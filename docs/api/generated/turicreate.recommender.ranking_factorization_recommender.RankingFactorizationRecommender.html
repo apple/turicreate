@@ -1,0 +1,463 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="recommender" href="../turicreate.toolkits.recommender.html"/>
+        <link rel="next" title="turicreate.recommender.popularity_recommender.create" href="turicreate.recommender.popularity_recommender.create.html"/>
+        <link rel="prev" title="turicreate.recommender.ranking_factorization_recommender.create" href="turicreate.recommender.ranking_factorization_recommender.create.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.recommender.html"><code class="docutils literal"><span class="pre">recommender</span></code></a> &raquo;</li>
+      
+    <li>turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-recommender-ranking-factorization-recommender-rankingfactorizationrecommender">
+<h1>turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender<a class="headerlink" href="#turicreate-recommender-ranking-factorization-recommender-rankingfactorizationrecommender" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender">
+<em class="property">class </em><code class="descclassname">turicreate.recommender.ranking_factorization_recommender.</code><code class="descname">RankingFactorizationRecommender</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender" title="Permalink to this definition">¶</a></dt>
+<dd><p>A RankingFactorizationRecommender learns latent factors for each
+user and item and uses them to rank recommended items according to
+the likelihood of observing those (user, item) pairs. This is
+commonly desired when performing collaborative filtering for
+implicit feedback datasets or datasets with explicit ratings
+for which ranking prediction is desired.</p>
+<p>RankingFactorizationRecommender contains a number of options that
+tailor to a variety of datasets and evaluation metrics, making
+this one of the most powerful models in the Turi Create
+recommender toolkit.</p>
+<p><strong>Creating a RankingFactorizationRecommender</strong></p>
+<p>This model cannot be constructed directly.  Instead, use
+<a class="reference internal" href="turicreate.recommender.ranking_factorization_recommender.create.html#turicreate.recommender.ranking_factorization_recommender.create" title="turicreate.recommender.ranking_factorization_recommender.create"><code class="xref py py-func docutils literal"><span class="pre">turicreate.recommender.ranking_factorization_recommender.create()</span></code></a>
+to create an instance
+of this model. A detailed list of parameter options and code samples
+are available in the documentation for the create function.</p>
+<p><strong>Side information</strong></p>
+<p>Side features may be provided via the <cite>user_data</cite> and <cite>item_data</cite> options
+when the model is created.</p>
+<p>Additionally, observation-specific information, such as the time of day when
+the user rated the item, can also be included. Any column in the
+<cite>observation_data</cite> SFrame that is not the user id, item id, or target is
+treated as a observation side features. The same side feature columns must
+be present when calling <a class="reference internal" href="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.predict.html#turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.predict" title="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.predict"><code class="xref py py-meth docutils literal"><span class="pre">predict()</span></code></a>.</p>
+<p>Side features may be numeric or categorical. User ids and item ids are
+treated as categorical variables. For the additional side features, the type
+of the <a class="reference internal" href="turicreate.SFrame.html#turicreate.SFrame" title="turicreate.SFrame"><code class="xref py py-class docutils literal"><span class="pre">SFrame</span></code></a> column determines how it&#8217;s handled: strings
+are treated as categorical variables and integers and floats are treated as
+numeric variables. Dictionaries and numeric arrays are also supported.</p>
+<p><strong>Optimizing for ranking performance</strong></p>
+<p>By default, RankingFactorizationRecommender optimizes for the
+precision-recall performance of recommendations.</p>
+<p><strong>Model parameters</strong></p>
+<p>Trained model parameters may be accessed using
+<cite>m.get(&#8216;coefficients&#8217;)</cite> or equivalently <cite>m[&#8216;coefficients&#8217;]</cite>, where <cite>m</cite>
+is a RankingFactorizationRecommender.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.recommender.ranking_factorization_recommender.create.html#turicreate.recommender.ranking_factorization_recommender.create" title="turicreate.recommender.ranking_factorization_recommender.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a>, <a class="reference internal" href="turicreate.recommender.factorization_recommender.create.html#turicreate.recommender.factorization_recommender.create" title="turicreate.recommender.factorization_recommender.create"><code class="xref py py-func docutils literal"><span class="pre">turicreate.recommender.factorization_recommender.create()</span></code></a></p>
+</div>
+<p class="rubric">Notes</p>
+<p><strong>Model Details</strong></p>
+<p><cite>RankingFactorizationRecommender</cite> trains a model capable of predicting a score for
+each possible combination of users and items.  The internal coefficients of
+the model are learned from known scores of users and items.
+Recommendations are then based on these scores.</p>
+<p>In the two factorization models, users and items are represented by weights
+and factors.  These model coefficients are learned during training.
+Roughly speaking, the weights, or bias terms, account for a user or item&#8217;s
+bias towards higher or lower ratings.  For example, an item that is
+consistently rated highly would have a higher weight coefficient associated
+with them.  Similarly, an item that consistently receives below average
+ratings would have a lower weight coefficient to account for this bias.</p>
+<p>The factor terms model interactions between users and items.  For example,
+if a user tends to love romance movies and hate action movies, the factor
+terms attempt to capture that, causing the model to predict lower scores
+for action movies and higher scores for romance movies.  Learning good
+weights and factors is controlled by several options outlined below.</p>
+<p>More formally, the predicted score for user <span class="math">\(i\)</span> on item <span class="math">\(j\)</span> is
+given by</p>
+<div class="math">
+\[\operatorname{score}(i, j) =
+   \mu + w_i + w_j
+   + \mathbf{a}^T \mathbf{x}_i + \mathbf{b}^T \mathbf{y}_j
+   + {\mathbf u}_i^T {\mathbf v}_j,\]</div>
+<p>where <span class="math">\(\mu\)</span> is a global bias term, <span class="math">\(w_i\)</span> is the weight term for
+user <span class="math">\(i\)</span>, <span class="math">\(w_j\)</span> is the weight term for item <span class="math">\(j\)</span>,
+<span class="math">\(\mathbf{x}_i\)</span> and <span class="math">\(\mathbf{y}_j\)</span> are respectively the user and
+item side feature vectors, and <span class="math">\(\mathbf{a}\)</span> and <span class="math">\(\mathbf{b}\)</span>
+are respectively the weight vectors for those side features.
+The latent factors, which are vectors of length <code class="docutils literal"><span class="pre">num_factors</span></code>, are given
+by <span class="math">\({\mathbf u}_i\)</span> and <span class="math">\({\mathbf v}_j\)</span>.</p>
+<p><strong>Training the model</strong></p>
+<p>The model is trained using Stochastic Gradient Descent with additional
+tricks to improve convergence. The optimization is done in parallel
+over multiple threads. This procedure is inherently random, so different
+calls to <cite>create()</cite> may return slightly different models, even with the
+same <cite>random_seed</cite>.</p>
+<p>In the explicit rating case, the objective function we are
+optimizing for is:</p>
+<div class="math">
+\[\min_{\mathbf{w}, \mathbf{a}, \mathbf{b}, \mathbf{V}, \mathbf{U}}
+\frac{1}{|\mathcal{D}|} \sum_{(i,j,r_{ij}) \in \mathcal{D}}
+\mathcal{L}(\operatorname{score}(i, j), r_{ij})
++ \lambda_1 (\lVert {\mathbf w} \rVert^2_2 + || {\mathbf a} ||^2_2 + || {\mathbf b} ||^2_2 )
++ \lambda_2 \left(\lVert {\mathbf U} \rVert^2_2
+                     + \lVert {\mathbf V} \rVert^2_2 \right)\]</div>
+<p>where <span class="math">\(\mathcal{D}\)</span> is the observation dataset, <span class="math">\(r_{ij}\)</span> is the
+rating that user <span class="math">\(i\)</span> gave to item <span class="math">\(j\)</span>,
+<span class="math">\({\mathbf U} = ({\mathbf u}_1, {\mathbf u}_2, ...)\)</span> denotes the user&#8217;s
+latent factors and <span class="math">\({\mathbf V} = ({\mathbf v}_1, {\mathbf v}_2, ...)\)</span>
+denotes the item latent factors.  The loss function
+<span class="math">\(\mathcal{L}(\hat{y}, y)\)</span> is <span class="math">\((\hat{y} - y)^2\)</span> by default.
+<span class="math">\(\lambda_1\)</span> denotes the <cite>linear_regularization</cite> parameter and
+<span class="math">\(\lambda_2\)</span> the <cite>regularization</cite> parameter.</p>
+<p>When <code class="docutils literal"><span class="pre">ranking_regularization</span></code> is nonzero, then the equation
+above gets an additional term.  Let <span class="math">\(\lambda_{\text{rr}}\)</span> represent
+the value of <cite>ranking_regularization</cite>, and let
+<span class="math">\(v_{\text{ur}}\)</span> represent <cite>unobserved_rating_value</cite>.  Then the
+objective we attempt to minimize is:</p>
+<div class="math">
+\[\begin{split}\min_{\mathbf{w}, \mathbf{a}, \mathbf{b}, \mathbf{V}, \mathbf{U}}
+\frac{1}{|\mathcal{D}|} \sum_{(i,j,r_{ij}) \in \mathcal{D}}
+\mathcal{L}(\operatorname{score}(i, j), r_{ij})
++ \lambda_1 (\lVert {\mathbf w} \rVert^2_2 + || {\mathbf a} ||^2_2 + || {\mathbf b} ||^2_2 )
++ \lambda_2 \left(\lVert {\mathbf U} \rVert^2_2
+                     + \lVert {\mathbf V} \rVert^2_2 \right) \\
++ \frac{\lambda_{rr}}{\text{const} * |\mathcal{U}|}
+\sum_{(i,j) \in \mathcal{U}}
+\mathcal{L}\left(\operatorname{score}(i, j), v_{\text{ur}}\right),\end{split}\]</div>
+<p>where <span class="math">\(\mathcal{U}\)</span> is a sample of unobserved user-item pairs.</p>
+<p>In the implicit case when there are no target values, we use
+logistic loss to fit a model that attempts to predict all the
+given (user, item) pairs in the training data as 1 and all others
+as 0.  To train this model, we sample an unobserved item along
+with each observed (user, item) pair, using SGD to push the score
+of the observed pair towards 1 and the unobserved pair towards 0.
+In this case, the <cite>ranking_regularization</cite> parameter is ignored.</p>
+<p>When <cite>binary_targets=True</cite>, then the target values must be 0 or 1;
+in this case, we also use logistic loss to train the model so the
+predicted scores are as close to the target values as possible.
+This time, the rating of the sampled unobserved pair is set to 0
+(thus the <cite>unobserved_rating_value</cite> is ignored).  In this case,
+the loss on the unobserved pairs is weighted by
+<cite>ranking_regularization</cite> as in the non-binary case.</p>
+<p>To choose the unobserved pair complementing a given observation,
+the algorithm selects several (defaults to four) candidate
+negative items that the user in the given observation has not
+rated. The algorithm scores each one using the current model, then
+chooses the item with the largest predicted score.  This adaptive
+sampling strategy provides faster convergence than just sampling a
+single negative item.</p>
+<p>The Factorization Machine is a generalization of Matrix
+Factorization. Like matrix factorization, it predicts target
+rating values as a weighted combination of user and item latent
+factors, biases, side features, and their pairwise combinations.
+In particular, while Matrix Factorization learns latent factors
+for only the user and item interactions, the Factorization Machine
+learns latent factors for all variables, including side features,
+and also allows for interactions between all pairs of
+variables. Thus the Factorization Machine is capable of modeling
+complex relationships in the data. Typically, using
+<cite>linear_side_features=True</cite> performs better in terms of RMSE, but
+may require a longer training time.</p>
+<p>num_sampled_negative_examples: For each (user, item) pair in the data, the
+ranking sgd solver evaluates this many randomly chosen unseen items for the
+negative example step.  Increasing this can give better performance at the
+expense of speed, particularly when the number of items is large.</p>
+<p>When <cite>ranking_regularization</cite> is larger than zero, the model samples
+a small set of unobserved user-item pairs and attempts to drive their rating
+predictions below the value specified with <cite>unobserved_rating_value</cite>.
+This has the effect of improving the precision-recall performance of
+recommended items.</p>
+<p>** Implicit Matrix Factorization**</p>
+<p><cite>RankingFactorizationRecommender</cite> had an additional option of optimizing
+for ranking using the implcit matrix factorization model. The internal coefficients of
+the model and its interpretation are identical to the model described above.
+The difference between the two models is in the nature in which the objective
+is achieved. Currently, this model does not incorporate any columns
+beyond user/item (and rating) or side data.</p>
+<p>The model works by transferring the raw observations (or weights) (r) into
+two separate magnitudes with distinct interpretations: preferences (p) and
+confidence levels (c). The functional relationship between the weights (r)
+and the confidence is either linear or logarithmic which can be toggled
+by setting <cite>ials_confidence_scaling_type</cite> = <cite>linear</cite> (the default) or <cite>log</cite>
+respectively. The rate of increase of the confidence with respect to the
+weights is proportional to the <cite>ials_confidence_scaling_factor</cite>
+(default 1.0).</p>
+<p class="rubric">Examples</p>
+<p><strong>Basic usage</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">],</span>
+<span class="gp">... </span>                      <span class="s1">&#39;item_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">],</span>
+<span class="gp">... </span>                      <span class="s1">&#39;rating&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m1</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">ranking_factorization_recommender</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;rating&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For implicit data, no target column is specified:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;user&#39;</span><span class="p">:</span>  <span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">],</span>
+<span class="gp">... </span>                      <span class="s1">&#39;movie&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m2</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">ranking_factorization_recommender</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;movie&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Implicit Matrix Factorization</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">],</span>
+<span class="gp">... </span>                      <span class="s1">&#39;item_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">],</span>
+<span class="gp">... </span>                      <span class="s1">&#39;rating&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m1</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">ranking_factorization_recommender</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;rating&#39;</span><span class="p">,</span>
+<span class="go">                                                           solver=&#39;ials&#39;)</span>
+</pre></div>
+</div>
+<p>For implicit data, no target column is specified:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;user&#39;</span><span class="p">:</span>  <span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">],</span>
+<span class="gp">... </span>                      <span class="s1">&#39;movie&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m2</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">ranking_factorization_recommender</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;movie&#39;</span><span class="p">,</span>
+<span class="go">                                                           solver=&#39;ials&#39;)</span>
+</pre></div>
+</div>
+<p><strong>Including side features</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">user_info</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">],</span>
+<span class="gp">... </span>                             <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="s2">&quot;Bob&quot;</span><span class="p">,</span> <span class="s2">&quot;Charlie&quot;</span><span class="p">],</span>
+<span class="gp">... </span>                             <span class="s1">&#39;numeric_feature&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">22</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">item_info</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;item_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="n">d</span><span class="s2">&quot;],</span>
+<span class="gp">... </span>                             <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;item1&quot;</span><span class="p">,</span> <span class="s2">&quot;item2&quot;</span><span class="p">,</span> <span class="s2">&quot;item3&quot;</span><span class="p">,</span> <span class="s2">&quot;item4&quot;</span><span class="p">],</span>
+<span class="gp">... </span>                             <span class="s1">&#39;dict_feature&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;a&#39;</span> <span class="p">:</span> <span class="mi">23</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span> <span class="p">:</span> <span class="mi">13</span><span class="p">},</span>
+<span class="gp">... </span>                                              <span class="p">{</span><span class="s1">&#39;b&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+<span class="gp">... </span>                                              <span class="p">{</span><span class="s1">&#39;a&#39;</span> <span class="p">:</span> <span class="mi">23</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span> <span class="p">:</span> <span class="mi">32</span><span class="p">}]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m2</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">ranking_factorization_recommender</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span>
+<span class="gp">... </span>                                              <span class="n">target</span><span class="o">=</span><span class="s1">&#39;rating&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                                              <span class="n">user_data</span><span class="o">=</span><span class="n">user_info</span><span class="p">,</span>
+<span class="gp">... </span>                                              <span class="n">item_data</span><span class="o">=</span><span class="n">item_info</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Optimizing for ranking performance</strong></p>
+<p>Create a model that pushes predicted ratings of unobserved user-item
+pairs toward 1 or below.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m3</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">ranking_factorization_recommender</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span>
+<span class="gp">... </span>                                              <span class="n">target</span><span class="o">=</span><span class="s1">&#39;rating&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                                              <span class="n">ranking_regularization</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+<span class="gp">... </span>                                              <span class="n">unobserved_rating_value</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.evaluate.html#turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.evaluate" title="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.evaluate"><code class="xref py py-obj docutils literal"><span class="pre">RankingFactorizationRecommender.evaluate</span></code></a>(dataset)</td>
+<td>Evaluate the model&#8217;s ability to make rating predictions or recommendations.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.evaluate_precision_recall.html#turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.evaluate_precision_recall" title="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.evaluate_precision_recall"><code class="xref py py-obj docutils literal"><span class="pre">RankingFactorizationRecommender.evaluate_precision_recall</span></code></a>(dataset)</td>
+<td>Compute a model&#8217;s precision and recall scores for a particular dataset.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.evaluate_rmse.html#turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.evaluate_rmse" title="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.evaluate_rmse"><code class="xref py py-obj docutils literal"><span class="pre">RankingFactorizationRecommender.evaluate_rmse</span></code></a>(...)</td>
+<td>Evaluate the prediction error for each user-item pair in the given data set.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.get_num_items_per_user.html#turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.get_num_items_per_user" title="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.get_num_items_per_user"><code class="xref py py-obj docutils literal"><span class="pre">RankingFactorizationRecommender.get_num_items_per_user</span></code></a>()</td>
+<td>Get the number of items observed for each user.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.get_num_users_per_item.html#turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.get_num_users_per_item" title="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.get_num_users_per_item"><code class="xref py py-obj docutils literal"><span class="pre">RankingFactorizationRecommender.get_num_users_per_item</span></code></a>()</td>
+<td>Get the number of users observed for each item.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.get_similar_items.html#turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.get_similar_items" title="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.get_similar_items"><code class="xref py py-obj docutils literal"><span class="pre">RankingFactorizationRecommender.get_similar_items</span></code></a>([...])</td>
+<td>Get the k most similar items for each item in items.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.get_similar_users.html#turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.get_similar_users" title="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.get_similar_users"><code class="xref py py-obj docutils literal"><span class="pre">RankingFactorizationRecommender.get_similar_users</span></code></a>([...])</td>
+<td>Get the k most similar users for each entry in <cite>users</cite>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.predict.html#turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.predict" title="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.predict"><code class="xref py py-obj docutils literal"><span class="pre">RankingFactorizationRecommender.predict</span></code></a>(dataset)</td>
+<td>Return a score prediction for the user ids and item ids in the provided data set.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.recommend.html#turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.recommend" title="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.recommend"><code class="xref py py-obj docutils literal"><span class="pre">RankingFactorizationRecommender.recommend</span></code></a>([...])</td>
+<td>Recommend the <code class="docutils literal"><span class="pre">k</span></code> highest scored items for each user.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.recommend_from_interactions.html#turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.recommend_from_interactions" title="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.recommend_from_interactions"><code class="xref py py-obj docutils literal"><span class="pre">RankingFactorizationRecommender.recommend_from_interactions</span></code></a>(...)</td>
+<td>Recommend the <code class="docutils literal"><span class="pre">k</span></code> highest scored items based on the</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.save.html#turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.save" title="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.save"><code class="xref py py-obj docutils literal"><span class="pre">RankingFactorizationRecommender.save</span></code></a>(location)</td>
+<td>Save the model.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.summary.html#turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.summary" title="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.summary"><code class="xref py py-obj docutils literal"><span class="pre">RankingFactorizationRecommender.summary</span></code></a>([output])</td>
+<td>Print a summary of the model.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.recommender.popularity_recommender.create.html" class="btn btn-neutral float-right" title="turicreate.recommender.popularity_recommender.create">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.recommender.ranking_factorization_recommender.create.html" class="btn btn-neutral" title="turicreate.recommender.ranking_factorization_recommender.create"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

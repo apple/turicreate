@@ -1,0 +1,237 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.topic_model.TopicModel.evaluate &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>turicreate.topic_model.TopicModel.evaluate</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-topic-model-topicmodel-evaluate">
+<h1>turicreate.topic_model.TopicModel.evaluate<a class="headerlink" href="#turicreate-topic-model-topicmodel-evaluate" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="turicreate.topic_model.TopicModel.evaluate">
+<code class="descclassname">TopicModel.</code><code class="descname">evaluate</code><span class="sig-paren">(</span><em>train_data</em>, <em>test_data=None</em>, <em>metric='perplexity'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.topic_model.TopicModel.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate the model&#8217;s ability to predict new data. Imagine you have a
+corpus of books. One common approach to evaluating topic models is to
+train on the first half of all of the books and see how well the model
+predicts the second half of each book.</p>
+<p>This method returns a metric called perplexity, which  is related to the
+likelihood of observing these words under the given model. See
+<a class="reference internal" href="turicreate.topic_model.perplexity.html#turicreate.topic_model.perplexity" title="turicreate.topic_model.perplexity"><code class="xref py py-func docutils literal"><span class="pre">perplexity()</span></code></a> for more details.</p>
+<p>The provided <cite>train_data</cite> and <cite>test_data</cite> must have the same length,
+i.e., both data sets must have the same number of documents; the model
+will use train_data to estimate which topic the document belongs to, and
+this is used to estimate the model&#8217;s performance at predicting the
+unseen words in the test data.</p>
+<p>See <a class="reference internal" href="turicreate.topic_model.TopicModel.predict.html#turicreate.topic_model.TopicModel.predict" title="turicreate.topic_model.TopicModel.predict"><code class="xref py py-func docutils literal"><span class="pre">predict()</span></code></a> for details
+on how these predictions are made, and see
+<a class="reference internal" href="turicreate.text_analytics.random_split.html#turicreate.text_analytics.random_split" title="turicreate.text_analytics.random_split"><code class="xref py py-func docutils literal"><span class="pre">random_split()</span></code></a> for a helper function
+that can be used for making train/test splits.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>train_data</strong> : SArray or SFrame</p>
+<blockquote>
+<div><p>A set of documents to predict topics for.</p>
+</div></blockquote>
+<p><strong>test_data</strong> : SArray or SFrame, optional</p>
+<blockquote>
+<div><p>A set of documents to evaluate performance on.
+By default this will set to be the same as train_data.</p>
+</div></blockquote>
+<p><strong>metric</strong> : str</p>
+<blockquote>
+<div><p>The chosen metric to use for evaluating the topic model.
+Currently only &#8216;perplexity&#8217; is supported.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : dict</p>
+<blockquote class="last">
+<div><p>The set of estimated evaluation metrics.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.topic_model.TopicModel.predict.html#turicreate.topic_model.TopicModel.predict" title="turicreate.topic_model.TopicModel.predict"><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code></a>, <code class="xref py py-obj docutils literal"><span class="pre">turicreate.toolkits.text_analytics.random_split</span></code></p>
+</div>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">docs</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">(</span><span class="s1">&#39;https://static.turi.com/datasets/nips-text&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">train_data</span><span class="p">,</span> <span class="n">test_data</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">random_split</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">topic_model</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">test_data</span><span class="p">)</span>
+<span class="go">{&#39;perplexity&#39;: 2467.530370396021}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

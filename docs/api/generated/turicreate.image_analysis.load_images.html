@@ -1,0 +1,252 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.image_analysis.load_images &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="image_analysis" href="../turicreate.toolkits.image_analysis.html"/>
+        <link rel="next" title="turicreate.image_analysis.resize" href="turicreate.image_analysis.resize.html"/>
+        <link rel="prev" title="turicreate.image_analysis.resize" href="turicreate.image_analysis.resize.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.image_analysis.html"><code class="docutils literal"><span class="pre">image_analysis</span></code></a> &raquo;</li>
+      
+    <li>turicreate.image_analysis.load_images</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-image-analysis-load-images">
+<h1>turicreate.image_analysis.load_images<a class="headerlink" href="#turicreate-image-analysis-load-images" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.image_analysis.load_images">
+<code class="descclassname">turicreate.image_analysis.</code><code class="descname">load_images</code><span class="sig-paren">(</span><em>url</em>, <em>format='auto'</em>, <em>with_path=True</em>, <em>recursive=True</em>, <em>ignore_failure=True</em>, <em>random_order=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.image_analysis.load_images" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads images from a directory. JPEG and PNG images are supported.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>url</strong> : str</p>
+<blockquote>
+<div><p>The string of the path where all the images are stored.</p>
+</div></blockquote>
+<p><strong>format</strong> : {&#8216;PNG&#8217; | &#8216;JPG&#8217; | &#8216;auto&#8217;}, optional</p>
+<blockquote>
+<div><p>The format of the images in the directory. The default &#8216;auto&#8217; parameter
+value tries to infer the image type from the file extension. If a
+format is specified, all images must be of that format.</p>
+</div></blockquote>
+<p><strong>with_path</strong> : bool, optional</p>
+<blockquote>
+<div><p>Indicates whether a path column is added to the SFrame. If &#8216;with_path&#8217;
+is set to True,  the returned SFrame contains a &#8216;path&#8217; column, which
+holds a path string for each Image object.</p>
+</div></blockquote>
+<p><strong>recursive</strong> : bool, optional</p>
+<blockquote>
+<div><p>Inicates whether &#8216;load_images&#8217; should do recursive directory traversal,
+or a flat directory traversal.</p>
+</div></blockquote>
+<p><strong>ignore_failure</strong> : bool, optional</p>
+<blockquote>
+<div><p>If true, prints warning for failed images and keep loading the rest of
+the images.</p>
+</div></blockquote>
+<p><strong>random_order</strong> : bool, optional</p>
+<blockquote>
+<div><p>Load images in random order, useful for Stochastic Gradient Decent like
+algorithm.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SFrame</p>
+<blockquote class="last">
+<div><p>Returns an SFrame with either an &#8216;image&#8217; column or both an &#8216;image&#8217; and
+a &#8216;path&#8217; column. The &#8216;image&#8217; column is a column of Image objects. If
+with_path is True, there is also a &#8216;path&#8217; column which contains the image
+path for each of each corresponding Image object.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">url</span> <span class="o">=</span><span class="s1">&#39;https://static.turi.com/datasets/images/nested&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image_sarray</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">image_analysis</span><span class="o">.</span><span class="n">load_images</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">with_path</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+<span class="gp">... </span>                                                   <span class="n">recursive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.image_analysis.resize.html" class="btn btn-neutral float-right" title="turicreate.image_analysis.resize">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.image_analysis.resize.html" class="btn btn-neutral" title="turicreate.image_analysis.resize"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

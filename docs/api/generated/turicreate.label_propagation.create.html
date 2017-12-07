@@ -1,0 +1,315 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.label_propagation.create &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="graph_analytics" href="../turicreate.toolkits.graph_analytics.html"/>
+        <link rel="next" title="turicreate.label_propagation.LabelPropagationModel" href="turicreate.label_propagation.LabelPropagationModel.html"/>
+        <link rel="prev" title="turicreate.kcore.KcoreModel" href="turicreate.kcore.KcoreModel.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.graph_analytics.html"><code class="docutils literal"><span class="pre">graph_analytics</span></code></a> &raquo;</li>
+      
+    <li>turicreate.label_propagation.create</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-label-propagation-create">
+<h1>turicreate.label_propagation.create<a class="headerlink" href="#turicreate-label-propagation-create" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.label_propagation.create">
+<code class="descclassname">turicreate.label_propagation.</code><code class="descname">create</code><span class="sig-paren">(</span><em>graph</em>, <em>label_field</em>, <em>threshold=0.001</em>, <em>weight_field=''</em>, <em>self_weight=1.0</em>, <em>undirected=False</em>, <em>max_iterations=None</em>, <em>_single_precision=False</em>, <em>_distributed='auto'</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.label_propagation.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a weighted graph with observed class labels of a subset of vertices,
+infer the label probability for the unobserved vertices using the
+&#8220;label propagation&#8221; algorithm.</p>
+<p>The algorithm iteratively updates the label probability of current vertex
+as a weighted sum of label probability of self and the neighboring vertices
+until converge.  See
+<a class="reference internal" href="turicreate.label_propagation.LabelPropagationModel.html#turicreate.label_propagation.LabelPropagationModel" title="turicreate.label_propagation.LabelPropagationModel"><code class="xref py py-class docutils literal"><span class="pre">turicreate.label_propagation.LabelPropagationModel</span></code></a> for the details
+of the algorithm.</p>
+<p>Notes: label propagation works well with small number of labels, i.e. binary
+labels, or less than 1000 classes. The toolkit will throw error
+if the number of classes exceeds the maximum value (1000).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>graph</strong> : SGraph</p>
+<blockquote>
+<div><p>The graph on which to compute the label propagation.</p>
+</div></blockquote>
+<p><strong>label_field: str</strong></p>
+<blockquote>
+<div><p>Vertex field storing the initial vertex labels. The values in
+must be [0, num_classes). None values indicate unobserved vertex labels.</p>
+</div></blockquote>
+<p><strong>threshold</strong> : float, optional</p>
+<blockquote>
+<div><p>Threshold for convergence, measured in the average L2 norm
+(the sum of squared values) of the delta of each vertex&#8217;s
+label probability vector.</p>
+</div></blockquote>
+<p><strong>max_iterations: int, optional</strong></p>
+<blockquote>
+<div><p>The max number of iterations to run. Default is unlimited.
+If set, the algorithm terminates when either max_iterations
+or convergence threshold is reached.</p>
+</div></blockquote>
+<p><strong>weight_field: str, optional</strong></p>
+<blockquote>
+<div><p>Vertex field for edge weight. If empty, all edges are assumed
+to have unit weight.</p>
+</div></blockquote>
+<p><strong>self_weight: float, optional</strong></p>
+<blockquote>
+<div><p>The weight for self edge.</p>
+</div></blockquote>
+<p><strong>undirected: bool, optional</strong></p>
+<blockquote>
+<div><p>If true, treat each edge as undirected, and propagates label in
+both directions.</p>
+</div></blockquote>
+<p><strong>_single_precision</strong> : bool, optional</p>
+<blockquote>
+<div><p>If true, running label propagation in single precision. The resulting
+probability values may less accurate, but should run faster
+and use less memory.</p>
+</div></blockquote>
+<p><strong>_distributed</strong> : distributed environment, internal</p>
+<p><strong>verbose</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, print progress updates.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>out</strong> : LabelPropagationModel</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.label_propagation.LabelPropagationModel.html#turicreate.label_propagation.LabelPropagationModel" title="turicreate.label_propagation.LabelPropagationModel"><code class="xref py py-obj docutils literal"><span class="pre">LabelPropagationModel</span></code></a></p>
+</div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li>Zhu, X., &amp; Ghahramani, Z. (2002). <a class="reference external" href="http://www.cs.cmu.edu/~zhuxj/pub/CMU-CALD-02-107.pdf">Learning from labeled and unlabeled data
+with label propagation</a>.</li>
+</ul>
+<p class="rubric">Examples</p>
+<p>If given an <a class="reference internal" href="turicreate.SGraph.html#turicreate.SGraph" title="turicreate.SGraph"><code class="xref py py-class docutils literal"><span class="pre">SGraph</span></code></a> <code class="docutils literal"><span class="pre">g</span></code>, we can create
+a <a class="reference internal" href="turicreate.label_propagation.LabelPropagationModel.html#turicreate.label_propagation.LabelPropagationModel" title="turicreate.label_propagation.LabelPropagationModel"><code class="xref py py-class docutils literal"><span class="pre">LabelPropagationModel</span></code></a> as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">load_graph</span><span class="p">(</span><span class="s1">&#39;http://snap.stanford.edu/data/email-Enron.txt.gz&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                        <span class="n">format</span><span class="o">=</span><span class="s1">&#39;snap&#39;</span><span class="p">)</span>
+<span class="go"># Initialize random classes for a subset of vertices</span>
+<span class="go"># Leave the unobserved vertices with None label.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">random</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">init_label</span><span class="p">(</span><span class="n">vid</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">x</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mf">0.2</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="mi">0</span>
+<span class="gp">... </span>    <span class="k">elif</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mf">0.9</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="mi">1</span>
+<span class="gp">... </span>    <span class="k">else</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="bp">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="s1">&#39;__id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">init_label</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">label_propagation</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">label_field</span><span class="o">=</span><span class="s1">&#39;label&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We can obtain for each vertex the predicted label and the probability of
+each label in the graph <code class="docutils literal"><span class="pre">g</span></code> using:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">labels</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">]</span>     <span class="c1"># SFrame</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">labels</span>
+<span class="go">+------+-------+-----------------+-------------------+----------------+</span>
+<span class="go">| __id | label | predicted_label |         P0        |       P1       |</span>
+<span class="go">+------+-------+-----------------+-------------------+----------------+</span>
+<span class="go">|  5   |   1   |        1        |        0.0        |      1.0       |</span>
+<span class="go">|  7   |  None |        0        |    0.8213214997   |  0.1786785003  |</span>
+<span class="go">|  8   |  None |        1        | 5.96046447754e-08 | 0.999999940395 |</span>
+<span class="go">|  10  |  None |        0        |   0.534984718273  | 0.465015281727 |</span>
+<span class="go">|  27  |  None |        0        |   0.752801638549  | 0.247198361451 |</span>
+<span class="go">|  29  |  None |        1        | 5.96046447754e-08 | 0.999999940395 |</span>
+<span class="go">|  33  |  None |        1        | 5.96046447754e-08 | 0.999999940395 |</span>
+<span class="go">|  47  |   0   |        0        |        1.0        |      0.0       |</span>
+<span class="go">|  50  |  None |        0        |   0.788279032657  | 0.211720967343 |</span>
+<span class="go">|  52  |  None |        0        |   0.666666666667  | 0.333333333333 |</span>
+<span class="go">+------+-------+-----------------+-------------------+----------------+</span>
+<span class="go">[36692 rows x 5 columns]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.label_propagation.LabelPropagationModel.html" class="btn btn-neutral float-right" title="turicreate.label_propagation.LabelPropagationModel">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.kcore.KcoreModel.html" class="btn btn-neutral" title="turicreate.kcore.KcoreModel"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

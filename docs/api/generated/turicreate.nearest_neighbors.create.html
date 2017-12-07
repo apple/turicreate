@@ -1,0 +1,455 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.nearest_neighbors.create &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="nearest_neighbors" href="../turicreate.toolkits.nearest_neighbors.html"/>
+        <link rel="next" title="turicreate.nearest_neighbors.NearestNeighborsModel" href="turicreate.nearest_neighbors.NearestNeighborsModel.html"/>
+        <link rel="prev" title="turicreate.nearest_neighbors.NearestNeighborsModel" href="turicreate.nearest_neighbors.NearestNeighborsModel.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.nearest_neighbors.html"><code class="docutils literal"><span class="pre">nearest_neighbors</span></code></a> &raquo;</li>
+      
+    <li>turicreate.nearest_neighbors.create</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-nearest-neighbors-create">
+<h1>turicreate.nearest_neighbors.create<a class="headerlink" href="#turicreate-nearest-neighbors-create" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.nearest_neighbors.create">
+<code class="descclassname">turicreate.nearest_neighbors.</code><code class="descname">create</code><span class="sig-paren">(</span><em>dataset</em>, <em>label=None</em>, <em>features=None</em>, <em>distance=None</em>, <em>method='auto'</em>, <em>verbose=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.nearest_neighbors.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a nearest neighbor model, which can be searched efficiently and
+quickly for the nearest neighbors of a query observation. If the <cite>method</cite>
+argument is specified as <cite>auto</cite>, the type of model is chosen automatically
+based on the type of data in <cite>dataset</cite>.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The &#8216;dot_product&#8217; distance is deprecated and will be removed in future
+versions of Turi Create. Please use &#8216;transformed_dot_product&#8217;
+distance instead, although note that this is more than a name change;
+it is a <em>different</em> transformation of the dot product of two vectors.
+Please see the distances module documentation for more details.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
+<blockquote>
+<div><p>Reference data. If the features for each observation are numeric, they
+may be in separate columns of &#8216;dataset&#8217; or a single column with lists
+of values. The features may also be in the form of a column of sparse
+vectors (i.e. dictionaries), with string keys and numeric values.</p>
+</div></blockquote>
+<p><strong>label</strong> : string, optional</p>
+<blockquote>
+<div><p>Name of the SFrame column with row labels. If &#8216;label&#8217; is not specified,
+row numbers are used to identify reference dataset rows when the model
+is queried.</p>
+</div></blockquote>
+<p><strong>features</strong> : list[string], optional</p>
+<blockquote>
+<div><p>Name of the columns with features to use in computing distances between
+observations and the query points. &#8216;None&#8217; (the default) indicates that
+all columns except the label should be used as features. Each column
+can be one of the following types:</p>
+<ul class="simple">
+<li><em>Numeric</em>: values of numeric type integer or float.</li>
+<li><em>Array</em>: list of numeric (integer or float) values. Each list element
+is treated as a separate variable in the model.</li>
+<li><em>Dictionary</em>: key-value pairs with numeric (integer or float) values.
+Each key indicates a separate variable in the model.</li>
+<li><em>List</em>: list of integer or string values. Each element is treated as
+a separate variable in the model.</li>
+<li><em>String</em>: string values.</li>
+</ul>
+<p>Please note: if a composite distance is also specified, this parameter
+is ignored.</p>
+</div></blockquote>
+<p><strong>distance</strong> : string, function, or list[list], optional</p>
+<blockquote>
+<div><p>Function to measure the distance between any two input data rows. This
+may be one of three types:</p>
+<ul class="simple">
+<li><em>String</em>: the name of a standard distance function. One of
+&#8216;euclidean&#8217;, &#8216;squared_euclidean&#8217;, &#8216;manhattan&#8217;, &#8216;levenshtein&#8217;,
+&#8216;jaccard&#8217;, &#8216;weighted_jaccard&#8217;, &#8216;cosine&#8217;, &#8216;dot_product&#8217; (deprecated),
+or &#8216;transformed_dot_product&#8217;.</li>
+<li><em>Function</em>: a function handle from the
+<a class="reference internal" href="../turicreate.toolkits.distances.html#module-turicreate.toolkits.distances" title="turicreate.toolkits.distances"><code class="xref py py-mod docutils literal"><span class="pre">distances</span></code></a> module.</li>
+<li><em>Composite distance</em>: the weighted sum of several standard distance
+functions applied to various features. This is specified as a list of
+distance components, each of which is itself a list containing three
+items:<ol class="arabic">
+<li>list or tuple of feature names (strings)</li>
+<li>standard distance name (string)</li>
+<li>scaling factor (int or float)</li>
+</ol>
+</li>
+</ul>
+<p>For more information about Turi Create distance functions, please
+see the <a class="reference internal" href="../turicreate.toolkits.distances.html#module-turicreate.toolkits.distances" title="turicreate.toolkits.distances"><code class="xref py py-mod docutils literal"><span class="pre">distances</span></code></a> module.</p>
+<p>If &#8216;distance&#8217; is left unspecified or set to &#8216;auto&#8217;, a composite
+distance is constructed automatically based on feature types.</p>
+</div></blockquote>
+<p><strong>method</strong> : {&#8216;auto&#8217;, &#8216;ball_tree&#8217;, &#8216;brute_force&#8217;, &#8216;lsh&#8217;}, optional</p>
+<blockquote>
+<div><p>Method for computing nearest neighbors. The options are:</p>
+<ul class="simple">
+<li><em>auto</em> (default): the method is chosen automatically, based on the
+type of data and the distance. If the distance is &#8216;manhattan&#8217; or
+&#8216;euclidean&#8217; and the features are numeric or vectors of numeric
+values, then the &#8216;ball_tree&#8217; method is used. Otherwise, the
+&#8216;brute_force&#8217; method is used.</li>
+<li><em>ball_tree</em>: use a tree structure to find the k-closest neighbors to
+each query point. The ball tree model is slower to construct than the
+brute force model, but queries are faster than linear time. This
+method is not applicable for the cosine and dot product distances.
+See <a class="reference external" href="http://papers.nips.cc/paper/2666-an-investigation-of-practical-approximate-nearest-neighbor-algorithms">Liu, et al (2004)</a> for
+implementation details.</li>
+<li><em>brute_force</em>: compute the distance from a query point to all
+reference observations. There is no computation time for model
+creation with the brute force method (although the reference data is
+held in the model, but each query takes linear time.</li>
+<li><em>lsh</em>: use Locality Sensitive Hashing (LSH) to find approximate
+nearest neighbors efficiently. The LSH model supports &#8216;euclidean&#8217;,
+&#8216;squared_euclidean&#8217;, &#8216;manhattan&#8217;, &#8216;cosine&#8217;, &#8216;jaccard&#8217;, &#8216;dot_product&#8217;
+(deprecated), and &#8216;transformed_dot_product&#8217; distances. Two options
+are provided for LSH &#8211; <code class="docutils literal"><span class="pre">num_tables</span></code> and
+<code class="docutils literal"><span class="pre">num_projections_per_table</span></code>. See the notes below for details.</li>
+</ul>
+</div></blockquote>
+<p><strong>verbose: bool, optional</strong></p>
+<blockquote>
+<div><p>If True, print progress updates and model details.</p>
+</div></blockquote>
+<p><strong>**kwargs</strong> : optional</p>
+<blockquote>
+<div><p>Options for the distance function and query method.</p>
+<ul class="simple">
+<li><em>leaf_size</em>: for the ball tree method, the number of points in each
+leaf of the tree. The default is to use the max of 1,000 and
+n/(2^11), which ensures a maximum tree depth of 12.</li>
+<li><em>num_tables</em>: For the LSH method, the number of hash tables
+constructed. The default value is 20. We recommend choosing values
+from 10 to 30.</li>
+<li><em>num_projections_per_table</em>: For the LSH method, the number of
+projections/hash functions for each hash table. The default value is
+4 for &#8216;jaccard&#8217; distance, 16 for &#8216;cosine&#8217; distance and 8 for other
+distances. We recommend using number 2 ~ 6 for &#8216;jaccard&#8217; distance, 8
+~ 20 for &#8216;cosine&#8217; distance and 4 ~ 12 for other distances.</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : NearestNeighborsModel</p>
+<blockquote class="last">
+<div><p>A structure for efficiently computing the nearest neighbors in &#8216;dataset&#8217;
+of new query points.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.nearest_neighbors.NearestNeighborsModel.query.html#turicreate.nearest_neighbors.NearestNeighborsModel.query" title="turicreate.nearest_neighbors.NearestNeighborsModel.query"><code class="xref py py-obj docutils literal"><span class="pre">NearestNeighborsModel.query</span></code></a>, <a class="reference internal" href="../turicreate.toolkits.distances.html#module-turicreate.toolkits.distances" title="turicreate.toolkits.distances"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.toolkits.distances</span></code></a></p>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>Missing data is not allowed in the &#8216;dataset&#8217; provided to this function.
+Please use the <a class="reference internal" href="turicreate.SFrame.fillna.html#turicreate.SFrame.fillna" title="turicreate.SFrame.fillna"><code class="xref py py-func docutils literal"><span class="pre">turicreate.SFrame.fillna()</span></code></a> and
+<a class="reference internal" href="turicreate.SFrame.dropna.html#turicreate.SFrame.dropna" title="turicreate.SFrame.dropna"><code class="xref py py-func docutils literal"><span class="pre">turicreate.SFrame.dropna()</span></code></a> utilities to handle missing data before
+creating a nearest neighbors model.</li>
+<li>Missing keys in sparse vectors are assumed to have value 0.</li>
+<li>The <cite>composite_params</cite> parameter was removed as of Turi Create
+version 1.5. The <cite>distance</cite> parameter now accepts either standard or
+composite distances. Please see the <a class="reference internal" href="../turicreate.toolkits.distances.html#module-turicreate.toolkits.distances" title="turicreate.toolkits.distances"><code class="xref py py-mod docutils literal"><span class="pre">distances</span></code></a>
+module documentation for more information on composite distances.</li>
+<li>If the features should be weighted equally in the distance calculations
+but are measured on different scales, it is important to standardize the
+features. One way to do this is to subtract the mean of each column and
+divide by the standard deviation.</li>
+</ul>
+<p><strong>Locality Sensitive Hashing (LSH)</strong></p>
+<p>There are several efficient nearest neighbors search algorithms that work
+well for data with low dimensions <span class="math">\(d\)</span> (approximately 50). However,
+most of the solutions suffer from either space or query time that is
+exponential in <span class="math">\(d\)</span>. For large <span class="math">\(d\)</span>, they often provide little,
+if any, improvement over the &#8216;brute_force&#8217; method. This is a well-known
+consequence of the phenomenon called <cite>The Curse of Dimensionality</cite>.</p>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Locality-sensitive_hashing">Locality Sensitive Hashing (LSH)</a> is an approach
+that is designed to efficiently solve the <em>approximate</em> nearest neighbor
+search problem for high dimensional data. The key idea of LSH is to hash
+the data points using several hash functions, so that the probability of
+collision is much higher for data points which are close to each other than
+those which are far apart.</p>
+<p>An LSH family is a family of functions <span class="math">\(h\)</span> which map points from the
+metric space to a bucket, so that</p>
+<ul class="simple">
+<li>if <span class="math">\(d(p, q) \leq R\)</span>, then <span class="math">\(h(p) = h(q)\)</span> with at least probability <span class="math">\(p_1\)</span>.</li>
+<li>if <span class="math">\(d(p, q) \geq cR\)</span>, then <span class="math">\(h(p) = h(q)\)</span> with probability at most <span class="math">\(p_2\)</span>.</li>
+</ul>
+<p>LSH for efficient approximate nearest neighbor search:</p>
+<ul class="simple">
+<li>We define a new family of hash functions <span class="math">\(g\)</span>, where each
+function <span class="math">\(g\)</span> is obtained by concatenating <span class="math">\(k\)</span> functions
+<span class="math">\(h_1, ..., h_k\)</span>, i.e., <span class="math">\(g(p)=[h_1(p),...,h_k(p)]\)</span>.
+The algorithm constructs <span class="math">\(L\)</span> hash tables, each of which
+corresponds to a different randomly chosen hash function <span class="math">\(g\)</span>.
+There are <span class="math">\(k \cdot L\)</span> hash functions used in total.</li>
+<li>In the preprocessing step, we hash all <span class="math">\(n\)</span> reference points
+into each of the <span class="math">\(L\)</span> hash tables.</li>
+<li>Given a query point <span class="math">\(q\)</span>, the algorithm iterates over the
+<span class="math">\(L\)</span> hash functions <span class="math">\(g\)</span>. For each <span class="math">\(g\)</span> considered, it
+retrieves the data points that are hashed into the same bucket as q.
+These data points from all the <span class="math">\(L\)</span> hash tables are considered as
+candidates that are then re-ranked by their real distances with the query
+data.</li>
+</ul>
+<p><strong>Note</strong> that the number of tables <span class="math">\(L\)</span> and the number of hash
+functions per table <span class="math">\(k\)</span> are two main parameters. They can be set
+using the options <code class="docutils literal"><span class="pre">num_tables</span></code> and <code class="docutils literal"><span class="pre">num_projections_per_table</span></code>
+respectively.</p>
+<p>Hash functions for different distances:</p>
+<ul class="simple">
+<li><cite>euclidean</cite> and <cite>squared_euclidean</cite>:
+<span class="math">\(h(q) = \lfloor \frac{a \cdot q + b}{w} \rfloor\)</span> where
+<span class="math">\(a\)</span> is a vector, of which the elements are independently
+sampled from normal distribution, and <span class="math">\(b\)</span> is a number
+uniformly sampled from <span class="math">\([0, r]\)</span>. <span class="math">\(r\)</span> is a parameter for the
+bucket width. We set <span class="math">\(r\)</span> using the average all-pair <cite>euclidean</cite>
+distances from a small randomly sampled subset of the reference data.</li>
+<li><cite>manhattan</cite>: The hash function of <cite>manhattan</cite> is similar with that of
+<cite>euclidean</cite>. The only difference is that the elements of <cite>a</cite> are sampled
+from Cauchy distribution, instead of normal distribution.</li>
+<li><cite>cosine</cite>: Random Projection is designed to approximate the cosine
+distance between vectors. The hash function is <span class="math">\(h(q) = sgn(a \cdot
+q)\)</span>, where <span class="math">\(a\)</span> is randomly sampled normal unit vector.</li>
+<li><cite>jaccard</cite>: We use a recently proposed method one permutation hashing by
+Shrivastava and Li. See the paper <a class="reference external" href="http://www.auai.org/uai2014/proceedings/individuals/225.pdf">[Shrivastava and Li, UAI 2014]</a> for
+details.</li>
+<li><cite>dot_product</cite>: The reference data points are first transformed to
+fixed-norm vectors, and then the minimum <cite>dot_product</cite> distance search
+problem can be solved via finding the reference data with smallest
+<cite>cosine</cite> distances. See the paper <a class="reference external" href="http://jmlr.org/proceedings/papers/v37/neyshabur15.html">[Neyshabur and Srebro, ICML 2015]</a> for details.</li>
+</ul>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><a class="reference external" href="http://en.wikipedia.org/wiki/Nearest_neighbor_search">Wikipedia - nearest neighbor
+search</a></li>
+<li><a class="reference external" href="http://en.wikipedia.org/wiki/Ball_tree">Wikipedia - ball tree</a></li>
+<li>Ball tree implementation: Liu, T., et al. (2004) <a class="reference external" href="http://papers.nips.cc/paper/2666-an-investigation-of-practical-approximate-nearest-neighbor-algorithms">An Investigation of
+Practical Approximate Nearest Neighbor Algorithms</a>. Advances in Neural
+Information Processing Systems pp. 825-832.</li>
+<li><a class="reference external" href="http://en.wikipedia.org/wiki/Jaccard_index">Wikipedia - Jaccard distance</a></li>
+<li>Weighted Jaccard distance: Chierichetti, F., et al. (2010) <a class="reference external" href="http://theory.stanford.edu/~sergei/papers/soda10-jaccard.pdf">Finding the
+Jaccard Median</a>.
+Proceedings of the Twenty-First Annual ACM-SIAM Symposium on Discrete
+Algorithms. Society for Industrial and Applied Mathematics.</li>
+<li><a class="reference external" href="http://en.wikipedia.org/wiki/Cosine_similarity">Wikipedia - Cosine distance</a></li>
+<li><a class="reference external" href="http://en.wikipedia.org/wiki/Levenshtein_distance">Wikipedia - Levenshtein distance</a></li>
+<li>Locality Sensitive Hashing : Chapter 3 of the book <a class="reference external" href="http://infolab.stanford.edu/~ullman/mmds/ch3.pdf">Mining Massive
+Datasets</a>.</li>
+</ul>
+<p class="rubric">Examples</p>
+<p>Construct a nearest neighbors model with automatically determined method
+and distance:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;X1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.98</span><span class="p">,</span> <span class="mf">0.62</span><span class="p">,</span> <span class="mf">0.11</span><span class="p">],</span>
+<span class="gp">... </span>                      <span class="s1">&#39;X2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.69</span><span class="p">,</span> <span class="mf">0.58</span><span class="p">,</span> <span class="mf">0.36</span><span class="p">],</span>
+<span class="gp">... </span>                      <span class="s1">&#39;str_feature&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;fossa&#39;</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">nearest_neighbors</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;X1&#39;</span><span class="p">,</span> <span class="s1">&#39;X2&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>For datasets with a large number of rows and up to about 100 variables, the
+ball tree method often leads to much faster queries.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">nearest_neighbors</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;X1&#39;</span><span class="p">,</span> <span class="s1">&#39;X2&#39;</span><span class="p">],</span>
+<span class="gp">... </span>                                          <span class="n">method</span><span class="o">=</span><span class="s1">&#39;ball_tree&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Often the final determination of a neighbor is based on several distance
+computations over different sets of features. Each part of this composite
+distance may have a different relative weight.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_dist</span> <span class="o">=</span> <span class="p">[[[</span><span class="s1">&#39;X1&#39;</span><span class="p">,</span> <span class="s1">&#39;X2&#39;</span><span class="p">],</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span>
+<span class="gp">... </span>           <span class="p">[[</span><span class="s1">&#39;str_feature&#39;</span><span class="p">],</span> <span class="s1">&#39;levenshtein&#39;</span><span class="p">,</span> <span class="mf">3.</span><span class="p">]]</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">nearest_neighbors</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="n">my_dist</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.nearest_neighbors.NearestNeighborsModel.html" class="btn btn-neutral float-right" title="turicreate.nearest_neighbors.NearestNeighborsModel">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.nearest_neighbors.NearestNeighborsModel.html" class="btn btn-neutral" title="turicreate.nearest_neighbors.NearestNeighborsModel"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

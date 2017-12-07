@@ -1,0 +1,358 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>distances &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="index.html"/>
+        <link rel="up" title="Modelling" href="turicreate.toolkits.html"/>
+        <link rel="next" title="turicreate.toolkits.distances.euclidean" href="generated/turicreate.toolkits.distances.euclidean.html"/>
+        <link rel="prev" title="load_model" href="turicreate.load_model.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+    <li><code class="docutils literal"><span class="pre">distances</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="module-turicreate.toolkits.distances">
+<span id="distances"></span><h1><code class="xref py py-mod docutils literal"><span class="pre">distances</span></code><a class="headerlink" href="#module-turicreate.toolkits.distances" title="Permalink to this headline">¶</a></h1>
+<p>The Turi Create distances module provides access to the standard distance
+functions and utilities for working with composite distances. Distance functions
+are used in all toolkits based on a nearest neighbors search, including
+<a class="reference internal" href="turicreate.toolkits.nearest_neighbors.html#module-turicreate.toolkits.nearest_neighbors" title="turicreate.toolkits.nearest_neighbors"><code class="xref py py-mod docutils literal"><span class="pre">nearest_neighbors</span></code></a> itself,
+<code class="xref py py-mod docutils literal"><span class="pre">nearest_neighbor_classifier</span></code> , and <code class="xref py py-mod docutils literal"><span class="pre">nearest_neighbor_deduplication</span></code>.</p>
+<blockquote>
+<div><div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The &#8216;dot_product&#8217; distance is deprecated and will be removed in future
+versions of Turi Create. Please use &#8216;logistic&#8217; distance instead,
+although note that this is more than a name change; it is a <em>different</em>
+transformation of the dot product of two vectors. Please see the
+distances module documentation for more details.</p>
+</div>
+</div></blockquote>
+<p><strong>Standard distance functions</strong> measure the dissimilarity between two data
+points consisting of only a single type.</p>
+<blockquote>
+<div><ul class="simple">
+<li><em>euclidean</em>, <em>squared_euclidean</em>, <em>manhattan</em>, <em>cosine</em>, and
+<em>transformed_dot_product</em> distances work for integer and floating point
+data, which can be thought of a vectors.</li>
+<li>These distances, as well as the <em>jaccard</em> and <em>weighted_jaccard</em> distances
+work on data contained in dictionaries.</li>
+<li>The <em>levenshtein</em> distance works for string data, although another
+strategy that often works well is to turn strings into dictionaries with
+the <a class="reference internal" href="generated/turicreate.text_analytics.count_ngrams.html#turicreate.text_analytics.count_ngrams" title="turicreate.text_analytics.count_ngrams"><code class="xref py py-func docutils literal"><span class="pre">turicreate.text_analytics.count_ngrams()</span></code></a> function then use
+Jaccard or weighted Jaccard distance.</li>
+</ul>
+</div></blockquote>
+<p>These functions may be passed to a model by specifying either the name or the
+handle of the function in this module. For example, suppose we have the
+following SFrame of data:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;X1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.98</span><span class="p">,</span> <span class="mf">0.62</span><span class="p">,</span> <span class="mf">0.11</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">],</span>
+<span class="gp">... </span>                      <span class="s1">&#39;X2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.69</span><span class="p">,</span> <span class="mf">0.58</span><span class="p">,</span> <span class="mf">0.36</span><span class="p">,</span> <span class="mf">1.23</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+<span class="gp">... </span>                      <span class="s1">&#39;species&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;elephant&#39;</span><span class="p">,</span> <span class="s1">&#39;fossa&#39;</span><span class="p">,</span> <span class="s1">&#39;giraffe&#39;</span><span class="p">]})</span>
+</pre></div>
+</div>
+<p>To find the nearest neighbors of each row, we create a nearest neighbors model,
+and we have to indicate how we want to measure the distance between any pair of
+rows. Suppose we only want to use the numeric features &#8216;X1&#8217; and &#8216;X2&#8217;; then we
+can use any of the standard numeric distances.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">nearest_neighbors</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;X1&#39;</span><span class="p">,</span> <span class="s1">&#39;X2&#39;</span><span class="p">],</span>
+<span class="gp">... </span>                                      <span class="n">distance</span><span class="o">=</span><span class="s1">&#39;euclidean&#39;</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m2</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">nearest_neighbors</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;X1&#39;</span><span class="p">,</span> <span class="s1">&#39;X2&#39;</span><span class="p">],</span>
+<span class="gp">... </span>                                       <span class="n">distance</span><span class="o">=</span><span class="n">turicreate</span><span class="o">.</span><span class="n">distances</span><span class="o">.</span><span class="n">euclidean</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Composite distances</strong> provide greater flexibility because they allow distances
+on features that have <em>different</em> types. A composite distance is simply a
+weighted sum of standard distance functions, each of which is applied to a
+particular subset of features. To represent this in code, we use a Python list.
+Each member of a composite distance list contains three things:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>a list or tuple of feature names</li>
+<li>the name of a standard distance function</li>
+<li>a weight</li>
+</ol>
+</div></blockquote>
+<p>The weight is a single scalar value (integer or float) that multiplies the
+contribution of each component of the distance.</p>
+<p>For a concrete example, suppose we want to measure the distance between two rows
+<span class="math">\(a\)</span> and <span class="math">\(b\)</span> in the SFrame above using a combination of Euclidean
+distance on the numeric features and Levenshtein distance on the species name.
+To increase the relative contribution of the numeric features we can up-weight
+the Euclidean distance by a factor of 2, and down-weight the Levenshtein
+distance by a factor of 0.3. Our composite distance is</p>
+<div class="math">
+\[D(a, b) = 2 * d_{euclidean}(a[X1, X2], b[X1, X2])
+        + 0.3 * d_{levenshtein}(a[species], b[species])\]</div>
+<p>This is represented in Python code as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">species_dist</span> <span class="o">=</span> <span class="p">[[(</span><span class="s1">&#39;X1&#39;</span><span class="p">,</span> <span class="s1">&#39;X2&#39;</span><span class="p">),</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+<span class="gp">... </span>                <span class="p">[(</span><span class="s1">&#39;species&#39;</span><span class="p">,),</span> <span class="s1">&#39;levenshtein&#39;</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">]]</span>
+</pre></div>
+</div>
+<p>Composite distances can be used with the following models as a drop-in
+replacement for the standard distance name or function.</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference internal" href="generated/turicreate.nearest_neighbors.NearestNeighborsModel.html#turicreate.nearest_neighbors.NearestNeighborsModel" title="turicreate.nearest_neighbors.NearestNeighborsModel"><code class="xref py py-class docutils literal"><span class="pre">NearestNeighborsModel</span></code></a></li>
+<li><a class="reference internal" href="generated/turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.html#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier"><code class="xref py py-class docutils literal"><span class="pre">NearestNeighborClassifier</span></code></a></li>
+<li><a class="reference internal" href="generated/turicreate.dbscan.DBSCANModel.html#turicreate.dbscan.DBSCANModel" title="turicreate.dbscan.DBSCANModel"><code class="xref py py-class docutils literal"><span class="pre">DBSCANModel</span></code></a></li>
+<li><code class="xref py py-class docutils literal"><span class="pre">NearestNeighborDeduplication</span></code></li>
+<li><code class="xref py py-class docutils literal"><span class="pre">RecordLinker</span></code></li>
+</ul>
+</div></blockquote>
+<p>When a composite distance is used, we no longer need to specify the features,
+because the composite distance already contains that information. Models that
+use composite distances store the specification so it can be retrieved,
+modified, and reused. For example, suppose we decided that the Levenshtein
+distance on species name should have a higher weight. We don&#8217;t have to construct
+a composite distance from scratch; we can modify the one we used previously.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m3</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">nearest_neighbors</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="n">dist_spec</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dist_spec2</span> <span class="o">=</span> <span class="n">m3</span><span class="p">[</span><span class="s1">&#39;composite_params&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dist_spec2</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m4</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">nearest_neighbors</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="n">dist_spec2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Specifying a composite distance can be tricky. Often we have a general sense for
+which features and standard distances to use, but only a vague idea how much
+each component should be weighted. The <cite>compute_composite_distance</cite> function can
+help with this by evaluating a composite distance on two specific data points.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d1</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">distances</span><span class="o">.</span><span class="n">compute_composite_distance</span><span class="p">(</span><span class="n">dist_spec</span><span class="p">,</span> <span class="n">sf</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sf</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d2</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">distances</span><span class="o">.</span><span class="n">compute_composite_distance</span><span class="p">(</span><span class="n">dist_spec</span><span class="p">,</span> <span class="n">sf</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sf</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="s2">&quot;d1:&quot;</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="s2">&quot;d2:&quot;</span><span class="p">,</span> <span class="n">d2</span>
+<span class="go">d1: 1.65286120899 d2: 3.66096749031</span>
+</pre></div>
+</div>
+<p>This tells that under our first composite distance, the &#8216;cat&#8217; and &#8216;dog&#8217; data
+points are closer than the &#8216;cat&#8217; and &#8216;elephant&#8217; data points.</p>
+<div class="section" id="id1">
+<h2>distances<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.toolkits.distances.euclidean.html#turicreate.toolkits.distances.euclidean" title="turicreate.toolkits.distances.euclidean"><code class="xref py py-obj docutils literal"><span class="pre">euclidean</span></code></a>(x,&nbsp;y)</td>
+<td>Compute the Euclidean distance between two dictionaries or two lists of equal length.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.toolkits.distances.squared_euclidean.html#turicreate.toolkits.distances.squared_euclidean" title="turicreate.toolkits.distances.squared_euclidean"><code class="xref py py-obj docutils literal"><span class="pre">squared_euclidean</span></code></a>(x,&nbsp;y)</td>
+<td>Compute the squared Euclidean distance between two dictionaries or two lists of equal length.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.toolkits.distances.manhattan.html#turicreate.toolkits.distances.manhattan" title="turicreate.toolkits.distances.manhattan"><code class="xref py py-obj docutils literal"><span class="pre">manhattan</span></code></a>(x,&nbsp;y)</td>
+<td>Compute the Manhattan distance between between two dictionaries or two lists of equal length.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.toolkits.distances.cosine.html#turicreate.toolkits.distances.cosine" title="turicreate.toolkits.distances.cosine"><code class="xref py py-obj docutils literal"><span class="pre">cosine</span></code></a>(x,&nbsp;y)</td>
+<td>Compute the cosine distance between between two dictionaries or two lists of equal length.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.toolkits.distances.levenshtein.html#turicreate.toolkits.distances.levenshtein" title="turicreate.toolkits.distances.levenshtein"><code class="xref py py-obj docutils literal"><span class="pre">levenshtein</span></code></a>(x,&nbsp;y)</td>
+<td>Compute the Levenshtein distance between between strings.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.toolkits.distances.dot_product.html#turicreate.toolkits.distances.dot_product" title="turicreate.toolkits.distances.dot_product"><code class="xref py py-obj docutils literal"><span class="pre">dot_product</span></code></a>(x,&nbsp;y)</td>
+<td>Compute the dot_product between two dictionaries or two lists of equal length.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.toolkits.distances.transformed_dot_product.html#turicreate.toolkits.distances.transformed_dot_product" title="turicreate.toolkits.distances.transformed_dot_product"><code class="xref py py-obj docutils literal"><span class="pre">transformed_dot_product</span></code></a>(x,&nbsp;y)</td>
+<td>Compute the &#8220;transformed_dot_product&#8221; distance between two dictionaries or two lists of equal length.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.toolkits.distances.jaccard.html#turicreate.toolkits.distances.jaccard" title="turicreate.toolkits.distances.jaccard"><code class="xref py py-obj docutils literal"><span class="pre">jaccard</span></code></a>(x,&nbsp;y)</td>
+<td>Compute the Jaccard distance between between two dictionaries.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.toolkits.distances.weighted_jaccard.html#turicreate.toolkits.distances.weighted_jaccard" title="turicreate.toolkits.distances.weighted_jaccard"><code class="xref py py-obj docutils literal"><span class="pre">weighted_jaccard</span></code></a>(x,&nbsp;y)</td>
+<td>Compute the weighted Jaccard distance between between two dictionaries.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="utilities">
+<h2>utilities<a class="headerlink" href="#utilities" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.toolkits.distances.compute_composite_distance.html#turicreate.toolkits.distances.compute_composite_distance" title="turicreate.toolkits.distances.compute_composite_distance"><code class="xref py py-obj docutils literal"><span class="pre">compute_composite_distance</span></code></a>(distance,&nbsp;x,&nbsp;y)</td>
+<td>Compute the value of a composite distance function on two dictionaries, typically SFrame rows.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.toolkits.distances.build_address_distance.html#turicreate.toolkits.distances.build_address_distance" title="turicreate.toolkits.distances.build_address_distance"><code class="xref py py-obj docutils literal"><span class="pre">build_address_distance</span></code></a>([number,&nbsp;street,&nbsp;...])</td>
+<td>Construct a composite distance appropriate for matching address data.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="generated/turicreate.toolkits.distances.euclidean.html" class="btn btn-neutral float-right" title="turicreate.toolkits.distances.euclidean">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.load_model.html" class="btn btn-neutral" title="load_model"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

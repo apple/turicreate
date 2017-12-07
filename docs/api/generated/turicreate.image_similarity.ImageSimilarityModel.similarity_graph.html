@@ -1,0 +1,260 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.image_similarity.ImageSimilarityModel.similarity_graph &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>turicreate.image_similarity.ImageSimilarityModel.similarity_graph</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-image-similarity-imagesimilaritymodel-similarity-graph">
+<h1>turicreate.image_similarity.ImageSimilarityModel.similarity_graph<a class="headerlink" href="#turicreate-image-similarity-imagesimilaritymodel-similarity-graph" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="turicreate.image_similarity.ImageSimilarityModel.similarity_graph">
+<code class="descclassname">ImageSimilarityModel.</code><code class="descname">similarity_graph</code><span class="sig-paren">(</span><em>k=5</em>, <em>radius=None</em>, <em>include_self_edges=False</em>, <em>output_type='SGraph'</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.image_similarity.ImageSimilarityModel.similarity_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct the similarity graph on the reference dataset, which is
+already stored in the model to find the top <cite>k</cite> similar images for each
+image in your input dataset.</p>
+<p>This is conceptually very similar to running <cite>query</cite> with the reference
+set, but this method is optimized for the purpose, syntactically
+simpler, and automatically removes self-edges.</p>
+<p>WARNING: This method can take time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>k</strong> : int, optional</p>
+<blockquote>
+<div><p>Maximum number of neighbors to return for each point in the
+dataset. Setting this to <code class="docutils literal"><span class="pre">None</span></code> deactivates the constraint, so
+that all neighbors are returned within <code class="docutils literal"><span class="pre">radius</span></code> of a given point.</p>
+</div></blockquote>
+<p><strong>radius</strong> : float, optional</p>
+<blockquote>
+<div><p>For a given point, only neighbors within this distance are
+returned. The default is <code class="docutils literal"><span class="pre">None</span></code>, in which case the <code class="docutils literal"><span class="pre">k</span></code> nearest
+neighbors are returned for each query point, regardless of
+distance.</p>
+</div></blockquote>
+<p><strong>include_self_edges</strong> : bool, optional</p>
+<blockquote>
+<div><p>For most distance functions, each point in the model&#8217;s reference
+dataset is its own nearest neighbor. If this parameter is set to
+False, this result is ignored, and the nearest neighbors are
+returned <em>excluding</em> the point itself.</p>
+</div></blockquote>
+<p><strong>output_type</strong> : {&#8216;SGraph&#8217;, &#8216;SFrame&#8217;}, optional</p>
+<blockquote>
+<div><p>By default, the results are returned in the form of an SGraph,
+where each point in the reference dataset is a vertex and an edge A
+-&gt; B indicates that vertex B is a nearest neighbor of vertex A. If
+&#8216;output_type&#8217; is set to &#8216;SFrame&#8217;, the output is in the same form as
+the results of the &#8216;query&#8217; method: an SFrame with columns
+indicating the query label (in this case the query data is the same
+as the reference data), reference label, distance between the two
+points, and the rank of the neighbor.</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, print progress updates and model details.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SFrame or SGraph</p>
+<blockquote class="last">
+<div><p>The type of the output object depends on the &#8216;output_type&#8217;
+parameter. See the parameter description for more detail.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>If both <code class="docutils literal"><span class="pre">k</span></code> and <code class="docutils literal"><span class="pre">radius</span></code> are set to <code class="docutils literal"><span class="pre">None</span></code>, each data point is
+matched to the entire dataset. If the reference dataset has
+<span class="math">\(n\)</span> rows, the output is an SFrame with <span class="math">\(n^2\)</span> rows (or an
+SGraph with <span class="math">\(n^2\)</span> edges).</li>
+</ul>
+<p class="rubric">Examples</p>
+<p>Unlike the <code class="docutils literal"><span class="pre">query</span></code> method, there is no need for a second dataset with
+<code class="docutils literal"><span class="pre">similarity_graph</span></code>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">similarity_graph</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># an SGraph</span>
+</pre></div>
+</div>
+<p># Most similar image for each image in the input dataset
+&gt;&gt;&gt; graph.edges
++&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;+
+| __src_id | __dst_id |    distance    | rank |
++&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;+
+|    0     |    1     | 0.376430604494 |  1   |
+|    2     |    1     | 0.55542776308  |  1   |
+|    1     |    0     | 0.376430604494 |  1   |
++&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;+</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

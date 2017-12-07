@@ -1,0 +1,268 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>nearest_neighbors &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="index.html"/>
+        <link rel="up" title="Modelling" href="turicreate.toolkits.html"/>
+        <link rel="next" title="turicreate.nearest_neighbors.create" href="generated/turicreate.nearest_neighbors.create.html"/>
+        <link rel="prev" title="turicreate.image_analysis.resize" href="generated/turicreate.image_analysis.resize.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+    <li><code class="docutils literal"><span class="pre">nearest_neighbors</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="module-turicreate.toolkits.nearest_neighbors">
+<span id="nearest-neighbors"></span><h1><code class="xref py py-mod docutils literal"><span class="pre">nearest_neighbors</span></code><a class="headerlink" href="#module-turicreate.toolkits.nearest_neighbors" title="Permalink to this headline">¶</a></h1>
+<p>The Turi Create nearest neighbors toolkit finds the rows in a tabular
+reference dataset that are most similar to a set of queries with the same
+schema.</p>
+<p>A <a class="reference internal" href="generated/turicreate.nearest_neighbors.NearestNeighborsModel.html#turicreate.nearest_neighbors.NearestNeighborsModel" title="turicreate.nearest_neighbors.NearestNeighborsModel"><code class="xref py py-class docutils literal"><span class="pre">NearestNeighborsModel</span></code></a> is created with
+a reference dataset contained in an <a class="reference internal" href="generated/turicreate.SFrame.html#turicreate.SFrame" title="turicreate.SFrame"><code class="xref py py-class docutils literal"><span class="pre">SFrame</span></code></a>, a distance
+function, and an indexing method (the latter two options can be done
+automatically by the model). An instantiated model has two key methods:
+<strong>query</strong>, for finding the closest points in the reference dataset to <em>new</em> data
+points; and <strong>similarity_graph</strong>, for finding the nearest neighbors of each
+point in the original reference set.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">references</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;x1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.98</span><span class="p">,</span> <span class="mf">0.62</span><span class="p">,</span> <span class="mf">0.11</span><span class="p">],</span>
+<span class="gp">... </span>                              <span class="s1">&#39;x2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.69</span><span class="p">,</span> <span class="mf">0.58</span><span class="p">,</span> <span class="mf">0.36</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">references</span><span class="o">.</span><span class="n">print_rows</span><span class="p">()</span>
+<span class="go">+------+------+</span>
+<span class="go">|  x1  |  x2  |</span>
+<span class="go">+------+------+</span>
+<span class="go">| 0.98 | 0.69 |</span>
+<span class="go">| 0.62 | 0.58 |</span>
+<span class="go">| 0.11 | 0.36 |</span>
+<span class="go">+------+------+</span>
+<span class="go">[3 rows x 2 columns]</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">nearest_neighbors</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">references</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sim_graph</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">similarity_graph</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sim_graph</span><span class="o">.</span><span class="n">edges</span>
+<span class="go">+----------+----------+----------------+------+</span>
+<span class="go">| __src_id | __dst_id |    distance    | rank |</span>
+<span class="go">+----------+----------+----------------+------+</span>
+<span class="go">|    0     |    1     | 0.376430604494 |  1   |</span>
+<span class="go">|    2     |    1     | 0.55542776308  |  1   |</span>
+<span class="go">|    1     |    0     | 0.376430604494 |  1   |</span>
+<span class="go">+----------+----------+----------------+------+</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">queries</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;x1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.61</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">],</span>
+<span class="gp">... </span>                           <span class="s1">&#39;x2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.06</span><span class="p">,</span> <span class="mf">0.97</span><span class="p">,</span> <span class="mf">0.86</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">queries</span><span class="o">.</span><span class="n">print_rows</span><span class="p">()</span>
+<span class="go">+------+------+</span>
+<span class="go">|  x1  |  x2  |</span>
+<span class="go">+------+------+</span>
+<span class="go">| 0.05 | 0.06 |</span>
+<span class="go">| 0.61 | 0.97 |</span>
+<span class="go">| 0.99 | 0.86 |</span>
+<span class="go">+------+------+</span>
+<span class="go">[3 rows x 2 columns]</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">queries</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">+-------------+-----------------+----------------+------+</span>
+<span class="go">| query_label | reference_label |    distance    | rank |</span>
+<span class="go">+-------------+-----------------+----------------+------+</span>
+<span class="go">|      0      |        2        | 0.305941170816 |  1   |</span>
+<span class="go">|      0      |        1        | 0.771556867638 |  2   |</span>
+<span class="go">|      1      |        1        | 0.390128184063 |  1   |</span>
+<span class="go">|      1      |        0        | 0.464004310325 |  2   |</span>
+<span class="go">|      2      |        0        | 0.170293863659 |  1   |</span>
+<span class="go">|      2      |        1        | 0.464004310325 |  2   |</span>
+<span class="go">+-------------+-----------------+----------------+------+</span>
+</pre></div>
+</div>
+<p>In addition to the API documentation, please see the <a class="reference external" href="https://apple.github.io/turicreate/docs/userguide/nearest_neighbors/nearest_neighbors.html">nearest neighbors chapter of the User Guide</a>
+for more details and extended examples.</p>
+<div class="section" id="id1">
+<h2>nearest neighbors<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.nearest_neighbors.create.html#turicreate.nearest_neighbors.create" title="turicreate.nearest_neighbors.create"><code class="xref py py-obj docutils literal"><span class="pre">nearest_neighbors.create</span></code></a></td>
+<td>Create a nearest neighbor model, which can be searched efficiently and quickly for the nearest neighbors of a query observation.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.nearest_neighbors.NearestNeighborsModel.html#turicreate.nearest_neighbors.NearestNeighborsModel" title="turicreate.nearest_neighbors.NearestNeighborsModel"><code class="xref py py-obj docutils literal"><span class="pre">nearest_neighbors.NearestNeighborsModel</span></code></a></td>
+<td>The NearestNeighborsModel represents rows of an SFrame in a structure that is used to quickly and efficiently find the nearest neighbors of a query point.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="generated/turicreate.nearest_neighbors.create.html" class="btn btn-neutral float-right" title="turicreate.nearest_neighbors.create">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="generated/turicreate.image_analysis.resize.html" class="btn btn-neutral" title="turicreate.image_analysis.resize"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

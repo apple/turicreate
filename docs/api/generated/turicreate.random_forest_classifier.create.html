@@ -1,0 +1,353 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.random_forest_classifier.create &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="classifier" href="../turicreate.toolkits.classifier.html"/>
+        <link rel="next" title="turicreate.random_forest_classifier.RandomForestClassifier" href="turicreate.random_forest_classifier.RandomForestClassifier.html"/>
+        <link rel="prev" title="turicreate.classifier.create" href="turicreate.classifier.create.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.classifier.html"><code class="docutils literal"><span class="pre">classifier</span></code></a> &raquo;</li>
+      
+    <li>turicreate.random_forest_classifier.create</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-random-forest-classifier-create">
+<h1>turicreate.random_forest_classifier.create<a class="headerlink" href="#turicreate-random-forest-classifier-create" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.random_forest_classifier.create">
+<code class="descclassname">turicreate.random_forest_classifier.</code><code class="descname">create</code><span class="sig-paren">(</span><em>dataset</em>, <em>target</em>, <em>features=None</em>, <em>max_iterations=10</em>, <em>validation_set='auto'</em>, <em>verbose=True</em>, <em>class_weights=None</em>, <em>random_seed=None</em>, <em>metric='auto'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.random_forest_classifier.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a (binary or multi-class) classifier model of type
+<a class="reference internal" href="turicreate.random_forest_classifier.RandomForestClassifier.html#turicreate.random_forest_classifier.RandomForestClassifier" title="turicreate.random_forest_classifier.RandomForestClassifier"><code class="xref py py-class docutils literal"><span class="pre">RandomForestClassifier</span></code></a> using
+an ensemble of decision trees trained on subsets of the data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
+<blockquote>
+<div><p>A training dataset containing feature columns and a target column.</p>
+</div></blockquote>
+<p><strong>target</strong> : str</p>
+<blockquote>
+<div><p>Name of the column containing the target variable. The values in this
+column must be of string or integer type.  String target variables are
+automatically mapped to integers in alphabetical order of the variable values.
+For example, a target variable with &#8216;cat&#8217;, &#8216;dog&#8217;, and &#8216;foosa&#8217; as possible
+values is mapped to 0, 1, and, 2 respectively.</p>
+</div></blockquote>
+<p><strong>features</strong> : list[str], optional</p>
+<blockquote>
+<div><p>A list of columns names of features used for training the model.
+Defaults to None, which uses all columns in the SFrame <code class="docutils literal"><span class="pre">dataset</span></code>
+excepting the target column..</p>
+</div></blockquote>
+<p><strong>max_iterations</strong> : int, optional</p>
+<blockquote>
+<div><p>The maximum number of iterations to perform. For multi-class
+classification with K classes, each iteration will create K-1 trees.</p>
+</div></blockquote>
+<p><strong>max_depth</strong> : float, optional</p>
+<blockquote>
+<div><p>Maximum depth of a tree.</p>
+</div></blockquote>
+<p><strong>class_weights</strong> : {dict, <cite>auto</cite>}, optional</p>
+<blockquote>
+<div><p>Weights the examples in the training data according to the given class
+weights. If set to <cite>None</cite>, all classes are supposed to have weight one. The
+<cite>auto</cite> mode set the class weight to be inversely proportional to number of
+examples in the training data with the given class.</p>
+</div></blockquote>
+<p><strong>min_loss_reduction</strong> : float, optional (non-negative)</p>
+<blockquote>
+<div><p>Minimum loss reduction required to make a further partition on a
+leaf node of the tree. The larger it is, the more conservative the
+algorithm will be. Must be non-negative.</p>
+</div></blockquote>
+<p><strong>min_child_weight</strong> : float, optional (non-negative)</p>
+<blockquote>
+<div><p>Controls the minimum weight of each leaf node. Larger values result in
+more conservative tree learning and help prevent overfitting.
+Formally, this is minimum sum of instance weights (hessians) in each
+node. If the tree learning algorithm results in a leaf node with the
+sum of instance weights less than <cite>min_child_weight</cite>, tree building
+will terminate.</p>
+</div></blockquote>
+<p><strong>row_subsample</strong> : float, optional</p>
+<blockquote>
+<div><p>Subsample the ratio of the training set in each iteration of tree
+construction.  This is called the bagging trick and can usually help
+prevent overfitting.  Setting this to a value of 0.5 results in the
+model randomly sampling half of the examples (rows) to grow each tree.</p>
+</div></blockquote>
+<p><strong>column_subsample</strong> : float, optional</p>
+<blockquote>
+<div><p>Subsample ratio of the columns in each iteration of tree
+construction.  Like row_subsample, this can also help prevent
+model overfitting.  Setting this to a value of 0.5 results in the
+model randomly sampling half of the columns to grow each tree.</p>
+</div></blockquote>
+<p><strong>validation_set</strong> : SFrame, optional</p>
+<blockquote>
+<div><p>A dataset for monitoring the model&#8217;s generalization performance.
+For each row of the progress table, the chosen metrics are computed
+for both the provided training dataset and the validation_set. The
+format of this SFrame must be the same as the training set.
+By default this argument is set to &#8216;auto&#8217; and a validation set is
+automatically sampled and used for progress printing. If
+validation_set is set to None, then no additional metrics
+are computed. This is computed once per full iteration. Large
+differences in model accuracy between the training data and validation
+data is indicative of overfitting. The default value is &#8216;auto&#8217;.</p>
+</div></blockquote>
+<p><strong>verbose</strong> : boolean, optional</p>
+<blockquote>
+<div><p>Print progress information during training (if set to true).</p>
+</div></blockquote>
+<p><strong>random_seed</strong> : int, optional</p>
+<blockquote>
+<div><p>Seeds random opertations such as column and row subsampling, such that
+results are reproducable.</p>
+</div></blockquote>
+<p><strong>metric</strong> : str or list[str], optional</p>
+<blockquote>
+<div><p>Performance metric(s) that are tracked during training. When specified,
+the progress table will display the tracked metric(s) on training and
+validation set.
+Supported metrics are: {&#8216;accuracy&#8217;, &#8216;auc&#8217;, &#8216;log_loss&#8217;}</p>
+</div></blockquote>
+<p><strong>kwargs</strong> : dict, optional</p>
+<blockquote>
+<div><p>Additional arguments for training the model.</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">model_checkpoint_path</span></code> <span class="classifier-delimiter">:</span> <span class="classifier">str, default None</span></dt>
+<dd>If specified, checkpoint the model training to the given path every n iterations,
+where n is specified by <code class="docutils literal"><span class="pre">model_checkpoint_interval</span></code>.
+For instance, if <cite>model_checkpoint_interval</cite> is 5, and <cite>model_checkpoint_path</cite> is
+set to <code class="docutils literal"><span class="pre">/tmp/model_tmp</span></code>, the checkpoints will be saved into
+<code class="docutils literal"><span class="pre">/tmp/model_tmp/model_checkpoint_5</span></code>, <code class="docutils literal"><span class="pre">/tmp/model_tmp/model_checkpoint_10</span></code>, ... etc.
+Training can be resumed by setting <code class="docutils literal"><span class="pre">resume_from_checkpoint</span></code> to one of these checkpoints.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">model_checkpoint_interval</span></code> <span class="classifier-delimiter">:</span> <span class="classifier">int, default 5</span></dt>
+<dd>If model_check_point_path is specified,
+save the model to the given path every n iterations.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">resume_from_checkpoint</span></code> <span class="classifier-delimiter">:</span> <span class="classifier">str, default None</span></dt>
+<dd>Continues training from a model checkpoint. The model must take
+exact the same training data as the checkpointed model.</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : RandomForestClassifier</p>
+<blockquote class="last">
+<div><p>A trained random forest model for classification tasks.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.random_forest_classifier.RandomForestClassifier.html#turicreate.random_forest_classifier.RandomForestClassifier" title="turicreate.random_forest_classifier.RandomForestClassifier"><code class="xref py py-obj docutils literal"><span class="pre">RandomForestClassifier</span></code></a>, <a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.html#turicreate.logistic_classifier.LogisticClassifier" title="turicreate.logistic_classifier.LogisticClassifier"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.logistic_classifier.LogisticClassifier</span></code></a>, <a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.html#turicreate.svm_classifier.SVMClassifier" title="turicreate.svm_classifier.SVMClassifier"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.svm_classifier.SVMClassifier</span></code></a></p>
+</div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><a class="reference external" href="http://jessica2.msri.org/attachments/10778/10778-boost.pdf">Trevor Hastie&#8217;s slides on Boosted Trees and Random Forest</a></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://static.turi.com/datasets/xgboost/mushroom.csv&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">random_split</span><span class="p">(</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">random_forest_classifier</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;label&#39;</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">predicitons</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">classify</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.random_forest_classifier.RandomForestClassifier.html" class="btn btn-neutral float-right" title="turicreate.random_forest_classifier.RandomForestClassifier">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.classifier.create.html" class="btn btn-neutral" title="turicreate.classifier.create"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

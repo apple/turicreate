@@ -1,0 +1,442 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>graph_analytics &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="index.html"/>
+        <link rel="up" title="Modelling" href="turicreate.toolkits.html"/>
+        <link rel="next" title="turicreate.connected_components.create" href="generated/turicreate.connected_components.create.html"/>
+        <link rel="prev" title="turicreate.kmeans.KmeansModel" href="generated/turicreate.kmeans.KmeansModel.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+    <li><code class="docutils literal"><span class="pre">graph_analytics</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="module-turicreate.toolkits.graph_analytics">
+<span id="graph-analytics"></span><h1><code class="xref py py-mod docutils literal"><span class="pre">graph_analytics</span></code><a class="headerlink" href="#module-turicreate.toolkits.graph_analytics" title="Permalink to this headline">¶</a></h1>
+<p>The graph analytics toolkit contains methods for analyzing a
+<a class="reference internal" href="generated/turicreate.SGraph.html#turicreate.SGraph" title="turicreate.SGraph"><code class="xref py py-class docutils literal"><span class="pre">SGraph</span></code></a>. Each method takes an input graph and returns a model
+object, which contains the training time, an <a class="reference internal" href="generated/turicreate.SFrame.html#turicreate.SFrame" title="turicreate.SFrame"><code class="xref py py-class docutils literal"><span class="pre">SFrame</span></code></a> with the
+desired output for each vertex, and a new graph whose vertices contain the
+output as an attribute. Note that all of the methods in the graph analytics
+toolkit are available from the top level turicreate import.</p>
+<p>For this example we download a dataset of James Bond characters to an
+SFrame, then build the SGraph.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">SFrame</span><span class="p">,</span> <span class="n">SGraph</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://static.turi.com/datasets/bond/bond_edges.csv&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">SFrame</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">SGraph</span><span class="p">()</span><span class="o">.</span><span class="n">add_edges</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">src_field</span><span class="o">=</span><span class="s1">&#39;src&#39;</span><span class="p">,</span> <span class="n">dst_field</span><span class="o">=</span><span class="s1">&#39;dst&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="generated/turicreate.degree_counting.create.html#turicreate.degree_counting.create" title="turicreate.degree_counting.create"><code class="xref py py-func docutils literal"><span class="pre">degree_counting.create()</span></code></a> method computes the inbound, outbound,
+and total degree for each vertex.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">degree_counting</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">deg</span> <span class="o">=</span> <span class="n">degree_counting</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">deg_graph</span> <span class="o">=</span> <span class="n">deg</span><span class="p">[</span><span class="s1">&#39;graph&#39;</span><span class="p">]</span> <span class="c1"># a new SGraph with degree data attached to each vertex</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">in_degree</span> <span class="o">=</span> <span class="n">deg_graph</span><span class="o">.</span><span class="n">vertices</span><span class="p">[[</span><span class="s1">&#39;__id&#39;</span><span class="p">,</span> <span class="s1">&#39;in_degree&#39;</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out_degree</span> <span class="o">=</span> <span class="n">deg_graph</span><span class="o">.</span><span class="n">vertices</span><span class="p">[[</span><span class="s1">&#39;__id&#39;</span><span class="p">,</span> <span class="s1">&#39;out_degree&#39;</span><span class="p">]]</span>
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="generated/turicreate.connected_components.create.html#turicreate.connected_components.create" title="turicreate.connected_components.create"><code class="xref py py-func docutils literal"><span class="pre">connected_components.create()</span></code></a> method finds all weakly connected
+components in the graph and returns a
+<a class="reference internal" href="generated/turicreate.connected_components.ConnectedComponentsModel.html#turicreate.connected_components.ConnectedComponentsModel" title="turicreate.connected_components.ConnectedComponentsModel"><code class="xref py py-class docutils literal"><span class="pre">ConnectedComponentsModel</span></code></a>.
+A connected component is a group of vertices such that
+there is a path between each vertex in the component and all other vertices in
+the group. If two vertices are in different connected components there is no
+path between them.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">connected_components</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cc</span> <span class="o">=</span> <span class="n">connected_components</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cc</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cc_ids</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;component_id&#39;</span><span class="p">)</span>  <span class="c1"># an SFrame</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cc_ids</span> <span class="o">=</span> <span class="n">cc</span><span class="p">[</span><span class="s1">&#39;component_id&#39;</span><span class="p">]</span>      <span class="c1"># equivalent to the above line</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cc_graph</span> <span class="o">=</span> <span class="n">cc</span><span class="p">[</span><span class="s1">&#39;graph&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="generated/turicreate.shortest_path.create.html#turicreate.shortest_path.create" title="turicreate.shortest_path.create"><code class="xref py py-func docutils literal"><span class="pre">shortest_path.create()</span></code></a>
+method finds the shortest directed path distance from a single source vertex to
+all other vertices and returns a
+<a class="reference internal" href="generated/turicreate.shortest_path.ShortestPathModel.html#turicreate.shortest_path.ShortestPathModel" title="turicreate.shortest_path.ShortestPathModel"><code class="xref py py-class docutils literal"><span class="pre">ShortestPathModel</span></code></a>.
+The output model contains this information and a method to
+retrieve the actual path to a particular vertex.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">shortest_path</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span> <span class="o">=</span> <span class="n">shortest_path</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">source_vid</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sp_sframe</span> <span class="o">=</span> <span class="n">sp</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sp_graph</span> <span class="o">=</span> <span class="n">sp</span><span class="p">[</span><span class="s1">&#39;graph&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s1">&#39;98&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="generated/turicreate.triangle_counting.create.html#turicreate.triangle_counting.create" title="turicreate.triangle_counting.create"><code class="xref py py-func docutils literal"><span class="pre">triangle_counting.create()</span></code></a>
+counts the number of triangles in the graph and for each vertex and returns
+a <a class="reference internal" href="generated/turicreate.triangle_counting.TriangleCountingModel.html#turicreate.triangle_counting.TriangleCountingModel" title="turicreate.triangle_counting.TriangleCountingModel"><code class="xref py py-class docutils literal"><span class="pre">TriangleCountingModel</span></code></a>.
+A graph triangle is a complete subgraph of three vertices. The number of
+triangles to which a vertex belongs is an indication of the connectivity of the
+graph around that vertex.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">triangle_counting</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tc</span> <span class="o">=</span> <span class="n">triangle_counting</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tc_out</span> <span class="o">=</span> <span class="n">tc</span><span class="p">[</span><span class="s1">&#39;triangle_count&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="generated/turicreate.pagerank.create.html#turicreate.pagerank.create" title="turicreate.pagerank.create"><code class="xref py py-func docutils literal"><span class="pre">pagerank.create()</span></code></a> method computes
+the pagerank for each vertex and returns a <a class="reference internal" href="generated/turicreate.pagerank.PagerankModel.html#turicreate.pagerank.PagerankModel" title="turicreate.pagerank.PagerankModel"><code class="xref py py-class docutils literal"><span class="pre">PagerankModel</span></code></a>.
+The pagerank value indicates the centrality of each node in the graph.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">pagerank</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pr</span> <span class="o">=</span> <span class="n">pagerank</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pr_out</span> <span class="o">=</span> <span class="n">pr</span><span class="p">[</span><span class="s1">&#39;pagerank&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="generated/turicreate.label_propagation.create.html#turicreate.label_propagation.create" title="turicreate.label_propagation.create"><code class="xref py py-func docutils literal"><span class="pre">label_propagation.create()</span></code></a>
+method computes the label probability for the vertices with unobserved labels
+by propagating information from the vertices with observed labels along the edges.
+The method returns a <a class="reference internal" href="generated/turicreate.label_propagation.LabelPropagationModel.html#turicreate.label_propagation.LabelPropagationModel" title="turicreate.label_propagation.LabelPropagationModel"><code class="xref py py-class docutils literal"><span class="pre">LabelPropagationModel</span></code></a>,
+which contains the probability that a vertex belongs to each of the label classes.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">label_propagation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">random</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">init_label</span><span class="p">(</span><span class="n">vid</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">x</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mf">0.9</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="mi">0</span>
+<span class="gp">... </span>    <span class="k">elif</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mf">0.1</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="mi">1</span>
+<span class="gp">... </span>    <span class="k">else</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="bp">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="s1">&#39;__id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">init_label</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">label_propagation</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">labels</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The K-core decomposition recursively removes vertices from the graph with degree
+less than k. The value of k where a vertex is removed is its core ID; the
+<a class="reference internal" href="generated/turicreate.kcore.create.html#turicreate.kcore.create" title="turicreate.kcore.create"><code class="xref py py-func docutils literal"><span class="pre">kcore.create()</span></code></a> method returns
+a <a class="reference internal" href="generated/turicreate.kcore.KcoreModel.html#turicreate.kcore.KcoreModel" title="turicreate.kcore.KcoreModel"><code class="xref py py-class docutils literal"><span class="pre">KcoreModel</span></code></a> which contains the core ID for
+every vertex in the graph.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">kcore</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">kc</span> <span class="o">=</span> <span class="n">kcore</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">kcore_id</span> <span class="o">=</span> <span class="n">kc</span><span class="p">[</span><span class="s1">&#39;core_id&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Graph coloring assigns each vertex in the graph to a group in such a way that no
+two adjacent vertices share the same group.
+<a class="reference internal" href="generated/turicreate.graph_coloring.create.html#turicreate.graph_coloring.create" title="turicreate.graph_coloring.create"><code class="xref py py-func docutils literal"><span class="pre">graph_coloring.create()</span></code></a> method returns
+a <a class="reference internal" href="generated/turicreate.graph_coloring.GraphColoringModel.html#turicreate.graph_coloring.GraphColoringModel" title="turicreate.graph_coloring.GraphColoringModel"><code class="xref py py-class docutils literal"><span class="pre">GraphColoringModel</span></code></a> which contains
+the color group ID for every vertex in the graph.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">graph_coloring</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">color</span> <span class="o">=</span> <span class="n">graph_coloring</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">color_id</span> <span class="o">=</span> <span class="n">color</span><span class="p">[</span><span class="s1">&#39;color_id&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">num_colors</span> <span class="o">=</span> <span class="n">color</span><span class="p">[</span><span class="s1">&#39;num_colors&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>For more information on the models in the graph analytics toolkit, plus extended
+examples, please see the model definitions and create methods in the API
+documentation, as well as the <a class="reference external" href="https://apple.github.io/turicreate/docs/userguide/graph_analytics/intro.html">graph analytics chapter of
+the User Guide</a>.</p>
+<div class="section" id="connected-components">
+<h2>connected components<a class="headerlink" href="#connected-components" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.connected_components.create.html#turicreate.connected_components.create" title="turicreate.connected_components.create"><code class="xref py py-obj docutils literal"><span class="pre">connected_components.create</span></code></a></td>
+<td>Compute the number of weakly connected components in the graph.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.connected_components.ConnectedComponentsModel.html#turicreate.connected_components.ConnectedComponentsModel" title="turicreate.connected_components.ConnectedComponentsModel"><code class="xref py py-obj docutils literal"><span class="pre">connected_components.ConnectedComponentsModel</span></code></a></td>
+<td>A ConnectedComponentsModel object contains the component ID for each vertex and the total number of weakly connected components in the graph.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="degree-counting">
+<h2>degree counting<a class="headerlink" href="#degree-counting" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.degree_counting.create.html#turicreate.degree_counting.create" title="turicreate.degree_counting.create"><code class="xref py py-obj docutils literal"><span class="pre">degree_counting.create</span></code></a></td>
+<td>Compute the in degree, out degree and total degree of each vertex.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.degree_counting.DegreeCountingModel.html#turicreate.degree_counting.DegreeCountingModel" title="turicreate.degree_counting.DegreeCountingModel"><code class="xref py py-obj docutils literal"><span class="pre">degree_counting.DegreeCountingModel</span></code></a></td>
+<td>Model object containing the in degree, out degree and total degree for each vertex,</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="graph-coloring">
+<h2>graph coloring<a class="headerlink" href="#graph-coloring" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.graph_coloring.create.html#turicreate.graph_coloring.create" title="turicreate.graph_coloring.create"><code class="xref py py-obj docutils literal"><span class="pre">graph_coloring.create</span></code></a></td>
+<td>Compute the graph coloring.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.graph_coloring.GraphColoringModel.html#turicreate.graph_coloring.GraphColoringModel" title="turicreate.graph_coloring.GraphColoringModel"><code class="xref py py-obj docutils literal"><span class="pre">graph_coloring.GraphColoringModel</span></code></a></td>
+<td>A GraphColoringModel object contains color ID assignments for each vertex and the total number of colors used in coloring the entire graph.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="k-core">
+<h2>k-core<a class="headerlink" href="#k-core" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.kcore.create.html#turicreate.kcore.create" title="turicreate.kcore.create"><code class="xref py py-obj docutils literal"><span class="pre">kcore.create</span></code></a></td>
+<td>Compute the K-core decomposition of the graph.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.kcore.KcoreModel.html#turicreate.kcore.KcoreModel" title="turicreate.kcore.KcoreModel"><code class="xref py py-obj docutils literal"><span class="pre">kcore.KcoreModel</span></code></a></td>
+<td>A KcoreModel object contains a core ID for each vertex, and the total number of cores in the graph.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="label-propagation">
+<h2>label propagation<a class="headerlink" href="#label-propagation" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.label_propagation.create.html#turicreate.label_propagation.create" title="turicreate.label_propagation.create"><code class="xref py py-obj docutils literal"><span class="pre">label_propagation.create</span></code></a></td>
+<td>Given a weighted graph with observed class labels of a subset of vertices, infer the label probability for the unobserved vertices using the &#8220;label propagation&#8221; algorithm.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.label_propagation.LabelPropagationModel.html#turicreate.label_propagation.LabelPropagationModel" title="turicreate.label_propagation.LabelPropagationModel"><code class="xref py py-obj docutils literal"><span class="pre">label_propagation.LabelPropagationModel</span></code></a></td>
+<td>A LabelPropagationModel computes the probability of each class label for each unlabeled vertex.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="pagerank">
+<h2>pagerank<a class="headerlink" href="#pagerank" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.pagerank.create.html#turicreate.pagerank.create" title="turicreate.pagerank.create"><code class="xref py py-obj docutils literal"><span class="pre">pagerank.create</span></code></a></td>
+<td>Compute the PageRank for each vertex in the graph.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.pagerank.PagerankModel.html#turicreate.pagerank.PagerankModel" title="turicreate.pagerank.PagerankModel"><code class="xref py py-obj docutils literal"><span class="pre">pagerank.PagerankModel</span></code></a></td>
+<td>A PageRankModel object contains the pagerank value for each vertex.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="shortest-path">
+<h2>shortest path<a class="headerlink" href="#shortest-path" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.shortest_path.create.html#turicreate.shortest_path.create" title="turicreate.shortest_path.create"><code class="xref py py-obj docutils literal"><span class="pre">shortest_path.create</span></code></a></td>
+<td>Compute the single source shortest path distance from the source vertex to all vertices in the graph.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.shortest_path.ShortestPathModel.html#turicreate.shortest_path.ShortestPathModel" title="turicreate.shortest_path.ShortestPathModel"><code class="xref py py-obj docutils literal"><span class="pre">shortest_path.ShortestPathModel</span></code></a></td>
+<td>Model object containing the distance for each vertex in the graph to a single source vertex, which is specified during <a class="reference internal" href="generated/turicreate.shortest_path.create.html#turicreate.shortest_path.create" title="turicreate.shortest_path.create"><code class="xref py py-func docutils literal"><span class="pre">turicreate.shortest_path.create()</span></code></a>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="triangle-counting">
+<h2>triangle counting<a class="headerlink" href="#triangle-counting" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.triangle_counting.create.html#turicreate.triangle_counting.create" title="turicreate.triangle_counting.create"><code class="xref py py-obj docutils literal"><span class="pre">triangle_counting.create</span></code></a></td>
+<td>Compute the number of triangles each vertex belongs to, ignoring edge directions.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.triangle_counting.TriangleCountingModel.html#turicreate.triangle_counting.TriangleCountingModel" title="turicreate.triangle_counting.TriangleCountingModel"><code class="xref py py-obj docutils literal"><span class="pre">triangle_counting.TriangleCountingModel</span></code></a></td>
+<td>Model object containing the traingle count for each vertex, and the total number of triangles.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="generated/turicreate.connected_components.create.html" class="btn btn-neutral float-right" title="turicreate.connected_components.create">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="generated/turicreate.kmeans.KmeansModel.html" class="btn btn-neutral" title="turicreate.kmeans.KmeansModel"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

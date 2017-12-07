@@ -1,0 +1,283 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.logistic_classifier.LogisticClassifier &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="classifier" href="../turicreate.toolkits.classifier.html"/>
+        <link rel="next" title="turicreate.svm_classifier.create" href="turicreate.svm_classifier.create.html"/>
+        <link rel="prev" title="turicreate.logistic_classifier.create" href="turicreate.logistic_classifier.create.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.classifier.html"><code class="docutils literal"><span class="pre">classifier</span></code></a> &raquo;</li>
+      
+    <li>turicreate.logistic_classifier.LogisticClassifier</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-logistic-classifier-logisticclassifier">
+<h1>turicreate.logistic_classifier.LogisticClassifier<a class="headerlink" href="#turicreate-logistic-classifier-logisticclassifier" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="turicreate.logistic_classifier.LogisticClassifier">
+<em class="property">class </em><code class="descclassname">turicreate.logistic_classifier.</code><code class="descname">LogisticClassifier</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.logistic_classifier.LogisticClassifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logistic regression models a discrete target variable as a function of
+several feature variables.</p>
+<p>The <code class="xref py py-class docutils literal"><span class="pre">logisticClassifier</span></code> uses
+a discrete target variable <span class="math">\(y\)</span> instead of a scalar. For each
+observation, the probability that <span class="math">\(y=1\)</span> (instead of 0) is modeled as
+the logistic function of a linear combination of the feature values.</p>
+<p>Given a set of features <span class="math">\(x_i\)</span>, and a label <span class="math">\(y_i \in \{0,1\}\)</span>,
+logistic regression interprets the probability that the label is in one class
+as a logistic function of a linear combination of the features.</p>
+<blockquote>
+<div><div class="math">
+\[f_i(\theta) =  p(y_i = 1 | x) = \frac{1}{1 + \exp(-\theta^T x)}\]</div>
+</div></blockquote>
+<p>An intercept term is added by appending a column of 1&#8217;s to the features.
+Regularization is often required to prevent over fitting by penalizing
+models with extreme parameter values. The logistic regression module
+supports l1 and l2 regularization, which are added to the loss function.</p>
+<p>The composite objective being optimized for is the following;</p>
+<blockquote>
+<div><div class="math">
+\[\min_{\theta} \sum_{i = 1}^{n} f_i(\theta) + \lambda_1 ||\theta||_1 + \lambda_2 ||\theta||^{2}_{2}\]</div>
+</div></blockquote>
+<p>where <span class="math">\(\lambda_1\)</span> is the <code class="docutils literal"><span class="pre">l1_penalty</span></code> and <span class="math">\(\lambda_2\)</span> is the
+<code class="docutils literal"><span class="pre">l2_penalty</span></code>.</p>
+<p>For multi-class models, we perform multinomial logistic regression, which
+is an extension of the binary logistic regression model discussed above.</p>
+<p>This model cannot be constructed directly.  Instead, use
+<a class="reference internal" href="turicreate.logistic_classifier.create.html#turicreate.logistic_classifier.create" title="turicreate.logistic_classifier.create"><code class="xref py py-func docutils literal"><span class="pre">turicreate.logistic_classifier.create()</span></code></a> to create an instance of this
+model. A detailed list of parameter options and code samples are available
+in the documentation for the create function.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.logistic_classifier.create.html#turicreate.logistic_classifier.create" title="turicreate.logistic_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a></p>
+</div>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Load the data (From an S3 bucket)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">data</span> <span class="o">=</span>  <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">(</span><span class="s1">&#39;https://static.turi.com/datasets/regression/houses.csv&#39;</span><span class="p">)</span>
+
+<span class="c1"># Make sure the target is discrete</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;is_expensive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;price&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">30000</span>
+
+<span class="c1"># Make a logistic regression model</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">logistic_classifier</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;is_expensive&#39;</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;bath&#39;</span><span class="p">,</span> <span class="s1">&#39;bedroom&#39;</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">])</span>
+
+<span class="c1"># Extract the coefficients</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">coefficients</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">coefficients</span>
+
+<span class="c1"># Make predictions (as margins, probability, or class)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="s1">&#39;probability&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="s1">&#39;margin&#39;</span><span class="p">)</span>
+
+<span class="c1"># Evaluate the model</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.classify.html#turicreate.logistic_classifier.LogisticClassifier.classify" title="turicreate.logistic_classifier.LogisticClassifier.classify"><code class="xref py py-obj docutils literal"><span class="pre">LogisticClassifier.classify</span></code></a>(dataset[,&nbsp;...])</td>
+<td>Return a classification, for each example in the <code class="docutils literal"><span class="pre">dataset</span></code>, using the trained logistic regression model.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.evaluate.html#turicreate.logistic_classifier.LogisticClassifier.evaluate" title="turicreate.logistic_classifier.LogisticClassifier.evaluate"><code class="xref py py-obj docutils literal"><span class="pre">LogisticClassifier.evaluate</span></code></a>(dataset[,&nbsp;...])</td>
+<td>Evaluate the model by making predictions of target values and comparing these to actual values.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.export_coreml.html#turicreate.logistic_classifier.LogisticClassifier.export_coreml" title="turicreate.logistic_classifier.LogisticClassifier.export_coreml"><code class="xref py py-obj docutils literal"><span class="pre">LogisticClassifier.export_coreml</span></code></a>(filename)</td>
+<td>Export the model in Core ML format.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.predict.html#turicreate.logistic_classifier.LogisticClassifier.predict" title="turicreate.logistic_classifier.LogisticClassifier.predict"><code class="xref py py-obj docutils literal"><span class="pre">LogisticClassifier.predict</span></code></a>(dataset[,&nbsp;...])</td>
+<td>Return predictions for <code class="docutils literal"><span class="pre">dataset</span></code>, using the trained logistic regression model.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.predict_topk.html#turicreate.logistic_classifier.LogisticClassifier.predict_topk" title="turicreate.logistic_classifier.LogisticClassifier.predict_topk"><code class="xref py py-obj docutils literal"><span class="pre">LogisticClassifier.predict_topk</span></code></a>(dataset[,&nbsp;...])</td>
+<td>Return top-k predictions for the <code class="docutils literal"><span class="pre">dataset</span></code>, using the trained model.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.save.html#turicreate.logistic_classifier.LogisticClassifier.save" title="turicreate.logistic_classifier.LogisticClassifier.save"><code class="xref py py-obj docutils literal"><span class="pre">LogisticClassifier.save</span></code></a>(location)</td>
+<td>Save the model.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.summary.html#turicreate.logistic_classifier.LogisticClassifier.summary" title="turicreate.logistic_classifier.LogisticClassifier.summary"><code class="xref py py-obj docutils literal"><span class="pre">LogisticClassifier.summary</span></code></a>([output])</td>
+<td>Print a summary of the model.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.svm_classifier.create.html" class="btn btn-neutral float-right" title="turicreate.svm_classifier.create">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.logistic_classifier.create.html" class="btn btn-neutral" title="turicreate.logistic_classifier.create"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

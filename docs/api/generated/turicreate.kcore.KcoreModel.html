@@ -1,0 +1,260 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.kcore.KcoreModel &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="graph_analytics" href="../turicreate.toolkits.graph_analytics.html"/>
+        <link rel="next" title="turicreate.label_propagation.create" href="turicreate.label_propagation.create.html"/>
+        <link rel="prev" title="turicreate.kcore.create" href="turicreate.kcore.create.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.graph_analytics.html"><code class="docutils literal"><span class="pre">graph_analytics</span></code></a> &raquo;</li>
+      
+    <li>turicreate.kcore.KcoreModel</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-kcore-kcoremodel">
+<h1>turicreate.kcore.KcoreModel<a class="headerlink" href="#turicreate-kcore-kcoremodel" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="turicreate.kcore.KcoreModel">
+<em class="property">class </em><code class="descclassname">turicreate.kcore.</code><code class="descname">KcoreModel</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.kcore.KcoreModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>A KcoreModel object contains a core ID for each vertex, and the total
+number of cores in the graph.</p>
+<p>The core ID of a vertex is a measure of its global centrality.</p>
+<p>The algorithms iteratively remove vertices that has less than <span class="math">\(k\)</span>
+neighbors <strong>recursively</strong>. The algorithm guarantees that at iteration
+<span class="math">\(k+1\)</span>, all vertices left in the graph will have at least <span class="math">\(k+1\)</span>
+neighbors.  The vertices removed at iteration <span class="math">\(k\)</span> is assigned with a
+core ID equal to <span class="math">\(k\)</span>.</p>
+<p>Below is a list of queryable fields for this model:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="78%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>core_id</td>
+<td>An SFrame with each vertex&#8217;s core id</td>
+</tr>
+<tr class="row-odd"><td>graph</td>
+<td>A new SGraph with the core id as a vertex property</td>
+</tr>
+<tr class="row-even"><td>kmax</td>
+<td>The maximum core id assigned to any vertex</td>
+</tr>
+<tr class="row-odd"><td>kmin</td>
+<td>The minimum core id assigned to any vertex</td>
+</tr>
+<tr class="row-even"><td>training_time</td>
+<td>Total training time of the model</td>
+</tr>
+</tbody>
+</table>
+<p>This model cannot be constructed directly.  Instead, use
+<a class="reference internal" href="turicreate.kcore.create.html#turicreate.kcore.create" title="turicreate.kcore.create"><code class="xref py py-func docutils literal"><span class="pre">turicreate.kcore.create()</span></code></a> to create an instance
+of this model. A detailed list of parameter options and code samples
+are available in the documentation for the create function.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.kcore.create.html#turicreate.kcore.create" title="turicreate.kcore.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a></p>
+</div>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.kcore.KcoreModel.name.html#turicreate.kcore.KcoreModel.name" title="turicreate.kcore.KcoreModel.name"><code class="xref py py-obj docutils literal"><span class="pre">KcoreModel.name</span></code></a>()</td>
+<td>Returns the name of the model.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.kcore.KcoreModel.save.html#turicreate.kcore.KcoreModel.save" title="turicreate.kcore.KcoreModel.save"><code class="xref py py-obj docutils literal"><span class="pre">KcoreModel.save</span></code></a>(location)</td>
+<td>Save the model.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.kcore.KcoreModel.summary.html#turicreate.kcore.KcoreModel.summary" title="turicreate.kcore.KcoreModel.summary"><code class="xref py py-obj docutils literal"><span class="pre">KcoreModel.summary</span></code></a>([output])</td>
+<td>Print a summary of the model.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.label_propagation.create.html" class="btn btn-neutral float-right" title="turicreate.label_propagation.create">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.kcore.create.html" class="btn btn-neutral" title="turicreate.kcore.create"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

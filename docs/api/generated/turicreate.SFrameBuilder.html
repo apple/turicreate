@@ -1,0 +1,288 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.SFrameBuilder &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="Data" href="../turicreate.data_structures.html"/>
+        <link rel="next" title="turicreate.Sketch" href="turicreate.Sketch.html"/>
+        <link rel="prev" title="turicreate.SArrayBuilder" href="turicreate.SArrayBuilder.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.data_structures.html">Data</a> &raquo;</li>
+      
+    <li>turicreate.SFrameBuilder</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-sframebuilder">
+<h1>turicreate.SFrameBuilder<a class="headerlink" href="#turicreate-sframebuilder" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="turicreate.SFrameBuilder">
+<em class="property">class </em><code class="descclassname">turicreate.</code><code class="descname">SFrameBuilder</code><span class="sig-paren">(</span><em>column_types</em>, <em>column_names=None</em>, <em>num_segments=1</em>, <em>history_size=10</em>, <em>save_location=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrameBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>An interface to incrementally build an SFrame (row by row). It has some
+basic features such as appending multiple rows at once, polling the last N
+rows appended, and a primitive parallel insert interface.</p>
+<p>Once closed, the SFrame cannot be &#8220;reopened&#8221; using this interface.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>column_types</strong> : list[type]</p>
+<blockquote>
+<div><p>The column types of the result SFrame. Types must be of the python
+types that are supported by SFrame (int, float, str, array.array, list,
+dict, datetime.datetime, image). Column types are strictly enforced
+while appending.</p>
+</div></blockquote>
+<p><strong>column_names</strong> : list[str], optional</p>
+<blockquote>
+<div><p>Column names of the result SFrame. If given, length of the list must
+equal the length of <cite>column_types</cite>. If not given, names are generated.</p>
+</div></blockquote>
+<p><strong>num_segments</strong> : int, optional</p>
+<blockquote>
+<div><p>Number of segments that can be written in parallel.</p>
+</div></blockquote>
+<p><strong>history_size</strong> : int, optional</p>
+<blockquote>
+<div><p>The number of rows to be cached as history. Caches the last
+<cite>history_size</cite> rows added with <cite>append</cite> or <cite>append_multiple</cite>.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>out</strong> : SFrameBuilder</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">SFrameBuilder</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sb</span> <span class="o">=</span> <span class="n">SFrameBuilder</span><span class="p">([</span><span class="nb">int</span><span class="p">,</span><span class="nb">float</span><span class="p">,</span><span class="nb">str</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sb</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="s2">&quot;1&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sb</span><span class="o">.</span><span class="n">append_multiple</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span><span class="mf">2.0</span><span class="p">,</span><span class="s2">&quot;2&quot;</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mf">3.0</span><span class="p">,</span><span class="s2">&quot;3&quot;</span><span class="p">]])</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="go">Columns:</span>
+<span class="go">        X1      int</span>
+<span class="go">        X2      float</span>
+<span class="go">        X3      str</span>
+<span class="go">Rows: 3</span>
+<span class="go">Data:</span>
+<span class="go">+----+-----+----+</span>
+<span class="go">| X1 |  X2 | X3 |</span>
+<span class="go">+----+-----+----+</span>
+<span class="go">| 1  | 1.0 | 1  |</span>
+<span class="go">| 2  | 2.0 | 2  |</span>
+<span class="go">| 3  | 3.0 | 3  |</span>
+<span class="go">+----+-----+----+</span>
+<span class="go">[3 rows x 3 columns]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrameBuilder.append.html#turicreate.SFrameBuilder.append" title="turicreate.SFrameBuilder.append"><code class="xref py py-obj docutils literal"><span class="pre">SFrameBuilder.append</span></code></a>(data[,&nbsp;segment])</td>
+<td>Append a single row to an SFrame.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrameBuilder.append_multiple.html#turicreate.SFrameBuilder.append_multiple" title="turicreate.SFrameBuilder.append_multiple"><code class="xref py py-obj docutils literal"><span class="pre">SFrameBuilder.append_multiple</span></code></a>(data[,&nbsp;segment])</td>
+<td>Append multiple rows to an SFrame.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrameBuilder.close.html#turicreate.SFrameBuilder.close" title="turicreate.SFrameBuilder.close"><code class="xref py py-obj docutils literal"><span class="pre">SFrameBuilder.close</span></code></a>()</td>
+<td>Creates an SFrame from all values that were appended to the SFrameBuilder.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrameBuilder.column_names.html#turicreate.SFrameBuilder.column_names" title="turicreate.SFrameBuilder.column_names"><code class="xref py py-obj docutils literal"><span class="pre">SFrameBuilder.column_names</span></code></a>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrameBuilder.column_types.html#turicreate.SFrameBuilder.column_types" title="turicreate.SFrameBuilder.column_types"><code class="xref py py-obj docutils literal"><span class="pre">SFrameBuilder.column_types</span></code></a>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrameBuilder.read_history.html#turicreate.SFrameBuilder.read_history" title="turicreate.SFrameBuilder.read_history"><code class="xref py py-obj docutils literal"><span class="pre">SFrameBuilder.read_history</span></code></a>([num,&nbsp;segment])</td>
+<td>Outputs the last <cite>num</cite> rows that were appended either by <cite>append</cite> or <cite>append_multiple</cite>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.Sketch.html" class="btn btn-neutral float-right" title="turicreate.Sketch">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.SArrayBuilder.html" class="btn btn-neutral" title="turicreate.SArrayBuilder"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

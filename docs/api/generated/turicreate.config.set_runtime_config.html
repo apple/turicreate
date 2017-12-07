@@ -1,0 +1,303 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.config.set_runtime_config &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="Configuration" href="../turicreate.utils.html"/>
+        <link rel="next" title="turicreate.config.get_environment_config" href="turicreate.config.get_environment_config.html"/>
+        <link rel="prev" title="turicreate.config.set_num_gpus" href="turicreate.config.set_num_gpus.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.utils.html">Configuration</a> &raquo;</li>
+      
+    <li>turicreate.config.set_runtime_config</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-config-set-runtime-config">
+<h1>turicreate.config.set_runtime_config<a class="headerlink" href="#turicreate-config-set-runtime-config" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.config.set_runtime_config">
+<code class="descclassname">turicreate.config.</code><code class="descname">set_runtime_config</code><span class="sig-paren">(</span><em>name</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.config.set_runtime_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configures system behavior at runtime. These configuration values are also
+read from environment variables at program startup if available. See
+<code class="xref py py-func docutils literal"><span class="pre">turicreate.get_runtime_config()</span></code> to get the current values for
+each variable.</p>
+<p>Note that defaults may change across versions and the names
+of performance tuning constants may also change as improved algorithms
+are developed and implemented.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>name</strong> : string</p>
+<blockquote>
+<div><p>A string referring to runtime configuration variable.</p>
+</div></blockquote>
+<p><strong>value</strong></p>
+<blockquote>
+<div><p>The value to set the variable to.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>RuntimeError</strong></p>
+<blockquote class="last">
+<div><p>If the key does not exist, or if the value cannot be changed to the
+requested value.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The following section documents all the Turi Create environment variables
+that can be configured.</p>
+<p><strong>Basic Configuration Variables</strong></p>
+<ul class="simple">
+<li><em>TURI_NUM_GPUS</em>: Number of GPUs to use when applicable. Set to 0 to force
+CPU use in all situations.</li>
+<li><em>TURI_CACHE_FILE_LOCATIONS</em>: The directory in which intermediate
+SFrames/SArray are stored.  For instance &#8220;/var/tmp&#8221;.  Multiple
+directories can be specified separated by a colon (ex: &#8220;/var/tmp:/tmp&#8221;)
+in which case intermediate SFrames will be striped across both
+directories (useful for specifying multiple disks).  Defaults to /var/tmp
+if the directory exists, /tmp otherwise.</li>
+<li><em>TURI_FILEIO_MAXIMUM_CACHE_CAPACITY</em>: The maximum amount of memory which
+will be occupied by <em>all</em> intermediate SFrames/SArrays. Once this limit
+is exceeded, SFrames/SArrays will be flushed out to temporary storage (as
+specified by <cite>TURI_CACHE_FILE_LOCATIONS</cite>). On large systems increasing
+this as well as <cite>TURI_FILEIO_MAXIMUM_CACHE_CAPACITY_PER_FILE</cite> can improve
+performance significantly. Defaults to 2147483648 bytes (2GB).</li>
+<li><em>TURI_FILEIO_MAXIMUM_CACHE_CAPACITY_PER_FILE</em>: The maximum amount of
+memory which will be occupied by any individual intermediate
+SFrame/SArray.  Once this limit is exceeded, the SFrame/SArray will be
+flushed out to temporary storage (as specified by
+<cite>TURI_CACHE_FILE_LOCATIONS</cite>). On large systems, increasing this as well
+as <cite>TURI_FILEIO_MAXIMUM_CACHE_CAPACITY</cite> can improve performance
+significantly for large SFrames. Defaults to 134217728 bytes (128MB).</li>
+</ul>
+<p><strong>S3 Configuration</strong></p>
+<ul class="simple">
+<li><em>TURI_S3_ENDPOINT</em>: The S3 Endpoint to connect to. If not specified AWS
+S3 is assumed.</li>
+</ul>
+<p><strong>SSL Configuration</strong></p>
+<ul class="simple">
+<li><em>TURI_FILEIO_ALTERNATIVE_SSL_CERT_FILE</em>: The location of an SSL
+certificate file used to validate HTTPS / S3 connections. Defaults to the
+the Python certifi package certificates.</li>
+<li><em>TURI_FILEIO_ALTERNATIVE_SSL_CERT_DIR</em>: The location of an SSL
+certificate directory used to validate HTTPS / S3 connections. Defaults
+to the operating system certificates.</li>
+<li><em>TURI_FILEIO_INSECURE_SSL_CERTIFICATE_CHECKS</em>: If set to a non-zero
+value, disables all SSL certificate validation.  Defaults to False.</li>
+</ul>
+<p><strong>Sort Performance Configuration</strong></p>
+<ul class="simple">
+<li><em>TURI_SFRAME_SORT_PIVOT_ESTIMATION_SAMPLE_SIZE</em>: The number of random
+rows to sample from the SFrame to estimate the sort pivots used to
+partition the sort. Defaults to 2000000.</li>
+<li><em>TURI_SFRAME_SORT_BUFFER_SIZE</em>: The maximum estimated memory consumption
+sort is allowed to use. Increasing this will increase the size of each
+sort partition, and will increase performance with increased memory
+consumption.  Defaults to 2GB.</li>
+</ul>
+<p><strong>Join Performance Configuration</strong></p>
+<ul class="simple">
+<li><em>TURI_SFRAME_JOIN_BUFFER_NUM_CELLS</em>: The maximum number of cells to
+buffer in memory. Increasing this will increase the size of each join
+partition and will increase performance with increased memory
+consumption.  If you have very large cells (very long strings for
+instance), decreasing this value will help decrease memory consumption.
+Defaults to 52428800.</li>
+</ul>
+<p><strong>Groupby Aggregate Performance Configuration</strong></p>
+<ul class="simple">
+<li><em>TURI_SFRAME_GROUPBY_BUFFER_NUM_ROWS</em>: The number of groupby keys cached
+in memory. Increasing this will increase performance with increased
+memory consumption. Defaults to 1048576.</li>
+</ul>
+<p><strong>Advanced Configuration Variables</strong></p>
+<ul class="simple">
+<li><em>TURI_SFRAME_FILE_HANDLE_POOL_SIZE</em>: The maximum number of file handles
+to use when reading SFrames/SArrays.  Once this limit is exceeded, file
+handles will be recycled, reducing performance. This limit should be
+rarely approached by most SFrame/SArray operations. Large SGraphs however
+may create a large a number of SFrames in which case increasing this
+limit may improve performance (You may also need to increase the system
+file handle limit with &#8220;ulimit -n&#8221;).  Defaults to 128.</li>
+</ul>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.config.get_environment_config.html" class="btn btn-neutral float-right" title="turicreate.config.get_environment_config">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.config.set_num_gpus.html" class="btn btn-neutral" title="turicreate.config.set_num_gpus"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

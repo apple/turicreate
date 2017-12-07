@@ -1,0 +1,318 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="recommender" href="../turicreate.toolkits.recommender.html"/>
+        <link rel="next" title="turicreate.recommender.item_content_recommender.create" href="turicreate.recommender.item_content_recommender.create.html"/>
+        <link rel="prev" title="turicreate.recommender.item_similarity_recommender.create" href="turicreate.recommender.item_similarity_recommender.create.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.recommender.html"><code class="docutils literal"><span class="pre">recommender</span></code></a> &raquo;</li>
+      
+    <li>turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-recommender-item-similarity-recommender-itemsimilarityrecommender">
+<h1>turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender<a class="headerlink" href="#turicreate-recommender-item-similarity-recommender-itemsimilarityrecommender" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender">
+<em class="property">class </em><code class="descclassname">turicreate.recommender.item_similarity_recommender.</code><code class="descname">ItemSimilarityRecommender</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender" title="Permalink to this definition">¶</a></dt>
+<dd><p>A model that ranks an item according to its similarity to other items
+observed for the user in question.</p>
+<p><strong>Creating an ItemSimilarityRecommender</strong></p>
+<p>This model cannot be constructed directly.  Instead, use
+<a class="reference internal" href="turicreate.recommender.item_similarity_recommender.create.html#turicreate.recommender.item_similarity_recommender.create" title="turicreate.recommender.item_similarity_recommender.create"><code class="xref py py-func docutils literal"><span class="pre">turicreate.recommender.item_similarity_recommender.create()</span></code></a>
+to create an instance
+of this model. A detailed list of parameter options and code samples
+are available in the documentation for the create function.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.recommender.item_similarity_recommender.create.html#turicreate.recommender.item_similarity_recommender.create" title="turicreate.recommender.item_similarity_recommender.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a></p>
+</div>
+<p class="rubric">Notes</p>
+<p><strong>Model Definition</strong></p>
+<p>This model first computes the similarity
+between items using the observations of users who have interacted with both
+items. Given a similarity between item <span class="math">\(i\)</span> and <span class="math">\(j\)</span>,
+<span class="math">\(S(i,j)\)</span>, it scores an item <span class="math">\(j\)</span> for user <span class="math">\(u\)</span> using a
+weighted average of the user&#8217;s previous observations <span class="math">\(I_u\)</span>.</p>
+<p>There are three choices of similarity metrics to use: &#8216;jaccard&#8217;,
+&#8216;cosine&#8217; and &#8216;pearson&#8217;.</p>
+<p><a class="reference external" href="http://en.wikipedia.org/wiki/Jaccard_index">Jaccard similarity</a>
+is used to measure the similarity between two set of elements.
+In the context of recommendation, the Jaccard similarity between two
+items is computed as</p>
+<div class="math">
+\[\mbox{JS}(i,j)
+= \frac{|U_i \cap U_j|}{|U_i \cup U_j|}\]</div>
+<p>where <span class="math">\(U_{i}\)</span> is the set of users who rated item <span class="math">\(i\)</span>.
+Jaccard is a good choice when one only has implicit feedbacks of items
+(e.g., people rated them or not), or when one does not care about how
+many stars items received.</p>
+<p>If one needs to compare the ratings of items, Cosine and Pearson similarity
+are recommended.</p>
+<p>The Cosine similarity between two items is computed as</p>
+<div class="math">
+\[\mbox{CS}(i,j)
+= \frac{\sum_{u\in U_{ij}} r_{ui}r_{uj}}
+    {\sqrt{\sum_{u\in U_{i}} r_{ui}^2}
+     \sqrt{\sum_{u\in U_{j}} r_{uj}^2}}\]</div>
+<p>where <span class="math">\(U_{i}\)</span> is the set of users who rated item <span class="math">\(i\)</span>,
+and <span class="math">\(U_{ij}\)</span> is the set of users who rated both items <span class="math">\(i\)</span> and
+<span class="math">\(j\)</span>. A problem with Cosine similarity is that it does not consider
+the differences in the mean and variance of the ratings made to
+items <span class="math">\(i\)</span> and <span class="math">\(j\)</span>.</p>
+<p>Another popular measure that compares ratings where the effects of means and
+variance have been removed is Pearson Correlation similarity:</p>
+<div class="math">
+\[\mbox{PS}(i,j)
+= \frac{\sum_{u\in U_{ij}} (r_{ui} - \bar{r}_i)
+                            (r_{uj} - \bar{r}_j)}
+    {\sqrt{\sum_{u\in U_{ij}} (r_{ui} - \bar{r}_i)^2}
+     \sqrt{\sum_{u\in U_{ij}} (r_{uj} - \bar{r}_j)^2}}\]</div>
+<p>The predictions of items depend on whether <cite>target</cite> is specified.
+When the <cite>target</cite> is absent, a prediction for item <span class="math">\(j\)</span> is made via</p>
+<div class="math">
+\[y_{uj}
+= \frac{\sum_{i \in I_u} \mbox{SIM}(i,j)  }{|I_u|}\]</div>
+<p>Otherwise, predictions for <code class="docutils literal"><span class="pre">jaccard</span></code> and <code class="docutils literal"><span class="pre">cosine</span></code> similarities are made via</p>
+<div class="math">
+\[y_{uj}
+= \frac{\sum_{i \in I_u} \mbox{SIM}(i,j) r_{ui} }{\sum_{i \in I_u} \mbox{SIM}(i,j)}\]</div>
+<p>Predictions for <code class="docutils literal"><span class="pre">pearson</span></code> similarity are made via</p>
+<div class="math">
+\[y_{uj}
+= \bar{r}_j + \frac{\sum_{i \in I_u} \mbox{SIM}(i,j) (r_{ui} - \bar{r}_i) }{\sum_{i \in I_u} \mbox{SIM}(i,j)}\]</div>
+<p>For more details of item similarity methods, please see, e.g.,
+Chapter 4 of <a class="reference internal" href="#ricci-et-al1415" id="id1">[Ricci_et_al1415]</a>.</p>
+<p class="rubric">References</p>
+<table class="docutils citation" frame="void" id="ricci-et-al1415" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[Ricci_et_al1415]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>)</em> Francesco Ricci, Lior Rokach, and Bracha Shapira.
+<a class="reference external" href="http://www.ics.uci.edu/~smyth/courses/cs277/papers/intro-rec-sys-handbook.pdf">Introduction to recommender systems handbook</a>. Springer US, 2011.</td></tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.evaluate.html#turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.evaluate" title="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.evaluate"><code class="xref py py-obj docutils literal"><span class="pre">ItemSimilarityRecommender.evaluate</span></code></a>(dataset)</td>
+<td>Evaluate the model&#8217;s ability to make rating predictions or recommendations.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.evaluate_precision_recall.html#turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.evaluate_precision_recall" title="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.evaluate_precision_recall"><code class="xref py py-obj docutils literal"><span class="pre">ItemSimilarityRecommender.evaluate_precision_recall</span></code></a>(dataset)</td>
+<td>Compute a model&#8217;s precision and recall scores for a particular dataset.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.evaluate_rmse.html#turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.evaluate_rmse" title="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.evaluate_rmse"><code class="xref py py-obj docutils literal"><span class="pre">ItemSimilarityRecommender.evaluate_rmse</span></code></a>(...)</td>
+<td>Evaluate the prediction error for each user-item pair in the given data set.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.get_num_items_per_user.html#turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.get_num_items_per_user" title="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.get_num_items_per_user"><code class="xref py py-obj docutils literal"><span class="pre">ItemSimilarityRecommender.get_num_items_per_user</span></code></a>()</td>
+<td>Get the number of items observed for each user.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.get_num_users_per_item.html#turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.get_num_users_per_item" title="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.get_num_users_per_item"><code class="xref py py-obj docutils literal"><span class="pre">ItemSimilarityRecommender.get_num_users_per_item</span></code></a>()</td>
+<td>Get the number of users observed for each item.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.get_similar_items.html#turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.get_similar_items" title="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.get_similar_items"><code class="xref py py-obj docutils literal"><span class="pre">ItemSimilarityRecommender.get_similar_items</span></code></a>([...])</td>
+<td>Get the k most similar items for each item in items.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.get_similar_users.html#turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.get_similar_users" title="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.get_similar_users"><code class="xref py py-obj docutils literal"><span class="pre">ItemSimilarityRecommender.get_similar_users</span></code></a>([...])</td>
+<td>Get the k most similar users for each entry in <cite>users</cite>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.predict.html#turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.predict" title="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.predict"><code class="xref py py-obj docutils literal"><span class="pre">ItemSimilarityRecommender.predict</span></code></a>(dataset[,&nbsp;...])</td>
+<td>Return a score prediction for the user ids and item ids in the provided data set.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.recommend.html#turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.recommend" title="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.recommend"><code class="xref py py-obj docutils literal"><span class="pre">ItemSimilarityRecommender.recommend</span></code></a>([users,&nbsp;...])</td>
+<td>Recommend the <code class="docutils literal"><span class="pre">k</span></code> highest scored items for each user.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.recommend_from_interactions.html#turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.recommend_from_interactions" title="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.recommend_from_interactions"><code class="xref py py-obj docutils literal"><span class="pre">ItemSimilarityRecommender.recommend_from_interactions</span></code></a>(...)</td>
+<td>Recommend the <code class="docutils literal"><span class="pre">k</span></code> highest scored items based on the</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.save.html#turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.save" title="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.save"><code class="xref py py-obj docutils literal"><span class="pre">ItemSimilarityRecommender.save</span></code></a>(location)</td>
+<td>Save the model.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.summary.html#turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.summary" title="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.summary"><code class="xref py py-obj docutils literal"><span class="pre">ItemSimilarityRecommender.summary</span></code></a>([output])</td>
+<td>Print a summary of the model.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.recommender.item_content_recommender.create.html" class="btn btn-neutral float-right" title="turicreate.recommender.item_content_recommender.create">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.recommender.item_similarity_recommender.create.html" class="btn btn-neutral" title="turicreate.recommender.item_similarity_recommender.create"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

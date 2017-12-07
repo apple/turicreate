@@ -1,0 +1,259 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Turi Create API Documentation &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="#"/>
+        <link rel="next" title="Data" href="turicreate.data_structures.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="#" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.toolkits.html">Modelling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="#">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="#">Docs</a> &raquo;</li>
+      
+    <li>Turi Create API Documentation</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turi-create-api-documentation">
+<h1>Turi Create API Documentation<a class="headerlink" href="#turi-create-api-documentation" title="Permalink to this headline">¶</a></h1>
+<p id="about">Turi Create simplifies the development of custom machine learning models. You
+don&#8217;t have to be a machine learning expert to add recommendations, object
+detection, image classification, image similarity or activity classification to
+your app.</p>
+<ul class="simple">
+<li><strong>Easy-to-use:</strong> Focus on tasks instead of algorithms</li>
+<li><strong>Visual:</strong> Built-in, streaming visualizations to explore your data</li>
+<li><strong>Flexible:</strong> Supports text, images, audio, video and sensor data</li>
+<li><strong>Fast and Scalable:</strong> Work with large datasets on a single machine</li>
+<li><strong>Ready To Deploy:</strong> Export models to Core ML for use in iOS, macOS, watchOS, and tvOS apps</li>
+</ul>
+<div class="section" id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#id1">Data Structures</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/turicreate.SArray.html">turicreate.SArray</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/turicreate.SFrame.html">turicreate.SFrame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/turicreate.SGraph.html">turicreate.SGraph</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#data-types">Data Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/turicreate.Image.html">turicreate.Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/turicreate.Vertex.html">turicreate.Vertex</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/turicreate.Edge.html">turicreate.Edge</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#utilities">Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/turicreate.SArrayBuilder.html">turicreate.SArrayBuilder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/turicreate.SFrameBuilder.html">turicreate.SFrameBuilder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/turicreate.Sketch.html">turicreate.Sketch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/turicreate.aggregate.html">turicreate.aggregate</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.toolkits.html">Modelling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.toolkits.html#applications">Applications</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="turicreate.toolkits.activity_classifier.html"><code class="docutils literal"><span class="pre">activity_classifier</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="turicreate.toolkits.image_classifier.html"><code class="docutils literal"><span class="pre">image_classifier</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="turicreate.toolkits.image_similarity.html"><code class="docutils literal"><span class="pre">image_similarity</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="turicreate.toolkits.object_detector.html"><code class="docutils literal"><span class="pre">object_detector</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="turicreate.toolkits.recommender.html"><code class="docutils literal"><span class="pre">recommender</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="turicreate.toolkits.sentence_classifier.html"><code class="docutils literal"><span class="pre">sentence_classifier</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.toolkits.html#essentials">Essentials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="turicreate.toolkits.classifier.html"><code class="docutils literal"><span class="pre">classifier</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="turicreate.toolkits.clustering.html"><code class="docutils literal"><span class="pre">clustering</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="turicreate.toolkits.graph_analytics.html"><code class="docutils literal"><span class="pre">graph_analytics</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="turicreate.toolkits.image_analysis.html"><code class="docutils literal"><span class="pre">image_analysis</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="turicreate.toolkits.nearest_neighbors.html"><code class="docutils literal"><span class="pre">nearest_neighbors</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="turicreate.toolkits.regression.html"><code class="docutils literal"><span class="pre">regression</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="turicreate.toolkits.text_analytics.html"><code class="docutils literal"><span class="pre">text_analytics</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="turicreate.toolkits.topic_model.html"><code class="docutils literal"><span class="pre">topic_model</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.toolkits.html#utilities">Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="turicreate.load_model.html"><code class="docutils literal"><span class="pre">load_model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="turicreate.toolkits.distances.html"><code class="docutils literal"><span class="pre">distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="turicreate.toolkits.evaluation.html"><code class="docutils literal"><span class="pre">evaluation</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.utils.html">Configuration</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.data_structures.html" class="btn btn-neutral float-right" title="Data">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

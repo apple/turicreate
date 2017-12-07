@@ -1,0 +1,247 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.graph_coloring.create &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="graph_analytics" href="../turicreate.toolkits.graph_analytics.html"/>
+        <link rel="next" title="turicreate.graph_coloring.GraphColoringModel" href="turicreate.graph_coloring.GraphColoringModel.html"/>
+        <link rel="prev" title="turicreate.degree_counting.DegreeCountingModel" href="turicreate.degree_counting.DegreeCountingModel.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.graph_analytics.html"><code class="docutils literal"><span class="pre">graph_analytics</span></code></a> &raquo;</li>
+      
+    <li>turicreate.graph_coloring.create</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-graph-coloring-create">
+<h1>turicreate.graph_coloring.create<a class="headerlink" href="#turicreate-graph-coloring-create" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.graph_coloring.create">
+<code class="descclassname">turicreate.graph_coloring.</code><code class="descname">create</code><span class="sig-paren">(</span><em>graph</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.graph_coloring.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the graph coloring. Assign a color to each vertex such that no
+adjacent vertices have the same color. Return a model object with total
+number of colors used as well as the color ID for each vertex in the graph.
+This algorithm is greedy and is not guaranteed to find the <strong>minimum</strong> graph
+coloring. It is also not deterministic, so successive runs may return
+different answers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>graph</strong> : SGraph</p>
+<blockquote>
+<div><p>The graph on which to compute the coloring.</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, print progress updates.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>out</strong> : GraphColoringModel</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.graph_coloring.GraphColoringModel.html#turicreate.graph_coloring.GraphColoringModel" title="turicreate.graph_coloring.GraphColoringModel"><code class="xref py py-obj docutils literal"><span class="pre">GraphColoringModel</span></code></a></p>
+</div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><a class="reference external" href="http://en.wikipedia.org/wiki/Graph_coloring">Wikipedia - graph coloring</a></li>
+</ul>
+<p class="rubric">Examples</p>
+<p>If given an <a class="reference internal" href="turicreate.SGraph.html#turicreate.SGraph" title="turicreate.SGraph"><code class="xref py py-class docutils literal"><span class="pre">SGraph</span></code></a> <code class="docutils literal"><span class="pre">g</span></code>, we can create
+a <a class="reference internal" href="turicreate.graph_coloring.GraphColoringModel.html#turicreate.graph_coloring.GraphColoringModel" title="turicreate.graph_coloring.GraphColoringModel"><code class="xref py py-class docutils literal"><span class="pre">GraphColoringModel</span></code></a> as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">load_graph</span><span class="p">(</span><span class="s1">&#39;http://snap.stanford.edu/data/email-Enron.txt.gz&#39;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s1">&#39;snap&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gc</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">graph_coloring</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We can obtain the <code class="docutils literal"><span class="pre">color</span> <span class="pre">id</span></code> corresponding to each vertex in the graph <code class="docutils literal"><span class="pre">g</span></code>
+as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">color_id</span> <span class="o">=</span> <span class="n">gc</span><span class="p">[</span><span class="s1">&#39;color_id&#39;</span><span class="p">]</span>  <span class="c1"># SFrame</span>
+</pre></div>
+</div>
+<p>We can obtain the total number of colors required to color the graph <code class="docutils literal"><span class="pre">g</span></code>
+as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">num_colors</span> <span class="o">=</span> <span class="n">gc</span><span class="p">[</span><span class="s1">&#39;num_colors&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.graph_coloring.GraphColoringModel.html" class="btn btn-neutral float-right" title="turicreate.graph_coloring.GraphColoringModel">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.degree_counting.DegreeCountingModel.html" class="btn btn-neutral" title="turicreate.degree_counting.DegreeCountingModel"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

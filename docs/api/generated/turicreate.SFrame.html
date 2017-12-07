@@ -1,0 +1,910 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.SFrame &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="Data" href="../turicreate.data_structures.html"/>
+        <link rel="next" title="turicreate.SGraph" href="turicreate.SGraph.html"/>
+        <link rel="prev" title="turicreate.SArray" href="turicreate.SArray.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.data_structures.html">Data</a> &raquo;</li>
+      
+    <li>turicreate.SFrame</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-sframe">
+<h1>turicreate.SFrame<a class="headerlink" href="#turicreate-sframe" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="turicreate.SFrame">
+<em class="property">class </em><code class="descclassname">turicreate.</code><code class="descname">SFrame</code><span class="sig-paren">(</span><em>data=list()</em>, <em>format='auto'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>A tabular, column-mutable dataframe object that can scale to big data. The
+data in SFrame is stored column-wise on the Turi Server side, and is
+stored on persistent storage (e.g. disk) to avoid being constrained by
+memory size.  Each column in an SFrame is a size-immutable
+<a class="reference internal" href="turicreate.SArray.html#turicreate.SArray" title="turicreate.SArray"><code class="xref py py-class docutils literal"><span class="pre">SArray</span></code></a>, but SFrames are mutable in that columns can be
+added and subtracted with ease.  An SFrame essentially acts as an ordered
+dict of SArrays.</p>
+<p>Currently, we support constructing an SFrame from the following data
+formats:</p>
+<ul class="simple">
+<li>csv file (comma separated value)</li>
+<li>sframe directory archive (A directory where an sframe was saved
+previously)</li>
+<li>general text file (with csv parsing options, See <a class="reference internal" href="turicreate.SFrame.read_csv.html#turicreate.SFrame.read_csv" title="turicreate.SFrame.read_csv"><code class="xref py py-meth docutils literal"><span class="pre">read_csv()</span></code></a>)</li>
+<li>a Python dictionary</li>
+<li>pandas.DataFrame</li>
+<li>JSON</li>
+<li>Apache Avro</li>
+</ul>
+<p>and from the following sources:</p>
+<ul class="simple">
+<li>your local file system</li>
+<li>the Turi Server&#8217;s file system</li>
+<li>HDFS</li>
+<li>Amazon S3</li>
+<li>HTTP(S).</li>
+</ul>
+<p>Only basic examples of construction are covered here. For more information
+and examples, please see the <a class="reference external" href="https://apple.github.io/turicreate/docs/userguide/index.html#Working_with_data_Tabular_data">User Guide</a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> : array | pandas.DataFrame | string | dict, optional</p>
+<blockquote>
+<div><p>The actual interpretation of this field is dependent on the <code class="docutils literal"><span class="pre">format</span></code>
+parameter. If <code class="docutils literal"><span class="pre">data</span></code> is an array or Pandas DataFrame, the contents are
+stored in the SFrame. If <code class="docutils literal"><span class="pre">data</span></code> is a string, it is interpreted as a
+file. Files can be read from local file system or urls (local://,
+hdfs://, s3://, http://).</p>
+</div></blockquote>
+<p><strong>format</strong> : string, optional</p>
+<blockquote class="last">
+<div><p>Format of the data. The default, &#8220;auto&#8221; will automatically infer the
+input data format. The inference rules are simple: If the data is an
+array or a dataframe, it is associated with &#8216;array&#8217; and &#8216;dataframe&#8217;
+respectively. If the data is a string, it is interpreted as a file, and
+the file extension is used to infer the file format. The explicit
+options are:</p>
+<ul class="simple">
+<li>&#8220;auto&#8221;</li>
+<li>&#8220;array&#8221;</li>
+<li>&#8220;dict&#8221;</li>
+<li>&#8220;sarray&#8221;</li>
+<li>&#8220;dataframe&#8221;</li>
+<li>&#8220;csv&#8221;</li>
+<li>&#8220;tsv&#8221;</li>
+<li>&#8220;sframe&#8221;.</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.SFrame.read_csv.html#turicreate.SFrame.read_csv" title="turicreate.SFrame.read_csv"><code class="xref py py-obj docutils literal"><span class="pre">read_csv</span></code></a></dt>
+<dd>Create a new SFrame from a csv file. Preferred for text and CSV formats, because it has a lot more options for controlling the parser.</dd>
+<dt><a class="reference internal" href="turicreate.SFrame.save.html#turicreate.SFrame.save" title="turicreate.SFrame.save"><code class="xref py py-obj docutils literal"><span class="pre">save</span></code></a></dt>
+<dd>Save an SFrame for later use.</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>When reading from HDFS on Linux we must guess the location of your java
+installation. By default, we will use the location pointed to by the
+JAVA_HOME environment variable.  If this is not set, we check many common
+installation paths. You may use two environment variables to override
+this behavior.  TURI_JAVA_HOME allows you to specify a specific java
+installation and overrides JAVA_HOME.  TURI_LIBJVM_DIRECTORY
+overrides all and expects the exact directory that your preferred
+libjvm.so file is located.  Use this ONLY if you&#8217;d like to use a
+non-standard JVM.</li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">turicreate</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">SFrame</span>
+</pre></div>
+</div>
+<p><strong>Construction</strong></p>
+<p>Construct an SFrame from a dataframe and transfers the dataframe object
+across the network.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">SFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Construct an SFrame from a local csv file (only works for local server).</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">SFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="s1">&#39;~/mydata/foo.csv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Construct an SFrame from a csv file on Amazon S3. This requires the
+environment variables: <em>AWS_ACCESS_KEY_ID</em> and <em>AWS_SECRET_ACCESS_KEY</em> to be
+set before the python session started. Alternatively, you can use
+<code class="xref py py-func docutils literal"><span class="pre">turicreate.aws.set_credentials()</span></code> to set the credentials after
+python is started and <code class="xref py py-func docutils literal"><span class="pre">turicreate.aws.get_credentials()</span></code> to verify
+these environment variables.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">SFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="s1">&#39;s3://mybucket/foo.csv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Read from HDFS using a specific java installation (environment variable
+only applies when using Linux)</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;TURI_JAVA_HOME&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;/my/path/to/java&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">SFrame</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">SFrame</span><span class="p">(</span><span class="s2">&quot;hdfs://mycluster.example.com:8020/user/myname/coolfile.txt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>An SFrame can be constructed from a dictionary of values or SArrays:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;id&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span><span class="s1">&#39;val&#39;</span><span class="p">:[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span>
+<span class="go">Columns:</span>
+<span class="go">    id  int</span>
+<span class="go">    val str</span>
+<span class="go">Rows: 3</span>
+<span class="go">Data:</span>
+<span class="go">   id  val</span>
+<span class="go">0  1   A</span>
+<span class="go">1  2   B</span>
+<span class="go">2  3   C</span>
+</pre></div>
+</div>
+<p>Or equivalently:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ids</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vals</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">([</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;id&#39;</span><span class="p">:</span><span class="n">ids</span><span class="p">,</span><span class="s1">&#39;val&#39;</span><span class="p">:</span><span class="n">vals</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>It can also be constructed from an array of SArrays in which case column
+names are automatically assigned.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ids</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vals</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">([</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">SFrame</span><span class="p">([</span><span class="n">ids</span><span class="p">,</span> <span class="n">vals</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span>
+<span class="go">Columns:</span>
+<span class="go">    X1 int</span>
+<span class="go">    X2 str</span>
+<span class="go">Rows: 3</span>
+<span class="go">Data:</span>
+<span class="go">   X1  X2</span>
+<span class="go">0  1   A</span>
+<span class="go">1  2   B</span>
+<span class="go">2  3   C</span>
+</pre></div>
+</div>
+<p>If the SFrame is constructed from a list of values, an SFrame of a single
+column is constructed.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">SFrame</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span>
+<span class="go">Columns:</span>
+<span class="go">    X1 int</span>
+<span class="go">Rows: 3</span>
+<span class="go">Data:</span>
+<span class="go">   X1</span>
+<span class="go">0  1</span>
+<span class="go">1  2</span>
+<span class="go">2  3</span>
+</pre></div>
+</div>
+<p><strong>Parsing</strong></p>
+<p>The <a class="reference internal" href="turicreate.SFrame.read_csv.html#turicreate.SFrame.read_csv" title="turicreate.SFrame.read_csv"><code class="xref py py-func docutils literal"><span class="pre">turicreate.SFrame.read_csv()</span></code></a> is quite powerful and, can be
+used to import a variety of row-based formats.</p>
+<p>First, some simple cases:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>&gt;&gt;&gt; !cat ratings.csv
+user_id,movie_id,rating
+10210,1,1
+10213,2,5
+10217,2,2
+10102,1,3
+10109,3,4
+10117,5,2
+10122,2,4
+10114,1,5
+10125,1,1
+&gt;&gt;&gt; tc.SFrame.read_csv(&#39;ratings.csv&#39;)
+Columns:
+  user_id   int
+  movie_id  int
+  rating    int
+Rows: 9
+Data:
++---------+----------+--------+
+| user_id | movie_id | rating |
++---------+----------+--------+
+|  10210  |    1     |   1    |
+|  10213  |    2     |   5    |
+|  10217  |    2     |   2    |
+|  10102  |    1     |   3    |
+|  10109  |    3     |   4    |
+|  10117  |    5     |   2    |
+|  10122  |    2     |   4    |
+|  10114  |    1     |   5    |
+|  10125  |    1     |   1    |
++---------+----------+--------+
+[9 rows x 3 columns]
+</pre></div>
+</div>
+<p>Delimiters can be specified, if &#8221;,&#8221; is not the delimiter, for instance
+space &#8216; &#8216; in this case. Only single character delimiters are supported.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>&gt;&gt;&gt; !cat ratings.csv
+user_id movie_id rating
+10210 1 1
+10213 2 5
+10217 2 2
+10102 1 3
+10109 3 4
+10117 5 2
+10122 2 4
+10114 1 5
+10125 1 1
+&gt;&gt;&gt; tc.SFrame.read_csv(&#39;ratings.csv&#39;, delimiter=&#39; &#39;)
+</pre></div>
+</div>
+<p>By default, &#8220;NA&#8221; or a missing element are interpreted as missing values.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>&gt;&gt;&gt; !cat ratings2.csv
+user,movie,rating
+&quot;tom&quot;,,1
+harry,5,
+jack,2,2
+bill,,
+&gt;&gt;&gt; tc.SFrame.read_csv(&#39;ratings2.csv&#39;)
+Columns:
+  user  str
+  movie int
+  rating    int
+Rows: 4
+Data:
++---------+-------+--------+
+|   user  | movie | rating |
++---------+-------+--------+
+|   tom   |  None |   1    |
+|  harry  |   5   |  None  |
+|   jack  |   2   |   2    |
+| missing |  None |  None  |
++---------+-------+--------+
+[4 rows x 3 columns]
+</pre></div>
+</div>
+<p>Furthermore due to the dictionary types and list types, can handle parsing
+of JSON-like formats.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>&gt;&gt;&gt; !cat ratings3.csv
+business, categories, ratings
+&quot;Restaurant 1&quot;, [1 4 9 10], {&quot;funny&quot;:5, &quot;cool&quot;:2}
+&quot;Restaurant 2&quot;, [], {&quot;happy&quot;:2, &quot;sad&quot;:2}
+&quot;Restaurant 3&quot;, [2, 11, 12], {}
+&gt;&gt;&gt; tc.SFrame.read_csv(&#39;ratings3.csv&#39;)
+Columns:
+business    str
+categories  array
+ratings dict
+Rows: 3
+Data:
++--------------+--------------------------------+-------------------------+
+|   business   |           categories           |         ratings         |
++--------------+--------------------------------+-------------------------+
+| Restaurant 1 | array(&#39;d&#39;, [1.0, 4.0, 9.0, ... | {&#39;funny&#39;: 5, &#39;cool&#39;: 2} |
+| Restaurant 2 |           array(&#39;d&#39;)           |  {&#39;sad&#39;: 2, &#39;happy&#39;: 2} |
+| Restaurant 3 | array(&#39;d&#39;, [2.0, 11.0, 12.0])  |            {}           |
++--------------+--------------------------------+-------------------------+
+[3 rows x 3 columns]
+</pre></div>
+</div>
+<p>The list and dictionary parsers are quite flexible and can absorb a
+variety of purely formatted inputs. Also, note that the list and dictionary
+types are recursive, allowing for arbitrary values to be contained.</p>
+<p>All these are valid lists:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>&gt;&gt;&gt; !cat interesting_lists.csv
+list
+[]
+[1,2,3]
+[1;2,3]
+[1 2 3]
+[{a:b}]
+[&quot;c&quot;,d, e]
+[[a]]
+&gt;&gt;&gt; tc.SFrame.read_csv(&#39;interesting_lists.csv&#39;)
+Columns:
+  list  list
+Rows: 7
+Data:
++-----------------+
+|       list      |
++-----------------+
+|        []       |
+|    [1, 2, 3]    |
+|    [1, 2, 3]    |
+|    [1, 2, 3]    |
+|   [{&#39;a&#39;: &#39;b&#39;}]  |
+| [&#39;c&#39;, &#39;d&#39;, &#39;e&#39;] |
+|     [[&#39;a&#39;]]     |
++-----------------+
+[7 rows x 1 columns]
+</pre></div>
+</div>
+<p>All these are valid dicts:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>&gt;&gt;&gt; !cat interesting_dicts.csv
+dict
+{&quot;classic&quot;:1,&quot;dict&quot;:1}
+{space:1 seperated:1}
+{emptyvalue:}
+{}
+{:}
+{recursive1:[{a:b}]}
+{:[{:[a]}]}
+&gt;&gt;&gt; tc.SFrame.read_csv(&#39;interesting_dicts.csv&#39;)
+Columns:
+  dict  dict
+Rows: 7
+Data:
++------------------------------+
+|             dict             |
++------------------------------+
+|  {&#39;dict&#39;: 1, &#39;classic&#39;: 1}   |
+| {&#39;seperated&#39;: 1, &#39;space&#39;: 1} |
+|     {&#39;emptyvalue&#39;: None}     |
+|              {}              |
+|         {None: None}         |
+| {&#39;recursive1&#39;: [{&#39;a&#39;: &#39;b&#39;}]} |
+| {None: [{None: array(&#39;d&#39;)}]} |
++------------------------------+
+[7 rows x 1 columns]
+</pre></div>
+</div>
+<p><strong>Saving</strong></p>
+<p>Save and load the sframe in native format.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;mysframedir&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf2</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">load_sframe</span><span class="p">(</span><span class="s1">&#39;mysframedir&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Column Manipulation</strong></p>
+<p>An SFrame is composed of a collection of columns of SArrays, and individual
+SArrays can be extracted easily. For instance given an SFrame:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;id&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span><span class="s1">&#39;val&#39;</span><span class="p">:[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span>
+<span class="go">Columns:</span>
+<span class="go">    id  int</span>
+<span class="go">    val str</span>
+<span class="go">Rows: 3</span>
+<span class="go">Data:</span>
+<span class="go">   id  val</span>
+<span class="go">0  1   A</span>
+<span class="go">1  2   B</span>
+<span class="go">2  3   C</span>
+</pre></div>
+</div>
+<p>The &#8220;id&#8221; column can be extracted using:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+<span class="go">dtype: int</span>
+<span class="go">Rows: 3</span>
+<span class="go">[1, 2, 3]</span>
+</pre></div>
+</div>
+<p>And can be deleted using:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">sf</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Multiple columns can be selected by passing a list of column names:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;id&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span><span class="s1">&#39;val&#39;</span><span class="p">:[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">],</span><span class="s1">&#39;val2&#39;</span><span class="p">:[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span>
+<span class="go">Columns:</span>
+<span class="go">    id   int</span>
+<span class="go">    val  str</span>
+<span class="go">    val2 int</span>
+<span class="go">Rows: 3</span>
+<span class="go">Data:</span>
+<span class="go">   id  val val2</span>
+<span class="go">0  1   A   5</span>
+<span class="go">1  2   B   6</span>
+<span class="go">2  3   C   7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf2</span> <span class="o">=</span> <span class="n">sf</span><span class="p">[[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="s1">&#39;val&#39;</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf2</span>
+<span class="go">Columns:</span>
+<span class="go">    id  int</span>
+<span class="go">    val str</span>
+<span class="go">Rows: 3</span>
+<span class="go">Data:</span>
+<span class="go">   id  val</span>
+<span class="go">0  1   A</span>
+<span class="go">1  2   B</span>
+<span class="go">2  3   C</span>
+</pre></div>
+</div>
+<p>You can also select columns using types or a list of types:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf2</span> <span class="o">=</span> <span class="n">sf</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf2</span>
+<span class="go">Columns:</span>
+<span class="go">    id   int</span>
+<span class="go">    val2 int</span>
+<span class="go">Rows: 3</span>
+<span class="go">Data:</span>
+<span class="go">   id  val2</span>
+<span class="go">0  1   5</span>
+<span class="go">1  2   6</span>
+<span class="go">2  3   7</span>
+</pre></div>
+</div>
+<p>Or a mix of types and names:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf2</span> <span class="o">=</span> <span class="n">sf</span><span class="p">[[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf2</span>
+<span class="go">Columns:</span>
+<span class="go">    id  int</span>
+<span class="go">    val str</span>
+<span class="go">Rows: 3</span>
+<span class="go">Data:</span>
+<span class="go">   id  val</span>
+<span class="go">0  1   A</span>
+<span class="go">1  2   B</span>
+<span class="go">2  3   C</span>
+</pre></div>
+</div>
+<p>The same mechanism can be used to re-order columns:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;id&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span><span class="s1">&#39;val&#39;</span><span class="p">:[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span>
+<span class="go">Columns:</span>
+<span class="go">    id  int</span>
+<span class="go">    val str</span>
+<span class="go">Rows: 3</span>
+<span class="go">Data:</span>
+<span class="go">   id  val</span>
+<span class="go">0  1   A</span>
+<span class="go">1  2   B</span>
+<span class="go">2  3   C</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="p">[[</span><span class="s1">&#39;val&#39;</span><span class="p">,</span><span class="s1">&#39;id&#39;</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span>
+<span class="go">Columns:</span>
+<span class="go">    val str</span>
+<span class="go">    id  int</span>
+<span class="go">Rows: 3</span>
+<span class="go">Data:</span>
+<span class="go">   val id</span>
+<span class="go">0  A   1</span>
+<span class="go">1  B   2</span>
+<span class="go">2  C   3</span>
+</pre></div>
+</div>
+<p><strong>Element Access and Slicing</strong></p>
+<p>SFrames can be accessed by integer keys just like a regular python list.
+Such operations may not be fast on large datasets so looping over an SFrame
+should be avoided.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;id&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span><span class="s1">&#39;val&#39;</span><span class="p">:[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">{&#39;id&#39;: 1, &#39;val&#39;: &#39;A&#39;}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="go">{&#39;id&#39;: 3, &#39;val&#39;: &#39;C&#39;}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+<span class="go">IndexError: SFrame index out of range</span>
+</pre></div>
+</div>
+<p>Negative indices can be used to access elements from the tail of the array</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># returns the last element</span>
+<span class="go">{&#39;id&#39;: 3, &#39;val&#39;: &#39;C&#39;}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="c1"># returns the second to last element</span>
+<span class="go">{&#39;id&#39;: 2, &#39;val&#39;: &#39;B&#39;}</span>
+</pre></div>
+</div>
+<p>The SFrame also supports the full range of python slicing operators:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="p">[</span><span class="mi">1000</span><span class="p">:]</span> <span class="c1"># Returns an SFrame containing rows 1000 to the end</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="p">[:</span><span class="mi">1000</span><span class="p">]</span> <span class="c1"># Returns an SFrame containing rows 0 to row 999 inclusive</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1000</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="c1"># Returns an SFrame containing rows 0 to row 1000 in steps of 2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="p">[</span><span class="o">-</span><span class="mi">100</span><span class="p">:]</span> <span class="c1"># Returns an SFrame containing last 100 rows</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="p">[</span><span class="o">-</span><span class="mi">100</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">sf</span><span class="p">):</span><span class="mi">2</span><span class="p">]</span> <span class="c1"># Returns an SFrame containing last 100 rows in steps of 2</span>
+</pre></div>
+</div>
+<p><strong>Logical Filter</strong></p>
+<p>An SFrame can be filtered using</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sframe</span><span class="p">[</span><span class="n">binary_filter</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>where sframe is an SFrame and binary_filter is an SArray of the same length.
+The result is a new SFrame which contains only rows of the SFrame where its
+matching row in the binary_filter is non zero.</p>
+<p>This permits the use of boolean operators that can be used to perform
+logical filtering operations. For instance, given an SFrame</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span>
+<span class="go">Columns:</span>
+<span class="go">    id  int</span>
+<span class="go">    val str</span>
+<span class="go">Rows: 3</span>
+<span class="go">Data:</span>
+<span class="go">   id  val</span>
+<span class="go">0  1   A</span>
+<span class="go">1  2   B</span>
+<span class="go">2  3   C</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="p">[(</span><span class="n">sf</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">sf</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">)]</span>
+<span class="go">Columns:</span>
+<span class="go">    id  int</span>
+<span class="go">    val str</span>
+<span class="go">Rows: 3</span>
+<span class="go">Data:</span>
+<span class="go">   id  val</span>
+<span class="go">0  1   A</span>
+<span class="go">1  2   B</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="turicreate.SArray.html#turicreate.SArray" title="turicreate.SArray"><code class="xref py py-class docutils literal"><span class="pre">SArray</span></code></a> for more details on the use of the logical
+filter.</p>
+<p>This can also be used more generally to provide filtering capability which
+is otherwise not expressible with simple boolean functions. For instance:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="p">[</span><span class="n">sf</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)]</span>
+<span class="go">Columns:</span>
+<span class="go">    id  int</span>
+<span class="go">    val str</span>
+<span class="go">Rows: 3</span>
+<span class="go">Data:</span>
+<span class="go">   id  val</span>
+<span class="go">0  1   A</span>
+<span class="go">1  2   B</span>
+</pre></div>
+</div>
+<p>Or alternatively:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="p">[</span><span class="n">sf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)]</span>
+</pre></div>
+</div>
+<blockquote>
+<div>Create an SFrame from a Python dictionary.</div></blockquote>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">SFrame</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;id&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;val&#39;</span><span class="p">:[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span>
+<span class="go">Columns:</span>
+<span class="go">    id  int</span>
+<span class="go">    val str</span>
+<span class="go">Rows: 3</span>
+<span class="go">Data:</span>
+<span class="go">   id  val</span>
+<span class="go">0  1   A</span>
+<span class="go">1  2   B</span>
+<span class="go">2  3   C</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.add_column.html#turicreate.SFrame.add_column" title="turicreate.SFrame.add_column"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.add_column</span></code></a>(data[,&nbsp;column_name,&nbsp;inplace])</td>
+<td>Returns an SFrame with a new column.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.add_columns.html#turicreate.SFrame.add_columns" title="turicreate.SFrame.add_columns"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.add_columns</span></code></a>(data[,&nbsp;column_names,&nbsp;inplace])</td>
+<td>Returns an SFrame with multiple columns added.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.add_row_number.html#turicreate.SFrame.add_row_number" title="turicreate.SFrame.add_row_number"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.add_row_number</span></code></a>([column_name,&nbsp;start,&nbsp;...])</td>
+<td>Returns an SFrame with a new column that numbers each row sequentially.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.append.html#turicreate.SFrame.append" title="turicreate.SFrame.append"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.append</span></code></a>(other)</td>
+<td>Add the rows of an SFrame to the end of this SFrame.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.apply.html#turicreate.SFrame.apply" title="turicreate.SFrame.apply"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.apply</span></code></a>(fn[,&nbsp;dtype,&nbsp;seed])</td>
+<td>Transform each row to an <a class="reference internal" href="turicreate.SArray.html#turicreate.SArray" title="turicreate.SArray"><code class="xref py py-class docutils literal"><span class="pre">SArray</span></code></a> according to a specified function.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.column_names.html#turicreate.SFrame.column_names" title="turicreate.SFrame.column_names"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.column_names</span></code></a>()</td>
+<td>The name of each column in the SFrame.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.column_types.html#turicreate.SFrame.column_types" title="turicreate.SFrame.column_types"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.column_types</span></code></a>()</td>
+<td>The type of each column in the SFrame.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.copy.html#turicreate.SFrame.copy" title="turicreate.SFrame.copy"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.copy</span></code></a>()</td>
+<td>Returns a shallow copy of the sframe.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.dropna.html#turicreate.SFrame.dropna" title="turicreate.SFrame.dropna"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.dropna</span></code></a>([columns,&nbsp;how])</td>
+<td>Remove missing values from an SFrame.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.dropna_split.html#turicreate.SFrame.dropna_split" title="turicreate.SFrame.dropna_split"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.dropna_split</span></code></a>([columns,&nbsp;how])</td>
+<td>Split rows with missing values from this SFrame.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.explore.html#turicreate.SFrame.explore" title="turicreate.SFrame.explore"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.explore</span></code></a>([title])</td>
+<td>Explore the SFrame in an interactive GUI.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.export_csv.html#turicreate.SFrame.export_csv" title="turicreate.SFrame.export_csv"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.export_csv</span></code></a>(filename[,&nbsp;delimiter,&nbsp;...])</td>
+<td>Writes an SFrame to a CSV file.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.export_json.html#turicreate.SFrame.export_json" title="turicreate.SFrame.export_json"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.export_json</span></code></a>(filename[,&nbsp;orient])</td>
+<td>Writes an SFrame to a JSON file.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.fillna.html#turicreate.SFrame.fillna" title="turicreate.SFrame.fillna"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.fillna</span></code></a>(column_name,&nbsp;value)</td>
+<td>Fill all missing values with a given value in a given column.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.filter_by.html#turicreate.SFrame.filter_by" title="turicreate.SFrame.filter_by"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.filter_by</span></code></a>(values,&nbsp;column_name[,&nbsp;exclude])</td>
+<td>Filter an SFrame by values inside an iterable object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.flat_map.html#turicreate.SFrame.flat_map" title="turicreate.SFrame.flat_map"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.flat_map</span></code></a>(column_names,&nbsp;fn[,&nbsp;...])</td>
+<td>Map each row of the SFrame to multiple rows in a new SFrame via a function.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.from_sql.html#turicreate.SFrame.from_sql" title="turicreate.SFrame.from_sql"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.from_sql</span></code></a>(conn,&nbsp;sql_statement[,&nbsp;...])</td>
+<td>Convert the result of a SQL database query to an SFrame.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.groupby.html#turicreate.SFrame.groupby" title="turicreate.SFrame.groupby"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.groupby</span></code></a>(key_column_names,&nbsp;operations,&nbsp;...)</td>
+<td>Perform a group on the key_column_names followed by aggregations on the columns listed in operations.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.head.html#turicreate.SFrame.head" title="turicreate.SFrame.head"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.head</span></code></a>([n])</td>
+<td>The first n rows of the SFrame.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.is_materialized.html#turicreate.SFrame.is_materialized" title="turicreate.SFrame.is_materialized"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.is_materialized</span></code></a>()</td>
+<td>Returns whether or not the SFrame has been materialized.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.join.html#turicreate.SFrame.join" title="turicreate.SFrame.join"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.join</span></code></a>(right[,&nbsp;on,&nbsp;how])</td>
+<td>Merge two SFrames.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.materialize.html#turicreate.SFrame.materialize" title="turicreate.SFrame.materialize"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.materialize</span></code></a>()</td>
+<td>For an SFrame that is lazily evaluated, force the persistence of the SFrame to disk, committing all lazy evaluated operations.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.num_columns.html#turicreate.SFrame.num_columns" title="turicreate.SFrame.num_columns"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.num_columns</span></code></a>()</td>
+<td>The number of columns in this SFrame.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.num_rows.html#turicreate.SFrame.num_rows" title="turicreate.SFrame.num_rows"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.num_rows</span></code></a>()</td>
+<td>The number of rows in this SFrame.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.pack_columns.html#turicreate.SFrame.pack_columns" title="turicreate.SFrame.pack_columns"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.pack_columns</span></code></a>([column_names,&nbsp;...])</td>
+<td>Pack columns of the current SFrame into one single column.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.print_rows.html#turicreate.SFrame.print_rows" title="turicreate.SFrame.print_rows"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.print_rows</span></code></a>([num_rows,&nbsp;num_columns,&nbsp;...])</td>
+<td>Print the first M rows and N columns of the SFrame in human readable format.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.random_split.html#turicreate.SFrame.random_split" title="turicreate.SFrame.random_split"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.random_split</span></code></a>(fraction[,&nbsp;seed])</td>
+<td>Randomly split the rows of an SFrame into two SFrames.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.read_csv.html#turicreate.SFrame.read_csv" title="turicreate.SFrame.read_csv"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.read_csv</span></code></a>(url[,&nbsp;delimiter,&nbsp;header,&nbsp;...])</td>
+<td>Constructs an SFrame from a CSV file or a path to multiple CSVs.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.read_csv_with_errors.html#turicreate.SFrame.read_csv_with_errors" title="turicreate.SFrame.read_csv_with_errors"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.read_csv_with_errors</span></code></a>(url[,&nbsp;...])</td>
+<td>Constructs an SFrame from a CSV file or a path to multiple CSVs, and returns a pair containing the SFrame and a dict of filenames to SArrays indicating for each file, what are the incorrectly parsed lines encountered.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.read_json.html#turicreate.SFrame.read_json" title="turicreate.SFrame.read_json"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.read_json</span></code></a>(url[,&nbsp;orient])</td>
+<td>Reads a JSON file representing a table into an SFrame.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.remove_column.html#turicreate.SFrame.remove_column" title="turicreate.SFrame.remove_column"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.remove_column</span></code></a>(column_name[,&nbsp;inplace])</td>
+<td>Returns an SFrame with a column removed.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.remove_columns.html#turicreate.SFrame.remove_columns" title="turicreate.SFrame.remove_columns"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.remove_columns</span></code></a>(column_names[,&nbsp;inplace])</td>
+<td>Returns an SFrame with one or more columns removed.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.rename.html#turicreate.SFrame.rename" title="turicreate.SFrame.rename"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.rename</span></code></a>(names[,&nbsp;inplace])</td>
+<td>Returns an SFrame with columns renamed.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.sample.html#turicreate.SFrame.sample" title="turicreate.SFrame.sample"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.sample</span></code></a>(fraction[,&nbsp;seed])</td>
+<td>Sample a fraction of the current SFrame&#8217;s rows.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.save.html#turicreate.SFrame.save" title="turicreate.SFrame.save"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.save</span></code></a>(filename[,&nbsp;format])</td>
+<td>Save the SFrame to a file system for later use.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.select_column.html#turicreate.SFrame.select_column" title="turicreate.SFrame.select_column"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.select_column</span></code></a>(column_name)</td>
+<td>Get a reference to the <a class="reference internal" href="turicreate.SArray.html#turicreate.SArray" title="turicreate.SArray"><code class="xref py py-class docutils literal"><span class="pre">SArray</span></code></a> that corresponds with the given column_name.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.select_columns.html#turicreate.SFrame.select_columns" title="turicreate.SFrame.select_columns"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.select_columns</span></code></a>(column_names)</td>
+<td>Selects all columns where the name of the column or the type of column is included in the column_names.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.show.html#turicreate.SFrame.show" title="turicreate.SFrame.show"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.show</span></code></a>()</td>
+<td>Visualize a summary of each column in an SFrame.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.sort.html#turicreate.SFrame.sort" title="turicreate.SFrame.sort"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.sort</span></code></a>(key_column_names[,&nbsp;ascending])</td>
+<td>Sort current SFrame by the given columns, using the given sort order.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.split_datetime.html#turicreate.SFrame.split_datetime" title="turicreate.SFrame.split_datetime"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.split_datetime</span></code></a>(column_name[,&nbsp;...])</td>
+<td>Splits a datetime column of SFrame to multiple columns, with each value in a separate column.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.stack.html#turicreate.SFrame.stack" title="turicreate.SFrame.stack"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.stack</span></code></a>(column_name[,&nbsp;new_column_name,&nbsp;...])</td>
+<td>Convert a &#8220;wide&#8221; column of an SFrame to one or two &#8220;tall&#8221; columns by stacking all values.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.swap_columns.html#turicreate.SFrame.swap_columns" title="turicreate.SFrame.swap_columns"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.swap_columns</span></code></a>(column_name_1,&nbsp;column_name_2)</td>
+<td>Returns an SFrame with two column positions swapped.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.tail.html#turicreate.SFrame.tail" title="turicreate.SFrame.tail"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.tail</span></code></a>([n])</td>
+<td>The last n rows of the SFrame.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.to_dataframe.html#turicreate.SFrame.to_dataframe" title="turicreate.SFrame.to_dataframe"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.to_dataframe</span></code></a>()</td>
+<td>Convert this SFrame to pandas.DataFrame.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.to_numpy.html#turicreate.SFrame.to_numpy" title="turicreate.SFrame.to_numpy"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.to_numpy</span></code></a>()</td>
+<td>Converts this SFrame to a numpy array</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.to_sql.html#turicreate.SFrame.to_sql" title="turicreate.SFrame.to_sql"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.to_sql</span></code></a>(conn,&nbsp;table_name[,&nbsp;...])</td>
+<td>Convert an SFrame to a single table in a SQL database.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.topk.html#turicreate.SFrame.topk" title="turicreate.SFrame.topk"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.topk</span></code></a>(column_name[,&nbsp;k,&nbsp;reverse])</td>
+<td>Get top k rows according to the given column.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.unique.html#turicreate.SFrame.unique" title="turicreate.SFrame.unique"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.unique</span></code></a>()</td>
+<td>Remove duplicate rows of the SFrame.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.unpack.html#turicreate.SFrame.unpack" title="turicreate.SFrame.unpack"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.unpack</span></code></a>(column_name[,&nbsp;...])</td>
+<td>Expand one column of this SFrame to multiple columns with each value in a separate column.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.unstack.html#turicreate.SFrame.unstack" title="turicreate.SFrame.unstack"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.unstack</span></code></a>(column_names[,&nbsp;new_column_name])</td>
+<td>Concatenate values from one or two columns into one column, grouping by all other columns.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.dtype.html#turicreate.SFrame.dtype" title="turicreate.SFrame.dtype"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.dtype</span></code></a></td>
+<td>The type of each column.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.shape.html#turicreate.SFrame.shape" title="turicreate.SFrame.shape"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.shape</span></code></a></td>
+<td>The shape of the SFrame, in a tuple.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.SGraph.html" class="btn btn-neutral float-right" title="turicreate.SGraph">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.SArray.html" class="btn btn-neutral" title="turicreate.SArray"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

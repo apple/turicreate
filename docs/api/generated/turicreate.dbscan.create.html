@@ -1,0 +1,342 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.dbscan.create &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="clustering" href="../turicreate.toolkits.clustering.html"/>
+        <link rel="next" title="turicreate.dbscan.DBSCANModel" href="turicreate.dbscan.DBSCANModel.html"/>
+        <link rel="prev" title="turicreate.kmeans.KmeansModel" href="turicreate.kmeans.KmeansModel.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.clustering.html"><code class="docutils literal"><span class="pre">clustering</span></code></a> &raquo;</li>
+      
+    <li>turicreate.dbscan.create</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-dbscan-create">
+<h1>turicreate.dbscan.create<a class="headerlink" href="#turicreate-dbscan-create" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.dbscan.create">
+<code class="descclassname">turicreate.dbscan.</code><code class="descname">create</code><span class="sig-paren">(</span><em>dataset</em>, <em>features=None</em>, <em>distance=None</em>, <em>radius=1.0</em>, <em>min_core_neighbors=10</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.dbscan.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a DBSCAN clustering model. The DBSCAN method partitions the input
+dataset into three types of points, based on the estimated probability
+density at each point.</p>
+<ul class="simple">
+<li><strong>Core</strong> points have a large number of points within a given neighborhood.
+Specifically, <cite>min_core_neighbors</cite> must be within distance <cite>radius</cite> of a
+point for it to be considered a core point.</li>
+<li><strong>Boundary</strong> points are within distance <cite>radius</cite> of a core point, but
+don&#8217;t have sufficient neighbors of their own to be considered core.</li>
+<li><strong>Noise</strong> points comprise the remainder of the data. These points have too
+few neighbors to be considered core points, and are further than distance
+<cite>radius</cite> from all core points.</li>
+</ul>
+<p>Clusters are formed by connecting core points that are neighbors of each
+other, then assigning boundary points to their nearest core neighbor&#8217;s
+cluster.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
+<blockquote>
+<div><p>Training data, with each row corresponding to an observation. Must
+include all features specified in the <cite>features</cite> parameter, but may have
+additional columns as well.</p>
+</div></blockquote>
+<p><strong>features</strong> : list[str], optional</p>
+<blockquote>
+<div><p>Name of the columns with features to use in comparing records. &#8216;None&#8217;
+(the default) indicates that all columns of the input <cite>dataset</cite> should
+be used to train the model. All features must be numeric, i.e. integer
+or float types.</p>
+</div></blockquote>
+<p><strong>distance</strong> : str or list[list], optional</p>
+<blockquote>
+<div><p>Function to measure the distance between any two input data rows. This
+may be one of two types:</p>
+<ul class="simple">
+<li><em>String</em>: the name of a standard distance function. One of
+&#8216;euclidean&#8217;, &#8216;squared_euclidean&#8217;, &#8216;manhattan&#8217;, &#8216;levenshtein&#8217;,
+&#8216;jaccard&#8217;, &#8216;weighted_jaccard&#8217;, &#8216;cosine&#8217;, &#8216;dot_product&#8217; (deprecated),
+or &#8216;transformed_dot_product&#8217;.</li>
+<li><em>Composite distance</em>: the weighted sum of several standard distance
+functions applied to various features. This is specified as a list of
+distance components, each of which is itself a list containing three
+items:<ol class="arabic">
+<li>list or tuple of feature names (str)</li>
+<li>standard distance name (str)</li>
+<li>scaling factor (int or float)</li>
+</ol>
+</li>
+</ul>
+<p>For more information about Turi Create distance functions, please
+see the <a class="reference internal" href="../turicreate.toolkits.distances.html#module-turicreate.toolkits.distances" title="turicreate.toolkits.distances"><code class="xref py py-mod docutils literal"><span class="pre">distances</span></code></a> module.</p>
+<p>For sparse vectors, missing keys are assumed to have value 0.0.</p>
+<p>If &#8216;distance&#8217; is left unspecified, a composite distance is constructed
+automatically based on feature types.</p>
+</div></blockquote>
+<p><strong>radius</strong> : int or float, optional</p>
+<blockquote>
+<div><p>Size of each point&#8217;s neighborhood, with respect to the specified
+distance function.</p>
+</div></blockquote>
+<p><strong>min_core_neighbors</strong> : int, optional</p>
+<blockquote>
+<div><p>Number of neighbors that must be within distance <cite>radius</cite> of a point in
+order for that point to be considered a &#8220;core point&#8221; of a cluster.</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, print progress updates and model details during model creation.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : DBSCANModel</p>
+<blockquote class="last">
+<div><p>A model containing a cluster label for each row in the input <cite>dataset</cite>.
+Also contains the indices of the core points, cluster boundary points,
+and noise points.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.dbscan.DBSCANModel.html#turicreate.dbscan.DBSCANModel" title="turicreate.dbscan.DBSCANModel"><code class="xref py py-obj docutils literal"><span class="pre">DBSCANModel</span></code></a>, <a class="reference internal" href="../turicreate.toolkits.distances.html#module-turicreate.toolkits.distances" title="turicreate.toolkits.distances"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.toolkits.distances</span></code></a></p>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>Our implementation of DBSCAN first computes the similarity graph on the
+input dataset, which can be a computationally intensive process. In the
+current implementation, some distances are substantially faster than
+others; in particular &#8220;euclidean&#8221;, &#8220;squared_euclidean&#8221;, &#8220;cosine&#8221;, and
+&#8220;transformed_dot_product&#8221; are quite fast, while composite distances can be
+slow.</li>
+<li>Any distance function in the GL Create library may be used with DBSCAN but
+the results may be poor for distances that violate the standard metric
+properties, i.e. symmetry, non-negativity, triangle inequality, and
+identity of indiscernibles. In particular, the DBSCAN algorithm is based
+on the concept of connecting high-density points that are <em>close</em> to each
+other into a single cluster, but the notion of <em>close</em> may be very
+counterintuitive if the chosen distance function is not a valid metric.
+The distances &#8220;euclidean&#8221;, &#8220;manhattan&#8221;, &#8220;jaccard&#8221;, and &#8220;levenshtein&#8221; will
+likely yield the best results.</li>
+</ul>
+<p class="rubric">References</p>
+<ul class="simple">
+<li>Ester, M., et al. (1996) <a class="reference external" href="http://www.aaai.org/Papers/KDD/1996/KDD96-037">A Density-Based Algorithm for Discovering
+Clusters in Large Spatial Databases with Noise</a>. In Proceedings of the
+Second International Conference on Knowledge Discovery and Data Mining.
+pp. 226-231.</li>
+<li><a class="reference external" href="https://en.wikipedia.org/wiki/DBSCAN">Wikipedia - DBSCAN</a></li>
+<li><a class="reference external" href="http://www.naftaliharris.com/blog/visualizing-dbscan-clustering/">Visualizing DBSCAN Clustering</a></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span>
+<span class="gp">... </span>    <span class="s1">&#39;x1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.6777</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.391</span><span class="p">,</span> <span class="mf">7.0385</span><span class="p">,</span> <span class="mf">2.2657</span><span class="p">,</span> <span class="mf">7.7864</span><span class="p">,</span> <span class="o">-</span><span class="mf">10.16</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.162</span><span class="p">,</span>
+<span class="gp">... </span>           <span class="mf">8.8817</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.525</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.153</span><span class="p">,</span> <span class="mf">2.0860</span><span class="p">,</span> <span class="mf">7.6619</span><span class="p">,</span> <span class="mf">6.5511</span><span class="p">,</span> <span class="mf">2.7020</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="s1">&#39;x2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">5.6110</span><span class="p">,</span> <span class="mf">8.5139</span><span class="p">,</span> <span class="mf">5.3913</span><span class="p">,</span> <span class="mf">5.4743</span><span class="p">,</span> <span class="mf">8.3606</span><span class="p">,</span> <span class="mf">7.8843</span><span class="p">,</span> <span class="mf">2.7305</span><span class="p">,</span>
+<span class="gp">... </span>           <span class="mf">5.1679</span><span class="p">,</span> <span class="mf">6.7231</span><span class="p">,</span> <span class="mf">3.7051</span><span class="p">,</span> <span class="mf">1.7682</span><span class="p">,</span> <span class="mf">7.4608</span><span class="p">,</span> <span class="mf">3.1270</span><span class="p">,</span> <span class="mf">6.5624</span><span class="p">]})</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">dbscan</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">4.25</span><span class="p">,</span> <span class="n">min_core_neighbors</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">cluster_id</span><span class="o">.</span><span class="n">print_rows</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+<span class="go">+--------+------------+----------+</span>
+<span class="go">| row_id | cluster_id |   type   |</span>
+<span class="go">+--------+------------+----------+</span>
+<span class="go">|   8    |     0      |   core   |</span>
+<span class="go">|   7    |     2      |   core   |</span>
+<span class="go">|   0    |     1      |   core   |</span>
+<span class="go">|   2    |     2      |   core   |</span>
+<span class="go">|   3    |     1      |   core   |</span>
+<span class="go">|   11   |     2      |   core   |</span>
+<span class="go">|   4    |     2      |   core   |</span>
+<span class="go">|   1    |     0      | boundary |</span>
+<span class="go">|   6    |     0      | boundary |</span>
+<span class="go">|   5    |     0      | boundary |</span>
+<span class="go">|   9    |     0      | boundary |</span>
+<span class="go">|   12   |     2      | boundary |</span>
+<span class="go">|   10   |     1      | boundary |</span>
+<span class="go">|   13   |     1      | boundary |</span>
+<span class="go">+--------+------------+----------+</span>
+<span class="go">[14 rows x 3 columns]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.dbscan.DBSCANModel.html" class="btn btn-neutral float-right" title="turicreate.dbscan.DBSCANModel">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.kmeans.KmeansModel.html" class="btn btn-neutral" title="turicreate.kmeans.KmeansModel"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

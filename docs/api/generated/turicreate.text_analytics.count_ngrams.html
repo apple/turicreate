@@ -1,0 +1,313 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.text_analytics.count_ngrams &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="text_analytics" href="../turicreate.toolkits.text_analytics.html"/>
+        <link rel="next" title="turicreate.text_analytics.parse_sparse" href="turicreate.text_analytics.parse_sparse.html"/>
+        <link rel="prev" title="turicreate.text_analytics.count_words" href="turicreate.text_analytics.count_words.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.text_analytics.html"><code class="docutils literal"><span class="pre">text_analytics</span></code></a> &raquo;</li>
+      
+    <li>turicreate.text_analytics.count_ngrams</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-text-analytics-count-ngrams">
+<h1>turicreate.text_analytics.count_ngrams<a class="headerlink" href="#turicreate-text-analytics-count-ngrams" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.text_analytics.count_ngrams">
+<code class="descclassname">turicreate.text_analytics.</code><code class="descname">count_ngrams</code><span class="sig-paren">(</span><em>sa, to_lower=True, delimiters=[&quot;\r&quot;, &quot;\v&quot;, &quot;\n&quot;, &quot;\f&quot;, &quot;\t&quot;, &quot; &quot;, &quot;!&quot;, &quot;#&quot;, &quot;$&quot;, &quot;%&quot;, &quot;&amp;&quot;, &quot;'&quot;, &quot;(&quot;, &quot;)&quot;, &quot;*&quot;, &quot;+&quot;, &quot;,&quot;, &quot;-&quot;, &quot;.&quot;, &quot;/&quot;, &quot;:&quot;, &quot;;&quot;, &quot;&lt;&quot;, &quot;=&quot;, &quot;&gt;&quot;, &quot;?&quot;, &quot;&#64;&quot;, &quot;[&quot;, &quot;\&quot;, &quot;]&quot;, &quot;^&quot;, &quot;_&quot;, &quot;`&quot;, &quot;{&quot;, &quot;|&quot;, &quot;}&quot;, &quot;~&quot;], ignore_punct=True, ignore_space=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.text_analytics.count_ngrams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an SArray of <code class="docutils literal"><span class="pre">dict</span></code> type where each element contains the count
+for each of the n-grams that appear in the corresponding input element.
+The n-grams can be specified to be either character n-grams or word
+n-grams.  The input SArray could contain strings, dicts with string keys
+and numeric values, or lists of strings.</p>
+<p>This function is implemented using</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sa</strong> : SArray[str | dict | list]</p>
+<blockquote>
+<div><p>Input text data.</p>
+</div></blockquote>
+<p><strong>n</strong> : int, optional</p>
+<blockquote>
+<div><p>The number of words in each n-gram. An <code class="docutils literal"><span class="pre">n</span></code> value of 1 returns word
+counts.</p>
+</div></blockquote>
+<p><strong>method</strong> : {&#8216;word&#8217;, &#8216;character&#8217;}, optional</p>
+<blockquote>
+<div><p>If &#8220;word&#8221;, the function performs a count of word n-grams. If
+&#8220;character&#8221;, does a character n-gram count.</p>
+</div></blockquote>
+<p><strong>to_lower</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, all words are converted to lower case before counting.</p>
+</div></blockquote>
+<p><strong>delimiters</strong> : list[str], None, optional</p>
+<blockquote>
+<div><p>If method is &#8220;word&#8221;, input strings are tokenized using delimiter
+characters in this list. Each entry in this list must contain a single
+character. If set to <cite>None</cite>, then a Penn treebank-style tokenization is
+used, which contains smart handling of punctuations. If method is
+&#8220;character,&#8221; this option is ignored.</p>
+</div></blockquote>
+<p><strong>ignore_punct</strong> : bool, optional</p>
+<blockquote>
+<div><p>If method is &#8220;character&#8221;, indicates if <em>punctuations</em> between words are
+counted as part of the n-gram. For instance, with the input SArray
+element of &#8220;fun.games&#8221;, if this parameter is set to False one
+tri-gram would be &#8216;n.g&#8217;. If <code class="docutils literal"><span class="pre">ignore_punct</span></code> is set to True, there
+would be no such tri-gram (there would still be &#8216;nga&#8217;). This
+parameter has no effect if the method is set to &#8220;word&#8221;.</p>
+</div></blockquote>
+<p><strong>ignore_space</strong> : bool, optional</p>
+<blockquote>
+<div><p>If method is &#8220;character&#8221;, indicates if <em>spaces</em> between words are
+counted as part of the n-gram. For instance, with the input SArray
+element of &#8220;fun games&#8221;, if this parameter is set to False one
+tri-gram would be &#8216;n g&#8217;. If <code class="docutils literal"><span class="pre">ignore_space</span></code> is set to True, there
+would be no such tri-gram (there would still be &#8216;nga&#8217;). This
+parameter has no effect if the method is set to &#8220;word&#8221;.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SArray[dict]</p>
+<blockquote class="last">
+<div><p>An SArray of dictionary type, where each key is the n-gram string
+and each value is its count.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.text_analytics.count_words.html#turicreate.text_analytics.count_words" title="turicreate.text_analytics.count_words"><code class="xref py py-obj docutils literal"><span class="pre">count_words</span></code></a>, <a class="reference internal" href="turicreate.text_analytics.tokenize.html#turicreate.text_analytics.tokenize" title="turicreate.text_analytics.tokenize"><code class="xref py py-obj docutils literal"><span class="pre">tokenize</span></code></a></p>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>Ignoring case (with <code class="docutils literal"><span class="pre">to_lower</span></code>) involves a full string copy of the
+SArray data. To increase speed for large documents, set <code class="docutils literal"><span class="pre">to_lower</span></code> to
+False.</li>
+<li>Punctuation and spaces are both delimiters by default when counting
+word n-grams. When counting character n-grams, one may choose to ignore
+puncutations, spaces, neither, or both.</li>
+</ul>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><a class="reference external" href="http://en.wikipedia.org/wiki/N-gram">N-gram wikipedia article</a></li>
+<li><a class="reference external" href="https://www.cis.upenn.edu/~treebank/tokenization.html">Penn treebank tokenization</a></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">turicreate</span>
+
+<span class="go"># Counting word n-grams:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="s1">&#39;I like big dogs. I LIKE BIG DOGS.&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">count_ngrams</span><span class="p">(</span><span class="n">sa</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">dtype: dict</span>
+<span class="go">Rows: 1</span>
+<span class="go">[{&#39;big dogs i&#39;: 1, &#39;like big dogs&#39;: 2, &#39;dogs i like&#39;: 1, &#39;i like big&#39;: 2}]</span>
+
+<span class="go"># Counting character n-grams:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="s1">&#39;Fun. Is. Fun&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">count_ngrams</span><span class="p">(</span><span class="n">sa</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;character&quot;</span><span class="p">)</span>
+<span class="go">dtype: dict</span>
+<span class="go">Rows: 1</span>
+<span class="go">{&#39;fun&#39;: 2, &#39;nis&#39;: 1, &#39;sfu&#39;: 1, &#39;isf&#39;: 1, &#39;uni&#39;: 1}]</span>
+
+<span class="go"># Run count_ngrams with dictionary input</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([{</span><span class="s1">&#39;alice bob&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Bob alice&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">},</span>
+<span class="gp">... </span>                      <span class="p">{</span><span class="s1">&#39;a dog&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;a dog cat&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">count_ngrams</span><span class="p">(</span><span class="n">sa</span><span class="p">)</span>
+<span class="go">dtype: dict</span>
+<span class="go">Rows: 2</span>
+<span class="go">[{&#39;bob alice&#39;: 0.5, &#39;alice bob&#39;: 1}, {&#39;dog cat&#39;: 5, &#39;a dog&#39;: 5}]</span>
+
+<span class="go"># Run count_ngrams with list input</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([[</span><span class="s1">&#39;one&#39;</span><span class="p">,</span> <span class="s1">&#39;bar bah&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;a dog&#39;</span><span class="p">,</span> <span class="s1">&#39;a dog cat&#39;</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">count_ngrams</span><span class="p">(</span><span class="n">sa</span><span class="p">)</span>
+<span class="go">dtype: dict</span>
+<span class="go">Rows: 2</span>
+<span class="go">[{&#39;bar bah&#39;: 1}, {&#39;dog cat&#39;: 1, &#39;a dog&#39;: 2}]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.text_analytics.parse_sparse.html" class="btn btn-neutral float-right" title="turicreate.text_analytics.parse_sparse">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.text_analytics.count_words.html" class="btn btn-neutral" title="turicreate.text_analytics.count_words"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,309 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.evaluation.precision &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="evaluation" href="../turicreate.toolkits.evaluation.html"/>
+        <link rel="next" title="turicreate.evaluation.recall" href="turicreate.evaluation.recall.html"/>
+        <link rel="prev" title="turicreate.evaluation.log_loss" href="turicreate.evaluation.log_loss.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.evaluation.html"><code class="docutils literal"><span class="pre">evaluation</span></code></a> &raquo;</li>
+      
+    <li>turicreate.evaluation.precision</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-evaluation-precision">
+<h1>turicreate.evaluation.precision<a class="headerlink" href="#turicreate-evaluation-precision" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.evaluation.precision">
+<code class="descclassname">turicreate.evaluation.</code><code class="descname">precision</code><span class="sig-paren">(</span><em>targets</em>, <em>predictions</em>, <em>average='macro'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.evaluation.precision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the precision score for classification tasks. The precision score
+quantifies the ability of a classifier to not label a <cite>negative</cite> example as
+<cite>positive</cite>. The precision score can be interpreted as the probability that
+a <cite>positive</cite> prediction made by the classifier is <cite>positive</cite>. The score is
+in the range [0,1] with 0 being the worst, and 1 being perfect.</p>
+<dl class="docutils">
+<dt>The precision score is defined as the ratio:</dt>
+<dd><div class="first last math">
+\[\frac{tp}{tp + fp}\]</div>
+</dd>
+</dl>
+<p>where <cite>tp</cite> is the number of true positives and <cite>fp</cite> the number of false
+positives.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>targets</strong> : SArray</p>
+<blockquote>
+<div><p>Ground truth class labels.</p>
+</div></blockquote>
+<p><strong>predictions</strong> : SArray</p>
+<blockquote>
+<div><p>The prediction that corresponds to each target value.  This SArray must
+have the same length as <code class="docutils literal"><span class="pre">targets</span></code> and must be of the same type
+as the <code class="docutils literal"><span class="pre">targets</span></code> SArray.</p>
+</div></blockquote>
+<p><strong>average</strong> : string, [None, &#8216;macro&#8217; (default), &#8216;micro&#8217;]</p>
+<blockquote>
+<div><p>Metric averaging strategies for multiclass classification. Averaging
+strategies can be one of the following:</p>
+<blockquote>
+<div><ul class="simple">
+<li>None: No averaging is performed and a single metric is returned
+for each class.</li>
+<li>&#8216;micro&#8217;: Calculate metrics globally by counting the total true
+positives, and false positives.</li>
+<li>&#8216;macro&#8217;: Calculate metrics for each label, and find their
+unweighted mean. This does not take label imbalance into account.</li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : float (for binary classification) or dict[float]</p>
+<blockquote class="last">
+<div><p>Score for the positive class (for binary classification) or an average
+score for each class for multi-class classification.  If
+<cite>average=None</cite>, then a dictionary is returned where the key is the
+class label and the value is the score for the corresponding class
+label.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.evaluation.confusion_matrix.html#turicreate.evaluation.confusion_matrix" title="turicreate.evaluation.confusion_matrix"><code class="xref py py-obj docutils literal"><span class="pre">confusion_matrix</span></code></a>, <a class="reference internal" href="turicreate.evaluation.accuracy.html#turicreate.evaluation.accuracy" title="turicreate.evaluation.accuracy"><code class="xref py py-obj docutils literal"><span class="pre">accuracy</span></code></a>, <a class="reference internal" href="turicreate.evaluation.recall.html#turicreate.evaluation.recall" title="turicreate.evaluation.recall"><code class="xref py py-obj docutils literal"><span class="pre">recall</span></code></a>, <a class="reference internal" href="turicreate.evaluation.f1_score.html#turicreate.evaluation.f1_score" title="turicreate.evaluation.f1_score"><code class="xref py py-obj docutils literal"><span class="pre">f1_score</span></code></a></p>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>For binary classification, when the target label is of type &#8220;string&#8221;,
+then the labels are sorted alphanumerically and the largest label is
+chosen as the &#8220;positive&#8221; label.  For example, if the classifier labels
+are {&#8220;cat&#8221;, &#8220;dog&#8221;}, then &#8220;dog&#8221; is chosen as the positive label for the
+binary classification case.</li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Targets and Predictions</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">targets</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">predictions</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+<span class="c1"># Micro average of the precision scores for each class.</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">precision</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">predictions</span><span class="p">,</span>
+<span class="o">...</span>                               <span class="n">average</span> <span class="o">=</span> <span class="s1">&#39;micro&#39;</span><span class="p">)</span>
+<span class="mf">0.25</span>
+
+<span class="c1"># Macro average of the precision scores for each class.</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">precision</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">predictions</span><span class="p">,</span>
+<span class="o">...</span>                              <span class="n">average</span> <span class="o">=</span> <span class="s1">&#39;macro&#39;</span><span class="p">)</span>
+<span class="mf">0.3125</span>
+
+<span class="c1"># Precision score for each class.</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">precision</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">predictions</span><span class="p">,</span>
+<span class="o">...</span>                               <span class="n">average</span> <span class="o">=</span> <span class="bp">None</span><span class="p">)</span>
+<span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>This metric also works for string classes.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Targets and Predictions</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">targets</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">(</span>
+<span class="o">...</span>      <span class="p">[</span><span class="s2">&quot;cat&quot;</span><span class="p">,</span> <span class="s2">&quot;dog&quot;</span><span class="p">,</span> <span class="s2">&quot;foosa&quot;</span><span class="p">,</span> <span class="s2">&quot;snake&quot;</span><span class="p">,</span> <span class="s2">&quot;cat&quot;</span><span class="p">,</span> <span class="s2">&quot;dog&quot;</span><span class="p">,</span> <span class="s2">&quot;foosa&quot;</span><span class="p">,</span> <span class="s2">&quot;snake&quot;</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">predictions</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">(</span>
+<span class="o">...</span>      <span class="p">[</span><span class="s2">&quot;dog&quot;</span><span class="p">,</span> <span class="s2">&quot;cat&quot;</span><span class="p">,</span> <span class="s2">&quot;foosa&quot;</span><span class="p">,</span> <span class="s2">&quot;dog&quot;</span><span class="p">,</span> <span class="s2">&quot;snake&quot;</span><span class="p">,</span> <span class="s2">&quot;dog&quot;</span><span class="p">,</span> <span class="s2">&quot;cat&quot;</span><span class="p">,</span> <span class="s2">&quot;dog&quot;</span><span class="p">])</span>
+
+<span class="c1"># Micro average of the precision scores for each class.</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">precision</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">predictions</span><span class="p">,</span>
+<span class="o">...</span>                               <span class="n">average</span> <span class="o">=</span> <span class="s1">&#39;micro&#39;</span><span class="p">)</span>
+<span class="mf">0.25</span>
+
+<span class="c1"># Macro average of the precision scores for each class.</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">precision</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">predictions</span><span class="p">,</span>
+<span class="o">...</span>                              <span class="n">average</span> <span class="o">=</span> <span class="s1">&#39;macro&#39;</span><span class="p">)</span>
+<span class="mf">0.3125</span>
+
+<span class="c1"># Precision score for each class.</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">precision</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">predictions</span><span class="p">,</span>
+<span class="o">...</span>                               <span class="n">average</span> <span class="o">=</span> <span class="bp">None</span><span class="p">)</span>
+<span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.evaluation.recall.html" class="btn btn-neutral float-right" title="turicreate.evaluation.recall">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.evaluation.log_loss.html" class="btn btn-neutral" title="turicreate.evaluation.log_loss"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

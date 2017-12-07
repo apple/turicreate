@@ -1,0 +1,252 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.connected_components.create &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="graph_analytics" href="../turicreate.toolkits.graph_analytics.html"/>
+        <link rel="next" title="turicreate.connected_components.ConnectedComponentsModel" href="turicreate.connected_components.ConnectedComponentsModel.html"/>
+        <link rel="prev" title="turicreate.triangle_counting.TriangleCountingModel" href="turicreate.triangle_counting.TriangleCountingModel.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.graph_analytics.html"><code class="docutils literal"><span class="pre">graph_analytics</span></code></a> &raquo;</li>
+      
+    <li>turicreate.connected_components.create</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-connected-components-create">
+<h1>turicreate.connected_components.create<a class="headerlink" href="#turicreate-connected-components-create" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.connected_components.create">
+<code class="descclassname">turicreate.connected_components.</code><code class="descname">create</code><span class="sig-paren">(</span><em>graph</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.connected_components.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the number of weakly connected components in the graph. Return a
+model object with total number of weakly connected components as well as the
+component ID for each vertex in the graph.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>graph</strong> : SGraph</p>
+<blockquote>
+<div><p>The graph on which to compute the triangle counts.</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, print progress updates.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>out</strong> : ConnectedComponentsModel</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.connected_components.ConnectedComponentsModel.html#turicreate.connected_components.ConnectedComponentsModel" title="turicreate.connected_components.ConnectedComponentsModel"><code class="xref py py-obj docutils literal"><span class="pre">ConnectedComponentsModel</span></code></a></p>
+</div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><a class="reference external" href="http://mathworld.wolfram.com/WeaklyConnectedComponent.html">Mathworld Wolfram - Weakly Connected Component</a></li>
+</ul>
+<p class="rubric">Examples</p>
+<p>If given an <a class="reference internal" href="turicreate.SGraph.html#turicreate.SGraph" title="turicreate.SGraph"><code class="xref py py-class docutils literal"><span class="pre">SGraph</span></code></a> <code class="docutils literal"><span class="pre">g</span></code>, we can create
+a <a class="reference internal" href="turicreate.connected_components.ConnectedComponentsModel.html#turicreate.connected_components.ConnectedComponentsModel" title="turicreate.connected_components.ConnectedComponentsModel"><code class="xref py py-class docutils literal"><span class="pre">ConnectedComponentsModel</span></code></a> as
+follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">load_graph</span><span class="p">(</span><span class="s1">&#39;http://snap.stanford.edu/data/email-Enron.txt.gz&#39;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s1">&#39;snap&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cc</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">connected_components</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cc</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>We can obtain the <code class="docutils literal"><span class="pre">component</span> <span class="pre">id</span></code> corresponding to each vertex in the
+graph <code class="docutils literal"><span class="pre">g</span></code> as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cc_ids</span> <span class="o">=</span> <span class="n">cc</span><span class="p">[</span><span class="s1">&#39;component_id&#39;</span><span class="p">]</span>  <span class="c1"># SFrame</span>
+</pre></div>
+</div>
+<p>We can obtain a graph with additional information about the <code class="docutils literal"><span class="pre">component</span>
+<span class="pre">id</span></code> corresponding to each vertex as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cc_graph</span> <span class="o">=</span> <span class="n">cc</span><span class="p">[</span><span class="s1">&#39;graph&#39;</span><span class="p">]</span>      <span class="c1"># SGraph</span>
+</pre></div>
+</div>
+<p>We can add the new component_id field to the original graph g using:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="s1">&#39;component_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cc</span><span class="p">[</span><span class="s1">&#39;graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="s1">&#39;component_id&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Note that the task above does not require a join because the vertex
+ordering is preserved through <code class="docutils literal"><span class="pre">create()</span></code>.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.connected_components.ConnectedComponentsModel.html" class="btn btn-neutral float-right" title="turicreate.connected_components.ConnectedComponentsModel">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.triangle_counting.TriangleCountingModel.html" class="btn btn-neutral" title="turicreate.triangle_counting.TriangleCountingModel"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

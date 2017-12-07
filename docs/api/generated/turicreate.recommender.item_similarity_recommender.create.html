@@ -1,0 +1,395 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.recommender.item_similarity_recommender.create &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="recommender" href="../turicreate.toolkits.recommender.html"/>
+        <link rel="next" title="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender" href="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.html"/>
+        <link rel="prev" title="turicreate.recommender.create" href="turicreate.recommender.create.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.recommender.html"><code class="docutils literal"><span class="pre">recommender</span></code></a> &raquo;</li>
+      
+    <li>turicreate.recommender.item_similarity_recommender.create</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-recommender-item-similarity-recommender-create">
+<h1>turicreate.recommender.item_similarity_recommender.create<a class="headerlink" href="#turicreate-recommender-item-similarity-recommender-create" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.recommender.item_similarity_recommender.create">
+<code class="descclassname">turicreate.recommender.item_similarity_recommender.</code><code class="descname">create</code><span class="sig-paren">(</span><em>observation_data</em>, <em>user_id='user_id'</em>, <em>item_id='item_id'</em>, <em>target=None</em>, <em>user_data=None</em>, <em>item_data=None</em>, <em>nearest_items=None</em>, <em>similarity_type='jaccard'</em>, <em>threshold=0.001</em>, <em>only_top_k=64</em>, <em>verbose=True</em>, <em>target_memory_usage=8589934592</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.recommender.item_similarity_recommender.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a recommender that uses item-item similarities based on
+users in common.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>observation_data</strong> : SFrame</p>
+<blockquote>
+<div><p>The dataset to use for training the model. It must contain a column of
+user ids and a column of item ids. Each row represents an observed
+interaction between the user and the item.  The (user, item) pairs
+are stored with the model so that they can later be excluded from
+recommendations if desired. It can optionally contain a target ratings
+column. All other columns are interpreted by the underlying model as
+side features for the observations.</p>
+<p>The user id and item id columns must be of type &#8216;int&#8217; or &#8216;str&#8217;. The
+target column must be of type &#8216;int&#8217; or &#8216;float&#8217;.</p>
+</div></blockquote>
+<p><strong>user_id</strong> : string, optional</p>
+<blockquote>
+<div><p>The name of the column in <cite>observation_data</cite> that corresponds to the
+user id.</p>
+</div></blockquote>
+<p><strong>item_id</strong> : string, optional</p>
+<blockquote>
+<div><p>The name of the column in <cite>observation_data</cite> that corresponds to the
+item id.</p>
+</div></blockquote>
+<p><strong>target</strong> : string, optional</p>
+<blockquote>
+<div><p>The <cite>observation_data</cite> can optionally contain a column of scores
+representing ratings given by the users. If present, the name of this
+column may be specified variables <cite>target</cite>.</p>
+</div></blockquote>
+<p><strong>user_data</strong> : SFrame, optional</p>
+<blockquote>
+<div><p>Side information for the users.  This SFrame must have a column with
+the same name as what is specified by the <cite>user_id</cite> input parameter.
+<cite>user_data</cite> can provide any amount of additional user-specific
+information. (NB: This argument is currently ignored by this model.)</p>
+</div></blockquote>
+<p><strong>item_data</strong> : SFrame, optional</p>
+<blockquote>
+<div><p>Side information for the items.  This SFrame must have a column with
+the same name as what is specified by the <cite>item_id</cite> input parameter.
+<cite>item_data</cite> can provide any amount of additional item-specific
+information. (NB: This argument is currently ignored by this model.)</p>
+</div></blockquote>
+<p><strong>similarity_type</strong> : {&#8216;jaccard&#8217;, &#8216;cosine&#8217;, &#8216;pearson&#8217;}, optional</p>
+<blockquote>
+<div><p>Similarity metric to use. See ItemSimilarityRecommender for details.
+Default: &#8216;jaccard&#8217;.</p>
+</div></blockquote>
+<p><strong>threshold</strong> : float, optional</p>
+<blockquote>
+<div><p>Predictions ignore items below this similarity value.
+Default: 0.001.</p>
+</div></blockquote>
+<p><strong>only_top_k</strong> : int, optional</p>
+<blockquote>
+<div><p>Number of similar items to store for each item. Default value is
+64.  Decreasing this  decreases the amount of memory required for the
+model, but may also decrease the accuracy.</p>
+</div></blockquote>
+<p><strong>nearest_items</strong> : SFrame, optional</p>
+<blockquote>
+<div><p>A set of each item&#8217;s nearest items. When provided, this overrides
+the similarity computed above.
+See Notes in the documentation for ItemSimilarityRecommender.
+Default: None.</p>
+</div></blockquote>
+<p><strong>target_memory_usage</strong> : int, optional</p>
+<blockquote>
+<div><p>The target memory usage for the processing buffers and lookup
+tables.  The actual memory usage may be higher or lower than this,
+but decreasing this decreases memory usage at the expense of
+training time, and increasing this can dramatically speed up the
+training time.  Default is 8GB = 8589934592.</p>
+</div></blockquote>
+<p><strong>seed_item_set_size</strong> : int, optional</p>
+<blockquote>
+<div><p>For users that have not yet rated any items, or have only
+rated uniquely occuring items with no similar item info,
+the model seeds the user&#8217;s item set with the average
+ratings of the seed_item_set_size most popular items when
+making predictions and recommendations.  If set to 0, then
+recommendations based on either popularity (no target present)
+or average item score (target present) are made in this case.</p>
+</div></blockquote>
+<p><strong>training_method</strong> : (advanced), optional.</p>
+<blockquote>
+<div><p>The internal processing is done with a combination of nearest
+neighbor searching, dense tables for tracking item-item
+similarities, and sparse item-item tables.  If &#8216;auto&#8217; is chosen
+(default), then the estimated computation time is estimated for
+each, and the computation balanced between the methods in order to
+minimize training time given the target memory usage.  This allows
+the user to force the use of one of these methods.  All should give
+equivalent results; the only difference would be training time.
+Possible values are {&#8216;auto&#8217;, &#8216;dense&#8217;, &#8216;sparse&#8217;, &#8216;nn&#8217;, &#8216;nn:dense&#8217;,
+&#8216;nn:sparse&#8217;}. &#8216;dense&#8217; uses a dense matrix to store item-item
+interactions as a lookup, and may do multiple passes to control
+memory requirements. &#8216;sparse&#8217; does the same but with a sparse lookup
+table; this is better if the data has many infrequent items.  &#8220;nn&#8221;
+uses a brute-force nearest neighbors search.  &#8220;nn:dense&#8221; and
+&#8220;nn:sparse&#8221; use nearest neighbors for the most frequent items
+(see nearest_neighbors_interaction_proportion_threshold below),
+and either sparse or dense matrices for the remainder.  &#8220;auto&#8221;
+chooses the method predicted to be the fastest based on the
+properties of the data.</p>
+</div></blockquote>
+<p><strong>nearest_neighbors_interaction_proportion_threshold</strong> : (advanced) float</p>
+<blockquote>
+<div><p>Any item that has was rated by more than this proportion of
+users is  treated by doing a nearest neighbors search.  For
+frequent items, this  is almost always faster, but it is slower
+for infrequent items.  Furthermore, decreasing this causes more
+items to be processed using the nearest neighbor path, which may
+decrease memory requirements.</p>
+</div></blockquote>
+<p><strong>degree_approximation_threshold</strong> : (advanced) int, optional</p>
+<blockquote>
+<div><p>Users with more than this many item interactions may be
+approximated.  The approximation is done by a combination of
+sampling and choosing the interactions likely to have the most
+impact on the model.  Increasing this can increase the training time
+and may or may not increase the quality of the model.  Default = 4096.</p>
+</div></blockquote>
+<p><strong>max_data_passes</strong> : (advanced) int, optional</p>
+<blockquote class="last">
+<div><p>The maximum number of passes through the data allowed in
+building the similarity lookup tables.  If it is not possible to
+build the recommender in this many passes (calculated before
+that stage of training), then additional approximations are
+applied; namely decreasing degree_approximation_threshold.  If
+this is not possible, an error is raised.  To decrease the
+number of passes required, increase target_memory_usage or
+decrease nearest_neighbors_interaction_proportion_threshold.
+Default = 1024.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.html#turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender" title="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender"><code class="xref py py-obj docutils literal"><span class="pre">ItemSimilarityRecommender</span></code></a></p>
+</div>
+<p class="rubric">Notes</p>
+<p>Currently, <a class="reference internal" href="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.html#turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender" title="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender"><code class="xref py py-class docutils literal"><span class="pre">ItemSimilarityRecommender</span></code></a>
+does not leverage the use of side features <cite>user_data</cite> and <cite>item_data</cite>.</p>
+<p><strong>Incorporating pre-defined similar items</strong></p>
+<p>For item similarity models, one may choose to provide user-specified
+nearest neighbors graph using the keyword argument <cite>nearest_items</cite>. This is
+an SFrame containing, for each item, the nearest items and the similarity
+score between them. If provided, these item similarity scores are used for
+recommendations. The SFrame must contain (at least) three columns:</p>
+<ul class="simple">
+<li>&#8216;item_id&#8217;: a column with the same name as that provided to the <cite>item_id</cite>
+arugment (which defaults to the string &#8220;item_id&#8221;).</li>
+<li>&#8216;similar&#8217;: a column containing the nearest items for the given item id.
+This should have the same type as the <cite>item_id</cite> column.</li>
+<li>&#8216;score&#8217;: a numeric score measuring how similar these two items are.</li>
+</ul>
+<p>For example, suppose you first create an ItemSimilarityRecommender and use
+<code class="xref py py-class docutils literal"><span class="pre">get_similar_items</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">],</span>
+<span class="gp">... </span>                      <span class="s1">&#39;item_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">item_similarity_recommender</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nn</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_similar_items</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m2</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">item_similarity_recommender</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">nearest_items</span><span class="o">=</span><span class="n">nn</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>With the above code, the item similarities computed for model <cite>m</cite> can be
+used to create a new recommender object, <cite>m2</cite>. Note that we could have
+created <cite>nn</cite> from some other means, but now use <cite>m2</cite> to make
+recommendations via <cite>m2.recommend()</cite>.</p>
+<p class="rubric">Examples</p>
+<p>Given basic user-item observation data, an
+<a class="reference internal" href="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.html#turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender" title="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender"><code class="xref py py-class docutils literal"><span class="pre">ItemSimilarityRecommender</span></code></a> is created:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">],</span>
+<span class="gp">... </span>                      <span class="s1">&#39;item_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">item_similarity_recommender</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">recs</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">recommend</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>When a target is available, one can specify the desired similarity. For
+example we may choose to use a cosine similarity, and use it to make
+predictions or recommendations.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf2</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">],</span>
+<span class="gp">... </span>                       <span class="s1">&#39;item_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">],</span>
+<span class="gp">... </span>                       <span class="s1">&#39;rating&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m2</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">item_similarity_recommender</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf2</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;rating&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                                                 <span class="n">similarity_type</span><span class="o">=</span><span class="s1">&#39;cosine&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m2</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">sf</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m2</span><span class="o">.</span><span class="n">recommend</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.html" class="btn btn-neutral float-right" title="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.recommender.create.html" class="btn btn-neutral" title="turicreate.recommender.create"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,283 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.text_analytics.count_words &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="text_analytics" href="../turicreate.toolkits.text_analytics.html"/>
+        <link rel="next" title="turicreate.text_analytics.count_ngrams" href="turicreate.text_analytics.count_ngrams.html"/>
+        <link rel="prev" title="turicreate.topic_model.TopicModel" href="turicreate.topic_model.TopicModel.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.text_analytics.html"><code class="docutils literal"><span class="pre">text_analytics</span></code></a> &raquo;</li>
+      
+    <li>turicreate.text_analytics.count_words</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-text-analytics-count-words">
+<h1>turicreate.text_analytics.count_words<a class="headerlink" href="#turicreate-text-analytics-count-words" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.text_analytics.count_words">
+<code class="descclassname">turicreate.text_analytics.</code><code class="descname">count_words</code><span class="sig-paren">(</span><em>sa, to_lower=True, delimiters=[&quot;\r&quot;, &quot;\v&quot;, &quot;\n&quot;, &quot;\f&quot;, &quot;\t&quot;, &quot; &quot;]</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.text_analytics.count_words" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the content of string/dict/list type SArrays to a dictionary of
+(word, count) pairs. Dictionary keys and list elements must be strings.
+The strings are first tokenized into words according to the specified
+<cite>to_lower</cite> and <cite>delimiters</cite> options. Then, word counts are accumulated.
+In each output dictionary, the keys are the words in the corresponding
+input data entry, and the values are the number of times the words appears.
+By default, words are split on all whitespace and newline characters. The
+output is commonly known as the &#8220;bag-of-words&#8221; representation of text data.</p>
+<p>This function is implemented using</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sa</strong> : SArray[str | dict | list]</p>
+<blockquote>
+<div><p>Input data to be tokenized and counted.</p>
+</div></blockquote>
+<p><strong>to_lower</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, all strings are converted to lower case before counting.</p>
+</div></blockquote>
+<p><strong>delimiters</strong> : list[str], None, optional</p>
+<blockquote>
+<div><p>Input strings are tokenized using delimiter characters in this list.
+Each entry in this list must contain a single character. If set to
+<cite>None</cite>, then a Penn treebank-style tokenization is used, which contains
+smart handling of punctuations.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SArray[dict]</p>
+<blockquote class="last">
+<div><p>Each entry contains a dictionary with the frequency count of each word
+in the corresponding input entry.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.text_analytics.count_ngrams.html#turicreate.text_analytics.count_ngrams" title="turicreate.text_analytics.count_ngrams"><code class="xref py py-obj docutils literal"><span class="pre">count_ngrams</span></code></a>, <a class="reference internal" href="turicreate.text_analytics.tf_idf.html#turicreate.text_analytics.tf_idf" title="turicreate.text_analytics.tf_idf"><code class="xref py py-obj docutils literal"><span class="pre">tf_idf</span></code></a>, <a class="reference internal" href="turicreate.text_analytics.tokenize.html#turicreate.text_analytics.tokenize" title="turicreate.text_analytics.tokenize"><code class="xref py py-obj docutils literal"><span class="pre">tokenize</span></code></a></p>
+</div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><a class="reference external" href="http://en.wikipedia.org/wiki/Bag-of-words_model">Bag of words model</a></li>
+<li><a class="reference external" href="https://www.cis.upenn.edu/~treebank/tokenization.html">Penn treebank tokenization</a></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">turicreate</span>
+
+<span class="go"># Create input data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="s2">&quot;The quick brown fox jumps.&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                      <span class="s2">&quot;Word word WORD, word!!!word&quot;</span><span class="p">])</span>
+
+<span class="go"># Run count_words</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">count_words</span><span class="p">(</span><span class="n">sa</span><span class="p">)</span>
+<span class="go">dtype: dict</span>
+<span class="go">Rows: 2</span>
+<span class="go">[{&#39;quick&#39;: 1, &#39;brown&#39;: 1, &#39;the&#39;: 1, &#39;fox&#39;: 1, &#39;jumps.&#39;: 1},</span>
+<span class="go"> {&#39;word,&#39;: 1, &#39;word!!!word&#39;: 1, &#39;word&#39;: 2}]</span>
+
+<span class="go"># Run count_words with Penn treebank style tokenization to handle</span>
+<span class="go"># puntuations</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">count_words</span><span class="p">(</span><span class="n">sa</span><span class="p">,</span> <span class="n">delimiters</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<span class="go">dtype: dict</span>
+<span class="go">Rows: 2</span>
+<span class="go">[{&#39;brown&#39;: 1, &#39;jumps&#39;: 1, &#39;fox&#39;: 1, &#39;.&#39;: 1, &#39;quick&#39;: 1, &#39;the&#39;: 1},</span>
+<span class="go"> {&#39;word&#39;: 3, &#39;word!!!word&#39;: 1, &#39;,&#39;: 1}]</span>
+
+<span class="go"># Run count_words with dictionary input</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([{</span><span class="s1">&#39;alice bob&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Bob alice&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">},</span>
+<span class="gp">... </span>                      <span class="p">{</span><span class="s1">&#39;a dog&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;a dog cat&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">count_words</span><span class="p">(</span><span class="n">sa</span><span class="p">)</span>
+<span class="go">dtype: dict</span>
+<span class="go">Rows: 2</span>
+<span class="go">[{&#39;bob&#39;: 1.5, &#39;alice&#39;: 1.5}, {&#39;a&#39;: 5, &#39;dog&#39;: 5, &#39;cat&#39;: 5}]</span>
+
+<span class="go"># Run count_words with list input</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([[</span><span class="s1">&#39;one&#39;</span><span class="p">,</span> <span class="s1">&#39;bar bah&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;a dog&#39;</span><span class="p">,</span> <span class="s1">&#39;a dog cat&#39;</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">count_words</span><span class="p">(</span><span class="n">sa</span><span class="p">)</span>
+<span class="go">dtype: dict</span>
+<span class="go">Rows: 2</span>
+<span class="go">[{&#39;bar&#39;: 1, &#39;bah&#39;: 1, &#39;one&#39;: 1}, {&#39;a&#39;: 2, &#39;dog&#39;: 2, &#39;cat&#39;: 1}]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.text_analytics.count_ngrams.html" class="btn btn-neutral float-right" title="turicreate.text_analytics.count_ngrams">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.topic_model.TopicModel.html" class="btn btn-neutral" title="turicreate.topic_model.TopicModel"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

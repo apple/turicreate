@@ -1,0 +1,307 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.recommender.item_content_recommender.create &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="recommender" href="../turicreate.toolkits.recommender.html"/>
+        <link rel="next" title="turicreate.recommender.item_content_recommender.ItemContentRecommender" href="turicreate.recommender.item_content_recommender.ItemContentRecommender.html"/>
+        <link rel="prev" title="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender" href="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.recommender.html"><code class="docutils literal"><span class="pre">recommender</span></code></a> &raquo;</li>
+      
+    <li>turicreate.recommender.item_content_recommender.create</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-recommender-item-content-recommender-create">
+<h1>turicreate.recommender.item_content_recommender.create<a class="headerlink" href="#turicreate-recommender-item-content-recommender-create" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.recommender.item_content_recommender.create">
+<code class="descclassname">turicreate.recommender.item_content_recommender.</code><code class="descname">create</code><span class="sig-paren">(</span><em>item_data</em>, <em>item_id</em>, <em>observation_data=None</em>, <em>user_id=None</em>, <em>target=None</em>, <em>weights='auto'</em>, <em>similarity_metrics='auto'</em>, <em>item_data_transform='auto'</em>, <em>max_item_neighborhood_size=64</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.recommender.item_content_recommender.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a content-based recommender model in which the similarity
+between the items recommended is determined by the content of
+those items rather than learned from user interaction data.</p>
+<p>The similarity score between two items is calculated by first
+computing the similarity between the item data for each column,
+then taking a weighted average of the per-column similarities to
+get the final similarity.  The recommendations are generated
+according to the average similarity of a candidate item to all the
+items in a user&#8217;s set of rated items.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>item_data</strong> : SFrame</p>
+<blockquote>
+<div><p>An SFrame giving the content of the items to use to learn the
+structure of similar items.  The SFrame must have one column
+that matches the name of the <cite>item_id</cite>; this gives a unique
+identifier that can then be used to make recommendations.  The rest
+of the columns are then used in the distance calculations
+below.</p>
+</div></blockquote>
+<p><strong>item_id</strong> : string</p>
+<blockquote>
+<div><p>The name of the column in item_data (and <cite>observation_data</cite>,
+if given) that represents the item ID.</p>
+</div></blockquote>
+<p><strong>observation_data</strong> : None (optional)</p>
+<blockquote>
+<div><p>An SFrame giving user and item interaction data.  This
+information is stored in the model, and the recommender will
+recommend the items with the most similar content to the
+items that were present and/or highly rated for that user.</p>
+</div></blockquote>
+<p><strong>user_id</strong> : None (optional)</p>
+<blockquote>
+<div><p>If observation_data is given, then this specifies the column
+name corresponding to the user identifier.</p>
+</div></blockquote>
+<p><strong>target_id</strong> : None (optional)</p>
+<blockquote>
+<div><p>If observation_data is given, then this specifies the column
+name corresponding to the target or rating.</p>
+</div></blockquote>
+<p><strong>weights</strong> : dict or &#8216;auto&#8217; (optional)</p>
+<blockquote>
+<div><p>If given, then weights must be a dictionary of column names
+present in item_data to weights between the column names.  If
+&#8216;auto&#8217; is given, the all columns are weighted equally.</p>
+</div></blockquote>
+<p><strong>max_item_neighborhood_size</strong> : int, 64</p>
+<blockquote>
+<div><p>For each item, we hold this many similar items to use when
+aggregating models for predictions.  Decreasing this value
+decreases the memory required by the model and decreases the
+time required to generate recommendations, but it may also
+decrease recommendation accuracy.</p>
+</div></blockquote>
+<p><strong>verbose</strong> : True or False (optional)</p>
+<blockquote class="last">
+<div><p>If set to False, then less information is printed.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">item_data</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s2">&quot;my_item_id&quot;</span> <span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span>
+<span class="go">                           &quot;data_1&quot; : [ [1, 0], [1, 0], [0, 1], [0.5, 0.5] ],</span>
+<span class="go">                           &quot;data_2&quot; : [ [0, 1], [1, 0], [0, 1], [0.5, 0.5] ] })</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">recommender</span><span class="o">.</span><span class="n">item_content_recommender</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">item_data</span><span class="p">,</span> <span class="s2">&quot;my_item_id&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">recommend_from_interactions</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>Columns:</dt>
+<dd>my_item_id      int
+score   float
+rank    int</dd>
+</dl>
+<p>Rows: 3</p>
+<p>Data:
++&#8212;&#8212;&#8212;&#8212;+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;+
+| my_item_id |     score      | rank |
++&#8212;&#8212;&#8212;&#8212;+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;+
+|     3      | 0.707106769085 |  1   |
+|     1      |      0.5       |  2   |
+|     2      |      0.5       |  3   |
++&#8212;&#8212;&#8212;&#8212;+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;+
+[3 rows x 3 columns]</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">recommend_from_interactions</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>Columns:</dt>
+<dd>my_item_id      int
+score   float
+rank    int</dd>
+</dl>
+<p>Rows: 2</p>
+<p>Data:
++&#8212;&#8212;&#8212;&#8212;+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;+
+| my_item_id |     score      | rank |
++&#8212;&#8212;&#8212;&#8212;+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;+
+|     3      | 0.707106769085 |  1   |
+|     2      |      0.25      |  2   |
++&#8212;&#8212;&#8212;&#8212;+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;+
+[2 rows x 3 columns]</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.recommender.item_content_recommender.ItemContentRecommender.html" class="btn btn-neutral float-right" title="turicreate.recommender.item_content_recommender.ItemContentRecommender">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.html" class="btn btn-neutral" title="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,259 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.recommender.util.precision_recall_by_user &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="recommender" href="../turicreate.toolkits.recommender.html"/>
+        <link rel="next" title="sentence_classifier" href="../turicreate.toolkits.sentence_classifier.html"/>
+        <link rel="prev" title="turicreate.recommender.util.random_split_by_user" href="turicreate.recommender.util.random_split_by_user.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.recommender.html"><code class="docutils literal"><span class="pre">recommender</span></code></a> &raquo;</li>
+      
+    <li>turicreate.recommender.util.precision_recall_by_user</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-recommender-util-precision-recall-by-user">
+<h1>turicreate.recommender.util.precision_recall_by_user<a class="headerlink" href="#turicreate-recommender-util-precision-recall-by-user" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.recommender.util.precision_recall_by_user">
+<code class="descclassname">turicreate.recommender.util.</code><code class="descname">precision_recall_by_user</code><span class="sig-paren">(</span><em>observed_user_items, recommendations, cutoffs=[10]</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.recommender.util.precision_recall_by_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute precision and recall at a given cutoff for each user. In information
+retrieval terms, precision represents the ratio of relevant, retrieved items
+to the number of relevant items. Recall represents the ratio of relevant,
+retrieved items to the number of relevant items.</p>
+<p>Let <span class="math">\(p_k\)</span> be a vector of the first <span class="math">\(k\)</span> elements in the
+recommendations for a particular user, and let <span class="math">\(a\)</span> be the set of items
+in <code class="docutils literal"><span class="pre">observed_user_items</span></code> for that user. The &#8220;precision at cutoff k&#8221; for
+this user is defined as</p>
+<div class="math">
+\[P(k) = \frac{ | a \cap p_k | }{k},\]</div>
+<p>while &#8220;recall at cutoff k&#8221; is defined as</p>
+<div class="math">
+\[R(k) = \frac{ | a \cap p_k | }{|a|}\]</div>
+<p>The order of the elements in the recommendations affects the returned
+precision and recall scores.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>observed_user_items</strong> : SFrame</p>
+<blockquote>
+<div><p>An SFrame containing observed user item pairs, where the first
+column contains user ids and the second column contains item ids.</p>
+</div></blockquote>
+<p><strong>recommendations</strong> : SFrame</p>
+<blockquote>
+<div><p>An SFrame containing columns pertaining to the user id, the item id,
+the score given to that pair, and the rank of that item among the
+recommendations made for user id. For example, see the output of
+recommend() produced by any turicreate.recommender model.</p>
+</div></blockquote>
+<p><strong>cutoffs</strong> : list[int], optional</p>
+<blockquote>
+<div><p>The cutoffs to use when computing precision and recall.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SFrame</p>
+<blockquote class="last">
+<div><p>An SFrame containing columns user id, cutoff, precision, recall, and
+count where  the precision and recall are reported for each user at
+each requested cutoff, and count is the number of observations for
+that user id.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The corner cases that involve empty lists were chosen to be consistent
+with the feasible set of precision-recall curves, which start at
+(precision, recall) = (1,0) and end at (0,1). However, we do not believe
+there is a well-known concensus on this choice.</p>
+<p class="rubric">Examples</p>
+<p>Given SFrames <code class="docutils literal"><span class="pre">train_data</span></code> and <code class="docutils literal"><span class="pre">test_data</span></code> with columns user_id
+and item_id:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate.toolkits.recommender.util</span> <span class="kn">import</span> <span class="n">precision_recall_by_user</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">recommender</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">recs</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">recommend</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">precision_recall_by_user</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">recs</span><span class="p">,</span> <span class="n">cutoffs</span><span class="o">=</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../turicreate.toolkits.sentence_classifier.html" class="btn btn-neutral float-right" title="sentence_classifier">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.recommender.util.random_split_by_user.html" class="btn btn-neutral" title="turicreate.recommender.util.random_split_by_user"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

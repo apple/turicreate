@@ -1,0 +1,1135 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <title>Nearest Neighbor Classifier · GitBook</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.0">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-anchors/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="random_forest_classifier.html" />
+    
+    
+    <link rel="prev" href="logistic-regression.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Overview
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../sframe/introduction.html">
+            
+                <a href="../sframe/introduction.html">
+            
+                    
+                    Working with data
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../sframe/tabular-data.html">
+            
+                <a href="../sframe/tabular-data.html">
+            
+                    
+                    Tabular data
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.1" data-path="../sframe/sframe-intro.html">
+            
+                <a href="../sframe/sframe-intro.html">
+            
+                    
+                    Loading and Saving
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2" data-path="../sframe/data-manipulation.html">
+            
+                <a href="../sframe/data-manipulation.html">
+            
+                    
+                    Data Manipulation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.3" data-path="../data_formats_and_sources/sql_integration.html">
+            
+                <a href="../data_formats_and_sources/sql_integration.html">
+            
+                    
+                    SQL Databases
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../sgraph/sgraph.html">
+            
+                <a href="../sgraph/sgraph.html">
+            
+                    
+                    Graph data
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="../text/analysis.html">
+            
+                <a href="../text/analysis.html">
+            
+                    
+                    Text data
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4" data-path="../vis/introduction.html">
+            
+                <a href="../vis/introduction.html">
+            
+                    
+                    Visualization
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.4.1" data-path="../vis/gallery.html">
+            
+                <a href="../vis/gallery.html">
+            
+                    
+                    Example Gallery
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4.2" data-path="../vis/use_cases.html">
+            
+                <a href="../vis/use_cases.html">
+            
+                    
+                    Sample Use Cases
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../applications/intro.html">
+            
+                <a href="../applications/intro.html">
+            
+                    
+                    Task focused toolkits
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../recommender/introduction.html">
+            
+                <a href="../recommender/introduction.html">
+            
+                    
+                    Recommender systems
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1.1" data-path="../recommender/using-trained-models.html">
+            
+                <a href="../recommender/using-trained-models.html">
+            
+                    
+                    Using models
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.1.2" data-path="../recommender/choosing-a-model.html">
+            
+                <a href="../recommender/choosing-a-model.html">
+            
+                    
+                    Choosing a model
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../image_classifier/introduction.html">
+            
+                <a href="../image_classifier/introduction.html">
+            
+                    
+                    Image classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.2.1" data-path="../image_classifier/advanced-usage.html">
+            
+                <a href="../image_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.2" data-path="../image_classifier/how-it-works.html">
+            
+                <a href="../image_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../image_similarity/introduction.html">
+            
+                <a href="../image_similarity/introduction.html">
+            
+                    
+                    Image similarity
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../object_detection/introduction.html">
+            
+                <a href="../object_detection/introduction.html">
+            
+                    
+                    Object detection
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.4.1" data-path="../object_detection/advanced-usage.html">
+            
+                <a href="../object_detection/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.2" data-path="../object_detection/how-it-works.html">
+            
+                <a href="../object_detection/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../activity_classifier/introduction.html">
+            
+                <a href="../activity_classifier/introduction.html">
+            
+                    
+                    Activity classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" data-path="../activity_classifier/advanced-usage.html">
+            
+                <a href="../activity_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.2" data-path="../activity_classifier/export_coreml.html">
+            
+                <a href="../activity_classifier/export_coreml.html">
+            
+                    
+                    Deployment to CoreML
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.3" data-path="../activity_classifier/how-it-works.html">
+            
+                <a href="../activity_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6" data-path="../text_classifier/introduction.html">
+            
+                <a href="../text_classifier/introduction.html">
+            
+                    
+                    Text classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../modeling-data/intro.html">
+            
+                <a href="../modeling-data/intro.html">
+            
+                    
+                    Machine learning essentials
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="classifier.html">
+            
+                <a href="classifier.html">
+            
+                    
+                    Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1.1" data-path="boosted_trees_classifier.html">
+            
+                <a href="boosted_trees_classifier.html">
+            
+                    
+                    Boosted Trees Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.2" data-path="decision_tree_classifier.html">
+            
+                <a href="decision_tree_classifier.html">
+            
+                    
+                    Decision Tree Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.3" data-path="logistic-regression.html">
+            
+                <a href="logistic-regression.html">
+            
+                    
+                    Logistic Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.4.1.4" data-path="knn_classifier.html">
+            
+                <a href="knn_classifier.html">
+            
+                    
+                    Nearest Neighbor Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.5" data-path="random_forest_classifier.html">
+            
+                <a href="random_forest_classifier.html">
+            
+                    
+                    Random Forest Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.6" data-path="svm.html">
+            
+                <a href="svm.html">
+            
+                    
+                    SVM
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../clustering/intro.html">
+            
+                <a href="../clustering/intro.html">
+            
+                    
+                    Clustering
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.2.1" data-path="../clustering/kmeans.html">
+            
+                <a href="../clustering/kmeans.html">
+            
+                    
+                    KMeans
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.2" data-path="../clustering/dbscan.html">
+            
+                <a href="../clustering/dbscan.html">
+            
+                    
+                    DBSCAN
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../graph_analytics/intro.html">
+            
+                <a href="../graph_analytics/intro.html">
+            
+                    
+                    Graph analytics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../nearest_neighbors/nearest_neighbors.html">
+            
+                <a href="../nearest_neighbors/nearest_neighbors.html">
+            
+                    
+                    Nearest neighbors
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="regression.html">
+            
+                <a href="regression.html">
+            
+                    
+                    Regression
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.5.1" data-path="boosted_trees_regression.html">
+            
+                <a href="boosted_trees_regression.html">
+            
+                    
+                    Boosted Trees Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.2" data-path="decision_tree_regression.html">
+            
+                <a href="decision_tree_regression.html">
+            
+                    
+                    Decision Tree Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.3" data-path="linear-regression.html">
+            
+                <a href="linear-regression.html">
+            
+                    
+                    Linear Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.4" data-path="random_forest_regression.html">
+            
+                <a href="random_forest_regression.html">
+            
+                    
+                    Random Forest Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="../text/intro.html">
+            
+                <a href="../text/intro.html">
+            
+                    
+                    Text analysis
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../evaluation/introduction.html">
+            
+                <a href="../evaluation/introduction.html">
+            
+                    
+                    Evaluating models
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../evaluation/regression.html">
+            
+                <a href="../evaluation/regression.html">
+            
+                    
+                    Regression metrics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../evaluation/classification.html">
+            
+                <a href="../evaluation/classification.html">
+            
+                    
+                    Classification metrics
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../deployment/introduction.html">
+            
+                <a href="../deployment/introduction.html">
+            
+                    
+                    Deployment
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../conclusion.html">
+            
+                <a href="../conclusion.html">
+            
+                    
+                    Additional Resources
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Nearest Neighbor Classifier</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="nearest-neighbor-classifier"><a name="nearest-neighbor-classifier" class="plugin-anchor" href="#nearest-neighbor-classifier"><i class="fa fa-link" aria-hidden="true"></i></a>Nearest Neighbor Classifier</h1><p>The <a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.html" target="_blank">nearest neighbor classifier</a>
+is one of the simplest classification models, but it often performs nearly as
+well as more sophisticated methods.</p><h4 id="background"><a name="background" class="plugin-anchor" href="#background"><i class="fa fa-link" aria-hidden="true"></i></a>Background</h4><p>The nearest neighbors classifier predicts the class of a data point to be the
+most common class among that point&apos;s neighbors. Suppose we have <script type="math/tex; ">n</script> training
+data points, where the <script type="math/tex; ">i</script>&apos;th point has both a vector of features <script type="math/tex; ">x_i</script> and
+class label <script type="math/tex; ">y_i</script>. For a new point <script type="math/tex; ">x^*</script>, the nearest neighbor classifier
+first finds the set of neighbors of <script type="math/tex; ">x^*</script>, denoted <script type="math/tex; ">N(x^*)</script>. The class label
+for <script type="math/tex; ">x^*</script> is then predicted to be</p><p><script type="math/tex; mode=display">
+    y* = \max_c \sum_{i \in N(x^*)} I(y_i = c)
+</script></p><p>where the indicator function <script type="math/tex; ">I()</script> is 1 if the argument is true, and 0
+otherwise. The simplicity of this approach makes the model relatively
+straightforward to understand and communicate to others, and naturally lends
+itself to multi-class classification.</p><p>Defining the criteria for the <strong>neighborhood</strong> of a prediction data point
+requires careful thought and domain knowledge. A function must be specified to
+measure the distance between any two data points, and then the size of
+&quot;neighborhoods&quot; relative to this distance function must be set.</p><p>For the first step, there are many standard distance functions (e.g.
+Euclidean, Jaccard, Levenshtein) that work well for data whose features
+are all of the same type, but for heterogeneous data the task is a bit
+trickier. Turi Create overcomes this problem with <strong>composite
+distances</strong>, which are weighted sums of standard distance functions
+applied to appropriate subsets of features. For more about distance
+functions in Turi Create, including composite distances, please see the
+<a href="https://apple.github.io/turicreate/docs/api/turicreate.toolkits.distances.html" target="_blank">API documentation for the distances
+module</a>.
+The end of this chapter describes how to use a composite distance with
+the nearest neighbor classifier in particular.</p><p>Once the distance function is defined, the user must indicate the
+criteria for deciding when training data are in the &quot;neighborhood&quot; of a
+prediction point.  This is done by setting two constraints:</p><ol><li><p><code>radius</code> - the maximum distance a training example can be from the prediction
+point and still be considered a neighbor, and</p></li>
+<li><p><code>max_neighbors</code> - the maximum number of neighbors for the prediction point.
+If there are more points within <code>radius</code> of the prediction point, the closest
+<code>max_neighbors</code> are used.</p></li></ol>
+<p>Unlike the other classifiers in the Turi Create classifier toolkit, the
+nearest neighbors classifiers is an <strong>instance-based</strong> method, which means that
+the model must store all of the training data. For each prediction, the model
+must search all of the training data to find the neighbor points in the training
+data. Turi Create performs this search intelligently, but predictions are
+nevertheless typically slower than other classification models.</p><h4 id="basic-example"><a name="basic-example" class="plugin-anchor" href="#basic-example"><i class="fa fa-link" aria-hidden="true"></i></a>Basic Example</h4><p>To illustrate basic usage of the nearest neighbor classifier, we again
+use restaurant review data, with the goal of predicting how
+many &quot;stars&quot; a user will give a particular business. Anticipating that
+we will want to test the validity of the model, we first split the data
+into training and testing subsets.</p><pre><code class="lang-python"><span class="hljs-keyword">import</span> turicreate <span class="hljs-keyword">as</span> tc
+
+data =  tc.SFrame(<span class="hljs-string">&apos;ratings-data.csv&apos;</span>)
+train_data, test_data = data.random_split(<span class="hljs-number">0.9</span>)</code></pre>
+<p>In this example we build a classifier using only the four numeric
+features listed in the logistic regression chapter, namely the average
+stars awarded by each user and to each business and the total count of
+reviews given by each user and to each business. The review counts
+features are typically much larger than the average stars features,
+which would cause the review counts to dominate standard numeric
+distance functions. To avoid this we standardize the features before
+creating the model.</p><pre><code class="lang-python">numeric_features = [<span class="hljs-string">&apos;user_avg_stars&apos;</span>, 
+                    <span class="hljs-string">&apos;business_avg_stars&apos;</span>, 
+                    <span class="hljs-string">&apos;user_review_count&apos;</span>, 
+                    <span class="hljs-string">&apos;business_review_count&apos;</span>]
+
+<span class="hljs-keyword">for</span> ftr <span class="hljs-keyword">in</span> numeric_features:
+    mean = train_data[ftr].mean()
+    stdev = train_data[ftr].std()
+    train_data[ftr] = (train_data[ftr] - mean) / stdev
+    test_data[ftr] = (test_data[ftr] - mean) / stdev</code></pre>
+<p>Finally, we create the model and generate predictions.</p><pre><code class="lang-python">m = tc.nearest_neighbor_classifier.create(train_data, target=<span class="hljs-string">&apos;stars&apos;</span>,
+                                          features=numeric_features)
+predictions = m.classify(test_data, max_neighbors=<span class="hljs-number">20</span>, radius=<span class="hljs-keyword">None</span>)
+<span class="hljs-keyword">print</span> predictions</code></pre>
+<pre><code class="lang-no-highlight">+-------+-------------+
+| class | probability |
++-------+-------------+
+|   4   |     0.65    |
+|   4   |     0.5     |
+|   5   |     0.8     |
+|   5   |     0.65    |
+|   5   |     1.0     |
+|   4   |     0.55    |
+|   4   |     0.35    |
+|   3   |     0.45    |
+|   4   |     0.45    |
+|   5   |     0.4     |
++-------+-------------+
+[21466 rows x 2 columns]
+Note: Only the head of the SFrame is printed.
+You can use print_rows(num_rows=m, num_columns=n) to print more rows and columns.</code></pre>
+<h4 id="advanced-usage"><a name="advanced-usage" class="plugin-anchor" href="#advanced-usage"><i class="fa fa-link" aria-hidden="true"></i></a>Advanced Usage</h4><p>The <code>classify</code> method returns an SFrame with both the predicted class and the
+probability score of that class, which is simply the fraction of the points&apos;
+neighbors which belong to the most common class. As with multiclass logistic
+regression, the <code>predict_topk</code> method can be used to see the fraction of
+neighbors belonging to every target class.</p><pre><code class="lang-python">topk = m.predict_topk(test_data[:<span class="hljs-number">5</span>], max_neighbors=<span class="hljs-number">20</span>, k=<span class="hljs-number">3</span>)
+<span class="hljs-keyword">print</span> topk</code></pre>
+<pre><code class="lang-no-highlight">## -- End pasted text --
++--------+-------+-------------+
+| row_id | class | probability |
++--------+-------+-------------+
+|   0    |   5   |     0.7     |
+|   0    |   4   |     0.3     |
+|   3    |   4   |     0.45    |
+|   3    |   5   |     0.3     |
+|   3    |   3   |     0.2     |
+|   1    |   5   |     0.8     |
+|   1    |   4   |     0.15    |
+|   1    |   3   |     0.05    |
+|   2    |   4   |     0.6     |
+|   2    |   5   |     0.25    |
++--------+-------+-------------+
+[14 rows x 3 columns]
+Note: Only the head of the SFrame is printed.
+You can use print_rows(num_rows=m, num_columns=n) to print more rows and columns.</code></pre>
+<p>To get a sense of the model validity, pass the test data to the <code>evaluate</code>
+method.</p><pre><code class="lang-python">evals = m.evaluate(test_data[:<span class="hljs-number">3000</span>])
+<span class="hljs-keyword">print</span> evals[<span class="hljs-string">&apos;accuracy&apos;</span>]</code></pre>
+<pre><code class="lang-no-highlight">0.46</code></pre>
+<p>46% accuracy seems low, but remember that we are in a multi-class
+classiciation setting. The most common class (4 stars) only occurs in
+34.8% of the test data, so our model has indeed learned something. The
+confusion matrix produced by the <code>evaluate</code> method can help us to better
+understand the model performance. In this case we see that 83.9% of our
+predictions are actually within 1 star of the true number of stars.</p><pre><code class="lang-python">conf_matrix = evals[<span class="hljs-string">&apos;confusion_matrix&apos;</span>]
+conf_matrix[<span class="hljs-string">&apos;within_one&apos;</span>] = conf_matrix.apply(
+    <span class="hljs-keyword">lambda</span> x: abs(x[<span class="hljs-string">&apos;target_label&apos;</span>] - x[<span class="hljs-string">&apos;predicted_label&apos;</span>]) &lt;= <span class="hljs-number">1</span>)
+num_within_one = conf_matrix[conf_matrix[<span class="hljs-string">&apos;within_one&apos;</span>]][<span class="hljs-string">&apos;count&apos;</span>].sum()
+<span class="hljs-keyword">print</span> float(num_within_one) / len(test_data)</code></pre>
+<pre><code class="lang-no-highlight">0.8386693230783487</code></pre>
+<p>Suppose we want to add the <code>text</code> column as a feature. One way to do
+this is to treat each entry as a &quot;bag of words&quot; by simply counting the
+number of times each word appears but ignoring the order (please see the
+text analytics chapter for more detail).</p><pre><code class="lang-python">train_data[<span class="hljs-string">&apos;word_counts&apos;</span>] = tc.text_analytics.count_words(train_data[<span class="hljs-string">&apos;text&apos;</span>],
+                                                          to_lower=<span class="hljs-keyword">True</span>)
+test_data[<span class="hljs-string">&apos;word_counts&apos;</span>] = tc.text_analytics.count_words(test_data[<span class="hljs-string">&apos;text&apos;</span>],
+                                                         to_lower=<span class="hljs-keyword">True</span>)</code></pre>
+<p>For example, the (abbreviated) text of the first review in the training
+set is:</p><blockquote><p>My wife took me here on my birthday for breakfast and it was excellent. The
+weather was perfect which made sitting outside overlooking their grounds an
+absolute pleasure....</p></blockquote><p>while the (also abbreviated) bag-of-words representation is a dictionary
+that maps each word to the number of times that word appears:</p><pre><code class="lang-python">{<span class="hljs-string">&apos;2&apos;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&apos;a&apos;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&apos;absolute&apos;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&apos;absolutely&apos;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&apos;amazing&apos;</span>: <span class="hljs-number">2</span>, <span class="hljs-string">&apos;an&apos;</span>: <span class="hljs-number">1</span>,
+<span class="hljs-string">&apos;and&apos;</span>: <span class="hljs-number">8</span>, <span class="hljs-string">&apos;anyway&apos;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&apos;arrived&apos;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&apos;back&apos;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&apos;best&apos;</span>: <span class="hljs-number">2</span>, <span class="hljs-string">&apos;better&apos;</span>: <span class="hljs-number">1</span>,
+<span class="hljs-string">&apos;birthday&apos;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&apos;blend&apos;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&apos;bloody&apos;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&apos;bread&apos;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&apos;breakfast&apos;</span>: <span class="hljs-number">1</span>, ... }</code></pre>
+<p>The <code>weighted_jaccard</code> distance measures the difference between two
+sets, weighted by the counts of each element (please see the <a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.toolkits.distances.weighted_jaccard.html#turicreate.toolkits.distances.weighted_jaccard" target="_blank">API
+documentation</a>
+for details). To combine this output with the numeric distance we used
+above, we specify a <strong>composite distance</strong>. Each element in this list
+includes a list (or tuple) of feature names, a standard distance
+function name, and a numeric weight. The weight on each component can be
+adjusted to produce the same effect as normalizing features.</p><pre><code class="lang-python">my_dist = [
+    [numeric_features, <span class="hljs-string">&apos;euclidean&apos;</span>, <span class="hljs-number">1.0</span>],
+    [[<span class="hljs-string">&apos;word_counts&apos;</span>], <span class="hljs-string">&apos;weighted_jaccard&apos;</span>, <span class="hljs-number">1.0</span>]
+    ]
+
+m2 = tc.nearest_neighbor_classifier.create(train_data, target=<span class="hljs-string">&apos;stars&apos;</span>,
+                                          distance=my_dist)
+accuracy = m2.evaluate(test_data[:<span class="hljs-number">3000</span>], metric=<span class="hljs-string">&apos;accuracy&apos;</span>)
+<span class="hljs-keyword">print</span> accuracy</code></pre>
+<pre><code class="lang-no-highlight">{&apos;accuracy&apos;: 0.482}</code></pre>
+<p>Adding the text feature appears to slightly improve the accuracy of our
+classifier. For more information, please see the following resources:</p><ul><li><a href="https://apple.github.io/turicreate/docs/userguide/nearest_neighbors/nearest_neighbors.html" target="_blank">User Guide chapter on nearest neighbors search</a>
+</li>
+<li><a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.html" target="_blank">API documentation on the nearest neighbor classifier</a>
+</li>
+<li><a href="https://apple.github.io/turicreate/docs/api/turicreate.toolkits.distances.html" target="_blank">API documentation on the distances module</a>
+</li>
+<li><a href="http://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm" target="_blank">Wikipedia on the k-nearest neighbors algorithm</a>
+</li></ul>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="logistic-regression.html" class="navigation navigation-prev " aria-label="Previous page: Logistic Regression">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="random_forest_classifier.html" class="navigation navigation-next " aria-label="Next page: Random Forest Classifier">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Nearest Neighbor Classifier","level":"1.4.1.4","depth":3,"next":{"title":"Random Forest Classifier","level":"1.4.1.5","depth":3,"path":"supervised-learning/random_forest_classifier.md","ref":"supervised-learning/random_forest_classifier.md","articles":[]},"previous":{"title":"Logistic Regression","level":"1.4.1.3","depth":3,"path":"supervised-learning/logistic-regression.md","ref":"supervised-learning/logistic-regression.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"supervised-learning/knn_classifier.md","mtime":"2017-12-06T10:05:16.768Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2017-12-07T21:59:31.449Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-collapsible-menu/plugin.js"></script>
+        
+    
+        
+        <script src="https://cdn.mathjax.org/mathjax/2.6-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-mathjax/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

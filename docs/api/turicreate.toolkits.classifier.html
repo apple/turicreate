@@ -1,0 +1,328 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>classifier &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="index.html"/>
+        <link rel="up" title="Modelling" href="turicreate.toolkits.html"/>
+        <link rel="next" title="turicreate.classifier.create" href="generated/turicreate.classifier.create.html"/>
+        <link rel="prev" title="turicreate.sentence_classifier.SentenceClassifier" href="generated/turicreate.sentence_classifier.SentenceClassifier.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+    <li><code class="docutils literal"><span class="pre">classifier</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="module-turicreate.toolkits.classifier">
+<span id="classifier"></span><h1><code class="xref py py-mod docutils literal"><span class="pre">classifier</span></code><a class="headerlink" href="#module-turicreate.toolkits.classifier" title="Permalink to this headline">¶</a></h1>
+<p>The Turi Create classifier toolkit contains models for classification
+problems. Currently, we support binary classification using support vector
+machines (SVM), logistic regression, boosted trees, and nearest
+neighbors. In addition to these models, we provide a smart interface that
+selects the right model based on the data. If you are unsure about which model
+to use, simply use <a class="reference internal" href="generated/turicreate.classifier.create.html#turicreate.classifier.create" title="turicreate.classifier.create"><code class="xref py py-meth docutils literal"><span class="pre">create()</span></code></a> function.</p>
+<p>Training datasets should contain a column for the &#8216;target&#8217; variable and one or
+more columns representing feature variables.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Set up the data</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">turicreate</span> <span class="kn">as</span> <span class="nn">tc</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">data</span> <span class="o">=</span>  <span class="n">tc</span><span class="o">.</span><span class="n">SFrame</span><span class="p">(</span><span class="s1">&#39;https://static.turi.com/datasets/regression/houses.csv&#39;</span><span class="p">)</span>
+
+<span class="c1"># Create the model</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;is_expensive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;price&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">30000</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">classifier</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;is_expensive&#39;</span><span class="p">,</span>
+<span class="o">...</span>                              <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;bath&#39;</span><span class="p">,</span> <span class="s1">&#39;bedroom&#39;</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">])</span>
+
+<span class="c1"># Make predictions and evaluate results.</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">classification</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">classify</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="creating-a-classifier">
+<h2>creating a classifier<a class="headerlink" href="#creating-a-classifier" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.classifier.create.html#turicreate.classifier.create" title="turicreate.classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">classifier.create</span></code></a></td>
+<td>Automatically create a suitable classifier model based on the provided training data.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="random-forest">
+<h2>random forest<a class="headerlink" href="#random-forest" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.random_forest_classifier.create.html#turicreate.random_forest_classifier.create" title="turicreate.random_forest_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">random_forest_classifier.create</span></code></a></td>
+<td>Create a (binary or multi-class) classifier model of type <a class="reference internal" href="generated/turicreate.random_forest_classifier.RandomForestClassifier.html#turicreate.random_forest_classifier.RandomForestClassifier" title="turicreate.random_forest_classifier.RandomForestClassifier"><code class="xref py py-class docutils literal"><span class="pre">RandomForestClassifier</span></code></a> using an ensemble of decision trees trained on subsets of the data.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.random_forest_classifier.RandomForestClassifier.html#turicreate.random_forest_classifier.RandomForestClassifier" title="turicreate.random_forest_classifier.RandomForestClassifier"><code class="xref py py-obj docutils literal"><span class="pre">random_forest_classifier.RandomForestClassifier</span></code></a></td>
+<td>The random forest model can be used as a classifier for predictive tasks.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="decision-tree">
+<h2>decision tree<a class="headerlink" href="#decision-tree" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.decision_tree_classifier.create.html#turicreate.decision_tree_classifier.create" title="turicreate.decision_tree_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">decision_tree_classifier.create</span></code></a></td>
+<td>Create a (binary or multi-class) classifier model of type <a class="reference internal" href="generated/turicreate.decision_tree_classifier.DecisionTreeClassifier.html#turicreate.decision_tree_classifier.DecisionTreeClassifier" title="turicreate.decision_tree_classifier.DecisionTreeClassifier"><code class="xref py py-class docutils literal"><span class="pre">DecisionTreeClassifier</span></code></a>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.decision_tree_classifier.DecisionTreeClassifier.html#turicreate.decision_tree_classifier.DecisionTreeClassifier" title="turicreate.decision_tree_classifier.DecisionTreeClassifier"><code class="xref py py-obj docutils literal"><span class="pre">decision_tree_classifier.DecisionTreeClassifier</span></code></a></td>
+<td>Special case of gradient boosted trees with the number of trees set to 1.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="boosted-trees">
+<h2>boosted trees<a class="headerlink" href="#boosted-trees" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.boosted_trees_classifier.create.html#turicreate.boosted_trees_classifier.create" title="turicreate.boosted_trees_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">boosted_trees_classifier.create</span></code></a></td>
+<td>Create a (binary or multi-class) classifier model of type <a class="reference internal" href="generated/turicreate.boosted_trees_classifier.BoostedTreesClassifier.html#turicreate.boosted_trees_classifier.BoostedTreesClassifier" title="turicreate.boosted_trees_classifier.BoostedTreesClassifier"><code class="xref py py-class docutils literal"><span class="pre">BoostedTreesClassifier</span></code></a> using gradient boosted trees (sometimes known as GBMs).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.boosted_trees_classifier.BoostedTreesClassifier.html#turicreate.boosted_trees_classifier.BoostedTreesClassifier" title="turicreate.boosted_trees_classifier.BoostedTreesClassifier"><code class="xref py py-obj docutils literal"><span class="pre">boosted_trees_classifier.BoostedTreesClassifier</span></code></a></td>
+<td>The gradient boosted trees model can be used as a classifier for predictive tasks.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="logistic-regression">
+<h2>logistic regression<a class="headerlink" href="#logistic-regression" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.logistic_classifier.create.html#turicreate.logistic_classifier.create" title="turicreate.logistic_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">logistic_classifier.create</span></code></a></td>
+<td>Create a <a class="reference internal" href="generated/turicreate.logistic_classifier.LogisticClassifier.html#turicreate.logistic_classifier.LogisticClassifier" title="turicreate.logistic_classifier.LogisticClassifier"><code class="xref py py-class docutils literal"><span class="pre">LogisticClassifier</span></code></a> (using logistic regression as a classifier) to predict the class of a discrete target variable (binary or multiclass) based on a model of class probability as a logistic function of a linear combination of the features.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.logistic_classifier.LogisticClassifier.html#turicreate.logistic_classifier.LogisticClassifier" title="turicreate.logistic_classifier.LogisticClassifier"><code class="xref py py-obj docutils literal"><span class="pre">logistic_classifier.LogisticClassifier</span></code></a></td>
+<td>Logistic regression models a discrete target variable as a function of several feature variables.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="support-vector-machines">
+<h2>support vector machines<a class="headerlink" href="#support-vector-machines" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.svm_classifier.create.html#turicreate.svm_classifier.create" title="turicreate.svm_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">svm_classifier.create</span></code></a></td>
+<td>Create a <a class="reference internal" href="generated/turicreate.svm_classifier.SVMClassifier.html#turicreate.svm_classifier.SVMClassifier" title="turicreate.svm_classifier.SVMClassifier"><code class="xref py py-class docutils literal"><span class="pre">SVMClassifier</span></code></a> to predict the class of a binary target variable based on a model of which side of a hyperplane the example falls on.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.svm_classifier.SVMClassifier.html#turicreate.svm_classifier.SVMClassifier" title="turicreate.svm_classifier.SVMClassifier"><code class="xref py py-obj docutils literal"><span class="pre">svm_classifier.SVMClassifier</span></code></a></td>
+<td>Support Vector Machines can be used to predict binary target variable using several feature variables.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="nearest-neighbor">
+<h2>nearest neighbor<a class="headerlink" href="#nearest-neighbor" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.nearest_neighbor_classifier.create.html#turicreate.nearest_neighbor_classifier.create" title="turicreate.nearest_neighbor_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">nearest_neighbor_classifier.create</span></code></a></td>
+<td>Create a <a class="reference internal" href="generated/turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.html#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier"><code class="xref py py-class docutils literal"><span class="pre">NearestNeighborClassifier</span></code></a> model.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.html#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier"><code class="xref py py-obj docutils literal"><span class="pre">nearest_neighbor_classifier.NearestNeighborClassifier</span></code></a></td>
+<td>Nearest neighbor classifier model.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="generated/turicreate.classifier.create.html" class="btn btn-neutral float-right" title="turicreate.classifier.create">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="generated/turicreate.sentence_classifier.SentenceClassifier.html" class="btn btn-neutral" title="turicreate.sentence_classifier.SentenceClassifier"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

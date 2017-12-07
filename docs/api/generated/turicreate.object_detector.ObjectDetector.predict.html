@@ -1,0 +1,237 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.object_detector.ObjectDetector.predict &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>turicreate.object_detector.ObjectDetector.predict</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-object-detector-objectdetector-predict">
+<h1>turicreate.object_detector.ObjectDetector.predict<a class="headerlink" href="#turicreate-object-detector-objectdetector-predict" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="turicreate.object_detector.ObjectDetector.predict">
+<code class="descclassname">ObjectDetector.</code><code class="descname">predict</code><span class="sig-paren">(</span><em>dataset</em>, <em>confidence_threshold=0.25</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.object_detector.ObjectDetector.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict object instances in an sframe of images.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
+<blockquote>
+<div><p>A dataset that has the same columns that were used during training.
+If the annotations column exists in <code class="docutils literal"><span class="pre">dataset</span></code> it will be ignored
+while making predictions.</p>
+</div></blockquote>
+<p><strong>confidence_threshold</strong> : float</p>
+<blockquote>
+<div><p>Only return predictions above this level of confidence. The
+threshold can range from 0 to 1.</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool</p>
+<blockquote>
+<div><p>If True, prints prediction progress.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SArray</p>
+<blockquote class="last">
+<div><p>An SArray with model predictions. Each element corresponds to
+an image and contains a list of dictionaries. Each dictionary
+describes an object instances that was found in the image.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.object_detector.ObjectDetector.evaluate.html#turicreate.object_detector.ObjectDetector.evaluate" title="turicreate.object_detector.ObjectDetector.evaluate"><code class="xref py py-obj docutils literal"><span class="pre">evaluate</span></code></a></p>
+</div>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Make predictions</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># Stack predictions, for a better overview</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">object_detector</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">stack_annotations</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
+<span class="n">Data</span><span class="p">:</span>
+<span class="o">+--------+------------+-------+-------+-------+-------+--------+</span>
+<span class="o">|</span> <span class="n">row_id</span> <span class="o">|</span> <span class="n">confidence</span> <span class="o">|</span> <span class="n">label</span> <span class="o">|</span>   <span class="n">x</span>   <span class="o">|</span>   <span class="n">y</span>   <span class="o">|</span> <span class="n">width</span> <span class="o">|</span> <span class="n">height</span> <span class="o">|</span>
+<span class="o">+--------+------------+-------+-------+-------+-------+--------+</span>
+<span class="o">|</span>   <span class="mi">0</span>    <span class="o">|</span>    <span class="mf">0.98</span>    <span class="o">|</span>  <span class="n">dog</span>  <span class="o">|</span> <span class="mf">123.0</span> <span class="o">|</span> <span class="mf">128.0</span> <span class="o">|</span>  <span class="mf">80.0</span> <span class="o">|</span> <span class="mf">182.0</span>  <span class="o">|</span>
+<span class="o">|</span>   <span class="mi">0</span>    <span class="o">|</span>    <span class="mf">0.67</span>    <span class="o">|</span>  <span class="n">cat</span>  <span class="o">|</span> <span class="mf">150.0</span> <span class="o">|</span> <span class="mf">183.0</span> <span class="o">|</span> <span class="mf">129.0</span> <span class="o">|</span> <span class="mf">101.0</span>  <span class="o">|</span>
+<span class="o">|</span>   <span class="mi">1</span>    <span class="o">|</span>    <span class="mf">0.8</span>     <span class="o">|</span>  <span class="n">dog</span>  <span class="o">|</span>  <span class="mf">50.0</span> <span class="o">|</span> <span class="mf">432.0</span> <span class="o">|</span>  <span class="mf">65.0</span> <span class="o">|</span>  <span class="mf">98.0</span>  <span class="o">|</span>
+<span class="o">+--------+------------+-------+-------+-------+-------+--------+</span>
+<span class="p">[</span><span class="mi">3</span> <span class="n">rows</span> <span class="n">x</span> <span class="mi">7</span> <span class="n">columns</span><span class="p">]</span>
+
+<span class="c1"># Visualize predictions by generating a new column of marked up images</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;image_pred&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">object_detector</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">draw_bounding_boxes</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;predictions&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

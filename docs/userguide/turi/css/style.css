@@ -1,0 +1,686 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 100px;
+  font-size: 15px;
+}
+
+.navbar-nav {
+  float: right;
+}
+
+footer, footer p {
+  font-size: 12px;
+}
+footer.site-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 100px;
+  background-color: #fff;
+  padding: 20px 0;
+  border-top: 1px solid #E3E3E3;
+  text-align: center;
+}
+footer.site-footer p {
+  margin: 3px 0;
+}
+
+/* Override font family */
+body {
+  font-family: -apple-system,  -webkit-system-font, 'Helvetica Neue Thin', 'Helvetica Neue', 'Helvetica', sans-serif;
+}
+
+a{
+  color: #0a8cc4;
+}
+
+a:hover{
+  text-decoration:none;
+}
+
+hr {
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+/* Larger margins for headers */
+.h1, .h2, .h3, h1, h2, h3 {
+  margin-top: 50px;
+  margin-bottom: 20px;
+
+}
+
+.h4, h4 {
+  font-weight: 400;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+p > img {
+  margin: 30px 0;
+}
+
+.navbar .glyphicon {
+  font-size: 10px;
+  top: 0;
+  left: 2px;
+}
+
+p .glyphicon {
+  font-size: 10px;
+  top: -1px;
+  color: #0a8cc4;
+  left: 2px;
+}
+
+/* More margin and consistent color for code */
+pre {
+  margin: 20px 0;
+  background: #f8f8f8;
+}
+.hljs {
+  background: transparent;
+}
+
+/*
+ * Side navigation
+ *
+ * Scrollspy and affixed enhanced navigation to highlight sections and secondary
+ * sections of docs content.
+ */
+
+/* By default it's not affixed in mobile views, so undo that */
+.bs-docs-sidebar.affix {
+  position: static;
+}
+@media (min-width: 768px) {
+  .bs-docs-sidebar {
+    padding-left: 20px;
+  }
+}
+
+/* First level of nav */
+.bs-docs-sidenav {
+  margin-top: 50px;
+  margin-bottom: 20px;
+}
+
+.bs-docs-sidenav > li {
+  height: 50px;
+  line-height: 20px;
+}
+
+.bs-docs-sidebar .nav > li > a {
+  display: block;
+  padding: 2px 0;
+  font-size: 13px;
+  font-weight: 400;
+  color: #767676;
+}
+
+.bs-docs-sidebar .nav > li > a .nav-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background: #ffffff;
+  display: inline-block;
+  position: relative;
+  vertical-align: top;
+  margin-right: 5px;
+}
+
+.bs-docs-sidebar .nav > li > a .nav-dot .inner-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+
+
+.bs-docs-sidebar .nav > li > a .nav-dot .nav-connector {
+  width: 6px;
+  height: 32px;
+  background: #ffffff;
+  position: absolute;
+  top: 19px;
+  left: 7px;
+  pointer-events: none;
+}
+
+.bs-docs-sidebar .nav > .active > a .nav-dot .inner-dot,
+.bs-docs-sidebar .nav > .active > a .nav-dot .inner-dot {
+  background: #ae2080;
+}
+
+.bs-docs-sidebar .nav > li > a:hover,
+.bs-docs-sidebar .nav > li > a:focus {
+  color: #ae2080;
+  text-decoration: none;
+  background-color: transparent;
+}
+.bs-docs-sidebar .nav > .active > a,
+.bs-docs-sidebar .nav > .active:hover > a,
+.bs-docs-sidebar .nav > .active:focus > a {
+  color: #ae2080;
+  font-weight: 400;
+  background-color: transparent;
+}
+
+/* Show and affix the side nav when space allows it */
+@media (min-width: 992px) {
+  .bs-docs-sidebar .nav > .active > ul {
+    display: block;
+  }
+  /* Widen the fixed sidebar */
+  .bs-docs-sidebar.affix,
+  .bs-docs-sidebar.affix-bottom {
+    width: 213px;
+  }
+  .bs-docs-sidebar.affix {
+    position: fixed; /* Undo the static from mobile first approach */
+    top: 20px;
+  }
+  .bs-docs-sidebar.affix-bottom {
+    position: absolute; /* Undo the static from mobile first approach */
+  }
+  .bs-docs-sidebar.affix-bottom .bs-docs-sidenav,
+  .bs-docs-sidebar.affix .bs-docs-sidenav {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+@media (min-width: 1200px) {
+  /* Widen the fixed sidebar again */
+  .bs-docs-sidebar.affix-bottom,
+  .bs-docs-sidebar.affix {
+    width: 263px;
+  }
+}
+
+/* End sidebar nav styles */
+
+
+
+/* Default navbar overrides */
+.navbar-fixed-top{
+
+}
+.navbar-default {
+  background-color: #fbfbfb;
+  border-top: none;
+  border-color: #e9e9e9;
+  margin-bottom: 0;
+}
+.navbar-default.noborder {
+  border: none;
+}
+/*
+.navbar-default .navbar-brand {
+  color: #777;
+  font-weight: 300;
+  background-image: url('../img/chaos.png');
+  height: 60px;
+  background-repeat: no-repeat;
+  background-position: right center;
+  padding-right: 46px;
+  margin-right: 60px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  height: 60px;
+}*/
+.navbar-default .logo{
+  height: 45px;
+  padding-right: 46px;
+  padding-top: 13px;
+}
+.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
+  color: #5e5e5e;
+  background-color: transparent;
+}
+.navbar-default .navbar-nav > li > a {
+  color: #777;
+  padding-bottom: 17px;
+  padding-top: 20px;
+}
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+  color: #333;
+  background-color: transparent;
+}
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+  color: #ae2080;
+  background-color: transparent;
+  border-bottom: 3px solid #ae2080;
+}
+.navbar-default .navbar-nav > .disabled > a, .navbar-default .navbar-nav > .disabled > a:hover, .navbar-default .navbar-nav > .disabled > a:focus {
+  color: #ccc;
+  background-color: transparent;
+}
+.navbar-default .navbar-toggle {
+  border-color: #ddd;
+  margin-top: 13px;
+  margin-bottom: 13px;
+}
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+  background-color: #ddd;
+}
+.navbar-default .navbar-toggle .icon-bar {
+  background-color: #888;
+}
+.navbar-default .navbar-collapse,
+.navbar-default .navbar-form {
+  border-color: #e9e9e9;
+}
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+  background-color: transparent;
+  color: #ae2080;
+}
+/* End default navbar overrides */
+
+
+/* Jumbotron overrides */
+.jumbotron {
+  text-align: center;
+  background: #FBFBFB;
+  padding: 62px 0 0 0;
+  margin-bottom: 0px;
+}
+
+.jumbotron h1 {
+  font-family: -apple-system,  -webkit-system-font, 'HelveticaNeue-UltraLight','Helvetica Neue', 'Helvetica', sans-serif;
+  font-size: 60px;
+  margin: 30px 0;
+}
+
+.jumbotron p {
+  margin-bottom: 20px;
+  font-size: 24px;
+  line-height: 36px;
+}
+
+
+.jumbotron .btn-lg {
+  padding: 12px 58px;
+  font-weight: 300;
+  background-color: #0a8cc4;
+  border-color: #0a8cc4;
+  border-radius: 3px;
+  margin: 40px;
+}
+
+.jumbotron a{
+  font-size: 21px;
+}
+
+
+/* end jumbotron overrides */
+
+.feature-highlight{
+  padding: 30px 0 30px 0;
+  background-color:#F1F1F3;
+}
+
+.feature-highlight p{
+  color: #777;
+}
+
+.feature-highlight .fast{
+   background-image: url('../img/fast.png');
+   background-repeat: no-repeat;
+   background-position: center;
+   background-size: 100px;
+}
+
+.feature-highlight .extensible{
+   background-image: url('../img/extensible.png');
+   background-repeat: no-repeat;
+   background-position: center;
+   background-size: 180px;
+}
+
+.feature-highlight .scalable{
+   background-image: url('../img/scalable.png');
+   background-repeat: no-repeat;
+   background-position: center;
+    background-size: 200px;
+}
+
+.feature-highlight h2{
+  margin-top: 30px
+}
+
+.feature-highlight p{
+  width: 300px;
+}
+#algorithms{
+  text-align: center;
+  margin-top: 70px;
+}
+
+.section-icon{
+  max-width: 60px;
+  margin-top: 50px;
+  margin-bottom: 10px;
+}
+
+
+.tool{
+  margin-top: 30px;
+}
+
+
+.tool p{
+  width: 270px;
+}
+
+.tool ul{
+  padding-left: 15px;
+  margin-bottom: 0px;
+}
+
+.section-header {
+  text-align: center;
+}
+
+.algorithms{
+  margin-top: 70px;
+}
+
+ul{
+  list-style-type: circle;
+}
+
+.section-header h2 {
+  font-size: 36px;
+  margin: 40px 0 30px 0;
+}
+.section-header .lead {
+  font-size: 18px;
+  margin: 40px auto 40px auto;
+  width: 700px;
+}
+
+.tool ul a{
+  text-decoration:none;
+  color: #333;
+}
+
+.tool ul a:hover{
+  text-decoration:underline;
+}
+
+
+
+.tool-description a:hover{
+  color: #0055b3;
+}
+
+/* pre-footer */
+
+.pre-footer {
+  background: #f8f8f8;
+
+  padding: 40px 0;
+}
+
+.pre-footer h2 {
+  margin: 0 auto 50px auto;
+}
+
+.pre-footer .p-small {
+  margin: 30px auto 10px auto;
+  font-size: 14px;
+  color: #999;
+}
+
+.next-steps {
+  display: inline-block;
+}
+
+.pre-footer img.next-steps {
+  width: 7px;
+  margin-left: 10px;
+  position: relative;
+  bottom: 2px;
+}
+
+.vertical-line {
+  border-right: 1px solid #DCDCDC;
+}
+.docs-description {
+  margin-top: 10px;
+  width: 300px;
+}
+
+.vertical-line-space {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.push-down {
+  padding-bottom: 60px;
+
+}
+
+.start-footer{
+  background: #0a8cc4;
+  height: 100px;
+  margin-top: 60px;
+}
+
+.start-footer p{
+  text-align: center;
+  font-size: 27px;
+  font-weight: 300;
+  color: white;
+  line-height: 100px;
+}
+
+.get-started-help {
+  padding: 30px;
+  margin-top: 40px;
+  background: #f8f8f8;
+  width: 293px;
+}
+
+.get-started-help h2 {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.datasets {
+  padding: 30px;
+  margin-top: 40px;
+  background: #f8f8f8;
+  width: 293px;
+}
+
+.datasets h2 {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.datasets ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.datasets > ul > li {
+  margin-bottom: 25px;
+}
+
+.datasets > ul > li > ul > li {
+  padding-left: 20px;
+  margin-bottom: 5px;
+  margin-top: 10px;
+}
+
+.datasets .download {
+  height: 15px;
+  padding-left: 22px;
+  position: absolute;
+}
+
+/*Support*/
+.resource-title{
+  margin-bottom: 0px;
+}
+
+.faq p{
+  padding-top: 5px;
+}
+
+.faq h4{
+  padding-top: 10px;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: none;
+  -webkit-touch-callout: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/*new index*/
+.jumbotron .lead_no_button{
+  margin-bottom: 100px;
+}
+
+.products{
+  padding: 60px 0 30px 0;
+  background-color:#FFF; }
+
+.products p{
+  color: #777;
+  text-align: center;
+  margin: auto 30px auto 30px;
+}
+
+.product h3{
+  text-align: center;
+}
+
+.product a{
+  color: #333;
+  font-weight: 500;
+  font-size: 20px;
+}
+
+.products img{
+  height: 160px;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+}
+
+.bordered{
+  border-right: 1px solid #e3e3e3;
+}
+
+.tag{
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff !important;
+  background-color: #FF9500;
+  border-radius: 3px;
+  width: 120px;
+  padding: 2px 4px 2px 4px;
+  position: relative;
+  top: -3px;
+}
+.product .repo{
+  font-size: 15px;
+  color: #0a8cc4;
+}
+
+.signup{
+  background-color: #0a8cc4;
+  border-color: #0a8cc4;
+  border-radius: 3px;
+  margin:40px;
+  display: inline;
+}
+
+.notify{
+  color: #333 !important;
+  display: inline;
+  text-align: center;
+}
+
+.notify-bg{
+  background-color: #f1f1f3;
+}
+
+.flow-graphic{
+  width: 900px;
+  padding-bottom: 30px;
+  padding-top: 30px;
+}
+
+.platform{
+
+  border-radius:3px;
+  width: 133px;
+}
+
+.platform a{
+  color:#AE2080;
+  border-radius: 3px;
+  border:1px solid #AE2080;
+  color: #AE2080 !important;
+  padding: 5px 15px 5px 15px !important;
+  margin: 15px 5px 15px 5px !important;
+}
+
+.platform a:hover{
+  background-color: #AE2080 !important;
+  color: #FFF !important;
+}
+
+.products .deeplearning-tool{
+ height: 80%;
+ width: 100%;
+}
+
+.deeplearning-product{
+  padding:30px 0 30px 0;
+}
+
+.flow{
+  width: 600px;
+  margin-top: 50px;
+  margin-bottom: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.distributed{
+  width: 900px;
+  margin-bottom: 100px;
+}
+
+.section-header .dl-title{
+  margin-top: 80px;
+}
+
+.product .des-link{
+  font-size: 15px;
+  color: #0a8cc4;
+}
+
+.deeplearning-product p{
+  width: 700px;
+  text-align: center;
+}

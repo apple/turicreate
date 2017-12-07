@@ -1,0 +1,261 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.SGraph.get_edges &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>turicreate.SGraph.get_edges</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-sgraph-get-edges">
+<h1>turicreate.SGraph.get_edges<a class="headerlink" href="#turicreate-sgraph-get-edges" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="turicreate.SGraph.get_edges">
+<code class="descclassname">SGraph.</code><code class="descname">get_edges</code><span class="sig-paren">(</span><em>self</em>, <em>src_ids=list()</em>, <em>dst_ids=list()</em>, <em>fields={}</em>, <em>format='sframe'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SGraph.get_edges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a collection of edges and their attributes. This function is used
+to find edges by vertex IDs, filter on edge attributes, or list in-out
+neighbors of vertex sets.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>src_ids, dst_ids</strong> : list or SArray, optional</p>
+<blockquote>
+<div><p>Parallel arrays of vertex IDs, with each pair corresponding to an
+edge to fetch. Only edges in this list are returned. <code class="docutils literal"><span class="pre">None</span></code> can be
+used to designate a wild card. For instance, <code class="docutils literal"><span class="pre">src_ids=[1,</span> <span class="pre">2,</span>
+<span class="pre">None]</span></code>, <code class="docutils literal"><span class="pre">dst_ids=[3,</span> <span class="pre">None,</span> <span class="pre">5]</span></code> will fetch the edge 1-&gt;3, all
+outgoing edges of 2 and all incoming edges of 5. src_id and dst_id
+may be left empty, which implies an array of all wild cards.</p>
+</div></blockquote>
+<p><strong>fields</strong> : dict, optional</p>
+<blockquote>
+<div><p>Dictionary specifying equality constraints on field values. For
+example, <code class="docutils literal"><span class="pre">{'relationship':</span> <span class="pre">'following'}</span></code>, returns only edges whose
+&#8216;relationship&#8217; field equals &#8216;following&#8217;. <code class="docutils literal"><span class="pre">None</span></code> can be used as a
+value to designate a wild card. e.g. <code class="docutils literal"><span class="pre">{'relationship':</span> <span class="pre">None}</span></code> will
+find all edges with the field &#8216;relationship&#8217; regardless of the
+value.</p>
+</div></blockquote>
+<p><strong>format</strong> : {&#8216;sframe&#8217;, &#8216;list&#8217;}, optional</p>
+<blockquote>
+<div><p>Output format. The &#8216;sframe&#8217; output (default) contains columns
+__src_id and __dst_id with edge vertex IDs and a column for each
+edge attribute. List output returns a list of Edge objects.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SFrame | list [Edge]</p>
+<blockquote class="last">
+<div><p>An SFrame or list of edges.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.SGraph.edges.html#turicreate.SGraph.edges" title="turicreate.SGraph.edges"><code class="xref py py-obj docutils literal"><span class="pre">edges</span></code></a>, <a class="reference internal" href="turicreate.SGraph.get_vertices.html#turicreate.SGraph.get_vertices" title="turicreate.SGraph.get_vertices"><code class="xref py py-obj docutils literal"><span class="pre">get_vertices</span></code></a></p>
+</div>
+<p class="rubric">Examples</p>
+<p>Return all edges in the graph.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">SGraph</span><span class="p">,</span> <span class="n">Edge</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">SGraph</span><span class="p">()</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span><span class="n">Edge</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;rating&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}),</span>
+<span class="go">                            Edge(0, 2, attr={&#39;rating&#39;: 2}),</span>
+<span class="go">                            Edge(1, 2)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">src_ids</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">],</span> <span class="n">dst_ids</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">])</span>
+<span class="go">+----------+----------+--------+</span>
+<span class="go">| __src_id | __dst_id | rating |</span>
+<span class="go">+----------+----------+--------+</span>
+<span class="go">|    0     |    2     |   2    |</span>
+<span class="go">|    0     |    1     |   5    |</span>
+<span class="go">|    1     |    2     |  None  |</span>
+<span class="go">+----------+----------+--------+</span>
+</pre></div>
+</div>
+<p>Return edges with the attribute &#8220;rating&#8221; of 5.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;rating&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
+<span class="go">+----------+----------+--------+</span>
+<span class="go">| __src_id | __dst_id | rating |</span>
+<span class="go">+----------+----------+--------+</span>
+<span class="go">|    0     |    1     |   5    |</span>
+<span class="go">+----------+----------+--------+</span>
+</pre></div>
+</div>
+<p>Return edges 0 &#8211;&gt; 1 and 1 &#8211;&gt; 2 (if present in the graph).</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">src_ids</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dst_ids</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="go">+----------+----------+--------+</span>
+<span class="go">| __src_id | __dst_id | rating |</span>
+<span class="go">+----------+----------+--------+</span>
+<span class="go">|    0     |    1     |   5    |</span>
+<span class="go">|    1     |    2     |  None  |</span>
+<span class="go">+----------+----------+--------+</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

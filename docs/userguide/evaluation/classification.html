@@ -1,0 +1,1355 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <title>Classification metrics · GitBook</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.0">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-anchors/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../deployment/introduction.html" />
+    
+    
+    <link rel="prev" href="regression.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Overview
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../sframe/introduction.html">
+            
+                <a href="../sframe/introduction.html">
+            
+                    
+                    Working with data
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../sframe/tabular-data.html">
+            
+                <a href="../sframe/tabular-data.html">
+            
+                    
+                    Tabular data
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.1" data-path="../sframe/sframe-intro.html">
+            
+                <a href="../sframe/sframe-intro.html">
+            
+                    
+                    Loading and Saving
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.2" data-path="../sframe/data-manipulation.html">
+            
+                <a href="../sframe/data-manipulation.html">
+            
+                    
+                    Data Manipulation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.3" data-path="../data_formats_and_sources/sql_integration.html">
+            
+                <a href="../data_formats_and_sources/sql_integration.html">
+            
+                    
+                    SQL Databases
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../sgraph/sgraph.html">
+            
+                <a href="../sgraph/sgraph.html">
+            
+                    
+                    Graph data
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="../text/analysis.html">
+            
+                <a href="../text/analysis.html">
+            
+                    
+                    Text data
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4" data-path="../vis/introduction.html">
+            
+                <a href="../vis/introduction.html">
+            
+                    
+                    Visualization
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.4.1" data-path="../vis/gallery.html">
+            
+                <a href="../vis/gallery.html">
+            
+                    
+                    Example Gallery
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4.2" data-path="../vis/use_cases.html">
+            
+                <a href="../vis/use_cases.html">
+            
+                    
+                    Sample Use Cases
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../applications/intro.html">
+            
+                <a href="../applications/intro.html">
+            
+                    
+                    Task focused toolkits
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../recommender/introduction.html">
+            
+                <a href="../recommender/introduction.html">
+            
+                    
+                    Recommender systems
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1.1" data-path="../recommender/using-trained-models.html">
+            
+                <a href="../recommender/using-trained-models.html">
+            
+                    
+                    Using models
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.1.2" data-path="../recommender/choosing-a-model.html">
+            
+                <a href="../recommender/choosing-a-model.html">
+            
+                    
+                    Choosing a model
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../image_classifier/introduction.html">
+            
+                <a href="../image_classifier/introduction.html">
+            
+                    
+                    Image classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.2.1" data-path="../image_classifier/advanced-usage.html">
+            
+                <a href="../image_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.2" data-path="../image_classifier/how-it-works.html">
+            
+                <a href="../image_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../image_similarity/introduction.html">
+            
+                <a href="../image_similarity/introduction.html">
+            
+                    
+                    Image similarity
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../object_detection/introduction.html">
+            
+                <a href="../object_detection/introduction.html">
+            
+                    
+                    Object detection
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.4.1" data-path="../object_detection/advanced-usage.html">
+            
+                <a href="../object_detection/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.2" data-path="../object_detection/how-it-works.html">
+            
+                <a href="../object_detection/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../activity_classifier/introduction.html">
+            
+                <a href="../activity_classifier/introduction.html">
+            
+                    
+                    Activity classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" data-path="../activity_classifier/advanced-usage.html">
+            
+                <a href="../activity_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.2" data-path="../activity_classifier/export_coreml.html">
+            
+                <a href="../activity_classifier/export_coreml.html">
+            
+                    
+                    Deployment to CoreML
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.3" data-path="../activity_classifier/how-it-works.html">
+            
+                <a href="../activity_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6" data-path="../text_classifier/introduction.html">
+            
+                <a href="../text_classifier/introduction.html">
+            
+                    
+                    Text classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../modeling-data/intro.html">
+            
+                <a href="../modeling-data/intro.html">
+            
+                    
+                    Machine learning essentials
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../supervised-learning/classifier.html">
+            
+                <a href="../supervised-learning/classifier.html">
+            
+                    
+                    Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1.1" data-path="../supervised-learning/boosted_trees_classifier.html">
+            
+                <a href="../supervised-learning/boosted_trees_classifier.html">
+            
+                    
+                    Boosted Trees Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.2" data-path="../supervised-learning/decision_tree_classifier.html">
+            
+                <a href="../supervised-learning/decision_tree_classifier.html">
+            
+                    
+                    Decision Tree Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.3" data-path="../supervised-learning/logistic-regression.html">
+            
+                <a href="../supervised-learning/logistic-regression.html">
+            
+                    
+                    Logistic Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.4" data-path="../supervised-learning/knn_classifier.html">
+            
+                <a href="../supervised-learning/knn_classifier.html">
+            
+                    
+                    Nearest Neighbor Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.5" data-path="../supervised-learning/random_forest_classifier.html">
+            
+                <a href="../supervised-learning/random_forest_classifier.html">
+            
+                    
+                    Random Forest Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.6" data-path="../supervised-learning/svm.html">
+            
+                <a href="../supervised-learning/svm.html">
+            
+                    
+                    SVM
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../clustering/intro.html">
+            
+                <a href="../clustering/intro.html">
+            
+                    
+                    Clustering
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.2.1" data-path="../clustering/kmeans.html">
+            
+                <a href="../clustering/kmeans.html">
+            
+                    
+                    KMeans
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.2" data-path="../clustering/dbscan.html">
+            
+                <a href="../clustering/dbscan.html">
+            
+                    
+                    DBSCAN
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../graph_analytics/intro.html">
+            
+                <a href="../graph_analytics/intro.html">
+            
+                    
+                    Graph analytics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../nearest_neighbors/nearest_neighbors.html">
+            
+                <a href="../nearest_neighbors/nearest_neighbors.html">
+            
+                    
+                    Nearest neighbors
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../supervised-learning/regression.html">
+            
+                <a href="../supervised-learning/regression.html">
+            
+                    
+                    Regression
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.5.1" data-path="../supervised-learning/boosted_trees_regression.html">
+            
+                <a href="../supervised-learning/boosted_trees_regression.html">
+            
+                    
+                    Boosted Trees Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.2" data-path="../supervised-learning/decision_tree_regression.html">
+            
+                <a href="../supervised-learning/decision_tree_regression.html">
+            
+                    
+                    Decision Tree Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.3" data-path="../supervised-learning/linear-regression.html">
+            
+                <a href="../supervised-learning/linear-regression.html">
+            
+                    
+                    Linear Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.4" data-path="../supervised-learning/random_forest_regression.html">
+            
+                <a href="../supervised-learning/random_forest_regression.html">
+            
+                    
+                    Random Forest Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="../text/intro.html">
+            
+                <a href="../text/intro.html">
+            
+                    
+                    Text analysis
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="introduction.html">
+            
+                <a href="introduction.html">
+            
+                    
+                    Evaluating models
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="regression.html">
+            
+                <a href="regression.html">
+            
+                    
+                    Regression metrics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.5.2" data-path="classification.html">
+            
+                <a href="classification.html">
+            
+                    
+                    Classification metrics
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../deployment/introduction.html">
+            
+                <a href="../deployment/introduction.html">
+            
+                    
+                    Deployment
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../conclusion.html">
+            
+                <a href="../conclusion.html">
+            
+                    
+                    Additional Resources
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Classification metrics</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="classification-metrics"><a name="classification-metrics" class="plugin-anchor" href="#classification-metrics"><i class="fa fa-link" aria-hidden="true"></i></a>Classification Metrics</h1><p>As mentioned previously, evaluation metrics are tied to the machine learning task. In this section, we will cover metrics for classification tasks. In binary classification, there are two possible output classes. In multi-class
+classification, there are more than two possible classes.</p><p>There are many ways of measuring classification performance:</p><ul><li><a href="classification.html#accuracy">Accuracy</a>
+</li>
+<li><a href="classification.html#confusion_matrix">Confusion matrix</a>
+</li>
+<li><a href="classification.html#log_loss">Log-loss</a>
+</li>
+<li><a href="classification.html#precision_recall">Precision and Recall</a>
+</li>
+<li><a href="classification.html#f_scores">F-Scores</a>
+</li>
+<li><a href="classification.html#roc_curve">Receiver operating characteristic (ROC) curve</a>
+</li>
+<li><a href="classification.html#auc">Area under curve (AUC) (&quot;curve&quot; corresponds to the ROC curve)</a>
+</li></ul>
+<h2 id="accuracy"><a name="accuracy" class="plugin-anchor" href="#accuracy"><i class="fa fa-link" aria-hidden="true"></i></a>Accuracy</h2><p>Accuracy simply measures how often the classifier makes the correct prediction.
+It&#x2019;s the ratio between the number of correct predictions and the total number
+of predictions (the number of test data points).</p><p><script type="math/tex; mode=display">
+    \mbox{accuracy} = \frac{\mbox{# correct}}{\mbox{# predictions}}
+</script></p><pre><code class="lang-python"><span class="hljs-keyword">import</span> turicreate <span class="hljs-keyword">as</span> tc
+
+y    = tc.SArray([<span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;dog&quot;</span>, <span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;cat&quot;</span>])
+yhat = tc.SArray([<span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;dog&quot;</span>, <span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;dog&quot;</span>])
+
+<span class="hljs-keyword">print</span> tc.evaluation.accuracy(y, yhat)</code></pre>
+<pre><code>0.75</code></pre>
+<p>Accuracy looks easy enough. However, it makes no distinction between classes;
+correct answers for each class are treated equally. Sometimes this is not
+enough. You might want to look at how many examples failed for each class.
+This would be the case if the cost of misclassification is different, or if you
+have a lot more test data of one class than the other. For instance, making the
+call that a patient has cancer when he doesn&#x2019;t (known as a false positive) has
+very different consequences than making the call that a patient doesn&#x2019;t have
+cancer when he does (a false negative).</p><h3 id="multi-class-averaging"><a name="multi-class-averaging" class="plugin-anchor" href="#multi-class-averaging"><i class="fa fa-link" aria-hidden="true"></i></a>Multiclass Averaging</h3><p>The multi-class setting is an extension of the binary setting. The accuracy
+metrics can be &quot;averaged&quot; across all the classes in many possible ways. Some of
+them are:</p><ul><li><strong>micro</strong>: Calculate metrics globally by counting the total number of times
+each class was correctly predicted and incorrectly predicted.
+</li>
+<li><strong>macro</strong>: Calculate metrics for each &quot;class&quot; independently, and find their
+unweighted mean. This does not take label imbalance into account.
+</li>
+<li><strong>None</strong>: Return a metric corresponding to each class.
+</li></ul>
+<pre><code class="lang-python"><span class="hljs-keyword">import</span> turicreate <span class="hljs-keyword">as</span> tc
+
+y    = tc.SArray([<span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;dog&quot;</span>, <span class="hljs-string">&quot;foosa&quot;</span>, <span class="hljs-string">&quot;cat&quot;</span>])
+yhat = tc.SArray([<span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;dog&quot;</span>, <span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;dog&quot;</span>])
+
+<span class="hljs-keyword">print</span> tc.evaluation.accuracy(y, yhat, average = <span class="hljs-string">&quot;micro&quot;</span>)
+<span class="hljs-keyword">print</span> tc.evaluation.accuracy(y, yhat, average = <span class="hljs-string">&quot;macro&quot;</span>)
+<span class="hljs-keyword">print</span> tc.evaluation.accuracy(y, yhat, average = <span class="hljs-keyword">None</span>)</code></pre>
+<pre><code class="lang-no-highlight">0.5
+0.666666666667
+{&apos;dog&apos;: 0.75, &apos;foosa&apos;: 0.75, &apos;cat&apos;: 0.5}</code></pre>
+<p>In general, when there are different numbers of examples per class, the average
+per-class accuracy will be different from the micro-average accuracy.  When the
+classes are imbalanced, i.e., there are a lot more examples of one class than
+the other, then the accuracy will give a very distorted picture, because the
+class with more examples will dominate the statistic. In that case, you should
+look at the average per-class accuracy (average=&quot;micro&quot;), as well as the
+individual per-class accuracy numbers (average=None). Per-class accuracy is not
+without its own caveats, however: for instance, if there are very few examples of one
+class, the test statistics for that class will be unreliable (i.e., they have
+large variance), so it&#x2019;s not statistically sound to average quantities with
+different degrees of variance.</p><h2 id="confusion_matrix"><a name="confusion_matrix" class="plugin-anchor" href="#confusion_matrix"><i class="fa fa-link" aria-hidden="true"></i></a>Confusion matrix</h2><p>A confusion matrix (or confusion table) shows a more detailed breakdown of
+correct and incorrect classifications for each class. Here is an example of how
+the confusion matrix can be computed.</p><p>The confusion table is an SFrame consisting of three columns:</p><ul><li><strong>target_label</strong>: The label of the ground truth.
+</li>
+<li><strong>predicted_label</strong>: The predicted label.
+</li>
+<li><strong>count</strong>: The number of times the <code>target_label</code> was predicted as the
+<code>predicted_label</code>.
+</li></ul>
+<pre><code class="lang-python">y    = tc.SArray([<span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;dog&quot;</span>, <span class="hljs-string">&quot;foosa&quot;</span>, <span class="hljs-string">&quot;cat&quot;</span>])
+yhat = tc.SArray([<span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;dog&quot;</span>, <span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;dog&quot;</span>])
+
+cf_matrix = tc.evaluation.confusion_matrix(y, yhat)</code></pre>
+<pre><code class="lang-no-highlight">Columns:
+    target_label    str
+    predicted_label    str
+    count    int
+
+Rows: 4
+
+Data:
++--------------+-----------------+-------+
+| target_label | predicted_label | count |
++--------------+-----------------+-------+
+|    foosa     |       cat       |   1   |
+|     cat      |       dog       |   1   |
+|     dog      |       dog       |   1   |
+|     cat      |       cat       |   1   |
++--------------+-----------------+-------+
+[4 rows x 3 columns]</code></pre>
+<p>Looking at the matrix, one can clearly get a better picture of which class the
+model best identifies. This information is lost if one only looks at the
+overall accuracy.</p><h2 id="log_loss"><a name="log_loss" class="plugin-anchor" href="#log_loss"><i class="fa fa-link" aria-hidden="true"></i></a>Log-loss</h2><p>Log-loss, or logarithmic loss, gets into the finer details of a classifier. In
+particular, if the raw output of the classifier is a numeric probability
+instead of a class label, then log-loss can be used. The probability
+essentially serves as a gauge of confidence. If the true label is &quot;0&quot; but the
+classifier thinks it belongs to class &quot;1&quot; with probability 0.51, then the
+classifier would be making a mistake. But it&#x2019;s a near miss because the
+probability is very close to the decision boundary of 0.5. Log-loss is a &#x201C;soft&#x201D;
+measurement of accuracy that incorporates this idea of probabilistic
+confidence.</p><p>Mathematically, log-loss for a binary classifier looks like this:</p><p><script type="math/tex; mode=display">
+\mbox{log-loss} = \sum_{i=1}^{N} y_i \log(p_i) + (1 - y_i) \log(1 - p_i)
+</script></p><p>Here, <script type="math/tex; ">p_i</script> is the probability that the i-th data point belongs to class &quot;1&quot;,
+as judged by the classifier. <script type="math/tex; ">y_i</script> is the true label and is either &quot;0&quot; or
+&quot;1&quot;.  The beautiful thing about this definition is that it is intimately tied
+to information theory: Intuitively, log-loss measures the unpredictability of
+the &#x201C;extra noise&#x201D; that comes from using a predictor as opposed to the true
+labels.  By minimizing the cross entropy, we maximize the accuracy of the
+classifier.</p><p>Here is an example of how this is computed:</p><pre><code class="lang-python"><span class="hljs-keyword">import</span> turicreate <span class="hljs-keyword">as</span> tc
+
+targets = tc.SArray([<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>])
+predictions = tc.SArray([<span class="hljs-number">0.1</span>, <span class="hljs-number">0.35</span>, <span class="hljs-number">0.7</span>, <span class="hljs-number">0.99</span>])
+
+log_loss = tc.evaluation.log_loss(targets, predictions)</code></pre>
+<pre><code class="lang-no-highlight">1.5292569425208318</code></pre>
+<p>Logloss is undefined when a probability value <script type="math/tex; ">p_i = 0</script>, or <script type="math/tex; ">p_i = 1</script>.
+Hence, probabilities are clipped to <script type="math/tex; ">\max(\epsilon, \min(1 - \epsilon, p_i))</script>
+where <script type="math/tex; ">\epsilon=1.0 \times 10^{-15}</script></p><h3 id="multi-class-log-loss"><a name="multi-class-log-loss" class="plugin-anchor" href="#multi-class-log-loss"><i class="fa fa-link" aria-hidden="true"></i></a>Multi-class log-loss</h3><p>In the multi-class setting, log-loss requires a vector of probabilities (that
+sum to 1) for each class label in the input dataset. In this example, there are
+three classes [0, 1, 2], and the vector of probabilities correspond to the
+probability of prediction for each of the three classes (while maintaining
+ordering).</p><pre><code class="lang-python">targets    = tc.SArray([ <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>])
+predictions = tc.SArray([[<span class="hljs-number">.1</span>, <span class="hljs-number">.8</span>, <span class="hljs-number">0.1</span>],
+                        [<span class="hljs-number">.9</span>, <span class="hljs-number">.1</span>, <span class="hljs-number">0.0</span>],
+                        [<span class="hljs-number">.8</span>, <span class="hljs-number">.1</span>, <span class="hljs-number">0.1</span>],
+                        [<span class="hljs-number">.3</span>, <span class="hljs-number">.6</span>, <span class="hljs-number">0.1</span>]])
+
+log_loss = tc.evaluation.log_loss(targets, predictions)</code></pre>
+<pre><code class="lang-no-highlight">0.785478695933018</code></pre>
+<p>For multi-class classification, when the target label is of type <strong>string</strong>,
+then the probability vector is assumed to be a vector of probabilities of class
+as sorted alphanumerically. Hence, for the probability vector [0.1, 0.2, 0.7]
+for a dataset with classes [&quot;cat&quot;, &quot;dog&quot;, &quot;rat&quot;; the 0.1 refers to &quot;cat&quot;, 0.2
+refers to &quot;dog&quot;, and 0.7 to &quot;rat&quot;.</p><pre><code class="lang-python">target    = tc.SArray([ <span class="hljs-string">&quot;dog&quot;</span>, <span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;foosa&quot;</span>, <span class="hljs-string">&quot;dog&quot;</span>])
+predictions = tc.SArray([[<span class="hljs-number">.1</span>, <span class="hljs-number">.8</span>, <span class="hljs-number">0.1</span>],
+                        [<span class="hljs-number">.9</span>, <span class="hljs-number">.1</span>, <span class="hljs-number">0.0</span>],
+                        [<span class="hljs-number">.8</span>, <span class="hljs-number">.1</span>, <span class="hljs-number">0.1</span>],
+                        [<span class="hljs-number">.3</span>, <span class="hljs-number">.6</span>, <span class="hljs-number">0.1</span>]])
+log_loss = tc.evaluation.log_loss(y, yhat)</code></pre>
+<pre><code class="lang-no-highlight">1.5292569425208318</code></pre>
+<h2 id="precision_recall"><a name="precision_recall" class="plugin-anchor" href="#precision_recall"><i class="fa fa-link" aria-hidden="true"></i></a>Precision &amp; Recall</h2><p>Precision and recall are actually two metrics. But they are often used
+together. Precision answers the question: <em>Out of the items that the classifier
+predicted to be true, how many are actually true?</em> Whereas, recall answers the
+question: <em>Out of all the items that are true, how many are found to
+be true by the classifier?</em></p><p>The precision score quantifies the ability of a classifier to not label a
+<strong>negative</strong> example as <strong>positive</strong>. The precision score can be interpreted as
+the probability that a <strong>positive</strong> prediction made by the classifier is
+<strong>positive</strong>.  The score is in the range [0,1] with 0 being the worst, and 1
+being perfect.</p><p>The precision and recall scores can be defined as:</p><p><script type="math/tex; ">\mbox{precision} = \frac{\mbox{# true positive}}{\mbox{#true positive + #false positive}}</script></p><p><script type="math/tex; ">\mbox{recall} = \frac{\mbox{# true positive}}{\mbox{#true positive + #false negative}}</script></p><pre><code class="lang-python">targets = turicreate.SArray([<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>])
+predictions = turicreate.SArray([<span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>])
+
+pr_score   = turicreate.evaluation.precision(targets, predictions)
+rec_score  = turicreate.evaluation.recall(targets, predictions)
+<span class="hljs-keyword">print</span> pr_score, rec_score</code></pre>
+<pre><code class="lang-no-highlight">0.25, 0.5</code></pre>
+<p>Precision can also be defined then the target classes are of type <strong>string</strong>.
+For binary classification, when the target label is of type <strong>string</strong>, then
+the labels are sorted alphanumerically and the largest label is considered the
+&quot;positive&quot; label.</p><pre><code class="lang-python">targets = turicreate.SArray([<span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;dog&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;dog&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>])
+predictions = turicreate.SArray([<span class="hljs-string">&apos;dog&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;dog&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;dog&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;dog&apos;</span>])
+
+pr_score   = turicreate.evaluation.precision(targets, predictions)
+rec_score  = turicreate.evaluation.recall(targets, predictions)
+<span class="hljs-keyword">print</span> pr_score, rec_score</code></pre>
+<pre><code class="lang-no-highlight">0.25, 0.5</code></pre>
+<h3 id="multi-class-precision-recall"><a name="multi-class-precision-recall" class="plugin-anchor" href="#multi-class-precision-recall"><i class="fa fa-link" aria-hidden="true"></i></a>Multi-class precision-recall</h3><p>Precision and recall scores can also be defined in the multi-class setting.
+Here, the metrics can be &quot;averaged&quot; across all the classes in many possible
+ways. Some of them are:</p><ul><li><strong>micro</strong>: Calculate metrics globally by counting the total number of times
+each class was correctly predicted and incorrectly predicted.
+</li>
+<li><strong>macro</strong>: Calculate metrics for each &quot;class&quot; independently, and find their
+unweighted mean. This does not take label imbalance into account.
+</li>
+<li><strong>None</strong>: Return the accuracy score for each class.corresponding to each
+class.
+</li></ul>
+<pre><code class="lang-python">targets = turicreate.SArray([<span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;dog&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;dog&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;foosa&apos;</span>])
+predictions = turicreate.SArray([<span class="hljs-string">&apos;dog&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;dog&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;dog&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;foosa&apos;</span>])
+
+macro_pr = turicreate.evaluation.precision(targets, predictions, average=<span class="hljs-string">&apos;macro&apos;</span>)
+micro_pr = turicreate.evaluation.precision(targets, predictions, average=<span class="hljs-string">&apos;micro&apos;</span>)
+per_class_pr = turicreate.evaluation.precision(targets, predictions, average=<span class="hljs-keyword">None</span>)
+
+<span class="hljs-keyword">print</span> macro_pr, micro_pr
+<span class="hljs-keyword">print</span> per_class_pr</code></pre>
+<pre><code class="lang-no-highlight">0.694444444444 0.625
+{&apos;foosa&apos;: 1.0, &apos;dog&apos;: 0.3333333333333333, &apos;cat&apos;: 0.75}</code></pre>
+<p><strong>Note:</strong> The micro average precision, recall, and accuracy scores are
+mathematically equivalent.</p><p><strong> Undefined Precision-Recall </strong>
+The precision (or recall) score is not defined when the number of true positives + false positives (true positives + false negatives) is zero. In
+other words, then the denominators of the respective equations are 0, the
+metrics are not defined. In those settings, we return a value of <code>None</code>. In the
+multi-class setting, the <code>None</code> is skipped during averaging.</p><h2 id="f_scores"><a name="f_scores" class="plugin-anchor" href="#f_scores"><i class="fa fa-link" aria-hidden="true"></i></a>F-scores (F1, F-beta)</h2><p>The F1-score is a single metric that combines both precision and recall via
+their harmonic mean:</p><p><script type="math/tex; ">F_1 = 2 \frac{\mbox{precision} * \mbox{recall}}{\mbox{precision + recall}}</script></p><p>The score lies in the range [0,1] with 1 being ideal and 0 being the worst.
+Unlike the arithmetic mean, the harmonic mean tends toward the smaller of the
+two elements.  Hence the F1 score will be small if either precision or recall
+is small.</p><p>The F1-score (sometimes known as the balanced F-beta score), is a special case
+of a metric known as the F-Beta score, which <em>measures the effectiveness of
+retrieval with respect to a user who attaches <script type="math/tex; ">\beta</script> times as much
+importance to recall as to precision</em>.</p><p><script type="math/tex; ">F_\beta = (1 + \beta^2) \frac{\mbox{precision} * \mbox{recall}}{\mbox{\beta^2 precision + recall}}.</script></p><pre><code class="lang-python">targets = turicreate.SArray([<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>])
+predictions = turicreate.SArray([<span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>])
+
+f1    = turicreate.evaluation.f1_score(targets, predictions)
+fbeta = turicreate.evaluation.fbeta_score(targets, predictions, beta = <span class="hljs-number">2.0</span>)
+<span class="hljs-keyword">print</span> f1, fbeta</code></pre>
+<pre><code class="lang-no-highlight">0.333333333333 0.416666666667</code></pre>
+<p>Like the other metrics, the F1-score (or F-beta score) can also be defined when
+the target classes are of type <strong>string</strong>.  For binary classification, when the
+target label is of type <strong>string</strong>, then the labels are sorted alphanumerically
+and the largest label is considered the &quot;positive&quot; label.</p><pre><code class="lang-python">targets = turicreate.SArray([<span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;dog&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;dog&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>])
+predictions = turicreate.SArray([<span class="hljs-string">&apos;dog&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;dog&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;dog&apos;</span>, <span class="hljs-string">&apos;cat&apos;</span>, <span class="hljs-string">&apos;dog&apos;</span>])
+
+f1    = turicreate.evaluation.f1_score(targets, predictions)
+fbeta = turicreate.evaluation.fbeta_score(targets, predictions, beta = <span class="hljs-number">2.0</span>)
+<span class="hljs-keyword">print</span> f1, fbeta</code></pre>
+<pre><code class="lang-no-highlight">0.333333333333 0.416666666667</code></pre>
+<h3 id="multi-class-f-scores"><a name="multi-class-f-scores" class="plugin-anchor" href="#multi-class-f-scores"><i class="fa fa-link" aria-hidden="true"></i></a>Multi-class F-scores</h3><p>F-scores can also be defined in the multi-class setting.  Here, the metrics can
+be &quot;averaged&quot; across all the classes in many possible ways. Some of them are:</p><ul><li><strong>micro</strong>: Calculate metrics globally by counting the total number of times
+each class was correctly predicted and incorrectly predicted.
+</li>
+<li><strong>macro</strong>: Calculate metrics for each &quot;class&quot; independently, and find their
+unweighted mean. This does not take label imbalance into account.
+</li>
+<li><strong>None</strong>: Return the accuracy score for each class.corresponding to each
+class.
+</li></ul>
+<p><strong>Note:</strong> The micro average precision, recall, and accuracy scores are
+mathematically equivalent.</p><h2 id="roc_curve"><a name="roc_curve" class="plugin-anchor" href="#roc_curve"><i class="fa fa-link" aria-hidden="true"></i></a>Receiver Operating Characteristic (ROC Curve)</h2><p>In statistics, a receiver operating characteristic (ROC), or ROC curve, is a
+graphical plot that illustrates the performance of a binary classifier system
+as its prediction <strong>threshold</strong> is varied. The ROC curve provides nuanced
+details about the behavior of the classifier.  The curve is created by plotting
+the <strong>true positive rate</strong> (TPR) against the <strong>false positive rate</strong> (FPR) at
+various threshold settings.</p><p>This exotic sounding name originated in the 1950s from radio signal analysis,
+and was made popular by a 1978 paper by Charles Metz called &quot;Basic Principles
+of ROC analysis.&quot; The ROC curve shows the sensitivity of the classifier by
+plotting the rate of true positives to the rate of false positives. In other
+words, it shows you how many correct positive classifications can be gained as
+you allow for more and more false positives.  The perfect classifier that makes
+no mistakes would hit a true positive rate of 100% immediately, without
+incurring any false positives. This almost never happens in practice.</p><p>A good ROC curve has a lot of space under it (because the true positive rate
+shoots up to 100% very quickly). A bad ROC curve covers very little area.</p><pre><code class="lang-python">targets = turicreate.SArray([<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>])
+predictions = turicreate.SArray([<span class="hljs-number">0.1</span>, <span class="hljs-number">0.35</span>, <span class="hljs-number">0.7</span>, <span class="hljs-number">0.99</span>])
+
+roc_curve = turicreate.evaluation.roc_curve(targets, predictions)</code></pre>
+<pre><code class="lang-no-highlight">Data:
++-----------+-----+-----+---+---+
+| threshold | fpr | tpr | p | n |
++-----------+-----+-----+---+---+
+|    0.0    | 1.0 | 1.0 | 2 | 2 |
+|   1e-05   | 1.0 | 1.0 | 2 | 2 |
+|   2e-05   | 1.0 | 1.0 | 2 | 2 |
+|   3e-05   | 1.0 | 1.0 | 2 | 2 |
+|   4e-05   | 1.0 | 1.0 | 2 | 2 |
+|   5e-05   | 1.0 | 1.0 | 2 | 2 |
+|   6e-05   | 1.0 | 1.0 | 2 | 2 |
+|   7e-05   | 1.0 | 1.0 | 2 | 2 |
+|   8e-05   | 1.0 | 1.0 | 2 | 2 |
+|   9e-05   | 1.0 | 1.0 | 2 | 2 |
++-----------+-----+-----+---+---+
+[100001 rows x 5 columns]</code></pre>
+<p>The result of the <strong>roc curve</strong> is a multi-column <strong>SFrame</strong> with the following
+columns:</p><ul><li><strong>tpr</strong>: True positive rate, the number of true positives divided by the number of positives.
+</li>
+<li><strong>fpr</strong>: False positive rate, the number of false positives divided by the number of negatives.
+</li>
+<li><strong>p</strong>: Total number of positive values.
+</li>
+<li><strong>n</strong>: Total number of negative values.
+</li>
+<li><strong>class</strong>: Reference class for this ROC curve (for multi-class classification).
+</li></ul>
+<p><strong>Note</strong>: The ROC curve is computed using a binned histogram and hence always
+contains 100K rows. The binned histogram provides a curve that is accurate to
+the 5th decimal.</p><pre><code class="lang-python">targets = turicreate.SArray([<span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;dog&quot;</span>, <span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;dog&quot;</span>])
+predictions = turicreate.SArray([<span class="hljs-number">0.1</span>, <span class="hljs-number">0.35</span>, <span class="hljs-number">0.7</span>, <span class="hljs-number">0.99</span>])
+
+roc_curve = turicreate.evaluation.roc_curve(targets, predictions)</code></pre>
+<pre><code class="lang-no-highlight">Data:
++-----------+-----+-----+---+---+
+| threshold | fpr | tpr | p | n |
++-----------+-----+-----+---+---+
+|    0.0    | 1.0 | 1.0 | 2 | 2 |
+|   1e-05   | 1.0 | 1.0 | 2 | 2 |
+|   2e-05   | 1.0 | 1.0 | 2 | 2 |
+|   3e-05   | 1.0 | 1.0 | 2 | 2 |
+|   4e-05   | 1.0 | 1.0 | 2 | 2 |
+|   5e-05   | 1.0 | 1.0 | 2 | 2 |
+|   6e-05   | 1.0 | 1.0 | 2 | 2 |
+|   7e-05   | 1.0 | 1.0 | 2 | 2 |
+|   8e-05   | 1.0 | 1.0 | 2 | 2 |
+|   9e-05   | 1.0 | 1.0 | 2 | 2 |
++-----------+-----+-----+---+---+
+[100001 rows x 5 columns]</code></pre>
+<p>For binary classification, when the target label is of type <strong>string</strong>, then
+the labels are sorted alphanumerically and the largest label is chosen as the
+the <strong>positive class</strong>. The ROC curve can also be defined in the multi-class
+setting by returning a single curve for each class.</p><h2 id="auc"><a name="auc" class="plugin-anchor" href="#auc"><i class="fa fa-link" aria-hidden="true"></i></a>Area under the curve (AUC)</h2><p>AUC stands for Area Under the Curve. Here, the curve is the ROC curve. As
+mentioned above, a good ROC curve has a lot of space under it (because the true
+positive rate shoots up to 100% very quickly). A bad ROC curve covers very
+little area.</p><pre><code class="lang-python">targets = turicreate.SArray([<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>])
+predictions = turicreate.SArray([<span class="hljs-number">0.1</span>, <span class="hljs-number">0.35</span>, <span class="hljs-number">0.7</span>, <span class="hljs-number">0.99</span>])
+
+auc = turicreate.evaluation.auc(targets, predictions)
+<span class="hljs-keyword">print</span> auc</code></pre>
+<pre><code class="lang-no-highlight">0.5</code></pre>
+<p><strong>Note</strong>: The AUC score is computed using a binned histogram and hence always
+contains 100K rows. The binned histogram provides a curve that is accurate to
+the 5th decimal.</p><p>The AUC score can also be defined when the target classes are of type
+<strong>string</strong>.  For binary classification, when the target label is of type
+<strong>string</strong>, then the labels are sorted alphanumerically and the largest label
+is considered the &quot;positive&quot; label.</p><pre><code class="lang-python">targets = turicreate.SArray([<span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;dog&quot;</span>, <span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;dog&quot;</span>])
+predictions = turicreate.SArray([<span class="hljs-number">0.1</span>, <span class="hljs-number">0.35</span>, <span class="hljs-number">0.7</span>, <span class="hljs-number">0.99</span>])
+
+auc = turicreate.evaluation.auc(targets, predictions)
+<span class="hljs-keyword">print</span> auc</code></pre>
+<pre><code class="lang-no-highlight">0.5</code></pre>
+<h3 id="multi-class-area-under-curve"><a name="multi-class-area-under-curve" class="plugin-anchor" href="#multi-class-area-under-curve"><i class="fa fa-link" aria-hidden="true"></i></a>Multi-class area under curve</h3><p>The AUC score can also be defined in the multi-class setting.  Here, the
+metrics can be &quot;averaged&quot; across all the classes in many possible ways. Some of
+them are:</p><ul><li><strong>macro</strong>: Calculate metrics for each &quot;class&quot; independently, and find their
+unweighted mean. This does not take label imbalance into account.
+</li>
+<li><strong>None</strong>: Return a metric corresponding to each class.
+</li></ul>
+<h2 id="calibration_curve"><a name="calibration_curve" class="plugin-anchor" href="#calibration_curve"><i class="fa fa-link" aria-hidden="true"></i></a>Calibration curve</h2><p>A calibration curve that compares the true probability of an event with its
+predicted probability. This chart shows if the  created model has well
+&quot;calibrated&quot; probability predictions. The closer the calibration curve is to
+the &quot;ideal&quot; curve, the more confident one can be in interpreting the
+probability predictions as a confidence score for predicting churn.</p><p>The graph is constructed by segmenting the probability space, from 0.0 to 1.0,
+into a fixed number of discrete steps. For instance, for a step size of 0.1,
+the probability space would be divided into 10 buckets: [0.0, 0.1), [0.1, 0.2)
+... [0.9, 1.0]. Given a set of events for which a predicted probability has
+been computed, each predicted probability is rounded to the appropriate bucket.
+An aggregation is then performed to compute the total number of data points
+within each probability range along with fraction of those data points that
+were truly positive events. The calibration curve plots the fraction of events
+that were truly positive for each probability bucket. A perfectly calibrated
+model, the curve would be a line from (0.0, 0.0) to (1.0, 1.0).</p><p>Consider a simple example of a binary classification problem where a model
+was created to predict a click or no-click event. If an event was &#x201C;clicked&#x201D;,
+and had a predicted probability of 0.345, using a binning of 0.1, the &#x201C;number
+of events&#x201D; for bin [0.3, 0.4) would be increased by one, and the &#x201C;number of
+true&#x201D; events would be increased by one. If an event with probability 0.231 was
+&#x201C;not clicked&#x201D;, the &#x201C;number of events&#x201D; for bin [0.2, 0.3) would be increased by
+one, while the &#x201C;number of true&#x201D; events would not be increased. For each bin,
+the &#x201C;number of true&#x201D; over the &#x201C;total number of events&#x201D; becomes the observed
+probability (y-axis value). The average predicted probability for the bin
+becomes the x-axis value.</p><h2 id="precision_recall_curve"><a name="precision_recall_curve" class="plugin-anchor" href="#precision_recall_curve"><i class="fa fa-link" aria-hidden="true"></i></a>Precision-Recall Curve</h2><p>The precision-recall curve plots the inherent trade-off between precision and
+recall. It is easier to understand and interpret this curve by understanding
+each of the components of this curve at different &quot;thresholds&quot;.</p><p>Consider a simple example of a binary classification problem where a
+model was created to predict a click or no-click event. If an event was
+&#x201C;clicked&#x201D;, Looking at the confusion matrix, the model predictions can be
+broken down into four categories:</p><ul><li>Events that were predicted to be &quot;click&quot; and were actually &quot;click&quot; events
+(True Positive, TP).
+</li>
+<li>Events that were predicted to be &quot;not-click&quot; but were not &quot;click&quot; events
+(False Positive, FP).
+</li>
+<li>Events that were predicted to be &quot;not-click&quot; and were actually &quot;not-click&quot;
+events (True Negative, TN).
+</li>
+<li>Events that were predicted to be &quot;click&quot; but were actually &quot;not-click&quot; events
+(False Negative, FN).
+</li></ul>
+<p>As defined earlier, precision is fraction of predicted click events that were
+actually click events while recall is the fraction of click events that were
+correctly predicted by the model. The definitions of precision and recall are
+not necessarily discrete events and can depend on the prediction probabilities.
+One can define a &quot;threshold&quot; of probability above which the model prediction
+can be considered a &quot;click&quot; prediction.</p><p>For example, a &quot;threshold&quot; of 0.5 implies that all probability predictions
+above 0.5 are considered &quot;click&quot; events and all predictions below are
+considered &quot;not-click&quot; events. By varying the threshold between 0.0 and 1.0, we
+can compute different precision and recall numbers. At a threshold of 0.0 all
+the model predictions are &quot;click&quot;. At this point, the model exhibits perfect
+recall but has the worst possible precision. At a threshold of 1.0, the model
+predicts every event as &quot;not-click&quot;; this is prefect precision (the model was
+never wrong at predicting clicks!) but the worst possible recall.</p><p>This by plotting precision and recall at various thresholds, the
+precision-recall curve illustrates the trade-off of precision and recall for
+the model, at varying thresholds. Two models can be compared easily by plotting
+their precision-recall curve. A curve that is more to the top-right hand side
+of the plot represents a better model.</p>
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="regression.html" class="navigation navigation-prev " aria-label="Previous page: Regression metrics">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../deployment/introduction.html" class="navigation navigation-next " aria-label="Next page: Deployment">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Classification metrics","level":"1.5.2","depth":2,"next":{"title":"Deployment","level":"1.6","depth":1,"path":"deployment/introduction.md","ref":"deployment/introduction.md","articles":[]},"previous":{"title":"Regression metrics","level":"1.5.1","depth":2,"path":"evaluation/regression.md","ref":"evaluation/regression.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"evaluation/classification.md","mtime":"2017-12-04T22:58:11.144Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2017-12-07T21:59:31.449Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-collapsible-menu/plugin.js"></script>
+        
+    
+        
+        <script src="https://cdn.mathjax.org/mathjax/2.6-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-mathjax/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

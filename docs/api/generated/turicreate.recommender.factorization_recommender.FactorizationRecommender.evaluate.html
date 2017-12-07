@@ -1,0 +1,268 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.recommender.factorization_recommender.FactorizationRecommender.evaluate &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>turicreate.recommender.factorization_recommender.FactorizationRecommender.evaluate</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-recommender-factorization-recommender-factorizationrecommender-evaluate">
+<h1>turicreate.recommender.factorization_recommender.FactorizationRecommender.evaluate<a class="headerlink" href="#turicreate-recommender-factorization-recommender-factorizationrecommender-evaluate" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="turicreate.recommender.factorization_recommender.FactorizationRecommender.evaluate">
+<code class="descclassname">FactorizationRecommender.</code><code class="descname">evaluate</code><span class="sig-paren">(</span><em>dataset</em>, <em>metric='auto'</em>, <em>exclude_known_for_precision_recall=True</em>, <em>target=None</em>, <em>verbose=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.recommender.factorization_recommender.FactorizationRecommender.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the model&#8217;s ability to make rating predictions or
+recommendations.</p>
+<p>If the model is trained to predict a particular target, the
+default metric used for model comparison is root-mean-squared error
+(RMSE). Suppose <span class="math">\(y\)</span> and <span class="math">\(\widehat{y}\)</span> are vectors of length
+<span class="math">\(N\)</span>, where <span class="math">\(y\)</span> contains the actual ratings and
+<span class="math">\(\widehat{y}\)</span> the predicted ratings. Then the RMSE is defined as</p>
+<div class="math">
+\[RMSE = \sqrt{\frac{1}{N} \sum_{i=1}^N (\widehat{y}_i - y_i)^2} .\]</div>
+<p>If the model was not trained on a target column, the default metrics for
+model comparison are precision and recall. Let
+<span class="math">\(p_k\)</span> be a vector of the <span class="math">\(k\)</span> highest ranked recommendations
+for a particular user, and let <span class="math">\(a\)</span> be the set of items for that
+user in the groundtruth <cite>dataset</cite>. The &#8220;precision at cutoff k&#8221; is
+defined as</p>
+<div class="math">
+\[P(k) = \frac{ | a \cap p_k | }{k}\]</div>
+<p>while &#8220;recall at cutoff k&#8221; is defined as</p>
+<div class="math">
+\[R(k) = \frac{ | a \cap p_k | }{|a|}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
+<blockquote>
+<div><p>An SFrame that is in the same format as provided for training.</p>
+</div></blockquote>
+<p><strong>metric</strong> : str, {&#8216;auto&#8217;, &#8216;rmse&#8217;, &#8216;precision_recall&#8217;}, optional</p>
+<blockquote>
+<div><p>Metric to use for evaluation. The default automatically chooses
+&#8216;rmse&#8217; for models trained with a <cite>target</cite>, and &#8216;precision_recall&#8217;
+otherwise.</p>
+</div></blockquote>
+<p><strong>exclude_known_for_precision_recall</strong> : bool, optional</p>
+<blockquote>
+<div><p>A useful option for evaluating precision-recall. Recommender models
+have the option to exclude items seen in the training data from the
+final recommendation list. Set this option to True when evaluating
+on test data, and False when evaluating precision-recall on training
+data.</p>
+</div></blockquote>
+<p><strong>target</strong> : str, optional</p>
+<blockquote>
+<div><p>The name of the target column for evaluating rmse. If the model is
+trained with a target column, the default is to using the same
+column. If the model is trained without a target column and <cite>metric</cite>
+is set to &#8216;rmse&#8217;, this option must provided by user.</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool, optional</p>
+<blockquote>
+<div><p>Enables verbose output. Default is verbose.</p>
+</div></blockquote>
+<p><strong>**kwargs</strong></p>
+<blockquote>
+<div><p>When <cite>metric</cite> is set to &#8216;precision_recall&#8217;, these parameters
+are passed on to <a class="reference internal" href="turicreate.recommender.factorization_recommender.FactorizationRecommender.evaluate_precision_recall.html#turicreate.recommender.factorization_recommender.FactorizationRecommender.evaluate_precision_recall" title="turicreate.recommender.factorization_recommender.FactorizationRecommender.evaluate_precision_recall"><code class="xref py py-meth docutils literal"><span class="pre">evaluate_precision_recall()</span></code></a>.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SFrame or dict</p>
+<blockquote class="last">
+<div><p>Results from the model evaluation procedure. If the model is trained
+on a target (i.e. RMSE is the evaluation criterion), a dictionary
+with three items is returned: items <em>rmse_by_user</em> and
+<em>rmse_by_item</em> are SFrames with per-user and per-item RMSE, while
+<em>rmse_overall</em> is the overall RMSE (a float). If the model is
+trained without a target (i.e. precision and recall are the
+evaluation criteria) an <a class="reference internal" href="turicreate.SFrame.html#turicreate.SFrame" title="turicreate.SFrame"><code class="xref py py-class docutils literal"><span class="pre">SFrame</span></code></a> is returned
+with both of these metrics for each user at several cutoff values.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.recommender.factorization_recommender.FactorizationRecommender.evaluate_precision_recall.html#turicreate.recommender.factorization_recommender.FactorizationRecommender.evaluate_precision_recall" title="turicreate.recommender.factorization_recommender.FactorizationRecommender.evaluate_precision_recall"><code class="xref py py-obj docutils literal"><span class="pre">evaluate_precision_recall</span></code></a>, <a class="reference internal" href="turicreate.recommender.factorization_recommender.FactorizationRecommender.evaluate_rmse.html#turicreate.recommender.factorization_recommender.FactorizationRecommender.evaluate_rmse" title="turicreate.recommender.factorization_recommender.FactorizationRecommender.evaluate_rmse"><code class="xref py py-obj docutils literal"><span class="pre">evaluate_rmse</span></code></a>, <code class="xref py py-obj docutils literal"><span class="pre">precision_recall_by_user</span></code></p>
+</div>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">turicreate</span> <span class="kn">as</span> <span class="nn">tc</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">SFrame</span><span class="p">(</span><span class="s1">&#39;https://static.turi.com/datasets/audioscrobbler&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">recommender</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">random_split_by_user</span><span class="p">(</span><span class="n">sf</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">recommender</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;target&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">eval</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,280 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.classifier.create &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="classifier" href="../turicreate.toolkits.classifier.html"/>
+        <link rel="next" title="turicreate.random_forest_classifier.create" href="turicreate.random_forest_classifier.create.html"/>
+        <link rel="prev" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier" href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.classifier.html"><code class="docutils literal"><span class="pre">classifier</span></code></a> &raquo;</li>
+      
+    <li>turicreate.classifier.create</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-classifier-create">
+<h1>turicreate.classifier.create<a class="headerlink" href="#turicreate-classifier-create" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.classifier.create">
+<code class="descclassname">turicreate.classifier.</code><code class="descname">create</code><span class="sig-paren">(</span><em>dataset</em>, <em>target</em>, <em>features=None</em>, <em>validation_set='auto'</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.classifier.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Automatically create a suitable classifier model based on the provided
+training data.</p>
+<p>To use specific options of a desired model, use the <code class="docutils literal"><span class="pre">create</span></code> function
+of the corresponding model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
+<blockquote>
+<div><p>Dataset for training the model.</p>
+</div></blockquote>
+<p><strong>target</strong> : string</p>
+<blockquote>
+<div><p>Name of the column containing the target variable. The values in this
+column must be of string or integer type. String target variables are
+automatically mapped to integers in the order in which they are
+provided.  For example, a target variable with &#8216;cat&#8217; and &#8216;dog&#8217; as
+possible values is mapped to 0 and 1 respectively with 0 being the base
+class and 1 being the reference class. Use <cite>model.classes</cite> to
+retrieve the order in which the classes are mapped.</p>
+</div></blockquote>
+<p><strong>features</strong> : list[string], optional</p>
+<blockquote>
+<div><p>Names of the columns containing features. &#8216;None&#8217; (the default) indicates
+that all columns except the target variable should be used as features.</p>
+<p>The features are columns in the input SFrame that can be of the
+following types:</p>
+<ul class="simple">
+<li><em>Numeric</em>: values of numeric type integer or float.</li>
+<li><em>Categorical</em>: values of type string.</li>
+<li><em>Array</em>: list of numeric (integer or float) values. Each list element
+is treated as a separate feature in the model.</li>
+<li><em>Dictionary</em>: key-value pairs with numeric (integer or float) values
+Each key of a dictionary is treated as a separate feature and the
+value in the dictionary corresponds to the value of the feature.
+Dictionaries are ideal for representing sparse data.</li>
+</ul>
+<p>Columns of type <em>list</em> are not supported. Convert such feature
+columns to type array if all entries in the list are of numeric
+types. If the lists contain data of mixed types, separate
+them out into different columns.</p>
+</div></blockquote>
+<p><strong>validation_set</strong> : SFrame, optional</p>
+<blockquote>
+<div><p>A dataset for monitoring the model&#8217;s generalization performance.  For
+each row of the progress table, the chosen metrics are computed for
+both the provided training dataset and the validation_set. The format
+of this SFrame must be the same as the training set.  By default this
+argument is set to &#8216;auto&#8217; and a validation set is automatically sampled
+and used for progress printing. If validation_set is set to None, then
+no additional metrics are computed. The default value is &#8216;auto&#8217;.</p>
+</div></blockquote>
+<p><strong>verbose</strong> : boolean, optional</p>
+<blockquote>
+<div><p>If True, print progress information during training.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>out</strong> : A trained classifier model.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.boosted_trees_classifier.BoostedTreesClassifier.html#turicreate.boosted_trees_classifier.BoostedTreesClassifier" title="turicreate.boosted_trees_classifier.BoostedTreesClassifier"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.boosted_trees_classifier.BoostedTreesClassifier</span></code></a>, <a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.html#turicreate.logistic_classifier.LogisticClassifier" title="turicreate.logistic_classifier.LogisticClassifier"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.logistic_classifier.LogisticClassifier</span></code></a>, <a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.html#turicreate.svm_classifier.SVMClassifier" title="turicreate.svm_classifier.SVMClassifier"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.svm_classifier.SVMClassifier</span></code></a>, <a class="reference internal" href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.html#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.nearest_neighbor_classifier.NearestNeighborClassifier</span></code></a></p>
+</div>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Setup the data</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">turicreate</span> <span class="kn">as</span> <span class="nn">tc</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">data</span> <span class="o">=</span>  <span class="n">tc</span><span class="o">.</span><span class="n">SFrame</span><span class="p">(</span><span class="s1">&#39;https://static.turi.com/datasets/regression/houses.csv&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;is_expensive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;price&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">30000</span>
+
+<span class="c1"># Selects the best model based on your data.</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">classifier</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;is_expensive&#39;</span><span class="p">,</span>
+<span class="o">...</span>                              <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;bath&#39;</span><span class="p">,</span> <span class="s1">&#39;bedroom&#39;</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">])</span>
+
+<span class="c1"># Make predictions and evaluate results.</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">classify</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.random_forest_classifier.create.html" class="btn btn-neutral float-right" title="turicreate.random_forest_classifier.create">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.html" class="btn btn-neutral" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,313 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.kmeans.create &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="clustering" href="../turicreate.toolkits.clustering.html"/>
+        <link rel="next" title="turicreate.kmeans.KmeansModel" href="turicreate.kmeans.KmeansModel.html"/>
+        <link rel="prev" title="turicreate.dbscan.DBSCANModel" href="turicreate.dbscan.DBSCANModel.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.clustering.html"><code class="docutils literal"><span class="pre">clustering</span></code></a> &raquo;</li>
+      
+    <li>turicreate.kmeans.create</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-kmeans-create">
+<h1>turicreate.kmeans.create<a class="headerlink" href="#turicreate-kmeans-create" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.kmeans.create">
+<code class="descclassname">turicreate.kmeans.</code><code class="descname">create</code><span class="sig-paren">(</span><em>dataset</em>, <em>num_clusters=None</em>, <em>features=None</em>, <em>label=None</em>, <em>initial_centers=None</em>, <em>max_iterations=10</em>, <em>batch_size=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.kmeans.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a k-means clustering model. The KmeansModel object contains the
+computed cluster centers and the cluster assignment for each instance in
+the input &#8216;dataset&#8217;.</p>
+<p>Given a number of clusters, k-means iteratively chooses the best cluster
+centers and assigns nearby points to the best cluster. If no points change
+cluster membership between iterations, the algorithm terminates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
+<blockquote>
+<div><p>Each row in the SFrame is an observation.</p>
+</div></blockquote>
+<p><strong>num_clusters</strong> : int</p>
+<blockquote>
+<div><p>Number of clusters. This is the &#8216;k&#8217; in k-means.</p>
+</div></blockquote>
+<p><strong>features</strong> : list[str], optional</p>
+<blockquote>
+<div><p>Names of feature columns to use in computing distances between
+observations and cluster centers. &#8216;None&#8217; (the default) indicates that
+all columns should be used as features. Columns may be of the following
+types:</p>
+<ul class="simple">
+<li><em>Numeric</em>: values of numeric type integer or float.</li>
+<li><em>Array</em>: list of numeric (int or float) values. Each list element
+is treated as a distinct feature in the model.</li>
+<li><em>Dict</em>: dictionary of keys mapped to numeric values. Each unique key
+is treated as a distinct feature in the model.</li>
+</ul>
+<p>Note that columns of type <em>list</em> are not supported. Convert them to
+array columns if all entries in the list are of numeric types.</p>
+</div></blockquote>
+<p><strong>label</strong> : str, optional</p>
+<blockquote>
+<div><p>Name of the column to use as row labels in the Kmeans output. The
+values in this column must be integers or strings. If not specified,
+row numbers are used by default.</p>
+</div></blockquote>
+<p><strong>initial_centers</strong> : SFrame, optional</p>
+<blockquote>
+<div><p>Initial centers to use when starting the K-means algorithm. If
+specified, this parameter overrides the <em>num_clusters</em> parameter. The
+&#8216;initial_centers&#8217; SFrame must contain the same features used in the
+input &#8216;dataset&#8217;.</p>
+<p>If not specified (the default), initial centers are chosen
+intelligently with the K-means++ algorithm.</p>
+</div></blockquote>
+<p><strong>max_iterations</strong> : int, optional</p>
+<blockquote>
+<div><p>The maximum number of iterations to run. Prints a warning if the
+algorithm does not converge after max_iterations iterations. If set to
+0, the model returns clusters defined by the initial centers and
+assignments to those centers.</p>
+</div></blockquote>
+<p><strong>batch_size</strong> : int, optional</p>
+<blockquote>
+<div><p>Number of randomly-chosen data points to use in each iteration. If
+&#8216;None&#8217; (the default) or greater than the number of rows in &#8216;dataset&#8217;,
+then this parameter is ignored: all rows of <cite>dataset</cite> are used in each
+iteration and model training terminates once point assignments stop
+changing or <cite>max_iterations</cite> is reached.</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, print model training progress to the screen.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : KmeansModel</p>
+<blockquote class="last">
+<div><p>A Model object containing a cluster id for each vertex, and the centers
+of the clusters.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.kmeans.KmeansModel.html#turicreate.kmeans.KmeansModel" title="turicreate.kmeans.KmeansModel"><code class="xref py py-obj docutils literal"><span class="pre">KmeansModel</span></code></a></p>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>Integer features in the &#8216;dataset&#8217; or &#8216;initial_centers&#8217; inputs are
+converted internally to float type, and the corresponding features in the
+output centers are float-typed.</li>
+<li>It can be important for the K-means model to standardize the features so
+they have the same scale. This function does <em>not</em> standardize
+automatically.</li>
+</ul>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><a class="reference external" href="http://en.wikipedia.org/wiki/K-means_clustering">Wikipedia - k-means clustering</a></li>
+<li>Artuhur, D. and Vassilvitskii, S. (2007) <a class="reference external" href="http://ilpubs.stanford.edu:8090/778/1/2006-13.pdf">k-means++: The Advantages of
+Careful Seeding</a>. In
+Proceedings of the Eighteenth Annual ACM-SIAM Symposium on Discrete
+Algorithms. pp. 1027-1035.</li>
+<li>Elkan, C. (2003) <a class="reference external" href="http://www.aaai.org/Papers/ICML/2003/ICML03-022.pdf">Using the triangle inequality to accelerate k-means</a>. In Proceedings
+of the Twentieth International Conference on Machine Learning, Volume 3,
+pp. 147-153.</li>
+<li>Sculley, D. (2010) <a class="reference external" href="http://www.eecs.tufts.edu/~dsculley/papers/fastkmeans.pdf">Web Scale K-Means Clustering</a>. In
+Proceedings of the 19th International Conference on World Wide Web. pp.
+1177-1178</li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span>
+<span class="gp">... </span>    <span class="s1">&#39;x1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.6777</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.391</span><span class="p">,</span> <span class="mf">7.0385</span><span class="p">,</span> <span class="mf">2.2657</span><span class="p">,</span> <span class="mf">7.7864</span><span class="p">,</span> <span class="o">-</span><span class="mf">10.16</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.162</span><span class="p">,</span>
+<span class="gp">... </span>           <span class="mf">8.8817</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.525</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.153</span><span class="p">,</span> <span class="mf">2.0860</span><span class="p">,</span> <span class="mf">7.6619</span><span class="p">,</span> <span class="mf">6.5511</span><span class="p">,</span> <span class="mf">2.7020</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="s1">&#39;x2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">5.6110</span><span class="p">,</span> <span class="mf">8.5139</span><span class="p">,</span> <span class="mf">5.3913</span><span class="p">,</span> <span class="mf">5.4743</span><span class="p">,</span> <span class="mf">8.3606</span><span class="p">,</span> <span class="mf">7.8843</span><span class="p">,</span> <span class="mf">2.7305</span><span class="p">,</span>
+<span class="gp">... </span>           <span class="mf">5.1679</span><span class="p">,</span> <span class="mf">6.7231</span><span class="p">,</span> <span class="mf">3.7051</span><span class="p">,</span> <span class="mf">1.7682</span><span class="p">,</span> <span class="mf">7.4608</span><span class="p">,</span> <span class="mf">3.1270</span><span class="p">,</span> <span class="mf">6.5624</span><span class="p">]})</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">kmeans</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sf</span><span class="p">,</span> <span class="n">num_clusters</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.kmeans.KmeansModel.html" class="btn btn-neutral float-right" title="turicreate.kmeans.KmeansModel">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.dbscan.DBSCANModel.html" class="btn btn-neutral" title="turicreate.dbscan.DBSCANModel"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,292 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>regression &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="index.html"/>
+        <link rel="up" title="Modelling" href="turicreate.toolkits.html"/>
+        <link rel="next" title="turicreate.regression.create" href="generated/turicreate.regression.create.html"/>
+        <link rel="prev" title="turicreate.nearest_neighbors.NearestNeighborsModel" href="generated/turicreate.nearest_neighbors.NearestNeighborsModel.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+    <li><code class="docutils literal"><span class="pre">regression</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="module-turicreate.toolkits.regression">
+<span id="regression"></span><h1><code class="xref py py-mod docutils literal"><span class="pre">regression</span></code><a class="headerlink" href="#module-turicreate.toolkits.regression" title="Permalink to this headline">¶</a></h1>
+<p>The Turi Create regression toolkit contains models for regression problems.
+Currently, we support linear regression and boosted trees. In addition to these
+models, we provide a smart interface that selects the right model based on the
+data. If you are unsure about which model to use, simply use
+<a class="reference internal" href="generated/turicreate.regression.create.html#turicreate.regression.create" title="turicreate.regression.create"><code class="xref py py-meth docutils literal"><span class="pre">create()</span></code></a> function.</p>
+<p>Training data must contain a column for the &#8216;target&#8217; variable and one or more
+columns representing feature variables.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Set up the data</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">turicreate</span> <span class="kn">as</span> <span class="nn">tc</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">data</span> <span class="o">=</span>  <span class="n">tc</span><span class="o">.</span><span class="n">SFrame</span><span class="p">(</span><span class="s1">&#39;https://static.turi.com/datasets/regression/houses.csv&#39;</span><span class="p">)</span>
+
+<span class="c1"># Select the best model based on your data.</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">regression</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;price&#39;</span><span class="p">,</span>
+<span class="o">...</span>                                  <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;bath&#39;</span><span class="p">,</span> <span class="s1">&#39;bedroom&#39;</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">])</span>
+
+<span class="c1"># Make predictions and evaluate results.</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="creating-a-regression-model">
+<h2>creating a regression model<a class="headerlink" href="#creating-a-regression-model" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.regression.create.html#turicreate.regression.create" title="turicreate.regression.create"><code class="xref py py-obj docutils literal"><span class="pre">regression.create</span></code></a></td>
+<td>Automatically create a suitable regression model based on the provided training data.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="random-forest">
+<h2>random forest<a class="headerlink" href="#random-forest" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.random_forest_regression.create.html#turicreate.random_forest_regression.create" title="turicreate.random_forest_regression.create"><code class="xref py py-obj docutils literal"><span class="pre">random_forest_regression.create</span></code></a></td>
+<td>Create a <a class="reference internal" href="generated/turicreate.random_forest_regression.RandomForestRegression.html#turicreate.random_forest_regression.RandomForestRegression" title="turicreate.random_forest_regression.RandomForestRegression"><code class="xref py py-class docutils literal"><span class="pre">RandomForestRegression</span></code></a> to predict a scalar target variable using one or more features.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.random_forest_regression.RandomForestRegression.html#turicreate.random_forest_regression.RandomForestRegression" title="turicreate.random_forest_regression.RandomForestRegression"><code class="xref py py-obj docutils literal"><span class="pre">random_forest_regression.RandomForestRegression</span></code></a></td>
+<td>Encapsulates random forest models for regression tasks.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="decision-tree">
+<h2>decision tree<a class="headerlink" href="#decision-tree" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.decision_tree_regression.create.html#turicreate.decision_tree_regression.create" title="turicreate.decision_tree_regression.create"><code class="xref py py-obj docutils literal"><span class="pre">decision_tree_regression.create</span></code></a></td>
+<td>Create a <a class="reference internal" href="generated/turicreate.decision_tree_regression.DecisionTreeRegression.html#turicreate.decision_tree_regression.DecisionTreeRegression" title="turicreate.decision_tree_regression.DecisionTreeRegression"><code class="xref py py-class docutils literal"><span class="pre">DecisionTreeRegression</span></code></a> to predict a scalar target variable using one or more features.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.decision_tree_regression.DecisionTreeRegression.html#turicreate.decision_tree_regression.DecisionTreeRegression" title="turicreate.decision_tree_regression.DecisionTreeRegression"><code class="xref py py-obj docutils literal"><span class="pre">decision_tree_regression.DecisionTreeRegression</span></code></a></td>
+<td>The prediction is based on a collection of base learners, <a class="reference external" href="http://en.wikipedia.org/wiki/Decision_tree_learning">regression trees</a>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="boosted-trees">
+<h2>boosted trees<a class="headerlink" href="#boosted-trees" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.boosted_trees_regression.create.html#turicreate.boosted_trees_regression.create" title="turicreate.boosted_trees_regression.create"><code class="xref py py-obj docutils literal"><span class="pre">boosted_trees_regression.create</span></code></a></td>
+<td>Create a <a class="reference internal" href="generated/turicreate.boosted_trees_regression.BoostedTreesRegression.html#turicreate.boosted_trees_regression.BoostedTreesRegression" title="turicreate.boosted_trees_regression.BoostedTreesRegression"><code class="xref py py-class docutils literal"><span class="pre">BoostedTreesRegression</span></code></a> to predict a scalar target variable using one or more features.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.boosted_trees_regression.BoostedTreesRegression.html#turicreate.boosted_trees_regression.BoostedTreesRegression" title="turicreate.boosted_trees_regression.BoostedTreesRegression"><code class="xref py py-obj docutils literal"><span class="pre">boosted_trees_regression.BoostedTreesRegression</span></code></a></td>
+<td>Encapsulates gradient boosted trees for regression tasks.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="linear-regression">
+<h2>linear regression<a class="headerlink" href="#linear-regression" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.linear_regression.create.html#turicreate.linear_regression.create" title="turicreate.linear_regression.create"><code class="xref py py-obj docutils literal"><span class="pre">linear_regression.create</span></code></a></td>
+<td>Create a <a class="reference internal" href="generated/turicreate.linear_regression.LinearRegression.html#turicreate.linear_regression.LinearRegression" title="turicreate.linear_regression.LinearRegression"><code class="xref py py-class docutils literal"><span class="pre">LinearRegression</span></code></a> to predict a scalar target variable as a linear function of one or more features.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.linear_regression.LinearRegression.html#turicreate.linear_regression.LinearRegression" title="turicreate.linear_regression.LinearRegression"><code class="xref py py-obj docutils literal"><span class="pre">linear_regression.LinearRegression</span></code></a></td>
+<td>Linear regression is an approach for modeling a scalar target <span class="math">\(y\)</span> as a linear function of one or more explanatory variables denoted <span class="math">\(X\)</span>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="generated/turicreate.regression.create.html" class="btn btn-neutral float-right" title="turicreate.regression.create">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="generated/turicreate.nearest_neighbors.NearestNeighborsModel.html" class="btn btn-neutral" title="turicreate.nearest_neighbors.NearestNeighborsModel"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

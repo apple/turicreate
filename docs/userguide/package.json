@@ -1,0 +1,29 @@
+{
+  "name": "userguide",
+  "version": "2.0.0",
+  "description": "userguide",
+  "main": "index.js",
+  "devDependencies": {
+    "mathjax-node": "1.2.1",
+    "gitbook-cli": "2.3.2",
+    "gitbook-plugin-anchors": "*",
+    "gitbook-plugin-collapsible-menu": "*",
+    "gitbook-plugin-mathjax": "1.1.2"
+  },
+  "scripts": {
+    "gitbook-dep": "./node_modules/.bin/gitbook install ./",
+    "build": "./node_modules/.bin/gitbook build",
+    "gitbook": "./node_modules/.bin/gitbook build",
+    "serve": "./node_modules/.bin/gitbook serve"
+  },
+  "author": "Apple",
+  "license": "BSD-3-Clause",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apple/turicreate"
+  },
+  "engines": {
+    "node": ">=4.0.0 <5.0.0"
+  },
+  "private": true
+}

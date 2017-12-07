@@ -1,0 +1,449 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.SFrame.groupby &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>turicreate.SFrame.groupby</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-sframe-groupby">
+<h1>turicreate.SFrame.groupby<a class="headerlink" href="#turicreate-sframe-groupby" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="turicreate.SFrame.groupby">
+<code class="descclassname">SFrame.</code><code class="descname">groupby</code><span class="sig-paren">(</span><em>key_column_names</em>, <em>operations</em>, <em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.groupby" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a group on the key_column_names followed by aggregations on the
+columns listed in operations.</p>
+<p>The operations parameter is a dictionary that indicates which
+aggregation operators to use and which columns to use them on. The
+available operators are SUM, MAX, MIN, COUNT, AVG, VAR, STDV, CONCAT,
+SELECT_ONE, ARGMIN, ARGMAX, and QUANTILE. For convenience, aggregators
+MEAN, STD, and VARIANCE are available as synonyms for AVG, STDV, and
+VAR. See <a class="reference internal" href="turicreate.aggregate.html#module-turicreate.aggregate" title="turicreate.aggregate"><code class="xref py py-mod docutils literal"><span class="pre">aggregate</span></code></a> for more detail on the aggregators.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>key_column_names</strong> : string | list[string]</p>
+<blockquote>
+<div><p>Column(s) to group by. Key columns can be of any type other than
+dictionary.</p>
+</div></blockquote>
+<p><strong>operations</strong> : dict, list</p>
+<blockquote>
+<div><p>Dictionary of columns and aggregation operations. Each key is a
+output column name and each value is an aggregator. This can also
+be a list of aggregators, in which case column names will be
+automatically assigned.</p>
+</div></blockquote>
+<p><strong>*args</strong></p>
+<blockquote>
+<div><p>All other remaining arguments will be interpreted in the same
+way as the operations argument.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out_sf</strong> : SFrame</p>
+<blockquote class="last">
+<div><p>A new SFrame, with a column for each groupby column and each
+aggregation operation.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.aggregate.html#module-turicreate.aggregate" title="turicreate.aggregate"><code class="xref py py-obj docutils literal"><span class="pre">aggregate</span></code></a></p>
+</div>
+<p class="rubric">Examples</p>
+<p>Suppose we have an SFrame with movie ratings by many users.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">turicreate.aggregate</span> <span class="kn">as</span> <span class="nn">agg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://static.turi.com/datasets/rating_data_example.csv&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span>
+<span class="go">+---------+----------+--------+</span>
+<span class="go">| user_id | movie_id | rating |</span>
+<span class="go">+---------+----------+--------+</span>
+<span class="go">|  25904  |   1663   |   3    |</span>
+<span class="go">|  25907  |   1663   |   3    |</span>
+<span class="go">|  25923  |   1663   |   3    |</span>
+<span class="go">|  25924  |   1663   |   3    |</span>
+<span class="go">|  25928  |   1663   |   2    |</span>
+<span class="go">|  25933  |   1663   |   4    |</span>
+<span class="go">|  25934  |   1663   |   4    |</span>
+<span class="go">|  25935  |   1663   |   4    |</span>
+<span class="go">|  25936  |   1663   |   5    |</span>
+<span class="go">|  25937  |   1663   |   2    |</span>
+<span class="go">|   ...   |   ...    |  ...   |</span>
+<span class="go">+---------+----------+--------+</span>
+<span class="go">[10000 rows x 3 columns]</span>
+</pre></div>
+</div>
+<p>Compute the number of occurrences of each user.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">user_count</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key_column_names</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                        <span class="n">operations</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">COUNT</span><span class="p">()})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">user_count</span>
+<span class="go">+---------+-------+</span>
+<span class="go">| user_id | count |</span>
+<span class="go">+---------+-------+</span>
+<span class="go">|  62361  |   1   |</span>
+<span class="go">|  30727  |   1   |</span>
+<span class="go">|  40111  |   1   |</span>
+<span class="go">|  50513  |   1   |</span>
+<span class="go">|  35140  |   1   |</span>
+<span class="go">|  42352  |   1   |</span>
+<span class="go">|  29667  |   1   |</span>
+<span class="go">|  46242  |   1   |</span>
+<span class="go">|  58310  |   1   |</span>
+<span class="go">|  64614  |   1   |</span>
+<span class="go">|   ...   |  ...  |</span>
+<span class="go">+---------+-------+</span>
+<span class="go">[9852 rows x 2 columns]</span>
+</pre></div>
+</div>
+<p>Compute the mean and standard deviation of ratings per user.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">user_rating_stats</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key_column_names</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                               <span class="n">operations</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">... </span>                                   <span class="s1">&#39;mean_rating&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">MEAN</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">),</span>
+<span class="gp">... </span>                                   <span class="s1">&#39;std_rating&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">STD</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">)</span>
+<span class="gp">... </span>                               <span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">user_rating_stats</span>
+<span class="go">+---------+-------------+------------+</span>
+<span class="go">| user_id | mean_rating | std_rating |</span>
+<span class="go">+---------+-------------+------------+</span>
+<span class="go">|  62361  |     5.0     |    0.0     |</span>
+<span class="go">|  30727  |     4.0     |    0.0     |</span>
+<span class="go">|  40111  |     2.0     |    0.0     |</span>
+<span class="go">|  50513  |     4.0     |    0.0     |</span>
+<span class="go">|  35140  |     4.0     |    0.0     |</span>
+<span class="go">|  42352  |     5.0     |    0.0     |</span>
+<span class="go">|  29667  |     4.0     |    0.0     |</span>
+<span class="go">|  46242  |     5.0     |    0.0     |</span>
+<span class="go">|  58310  |     2.0     |    0.0     |</span>
+<span class="go">|  64614  |     2.0     |    0.0     |</span>
+<span class="go">|   ...   |     ...     |    ...     |</span>
+<span class="go">+---------+-------------+------------+</span>
+<span class="go">[9852 rows x 3 columns]</span>
+</pre></div>
+</div>
+<p>Compute the movie with the minimum rating per user.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chosen_movies</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key_column_names</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                           <span class="n">operations</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">... </span>                               <span class="s1">&#39;worst_movies&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">ARGMIN</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">,</span><span class="s1">&#39;movie_id&#39;</span><span class="p">)</span>
+<span class="gp">... </span>                           <span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chosen_movies</span>
+<span class="go">+---------+-------------+</span>
+<span class="go">| user_id | worst_movies |</span>
+<span class="go">+---------+-------------+</span>
+<span class="go">|  62361  |     1663    |</span>
+<span class="go">|  30727  |     1663    |</span>
+<span class="go">|  40111  |     1663    |</span>
+<span class="go">|  50513  |     1663    |</span>
+<span class="go">|  35140  |     1663    |</span>
+<span class="go">|  42352  |     1663    |</span>
+<span class="go">|  29667  |     1663    |</span>
+<span class="go">|  46242  |     1663    |</span>
+<span class="go">|  58310  |     1663    |</span>
+<span class="go">|  64614  |     1663    |</span>
+<span class="go">|   ...   |     ...     |</span>
+<span class="go">+---------+-------------+</span>
+<span class="go">[9852 rows x 2 columns]</span>
+</pre></div>
+</div>
+<p>Compute the movie with the max rating per user and also the movie with
+the maximum imdb-ranking per user.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="p">[</span><span class="s1">&#39;imdb-ranking&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sf</span><span class="p">[</span><span class="s1">&#39;rating&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chosen_movies</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key_column_names</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="n">operations</span><span class="o">=</span><span class="p">{(</span><span class="s1">&#39;max_rating_movie&#39;</span><span class="p">,</span><span class="s1">&#39;max_imdb_ranking_movie&#39;</span><span class="p">):</span> <span class="n">agg</span><span class="o">.</span><span class="n">ARGMAX</span><span class="p">((</span><span class="s1">&#39;rating&#39;</span><span class="p">,</span><span class="s1">&#39;imdb-ranking&#39;</span><span class="p">),</span><span class="s1">&#39;movie_id&#39;</span><span class="p">)})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chosen_movies</span>
+<span class="go">+---------+------------------+------------------------+</span>
+<span class="go">| user_id | max_rating_movie | max_imdb_ranking_movie |</span>
+<span class="go">+---------+------------------+------------------------+</span>
+<span class="go">|  62361  |       1663       |          16630         |</span>
+<span class="go">|  30727  |       1663       |          16630         |</span>
+<span class="go">|  40111  |       1663       |          16630         |</span>
+<span class="go">|  50513  |       1663       |          16630         |</span>
+<span class="go">|  35140  |       1663       |          16630         |</span>
+<span class="go">|  42352  |       1663       |          16630         |</span>
+<span class="go">|  29667  |       1663       |          16630         |</span>
+<span class="go">|  46242  |       1663       |          16630         |</span>
+<span class="go">|  58310  |       1663       |          16630         |</span>
+<span class="go">|  64614  |       1663       |          16630         |</span>
+<span class="go">|   ...   |       ...        |          ...           |</span>
+<span class="go">+---------+------------------+------------------------+</span>
+<span class="go">[9852 rows x 3 columns]</span>
+</pre></div>
+</div>
+<p>Compute the movie with the max rating per user.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chosen_movies</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key_column_names</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span>
+<span class="go">            operations={&#39;best_movies&#39;: agg.ARGMAX(&#39;rating&#39;,&#39;movie&#39;)})</span>
+</pre></div>
+</div>
+<p>Compute the movie with the max rating per user and also the movie with the maximum imdb-ranking per user.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chosen_movies</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key_column_names</span><span class="o">=</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span>
+<span class="go">           operations={(&#39;max_rating_movie&#39;,&#39;max_imdb_ranking_movie&#39;): agg.ARGMAX((&#39;rating&#39;,&#39;imdb-ranking&#39;),&#39;movie&#39;)})</span>
+</pre></div>
+</div>
+<p>Compute the count, mean, and standard deviation of ratings per (user,
+time), automatically assigning output column names.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;user_id&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;movie_id&#39;</span><span class="p">])</span> <span class="o">%</span> <span class="mi">11</span> <span class="o">+</span> <span class="mi">2000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">user_rating_stats</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">],</span>
+<span class="gp">... </span>                               <span class="p">[</span><span class="n">agg</span><span class="o">.</span><span class="n">COUNT</span><span class="p">(),</span>
+<span class="gp">... </span>                                <span class="n">agg</span><span class="o">.</span><span class="n">AVG</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">),</span>
+<span class="gp">... </span>                                <span class="n">agg</span><span class="o">.</span><span class="n">STDV</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">user_rating_stats</span>
+<span class="go">+------+---------+-------+---------------+----------------+</span>
+<span class="go">| time | user_id | Count | Avg of rating | Stdv of rating |</span>
+<span class="go">+------+---------+-------+---------------+----------------+</span>
+<span class="go">| 2006 |  61285  |   1   |      4.0      |      0.0       |</span>
+<span class="go">| 2000 |  36078  |   1   |      4.0      |      0.0       |</span>
+<span class="go">| 2003 |  47158  |   1   |      3.0      |      0.0       |</span>
+<span class="go">| 2007 |  34446  |   1   |      3.0      |      0.0       |</span>
+<span class="go">| 2010 |  47990  |   1   |      3.0      |      0.0       |</span>
+<span class="go">| 2003 |  42120  |   1   |      5.0      |      0.0       |</span>
+<span class="go">| 2007 |  44940  |   1   |      4.0      |      0.0       |</span>
+<span class="go">| 2008 |  58240  |   1   |      4.0      |      0.0       |</span>
+<span class="go">| 2002 |   102   |   1   |      1.0      |      0.0       |</span>
+<span class="go">| 2009 |  52708  |   1   |      3.0      |      0.0       |</span>
+<span class="go">| ...  |   ...   |  ...  |      ...      |      ...       |</span>
+<span class="go">+------+---------+-------+---------------+----------------+</span>
+<span class="go">[10000 rows x 5 columns]</span>
+</pre></div>
+</div>
+<p>The groupby function can take a variable length list of aggregation
+specifiers so if we want the count and the 0.25 and 0.75 quantiles of
+ratings:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">user_rating_stats</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">agg</span><span class="o">.</span><span class="n">COUNT</span><span class="p">(),</span>
+<span class="gp">... </span>                               <span class="p">{</span><span class="s1">&#39;rating_quantiles&#39;</span><span class="p">:</span> <span class="n">agg</span><span class="o">.</span><span class="n">QUANTILE</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">,[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">])})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">user_rating_stats</span>
+<span class="go">+------+---------+-------+------------------------+</span>
+<span class="go">| time | user_id | Count |    rating_quantiles    |</span>
+<span class="go">+------+---------+-------+------------------------+</span>
+<span class="go">| 2006 |  61285  |   1   | array(&#39;d&#39;, [4.0, 4.0]) |</span>
+<span class="go">| 2000 |  36078  |   1   | array(&#39;d&#39;, [4.0, 4.0]) |</span>
+<span class="go">| 2003 |  47158  |   1   | array(&#39;d&#39;, [3.0, 3.0]) |</span>
+<span class="go">| 2007 |  34446  |   1   | array(&#39;d&#39;, [3.0, 3.0]) |</span>
+<span class="go">| 2010 |  47990  |   1   | array(&#39;d&#39;, [3.0, 3.0]) |</span>
+<span class="go">| 2003 |  42120  |   1   | array(&#39;d&#39;, [5.0, 5.0]) |</span>
+<span class="go">| 2007 |  44940  |   1   | array(&#39;d&#39;, [4.0, 4.0]) |</span>
+<span class="go">| 2008 |  58240  |   1   | array(&#39;d&#39;, [4.0, 4.0]) |</span>
+<span class="go">| 2002 |   102   |   1   | array(&#39;d&#39;, [1.0, 1.0]) |</span>
+<span class="go">| 2009 |  52708  |   1   | array(&#39;d&#39;, [3.0, 3.0]) |</span>
+<span class="go">| ...  |   ...   |  ...  |          ...           |</span>
+<span class="go">+------+---------+-------+------------------------+</span>
+<span class="go">[10000 rows x 4 columns]</span>
+</pre></div>
+</div>
+<p>To put all items a user rated into one list value by their star rating:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">user_rating_stats</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;user_id&quot;</span><span class="p">,</span> <span class="s2">&quot;rating&quot;</span><span class="p">],</span>
+<span class="gp">... </span>                               <span class="p">{</span><span class="s2">&quot;rated_movie_ids&quot;</span><span class="p">:</span><span class="n">agg</span><span class="o">.</span><span class="n">CONCAT</span><span class="p">(</span><span class="s2">&quot;movie_id&quot;</span><span class="p">)})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">user_rating_stats</span>
+<span class="go">+--------+---------+----------------------+</span>
+<span class="go">| rating | user_id |     rated_movie_ids  |</span>
+<span class="go">+--------+---------+----------------------+</span>
+<span class="go">|   3    |  31434  | array(&#39;d&#39;, [1663.0]) |</span>
+<span class="go">|   5    |  25944  | array(&#39;d&#39;, [1663.0]) |</span>
+<span class="go">|   4    |  38827  | array(&#39;d&#39;, [1663.0]) |</span>
+<span class="go">|   4    |  51437  | array(&#39;d&#39;, [1663.0]) |</span>
+<span class="go">|   4    |  42549  | array(&#39;d&#39;, [1663.0]) |</span>
+<span class="go">|   4    |  49532  | array(&#39;d&#39;, [1663.0]) |</span>
+<span class="go">|   3    |  26124  | array(&#39;d&#39;, [1663.0]) |</span>
+<span class="go">|   4    |  46336  | array(&#39;d&#39;, [1663.0]) |</span>
+<span class="go">|   4    |  52133  | array(&#39;d&#39;, [1663.0]) |</span>
+<span class="go">|   5    |  62361  | array(&#39;d&#39;, [1663.0]) |</span>
+<span class="go">|  ...   |   ...   |         ...          |</span>
+<span class="go">+--------+---------+----------------------+</span>
+<span class="go">[9952 rows x 3 columns]</span>
+</pre></div>
+</div>
+<p>To put all items and rating of a given user together into a dictionary
+value:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">user_rating_stats</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;user_id&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                               <span class="p">{</span><span class="s2">&quot;movie_rating&quot;</span><span class="p">:</span><span class="n">agg</span><span class="o">.</span><span class="n">CONCAT</span><span class="p">(</span><span class="s2">&quot;movie_id&quot;</span><span class="p">,</span> <span class="s2">&quot;rating&quot;</span><span class="p">)})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">user_rating_stats</span>
+<span class="go">+---------+--------------+</span>
+<span class="go">| user_id | movie_rating |</span>
+<span class="go">+---------+--------------+</span>
+<span class="go">|  62361  |  {1663: 5}   |</span>
+<span class="go">|  30727  |  {1663: 4}   |</span>
+<span class="go">|  40111  |  {1663: 2}   |</span>
+<span class="go">|  50513  |  {1663: 4}   |</span>
+<span class="go">|  35140  |  {1663: 4}   |</span>
+<span class="go">|  42352  |  {1663: 5}   |</span>
+<span class="go">|  29667  |  {1663: 4}   |</span>
+<span class="go">|  46242  |  {1663: 5}   |</span>
+<span class="go">|  58310  |  {1663: 2}   |</span>
+<span class="go">|  64614  |  {1663: 2}   |</span>
+<span class="go">|   ...   |     ...      |</span>
+<span class="go">+---------+--------------+</span>
+<span class="go">[9852 rows x 2 columns]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

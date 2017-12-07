@@ -1,0 +1,369 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.topic_model.create &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="topic_model" href="../turicreate.toolkits.topic_model.html"/>
+        <link rel="next" title="turicreate.topic_model.perplexity" href="turicreate.topic_model.perplexity.html"/>
+        <link rel="prev" title="turicreate.topic_model.TopicModel" href="turicreate.topic_model.TopicModel.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.topic_model.html"><code class="docutils literal"><span class="pre">topic_model</span></code></a> &raquo;</li>
+      
+    <li>turicreate.topic_model.create</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-topic-model-create">
+<h1>turicreate.topic_model.create<a class="headerlink" href="#turicreate-topic-model-create" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.topic_model.create">
+<code class="descclassname">turicreate.topic_model.</code><code class="descname">create</code><span class="sig-paren">(</span><em>dataset</em>, <em>num_topics=10</em>, <em>initial_topics=None</em>, <em>alpha=None</em>, <em>beta=0.1</em>, <em>num_iterations=10</em>, <em>num_burnin=5</em>, <em>associations=None</em>, <em>verbose=False</em>, <em>print_interval=10</em>, <em>validation_set=None</em>, <em>method='auto'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.topic_model.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a topic model from the given data set. A topic model assumes each
+document is a mixture of a set of topics, where for each topic some words
+are more likely than others. One statistical approach to do this is called a
+&#8220;topic model&#8221;. This method learns a topic model for the given document
+collection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SArray of type dict or SFrame with a single column of type dict</p>
+<blockquote>
+<div><p>A bag of words representation of a document corpus.
+Each element is a dictionary representing a single document, where
+the keys are words and the values are the number of times that word
+occurs in that document.</p>
+</div></blockquote>
+<p><strong>num_topics</strong> : int, optional</p>
+<blockquote>
+<div><p>The number of topics to learn.</p>
+</div></blockquote>
+<p><strong>initial_topics</strong> : SFrame, optional</p>
+<blockquote>
+<div><p>An SFrame with a column of unique words representing the vocabulary
+and a column of dense vectors representing
+probability of that word given each topic. When provided,
+these values are used to initialize the algorithm.</p>
+</div></blockquote>
+<p><strong>alpha</strong> : float, optional</p>
+<blockquote>
+<div><p>Hyperparameter that controls the diversity of topics in a document.
+Smaller values encourage fewer topics per document.
+Provided value must be positive. Default value is 50/num_topics.</p>
+</div></blockquote>
+<p><strong>beta</strong> : float, optional</p>
+<blockquote>
+<div><p>Hyperparameter that controls the diversity of words in a topic.
+Smaller values encourage fewer words per topic. Provided value
+must be positive.</p>
+</div></blockquote>
+<p><strong>num_iterations</strong> : int, optional</p>
+<blockquote>
+<div><p>The number of iterations to perform.</p>
+</div></blockquote>
+<p><strong>num_burnin</strong> : int, optional</p>
+<blockquote>
+<div><p>The number of iterations to perform when inferring the topics for
+documents at prediction time.</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool, optional</p>
+<blockquote>
+<div><p>When True, print most probable words for each topic while printing
+progress.</p>
+</div></blockquote>
+<p><strong>print_interval</strong> : int, optional</p>
+<blockquote>
+<div><p>The number of iterations to wait between progress reports.</p>
+</div></blockquote>
+<p><strong>associations</strong> : SFrame, optional</p>
+<blockquote>
+<div><p>An SFrame with two columns named &#8220;word&#8221; and &#8220;topic&#8221; containing words
+and the topic id that the word should be associated with. These words
+are not considered during learning.</p>
+</div></blockquote>
+<p><strong>validation_set</strong> : SArray of type dict or SFrame with a single column</p>
+<blockquote>
+<div><p>A bag of words representation of a document corpus, similar to the
+format required for <cite>dataset</cite>. This will be used to monitor model
+performance during training. Each document in the provided validation
+set is randomly split: the first portion is used estimate which topic
+each document belongs to, and the second portion is used to estimate
+the model&#8217;s performance at predicting the unseen words in the test data.</p>
+</div></blockquote>
+<p><strong>method</strong> : {&#8216;cgs&#8217;, &#8216;alias&#8217;}, optional</p>
+<blockquote>
+<div><p>The algorithm used for learning the model.</p>
+<ul class="simple">
+<li><em>cgs:</em> Collapsed Gibbs sampling</li>
+<li><em>alias:</em> AliasLDA method.</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : TopicModel</p>
+<blockquote class="last">
+<div><p>A fitted topic model. This can be used with
+<a class="reference internal" href="turicreate.topic_model.TopicModel.get_topics.html#turicreate.topic_model.TopicModel.get_topics" title="turicreate.topic_model.TopicModel.get_topics"><code class="xref py py-func docutils literal"><span class="pre">get_topics()</span></code></a> and
+<a class="reference internal" href="turicreate.topic_model.TopicModel.predict.html#turicreate.topic_model.TopicModel.predict" title="turicreate.topic_model.TopicModel.predict"><code class="xref py py-func docutils literal"><span class="pre">predict()</span></code></a>. While fitting is in progress, several
+metrics are shown, including:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%" />
+<col width="74%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Elapsed Time</td>
+<td>The number of elapsed seconds.</td>
+</tr>
+<tr class="row-odd"><td>Tokens/second</td>
+<td>The number of unique words processed per second</td>
+</tr>
+<tr class="row-even"><td>Est. Perplexity</td>
+<td>An estimate of the model&#8217;s ability to model the
+training data. See the documentation on evaluate.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.topic_model.TopicModel.html#turicreate.topic_model.TopicModel" title="turicreate.topic_model.TopicModel"><code class="xref py py-obj docutils literal"><span class="pre">TopicModel</span></code></a>, <a class="reference internal" href="turicreate.topic_model.TopicModel.get_topics.html#turicreate.topic_model.TopicModel.get_topics" title="turicreate.topic_model.TopicModel.get_topics"><code class="xref py py-obj docutils literal"><span class="pre">TopicModel.get_topics</span></code></a>, <a class="reference internal" href="turicreate.topic_model.TopicModel.predict.html#turicreate.topic_model.TopicModel.predict" title="turicreate.topic_model.TopicModel.predict"><code class="xref py py-obj docutils literal"><span class="pre">TopicModel.predict</span></code></a>, <a class="reference internal" href="turicreate.SArray.dict_trim_by_keys.html#turicreate.SArray.dict_trim_by_keys" title="turicreate.SArray.dict_trim_by_keys"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.SArray.dict_trim_by_keys</span></code></a>, <a class="reference internal" href="turicreate.topic_model.TopicModel.evaluate.html#turicreate.topic_model.TopicModel.evaluate" title="turicreate.topic_model.TopicModel.evaluate"><code class="xref py py-obj docutils literal"><span class="pre">TopicModel.evaluate</span></code></a></p>
+</div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><a class="reference external" href="http://en.wikipedia.org/wiki/Latent_Dirichlet_allocation">Wikipedia - Latent Dirichlet allocation</a></li>
+<li>Alias method: Li, A. et al. (2014) <a class="reference external" href="http://www.sravi.org/pubs/fastlda-kdd2014.pdf">Reducing the Sampling Complexity of
+Topic Models.</a>.
+KDD 2014.</li>
+</ul>
+<p class="rubric">Examples</p>
+<p>The following example includes an SArray of documents, where
+each element represents a document in &#8220;bag of words&#8221; representation
+&#8211; a dictionary with word keys and whose values are the number of times
+that word occurred in the document:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">docs</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">(</span><span class="s1">&#39;https://static.turi.com/datasets/nytimes&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Once in this form, it is straightforward to learn a topic model.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">topic_model</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It is also easy to create a new topic model from an old one  &#8211; whether
+it was created using Turi Create or another package.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m2</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">topic_model</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">initial_topics</span><span class="o">=</span><span class="n">m</span><span class="p">[</span><span class="s1">&#39;topics&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>To manually fix several words to always be assigned to a topic, use
+the <cite>associations</cite> argument. The following will ensure that topic 0
+has the most probability for each of the provided words:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">SFrame</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">associations</span> <span class="o">=</span> <span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;word&#39;</span><span class="p">:[</span><span class="s1">&#39;hurricane&#39;</span><span class="p">,</span> <span class="s1">&#39;wind&#39;</span><span class="p">,</span> <span class="s1">&#39;storm&#39;</span><span class="p">],</span>
+<span class="go">                           &#39;topic&#39;: [0, 0, 0]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">topic_model</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span>
+<span class="go">                                    associations=associations)</span>
+</pre></div>
+</div>
+<p>More advanced usage allows you  to control aspects of the model and the
+learning method.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">turicreate</span> <span class="kn">as</span> <span class="nn">tc</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">topic_model</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span>
+<span class="go">                              num_topics=20,       # number of topics</span>
+<span class="go">                              num_iterations=10,   # algorithm parameters</span>
+<span class="go">                              alpha=.01, beta=.1)  # hyperparameters</span>
+</pre></div>
+</div>
+<p>To evaluate the model&#8217;s ability to generalize, we can create a train/test
+split where a portion of the words in each document are held out from
+training.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">random_split</span><span class="p">(</span><span class="o">.</span><span class="mi">8</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">topic_model</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;perplexity&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.topic_model.perplexity.html" class="btn btn-neutral float-right" title="turicreate.topic_model.perplexity">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.topic_model.TopicModel.html" class="btn btn-neutral" title="turicreate.topic_model.TopicModel"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,253 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Data &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="index.html"/>
+        <link rel="next" title="turicreate.SArray" href="generated/turicreate.SArray.html"/>
+        <link rel="prev" title="Turi Create API Documentation" href="index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.toolkits.html">Modelling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Data</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="module-turicreate.data_structures">
+<span id="data"></span><span id="data-structures"></span><h1>Data<a class="headerlink" href="#module-turicreate.data_structures" title="Permalink to this headline">¶</a></h1>
+<p>Turi Create offers several data structures for data analysis.  Concise
+descriptions of the data structures and their methods are contained in the API
+documentation, along with a small number of simple examples.</p>
+<div class="section" id="id1">
+<h2>Data Structures<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.SArray.html#turicreate.SArray" title="turicreate.SArray"><code class="xref py py-obj docutils literal"><span class="pre">SArray</span></code></a></td>
+<td>An immutable, homogeneously typed array object backed by persistent storage.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.SFrame.html#turicreate.SFrame" title="turicreate.SFrame"><code class="xref py py-obj docutils literal"><span class="pre">SFrame</span></code></a></td>
+<td>A tabular, column-mutable dataframe object that can scale to big data.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.SGraph.html#turicreate.SGraph" title="turicreate.SGraph"><code class="xref py py-obj docutils literal"><span class="pre">SGraph</span></code></a></td>
+<td>A scalable graph data structure.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="data-types">
+<h2>Data Types<a class="headerlink" href="#data-types" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.Image.html#turicreate.Image" title="turicreate.Image"><code class="xref py py-obj docutils literal"><span class="pre">Image</span></code></a></td>
+<td>A class whose objects contains image data, meta-data, and supports useful utility methods.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.Vertex.html#turicreate.Vertex" title="turicreate.Vertex"><code class="xref py py-obj docutils literal"><span class="pre">Vertex</span></code></a></td>
+<td>A vertex object, consisting of a vertex ID and a dictionary of vertex attributes.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.Edge.html#turicreate.Edge" title="turicreate.Edge"><code class="xref py py-obj docutils literal"><span class="pre">Edge</span></code></a></td>
+<td>A directed edge between two Vertex objects.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="utilities">
+<h2>Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.SArrayBuilder.html#turicreate.SArrayBuilder" title="turicreate.SArrayBuilder"><code class="xref py py-obj docutils literal"><span class="pre">SArrayBuilder</span></code></a></td>
+<td>An interface to incrementally build an SArray element by element.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.SFrameBuilder.html#turicreate.SFrameBuilder" title="turicreate.SFrameBuilder"><code class="xref py py-obj docutils literal"><span class="pre">SFrameBuilder</span></code></a></td>
+<td>An interface to incrementally build an SFrame (row by row).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.Sketch.html#turicreate.Sketch" title="turicreate.Sketch"><code class="xref py py-obj docutils literal"><span class="pre">Sketch</span></code></a></td>
+<td>The Sketch object contains a sketch of a single SArray (a column of an SFrame).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.aggregate.html#module-turicreate.aggregate" title="turicreate.aggregate"><code class="xref py py-obj docutils literal"><span class="pre">aggregate</span></code></a></td>
+<td>Builtin aggregators for SFrame groupby operator.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="generated/turicreate.SArray.html" class="btn btn-neutral float-right" title="turicreate.SArray">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Turi Create API Documentation"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

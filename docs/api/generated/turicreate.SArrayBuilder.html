@@ -1,0 +1,265 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.SArrayBuilder &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="Data" href="../turicreate.data_structures.html"/>
+        <link rel="next" title="turicreate.SFrameBuilder" href="turicreate.SFrameBuilder.html"/>
+        <link rel="prev" title="turicreate.Edge" href="turicreate.Edge.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.data_structures.html">Data</a> &raquo;</li>
+      
+    <li>turicreate.SArrayBuilder</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-sarraybuilder">
+<h1>turicreate.SArrayBuilder<a class="headerlink" href="#turicreate-sarraybuilder" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="turicreate.SArrayBuilder">
+<em class="property">class </em><code class="descclassname">turicreate.</code><code class="descname">SArrayBuilder</code><span class="sig-paren">(</span><em>dtype</em>, <em>num_segments=1</em>, <em>history_size=10</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SArrayBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>An interface to incrementally build an SArray element by element.</p>
+<p>Once closed, the SArray cannot be &#8220;reopened&#8221; using this interface.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>num_segments</strong> : int, optional</p>
+<blockquote>
+<div><p>Number of segments that can be written in parallel.</p>
+</div></blockquote>
+<p><strong>history_size</strong> : int, optional</p>
+<blockquote>
+<div><p>The number of elements to be cached as history. Caches the last
+<cite>history_size</cite> elements added with <cite>append</cite> or <cite>append_multiple</cite>.</p>
+</div></blockquote>
+<p><strong>dtype</strong> : type, optional</p>
+<blockquote>
+<div><p>The type the resulting SArray will be. If None, the resulting SArray
+will take on the type of the first non-None value it receives.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>out</strong> : SArrayBuilder</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">SArrayBuilder</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sb</span> <span class="o">=</span> <span class="n">SArrayBuilder</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sb</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sb</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="go">dtype: int</span>
+<span class="go">Rows: 3</span>
+<span class="go">[1, 2, 3]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArrayBuilder.append.html#turicreate.SArrayBuilder.append" title="turicreate.SArrayBuilder.append"><code class="xref py py-obj docutils literal"><span class="pre">SArrayBuilder.append</span></code></a>(data[,&nbsp;segment])</td>
+<td>Append a single element to an SArray.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArrayBuilder.append_multiple.html#turicreate.SArrayBuilder.append_multiple" title="turicreate.SArrayBuilder.append_multiple"><code class="xref py py-obj docutils literal"><span class="pre">SArrayBuilder.append_multiple</span></code></a>(data[,&nbsp;segment])</td>
+<td>Append multiple elements to an SArray.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArrayBuilder.close.html#turicreate.SArrayBuilder.close" title="turicreate.SArrayBuilder.close"><code class="xref py py-obj docutils literal"><span class="pre">SArrayBuilder.close</span></code></a>()</td>
+<td>Creates an SArray from all values that were appended to the SArrayBuilder.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArrayBuilder.get_type.html#turicreate.SArrayBuilder.get_type" title="turicreate.SArrayBuilder.get_type"><code class="xref py py-obj docutils literal"><span class="pre">SArrayBuilder.get_type</span></code></a>()</td>
+<td>The type the result SArray will be if <cite>close</cite> is called.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArrayBuilder.read_history.html#turicreate.SArrayBuilder.read_history" title="turicreate.SArrayBuilder.read_history"><code class="xref py py-obj docutils literal"><span class="pre">SArrayBuilder.read_history</span></code></a>([num,&nbsp;segment])</td>
+<td>Outputs the last <cite>num</cite> elements that were appended either by <cite>append</cite> or <cite>append_multiple</cite>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.SFrameBuilder.html" class="btn btn-neutral float-right" title="turicreate.SFrameBuilder">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.Edge.html" class="btn btn-neutral" title="turicreate.Edge"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,1566 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <title>Data Manipulation · GitBook</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.0">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-anchors/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../data_formats_and_sources/sql_integration.html" />
+    
+    
+    <link rel="prev" href="sframe-intro.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Overview
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="introduction.html">
+            
+                <a href="introduction.html">
+            
+                    
+                    Working with data
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="tabular-data.html">
+            
+                <a href="tabular-data.html">
+            
+                    
+                    Tabular data
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1.1" data-path="sframe-intro.html">
+            
+                <a href="sframe-intro.html">
+            
+                    
+                    Loading and Saving
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.2.1.2" data-path="data-manipulation.html">
+            
+                <a href="data-manipulation.html">
+            
+                    
+                    Data Manipulation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.1.3" data-path="../data_formats_and_sources/sql_integration.html">
+            
+                <a href="../data_formats_and_sources/sql_integration.html">
+            
+                    
+                    SQL Databases
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../sgraph/sgraph.html">
+            
+                <a href="../sgraph/sgraph.html">
+            
+                    
+                    Graph data
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="../text/analysis.html">
+            
+                <a href="../text/analysis.html">
+            
+                    
+                    Text data
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4" data-path="../vis/introduction.html">
+            
+                <a href="../vis/introduction.html">
+            
+                    
+                    Visualization
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.4.1" data-path="../vis/gallery.html">
+            
+                <a href="../vis/gallery.html">
+            
+                    
+                    Example Gallery
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.4.2" data-path="../vis/use_cases.html">
+            
+                <a href="../vis/use_cases.html">
+            
+                    
+                    Sample Use Cases
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../applications/intro.html">
+            
+                <a href="../applications/intro.html">
+            
+                    
+                    Task focused toolkits
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../recommender/introduction.html">
+            
+                <a href="../recommender/introduction.html">
+            
+                    
+                    Recommender systems
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1.1" data-path="../recommender/using-trained-models.html">
+            
+                <a href="../recommender/using-trained-models.html">
+            
+                    
+                    Using models
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.1.2" data-path="../recommender/choosing-a-model.html">
+            
+                <a href="../recommender/choosing-a-model.html">
+            
+                    
+                    Choosing a model
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../image_classifier/introduction.html">
+            
+                <a href="../image_classifier/introduction.html">
+            
+                    
+                    Image classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.2.1" data-path="../image_classifier/advanced-usage.html">
+            
+                <a href="../image_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.2" data-path="../image_classifier/how-it-works.html">
+            
+                <a href="../image_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../image_similarity/introduction.html">
+            
+                <a href="../image_similarity/introduction.html">
+            
+                    
+                    Image similarity
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../object_detection/introduction.html">
+            
+                <a href="../object_detection/introduction.html">
+            
+                    
+                    Object detection
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.4.1" data-path="../object_detection/advanced-usage.html">
+            
+                <a href="../object_detection/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.2" data-path="../object_detection/how-it-works.html">
+            
+                <a href="../object_detection/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../activity_classifier/introduction.html">
+            
+                <a href="../activity_classifier/introduction.html">
+            
+                    
+                    Activity classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" data-path="../activity_classifier/advanced-usage.html">
+            
+                <a href="../activity_classifier/advanced-usage.html">
+            
+                    
+                    Advanced Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.2" data-path="../activity_classifier/export_coreml.html">
+            
+                <a href="../activity_classifier/export_coreml.html">
+            
+                    
+                    Deployment to CoreML
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.3" data-path="../activity_classifier/how-it-works.html">
+            
+                <a href="../activity_classifier/how-it-works.html">
+            
+                    
+                    How it works
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6" data-path="../text_classifier/introduction.html">
+            
+                <a href="../text_classifier/introduction.html">
+            
+                    
+                    Text classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../modeling-data/intro.html">
+            
+                <a href="../modeling-data/intro.html">
+            
+                    
+                    Machine learning essentials
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../supervised-learning/classifier.html">
+            
+                <a href="../supervised-learning/classifier.html">
+            
+                    
+                    Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1.1" data-path="../supervised-learning/boosted_trees_classifier.html">
+            
+                <a href="../supervised-learning/boosted_trees_classifier.html">
+            
+                    
+                    Boosted Trees Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.2" data-path="../supervised-learning/decision_tree_classifier.html">
+            
+                <a href="../supervised-learning/decision_tree_classifier.html">
+            
+                    
+                    Decision Tree Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.3" data-path="../supervised-learning/logistic-regression.html">
+            
+                <a href="../supervised-learning/logistic-regression.html">
+            
+                    
+                    Logistic Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.4" data-path="../supervised-learning/knn_classifier.html">
+            
+                <a href="../supervised-learning/knn_classifier.html">
+            
+                    
+                    Nearest Neighbor Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.5" data-path="../supervised-learning/random_forest_classifier.html">
+            
+                <a href="../supervised-learning/random_forest_classifier.html">
+            
+                    
+                    Random Forest Classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.1.6" data-path="../supervised-learning/svm.html">
+            
+                <a href="../supervised-learning/svm.html">
+            
+                    
+                    SVM
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../clustering/intro.html">
+            
+                <a href="../clustering/intro.html">
+            
+                    
+                    Clustering
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.2.1" data-path="../clustering/kmeans.html">
+            
+                <a href="../clustering/kmeans.html">
+            
+                    
+                    KMeans
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2.2" data-path="../clustering/dbscan.html">
+            
+                <a href="../clustering/dbscan.html">
+            
+                    
+                    DBSCAN
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../graph_analytics/intro.html">
+            
+                <a href="../graph_analytics/intro.html">
+            
+                    
+                    Graph analytics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../nearest_neighbors/nearest_neighbors.html">
+            
+                <a href="../nearest_neighbors/nearest_neighbors.html">
+            
+                    
+                    Nearest neighbors
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../supervised-learning/regression.html">
+            
+                <a href="../supervised-learning/regression.html">
+            
+                    
+                    Regression
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.5.1" data-path="../supervised-learning/boosted_trees_regression.html">
+            
+                <a href="../supervised-learning/boosted_trees_regression.html">
+            
+                    
+                    Boosted Trees Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.2" data-path="../supervised-learning/decision_tree_regression.html">
+            
+                <a href="../supervised-learning/decision_tree_regression.html">
+            
+                    
+                    Decision Tree Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.3" data-path="../supervised-learning/linear-regression.html">
+            
+                <a href="../supervised-learning/linear-regression.html">
+            
+                    
+                    Linear Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5.4" data-path="../supervised-learning/random_forest_regression.html">
+            
+                <a href="../supervised-learning/random_forest_regression.html">
+            
+                    
+                    Random Forest Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="../text/intro.html">
+            
+                <a href="../text/intro.html">
+            
+                    
+                    Text analysis
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../evaluation/introduction.html">
+            
+                <a href="../evaluation/introduction.html">
+            
+                    
+                    Evaluating models
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../evaluation/regression.html">
+            
+                <a href="../evaluation/regression.html">
+            
+                    
+                    Regression metrics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../evaluation/classification.html">
+            
+                <a href="../evaluation/classification.html">
+            
+                    
+                    Classification metrics
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../deployment/introduction.html">
+            
+                <a href="../deployment/introduction.html">
+            
+                    
+                    Deployment
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../conclusion.html">
+            
+                <a href="../conclusion.html">
+            
+                    
+                    Additional Resources
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Data Manipulation</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="data-manipulation"><a name="data-manipulation" class="plugin-anchor" href="#data-manipulation"><i class="fa fa-link" aria-hidden="true"></i></a>Data Manipulation</h1><p>It isn&apos;t often that your dataset is &quot;clean&quot; enough to run one of our
+toolkits on it in a meaningful way right after import.  Such is
+life...data is messy.  SFrames enable you to complete data cleaning
+tasks in a scalable way, even on datasets that are much larger than your
+computer&apos;s memory.</p><h4 id="column-selection-and-manipulation"><a name="column-selection-and-manipulation" class="plugin-anchor" href="#column-selection-and-manipulation"><i class="fa fa-link" aria-hidden="true"></i></a>Column Selection and Manipulation</h4><p>A problem you may have noticed in the song metadata is that some songs&apos;
+year value is 0.  Suppose we want to change those to a missing value, so
+that they do not skew a summary statistic over the column (e.g. <code>mean</code>
+or <code>min</code>). If we knew about this before parsing, or are willing to parse
+the file again, we could add 0 to the <code>na_values</code> option of <code>read_csv</code>.
+Alternatively, we can apply an arbitrary function to one or multiple
+columns of an SFrame.  Here&apos;s how to replace those zeroes with missing
+values with a Python lambda function:</p><pre><code class="lang-python">songs[<span class="hljs-string">&apos;year&apos;</span>] = songs[<span class="hljs-string">&apos;year&apos;</span>].apply(<span class="hljs-keyword">lambda</span> x: <span class="hljs-keyword">None</span> <span class="hljs-keyword">if</span> x == <span class="hljs-number">0</span> <span class="hljs-keyword">else</span> x)
+songs.head(<span class="hljs-number">5</span>)</code></pre>
+<pre><code>+--------------------+----------------------+--------------------------------+
+|      song_id       |        title         |            release             |
++--------------------+----------------------+--------------------------------+
+| SOQMMHC12AB0180CB8 |     Silent Night     |     Monster Ballads X-Mas      |
+| SOVFVAK12A8C1350D9 |     Tanssi vaan      |       Karkuteill\xc3\xa4       |
+| SOGTUKN12AB017F4F1 |  No One Could Ever   |             Butter             |
+| SOBNYVR12A8C13558C | Si Vos Quer\xc3\xa9s |            De Culo             |
+| SOHSBXH12A8C13B0DF |   Tantce Of Aspens   | Rene Ablaze Presents Winte ... |
++--------------------+----------------------+--------------------------------+
++------------------+------+
+|   artist_name    | year |
++------------------+------+
+| Faster Pussy cat | 2003 |
+| Karkkiautomaatti | 1995 |
+|  Hudson Mohawke  | 2006 |
+|   Yerba Brava    | 2003 |
+|    Der Mystic    | None |
++------------------+------+
+[5 rows x 5 columns]</code></pre>
+<p>Notice we had to reassign the resulting column back to our SFrame.  This
+is because the content of the SFrame&apos;s columns (a separate data
+structure called an
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.SArray.html" target="_blank">SArray</a>) 
+is immutable.  SFrames can add and subtract columns liberally though, as
+it essentially is just a carrier of references to SArrays.</p><p>We used a lambda function here because it is the simplest way to
+instantiate a small function like that.  The <code>apply</code> method will take a
+named function (a normal Python function that starts with <code>def</code>) as
+well.  As long as the function takes one parameter and returns one
+value, it can be applied to a column.</p><p>We can also apply a function to multiple columns.  Suppose we want to
+add a column of the number of times the word &apos;love&apos; is used in the
+<code>title</code> and <code>artist</code> column:</p><pre><code class="lang-python">songs[<span class="hljs-string">&apos;love_count&apos;</span>] = songs[[<span class="hljs-string">&apos;title&apos;</span>, <span class="hljs-string">&apos;artist_name&apos;</span>]].apply(
+    <span class="hljs-keyword">lambda</span> row: sum(x.lower().split(<span class="hljs-string">&apos; &apos;</span>).count(<span class="hljs-string">&apos;love&apos;</span>) <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> row.values()))
+songs.topk(<span class="hljs-string">&apos;love_count&apos;</span>, k=<span class="hljs-number">5</span>)</code></pre>
+<pre><code>+--------------------+--------------------------------+
+|      song_id       |             title              |
++--------------------+--------------------------------+
+| SOMYDCX12A8AE4836B | The Love Story (Part 1) In ... |
+| SONXAVM12AB017AA1D |          Document 15           |
+| SOAWJOC12A8C1367A7 |       Black Black Window       |
+| SOXAVWF12A8AE4922C |           One Piece            |
+| SOAJRDR12A8C1383B1 |         Love Love Love         |
++--------------------+--------------------------------+
++--------------------------------+--------------------------------+------+------------+
+|            release             |          artist_name           | year | love_count |
++--------------------------------+--------------------------------+------+------------+
+|      Skid Row / 34 Hours       |            Skid Row            | None |     4      |
+| Feels_ Feathers_ Bog and Bees  | Low Low Low La La La Love  ... | None |     3      |
+|          Ends Of June          | Low Low Low La La La Love  ... | 2007 |     3      |
+| Low Low Low La La La Love  ... | Low Low Low La La La Love  ... | 2007 |     3      |
+|           Radio Hitz           |       Spider Murphy Gang       | None |     3      |
++--------------------------------+--------------------------------+------+------------+
+[5 rows x 6 columns]</code></pre>
+<p>A few things to note here.  We first select a subset of columns
+using a list within square brackets.  This is useful in general, but it helps us
+with performance in this case, as fewer values are scanned.  Also, when apply is
+called on an SFrame instead of an SArray as shown here, the input of the lambda
+function is a dictionary where the keys are the column names, and the values
+correspond to that row&apos;s values.</p><p>Another very useful and common operation is the ability to select
+columns based on types.  For instance, this extracts all the columns
+containing strings.</p><pre><code class="lang-python">songs[str]</code></pre>
+<pre><code>Data:
++--------------------+-------------------------------+
+|      song_id       |             title             |
++--------------------+-------------------------------+
+| SOQMMHC12AB0180CB8 |          Silent Night         |
+| SOVFVAK12A8C1350D9 |          Tanssi vaan          |
+| SOGTUKN12AB017F4F1 |       No One Could Ever       |
+| SOBNYVR12A8C13558C |         Si Vos Quer&#xE9;s         |
+| SOHSBXH12A8C13B0DF |        Tantce Of Aspens       |
+| SOZVAPQ12A8C13B63C | Symphony No. 1 G minor &quot;Si... |
+| SOQVRHI12A6D4FB2D7 |        We Have Got Love       |
+| SOEYRFT12AB018936C |       2 Da Beat Ch&apos;yall       |
+| SOPMIYT12A6D4F851E |            Goodbye            |
+| SOJCFMH12A8C13B0C2 |   Mama_ mama can&apos;t you see ?  |
++--------------------+-------------------------------+
++-------------------------------+-------------------------------+
+|            release            |          artist_name          |
++-------------------------------+-------------------------------+
+|     Monster Ballads X-Mas     |        Faster Pussy cat       |
+|          Karkuteill&#xE4;          |        Karkkiautomaatti       |
+|             Butter            |         Hudson Mohawke        |
+|            De Culo            |          Yerba Brava          |
+| Rene Ablaze Presents Winte... |           Der Mystic          |
+| Berwald: Symphonies Nos. 1... |        David Montgomery       |
+|   Strictly The Best Vol. 34   |       Sasha / Turbulence      |
+|            Da Bomb            |           Kris Kross          |
+|           Danny Boy           |          Joseph Locke         |
+| March to cadence with the ... | The Sun Harbor&apos;s Chorus-Do... |
++-------------------------------+-------------------------------+</code></pre>
+<p>Now, you may not feel comfortable transforming a column without inspecting more
+than the first 10 rows of it, as we did with the <code>year</code> column. To quickly get
+a summary of the column, we can do:</p><pre><code class="lang-python">songs[<span class="hljs-string">&apos;year&apos;</span>].summary()</code></pre>
+<pre><code>+--------------------+---------------+----------+
+|        item        |     value     | is exact |
++--------------------+---------------+----------+
+|       Length       |    1000000    |   Yes    |
+|        Min         |      0.0      |   Yes    |
+|        Max         |     2011.0    |   Yes    |
+|        Mean        |  1030.325652  |   Yes    |
+|        Sum         |  1030325652.0 |   Yes    |
+|      Variance      | 997490.582407 |   Yes    |
+| Standard Deviation | 998.744503067 |   Yes    |
+|  # Missing Values  |       0       |   Yes    |
+|  # unique values   |       90      |    No    |
++--------------------+---------------+----------+
+
+Most frequent items:
++-------+--------+-------+-------+-------+-------+-------+-------+-------+-------+
+| value |   0    |  2007 |  2006 |  2005 |  2008 |  2009 |  2004 |  2003 |  2002 |
++-------+--------+-------+-------+-------+-------+-------+-------+-------+-------+
+| count | 484424 | 39414 | 37546 | 34960 | 34770 | 31051 | 29618 | 27389 | 23472 |
++-------+--------+-------+-------+-------+-------+-------+-------+-------+-------+
++-------+
+|  2001 |
++-------+
+| 21604 |
++-------+
+
+Quantiles:
++-----+-----+-----+-----+--------+--------+--------+--------+--------+
+|  0% |  1% |  5% | 25% |  50%   |  75%   |  95%   |  99%   |  100%  |
++-----+-----+-----+-----+--------+--------+--------+--------+--------+
+| 0.0 | 0.0 | 0.0 | 0.0 | 1970.0 | 2002.0 | 2008.0 | 2009.0 | 2011.0 |
++-----+-----+-----+-----+--------+--------+--------+--------+--------+
+</code></pre>
+<p>It appears that there are no other bogus years than 0.  This summary splits
+its values into &quot;exact&quot; and &quot;approximate&quot;.  The approximate values could
+certainly be returned as exact values, but for the summary we use approximate
+values to make sure exploring large datasets is scalable.  The methods we use
+only do a single pass of the data in the column, and each operation has well-
+defined bounds on how wrong the answer will be, which are listed in our
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.Sketch.html" target="_blank">API Reference</a>.</p><p>Using the most frequent items and quantiles described here, you can probably
+almost picture the distribution of years, where the tallest part is squarely
+within the 2000s.  Fortunately, we don&apos;t have to just picture it in our heads.
+Turi Create provides visualizations of SFrames, as well as other data
+structures.  Turi Create visualization is covered in depth in the
+<a href="../vis/introduction.html">Visualization</a> section. To view a histogram of the
+SArray, we run:</p><pre><code>songs[&apos;year&apos;].show()</code></pre>
+<p><img alt="songs[&apos;year&apos;].show()" src="images/sframe_user_guide_1_histogram.png"></p><p>We have done some exploration, transformation, and feature generation.  Let&apos;s
+spend some time filtering values we won&apos;t care about later.  For example,
+perhaps we&apos;ll need an SFrame with <strong>only</strong> dated songs.  This basic filter operation
+looks like this:</p><pre><code class="lang-python">dated_songs = songs[songs[<span class="hljs-string">&apos;year&apos;</span>] != <span class="hljs-keyword">None</span>]
+dated_songs</code></pre>
+<pre><code>+--------------------+--------------------------------+
+|      song_id       |             title              |
++--------------------+--------------------------------+
+| SOQMMHC12AB0180CB8 |          Silent Night          |
+| SOVFVAK12A8C1350D9 |          Tanssi vaan           |
+| SOGTUKN12AB017F4F1 |       No One Could Ever        |
+| SOBNYVR12A8C13558C |      Si Vos Quer\xc3\xa9s      |
+| SOEYRFT12AB018936C |       2 Da Beat Ch&apos;yall        |
+| SOYGNWH12AB018191E |         L&apos;antarctique          |
+| SOLJTLX12AB01890ED |       El hijo del pueblo       |
+| SOMPVQB12A8C1379BB |             Pilots             |
+| SOSDCFG12AB0184647 |              006               |
+| SOBARPM12A8C133DFF | (Looking For) The Heart Of ... |
++--------------------+--------------------------------+
++--------------------------------+------------------+------+------------+
+|            release             |   artist_name    | year | love_count |
++--------------------------------+------------------+------+------------+
+|     Monster Ballads X-Mas      | Faster Pussy cat | 2003 |     0      |
+|       Karkuteill\xc3\xa4       | Karkkiautomaatti | 1995 |     0      |
+|             Butter             |  Hudson Mohawke  | 2006 |     0      |
+|            De Culo             |   Yerba Brava    | 2003 |     0      |
+|            Da Bomb             |    Kris Kross    | 1993 |     0      |
+|   Des cobras des tarentules    | 3 Gars Su&apos;l Sofa | 2007 |     0      |
+| 32 Grandes \xc3\x89xitos  CD 2 |  Jorge Negrete   | 1997 |     0      |
+|           The Loyal            |    Tiger Lou     | 2005 |     0      |
+|       Lena 20 \xc3\x85r        | Lena Philipsson  | 1998 |     0      |
+|           Cover Girl           |   Shawn Colvin   | 1994 |     0      |
++--------------------------------+------------------+------+------------+
+[? rows x 6 columns]
+Note: Only the head of the SFrame is printed. This SFrame is lazily evaluated.
+You can use len(sf) to force materialization.</code></pre>
+<p>The output does a good job at explaining what is happening here.  SFrames will
+not do any work if it isn&apos;t required right away.  This way, if you decide this
+filter operation isn&apos;t for you after looking at the first few rows, Turi
+Create won&apos;t waste computation time doing it anyways.  However, it
+is important to verify that the missing values were indeed removed, and that we
+indeed removed 484424 rows, so we&apos;ll force materialization of the new SFrame.</p><pre><code class="lang-python">len(dated_songs)</code></pre>
+<pre><code>515576</code></pre>
+<p>Why does this filtering syntax work?  What we&apos;re actually doing is placing an
+SArray in the square brackets.  A comparison operator applied to an SArray
+returns a new SArray of the same length as the original, but with values that
+correspond to <code>true</code> or <code>false</code> based on the operator.  Here&apos;s what it looks
+like:</p><pre><code class="lang-python">songs[<span class="hljs-string">&apos;year&apos;</span>] != <span class="hljs-keyword">None</span></code></pre>
+<pre><code>dtype: int
+Rows: 1000000
+[1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, ... ]</code></pre>
+<p>We may want to use more than one comparison operator, for which you must place
+each comparison statement in parentheses and use the bitwise boolean logic
+operators to combine the statements, as Python does not allow the overloading of
+logical operators.  Perhaps we are building a music recommender with this data,
+and we would like to only use &quot;reasonable&quot; play counts, for some definition of
+reasonable:</p><pre><code class="lang-python">reasonable_usage = usage_data[(usage_data[<span class="hljs-string">&apos;listen_count&apos;</span>] &gt;= <span class="hljs-number">10</span>) &amp; (usage_data[<span class="hljs-string">&apos;listen_count&apos;</span>] &lt;= <span class="hljs-number">500</span>)]
+len(reasonable_usage)</code></pre>
+<pre><code>114026</code></pre>
+<p>You can also write a lambda function to filter using the <code>filter</code> function,
+which you can read about in the <a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.SArray.filter.html#turicreate.SArray.filter" target="_blank">API Reference</a>.</p><h4 id="joins-and-aggregation"><a name="joins-and-aggregation" class="plugin-anchor" href="#joins-and-aggregation"><i class="fa fa-link" aria-hidden="true"></i></a>Joins and Aggregation</h4><p>Another important way to filter a dataset is to get rid of duplicate
+data.  A nice way to search for duplicate data is to visualize the
+SFrame.</p><pre><code>songs.show()</code></pre>
+<p><img alt="songs.show()" src="images/sframe_user_guide_2_summary.png"></p><p>It appears our <code>song_id</code> is not completely unique.  This would make merging the
+<code>songs</code> and <code>usage_data</code> SFrames error-prone if all we want to do is add song
+title information to the existing usage data.  In this particular dataset, these
+repeat songs are included because they may have been released on several
+different albums (movie soundtracks, radio singles, etc.).  If we do not care
+about which album release is included in the dataset, we can filter those
+duplicates like this:</p><pre><code class="lang-python">other_cols = songs.column_names()
+other_cols.remove(<span class="hljs-string">&apos;song_id&apos;</span>)
+agg_list = [tc.aggregate.SELECT_ONE(i) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> other_cols]
+unique_songs = songs.groupby(<span class="hljs-string">&apos;song_id&apos;</span>, dict(zip(other_cols, agg_list)))</code></pre>
+<p>This code block needs some further explanation.  It is centered around calling
+<code>groupby</code> with the <code>SELECT_ONE</code> aggregator.  This selects a random
+representative row from each group.  You must explicitly denote which columns
+will use this aggregator, so the list comprehension gathers all other columns
+than the one we are grouping by and uses the <code>SELECT_ONE</code> aggregator for each
+one.  When used like this, <code>SELECT_ONE</code> will use the same random row for each
+column.  This is great if it is not important which of the duplicates you pick.
+If it is, another aggregator like <code>MIN</code> or <code>MAX</code> may be in order.</p><p>Suppose we actually want to see the songs that have the highest play count?  Now
+we can correctly group each song and aggregate its listen count, and then join
+the result to the song metadata to see the song titles.</p><pre><code class="lang-python">usage_groups = usage_data.groupby([<span class="hljs-string">&apos;song_id&apos;</span>], {<span class="hljs-string">&apos;total_listens&apos;</span>: tc.aggregate.SUM(<span class="hljs-string">&apos;listen_count&apos;</span>),
+                                       <span class="hljs-string">&apos;num_unique_users&apos;</span>: tc.aggregate.COUNT(<span class="hljs-string">&apos;user_id&apos;</span>)})
+usage_groups.join(songs, [<span class="hljs-string">&apos;song_id&apos;</span>]).topk(<span class="hljs-string">&apos;total_listens&apos;</span>)</code></pre>
+<pre><code>+--------------------+------------------+---------------+
+|      song_id       | num_unique_users | total_listens |
++--------------------+------------------+---------------+
+| SOBONKR12A58A7A7E0 |       6412       |     54136     |
+| SOAUWYT12A81C206F1 |       7032       |     49253     |
+| SOSXLTC12AF72A7F54 |       6145       |     41418     |
+| SOEGIYH12A6D4FC0E3 |       5385       |     31153     |
+| SOFRQTD12A81C233C0 |       8277       |     31036     |
+| SOAXGDH12A8C13F8A1 |       6949       |     26663     |
+| SONYKOW12AB01849C9 |       5841       |     22100     |
+| SOPUCYA12A8C13A694 |       3526       |     21019     |
+| SOUFTBI12AB0183F65 |       2887       |     19645     |
+| SOVDSJC12A58A7A271 |       2866       |     18309     |
++--------------------+------------------+---------------+
++--------------------------------+--------------------------------+
+|             title              |            release             |
++--------------------------------+--------------------------------+
+|         You&apos;re The One         |       If There Was A Way       |
+|              Undo              |        Vespertine Live         |
+|            Revelry             |       Only By The Night        |
+| Horn Concerto No. 4 in E f ... | Mozart - Eine kleine Nacht ... |
+|         Sehr kosmisch          |       Musik von Harmonia       |
+| Dog Days Are Over (Radio Edit) | Now That&apos;s What I Call Mus ... |
+|            Secrets             |           Waking Up            |
+|             Canada             |        The End Is Here         |
+|            Invalid             |         Fermi Paradox          |
+|        Ain&apos;t Misbehavin        |           Summertime           |
++--------------------------------+--------------------------------+
++--------------------------------+------+------------+
+|          artist_name           | year | love_count |
++--------------------------------+------+------------+
+|         Dwight Yoakam          | 1990 |     0      |
+|          Bj\xc3\xb6rk          | 2001 |     0      |
+|         Kings Of Leon          | 2008 |     0      |
+| Barry Tuckwell/Academy of  ... | None |     0      |
+|            Harmonia            | None |     0      |
+|     Florence + The Machine     | None |     0      |
+|          OneRepublic           | 2009 |     0      |
+|        Five Iron Frenzy        | None |     0      |
+|            Tub Ring            | 2002 |     0      |
+|           Sam Cooke            | None |     0      |
++--------------------------------+------+------------+
+[10 rows x 8 columns]</code></pre>
+<p>The <code>usage_data</code> table is already in a great format for feeding to a
+recommender algorithm as it has user and song identifiers, and some form
+of a metric (number of listens) to rate how much the user liked the
+song.  The problem here is that users that listened to a song a lot
+would skew the recommendations.  At some point, once a user plays a song
+enough times, you know they really like it.  Perhaps we could translate
+the <code>listen_count</code> into a rating instead.  Here is a simple way to do
+it:</p><pre><code class="lang-python">s = usage_data[<span class="hljs-string">&apos;listen_count&apos;</span>].summary()
+<span class="hljs-keyword">import</span> numpy
+buckets = numpy.linspace(s.quantile(<span class="hljs-number">.005</span>), s.quantile(<span class="hljs-number">.995</span>), <span class="hljs-number">5</span>)
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">bucketize</span><span class="hljs-params">(x)</span>:</span>
+    cur_bucket = <span class="hljs-number">0</span>
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(<span class="hljs-number">0</span>,<span class="hljs-number">5</span>):
+        cur_bucket += <span class="hljs-number">1</span>
+        <span class="hljs-keyword">if</span> x &lt;= buckets[i]:
+            <span class="hljs-keyword">break</span>
+    <span class="hljs-keyword">return</span> cur_bucket
+usage_data[<span class="hljs-string">&apos;rating&apos;</span>] = usage_data[<span class="hljs-string">&apos;listen_count&apos;</span>].apply(bucketize)
+usage_data</code></pre>
+<pre><code>Columns:
+        user_id str
+        song_id str
+        listen_count    int
+        rating  int
+
+Rows: 2000000
+
+Data:
++--------------------------------+--------------------+--------------+--------+
+|            user_id             |      song_id       | listen_count | rating |
++--------------------------------+--------------------+--------------+--------+
+| b80344d063b5ccb3212f76538f ... | SOAKIMP12A8C130995 |      1       |   1    |
+| b80344d063b5ccb3212f76538f ... | SOBBMDR12A8C13253B |      2       |   2    |
+| b80344d063b5ccb3212f76538f ... | SOBXHDL12A81C204C0 |      1       |   1    |
+| b80344d063b5ccb3212f76538f ... | SOBYHAJ12A6701BF1D |      1       |   1    |
+| b80344d063b5ccb3212f76538f ... | SODACBL12A8C13C273 |      1       |   1    |
+| b80344d063b5ccb3212f76538f ... | SODDNQT12A6D4F5F7E |      5       |   2    |
+| b80344d063b5ccb3212f76538f ... | SODXRTY12AB0180F3B |      1       |   1    |
+| b80344d063b5ccb3212f76538f ... | SOFGUAY12AB017B0A8 |      1       |   1    |
+| b80344d063b5ccb3212f76538f ... | SOFRQTD12A81C233C0 |      1       |   1    |
+| b80344d063b5ccb3212f76538f ... | SOHQWYZ12A6D4FA701 |      1       |   1    |
+|              ...               |        ...         |     ...      |  ...   |
++--------------------------------+--------------------+--------------+--------+
+[2000000 rows x 4 columns]
+Note: Only the head of the SFrame is printed.</code></pre>
+<h4 id="working-with-complex-types"><a name="working-with-complex-types" class="plugin-anchor" href="#working-with-complex-types"><i class="fa fa-link" aria-hidden="true"></i></a>Working with Complex Types</h4><p>SArrays are strongly-typed and some operations only work on certain types. Two
+types deserve some special consideration in this user guide: <code>list</code> and <code>dict</code>.
+These types can hold values of any type supported by SArrays, including
+themselves. So you can have an SFrame with a column of dictionaries that each
+have values that are lists of lists of dicts with mixed strings and
+integers... anyway, you get the idea!</p><p>The dataset we&apos;re working with right now does not have any of these types, so we
+can show how to convert one or several columns to one of these iterable types.
+For instance, suppose we want a list of all albums with a list of each song that
+was on the album.  We would obtain this list from our metadata like this:</p><pre><code class="lang-python">albums = songs.groupby([<span class="hljs-string">&apos;release&apos;</span>,<span class="hljs-string">&apos;artist_name&apos;</span>], {<span class="hljs-string">&apos;tracks&apos;</span>: tc.aggregate.CONCAT(<span class="hljs-string">&apos;title&apos;</span>),
+                                                   <span class="hljs-string">&apos;years&apos;</span>: tc.aggregate.CONCAT(<span class="hljs-string">&apos;year&apos;</span>)})
+albums</code></pre>
+<pre><code>+--------------------------------+--------------------------------+
+|          artist_name           |            release             |
++--------------------------------+--------------------------------+
+|          Veruca Salt           |     Eight Arms To Hold You     |
+|  Les Compagnons De La Chanson  | Heritage - Le Chant De Mal ... |
+| Nelly / Fat Joe / Young Tr ... |             Sweat              |
+|           The Grouch           |       My Baddest B*tches       |
+|         Ozzy Osbourne          | Diary of a madman / Bark a ... |
+|        Peter Hunnigale         |      Reggae Hits Vol. 32       |
+|         Burning Spear          |      Studio One Classics       |
+|              Bond              |        New Classix 2008        |
+| Lee Coombs feat. Katherine ... |            Control             |
+|         Stevie Wonder          |    Songs In The Key Of Life    |
++--------------------------------+--------------------------------+
++--------------------------------+--------------------------------+
+|             tracks             |             years              |
++--------------------------------+--------------------------------+
+| [\&apos;One Last Time\&apos;, \&apos;With ... | array(&apos;d&apos;, [1997.0, 1997.0 ... |
+| [&apos;I Commedianti&apos;, &apos;Il Est  ... |              None              |
+|       [&apos;Grand Hang Out&apos;]       |      array(&apos;d&apos;, [2004.0])      |
+| [&apos;Silly Putty (Zion I Feat ... |      array(&apos;d&apos;, [1999.0])      |
+| [&quot;You Can\&apos;t Kill Rock And ... | array(&apos;d&apos;, [1981.0, 1983.0 ... |
+|        [&apos;Weeks Go By&apos;]         |              None              |
+|        [&apos;Rocking Time&apos;]        |      array(&apos;d&apos;, [1973.0])      |
+|   [&apos;Allegretto&apos;, &apos;Kashmir&apos;]    |              None              |
+| [&apos;Control (10Rapid Remix)&apos; ... |              None              |
+| [&apos;Ngiculela-Es Una Histori ... |      array(&apos;d&apos;, [1976.0])      |
+|              ...               |              ...               |
++--------------------------------+--------------------------------+
+[230558 rows x 4 columns]
+Note: Only the head of the SFrame is printed.</code></pre>
+<p>The <a href="https://apple.github.io/turicreate/docs/api/turicreate.data_structures.html#module-turicreate.aggregate" target="_blank">CONCAT</a>
+aggregator simply creates a list of all values in the given column for each
+group.  I included the year for debugging purposes, since I didn&apos;t know if the
+invariant of &quot;every song on the same release has the same year&quot; was true in
+this dataset.  Even looking at the first row, this is clearly not true:</p><pre><code class="lang-python">albums[<span class="hljs-number">0</span>]</code></pre>
+<pre><code>{&apos;artist_name&apos;: &apos;Veruca Salt&apos;,
+ &apos;release&apos;: &apos;Eight Arms To Hold You&apos;,
+ &apos;tracks&apos;: [&apos;With David Bowie&apos;,
+  &apos;One Last Time&apos;,
+  &apos;The Morning Sad&apos;,
+  &apos;Awesome&apos;,
+  &apos;Stoneface&apos;,
+  &quot;Don&apos;t Make Me Prove It&quot;,
+  &apos;Straight&apos;,
+  &apos;Earthcrosser&apos;,
+  &apos;Benjamin&apos;,
+  &apos;Volcano Girls&apos;,
+  &apos;Shutterbug&apos;,
+  &apos;Sound Of The Bell&apos;,
+  &apos;Loneliness Is Worse&apos;,
+  &apos;Venus Man Trap&apos;],
+  &apos;years&apos;: array(&apos;d&apos;, [1997.0, 1997.0, 1997.0, 1997.0, 1997.0, 1997.0, 1994.0, 1997.0, 1997.0, 1997.0, 1997.0, 1997.0, 1997.0, 1997.0])}</code></pre>
+<p>In light of this complication, and for demonstration purposes, let&apos;s
+have our &apos;tracks&apos; column contain dictionaries instead, where the key is
+the year and the value is a list of tracks.</p><pre><code class="lang-python">albums = songs.groupby([<span class="hljs-string">&apos;release&apos;</span>,<span class="hljs-string">&apos;artist_name&apos;</span>,<span class="hljs-string">&apos;year&apos;</span>], {<span class="hljs-string">&apos;tracks&apos;</span>:tc.aggregate.CONCAT(<span class="hljs-string">&apos;title&apos;</span>)})
+albums = albums.unstack(column=[<span class="hljs-string">&apos;year&apos;</span>,<span class="hljs-string">&apos;tracks&apos;</span>], new_column_name=<span class="hljs-string">&apos;track_dict&apos;</span>)
+albums</code></pre>
+<pre><code>+--------------------------------+--------------------------------+
+|          artist_name           |            release             |
++--------------------------------+--------------------------------+
+|          Veruca Salt           |     Eight Arms To Hold You     |
+|  Les Compagnons De La Chanson  | Heritage - Le Chant De Mal ... |
+| Nelly / Fat Joe / Young Tr ... |             Sweat              |
+|           The Grouch           |       My Baddest B*tches       |
+|         Ozzy Osbourne          | Diary of a madman / Bark a ... |
+|        Peter Hunnigale         |      Reggae Hits Vol. 32       |
+|         Burning Spear          |      Studio One Classics       |
+|              Bond              |        New Classix 2008        |
+| Lee Coombs feat. Katherine ... |            Control             |
+|         Stevie Wonder          |    Songs In The Key Of Life    |
++--------------------------------+--------------------------------+
++--------------------------------+
+|           track_dict           |
++--------------------------------+
+| {1994: [\&apos;Straight\&apos;], 199 ... |
+|              None              |
+|   {2004: [&apos;Grand Hang Out&apos;]}   |
+|     {1999: [&apos;Simple Man&apos;]}     |
+| {1986: [\&apos;Secret Loser\&apos;], ... |
+|              None              |
+|    {1973: [&apos;Rocking Time&apos;]}    |
+|              None              |
+|              None              |
+| {1976: [&apos;Have A Talk With  ... |
+|              ...               |
++--------------------------------+
+[230558 rows x 3 columns]</code></pre>
+<p>The <code>unstack</code> function is essentially a convenience function for calling
+<code>groupby</code> on all other columns with the <code>CONCAT</code> aggregator.  This operation
+can be undone with <code>stack</code>, which I won&apos;t take time to show in detail.</p><p>With our data organized this way, we can get some statistics on how many albums
+have this oddity and see that it&apos;s actually somewhat prevalent for this to
+occur:</p><pre><code class="lang-python">albums[<span class="hljs-string">&apos;num_years&apos;</span>] = albums[<span class="hljs-string">&apos;track_dict&apos;</span>].item_length()
+albums[<span class="hljs-string">&apos;num_years&apos;</span>].show()</code></pre>
+<p><img alt="albums[&apos;num_years&apos;].show()" src="images/sframe_user_guide_3_categorical.png"></p><p>We can still recover the full track listing with some dict operations, so
+suppose we want both a <code>list</code> and a <code>dict</code> representation of the tracks.</p><pre><code class="lang-python">albums[<span class="hljs-string">&apos;track_list&apos;</span>] = albums[<span class="hljs-string">&apos;track_dict&apos;</span>].dict_values()
+albums</code></pre>
+<pre><code>+--------------------------------+--------------------------------+
+|          artist_name           |            release             |
++--------------------------------+--------------------------------+
+|          Veruca Salt           |     Eight Arms To Hold You     |
+|  Les Compagnons De La Chanson  | Heritage - Le Chant De Mal ... |
+| Nelly / Fat Joe / Young Tr ... |             Sweat              |
+|           The Grouch           |       My Baddest B*tches       |
+|         Ozzy Osbourne          | Diary of a madman / Bark a ... |
+|        Peter Hunnigale         |      Reggae Hits Vol. 32       |
+|         Burning Spear          |      Studio One Classics       |
+|              Bond              |        New Classix 2008        |
+| Lee Coombs feat. Katherine ... |            Control             |
+|         Stevie Wonder          |    Songs In The Key Of Life    |
++--------------------------------+--------------------------------+
++--------------------------------+-----------+--------------------------------+
+|           track_dict           | num_years |           track_list           |
++--------------------------------+-----------+--------------------------------+
+| {1994: [\&apos;Straight\&apos;], 199 ... |     2     | [[\&apos;Straight\&apos;], [\&apos;With D ... |
+|              None              |    None   |              None              |
+|   {2004: [&apos;Grand Hang Out&apos;]}   |     1     |      [[&apos;Grand Hang Out&apos;]]      |
+|     {1999: [&apos;Simple Man&apos;]}     |     1     |        [[&apos;Simple Man&apos;]]        |
+| {1986: [\&apos;Secret Loser\&apos;], ... |     3     | [[&quot;You Can\&apos;t Kill Rock An ... |
+|              None              |    None   |              None              |
+|    {1973: [&apos;Rocking Time&apos;]}    |     1     |       [[&apos;Rocking Time&apos;]]       |
+|              None              |    None   |              None              |
+|              None              |    None   |              None              |
+| {1976: [&apos;Have A Talk With  ... |     1     |   [[&apos;Have A Talk With God&apos;]]   |
+|              ...               |    ...    |              ...               |
++--------------------------------+-----------+--------------------------------+
+[230558 rows x 5 columns]
+Note: Only the head of the SFrame is printed.</code></pre>
+<p>We have almost recovered our old column, but we have a list of lists instead of
+just a single list.  Fixing that is a simple <code>apply</code> away:</p><pre><code class="lang-python"><span class="hljs-keyword">import</span> itertools
+albums[<span class="hljs-string">&apos;track_list&apos;</span>] = albums[<span class="hljs-string">&apos;track_list&apos;</span>].apply(<span class="hljs-keyword">lambda</span> x: list(itertools.chain(*x)))
+albums</code></pre>
+<pre><code>+--------------------------------+--------------------------------+
+|          artist_name           |            release             |
++--------------------------------+--------------------------------+
+|          Veruca Salt           |     Eight Arms To Hold You     |
+|  Les Compagnons De La Chanson  | Heritage - Le Chant De Mal ... |
+| Nelly / Fat Joe / Young Tr ... |             Sweat              |
+|           The Grouch           |       My Baddest B*tches       |
+|         Ozzy Osbourne          | Diary of a madman / Bark a ... |
+|        Peter Hunnigale         |      Reggae Hits Vol. 32       |
+|         Burning Spear          |      Studio One Classics       |
+|              Bond              |        New Classix 2008        |
+| Lee Coombs feat. Katherine ... |            Control             |
+|         Stevie Wonder          |    Songs In The Key Of Life    |
++--------------------------------+--------------------------------+
++--------------------------------+-----------+--------------------------------+
+|           track_dict           | num_years |           track_list           |
++--------------------------------+-----------+--------------------------------+
+| {1994: [\&apos;Straight\&apos;], 199 ... |     2     | [\&apos;Straight\&apos;, \&apos;With Davi ... |
+|              None              |    None   |              None              |
+|   {2004: [&apos;Grand Hang Out&apos;]}   |     1     |       [&apos;Grand Hang Out&apos;]       |
+|     {1999: [&apos;Simple Man&apos;]}     |     1     |         [&apos;Simple Man&apos;]         |
+| {1986: [\&apos;Secret Loser\&apos;], ... |     3     | [&quot;You Can\&apos;t Kill Rock And ... |
+|              None              |    None   |              None              |
+|    {1973: [&apos;Rocking Time&apos;]}    |     1     |        [&apos;Rocking Time&apos;]        |
+|              None              |    None   |              None              |
+|              None              |    None   |              None              |
+| {1976: [&apos;Have A Talk With  ... |     1     |    [&apos;Have A Talk With God&apos;]    |
+|              ...               |    ...    |              ...               |
++--------------------------------+-----------+--------------------------------+
+[230558 rows x 5 columns]
+Note: Only the head of the SFrame is printed.</code></pre>
+<p>We can also filter elements from within a list or dictionary.  Here is how to
+remove all songs made in 1994 or 1999:</p><pre><code class="lang-python">albums[<span class="hljs-string">&apos;track_dict&apos;</span>] = albums[<span class="hljs-string">&apos;track_dict&apos;</span>].dict_trim_by_keys([<span class="hljs-number">1994</span>, <span class="hljs-number">1999</span>])
+
+
+albums</code></pre>
+<pre><code>+--------------------------------+--------------------------------+
+|          artist_name           |            release             |
++--------------------------------+--------------------------------+
+|          Veruca Salt           |     Eight Arms To Hold You     |
+|  Les Compagnons De La Chanson  | Heritage - Le Chant De Mal ... |
+| Nelly / Fat Joe / Young Tr ... |             Sweat              |
+|           The Grouch           |       My Baddest B*tches       |
+|         Ozzy Osbourne          | Diary of a madman / Bark a ... |
+|        Peter Hunnigale         |      Reggae Hits Vol. 32       |
+|         Burning Spear          |      Studio One Classics       |
+|              Bond              |        New Classix 2008        |
+| Lee Coombs feat. Katherine ... |            Control             |
+|         Stevie Wonder          |    Songs In The Key Of Life    |
++--------------------------------+--------------------------------+
++--------------------------------+-----------+--------------------------------+
+|           track_dict           | num_years |           track_list           |
++--------------------------------+-----------+--------------------------------+
+| {1997: [\&apos;With David Bowie ... |     2     | [\&apos;Straight\&apos;, \&apos;With Davi ... |
+|              None              |    None   |              None              |
+|   {2004: [&apos;Grand Hang Out&apos;]}   |     1     |       [&apos;Grand Hang Out&apos;]       |
+|               {}               |     1     |         [&apos;Simple Man&apos;]         |
+| {1986: [\&apos;Secret Loser\&apos;], ... |     3     | [&quot;You Can\&apos;t Kill Rock And ... |
+|              None              |    None   |              None              |
+|    {1973: [&apos;Rocking Time&apos;]}    |     1     |        [&apos;Rocking Time&apos;]        |
+|              None              |    None   |              None              |
+|              None              |    None   |              None              |
+| {1976: [&apos;Have A Talk With  ... |     1     |    [&apos;Have A Talk With God&apos;]    |
+|              ...               |    ...    |              ...               |
++--------------------------------+-----------+--------------------------------+
+[230558 rows x 5 columns]
+Note: Only the head of the SFrame is printed.</code></pre>
+<p>Since dictionaries are good for item lookups, we can filter by elements we
+find in dictionaries.  Here is a query that filters  albums by whether any of
+their songs came out in 1965:</p><pre><code class="lang-python">albums[albums[<span class="hljs-string">&apos;track_dict&apos;</span>].dict_has_any_keys(<span class="hljs-number">1965</span>)]</code></pre>
+<pre><code>+----------------------------+--------------------------------+
+|        artist_name         |            release             |
++----------------------------+--------------------------------+
+| Jr. Walker &amp; The All Stars | The Motown Story: The Sixties  |
+|        The Seekers         | The Best Sixties Album In  ... |
+| Jr. Walker &amp; The All Stars | Sparks Present Motown Made ... |
+|          The Who           |           Who&apos;s Next           |
+|        Bobby Vinton        |    The Best Of Bobby Vinton    |
+|     Righteous Brothers     |         The Collection         |
+|       Little Milton        |          Chess Blues           |
+|          The Who           |          Singles Box           |
+|       Dionne Warwick       |           Here I Am            |
+|        Albert Ayler        | Nuits De La Fondation Maeg ... |
++----------------------------+--------------------------------+
++--------------------------------+-----------+--------------------------------+
+|           track_dict           | num_years |           track_list           |
++--------------------------------+-----------+--------------------------------+
+|      {1965: [&apos;Shotgun&apos;]}       |     1     |          [&apos;Shotgun&apos;]           |
+| {1965: [&apos;The Carnival Is O ... |     1     |    [&apos;The Carnival Is Over&apos;]    |
+|    {1965: [&quot;Cleo\&apos;s Back&quot;]}    |     1     |        [&quot;Cleo\&apos;s Back&quot;]        |
+| {1995: [&quot;I Don\&apos;t Even Kno ... |     4     | [\&apos;My Generation\&apos;, \&apos;Behi ... |
+| {1991: [\&apos;Please Love Me F ... |     6     | [\&apos;Roses Are Red (My Love) ... |
+| {2006: [&apos;Let The Good Time ... |     4     | [&apos;Justine&apos;, &apos;Stagger Lee&apos;, ... |
+| {1965: [&quot;We\&apos;re Gonna Make ... |     1     |    [&quot;We\&apos;re Gonna Make It&quot;]    |
+|  {1965: [&apos;Shout And Shimmy&apos;]}  |     1     |      [&apos;Shout And Shimmy&apos;]      |
+| {1965: [&apos;How Can I Hurt Yo ... |     1     | [&apos;How Can I Hurt You? (LP  ... |
+| {1969: [&apos;Music Is The Heal ... |     4     | [&apos;Spirits&apos;, &apos;Spirits Rejoi ... |
++--------------------------------+-----------+--------------------------------+
+[? rows x 5 columns]
+Note: Only the head of the SFrame is printed. This SFrame is lazily evaluated.
+You can use len(sf) to force materialization.</code></pre>
+<p>Converting to a <code>list</code> or <code>dict</code> doesn&apos;t need to group by the rest of the values in
+the row.  If for some reason you want to turn this into a table with one column
+and all values packed into a list, you can!</p><pre><code class="lang-python">big_list = albums.pack_columns(albums.column_names())
+big_list</code></pre>
+<pre><code>+--------------------------------+
+|               X1               |
++--------------------------------+
+| [\&apos;Veruca Salt\&apos;, \&apos;Eight  ... |
+| [&apos;Les Compagnons De La Cha ... |
+| [&apos;Nelly / Fat Joe / Young  ... |
+| [&apos;The Grouch&apos;, &apos;My Baddest ... |
+| [\&apos;Ozzy Osbourne\&apos;, \&apos;Diar ... |
+| [&apos;Peter Hunnigale&apos;, &apos;Regga ... |
+| [&apos;Burning Spear&apos;, &apos;Studio  ... |
+| [&apos;Bond&apos;, &apos;New Classix 2008 ... |
+| [&apos;Lee Coombs feat. Katheri ... |
+| [&apos;Stevie Wonder&apos;, &apos;Songs I ... |
+|              ...               |
++--------------------------------+
+[230558 rows x 1 columns]
+Note: Only the head of the SFrame is printed.</code></pre>
+<p>The <code>unpack</code> function accomplishes the reverse task.  These examples may
+be a bit contrived, but these functions are very useful when working
+with unstructured data like text, as you will be able to see in the
+<a href="../text/analysis.html">Text Analysis</a> chapter of this guide.</p><p>To find out more, check out the <a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.SFrame.html" target="_blank">API Reference for
+SFrames</a>.</p>
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="sframe-intro.html" class="navigation navigation-prev " aria-label="Previous page: Loading and Saving">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../data_formats_and_sources/sql_integration.html" class="navigation navigation-next " aria-label="Next page: SQL Databases">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Data Manipulation","level":"1.2.1.2","depth":3,"next":{"title":"SQL Databases","level":"1.2.1.3","depth":3,"path":"data_formats_and_sources/sql_integration.md","ref":"data_formats_and_sources/sql_integration.md","articles":[]},"previous":{"title":"Loading and Saving","level":"1.2.1.1","depth":3,"path":"sframe/sframe-intro.md","ref":"sframe/sframe-intro.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"sframe/data-manipulation.md","mtime":"2017-12-07T19:58:53.983Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2017-12-07T21:59:31.449Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-collapsible-menu/plugin.js"></script>
+        
+    
+        
+        <script src="https://cdn.mathjax.org/mathjax/2.6-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-mathjax/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

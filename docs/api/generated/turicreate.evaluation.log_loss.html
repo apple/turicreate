@@ -1,0 +1,304 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.evaluation.log_loss &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="evaluation" href="../turicreate.toolkits.evaluation.html"/>
+        <link rel="next" title="turicreate.evaluation.precision" href="turicreate.evaluation.precision.html"/>
+        <link rel="prev" title="turicreate.evaluation.fbeta_score" href="turicreate.evaluation.fbeta_score.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.evaluation.html"><code class="docutils literal"><span class="pre">evaluation</span></code></a> &raquo;</li>
+      
+    <li>turicreate.evaluation.log_loss</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-evaluation-log-loss">
+<h1>turicreate.evaluation.log_loss<a class="headerlink" href="#turicreate-evaluation-log-loss" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.evaluation.log_loss">
+<code class="descclassname">turicreate.evaluation.</code><code class="descname">log_loss</code><span class="sig-paren">(</span><em>targets</em>, <em>predictions</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.evaluation.log_loss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the logloss for the given targets and the given predicted
+probabilities. This quantity is defined to be the negative of the sum
+of the log probability of each observation, normalized by the number of
+observations:</p>
+<div class="math">
+\[\textrm{logloss} = - \frac{1}{N} \sum_{i \in 1,\ldots,N}
+    (y_i \log(p_i) + (1-y_i)\log(1-p_i)) ,\]</div>
+<p>where y_i is the i&#8217;th target value and p_i is the i&#8217;th predicted
+probability.</p>
+<p>For multiclass situations, the definition is a slight generalization of the
+above:</p>
+<div class="math">
+\[\textrm{logloss} = - \frac{1}{N} \sum_{i \in 1,\ldots,N}
+    \sum_{j \in 1, \ldots, L}
+    (y_{ij} \log(p_{ij})) ,\]</div>
+<p>where <span class="math">\(L\)</span> is the number of classes and <span class="math">\(y_{ij}\)</span> indicates that
+observation <cite>i</cite> has class label <cite>j</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>targets</strong> : SArray</p>
+<blockquote>
+<div><p>Ground truth class labels. This can either contain integers or strings.</p>
+</div></blockquote>
+<p><strong>predictions</strong> : SArray</p>
+<blockquote>
+<div><p>The predicted probability that corresponds to each target value. For
+binary classification, the probability corresponds to the probability
+of the &#8220;positive&#8221; label being predicted. For multi-class
+classification, the predictions are expected to be an array of
+predictions for each class.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : float</p>
+<blockquote class="last">
+<div><p>The log_loss.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.evaluation.accuracy.html#turicreate.evaluation.accuracy" title="turicreate.evaluation.accuracy"><code class="xref py py-obj docutils literal"><span class="pre">accuracy</span></code></a></p>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>For binary classification, when the target label is of type &#8220;string&#8221;,
+then the labels are sorted alphanumerically and the largest label is
+chosen as the &#8220;positive&#8221; label.  For example, if the classifier labels
+are {&#8220;cat&#8221;, &#8220;dog&#8221;}, then &#8220;dog&#8221; is chosen as the positive label for the
+binary classification case.</li>
+<li>For multi-class classification, when the target label is of type
+&#8220;string&#8221;, then the probability vector is assumed to be a vector of
+probabilities of classes as sorted alphanumerically. Hence, for the
+probability vector [0.1, 0.2, 0.7] for a dataset with classes &#8220;cat&#8221;,
+&#8220;dog&#8221;, and &#8220;rat&#8221;; the 0.1 corresponds to &#8220;cat&#8221;, the 0.2 to &#8220;dog&#8221; and the
+0.7 to &#8220;rat&#8221;.</li>
+<li>Logloss is undefined when a probability value p = 0, or p = 1.  Hence,
+probabilities are clipped to max(EPSILON, min(1 - EPSILON, p)) where
+EPSILON = 1e-15.</li>
+</ul>
+<p class="rubric">References</p>
+<p><a class="reference external" href="https://www.kaggle.com/wiki/LogarithmicLoss">https://www.kaggle.com/wiki/LogarithmicLoss</a></p>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">turicreate</span> <span class="kn">as</span> <span class="nn">tc</span>
+<span class="n">targets</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">])</span>
+<span class="n">log_loss</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">log_loss</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">predictions</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For binary classification, when the target label is of type &#8220;string&#8221;, then
+the labels are sorted alphanumerically and the largest label is chosen as
+the &#8220;positive&#8221; label.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">turicreate</span> <span class="kn">as</span> <span class="nn">tc</span>
+<span class="n">targets</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="s2">&quot;cat&quot;</span><span class="p">,</span> <span class="s2">&quot;dog&quot;</span><span class="p">,</span> <span class="s2">&quot;dog&quot;</span><span class="p">,</span> <span class="s2">&quot;cat&quot;</span><span class="p">])</span>
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">])</span>
+<span class="n">log_loss</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">log_loss</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">predictions</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In the multi-class setting, log-loss requires a vector of probabilities
+(that sum to 1) for each class label in the input dataset. In this example,
+there are three classes [0, 1, 2], and the vector of probabilities
+correspond to the probability of prediction for each of the three classes.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">target</span>    <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">SArray</span><span class="p">([[</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">8</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
+                        <span class="p">[</span><span class="o">.</span><span class="mi">9</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+                        <span class="p">[</span><span class="o">.</span><span class="mi">8</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
+                        <span class="p">[</span><span class="o">.</span><span class="mi">3</span><span class="p">,</span> <span class="o">.</span><span class="mi">6</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]])</span>
+<span class="n">log_loss</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">log_loss</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">predictions</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For multi-class classification, when the target label is of type &#8220;string&#8221;,
+then the probability vector is assumed to be a vector of probabilities of
+class as sorted alphanumerically. Hence, for the probability vector [0.1,
+0.2, 0.7] for a dataset with classes &#8220;cat&#8221;, &#8220;dog&#8221;, and &#8220;rat&#8221;; the 0.1
+corresponds to &#8220;cat&#8221;, the 0.2 to &#8220;dog&#8221; and the 0.7 to &#8220;rat&#8221;.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">target</span>    <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span> <span class="s2">&quot;dog&quot;</span><span class="p">,</span> <span class="s2">&quot;cat&quot;</span><span class="p">,</span> <span class="s2">&quot;foosa&quot;</span><span class="p">,</span> <span class="s2">&quot;dog&quot;</span><span class="p">])</span>
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">SArray</span><span class="p">([[</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">8</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
+                        <span class="p">[</span><span class="o">.</span><span class="mi">9</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+                        <span class="p">[</span><span class="o">.</span><span class="mi">8</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
+                        <span class="p">[</span><span class="o">.</span><span class="mi">3</span><span class="p">,</span> <span class="o">.</span><span class="mi">6</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]])</span>
+<span class="n">log_loss</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">log_loss</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">predictions</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.evaluation.precision.html" class="btn btn-neutral float-right" title="turicreate.evaluation.precision">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.evaluation.fbeta_score.html" class="btn btn-neutral" title="turicreate.evaluation.fbeta_score"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

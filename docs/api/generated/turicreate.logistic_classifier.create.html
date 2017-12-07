@@ -1,0 +1,427 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.logistic_classifier.create &mdash; Turi Create API 4.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+        <link rel="up" title="classifier" href="../turicreate.toolkits.classifier.html"/>
+        <link rel="next" title="turicreate.logistic_classifier.LogisticClassifier" href="turicreate.logistic_classifier.LogisticClassifier.html"/>
+        <link rel="prev" title="turicreate.boosted_trees_classifier.BoostedTreesClassifier" href="turicreate.boosted_trees_classifier.BoostedTreesClassifier.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.classifier.html"><code class="docutils literal"><span class="pre">classifier</span></code></a> &raquo;</li>
+      
+    <li>turicreate.logistic_classifier.create</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-logistic-classifier-create">
+<h1>turicreate.logistic_classifier.create<a class="headerlink" href="#turicreate-logistic-classifier-create" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.logistic_classifier.create">
+<code class="descclassname">turicreate.logistic_classifier.</code><code class="descname">create</code><span class="sig-paren">(</span><em>dataset</em>, <em>target</em>, <em>features=None</em>, <em>l2_penalty=0.01</em>, <em>l1_penalty=0.0</em>, <em>solver='auto'</em>, <em>feature_rescaling=True</em>, <em>convergence_threshold=0.01</em>, <em>step_size=1.0</em>, <em>lbfgs_memory_level=11</em>, <em>max_iterations=10</em>, <em>class_weights=None</em>, <em>validation_set='auto'</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.logistic_classifier.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a <a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.html#turicreate.logistic_classifier.LogisticClassifier" title="turicreate.logistic_classifier.LogisticClassifier"><code class="xref py py-class docutils literal"><span class="pre">LogisticClassifier</span></code></a> (using
+logistic regression as a classifier) to predict the class of a discrete
+target variable (binary or multiclass) based on a model of class probability
+as a logistic function of a linear combination of the features.  In addition
+to standard numeric and categorical types, features can also be extracted
+automatically from list or dictionary-type SFrame columns.</p>
+<p>This model can be regularized with an l1 penalty, an l2 penalty, or both. By
+default this model has an l2 regularization weight of 0.01.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
+<blockquote>
+<div><p>Dataset for training the model.</p>
+</div></blockquote>
+<p><strong>target</strong> : string or int</p>
+<blockquote>
+<div><p>Name of the column containing the target variable. The values in this
+column must be of string or integer type. String target variables are
+automatically mapped to integers in the order in which they are provided.
+For example, a target variable with &#8216;cat&#8217; and &#8216;dog&#8217; as possible
+values is mapped to 0 and 1 respectively with 0 being the base class
+and 1 being the reference class. Use <cite>model.classes</cite> to retrieve
+the order in which the classes are mapped.</p>
+</div></blockquote>
+<p><strong>features</strong> : list[string], optional</p>
+<blockquote>
+<div><p>Names of the columns containing features. &#8216;None&#8217; (the default) indicates
+that all columns except the target variable should be used as features.</p>
+<p>The features are columns in the input SFrame that can be of the
+following types:</p>
+<ul class="simple">
+<li><em>Numeric</em>: values of numeric type integer or float.</li>
+<li><em>Categorical</em>: values of type string.</li>
+<li><em>Array</em>: list of numeric (integer or float) values. Each list element
+is treated as a separate feature in the model.</li>
+<li><em>Dictionary</em>: key-value pairs with numeric (integer or float) values
+Each key of a dictionary is treated as a separate feature and the
+value in the dictionary corresponds to the value of the feature.
+Dictionaries are ideal for representing sparse data.</li>
+</ul>
+<p>Columns of type <em>list</em> are not supported. Convert such feature
+columns to type array if all entries in the list are of numeric
+types. If the lists contain data of mixed types, separate
+them out into different columns.</p>
+</div></blockquote>
+<p><strong>l2_penalty</strong> : float, optional</p>
+<blockquote>
+<div><p>Weight on l2 regularization of the model. The larger this weight, the
+more the model coefficients shrink toward 0. This introduces bias into
+the model but decreases variance, potentially leading to better
+predictions. The default value is 0.01; setting this parameter to 0
+corresponds to unregularized logistic regression. See the ridge
+regression reference for more detail.</p>
+</div></blockquote>
+<p><strong>l1_penalty</strong> : float, optional</p>
+<blockquote>
+<div><p>Weight on l1 regularization of the model. Like the l2 penalty, the
+higher the l1 penalty, the more the estimated coefficients shrink toward
+0. The l1 penalty, however, completely zeros out sufficiently small
+coefficients, automatically indicating features that are not useful
+for the model. The default weight of 0 prevents any features from
+being discarded. See the LASSO regression reference for more detail.</p>
+</div></blockquote>
+<p><strong>solver</strong> : string, optional</p>
+<blockquote>
+<div><p>Name of the solver to be used to solve the regression. See the
+references for more detail on each solver. Available solvers are:</p>
+<ul class="simple">
+<li><em>auto (default)</em>: automatically chooses the best solver for the data
+and model parameters.</li>
+<li><em>newton</em>: Newton-Raphson</li>
+<li><em>lbfgs</em>: limited memory BFGS</li>
+<li><em>fista</em>: accelerated gradient descent</li>
+</ul>
+<p>For this model, the Newton-Raphson method is equivalent to the
+iteratively re-weighted least squares algorithm. If the l1_penalty is
+greater than 0, use the &#8216;fista&#8217; solver.</p>
+<p>The model is trained using a carefully engineered collection of methods
+that are automatically picked based on the input data. The <code class="docutils literal"><span class="pre">newton</span></code>
+method  works best for datasets with plenty of examples and few features
+(long datasets). Limited memory BFGS (<code class="docutils literal"><span class="pre">lbfgs</span></code>) is a robust solver for
+wide datasets (i.e datasets with many coefficients).  <code class="docutils literal"><span class="pre">fista</span></code> is the
+default solver for l1-regularized linear regression. The solvers are all
+automatically tuned and the default options should function well. See
+the solver options guide for setting additional parameters for each of
+the solvers.</p>
+<p>See the user guide for additional details on how the solver is chosen.
+(see <a class="reference external" href="https://apple.github.io/turicreate/docs/userguide/supervised-learning/linear-regression.html">here</a>)</p>
+</div></blockquote>
+<p><strong>feature_rescaling</strong> : boolean, optional</p>
+<blockquote>
+<div><p>Feature rescaling is an important pre-processing step that ensures that
+all features are on the same scale. An l2-norm rescaling is performed
+to make sure that all features are of the same norm. Categorical
+features are also rescaled by rescaling the dummy variables that are
+used to represent them. The coefficients are returned in original scale
+of the problem. This process is particularly useful when features
+vary widely in their ranges.</p>
+</div></blockquote>
+<p><strong>convergence_threshold</strong> : float, optional</p>
+<blockquote>
+<div><p>Convergence is tested using variation in the training objective. The
+variation in the training objective is calculated using the difference
+between the objective values between two steps. Consider reducing this
+below the default value (0.01) for a more accurately trained model.
+Beware of overfitting (i.e a model that works well only on the training
+data) if this parameter is set to a very low value.</p>
+</div></blockquote>
+<p><strong>lbfgs_memory_level</strong> : float, optional</p>
+<blockquote>
+<div><p>The L-BFGS algorithm keeps track of gradient information from the
+previous <code class="docutils literal"><span class="pre">lbfgs_memory_level</span></code> iterations. The storage requirement for
+each of these gradients is the <code class="docutils literal"><span class="pre">num_coefficients</span></code> in the problem.
+Increasing the <code class="docutils literal"><span class="pre">lbfgs_memory_level</span> <span class="pre">``can</span> <span class="pre">help</span> <span class="pre">improve</span> <span class="pre">the</span> <span class="pre">quality</span> <span class="pre">of</span>
+<span class="pre">the</span> <span class="pre">model</span> <span class="pre">trained.</span> <span class="pre">Setting</span> <span class="pre">this</span> <span class="pre">to</span> <span class="pre">more</span> <span class="pre">than</span> <span class="pre">``max_iterations</span></code> has the
+same effect as setting it to <code class="docutils literal"><span class="pre">max_iterations</span></code>.</p>
+</div></blockquote>
+<p><strong>max_iterations</strong> : float, optional</p>
+<blockquote>
+<div><p>The maximum number of allowed passes through the data. More passes over
+the data can result in a more accurately trained model. Consider
+increasing this (the default value is 10) if the training accuracy is
+low and the <em>Grad-Norm</em> in the display is large.</p>
+</div></blockquote>
+<p><strong>step_size</strong> : float, optional</p>
+<blockquote>
+<div><p>The starting step size to use for the <code class="docutils literal"><span class="pre">fista</span></code> solver. The default is
+set to 1.0, this is an aggressive setting. If the first iteration takes
+a considerable amount of time, reducing this parameter may speed up
+model training.</p>
+</div></blockquote>
+<p><strong>class_weights</strong> : {dict, <cite>auto</cite>}, optional</p>
+<blockquote>
+<div><p>Weights the examples in the training data according to the given class
+weights. If set to <cite>None</cite>, all classes are supposed to have weight one. The
+<cite>auto</cite> mode set the class weight to be inversely proportional to number of
+examples in the training data with the given class.</p>
+</div></blockquote>
+<p><strong>validation_set</strong> : SFrame, optional</p>
+<blockquote>
+<div><p>A dataset for monitoring the model&#8217;s generalization performance.
+For each row of the progress table, the chosen metrics are computed
+for both the provided training dataset and the validation_set. The
+format of this SFrame must be the same as the training set.
+By default this argument is set to &#8216;auto&#8217; and a validation set is
+automatically sampled and used for progress printing. If
+validation_set is set to None, then no additional metrics
+are computed. The default value is &#8216;auto&#8217;.</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool, optional</p>
+<blockquote>
+<div><p>If True, print progress updates.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : LogisticClassifier</p>
+<blockquote class="last">
+<div><p>A trained model of type
+<a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.html#turicreate.logistic_classifier.LogisticClassifier" title="turicreate.logistic_classifier.LogisticClassifier"><code class="xref py py-class docutils literal"><span class="pre">LogisticClassifier</span></code></a>.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.html#turicreate.logistic_classifier.LogisticClassifier" title="turicreate.logistic_classifier.LogisticClassifier"><code class="xref py py-obj docutils literal"><span class="pre">LogisticClassifier</span></code></a>, <a class="reference internal" href="turicreate.boosted_trees_classifier.BoostedTreesClassifier.html#turicreate.boosted_trees_classifier.BoostedTreesClassifier" title="turicreate.boosted_trees_classifier.BoostedTreesClassifier"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.boosted_trees_classifier.BoostedTreesClassifier</span></code></a>, <a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.html#turicreate.svm_classifier.SVMClassifier" title="turicreate.svm_classifier.SVMClassifier"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.svm_classifier.SVMClassifier</span></code></a>, <a class="reference internal" href="turicreate.classifier.create.html#turicreate.classifier.create" title="turicreate.classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.classifier.create</span></code></a></p>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>Categorical variables are encoded by creating dummy variables. For a
+variable with <span class="math">\(K\)</span> categories, the encoding creates <span class="math">\(K-1\)</span> dummy
+variables, while the first category encountered in the data is used as the
+baseline.</li>
+<li>For prediction and evaluation of logistic regression models with sparse
+dictionary inputs, new keys/columns that were not seen during training
+are silently ignored.</li>
+<li>During model creation, &#8216;None&#8217; values in the data will result in an error
+being thrown.</li>
+<li>A constant term is automatically added for the model intercept. This term
+is not regularized.</li>
+<li>Standard errors on coefficients are only availiable when <cite>solver=newton</cite>
+or when the default <cite>auto</cite> solver option choses the newton method and if
+the number of examples in the training data is more than the number of
+coefficients. If standard errors cannot be estimated, a column of <cite>None</cite>
+values are returned.</li>
+</ul>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><a class="reference external" href="http://en.wikipedia.org/wiki/Logistic_regression">Wikipedia - logistic regression</a></li>
+<li>Hoerl, A.E. and Kennard, R.W. (1970) <a class="reference external" href="http://amstat.tandfonline.com/doi/abs/10.1080/00401706.1970.10488634">Ridge regression: Biased Estimation
+for Nonorthogonal Problems</a>.
+Technometrics 12(1) pp.55-67</li>
+<li>Tibshirani, R. (1996) <a class="reference external" href="http://www.jstor.org/discover/10.2307/2346178?uid=3739256&amp;uid=2&amp;uid=4&amp;sid=21104169934983">Regression Shrinkage and Selection via the Lasso</a>. Journal of the Royal Statistical Society. Series B
+(Methodological) 58(1) pp.267-288.</li>
+<li>Zhu, C., et al. (1997) <a class="reference external" href="http://dl.acm.org/citation.cfm?id=279236">Algorithm 778: L-BFGS-B: Fortran subroutines for
+large-scale bound-constrained optimization</a>. ACM Transactions on
+Mathematical Software 23(4) pp.550-560.</li>
+<li>Beck, A. and Teboulle, M. (2009) <a class="reference external" href="http://epubs.siam.org/doi/abs/10.1137/080716542">A Fast Iterative Shrinkage-Thresholding
+Algorithm for Linear Inverse Problems</a>. SIAM Journal on
+Imaging Sciences 2(1) pp.183-202.</li>
+</ul>
+<p class="rubric">Examples</p>
+<p>Given an <a class="reference internal" href="turicreate.SFrame.html#turicreate.SFrame" title="turicreate.SFrame"><code class="xref py py-class docutils literal"><span class="pre">SFrame</span></code></a> <code class="docutils literal"><span class="pre">sf</span></code>, a list of feature columns
+[<code class="docutils literal"><span class="pre">feature_1</span></code> ... <code class="docutils literal"><span class="pre">feature_K</span></code>], and a target column <code class="docutils literal"><span class="pre">target</span></code> with 0 and
+1 values, create a
+<a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.html#turicreate.logistic_classifier.LogisticClassifier" title="turicreate.logistic_classifier.LogisticClassifier"><code class="xref py py-class docutils literal"><span class="pre">LogisticClassifier</span></code></a> as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span>  <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">(</span><span class="s1">&#39;https://static.turi.com/datasets/regression/houses.csv&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;is_expensive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;price&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">30000</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">logistic_classifier</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;is_expensive&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>By default all columns of <code class="docutils literal"><span class="pre">data</span></code> except the target are used as features, but
+specific feature columns can be specified manually.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">logistic_classifier</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;is_expensive&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;bedroom&#39;</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># L2 regularizer</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">model_ridge</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">logistic_classifier</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;is_expensive&#39;</span><span class="p">,</span> <span class="n">l2_penalty</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
+<span class="c1"># L1 regularizer</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">model_lasso</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">logistic_classifier</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;is_expensive&#39;</span><span class="p">,</span> <span class="n">l2_penalty</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
+                                                             <span class="n">l1_penalty</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="c1"># Both L1 and L2 regularizer</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">model_enet</span>  <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">logistic_classifier</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;is_expensive&#39;</span><span class="p">,</span> <span class="n">l2_penalty</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">l1_penalty</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.logistic_classifier.LogisticClassifier.html" class="btn btn-neutral float-right" title="turicreate.logistic_classifier.LogisticClassifier">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.boosted_trees_classifier.BoostedTreesClassifier.html" class="btn btn-neutral" title="turicreate.boosted_trees_classifier.BoostedTreesClassifier"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Dec 07, 2017.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
