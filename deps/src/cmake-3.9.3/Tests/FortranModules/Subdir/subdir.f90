@@ -1,0 +1,2 @@
+MODULE subdirModuleA
+END MODULE

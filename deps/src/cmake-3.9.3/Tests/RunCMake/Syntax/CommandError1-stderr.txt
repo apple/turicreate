@@ -1,0 +1,4 @@
+CMake Error at CommandError1.cmake:1:
+  Parse error.  Expected a newline, got identifier with text "message".
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

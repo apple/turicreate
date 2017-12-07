@@ -1,0 +1,8 @@
+./test/schemas/decimal-3_0.xml:12: element val: Schemas validity error : Element 'val': [facet 'totalDigits'] The value '0.123' has more digits than are allowed ('2').
+./test/schemas/decimal-3_0.xml:12: element val: Schemas validity error : Element 'val': '0.123' is not a valid value of the atomic type 'myDecimal'.
+./test/schemas/decimal-3_0.xml:13: element val: Schemas validity error : Element 'val': [facet 'totalDigits'] The value '0.023' has more digits than are allowed ('2').
+./test/schemas/decimal-3_0.xml:13: element val: Schemas validity error : Element 'val': '0.023' is not a valid value of the atomic type 'myDecimal'.
+./test/schemas/decimal-3_0.xml:14: element val: Schemas validity error : Element 'val': [facet 'totalDigits'] The value '123' has more digits than are allowed ('2').
+./test/schemas/decimal-3_0.xml:14: element val: Schemas validity error : Element 'val': '123' is not a valid value of the atomic type 'myDecimal'.
+./test/schemas/decimal-3_0.xml:15: element val: Schemas validity error : Element 'val': [facet 'totalDigits'] The value '12.3' has more digits than are allowed ('2').
+./test/schemas/decimal-3_0.xml:15: element val: Schemas validity error : Element 'val': '12.3' is not a valid value of the atomic type 'myDecimal'.

@@ -1,0 +1,1 @@
+./test/schemas/src-attribute3-2-type_0.xsd:10: element attribute: Schemas parser error : Element '{http://www.w3.org/2001/XMLSchema}attribute': The attribute 'type' is not allowed.

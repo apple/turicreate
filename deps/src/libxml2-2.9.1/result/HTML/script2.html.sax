@@ -1,0 +1,50 @@
+SAX.setDocumentLocator()
+SAX.startDocument()
+SAX.internalSubset(html, -//W3C//DTD XHTML 1.0 Strict//EN, http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd)
+SAX.startElement(html, xmlns='http://www.w3.org/1999/xhtml')
+SAX.ignorableWhitespace(
+	, 2)
+SAX.startElement(head)
+SAX.ignorableWhitespace(
+		, 3)
+SAX.startElement(meta, http-equiv='Content-Type', content='text/html; charset=UTF-8')
+SAX.endElement(meta)
+SAX.ignorableWhitespace(
+, 1)
+SAX.startElement(title)
+SAX.characters(Test Page, 9)
+SAX.endElement(title)
+SAX.ignorableWhitespace(
+, 1)
+SAX.endElement(head)
+SAX.ignorableWhitespace(
+, 1)
+SAX.startElement(body)
+SAX.characters(
+, 1)
+SAX.startElement(div, id='portal')
+SAX.characters(
+, 1)
+SAX.startElement(script, type='text/javascript')
+SAX.cdata(
+	documen.write("P&#345;, 74)
+SAX.endElement(script)
+SAX.characters(
+	, 2)
+SAX.startElement(p)
+SAX.characters(
+	P&#345;&iacute;li&scaron; , 58)
+SAX.endElement(p)
+SAX.characters(
+, 1)
+SAX.endElement(div)
+SAX.characters(
+, 1)
+SAX.endElement(body)
+SAX.ignorableWhitespace(
+, 1)
+SAX.endElement(html)
+SAX.ignorableWhitespace(
+
+, 2)
+SAX.endDocument()

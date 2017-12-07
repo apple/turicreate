@@ -1,0 +1,3 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!ENTITY entity "This is an external entity that uses non-ASCII characters… 日本">
+<!ELEMENT root (#PCDATA)>

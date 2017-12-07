@@ -1,0 +1,9 @@
+<schema xmlns="http://www.ascc.net/xml/schematron" >
+     <pattern name="Character @ forbidden">
+          <rule context="*">
+               <report test="contains(.,'@')">Text in element
+                    <name/> must not contain character @
+               </report>
+          </rule>
+     </pattern>
+</schema>

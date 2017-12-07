@@ -1,0 +1,34 @@
+# This is the CMakeCache file.
+# For build in directory: d:/build/kitware/cmake/CMake-nmake/Tests/Complex
+# You can edit this file to change values found and used by cmake.
+# If you do not want to change any of the values, simply exit the editor.
+# If you do want to change a value, simply edit, save, and exit the editor.
+# The syntax for the file is as follows:
+# KEY:TYPE=VALUE
+# KEY is the name of a varible in the cache.
+# TYPE is a hint to GUI's for the type of VALUE, DO NOT EDIT TYPE!.
+# VALUE is the current value for the KEY.
+
+########################
+# EXTERNAL cache entries
+########################
+
+//A var.
+CACHE_TEST_VAR1:STRING=foo
+
+//A var.
+CACHE_TEST_VAR2:FILEPATH=bar
+
+//A var.
+CACHE_TEST_VAR3:BOOL=1
+
+//A var.
+CACHE_TEST_VAR_EXCLUDED:BOOL=1
+
+
+########################
+# INTERNAL cache entries
+########################
+
+//A var.
+CACHE_TEST_VAR_INTERNAL:INTERNAL=bar

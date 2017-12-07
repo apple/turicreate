@@ -1,0 +1,4 @@
+CMake Error at target_link_libraries.cmake:9 \(target_link_libraries\):
+  target_link_libraries can not be used on an ALIAS target.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

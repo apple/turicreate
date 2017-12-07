@@ -1,0 +1,3 @@
+Pattern: Predefined values
+/AAA line 1: The AAA value is not permitted.
+./test/schematron/zvon6_2.xml fails to validate

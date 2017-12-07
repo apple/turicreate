@@ -1,0 +1,9 @@
+CMake Error at .*/Modules/ExternalData.cmake:[0-9]+ \(message\):
+  Bad %\(algo:0BadMap\(\) in URL template:
+
+   file:///path/to/%\(algo:0BadMap\(\)/%\(hash\)
+
+  The transform name must be a valid C identifier.
+Call Stack \(most recent call first\):
+  BadAlgoMap2.cmake:[0-9]+ \(ExternalData_Add_Target\)
+  CMakeLists.txt:3 \(include\)

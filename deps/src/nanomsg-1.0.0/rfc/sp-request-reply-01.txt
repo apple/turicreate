@@ -1,0 +1,840 @@
+
+
+
+
+Internet Engineering Task Force                          M. Sustrik, Ed.
+Internet-Draft
+Intended status: Informational                               August 2013
+Expires: February 2, 2014
+
+
+                   Request/Reply Scalability Protocol
+                          sp-request-reply-01
+
+Abstract
+
+   This document defines a scalability protocol used for distributing
+   processing tasks among arbitrary number of stateless processing nodes
+   and returning the results of the processing.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at http://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on February 2, 2014.
+
+Copyright Notice
+
+   Copyright (c) 2013 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (http://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.
+
+
+
+
+
+Sustrik                 Expires February 2, 2014                [Page 1]
+
+Internet-Draft              Request/Reply SP                 August 2013
+
+
+1.  Introduction
+
+   One of the most common problems in distributed applications is how to
+   delegate a work to another processing node and get the result back to
+   the original node.  In other words, the goal is to utilise the CPU
+   power of a remote node.
+
+   There's a wide range of RPC systems addressing the problem, however,
+   instead of relying on simple RPC algorithm, we will aim at solving a
+   more general version of the problem.  First, we want to issue
+   processing requests from multiple clients, not just a single one.
+   Second, we want to distribute the tasks to any number processing
+   nodes instead of a single one so that the processing can be scaled up
+   by adding new processing nodes as necessary.
+
+   Solving the generalised problem requires that the algorithm executing
+   the task in question -- also known as "service" -- is stateless.
+
+   To put it simply, the service is called "stateless" when there's no
+   way for the user to distinguish whether a request was processed by
+   one instance of the service or another one.
+
+   So, for example, a service which accepts two integers and multiplies
+   them is stateless.  Request for "2x2" is always going to produce "4",
+   no matter what instance of the service have computed it.
+
+   Service that accepts empty requests and produces the number of
+   requests processed so far (1, 2, 3 etc.), on the other hand, is not
+   stateless.  To prove it you can run two instances of the service.
+   First reply, no matter which instance produces it is going to be 1.
+   Second reply though is going to be either 2 (if processed by the same
+   instance as the first one) or 1 (if processed by the other instance).
+   You can distinguish which instance produced the result.  Thus,
+   according to the definition, the service is not stateless.
+
+   Despite the name, being "stateless" doesn't mean that the service has
+   no state at all.  Rather it means that the service doesn't retain any
+   business-logic-related state in-between processing two subsequent
+   requests.  The service is, of course, allowed to have state while
+   processing a single request.  It can also have state that is
+   unrelated to its business logic, say statistics about the processing
+   that are used for administrative purposes and never returned to the
+   clients.
+
+   Also note that "stateless" doesn't necessarily mean "fully
+   deterministic".  For example, a service that generates random numbers
+   is non-deterministic.  However, the client, after receiving a new
+
+
+
+
+Sustrik                 Expires February 2, 2014                [Page 2]
+
+Internet-Draft              Request/Reply SP                 August 2013
+
+
+   random number cannot tell which instance has produced it, thus, the
+   service can be considered stateless.
+
+   While stateless services are often implemented by passing the entire
+   state inside the request, they are not required to do so.  Especially
+   when the state is large, passing it around in each request may be
+   impractical.  In such cases, it's typically just a reference to the
+   state that's passed in the request, such as ID or path.  The state
+   itself can then be retrieved by the service from a shared database, a
+   network file system or similar storage mechanism.
+
+   Requiring services to be stateless serves a specific purpose.  It
+   allows for using any number of service instances to handle the
+   processing load.  After all, the client won't be able to tell the
+   difference between replies from instance A and replies from instance
+   B.  You can even start new instances on the fly and get away with it.
+   The client still won't be able to tell the difference.  In other
+   words, statelessness is a prerequisite to make your service cluster
+   fully scalable.
+
+   Once it is ensured that the service is stateless there are several
+   topologies for a request/reply system to form.  What follows are the
+   most common:
+
+   1.  One client sends a request to one server and gets a reply.  The
+       common RPC scenario.
+
+   2.  Many clients send requests to one server and get replies.  The
+       classic client/server model.  Think of a database server and
+       database clients.  Alternatively think of a messaging broker and
+       messaging clients.
+
+   3.  One client send requests to many servers and gets replies.  The
+       load-balancer model.  Think of HTTP load balancers.
+
+   4.  Many clients send requests to be processed by many servers.  The
+       "enterprise service bus" model.  In the simplest case the bus can
+       be implemented as a simple hub-and-spokes topology.  In complex
+       cases the bus can span multiple physical locations or multiple
+       organisations with intermediate nodes at the boundaries
+       connecting different parts of the topology.
+
+   In addition to distributing tasks to processing nodes, request/reply
+   model comes with full end-to-end reliability.  The reliability
+   guarantee can be defined as follows: As long as the client is alive
+   and there's at least one server accessible from the client, the task
+   will eventually get processed and the result will be delivered back
+   to the client.
+
+
+
+Sustrik                 Expires February 2, 2014                [Page 3]
+
+Internet-Draft              Request/Reply SP                 August 2013
+
+
+   End-to-end reliability is achieved, similar to TCP, by re-sending the
+   request if the client believes the original instance of the request
+   has failed.  Typically, request is believed to have failed when
+   there's no reply received within a specified time.
+
+   Note that, unlike with TCP, the reliability algorithm is resistant to
+   a server failure.  Even if server fails while processing a request,
+   the request will be re-sent and eventually processed by a different
+   instance of the server.
+
+   As can be seen from the above, one request may be processed multiple
+   times.  For example, reply may be lost on its way back to the client.
+   Client will assume that the request was not processed yet, it will
+   resend it and thus cause duplicate execution of the task.
+
+   Some applications may want to prevent duplicate execution of tasks.
+   It often turns out that hardening such applications to be idempotent
+   is relatively easy as they already possess the tools to do so.  For
+   example, a payment processing server already has access to a shared
+   database which it can use to verify that the payment with specified
+   ID was not yet processed.
+
+   On the other hand, many applications don't care about occasional
+   duplicate processed tasks.  Therefore, request/reply protocol does
+   not require the service to be idempotent.  Instead, the idempotence
+   issue is left to the user to decide on.
+
+   Finally, it should be noted that this specification discusses several
+   features that are of little use in simple topologies and are rather
+   aimed at large, geographically or organisationally distributed
+   topologies.  Features like channel prioritisation and loop avoidance
+   fall into this category.
+
+2.  Underlying protocol
+
+   The request/reply protocol can be run on top of any SP mapping, such
+   as, for example, SP TCPmapping [SPoverTCP].
+
+   Also, given that SP protocols describe the behaviour of entire
+   arbitrarily complex topology rather than of a single node-to-node
+   communication, several underlying protocols can be used in parallel.
+   For example, a client may send a request via WebSocket, then, on the
+   edge of the company network an intermediary node may retransmit it
+   using TCP etc.
+
+
+
+
+
+
+
+Sustrik                 Expires February 2, 2014                [Page 4]
+
+Internet-Draft              Request/Reply SP                 August 2013
+
+
+   +---+  WebSocket  +---+    TCP    +---+
+   |   |-------------|   |-----------|   |
+   +---+             +---+           +---+
+                      | |
+        +---+   IPC   | |  SCTP  +---+    DCCP   +---+
+        |   |---------+ +--------|   |-----------|   |
+        +---+                    +---+           +---+
+
+3.  Overview of the algorithm
+
+   Request/reply protocol defines two different endpoint types: The
+   requester or REQ (the client) and the replier or REP (the service).
+
+   REQ endpoint can be connected only to a REP endpoint.  REP endpoint
+   can be connected only to the REQ endpoint.  If the underlying
+   protocol indicates that there's an attempt to create a channel to an
+   incompatible endpoint, the channel MUST NOT be used.  In the case of
+   TCP mapping, for example, the underlying TCP connection MUST be
+   closed.
+
+   When creating more complex topologies, REQ and REP endpoints are
+   paired in the intermediate nodes to form a forwarding component, so
+   called "device".  Device receives requests from the REP endpoint and
+   forwards them to the REQ endpoint.  At the same time it receives
+   replies from the REQ endpoint and forwards them to the REP endpoint:
+
+                   --- requests -->
+
+   +-----+   +-----+-----+   +-----+-----+   +-----+
+   |     |-->|     |     |-->|     |     |-->|     |
+   | REQ |   | REP | REQ |   | REP | REQ |   | REP |
+   |     |<--|     |     |<--|     |     |<--|     |
+   +-----+   +-----+-----+   +-----+-----+   +-----+
+
+                   <-- replies ---
+
+   Using devices, arbitrary complex topologies can be built.  The rest
+   of this section explains how are the requests routed through a
+   topology towards processing nodes and how are replies routed back
+   from processing nodes to the original clients, as well as how the
+   reliability is achieved.
+
+   The idea for routing requests is to implement a simple coarse-grained
+   scheduling algorithm based on pushback capabilities of the underlying
+   transport.
+
+
+
+
+
+
+Sustrik                 Expires February 2, 2014                [Page 5]
+
+Internet-Draft              Request/Reply SP                 August 2013
+
+
+   The algorithm works by interpreting pushback on a particular channel
+   as "the part of topology accessible through this channel is busy at
+   the moment and doesn't accept any more requests."
+
+   Thus, when a node is about to send a request, it can choose to send
+   it only to one of the channels that don't report pushback at the
+   moment.  To implement approximately fair distribution of the workload
+   the node choses a channel from that pool using the round-robin
+   algorithm.
+
+   As for delivering replies back to the clients, it should be
+   understood that the client may not be directly accessible (say using
+   TCP/IP) from the processing node.  It may be beyond a firewall, have
+   no static IP address etc.  Furthermore, the client and the processing
+   may not even speak the same transport protocol -- imagine client
+   connecting to the topology using WebSockets and processing node via
+   SCTP.
+
+   Given the above, it becomes obvious that the replies must be routed
+   back through the existing topology rather than directly.  In fact,
+   request/reply topology may be thought of as an overlay network on the
+   top of underlying transport mechanisms.
+
+   As for routing replies within the request/topology, it is designed in
+   such a way that each reply contains the whole routing path, rather
+   than containing just the address of destination node, as is the case
+   with, for example, TCP/IP.
+
+   The downside of the design is that replies are a little bit longer
+   and that is in intermediate node gets restarted, all the requests
+   that were routed through it will fail to complete and will have to be
+   resent by request/reply end-to-end reliability mechanism.
+
+   The upside, on the other hand, is that the nodes in the topology
+   don't have to maintain any routing tables beside the simple table of
+   adjacent channels along with their IDs.  There's also no need for any
+   additional protocols for distributing routing information within the
+   topology.
+
+   The most important reason for adopting the design though is that
+   there's no propagation delay and any nodes becomes accessible
+   immediately after it is started.  Given that some nodes in the
+   topology may be extremely short-lived this is a crucial requirement.
+   Imagine a database client that sends a query, reads the result and
+   terminates.  It makes no sense to delay the whole process until the
+   routing tables are synchronised between the client and the server.
+
+
+
+
+
+Sustrik                 Expires February 2, 2014                [Page 6]
+
+Internet-Draft              Request/Reply SP                 August 2013
+
+
+   The algorithm thus works as follows: When request is routed from the
+   client to the processing node, every REP endpoint determines which
+   channel it was received from and adds the ID of the channel to the
+   request.  Thus, when the request arrives at the ultimate processing
+   node it already contains a full backtrace stack, which in turn
+   contains all the info needed to route a message back to the original
+   client.
+
+   After processing the request, the processing node attaches the
+   backtrace stack from the request to the reply and sends it back to
+   the topology.  At that point every REP endpoint can check the
+   traceback and determine which channel it should send the reply to.
+
+   In addition to routing, request/reply protocol takes care of
+   reliability, i.e. ensures that every request will be eventually
+   processed and the reply will be delivered to the user, even when
+   facing failures of processing nodes, intermediate nodes and network
+   infrastructure.
+
+   Reliability is achieved by simply re-sending the request, if the
+   reply is not received with a certain timeframe.  To make that
+   algorithm work flawlessly, the client has to be able to filter out
+   any stray replies (delayed replies for the requests that we've
+   already received reply to).
+
+   The client thus adds an unique request ID to the request.  The ID
+   gets copied from the request to the reply by the processing node.
+   When the reply gets back to the client, it can simply check whether
+   the request in question is still being processed and if not so, it
+   can ignore the reply.
+
+   To implement all the functionality described above, messages (both
+   requests and replies have the following format:
+
+   +-+------------+-+------------+   +-+------------+-------------+
+   |0| Channel ID |0| Channel ID |...|1| Request ID |   payload   |
+   +-+------------+-+------------+   +-+------------+ ------------+
+
+   Payload of the message is preceded by a stack of 32-bit tags.  The
+   most significant bit of each tag is set to 0 except for the very last
+   tag.  That allows the algorithm to find out where the tags end and
+   where the message payload begins.
+
+   As for the remaining 31 bits, they are either request ID (in the last
+   tag) or a channel ID (in all the remaining tags).  The first channel
+   ID is added and processed by the REP endpoint closest to the
+   processing node.  The last channel ID is added and processed by the
+   REP endpoint closest to the client.
+
+
+
+Sustrik                 Expires February 2, 2014                [Page 7]
+
+Internet-Draft              Request/Reply SP                 August 2013
+
+
+   Following picture shows an example of request saying "Hello" being
+   routed from the client through two intermediate nodes to the
+   processing node and the reply "World" being routed back.  It shows
+   what messages are passed over the network at each step of the
+   process:
+
+                           client
+                     Hello    |    World
+                      |    +-----+    ^
+                      |    | REQ |    |
+                      V    +-----+    |
+               1|823|Hello    |    1|823|World
+                      |    +-----+    ^
+                      |    | REP |    |
+                      |    +-----+    |
+                      |    | REQ |    |
+                      V    +-----+    |
+         0|299|1|823|Hello    |    0|299|1|823|World
+                      |    +-----+    ^
+                      |    | REP |    |
+                      |    +-----+    |
+                      |    | REQ |    |
+                      V    +-----+    |
+   0|446|0|299|1|823|Hello    |    0|446|0|299|1|823|World
+                      |    +-----+    ^
+                      |    | REP |    |
+                      V    +-----+    |
+                     Hello    |    World
+                           service
+
+4.  Hop-by-hop vs. End-to-end
+
+   All endpoints implement so called "hop-by-hop" functionality.  It's
+   the functionality concerned with sending messages to the immediately
+   adjacent components and receiving messages from them.
+
+   In addition to that, the endpoints on the edge of the topology
+   implement so called "end-to-end" functionality that is concerned with
+   issues such as, for example, reliability.
+
+
+
+
+
+
+
+
+
+
+
+
+Sustrik                 Expires February 2, 2014                [Page 8]
+
+Internet-Draft              Request/Reply SP                 August 2013
+
+
+                      end to end
+      +-----------------------------------------+
+      |                                         |
+   +-----+   +-----+-----+   +-----+-----+   +-----+
+   |     |-->|     |     |-->|     |     |-->|     |
+   | REQ |   | REP | REQ |   | REP | REQ |   | REP |
+   |     |<--|     |     |<--|     |     |<--|     |
+   +-----+   +-----+-----+   +-----+-----+   +-----+
+      |         |     |         |     |         |
+      +---------+     +---------+     +---------+
+      hop by hop      hop by hop      hop by hop
+
+   To make an analogy with the TCP/IP stack, IP provides hop-by-hop
+   functionality, i.e. routing of the packets to the adjacent node,
+   while TCP implements end-to-end functionality such resending of lost
+   packets.
+
+   As a rule of thumb, raw hop-by-hop endpoints are used to build
+   devices (intermediary nodes in the topology) while end-to-end
+   endpoints are used directly by the applications.
+
+   To prevent confusion, the specification of the endpoint behaviour
+   below will discuss hop-by-hop and end end-to-end functionality in
+   separate chapters.
+
+5.  Hop-by-hop functionality
+
+5.1.  REQ endpoint
+
+   The REQ endpoint is used by the user to send requests to the
+   processing nodes and receive the replies afterwards.
+
+   When user asks REQ endpoint to send a request, the endpoint should
+   send it to one of the associated outbound channels (TCP connections
+   or similar).  The request sent is exactly the message supplied by the
+   user.  REQ socket MUST NOT modify an outgoing request in any way.
+
+   If there's no channel to send the request to, the endpoint won't send
+   the request and MUST report the backpressure condition to the user.
+   For example, with BSD socket API, backpressure is reported as EAGAIN
+   error.
+
+   If there are associated channels but none of them is available for
+   sending, i.e. all of them are already reporting backpressure, the
+   endpoint won't send the message and MUST report the backpressure
+   condition to the user.
+
+
+
+
+
+Sustrik                 Expires February 2, 2014                [Page 9]
+
+Internet-Draft              Request/Reply SP                 August 2013
+
+
+   Backpressure is used as a means to redirect the requests from the
+   congested parts of the topology to to the parts that are still
+   responsive.  It can be thought of as a crude scheduling algorithm.
+   However crude though, it's probably still the best you can get
+   without knowing estimates of execution time for individual tasks, CPU
+   capacity of individual processing nodes etc.
+
+   Alternatively, backpressure can be thought of as a congestion control
+   mechanism.  When all available processing nodes are busy, it slows
+   down the client application, i.e. it prevents the user from sending
+   any more requests.
+
+   If the channel is not capable of reporting backpressure (e.g.  DCCP)
+   the endpoint SHOULD consider it as always available for sending new
+   request.  However, such channels should be used with care as when the
+   congestion hits they may suck in a lot of requests just to discard
+   them silently and thus cause re-transmission storms later on.  The
+   implementation of the REQ endpoint MAY choose to prohibit the use of
+   such channels altogether.
+
+   When there are multiple channels available for sending the request
+   endpoint MAY use any prioritisation mechanism to decide which channel
+   to send the request to.  For example, it may use classic priorities
+   attached to channels and send message to the channel with the highest
+   priority.  That allows for routing algorithms such as: "Use local
+   processing nodes if any are available.  Send the requests to remote
+   nodes only if there are no local ones available."  Alternatively, the
+   endpoint may implement weighted priorities ("send 20% of the request
+   to node A and 80% to node B).  The endpoint also may not implement
+   any prioritisation strategy and treat all channels as equal.
+
+   Whatever the case, two rules must apply.
+
+   First, by default the priority settings for all channels MUST be
+   equal.  Creating a channel with different priority MUST be triggered
+   by an explicit action by the user.
+
+   Second, if there are several channels with equal priority, the
+   endpoint MUST distribute the messages among them in fair fashion
+   using round-robin algorithm.  The round-robin implementation MUST
+   also take care not to become unfair when new channels are added or
+   old ones are removed on the fly.
+
+   As for incoming messages, i.e. replies, REQ endpoint MUST fair-queues
+   them.  In other words, if there are replies available on several
+   channels, it MUST receive them in a round-robin fashion.  It must
+   also take care not to compromise the fairness when new channels are
+   added or old ones removed.
+
+
+
+Sustrik                 Expires February 2, 2014               [Page 10]
+
+Internet-Draft              Request/Reply SP                 August 2013
+
+
+   In addition to providing basic fairness, the goal of fair-queueing is
+   to prevent DoS attacks where a huge stream of fake replies from one
+   channel would be able to block the real replies coming from different
+   channels.  Fair queueing ensures that messages from every channel are
+   received at approximately the same rate.  That way, DoS attack can
+   slow down the system but it can't entirely block it.
+
+   Incoming replies MUST be handed to the user exactly as they were
+   received.  REQ endpoint MUST not modify the replies in any way.
+
+5.2.  REP endpoint
+
+   REP endpoint is used to receive requests from the clients and send
+   replies back to the clients.
+
+   First of all, REP socket is responsible for assigning unique 31-bit
+   channel IDs to the individual associated channels.
+
+   First ID assigned MUST be random.  Next is computed by adding 1 to
+   the previous one with potential overflow to 0.
+
+   The implementation MUST ensure that the random number is different
+   each time the endpoint is re-started, the process that contains it is
+   restarted or similar.  So, for example, using pseudo-random generator
+   with a constant seed won't do.
+
+   The goal of the algorithm is to the spread of possible channel ID
+   values and thus minimise the chance that a reply is routed to an
+   unrelated channel, even in the face of intermediate node failures.
+
+   When receiving a message, REP endpoint MUST fair-queue among the
+   channels available for receiving.  In other words it should round-
+   robin among such channels and receive one request from a channel at a
+   time.  It MUST also implement the round-robin algorithm is such a way
+   that adding or removing channels don't break its fairness.
+
+   In addition to guaranteeing basic fairness in access to computing
+   resources the above algorithm makes it impossible for a malevolent or
+   misbehaving client to completely block the processing of requests
+   from other clients by issuing steady stream of requests.
+
+   After getting hold on the request, the REP socket should prepend it
+   by 32 bit value, consisting of 1 bit set to 0 followed by the 31-bit
+   ID of the channel the request was received from.  The extended
+   request will be then handed to the user.
+
+   The goal of adding the channel ID to the request is to be able to
+   route the reply back to the original channel later on.  Thus, when
+
+
+
+Sustrik                 Expires February 2, 2014               [Page 11]
+
+Internet-Draft              Request/Reply SP                 August 2013
+
+
+   the user sends a reply, endpoint strips first 32 bits off and uses
+   the value to determine where it is to be routed.
+
+   If the reply is shorter than 32 bits, it is malformed and the
+   endpoint MUST ignore it.  Also, if the most relevant bit of the
+   32-bit value isn't set to 0, the reply is malformed and MUST be
+   ignored.
+
+   Otherwise, the endpoint checks whether its table of associated
+   channels contains the channel with a corresponding ID.  If so, it
+   sends the reply (with first 32 bits stripped off) to that channel.
+   If the channel is not found, the reply MUST be dropped.  If the
+   channel is not available for sending, i.e. it is applying
+   backpressure, the reply MUST be dropped.
+
+   Note that when the reply is unroutable two things might have
+   happened.  Either there was some kind of network disruption, in which
+   case the request will be re-sent later on, or the original client
+   have failed or been shut down.  In such case the request won't be
+   resent, however, it doesn't really matter because there's no one to
+   deliver the reply to any more anyway.
+
+   Unlike requests, there's no pushback applied to the replies; they are
+   simply dropped.  If the endpoint blocked and waited for the channel
+   to become available, all the subsequent replies, possibly destined
+   for different unblocked channels, would be blocked in the meantime.
+   That allows for a DoS attack simply by firing a lot of requests and
+   not receiving the replies.
+
+6.  End-to-end functionality
+
+   End-to-end functionality is built on top of hop-to-hop functionality.
+   Thus, an endpoint on the edge of a topology contains all the hop-by-
+   hop functionality, but also implements additional functionality of
+   its own.  This end-to-end functionality acts basically as a user of
+   the underlying hop-by-hop functionality.
+
+6.1.  REQ endpoint
+
+   End-to-end functionality for REQ sockets is concerned with re-sending
+   the requests in case of failure and with filtering out stray or
+   outdated replies.
+
+   To be able to do the latter, the endpoint must tag the requests with
+   unique 31-bit request IDs.  First request ID is picked at random.
+   All subsequent request IDs are generated by adding 1 to the last
+   request ID and possibly overflowing to 0.
+
+
+
+
+Sustrik                 Expires February 2, 2014               [Page 12]
+
+Internet-Draft              Request/Reply SP                 August 2013
+
+
+   To improve robustness of the system, the implementation MUST ensure
+   that the random number is different each time the endpoint, the
+   process or the machine is restarted.  Pseudo-random generator with
+   fixed seed won't do.
+
+   When user asks the endpoint to send a message, the endpoint prepends
+   a 32-bit value to the message, consisting of a single bit set to 1
+   followed by a 31-bit request ID and passes it on in a standard hop-
+   by-hop way.
+
+   If the hop-by-hop layer reports pushback condition, the end-to-end
+   layer considers the request unsent and MUST report pushback condition
+   to the user.
+
+   If the request is successfully sent, the endpoint stores the request
+   including its request ID, so that it can be resent later on if
+   needed.  At the same time it sets up a timer to trigger the re-
+   transmission in case the reply is not received within a specified
+   timeout.  The user MUST be allowed to specify the timeout interval.
+   The default timeout interval must be 60 seconds.
+
+   When a reply is received from the underlying hop-by-hop
+   implementation, the endpoint should strip off first 32 bits from the
+   reply to check whether it is a valid reply.
+
+   If the reply is shorter than 32 bits, it is malformed and the
+   endpoint MUST ignore it.  If the most significant bit of the 32-bit
+   value is set to 0, the reply is malformed and MUST be ignored.
+
+   Otherwise, the endpoint should check whether the request ID in the
+   reply matches any of the request IDs of the requests being processed
+   at the moment.  If not so, the reply MUST be ignored.  It is either a
+   stray message or a duplicate reply.
+
+   Please note that the endpoint can support either one or more requests
+   being processed in parallel.  Which one is the case depends on the
+   API exposed to the user and is not part of this specification.
+
+   If the ID in the reply matches one of the requests in progress, the
+   reply MUST be passed to the user (with the 32-bit prefix stripped
+   off).  At the same time the stored copy of the original request as
+   well as re-transmission timer must be deallocated.
+
+   Finally, REQ endpoint MUST make it possible for the user to cancel a
+   particular request in progress.  What it means technically is
+   deleting the stored copy of the request and cancelling the associated
+   timer.  Thus, once the reply arrives, it will be discarded by the
+   algorithm above.
+
+
+
+Sustrik                 Expires February 2, 2014               [Page 13]
+
+Internet-Draft              Request/Reply SP                 August 2013
+
+
+   The cancellation allows, for example, the user to time out a request.
+   They can simply post a request and if there's no answer in specific
+   timeframe, they can cancel it.
+
+6.2.  REP endpoint
+
+   End-to-end functionality for REP endpoints is concerned with turning
+   requests into corresponding replies.
+
+   When user asks to receive a request, the endpoint gets next request
+   from the hop-by-hop layer and splits it into the traceback stack and
+   the message payload itself.  The traceback stack is stored and the
+   payload is returned to the user.
+
+   The algorithm for splitting the request is as follows: Strip 32 bit
+   tags from the message in one-by-one manner.  Once the most
+   significant bit of the tag is set, we've reached the bottom of the
+   traceback stack and the splitting is done.  If the end of the message
+   is reached without finding the bottom of the stack, the request is
+   malformed and MUST be ignored.
+
+   Note that the payload produced by this procedure is the same as the
+   request payload sent by the original client.
+
+   Once the user processes the request and sends the reply, the endpoint
+   prepends the reply with the stored traceback stack and sends it on
+   using the hop-by-hop layer.  At that point the stored traceback stack
+   MUST be deallocated.
+
+   Additionally, REP endpoint MUST support cancelling any request being
+   processed at the moment.  What it means, technically, is that state
+   associated with the request, i.e. the traceback stack stored by the
+   endpoint is deleted and reply to that particular request is never
+   sent.
+
+   The most important use of cancellation is allowing the service
+   instances to ignore malformed requests.  If the application-level
+   part of the request doesn't conform to the application protocol the
+   service can simply cancel the request.  In such case the reply is
+   never sent.  Of course, if application wants to send an application-
+   specific error massage back to the client it can do so by not
+   cancelling the request and sending a regular reply.
+
+7.  Loop avoidance
+
+   It may happen that a request/reply topology contains a loop.  It
+   becomes increasingly likely as the topology grows out of scope of a
+   single organisation and there are multiple administrators involved in
+
+
+
+Sustrik                 Expires February 2, 2014               [Page 14]
+
+Internet-Draft              Request/Reply SP                 August 2013
+
+
+   maintaining it.  Unfortunate interaction between two perfectly
+   legitimate setups can cause loop to be created.
+
+   With no additional guards against the loops, it's likely that
+   requests will be caught inside the loop, rotating there forever, each
+   message gradually growing in size as new prefixes are added to it by
+   each REP endpoint on the way.  Eventually, a loop can cause
+   congestion and bring the whole system to a halt.
+
+   To deal with the problem REQ endpoints MUST check the depth of the
+   traceback stack for every outgoing request and discard any requests
+   where it exceeds certain threshold.  The threshold should be defined
+   by the user.  The default value is suggested to be 8.
+
+8.  IANA Considerations
+
+   New SP endpoint types REQ and REP should be registered by IANA.  For
+   now, value of 16 should be used for REQ endpoints and value of 17 for
+   REP endpoints.
+
+9.  Security Considerations
+
+   The mapping is not intended to provide any additional security to the
+   underlying protocol.  DoS concerns are addressed within the
+   specification.
+
+10.  References
+
+   [SPoverTCP]
+              Sustrik, M., "TCP mapping for SPs", August 2013.
+
+Author's Address
+
+   Martin Sustrik (editor)
+
+   Email: sustrik@250bpm.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Sustrik                 Expires February 2, 2014               [Page 15]

@@ -1,0 +1,4 @@
+^CMake Error at cxx_not_enabled.cmake:[0-9]+ \(target_compile_features\):
+  target_compile_features cannot use features from non-enabled language CXX
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

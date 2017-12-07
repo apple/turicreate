@@ -1,0 +1,47 @@
+CMake Error at target_commands.cmake:4 \(target_link_libraries\):
+  INTERFACE library can only be used with the INTERFACE keyword of
+  target_link_libraries
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at target_commands.cmake:5 \(target_link_libraries\):
+  INTERFACE library can only be used with the INTERFACE keyword of
+  target_link_libraries
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at target_commands.cmake:6 \(target_link_libraries\):
+  INTERFACE library can only be used with the INTERFACE keyword of
+  target_link_libraries
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at target_commands.cmake:7 \(target_link_libraries\):
+  INTERFACE library can only be used with the INTERFACE keyword of
+  target_link_libraries
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at target_commands.cmake:9 \(target_include_directories\):
+  target_include_directories may only be set INTERFACE properties on
+  INTERFACE targets
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at target_commands.cmake:10 \(target_include_directories\):
+  target_include_directories may only be set INTERFACE properties on
+  INTERFACE targets
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at target_commands.cmake:12 \(target_compile_definitions\):
+  target_compile_definitions may only be set INTERFACE properties on
+  INTERFACE targets
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at target_commands.cmake:13 \(target_compile_definitions\):
+  target_compile_definitions may only be set INTERFACE properties on
+  INTERFACE targets
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

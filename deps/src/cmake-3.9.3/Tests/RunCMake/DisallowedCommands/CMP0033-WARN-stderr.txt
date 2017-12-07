@@ -1,0 +1,12 @@
+CMake Warning \(dev\) at CMP0033-WARN.cmake:1 \(export_library_dependencies\):
+  Policy CMP0033 is not set: The export_library_dependencies command should
+  not be called.  Run "cmake --help-policy CMP0033" for policy details.  Use
+  the cmake_policy command to set the policy and suppress this warning.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Error at CMP0033-WARN.cmake:1 \(export_library_dependencies\):
+  export_library_dependencies called with incorrect number of arguments
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

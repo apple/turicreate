@@ -1,0 +1,4 @@
+^CMake Error at EncodingMissing.cmake:[0-9]+ \(execute_process\):
+  execute_process called with no value for ENCODING.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)$

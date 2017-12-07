@@ -1,0 +1,6 @@
+^CMake Error at .*/Modules/Platform/Android-Determine.cmake:[0-9]+ \(message\):
+  Android: CMAKE_ANDROID_ARM_MODE is set but is valid only for 'armeabi'
+  architectures.
+Call Stack \(most recent call first\):
+  .*/Modules/CMakeDetermineSystem.cmake:[0-9]+ \(include\)
+  CMakeLists.txt:[0-9]+ \(project\)$

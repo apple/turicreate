@@ -1,0 +1,4 @@
+CMake Error at CMP0045-NEW.cmake:4 \(get_target_property\):
+  get_target_property\(\) called with non-existent target "tgt".
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

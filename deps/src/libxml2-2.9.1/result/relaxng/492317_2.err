@@ -1,0 +1,3 @@
+./test/relaxng/492317_2.xml:2: element child: Relax-NG validity error : Element child failed to validate attributes
+./test/relaxng/492317_2.xml:1: element root: Relax-NG validity error : Element root failed to validate content
+./test/relaxng/492317_2.xml fails to validate

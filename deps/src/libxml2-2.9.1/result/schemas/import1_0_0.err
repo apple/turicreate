@@ -1,0 +1,4 @@
+I/O warning : failed to load external entity "test/schemas/import1_0bc.imp"
+./test/schemas/import1_0.xsd:11: element import: Schemas parser warning : Element '{http://www.w3.org/2001/XMLSchema}import': Failed to locate a schema at location 'test/schemas/import1_0bc.imp'. Skipping the import.
+./test/schemas/import1_0.xsd:16: element import: Schemas parser warning : Element '{http://www.w3.org/2001/XMLSchema}import': Skipping import of schema located at 'test/schemas/import1_0b.imp' for the namespace 'http://BAR', since this namespace was already imported with the schema located at 'test/schemas/import1_0.imp'.
+./test/schemas/import1_0.xsd:26: element element: Schemas parser error : Element '{http://www.w3.org/2001/XMLSchema}element', attribute 'ref': The QName value '{http://BAR}bar.B' does not resolve to a(n) element declaration.

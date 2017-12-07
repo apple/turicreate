@@ -1,0 +1,1 @@
+add_library(Lib HelperFun.c HelperFun.h)

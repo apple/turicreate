@@ -1,0 +1,2 @@
+Error message was: ([Cc]ould *n.t resolve host:? '?-no-site-'?.*|The requested URL returned error:.*|Protocol "https" not supported or disabled in .*|.* was built with SSL disabled.*)
+   Problems when submitting via HTTP

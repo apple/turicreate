@@ -1,0 +1,6 @@
+^get_cmake_property: --><--
+get_property: --><--
+get_cmake_property: -->value<--
+get_property: -->value<--
+get_cmake_property: -->NOTFOUND<--
+get_property: --><--$

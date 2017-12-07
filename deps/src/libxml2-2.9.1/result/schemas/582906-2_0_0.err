@@ -1,0 +1,1 @@
+test/schemas/582906-2-prog1.xsd:9: element include: Schemas parser error : Element '{http://www.w3.org/2001/XMLSchema}include': The target namespace 'http://example.com/xml/Prog3' of the included/redefined schema 'test/schemas/582906-2-common.xsd' differs from 'http://example.com/xml/Prog1' of the including/redefining schema.

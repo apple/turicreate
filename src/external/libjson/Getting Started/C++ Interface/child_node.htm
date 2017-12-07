@@ -1,0 +1,46 @@
+<HTML>
+<HEAD>
+<title>libjson Child Node Example</title>
+<script type="text/javascript" src="../Library Interface/scripts/shCore.js"></script>
+<script type="text/javascript" src="../Library Interface/scripts/shBrushCpp.js"></script>
+	<link type="text/css" rel="stylesheet" href="../Library Interface/styles/shCoreDefault.css"/>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+
+</HEAD>
+<BODY>
+<h1>libjson Child Node Example</h1>
+<p>Now we&#39;ll look at how to create a branch off the main tree.</p>
+<p><span id="more-114"></span></p>
+<pre class="brush:cpp;wrap-lines:true">JSONNode n(JSON_NODE);
+n.push_back(JSONNode(&quot;RootA&quot;, &quot;Value in parent node&quot;));
+JSONNode c(JSON_NODE);
+c.set_name(&quot;ChildNode&quot;);
+c.push_back(JSONNode(&quot;ChildA&quot;, &quot;String Value&quot;));
+c.push_back(JSONNode(&quot;ChildB&quot;, 42));
+n.push_back(c);
+std::string jc = n.write_formatted();
+std::cout &lt;&lt; jc &lt;&lt; std::endl;</pre>
+
+<p>The result will look like this:</p>
+<pre class="brush:cpp;wrap-lines:true">{
+    &quot;RootA&quot; : &quot;Value in parent node&quot;,
+    &quot;ChildNode&quot; : {
+        &quot;ChildA&quot; : &quot;String Value&quot;,
+        &quot;ChildB&quot; : 42
+    }
+}</pre>
+
+<p>As in the previous example, we create a root node to hold all of our child nodes on line one using the constructor.</p>
+<p>Line 2 adds to the root a string node with the name &quot;RootA&quot; and a value of &quot;Value in parent node&quot;.</p>
+<p>On line 3 we&#39;re creating a new, floating node that will be a branch off the root. It&#39;s the same type as our root, JSON_NODE.</p>
+<p><em>set_name</em> lets us name the node that we&#39;ve just created. If your branch is an object of some kind, you&#39;ll likely want to name it properly. Note that if you try to name the root node (<em>n</em> in our case), it won&#39;t be written out. The name will only appear if the JSON_NODE is a child of another node.</p>
+
+<p>Lines 5 and 6 add new nodes with values to our branch node <em>c</em>.</p>
+<p>Line 7 attaches our branch node <em>c</em> to the root node <em>n</em> after the string node named &quot;RootA&quot;.</p>
+<p>Line 8 returns the <em>json_string</em> nicely formatted and 9 prints it to stdout.</p>
+
+<p>With these tools, we can create complicated JSON structures and mimick objects with child properties.</p>
+
+
+<BODY>
+</HTML>

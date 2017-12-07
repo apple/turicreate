@@ -1,0 +1,4 @@
+CMake Error at OneArg.cmake:1 \(try_compile\):
+  try_compile unknown error.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

@@ -1,0 +1,251 @@
+import tvm
+
+def test_bound1():
+    m = tvm.var('m')
+    l = tvm.var('l')
+    A = tvm.placeholder((m, l), name='A')
+    A1 = tvm.compute((m, l), lambda i, j: A[i, j], name='A1')
+    A2 = tvm.compute((m, l), lambda i, j: A1[i, j] + 3, name='A2')
+
+    s = tvm.create_schedule([A2.op])
+    xo, xi = s[A2].split(s[A2].op.axis[0], 8)
+    s[A1].compute_at(s[A2], xo)
+    bounds = tvm.schedule.InferBound(s)
+    assert isinstance(bounds, tvm.container.Map)
+    assert(bounds[A1.op.axis[0]].extent.value == 8)
+
+def test_bound2():
+    m = tvm.var('m')
+    l = tvm.var('l')
+    A = tvm.placeholder((m, l), name='A')
+    A1 = tvm.compute((m, l), lambda i, j: A[i, j], name='A1')
+    A2 = tvm.compute((m, l), lambda i, j: A1[i, j] + 3, name='A2')
+    s = tvm.create_schedule(A2.op)
+    xo, yo, xi, yi = s[A2].tile(A2.op.axis[0], A2.op.axis[1], 8, 8)
+    # test normalize not affecting schedule
+    _ = s.normalize()
+    s[A1].compute_at(s[A2], yo)
+    bounds = tvm.schedule.InferBound(s)
+    assert isinstance(bounds, tvm.container.Map)
+    assert(bounds[A1.op.axis[0]].extent.value == 8)
+    assert(bounds[A1.op.axis[1]].extent.value == 8)
+
+def test_bound3():
+    m = tvm.var('m')
+    l = tvm.var('l')
+    A = tvm.placeholder((m, l), name='A')
+    A1 = tvm.compute((m, l), lambda i, j: A[i, j], name='A1')
+    A2 = tvm.compute((m, l), lambda i, j: A1[i, j] + 3, name='A2')
+
+    s = tvm.create_schedule(A2.op)
+    s[A1].set_scope("shared")
+    xo, xi = s[A2].split(A2.op.axis[0], 32)
+    xi0, xi1 = s[A2].split(xi, nparts=16)
+    s[A2].bind(xi0, tvm.thread_axis("threadIdx.x"))
+    yo, yi = s[A2].split(A2.op.axis[1], 16)
+    # test normalize not affecting schedule
+    _ = s.normalize()
+    s[A2].reorder(xo, xi0, yo, xi1, yi)
+    s[A1].compute_at(s[A2], yo)
+
+    bounds = tvm.schedule.InferBound(s)
+    assert isinstance(bounds, tvm.container.Map)
+    assert(bounds[A1.op.axis[0]].extent.value==32)
+    assert(bounds[A1.op.axis[1]].extent.value==16)
+
+def test_bound_scan():
+    m = tvm.var("m")
+    n = tvm.var("n")
+    X = tvm.compute((m, n), lambda i, j: tvm.const(1, "float32"), name="x")
+    s_state = tvm.placeholder((m, n))
+    s_init = tvm.compute((1, n), lambda _, i: X[0, i])
+    s_update = tvm.compute((m, n), lambda t, i: s_state[t-1, i] + X[t, i])
+    s_scan = tvm.scan(s_init, s_update, s_state)
+
+    assert tuple(s_scan.shape) == (m, n)
+    s = tvm.create_schedule(s_scan.op)
+    XX = s.cache_read(X, "local", s_update)
+    xo, xi = s[s_update].split(s_update.op.axis[1], factor=4)
+    s[XX].compute_at(s[s_update], xo)
+    s = s.normalize()
+    bounds = tvm.schedule.InferBound(s)
+    stmt = tvm.schedule.ScheduleOps(s, bounds)
+    assert bounds[XX.op.axis[1]].extent.value == 4
+
+def test_bound_conv1d():
+    n = tvm.var('n')
+    A = tvm.compute((n+2), lambda i: 1,  name='A')
+    def computeB(ii):
+        i = ii + 1
+        return A[i-1] + A[i] + A[i+1]
+    B = tvm.compute(n, computeB, name='B')
+    s = tvm.create_schedule(B.op)
+    s[A].compute_at(s[B], B.op.axis[0])
+    s = s.normalize()
+    bounds = tvm.schedule.InferBound(s)
+    assert(bounds[A.op.axis[0]].extent.value == 3)
+
+def test_bound_blur():
+    n = tvm.convert(12)
+    A = tvm.compute((n, n), lambda i, j: 1, name='A')
+    def computeB(ii, jj):
+        # set the correct center
+        i = ii + 1
+        j = jj + 1
+        return A[i][j] + A[i-1][j] + A[i+1][j] + A[i][j+1] + A[i][j-1]
+    B = tvm.compute((n-2, n-2), computeB, name='B')
+    s = tvm.create_schedule(B.op)
+    s[A].compute_at(s[B], B.op.axis[1])
+    s = s.normalize()
+    bounds = tvm.schedule.InferBound(s)
+    assert(bounds[A.op.axis[0]].extent.value == 3)
+    assert(bounds[A.op.axis[1]].extent.value == 3)
+
+def test_bound_rfactor():
+    n = tvm.var('n')
+    A = tvm.placeholder((n,), name='A')
+    k = tvm.reduce_axis((0, n))
+    B = tvm.compute((1,), lambda i: tvm.sum(A[k], axis=k, where=(i>1)), name='B')
+    # schedule
+    s = tvm.create_schedule(B.op)
+    kf, ki = s[B].split(k, nparts=4)
+    BF = s.rfactor(B, kf)
+    s = s.normalize()
+    bounds = tvm.schedule.InferBound(s)
+
+    assert(bounds[BF.op.axis[0]].extent.value == 4)
+    assert(bounds[BF.op.axis[1]].extent.value == 1)
+
+def test_bound_group_schedule():
+    m = tvm.var("m")
+    n = tvm.var("n")
+    x = tvm.compute((m, n), lambda i, j: tvm.const(1, "float32"), name="x")
+    x1 = tvm.compute(x.shape, lambda *i: x(*i) + 1, name="x1")
+    x2 = tvm.compute(x.shape, lambda *i: x1(*i) + 2, name="x2")
+    s = tvm.create_schedule(x2.op)
+    g = s.create_group(outputs=x1, inputs=x, include_inputs=True)
+    g.compute_at(s[x2], x2.op.axis[0])
+    assert s[x1].group == g
+    assert s[x].group == g
+    s = s.normalize()
+    bounds = tvm.schedule.InferBound(s)
+    assert bounds[x.op.axis[0]].extent.value == 1
+    assert bounds[x.op.axis[1]].extent == n
+
+def test_bound_nest_group():
+    m = tvm.var("m")
+    n = tvm.var("n")
+    x = tvm.compute((m, n), lambda i, j: tvm.const(1, "float32"), name="x")
+    x1 = tvm.compute(x.shape, lambda *i: x(*i) + 1, name="x1")
+    x2 = tvm.compute(x.shape, lambda *i: x1(*i) + 2, name="x2")
+    s = tvm.create_schedule(x2.op)
+    g1 = s.create_group(outputs=x, inputs=x, include_inputs=True)
+    g2 = s.create_group(outputs=x1, inputs=x, include_inputs=True)
+    assert s[x].group == g1
+    assert s[x1].group == g2
+    g2.compute_at(s[x2], x2.op.axis[0])
+    g1.compute_at(s[x1], s[x1].op.axis[1])
+    s = s.normalize()
+    bounds = tvm.schedule.InferBound(s)
+    assert bounds[x.op.axis[0]].extent.value == 1
+    assert bounds[x.op.axis[1]].extent.value == 1
+    assert bounds[x1.op.axis[0]].extent.value == 1
+    assert bounds[x1.op.axis[1]].extent == n
+
+
+def test_bound_nest_thread():
+    m = tvm.var('m')
+    A = tvm.placeholder((m), name='A')
+    A1 = tvm.compute((m,), lambda i: A[i], name='A1')
+    A2 = tvm.compute((m,), lambda i: A1[i] + 2, name='A2')
+    A3 = tvm.compute((m,), lambda i: A2[i] + 3, name='A3')
+
+    s = tvm.create_schedule(A3.op)
+    s[A2].set_scope("shared")
+    s[A1].set_scope("local")
+
+    block_x = tvm.thread_axis("blockIdx.x")
+    thread_x = tvm.thread_axis("threadIdx.x")
+    bx, tx = s[A3].split(A3.op.axis[0], factor=32)
+    s[A3].bind(bx, block_x)
+    s[A3].bind(tx, thread_x)
+    s[A2].compute_at(s[A3], tx)
+    _, xi = s[A2].split(A2.op.axis[0], nparts=1)
+    s[A2].bind(xi, thread_x)
+    s[A1].compute_at(s[A3], tx)
+    s = s.normalize()
+    bounds = tvm.schedule.InferBound(s)
+    assert(bounds[A1.op.axis[0]].extent.value==1)
+    assert(bounds[A2.op.axis[0]].extent.value==32)
+    assert(bounds[A3.op.axis[0]].extent == m)
+
+def test_gemm_bound():
+    nn = 1024
+    n = tvm.convert(nn)
+    A = tvm.placeholder((n, n), name='A')
+    B = tvm.placeholder((n, n), name='B')
+    k = tvm.reduce_axis((0, n), name='k')
+    C = tvm.compute(
+        (n, n),
+        lambda ii, jj: tvm.sum(A[ii, k] * B[jj, k], axis=k),
+        name='CC')
+    # schedule
+    s = tvm.create_schedule(C.op)
+    xtile, ytile = 32, 32
+    scale = 8
+    num_thread = 8
+    block_factor = scale * num_thread
+    block_x = tvm.thread_axis("blockIdx.x")
+    thread_x = tvm.thread_axis("threadIdx.x")
+    block_y = tvm.thread_axis("blockIdx.y")
+    thread_y = tvm.thread_axis("threadIdx.y")
+
+    CC = s.cache_write(C, "local")
+    AA = s.cache_read(A, "shared", [CC])
+    BB = s.cache_read(B, "shared", [CC])
+    by, yi = s[C].split(C.op.axis[0], factor=block_factor)
+    bx, xi = s[C].split(C.op.axis[1], factor=block_factor)
+    s[C].reorder(by, bx, yi, xi)
+    s[C].bind(by, block_y)
+    s[C].bind(bx, block_x)
+    ty, yi = s[C].split(yi, nparts=num_thread)
+    tx, xi = s[C].split(xi, nparts=num_thread)
+    s[C].reorder(ty, tx, yi, xi)
+    s[C].bind(ty, thread_y)
+    s[C].bind(tx, thread_x)
+    yo, xo = CC.op.axis
+    s[CC].reorder(k, yo, xo)
+
+    s[CC].compute_at(s[C], tx)
+    s[AA].compute_at(s[CC], k)
+    s[BB].compute_at(s[CC], k)
+
+    ty, xi = s[AA].split(s[AA].op.axis[0], nparts=num_thread)
+    tx, xi = s[AA].split(xi, nparts=num_thread)
+    s[AA].bind(ty, thread_y)
+    s[AA].bind(tx, thread_x)
+
+    ty, xi = s[BB].split(s[BB].op.axis[0], nparts=num_thread)
+    tx, xi = s[BB].split(xi, nparts=num_thread)
+    s[BB].bind(ty, thread_y)
+    s[BB].bind(tx, thread_x)
+    s = s.normalize()
+    bounds = tvm.schedule.InferBound(s)
+    assert(bounds[BB.op.axis[0]].extent.value==64)
+    assert(bounds[AA.op.axis[0]].extent.value==64)
+    assert(bounds[CC.op.axis[0]].extent.value == 8)
+    assert(bounds[CC.op.axis[1]].extent.value == 8)
+
+
+if __name__ == "__main__":
+    test_bound_nest_thread()
+    test_bound1()
+    test_bound_nest_group()
+    test_bound_group_schedule()
+    test_bound_scan()
+    test_bound3()
+    test_bound_rfactor()
+    test_bound_blur()
+    test_bound_conv1d()
+    test_bound2()
+    test_gemm_bound()

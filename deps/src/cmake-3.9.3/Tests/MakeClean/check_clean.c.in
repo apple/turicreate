@@ -1,0 +1,26 @@
+#include <stdio.h>
+
+int main()
+{
+  /* The list of files to check.  */
+  const char* files[] =
+    {
+      @CHECK_FILES@
+      0
+    };
+
+  /* No file should exist.  */
+  const char** f = files;
+  int result = 0;
+  for(; *f; ++f)
+    {
+    FILE* pf = fopen(*f, "rb");
+    if(pf)
+      {
+      fclose(pf);
+      fprintf(stderr, "File \"%s\" exists!", *f);
+      result = 1;
+      }
+    }
+  return result;
+}

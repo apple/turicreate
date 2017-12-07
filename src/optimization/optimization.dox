@@ -1,0 +1,4 @@
+/**
+ * \defgroup group_optimization Convex Optimization
+ * A general purpose convex optimization library.
+ */

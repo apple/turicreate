@@ -1,0 +1,20 @@
+/* Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
+   file Copyright.txt or https://cmake.org/licensing for details.  */
+#ifndef cmThirdParty_h
+#define cmThirdParty_h
+
+/* Whether CMake is using its own utility libraries.  */
+#cmakedefine CMAKE_USE_SYSTEM_CURL
+#cmakedefine CMAKE_USE_SYSTEM_EXPAT
+#cmakedefine CMAKE_USE_SYSTEM_KWIML
+#cmakedefine CMAKE_USE_SYSTEM_ZLIB
+#cmakedefine CMAKE_USE_SYSTEM_BZIP2
+#cmakedefine CMAKE_USE_SYSTEM_LIBARCHIVE
+#cmakedefine CMAKE_USE_SYSTEM_LIBLZMA
+#cmakedefine CMAKE_USE_SYSTEM_FORM
+#cmakedefine CMAKE_USE_SYSTEM_JSONCPP
+#cmakedefine CMAKE_USE_SYSTEM_LIBRHASH
+#cmakedefine CMAKE_USE_SYSTEM_LIBUV
+#cmakedefine CTEST_USE_XMLRPC
+
+#endif

@@ -1,0 +1,1 @@
+./test/schemas/src-element1_0.xsd:7: element element: Schemas parser error : Element '{http://www.w3.org/2001/XMLSchema}element': The attributes 'default' and 'fixed' are mutually exclusive.

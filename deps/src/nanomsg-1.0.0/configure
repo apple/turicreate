@@ -1,0 +1,116 @@
+#!/bin/sh
+#
+# Copyright 2016 Garrett D'Amore <garrett@damore.org>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom
+# the Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+# IN THE SOFTWARE.
+#
+#
+# This configure script provides the usual autoconf style interface for
+# installation, but simply uses cmake.
+#
+SRCDIR=`dirname $0`
+CURDIR=`pwd`
+
+strip_arg()
+{
+	x=`echo "$1" | sed "s/[^=]*=//"`
+	eval $2=\"$x\"
+}
+
+warn() {
+	echo "$*" 1>&2
+}
+
+find_prog() {
+	SIFS="${IFS=	 }"
+	IFS=:
+	for p in $PATH; do
+		if [ -x ${p}/$1 ]
+		then
+			IFS="${SIFS}"
+			echo "${p}/${1}"
+			return 0
+		fi
+	done
+	IFS="${SIFS}"
+	return 1
+}
+
+need_cmake() {
+	warn "This program requires CMake 2.6 or newer to build."
+	warn "Obtain CMake from www.cmake.org"
+	exit 1
+}
+
+help() {
+	echo "This configure script is a convenience wrapper around"
+	echo "CMake.  Only a limited subset of configuration options"
+	echo "are supported.  For a fully featured build, use CMake".
+	echo
+	echo "Execute as $0 [options]"
+	echo
+	echo "Options supported are:"
+	echo
+	echo " --prefix={path}      Set installation directory prefix."
+	echo " --with-cmake={path}  Location of CMake executable."
+	echo
+	exit 1
+}
+
+# Argument parsing
+PREFIX=/usr/local
+while [ -n "$1" ]; do
+	case "$1" in
+	--with-cmake)
+		CMAKE="$2"
+		shift 2
+		;;
+	--with-cmake=*)
+		strip_arg "$1" CMAKE
+		shift
+		;;
+	--prefix)
+		if [ -z "$2" ]; then
+			help
+		fi
+		PREFIX="$2"
+		shift 2
+		;;
+	--prefix=*)
+		strip_arg "$1" PREFIX
+		shift
+		;;
+	*)
+		help
+		;;
+	esac
+done
+
+if [ -z "${CMAKE}" ]; then
+	CMAKE=`find_prog cmake` || need_cmake
+fi
+
+if [ -f src/nn.h ]
+then
+	warn "NOTE: Building in the source directory is not recommended."
+fi
+
+GENERATOR="Unix Makefiles"
+
+"$CMAKE" -G "$GENERATOR" "-DCMAKE_INSTALL_PREFIX=$PREFIX" $SRCDIR

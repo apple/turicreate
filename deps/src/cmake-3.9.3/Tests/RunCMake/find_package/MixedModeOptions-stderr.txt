@@ -1,0 +1,14 @@
+CMake Error at MixedModeOptions.cmake:1 \(find_package\):
+  find_package given options exclusive to Module mode:
+
+    MODULE
+
+  and options exclusive to Config mode:
+
+    CONFIG
+    CONFIGS
+    NO_DEFAULT_PATH
+
+  The options are incompatible.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

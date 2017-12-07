@@ -1,0 +1,6 @@
+This directory contains simple performance measurement utilities:
+
+- inproc_lat measures the latency of the inproc transport
+- inproc_thr measures the throughput of the inproc transport
+- local_lat and remote_lat measure the latency other transports
+- local_thr and remote_thr measure the throughput other transports

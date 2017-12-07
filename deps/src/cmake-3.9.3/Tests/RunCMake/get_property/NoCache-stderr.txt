@@ -1,0 +1,4 @@
+^CMake Error at NoCache.cmake:1 \(get_property\):
+  get_property not given name for CACHE scope.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

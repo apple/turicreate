@@ -1,0 +1,10 @@
+CMake Error at CMakeLists.txt:[0-9]+ \(project\):
+  Generator
+
+    .*
+
+  given toolset specification
+
+    Test Toolset,host=x64,host=x64
+
+  that contains duplicate field key 'host'\.$

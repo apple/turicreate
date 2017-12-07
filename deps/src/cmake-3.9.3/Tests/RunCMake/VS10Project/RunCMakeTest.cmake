@@ -1,0 +1,6 @@
+include(RunCMake)
+run_cmake(VsConfigurationType)
+run_cmake(VsTargetsFileReferences)
+run_cmake(VsCustomProps)
+run_cmake(VsDebuggerWorkingDir)
+run_cmake(VsCSharpCustomTags)

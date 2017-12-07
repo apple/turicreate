@@ -1,0 +1,4 @@
+CMake Error at duplicate-else-after-elseif.cmake:[0-9]+ \(else\):
+  A duplicate ELSE command was found inside an IF block.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

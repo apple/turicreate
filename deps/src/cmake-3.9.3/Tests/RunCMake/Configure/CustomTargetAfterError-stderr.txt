@@ -1,0 +1,9 @@
+^CMake Error at CustomTargetAfterError.cmake:1 \(message\):
+  Error before add_custom_target
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at CustomTargetAfterError.cmake:3 \(message\):
+  Error after add_custom_target
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

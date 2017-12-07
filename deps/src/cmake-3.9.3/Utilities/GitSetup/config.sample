@@ -1,0 +1,32 @@
+# Kitware Local Git Setup Scripts - Sample Project Configuration
+#
+# Copy to "config" and edit as necessary.
+
+[hooks]
+	url = http://public.kitware.com/GitSetup.git
+	#branch = hooks
+
+[ssh]
+	host = public.kitware.com
+	key = id_git_public
+	request-url = https://www.kitware.com/Admin/SendPassword.cgi
+
+[stage]
+	#url = git://public.kitware.com/stage/Project.git
+	#pushurl = git@public.kitware.com:stage/Project.git
+
+[gerrit]
+	#project = Project
+	site = http://review.source.kitware.com
+	# pushurl placeholder "$username" is literal
+	pushurl = $username@review.source.kitware.com:Project
+
+[upstream]
+	url = git://public.kitware.com/Project.git
+
+[gitlab]
+	host = gitlab.kitware.com
+	group-path = group
+	group-name = Group
+	project-path = project
+	project-name = Project

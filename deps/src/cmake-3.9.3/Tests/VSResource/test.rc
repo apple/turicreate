@@ -1,0 +1,20 @@
+#ifdef CMAKE_RCDEFINE
+# ifndef CMAKE_RC_NO_INCLUDE
+#  include <include.rc>
+# endif
+
+// This line can compile with either an unquoted or a quoted string
+1025 TEXTFILE CMAKE_RCDEFINE
+
+#ifndef CMAKE_RCDEFINE_NO_QUOTED_STRINGS
+// This block can only be compiled if CMAKE_RCDEFINE preprocesses
+// to a double quoted string
+STRINGTABLE
+BEGIN
+  1026 CMAKE_RCDEFINE
+END
+#endif
+
+#else
+#error "resource compiler did not get defines from command line!"
+#endif

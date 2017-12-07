@@ -1,0 +1,5 @@
+^CMake Error at CustomCommandDepfile-ERROR.cmake:1 \(add_custom_command\):
+  add_custom_command Option DEPFILE not supported by [^
+]+
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

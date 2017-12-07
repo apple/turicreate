@@ -1,0 +1,9 @@
+CMake Error at .*/Modules/ExternalData.cmake:[0-9]+ \(message\):
+  Unknown option "Bad/Option" in argument
+
+    DATA{Data.txt,Bad/Option}
+
+Call Stack \(most recent call first\):
+  .*
+  BadOption1.cmake:2 \(ExternalData_Add_Test\)
+  CMakeLists.txt:3 \(include\)

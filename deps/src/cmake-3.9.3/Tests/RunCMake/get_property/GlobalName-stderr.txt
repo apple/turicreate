@@ -1,0 +1,4 @@
+^CMake Error at GlobalName.cmake:1 \(get_property\):
+  get_property given name for GLOBAL scope.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

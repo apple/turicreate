@@ -1,0 +1,7 @@
+^Test project .*/Tests/RunCMake/CTestCommandLine/TestLoad
+    Start 1: TestLoad1
+    Start 2: TestLoad2
+1/2 Test #[1-2]: TestLoad[1-2] ........................   Passed +[0-9.]+ sec
+2/2 Test #[1-2]: TestLoad[1-2] ........................   Passed +[0-9.]+ sec
++
+100% tests passed, 0 tests failed out of 2

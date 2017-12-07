@@ -1,0 +1,5 @@
+CMake Error in CMakeLists.txt:
+  You have set CMAKE_BACKWARDS_COMPATIBILITY to a CMake version less than
+  2.4.  This version of CMake only supports backwards compatibility with
+  CMake 2.4 or later.  For compatibility with older versions please use any
+  CMake 2.8.x release or lower.

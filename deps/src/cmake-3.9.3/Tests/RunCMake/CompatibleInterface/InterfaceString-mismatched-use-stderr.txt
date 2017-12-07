@@ -1,0 +1,4 @@
+CMake Error: Property SOMEPROP on target "user" is
+implied to be empty because it was used to determine the link libraries
+already. The INTERFACE_SOMEPROP property on
+dependency "foo" is in conflict.

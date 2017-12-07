@@ -1,0 +1,36 @@
+CMake Warning \(dev\) at .*/Modules/ExternalProject.cmake:[0-9]+. \(message\):
+  Using NO_DEPENDS for "configure" step might break parallel builds
+Call Stack \(most recent call first\):
+  .*/Modules/ExternalProject.cmake:[0-9]+ \(ExternalProject_Add_StepTargets\)
+  .*/Modules/ExternalProject.cmake:[0-9]+ \(ExternalProject_Add_Step\)
+  .*/Modules/ExternalProject.cmake:[0-9]+ \(_ep_add_configure_command\)
+  NO_DEPENDS.cmake:[0-9]+ \(ExternalProject_Add\)
+  CMakeLists.txt:[0-9]+ \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning \(dev\) at .*/Modules/ExternalProject.cmake:[0-9]+. \(message\):
+  Using NO_DEPENDS for "build" step might break parallel builds
+Call Stack \(most recent call first\):
+  .*/Modules/ExternalProject.cmake:[0-9]+ \(ExternalProject_Add_StepTargets\)
+  .*/Modules/ExternalProject.cmake:[0-9]+ \(ExternalProject_Add_Step\)
+  .*/Modules/ExternalProject.cmake:[0-9]+ \(_ep_add_build_command\)
+  NO_DEPENDS.cmake:[0-9]+ \(ExternalProject_Add\)
+  CMakeLists.txt:[0-9]+ \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning \(dev\) at .*/Modules/ExternalProject.cmake:[0-9]+. \(message\):
+  Using NO_DEPENDS for "install" step might break parallel builds
+Call Stack \(most recent call first\):
+  .*/Modules/ExternalProject.cmake:[0-9]+ \(ExternalProject_Add_StepTargets\)
+  .*/Modules/ExternalProject.cmake:[0-9]+ \(ExternalProject_Add_Step\)
+  .*/Modules/ExternalProject.cmake:[0-9]+ \(_ep_add_install_command\)
+  NO_DEPENDS.cmake:[0-9]+ \(ExternalProject_Add\)
+  CMakeLists.txt:[0-9]+ \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning \(dev\) at .*/Modules/ExternalProject.cmake:[0-9]+. \(message\):
+  Using NO_DEPENDS for "test" step might break parallel builds
+Call Stack \(most recent call first\):
+  NO_DEPENDS.cmake:[0-9]+ \(ExternalProject_Add_StepTargets\)
+  CMakeLists.txt:[0-9]+ \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.

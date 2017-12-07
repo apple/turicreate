@@ -1,0 +1,4 @@
+CMake Error at UuidMissingNameValue.cmake:3 \(string\):
+  string UUID sub-command, NAME requires a value.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

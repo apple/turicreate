@@ -1,0 +1,2 @@
+^mylist was: FILTER_THIS_BIT;DO_NOT_FILTER_THIS;thisisanitem;FILTER_THIS_THING
+mylist is: DO_NOT_FILTER_THIS;thisisanitem$

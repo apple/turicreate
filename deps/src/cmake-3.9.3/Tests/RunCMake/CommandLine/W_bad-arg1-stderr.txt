@@ -1,0 +1,2 @@
+CMake Error: -W must be followed with \[no-\]<name>.
+CMake Error: Problem processing arguments. Aborting.

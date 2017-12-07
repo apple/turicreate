@@ -1,0 +1,4 @@
+CMake Error at CMP0036-OLD.cmake:2 \(build_name\):
+  build_name called with incorrect number of arguments
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

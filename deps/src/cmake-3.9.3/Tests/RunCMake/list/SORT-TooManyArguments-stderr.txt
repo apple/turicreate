@@ -1,0 +1,4 @@
+^CMake Error at SORT-TooManyArguments.cmake:1 \(list\):
+  list sub-command SORT only takes one argument.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

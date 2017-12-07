@@ -1,0 +1,8 @@
+CMake Error at DirInput.cmake:[0-9]+ \(configure_file\):
+  configure_file input location
+
+    .*/Tests/RunCMake/configure_file/.
+
+  is a directory but a file was expected.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

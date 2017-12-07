@@ -1,0 +1,23 @@
+#cmakedefine HAVE_SYS_TYPES_H
+#cmakedefine HAVE_STDINT_H
+#cmakedefine HAVE_STDDEF_H
+
+/* bool */
+#cmakedefine HAVE_SIZEOF_BOOL
+@SIZEOF_BOOL_CODE@
+
+/* struct ns::somestruct::someint */
+#cmakedefine HAVE_SIZEOF_NS_STRUCTMEMBER_INT
+@SIZEOF_NS_STRUCTMEMBER_INT_CODE@
+
+/* struct ns::somestruct::someptr */
+#cmakedefine HAVE_SIZEOF_NS_STRUCTMEMBER_PTR
+@SIZEOF_NS_STRUCTMEMBER_PTR_CODE@
+
+/* struct ns::somestruct::somechar */
+#cmakedefine HAVE_SIZEOF_NS_STRUCTMEMBER_CHAR
+@SIZEOF_NS_STRUCTMEMBER_CHAR_CODE@
+
+/* struct ns::somestruct::somebool */
+#cmakedefine HAVE_SIZEOF_NS_STRUCTMEMBER_BOOL
+@SIZEOF_NS_STRUCTMEMBER_BOOL_CODE@

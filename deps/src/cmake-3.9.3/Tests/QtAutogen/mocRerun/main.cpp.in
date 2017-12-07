@@ -1,0 +1,18 @@
+#include "test1.h"
+
+class Test2 : public QObject
+{
+  Q_OBJECT
+public slots:
+  void onTst1() {}
+};
+
+int main()
+{
+  Test1 test1;
+  Test2 test2;
+
+  return 0;
+}
+
+#include "main.moc"

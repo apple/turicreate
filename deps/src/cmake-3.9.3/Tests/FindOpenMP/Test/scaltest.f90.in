@@ -1,0 +1,21 @@
+program scaltest
+    use iso_c_binding
+    implicit none
+    interface
+        subroutine scalprod(n, x_p, y_p, res) bind(c)
+            use iso_c_binding
+            integer(c_int), value :: n
+            type(c_ptr), value :: x_p, y_p
+            real(c_double) :: res
+        end subroutine scalprod
+    end interface
+    type(c_ptr) :: x_pt, y_pt
+    real(c_double), dimension(5), target :: a = (/ 1, 2, 3, 4, 5 /)
+    real(c_double), dimension(5), target :: b = (/ 2, 3, 4, 5, 6 /)
+    integer(c_int) :: n = size(a)
+    real(c_double) :: res
+    x_pt = c_loc(a)
+    y_pt = c_loc(b)
+    call scalprod(n, x_pt, y_pt, res)
+    print *, res
+end program scaltest

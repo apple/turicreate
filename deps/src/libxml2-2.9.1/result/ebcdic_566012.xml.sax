@@ -1,0 +1,5 @@
+SAX.setDocumentLocator()
+SAX.startDocument()
+SAX.startElement(test, attr='ÄÖÜ')
+SAX.endElement(test)
+SAX.endDocument()

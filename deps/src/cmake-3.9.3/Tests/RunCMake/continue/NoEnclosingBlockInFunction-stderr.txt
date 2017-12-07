@@ -1,0 +1,6 @@
+CMake Error at NoEnclosingBlockInFunction.cmake:2 \(continue\):
+  A CONTINUE command was found outside of a proper FOREACH or WHILE loop
+  scope.
+Call Stack \(most recent call first\):
+  NoEnclosingBlockInFunction.cmake:6 \(foo\)
+  CMakeLists.txt:3 \(include\)

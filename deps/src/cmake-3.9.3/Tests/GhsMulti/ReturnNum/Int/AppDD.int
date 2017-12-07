@@ -1,0 +1,12 @@
+# Input File for the Integrate utility for use with the INTEGRITY real-time
+#  operating system by Green Hills Software.
+# Before editing this file, refer to the Integrate Reference Manual.
+
+Kernel
+    Filename    DynamicDownload
+EndKernel
+
+AddressSpace        App
+  Filename      "App/App.as"
+  Language C
+EndAddressSpace

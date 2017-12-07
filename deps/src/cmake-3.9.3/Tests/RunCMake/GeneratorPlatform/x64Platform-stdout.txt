@@ -1,0 +1,2 @@
+-- CMAKE_GENERATOR_PLATFORM is 'x64' as expected.
+-- CMAKE_VS_PLATFORM_NAME is 'x64' as expected.

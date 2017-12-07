@@ -1,0 +1,5 @@
+^CMake Error at OwnSources.cmake:[0-9]+ \(add_library\):
+  The SOURCES of "A" use a generator expression that depends on the SOURCES
+  themselves.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)$

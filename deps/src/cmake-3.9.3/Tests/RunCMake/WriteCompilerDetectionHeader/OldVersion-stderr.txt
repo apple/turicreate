@@ -1,0 +1,9 @@
+CMake Error at .*Modules/WriteCompilerDetectionHeader.cmake:[0-9]+ \(message\):
+  VERSION compatibility for write_compiler_detection_header is set to 3.0,
+  which is too low.  It must be set to at least 3.1.0.  Either set the
+  VERSION parameter to the write_compiler_detection_header function, or
+  update your minimum required CMake version with the cmake_minimum_required
+  command.
+Call Stack \(most recent call first\):
+  OldVersion.cmake:4 \(write_compiler_detection_header\)
+  CMakeLists.txt:3 \(include\)

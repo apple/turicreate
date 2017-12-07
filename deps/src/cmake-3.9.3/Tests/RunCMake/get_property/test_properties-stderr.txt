@@ -1,0 +1,6 @@
+^get_test_property: --><--
+get_property: --><--
+get_test_property: -->value<--
+get_property: -->value<--
+get_test_property: -->NOTFOUND<--
+get_property: --><--$

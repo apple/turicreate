@@ -1,0 +1,4 @@
+CMake Error at EmptyCondition2.cmake:2 \(file\):
+  file CONDITION of sub-command GENERATE must not be empty if specified.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)

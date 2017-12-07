@@ -1,0 +1,6 @@
+CMake Error in CMakeLists.txt:
+  Target "testTarget" INTERFACE_SOURCES property contains path:
+
+    ".*Tests/RunCMake/IfacePaths_SOURCES/prefix/src/empty.cpp"
+
+  which is prefixed in the source directory.

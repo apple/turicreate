@@ -1,0 +1,32 @@
+-- The following OPTIONAL packages have been found:
+
+ \* Foo, The Foo package, <https://foo.example/>
+
+-- The following OPTIONAL packages have not been found:
+
+ \* Bar
+ \* Baz
+
+-- The following OPTIONAL packages have been found:
+
+ \* Foo, The Foo package, <https://foo.example/>
+
+-- The following OPTIONAL packages have not been found:
+
+ \* Bar, <https://bar.net/>
+ \* Baz, A Baz package
+
+-- Warning: Property DESCRIPTION for package Foo already set to "The Foo package", overriding it with "A Foo package"
+-- Warning: Property URL already set to "https://foo.example/", overriding it with "https://foo.net/"
+-- Warning: Property URL already set to "https://bar.net/", overriding it with "https://bar.example/"
+-- Warning: Property DESCRIPTION for package Baz already set to "A Baz package", overriding it with "The Baz package"
+-- The following OPTIONAL packages have been found:
+
+ \* Foo, A Foo package, <https://foo.net/>
+
+-- The following OPTIONAL packages have not been found:
+
+ \* Bar, The Bar package, <https://bar.example/>
+ \* Baz, The Baz package, <https://baz.example/>
+
+-- Configuring done

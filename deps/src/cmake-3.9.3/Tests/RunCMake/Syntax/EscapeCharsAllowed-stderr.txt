@@ -1,0 +1,12 @@
+^-->semicolon<--
+-->dollar<--
+-->brace<--
+-->bracket<--
+-->newline<--
+-->octothorpe<--
+-->splat<--
+-->caret<--
+-->paren<--
+-->dquote<--
+-->top-levelsemicolon<--
+-->top-level;escaped;semicolon<--$

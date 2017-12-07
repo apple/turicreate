@@ -1,0 +1,94 @@
+
+========================
+Expression: /.
+Object is a Node Set :
+Set contains 1 nodes:
+1   /
+
+========================
+Expression: //.
+Object is a Node Set :
+Set contains 12 nodes:
+1   /
+2  ELEMENT root
+3  ELEMENT foo
+4  TEXT
+    content=txt
+5  COMMENT
+    content=hello
+6  CDATA_SECTION
+    content=data
+7  PI target
+    content=data
+8  ELEMENT bar
+9  TEXT
+    content=txt
+10  COMMENT
+    content=hello
+11  CDATA_SECTION
+    content=data
+12  PI target
+    content=data
+
+========================
+Expression: /root//.
+Object is a Node Set :
+Set contains 11 nodes:
+1  ELEMENT root
+2  ELEMENT foo
+3  TEXT
+    content=txt
+4  COMMENT
+    content=hello
+5  CDATA_SECTION
+    content=data
+6  PI target
+    content=data
+7  ELEMENT bar
+8  TEXT
+    content=txt
+9  COMMENT
+    content=hello
+10  CDATA_SECTION
+    content=data
+11  PI target
+    content=data
+
+========================
+Expression: //.//./././/.
+Object is a Node Set :
+Set contains 12 nodes:
+1   /
+2  ELEMENT root
+3  ELEMENT foo
+4  TEXT
+    content=txt
+5  COMMENT
+    content=hello
+6  CDATA_SECTION
+    content=data
+7  PI target
+    content=data
+8  ELEMENT bar
+9  TEXT
+    content=txt
+10  COMMENT
+    content=hello
+11  CDATA_SECTION
+    content=data
+12  PI target
+    content=data
+
+========================
+Expression: /root//././/bar//.
+Object is a Node Set :
+Set contains 5 nodes:
+1  ELEMENT bar
+2  TEXT
+    content=txt
+3  COMMENT
+    content=hello
+4  CDATA_SECTION
+    content=data
+5  PI target
+    content=data

@@ -1,0 +1,19 @@
+CMake Error at .*/Modules/ExternalData.cmake:[0-9]+ \(message\):
+  ExternalData_SERIES_PARSE is set to
+
+    NotASeriesRegex
+
+  which is not of the form
+
+    \(<number>\)\(<suffix>\)\$
+
+  Fix the regular expression or set variables
+
+    ExternalData_SERIES_PARSE_PREFIX = <prefix> regex group number, if any
+    ExternalData_SERIES_PARSE_NUMBER = <number> regex group number
+    ExternalData_SERIES_PARSE_SUFFIX = <suffix> regex group number
+
+Call Stack \(most recent call first\):
+  .*
+  BadSeries1.cmake:3 \(ExternalData_Expand_Arguments\)
+  CMakeLists.txt:3 \(include\)

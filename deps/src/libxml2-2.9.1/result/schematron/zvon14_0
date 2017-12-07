@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<AAA>
+     <BBB>
+          <CCC/>
+     </BBB>
+     <CCC/>
+     <DDD>
+          <CCC/>
+          <EEE>
+               <CCC/>
+          </EEE>
+     </DDD>
+</AAA>

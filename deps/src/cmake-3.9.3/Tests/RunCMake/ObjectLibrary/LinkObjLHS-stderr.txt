@@ -1,0 +1,4 @@
+CMake Error at LinkObjLHS.cmake:2 \(target_link_libraries\):
+  Object library target "AnObjLib" may not link to anything.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

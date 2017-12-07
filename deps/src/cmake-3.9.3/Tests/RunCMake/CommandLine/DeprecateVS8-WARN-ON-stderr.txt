@@ -1,0 +1,5 @@
+^CMake Warning:
+  The "Visual Studio 8 2005" generator is deprecated and will be removed in a
+  future version of CMake.
+
+  Add CMAKE_WARN_VS8=OFF to the cache to disable this warning.$

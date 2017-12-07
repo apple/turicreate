@@ -1,0 +1,86 @@
+             libxml2 on VxWorks 6.4+
+
+Here are my instructions for building on VxWorks.... I am very ashamed of
+how I did this because it is a complete hack, but it works great, so I
+can't complain too much.
+
+General Information
+
+1. The only way to build for VxWorks is to cross compile from a windows or
+linux system.  We use a RedHat 5.1 workstation system as our build
+environment.
+
+2. VxWorks 6.X has two main types of executable, DKMs (dynamic kernel
+modules), and RTPs (real-time processes).  Kernel modules are the bread
+and butter of VxWorks, but they look nothing like processes/threads in
+normal UNIX/Windows systems.  RTPs are more like processes that have
+memory protection, threads, etc.  VxWorks 6.X also introduces some level
+of POSIX conformance to their environment.  The POSIX conformance was the
+key for us to be able to port libxml2.  We support accessing libxml2 from
+both DKMs and RTPs.
+
+3. There are 2 compilers for VxWorks, the WindRiver compiler, and a port
+of the GNU toolchain, we have only tested and built with the GNU
+toolchain.
+
+How To Build
+
+1. Run the configure on your native linux system (this is the cheesy
+hack).  Since the VxWorks GNU toolchain is very close in version to the
+one in red hat, it generates a good config.h file.  We configured libxml2
+with the following to keep the size down, (but we have done basic testing
+with everything compiled in).
+
+./configure --with-minimum --with-reader --with-writer --with-regexps
+--with-threads --with-thread-alloc
+
+2. Rename the libxml2 folder to "src".  This step is required for our
+replacement makefile to work.
+
+3. Run the replacement makefile.  I wrote a new makefile that sets all the
+proper vxworks defines and uses the correct compilers.  The two defines on
+the make command line are to tell it which VxWorks Target (SH3.2 little
+endian), and the executable type.  We have tested this code on PENTIUM2gnu
+and SH32gnule.
+
+This makefile creates a shared library that runs on VxWorks: (libxml2.so)
+make -f Makefile.vxworks clean all VXCPU=SH32gnule VXTYPE=RTP
+
+This makefile creates a kernel module that runs on VxWorks: (xml2.out)
+make -f Makefile.vxworks clean all VXCPU=SH32gnule VXTYPE=DKM
+
+Important Notes
+
+1. There are several ways that this process could be improved, but at the
+end of the day, we make products, not port libraries, so we did a meets
+minimum for our needs.
+
+2. VxWorks is the devil, give me embedded linux every day.
+
+3. No matter what I tried, I couldn't get the configure to pick up the
+VxWorks toolchain, and in my investigation, it has something to do with
+automake/autoconf, not any individual package.  VxWorks doesn't play by
+the normal rules for building toolchains.
+
+4. The PIC flag in VxWorks (especially for SH processors) is very
+important, and very troublesome.  On linux, you can liberally use the PIC
+flag when compiling and the compiler/linker will ignore it as needed, on
+VxWorks if must always be on for shared libraries, and always be off for
+static libraries and executables.
+
+5. If anyone wants to work on a better way to do the build of libxml2 for
+VxWorks, I'm happy to help as much as I can, but I'm not looking to
+support it myself.
+
+Attached Files
+
+1. To use my Makefile for vxworks, you should enter the vxworks
+environment (/opt/windriver/wrenv.linux -p vxworks-6.4 for me).
+2. Run: build.sh libxml2-2.6.32 SH32gnule RTP (where you have
+libxml2-2.6.32.tar.gz and the Makefile in the same directory as the script
+file).
+
+Thanks,
+
+Jim Wert Jr.
+JWert@ILSTechnology.com

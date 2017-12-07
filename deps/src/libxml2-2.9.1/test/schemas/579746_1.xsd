@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <xsd:element name= "contact" type="ContactType"/>
+   <xsd:complexType name="ContactType">
+      <xsd:choice minOccurs="1" maxOccurs="2">
+         <xsd:element name="customer" type="xsd:string" />
+         <xsd:element name="comment" type="xsd:string"  minOccurs="0"/>
+      </xsd:choice>
+   </xsd:complexType>
+</xsd:schema>

@@ -1,0 +1,43 @@
+<HTML>
+<HEAD>
+<title>libjson Array Example</title>
+<script type="text/javascript" src="../Library Interface/scripts/shCore.js"></script>
+<script type="text/javascript" src="../Library Interface/scripts/shBrushCpp.js"></script>
+	<link type="text/css" rel="stylesheet" href="../Library Interface/styles/shCoreDefault.css"/>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+
+</HEAD>
+<BODY>
+<h1>libjson Array Example</h1>
+<p>This quick example will show you how to add an array to your JSON tree.</p>
+<p><span id="more-120"></span></p>
+<pre class="brush:cpp;wrap-lines:true">JSONNode n(JSON_NODE);
+n.push_back(JSONNode(&quot;RootA&quot;, &quot;Hello World&quot;));
+JSONNode c(JSON_ARRAY);
+c.set_name(&quot;ArrayOfNumbers&quot;);
+c.push_back(JSONNode(&quot;&quot;, 16));
+c.push_back(JSONNode(&quot;&quot;, 42));
+c.push_back(JSONNode(&quot;&quot;, 128));
+n.push_back(c);
+std::string jc = n.write_formatted();
+std::cout &lt;&lt; jc &lt;&lt; std::endl;</pre>
+
+<p>The result will look like this:</p>
+<pre class="brush:cpp;wrap-lines:true">{
+    &quot;RootA&quot; : &quot;Hello World&quot;,
+    &quot;ArrayOfNumbers&quot; : [
+        16,
+        42,
+        128
+    ]
+}</pre>
+<p>The first line generates a new root node for us to work with. This node will contain the entire JSON structure we want to create. Because this is created on the stack, there is no need to clean it up, it will do that when it goes out of scope.</p>
+
+<p>Line 2 creates a new JSON_STRING node, i.e. a node that will have a string value, and attaches the new node to the end of our original root node <em>n</em>.</p>
+<p>Line 3 creates a new child node and this time we&#39;re declaring a type of JSON_ARRAY that states the node will contain a number of nameless children nodes. While it&#39;s possible to have different data types in the same array, you should keep them all the same and treat it as if it were a typed array. Note that you can have an array of JSON_NODE objects, so you&#39;re not limited to simple data types, just be aware that the array will ignore any node names if you have them set.</p>
+<p>Lines 5 through 7 add values to the array, in this case they&#39;re all integer values. Because a JSON array cannot contain named values, the name parameter is set to &quot;&quot;.</p>
+
+<p>Line 8 appends the array to our root node.</p>
+<p>9 and 10 retrieve the formatted JSON string and dump it to stdout.</p>
+<BODY>
+</HTML>

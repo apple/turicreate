@@ -1,0 +1,56 @@
+^CMake Warning \(dev\) at CMP0053-NUL.cmake:1 \(set\):
+  Policy CMP0053 is not set: Simplify variable reference and escape sequence
+  evaluation.  Run "cmake --help-policy CMP0053" for policy details.  Use the
+  cmake_policy command to set the policy and suppress this warning.
+
+  For input:
+
+    '\\0'
+
+  the old evaluation rules produce:
+
+    ''
+
+  but the new evaluation rules produce an error:
+
+    Syntax error in cmake code at
+      .*/Tests/RunCMake/Syntax/CMP0053-NUL.cmake:1
+    when parsing string
+      \\0
+    Invalid character escape '\\0'.
+
+  Using the old result for compatibility since the policy is not set.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning \(dev\) at CMP0053-NUL.cmake:2 \(set\):
+  Policy CMP0053 is not set: Simplify variable reference and escape sequence
+  evaluation.  Run "cmake --help-policy CMP0053" for policy details.  Use the
+  cmake_policy command to set the policy and suppress this warning.
+
+  For input:
+
+    '\\0'
+
+  the old evaluation rules produce:
+
+    ''
+
+  but the new evaluation rules produce an error:
+
+    Syntax error in cmake code at
+      .*/Tests/RunCMake/Syntax/CMP0053-NUL.cmake:2
+    when parsing string
+      \\0
+    Invalid character escape '\\0'.
+
+  Using the old result for compatibility since the policy is not set.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+--><--
+--><--
+--><--
+--><--$

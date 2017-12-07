@@ -1,0 +1,14 @@
+<ietf:c14n11XmlBaseDoc1 xmlns:ietf="http://www.ietf.org" xmlns:w3c="http://www.w3.org" xml:base="http://xmlbase.example.org/xmlbase0/">
+    <ietf:e1 xml:base="/xmlbase1/">
+      <ietf:e11 xml:base="/xmlbase11/">
+        <ietf:e111 xml:base="/xmlbase111/"></ietf:e111>
+      </ietf:e11>
+      <ietf:e12 at="2">
+        <ietf:e121 xml:base="/xmlbase121/"></ietf:e121>
+      </ietf:e12>
+    </ietf:e1>
+
+    <ietf:e3>
+      <ietf:e31 at="3"></ietf:e31>
+    </ietf:e3>
+</ietf:c14n11XmlBaseDoc1>

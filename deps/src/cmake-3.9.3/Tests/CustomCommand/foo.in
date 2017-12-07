@@ -1,0 +1,32 @@
+#include "doc1.h"
+#include "foo.h"
+
+#include <stdio.h>
+
+int generated();
+int wrapped();
+
+#include "subdir/subdir.h"
+#ifndef SUBDIR_DEF
+# error SUBDIR_DEF not defined
+#endif
+
+int main ()
+{
+  if (generated()*wrapped()*doc() == 3*5*7)
+    {
+    FILE* fin = fopen("not_included.h", "r");
+    if(fin)
+      {
+      fclose(fin);
+      return 0;
+      }
+    else
+      {
+      return -2;
+      }
+    }
+
+  return -1;
+}
+

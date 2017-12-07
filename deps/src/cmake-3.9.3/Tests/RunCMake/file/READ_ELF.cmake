@@ -1,0 +1,2 @@
+file(READ_ELF XXX)
+file(READ_ELF XXX RPATH YYY)

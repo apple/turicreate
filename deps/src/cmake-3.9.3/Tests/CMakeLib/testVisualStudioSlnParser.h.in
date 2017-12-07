@@ -1,0 +1,7 @@
+#ifndef testVisualStudioSlnParser_h
+#define testVisualStudioSlnParser_h
+
+#define SOURCE_DIR "@CMAKE_CURRENT_SOURCE_DIR@"
+#define SLN_EXTENSION "sln-file"
+
+#endif

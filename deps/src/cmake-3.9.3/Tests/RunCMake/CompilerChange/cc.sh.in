@@ -1,0 +1,2 @@
+#!/bin/sh
+exec "@CMAKE_C_COMPILER@" "$@"

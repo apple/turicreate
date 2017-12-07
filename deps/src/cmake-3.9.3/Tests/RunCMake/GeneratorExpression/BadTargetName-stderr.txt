@@ -1,0 +1,8 @@
+CMake Error at BadTargetName.cmake:1 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<TARGET_NAME:\$<1:tgt>>
+
+  \$<TARGET_NAME> expression requires literal input.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

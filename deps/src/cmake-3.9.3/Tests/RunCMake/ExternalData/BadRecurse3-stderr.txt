@@ -1,0 +1,9 @@
+CMake Error at .*/Modules/ExternalData.cmake:[0-9]+ \(message\):
+  Unknown option "RECURSE:x" in argument
+
+    DATA{Directory1/,RECURSE:x,Data.dat}
+
+Call Stack \(most recent call first\):
+  .*
+  BadRecurse3.cmake:2 \(ExternalData_Expand_Arguments\)
+  CMakeLists.txt:3 \(include\)

@@ -1,0 +1,15 @@
+Test project .*/Tests/RunCMake/ctest_fixtures/exclude_cleanup_bar-build
+    Start 3: setupFoo
+1/5 Test #3: setupFoo +\.+ +Passed +[0-9.]+ sec
+    Start 2: setupBoth
+2/5 Test #2: setupBoth +\.+ +Passed +[0-9.]+ sec
+    Start 1: one
+3/5 Test #1: one +\.+ +Passed +[0-9.]+ sec
+    Start 5: cleanupFoo
+4/5 Test #5: cleanupFoo +\.+ +Passed +[0-9.]+ sec
+    Start 6: two
+5/5 Test #6: two +\.+ +Passed +[0-9.]+ sec
++
+100% tests passed, 0 tests failed out of 5
++
+Total Test time \(real\) = +[0-9.]+ sec$

@@ -1,0 +1,6 @@
+CMake Error at LinkObjRHS2.cmake:1 \(add_library\):
+  Target "A" links to OBJECT library "AnObjLib" but this is not allowed.  One
+  may link only to STATIC or SHARED libraries, or to executables with the
+  ENABLE_EXPORTS property set.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

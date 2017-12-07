@@ -1,0 +1,168 @@
+
+
+
+
+Internet Engineering Task Force                          M. Sustrik, Ed.
+Internet-Draft
+Intended status: Informational                                G. D'Amore
+Expires: August 7, 2015
+                                                        February 3, 2015
+
+
+              WebSocket Mapping for Scalability Protocols
+                        sp-websocket-mapping-01
+
+Abstract
+
+   This document defines the WebSocket mapping for scalability
+   protocols.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at http://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on August 7, 2015.
+
+Copyright Notice
+
+   Copyright (c) 2015 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (http://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.
+
+
+
+
+
+Sustrik & D'Amore        Expires August 7, 2015                 [Page 1]
+
+Internet-Draft          WebSocket mapping for SPs          February 2015
+
+
+1.  Underlying protocol
+
+   This mapping should be layered on the top of WebSocket protocol as
+   defined in RFC 6455.
+
+2.  Connection initiation
+
+   Standard WebSocket handshake is done following RFC 6455.
+
+   The Sec-WebSocket-Protocol field MUST be set in the client's HTTP
+   request to match the protocol used by the WebSocket server.
+   Accordingly, the following values should be used.
+
+   pair.sp.nanomsg.org (NN_PAIR client and server)
+
+   req.sp.nanomsg.org (NN_REQ server, NN_REP client)
+
+   rep.sp.nanomsg.org (NN_REP server, NN_REQ client)
+
+   pub.sp.nanomsg.org (NN_PUB server, NN_SUB client)
+
+   sub.sp.nanomsg.org (NN_SUB server, NN_PUB client)
+
+   surveyor.sp.nanomsg.org (NN_SURVEYOR server, NN_RESPONDENT client)
+
+   respondent.sp.nanomsg.org (NN_RESPONDENT server, NN_SURVEYOR client)
+
+   push.sp.nanomsg.org (NN_PUSH server, NN_PULL client)
+
+   pull.sp.nanomsg.org (NN_PULL server, NN_PUSH client)
+
+   bus.sp.nanomsg.org (NN_BUS client and server)
+
+   If the server supports the requested SP protocol as indicated by the
+   Sec-WebSocket-Protocol header, then it MUST respond with the same
+   Sec-WebSocket-Protocol value sent by the client.
+
+   If the server does support the requested SP protocol, then it MUST
+   fail the WebSocket connection using the Close code of 1002, as
+   specified in RFC 6455.
+
+   For example, an NN_REQ client socket, connecting to an NN_REP server,
+   will send the value rep.sp.nanomsg.org in the Sec-WebSocket-Protocol
+   field.  The NN_REP socket on the server would then include the same
+   rep.sp.nanomsg.org in its response.
+
+
+
+
+
+
+Sustrik & D'Amore        Expires August 7, 2015                 [Page 2]
+
+Internet-Draft          WebSocket mapping for SPs          February 2015
+
+
+3.  Message
+
+   SP message maps directly to WebSocket message.  The message can be
+   fragmented as needed.  Frame boundaries are ignored by the SP layer.
+
+   When possible, binary frames SHOULD be used in preference to text
+   frames.  If text frames are in use, then SP message payloads MUST be
+   comprised of legal UTF-8 text only.
+
+4.  IANA Considerations
+
+   This memo includes no request to IANA.
+
+5.  Security Considerations
+
+   The mapping isn't intended to provide any additional security in
+   addition to what WebSocket does.  DoS concerns are addressed within
+   the specification.
+
+Authors' Addresses
+
+   Martin Sustrik (editor)
+
+   Email: sustrik@250bpm.com
+
+
+   Garrett D'Amore
+
+   Email: garrett@damore.org
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Sustrik & D'Amore        Expires August 7, 2015                 [Page 3]

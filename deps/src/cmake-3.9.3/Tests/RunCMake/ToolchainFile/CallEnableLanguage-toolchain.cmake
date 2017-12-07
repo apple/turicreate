@@ -1,0 +1,1 @@
+enable_language(NONE)

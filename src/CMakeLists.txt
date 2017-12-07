@@ -1,0 +1,36 @@
+project(Turi)
+
+subdirs(
+  toolkits
+  cppipc
+  dot_graph_printer
+  exceptions
+  external
+  fault
+  numerics
+  fileio
+  flexible_type
+  generics
+  globals
+  image
+  lambda
+  lazy_eval
+  logger
+  ml_data
+  nanosockets
+  nnvm
+  optimization
+  platform
+  random
+  serialization
+  sframe
+  sframe_query_engine
+  sgraph
+  sketches
+  startup_teardown
+  table_printer
+  unity
+  util
+  visualization
+  )
+

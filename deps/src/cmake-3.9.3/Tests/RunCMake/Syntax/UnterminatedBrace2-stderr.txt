@@ -1,0 +1,12 @@
+CMake Error at UnterminatedBrace2.cmake:4 \(set\):
+  Syntax error in cmake code at
+
+    .*/Tests/RunCMake/Syntax/UnterminatedBrace2.cmake:4
+
+  when parsing string
+
+    \${
+
+  There is an unterminated variable reference.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

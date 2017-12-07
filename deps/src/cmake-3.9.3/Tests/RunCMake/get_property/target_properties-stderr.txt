@@ -1,0 +1,10 @@
+^get_target_property: --><--
+get_property: --><--
+get_target_property: -->value<--
+get_property: -->value<--
+get_target_property: -->gtp_val-NOTFOUND<--
+get_property: --><--
+get_target_property: -->(.*)/Tests/RunCMake/get_property<--
+get_property: -->(.*)/Tests/RunCMake/get_property<--
+get_target_property: -->(.*)/Tests/RunCMake/get_property/target_properties-build<--
+get_property: -->(.*)/Tests/RunCMake/get_property/target_properties-build<--$

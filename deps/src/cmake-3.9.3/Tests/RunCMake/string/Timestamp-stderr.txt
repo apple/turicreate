@@ -1,0 +1,1 @@
+RESULT=2005-08-07 23:19:49 Sun Aug 05 day=219 wd=0 week=32 %I=11 epoch=1123456789

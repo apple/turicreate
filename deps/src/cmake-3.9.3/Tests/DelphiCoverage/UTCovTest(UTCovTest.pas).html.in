@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <title>Delphi CodeCoverage Coverage Report</title>
+<style type="text/css">
+table {border-spacing:0; border-collapse:collapse;}
+table, td, th {border: 1px solid black;}
+td, th {background: white; margin: 0; padding: 2px 0.5em 2px 0.5em}
+td {border-width: 0 1px 0 0;}
+th {border-width: 1px 1px 1px 0;}
+p, h1, h2, h3, th {font-family: verdana,arial,sans-serif; font-size: 10pt;}
+td {font-family: courier,monospace; font-size: 10pt;}
+th {background: #CCCCCC;}
+table.o tr td:nth-child(1) {font-weight: bold;}
+table.o tr td:nth-child(2) {text-align: right;}
+table.o tr td {border-width: 1px;}
+table.s {width: 100%;}
+table.s tr td {padding: 0 0.25em 0 0.25em;}
+table.s tr td:first-child {text-align: right; font-weight: bold;}
+table.s tr.notcovered td {background: #DDDDFF;}
+table.s tr.nocodegen td {background: #FFFFEE;}
+table.s tr.covered td {background: #CCFFCC;}
+table.s tr.covered td:first-child {color: green;}
+table.s {border-width: 1px 0 1px 1px;}
+table.sum tr td {border-width: 1px;}
+table.sum tr th {text-align:right;}
+table.sum tr th:first-child {text-align:center;}
+table.sum tr td {text-align:right;}
+table.sum tr td:first-child {text-align:left;}
+</style>
+</head>
+<body>
+<p>Coverage report for <strong>UTCovTest (C:\Users\joe.snyder\Work\OSEHRA\VistA\Packages\Order Entry Results Reporting\CPRS\Testing\Tests\UTCovTest.pas)</strong>.</p>
+<p> Generated at 10/3/2014 12:24:11 PM by <a href="http://code.google.com/p/delphi-code-coverage/" title="Code Coverage for Delphi 5+">DelphiCodeCoverage</a> - an open source tool for Delphi Code Coverage.</p>
+<p> Statistics for C:\Users\joe.snyder\Work\OSEHRA\VistA\Packages\Order Entry Results Reporting\CPRS\Testing\Tests\UTCovTest.pas </p>
+<table  class="o"><tr><td>Number of lines covered</td><td>19</td></tr><tr><td>Number of lines with code gen</td><td>19</td></tr><tr><td>Line coverage</td><td>100%</td></tr></table>
+<br /><br />
+<table  class="s">
+<tr class="nocodegen"><td>1</td><td><pre style="display:inline;">//---------------------------------------------------------------------------</pre></td></tr>
+<tr class="nocodegen"><td>2</td><td><pre style="display:inline;">// Copyright 2012 The Open Source Electronic Health Record Agent</pre></td></tr>
+<tr class="nocodegen"><td>3</td><td><pre style="display:inline;">//</pre></td></tr>
+<tr class="nocodegen"><td>4</td><td><pre style="display:inline;">// Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</pre></td></tr>
+<tr class="nocodegen"><td>5</td><td><pre style="display:inline;">// you may not use this file except in compliance with the License.</pre></td></tr>
+<tr class="nocodegen"><td>6</td><td><pre style="display:inline;">// You may obtain a copy of the License at</pre></td></tr>
+<tr class="nocodegen"><td>7</td><td><pre style="display:inline;">//</pre></td></tr>
+<tr class="nocodegen"><td>8</td><td><pre style="display:inline;">// &nbsp; &nbsp; http://www.apache.org/licenses/LICENSE-2.0</pre></td></tr>
+<tr class="nocodegen"><td>9</td><td><pre style="display:inline;">//</pre></td></tr>
+<tr class="nocodegen"><td>10</td><td><pre style="display:inline;">// Unless required by applicable law or agreed to in writing, software</pre></td></tr>
+<tr class="nocodegen"><td>11</td><td><pre style="display:inline;">// distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</pre></td></tr>
+<tr class="nocodegen"><td>12</td><td><pre style="display:inline;">// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</pre></td></tr>
+<tr class="nocodegen"><td>13</td><td><pre style="display:inline;">// See the License for the specific language governing permissions and</pre></td></tr>
+<tr class="nocodegen"><td>14</td><td><pre style="display:inline;">// limitations under the License.</pre></td></tr>
+<tr class="nocodegen"><td>15</td><td><pre style="display:inline;">//---------------------------------------------------------------------------</pre></td></tr>
+<tr class="nocodegen"><td>16</td><td><pre style="display:inline;">unit UTCovTest;</pre></td></tr>
+<tr class="nocodegen"><td>17</td><td><pre style="display:inline;">interface</pre></td></tr>
+<tr class="nocodegen"><td>18</td><td><pre style="display:inline;">uses UnitTest, TestFrameWork,SysUtils,Windows;</pre></td></tr>
+<tr class="nocodegen"><td>19</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>20</td><td><pre style="display:inline;">implementation</pre></td></tr>
+<tr class="nocodegen"><td>21</td><td><pre style="display:inline;">type</pre></td></tr>
+<tr class="nocodegen"><td>22</td><td><pre style="display:inline;">UTCovTestTests=class(TTestCase)</pre></td></tr>
+<tr class="nocodegen"><td>23</td><td><pre style="display:inline;"> &nbsp;public</pre></td></tr>
+<tr class="nocodegen"><td>24</td><td><pre style="display:inline;"> &nbsp;procedure SetUp; override;</pre></td></tr>
+<tr class="nocodegen"><td>25</td><td><pre style="display:inline;"> &nbsp;procedure TearDown; override;</pre></td></tr>
+<tr class="nocodegen"><td>26</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>27</td><td><pre style="display:inline;"> &nbsp;published</pre></td></tr>
+<tr class="nocodegen"><td>28</td><td><pre style="display:inline;"> &nbsp; &nbsp;procedure TestCov1;</pre></td></tr>
+<tr class="nocodegen"><td>29</td><td><pre style="display:inline;"> &nbsp; &nbsp;procedure TestCov2;</pre></td></tr>
+<tr class="nocodegen"><td>30</td><td><pre style="display:inline;"> &nbsp; &nbsp;procedure TestCov3;</pre></td></tr>
+<tr class="nocodegen"><td>31</td><td><pre style="display:inline;"> &nbsp;end;</pre></td></tr>
+<tr class="nocodegen"><td>32</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>33</td><td><pre style="display:inline;">procedure NotRun;</pre></td></tr>
+<tr class="nocodegen"><td>34</td><td><pre style="display:inline;">begin</pre></td></tr>
+<tr class="nocodegen"><td>35</td><td><pre style="display:inline;"> &nbsp; &nbsp;WriteLn(&apos;This line will never run&apos;);</pre></td></tr>
+<tr class="nocodegen"><td>36</td><td><pre style="display:inline;">end;</pre></td></tr>
+<tr class="nocodegen"><td>37</td><td><pre style="display:inline;">procedure UTCovTestTests.SetUp;</pre></td></tr>
+<tr class="nocodegen"><td>38</td><td><pre style="display:inline;">begin</pre></td></tr>
+<tr class="covered"><td>39</td><td><pre style="display:inline;">end;</pre></td></tr>
+<tr class="nocodegen"><td>40</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>41</td><td><pre style="display:inline;">procedure UTCovTestTests.TearDown;</pre></td></tr>
+<tr class="nocodegen"><td>42</td><td><pre style="display:inline;">begin</pre></td></tr>
+<tr class="covered"><td>43</td><td><pre style="display:inline;">end;</pre></td></tr>
+<tr class="nocodegen"><td>44</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>45</td><td><pre style="display:inline;">procedure UTCovTestTests.TestCov1;</pre></td></tr>
+<tr class="covered"><td>46</td><td><pre style="display:inline;">begin</pre></td></tr>
+<tr class="nocodegen"><td>47</td><td><pre style="display:inline;"> &nbsp;{</pre></td></tr>
+<tr class="nocodegen"><td>48</td><td><pre style="display:inline;"> &nbsp;Block comment lines</pre></td></tr>
+<tr class="nocodegen"><td>49</td><td><pre style="display:inline;"> &nbsp;}</pre></td></tr>
+<tr class="covered"><td>50</td><td><pre style="display:inline;"> &nbsp;CheckEquals(1,2-1);</pre></td></tr>
+<tr class="covered"><td>51</td><td><pre style="display:inline;">end;</pre></td></tr>
+<tr class="nocodegen"><td>52</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>53</td><td><pre style="display:inline;">procedure UTCovTestTests.TestCov2;</pre></td></tr>
+<tr class="nocodegen"><td>54</td><td><pre style="display:inline;">var</pre></td></tr>
+<tr class="nocodegen"><td>55</td><td><pre style="display:inline;"> &nbsp;i:DWORD;</pre></td></tr>
+<tr class="covered"><td>56</td><td><pre style="display:inline;">begin</pre></td></tr>
+<tr class="covered"><td>57</td><td><pre style="display:inline;"> &nbsp;for i := 0 to 1 do</pre></td></tr>
+<tr class="covered"><td>58</td><td><pre style="display:inline;"> &nbsp; &nbsp;WriteLn( IntToStr(i));</pre></td></tr>
+<tr class="nocodegen"><td>59</td><td><pre style="display:inline;"> &nbsp;// Comment</pre></td></tr>
+<tr class="covered"><td>60</td><td><pre style="display:inline;"> &nbsp;CheckEquals(i,2);</pre></td></tr>
+<tr class="covered"><td>61</td><td><pre style="display:inline;">end;</pre></td></tr>
+<tr class="nocodegen"><td>62</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="nocodegen"><td>63</td><td><pre style="display:inline;">procedure UTCovTestTests.TestCov3;</pre></td></tr>
+<tr class="nocodegen"><td>64</td><td><pre style="display:inline;">var</pre></td></tr>
+<tr class="nocodegen"><td>65</td><td><pre style="display:inline;"> i : DWORD;</pre></td></tr>
+<tr class="covered"><td>66</td><td><pre style="display:inline;">begin</pre></td></tr>
+<tr class="covered"><td>67</td><td><pre style="display:inline;"> &nbsp;i := 0;</pre></td></tr>
+<tr class="covered"><td>68</td><td><pre style="display:inline;"> &nbsp;while i &lt; 5 do</pre></td></tr>
+<tr class="covered"><td>69</td><td><pre style="display:inline;"> &nbsp; i := i+1;</pre></td></tr>
+<tr class="covered"><td>70</td><td><pre style="display:inline;"> &nbsp;CheckEquals(i,5);</pre></td></tr>
+<tr class="covered"><td>71</td><td><pre style="display:inline;">end;</pre></td></tr>
+<tr class="nocodegen"><td>72</td><td><pre style="display:inline;"></pre></td></tr>
+<tr class="covered"><td>73</td><td><pre style="display:inline;">begin</pre></td></tr>
+<tr class="covered"><td>74</td><td><pre style="display:inline;"> &nbsp;UnitTest.addSuite(UTCovTestTests.Suite);</pre></td></tr>
+<tr class="covered"><td>75</td><td><pre style="display:inline;">end.</pre></td></tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,8 @@
+CMake Error at BadInvalidName2.cmake:7 \(include_directories\):
+  Error evaluating generator expression:
+
+    \$<TARGET_PROPERTY:Invali/dTarget,Invali/dProperty>
+
+  Target name and property name not supported.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:8 \(include\)$

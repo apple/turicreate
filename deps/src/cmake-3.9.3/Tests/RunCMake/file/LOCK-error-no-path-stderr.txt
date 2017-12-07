@@ -1,0 +1,4 @@
+CMake Error at LOCK-error-no-path.cmake:[0-9]+ \(file\):
+  file must be called with at least two arguments.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)

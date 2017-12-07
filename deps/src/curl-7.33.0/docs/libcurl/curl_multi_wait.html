@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+ "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<title>curl_multi_wait man page</title>
+<meta name="generator" content="roffit">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">curl_multi_wait - polls on all easy handles in a multi handle <a name="SYNOPSIS"></a><h2 class="nroffsh">SYNOPSIS</h2>
+<p class="level0"><pre>
+<p class="level0">#include &lt;curl/curl.h&gt;
+ <p class="level0">CURLMcode curl_multi_wait(CURLM *multi_handle,
+ &nbsp;                         struct curl_waitfd extra_fds[],
+ &nbsp;                         unsigned int extra_nfds,
+ &nbsp;                         int timeout_ms,
+ &nbsp;                         int *numfds);
+ <p class="level0"></pre>
+<a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0">This function polls on all file descriptors used by the curl easy handles contained in the given multi handle set.  It will block until activity is detected on at least one of the handles or <span Class="emphasis">timeout_ms</span> has passed. Alternatively, if the multi handle has a pending internal timeout that has a shorter expiry time than <span Class="emphasis">timeout_ms</span>, that shorter time will be used instead to make sure timeout accuracy is reasonably kept. 
+<p class="level0">The calling application may pass additional curl_waitfd structures which are similar to <span Class="emphasis">poll(2)</span>'s pollfd structure to be waited on in the same call. 
+<p class="level0">On completion, if <span Class="emphasis">numfds</span> is supplied, it will be populated with the total number of file descriptors on which interesting events occured. This number can include both libcurl internal descriptors as well as descriptors provided in <span Class="emphasis">extra_fds</span>. 
+<p class="level0">If no extra file descriptors are provided and libcurl has no file descriptor to offer to wait for, this function will return immediately. 
+<p class="level0">This function is encouraged to be used instead of select(3) when using the multi interface to allow applications to easier circumvent the common problem with 1024 maximum file descriptors. <a name="curlwaitfd"></a><h2 class="nroffsh">curl_waitfd</h2>
+<p class="level0"><pre>
+<p class="level0">struct curl_waitfd {
+ &nbsp; curl_socket_t fd;
+ &nbsp; short events;
+ &nbsp; short revents;
+ };
+ </pre>
+
+<p class="level0">
+<p class="level0"><a name="CURLWAITPOLLIN"></a><span class="nroffip">CURL_WAIT_POLLIN</span> 
+<p class="level1">Bit flag to curl_waitfd.events indicating the socket should poll on read events such as new data received. 
+<p class="level0"><a name="CURLWAITPOLLPRI"></a><span class="nroffip">CURL_WAIT_POLLPRI</span> 
+<p class="level1">Bit flag to curl_waitfd.events indicating the socket should poll on high priority read events such as out of band data. 
+<p class="level0"><a name="CURLWAITPOLLOUT"></a><span class="nroffip">CURL_WAIT_POLLOUT</span> 
+<p class="level1">Bit flag to curl_waitfd.events indicating the socket should poll on write events such as the socket being clear to write without blocking. <a name="RETURN"></a><h2 class="nroffsh">RETURN VALUE</h2>
+<p class="level0">CURLMcode type, general libcurl multi interface error code. See <span Class="emphasis">libcurl-errors(3)</span> <a name="AVAILABILITY"></a><h2 class="nroffsh">AVAILABILITY</h2>
+<p class="level0">This function was added in libcurl 7.28.0. <a name="SEE"></a><h2 class="nroffsh">SEE ALSO</h2>
+<p class="level0"><a class="manpage" href="./curl_multi_fdset.html">curl_multi_fdset (3)</a> <a class="manpage" href="./curl_multi_perform.html">  curl_multi_perform (3)</a> <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>

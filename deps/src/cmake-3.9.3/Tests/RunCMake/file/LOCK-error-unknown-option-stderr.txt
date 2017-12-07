@@ -1,0 +1,6 @@
+CMake Error at LOCK-error-unknown-option\.cmake:[0-9]+ \(file\):
+  expected DIRECTORY, RELEASE, GUARD, RESULT_VARIABLE or TIMEOUT
+
+  but got: "UNKNOWN"\.
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:[0-9]* \(include\)

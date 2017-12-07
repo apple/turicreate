@@ -1,0 +1,3 @@
+Pattern: Test count
+/XXX line 1: Some AAA are missing
+./test/schematron/zvon8_2.xml fails to validate

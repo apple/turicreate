@@ -1,0 +1,5 @@
+make_boost_test(space_saving_test.cxx REQUIRES sketches random flexible_type)
+make_boost_test(space_saving_consistency_test.cxx REQUIRES sketches random flexible_type)
+make_boost_test(hyperloglog_test.cxx REQUIRES sketches random)
+make_boost_test(quantile_test.cxx REQUIRES sketches random)
+make_boost_test(count_sketches_test.cxx REQUIRES sketches random timer)

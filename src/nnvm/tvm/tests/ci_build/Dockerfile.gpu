@@ -1,0 +1,52 @@
+FROM nvidia/cuda:8.0-cudnn7-devel
+
+# Base scripts
+RUN apt-get update --fix-missing
+
+COPY install/ubuntu_install_core.sh /install/ubuntu_install_core.sh
+RUN bash /install/ubuntu_install_core.sh
+
+COPY install/ubuntu_install_python.sh /install/ubuntu_install_python.sh
+RUN bash /install/ubuntu_install_python.sh
+
+COPY install/ubuntu_install_llvm.sh /install/ubuntu_install_llvm.sh
+RUN bash /install/ubuntu_install_llvm.sh
+
+COPY install/ubuntu_install_opencl.sh /install/ubuntu_install_opencl.sh
+RUN bash /install/ubuntu_install_opencl.sh
+
+COPY install/ubuntu_install_iverilog.sh /install/ubuntu_install_iverilog.sh
+RUN bash /install/ubuntu_install_iverilog.sh
+
+COPY install/ubuntu_install_python_package.sh /install/ubuntu_install_python_package.sh
+RUN bash /install/ubuntu_install_python_package.sh
+
+COPY install/ubuntu_install_sphinx.sh /install/ubuntu_install_sphinx.sh
+RUN bash /install/ubuntu_install_sphinx.sh
+
+# Fix recommonmark to latest version
+RUN git clone https://github.com/rtfd/recommonmark
+RUN cd recommonmark; python setup.py install
+
+COPY install/ubuntu_install_java.sh /install/ubuntu_install_java.sh
+RUN bash /install/ubuntu_install_java.sh
+
+COPY install/ubuntu_install_nodejs.sh /install/ubuntu_install_nodejs.sh
+RUN bash /install/ubuntu_install_nodejs.sh
+
+COPY install/ubuntu_install_rocm.sh /install/ubuntu_install_rocm.sh
+RUN bash /install/ubuntu_install_rocm.sh
+
+# Enable doxygen for c++ doc build
+RUN apt-get install -y doxygen graphviz
+
+# Environment variables
+ENV PATH=/node_modules/.bin:${PATH}
+ENV PATH=/usr/local/nvidia/bin:${PATH}
+ENV PATH=/usr/clang+llvm-4.0.0-x86_64-linux-gnu-ubuntu-14.04/bin:${PATH}
+ENV PATH=/usr/local/cuda/bin:${PATH}
+ENV CPLUS_INCLUDE_PATH=/usr/local/cuda/include:${CPLUS_INCLUDE_PATH}
+ENV C_INCLUDE_PATH=/usr/local/cuda/include:${C_INCLUDE_PATH}
+ENV LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/nvidia/lib64:${LIBRARY_PATH}
+ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH}
+ENV LD_LIBRARY_PATH=/opt/rocm/lib:${LD_LIBRARY_PATH}

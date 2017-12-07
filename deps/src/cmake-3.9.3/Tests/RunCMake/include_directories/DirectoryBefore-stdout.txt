@@ -1,0 +1,1 @@
+-- INCLUDE_DIRECTORIES: '[^;]*/Tests/RunCMake/include_directories/BeforeDir;[^;]*/Tests/RunCMake/include_directories/AfterDir'

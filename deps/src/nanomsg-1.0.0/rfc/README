@@ -1,0 +1,2 @@
+This folder contains for RFCs implemented by nanomsg. XML files are formatted
+according to RFC 2629 and can be processed using xml2rfc utility.

@@ -1,0 +1,6 @@
+CMake Error:
+  Error evaluating generator expression:
+
+    \$<TARGET_PROPERTY:TargetPropertyGeneratorExpressions,INCLUDE_DIRECTORIES>
+
+  Self reference on target "TargetPropertyGeneratorExpressions".

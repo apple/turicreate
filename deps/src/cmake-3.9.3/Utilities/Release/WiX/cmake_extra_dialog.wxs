@@ -1,0 +1,36 @@
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+		<UI>
+			<Property Id="ADD_CMAKE_TO_PATH" Value="None"/>
+			<Dialog Id="CMakeExtraDialog" Width="370" Height="270" Title="Install Options">
+
+				<Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)"/>
+				<Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)"/>
+
+				<Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
+					<Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+				</Control>
+
+				<Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Choose options for installing CMake [ProductVersion]"/>
+				<Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="Install Options"/>
+				<Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)"/>
+				<Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0"/>
+				<Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0"/>
+
+				<Control Id="Hint" Type="Text" X="26" Y="60" Width="250" Height="16" Transparent="yes" Text="By default CMake does not add its directory to the system PATH."/>
+
+				<Control Id="ADD_CMAKE_TO_PATHOption" Type="RadioButtonGroup" X="26" Y="100" Width="305" Height="65" Property="ADD_CMAKE_TO_PATH">
+					<RadioButtonGroup Property="ADD_CMAKE_TO_PATH">
+						<RadioButton Value="None" X="0" Y="0" Width="295" Height="16" Text="Do not add CMake to the system PATH"/>
+						<RadioButton Value="System" X="0" Y="20" Width="295" Height="16" Text="Add CMake to the system PATH for all users"/>
+						<RadioButton Value="User" X="0" Y="40" Width="295" Height="16" Text="Add CMake to the system PATH for the current user"/>
+					</RadioButtonGroup>
+				</Control>
+
+				<?ifdef BUILD_QtDialog ?>
+					<Control Id="DesktopShortcutCheckBox" Type="CheckBox" X="20" Y="170" Width="330" Height="18" CheckBoxValue="1" Property="DESKTOP_SHORTCUT_REQUESTED" Text="Create CMake Desktop Icon"/>
+				<?endif ?>
+			</Dialog>
+		</UI>
+	</Fragment>
+</Wix>

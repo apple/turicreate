@@ -1,0 +1,6 @@
+Pattern: Open model
+/AAA line 1:  CCC element is not present
+Pattern: Closed model
+/AAA line 1:  CCC element is not present
+/AAA line 1: There is an extra element
+./test/schematron/zvon10_1.xml fails to validate

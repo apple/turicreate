@@ -1,0 +1,14 @@
+Regexp: (a|b{0,3}){0,1}
+a: Ok
+aa: Fail
+b: Ok
+bb: Ok
+bbb: Ok
+bbbb: Fail
+ab: Fail
+ba: Fail
+Regexp: ([0-9]{0,3}|([0-9]{0}|[0-9]{0,3})){0,3}
+0: Ok
+00: Ok
+123: Ok
+abc: Fail

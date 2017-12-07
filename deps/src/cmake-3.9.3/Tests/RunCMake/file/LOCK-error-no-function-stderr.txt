@@ -1,0 +1,8 @@
+CMake Error at LOCK-error-no-function\.cmake:[0-9]+ \(file\):
+  error locking file
+
+    ".*"
+
+  'GUARD FUNCTION' not used in function definition\.
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:[0-9]+ \(include\)

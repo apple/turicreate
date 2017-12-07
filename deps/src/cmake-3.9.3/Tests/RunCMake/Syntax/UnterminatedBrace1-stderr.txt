@@ -1,0 +1,13 @@
+CMake Warning \(dev\) at UnterminatedBrace1.cmake:3 \(set\):
+  Syntax error in cmake code at
+
+    .*/Tests/RunCMake/Syntax/UnterminatedBrace1.cmake:3
+
+  when parsing string
+
+    \${
+
+  syntax error, unexpected \$end, expecting } \(2\)
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.

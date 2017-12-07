@@ -1,0 +1,38 @@
+CMake Error at BadStrEqual.cmake:1 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<STREQUAL>
+
+  \$<STREQUAL> expression requires 2 comma separated parameters, but got 0
+  instead.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++CMake Error at BadStrEqual.cmake:1 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<STREQUAL:>
+
+  \$<STREQUAL> expression requires 2 comma separated parameters, but got 1
+  instead.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at BadStrEqual.cmake:1 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<STREQUAL:,,>
+
+  \$<STREQUAL> expression requires 2 comma separated parameters, but got 3
+  instead.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at BadStrEqual.cmake:1 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<STREQUAL:something,,>
+
+  \$<STREQUAL> expression requires 2 comma separated parameters, but got 3
+  instead.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

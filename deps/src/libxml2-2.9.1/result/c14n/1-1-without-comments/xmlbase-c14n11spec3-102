@@ -1,0 +1,2 @@
+<a xml:base="foo/bar"><d xml:base="../../x">
+     </d></a>

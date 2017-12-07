@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+ "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<title>curl_multi_setopt man page</title>
+<meta name="generator" content="roffit">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">curl_multi_setopt - set options for a curl multi handle <a name="SYNOPSIS"></a><h2 class="nroffsh">SYNOPSIS</h2>
+<p class="level0">#include &lt;curl/curl.h&gt; 
+<p class="level0">CURLMcode curl_multi_setopt(CURLM * multi_handle, CURLMoption option, param); <a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0">curl_multi_setopt() is used to tell a libcurl multi handle how to behave. By using the appropriate options to <a class="emphasis" href="./curl_multi_setopt.html">curl_multi_setopt(3)</a>, you can change libcurl's behaviour when using that multi handle.  All options are set with the <span Class="emphasis">option</span> followed by the parameter <span Class="emphasis">param</span>. That parameter can be a <span Class="bold">long</span>, a <span Class="bold">function pointer</span>, an <span Class="bold">object pointer</span> or a <span Class="bold">curl_off_t</span> type, depending on what the specific option expects. Read this manual carefully as bad input values may cause libcurl to behave badly! You can only set one option in each function call. 
+<p class="level0"><a name="OPTIONS"></a><h2 class="nroffsh">OPTIONS</h2>
+<p class="level0">
+<p class="level0"><a name="CURLMOPTSOCKETFUNCTION"></a><span class="nroffip">CURLMOPT_SOCKETFUNCTION</span> 
+<p class="level1">Pass a pointer to a function matching the <span Class="bold">curl_socket_callback</span> prototype. The <a class="emphasis" href="./curl_multi_socket_action.html">curl_multi_socket_action(3)</a> function informs the application about updates in the socket (file descriptor) status by doing none, one, or multiple calls to the curl_socket_callback given in the <span Class="bold">param</span> argument. They update the status with changes since the previous time a <a class="emphasis" href="./curl_multi_socket.html">curl_multi_socket(3)</a> function was called. If the given callback pointer is NULL, no callback will be called. Set the callback's <span Class="bold">userp</span> argument with <a class="emphasis" href="#CURLMOPTSOCKETDATA">CURLMOPT_SOCKETDATA</a>.  See <a class="emphasis" href="./curl_multi_socket.html">curl_multi_socket(3)</a> for more callback details. 
+<p class="level0"><a name="CURLMOPTSOCKETDATA"></a><span class="nroffip">CURLMOPT_SOCKETDATA</span> 
+<p class="level1">Pass a pointer to whatever you want passed to the <span Class="bold">curl_socket_callback</span>'s fourth argument, the userp pointer. This is not used by libcurl but only passed-thru as-is. Set the callback pointer with <a class="emphasis" href="#CURLMOPTSOCKETFUNCTION">CURLMOPT_SOCKETFUNCTION</a>. 
+<p class="level0"><a name="CURLMOPTPIPELINING"></a><span class="nroffip">CURLMOPT_PIPELINING</span> 
+<p class="level1">Pass a long set to 1 to enable or 0 to disable. Enabling pipelining on a multi handle will make it attempt to perform HTTP Pipelining as far as possible for transfers using this handle. This means that if you add a second request that can use an already existing connection, the second request will be "piped" on the same connection rather than being executed in parallel. (Added in 7.16.0) 
+<p class="level0"><a name="CURLMOPTTIMERFUNCTION"></a><span class="nroffip">CURLMOPT_TIMERFUNCTION</span> 
+<p class="level1">Pass a pointer to a function matching the <span Class="bold">curl_multi_timer_callback</span> prototype: int curl_multi_timer_callback(CURLM *multi /* multi handle */, long timeout_ms /* timeout in milliseconds */, void *userp /* TIMERDATA */). This function will then be called when the timeout value changes. The timeout value is at what latest time the application should call one of the "performing" functions of the multi interface (<a class="emphasis" href="./curl_multi_socket_action.html">curl_multi_socket_action(3)</a> and <a class="emphasis" href="./curl_multi_perform.html">curl_multi_perform(3)</a>) - to allow libcurl to keep timeouts and retries etc to work. A timeout value of -1 means that there is no timeout at all, and 0 means that the timeout is already reached. Libcurl attempts to limit calling this only when the fixed future timeout time actually changes. See also <a class="emphasis" href="#CURLMOPTTIMERDATA">CURLMOPT_TIMERDATA</a>. The callback should return 0 on success, and -1 on error. This callback can be used instead of, or in addition to, <a class="emphasis" href="./curl_multi_timeout.html">curl_multi_timeout(3)</a>. (Added in 7.16.0) 
+<p class="level0"><a name="CURLMOPTTIMERDATA"></a><span class="nroffip">CURLMOPT_TIMERDATA</span> 
+<p class="level1">Pass a pointer to whatever you want passed to the <span Class="bold">curl_multi_timer_callback</span>'s third argument, the userp pointer.  This is not used by libcurl but only passed-thru as-is. Set the callback pointer with <a class="emphasis" href="#CURLMOPTTIMERFUNCTION">CURLMOPT_TIMERFUNCTION</a>. (Added in 7.16.0) 
+<p class="level0"><a name="CURLMOPTMAXCONNECTS"></a><span class="nroffip">CURLMOPT_MAXCONNECTS</span> 
+<p class="level1">Pass a long. The set number will be used as the maximum amount of simultaneously open connections that libcurl may cache. Default is 10, and libcurl will enlarge the size for each added easy handle to make it fit 4 times the number of added easy handles. 
+<p class="level1">By setting this option, you can prevent the cache size from growing beyond the limit set by you. 
+<p class="level1">When the cache is full, curl closes the oldest one in the cache to prevent the number of open connections from increasing. 
+<p class="level1">This option is for the multi handle's use only, when using the easy interface you should instead use the <span Class="emphasis">CURLOPT_MAXCONNECTS</span> option. 
+<p class="level1">(Added in 7.16.3) 
+<p class="level0"><a name="CURLMOPTMAXHOSTCONNECTIONS"></a><span class="nroffip">CURLMOPT_MAX_HOST_CONNECTIONS</span> 
+<p class="level1">Pass a long. The set number will be used as the maximum amount of simultaneously open connections to a single host. For each new session to a host, libcurl will open a new connection up to the limit set by CURLMOPT_MAX_HOST_CONNECTIONS. When the limit is reached, the sessions will be pending until there are available connections. If CURLMOPT_PIPELINING is 1, libcurl will try to pipeline if the host is capable of it. 
+<p class="level1">The default value is 0, which means that there is no limit. However, for backwards compatibility, setting it to 0 when CURLMOPT_PIPELINING is 1 will not be treated as unlimited. Instead it will open only 1 connection and try to pipeline on it. 
+<p class="level1">(Added in 7.30.0) 
+<p class="level0"><a name="CURLMOPTMAXPIPELINELENGTH"></a><span class="nroffip">CURLMOPT_MAX_PIPELINE_LENGTH</span> 
+<p class="level1">Pass a long. The set number will be used as the maximum amount of requests in a pipelined connection. When this limit is reached, libcurl will use another connection to the same host (see CURLMOPT_MAX_HOST_CONNECTIONS), or queue the requests until one of the pipelines to the host is ready to accept a request. Thus, the total number of requests in-flight is CURLMOPT_MAX_HOST_CONNECTIONS * CURLMOPT_MAX_PIPELINE_LENGTH. The default value is 5. 
+<p class="level1">(Added in 7.30.0) 
+<p class="level0"><a name="CURLMOPTCONTENTLENGTHPENALTYSIZE"></a><span class="nroffip">CURLMOPT_CONTENT_LENGTH_PENALTY_SIZE</span> 
+<p class="level1">Pass a long. If a pipelined connection is currently processing a request with a Content-Length larger than CURLMOPT_CONTENT_LENGTH_PENALTY_SIZE, that connection will not be considered for additional requests, even if it is shorter than CURLMOPT_MAX_PIPELINE_LENGTH. The default value is 0, which means that the penalization is inactive. 
+<p class="level1">(Added in 7.30.0) 
+<p class="level0"><a name="CURLMOPTCHUNKLENGTHPENALTYSIZE"></a><span class="nroffip">CURLMOPT_CHUNK_LENGTH_PENALTY_SIZE</span> 
+<p class="level1">Pass a long. If a pipelined connection is currently processing a chunked (Transfer-encoding: chunked) request with a current chunk length larger than CURLMOPT_CHUNK_LENGTH_PENALTY_SIZE, that connection will not be considered for additional requests, even if it is shorter than CURLMOPT_MAX_PIPELINE_LENGTH. The default value is 0, which means that the penalization is inactive. 
+<p class="level1">(Added in 7.30.0) 
+<p class="level0"><a name="CURLMOPTPIPELININGSITEBL"></a><span class="nroffip">CURLMOPT_PIPELINING_SITE_BL</span> 
+<p class="level1">Pass an array of char *, ending with NULL. This is a list of sites that are blacklisted from pipelining, i.e sites that are known to not support HTTP pipelining. The array is copied by libcurl. 
+<p class="level1">The default value is NULL, which means that there is no blacklist. 
+<p class="level1">Pass a NULL pointer to clear the blacklist. 
+<p class="level1">Example: 
+<p class="level1"><pre>
+<p class="level1">&nbsp; site_blacklist[] =
+ &nbsp; {
+ &nbsp;   "www.haxx.se",
+ &nbsp;   "www.example.com:1234",
+ &nbsp;   NULL
+ &nbsp; };
+ <p class="level1">&nbsp; curl_multi_setopt(m, CURLMOPT_PIPELINE_SITE_BL, site_blacklist);
+ </pre>
+
+<p class="level1">
+<p class="level1">(Added in 7.30.0) 
+<p class="level0"><a name="CURLMOPTPIPELININGSERVERBL"></a><span class="nroffip">CURLMOPT_PIPELINING_SERVER_BL</span> 
+<p class="level1">Pass an array of char *, ending with NULL. This is a list of server types prefixes (in the Server: HTTP header) that are blacklisted from pipelining, i.e server types that are known to not support HTTP pipelining. The array is copied by libcurl. 
+<p class="level1">Note that the comparison matches if the Server: header begins with the string in the blacklist, i.e "Server: Ninja 1.2.3" and "Server: Ninja 1.4.0" can  both be blacklisted by having "Ninja" in the backlist. 
+<p class="level1">The default value is NULL, which means that there is no blacklist. 
+<p class="level1">Pass a NULL pointer to clear the blacklist. 
+<p class="level1">Example: 
+<p class="level1"><pre>
+<p class="level1">&nbsp; server_blacklist[] =
+ &nbsp; {
+ &nbsp;   "Microsoft-IIS/6.0",
+ &nbsp;   "nginx/0.8.54",
+ &nbsp;   NULL
+ &nbsp; };
+ <p class="level1">&nbsp; curl_multi_setopt(m, CURLMOPT_PIPELINE_SERVER_BL, server_blacklist);
+ </pre>
+
+<p class="level1">
+<p class="level1">(Added in 7.30.0) 
+<p class="level0"><a name="CURLMOPTMAXTOTALCONNECTIONS"></a><span class="nroffip">CURLMOPT_MAX_TOTAL_CONNECTIONS</span> 
+<p class="level1">Pass a long. The set number will be used as the maximum amount of simultaneously open connections in total. For each new session, libcurl will open a new connection up to the limit set by CURLMOPT_MAX_TOTAL_CONNECTIONS. When the limit is reached, the sessions will be pending until there are available connections. If CURLMOPT_PIPELINING is 1, libcurl will try to pipeline if the host is capable of it. 
+<p class="level1">The default value is 0, which means that there is no limit. However, for backwards compatibility, setting it to 0 when CURLMOPT_PIPELINING is 1 will not be treated as unlimited. Instead it will open only 1 connection and try to pipeline on it. 
+<p class="level1">(Added in 7.30.0) <a name="RETURNS"></a><h2 class="nroffsh">RETURNS</h2>
+<p class="level0">The standard CURLMcode for multi interface error codes. Note that it returns a CURLM_UNKNOWN_OPTION if you try setting an option that this version of libcurl doesn't know of. <a name="AVAILABILITY"></a><h2 class="nroffsh">AVAILABILITY</h2>
+<p class="level0">This function was added in libcurl 7.15.4. <a name="SEE"></a><h2 class="nroffsh">SEE ALSO</h2>
+<p class="level0"><a class="manpage" href="./curl_multi_cleanup.html">curl_multi_cleanup (3)</a> <a class="manpage" href="./curl_multi_init.html">  curl_multi_init (3)</a> <span Class="manpage"> </span> <a class="manpage" href="./curl_multi_socket.html">curl_multi_socket (3)</a> <a class="manpage" href="./curl_multi_info_read.html">  curl_multi_info_read (3)</a> <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>

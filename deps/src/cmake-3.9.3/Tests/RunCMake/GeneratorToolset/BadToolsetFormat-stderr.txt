@@ -1,0 +1,10 @@
+CMake Error at CMakeLists.txt:[0-9]+ \(project\):
+  Generator
+
+    .*
+
+  given toolset specification
+
+    Test Toolset,not_a_key
+
+  that contains a field after the first ',' with no '='\.$

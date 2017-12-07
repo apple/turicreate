@@ -1,0 +1,19 @@
+CMake Error at whitelist.cmake:4 \(set_property\):
+  INTERFACE_LIBRARY targets may only have whitelisted properties.  The
+  property "OUTPUT_NAME" is not allowed.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+
+
+CMake Error at whitelist.cmake:5 \(set_property\):
+  INTERFACE_LIBRARY targets may only have whitelisted properties.  The
+  property "OUTPUT_NAME" is not allowed.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+
+
+CMake Error at whitelist.cmake:6 \(get_target_property\):
+  INTERFACE_LIBRARY targets may only have whitelisted properties.  The
+  property "OUTPUT_NAME" is not allowed.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

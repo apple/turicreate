@@ -1,0 +1,5 @@
+^CMake Error at .*/Modules/CheckIPOSupported\.cmake:[0-9]+ \(message\):
+  Unparsed arguments: xxx
+Call Stack \(most recent call first\):
+  unparsed-arguments\.cmake:[0-9]+ \(check_ipo_supported\)
+  CMakeLists\.txt:[0-9]+ \(include\)$

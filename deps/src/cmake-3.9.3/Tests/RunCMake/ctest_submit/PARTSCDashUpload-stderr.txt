@@ -1,0 +1,2 @@
+CMake Error at .*/Tests/RunCMake/ctest_submit/PARTSCDashUpload/test.cmake:[0-9]+ \(ctest_submit\):
+  Part name "CDASH_UPLOAD" is invalid.

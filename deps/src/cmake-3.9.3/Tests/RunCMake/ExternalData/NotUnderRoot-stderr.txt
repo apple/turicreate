@@ -1,0 +1,12 @@
+CMake Error at .*/Modules/ExternalData.cmake:[0-9]+ \(message\):
+  Data file referenced by argument
+
+    DATA{../NotUnderRoot.txt}
+
+  does not lie under the top-level source directory
+
+    .*/Tests/RunCMake/ExternalData
+
+Call Stack \(most recent call first\):
+  .*
+  NotUnderRoot.cmake:2 \(ExternalData_Add_Test\)

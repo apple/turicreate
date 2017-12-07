@@ -1,0 +1,8 @@
+Pattern: Print both cases
+/AAA line 1: BBB element is missing.
+/AAA line 1: AAA misses attribute name.
+Pattern: Print positive result only
+Pattern: Print negative result only
+/AAA line 1: BBB element is missing.
+/AAA line 1: AAA misses attribute name.
+./test/schematron/zvon1_1.xml fails to validate

@@ -1,0 +1,26 @@
+SAX.setDocumentLocator()
+SAX.startDocument()
+SAX.startElement(html)
+SAX.ignorableWhitespace(
+, 1)
+SAX.startElement(head)
+SAX.ignorableWhitespace(
+, 1)
+SAX.startElement(style)
+SAX.cdata(
+.......
+....................., 1000)
+SAX.cdata(.............................., 1000)
+SAX.cdata(.............................., 1000)
+SAX.cdata(................
+............., 977)
+SAX.endElement(style)
+SAX.ignorableWhitespace(
+, 1)
+SAX.endElement(head)
+SAX.ignorableWhitespace(
+, 1)
+SAX.endElement(html)
+SAX.ignorableWhitespace(
+, 1)
+SAX.endDocument()

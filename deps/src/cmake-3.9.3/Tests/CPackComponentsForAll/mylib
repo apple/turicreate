@@ -1,0 +1,17 @@
+.\" Manpage for mylib.
+.\" Contact bugs@mylib_author.net.in to correct errors or typos.
+.TH mylib 3 "01 May 2015" "1.0" "mylib.so man page"
+.SH NAME
+mylib \- cpack testing lib
+.SH SYNOPSIS
+mylib.so
+.SH DESCRIPTION
+mylib.so test man page.
+.SH OPTIONS
+Lib does not take any options.
+.SH SEE ALSO
+mylib(3)
+.SH BUGS
+No known bugs.
+.SH AUTHOR
+Someone (author@lib_author.net.in)

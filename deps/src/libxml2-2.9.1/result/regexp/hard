@@ -1,0 +1,12 @@
+Regexp: ((a|b|\p{Nd}){1,2}|aaa|bbbb){1,2}
+bab: Ok
+aaca: Fail
+aaabbbb: Ok
+a0b: Ok
+aa0aaa: Fail
+b0aaa: Ok
+Regexp: (\d{1,3}\.){3}\d{1,3}
+1.2.3.4: Ok
+1.22.333.44: Ok
+1.2.3: Fail
+1..2.3: Fail

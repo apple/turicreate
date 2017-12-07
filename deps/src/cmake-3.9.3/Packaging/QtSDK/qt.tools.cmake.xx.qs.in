@@ -1,0 +1,46 @@
+/****************************************************************************
+**
+** Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
+** file Copyright.txt or https://cmake.org/licensing for details.
+**
+****************************************************************************/
+
+// constructor
+function Component()
+{
+    installer.valueChanged.connect( this, Component.prototype.reactOnTargetDirChange );
+    // set the default values to CMAKE%CMake_VERSION_MAJOR%%CMake_VERSION_MINOR%_BIN_DIR
+    Component.prototype.reactOnTargetDirChange("TargetDir", installer.value("TargetDir"));
+}
+
+Component.prototype.reactOnTargetDirChange = function(key, value)
+{
+    if (key == "TargetDir") {
+        var path = value + "/%CMAKE_BIN_DIR%";
+        installer.setValue("CMAKE%CMake_VERSION_MAJOR%%CMake_VERSION_MINOR%_BIN_DIR", path.replace(/\\/g, "/"));
+    }
+}
+
+Component.prototype.createOperations = function()
+{
+    component.createOperations();
+
+    try {
+        if (installer.value("SDKToolBinary") == "")
+            return;
+
+        var cmId = component.name;
+        installer.setValue("CMAKE%CMake_VERSION_MAJOR%%CMake_VERSION_MINOR%_ID", cmId);
+
+        component.addOperation("Execute",
+                               ["{0,2}", "@SDKToolBinary@", "addCMake",
+                                "--id", cmId,
+                                "--name", "%CMake_IFW_ROOT_COMPONENT_DISPLAY_NAME%",
+                                "--path", "@CMAKE%CMake_VERSION_MAJOR%%CMake_VERSION_MINOR%_BIN_DIR@/cmake%CMAKE_EXECUTABLE_SUFFIX%",
+                                "UNDOEXECUTE",
+                                "@SDKToolBinary@", "rmCMake", "--id", cmId]);
+
+    } catch( e ) {
+        print( e );
+    }
+}

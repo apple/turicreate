@@ -1,0 +1,3 @@
+Pattern: Attributes present
+/AAA/BBB line 2: The element must not have an isolated aaa attribute
+./test/schematron/zvon11_2.xml fails to validate

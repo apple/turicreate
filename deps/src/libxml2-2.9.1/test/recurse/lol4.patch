@@ -1,0 +1,16 @@
+Index: parser.c
+===================================================================
+--- parser.c	(revision 3773)
++++ parser.c	(working copy)
+@@ -2505,6 +2505,11 @@ xmlStringLenDecodeEntities(xmlParserCtxt
+	    c = CUR_SCHAR(str, l);
+	else
+	    c = 0;
++        if ((nbchars > 500000) &&
++	    (ctxt->instate == XML_PARSER_ATTRIBUTE_VALUE)) {
++	    xmlFatalErr(ctxt, XML_ERR_ENTITY_LOOP, NULL);
++	    goto int_error;
++        }
+     }
+     buffer[nbchars++] = 0;
+     return(buffer);

@@ -1,0 +1,1 @@
+CMake Error: CMake can not determine linker language for target: NoLang

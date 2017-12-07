@@ -1,0 +1,4 @@
+^CMake Error at DOWNLOAD-httpheader-not-set.cmake:[0-9]+ \(file\):
+  file DOWNLOAD missing string for HTTPHEADER.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)$

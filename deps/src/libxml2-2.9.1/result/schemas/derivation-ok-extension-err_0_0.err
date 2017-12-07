@@ -1,0 +1,1 @@
+./test/schemas/derivation-ok-extension-err_0.xsd:6: element complexType: Schemas parser error : local complex type: Duplicate attribute use 'barA_1'.

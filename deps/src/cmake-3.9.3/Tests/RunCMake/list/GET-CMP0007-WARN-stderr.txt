@@ -1,0 +1,8 @@
+^CMake Warning \(dev\) at GET-CMP0007-WARN.cmake:4 \(list\):
+  Policy CMP0007 is not set: list command no longer ignores empty elements.
+  Run "cmake --help-policy CMP0007" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.  List has value =
+  \[;NEW;OLD\].
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.$

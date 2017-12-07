@@ -1,0 +1,2 @@
+# Do not format a source encoded in UTF-16.
+test_UTF-16LE.h -format.clang-format

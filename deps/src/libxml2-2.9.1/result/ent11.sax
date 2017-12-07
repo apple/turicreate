@@ -1,0 +1,13 @@
+SAX.setDocumentLocator()
+SAX.startDocument()
+SAX.internalSubset(doc, , )
+SAX.entityDecl(newl, 1, (null), (null), )
+SAX.getEntity(newl)
+SAX.externalSubset(doc, , )
+SAX.startElement(doc)
+SAX.getEntity(newl)
+SAX.characters(
+, 1)
+SAX.reference(newl)
+SAX.endElement(doc)
+SAX.endDocument()

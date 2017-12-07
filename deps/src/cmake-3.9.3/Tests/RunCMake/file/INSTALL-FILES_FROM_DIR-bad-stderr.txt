@@ -1,0 +1,15 @@
+^CMake Error at INSTALL-FILES_FROM_DIR-bad.cmake:[0-9]+ \(file\):
+  file option FILES_FROM_DIR requires all files to be specified as relative
+  paths\.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)
++
+CMake Error at INSTALL-FILES_FROM_DIR-bad.cmake:[0-9]+ \(file\):
+  file INSTALL option RENAME may not be combined with FILES_FROM_DIR\.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)
++
+CMake Error at INSTALL-FILES_FROM_DIR-bad.cmake:[0-9]+ \(file\):
+  file option FILES_FROM_DIR may not appear after PATTERN or REGEX\.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)$

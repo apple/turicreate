@@ -1,0 +1,18 @@
+cmake_minimum_required(VERSION 3.1)
+@CASE_TEST_PREFIX_CODE@
+
+set(CTEST_SITE                          "test-site")
+set(CTEST_BUILD_NAME                    "test-build-name")
+set(CTEST_SOURCE_DIRECTORY              "@RunCMake_BINARY_DIR@/@CASE_NAME@")
+set(CTEST_BINARY_DIRECTORY              "@RunCMake_BINARY_DIR@/@CASE_NAME@-build")
+set(CTEST_CMAKE_GENERATOR               "@RunCMake_GENERATOR@")
+set(CTEST_CMAKE_GENERATOR_PLATFORM      "@RunCMake_GENERATOR_PLATFORM@")
+set(CTEST_CMAKE_GENERATOR_TOOLSET       "@RunCMake_GENERATOR_TOOLSET@")
+set(CTEST_BUILD_CONFIGURATION           "$ENV{CMAKE_CONFIG_TYPE}")
+set(CTEST_USE_LAUNCHERS                 TRUE)
+
+set(ctest_build_args "@CASE_CTEST_BUILD_ARGS@")
+ctest_start(Experimental)
+ctest_configure()
+ctest_build(${ctest_build_args} RETURN_VALUE ctest_build_return_value)
+@CASE_TEST_SUFFIX_CODE@

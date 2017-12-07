@@ -1,0 +1,61 @@
+SAX.setDocumentLocator()
+SAX.startDocument()
+SAX.internalSubset(doc, , )
+SAX.elementDecl(doc, 4, ...)
+SAX.elementDecl(tst, 3, ...)
+SAX.attributeDecl(tst, a, 8, 3, NULL, ...)
+SAX.attributeDecl(tst, b, 1, 3, NULL, ...)
+SAX.entityDecl(d, 1, (null), (null), )
+SAX.getEntity(d)
+SAX.entityDecl(a, 1, (null), (null),
+)
+SAX.getEntity(a)
+SAX.entityDecl(da, 1, (null), (null),
+)
+SAX.getEntity(da)
+SAX.externalSubset(doc, , )
+SAX.startElement(doc)
+SAX.characters(
+, 1)
+SAX.startElement(tst, a='  xyz', b='  xyz')
+SAX.endElement(tst)
+SAX.characters(
+, 1)
+SAX.getEntity(d)
+SAX.getEntity(d)
+SAX.getEntity(a)
+SAX.getEntity(a)
+SAX.getEntity(da)
+SAX.getEntity(d)
+SAX.getEntity(d)
+SAX.getEntity(a)
+SAX.getEntity(a)
+SAX.getEntity(da)
+SAX.startElement(tst, a='&d;&d;A&a; &a;B&da;', b='&d;&d;A&a; &a;B&da;')
+SAX.endElement(tst)
+SAX.characters(
+, 1)
+SAX.startElement(tst, a='A
+
+B
+', b='A
+
+B
+')
+SAX.endElement(tst)
+SAX.characters(
+, 1)
+SAX.startElement(tst, a=' x  y ', b=' x  y ')
+SAX.endElement(tst)
+SAX.characters(
+, 1)
+SAX.startElement(tst, a=' a b ', b=' a b ')
+SAX.endElement(tst)
+SAX.characters(
+, 1)
+SAX.startElement(tst, a='  a  b  ', b='  a  b  ')
+SAX.endElement(tst)
+SAX.characters(
+, 1)
+SAX.endElement(doc)
+SAX.endDocument()

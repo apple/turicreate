@@ -1,0 +1,10 @@
+./test/errors/attr4.xml:1: parser error : invalid character in attribute value
+<ROOT attr="XY"/>
+              ^
+./test/errors/attr4.xml:1: parser error : attributes construct error
+<ROOT attr="XY"/>
+              ^
+./test/errors/attr4.xml:1: parser error : Couldn't find end of Start Tag ROOT
+<ROOT attr="XY"/>
+              ^
+./test/errors/attr4.xml : failed to parse

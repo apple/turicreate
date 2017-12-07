@@ -1,0 +1,2 @@
+This directory contains all the available transport mechanisms such as
+in-process message transfer, IPC or TCP.

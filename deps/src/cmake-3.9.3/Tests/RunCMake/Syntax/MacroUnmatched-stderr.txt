@@ -1,0 +1,8 @@
+^CMake Error in MacroUnmatched.cmake:
+  A logical block opening on the line
+
+    .*/Tests/RunCMake/Syntax/MacroUnmatched.cmake:[0-9]+ \(macro\)
+
+  is not closed.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)$

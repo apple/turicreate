@@ -1,0 +1,4 @@
+^CMake Error at REMOVE_ITEM-NotList.cmake:2 \(list\):
+  list sub-command REMOVE_ITEM requires list to be present.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

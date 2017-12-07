@@ -1,0 +1,6 @@
+CMake Error at CMP0028-NEW-iface.cmake:6 \(add_library\):
+  Target "foo" links to target "External::Library" but the target was not
+  found.  Perhaps a find_package\(\) call is missing for an IMPORTED target, or
+  an ALIAS target is missing\?
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

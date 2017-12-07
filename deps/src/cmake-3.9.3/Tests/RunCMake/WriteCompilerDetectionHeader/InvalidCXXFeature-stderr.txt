@@ -1,0 +1,5 @@
+CMake Error at .*Modules/WriteCompilerDetectionHeader.cmake:[0-9]+ \(message\):
+  Unsupported feature cxx_not_a_feature.
+Call Stack \(most recent call first\):
+  InvalidCXXFeature.cmake:4 \(write_compiler_detection_header\)
+  CMakeLists.txt:3 \(include\)

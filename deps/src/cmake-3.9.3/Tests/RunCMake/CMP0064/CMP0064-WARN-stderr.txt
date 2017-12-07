@@ -1,0 +1,10 @@
+CMake Warning \(dev\) at CMP0064-WARN.cmake:3 \(if\):
+  Policy CMP0064 is not set: Support new TEST if\(\) operator.  Run "cmake
+  --help-policy CMP0064" for policy details.  Use the cmake_policy command to
+  set the policy and suppress this warning.
+
+  TEST will be interpreted as an operator when the policy is set to NEW.
+  Since the policy is not set the OLD behavior will be used.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.

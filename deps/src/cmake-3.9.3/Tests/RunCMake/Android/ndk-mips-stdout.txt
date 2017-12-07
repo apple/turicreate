@@ -1,0 +1,2 @@
+-- Android: Targeting API '[0-9]+' with architecture 'mips', ABI 'mips', and processor 'mips'
+-- Android: Selected (Clang toolchain '[^']+' with )?GCC toolchain '[^']+'

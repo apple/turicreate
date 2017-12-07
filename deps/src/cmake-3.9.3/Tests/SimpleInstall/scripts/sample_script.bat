@@ -1,0 +1,1 @@
+@echo Sample Script Output

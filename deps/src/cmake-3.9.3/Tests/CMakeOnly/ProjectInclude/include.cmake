@@ -1,0 +1,1 @@
+set(AUTO_INCLUDE TRUE)

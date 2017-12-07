@@ -1,0 +1,5 @@
+CMake Error at no_target.cmake:[0-9]+ \(target_compile_features\):
+  Cannot specify compile features for target "main" which is not built by
+  this project.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

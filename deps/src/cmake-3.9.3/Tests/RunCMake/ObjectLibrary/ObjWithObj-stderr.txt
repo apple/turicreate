@@ -1,0 +1,4 @@
+CMake Error at ObjWithObj.cmake:2 \(add_library\):
+  Only executables and non-OBJECT libraries may reference target objects.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

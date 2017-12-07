@@ -1,0 +1,5 @@
+CMake Error in CMakeLists.txt:
+  Target "testTarget" INTERFACE_INCLUDE_DIRECTORIES property contains
+  relative path:
+
+    "foo"

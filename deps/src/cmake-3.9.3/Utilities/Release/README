@@ -1,0 +1,18 @@
+To create a cmake release, make sure the "release" tag is pointing to the
+expected git commit:
+
+https://cmake.org/gitweb?p=cmake.git;a=shortlog;h=refs/heads/release
+
+Then as kitware@hythloth, using an up-to-date CMake:
+
+  cd ~/CMakeReleases/cmake/Utilities/Release
+  mkdir 283rc1
+  cd 283rc1
+  ~/CMakeReleases/build/bin/cmake -DCMAKE_CREATE_VERSION=release -P ../create-cmake-release.cmake
+  ./create-release.sh
+
+
+create-cmake-release.cmake:  script to run to create release sh scripts
+Add or remove machines in create-cmake-release.cmake.
+
+machine_release.cmake : config files for each machine

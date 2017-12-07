@@ -1,0 +1,10 @@
+CMake Error at COMPILE_LANGUAGE-add_library.cmake:4 \(add_library\):
+  Error evaluating generator expression:
+
+    \$<COMPILE_LANGUAGE>
+
+  \$<COMPILE_LANGUAGE:...> may only be used to specify include directories
+  compile definitions, compile options and to evaluate components of the
+  file\(GENERATE\) command.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

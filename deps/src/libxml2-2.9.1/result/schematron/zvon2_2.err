@@ -1,0 +1,3 @@
+Pattern: Character @ forbidden
+/AAA line 1: Text in element AAA must not contain character @
+./test/schematron/zvon2_2.xml fails to validate

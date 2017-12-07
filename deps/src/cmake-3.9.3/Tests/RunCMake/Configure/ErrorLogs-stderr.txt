@@ -1,0 +1,4 @@
+CMake Error at ErrorLogs.cmake:3 \(message\):
+  Some error!
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

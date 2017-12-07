@@ -1,0 +1,4 @@
+CMake Error at VersionMissingLanguages.cmake:2 \(project\):
+  project with VERSION must use LANGUAGES before language names.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

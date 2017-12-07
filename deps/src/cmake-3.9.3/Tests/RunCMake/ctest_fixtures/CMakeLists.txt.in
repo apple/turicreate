@@ -1,0 +1,87 @@
+cmake_minimum_required (VERSION 3.8.0)
+project(ctest_fixtures LANGUAGES NONE)
+include(CTest)
+
+macro(passTest testName)
+  set(someFile "${CMAKE_CURRENT_SOURCE_DIR}/test.cmake")
+  add_test(NAME ${testName}
+           COMMAND ${CMAKE_COMMAND} -E compare_files "${someFile}" "${someFile}")
+endmacro()
+
+macro(failTest testName)
+  set(someFile "${CMAKE_CURRENT_SOURCE_DIR}/test.cmake")
+  add_test(NAME ${testName}
+           COMMAND ${CMAKE_COMMAND} -E compare_files "${someFile}" "${someFile}xxx")
+endmacro()
+
+# Intersperse actual tests among setup/cleanup tests so that we don't
+# define them in the same order as they need to be executed. Numbers
+# at the end of each line correspond to the test numbers ctest will
+# use for each test.
+passTest(one)           # 1
+passTest(setupBoth)     # 2
+passTest(setupFoo)      # 3
+passTest(setupMeta)     # 4
+passTest(cleanupFoo)    # 5
+passTest(two)           # 6
+passTest(cleanupBar)    # 7
+passTest(three)         # 8
+failTest(setupFails)    # 9
+passTest(wontRun)       # 10
+passTest(cyclicSetup)   # 11
+passTest(cyclicCleanup) # 12
+passTest(cleanupUnused) # 13
+passTest(setupUnused)   # 14
+
+# Define fixture dependencies and ordering
+set_tests_properties(setupFoo   PROPERTIES FIXTURES_SETUP    "Foo")
+set_tests_properties(cleanupFoo PROPERTIES FIXTURES_CLEANUP  "Foo")
+
+set_tests_properties(setupBoth  PROPERTIES FIXTURES_SETUP    "Foo;Bar")
+set_tests_properties(cleanupBar PROPERTIES FIXTURES_CLEANUP  "Bar")
+
+set_tests_properties(setupMeta  PROPERTIES FIXTURES_SETUP    "Meta"
+                                           FIXTURES_REQUIRED "Foo;Bar")
+
+set_tests_properties(setupBoth  PROPERTIES DEPENDS           setupFoo)
+
+set_tests_properties(setupFails PROPERTIES FIXTURES_SETUP    "Fails")
+
+set_tests_properties(one        PROPERTIES FIXTURES_REQUIRED "Other;Foo")
+set_tests_properties(two        PROPERTIES FIXTURES_REQUIRED "Bar")
+set_tests_properties(three      PROPERTIES FIXTURES_REQUIRED "Meta;Bar")
+set_tests_properties(wontRun    PROPERTIES FIXTURES_REQUIRED "Fails")
+
+set_tests_properties(cleanupUnused PROPERTIES FIXTURES_CLEANUP "Unused")
+set_tests_properties(setupUnused   PROPERTIES FIXTURES_SETUP   "Unused")
+
+@CASE_CMAKELISTS_CYCLIC_CODE@
+
+# These are the cases verified by the main cmake build
+#
+#   Regex:         Test case list (in order)
+#    one            3, 2, 1, 5
+#    two            2, 6, 7
+#    three          3, 2, 4, 5, 8, 7
+#    setupFoo       3
+#    wontRun        9, 10
+#    cyclicSetup    -NA- (configure fails)
+#    cyclicCleanup  -NA- (configure fails)
+#    unused         14, 13
+#
+# In the case of asking for just setupFoo, since there are
+# no tests using the Foo fixture, we do NOT expect cleanupFoo
+# to be executed. It is important not to pull in cleanupFoo
+# if setupFoo is explicitly requested and no other test requires
+# the Foo fixture, otherwise it would not be possible to run
+# just a setup or cleanup test in isolation (likely to be
+# needed during initial creation of such test cases).
+#
+# For the wontRun case, test 9 fails and test 10 should not run.
+# The result of the set of tests should be failure, which is
+# verified by the main cmake build's tests.
+#
+# For the two cyclic test cases invoked by the main cmake build,
+# FIXTURES_... properties are added to the relevant test at the
+# location marked with CASE_CMAKELISTS_CYCLIC_CODE. This creates
+# a self-dependency which causes the configure step to fail.

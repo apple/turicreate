@@ -1,0 +1,2 @@
+./test/relaxng/558452_4.xml:6: element elem: Relax-NG validity error : Did not expect element elem there
+./test/relaxng/558452_4.xml fails to validate

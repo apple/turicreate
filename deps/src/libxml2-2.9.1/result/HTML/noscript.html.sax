@@ -1,0 +1,38 @@
+SAX.setDocumentLocator()
+SAX.startDocument()
+SAX.internalSubset(html, , )
+SAX.startElement(html)
+SAX.ignorableWhitespace(
+    , 5)
+SAX.startElement(head)
+SAX.ignorableWhitespace(
+        , 9)
+SAX.startElement(title)
+SAX.characters(omg, 3)
+SAX.endElement(title)
+SAX.ignorableWhitespace(
+        , 9)
+SAX.startElement(noscript)
+SAX.startElement(link, rel='stylesheet', href='http://foo.com')
+SAX.endElement(link)
+SAX.endElement(noscript)
+SAX.ignorableWhitespace(
+    , 5)
+SAX.endElement(head)
+SAX.ignorableWhitespace(
+    , 5)
+SAX.startElement(body, id='xxx')
+SAX.characters(
+        , 9)
+SAX.startElement(p)
+SAX.characters(yo, 2)
+SAX.endElement(p)
+SAX.characters(
+    , 5)
+SAX.endElement(body)
+SAX.ignorableWhitespace(
+, 1)
+SAX.endElement(html)
+SAX.ignorableWhitespace(
+, 1)
+SAX.endDocument()

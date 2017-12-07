@@ -1,0 +1,1 @@
+./test/schemas/any5_2.xml:7: element boo: Schemas validity error : Element '{urn:test:foo}boo': This element is not expected.

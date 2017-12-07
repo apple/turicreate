@@ -1,0 +1,6 @@
+CMake Error at .*Modules/WriteCompilerDetectionHeader.cmake:[0-9]+ \(message\):
+  Invalid arguments.  write_compiler_detection_header requires at least one
+  feature.
+Call Stack \(most recent call first\):
+  NoFeature.cmake:4 \(write_compiler_detection_header\)
+  CMakeLists.txt:3 \(include\)

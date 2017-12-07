@@ -1,0 +1,9 @@
+CMake Warning \(dev\) at CMP0045-WARN.cmake:2 \(get_target_property\):
+  Policy CMP0045 is not set: Error on non-existent target in
+  get_target_property.  Run "cmake --help-policy CMP0045" for policy details.
+  Use the cmake_policy command to set the policy and suppress this warning.
+
+  get_target_property\(\) called with non-existent target "tgt".
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.

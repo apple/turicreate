@@ -1,0 +1,4 @@
+CMake Error at UuidMissingTypeValue.cmake:3 \(string\):
+  string UUID sub-command, TYPE requires a value.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

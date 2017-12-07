@@ -1,0 +1,6 @@
+./test/errors/comment1.xml:5: parser error : xmlParseComment: invalid xmlChar value 14
+ in p02:  -->
+         ^
+./test/errors/comment1.xml:5: parser error : Start tag expected, '<' not found
+ in p02:  -->
+         ^

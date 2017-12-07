@@ -1,0 +1,11 @@
+CMake Warning \(dev\) at CMP0049-WARN.cmake:3 \(add_library\):
+  Policy CMP0049 is not set: Do not expand variables in target source
+  entries.  Run "cmake --help-policy CMP0049" for policy details.  Use the
+  cmake_policy command to set the policy and suppress this warning.
+
+  Legacy variable expansion in source file "\${tgt_srcs}" expanded to
+  "empty.cpp" in target "tgt".  This behavior will be removed in a future
+  version of CMake.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.

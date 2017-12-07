@@ -1,0 +1,9 @@
+This directory contains automatic tests for nanomsg library. To run the tests
+do "make test" in the build directory, or alternatively run ctest.
+
+Note that the code here is probably ill-suited for demonstration purposes, as
+it is primarily oriented towards testing the library, rather than serving as
+any sort of example.
+
+Instead, we recommend looking in ../demo for some example programs that
+demonstrate the API as we feel it is meant to be used.

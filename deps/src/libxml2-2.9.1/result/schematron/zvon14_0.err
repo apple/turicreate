@@ -1,0 +1,4 @@
+Pattern: a child of selected elements
+/AAA/CCC line 5: Element CCC must not be a child of element AAA
+/AAA/DDD/EEE/CCC line 9: Element CCC must not be a child of element EEE
+./test/schematron/zvon14_0.xml fails to validate

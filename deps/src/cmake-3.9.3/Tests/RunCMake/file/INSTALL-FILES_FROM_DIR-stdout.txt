@@ -1,0 +1,8 @@
+-- Before Installing
+-- Installing: .*/Tests/RunCMake/file/INSTALL-FILES_FROM_DIR-build/from/a.txt
+-- Installing: .*/Tests/RunCMake/file/INSTALL-FILES_FROM_DIR-build/from/a/b.txt
+-- Installing: .*/Tests/RunCMake/file/INSTALL-FILES_FROM_DIR-build/from/a/b/c.txt
+-- Up-to-date: .*/Tests/RunCMake/file/INSTALL-FILES_FROM_DIR-build/from/a.txt
+-- Up-to-date: .*/Tests/RunCMake/file/INSTALL-FILES_FROM_DIR-build/from/a/b.txt
+-- Up-to-date: .*/Tests/RunCMake/file/INSTALL-FILES_FROM_DIR-build/from/a/b/c.txt
+-- After Installing

@@ -1,0 +1,4 @@
+./test/schemas/decimal-2_0.xml:12: element val: Schemas validity error : Element 'val': [facet 'minInclusive'] The value '-0.1' is less than the minimum value allowed ('0').
+./test/schemas/decimal-2_0.xml:12: element val: Schemas validity error : Element 'val': '-0.1' is not a valid value of the atomic type 'myDecimal'.
+./test/schemas/decimal-2_0.xml:13: element val: Schemas validity error : Element 'val': [facet 'minInclusive'] The value '-1' is less than the minimum value allowed ('0').
+./test/schemas/decimal-2_0.xml:13: element val: Schemas validity error : Element 'val': '-1' is not a valid value of the atomic type 'myDecimal'.

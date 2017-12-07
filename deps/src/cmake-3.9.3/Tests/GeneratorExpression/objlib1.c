@@ -1,0 +1,4 @@
+
+void objlib1()
+{
+}

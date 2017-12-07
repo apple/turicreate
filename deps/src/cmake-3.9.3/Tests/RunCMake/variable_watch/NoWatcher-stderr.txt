@@ -1,0 +1,5 @@
+my_func
+CMake Debug Log at NoWatcher.cmake:8 \(set\):
+  Variable "b" was accessed using MODIFIED_ACCESS with value "".
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

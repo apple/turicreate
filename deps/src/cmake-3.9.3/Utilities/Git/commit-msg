@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
+# file Copyright.txt or https://cmake.org/licensing for details.
+
+die() {
+  echo 'commit-msg hook failure' 1>&2
+  echo '-----------------------' 1>&2
+  echo '' 1>&2
+  echo "$@" 1>&2
+  exit 1
+}
+
+# This is a placeholder for future commit-msg checks.
+exit 0

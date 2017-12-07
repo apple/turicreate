@@ -1,0 +1,4 @@
+/**
+ * \defgroup sframe_query_engine SFrame Logical Query Engine
+ * This implements the SFrame lazy evaluation query execution engine.
+ */

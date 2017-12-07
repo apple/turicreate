@@ -1,0 +1,10 @@
+project(generics_test)
+
+make_boost_test(gl_vector.cxx REQUIRES logger util serialization)
+make_boost_test(gl_string.cxx REQUIRES logger util serialization)
+make_boost_test(gl_string_compare.cxx REQUIRES logger util serialization)
+make_boost_test(gl_string_find.cxx REQUIRES logger util serialization)
+make_boost_test(gl_string_modifiers.cxx REQUIRES logger util serialization)
+make_boost_test(gl_string_iterators.cxx REQUIRES logger util serialization)
+make_boost_test(gl_string_constructors.cxx REQUIRES logger util serialization)
+make_boost_test(gl_string_other_ops.cxx REQUIRES logger util serialization)

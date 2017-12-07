@@ -1,0 +1,31 @@
+{% extends "!layout.html" %}
+{% block rootrellink %}
+  <li>
+    <img src="{{ pathto('_static/cmake-logo-16.png', 1) }}" alt=""
+         style="vertical-align: middle; margin-top: -2px" />
+  </li>
+  <li>
+    <a href="https://cmake.org/">CMake</a>{{ reldelim1 }}
+  </li>
+  <li>
+    {%- if versionswitch is defined %}
+    <span class="version_switch">{{ release }}</span>
+    <a href="{{ pathto(master_doc) }}">{% trans %}Documentation{% endtrans %}</a>{{ reldelim1 }}
+    {%- else %}
+    <a href="{{ pathto(master_doc) }}">{{ shorttitle|e }}</a>{{ reldelim1 }}
+    {%- endif %}
+  </li>
+{% endblock %}
+
+{% block extrahead %}
+  {% if versionswitch is defined %}
+  <script type="text/javascript" src="{{ pathto('../version_switch.js', 1) }}"></script>
+  {% endif %}
+{{ super() }}
+{% endblock %}
+
+{# Put some context in the html title element. Workaround for #}
+{# https://bitbucket.org/birkenfeld/sphinx/issue/1492/qthelp-generate-html-title-element-should #}
+{% block htmltitle %}
+  <title>{{ title|striptags|e }} {{ "&mdash;"|safe }} {{ docstitle|e }}</title>
+{% endblock %}

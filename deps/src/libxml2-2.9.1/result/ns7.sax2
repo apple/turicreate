@@ -1,0 +1,5 @@
+SAX.setDocumentLocator()
+SAX.startDocument()
+SAX.startElementNs(test, xml, 'http://www.w3.org/XML/1998/namespace', 0, 0, 0)
+SAX.endElementNs(test, xml, 'http://www.w3.org/XML/1998/namespace')
+SAX.endDocument()

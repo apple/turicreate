@@ -1,0 +1,4 @@
+Property POSITION_INDEPENDENT_CODE on target "conflict" is
+implied to be FALSE because it was used to determine the link libraries
+already. The INTERFACE_POSITION_INDEPENDENT_CODE property on
+dependency "picon" is in conflict.

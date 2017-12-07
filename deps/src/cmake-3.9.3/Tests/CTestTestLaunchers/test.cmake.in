@@ -1,0 +1,52 @@
+cmake_minimum_required(VERSION 2.8.12)
+
+set(TEST_SUCCESS TRUE)
+
+function(run_test_case NAME WHAT)
+  set(_message "Testing that launchers are used when running ${WHAT}")
+  message(STATUS "${_message}...")
+
+  # Settings:
+  set(CTEST_DASHBOARD_SOURCE              "@CMake_SOURCE_DIR@/Tests/CTestTestLaunchers")
+  set(CTEST_DASHBOARD_ROOT                "@CMake_BINARY_DIR@/Tests/CTestTestLaunchers")
+  set(CTEST_SITE                          "@SITE@")
+  set(CTEST_BUILD_NAME                    "Launchers-@BUILDNAME@-CTestTestLaunchers")
+
+  set(CTEST_SOURCE_DIRECTORY              "${CTEST_DASHBOARD_SOURCE}/${NAME}")
+  set(CTEST_BINARY_DIRECTORY              "${CTEST_DASHBOARD_ROOT}/${NAME}-bin")
+  set(CTEST_CMAKE_GENERATOR               "@CMAKE_GENERATOR@")
+  set(CTEST_CMAKE_GENERATOR_PLATFORM      "@CMAKE_GENERATOR_PLATFORM@")
+  set(CTEST_CMAKE_GENERATOR_TOOLSET       "@CMAKE_GENERATOR_TOOLSET@")
+  set(CTEST_BUILD_CONFIGURATION           "$ENV{CMAKE_CONFIG_TYPE}")
+  set(CTEST_NOTES_FILES                   "${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}")
+
+  ctest_empty_binary_directory(${CTEST_BINARY_DIRECTORY})
+
+  file(WRITE "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "
+  CMAKE_CXX_FLAGS:STRING=@CMAKE_CXX_FLAGS@
+  CMAKE_C_FLAGS:STRING=@CMAKE_C_FLAGS@
+  CMAKE_C_COMPILER:STRING=@CMAKE_C_COMPILER@
+  CMAKE_CXX_COMPILER:STRING=@CMAKE_CXX_COMPILER@
+  CMAKE_C_COMPILER_ARG1:STRING=@CMAKE_C_COMPILER_ARG1@
+  CMAKE_CXX_COMPILER_ARG1:STRING=@CMAKE_CXX_COMPILER_ARG1@
+  ")
+
+  ctest_start(Experimental)
+  ctest_configure(OPTIONS "-DCTEST_USE_LAUNCHERS=1")
+  ctest_build(NUMBER_ERRORS error_count)
+
+  if("${error_count}" STREQUAL "0")
+    set(TEST_SUCCESS FALSE PARENT_SCOPE)
+    message(STATUS "${_message}... FAIL")
+  else()
+    message(STATUS "${_message}... PASS")
+  endif()
+endfunction()
+
+run_test_case(launcher_compiler_test_project "the compiler")
+run_test_case(launcher_linker_test_project "the linker")
+run_test_case(launcher_custom_command_test_project "a custom command")
+
+if(TEST_SUCCESS)
+  message("CTEST_TEST_LAUNCHER_SUCCESS")
+endif()

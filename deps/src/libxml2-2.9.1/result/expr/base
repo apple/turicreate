@@ -1,0 +1,85 @@
+Expression: a
+Subexp: a => accept, Ok
+Subexp: a | a => accept, Ok
+Subexp: b => reject, Ok
+Expression: a|b
+Subexp: a => accept, Ok
+Subexp: b => accept, Ok
+Subexp: a | b => accept, Ok
+Subexp: a{0} => reject, Ok
+Subexp: b{0} => reject, Ok
+Expression: a | b | a
+Subexp: a => accept, Ok
+Subexp: b => accept, Ok
+Subexp: a | b => accept, Ok
+Subexp: b | a => accept, Ok
+Subexp: a | b | b => accept, Ok
+Subexp: a | b | a => accept, Ok
+Subexp: b | a | b => accept, Ok
+Expression: a,a
+Subexp: a,a => accept, Ok
+Subexp: a => reject, Ok
+Subexp: a,a,a => reject, Ok
+Expression: a{0,3}
+Subexp: a{3} => accept, Ok
+Subexp: a => accept, Ok
+Subexp: a,a,a => accept, Ok
+Subexp: a{1,3} => accept, Ok
+Expression: (a|b){0,4}
+Subexp: a => accept, Ok
+Subexp: b => accept, Ok
+Subexp: a,b => accept, Ok
+Subexp: a,b,a,b => accept, Ok
+Subexp: b,a,b,a,b => reject, Ok
+Subexp: b,a{1,3} => accept, Ok
+Subexp: a{1,3},b => accept, Ok
+Subexp: a{1,3},b,a => reject, Ok
+Subexp: a{1,4},b => reject, Ok
+Subexp: a{0,5} => reject, Ok
+Subexp: (b|a){0,4} => accept, Ok
+Subexp: (b|a){0,4},a => reject, Ok
+Subexp: (a,b){0,2} => accept, Ok
+Subexp: (a,b){0,1},b => accept, Ok
+Expression:  a*
+Subexp: a => accept, Ok
+Subexp: a? => accept, Ok
+Subexp: a+ => accept, Ok
+Subexp: a* => accept, Ok
+Subexp: a{0} => accept, Ok
+Expression:  a+
+Subexp: a => accept, Ok
+Subexp: a? => reject, Ok
+Subexp: a+ => accept, Ok
+Subexp: a* => reject, Ok
+Subexp: a?,a => accept, Ok
+Subexp: a,a* => accept, Ok
+Subexp: a*,a => accept, Ok
+Subexp: a?,a*,a => accept, Ok
+Subexp: a*,a?,a => accept, Ok
+Expression: (a|b)*
+Subexp: a => accept, Ok
+Subexp: b => accept, Ok
+Subexp: a,b => accept, Ok
+Subexp: a,b,a,b => accept, Ok
+Subexp: (b|a){0,4} => accept, Ok
+Subexp: (b|a){0,4},a => accept, Ok
+Subexp: a* => accept, Ok
+Subexp: b* => accept, Ok
+Subexp: (a|b)* => accept, Ok
+Subexp: a{1,3} => accept, Ok
+Subexp: b,a{1,3} => accept, Ok
+Subexp: a{1,3},b => accept, Ok
+Subexp: a*,(a|b)* => accept, Ok
+Subexp: a*,b{2,5} => accept, Ok
+Subexp: a*,(a|b)*,b{2,5} => accept, Ok
+Expression: (a|b)+,(c|d)
+Subexp: a+,c => accept, Ok
+Subexp: a*,c => reject, Ok
+Subexp: a,c => accept, Ok
+Subexp: a,b*,a*,c => accept, Ok
+Expression: (a|b),(a|c){0,100}
+Subexp: a{0,100},(a|c) => accept, Ok
+Subexp: a{0,101},(a|c) => reject, Ok
+Expression: (a, ((b, c, d){0,5}, e{0,1}){0,4}, f)
+Subexp: (a, b, (c, d, b){2,3}, c, d, e, f) => accept, Ok
+Ops: 0 nodes, 221 cons

@@ -1,0 +1,10 @@
+SAX.setDocumentLocator()
+SAX.startDocument()
+SAX.startElement(html, xmlns='http://www.w3.org/1999/xhtml')
+SAX.characters(
+, 1)
+SAX.pcdata(, 0)
+SAX.characters(
+, 1)
+SAX.endElement(html)
+SAX.endDocument()

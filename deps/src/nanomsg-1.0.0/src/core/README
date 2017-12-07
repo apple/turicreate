@@ -1,0 +1,3 @@
+In this directory all the generic code of the library resides. I.e. the code
+that is not a transport, not a protocol, not a generic utility, rather a glue
+between the pieces.

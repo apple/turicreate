@@ -1,0 +1,1 @@
+./test/schemas/bug303566_1.xml:9: Schemas validity error : Element 'Part': No match found for key-sequence ['B'] of keyref 'PartRefCountryDummy'.

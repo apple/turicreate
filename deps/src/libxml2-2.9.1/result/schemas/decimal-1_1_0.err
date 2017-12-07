@@ -1,0 +1,8 @@
+./test/schemas/decimal-1_0.xml:16: element val: Schemas validity error : Element 'val': '.' is not a valid value of the atomic type 'myDecimal'.
+./test/schemas/decimal-1_0.xml:17: element val: Schemas validity error : Element 'val': '-' is not a valid value of the atomic type 'myDecimal'.
+./test/schemas/decimal-1_0.xml:18: element val: Schemas validity error : Element 'val': '+' is not a valid value of the atomic type 'myDecimal'.
+./test/schemas/decimal-1_0.xml:19: element val: Schemas validity error : Element 'val': '*' is not a valid value of the atomic type 'myDecimal'.
+./test/schemas/decimal-1_0.xml:20: element val: Schemas validity error : Element 'val': '- 1' is not a valid value of the atomic type 'myDecimal'.
+./test/schemas/decimal-1_0.xml:21: element val: Schemas validity error : Element 'val': '+ 1' is not a valid value of the atomic type 'myDecimal'.
+./test/schemas/decimal-1_0.xml:22: element val: Schemas validity error : Element 'val': '+ 0' is not a valid value of the atomic type 'myDecimal'.
+./test/schemas/decimal-1_0.xml:23: element val: Schemas validity error : Element 'val': '- 0' is not a valid value of the atomic type 'myDecimal'.

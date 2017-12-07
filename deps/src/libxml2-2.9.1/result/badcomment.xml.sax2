@@ -1,0 +1,24 @@
+SAX.setDocumentLocator()
+SAX.startDocument()
+SAX.startElementNs(foo, NULL, NULL, 0, 0, 0)
+SAX.characters(
+, 1)
+SAX.comment( def='NT-Char')
+SAX.comment(>Char</nt>* ']]&gt;' <nt def='NT-Char'>Char</nt>*))
+']]&gt;'</rhs>
+<com>CDATA sections</com>
+<rhs>| '&lt;!DOCTYPE'
+(<nt def="NT-Char">Char</nt> - ('[' | ']'))+
+('['
+<nt def="NT-simpleDTD">simpleDTD</nt>*
+']')? '&gt;'</rhs>
+<com>doc type declaration</com>
+<prod id="NT-simpleDTD"><lhs>simpleDTD</lhs>
+<rhs>'&lt;!&como;'
+(<nt def='NT-Char'>Char</nt>* -
+(<nt def='NT-Char'>Char</nt>* '&comc;' <nt def='NT-Char'>Char</nt>*))
+'&comc;&gt;'</rhs>)
+SAX.characters(
+, 1)
+SAX.endElementNs(foo, NULL, NULL)
+SAX.endDocument()

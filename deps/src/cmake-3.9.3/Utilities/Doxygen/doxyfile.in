@@ -1,0 +1,91 @@
+# -------------------------------------------------------------------------
+# doxyfile for CMakeReference
+# -------------------------------------------------------------------------
+
+PROJECT_NAME         = CMake
+PROJECT_BRIEF        = "Cross-platform Make"
+PROJECT_NUMBER       = "@CMake_VERSION@"
+PROJECT_LOGO         = "@CMake_SOURCE_DIR@/Source/QtDialog/CMakeSetup64.png"
+
+FULL_PATH_NAMES      = YES
+STRIP_FROM_PATH      = \
+ "@CMake_SOURCE_DIR@/" \
+ "@CMake_BINARY_DIR@/"
+
+WARN_IF_UNDOCUMENTED = NO
+
+GENERATE_TREEVIEW    = NO
+GENERATE_TODOLIST    = YES
+GENERATE_BUGLIST     = YES
+GENERATE_HTML        = @GENERATE_HTML@
+GENERATE_HTMLHELP    = YES
+GENERATE_QHP         = @GENERATE_QHP@
+GENERATE_LATEX       = NO
+GENERATE_MAN         = NO
+GENERATE_RTF         = NO
+
+HAVE_DOT             = @HAVE_DOT@
+DOT_PATH             = "@DOT_PATH@"
+CLASS_GRAPH          = YES
+COLLABORATION_GRAPH  = YES
+TEMPLATE_RELATIONS   = YES
+INCLUDE_GRAPH        = YES
+INCLUDED_BY_GRAPH    = YES
+CLASS_DIAGRAMS       = YES
+GENERATE_LEGEND      = YES
+GRAPHICAL_HIERARCHY  = YES
+REFERENCED_BY_RELATION = YES
+REFERENCES_RELATION    = YES
+
+ALLEXTERNALS         = NO
+
+OUTPUT_DIRECTORY     = "@CMakeDeveloperReference_BINARY_DIR@/developer-reference"
+
+INPUT                = \
+ "@CMake_SOURCE_DIR@/Utilities/Doxygen/DeveloperReference" \
+ "@CMake_SOURCE_DIR@/Source" \
+ "@CMake_SOURCE_DIR@/Source/CPack" \
+ "@CMake_SOURCE_DIR@/Source/CPack/IFW" \
+ "@CMake_SOURCE_DIR@/Source/CPack/WiX" \
+ "@CMake_SOURCE_DIR@/Source/CTest" \
+ "@CMake_SOURCE_DIR@/Source/CursesDialog" \
+ "@CMake_SOURCE_DIR@/Source/kwsys" \
+ "@CMake_SOURCE_DIR@/Source/QtDialog" \
+ "@CMake_BINARY_DIR@/Source" \
+ "@CMake_BINARY_DIR@/Source/kwsys" \
+ "@CMake_BINARY_DIR@/Source/cmsys"
+
+EXTRACT_ALL          = YES
+EXTRACT_PRIVATE      = NO
+EXTRACT_STATIC       = YES
+HIDE_UNDOC_MEMBERS   = NO
+HIDE_UNDOC_CLASSES   = YES
+ALWAYS_DETAILED_SEC  = NO
+SOURCE_BROWSER       = YES
+INLINE_SOURCES       = NO
+CASE_SENSE_NAMES     = YES
+VERBATIM_HEADERS     = NO
+SHOW_INCLUDE_FILES   = YES
+JAVADOC_AUTOBRIEF    = YES
+SORT_MEMBER_DOCS     = NO
+DISTRIBUTE_GROUP_DOC = YES
+TAB_SIZE             = 3
+
+FILE_PATTERNS        = *.h *.hxx *.cxx *.dox
+RECURSIVE            = NO
+EXCLUDE_PATTERNS     =
+
+HTML_ALIGN_MEMBERS   = YES
+ALPHABETICAL_INDEX   = YES
+COLS_IN_ALPHA_INDEX  = 3
+IGNORE_PREFIX        = cm
+
+ENABLE_PREPROCESSING = YES
+MACRO_EXPANSION      = YES
+SEARCH_INCLUDES      = YES
+INCLUDE_PATH         =
+EXPAND_ONLY_PREDEF   = YES
+
+QHP_NAMESPACE        = org.cmake.developer-reference.@CMake_VERSION_MAJOR@@CMake_VERSION_MINOR@@CMake_VERSION_PATCH@
+QCH_FILE             = ../CMakeDeveloperReference-@CMake_VERSION_MAJOR@@CMake_VERSION_MINOR@@CMake_VERSION_PATCH@.qch
+QHG_LOCATION         = "@QHELPGENERATOR_EXECUTABLE@"

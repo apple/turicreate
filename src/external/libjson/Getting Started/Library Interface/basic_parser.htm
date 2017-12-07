@@ -1,0 +1,77 @@
+<HTML>
+<HEAD>
+<title>libjson Basic Parser Example</title>
+<script type="text/javascript" src="scripts/shCore.js"></script>
+<script type="text/javascript" src="scripts/shBrushCpp.js"></script>
+	<link type="text/css" rel="stylesheet" href="styles/shCoreDefault.css"/>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+
+</HEAD>
+<BODY>
+<h1>libjson Basic Parser</h1>
+<p>Previously we looked at how to create a new JSON node tree programmatically that could be sent over the wire to consumer. Now we&#39;ll look at the consumer side and see how to parse the JSON string into our application.</p>
+<p><span id="more-135"></span></p>
+<p>First we&#39;ll look at the main function in our program that will take a JSON string as input, parse it using the library and pass the tree to a function that will extract useful data.</p>
+<pre class="brush:cpp;wrap-lines:true">char *json = &quot;{\&quot;RootA\&quot;:\&quot;Value in parent node\&quot;,\&quot;ChildNode\&quot;:{\&quot;ChildA\&quot;:\&quot;String Value\&quot;,\&quot;ChildB\&quot;:42}}&quot;;
+JSONNODE *n = json_parse(json);
+ParseJSON(n);
+json_delete(n);</pre>
+
+<p>The first line is just a simple JSON string containing a child object. You&#39;ll likely get a string from a web service, message buss or even a file.</p>
+<p>Line 2 is where the magic happens in the library. We just pass the string to <em>json_parse</em> and if all is well, we&#39;ll receive a pointer to a node tree in return. NOTE that the parser is going to allocate memory for the node tree, so you have to free it on your own as we do in line 4.</p>
+<p>Line 3 is a function call that we define for iterating through the JSON tree. While mine isn&#39;t pretty, it gets the job done for simple JSON objects.</p>
+<pre class="brush:cpp;wrap-lines:true">void ParseJSON(JSONNODE *n){
+	if (n == NULL){
+		printf(&quot;Invalid JSON Node\n&quot;);
+		return;
+	}
+
+	JSONNODE_ITERATOR i = json_begin(n);
+	while (i != json_end(n)){
+		if (*i == NULL){
+			printf(&quot;Invalid JSON Node\n&quot;);
+			return;
+		}
+
+		// recursively call ourselves to dig deeper into the tree
+		if (json_type(*i) == JSON_ARRAY || json_type(*i) == JSON_NODE){
+			ParseJSON(*i);
+		}
+
+		// get the node name and value as a string
+		json_char *node_name = json_name(*i);
+
+		// find out where to store the values
+		if (strcmp(node_name, &quot;RootA&quot;) == 0){
+			json_char *node_value = json_as_string(*i);
+			strcpy(rootA, node_value);
+			json_free(node_value);
+		}
+		else if (strcmp(node_name, &quot;ChildA&quot;) == 0){
+			json_char *node_value = json_as_string(*i);
+			strcpy(childA, node_value);
+			json_free(node_value);
+		}
+		else if (strcmp(node_name, &quot;ChildB&quot;) == 0)
+			childB = json_as_int(*i);
+
+		// cleanup and increment the iterator
+		json_free(node_name);
+		++i;
+	}
+}</pre>
+
+<p>The first thing you want to do is check for NULL. If at any point in the parsing you run into a NULL value, then its likely that the JSON string wasn&#39;t formatted properly.</p>
+<p>Next on line 7 we get a pointer to the first iterator of the node we&#39;re currently dealing with. The iterator lets us navigate through the child nodes, one by one.</p>
+<p>Line 8 begins a while loop that will continue until we&#39;ve reached the final iterator returned by <em>json_end</em>.</p>
+<p>Again, we should check for an invalid iterator in case something went screwey, and we do so on line 9.</p>
+<p>If the iterator is currenly pointing to a node of type JSON_ARRAY or JSON_NODE, that means we are at a branch that requires a new iterator for processing. Thus line 16 makes a recursive call to the function so that we can start processing on the child node. Without this call, we would get the name of the node but trying to get a value would return nothing.</p>
+<p>On line 20 we call the <em>json_name</em> method that will return a string with the name of the node. If the node is not named or it&#39;s an array&#39;s value, the string will be empty, so check for that. Also note that you MUST free the memory returned by <em>json_name</em> as we do on line 37.</p>
+
+<p>Lines 23 through 34 are a simple decision tree that attempt to match the name of the node to known values and if a match is made, we use one of the library functions to extract the value of the node. <em>json_as_string</em> naturally returns the value of the node as a string. This is probably the easiest to use in that it doesn&#39;t care if the value of the node is encased in quotation marks or not, it will always return a string. You can read any node as a string and then typecast to whatever need.</p>
+<p>Line 37 frees up the node name allocation.</p>
+<p>Line 38 increments our iterator to the next node.</p>
+<p>So there you have a very simple little parser that will iterate through your tree and grab extract the data. Naturally you&#39;ll want to add error handling and tweak it for your own use.</p>
+<p>Chris Larsen 2010-10-08</p>
+<BODY>
+</HTML>

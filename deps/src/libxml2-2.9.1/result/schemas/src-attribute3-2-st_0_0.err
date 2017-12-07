@@ -1,0 +1,1 @@
+./test/schemas/src-attribute3-2-st_0.xsd:11: element simpleType: Schemas parser error : Element '{http://www.w3.org/2001/XMLSchema}attribute': The content is not valid. Expected is (annotation?).

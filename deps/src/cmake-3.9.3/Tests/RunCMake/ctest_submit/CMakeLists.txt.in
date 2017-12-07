@@ -1,0 +1,4 @@
+cmake_minimum_required(VERSION 3.1)
+project(CTestSubmit@CASE_NAME@ NONE)
+include(CTest)
+add_test(NAME RunCMakeVersion COMMAND "${CMAKE_COMMAND}" --version)

@@ -1,0 +1,3 @@
+Pattern: Number of characters in an abbreviation
+/AAA/BBB line 2: There is too much letters in the abbreviation
+./test/schematron/zvon12_2.xml fails to validate

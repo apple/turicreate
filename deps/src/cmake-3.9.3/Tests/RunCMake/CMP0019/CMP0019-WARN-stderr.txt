@@ -1,0 +1,40 @@
+CMake Warning \(dev\) in CMakeLists.txt:
+  Policy CMP0019 is not set: Do not re-expand variables in include and link
+  information.  Run "cmake --help-policy CMP0019" for policy details.  Use
+  the cmake_policy command to set the policy and suppress this warning.
+
+  The following variable evaluations were encountered:
+
+  Evaluated directory INCLUDE_DIRECTORIES
+
+    /usr/include/\${VAR_INCLUDE};/usr/include/normal
+
+  as
+
+    /usr/include/VAL_INCLUDE;/usr/include/normal
+
+  Evaluated target some_target INCLUDE_DIRECTORIES
+
+    /usr/include/\${VAR_INCLUDE};/usr/include/normal
+
+  as
+
+    /usr/include/VAL_INCLUDE;/usr/include/normal
+
+  Evaluated link directories
+
+    /usr/lib/\${VAR_LINK_DIRS};/usr/lib/normal
+
+  as
+
+    /usr/lib/VAL_LINK_DIRS;/usr/lib/normal
+
+  Evaluated link library
+
+    \${VAR_LINK_LIBS}
+
+  as
+
+    VAL_LINK_LIBS
+
+This warning is for project developers.  Use -Wno-dev to suppress it.$

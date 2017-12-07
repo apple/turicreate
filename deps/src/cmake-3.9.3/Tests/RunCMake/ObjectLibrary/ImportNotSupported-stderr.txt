@@ -1,0 +1,5 @@
+CMake Error at ImportNotSupported.cmake:[0-9]+ \(add_library\):
+  The OBJECT library type may not be used for IMPORTED libraries under Xcode
+  with multiple architectures.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

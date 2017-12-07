@@ -1,0 +1,62 @@
+cmake_minimum_required(VERSION 2.8)
+project(mfc1)
+
+macro(replace_flags var these those)
+  if("${${var}}" MATCHES "${these}")
+    string(REGEX REPLACE "${these}" "${those}" ${var} "${${var}}")
+    #message(STATUS "info: ${var} changed to '${${var}}'")
+  endif()
+  message(STATUS "info: ${var}='${${var}}'")
+endmacro()
+
+macro(msvc_link_to_static_crt)
+  if(MSVC)
+    set(has_correct_flag 0)
+    foreach(lang C CXX)
+    foreach(suffix "" _DEBUG _MINSIZEREL _RELEASE _RELWITHDEBINFO)
+      replace_flags("CMAKE_${lang}_FLAGS${suffix}" "/MD" "/MT")
+      if(CMAKE_${lang}_FLAGS${suffix} MATCHES "/MT")
+        set(has_correct_flag 1)
+      endif()
+    endforeach()
+    endforeach()
+    if(NOT has_correct_flag)
+      message(FATAL_ERROR "no CMAKE_*_FLAGS var contains /MT")
+    endif()
+  endif()
+endmacro()
+
+set(files
+  ChildFrm.cpp
+  ChildFrm.h
+  MainFrm.cpp
+  MainFrm.h
+  mfc1.cpp
+  mfc1.h
+  mfc1.rc
+  mfc1Doc.cpp
+  mfc1Doc.h
+  mfc1View.cpp
+  mfc1View.h
+  Resource.h
+  stdafx.cpp
+  stdafx.h
+)
+
+set(CMAKE_MFC_FLAG "@CMAKE_MFC_FLAG_VALUE@")
+
+if("${CMAKE_MFC_FLAG}" STREQUAL "1")
+  msvc_link_to_static_crt()
+else()
+  # VS generators add this automatically based on the CMAKE_MFC_FLAG value,
+  # but generators matching "Make" require:
+  add_definitions(-D_AFXDLL)
+endif()
+
+add_executable(mfc1 WIN32 ${files})
+install(TARGETS mfc1 DESTINATION bin)
+
+if("${CMAKE_MFC_FLAG}" STREQUAL "2")
+  set(CMAKE_INSTALL_MFC_LIBRARIES ON)
+  include(InstallRequiredSystemLibraries)
+endif()

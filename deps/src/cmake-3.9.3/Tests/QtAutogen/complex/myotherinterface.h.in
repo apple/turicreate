@@ -1,0 +1,14 @@
+
+#ifndef MYOTHERINTERFACE_H
+#define MYOTHERINTERFACE_H
+
+#include <QObject>
+
+class MyOtherInterface
+{
+
+};
+
+Q_DECLARE_INTERFACE(MyOtherInterface, "org.cmake.example.MyOtherInterface")
+
+#endif

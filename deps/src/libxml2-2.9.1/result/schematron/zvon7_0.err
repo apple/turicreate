@@ -1,0 +1,3 @@
+Pattern: Test integer
+/AAA line 1: The AAA value is not an integer.
+./test/schematron/zvon7_0.xml fails to validate

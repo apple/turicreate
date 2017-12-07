@@ -1,0 +1,7 @@
+CMake Error at CMP0026-CONFIG-LOCATION-NEW.cmake:7 \(get_target_property\):
+  The LOCATION property may not be read from target "somelib".  Use the
+  target name directly with add_custom_command, or use the generator
+  expression \$<TARGET_FILE>, as appropriate.
+
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

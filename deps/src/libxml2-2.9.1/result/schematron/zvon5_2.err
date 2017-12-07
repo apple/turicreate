@@ -1,0 +1,5 @@
+Pattern: Select empty elements CCC
+/AAA/BBB/CCC line 3: Source contains an empty element CCC
+/AAA/BBB/CCC line 3: [1]An element CCC does not contain any text
+/AAA/BBB/CCC line 3: [2]An element CCC does not contain any text
+./test/schematron/zvon5_2.xml fails to validate

@@ -1,0 +1,17 @@
+SAX.setDocumentLocator()
+SAX.startDocument()
+SAX.comment(
+long comment long comment long comment long comment long comment long comment
+long comment long comment long comment long comment long comment long comment
+long comment long comment long comment long comment long comment long comment
+long comment long comment long comment long comment long comment long comment
+long comment long comment long comment long comment long comment long comment
+long comment long comment long comment long comment long comment long comment
+long comment long comment long comment long comment long comment long comment
+)
+SAX.internalSubset(a, , )
+SAX.elementDecl(a, 1, ...)
+SAX.externalSubset(a, , )
+SAX.startElementNs(a, NULL, NULL, 0, 0, 0)
+SAX.endElementNs(a, NULL, NULL)
+SAX.endDocument()

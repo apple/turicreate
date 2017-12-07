@@ -1,0 +1,3 @@
+-- Android: Targeting API '[0-9]+' with architecture 'arm', ABI 'armeabi', and processor 'armv5te'
+-- Android: Selected (Clang toolchain '[^']+' with )?GCC toolchain '[^']+'
+.*-- CMAKE_ANDROID_ARM_MODE=1

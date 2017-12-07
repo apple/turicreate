@@ -1,0 +1,46 @@
+cmake_minimum_required(VERSION 2.8)
+
+if (NOT MAJOR_TEST_MODULE OR NOT MAJOR_TEST_VERSION)
+  message(FATAL_ERROR "test selection variables not set up")
+endif ()
+
+if (MAJOR_TEST_NO_LANGUAGES)
+  project(major_detect_${MAJOR_TEST_MODULE}_${MAJOR_TEST_VERSION} NONE)
+else ()
+  project(major_detect_${MAJOR_TEST_MODULE}_${MAJOR_TEST_VERSION})
+endif ()
+
+find_package(${MAJOR_TEST_MODULE} ${MAJOR_TEST_VERSION})
+
+if (MAJOR_TEST_VERSION_VAR)
+  set(VERSION_VAR "${MAJOR_TEST_VERSION_VAR}")
+else ()
+  set(VERSION_VAR "${MAJOR_TEST_MODULE}_VERSION_STRING")
+endif ()
+
+string(TOUPPER "${MAJOR_TEST_MODULE}" MODULE_UPPER)
+
+if ( ( ${MAJOR_TEST_MODULE}_FOUND OR ${MODULE_UPPER}_FOUND ) AND ${VERSION_VAR})
+  message(STATUS "${VERSION_VAR} is '${${VERSION_VAR}}'")
+  if (${VERSION_VAR} VERSION_LESS MAJOR_TEST_VERSION)
+    message(SEND_ERROR "Found version ${${VERSION_VAR}} is less than requested major version ${MAJOR_TEST_VERSION}")
+  endif ()
+  math(EXPR V_PLUS_ONE "${MAJOR_TEST_VERSION} + 1")
+  if (${VERSION_VAR} VERSION_GREATER V_PLUS_ONE)
+    message(SEND_ERROR "Found version ${${VERSION_VAR}} is greater than requested major version ${MAJOR_TEST_VERSION}")
+  endif ()
+endif ()
+
+if ( ( ${MAJOR_TEST_MODULE}_FOUND OR ${MODULE_UPPER}_FOUND ) AND ${MAJOR_TEST_MODULE}_VERSION_MAJOR)
+  message(STATUS "${MAJOR_TEST_MODULE}_VERSION_MAJOR is '${${MAJOR_TEST_MODULE}_VERSION_MAJOR}'")
+  if (NOT ${MAJOR_TEST_VERSION} EQUAL ${MAJOR_TEST_MODULE}_VERSION_MAJOR)
+    message(SEND_ERROR "We requested major version ${MAJOR_TEST_VERSION} but ${MAJOR_TEST_MODULE} set ${MAJOR_TEST_MODULE}_VERSION_MAJOR to ${${MAJOR_TEST_MODULE}_VERSION_MAJOR}")
+  endif ()
+endif ()
+
+if ( ( ${MAJOR_TEST_MODULE}_FOUND OR ${MODULE_UPPER}_FOUND ) AND ${MODULE_UPPER}_VERSION_MAJOR)
+  message(STATUS "${MODULE_UPPER}_VERSION_MAJOR is '${${MODULE_UPPER}_VERSION_MAJOR}'")
+  if (NOT ${MAJOR_TEST_VERSION} EQUAL ${MODULE_UPPER}_VERSION_MAJOR)
+    message(SEND_ERROR "We requested major version ${MAJOR_TEST_VERSION} but ${MAJOR_TEST_MODULE} set ${MODULE_UPPER}_VERSION_MAJOR to ${${MODULE_UPPER}_VERSION_MAJOR}")
+  endif ()
+endif ()

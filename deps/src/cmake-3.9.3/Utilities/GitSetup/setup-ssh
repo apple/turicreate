@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+#=============================================================================
+# Copyright 2010-2012 Kitware, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#=============================================================================
+
+# Run this script to set up ssh push access to the repository host.
+
+# Project configuration instructions:
+#
+# - Populate adjacent "config" file with:
+#    ssh.host = Repository host name
+#    ssh.user = Username on host, if not "git"
+#    ssh.key = Local ssh key name
+#    ssh.request-url = Web page URL to request ssh access
+
+egrep-q() {
+	egrep "$@" >/dev/null 2>/dev/null
+}
+
+die() {
+	echo 1>&2 "$@" ; exit 1
+}
+
+# Make sure we are inside the repository.
+cd "${BASH_SOURCE%/*}" &&
+
+# Load the project configuration.
+host=$(git config -f config --get ssh.host) &&
+user=$(git config -f config --get ssh.user || echo git) &&
+key=$(git config -f config --get ssh.key) &&
+request_url=$(git config -f config --get ssh.request-url) ||
+die 'This project is not configured for ssh push access.'
+
+# Check for existing configuration.
+if test -r ~/.ssh/config &&
+   egrep-q 'Host[= ]'"${host//\./\\.}" ~/.ssh/config; then
+	echo 'Host "'"$host"'" is already in ~/.ssh/config' &&
+	setup= &&
+	question='Test'
+else
+	echo 'Host "'"$host"'" not found in ~/.ssh/config' &&
+	setup=1 &&
+	question='Setup and test'
+fi &&
+
+# Ask the user whether to make changes.
+echo '' &&
+read -ep "${question} push access by ssh to $user@$host? [y/N]: " access &&
+if test "$access" != "y" -a "$access" != "Y"; then
+	exit 0
+fi &&
+
+# Setup host configuration if necessary.
+if test -n "$setup"; then
+	if ! test -d ~/.ssh; then
+		mkdir -p ~/.ssh &&
+		chmod 700 ~/.ssh
+	fi &&
+	if ! test -f ~/.ssh/config; then
+		touch ~/.ssh/config &&
+		chmod 600 ~/.ssh/config
+	fi &&
+	ssh_config='Host='"$host"'
+  IdentityFile ~/.ssh/'"$key" &&
+	echo "Adding to ~/.ssh/config:
+
+$ssh_config
+" &&
+	echo "$ssh_config" >> ~/.ssh/config &&
+	if ! test -e ~/.ssh/"$key"; then
+		if test -f ~/.ssh/id_rsa; then
+			# Take care of the common case.
+			ln -s id_rsa ~/.ssh/"$key"
+			echo '
+Assuming ~/.ssh/id_rsa is the private key corresponding to the public key for
+
+  '"$user@$host"'
+
+If this is incorrect place private key at "~/.ssh/'"$key"'".'
+		else
+			echo '
+Place the private key corresponding to the public key registered for
+
+  '"$user@$host"'
+
+at "~/.ssh/'"$key"'".'
+		fi
+		read -e -n 1 -p 'Press any key to continue...'
+	fi
+fi || exit 1
+
+# Test access configuration.
+echo 'Testing ssh push access to "'"$user@$host"'"...' &&
+if ! ssh "$user@$host" info; then
+	die 'No ssh push access to "'"$user@$host"'".  You may need to request access at
+
+  '"$request_url"'
+'
+fi

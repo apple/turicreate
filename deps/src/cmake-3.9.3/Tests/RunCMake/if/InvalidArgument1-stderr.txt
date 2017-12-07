@@ -1,0 +1,8 @@
+^CMake Error at InvalidArgument1.cmake:1 \(if\):
+  if given arguments:
+
+    "NOT" "foo" "bar" "STREQUAL" "foo bar"
+
+  Unknown arguments specified
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

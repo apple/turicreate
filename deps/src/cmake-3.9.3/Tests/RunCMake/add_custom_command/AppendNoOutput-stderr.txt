@@ -1,0 +1,4 @@
+CMake Error at AppendNoOutput.cmake:1 \(add_custom_command\):
+  add_custom_command given APPEND option with no OUTPUT.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

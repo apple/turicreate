@@ -1,0 +1,5 @@
+CMake Error in CMakeLists.txt:
+  Target "foo" has property "INCLUDE_DIRECTORIES" listed in its
+  COMPATIBLE_INTERFACE_STRING property.  This is not allowed.  Only
+  user-defined properties may appear listed in the
+  COMPATIBLE_INTERFACE_STRING property.

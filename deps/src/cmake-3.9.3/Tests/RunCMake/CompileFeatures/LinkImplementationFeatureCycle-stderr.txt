@@ -1,0 +1,7 @@
+CMake Error in CMakeLists.txt:
+  The COMPILE_FEATURES property of target "empty1" was evaluated when
+  computing the link implementation, and the "CXX_STANDARD" was "98" for that
+  computation.  Computing the COMPILE_FEATURES based on the link
+  implementation resulted in a higher "CXX_STANDARD" "11".  This is not
+  permitted.  The COMPILE_FEATURES may not both depend on and be depended on
+  by the link implementation.

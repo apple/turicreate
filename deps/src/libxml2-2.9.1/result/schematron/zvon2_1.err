@@ -1,0 +1,5 @@
+Pattern: Character @ forbidden
+/AAA line 1: Text in element AAA must not contain character @
+/AAA/BBB line 2: Text in element BBB must not contain character @
+/AAA/CCC line 3: Text in element CCC must not contain character @
+./test/schematron/zvon2_1.xml fails to validate

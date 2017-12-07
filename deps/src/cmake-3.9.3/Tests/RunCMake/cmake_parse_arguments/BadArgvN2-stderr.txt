@@ -1,0 +1,5 @@
+^CMake Error at BadArgvN2.cmake:[0-9]+ \(cmake_parse_arguments\):
+  PARSE_ARGV index 'pref' is not an unsigned integer
+Call Stack \(most recent call first\):
+  BadArgvN2.cmake:[0-9]+ \(test2\)
+  CMakeLists.txt:[0-9]+ \(include\)$

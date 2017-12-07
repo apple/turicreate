@@ -1,0 +1,18 @@
+CMake Error at do_test.cmake:2 \(find_package\):
+  By not providing "FindNoPrefix.cmake" in CMAKE_MODULE_PATH this project has
+  asked CMake to find a package configuration file provided by "NoPrefix",
+  but CMake did not find one.
+
+  Could not find a package configuration file provided by "NoPrefix" with any
+  of the following names:
+
+    NoPrefixConfig.cmake
+    noprefix-config.cmake
+
+  Add the installation prefix of "NoPrefix" to CMAKE_PREFIX_PATH or set
+  "NoPrefix_DIR" to a directory containing one of the above files.  If
+  "NoPrefix" provides a separate development package or SDK, be sure it has
+  been installed.
+Call Stack \(most recent call first\):
+  no_install_prefix.cmake:2 \(include\)
+  CMakeLists.txt:3 \(include\)

@@ -1,0 +1,54 @@
+^Matched string properly
+results from: setting up initial state
+CMAKE_MATCH_0: -->01<--
+CMAKE_MATCH_1: -->0<--
+CMAKE_MATCH_2: -->1<--
+CMAKE_MATCH_COUNT: -->2<--
+Matched string properly
+results from: making a match inside of find_package
+CMAKE_MATCH_0: -->01<--
+CMAKE_MATCH_1: -->0<--
+CMAKE_MATCH_2: -->1<--
+CMAKE_MATCH_COUNT: -->2<--
+Matched nothing properly
+results from: making a failure inside of find_package
+CMAKE_MATCH_0: --><--
+CMAKE_MATCH_1: --><--
+CMAKE_MATCH_2: --><--
+CMAKE_MATCH_COUNT: -->0<--
+Matched nothing properly
+results from: checking after find_package
+CMAKE_MATCH_0: --><--
+CMAKE_MATCH_1: --><--
+CMAKE_MATCH_2: --><--
+CMAKE_MATCH_COUNT: -->0<--
+Matched nothing properly
+results from: clearing out results with a failing match
+CMAKE_MATCH_0: --><--
+CMAKE_MATCH_1: --><--
+CMAKE_MATCH_2: --><--
+CMAKE_MATCH_COUNT: -->0<--
+Matched string properly
+results from: making a successful match before add_subdirectory
+CMAKE_MATCH_0: -->01<--
+CMAKE_MATCH_1: -->0<--
+CMAKE_MATCH_2: -->1<--
+CMAKE_MATCH_COUNT: -->2<--
+Matched string properly
+results from: check for success in add_subdirectory
+CMAKE_MATCH_0: -->01<--
+CMAKE_MATCH_1: -->0<--
+CMAKE_MATCH_2: -->1<--
+CMAKE_MATCH_COUNT: -->2<--
+Matched nothing properly
+results from: failing inside of add_subdirectory
+CMAKE_MATCH_0: --><--
+CMAKE_MATCH_1: --><--
+CMAKE_MATCH_2: --><--
+CMAKE_MATCH_COUNT: -->0<--
+Matched string properly
+results from: ensuring the subdirectory did not interfere with the parent
+CMAKE_MATCH_0: -->01<--
+CMAKE_MATCH_1: -->0<--
+CMAKE_MATCH_2: -->1<--
+CMAKE_MATCH_COUNT: -->2<--$

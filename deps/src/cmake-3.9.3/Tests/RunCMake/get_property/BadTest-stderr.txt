@@ -1,0 +1,4 @@
+^CMake Error at BadTest.cmake:1 \(get_property\):
+  get_property given TEST name that does not exist: FOO
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

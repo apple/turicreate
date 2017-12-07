@@ -1,0 +1,5 @@
+CMake Warning \(dev\) at Before24.cmake:1 \(cmake_minimum_required\):
+  Compatibility with CMake < 2.4 is not supported by CMake >= 3.0.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.

@@ -1,0 +1,15 @@
+{
+  "gitbook": "3.2.0",
+  "plugins": [
+    "collapsible-menu@1.0.2",
+    "anchors@0.5.0",
+    "mathjax"
+  ],
+  "pluginsConfig": {
+    "fontSettings": {
+      "theme": "white",
+      "family": "sans",
+      "size": 2
+    }
+  }
+}

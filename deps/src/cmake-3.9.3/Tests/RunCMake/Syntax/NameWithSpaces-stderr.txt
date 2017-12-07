@@ -1,0 +1,12 @@
+^CMake Error at NameWithSpaces.cmake:1 \(message\):
+  Syntax error in cmake code at
+
+    .*/Tests/RunCMake/Syntax/NameWithSpaces.cmake:1
+
+  when parsing string
+
+    \${var
+
+  syntax error, unexpected \$end, expecting } \(5\)
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

@@ -1,0 +1,19 @@
+Entity: line 1: parser error : internal error: xmlParseInternalSubset: error detected in Markup declaration
+
+ %defroot;
+          ^
+Entity: line 1:
+&lt;!ELEMENT root (middle) >
+^
+Entity: line 1: parser error : DOCTYPE improperly terminated
+ %defroot;
+          ^
+Entity: line 1:
+&lt;!ELEMENT root (middle) >
+^
+Entity: line 1: parser error : Start tag expected, '<' not found
+ %defroot;
+          ^
+Entity: line 1:
+&lt;!ELEMENT root (middle) >
+ ^

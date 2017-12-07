@@ -1,0 +1,4 @@
+CMake Error at NonSourceCopyFile.cmake:1 \(try_compile\):
+  COPY_FILE specified on a srcdir type TRY_COMPILE
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

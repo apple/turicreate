@@ -1,0 +1,57 @@
+<HTML>
+<HEAD>
+<title>libjson Basic Parser Example</title>
+<script type="text/javascript" src="../Library Interface/scripts/shCore.js"></script>
+<script type="text/javascript" src="../Library Interface/scripts/shBrushCpp.js"></script>
+	<link type="text/css" rel="stylesheet" href="../Library Interface/styles/shCoreDefault.css"/>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+
+</HEAD>
+<BODY>
+<h1>libjson Basic Parser</h1>
+<p>Previously we looked at how to create a new JSON node tree programmatically that could be sent over the wire to consumer. Now we&#39;ll look at the consumer side and see how to parse the JSON string into our application.</p>
+<p><span id="more-135"></span></p>
+<p>First we&#39;ll look at the main function in our program that will take a JSON string as input, parse it using the library and pass the tree to a function that will extract useful data.</p>
+<pre class="brush:cpp;wrap-lines:true">std::string json = &quot;{\&quot;RootA\&quot;:\&quot;Value in parent node\&quot;,\&quot;ChildNode\&quot;:{\&quot;ChildA\&quot;:\&quot;String Value\&quot;,\&quot;ChildB\&quot;:42}}&quot;;
+JSONNode n = libjson::parse(json);
+ParseJSON(n);</pre>
+
+<p>The first line is just a simple JSON string containing a child object. You&#39;ll likely get a string from a web service, message buss or even a file.</p>
+<p>Line 2 is where the magic happens in the library. We just pass the string to <em>libjson::parse</em> and if all is well, we&#39;ll receive a node tree in return. NOTE that the parser is going to allocate memory on the stack, so do not try and delete it, let it go out of scope.</p>
+<p>Line 3 is a function call that we define for iterating through the JSON tree. While mine isn&#39;t pretty, it gets the job done for simple JSON objects.</p>
+<pre class="brush:cpp;wrap-lines:true">void ParseJSON(const JSONNode &amp; n){
+	JSONNode::const_iterator i = n.begin();
+	while (i != n.end()){
+		// recursively call ourselves to dig deeper into the tree
+		if (i -> type() == JSON_ARRAY || i -> type() == JSON_NODE){
+			ParseJSON(*i);
+		}
+
+		// get the node name and value as a string
+		std::string node_name = i -> name();
+
+		// find out where to store the values
+		if (node_name == &quot;RootA&quot;){
+			rootA = i -> as_string();
+		}
+		else if (node_name == &quot;ChildA&quot;){
+			childA = i -> as_string();
+		}
+		else if (node_name == &quot;ChildB&quot;)
+			childB = i -> as_int();
+
+		//increment the iterator
+		++i;
+	}
+}</pre>
+
+<p>Next on line 7 we get a pointer to the first iterator of the node we&#39;re currently dealing with. The iterator lets us navigate through the child nodes, one by one.</p>
+<p>Line 8 begins a while loop that will continue until we&#39;ve reached the final iterator returned by <em>json_end</em>.</p>
+<p>If the iterator is currenly pointing to a node of type JSON_ARRAY or JSON_NODE, that means we are at a branch that requires a new iterator for processing. Thus line 16 makes a recursive call to the function so that we can start processing on the child node. Without this call, we would get the name of the node but trying to get a value would return nothing.</p>
+<p>On line 20 we call the <em>name</em> method that will return a string with the name of the node. If the node is not named or it&#39;s an array&#39;s value, the string will be empty, so check for that.</p>
+
+<p>Lines 23 through 34 are a simple decision tree that attempt to match the name of the node to known values and if a match is made, we use one of the library functions to extract the value of the node. <em>as_string</em> naturally returns the value of the node as a string. This is probably the easiest to use in that it doesn&#39;t care if the value of the node is encased in quotation marks or not, it will always return a string. You can read any node as a string and then typecast to whatever need.</p>
+<p>Line 38 increments our iterator to the next node.</p>
+<p>So there you have a very simple little parser that will iterate through your tree and grab extract the data. Naturally you&#39;ll want to add error handling and tweak it for your own use.</p>
+<BODY>
+</HTML>

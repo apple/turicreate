@@ -1,0 +1,1 @@
+<e1 xmlns="http://www.ietf.org" xmlns:w3c="http://www.w3.org" xml:base="http://www.example.com/something/else"><e3 xmlns="" id="E3" xml:base="../bar/foo" xml:space="preserve"></e3></e1>

@@ -1,0 +1,1 @@
+./test/schemas/scc-no-xsi_0.xsd:7: element attribute: Schemas parser error : Element '{http://www.w3.org/2001/XMLSchema}attribute': The target namespace must not match 'http://www.w3.org/2001/XMLSchema-instance'.

@@ -1,0 +1,12 @@
+CMake Error at BadSources2.cmake:2 \(try_compile\):
+  Unknown extension ".cxx" for file
+
+    .*/Tests/RunCMake/try_compile/src.cxx
+
+  try_compile\(\) works only for enabled languages.  Currently these are:
+
+    C NONE( RC)?
+
+  See project\(\) command to enable other languages.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

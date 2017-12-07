@@ -1,0 +1,2 @@
+.*Warning: Unused direct dependencies.*
+.*libm.*

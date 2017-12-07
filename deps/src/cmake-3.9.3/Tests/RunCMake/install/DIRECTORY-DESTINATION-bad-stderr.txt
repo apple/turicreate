@@ -1,0 +1,6 @@
+CMake Error:
+  Error evaluating generator expression:
+
+    \$<NOTAGENEX>
+
+  Expression did not evaluate to a known generator expression

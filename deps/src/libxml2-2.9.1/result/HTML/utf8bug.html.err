@@ -1,0 +1,15 @@
+./test/HTML/utf8bug.html:45: HTML parser error : htmlParseEntityRef: expecting ';'
+<img src="showimage.aspx?path=Files_Upload\192.png&width=%>" border="0" />
+                                                        ^
+./test/HTML/utf8bug.html:118: HTML parser error : htmlParseEntityRef: expecting ';'
+				<a href="showimage.aspx?path=Files_Upload\302.JPG&Width=" rel="lightbox" tit
+				                                                       ^
+./test/HTML/utf8bug.html:119: HTML parser error : htmlParseEntityRef: expecting ';'
+				<img src="showimage.aspx?path=Files_Upload\302.JPG&Width=220" align="left" b
+				                                                        ^
+./test/HTML/utf8bug.html:121: HTML parser error : Tag s1 invalid
+ز همکاران است. روی آن کلیک کند.</FONT></FONT></STRONG><S1
+                                                                               ^
+./test/HTML/utf8bug.html:177: HTML parser error : htmlParseEntityRef: expecting ';'
+�ین پاسخ را برای نویسنده مقاله رجانیوز copy&paste
+                                                                               ^

@@ -1,0 +1,4 @@
+CMake Error at UnterminatedCall1.cmake:2:
+  Parse error.  Function missing ending "\)".  End of file reached.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

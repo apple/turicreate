@@ -1,0 +1,6 @@
+CMake Error in CMakeLists.txt:
+  Target "testTarget" INTERFACE_INCLUDE_DIRECTORIES property contains path:
+
+    ".*Tests/RunCMake/IfacePaths_INCLUDE_DIRECTORIES/copy/foo"
+
+  which is prefixed in the source directory.

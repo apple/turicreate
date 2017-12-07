@@ -1,0 +1,13 @@
+^CMake Error at .*/Modules/Platform/Android/Determine-Compiler-NDK.cmake:[0-9]+ \(message\):
+  Android: No toolchain for ABI 'armeabi' found in the NDK:
+
+    .*
+
+  of the version specified by CMAKE_ANDROID_NDK_TOOLCHAIN_VERSION:
+
+    1\.0
+
+Call Stack \(most recent call first\):
+.*
+  ndk-badvernum.cmake:1 \(enable_language\)
+  CMakeLists.txt:3 \(include\)

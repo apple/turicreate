@@ -1,0 +1,27 @@
+/* Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
+   file Copyright.txt or https://cmake.org/licensing#kwsys for details.  */
+#ifndef @KWSYS_NAMESPACE@_Configure_hxx
+#define @KWSYS_NAMESPACE@_Configure_hxx
+
+/* Include C configuration.  */
+#include <@KWSYS_NAMESPACE@/Configure.h>
+
+/* Whether wstring is available.  */
+#define @KWSYS_NAMESPACE@_STL_HAS_WSTRING @KWSYS_STL_HAS_WSTRING@
+/* Whether <ext/stdio_filebuf.h> is available. */
+#define @KWSYS_NAMESPACE@_CXX_HAS_EXT_STDIO_FILEBUF_H                         \
+  @KWSYS_CXX_HAS_EXT_STDIO_FILEBUF_H@
+
+/* If building a C++ file in kwsys itself, give the source file
+   access to the macros without a configured namespace.  */
+#if defined(KWSYS_NAMESPACE)
+#if !@KWSYS_NAMESPACE@_NAME_IS_KWSYS
+#define kwsys @KWSYS_NAMESPACE@
+#endif
+#define KWSYS_NAME_IS_KWSYS @KWSYS_NAMESPACE@_NAME_IS_KWSYS
+#define KWSYS_STL_HAS_WSTRING @KWSYS_NAMESPACE@_STL_HAS_WSTRING
+#define KWSYS_CXX_HAS_EXT_STDIO_FILEBUF_H                                     \
+  @KWSYS_NAMESPACE@_CXX_HAS_EXT_STDIO_FILEBUF_H
+#endif
+
+#endif

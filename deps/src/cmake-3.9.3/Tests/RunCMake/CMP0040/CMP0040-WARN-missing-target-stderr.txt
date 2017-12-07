@@ -1,0 +1,10 @@
+CMake Warning \(dev\) at CMP0040-WARN-missing-target.cmake:2 \(add_custom_command\):
+  Policy CMP0040 is not set: The target in the TARGET signature of
+  add_custom_command\(\) must exist.  Run "cmake --help-policy CMP0040" for
+  policy details.  Use the cmake_policy command to set the policy and
+  suppress this warning.
++
+  No TARGET 'foobar' has been created in this directory.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.

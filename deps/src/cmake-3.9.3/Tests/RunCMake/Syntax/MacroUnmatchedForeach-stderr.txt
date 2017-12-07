@@ -1,0 +1,8 @@
+^CMake Error at MacroUnmatchedForeach.cmake:[0-9]+ \(m\):
+  A logical block opening on the line
+
+    .*/Tests/RunCMake/Syntax/MacroUnmatchedForeach.cmake:[0-9]+ \(foreach\)
+
+  is not closed.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)$

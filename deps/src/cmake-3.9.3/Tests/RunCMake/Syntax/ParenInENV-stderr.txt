@@ -1,0 +1,20 @@
+CMake Warning \(dev\) at ParenInENV.cmake:2:
+  Syntax Warning in cmake code at column 21
+
+  Argument not separated from preceding token by whitespace.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Error at ParenInENV.cmake:2 \(message\):
+  Syntax error in cmake code at
+
+    .*Tests/RunCMake/Syntax/ParenInENV.cmake:2
+
+  when parsing string
+
+    -->\$ENV{e
+
+  syntax error, unexpected \$end, expecting } \(9\)
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

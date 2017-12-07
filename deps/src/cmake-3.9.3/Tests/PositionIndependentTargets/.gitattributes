@@ -1,0 +1,2 @@
+# Do not format a source where we want a long line preserved.
+pic_test.h -format.clang-format

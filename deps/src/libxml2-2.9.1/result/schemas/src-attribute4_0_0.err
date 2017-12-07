@@ -1,0 +1,1 @@
+./test/schemas/src-attribute4_0.xsd:8: element simpleType: Schemas parser error : Element '{http://www.w3.org/2001/XMLSchema}attribute': The attribute 'type' and the <simpleType> child are mutually exclusive.

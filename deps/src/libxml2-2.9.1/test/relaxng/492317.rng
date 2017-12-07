@@ -1,0 +1,16 @@
+<element name="root" xmlns="http://relaxng.org/ns/structure/1.0">
+  <choice>
+    <element name="child">
+      <attribute name="type">
+        <value>Foo</value>
+      </attribute>
+      <!-- Define stuff that's only valid when type is "Foo" -->
+    </element>
+    <element name="child">
+      <attribute name="type">
+        <value>Bar</value>
+      </attribute>
+      <!-- Define stuff that's only valid when type is "Bar" -->
+    </element>
+  </choice>
+</element>

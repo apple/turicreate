@@ -1,0 +1,1 @@
+./test/schemas/restriction-attr1_0.xsd:5: element complexType: Schemas parser error : local complex type, attribute use 'barA': The 'optional' attribute use is inconsistent with the corresponding 'required' attribute use of the base complex type definition '{http://FOO}typeA'.

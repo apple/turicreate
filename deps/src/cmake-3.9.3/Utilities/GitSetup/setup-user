@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+#=============================================================================
+# Copyright 2010-2012 Kitware, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#=============================================================================
+
+# Run this script to configure Git user info in this repository.
+
+# Project configuration instructions: NONE
+
+for (( ; ; )); do
+	user_name=$(git config user.name || echo '') &&
+	user_email=$(git config user.email || echo '') &&
+	if test -n "$user_name" -a -n "$user_email"; then
+		echo 'Your commits will record as Author:
+
+  '"$user_name <$user_email>"'
+' &&
+		read -ep 'Is the author name and email address above correct? [Y/n] ' correct &&
+		if test "$correct" != "n" -a "$correct" != "N"; then
+			break
+		fi
+	fi &&
+	read -ep 'Enter your full name e.g. "John Doe": ' name &&
+	read -ep 'Enter your email address e.g. "john@gmail.com": ' email &&
+	git config user.name "$name" &&
+	git config user.email "$email"
+done

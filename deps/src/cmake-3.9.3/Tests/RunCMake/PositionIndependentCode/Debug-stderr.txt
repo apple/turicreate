@@ -1,0 +1,6 @@
+CMake Debug Log:
+  Boolean compatibility of property "POSITION_INDEPENDENT_CODE" for target
+  "foo" \(result: "TRUE"\):
+
+   \* Target "foo" has property content "TRUE"
+   \* Target "iface" property value "TRUE" \(Agree\)

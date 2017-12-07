@@ -1,0 +1,8 @@
+-- Before Installing
+-- Installing: .*/Tests/RunCMake/file/INSTALL-DIRECTORY-build/dir
+-- Installing: .*/Tests/RunCMake/file/INSTALL-DIRECTORY-build/dir/empty.txt
+-- Up-to-date: .*/Tests/RunCMake/file/INSTALL-DIRECTORY-build/dir
+-- Up-to-date: .*/Tests/RunCMake/file/INSTALL-DIRECTORY-build/dir/empty.txt
+-- Up-to-date: .*/Tests/RunCMake/file/INSTALL-DIRECTORY-build/dir
+-- Up-to-date: .*/Tests/RunCMake/file/INSTALL-DIRECTORY-build/dir/empty.txt
+-- After Installing

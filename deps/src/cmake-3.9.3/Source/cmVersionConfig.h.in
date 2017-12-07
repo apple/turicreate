@@ -1,0 +1,8 @@
+/* Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
+   file Copyright.txt or https://cmake.org/licensing for details.  */
+#define CMake_VERSION_MAJOR @CMake_VERSION_MAJOR@
+#define CMake_VERSION_MINOR @CMake_VERSION_MINOR@
+#define CMake_VERSION_PATCH @CMake_VERSION_PATCH@
+#define CMake_VERSION_SUFFIX "@CMake_VERSION_SUFFIX@"
+#define CMake_VERSION_IS_DIRTY @CMake_VERSION_IS_DIRTY@
+#define CMake_VERSION "@CMake_VERSION@"

@@ -1,0 +1,6 @@
+CMake Error at CommandError0.cmake:2:
+  Parse error.  Expected "\(", got newline with text "
+
+  ".
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

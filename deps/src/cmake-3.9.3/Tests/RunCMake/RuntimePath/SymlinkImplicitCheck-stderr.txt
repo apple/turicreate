@@ -1,0 +1,22 @@
+^CMake Error at .*/Tests/RunCMake/RuntimePath/SymlinkImplicitCheck.cmake:[0-9]+ \(file\):
+  file RPATH_CHANGE could not write new RPATH:
+
+    old-should-not-exist
+
+  to the file:
+
+    [^
+]*/Tests/RunCMake/RuntimePath/SymlinkImplicit-build/exe
+
+  The current (RPATH|RUNPATH) is:
+
+    [^
+]*/Tests/RunCMake/RuntimePath/SymlinkImplicit-build/libAlways(:[^
+]*)?
+
+  which does not contain:
+
+    [^
+]*/Tests/RunCMake/RuntimePath/SymlinkImplicit-build/libLink
+
+  as was expected\.$

@@ -1,0 +1,5 @@
+^CMake Error at .*/Modules/CheckIPOSupported\.cmake:[0-9]+ \(message\):
+  Policy CMP0069 set to OLD
+Call Stack \(most recent call first\):
+  cmp0069-is-old\.cmake:[0-9]+ \(check_ipo_supported\)
+  CMakeLists\.txt:[0-9]+ \(include\)$

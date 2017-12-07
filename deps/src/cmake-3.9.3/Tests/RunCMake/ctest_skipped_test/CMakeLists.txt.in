@@ -1,0 +1,12 @@
+cmake_minimum_required(VERSION 3.8)
+project(@CASE_NAME@ C)
+include(CTest)
+
+if (WIN32)
+  set(skip_command "@CMAKE_CURRENT_LIST_DIR@/skip.bat")
+else ()
+  set(skip_command "@CMAKE_CURRENT_LIST_DIR@/skip.sh")
+endif ()
+
+add_test(NAME SuccessfulTest COMMAND "${CMAKE_COMMAND}" --version)
+@CASE_CMAKELISTS_SUFFIX_CODE@

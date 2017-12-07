@@ -1,0 +1,9 @@
+CMake Error at BadObjSource2.cmake:1 \(add_library\):
+  OBJECT library "A" contains:
+
+    bad.obj
+
+  but may contain only sources that compile, header files, and other files
+  that would not affect linking of a normal library.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

@@ -1,0 +1,76 @@
+// Test SET, VARIABLE_REQUIRES
+
+#cmakedefine ONE_VAR
+#cmakedefine ONE_VAR_IS_DEFINED
+#cmakedefine ZERO_VAR
+
+#define STRING_VAR "${STRING_VAR}"
+
+// Test FOREACH
+
+#define FOREACH_VAR1 "${FOREACH_VAR1}"
+#define FOREACH_VAR2 "${FOREACH_VAR2}"
+#define FOREACH_CONCAT "${FOREACH_CONCAT}"
+
+// Test WHILE
+#define WHILE_VALUE ${while_var}
+
+// Test LOAD_CACHE
+
+#define CACHE_TEST_VAR1 "${CACHE_TEST_VAR1}"
+#define CACHE_TEST_VAR2 "${CACHE_TEST_VAR2}"
+#define CACHE_TEST_VAR3 "${CACHE_TEST_VAR3}"
+#cmakedefine CACHE_TEST_VAR_EXCLUDED
+#define CACHE_TEST_VAR_INTERNAL "${CACHE_TEST_VAR_INTERNAL}"
+
+// Test internal CMake vars from C++ flags
+
+#cmakedefine CMAKE_NO_STD_NAMESPACE
+#cmakedefine CMAKE_NO_ANSI_STREAM_HEADERS
+#cmakedefine CMAKE_NO_ANSI_STRING_STREAM
+#cmakedefine CMAKE_NO_ANSI_FOR_SCOPE
+
+#cmakedefine01 SHOULD_BE_ZERO
+#cmakedefine01 SHOULD_BE_ONE
+// Needed to check for files
+
+#define BINARY_DIR "${Complex_BINARY_DIR}"
+
+// Test FIND_LIBRARY
+
+#define FIND_DUMMY_LIB "${FIND_DUMMY_LIB}"
+
+// Test SET_SOURCE_FILES_PROPERTIES
+
+#cmakedefine FILE_HAS_ABSTRACT
+#cmakedefine FILE_HAS_WRAP_EXCLUDE
+#define FILE_COMPILE_FLAGS "${FILE_COMPILE_FLAGS}"
+
+#define TEST_SEP "${TEST_SEP}"
+
+// Test registry read
+
+#if defined(_WIN32) && !defined(__CYGWIN__)
+#define REGISTRY_TEST_PATH "${REGISTRY_TEST_PATH}"
+#endif
+
+// Test Remove command
+#define REMOVE_STRING "${REMOVE_STRING}"
+
+// Test IF inside FOREACH
+#cmakedefine IF_INSIDE_FOREACH_THEN_EXECUTED
+#cmakedefine IF_INSIDE_FOREACH_ELSE_EXECUTED
+
+// Test SET CACHE FORCE
+#cmakedefine FORCE_TEST
+#define CMAKE_GENERATOR "${CMAKE_GENERATOR}"
+
+#define CMAKE_SHARED_MODULE_PREFIX "${CMAKE_SHARED_MODULE_PREFIX}"
+#define CMAKE_SHARED_MODULE_SUFFIX "${CMAKE_SHARED_MODULE_SUFFIX}"
+
+// test elseif
+#cmakedefine ELSEIF_RESULT
+
+// test parenthesis in conditionals
+#cmakedefine CONDITIONAL_PARENTHESES
+

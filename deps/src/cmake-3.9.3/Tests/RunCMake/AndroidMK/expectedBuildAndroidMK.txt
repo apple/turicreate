@@ -1,0 +1,26 @@
+LOCAL_PATH.*call my-dir.*
+include.*CLEAR_VARS.*
+LOCAL_MODULE.*bar
+LOCAL_SRC_FILES.*bar.*
+include.*PREBUILT_STATIC_LIBRARY.*
+.*
+include.*CLEAR_VARS.*
+LOCAL_MODULE.*dog
+LOCAL_SRC_FILES.*.*dog.*
+LOCAL_HAS_CPP := true
+include.*PREBUILT_STATIC_LIBRARY.*
+.*
+include.*CLEAR_VARS.*
+LOCAL_MODULE.*car
+LOCAL_SRC_FILES.*.*car.*
+LOCAL_HAS_CPP := true
+include.*PREBUILT_STATIC_LIBRARY.*
+.*
+include.*CLEAR_VARS.*
+LOCAL_MODULE.*foo
+LOCAL_SRC_FILES.*.*foo.*
+LOCAL_CPP_FEATURES.*rtti exceptions
+LOCAL_STATIC_LIBRARIES.*car bar dog
+LOCAL_EXPORT_LDLIBS := -lm
+LOCAL_HAS_CPP := true
+include.*PREBUILT_STATIC_LIBRARY.*

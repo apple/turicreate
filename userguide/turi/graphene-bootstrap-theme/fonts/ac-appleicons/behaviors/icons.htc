@@ -1,0 +1,84 @@
+<public:component>
+<public:attach event="onpropertychange" onevent="toolkit_icons()" />
+<script type="text/javascript">
+	function toolkit_icons() {
+		var innerHTML, existingHTML, icon;
+		var icons = {
+			"chevrondown": "&#xF000;",
+			"chevrondownalt": "&#xF001;",
+			"chevronleft": "&#xF002;",
+			"chevronrightalt": "&#xF003;",
+			"chevronright": "&#xF004;",
+			"chevronleftalt": "&#xF005;",
+			"chevronup": "&#xF006;",
+			"chevronupalt": "&#xF007;",
+			"close": "&#xF008;",
+			"closealt": "&#xF009;",
+			"download": "&#xF010;",
+			"downloadalt": "&#xF011;",
+			"external": "&#xF012;",
+			"alert": "&#xF013;",
+			"list": "&#xF014;",
+			"paddledown": "&#xF015;",
+			"paddleleft": "&#xF016;",
+			"paddleright": "&#xF017;",
+			"paddleup": "&#xF018;",
+			"pause": "&#xF019;",
+			"play": "&#xF020;",
+			"playalt": "&#xF021;",
+			"replay": "&#xF022;",
+			"zoomalt": "&#xF023;",
+			"closeinlinealt": "&#xF024;",
+			"grid": "&#xF025;",
+			"checkalt": "&#xF026;",
+			"stop": "&#xF027;",
+			"stopalt": "&#xF028;",
+			"replayalt": "&#xF029;",
+			"facebook": "&#xF030;",
+			"link": "&#xF031;",
+			"mail": "&#xF032;",
+			"pinterest": "&#xF033;",
+			"qqweibo": "&#xF034;",
+			"qzone": "&#xF035;",
+			"renren": "&#xF036;",
+			"share": "&#xF037;",
+			"tumblr": "&#xF038;",
+			"twitter": "&#xF039;",
+			"webo": "&#xF040;",
+			"instagram": "&#xF041;",
+			"check": "&#xF042;",
+			"linkedin": "&#xF043;",
+			"snapchat": "&#xF044;",
+			"zoom": "&#xF045;",
+			"zoomoutalt": "&#xF046;",
+			"zoomout": "&#xF047;",
+			"favorite": "&#xF048;",
+			"clearsolid": "&#xF049;",
+			"remove": "&#xF050;",
+			"unvalidatedalt": "&#xF051;",
+			"unvalidated": "&#xF052;",
+			"info": "&#xF053;",
+			"add": "&#xF054;",
+			"exclamation": "&#xF055;",
+			"infoalt": "&#xF056;",
+			"circle": "&#xF057;",
+			"apple": "&#xF8FF;"
+		};
+
+		if (!element.getAttribute('icons-htc')) {
+			element.setAttribute('icons-htc', true);
+			existingHTML = element.innerHTML;
+			element.className += ' icon-ie-parent';
+			if ((navigator.userAgent.replace(/.*MSIE\s(\d+).*/i, '$1') > 7) && window.document.documentMode > 7) {
+				element.innerHTML = '<span class="icon-ie-link">' + existingHTML + '</span>';
+			} else {
+				icon = element.className.match(/( icon-| paddlenav-arrow-|thumbnail-)((?!before)[a-z\-]*)/)[2] || false;
+				if( icon && icons[icon] ) {
+					element.innerHTML = existingHTML + "<span class='icon-htc'>"+icons[icon]+"</span>";
+				}
+			}
+		}
+	}
+	toolkit_icons();
+</script>
+</public:component>

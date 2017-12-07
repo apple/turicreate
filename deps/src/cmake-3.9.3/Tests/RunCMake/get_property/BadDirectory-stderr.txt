@@ -1,0 +1,6 @@
+^CMake Error at BadDirectory.cmake:1 \(get_property\):
+  get_property DIRECTORY scope provided but requested directory was not
+  found.  This could be because the directory argument was invalid or, it is
+  valid but has not been processed yet.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

@@ -1,0 +1,51 @@
+#cmakedefine HAVE_SYS_TYPES_H
+#cmakedefine HAVE_STDINT_H
+#cmakedefine HAVE_STDDEF_H
+
+/* void* */
+#cmakedefine HAVE_SIZEOF_DATA_PTR
+@SIZEOF_DATA_PTR_CODE@
+
+/* char */
+#cmakedefine HAVE_SIZEOF_CHAR
+@SIZEOF_CHAR_CODE@
+
+/* short */
+#cmakedefine HAVE_SIZEOF_SHORT
+@SIZEOF_SHORT_CODE@
+
+/* int */
+#cmakedefine HAVE_SIZEOF_INT
+@SIZEOF_INT_CODE@
+
+/* long */
+#cmakedefine HAVE_SIZEOF_LONG
+@SIZEOF_LONG_CODE@
+
+/* long long */
+#cmakedefine HAVE_SIZEOF_LONG_LONG
+@SIZEOF_LONG_LONG_CODE@
+
+/* __int64 */
+#cmakedefine HAVE_SIZEOF___INT64
+@SIZEOF___INT64_CODE@
+
+/* size_t */
+#cmakedefine HAVE_SIZEOF_SIZE_T
+@SIZEOF_SIZE_T_CODE@
+
+/* ssize_t */
+#cmakedefine HAVE_SIZEOF_SSIZE_T
+@SIZEOF_SSIZE_T_CODE@
+
+/* struct somestruct::someint */
+#cmakedefine HAVE_SIZEOF_STRUCTMEMBER_INT
+@SIZEOF_STRUCTMEMBER_INT_CODE@
+
+/* struct somestruct::someptr */
+#cmakedefine HAVE_SIZEOF_STRUCTMEMBER_PTR
+@SIZEOF_STRUCTMEMBER_PTR_CODE@
+
+/* struct somestruct::somechar */
+#cmakedefine HAVE_SIZEOF_STRUCTMEMBER_CHAR
+@SIZEOF_STRUCTMEMBER_CHAR_CODE@

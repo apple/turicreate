@@ -1,0 +1,12 @@
+Update LIBJSON_VERSION values and values in makefile too
+Strip all trailing white space
+Run test in XCode using all options on
+Export Documentation to PDF
+Delete build folders
+Run all tests on Mac
+Run all tests on Linux
+Run test in VC++ using all options on (if possible)
+Run benchmark to assert options are all the default
+Remove Hidden Finder files
+Zip TestSuite
+Zip on Linux

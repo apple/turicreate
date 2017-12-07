@@ -1,0 +1,1 @@
+Memory check project .*/Tests/RunCMake/ctest_memcheck/DummyValgrindFailPre-build

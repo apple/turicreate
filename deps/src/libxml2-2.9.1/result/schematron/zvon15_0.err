@@ -1,0 +1,4 @@
+Pattern: id is the only permited attribute name
+/AAA line 1: Attribute name is forbidden in element AAA
+/AAA/CCC line 3: Attribute color is forbidden in element CCC
+./test/schematron/zvon15_0.xml fails to validate

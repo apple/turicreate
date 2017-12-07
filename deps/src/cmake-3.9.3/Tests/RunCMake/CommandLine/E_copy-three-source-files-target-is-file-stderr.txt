@@ -1,0 +1,1 @@
+^Error: Target \(for copy command\).* is not a directory.$

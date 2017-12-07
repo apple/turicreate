@@ -1,0 +1,8 @@
+CMake Error at .*/Modules/ExternalData.cmake:[0-9]+ \(message\):
+  Unknown hash algorithm specified by ExternalData_LINK_CONTENT:
+
+    BAD
+Call Stack \(most recent call first\):
+  .*
+  BadHashAlgo1.cmake:3 \(ExternalData_Expand_Arguments\)
+  CMakeLists.txt:3 \(include\)

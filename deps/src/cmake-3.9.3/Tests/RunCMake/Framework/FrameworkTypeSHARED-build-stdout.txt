@@ -1,0 +1,3 @@
+.*/Framework:( Mach-O universal binary with [^
+]*)? Mach-O[^
+]* dynamically linked shared library.*

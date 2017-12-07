@@ -1,0 +1,9 @@
+CMake Error at MissingSource.cmake:1 \(add_library\):
+  Cannot find source file:
+
+    missing.c
+
+  Tried extensions( \.[A-Za-z+]+|
+ )*
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

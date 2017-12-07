@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+<!ELEMENT doc (tst)*>
+<!ELEMENT tst (#PCDATA)>
+<!ATTLIST tst a NMTOKENS #IMPLIED>
+<!ATTLIST tst b CDATA #IMPLIED>
+<!ENTITY d "&#xD;">
+<!ENTITY a "&#xA;">
+<!ENTITY da "&#xD;&#xA;">
+]>
+<doc>
+<tst a="xyz" b="  xyz"/>
+<tst a="A B" b="  A   B  "/>
+<tst a="&#13;&#13;A&#10;&#10;B&#13;&#10;" b="&#13;&#13;A&#10;&#10;B&#13;&#10;"/>
+<tst a="x y" b=" x  y "/>
+<tst a="a b" b=" a b "/>
+<tst a="a b" b="  a  b  "/>
+</doc>

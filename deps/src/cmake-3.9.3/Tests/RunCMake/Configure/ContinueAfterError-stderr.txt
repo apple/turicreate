@@ -1,0 +1,13 @@
+^CMake Error at ContinueAfterError.cmake:[0-9]+ \(message\):
+  error in loop body
+Call Stack \(most recent call first\):
+  ContinueAfterError.cmake:[0-9]+ \(m\)
+  ContinueAfterError.cmake:[0-9]+ \(f\)
+  CMakeLists.txt:[0-9]+ \(include\)
++
+CMake Error at ContinueAfterError.cmake:[0-9]+ \(message\):
+  error in loop body
+Call Stack \(most recent call first\):
+  ContinueAfterError.cmake:[0-9]+ \(m\)
+  ContinueAfterError.cmake:[0-9]+ \(f\)
+  CMakeLists.txt:[0-9]+ \(include\)$

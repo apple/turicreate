@@ -1,0 +1,92 @@
+title_text
+----------
+
+Command ``some_cmd()`` explicit cmake domain.
+Command ``some_cmd()`` without target.
+Command ``some_cmd`` with target.
+Command ``some_cmd_<cmd>()`` placeholder without target.
+Command ``some_cmd_<cmd>`` placholder with target.
+Command ``some_cmd()`` with parens.
+Command ``some_cmd(SUB)`` with subcommand.
+Command ``some_cmd(SUB)`` with subcommand and target.
+Command ``some_cmd (SUB)`` with space and subcommand and target.
+Command ``some command`` with space and target.
+Variable ``some variable`` space and target.
+Variable ``<PLACEHOLDER>_VARIABLE`` with leading placeholder.
+Variable ``VARIABLE_<PLACEHOLDER>`` with trailing placeholder.
+Variable ``<PLACEHOLDER>_VARIABLE`` with leading placeholder and target.
+Variable ``VARIABLE_<PLACEHOLDER>`` with trailing placeholder and target.
+Generator ``Some Generator`` with space.
+
+First TOC entry.
+
+|not replaced|
+Second TOC entry.
+
+CMake Module Content
+
+More CMake Module Content
+
+Bracket Comment Content
+
+[
+Bracket Comment Content
+]
+
+.. cmake:command:: some_cmd
+
+   Command some_cmd description.
+
+.. command:: other_cmd
+
+   Command other_cmd description.
+
+.. cmake:variable:: some_var
+
+   Variable some_var description.
+
+.. variable:: other_var
+
+   Variable other_var description.
+
+  Parsed-literal included without directive.
+ Common Indentation Removed
+ # replaced in parsed literal
+
+ # Sample CMake code block
+ if(condition)
+   message(indented)
+ endif()
+ # |not replaced in literal|
+
+A literal block starts after a line consisting of two colons
+
+::
+
+  Literal block.
+ Common Indentation Removed
+ # |not replaced in literal|
+
+or after a paragraph ending in two colons::
+
+  Literal block.
+ Common Indentation Removed
+ # |not replaced in literal|
+
+but not after a line ending in two colons::
+in the middle of a paragraph.
+
+.. productionlist::
+ grammar: `production`
+ production: "content rendered"
+
+.. note::
+ Notes are called out.
+
+substituted text with multiple lines becomes one line
+
+End of first include.
+
+Cross-include substitution text with ``some_cmd()`` reference.
+
+End of second include.

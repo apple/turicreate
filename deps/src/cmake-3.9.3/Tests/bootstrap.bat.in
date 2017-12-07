@@ -1,0 +1,2 @@
+@echo off
+sh "@CMake_SOURCE_DIR@/bootstrap" %*

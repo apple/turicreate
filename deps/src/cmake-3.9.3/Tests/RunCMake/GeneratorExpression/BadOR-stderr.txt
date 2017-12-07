@@ -1,0 +1,53 @@
+CMake Error at BadOR.cmake:1 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<OR>
+
+  \$<OR> expression requires at least one parameter.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at BadOR.cmake:1 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<OR:>
+
+  Parameters to \$<OR> must resolve to either '0' or '1'.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at BadOR.cmake:1 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<OR:,>
+
+  Parameters to \$<OR> must resolve to either '0' or '1'.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at BadOR.cmake:1 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<OR:01>
+
+  Parameters to \$<OR> must resolve to either '0' or '1'.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at BadOR.cmake:1 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<OR:nothing>
+
+  Parameters to \$<OR> must resolve to either '0' or '1'.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at BadOR.cmake:1 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<OR:0,nothing>
+
+  Parameters to \$<OR> must resolve to either '0' or '1'.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

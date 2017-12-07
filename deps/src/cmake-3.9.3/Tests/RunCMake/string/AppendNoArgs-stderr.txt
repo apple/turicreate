@@ -1,0 +1,4 @@
+CMake Error at AppendNoArgs.cmake:1 \(string\):
+  string sub-command APPEND requires at least one argument.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

@@ -1,0 +1,1 @@
+Some $<$<CONFIG:Debug>:conflicting> $<$<NOT:$<CONFIG:Debug>>:content>

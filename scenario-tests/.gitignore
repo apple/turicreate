@@ -1,0 +1,43 @@
+###########  C stuff ##################
+# use glob syntax
+syntax: glob
+
+*~
+############# python stuff ################
+*.py[cod]
+
+# C extensions
+*.so
+
+# Packages
+*.egg
+*.egg-info
+# Unit test / coverage reports
+.coverage
+.tox
+*.py.xml
+# Translations
+*.mo
+# Editor Swap files
+*.swp
+*.swo
+# Mr Old School Data Scientist
+.Rhistory
+# log files
+*.log
+__MACOSX
+.ipynb_checkpoints
+.DS_Store
+.Rproj.user
+*.Rd
+
+*.zip
+chromedriver
+chromedriver.exe
+*.app
+sikuli-script.jar
+/libs
+
+/tests/engine_hdfs/hadoop*
+
+/venv

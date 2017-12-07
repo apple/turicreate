@@ -1,0 +1,5 @@
+^CMake Error at TargetTypeInvalid.cmake:2 \(try_compile\):
+  Invalid value 'INVALID' for CMAKE_TRY_COMPILE_TARGET_TYPE.  Only
+  'EXECUTABLE' and 'STATIC_LIBRARY' are allowed.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

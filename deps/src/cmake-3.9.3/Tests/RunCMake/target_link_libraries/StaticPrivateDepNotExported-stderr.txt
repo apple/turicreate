@@ -1,0 +1,1 @@
+CMake Error: install\(EXPORT "Exp" ...\) includes target "foo" which requires target "not_exported" that is not in the export set.

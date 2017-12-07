@@ -1,0 +1,5 @@
+project(Turi)
+
+subdirs(
+  xgboost
+)

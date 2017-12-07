@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 2.6)
+project(Policy0002 C)
+cmake_policy(SET CMP0002 OLD)
+add_subdirectory(A)
+add_executable(Policy0002 policy0002.c)

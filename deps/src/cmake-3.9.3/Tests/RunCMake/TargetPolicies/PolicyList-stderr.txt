@@ -1,0 +1,27 @@
+  Error evaluating generator expression:
+
+    \$<TARGET_POLICY:NOT_A_POLICY>
+
+  \$<TARGET_POLICY:prop> may only be used with a limited number of policies.
+  Currently it may be used with the following policies:
+
+   \* CMP0003
+   \* CMP0004
+   \* CMP0008
+   \* CMP0020
+   \* CMP0021
+   \* CMP0022
+   \* CMP0027
+   \* CMP0038
+   \* CMP0041
+   \* CMP0042
+   \* CMP0046
+   \* CMP0052
+   \* CMP0060
+   \* CMP0063
+   \* CMP0065
+   \* CMP0068
+   \* CMP0069
+
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

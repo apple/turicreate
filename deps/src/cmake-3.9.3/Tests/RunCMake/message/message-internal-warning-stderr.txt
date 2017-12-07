@@ -1,0 +1,13 @@
+^CMake Warning \(dev\) in message-internal-warning.cmake:
+  A logical block opening on the line
+
+    .*Tests/RunCMake/message/message-internal-warning.cmake:4 \(macro\)
+
+  closes on the line
+
+    .*Tests/RunCMake/message/message-internal-warning.cmake:5 \(endmacro\)
+
+  with mis-matching arguments.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.$

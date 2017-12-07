@@ -1,0 +1,5 @@
+CMake Deprecation Warning at .*/Modules/Qt4Macros.cmake:[^ ]+ \(message\):
+  The qt4_automoc macro is obsolete.  Use the CMAKE_AUTOMOC feature instead.
+Call Stack \(most recent call first\):
+  AutomocMacro-WARN.cmake:7 \(qt4_automoc\)
+  CMakeLists.txt:3 \(include\)

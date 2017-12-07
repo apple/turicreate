@@ -1,0 +1,1 @@
+^-E capabilities accepts no additional arguments$

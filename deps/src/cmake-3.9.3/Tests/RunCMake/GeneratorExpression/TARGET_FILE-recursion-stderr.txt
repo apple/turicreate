@@ -1,0 +1,4 @@
+CMake Error at TARGET_FILE-recursion.cmake:[0-9]+ \(add_executable\):
+  Target 'empty1' OUTPUT_DIRECTORY depends on itself.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

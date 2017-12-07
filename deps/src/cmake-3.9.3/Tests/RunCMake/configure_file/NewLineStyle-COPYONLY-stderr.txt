@@ -1,0 +1,4 @@
+CMake Error at NewLineStyle-COPYONLY.cmake:[0-9]+ \(configure_file\):
+  configure_file COPYONLY could not be used in combination with NEWLINE_STYLE
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

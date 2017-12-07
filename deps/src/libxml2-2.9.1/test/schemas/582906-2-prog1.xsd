@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id$ -->
+<xs:schema xmlns="http://example.com/xml/Prog1"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           targetNamespace="http://example.com/xml/Prog1">
+
+    <xs:include schemaLocation="582906-2-common.xsd"/>
+
+</xs:schema>

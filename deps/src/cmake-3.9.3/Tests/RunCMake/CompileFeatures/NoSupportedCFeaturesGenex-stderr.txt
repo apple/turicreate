@@ -1,0 +1,6 @@
+CMake Error in CMakeLists.txt:
+  No known features for C compiler
+
+  "[^"]*"
+
+  version *[.0-9]+\.

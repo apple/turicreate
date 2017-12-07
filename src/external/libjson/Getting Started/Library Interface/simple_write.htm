@@ -1,0 +1,43 @@
+<HTML>
+<HEAD>
+<title>libjson Simple Write Example</title>
+<script type="text/javascript" src="scripts/shCore.js"></script>
+<script type="text/javascript" src="scripts/shBrushCpp.js"></script>
+	<link type="text/css" rel="stylesheet" href="styles/shCoreDefault.css"/>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+
+</HEAD>
+<BODY>
+<h1>libjson Simple Write Example</h1>
+<p>This example uses the C interface to create a set of JSON nodes that you can then dump to a string and use however you like.</p>
+<pre class="brush:cpp;wrap-lines:true">JSONNODE *n = json_new(JSON_NODE);
+json_push_back(n, json_new_a(&quot;String Node&quot;, &quot;String Value&quot;));
+json_push_back(n, json_new_i(&quot;Integer Node&quot;, 42));
+json_push_back(n, json_new_f(&quot;Floating Point Node&quot;, 3.14));
+json_push_back(n, json_new_b(&quot;Boolean Node&quot;, 1));
+json_char *jc = json_write_formatted(n);
+printf(&quot;%s\n&quot;, jc);
+json_free(jc);
+json_delete(n);</pre>
+
+<p>The result will look like this:</p>
+<pre class="brush:cpp;wrap-lines:true">{
+    &quot;String Node&quot; : &quot;String Value&quot;,
+    &quot;Integer Node&quot; : 42,
+    &quot;Floating Point Node&quot; : 3.14,
+    &quot;Boolean Node&quot; : true
+}</pre>
+
+<p>The first line generates a new root node for us to work with. This node will contain the entire JSON structure we want to create. Note that, as mentioned in the documentation, any time you call a <em>json_new&#8230;</em> method, you are responsbile for freeing the memory allocated by the method. You can do this manually or by attaching the resulting node pointer to an existing node.</p>
+<p>Line 2 creates a new JSON_STRING node, i.e. a node that will have a string value, and attaches the new node to the end of our original root node <em>n</em>. The <em>json_new_a</em> method will escape your string values when you go to write the final string.</p>
+<p>Line 3, 4 and 5 create and add new integer, floating point and boolean nodes respctively and add them to the root node. Both the integer and floating point methods will create JSON_NUMBER nodes where the numeric values will be printed to a JSON string without any quotation marks. The boolean method will take a 0 or a 1 and print a &quot;true&quot; or &quot;false&quot; in the final JSON string.</p>
+
+<p>Line 6 returns a <em>json_char</em> string that contains nicely formatted JSON code from the structure we just created. The string will be nicely tabbed and returned for human readability. Use this for debugging purposes. If you are going into production, use the <em>json_write </em>method instead which will compact the JSON into a single line that saves space for transmission over the Net or between components.<br />
+	NOTE: similar to other libraries, the <em>json_write</em> and <em>json_write_formatted</em> methods allocate memory for the string, so you are responsible for freeing the memory after you&#39;re finished with it.</p>
+
+<p>Line 8 frees the string that <em>json_write_formatted</em> allocated. Any time you use a library function that returns <em>json_char</em>, make sure to free it!</p>
+<p>Line 9 is very important as it will free up all of the memory you&#39;ve allocated for the JSONNODEs. Always call this function on a node when you&#39;re finished with it or you will have some nasty memory leaks to contend with.</p>
+<p>That&#39;s the simplest way to create a JSON tree.</p>
+<p>Chris Larsen 2010-10-08</p>
+<BODY>
+</HTML>

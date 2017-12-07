@@ -1,0 +1,36 @@
+<HTML>
+<HEAD>
+<title>libjson Simple Write Example</title>
+<script type="text/javascript" src="../Library Interface/scripts/shCore.js"></script>
+<script type="text/javascript" src="../Library Interface/scripts/shBrushCpp.js"></script>
+	<link type="text/css" rel="stylesheet" href="../Library Interface/styles/shCoreDefault.css"/>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+
+</HEAD>
+<BODY>
+<h1>libjson Simple Write Example</h1>
+<p>This example uses the C interface to create a set of JSON nodes that you can then dump to a string and use however you like.</p>
+<pre class="brush:cpp;wrap-lines:true">JSONNode n(JSON_NODE);
+n.push_back(JSONNode(&quot;String Node&quot;, &quot;String Value&quot;));
+n.push_back(JSONNode(&quot;Integer Node&quot;, 42));
+n.push_back(JSONNode(&quot;Floating Point Node&quot;, 3.14));
+n.push_back(JSONNode(&quot;Boolean Node&quot;, true));
+std::string jc = n.write_formatted();
+std::cout &lt;&lt; jc &lt;&lt; std::endl;</pre>
+
+<p>The result will look like this:</p>
+<pre class="brush:cpp;wrap-lines:true">{
+    &quot;String Node&quot; : &quot;String Value&quot;,
+    &quot;Integer Node&quot; : 42,
+    &quot;Floating Point Node&quot; : 3.14,
+    &quot;Boolean Node&quot; : true
+}</pre>
+
+<p>The first line generates a new root node for us to work with. This node will contain the entire JSON structure we want to create.</p>
+<p>Line 2 creates a new JSON_STRING node, i.e. a node that will have a string value, and attaches the new node to the end of our original root node <em>n</em>.</p>
+<p>Line 3, 4 and 5 create and add new integer, floating point and boolean nodes respctively and add them to the root node. Both the integer and floating point methods will create JSON_NUMBER nodes where the numeric values will be printed to a JSON string without any quotation marks. The boolean method will take a true or a false and print a &quot;true&quot; or &quot;false&quot; in the final JSON string.</p>
+
+<p>Line 6 returns a <em>json_string</em> that contains nicely formatted JSON code from the structure we just created. The string will be nicely tabbed and returned for human readability. Use this for debugging purposes. If you are going into production, use the <em>write </em>method instead which will compact the JSON into a single line that saves space for transmission over the Net or between components.</p>
+
+<BODY>
+</HTML>

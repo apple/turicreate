@@ -1,0 +1,16 @@
+set(CTEST_RUN_CURRENT_SCRIPT 0)
+
+set(LOCK_FILE "${TEST_NAME}.lock")
+
+if("${TEST_NAME}" STREQUAL "i_want_to_be_alone")
+	file(GLOB LOCK_FILES *.lock)
+	if(LOCK_FILES)
+		message(FATAL_ERROR "found lock files of other tests even though this test should be running by itself: ${LOCK_FILES}")
+	endif()
+endif()
+
+file(WRITE "${LOCK_FILE}")
+ctest_sleep(3)
+file(REMOVE "${LOCK_FILE}")
+
+return()

@@ -1,0 +1,25 @@
+if (NOT TEST_SOURCE)
+  set(TEST_SOURCE "${TEST}")
+endif ()
+
+set(make_program "@CMake_TEST_EXPLICIT_MAKE_PROGRAM@")
+if(make_program)
+  set(maybe_make_program "-DCMAKE_MAKE_PROGRAM=${make_program}")
+endif()
+
+set(source_dir "@CMAKE_CURRENT_SOURCE_DIR@/${TEST_SOURCE}")
+set(binary_dir "@CMAKE_CURRENT_BINARY_DIR@/${TEST}-build")
+file(REMOVE_RECURSE "${binary_dir}")
+file(MAKE_DIRECTORY "${binary_dir}")
+execute_process(
+  COMMAND  ${CMAKE_COMMAND} ${CMAKE_ARGS}
+  "${source_dir}" -G "@CMAKE_GENERATOR@"
+  -A "@CMAKE_GENERATOR_PLATFORM@"
+  -T "@CMAKE_GENERATOR_TOOLSET@"
+  ${maybe_make_program}
+  WORKING_DIRECTORY "${binary_dir}"
+  RESULT_VARIABLE result
+  )
+if(result)
+  message(FATAL_ERROR "CMake failed to configure ${TEST}")
+endif()

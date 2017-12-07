@@ -1,0 +1,10 @@
+Armadillo C++ Linear Algebra Library
+Copyright 2008-2017 Conrad Sanderson (http://conradsanderson.id.au)
+Copyright 2008-2016 National ICT Australia (NICTA)
+Copyright 2017      Arroyo Consortium
+Copyright 2017      Data61, CSIRO
+
+This product includes software developed by Conrad Sanderson (http://conradsanderson.id.au)
+This product includes software developed at National ICT Australia (NICTA)
+This product includes software developed at Arroyo Consortium
+This product includes software developed at Data61, CSIRO

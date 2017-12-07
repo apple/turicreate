@@ -1,0 +1,445 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		92141E251FBEE02A009C76D8 /* NSWindowWorkaround.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92141E241FBEE02A009C76D8 /* NSWindowWorkaround.swift */; };
+		9226E7C41F366F2E00C33A64 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9226E7C31F366F2E00C33A64 /* AppDelegate.swift */; };
+		9226E7C61F366F2E00C33A64 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9226E7C51F366F2E00C33A64 /* ViewController.swift */; };
+		9226E7C81F366F2E00C33A64 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9226E7C71F366F2E00C33A64 /* Assets.xcassets */; };
+		9226E7CB1F366F2E00C33A64 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9226E7C91F366F2E00C33A64 /* Main.storyboard */; };
+		92A7D9361F36A90D00D47187 /* vega_viz.html in Resources */ = {isa = PBXBuildFile; fileRef = 92A7D9351F36A90D00D47187 /* vega_viz.html */; };
+		92D462DB1F6BCB6600101404 /* Debugging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92D462DA1F6BCB6600101404 /* Debugging.swift */; };
+		FC13DE871F8D4B9F007A3A02 /* vega-lite.min.js in Resources */ = {isa = PBXBuildFile; fileRef = FC13DE861F8D4B9F007A3A02 /* vega-lite.min.js */; };
+		FC13DE891F8D4BB0007A3A02 /* vega-embed.min.js in Resources */ = {isa = PBXBuildFile; fileRef = FC13DE881F8D4BB0007A3A02 /* vega-embed.min.js */; };
+		FC13DE8B1F8D4BBE007A3A02 /* vega-tooltip.min.js in Resources */ = {isa = PBXBuildFile; fileRef = FC13DE8A1F8D4BBE007A3A02 /* vega-tooltip.min.js */; };
+		FC13DE8D1F8D4BD6007A3A02 /* vega-tooltip.min.css in Resources */ = {isa = PBXBuildFile; fileRef = FC13DE8C1F8D4BD6007A3A02 /* vega-tooltip.min.css */; };
+		FC1A87781FB1393100A67DAD /* table_view.css in Resources */ = {isa = PBXBuildFile; fileRef = FC1A87771FB1393100A67DAD /* table_view.css */; };
+		FC1A878E1FB14E2900A67DAD /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FC1A878D1FB14E2000A67DAD /* index.js */; };
+		FC245BED1F4F541D009F54C6 /* VegaContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC245BEC1F4F541D009F54C6 /* VegaContainer.swift */; };
+		FC245BF31F4F7FFB009F54C6 /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC245BF21F4F7FFB009F54C6 /* JSON.swift */; };
+		FC245BF51F4F8110009F54C6 /* Pipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC245BF41F4F8110009F54C6 /* Pipe.swift */; };
+		FC5F0B3C1F5F3A3E0001BCEE /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC5F0B3B1F5F3A3E0001BCEE /* Error.swift */; };
+		FC9066011F425B4800AE3881 /* AppData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC9066001F425B4800AE3881 /* AppData.swift */; };
+		FCE18BB31F8D4A05006F2730 /* d3.v4.min.js in Resources */ = {isa = PBXBuildFile; fileRef = FCE18BB21F8D4A05006F2730 /* d3.v4.min.js */; };
+		FCE18BB51F8D4ACF006F2730 /* vega.min.js in Resources */ = {isa = PBXBuildFile; fileRef = FCE18BB41F8D4ACF006F2730 /* vega.min.js */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		92141E241FBEE02A009C76D8 /* NSWindowWorkaround.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSWindowWorkaround.swift; sourceTree = "<group>"; };
+		9226E7C01F366F2E00C33A64 /* Turi Create Visualization.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Turi Create Visualization.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9226E7C31F366F2E00C33A64 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		9226E7C51F366F2E00C33A64 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		9226E7C71F366F2E00C33A64 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		9226E7CA1F366F2E00C33A64 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		9226E7CC1F366F2E00C33A64 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		92A7D9351F36A90D00D47187 /* vega_viz.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = vega_viz.html; sourceTree = "<group>"; };
+		92D462DA1F6BCB6600101404 /* Debugging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debugging.swift; sourceTree = "<group>"; };
+		FC13DE861F8D4B9F007A3A02 /* vega-lite.min.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "vega-lite.min.js"; sourceTree = "<group>"; };
+		FC13DE881F8D4BB0007A3A02 /* vega-embed.min.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "vega-embed.min.js"; sourceTree = "<group>"; };
+		FC13DE8A1F8D4BBE007A3A02 /* vega-tooltip.min.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "vega-tooltip.min.js"; sourceTree = "<group>"; };
+		FC13DE8C1F8D4BD6007A3A02 /* vega-tooltip.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "vega-tooltip.min.css"; sourceTree = "<group>"; };
+		FC1A87771FB1393100A67DAD /* table_view.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = table_view.css; sourceTree = "<group>"; };
+		FC1A87841FB14C3C00A67DAD /* package.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = package.json; sourceTree = "<group>"; };
+		FC1A87861FB14C3C00A67DAD /* index.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FC1A87881FB14C3C00A67DAD /* Table.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Table.js; sourceTree = "<group>"; };
+		FC1A87891FB14C3C00A67DAD /* webpack.config.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = webpack.config.js; sourceTree = "<group>"; };
+		FC1A878D1FB14E2000A67DAD /* index.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FC245BEC1F4F541D009F54C6 /* VegaContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VegaContainer.swift; sourceTree = "<group>"; };
+		FC245BF21F4F7FFB009F54C6 /* JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
+		FC245BF41F4F8110009F54C6 /* Pipe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pipe.swift; sourceTree = "<group>"; };
+		FC5F0B3B1F5F3A3E0001BCEE /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
+		FC9066001F425B4800AE3881 /* AppData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppData.swift; sourceTree = "<group>"; };
+		FCE18BB21F8D4A05006F2730 /* d3.v4.min.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = d3.v4.min.js; sourceTree = "<group>"; };
+		FCE18BB41F8D4ACF006F2730 /* vega.min.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = vega.min.js; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9226E7BD1F366F2E00C33A64 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9226E7B71F366F2E00C33A64 = {
+			isa = PBXGroup;
+			children = (
+				9226E7C21F366F2E00C33A64 /* Turi Create Visualization */,
+				9226E7C11F366F2E00C33A64 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9226E7C11F366F2E00C33A64 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9226E7C01F366F2E00C33A64 /* Turi Create Visualization.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9226E7C21F366F2E00C33A64 /* Turi Create Visualization */ = {
+			isa = PBXGroup;
+			children = (
+				FC1A87831FB148FE00A67DAD /* deps */,
+				FC1A87811FB1463200A67DAD /* src */,
+				FC1A87771FB1393100A67DAD /* table_view.css */,
+				92A7D9351F36A90D00D47187 /* vega_viz.html */,
+				9226E7C71F366F2E00C33A64 /* Assets.xcassets */,
+				9226E7C91F366F2E00C33A64 /* Main.storyboard */,
+				9226E7CC1F366F2E00C33A64 /* Info.plist */,
+			);
+			path = "Turi Create Visualization";
+			sourceTree = "<group>";
+		};
+		FC1A87811FB1463200A67DAD /* src */ = {
+			isa = PBXGroup;
+			children = (
+				FC245BF41F4F8110009F54C6 /* Pipe.swift */,
+				FC5F0B3B1F5F3A3E0001BCEE /* Error.swift */,
+				FC245BF21F4F7FFB009F54C6 /* JSON.swift */,
+				FC245BEC1F4F541D009F54C6 /* VegaContainer.swift */,
+				FC9066001F425B4800AE3881 /* AppData.swift */,
+				9226E7C51F366F2E00C33A64 /* ViewController.swift */,
+				9226E7C31F366F2E00C33A64 /* AppDelegate.swift */,
+				92D462DA1F6BCB6600101404 /* Debugging.swift */,
+				92141E241FBEE02A009C76D8 /* NSWindowWorkaround.swift */,
+				FC1A87821FB1464D00A67DAD /* js */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		FC1A87821FB1464D00A67DAD /* js */ = {
+			isa = PBXGroup;
+			children = (
+				FC1A878C1FB14E2000A67DAD /* build */,
+				FC1A87891FB14C3C00A67DAD /* webpack.config.js */,
+				FC1A87841FB14C3C00A67DAD /* package.json */,
+				FC1A87851FB14C3C00A67DAD /* lib */,
+			);
+			path = js;
+			sourceTree = "<group>";
+		};
+		FC1A87831FB148FE00A67DAD /* deps */ = {
+			isa = PBXGroup;
+			children = (
+				FCE18BB21F8D4A05006F2730 /* d3.v4.min.js */,
+				FCE18BB41F8D4ACF006F2730 /* vega.min.js */,
+				FC13DE861F8D4B9F007A3A02 /* vega-lite.min.js */,
+				FC13DE881F8D4BB0007A3A02 /* vega-embed.min.js */,
+				FC13DE8A1F8D4BBE007A3A02 /* vega-tooltip.min.js */,
+				FC13DE8C1F8D4BD6007A3A02 /* vega-tooltip.min.css */,
+			);
+			path = deps;
+			sourceTree = "<group>";
+		};
+		FC1A87851FB14C3C00A67DAD /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				FC1A87861FB14C3C00A67DAD /* index.js */,
+				FC1A87871FB14C3C00A67DAD /* elements */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		FC1A87871FB14C3C00A67DAD /* elements */ = {
+			isa = PBXGroup;
+			children = (
+				FC1A87881FB14C3C00A67DAD /* Table.js */,
+			);
+			path = elements;
+			sourceTree = "<group>";
+		};
+		FC1A878C1FB14E2000A67DAD /* build */ = {
+			isa = PBXGroup;
+			children = (
+				FC1A878D1FB14E2000A67DAD /* index.js */,
+			);
+			path = build;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		9226E7BF1F366F2E00C33A64 /* Turi Create Visualization */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9226E7E51F366F2E00C33A64 /* Build configuration list for PBXNativeTarget "Turi Create Visualization" */;
+			buildPhases = (
+				9226E7BC1F366F2E00C33A64 /* Sources */,
+				FC1A878A1FB14D2900A67DAD /* ShellScript */,
+				9226E7BD1F366F2E00C33A64 /* Frameworks */,
+				9226E7BE1F366F2E00C33A64 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Turi Create Visualization";
+			productName = Lyra;
+			productReference = 9226E7C01F366F2E00C33A64 /* Turi Create Visualization.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9226E7B81F366F2E00C33A64 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0830;
+				LastUpgradeCheck = 0900;
+				ORGANIZATIONNAME = Apple;
+				TargetAttributes = {
+					9226E7BF1F366F2E00C33A64 = {
+						CreatedOnToolsVersion = 8.3.3;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 9226E7BB1F366F2E00C33A64 /* Build configuration list for PBXProject "Turi Create Visualization" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 9226E7B71F366F2E00C33A64;
+			productRefGroup = 9226E7C11F366F2E00C33A64 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9226E7BF1F366F2E00C33A64 /* Turi Create Visualization */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9226E7BE1F366F2E00C33A64 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FC1A87781FB1393100A67DAD /* table_view.css in Resources */,
+				FC13DE8B1F8D4BBE007A3A02 /* vega-tooltip.min.js in Resources */,
+				FCE18BB31F8D4A05006F2730 /* d3.v4.min.js in Resources */,
+				92A7D9361F36A90D00D47187 /* vega_viz.html in Resources */,
+				FC13DE8D1F8D4BD6007A3A02 /* vega-tooltip.min.css in Resources */,
+				FCE18BB51F8D4ACF006F2730 /* vega.min.js in Resources */,
+				9226E7C81F366F2E00C33A64 /* Assets.xcassets in Resources */,
+				FC13DE891F8D4BB0007A3A02 /* vega-embed.min.js in Resources */,
+				FC1A878E1FB14E2900A67DAD /* index.js in Resources */,
+				9226E7CB1F366F2E00C33A64 /* Main.storyboard in Resources */,
+				FC13DE871F8D4B9F007A3A02 /* vega-lite.min.js in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		FC1A878A1FB14D2900A67DAD /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"$SRCROOT/Turi Create Visualization/src/js\"\nnpm install\nnpm run build";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9226E7BC1F366F2E00C33A64 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				92141E251FBEE02A009C76D8 /* NSWindowWorkaround.swift in Sources */,
+				FC5F0B3C1F5F3A3E0001BCEE /* Error.swift in Sources */,
+				9226E7C61F366F2E00C33A64 /* ViewController.swift in Sources */,
+				9226E7C41F366F2E00C33A64 /* AppDelegate.swift in Sources */,
+				FC245BF31F4F7FFB009F54C6 /* JSON.swift in Sources */,
+				FC9066011F425B4800AE3881 /* AppData.swift in Sources */,
+				FC245BF51F4F8110009F54C6 /* Pipe.swift in Sources */,
+				92D462DB1F6BCB6600101404 /* Debugging.swift in Sources */,
+				FC245BED1F4F541D009F54C6 /* VegaContainer.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		9226E7C91F366F2E00C33A64 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9226E7CA1F366F2E00C33A64 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		9226E7E31F366F2E00C33A64 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		9226E7E41F366F2E00C33A64 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+			};
+			name = Release;
+		};
+		9226E7E61F366F2E00C33A64 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "Turi Create Visualization/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.apple.turi.visualization-client";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		9226E7E71F366F2E00C33A64 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "Turi Create Visualization/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.apple.turi.visualization-client";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9226E7BB1F366F2E00C33A64 /* Build configuration list for PBXProject "Turi Create Visualization" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9226E7E31F366F2E00C33A64 /* Debug */,
+				9226E7E41F366F2E00C33A64 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9226E7E51F366F2E00C33A64 /* Build configuration list for PBXNativeTarget "Turi Create Visualization" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9226E7E61F366F2E00C33A64 /* Debug */,
+				9226E7E71F366F2E00C33A64 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9226E7B81F366F2E00C33A64 /* Project object */;
+}

@@ -1,0 +1,1 @@
+^(CPackRPM: Will use GENERATED spec file: (/[^/]*)*/Tests/RunCMake/RPM/CPack/[^-]*-build((-[^-]*-subtest/)|/)_CPack_Packages/.*/RPM/SPECS/[^\.]*\.spec(\n|$))*$

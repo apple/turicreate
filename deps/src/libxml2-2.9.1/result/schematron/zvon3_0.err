@@ -1,0 +1,6 @@
+Pattern: Attribute test
+/AAA/BBB/CCC[1] line 3: attribute name is not present
+/AAA/BBB/CCC[2] line 4: attribute name is not present
+/AAA/CCC[1] line 6: attribute name is present
+/AAA/CCC[2] line 7: attribute name is present
+./test/schematron/zvon3_0.xml fails to validate

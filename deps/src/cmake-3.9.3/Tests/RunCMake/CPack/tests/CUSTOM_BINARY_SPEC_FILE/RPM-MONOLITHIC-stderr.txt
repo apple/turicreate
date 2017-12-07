@@ -1,0 +1,1 @@
+CPackRPM: Will use USER specified spec file: (/[^/]*)*/CUSTOM_BINARY_SPEC_FILE/custom\.spec\.in

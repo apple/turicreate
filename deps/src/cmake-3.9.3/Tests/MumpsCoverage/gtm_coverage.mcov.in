@@ -1,0 +1,2 @@
+packages:${CMake_BINARY_DIR}/Testing/MumpsCoverage/VistA-FOIA/Packages
+coverage_dir:${CMake_SOURCE_DIR}/Tests/MumpsCoverage

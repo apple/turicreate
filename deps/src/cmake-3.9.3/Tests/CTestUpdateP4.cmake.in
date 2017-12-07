@@ -1,0 +1,261 @@
+# This script drives creation of a perforce repository and checks
+# that CTest can update from it.
+
+#-----------------------------------------------------------------------------
+# Test in a directory next to this script.
+get_filename_component(TOP "${CMAKE_CURRENT_LIST_FILE}" PATH)
+set(P4_TOP "${TOP}")
+string(APPEND TOP "/@CTestUpdateP4_DIR@")
+
+# Include code common to all update tests.
+set(REPOSITORY_FILE_PREFIX "//ctest/")
+include("@CMAKE_CURRENT_SOURCE_DIR@/CTestUpdateCommon.cmake")
+
+#-----------------------------------------------------------------------------
+# Perforce server options
+set(P4_HOST localhost)
+set(P4_PORT 1888)
+
+#-----------------------------------------------------------------------------
+# Report p4 tools in use and set its defaults
+message("Using P4 tools:")
+set(P4 "@P4_EXECUTABLE@")
+set(P4D "@P4D_EXECUTABLE@")
+message(" p4 = ${P4}")
+message(" p4d = ${P4D}")
+
+set(P4_CLIENT -c ctest_p4)
+set(P4_OPTIONS -H ${P4_HOST} -p ${P4_PORT})
+set(P4CMD ${P4} ${P4_OPTIONS})
+
+#-----------------------------------------------------------------------------
+# Start the Perforce server
+if(UNIX)
+  set(P4_ROOT ${P4_TOP}/perforce)
+
+  message("Starting p4d on '${P4_ROOT}' listening on port ${P4_PORT}...")
+
+  # Stop a previous instance of Perforce running
+  execute_process(
+    WORKING_DIRECTORY ${TOP}
+    COMMAND ${P4CMD} admin stop
+    OUTPUT_QUIET
+    ERROR_QUIET
+  )
+
+  # Make sure we don't have a perforce directory from a previous run
+  file(REMOVE_RECURSE ${P4_ROOT})
+  file(MAKE_DIRECTORY ${P4_ROOT})
+
+  set(P4_SERVER "nohup '${P4D}' -d -r '${P4_ROOT}'")
+  string(APPEND P4_SERVER " -L '${P4_ROOT}/p4.log'")
+  string(APPEND P4_SERVER " -J '${P4_ROOT}/journal'")
+  string(APPEND P4_SERVER " -p ${P4_PORT} >/dev/null 2>&1 &")
+
+  message("Server command line: ${P4_SERVER}")
+
+  execute_process(
+    COMMAND sh -c "
+${P4_SERVER}
+for i in 1 2 3 4 5 6 7 8 9 10; do
+  echo 'Waiting for server to start...'
+  sleep 1
+  if '${P4}' -H ${P4_HOST} -p ${P4_PORT} help >/dev/null 2>&1; then
+    echo 'Server started.'
+    exit
+  fi
+done
+echo 'Gave up waiting for server to start.'
+"
+    )
+endif()
+
+#-----------------------------------------------------------------------------
+# Initialize the testing directory.
+message("Creating test directory...")
+init_testing()
+
+#-----------------------------------------------------------------------------
+# Create the repository.
+message("Creating depot...")
+file(WRITE  ${TOP}/depot.spec "Depot: ctest\n")
+file(APPEND ${TOP}/depot.spec "Type: local\n")
+file(APPEND ${TOP}/depot.spec "Map: ctest/...\n")
+run_child(
+  WORKING_DIRECTORY ${TOP}
+  COMMAND ${P4CMD} depot -i
+  INPUT_FILE ${TOP}/depot.spec
+)
+
+#-----------------------------------------------------------------------------
+# Import initial content into the repository.
+message("Importing content...")
+create_content(user-source)
+
+message("Creating client spec...")
+file(WRITE  ${TOP}/client.spec "Client: ctest_p4\n")
+file(APPEND ${TOP}/client.spec "Root: ${TOP}/user-source\n")
+file(APPEND ${TOP}/client.spec "View: //ctest/... //ctest_p4/...\n")
+run_child(
+  WORKING_DIRECTORY ${TOP}/user-source
+  COMMAND ${P4CMD} client -i
+  INPUT_FILE ${TOP}/client.spec
+)
+
+# After creating the depot and the client view, all P4 commands need to
+# have the client spec passed to them
+list(APPEND P4CMD ${P4_CLIENT})
+
+message("Adding files to repository")
+file(GLOB_RECURSE files ${TOP}/user-source/*)
+foreach(filename ${files})
+  run_child(
+    WORKING_DIRECTORY ${TOP}/user-source
+    COMMAND ${P4CMD} add ${filename}
+  )
+endforeach()
+
+message("Submitting changes to repository")
+run_child(
+  WORKING_DIRECTORY ${TOP}/user-source
+  COMMAND ${P4CMD} submit -d "CTEST: Initial content"
+)
+message("Tagging the repository")
+file(WRITE  ${TOP}/label.spec "Label: r1\n")
+file(APPEND ${TOP}/label.spec "View: //ctest/...\n")
+
+run_child(
+  WORKING_DIRECTORY ${TOP}/user-source
+  COMMAND ${P4CMD} label -i
+  INPUT_FILE ${TOP}/label.spec
+)
+
+run_child(
+  WORKING_DIRECTORY ${TOP}/user-source
+  COMMAND ${P4CMD} labelsync -l r1
+)
+
+#-----------------------------------------------------------------------------
+# Make changes in the working tree.
+message("Changing content...")
+update_content(user-source files_added files_removed dirs_added)
+foreach(filename ${files_added})
+  message("add: ${filename}")
+  run_child(
+    WORKING_DIRECTORY ${TOP}/user-source
+    COMMAND ${P4CMD} add ${TOP}/user-source/${filename}
+  )
+endforeach()
+foreach(filename ${files_removed})
+  run_child(
+    WORKING_DIRECTORY ${TOP}/user-source
+    COMMAND ${P4CMD} delete ${TOP}/user-source/${filename}
+  )
+endforeach()
+
+#-----------------------------------------------------------------------------
+# Commit the changes to the repository.
+message("Committing revision 2...")
+run_child(
+  WORKING_DIRECTORY ${TOP}/user-source
+  COMMAND ${P4CMD} submit -d "CTEST: Changed content"
+)
+
+#-----------------------------------------------------------------------------
+# Make changes in the working tree.
+message("Changing content again...")
+run_child(
+  WORKING_DIRECTORY ${TOP}/user-source
+  COMMAND ${P4CMD} edit //ctest/...
+)
+
+change_content(user-source)
+run_child(
+  WORKING_DIRECTORY ${TOP}/user-source
+  COMMAND ${P4CMD} revert -a //ctest/...
+)
+
+#-----------------------------------------------------------------------------
+# Commit the changes to the repository.
+message("Committing revision 3...")
+run_child(
+  WORKING_DIRECTORY ${TOP}/user-source
+  COMMAND ${P4CMD} submit -d "CTEST: Changed content again"
+)
+
+#-----------------------------------------------------------------------------
+# Go back to before the changes so we can test updating.
+message("Backing up to revision 1...")
+run_child(
+  WORKING_DIRECTORY ${TOP}/user-source
+  COMMAND ${P4CMD} sync @r1
+  )
+
+# Create a modified file.
+run_child(
+  WORKING_DIRECTORY ${TOP}/user-source
+  COMMAND ${P4CMD} sync @r1
+  )
+
+# We should p4 open any files that modify_content creates
+run_child(
+  WORKING_DIRECTORY ${TOP}/user-source
+  COMMAND ${P4CMD} open ${TOP}/user-source/CTestConfig.cmake
+)
+modify_content(user-source)
+
+#-----------------------------------------------------------------------------
+# Test updating the user work directory with the command-line interface.
+message("Running CTest Dashboard Command Line...")
+
+# Create the user build tree.
+create_build_tree(user-source user-binary)
+file(APPEND ${TOP}/user-binary/CTestConfiguration.ini
+  "# P4 command configuration
+UpdateCommand: ${P4}
+P4Client: ctest_p4
+P4Options: -H ${P4_HOST} -p ${P4_PORT}
+")
+
+# Run the dashboard command line interface.
+run_dashboard_command_line(user-binary)
+
+# Revert the modified files
+run_child(
+  WORKING_DIRECTORY ${TOP}/user-source
+  COMMAND ${P4CMD} revert ${TOP}/user-source/CTestConfig.cmake
+)
+
+#-----------------------------------------------------------------------------
+# Test initial checkout and update with a dashboard script.
+# Create a new client so we can check out files on a different directory
+message("Running CTest Dashboard Script...")
+
+message("Creating client spec...")
+file(WRITE  ${TOP}/client2.spec "Client: ctest2_p4\n")
+file(APPEND ${TOP}/client2.spec "Root: ${TOP}/dash-source\n")
+file(APPEND ${TOP}/client2.spec "View: //ctest/... //ctest2_p4/...\n")
+run_child(
+  COMMAND ${P4CMD} client -i
+  INPUT_FILE ${TOP}/client2.spec
+)
+
+file(MAKE_DIRECTORY ${TOP}/dash-source)
+
+create_dashboard_script(dash-binary
+  "# P4 command configuration
+set(CTEST_P4_CLIENT \"ctest2_p4\")
+set(CTEST_P4_OPTIONS \"-H ${P4_HOST} -p ${P4_PORT}\")
+set(CTEST_UPDATE_COMMAND \"${P4}\")
+")
+
+# Run the dashboard script with CTest.
+run_dashboard_script(dash-binary)
+
+#-----------------------------------------------------------------------------
+# Clean up
+message("Shutting down p4d")
+run_child(
+    WORKING_DIRECTORY ${TOP}
+    COMMAND ${P4CMD} admin stop
+)

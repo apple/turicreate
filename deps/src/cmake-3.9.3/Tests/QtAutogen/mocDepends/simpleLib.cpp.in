@@ -1,0 +1,9 @@
+#include "simpleLib.hpp"
+
+SimpleLib::SimpleLib()
+{
+}
+
+SimpleLib::~SimpleLib()
+{
+}

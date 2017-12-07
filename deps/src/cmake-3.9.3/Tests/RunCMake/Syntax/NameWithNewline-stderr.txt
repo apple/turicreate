@@ -1,0 +1,12 @@
+^CMake Error at NameWithNewline.cmake:1 \(message\):
+  Syntax error in cmake code at
+
+    .*/Tests/RunCMake/Syntax/NameWithNewline.cmake:1
+
+  when parsing string
+
+    \${var\\nwith\\nnewline}
+
+  syntax error, unexpected cal_SYMBOL, expecting } \(7\)
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

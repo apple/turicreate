@@ -1,0 +1,1 @@
+^(.*CPackRPM:Warning: SUGGESTS not supported in provided rpmbuild.*)?CPackRPM: Will use GENERATED spec file: (/[^/]*)*/Tests/RunCMake/RPM/CPack/[^-]*-build/_CPack_Packages/.*/RPM/SPECS/[^\.]*\.spec$

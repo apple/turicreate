@@ -1,0 +1,161 @@
+[
+  # C++ alternatives to C standard headers
+  { include: [ "<assert.h>", public, "<cassert>", public ] },
+  { include: [ "<complex.h>", public, "<ccomplex>", public ] },
+  { include: [ "<ctype.h>", public, "<cctype>", public ] },
+  { include: [ "<errno.h>", public, "<cerrno>", public ] },
+  { include: [ "<float.h>", public, "<cfloat>", public ] },
+  { include: [ "<iso646.h>", public, "<ciso646>", public ] },
+  { include: [ "<limits.h>", public, "<climits>", public ] },
+  { include: [ "<locale.h>", public, "<clocale>", public ] },
+  { include: [ "<math.h>", public, "<cmath>", public ] },
+  { include: [ "<setjmp.h>", public, "<csetjmp>", public ] },
+  { include: [ "<signal.h>", public, "<csignal>", public ] },
+  { include: [ "<stdarg.h>", public, "<cstdarg>", public ] },
+  { include: [ "<stddef.h>", public, "<cstddef>", public ] },
+  { include: [ "<stdio.h>", public, "<cstdio>", public ] },
+  { include: [ "<stdlib.h>", public, "<cstdlib>", public ] },
+  { include: [ "<string.h>", public, "<cstring>", public ] },
+  { include: [ "<time.h>", public, "<ctime>", public ] },
+  { include: [ "<wchar.h>", public, "<cwchar>", public ] },
+  { include: [ "<wctype.h>", public, "<cwctype>", public ] },
+
+  # HACK: check whether this can be removed with next iwyu release.
+  { include: [ "<bits/std_function.h>", private, "<functional>", public ] },
+  { include: [ "<bits/time.h>", private, "<time.h>", public ] },
+  { include: [ "<bits/types/clock_t.h>", private, "<time.h>", public ] },
+  { include: [ "<bits/types/struct_timespec.h>", private, "<time.h>", public ] },
+  { include: [ "<bits/types/struct_timeval.h>", private, "<time.h>", public ] },
+  { include: [ "<bits/types/struct_tm.h>", private, "<time.h>", public ] },
+  { include: [ "<bits/types/time_t.h>", private, "<time.h>", public ] },
+
+  # HACK: check whether this can be removed with next iwyu release.
+  { symbol: [ "__GLIBC__", private, "<stdlib.h>", public ] },
+  { symbol: [ "_Noreturn", private, "<stdlib.h>", public ] },
+
+  # HACK: iwyu wrongly thinks that including <iosfwd> is sufficient.
+  { symbol: [ "std::stringstream", private, "<sstream>", public ] },
+  { symbol: [ "std::istringstream", private, "<sstream>", public ] },
+  { symbol: [ "std::ostringstream", private, "<sstream>", public ] },
+
+  # HACK: iwyu suggests those two files each time vector[] is used.
+  # https://github.com/include-what-you-use/include-what-you-use/issues/166
+  { include: [ "<ext/alloc_traits.h>", private, "<vector>", public ] },
+  { include: [ "<memory>", public, "<vector>", public ] },
+
+  # TODO: enable this block and remove some <utility> includes?
+  #{ symbol: [ "std::pair", private, "<utility>", public ] },
+  #{ symbol: [ "std::pair", private, "<map>", public ] },
+  #{ symbol: [ "std::pair", private, "<set>", public ] },
+
+  # IWYU wrongly suggests to include "cm_auto_ptr.hxx" in some places.  This
+  # might be a misinterpretation of a template specialization in <utility>.
+  # As a workaround, map the symbol auto_ptr to "cmConfigure.h".
+  # This will still correctly require "cm_auto_ptr.hxx" for CM_AUTO_PTR.
+  { symbol: [ "cm::auto_ptr", private, "\"cmConfigure.h\"", public ] },
+
+  # __decay_and_strip is used internally in the C++11 standard library.
+  # IWYU does not classify it as internal and suggests to add <type_traits>.
+  # To ignore it, we simply map it to a file that is included anyway.
+  # TODO: Can this be simplified with an @-expression?
+  #{ symbol: [ "@std::__decay_and_strip<.*>::__type", private, "\"cmConfigure.h\"", public ] },
+  { symbol: [ "std::__decay_and_strip<cmCommand *&>::__type", private, "\"cmConfigure.h\"", public ] },
+  { symbol: [ "std::__decay_and_strip<cmGeneratorTarget *&>::__type", private, "\"cmConfigure.h\"", public ] },
+  { symbol: [ "std::__decay_and_strip<cmFindCommon::PathLabel &>::__type", private, "\"cmConfigure.h\"", public ] },
+  { symbol: [ "std::__decay_and_strip<std::basic_string<char> &>::__type", private, "\"cmConfigure.h\"", public ] },
+  { symbol: [ "std::__decay_and_strip<const std::basic_string<char> &>::__type", private, "\"cmConfigure.h\"", public ] },
+  { symbol: [ "std::__decay_and_strip<cmFindPackageCommand::PathLabel &>::__type", private, "\"cmConfigure.h\"", public ] },
+  { symbol: [ "std::__decay_and_strip<__gnu_cxx::__normal_iterator<const cmCTestTestHandler::cmCTestTestProperties *, std::vector<cmCTestTestHandler::cmCTestTestProperties, std::allocator<cmCTestTestHandler::cmCTestTestProperties> > > &>::__type", private, "\"cmConfigure.h\"", public ] },
+
+  # Wrappers for headers added in TR1 / C++11
+  # { include: [ "<array>", public, "\"cm_array.hxx\"", public ] },
+  # { include: [ "<functional>", public, "\"cm_functional.hxx\"", public ] },
+  # { include: [ "<memory>", public, "\"cm_memory.hxx\"", public ] },
+  { include: [ "<unordered_map>", public, "\"cm_unordered_map.hxx\"", public ] },
+  { include: [ "<unordered_set>", public, "\"cm_unordered_set.hxx\"", public ] },
+  # { include: [ "<tr1/array>", public, "\"cm_array.hxx\"", public ] },
+  # { include: [ "<tr1/functional>", public, "\"cm_functional.hxx\"", public ] },
+  # { include: [ "<tr1/memory>", public, "\"cm_memory.hxx\"", public ] },
+  { include: [ "<tr1/unordered_map>", public, "\"cm_unordered_map.hxx\"", public ] },
+  { include: [ "<tr1/unordered_set>", public, "\"cm_unordered_set.hxx\"", public ] },
+
+  # KWIML
+  { include: [ "<stdint.h>", public, "\"cm_kwiml.h\"", public ] },
+  { include: [ "<inttypes.h>", public, "\"cm_kwiml.h\"", public ] },
+
+  # Self-sufficient wrapper for <sys/stat.h>
+  { include: [ "<sys/stat.h>", public, "\"cm_sys_stat.h\"", public ] },
+  { symbol: [ "mode_t", private, "\"cm_sys_stat.h\"", public ] },
+
+  # TODO: remove once TR1 / C++11 is required.
+  { include: [ "\"cmsys/hash_fun.hxx\"", private, "\"cm_unordered_map.hxx\"", public ] },
+  { include: [ "\"cmsys/hash_fun.hxx\"", private, "\"cm_unordered_set.hxx\"", public ] },
+  { include: [ "\"cmsys/hash_map.hxx\"", private, "\"cm_unordered_map.hxx\"", public ] },
+  { include: [ "\"cmsys/hash_set.hxx\"", private, "\"cm_unordered_set.hxx\"", public ] },
+  { include: [ "\"cmsys/hashtable.hxx\"", private, "\"cm_unordered_map.hxx\"", public ] },
+  { include: [ "\"cmsys/hashtable.hxx\"", private, "\"cm_unordered_set.hxx\"", public ] },
+
+  # Wrappers for 3rd-party libraries used from the system.
+  { include: [ "<archive.h>", private, "\"cm_libarchive.h\"", public ] },
+  { include: [ "<archive_entry.h>", private, "\"cm_libarchive.h\"", public ] },
+  { include: [ "@<curl/.+\\.h>", private, "\"cm_curl.h\"", public ] },
+  { include: [ "<expat.h>", private, "\"cm_expat.h\"", public ] },
+  { include: [ "<expat_external.h>", private, "\"cm_expat.h\"", public ] },
+  { include: [ "<json/reader.h>", private, "\"cm_jsoncpp_reader.h\"", public ] },
+  { include: [ "<json/value.h>", private, "\"cm_jsoncpp_value.h\"", public ] },
+  { include: [ "<json/writer.h>", private, "\"cm_jsoncpp_writer.h\"", public ] },
+  { include: [ "<rhash.h>", private, "\"cm_rhash.h\"", public ] },
+  { include: [ "<uv.h>", private, "\"cm_uv.h\"", public ] },
+  { include: [ "@<uv-.+\\.h>", private, "\"cm_uv.h\"", public ] },
+  { include: [ "<kwiml/abi.h>", private, "\"cm_kwiml.h\"", public ] },
+  { include: [ "<kwiml/int.h>", private, "\"cm_kwiml.h\"", public ] },
+  { include: [ "<xmlrpc.h>", private, "\"cm_xmlrpc.h\"", public ] },
+  { include: [ "<xmlrpc_client.h>", private, "\"cm_xmlrpc.h\"", public ] },
+  { include: [ "@<xmlrpc-c/.+\\.h>", private, "\"cm_xmlrpc.h\"", public ] },
+  { include: [ "<zconf.h>", private, "\"cm_zlib.h\"", public ] },
+  { include: [ "<zlib.h>", private, "\"cm_zlib.h\"", public ] },
+
+  # Wrappers for bundled 3rd-party libraries.
+  { include: [ "\"cmlibarchive/libarchive/archive.h\"", private, "\"cm_libarchive.h\"", public ] },
+  { include: [ "\"cmlibarchive/libarchive/archive_entry.h\"", private, "\"cm_libarchive.h\"", public ] },
+  { include: [ "@\"cmcurl/include/curl/.+\\.h\"", private, "\"cm_curl.h\"", public ] },
+  { include: [ "\"cmexpat/lib/expat.h\"", private, "\"cm_expat.h\"", public ] },
+  { include: [ "\"cmexpat/lib/expat_external.h\"", private, "\"cm_expat.h\"", public ] },
+  { include: [ "\"cmjsoncpp/include/json/reader.h\"", private, "\"cm_jsoncpp_reader.h\"", public ] },
+  { include: [ "\"cmjsoncpp/include/json/value.h\"", private, "\"cm_jsoncpp_value.h\"", public ] },
+  { include: [ "\"cmjsoncpp/include/json/writer.h\"", private, "\"cm_jsoncpp_writer.h\"", public ] },
+  { include: [ "\"cmlibrhash/librhash/rhash.h\"", private, "\"cm_rhash.h\"", public ] },
+  { include: [ "\"cmlibuv/include/uv.h\"", private, "\"cm_uv.h\"", public ] },
+  { include: [ "@\"cmlibuv/include/uv-.+\\.h\"", private, "\"cm_uv.h\"", public ] },
+  { include: [ "\"KWIML/include/kwiml/abi.h\"", private, "\"cm_kwiml.h\"", public ] },
+  { include: [ "\"KWIML/include/kwiml/int.h\"", private, "\"cm_kwiml.h\"", public ] },
+  { include: [ "\"cmzlib/cm_zlib_mangle.h\"", private, "\"cm_zlib.h\"", public ] },
+  { include: [ "\"cmzlib/zconf.h\"", private, "\"cm_zlib.h\"", public ] },
+  { include: [ "\"cmzlib/zlib.h\"", private, "\"cm_zlib.h\"", public ] },
+
+  # System symbols used by libuv
+  { symbol: [ "SIGHUP", private, "\"cm_uv.h\"", public ] },
+  { symbol: [ "SIGINT", private, "\"cm_uv.h\"", public ] },
+  { symbol: [ "ssize_t", private, "\"cm_uv.h\"", public ] },
+
+  { symbol: [ "std::ifstream", private, "\"cmsys/FStream.hxx\"", public ] },
+  { symbol: [ "std::ofstream", private, "\"cmsys/FStream.hxx\"", public ] },
+  { symbol: [ "cmsys::ifstream", private, "\"cmsys/FStream.hxx\"", public ] },
+  { symbol: [ "cmsys::ofstream", private, "\"cmsys/FStream.hxx\"", public ] },
+
+  { include: [ "<istream>", public, "\"cmsys/FStream.hxx\"", public ] },
+  { include: [ "<ostream>", public, "\"cmsys/FStream.hxx\"", public ] },
+  { include: [ "<fstream>", public, "\"cmsys/FStream.hxx\"", public ] },
+
+  # major and minor are used as macro arguments. Those are false matches.
+  { symbol: [ "major", private, "\"cm_kwiml.h\"", public ] },
+  { symbol: [ "minor", private, "\"cm_kwiml.h\"", public ] },
+  { symbol: [ "major", private, "\"cmVersion.h\"", public ] },
+  { symbol: [ "minor", private, "\"cmVersion.h\"", public ] },
+
+  { include: [ "<curses.h>", private, "\"cmCursesStandardIncludes.h\"", public ] },
+  { include: [ "\"form.h\"", private, "\"cmCursesStandardIncludes.h\"", public ] },
+  { include: [ "<form.h>", private, "\"cmCursesStandardIncludes.h\"", public ] },
+]
+
+# vim: set ft=toml:

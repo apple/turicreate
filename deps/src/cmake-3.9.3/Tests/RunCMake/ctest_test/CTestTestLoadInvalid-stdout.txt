@@ -1,0 +1,7 @@
+Test project .*/Tests/RunCMake/ctest_test/CTestTestLoadInvalid-build
+    Start 1: RunCMakeVersion
+1/1 Test #1: RunCMakeVersion ..................   Passed +[0-9.]+ sec
++
+100% tests passed, 0 tests failed out of 1
++
+Total Test time \(real\) = +[0-9.]+ sec$

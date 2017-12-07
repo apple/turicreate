@@ -1,0 +1,5 @@
+CMake Error at OldIface.cmake:[0-9]+ \(export\):
+  export EXPORT signature does not recognise the
+  EXPORT_LINK_INTERFACE_LIBRARIES option.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

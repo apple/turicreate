@@ -1,0 +1,3 @@
+^CMake Error: Error processing file: nosuchcachefile.txt
+CMake Error: The source directory ".*/Tests/RunCMake/CommandLine/C-no-file-build/nosuchcachefile.txt" does not exist.
+Specify --help for usage, or press the help button on the CMake GUI.$

@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+ "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<title>mk-ca-bundle man page</title>
+<meta name="generator" content="roffit">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">mk-ca-bundle - convert mozilla's certdata.txt to PEM format <a name="SYNOPSIS"></a><h2 class="nroffsh">SYNOPSIS</h2>
+<p class="level0">mk-ca-bundle [bilnqtuv] <span Class="emphasis">[outputfile]</span> <a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0">The mk-ca-bundle tool downloads the certdata.txt file from Mozilla's source tree over HTTP, then parses certdata.txt and extracts CA Root Certificates into PEM format.  These are then processed with the OpenSSL commandline tool to produce the final ca-bundle file. 
+<p class="level0">The default <span Class="emphasis">outputfile</span> name is <span Class="bold">ca-bundle.crt</span>. By setting it to '-' (a single dash) you will get the output sent to STDOUT instead of a file. 
+<p class="level0">The PEM format this scripts uses for output makes the result readily available for use by just about all OpenSSL or GnuTLS powered applications, such as curl, wget and more. <a name="OPTIONS"></a><h2 class="nroffsh">OPTIONS</h2>
+<p class="level0">The following options are supported: 
+<p class="level0"><a name="-b"></a><span class="nroffip">-b</span> 
+<p class="level1">backup an existing version of <span Class="emphasis">outputfilename</span> 
+<p class="level0"><a name="-f"></a><span class="nroffip">-f</span> 
+<p class="level1">force rebuild even if certdata.txt is current (Added in version 1.17) 
+<p class="level0"><a name="-i"></a><span class="nroffip">-i</span> 
+<p class="level1">print version info about used modules 
+<p class="level0"><a name="-l"></a><span class="nroffip">-l</span> 
+<p class="level1">print license info about certdata.txt 
+<p class="level0"><a name="-n"></a><span class="nroffip">-n</span> 
+<p class="level1">no download of certdata.txt (to use existing) 
+<p class="level0"><a name="-q"></a><span class="nroffip">-q</span> 
+<p class="level1">be really quiet (no progress output at all) 
+<p class="level0"><a name="-t"></a><span class="nroffip">-t</span> 
+<p class="level1">include plain text listing of certificates 
+<p class="level0"><a name="-u"></a><span class="nroffip">-u</span> 
+<p class="level1">unlink (remove) certdata.txt after processing 
+<p class="level0"><a name="-v"></a><span class="nroffip">-v</span> 
+<p class="level1">be verbose and print out processed CAs <a name="EXIT"></a><h2 class="nroffsh">EXIT STATUS</h2>
+<p class="level0">Returns 0 on success. Returns 1 if it fails to download data. <a name="CERTDATA"></a><h2 class="nroffsh">CERTDATA FORMAT</h2>
+<p class="level0">The file format used by Mozilla for this trust information seems to be documented here: <pre>
+<p class="level0"><a href="http://p11-glue.freedesktop.org/doc/storing-trust-policy/storing-trust-existing.html">http://p11-glue.freedesktop.org/doc/storing-trust-policy/storing-trust-existing.html</a>
+ </pre>
+
+<p class="level0"><a name="SEE"></a><h2 class="nroffsh">SEE ALSO</h2>
+<p class="level0"><span Class="manpage">curl (1)</span> <a name="HISTORY"></a><h2 class="nroffsh">HISTORY</h2>
+<p class="level0"><span Class="bold">mk-ca-bundle</span> is a command line tool that is shipped as part of every curl and libcurl release (see <a href="http://curl.haxx.se/">http://curl.haxx.se/</a>). It was originally based on the parse-certs script written by Roland Krikava and was later much improved by Guenter Knauf.  This manual page was initially written by Jan Schaumann &lt;jschauma@netmeister.org&gt;. <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>

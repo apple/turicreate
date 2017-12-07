@@ -1,0 +1,12 @@
+^CMake Error at DOWNLOAD-hash-mismatch.cmake:[0-9]+ \(file\):
+  file DOWNLOAD HASH mismatch
+
+    for file: \[.*/Tests/RunCMake/file/DOWNLOAD-hash-mismatch-build/hash-mismatch.txt\]
+      expected hash: \[0123456789abcdef0123456789abcdef01234567\]
+        actual hash: \[da39a3ee5e6b4b0d3255bfef95601890afd80709\]
+             status: \[0;"No error"\]
+
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)
++
+status='1;HASH mismatch: expected: 0123456789abcdef0123456789abcdef01234567 actual: da39a3ee5e6b4b0d3255bfef95601890afd80709'$

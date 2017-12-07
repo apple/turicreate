@@ -1,0 +1,18 @@
+#!/bin/sh
+
+TEST_OPT_@ID@_FOUND=0
+ARGS=""
+for a in "$@"; do
+    if [ "x${TEST_OPT_@ID@}" != "x" -a "x${TEST_OPT_@ID@}" = "x$a" ]; then
+        TEST_OPT_@ID@_FOUND=1
+    else
+        ARGS="$ARGS \"$a\""
+    fi
+done
+
+if [ "x${TEST_OPT_@ID@}" != "x" -a "x${TEST_OPT_@ID@_FOUND}" != "x1" ]; then
+    echo "Not given option '${TEST_OPT_@ID@}' as expected!"
+    exit 1
+fi
+
+eval "\"@COMMAND@\"" "$ARGS"

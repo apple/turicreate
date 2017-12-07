@@ -1,0 +1,10 @@
+^[^
+]+ --build \. --config "Release"
+[^
+]+ --build \. --config "Release" --target "MyTarget"
+[^
+]+ --build \. --config "Debug"
+[^
+]+ --build \. --config "Debug" --target "MyTarget"
+[^
+]+ --build \. --config "Release"$

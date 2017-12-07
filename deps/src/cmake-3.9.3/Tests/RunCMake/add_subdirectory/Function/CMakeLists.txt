@@ -1,0 +1,5 @@
+message(STATUS "var='${var}' in subdirectory before set")
+set(var 3)
+message(STATUS "var='${var}' in subdirectory after set")
+set(var_sub sub PARENT_SCOPE)
+message(STATUS "var_sub='${var_sub}' in subdirectory after set PARENT_SCOPE")

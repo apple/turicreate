@@ -1,0 +1,1 @@
+int byproduct2(void) { return 0; }

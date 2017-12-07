@@ -1,0 +1,19 @@
+project(unity_toolkits)
+
+make_library(unity_text
+  SOURCES
+    unity_text.cpp
+    topic_model.cpp
+    cgs.cpp
+    alias.cpp
+    perplexity.cpp
+  REQUIRES
+    numerics
+    unity_core
+    unity_options
+    unity_ml_model
+    random
+    logger
+    unity_ml_data_2
+    unity_util
+  )

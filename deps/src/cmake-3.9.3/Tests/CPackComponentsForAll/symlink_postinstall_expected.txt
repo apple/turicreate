@@ -1,0 +1,57 @@
+if [ "$RPM_INSTALL_PREFIX0" != "/usr/foo/bar/lib" ]; then
+  if [ "$RPM_INSTALL_PREFIX1" != "/usr/foo/bar/other_relocatable" ]; then
+    if [ -z "$CPACK_RPM_RELOCATED_SYMLINK_1" ]; then
+      ln -s "$RPM_INSTALL_PREFIX1/depth_two" "$RPM_INSTALL_PREFIX0/inside_relocatable_two/depth_two/symlink_other_relocatable_path"
+      CPACK_RPM_RELOCATED_SYMLINK_1=true
+    fi
+  fi
+  if [ "$RPM_INSTALL_PREFIX2" != "/usr/foo/bar/lib/inside_relocatable_two/depth_two/different_relocatable" ]; then
+    if [ -z "$CPACK_RPM_RELOCATED_SYMLINK_0" ]; then
+      ln -s "$RPM_INSTALL_PREFIX2/bar" "$RPM_INSTALL_PREFIX0/inside_relocatable_one/depth_two/symlink_relocatable_subpath"
+      CPACK_RPM_RELOCATED_SYMLINK_0=true
+    fi
+  fi
+  if [ -z "$CPACK_RPM_RELOCATED_SYMLINK_0" ]; then
+    ln -s "$RPM_INSTALL_PREFIX0/inside_relocatable_two/depth_two/different_relocatable/bar" "$RPM_INSTALL_PREFIX0/inside_relocatable_one/depth_two/symlink_relocatable_subpath"
+    CPACK_RPM_RELOCATED_SYMLINK_0=true
+  fi
+  if [ -z "$CPACK_RPM_RELOCATED_SYMLINK_0" ]; then
+    ln -s "/usr/foo/bar/lib/inside_relocatable_two/depth_two/different_relocatable/bar" "$RPM_INSTALL_PREFIX0/inside_relocatable_one/depth_two/symlink_relocatable_subpath"
+    CPACK_RPM_RELOCATED_SYMLINK_0=true
+  fi
+  if [ -z "$CPACK_RPM_RELOCATED_SYMLINK_1" ]; then
+    ln -s "/usr/foo/bar/other_relocatable/depth_two" "$RPM_INSTALL_PREFIX0/inside_relocatable_two/depth_two/symlink_other_relocatable_path"
+    CPACK_RPM_RELOCATED_SYMLINK_1=true
+  fi
+fi
+if [ "$RPM_INSTALL_PREFIX1" != "/usr/foo/bar/other_relocatable" ]; then
+  if [ -z "$CPACK_RPM_RELOCATED_SYMLINK_1" ]; then
+    ln -s "$RPM_INSTALL_PREFIX1/depth_two" "/usr/foo/bar/lib/inside_relocatable_two/depth_two/symlink_other_relocatable_path"
+    CPACK_RPM_RELOCATED_SYMLINK_1=true
+  fi
+fi
+if [ "$RPM_INSTALL_PREFIX2" != "/usr/foo/bar/lib/inside_relocatable_two/depth_two/different_relocatable" ]; then
+  if [ -z "$CPACK_RPM_RELOCATED_SYMLINK_0" ]; then
+    ln -s "$RPM_INSTALL_PREFIX2/bar" "/usr/foo/bar/lib/inside_relocatable_one/depth_two/symlink_relocatable_subpath"
+    CPACK_RPM_RELOCATED_SYMLINK_0=true
+  fi
+fi
+if [ "$RPM_INSTALL_PREFIX0" != "/usr/foo/bar/lib" ]; then
+  if [ -z "$CPACK_RPM_RELOCATED_SYMLINK_0" ]; then
+    ln -s "$RPM_INSTALL_PREFIX0/inside_relocatable_two/depth_two/different_relocatable/bar" "/usr/foo/bar/lib/inside_relocatable_one/depth_two/symlink_relocatable_subpath"
+    CPACK_RPM_RELOCATED_SYMLINK_0=true
+  fi
+  if [ -z "$CPACK_RPM_RELOCATED_SYMLINK_2" ]; then
+    ln -s "$RPM_INSTALL_PREFIX0/inside_relocatable_two/depth_two" "/usr/foo/bar/non_relocatable/depth_two/symlink_from_non_relocatable_path"
+    CPACK_RPM_RELOCATED_SYMLINK_2=true
+  fi
+fi
+if [ -z "$CPACK_RPM_RELOCATED_SYMLINK_0" ]; then
+  ln -s "/usr/foo/bar/lib/inside_relocatable_two/depth_two/different_relocatable/bar" "/usr/foo/bar/lib/inside_relocatable_one/depth_two/symlink_relocatable_subpath"
+fi
+if [ -z "$CPACK_RPM_RELOCATED_SYMLINK_1" ]; then
+  ln -s "/usr/foo/bar/other_relocatable/depth_two" "/usr/foo/bar/lib/inside_relocatable_two/depth_two/symlink_other_relocatable_path"
+fi
+if [ -z "$CPACK_RPM_RELOCATED_SYMLINK_2" ]; then
+  ln -s "/usr/foo/bar/lib/inside_relocatable_two/depth_two" "/usr/foo/bar/non_relocatable/depth_two/symlink_from_non_relocatable_path"
+fi

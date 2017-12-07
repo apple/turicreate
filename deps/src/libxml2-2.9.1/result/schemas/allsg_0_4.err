@@ -1,0 +1,1 @@
+./test/schemas/allsg_4.xml:6: element gm-A-1: Schemas validity error : Element '{urn:test:foo}gm-A-1': This element is not expected. Expected is one of ( {urn:test:foo}gh-B, {urn:test:foo}gm-B-1, {urn:test:foo}gm-B-2 ).

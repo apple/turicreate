@@ -1,0 +1,1 @@
+./test/schemas/any5_0.xml:6: element boo: Schemas validity error : Element '{urn:test:foo}boo': This element is not expected. Expected is ( ##other{urn:test:foo}* ).

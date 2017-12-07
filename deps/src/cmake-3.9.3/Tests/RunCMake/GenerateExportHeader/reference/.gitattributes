@@ -1,0 +1,2 @@
+# Exclude reference content from formatting.
+* -format.clang-format

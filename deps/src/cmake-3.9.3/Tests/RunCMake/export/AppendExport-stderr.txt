@@ -1,0 +1,4 @@
+CMake Error at AppendExport.cmake:[0-9]+ \(export\):
+  export EXPORT signature does not recognise the APPEND option.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

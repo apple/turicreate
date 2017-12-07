@@ -1,0 +1,8 @@
+^CMake Error at Missing.cmake:1 \(add_subdirectory\):
+  The source directory
+
+    .*/Tests/RunCMake/add_subdirectory/Missing
+
+  does not contain a CMakeLists.txt file.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

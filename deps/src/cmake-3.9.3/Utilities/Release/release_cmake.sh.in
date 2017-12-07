@@ -1,0 +1,158 @@
+#!/bin/sh
+echo "Start release"
+date
+echo ""
+echo  "remove and create working directory @CMAKE_RELEASE_DIRECTORY@"
+rm -rf @CMAKE_RELEASE_DIRECTORY@
+mkdir @CMAKE_RELEASE_DIRECTORY@
+@ENV@
+
+check_exit_value()
+{
+   VALUE="$1"
+   if [ "$VALUE" != "0" ]; then
+    echo "error in $2"
+    exit 1
+   fi
+}
+
+CMAKE_DOC_TARBALL=""
+if [ ! -z "@CMAKE_DOC_TARBALL_NAME@" ] ; then
+    CMAKE_DOC_TARBALL=@CMAKE_RELEASE_DIRECTORY@/@CMAKE_DOC_TARBALL_NAME@
+    mv "$HOME/@CMAKE_DOC_TARBALL_STAGED@" "$CMAKE_DOC_TARBALL"
+    check_exit_value $? "mv doc tarball" || exit 1
+fi
+
+if [ ! -z "@CC@" ]; then
+    export CC="@CC@"
+    check_exit_value $? "set CC compiler env var" || exit 1
+fi
+
+if [ ! -z "@FC@" ]; then
+    export FC="@FC@"
+    check_exit_value $? "set FC compiler env var" || exit 1
+fi
+
+if [ ! -z "@CXX@" ]; then
+    export CXX="@CXX@"
+    check_exit_value $? "set CC compiler env var" || exit 1
+fi
+
+if [ ! -z "@LDFLAGS@" ]; then
+    export LDFLAGS="@LDFLAGS@"
+    check_exit_value $? "set LDFLAGS env var" || exit 1
+fi
+
+if [ ! -z "@FFLAGS@" ]; then
+    export FFLAGS="@FFLAGS@"
+    check_exit_value $? "set FFLAGS env var" || exit 1
+fi
+
+if [ ! -z "@CFLAGS@" ]; then
+    export CFLAGS="@CFLAGS@"
+    check_exit_value $? "set CFLAGS  env var" || exit 1
+fi
+
+if [ ! -z "@CXXFLAGS@" ]; then
+    export CXXFLAGS="@CXXFLAGS@"
+    check_exit_value $? "setCXXFLAGS env var" || exit 1
+fi
+
+if [ ! -z "@USER_MAKE_RULE_FILE_CONTENTS@" ]; then
+    echo "@USER_MAKE_RULE_FILE_CONTENTS@" > "@USER_MAKE_RULE_FILE@"
+    check_exit_value $? "Create User Rule file" || exit 1
+fi
+echo "Create a directory to build in"
+rm -rf @CMAKE_RELEASE_DIRECTORY@/@CMAKE_CREATE_VERSION@-build
+check_exit_value $? "Remove build tree" || exit 1
+mkdir @CMAKE_RELEASE_DIRECTORY@/@CMAKE_CREATE_VERSION@-build
+check_exit_value $? "Create build directory" || exit 1
+# make sure directory was created
+if [ ! -d @CMAKE_RELEASE_DIRECTORY@/@CMAKE_CREATE_VERSION@-build ]; then
+        echo "Could not create @CMAKE_RELEASE_DIRECTORY@/@CMAKE_CREATE_VERSION@-build"
+        exit -1
+fi
+
+echo "Create initial cache"
+echo "@INITIAL_CACHE@" > @CMAKE_RELEASE_DIRECTORY@/@CMAKE_CREATE_VERSION@-build/CMakeCache.txt
+check_exit_value $? "Create initial cache" || exit 1
+
+# create a user override file user.txt if USER_OVERRIDE is set,
+# and append the cache variable to the cache
+if [ ! -z "@USER_OVERRIDE@" ]; then
+  echo "@USER_OVERRIDE@" >  @CMAKE_RELEASE_DIRECTORY@/@CMAKE_CREATE_VERSION@-build/user.txt
+  echo "CMAKE_USER_MAKE_RULES_OVERRIDE:FILEPATH=@CMAKE_RELEASE_DIRECTORY@/@CMAKE_CREATE_VERSION@-build/user.txt" >> @CMAKE_RELEASE_DIRECTORY@/@CMAKE_CREATE_VERSION@-build/CMakeCache.txt
+fi
+
+# Point build at pre-built documentation tarball, if any.
+if [ ! -z "$CMAKE_DOC_TARBALL" ]; then
+  echo "CMAKE_DOC_TARBALL:FILEPATH=$CMAKE_DOC_TARBALL" >> @CMAKE_RELEASE_DIRECTORY@/@CMAKE_CREATE_VERSION@-build/CMakeCache.txt
+fi
+
+echo "Checkout the source for @CMAKE_CREATE_VERSION@"
+cd @CMAKE_RELEASE_DIRECTORY@
+if [ ! -z "@GIT_COMMAND@" ]; then
+   # clone the repo without creating any source files in the directory
+   # matching the branch being built (i.e. master CMake-2-8, etc)
+   @GIT_COMMAND@ clone -n https://gitlab.kitware.com/cmake/cmake.git @CMAKE_CREATE_VERSION@
+   check_exit_value $? "git clone cmake source" || exit 1
+   # go into the git directory
+   cd @CMAKE_CREATE_VERSION@
+   # run any extra commands if they exist
+   @GIT_EXTRA@
+   check_exit_value $? "git extra cmake source" || exit 1
+   @GIT_FETCH@
+   check_exit_value $? "git extra fetch" || exit 1
+   # now checkout a copy on the local branch working
+   @GIT_COMMAND@ checkout -b working @GIT_BRANCH@
+   check_exit_value $? "git checkout" || exit 1
+   cd ..
+else
+   echo GIT_COMMAND does not exist
+   exit 1
+fi
+
+cd @CMAKE_RELEASE_DIRECTORY@/@CMAKE_CREATE_VERSION@-build
+
+if [ ! -z "@CONFIGURE_WITH_CMAKE@" ]; then
+    echo  "Run cmake to configure cmake"
+    @CMAKE_CONFIGURE_PATH@ ../@CMAKE_CREATE_VERSION@
+    check_exit_value $? "Configure cmake" || exit 1
+else
+    echo  "Run cmake bootstrap @BOOTSTRAP_ARGS@ --parallel=@PROCESSORS@"
+    ../@CMAKE_CREATE_VERSION@/bootstrap @BOOTSTRAP_ARGS@ --parallel=@PROCESSORS@
+    check_exit_value $? "Bootstrap cmake" || exit 1
+fi
+
+echo "Build cmake with @MAKE@"
+@MAKE@
+check_exit_value $? "Build cmake" || exit 1
+
+if [ -z "@SKIP_TESTS@" ]; then
+    echo "Run cmake tests"
+    ./bin/ctest --output-on-failure -j @PROCESSORS@ @EXTRA_CTEST_ARGS@
+    check_exit_value $? "Test cmake" || exit 1
+fi
+
+# loop over binary generators
+generators="@CPACK_BINARY_GENERATORS@"
+for GEN in $generators; do
+    echo "Create $GEN package"
+    ./bin/cpack -D CMAKE_MAKE_PROGRAM=@MAKE_PROGRAM@ -G $GEN
+    check_exit_value $? "Create $GEN package" || exit 1
+done
+
+# loop over source generators
+generators="@CPACK_SOURCE_GENERATORS@"
+for GEN in $generators; do
+    echo "Create $GEN package"
+    ./bin/cpack -D CMAKE_MAKE_PROGRAM=@MAKE_PROGRAM@ -G $GEN --config CPackSourceConfig.cmake
+    check_exit_value $? "Create $GEN package" || exit 1
+done
+
+
+
+echo "End release"
+date
+echo ""
+exit 0

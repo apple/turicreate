@@ -1,0 +1,2 @@
+This directory contains all the available scalability protocol implementations,
+such as publish/subscribe, request/reply etc.

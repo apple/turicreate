@@ -1,0 +1,18 @@
+CMake Warning \(dev\) at CMP0059-WARN.cmake:6 \(get_property\):
+  Policy CMP0059 is not set: Do not treat DEFINITIONS as a built-in directory
+  property.  Run "cmake --help-policy CMP0059" for policy details.  Use the
+  cmake_policy command to set the policy and suppress this warning.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+DEFS: -DSOME_DEF
+CMake Warning \(dev\) at CMP0059-WARN.cmake:14 \(get_property\):
+  Policy CMP0059 is not set: Do not treat DEFINITIONS as a built-in directory
+  property.  Run "cmake --help-policy CMP0059" for policy details.  Use the
+  cmake_policy command to set the policy and suppress this warning.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CUSTOM CONTENT: -DSOME_DEF

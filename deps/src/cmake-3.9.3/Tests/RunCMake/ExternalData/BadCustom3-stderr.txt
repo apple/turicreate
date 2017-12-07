@@ -1,0 +1,7 @@
+^CMake Error at .*/Modules/ExternalData.cmake:[0-9]+ \(message\):
+  No ExternalData_CUSTOM_SCRIPT_MissingKey is set for URL template:
+
+   ExternalDataCustomScript://MissingKey/%\(algo\)/%\(hash\)
+Call Stack \(most recent call first\):
+  BadCustom3.cmake:[0-9]+ \(ExternalData_Add_Target\)
+  CMakeLists.txt:[0-9]+ \(include\)$

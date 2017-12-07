@@ -1,0 +1,2 @@
+Pattern: Attributes present
+./test/schematron/zvon11_3.xml validates

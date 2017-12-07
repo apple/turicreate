@@ -1,0 +1,12 @@
+^CMake Error at NameWithCarriageReturnQuoted.cmake:1 \(message\):
+  Syntax error in cmake code at
+
+    .*/Tests/RunCMake/Syntax/NameWithCarriageReturnQuoted.cmake:1
+
+  when parsing string
+
+    \${var\\rwith\\rcarriagereturn}
+
+  syntax error, unexpected cal_SYMBOL, expecting } \(7\)
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

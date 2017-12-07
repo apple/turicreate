@@ -1,0 +1,6 @@
+^get_source_file_property: --><--
+get_property: --><--
+get_source_file_property: -->value<--
+get_property: -->value<--
+get_source_file_property: -->NOTFOUND<--
+get_property: --><--$

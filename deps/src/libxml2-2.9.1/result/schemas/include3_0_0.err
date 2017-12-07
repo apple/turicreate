@@ -1,0 +1,1 @@
+test/schemas/include3_0.inc:4: element element: Schemas parser error : Element '{http://www.w3.org/2001/XMLSchema}element': A global element declaration '{http://FOO}bar' does already exist.

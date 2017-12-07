@@ -1,0 +1,2 @@
+# Do not format a source containing C++11 '>>' syntax as C++98.
+cxx_right_angle_brackets.cpp -format.clang-format

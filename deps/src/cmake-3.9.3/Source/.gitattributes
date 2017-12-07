@@ -1,0 +1,2 @@
+# Do not format third-party sources.
+/kwsys/**                                  -format.clang-format

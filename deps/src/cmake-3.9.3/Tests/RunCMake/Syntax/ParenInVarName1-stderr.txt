@@ -1,0 +1,12 @@
+CMake Error at ParenInVarName1.cmake:4 \(message\):
+  Syntax error in cmake code at
+
+    .*/Tests/RunCMake/Syntax/ParenInVarName1.cmake:4
+
+  when parsing string
+
+    -->\${e\(x\)}<--
+
+  syntax error, unexpected cal_SYMBOL, expecting } \(10\)
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

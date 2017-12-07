@@ -1,0 +1,5 @@
+/**
+ * \ingroup sframe_query_engine
+ * \addtogroup Algorithms Algorithms
+ * Sort, Groupby algorithms that take a lazy input.
+ */

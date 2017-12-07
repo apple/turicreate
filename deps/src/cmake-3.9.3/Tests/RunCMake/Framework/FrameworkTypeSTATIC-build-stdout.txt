@@ -1,0 +1,2 @@
+.*/Framework:( Mach-O universal binary with [^
+]*)? current ar archive random library.*

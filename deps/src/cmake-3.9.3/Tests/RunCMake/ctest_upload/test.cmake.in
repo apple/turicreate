@@ -1,0 +1,14 @@
+cmake_minimum_required(VERSION 3.1)
+
+set(CTEST_SITE                          "test-site")
+set(CTEST_BUILD_NAME                    "test-build-name")
+set(CTEST_SOURCE_DIRECTORY              "@RunCMake_BINARY_DIR@/@CASE_NAME@")
+set(CTEST_BINARY_DIRECTORY              "@RunCMake_BINARY_DIR@/@CASE_NAME@-build")
+set(CTEST_CMAKE_GENERATOR               "@RunCMake_GENERATOR@")
+set(CTEST_CMAKE_GENERATOR_PLATFORM      "@RunCMake_GENERATOR_PLATFORM@")
+set(CTEST_CMAKE_GENERATOR_TOOLSET       "@RunCMake_GENERATOR_TOOLSET@")
+set(CTEST_BUILD_CONFIGURATION           "$ENV{CMAKE_CONFIG_TYPE}")
+
+set(ctest_upload_args "@CASE_CTEST_UPLOAD_ARGS@")
+ctest_start(Experimental)
+ctest_upload(FILES "${CTEST_SOURCE_DIRECTORY}/CMakeLists.txt" ${ctest_upload_args})

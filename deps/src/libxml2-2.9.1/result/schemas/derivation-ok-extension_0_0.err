@@ -1,0 +1,1 @@
+./test/schemas/derivation-ok-extension_0.xsd:10: element attribute: Schemas parser warning : Element '{http://www.w3.org/2001/XMLSchema}attribute': Skipping attribute use prohibition, since it is pointless when extending a type.

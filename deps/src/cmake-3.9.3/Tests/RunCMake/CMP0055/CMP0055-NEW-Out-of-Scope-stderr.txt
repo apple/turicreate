@@ -1,0 +1,4 @@
+CMake Error at CMP0055-NEW-Out-of-Scope.cmake:4 \(break\):
+  A BREAK command was found outside of a proper FOREACH or WHILE loop scope.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

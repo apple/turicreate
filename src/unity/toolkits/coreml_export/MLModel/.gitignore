@@ -1,0 +1,18 @@
+# build directory (generated files)
+/deps/
+/.depend
+
+# libraries
+*.a
+*.dylib
+*.so
+
+# object files
+*.o
+
+# generated proto files
+/format/*.cpp
+/format/*.hpp
+
+# test binary
+/test_runner

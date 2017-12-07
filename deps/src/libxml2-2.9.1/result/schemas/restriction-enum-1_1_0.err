@@ -1,0 +1,2 @@
+./test/schemas/restriction-enum-1_0.xml:7: element foo: Schemas validity error : Element 'foo': [facet 'enumeration'] The value 'c' is not an element of the set {'a', 'b', 'd'}.
+./test/schemas/restriction-enum-1_0.xml:7: element foo: Schemas validity error : Element 'foo': 'c' is not a valid value of the atomic type 'barType'.

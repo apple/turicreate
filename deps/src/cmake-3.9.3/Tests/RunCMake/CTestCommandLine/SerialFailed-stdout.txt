@@ -1,0 +1,10 @@
+Could not find executable no_such_command
+.*
+2/2 Test #2: Echo .............................   Passed +[0-9.]+ sec
++
+50% tests passed, 1 tests failed out of 2
++
+Total Test time \(real\) = +[0-9.]+ sec
++
+The following tests FAILED:
+[	 ]+1 - NoSuchCommand \(Not Run\)$

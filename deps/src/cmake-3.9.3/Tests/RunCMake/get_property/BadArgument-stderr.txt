@@ -1,0 +1,4 @@
+^CMake Error at BadArgument.cmake:1 \(get_property\):
+  get_property given invalid argument "FOO".
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

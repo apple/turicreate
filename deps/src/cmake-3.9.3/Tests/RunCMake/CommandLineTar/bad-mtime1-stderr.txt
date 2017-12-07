@@ -1,0 +1,2 @@
+^CMake Error: unable to parse mtime 'bad'
+CMake Error: Problem creating tar: bad.tar$

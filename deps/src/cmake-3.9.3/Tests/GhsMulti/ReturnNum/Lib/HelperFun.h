@@ -1,0 +1,1 @@
+int giveNum(void);

@@ -1,0 +1,8 @@
+CMake Error at .*/Modules/CheckTypeSize.cmake:[0-9]+. \(message\):
+  Unknown argument:
+
+    LANGUAG
+
+Call Stack \(most recent call first\):
+  CheckTypeSizeUnknownArgument.cmake:[0-9]+ \(check_type_size\)
+  CMakeLists.txt:[0-9]+ \(include\)

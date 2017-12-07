@@ -1,0 +1,4 @@
+CMake Error at export.cmake:8 \(export\):
+  export given ALIAS target "alias" which may not be exported.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

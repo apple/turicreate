@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Test for bug #341150 -->
+<TestRoot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="subst-group-1.xsd">
+    <Events>
+        <TestEvent>Test 1.</TestEvent>
+        <!-- Uncomment the following element to cause libxml's xmllint to
+            fail to validate. -->
+        <TestEvent>Test 2.</TestEvent>
+    </Events>
+</TestRoot>

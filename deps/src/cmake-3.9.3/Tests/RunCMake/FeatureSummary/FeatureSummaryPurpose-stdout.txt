@@ -1,0 +1,16 @@
+The following OPTIONAL packages have been found:
+
+ \* Foo, The Foo package, <https://foo.example/>
+
+-- The following OPTIONAL packages have been found:
+
+ \* Foo, The Foo package, <https://foo.example/>
+   Because everyone needs some Foo.
+
+-- The following OPTIONAL packages have been found:
+
+ \* Foo, The Foo package, <https://foo.example/>
+   Because everyone needs some Foo.
+   Because Foo is better than Bar.
+
+-- Configuring done

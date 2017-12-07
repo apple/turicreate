@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 2.8)
+project(CPackTestAllGenerators)
+add_subdirectory(../CTestTest/SmallAndFast SmallAndFast)
+install(FILES RunCPack.cmake DESTINATION .)
+include(CPack)

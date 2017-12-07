@@ -1,0 +1,1 @@
+./test/schemas/idc-keyref-err1_0.xml:12: Schemas validity error : Element '{urn:test:foo}Ref': No match found for key-sequence ['L4'] of keyref '{urn:test:foo}LinkKeyRef'.

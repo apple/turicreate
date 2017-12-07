@@ -1,0 +1,1 @@
+./test/schemas/any7_0.xml:18: element moo: Schemas validity error : Element 'moo': This element is not expected. Expected is ( ##other{urn:test:foo}* ).

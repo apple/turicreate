@@ -1,0 +1,2 @@
+^Error running 'iwyu-does-not-exist': [^
+]+$

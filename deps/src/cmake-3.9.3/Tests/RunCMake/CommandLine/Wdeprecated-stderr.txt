@@ -1,0 +1,4 @@
+^CMake Deprecation Warning at Wdeprecated.cmake:1 \(message\):
+  Some deprecated warning
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

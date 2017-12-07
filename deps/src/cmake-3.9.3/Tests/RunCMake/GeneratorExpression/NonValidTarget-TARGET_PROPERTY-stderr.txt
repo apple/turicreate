@@ -1,0 +1,11 @@
+CMake Error at NonValidTarget-TARGET_PROPERTY.cmake:4 \(add_custom_command\):
+  Error evaluating generator expression:
+
+    \$<TARGET_PROPERTY:NotAProperty>
+
+  \$<TARGET_PROPERTY:prop> may only be used with binary targets.  It may not
+  be used with add_custom_command or add_custom_target.  Specify the target
+  to read a property from using the \$<TARGET_PROPERTY:tgt,prop> signature
+  instead.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

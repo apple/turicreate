@@ -1,0 +1,434 @@
+#!/bin/bash
+##=============================================================================
+## Main configuration processing
+RELEASE_DIR=release
+DEBUG_DIR=debug
+TURI_HOME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+DEPS_PREFIX=$PWD/deps/local
+
+
+function print_help {
+  echo "Configures the build with the specified toolchain. "
+  echo
+  echo "If configure has already been run before, running configure "
+  echo "will simply reconfigure the build with no changes. "
+  echo
+  echo "Usage: ./configure <options>"
+  echo
+  echo "  --cleanup                         Clean up everything."
+  echo
+  echo "  --install-python-toolchain        Install python in local virtualenv."
+  echo  
+  echo "  --with-system-cmake (default)     Use system cmake, if avaliable."
+  echo "  --no-system-cmake "
+  echo 
+  echo "  --with-ccache (default)           Use ccache, if available."
+  echo "  --no-ccache "
+  echo  
+  echo "  --with-python (default)           Build python components."
+  echo "  --no-python"
+  echo 
+  echo "  --with-visualization (default)    Build Turi Create visualization client."
+  echo "  --no-visualization"
+  echo
+  echo "  --python3                         Use Python 3.4, default is Python 2.7."
+  echo "  --python3.5                       Use Python 3.5, default is Python 2.7."
+  echo 
+  echo "  --yes                             Defaults to yes on a prompt"
+  echo
+  echo "  -D var=value                      Specify CFLAGS definitions to be passed on to cmake."
+  echo
+  echo "Example: ./configure"
+  echo
+  echo "Cleanup all build directories"
+  echo "Example: ./configure --cleanup"
+  echo
+  echo "All remaining options will be forwarded to cmake."
+  exit 1
+} # end of print help
+
+
+function unknown_option {
+  echo "Unrecognized option: $1"
+  echo "To get help, run ./configure --help"
+  exit 1
+} # end of unknown option
+
+function run_cleanup {
+  echo "cleaning up";
+  rm -rf release debug deps/local/ deps/build/ deps/env
+}
+
+
+function run_cleanup_prompt {
+  #!/bin/bash
+  echo "This script completely erases all build folders including dependencies!"
+  if [[ $default_yes == 1 ]]; then
+          yesorno="yes"
+  else
+          echo "Are you sure you want to continue? (yes or no)"
+          read yesorno;
+  fi
+
+  if [ "$yesorno" == "yes" ]; then
+    run_cleanup
+  else
+    echo "Doing nothing!";
+  fi
+}
+
+function install_python_toolchain { 
+  
+  echo "Installing python toolchain."
+  echo "python version = $PYTHON_VERSION."
+
+  pushd ${TURI_HOME}
+  PYTHON_VERSION=${PYTHON_VERSION} ./scripts/install_python_toolchain.sh
+  popd
+}
+
+# command flag options
+cleanup_option=0
+python_only=0
+default_yes=0
+
+with_python=1
+
+with_system_cmake=1
+with_ccache=1
+
+with_ccache=1
+with_visualization=1
+
+python3=0
+python35=0
+
+###############################################################################
+#
+# Parse command line configure flags ------------------------------------------
+#
+while [ $# -gt 0 ]
+  do case $1 in
+    --cleanup)              cleanup_option=1;;
+    
+    --install-python-toolchain) python_only=1;;
+    
+    --with-system-cmake)    with_system_cmake=1;;
+    --no-system-cmake)      with_system_cmake=0;;
+
+    --with-ccache)          with_ccache=1;;
+    --no-ccache)            with_ccache=0;;
+    
+    --with-python)          with_python=1;;
+    --no-python)            with_python=0;;
+
+    --with-visualization)   with_visualization=1;;
+    --no-visualization)     with_visualization=0;;
+
+    --yes)                  default_yes=1;;
+
+    --python3)              python3=1;;
+    --python3.5)            python35=1;;
+    
+    --help)                 print_help ;;
+
+    -D)                     CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -D $2"; shift ;;
+    *) unknown_option $1 ;;
+  esac
+  shift
+done
+
+if [[ $cleanup_option == 1 ]]; then
+  run_cleanup_prompt
+  exit 0
+fi
+
+
+if [[ $python35 == 1 && $python3 ]]; then
+  echo "Two version of Python specified. Pick one."
+  exit 1
+fi
+
+
+if [[ $python3 == 1 ]]; then
+  CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DPYTHON_VERSION=\"python3.4m\""
+  PYTHON_VERSION="python3.4m"
+elif [[ $python35 == 1 ]]; then
+  CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DPYTHON_VERSION=\"python3.5m\""
+  PYTHON_VERSION="python3.5m"
+else
+  CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DPYTHON_VERSION=\"python2.7\""
+  PYTHON_VERSION="python2.7"
+fi
+
+if [[ $python_only == 1 ]]; then
+  install_python_toolchain
+  exit $?  
+fi
+
+# If we need to build python, we also need to install the python toolchain
+if [[ $with_python == 1 ]]; then
+  if [[ $with_visualization == 0 ]]; then 
+    echo "Visualization client libraries (--with-visualization) required for python build."
+    exit 1
+  fi
+
+  install_python_toolchain
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_PYTHON=1"
+else
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_PYTHON=0"
+fi
+
+# If we need to build python, we also need to install the python toolchain
+if [[ $with_visualization == 1 ]]; then
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_VISUALIZATION_CLIENT=1"
+else
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_VISUALIZATION_CLIENT=0"
+fi
+
+
+
+##################################################################3
+# setup compilers and includes
+#
+# mac compiler detection
+
+export LD_LIBRARY_PATH=${PWD}/deps/local/lib:${PWD}/deps/local/lib64:$LD_LIBRARY_PATH
+export INCLUDE_PATH=${PWD}/deps/local/include:$LD_LIBRARY_PATH
+
+echo "======================= BUILD CONFIGURATION ========================"
+echo "System Information: "
+uname -v
+
+
+if [[ $OSTYPE == darwin* ]]; then
+  if [[ -z $CC ]] && [[ -z $CXX ]]; then
+    CC=clang
+    CXX=clang++
+  fi
+fi
+
+# all other cases
+# If not specified we assume gcc and g++ are the default c and c++
+# compilers
+if [[ -z $CC ]]; then
+  if [[ `which cc` ]]; then 
+    CC=cc
+  elif [[ `which gcc` ]]; then
+    CC=gcc
+  elif [[ `which clang` ]]; then
+    CC=clang
+  else
+    echo "Compiler not in path with cc/gcc/clang; set manually with CC=<comp>"
+    exit 1
+  fi
+fi
+
+if [[ -z $CXX ]]; then
+  if [[ `which cxx` ]]; then 
+    CXX=cxx
+  elif [[ `which c++` ]]; then 
+    CXX=c++
+  elif [[ `which g++` ]]; then
+    CXX=g++
+  elif [[ `which clang++` ]]; then
+    CXX=clang++
+  else
+    echo "Compiler not it path with cxx/c++/g++/clang++; set manually with CXX=<comp>"
+    exit 1
+  fi
+fi
+
+CCCMD=`which $CC || echo ""`
+CXXCMD=`which $CXX || echo ""`
+  
+echo "CC = $CCCMD"
+echo "CXX = $CXXCMD" 
+
+echo "Attempting to use C compiler $CCCMD."
+echo "Attempting to use C++ compiler $CXXCMD."
+
+# Test for ccache
+CCACHE=`which ccache || echo ""`
+CCSCR="$DEPS_PREFIX/bin/cc"
+CXXSCR="$DEPS_PREFIX/bin/cxx"
+
+mkdir -p $DEPS_PREFIX/bin
+rm -f $CCSCR
+rm -f $CXXSCR
+
+if [ $with_ccache -eq 1 ] && [ -f $CCACHE ]; then 
+
+  echo "Using ccache from $CCACHE."
+
+  mkdir -p $DEPS_PREFIX/bin
+
+  echo "#!/bin/bash -e
+  $CCACHE $CCCMD \$@
+  exit \$?
+  " > $CCSCR && chmod a+x $CCSCR
+
+  echo "#!/bin/bash -e
+  $CCACHE $CXXCMD \$@
+  exit \$?
+  " > $CXXSCR && chmod a+x $CXXSCR
+
+else 
+
+  echo "#!/bin/bash -e
+  $CCCMD \$@
+  exit \$?
+  " > $CCSCR && chmod a+x $CCSCR
+
+  echo "#!/bin/bash -e
+  $CXXCMD \$@
+  exit \$?
+  " > $CXXSCR && chmod a+x $CXXSCR
+
+  echo "Not using CCache."
+fi
+
+CCCMD=$CCSCR
+CXXCMD=$CXXSCR
+
+echo "Checking for CMake."
+
+## ============================================================================
+# Install Cmake if not present
+
+## Obtained from forum:
+# http://stackoverflow.com/questions/4023830/bash-how-compare-two-strings-in-version-format
+# Return  0 if version are equal
+# Returns 1 if version 1 is larger
+# Returns 2 if version 2 is larger
+function check_version {
+  if [[ $1 == $2 ]]
+  then
+      return 0
+  fi
+  local IFS=.
+  local i ver1=($1) ver2=($2)
+  # fill empty fields in ver1 with zeros
+  for ((i=${#ver1[@]}; i<${#ver2[@]}; i++))
+  do
+      ver1[i]=0
+  done
+  for ((i=0; i<${#ver1[@]}; i++))
+  do
+      if [[ -z ${ver2[i]} ]]
+      then
+          # fill empty fields in ver2 with zeros
+          ver2[i]=0
+      fi
+      if ((10#${ver1[i]} > 10#${ver2[i]}))
+      then
+          return 1
+      fi
+      if ((10#${ver1[i]} < 10#${ver2[i]}))
+      then
+          return 2
+      fi
+  done
+  return 0
+}
+
+function install_cmake {
+  echo "Running script to build bundled cmake version."
+  CC=$CCCMD CXX=$CXXCMD ./scripts/cmake_setup.sh ${PWD}/deps/src/cmake-3.9.3 ${PWD}/deps/local || exit 1
+  return $?
+}
+
+CMAKE=`which cmake || echo ""`
+
+function check_cmake { 
+
+  if [[ -f $CMAKE ]] ; then
+
+    if [[ $with_system_cmake == 0 ]]; then
+      echo "Forcing use of bundled cmake."
+      CMAKE=${PWD}/deps/local/bin/cmake
+
+      if [[ ! -f ${PWD}/deps/local/bin/cmake ]]; then
+        install_cmake
+        return $?
+      fi
+    fi 
+    
+    if [[ -f ${PWD}/deps/local/bin/cmake ]]; then
+      CMAKE=${PWD}/deps/local/bin/cmake
+    fi
+
+    #test cmake version
+    echo "Testing existing cmake version..."
+    currentversion=`$CMAKE --version | awk -F "patch" '{print $1;}' | tr -dc '[0-9].'`
+    echo "Detected ${currentversion}. Required 3.5.0"
+
+    check_version $currentversion "3.5.1"
+
+    if [ $? -ne 2 ]; then
+      echo "CMake version is good; using built-in version."
+    else
+      install_cmake
+      CMAKE=${PWD}/deps/local/bin/cmake
+      return $?
+    fi
+  else
+    install_cmake
+    CMAKE=${PWD}/deps/local/bin/cmake
+    return $?
+  fi
+}
+
+check_cmake || { 
+  echo "Error 1: Error reported installing CMake." 
+  exit 1 
+}
+
+########################################################
+# Prepare to build
+
+set -e
+set -o pipefail
+
+# Delete the cython make files. If cython files get removed,
+# CMake has a tendency to leave the build files around.
+# So we just delete them and reconfigure should take care of it.
+rm -rf ${RELEASE_DIR}/src/unity/python/turicreate/cython
+rm -rf ${DEBUG_DIR}/src/unity/python/turicreate/cython
+
+echo -e "\n\n\n======================= Release ========================" \
+
+if [ ! -d $RELEASE_DIR ]; then
+    mkdir $RELEASE_DIR
+fi
+cd $RELEASE_DIR
+rm -f CMakeCache.txt
+build_cmd="$CMAKE \
+    $GENERATOR \
+    -D CMAKE_BUILD_TYPE=Release \
+    -D CMAKE_C_COMPILER=$CCCMD \
+    -D CMAKE_CXX_COMPILER=$CXXCMD \
+    $CMAKE_CONFIG_FLAGS
+    ../."
+echo $build_cmd
+eval $build_cmd
+cd $TURI_HOME
+
+
+echo -e "\n\n\n======================= Debug =========================" \
+
+if [ ! -d $DEBUG_DIR ]; then
+    mkdir $DEBUG_DIR
+fi
+cd $DEBUG_DIR
+rm -f CMakeCache.txt
+build_cmd="$CMAKE \
+    $GENERATOR \
+    -D CMAKE_BUILD_TYPE=Debug \
+    -D CMAKE_C_COMPILER=$CCCMD \
+    -D CMAKE_CXX_COMPILER=$CXXCMD \
+    $CMAKE_CONFIG_FLAGS
+    ../."
+echo $build_cmd
+eval $build_cmd
+cd $TURI_HOME

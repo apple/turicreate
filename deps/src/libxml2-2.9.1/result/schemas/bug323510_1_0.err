@@ -1,0 +1,1 @@
+./test/schemas/bug323510_0.xml:2: element foo: Schemas validity error : Element 'foo': Missing child element(s). Expected is ( bar ).

@@ -1,0 +1,9 @@
+CMake Error at CompileDefinitions.cmake:5 \(target_compile_definitions\):
+  Error evaluating generator expression:
+
+    \$<COMPILE_LANGUAGE:CXX>
+
+  \$<COMPILE_LANGUAGE:...> may only be used with COMPILE_OPTIONS with the
+  Xcode generator.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

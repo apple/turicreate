@@ -1,0 +1,5 @@
+CMake Error at not_a_c_feature.cmake:[0-9]+ \(target_compile_features\):
+  target_compile_features specified unknown feature "c_not_a_feature" for
+  target "main".
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

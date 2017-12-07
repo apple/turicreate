@@ -1,0 +1,4 @@
+^CMake Warning \(dev\) in CMakeLists.txt:
+  Directory property VS_STARTUP_PROJECT specifies target 'DoesNotExist' that
+  does not exist.  Ignoring.
+This warning is for project developers.  Use -Wno-dev to suppress it.$

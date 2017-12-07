@@ -1,0 +1,8 @@
+CMake Error at NotObjlibTarget.cmake:3 \(file\):
+  Error evaluating generator expression:
+
+    \$<TARGET_OBJECTS:StaticLib>
+
+  Objects of target "StaticLib" referenced but is not an OBJECT library.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

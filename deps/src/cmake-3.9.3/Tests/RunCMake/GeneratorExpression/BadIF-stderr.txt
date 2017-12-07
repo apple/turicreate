@@ -1,0 +1,15 @@
+CMake Error at BadIF.cmake:2 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<IF:asdf,a,b>
+
+  First parameter to \$<IF> must resolve to exactly one '0' or '1' value.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at BadIF.cmake:2 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<IF:asdf,a>
+
+  \$<IF> expression requires 3 comma separated parameters, but got 2 instead.

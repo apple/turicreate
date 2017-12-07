@@ -1,0 +1,205 @@
+# pylint: disable=invalid-name
+"""Utility to invoke Xcode compiler toolchain"""
+from __future__ import absolute_import as _abs
+import os
+import sys
+import subprocess
+from . import util
+
+def xcrun(cmd):
+    """Run xcrun and return the output.
+
+    Parameters
+    ----------
+    cmd : list of str
+        The command sequence.
+
+    Returns
+    -------
+    out : str
+        The output string.
+    """
+    cmd = ["xcrun"] + cmd
+    proc = subprocess.Popen(cmd,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT)
+    (out, _) = proc.communicate()
+    return out.strip()
+
+
+def codesign(lib):
+    """Codesign the shared libary
+
+    This is an required step for library to be loaded in
+    the app.
+
+    Parameters
+    ----------
+    lib : The path to the library.
+    """
+    if "TVM_IOS_CODESIGN" not in os.environ:
+        raise RuntimeError("Require environment variable TVM_IOS_CODESIGN "
+                           " to be the signature")
+    signature = os.environ["TVM_IOS_CODESIGN"]
+    cmd = ["codesign", "--force", "--sign", signature]
+    cmd += [lib]
+    proc = subprocess.Popen(cmd,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT)
+    (out, _) = proc.communicate()
+    if proc.returncode != 0:
+        msg = "Codesign error:\n"
+        msg += out
+        raise RuntimeError(msg)
+
+
+def create_dylib(output, objects, arch, sdk="macosx"):
+    """Create dynamic library.
+
+    Parameters
+    ----------
+    output : str
+        The target shared library.
+
+    objects : list
+        List of object files.
+
+    options : str
+        The additional options.
+
+    arch : str
+        Target major architectures
+
+    sdk : str
+        The sdk to be used.
+    """
+    clang = xcrun(["-sdk", sdk, "-find", "clang"])
+    sdk_path = xcrun(["-sdk", sdk, "--show-sdk-path"])
+    cmd = [clang]
+    cmd += ["-dynamiclib"]
+    cmd += ["-arch", arch]
+    cmd += ["-isysroot", sdk_path]
+    cmd += ["-o", output]
+    if isinstance(objects, str):
+        cmd += [objects]
+    else:
+        cmd += objects
+
+    proc = subprocess.Popen(
+        cmd, stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)
+    (out, _) = proc.communicate()
+
+    if proc.returncode != 0:
+        msg = "Compilation error:\n"
+        msg += out
+        raise RuntimeError(msg)
+
+
+def compile_metal(code, path_target=None, sdk="macosx"):
+    """Compile metal with CLI tool from env.
+
+    Parameters
+    ----------
+    code : str
+        The cuda code.
+
+    path_target : str, optional
+        Output file.
+
+    sdk : str, optional
+        The target platform SDK.
+
+    Return
+    ------
+    metallib : bytearray
+        The bytearray of the metallib
+    """
+    temp = util.tempdir()
+    temp_code = temp.relpath("my_lib.metal")
+    temp_ir = temp.relpath("my_lib.air")
+    temp_target = temp.relpath("my_lib.metallib")
+
+    with open(temp_code, "w") as out_file:
+        out_file.write(code)
+    file_target = path_target if path_target else temp_target
+
+    cmd1 = ["xcrun", "-sdk", sdk, "metal", "-O3"]
+    cmd1 += [temp_code, "-o", temp_ir]
+    cmd2 = ["xcrun", "-sdk", sdk, "metallib"]
+    cmd2 += [temp_ir, "-o", file_target]
+    proc = subprocess.Popen(
+        ' '.join(cmd1) + ";" + ' '.join(cmd2),
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)
+    (out, _) = proc.communicate()
+    if proc.returncode != 0:
+        sys.stderr.write("Compilation error:\n")
+        sys.stderr.write(out)
+        sys.stderr.flush()
+        libbin = None
+    else:
+        libbin = bytearray(open(file_target, "rb").read())
+    return libbin
+
+
+def popen_test_rpc(host,
+                   port,
+                   key,
+                   destination,
+                   libs=None,
+                   options=None):
+    """Launch rpc server via xcodebuild test through another process.
+
+    Parameters
+    ----------
+    host : str
+        The address of RPC proxy host.
+
+    port : int
+        The port of RPC proxy host
+
+    key : str
+        The key of the RPC server
+
+    destination : str
+        Destination device of deployment, as in xcodebuild
+
+    libs : list of str
+        List of files to be packed into app/Frameworks/tvm
+        These can be dylibs that can be loaed remoted by RPC.
+
+    options : list of str
+        Additional options to xcodebuild
+
+    Returns
+    -------
+    proc : Popen
+        The test rpc server process.
+        Don't do wait() on proc, since it can terminate normally.
+    """
+    if "TVM_IOS_RPC_ROOT" in os.environ:
+        rpc_root = os.environ["TVM_IOS_RPC_ROOT"]
+    else:
+        curr_path = os.path.dirname(os.path.abspath(os.path.expanduser(__file__)))
+        rpc_root = os.path.join(curr_path, "../../../apps/ios_rpc")
+    proj_path = os.path.abspath(os.path.join(rpc_root, "tvmrpc.xcodeproj"))
+    if not os.path.exists(proj_path):
+        raise RuntimeError("Cannot find tvmrpc.xcodeproj in %s," +
+                           (" please set env TVM_IOS_RPC_ROOT correctly" % rpc_root))
+    with open(os.path.join(rpc_root, "rpc_config.txt"), "w") as fo:
+        fo.write("%s %d %s\n" % (host, port, key))
+        libs = libs if libs else []
+        for file_name in libs:
+            fo.write("%s\n" % file_name)
+
+    cmd = ["xcrun", "xcodebuild",
+           "-scheme", "tvmrpc",
+           "-project", proj_path,
+           "-destination", destination]
+    if options:
+        cmd += options
+    cmd += ["test"]
+    proc = subprocess.Popen(cmd)
+    return proc

@@ -1,0 +1,4 @@
+CMake Error at utility_target.cmake:[0-9]+ \(target_compile_features\):
+  target_compile_features called with non-compilable target type
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
