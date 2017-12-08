@@ -1,0 +1,340 @@
+'\" t
+.\"     Title: xmlcatalog
+.\"    Author: John Fleck <jfleck@inkstain.net>
+.\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
+.\"      Date: $Date$
+.\"    Manual: xmlcatalog Manual
+.\"    Source: libxml2
+.\"  Language: English
+.\"
+.TH "XMLCATALOG" "1" "$Date$" "libxml2" "xmlcatalog Manual"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+xmlcatalog \- Command line tool to parse and manipulate XML or SGML catalog files\&.
+.SH "SYNOPSIS"
+.HP \w'\fBxmlcatalog\fR\ 'u
+\fBxmlcatalog\fR [\fB\-\-sgml\fR | \fB\-\-shell\fR | \fB\-\-create\fR | \fB\-\-del\ \fR\fB\fIVALUE(S)\fR\fR | [\ \fB\-\-add\ \fR\fB\fITYPE\fR\fR\fB\ \fR\fB\fIORIG\fR\fR\fB\ \fR\fB\fIREPLACE\fR\fR\fB\ \fR\ |\ \fB\-\-add\ \fR\fB\fIFILENAME\fR\fR] | \fB\-\-noout\fR | \fB\-\-no\-super\-update\fR | [\fB\-v\fR\ |\ \fB\-\-verbose\fR]] {\fICATALOGFILE\fR} {\fIENTITIES\fR...}
+.SH "DESCRIPTION"
+.PP
+
+\fBxmlcatalog\fR
+is a command line application allowing users to monitor and manipulate
+XML
+and
+SGML
+catalogs\&. It is included in
+\fBlibxml\fR(3)\&.
+.PP
+Its functions can be invoked from a single command from the command line, or it can perform multiple functions in interactive mode\&. It can operate on both
+XML
+and
+SGML
+files\&.
+.SH "OPTIONS"
+.PP
+
+\fBxmlcatalog\fR
+accepts the following options (in alphabetical order):
+.PP
+\fB\-\-add \fR\fB\fITYPE\fR\fR\fB \fR\fB\fIORIG\fR\fR\fB \fR\fB\fIREPLACE\fR\fR\fB \fR
+.RS 4
+Add an entry to
+CATALOGFILE\&.
+\fITYPE\fR
+indicates the type of entry\&. Possible types are:
+\fIpublic\fR, \fIsystem\fR, \fIuri\fR, \fIrewriteSystem\fR, \fIrewriteURI\fR, \fIdelegatePublic\fR, \fIdelegateSystem\fR, \fIdelegateURI\fR, \fInextCatalog\fR\&.
+\fIORIG\fR
+is the original reference to be replaced, and
+\fIREPLACE\fR
+is the
+URI
+of the replacement entity to be used\&. The
+\fB\-\-add\fR
+option will not overwrite
+CATALOGFILE, outputting to
+stdout, unless
+\fB\-\-noout\fR
+is used\&. The
+\fB\-\-add\fR
+will always take three parameters even if some of the
+XML
+catalog constructs will have only a single argument\&.
+.RE
+.PP
+\fB\-\-add \fR\fB\fIFILENAME\fR\fR
+.RS 4
+If the
+\fB\-\-add\fR
+option is used following the
+\fB\-\-sgml\fR
+option, only a single argument, a
+\fIFILENAME\fR, is used\&. This is used to add the name of a catalog file to an
+SGML
+supercatalog, a file that contains references to other included
+SGML
+catalog files\&.
+.RE
+.PP
+\fB\-\-create\fR
+.RS 4
+Create a new
+XML
+catalog\&. Outputs to
+stdout, ignoring
+\fIfilename\fR
+unless
+\fB\-\-noout\fR
+is used, in which case it creates a new catalog file
+\fIfilename\fR\&.
+.RE
+.PP
+\fB\-\-del \fR\fB\fIVALUE(S)\fR\fR
+.RS 4
+Remove entries from
+\fICATALOGFILE\fR
+matching
+\fIVALUE(S)\fR\&. The
+\fB\-\-del\fR
+option will not overwrite
+\fICATALOGFILE\fR, outputting to
+stdout, unless
+\fB\-\-noout\fR
+is used\&.
+.RE
+.PP
+\fB\-\-noout\fR
+.RS 4
+Save output to the named file rather than outputting to
+stdout\&.
+.RE
+.PP
+\fB\-\-no\-super\-update\fR
+.RS 4
+Do not update the
+SGML
+super catalog\&.
+.RE
+.PP
+\fB\-\-shell\fR
+.RS 4
+Run a shell allowing interactive queries on catalog file
+\fICATALOGFILE\fR\&. For the set of available commands see
+the section called \(lqSHELL COMMANDS\(rq\&.
+.RE
+.PP
+\fB\-\-sgml\fR
+.RS 4
+Uses
+SGML
+super catalogs for
+\fB\-\-add\fR
+and
+\fB\-\-del\fR
+options\&.
+.RE
+.PP
+\fB\-v\fR, \fB\-\-verbose\fR
+.RS 4
+Output debugging information\&.
+.RE
+.SH "SHELL COMMANDS"
+.PP
+Invoking
+\fBxmlcatalog\fR
+with the
+\fB\-\-shell \fR\fB\fICATALOGFILE\fR\fR
+option opens a command line shell allowing interactive access to the catalog file identified by
+\fICATALOGFILE\fR\&. Invoking the shell provides a command line prompt after which the following commands (described in alphabetical order) can be entered\&.
+.PP
+\fBadd \fR\fB\fITYPE\fR\fR\fB \fR\fB\fIORIG\fR\fR\fB \fR\fB\fIREPLACE\fR\fR\fB \fR
+.RS 4
+Add an entry to the catalog file\&.
+\fITYPE\fR
+indicates the type of entry\&. Possible types are:
+\fIpublic\fR, \fIsystem\fR, \fIuri\fR, \fIrewriteSystem\fR, \fIrewriteURI\fR, \fIdelegatePublic\fR, \fIdelegateSystem\fR, \fIdelegateURI\fR, \fInextCatalog\fR\&.
+\fIORIG\fR
+is the original reference to be replaced, and
+\fIREPLACE\fR
+is the
+URI
+of the replacement entity to be used\&. The
+\fB\-\-add\fR
+option will not overwrite
+CATALOGFILE, outputting to
+stdout, unless
+\fB\-\-noout\fR
+is used\&. The
+\fB\-\-add\fR
+will always take three parameters even if some of the
+XML
+catalog constructs will have only a single argument\&.
+.RE
+.PP
+\fBdebug\fR
+.RS 4
+Print debugging statements showing the steps
+\fBxmlcatalog\fR
+is executing\&.
+.RE
+.PP
+\fBdel \fR\fB\fIVALUE(S)\fR\fR
+.RS 4
+Remove the catalog entry corresponding to
+\fIVALUE(S)\fR\&.
+.RE
+.PP
+\fBdump\fR
+.RS 4
+Print the current catalog\&.
+.RE
+.PP
+\fBexit\fR
+.RS 4
+Quit the shell\&.
+.RE
+.PP
+\fBpublic \fR\fB\fIPUBLIC\-ID\fR\fR
+.RS 4
+Execute a Formal Public Identifier look\-up of the catalog entry for
+\fIPUBLIC\-ID\fR\&. The corresponding entry will be output to the command line\&.
+.RE
+.PP
+\fBquiet\fR
+.RS 4
+Stop printing debugging statements\&.
+.RE
+.PP
+\fBsystem \fR\fB\fISYSTEM\-ID\fR\fR
+.RS 4
+Execute a Formal Public Identifier look\-up of the catalog entry for
+\fISYSTEM\-ID\fR\&. The corresponding entry will be output to the command line\&.
+.RE
+.SH "ENVIRONMENT"
+.PP
+\fBXML_CATALOG_FILES\fR
+.RS 4
+XML
+catalog behavior can be changed by redirecting queries to the user\*(Aqs own set of catalogs\&. This can be done by setting the
+\fBXML_CATALOG_FILES\fR
+environment variable to a list of catalogs\&. An empty one should deactivate loading the default
+/etc/xml/catalog
+catalog\&.
+.RE
+.SH "DIAGNOSTICS"
+.PP
+
+\fBxmlcatalog\fR
+return codes provide information that can be used when calling it from scripts\&.
+.PP
+\fB0\fR
+.RS 4
+No error
+.RE
+.PP
+\fB1\fR
+.RS 4
+Failed to remove an entry from the catalog
+.RE
+.PP
+\fB2\fR
+.RS 4
+Failed to save to the catalog, check file permissions
+.RE
+.PP
+\fB3\fR
+.RS 4
+Failed to add an entry to the catalog
+.RE
+.PP
+\fB4\fR
+.RS 4
+Failed to look up an entry in the catalog
+.RE
+.SH "SEE ALSO"
+.PP
+\fBlibxml\fR(3)
+.PP
+More information can be found at
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBlibxml\fR(3)
+web page
+\m[blue]\fB\%http://www.xmlsoft.org/\fR\m[]
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\fBlibxml\fR(3)
+catalog support web page at
+\m[blue]\fB\%http://www.xmlsoft.org/catalog.html\fR\m[]
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+James Clark\*(Aqs
+SGML
+catalog page
+\m[blue]\fB\%http://www.jclark.com/sp/catalog.htm\fR\m[]
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+OASIS
+XML
+catalog specification
+\m[blue]\fB\%http://www.oasis-open.org/committees/entity/spec.html\fR\m[]
+.RE
+.sp
+.SH "AUTHOR"
+.PP
+\fBJohn Fleck\fR <\&jfleck@inkstain\&.net\&>
+.RS 4
+Author.
+.RE
+.SH "COPYRIGHT"
+.br
+Copyright \(co 2001, 2004
+.br

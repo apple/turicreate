@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>dict: string dictionnary</title>
+    <meta name="generator" content="Libxml2 devhelp stylesheet"/>
+    <link rel="start" href="index.html" title="libxml2 Reference Manual"/>
+    <link rel="up" href="general.html" title="API"/>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+    <link rel="chapter" href="general.html" title="API"/>
+  </head>
+  <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+    <table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+      <tr valign="middle">
+        <td>
+          <a accesskey="p" href="libxml2-debugXML.html">
+            <img src="left.png" width="24" height="24" border="0" alt="Prev"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="u" href="general.html">
+            <img src="up.png" width="24" height="24" border="0" alt="Up"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="h" href="index.html">
+            <img src="home.png" width="24" height="24" border="0" alt="Home"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="n" href="libxml2-encoding.html">
+            <img src="right.png" width="24" height="24" border="0" alt="Next"/>
+          </a>
+        </td>
+        <th width="100%" align="center">libxml2 Reference Manual</th>
+      </tr>
+    </table>
+    <h2>
+      <span class="refentrytitle">dict</span>
+    </h2>
+    <p>dict - string dictionnary</p>
+    <p>dictionary of reusable strings, just used to avoid allocation and freeing operations. </p>
+    <p>Author(s): Daniel Veillard </p>
+    <div class="refsynopsisdiv">
+      <h2>Synopsis</h2>
+      <pre class="synopsis">typedef struct _xmlDict <a href="#xmlDict">xmlDict</a>;
+typedef <a href="libxml2-dict.html#xmlDict">xmlDict</a> * <a href="#xmlDictPtr">xmlDictPtr</a>;
+size_t	<a href="#xmlDictGetUsage">xmlDictGetUsage</a>			(<a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a> dict);
+int	<a href="#xmlDictReference">xmlDictReference</a>		(<a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a> dict);
+void	<a href="#xmlDictCleanup">xmlDictCleanup</a>			(void);
+int	<a href="#xmlDictSize">xmlDictSize</a>			(<a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a> dict);
+const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlDictExists">xmlDictExists</a>		(<a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a> dict, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 int len);
+size_t	<a href="#xmlDictSetLimit">xmlDictSetLimit</a>			(<a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a> dict, <br/>					 size_t limit);
+int	<a href="#xmlDictOwns">xmlDictOwns</a>			(<a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a> dict, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str);
+const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlDictQLookup">xmlDictQLookup</a>		(<a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a> dict, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * prefix, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name);
+int	<a href="#xmlInitializeDict">xmlInitializeDict</a>		(void);
+<a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a>	<a href="#xmlDictCreateSub">xmlDictCreateSub</a>	(<a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a> sub);
+void	<a href="#xmlDictFree">xmlDictFree</a>			(<a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a> dict);
+const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlDictLookup">xmlDictLookup</a>		(<a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a> dict, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 int len);
+<a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a>	<a href="#xmlDictCreate">xmlDictCreate</a>		(void);
+</pre>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Description</h2>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Details</h2>
+      <div class="refsect2" lang="en">
+        <div class="refsect2" lang="en"><h3><a name="xmlDict">Structure </a>xmlDict</h3><pre class="programlisting">struct _xmlDict {
+The content of this structure is not made public by the API.
+} xmlDict;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlDictPtr">Typedef </a>xmlDictPtr</h3><pre class="programlisting"><a href="libxml2-dict.html#xmlDict">xmlDict</a> * xmlDictPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlDictCleanup"/>xmlDictCleanup ()</h3><pre class="programlisting">void	xmlDictCleanup			(void)<br/>
+</pre><p>Free the dictionary mutex. Do not call unless sure the library is not in use anymore !</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlDictCreate"/>xmlDictCreate ()</h3><pre class="programlisting"><a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a>	xmlDictCreate		(void)<br/>
+</pre><p>Create a new dictionary</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the newly created dictionnary, or NULL if an error occured.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlDictCreateSub"/>xmlDictCreateSub ()</h3><pre class="programlisting"><a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a>	xmlDictCreateSub	(<a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a> sub)<br/>
+</pre><p>Create a new dictionary, inheriting strings from the read-only dictionnary @sub. On lookup, strings are first searched in the new dictionnary, then in @sub, and if not found are created in the new dictionnary.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>sub</tt></i>:</span></td><td>an existing dictionnary</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the newly created dictionnary, or NULL if an error occured.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlDictExists"/>xmlDictExists ()</h3><pre class="programlisting">const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlDictExists		(<a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a> dict, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 int len)<br/>
+</pre><p>Check if the @name exists in the dictionnary @dict.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>dict</tt></i>:</span></td><td>the dictionnary</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the name of the userdata</td></tr><tr><td><span class="term"><i><tt>len</tt></i>:</span></td><td>the length of the name, if -1 it is recomputed</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the internal copy of the name or NULL if not found.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlDictFree"/>xmlDictFree ()</h3><pre class="programlisting">void	xmlDictFree			(<a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a> dict)<br/>
+</pre><p>Free the hash @dict and its contents. The userdata is deallocated with @f if provided.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>dict</tt></i>:</span></td><td>the dictionnary</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlDictGetUsage"/>xmlDictGetUsage ()</h3><pre class="programlisting">size_t	xmlDictGetUsage			(<a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a> dict)<br/>
+</pre><p>Get how much memory is used by a dictionary for strings Added in 2.9.0</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>dict</tt></i>:</span></td><td>the dictionnary</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the amount of strings allocated</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlDictLookup"/>xmlDictLookup ()</h3><pre class="programlisting">const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlDictLookup		(<a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a> dict, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 int len)<br/>
+</pre><p>Add the @name to the dictionnary @dict if not present.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>dict</tt></i>:</span></td><td>the dictionnary</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the name of the userdata</td></tr><tr><td><span class="term"><i><tt>len</tt></i>:</span></td><td>the length of the name, if -1 it is recomputed</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the internal copy of the name or NULL in case of internal error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlDictOwns"/>xmlDictOwns ()</h3><pre class="programlisting">int	xmlDictOwns			(<a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a> dict, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str)<br/>
+</pre><p>check if a string is owned by the disctionary</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>dict</tt></i>:</span></td><td>the dictionnary</td></tr><tr><td><span class="term"><i><tt>str</tt></i>:</span></td><td>the string</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if true, 0 if false and -1 in case of error -1 in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlDictQLookup"/>xmlDictQLookup ()</h3><pre class="programlisting">const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlDictQLookup		(<a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a> dict, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * prefix, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name)<br/>
+</pre><p>Add the QName @prefix:@name to the hash @dict if not present.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>dict</tt></i>:</span></td><td>the dictionnary</td></tr><tr><td><span class="term"><i><tt>prefix</tt></i>:</span></td><td>the prefix</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the name</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the internal copy of the QName or NULL in case of internal error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlDictReference"/>xmlDictReference ()</h3><pre class="programlisting">int	xmlDictReference		(<a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a> dict)<br/>
+</pre><p>Increment the <a href="libxml2-SAX.html#reference">reference</a> counter of a dictionary</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>dict</tt></i>:</span></td><td>the dictionnary</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 in case of success and -1 in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlDictSetLimit"/>xmlDictSetLimit ()</h3><pre class="programlisting">size_t	xmlDictSetLimit			(<a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a> dict, <br/>					 size_t limit)<br/>
+</pre><p>Set a size limit for the dictionary Added in 2.9.0</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>dict</tt></i>:</span></td><td>the dictionnary</td></tr><tr><td><span class="term"><i><tt>limit</tt></i>:</span></td><td>the limit in bytes</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the previous limit of the dictionary or 0</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlDictSize"/>xmlDictSize ()</h3><pre class="programlisting">int	xmlDictSize			(<a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a> dict)<br/>
+</pre><p>Query the number of elements installed in the hash @dict.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>dict</tt></i>:</span></td><td>the dictionnary</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the number of elements in the dictionnary or -1 in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlInitializeDict"/>xmlInitializeDict ()</h3><pre class="programlisting">int	xmlInitializeDict		(void)<br/>
+</pre><p>Do the dictionary mutex initialization. this function is deprecated</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if initialization was already done, and 1 if that call led to the initialization</td></tr></tbody></table></div></div>
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

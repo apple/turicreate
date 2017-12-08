@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>xmlstring: set of routines to process strings</title>
+    <meta name="generator" content="Libxml2 devhelp stylesheet"/>
+    <link rel="start" href="index.html" title="libxml2 Reference Manual"/>
+    <link rel="up" href="general.html" title="API"/>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+    <link rel="chapter" href="general.html" title="API"/>
+  </head>
+  <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+    <table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+      <tr valign="middle">
+        <td>
+          <a accesskey="p" href="libxml2-xmlschemastypes.html">
+            <img src="left.png" width="24" height="24" border="0" alt="Prev"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="u" href="general.html">
+            <img src="up.png" width="24" height="24" border="0" alt="Up"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="h" href="index.html">
+            <img src="home.png" width="24" height="24" border="0" alt="Home"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="n" href="libxml2-xmlunicode.html">
+            <img src="right.png" width="24" height="24" border="0" alt="Next"/>
+          </a>
+        </td>
+        <th width="100%" align="center">libxml2 Reference Manual</th>
+      </tr>
+    </table>
+    <h2>
+      <span class="refentrytitle">xmlstring</span>
+    </h2>
+    <p>xmlstring - set of routines to process strings</p>
+    <p>type and interfaces needed for the internal string handling of the library, especially UTF8 processing. </p>
+    <p>Author(s): Daniel Veillard </p>
+    <div class="refsynopsisdiv">
+      <h2>Synopsis</h2>
+      <pre class="synopsis">#define <a href="#BAD_CAST">BAD_CAST</a>;
+typedef unsigned char <a href="#xmlChar">xmlChar</a>;
+int	<a href="#xmlStrcmp">xmlStrcmp</a>			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str1, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str2);
+<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlCharStrndup">xmlCharStrndup</a>		(const char * cur, <br/>					 int len);
+const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlStrcasestr">xmlStrcasestr</a>		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * val);
+<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlStrcat">xmlStrcat</a>		(<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * cur, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * add);
+int	<a href="#xmlStrPrintf">xmlStrPrintf</a>			(<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * buf, <br/>					 int len, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * msg, <br/>					 ... ...);
+const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlStrstr">xmlStrstr</a>		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * val);
+int	<a href="#xmlUTF8Size">xmlUTF8Size</a>			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * utf);
+int	<a href="#xmlStrQEqual">xmlStrQEqual</a>			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * pref, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str);
+<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlStrncatNew">xmlStrncatNew</a>		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str1, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str2, <br/>					 int len);
+const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlUTF8Strpos">xmlUTF8Strpos</a>		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * utf, <br/>					 int pos);
+<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlStrdup">xmlStrdup</a>		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * cur);
+<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlCharStrdup">xmlCharStrdup</a>		(const char * cur);
+const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlStrchr">xmlStrchr</a>		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str, <br/>					 <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> val);
+int	<a href="#xmlStrlen">xmlStrlen</a>			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str);
+int	<a href="#xmlStrncmp">xmlStrncmp</a>			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str1, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str2, <br/>					 int len);
+<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlStrsub">xmlStrsub</a>		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str, <br/>					 int start, <br/>					 int len);
+<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlStrncat">xmlStrncat</a>		(<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * cur, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * add, <br/>					 int len);
+int	<a href="#xmlGetUTF8Char">xmlGetUTF8Char</a>			(const unsigned char * utf, <br/>					 int * len);
+int	<a href="#xmlStrcasecmp">xmlStrcasecmp</a>			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str1, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str2);
+<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlStrndup">xmlStrndup</a>		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * cur, <br/>					 int len);
+int	<a href="#xmlStrVPrintf">xmlStrVPrintf</a>			(<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * buf, <br/>					 int len, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * msg, <br/>					 va_list ap);
+int	<a href="#xmlUTF8Strsize">xmlUTF8Strsize</a>			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * utf, <br/>					 int len);
+int	<a href="#xmlCheckUTF8">xmlCheckUTF8</a>			(const unsigned char * utf);
+int	<a href="#xmlStrncasecmp">xmlStrncasecmp</a>			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str1, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str2, <br/>					 int len);
+int	<a href="#xmlUTF8Strlen">xmlUTF8Strlen</a>			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * utf);
+<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlUTF8Strsub">xmlUTF8Strsub</a>		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * utf, <br/>					 int start, <br/>					 int len);
+int	<a href="#xmlStrEqual">xmlStrEqual</a>			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str1, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str2);
+int	<a href="#xmlUTF8Charcmp">xmlUTF8Charcmp</a>			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * utf1, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * utf2);
+<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlUTF8Strndup">xmlUTF8Strndup</a>		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * utf, <br/>					 int len);
+int	<a href="#xmlUTF8Strloc">xmlUTF8Strloc</a>			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * utf, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * utfchar);
+</pre>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Description</h2>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Details</h2>
+      <div class="refsect2" lang="en">
+        <div class="refsect2" lang="en"><h3><a name="BAD_CAST">Macro </a>BAD_CAST</h3><pre class="programlisting">#define <a href="#BAD_CAST">BAD_CAST</a>;
+</pre><p>Macro to cast a string to an <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * when one know its safe.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlChar">Typedef </a>xmlChar</h3><pre class="programlisting">unsigned char xmlChar;
+</pre><p>This is a basic byte in an UTF-8 encoded string. It's unsigned allowing to pinpoint case where char * are assigned to <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * (possibly making serialization back impossible).</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlCharStrdup"/>xmlCharStrdup ()</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlCharStrdup		(const char * cur)<br/>
+</pre><p>a strdup for char's to xmlChar's</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the input char *</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a new <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * or NULL</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlCharStrndup"/>xmlCharStrndup ()</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlCharStrndup		(const char * cur, <br/>					 int len)<br/>
+</pre><p>a strndup for char's to xmlChar's</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the input char *</td></tr><tr><td><span class="term"><i><tt>len</tt></i>:</span></td><td>the len of @cur</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a new <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * or NULL</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlCheckUTF8"/>xmlCheckUTF8 ()</h3><pre class="programlisting">int	xmlCheckUTF8			(const unsigned char * utf)<br/>
+</pre><p>Checks @utf for being valid UTF-8. @utf is assumed to be null-terminated. This function is not super-strict, as it will allow longer UTF-8 sequences than necessary. Note that Java is capable of producing these sequences if provoked. Also note, this routine checks for the 4-byte maximum size, but does not check for 0x10ffff maximum value.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>utf</tt></i>:</span></td><td>Pointer to putative UTF-8 encoded string.</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>value: true if @utf is valid.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlGetUTF8Char"/>xmlGetUTF8Char ()</h3><pre class="programlisting">int	xmlGetUTF8Char			(const unsigned char * utf, <br/>					 int * len)<br/>
+</pre><p>Read the first UTF8 character from @utf</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>utf</tt></i>:</span></td><td>a sequence of UTF-8 encoded bytes</td></tr><tr><td><span class="term"><i><tt>len</tt></i>:</span></td><td>a pointer to the minimum number of bytes present in the sequence. This is used to assure the next character is completely contained within the sequence.</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the char value or -1 in case of error, and sets *len to the actual number of bytes consumed (0 in case of error)</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStrEqual"/>xmlStrEqual ()</h3><pre class="programlisting">int	xmlStrEqual			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str1, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str2)<br/>
+</pre><p>Check if both strings are equal of have same content. Should be a bit more readable and faster than xmlStrcmp()</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>str1</tt></i>:</span></td><td>the first <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *</td></tr><tr><td><span class="term"><i><tt>str2</tt></i>:</span></td><td>the second <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if they are equal, 0 if they are different</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStrPrintf"/>xmlStrPrintf ()</h3><pre class="programlisting">int	xmlStrPrintf			(<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * buf, <br/>					 int len, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * msg, <br/>					 ... ...)<br/>
+</pre><p>Formats @msg and places result into @buf.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>buf</tt></i>:</span></td><td>the result buffer.</td></tr><tr><td><span class="term"><i><tt>len</tt></i>:</span></td><td>the result buffer length.</td></tr><tr><td><span class="term"><i><tt>msg</tt></i>:</span></td><td>the message with printf formatting.</td></tr><tr><td><span class="term"><i><tt>...</tt></i>:</span></td><td>extra parameters for the message.</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the number of <a href="libxml2-SAX.html#characters">characters</a> written to @buf or -1 if an error occurs.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStrQEqual"/>xmlStrQEqual ()</h3><pre class="programlisting">int	xmlStrQEqual			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * pref, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str)<br/>
+</pre><p>Check if a QName is Equal to a given string</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>pref</tt></i>:</span></td><td>the prefix of the QName</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the localname of the QName</td></tr><tr><td><span class="term"><i><tt>str</tt></i>:</span></td><td>the second <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if they are equal, 0 if they are different</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStrVPrintf"/>xmlStrVPrintf ()</h3><pre class="programlisting">int	xmlStrVPrintf			(<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * buf, <br/>					 int len, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * msg, <br/>					 va_list ap)<br/>
+</pre><p>Formats @msg and places result into @buf.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>buf</tt></i>:</span></td><td>the result buffer.</td></tr><tr><td><span class="term"><i><tt>len</tt></i>:</span></td><td>the result buffer length.</td></tr><tr><td><span class="term"><i><tt>msg</tt></i>:</span></td><td>the message with printf formatting.</td></tr><tr><td><span class="term"><i><tt>ap</tt></i>:</span></td><td>extra parameters for the message.</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the number of <a href="libxml2-SAX.html#characters">characters</a> written to @buf or -1 if an error occurs.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStrcasecmp"/>xmlStrcasecmp ()</h3><pre class="programlisting">int	xmlStrcasecmp			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str1, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str2)<br/>
+</pre><p>a strcasecmp for xmlChar's</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>str1</tt></i>:</span></td><td>the first <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *</td></tr><tr><td><span class="term"><i><tt>str2</tt></i>:</span></td><td>the second <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the integer result of the comparison</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStrcasestr"/>xmlStrcasestr ()</h3><pre class="programlisting">const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlStrcasestr		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * val)<br/>
+</pre><p>a case-ignoring strstr for xmlChar's</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>str</tt></i>:</span></td><td>the <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * array (haystack)</td></tr><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>the <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> to search (needle)</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * for the first occurrence or NULL.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStrcat"/>xmlStrcat ()</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlStrcat		(<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * cur, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * add)<br/>
+</pre><p>a strcat for array of xmlChar's. Since they are supposed to be encoded in UTF-8 or an encoding with 8bit based chars, we assume a termination mark of '0'.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the original <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * array</td></tr><tr><td><span class="term"><i><tt>add</tt></i>:</span></td><td>the <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * array added</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a new <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * containing the concatenated string.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStrchr"/>xmlStrchr ()</h3><pre class="programlisting">const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlStrchr		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str, <br/>					 <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> val)<br/>
+</pre><p>a strchr for xmlChar's</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>str</tt></i>:</span></td><td>the <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * array</td></tr><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>the <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> to search</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * for the first occurrence or NULL.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStrcmp"/>xmlStrcmp ()</h3><pre class="programlisting">int	xmlStrcmp			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str1, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str2)<br/>
+</pre><p>a strcmp for xmlChar's</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>str1</tt></i>:</span></td><td>the first <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *</td></tr><tr><td><span class="term"><i><tt>str2</tt></i>:</span></td><td>the second <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the integer result of the comparison</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStrdup"/>xmlStrdup ()</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlStrdup		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * cur)<br/>
+</pre><p>a strdup for array of xmlChar's. Since they are supposed to be encoded in UTF-8 or an encoding with 8bit based chars, we assume a termination mark of '0'.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the input <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a new <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * or NULL</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStrlen"/>xmlStrlen ()</h3><pre class="programlisting">int	xmlStrlen			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str)<br/>
+</pre><p>length of a xmlChar's string</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>str</tt></i>:</span></td><td>the <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * array</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the number of <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> contained in the ARRAY.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStrncasecmp"/>xmlStrncasecmp ()</h3><pre class="programlisting">int	xmlStrncasecmp			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str1, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str2, <br/>					 int len)<br/>
+</pre><p>a strncasecmp for xmlChar's</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>str1</tt></i>:</span></td><td>the first <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *</td></tr><tr><td><span class="term"><i><tt>str2</tt></i>:</span></td><td>the second <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *</td></tr><tr><td><span class="term"><i><tt>len</tt></i>:</span></td><td>the max comparison length</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the integer result of the comparison</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStrncat"/>xmlStrncat ()</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlStrncat		(<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * cur, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * add, <br/>					 int len)<br/>
+</pre><p>a strncat for array of xmlChar's, it will extend @cur with the len first bytes of @add. Note that if @len &lt; 0 then this is an API error and NULL will be returned.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the original <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * array</td></tr><tr><td><span class="term"><i><tt>add</tt></i>:</span></td><td>the <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * array added</td></tr><tr><td><span class="term"><i><tt>len</tt></i>:</span></td><td>the length of @add</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a new <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *, the original @cur is reallocated if needed and should not be freed</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStrncatNew"/>xmlStrncatNew ()</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlStrncatNew		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str1, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str2, <br/>					 int len)<br/>
+</pre><p>same as xmlStrncat, but creates a new string. The original two strings are not freed. If @len is &lt; 0 then the length will be calculated automatically.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>str1</tt></i>:</span></td><td>first <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> string</td></tr><tr><td><span class="term"><i><tt>str2</tt></i>:</span></td><td>second <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> string</td></tr><tr><td><span class="term"><i><tt>len</tt></i>:</span></td><td>the len of @str2 or &lt; 0</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a new <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * or NULL</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStrncmp"/>xmlStrncmp ()</h3><pre class="programlisting">int	xmlStrncmp			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str1, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str2, <br/>					 int len)<br/>
+</pre><p>a strncmp for xmlChar's</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>str1</tt></i>:</span></td><td>the first <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *</td></tr><tr><td><span class="term"><i><tt>str2</tt></i>:</span></td><td>the second <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *</td></tr><tr><td><span class="term"><i><tt>len</tt></i>:</span></td><td>the max comparison length</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the integer result of the comparison</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStrndup"/>xmlStrndup ()</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlStrndup		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * cur, <br/>					 int len)<br/>
+</pre><p>a strndup for array of xmlChar's</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the input <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *</td></tr><tr><td><span class="term"><i><tt>len</tt></i>:</span></td><td>the len of @cur</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a new <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * or NULL</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStrstr"/>xmlStrstr ()</h3><pre class="programlisting">const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlStrstr		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * val)<br/>
+</pre><p>a strstr for xmlChar's</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>str</tt></i>:</span></td><td>the <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * array (haystack)</td></tr><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>the <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> to search (needle)</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * for the first occurrence or NULL.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStrsub"/>xmlStrsub ()</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlStrsub		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str, <br/>					 int start, <br/>					 int len)<br/>
+</pre><p>Extract a substring of a given string</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>str</tt></i>:</span></td><td>the <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * array (haystack)</td></tr><tr><td><span class="term"><i><tt>start</tt></i>:</span></td><td>the index of the first char (zero based)</td></tr><tr><td><span class="term"><i><tt>len</tt></i>:</span></td><td>the length of the substring</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * for the first occurrence or NULL.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlUTF8Charcmp"/>xmlUTF8Charcmp ()</h3><pre class="programlisting">int	xmlUTF8Charcmp			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * utf1, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * utf2)<br/>
+</pre><p>compares the two UCS4 values</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>utf1</tt></i>:</span></td><td>pointer to first UTF8 char</td></tr><tr><td><span class="term"><i><tt>utf2</tt></i>:</span></td><td>pointer to second UTF8 char</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>result of the compare as with <a href="libxml2-xmlstring.html#xmlStrncmp">xmlStrncmp</a></td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlUTF8Size"/>xmlUTF8Size ()</h3><pre class="programlisting">int	xmlUTF8Size			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * utf)<br/>
+</pre><p>calculates the internal size of a UTF8 character</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>utf</tt></i>:</span></td><td>pointer to the UTF8 character</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the numbers of bytes in the character, -1 on format error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlUTF8Strlen"/>xmlUTF8Strlen ()</h3><pre class="programlisting">int	xmlUTF8Strlen			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * utf)<br/>
+</pre><p>compute the length of an UTF8 string, it doesn't do a full UTF8 checking of the content of the string.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>utf</tt></i>:</span></td><td>a sequence of UTF-8 encoded bytes</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the number of <a href="libxml2-SAX.html#characters">characters</a> in the string or -1 in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlUTF8Strloc"/>xmlUTF8Strloc ()</h3><pre class="programlisting">int	xmlUTF8Strloc			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * utf, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * utfchar)<br/>
+</pre><p>a function to provide the relative location of a UTF8 char</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>utf</tt></i>:</span></td><td>the input UTF8 *</td></tr><tr><td><span class="term"><i><tt>utfchar</tt></i>:</span></td><td>the UTF8 character to be found</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the relative character position of the desired char or -1 if not found</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlUTF8Strndup"/>xmlUTF8Strndup ()</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlUTF8Strndup		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * utf, <br/>					 int len)<br/>
+</pre><p>a strndup for array of UTF8's</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>utf</tt></i>:</span></td><td>the input UTF8 *</td></tr><tr><td><span class="term"><i><tt>len</tt></i>:</span></td><td>the len of @utf (in chars)</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a new UTF8 * or NULL</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlUTF8Strpos"/>xmlUTF8Strpos ()</h3><pre class="programlisting">const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlUTF8Strpos		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * utf, <br/>					 int pos)<br/>
+</pre><p>a function to provide the equivalent of fetching a character from a string array</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>utf</tt></i>:</span></td><td>the input UTF8 *</td></tr><tr><td><span class="term"><i><tt>pos</tt></i>:</span></td><td>the position of the desired UTF8 char (in chars)</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a pointer to the UTF8 character or NULL</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlUTF8Strsize"/>xmlUTF8Strsize ()</h3><pre class="programlisting">int	xmlUTF8Strsize			(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * utf, <br/>					 int len)<br/>
+</pre><p>storage size of an UTF8 string the behaviour is not garanteed if the input string is not UTF-8</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>utf</tt></i>:</span></td><td>a sequence of UTF-8 encoded bytes</td></tr><tr><td><span class="term"><i><tt>len</tt></i>:</span></td><td>the number of <a href="libxml2-SAX.html#characters">characters</a> in the array</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the storage size of the first 'len' <a href="libxml2-SAX.html#characters">characters</a> of ARRAY</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlUTF8Strsub"/>xmlUTF8Strsub ()</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlUTF8Strsub		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * utf, <br/>					 int start, <br/>					 int len)<br/>
+</pre><p>Create a substring from a given UTF-8 string Note: positions are given in units of UTF-8 chars</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>utf</tt></i>:</span></td><td>a sequence of UTF-8 encoded bytes</td></tr><tr><td><span class="term"><i><tt>start</tt></i>:</span></td><td>relative pos of first char</td></tr><tr><td><span class="term"><i><tt>len</tt></i>:</span></td><td>total number to copy</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a pointer to a newly created string or NULL if any problem</td></tr></tbody></table></div></div>
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

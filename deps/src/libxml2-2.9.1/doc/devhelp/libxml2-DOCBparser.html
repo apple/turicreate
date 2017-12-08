@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>DOCBparser: old DocBook SGML parser</title>
+    <meta name="generator" content="Libxml2 devhelp stylesheet"/>
+    <link rel="start" href="index.html" title="libxml2 Reference Manual"/>
+    <link rel="up" href="general.html" title="API"/>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+    <link rel="chapter" href="general.html" title="API"/>
+  </head>
+  <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+    <table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+      <tr valign="middle">
+        <td>
+          <a accesskey="u" href="general.html">
+            <img src="up.png" width="24" height="24" border="0" alt="Up"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="h" href="index.html">
+            <img src="home.png" width="24" height="24" border="0" alt="Home"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="n" href="libxml2-HTMLparser.html">
+            <img src="right.png" width="24" height="24" border="0" alt="Next"/>
+          </a>
+        </td>
+        <th width="100%" align="center">libxml2 Reference Manual</th>
+      </tr>
+    </table>
+    <h2>
+      <span class="refentrytitle">DOCBparser</span>
+    </h2>
+    <p>DOCBparser - old DocBook SGML parser</p>
+    <p>interface for a DocBook SGML non-verifying parser This code is DEPRECATED, and should not be used anymore. </p>
+    <p> WARNING: this module is deprecated !</p>
+    <p>Author(s): Daniel Veillard </p>
+    <div class="refsynopsisdiv">
+      <h2>Synopsis</h2>
+      <pre class="synopsis">typedef <a href="libxml2-tree.html#xmlParserInputPtr">xmlParserInputPtr</a> <a href="#docbParserInputPtr">docbParserInputPtr</a>;
+typedef <a href="libxml2-tree.html#xmlParserCtxt">xmlParserCtxt</a> <a href="#docbParserCtxt">docbParserCtxt</a>;
+typedef <a href="libxml2-tree.html#xmlParserCtxtPtr">xmlParserCtxtPtr</a> <a href="#docbParserCtxtPtr">docbParserCtxtPtr</a>;
+typedef <a href="libxml2-tree.html#xmlParserInput">xmlParserInput</a> <a href="#docbParserInput">docbParserInput</a>;
+typedef <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> <a href="#docbDocPtr">docbDocPtr</a>;
+typedef <a href="libxml2-tree.html#xmlSAXHandler">xmlSAXHandler</a> <a href="#docbSAXHandler">docbSAXHandler</a>;
+typedef <a href="libxml2-tree.html#xmlSAXHandlerPtr">xmlSAXHandlerPtr</a> <a href="#docbSAXHandlerPtr">docbSAXHandlerPtr</a>;
+void	<a href="#docbFreeParserCtxt">docbFreeParserCtxt</a>		(<a href="libxml2-DOCBparser.html#docbParserCtxtPtr">docbParserCtxtPtr</a> ctxt);
+<a href="libxml2-DOCBparser.html#docbDocPtr">docbDocPtr</a>	<a href="#docbParseDoc">docbParseDoc</a>		(<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * cur, <br/>					 const char * encoding);
+<a href="libxml2-DOCBparser.html#docbParserCtxtPtr">docbParserCtxtPtr</a>	<a href="#docbCreateFileParserCtxt">docbCreateFileParserCtxt</a>	(const char * filename, <br/>							 const char * encoding);
+<a href="libxml2-DOCBparser.html#docbDocPtr">docbDocPtr</a>	<a href="#docbSAXParseFile">docbSAXParseFile</a>	(const char * filename, <br/>					 const char * encoding, <br/>					 <a href="libxml2-DOCBparser.html#docbSAXHandlerPtr">docbSAXHandlerPtr</a> sax, <br/>					 void * userData);
+<a href="libxml2-DOCBparser.html#docbDocPtr">docbDocPtr</a>	<a href="#docbSAXParseDoc">docbSAXParseDoc</a>		(<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * cur, <br/>					 const char * encoding, <br/>					 <a href="libxml2-DOCBparser.html#docbSAXHandlerPtr">docbSAXHandlerPtr</a> sax, <br/>					 void * userData);
+<a href="libxml2-DOCBparser.html#docbParserCtxtPtr">docbParserCtxtPtr</a>	<a href="#docbCreatePushParserCtxt">docbCreatePushParserCtxt</a>	(<a href="libxml2-DOCBparser.html#docbSAXHandlerPtr">docbSAXHandlerPtr</a> sax, <br/>							 void * user_data, <br/>							 const char * chunk, <br/>							 int size, <br/>							 const char * filename, <br/>							 <a href="libxml2-encoding.html#xmlCharEncoding">xmlCharEncoding</a> enc);
+int	<a href="#docbEncodeEntities">docbEncodeEntities</a>		(unsigned char * out, <br/>					 int * outlen, <br/>					 const unsigned char * in, <br/>					 int * inlen, <br/>					 int quoteChar);
+<a href="libxml2-DOCBparser.html#docbDocPtr">docbDocPtr</a>	<a href="#docbParseFile">docbParseFile</a>		(const char * filename, <br/>					 const char * encoding);
+int	<a href="#docbParseDocument">docbParseDocument</a>		(<a href="libxml2-DOCBparser.html#docbParserCtxtPtr">docbParserCtxtPtr</a> ctxt);
+int	<a href="#docbParseChunk">docbParseChunk</a>			(<a href="libxml2-DOCBparser.html#docbParserCtxtPtr">docbParserCtxtPtr</a> ctxt, <br/>					 const char * chunk, <br/>					 int size, <br/>					 int terminate);
+</pre>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Description</h2>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Details</h2>
+      <div class="refsect2" lang="en">
+        <div class="refsect2" lang="en"><h3><a name="docbDocPtr">Typedef </a>docbDocPtr</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> docbDocPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="docbParserCtxt">Typedef </a>docbParserCtxt</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlParserCtxt">xmlParserCtxt</a> docbParserCtxt;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="docbParserCtxtPtr">Typedef </a>docbParserCtxtPtr</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlParserCtxtPtr">xmlParserCtxtPtr</a> docbParserCtxtPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="docbParserInput">Typedef </a>docbParserInput</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlParserInput">xmlParserInput</a> docbParserInput;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="docbParserInputPtr">Typedef </a>docbParserInputPtr</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlParserInputPtr">xmlParserInputPtr</a> docbParserInputPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="docbSAXHandler">Typedef </a>docbSAXHandler</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlSAXHandler">xmlSAXHandler</a> docbSAXHandler;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="docbSAXHandlerPtr">Typedef </a>docbSAXHandlerPtr</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlSAXHandlerPtr">xmlSAXHandlerPtr</a> docbSAXHandlerPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="docbCreateFileParserCtxt"/>docbCreateFileParserCtxt ()</h3><pre class="programlisting"><a href="libxml2-DOCBparser.html#docbParserCtxtPtr">docbParserCtxtPtr</a>	docbCreateFileParserCtxt	(const char * filename, <br/>							 const char * encoding)<br/>
+</pre><p>Create a parser context for a file content. Automatic support for ZLIB/Compress compressed document is provided by default if found at compile-time.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>filename</tt></i>:</span></td><td>the filename</td></tr><tr><td><span class="term"><i><tt>encoding</tt></i>:</span></td><td>the SGML document encoding, or NULL</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the new parser context or NULL</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="docbCreatePushParserCtxt"/>docbCreatePushParserCtxt ()</h3><pre class="programlisting"><a href="libxml2-DOCBparser.html#docbParserCtxtPtr">docbParserCtxtPtr</a>	docbCreatePushParserCtxt	(<a href="libxml2-DOCBparser.html#docbSAXHandlerPtr">docbSAXHandlerPtr</a> sax, <br/>							 void * user_data, <br/>							 const char * chunk, <br/>							 int size, <br/>							 const char * filename, <br/>							 <a href="libxml2-encoding.html#xmlCharEncoding">xmlCharEncoding</a> enc)<br/>
+</pre><p>Create a parser context for using the DocBook SGML parser in push mode To allow content encoding detection, @size should be &gt;= 4 The value of @filename is used for fetching external entities and error/warning reports.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>sax</tt></i>:</span></td><td>a SAX handler</td></tr><tr><td><span class="term"><i><tt>user_data</tt></i>:</span></td><td>The user data returned on SAX callbacks</td></tr><tr><td><span class="term"><i><tt>chunk</tt></i>:</span></td><td>a pointer to an array of chars</td></tr><tr><td><span class="term"><i><tt>size</tt></i>:</span></td><td>number of chars in the array</td></tr><tr><td><span class="term"><i><tt>filename</tt></i>:</span></td><td>an optional file name or URI</td></tr><tr><td><span class="term"><i><tt>enc</tt></i>:</span></td><td>an optional encoding</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the new parser context or NULL</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="docbEncodeEntities"/>docbEncodeEntities ()</h3><pre class="programlisting">int	docbEncodeEntities		(unsigned char * out, <br/>					 int * outlen, <br/>					 const unsigned char * in, <br/>					 int * inlen, <br/>					 int quoteChar)<br/>
+</pre><p>Take a block of UTF-8 chars in and try to convert it to an ASCII plus SGML entities block of chars out.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>out</tt></i>:</span></td><td>a pointer to an array of bytes to store the result</td></tr><tr><td><span class="term"><i><tt>outlen</tt></i>:</span></td><td>the length of @out</td></tr><tr><td><span class="term"><i><tt>in</tt></i>:</span></td><td>a pointer to an array of UTF-8 chars</td></tr><tr><td><span class="term"><i><tt>inlen</tt></i>:</span></td><td>the length of @in</td></tr><tr><td><span class="term"><i><tt>quoteChar</tt></i>:</span></td><td>the quote character to escape (' or ") or zero.</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if success, -2 if the transcoding fails, or -1 otherwise The value of @inlen after return is the number of octets consumed as the return value is positive, else unpredictable. The value of @outlen after return is the number of octets consumed.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="docbFreeParserCtxt"/>docbFreeParserCtxt ()</h3><pre class="programlisting">void	docbFreeParserCtxt		(<a href="libxml2-DOCBparser.html#docbParserCtxtPtr">docbParserCtxtPtr</a> ctxt)<br/>
+</pre><p>Free all the memory used by a parser context. However the parsed document in ctxt-&gt;myDoc is not freed.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>an SGML parser context</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="docbParseChunk"/>docbParseChunk ()</h3><pre class="programlisting">int	docbParseChunk			(<a href="libxml2-DOCBparser.html#docbParserCtxtPtr">docbParserCtxtPtr</a> ctxt, <br/>					 const char * chunk, <br/>					 int size, <br/>					 int terminate)<br/>
+</pre><p>Parse a Chunk of memory</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>an XML parser context</td></tr><tr><td><span class="term"><i><tt>chunk</tt></i>:</span></td><td>an char array</td></tr><tr><td><span class="term"><i><tt>size</tt></i>:</span></td><td>the size in byte of the chunk</td></tr><tr><td><span class="term"><i><tt>terminate</tt></i>:</span></td><td>last chunk indicator</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>zero if no error, the <a href="libxml2-xmlerror.html#xmlParserErrors">xmlParserErrors</a> otherwise.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="docbParseDoc"/>docbParseDoc ()</h3><pre class="programlisting"><a href="libxml2-DOCBparser.html#docbDocPtr">docbDocPtr</a>	docbParseDoc		(<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * cur, <br/>					 const char * encoding)<br/>
+</pre><p>parse an SGML in-memory document and build a tree.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>a pointer to an array of <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a></td></tr><tr><td><span class="term"><i><tt>encoding</tt></i>:</span></td><td>a free form C string describing the SGML document encoding, or NULL</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the resulting document tree</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="docbParseDocument"/>docbParseDocument ()</h3><pre class="programlisting">int	docbParseDocument		(<a href="libxml2-DOCBparser.html#docbParserCtxtPtr">docbParserCtxtPtr</a> ctxt)<br/>
+</pre><p>parse an SGML document (and build a tree if using the standard SAX interface).</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>an SGML parser context</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0, -1 in case of error. the parser context is augmented as a result of the parsing.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="docbParseFile"/>docbParseFile ()</h3><pre class="programlisting"><a href="libxml2-DOCBparser.html#docbDocPtr">docbDocPtr</a>	docbParseFile		(const char * filename, <br/>					 const char * encoding)<br/>
+</pre><p>parse a Docbook SGML file and build a tree. Automatic support for ZLIB/Compress compressed document is provided by default if found at compile-time.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>filename</tt></i>:</span></td><td>the filename</td></tr><tr><td><span class="term"><i><tt>encoding</tt></i>:</span></td><td>a free form C string describing document encoding, or NULL</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the resulting document tree</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="docbSAXParseDoc"/>docbSAXParseDoc ()</h3><pre class="programlisting"><a href="libxml2-DOCBparser.html#docbDocPtr">docbDocPtr</a>	docbSAXParseDoc		(<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * cur, <br/>					 const char * encoding, <br/>					 <a href="libxml2-DOCBparser.html#docbSAXHandlerPtr">docbSAXHandlerPtr</a> sax, <br/>					 void * userData)<br/>
+</pre><p>parse an SGML in-memory document and build a tree. It use the given SAX function block to handle the parsing callback. If sax is NULL, fallback to the default DOM tree building routines.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>a pointer to an array of <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a></td></tr><tr><td><span class="term"><i><tt>encoding</tt></i>:</span></td><td>a free form C string describing the SGML document encoding, or NULL</td></tr><tr><td><span class="term"><i><tt>sax</tt></i>:</span></td><td>the SAX handler block</td></tr><tr><td><span class="term"><i><tt>userData</tt></i>:</span></td><td>if using SAX, this pointer will be provided on callbacks.</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the resulting document tree</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="docbSAXParseFile"/>docbSAXParseFile ()</h3><pre class="programlisting"><a href="libxml2-DOCBparser.html#docbDocPtr">docbDocPtr</a>	docbSAXParseFile	(const char * filename, <br/>					 const char * encoding, <br/>					 <a href="libxml2-DOCBparser.html#docbSAXHandlerPtr">docbSAXHandlerPtr</a> sax, <br/>					 void * userData)<br/>
+</pre><p>parse an SGML file and build a tree. Automatic support for ZLIB/Compress compressed document is provided by default if found at compile-time. It use the given SAX function block to handle the parsing callback. If sax is NULL, fallback to the default DOM tree building routines.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>filename</tt></i>:</span></td><td>the filename</td></tr><tr><td><span class="term"><i><tt>encoding</tt></i>:</span></td><td>a free form C string describing the SGML document encoding, or NULL</td></tr><tr><td><span class="term"><i><tt>sax</tt></i>:</span></td><td>the SAX handler block</td></tr><tr><td><span class="term"><i><tt>userData</tt></i>:</span></td><td>if using SAX, this pointer will be provided on callbacks.</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the resulting document tree</td></tr></tbody></table></div></div>
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

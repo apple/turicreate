@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>xpointer: API to handle XML Pointers</title>
+    <meta name="generator" content="Libxml2 devhelp stylesheet"/>
+    <link rel="start" href="index.html" title="libxml2 Reference Manual"/>
+    <link rel="up" href="general.html" title="API"/>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+    <link rel="chapter" href="general.html" title="API"/>
+  </head>
+  <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+    <table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+      <tr valign="middle">
+        <td>
+          <a accesskey="p" href="libxml2-xpathInternals.html">
+            <img src="left.png" width="24" height="24" border="0" alt="Prev"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="u" href="general.html">
+            <img src="up.png" width="24" height="24" border="0" alt="Up"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="h" href="index.html">
+            <img src="home.png" width="24" height="24" border="0" alt="Home"/>
+          </a>
+        </td>
+        <th width="100%" align="center">libxml2 Reference Manual</th>
+      </tr>
+    </table>
+    <h2>
+      <span class="refentrytitle">xpointer</span>
+    </h2>
+    <p>xpointer - API to handle XML Pointers</p>
+    <p>API to handle XML Pointers Base implementation was made accordingly to W3C Candidate Recommendation 7 June 2000</p>
+    <p>Author(s): Daniel Veillard </p>
+    <div class="refsynopsisdiv">
+      <h2>Synopsis</h2>
+      <pre class="synopsis">typedef struct _xmlLocationSet <a href="#xmlLocationSet">xmlLocationSet</a>;
+typedef <a href="libxml2-xpointer.html#xmlLocationSet">xmlLocationSet</a> * <a href="#xmlLocationSetPtr">xmlLocationSetPtr</a>;
+<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	<a href="#xmlXPtrNewRange">xmlXPtrNewRange</a>	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> start, <br/>					 int startindex, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> end, <br/>					 int endindex);
+void	<a href="#xmlXPtrFreeLocationSet">xmlXPtrFreeLocationSet</a>		(<a href="libxml2-xpointer.html#xmlLocationSetPtr">xmlLocationSetPtr</a> obj);
+<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	<a href="#xmlXPtrWrapLocationSet">xmlXPtrWrapLocationSet</a>	(<a href="libxml2-xpointer.html#xmlLocationSetPtr">xmlLocationSetPtr</a> val);
+<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a>	<a href="#xmlXPtrBuildNodeList">xmlXPtrBuildNodeList</a>	(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> obj);
+<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	<a href="#xmlXPtrEval">xmlXPtrEval</a>	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str, <br/>					 <a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a> ctx);
+<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	<a href="#xmlXPtrNewRangeNodes">xmlXPtrNewRangeNodes</a>	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> start, <br/>						 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> end);
+void	<a href="#xmlXPtrLocationSetAdd">xmlXPtrLocationSetAdd</a>		(<a href="libxml2-xpointer.html#xmlLocationSetPtr">xmlLocationSetPtr</a> cur, <br/>					 <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> val);
+void	<a href="#xmlXPtrRangeToFunction">xmlXPtrRangeToFunction</a>		(<a href="libxml2-xpath.html#xmlXPathParserContextPtr">xmlXPathParserContextPtr</a> ctxt, <br/>					 int nargs);
+<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	<a href="#xmlXPtrNewCollapsedRange">xmlXPtrNewCollapsedRange</a>	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> start);
+<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	<a href="#xmlXPtrNewRangePoints">xmlXPtrNewRangePoints</a>	(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> start, <br/>						 <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> end);
+<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	<a href="#xmlXPtrNewLocationSetNodeSet">xmlXPtrNewLocationSetNodeSet</a>	(<a href="libxml2-xpath.html#xmlNodeSetPtr">xmlNodeSetPtr</a> set);
+<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	<a href="#xmlXPtrNewRangePointNode">xmlXPtrNewRangePointNode</a>	(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> start, <br/>							 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> end);
+<a href="libxml2-xpointer.html#xmlLocationSetPtr">xmlLocationSetPtr</a>	<a href="#xmlXPtrLocationSetCreate">xmlXPtrLocationSetCreate</a>	(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> val);
+<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	<a href="#xmlXPtrNewRangeNodeObject">xmlXPtrNewRangeNodeObject</a>	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> start, <br/>							 <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> end);
+<a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a>	<a href="#xmlXPtrNewContext">xmlXPtrNewContext</a>	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>						 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> here, <br/>						 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> origin);
+void	<a href="#xmlXPtrLocationSetRemove">xmlXPtrLocationSetRemove</a>	(<a href="libxml2-xpointer.html#xmlLocationSetPtr">xmlLocationSetPtr</a> cur, <br/>					 int val);
+<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	<a href="#xmlXPtrNewRangeNodePoint">xmlXPtrNewRangeNodePoint</a>	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> start, <br/>							 <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> end);
+void	<a href="#xmlXPtrLocationSetDel">xmlXPtrLocationSetDel</a>		(<a href="libxml2-xpointer.html#xmlLocationSetPtr">xmlLocationSetPtr</a> cur, <br/>					 <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> val);
+<a href="libxml2-xpointer.html#xmlLocationSetPtr">xmlLocationSetPtr</a>	<a href="#xmlXPtrLocationSetMerge">xmlXPtrLocationSetMerge</a>	(<a href="libxml2-xpointer.html#xmlLocationSetPtr">xmlLocationSetPtr</a> val1, <br/>						 <a href="libxml2-xpointer.html#xmlLocationSetPtr">xmlLocationSetPtr</a> val2);
+void	<a href="#xmlXPtrEvalRangePredicate">xmlXPtrEvalRangePredicate</a>	(<a href="libxml2-xpath.html#xmlXPathParserContextPtr">xmlXPathParserContextPtr</a> ctxt);
+<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	<a href="#xmlXPtrNewLocationSetNodes">xmlXPtrNewLocationSetNodes</a>	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> start, <br/>							 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> end);
+</pre>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Description</h2>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Details</h2>
+      <div class="refsect2" lang="en">
+        <div class="refsect2" lang="en"><h3><a name="xmlLocationSet">Structure </a>xmlLocationSet</h3><pre class="programlisting">struct _xmlLocationSet {
+    int	locNr	: number of locations in the set
+    int	locMax	: size of the array as allocated
+    <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> *	locTab	: array of locations
+} xmlLocationSet;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlLocationSetPtr">Typedef </a>xmlLocationSetPtr</h3><pre class="programlisting"><a href="libxml2-xpointer.html#xmlLocationSet">xmlLocationSet</a> * xmlLocationSetPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPtrBuildNodeList"/>xmlXPtrBuildNodeList ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a>	xmlXPtrBuildNodeList	(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> obj)<br/>
+</pre><p>Build a node list tree copy of the XPointer result. This will drop Attributes and Namespace declarations.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>obj</tt></i>:</span></td><td>the XPointer result from the evaluation.</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>an <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> list or NULL. the caller has to free the node tree.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPtrEval"/>xmlXPtrEval ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	xmlXPtrEval	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str, <br/>					 <a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a> ctx)<br/>
+</pre><p>Evaluate the XPath Location Path in the given context.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>str</tt></i>:</span></td><td>the XPointer expression</td></tr><tr><td><span class="term"><i><tt>ctx</tt></i>:</span></td><td>the XPointer context</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> resulting from the evaluation or NULL. the caller has to free the object.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPtrEvalRangePredicate"/>xmlXPtrEvalRangePredicate ()</h3><pre class="programlisting">void	xmlXPtrEvalRangePredicate	(<a href="libxml2-xpath.html#xmlXPathParserContextPtr">xmlXPathParserContextPtr</a> ctxt)<br/>
+</pre><p>[8] Predicate ::= '[' PredicateExpr ']' [9] PredicateExpr ::= Expr Evaluate a predicate as in xmlXPathEvalPredicate() but for a Location Set instead of a node set</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the XPointer Parser context</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPtrFreeLocationSet"/>xmlXPtrFreeLocationSet ()</h3><pre class="programlisting">void	xmlXPtrFreeLocationSet		(<a href="libxml2-xpointer.html#xmlLocationSetPtr">xmlLocationSetPtr</a> obj)<br/>
+</pre><p>Free the LocationSet compound (not the actual ranges !).</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>obj</tt></i>:</span></td><td>the <a href="libxml2-xpointer.html#xmlLocationSetPtr">xmlLocationSetPtr</a> to free</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPtrLocationSetAdd"/>xmlXPtrLocationSetAdd ()</h3><pre class="programlisting">void	xmlXPtrLocationSetAdd		(<a href="libxml2-xpointer.html#xmlLocationSetPtr">xmlLocationSetPtr</a> cur, <br/>					 <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> val)<br/>
+</pre><p>add a new <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> to an existing LocationSet If the location already exist in the set @val is freed.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the initial range set</td></tr><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>a new <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a></td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPtrLocationSetCreate"/>xmlXPtrLocationSetCreate ()</h3><pre class="programlisting"><a href="libxml2-xpointer.html#xmlLocationSetPtr">xmlLocationSetPtr</a>	xmlXPtrLocationSetCreate	(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> val)<br/>
+</pre><p>Create a new <a href="libxml2-xpointer.html#xmlLocationSetPtr">xmlLocationSetPtr</a> of type double and of value @val</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>an initial xmlXPathObjectPtr, or NULL</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the newly created object.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPtrLocationSetDel"/>xmlXPtrLocationSetDel ()</h3><pre class="programlisting">void	xmlXPtrLocationSetDel		(<a href="libxml2-xpointer.html#xmlLocationSetPtr">xmlLocationSetPtr</a> cur, <br/>					 <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> val)<br/>
+</pre><p>Removes an <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> from an existing LocationSet</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the initial range set</td></tr><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>an <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a></td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPtrLocationSetMerge"/>xmlXPtrLocationSetMerge ()</h3><pre class="programlisting"><a href="libxml2-xpointer.html#xmlLocationSetPtr">xmlLocationSetPtr</a>	xmlXPtrLocationSetMerge	(<a href="libxml2-xpointer.html#xmlLocationSetPtr">xmlLocationSetPtr</a> val1, <br/>						 <a href="libxml2-xpointer.html#xmlLocationSetPtr">xmlLocationSetPtr</a> val2)<br/>
+</pre><p>Merges two rangesets, all ranges from @val2 are added to @val1</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val1</tt></i>:</span></td><td>the first LocationSet</td></tr><tr><td><span class="term"><i><tt>val2</tt></i>:</span></td><td>the second LocationSet</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>val1 once extended or NULL in case of error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPtrLocationSetRemove"/>xmlXPtrLocationSetRemove ()</h3><pre class="programlisting">void	xmlXPtrLocationSetRemove	(<a href="libxml2-xpointer.html#xmlLocationSetPtr">xmlLocationSetPtr</a> cur, <br/>					 int val)<br/>
+</pre><p>Removes an entry from an existing LocationSet list.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the initial range set</td></tr><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>the index to remove</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPtrNewCollapsedRange"/>xmlXPtrNewCollapsedRange ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	xmlXPtrNewCollapsedRange	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> start)<br/>
+</pre><p>Create a new <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> of type range using a single nodes</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>start</tt></i>:</span></td><td>the starting and ending node</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the newly created object.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPtrNewContext"/>xmlXPtrNewContext ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a>	xmlXPtrNewContext	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>						 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> here, <br/>						 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> origin)<br/>
+</pre><p>Create a new XPointer context</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the XML document</td></tr><tr><td><span class="term"><i><tt>here</tt></i>:</span></td><td>the node that directly contains the XPointer being evaluated or NULL</td></tr><tr><td><span class="term"><i><tt>origin</tt></i>:</span></td><td>the element from which a user or program initiated traversal of the link, or NULL.</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the <a href="libxml2-xpath.html#xmlXPathContext">xmlXPathContext</a> just allocated.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPtrNewLocationSetNodeSet"/>xmlXPtrNewLocationSetNodeSet ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	xmlXPtrNewLocationSetNodeSet	(<a href="libxml2-xpath.html#xmlNodeSetPtr">xmlNodeSetPtr</a> set)<br/>
+</pre><p>Create a new <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> of type LocationSet and initialize it with all the nodes from @set</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>set</tt></i>:</span></td><td>a node set</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the newly created object.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPtrNewLocationSetNodes"/>xmlXPtrNewLocationSetNodes ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	xmlXPtrNewLocationSetNodes	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> start, <br/>							 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> end)<br/>
+</pre><p>Create a new <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> of type LocationSet and initialize it with the single range made of the two nodes @start and @end</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>start</tt></i>:</span></td><td>the start NodePtr value</td></tr><tr><td><span class="term"><i><tt>end</tt></i>:</span></td><td>the end NodePtr value or NULL</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the newly created object.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPtrNewRange"/>xmlXPtrNewRange ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	xmlXPtrNewRange	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> start, <br/>					 int startindex, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> end, <br/>					 int endindex)<br/>
+</pre><p>Create a new <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> of type range</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>start</tt></i>:</span></td><td>the starting node</td></tr><tr><td><span class="term"><i><tt>startindex</tt></i>:</span></td><td>the start index</td></tr><tr><td><span class="term"><i><tt>end</tt></i>:</span></td><td>the ending point</td></tr><tr><td><span class="term"><i><tt>endindex</tt></i>:</span></td><td>the ending index</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the newly created object.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPtrNewRangeNodeObject"/>xmlXPtrNewRangeNodeObject ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	xmlXPtrNewRangeNodeObject	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> start, <br/>							 <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> end)<br/>
+</pre><p>Create a new <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> of type range from a not to an object</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>start</tt></i>:</span></td><td>the starting node</td></tr><tr><td><span class="term"><i><tt>end</tt></i>:</span></td><td>the ending object</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the newly created object.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPtrNewRangeNodePoint"/>xmlXPtrNewRangeNodePoint ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	xmlXPtrNewRangeNodePoint	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> start, <br/>							 <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> end)<br/>
+</pre><p>Create a new <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> of type range from a node to a point</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>start</tt></i>:</span></td><td>the starting node</td></tr><tr><td><span class="term"><i><tt>end</tt></i>:</span></td><td>the ending point</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the newly created object.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPtrNewRangeNodes"/>xmlXPtrNewRangeNodes ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	xmlXPtrNewRangeNodes	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> start, <br/>						 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> end)<br/>
+</pre><p>Create a new <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> of type range using 2 nodes</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>start</tt></i>:</span></td><td>the starting node</td></tr><tr><td><span class="term"><i><tt>end</tt></i>:</span></td><td>the ending node</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the newly created object.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPtrNewRangePointNode"/>xmlXPtrNewRangePointNode ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	xmlXPtrNewRangePointNode	(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> start, <br/>							 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> end)<br/>
+</pre><p>Create a new <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> of type range from a point to a node</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>start</tt></i>:</span></td><td>the starting point</td></tr><tr><td><span class="term"><i><tt>end</tt></i>:</span></td><td>the ending node</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the newly created object.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPtrNewRangePoints"/>xmlXPtrNewRangePoints ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	xmlXPtrNewRangePoints	(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> start, <br/>						 <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> end)<br/>
+</pre><p>Create a new <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> of type range using 2 Points</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>start</tt></i>:</span></td><td>the starting point</td></tr><tr><td><span class="term"><i><tt>end</tt></i>:</span></td><td>the ending point</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the newly created object.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPtrRangeToFunction"/>xmlXPtrRangeToFunction ()</h3><pre class="programlisting">void	xmlXPtrRangeToFunction		(<a href="libxml2-xpath.html#xmlXPathParserContextPtr">xmlXPathParserContextPtr</a> ctxt, <br/>					 int nargs)<br/>
+</pre><p>Implement the range-to() XPointer function</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the XPointer Parser context</td></tr><tr><td><span class="term"><i><tt>nargs</tt></i>:</span></td><td>the number of args</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPtrWrapLocationSet"/>xmlXPtrWrapLocationSet ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	xmlXPtrWrapLocationSet	(<a href="libxml2-xpointer.html#xmlLocationSetPtr">xmlLocationSetPtr</a> val)<br/>
+</pre><p>Wrap the LocationSet @val in a new <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a></p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>the LocationSet value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the newly created object.</td></tr></tbody></table></div></div>
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

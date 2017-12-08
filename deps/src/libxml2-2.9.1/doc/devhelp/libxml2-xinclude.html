@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>xinclude: implementation of XInclude</title>
+    <meta name="generator" content="Libxml2 devhelp stylesheet"/>
+    <link rel="start" href="index.html" title="libxml2 Reference Manual"/>
+    <link rel="up" href="general.html" title="API"/>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+    <link rel="chapter" href="general.html" title="API"/>
+  </head>
+  <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+    <table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+      <tr valign="middle">
+        <td>
+          <a accesskey="p" href="libxml2-valid.html">
+            <img src="left.png" width="24" height="24" border="0" alt="Prev"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="u" href="general.html">
+            <img src="up.png" width="24" height="24" border="0" alt="Up"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="h" href="index.html">
+            <img src="home.png" width="24" height="24" border="0" alt="Home"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="n" href="libxml2-xlink.html">
+            <img src="right.png" width="24" height="24" border="0" alt="Next"/>
+          </a>
+        </td>
+        <th width="100%" align="center">libxml2 Reference Manual</th>
+      </tr>
+    </table>
+    <h2>
+      <span class="refentrytitle">xinclude</span>
+    </h2>
+    <p>xinclude - implementation of XInclude</p>
+    <p>API to handle XInclude processing, implements the World Wide Web Consortium Last Call Working Draft 10 November 2003</p>
+    <p>Author(s): Daniel Veillard </p>
+    <div class="refsynopsisdiv">
+      <h2>Synopsis</h2>
+      <pre class="synopsis">#define <a href="#XINCLUDE_PARSE_TEXT">XINCLUDE_PARSE_TEXT</a>;
+#define <a href="#XINCLUDE_PARSE_XPOINTER">XINCLUDE_PARSE_XPOINTER</a>;
+#define <a href="#XINCLUDE_HREF">XINCLUDE_HREF</a>;
+#define <a href="#XINCLUDE_FALLBACK">XINCLUDE_FALLBACK</a>;
+#define <a href="#XINCLUDE_NS">XINCLUDE_NS</a>;
+#define <a href="#XINCLUDE_PARSE">XINCLUDE_PARSE</a>;
+#define <a href="#XINCLUDE_NODE">XINCLUDE_NODE</a>;
+#define <a href="#XINCLUDE_PARSE_XML">XINCLUDE_PARSE_XML</a>;
+#define <a href="#XINCLUDE_PARSE_ENCODING">XINCLUDE_PARSE_ENCODING</a>;
+#define <a href="#XINCLUDE_OLD_NS">XINCLUDE_OLD_NS</a>;
+typedef struct _xmlXIncludeCtxt <a href="#xmlXIncludeCtxt">xmlXIncludeCtxt</a>;
+typedef <a href="libxml2-xinclude.html#xmlXIncludeCtxt">xmlXIncludeCtxt</a> * <a href="#xmlXIncludeCtxtPtr">xmlXIncludeCtxtPtr</a>;
+int	<a href="#xmlXIncludeProcessTreeFlagsData">xmlXIncludeProcessTreeFlagsData</a>	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> tree, <br/>					 int flags, <br/>					 void * data);
+int	<a href="#xmlXIncludeProcessFlagsData">xmlXIncludeProcessFlagsData</a>	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 int flags, <br/>					 void * data);
+int	<a href="#xmlXIncludeProcessFlags">xmlXIncludeProcessFlags</a>		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 int flags);
+int	<a href="#xmlXIncludeProcessTree">xmlXIncludeProcessTree</a>		(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> tree);
+int	<a href="#xmlXIncludeProcessNode">xmlXIncludeProcessNode</a>		(<a href="libxml2-xinclude.html#xmlXIncludeCtxtPtr">xmlXIncludeCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node);
+void	<a href="#xmlXIncludeFreeContext">xmlXIncludeFreeContext</a>		(<a href="libxml2-xinclude.html#xmlXIncludeCtxtPtr">xmlXIncludeCtxtPtr</a> ctxt);
+int	<a href="#xmlXIncludeSetFlags">xmlXIncludeSetFlags</a>		(<a href="libxml2-xinclude.html#xmlXIncludeCtxtPtr">xmlXIncludeCtxtPtr</a> ctxt, <br/>					 int flags);
+int	<a href="#xmlXIncludeProcess">xmlXIncludeProcess</a>		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc);
+<a href="libxml2-xinclude.html#xmlXIncludeCtxtPtr">xmlXIncludeCtxtPtr</a>	<a href="#xmlXIncludeNewContext">xmlXIncludeNewContext</a>	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc);
+int	<a href="#xmlXIncludeProcessTreeFlags">xmlXIncludeProcessTreeFlags</a>	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> tree, <br/>					 int flags);
+</pre>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Description</h2>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Details</h2>
+      <div class="refsect2" lang="en">
+        <div class="refsect2" lang="en"><h3><a name="XINCLUDE_FALLBACK">Macro </a>XINCLUDE_FALLBACK</h3><pre class="programlisting">#define <a href="#XINCLUDE_FALLBACK">XINCLUDE_FALLBACK</a>;
+</pre><p>Macro defining "fallback"</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XINCLUDE_HREF">Macro </a>XINCLUDE_HREF</h3><pre class="programlisting">#define <a href="#XINCLUDE_HREF">XINCLUDE_HREF</a>;
+</pre><p>Macro defining "href"</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XINCLUDE_NODE">Macro </a>XINCLUDE_NODE</h3><pre class="programlisting">#define <a href="#XINCLUDE_NODE">XINCLUDE_NODE</a>;
+</pre><p>Macro defining "include"</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XINCLUDE_NS">Macro </a>XINCLUDE_NS</h3><pre class="programlisting">#define <a href="#XINCLUDE_NS">XINCLUDE_NS</a>;
+</pre><p>Macro defining the Xinclude namespace: http://www.w3.org/2003/XInclude</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XINCLUDE_OLD_NS">Macro </a>XINCLUDE_OLD_NS</h3><pre class="programlisting">#define <a href="#XINCLUDE_OLD_NS">XINCLUDE_OLD_NS</a>;
+</pre><p>Macro defining the draft Xinclude namespace: http://www.w3.org/2001/XInclude</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XINCLUDE_PARSE">Macro </a>XINCLUDE_PARSE</h3><pre class="programlisting">#define <a href="#XINCLUDE_PARSE">XINCLUDE_PARSE</a>;
+</pre><p>Macro defining "parse"</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XINCLUDE_PARSE_ENCODING">Macro </a>XINCLUDE_PARSE_ENCODING</h3><pre class="programlisting">#define <a href="#XINCLUDE_PARSE_ENCODING">XINCLUDE_PARSE_ENCODING</a>;
+</pre><p>Macro defining "encoding"</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XINCLUDE_PARSE_TEXT">Macro </a>XINCLUDE_PARSE_TEXT</h3><pre class="programlisting">#define <a href="#XINCLUDE_PARSE_TEXT">XINCLUDE_PARSE_TEXT</a>;
+</pre><p>Macro defining "text"</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XINCLUDE_PARSE_XML">Macro </a>XINCLUDE_PARSE_XML</h3><pre class="programlisting">#define <a href="#XINCLUDE_PARSE_XML">XINCLUDE_PARSE_XML</a>;
+</pre><p>Macro defining "xml"</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XINCLUDE_PARSE_XPOINTER">Macro </a>XINCLUDE_PARSE_XPOINTER</h3><pre class="programlisting">#define <a href="#XINCLUDE_PARSE_XPOINTER">XINCLUDE_PARSE_XPOINTER</a>;
+</pre><p>Macro defining "xpointer"</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXIncludeCtxt">Structure </a>xmlXIncludeCtxt</h3><pre class="programlisting">struct _xmlXIncludeCtxt {
+The content of this structure is not made public by the API.
+} xmlXIncludeCtxt;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXIncludeCtxtPtr">Typedef </a>xmlXIncludeCtxtPtr</h3><pre class="programlisting"><a href="libxml2-xinclude.html#xmlXIncludeCtxt">xmlXIncludeCtxt</a> * xmlXIncludeCtxtPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXIncludeFreeContext"/>xmlXIncludeFreeContext ()</h3><pre class="programlisting">void	xmlXIncludeFreeContext		(<a href="libxml2-xinclude.html#xmlXIncludeCtxtPtr">xmlXIncludeCtxtPtr</a> ctxt)<br/>
+</pre><p>Free an XInclude context</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the XInclude context</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXIncludeNewContext"/>xmlXIncludeNewContext ()</h3><pre class="programlisting"><a href="libxml2-xinclude.html#xmlXIncludeCtxtPtr">xmlXIncludeCtxtPtr</a>	xmlXIncludeNewContext	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc)<br/>
+</pre><p>Creates a new XInclude context</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>an XML Document</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the new set</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXIncludeProcess"/>xmlXIncludeProcess ()</h3><pre class="programlisting">int	xmlXIncludeProcess		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc)<br/>
+</pre><p>Implement the XInclude substitution on the XML document @doc</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>an XML document</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if no substitution were done, -1 if some processing failed or the number of substitutions done.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXIncludeProcessFlags"/>xmlXIncludeProcessFlags ()</h3><pre class="programlisting">int	xmlXIncludeProcessFlags		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 int flags)<br/>
+</pre><p>Implement the XInclude substitution on the XML document @doc</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>an XML document</td></tr><tr><td><span class="term"><i><tt>flags</tt></i>:</span></td><td>a set of <a href="libxml2-parser.html#xmlParserOption">xmlParserOption</a> used for parsing XML includes</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if no substitution were done, -1 if some processing failed or the number of substitutions done.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXIncludeProcessFlagsData"/>xmlXIncludeProcessFlagsData ()</h3><pre class="programlisting">int	xmlXIncludeProcessFlagsData	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 int flags, <br/>					 void * data)<br/>
+</pre><p>Implement the XInclude substitution on the XML document @doc</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>an XML document</td></tr><tr><td><span class="term"><i><tt>flags</tt></i>:</span></td><td>a set of <a href="libxml2-parser.html#xmlParserOption">xmlParserOption</a> used for parsing XML includes</td></tr><tr><td><span class="term"><i><tt>data</tt></i>:</span></td><td>application data that will be passed to the parser context in the _private field of the parser context(s)</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if no substitution were done, -1 if some processing failed or the number of substitutions done.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXIncludeProcessNode"/>xmlXIncludeProcessNode ()</h3><pre class="programlisting">int	xmlXIncludeProcessNode		(<a href="libxml2-xinclude.html#xmlXIncludeCtxtPtr">xmlXIncludeCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node)<br/>
+</pre><p>Implement the XInclude substitution for the given subtree reusing the informations and data coming from the given context.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>an existing XInclude context</td></tr><tr><td><span class="term"><i><tt>node</tt></i>:</span></td><td>a node in an XML document</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if no substitution were done, -1 if some processing failed or the number of substitutions done.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXIncludeProcessTree"/>xmlXIncludeProcessTree ()</h3><pre class="programlisting">int	xmlXIncludeProcessTree		(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> tree)<br/>
+</pre><p>Implement the XInclude substitution for the given subtree</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>tree</tt></i>:</span></td><td>a node in an XML document</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if no substitution were done, -1 if some processing failed or the number of substitutions done.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXIncludeProcessTreeFlags"/>xmlXIncludeProcessTreeFlags ()</h3><pre class="programlisting">int	xmlXIncludeProcessTreeFlags	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> tree, <br/>					 int flags)<br/>
+</pre><p>Implement the XInclude substitution for the given subtree</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>tree</tt></i>:</span></td><td>a node in an XML document</td></tr><tr><td><span class="term"><i><tt>flags</tt></i>:</span></td><td>a set of <a href="libxml2-parser.html#xmlParserOption">xmlParserOption</a> used for parsing XML includes</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if no substitution were done, -1 if some processing failed or the number of substitutions done.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXIncludeProcessTreeFlagsData"/>xmlXIncludeProcessTreeFlagsData ()</h3><pre class="programlisting">int	xmlXIncludeProcessTreeFlagsData	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> tree, <br/>					 int flags, <br/>					 void * data)<br/>
+</pre><p>Implement the XInclude substitution on the XML node @tree</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>tree</tt></i>:</span></td><td>an XML node</td></tr><tr><td><span class="term"><i><tt>flags</tt></i>:</span></td><td>a set of <a href="libxml2-parser.html#xmlParserOption">xmlParserOption</a> used for parsing XML includes</td></tr><tr><td><span class="term"><i><tt>data</tt></i>:</span></td><td>application data that will be passed to the parser context in the _private field of the parser context(s)</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if no substitution were done, -1 if some processing failed or the number of substitutions done.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXIncludeSetFlags"/>xmlXIncludeSetFlags ()</h3><pre class="programlisting">int	xmlXIncludeSetFlags		(<a href="libxml2-xinclude.html#xmlXIncludeCtxtPtr">xmlXIncludeCtxtPtr</a> ctxt, <br/>					 int flags)<br/>
+</pre><p>Set the flags used for further processing of XML resources.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>an XInclude processing context</td></tr><tr><td><span class="term"><i><tt>flags</tt></i>:</span></td><td>a set of <a href="libxml2-parser.html#xmlParserOption">xmlParserOption</a> used for parsing XML includes</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 in case of success and -1 in case of error.</td></tr></tbody></table></div></div>
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

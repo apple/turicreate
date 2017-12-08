@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>xmlversion: compile-time version informations</title>
+    <meta name="generator" content="Libxml2 devhelp stylesheet"/>
+    <link rel="start" href="index.html" title="libxml2 Reference Manual"/>
+    <link rel="up" href="general.html" title="API"/>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+    <link rel="chapter" href="general.html" title="API"/>
+  </head>
+  <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+    <table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+      <tr valign="middle">
+        <td>
+          <a accesskey="p" href="libxml2-xmlunicode.html">
+            <img src="left.png" width="24" height="24" border="0" alt="Prev"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="u" href="general.html">
+            <img src="up.png" width="24" height="24" border="0" alt="Up"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="h" href="index.html">
+            <img src="home.png" width="24" height="24" border="0" alt="Home"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="n" href="libxml2-xmlwriter.html">
+            <img src="right.png" width="24" height="24" border="0" alt="Next"/>
+          </a>
+        </td>
+        <th width="100%" align="center">libxml2 Reference Manual</th>
+      </tr>
+    </table>
+    <h2>
+      <span class="refentrytitle">xmlversion</span>
+    </h2>
+    <p>xmlversion - compile-time version informations</p>
+    <p>compile-time version informations for the XML library </p>
+    <p>Author(s): Daniel Veillard </p>
+    <div class="refsynopsisdiv">
+      <h2>Synopsis</h2>
+      <pre class="synopsis">#define <a href="#LIBXML_VERSION_EXTRA">LIBXML_VERSION_EXTRA</a>;
+#define <a href="#LIBXML_MODULES_ENABLED">LIBXML_MODULES_ENABLED</a>;
+#define <a href="#LIBXML_LEGACY_ENABLED">LIBXML_LEGACY_ENABLED</a>;
+#define <a href="#LIBXML_LZMA_ENABLED">LIBXML_LZMA_ENABLED</a>;
+#define <a href="#LIBXML_READER_ENABLED">LIBXML_READER_ENABLED</a>;
+#define <a href="#LIBXML_THREAD_ENABLED">LIBXML_THREAD_ENABLED</a>;
+#define <a href="#LIBXML_DOTTED_VERSION">LIBXML_DOTTED_VERSION</a>;
+#define <a href="#LIBXML_ISO8859X_ENABLED">LIBXML_ISO8859X_ENABLED</a>;
+#define <a href="#LIBXML_DEBUG_ENABLED">LIBXML_DEBUG_ENABLED</a>;
+#define <a href="#LIBXML_XINCLUDE_ENABLED">LIBXML_XINCLUDE_ENABLED</a>;
+#define <a href="#ATTRIBUTE_UNUSED">ATTRIBUTE_UNUSED</a>;
+#define <a href="#LIBXML_DOCB_ENABLED">LIBXML_DOCB_ENABLED</a>;
+#define <a href="#LIBXML_PUSH_ENABLED">LIBXML_PUSH_ENABLED</a>;
+#define <a href="#LIBXML_SAX1_ENABLED">LIBXML_SAX1_ENABLED</a>;
+#define <a href="#WITHOUT_TRIO">WITHOUT_TRIO</a>;
+#define <a href="#LIBXML_SCHEMATRON_ENABLED">LIBXML_SCHEMATRON_ENABLED</a>;
+#define <a href="#LIBXML_HTTP_ENABLED">LIBXML_HTTP_ENABLED</a>;
+#define <a href="#LIBXML_OUTPUT_ENABLED">LIBXML_OUTPUT_ENABLED</a>;
+#define <a href="#WITH_TRIO">WITH_TRIO</a>;
+#define <a href="#LIBXML_DEBUG_RUNTIME">LIBXML_DEBUG_RUNTIME</a>;
+#define <a href="#LIBXML_VERSION">LIBXML_VERSION</a>;
+#define <a href="#LIBXML_XPTR_ENABLED">LIBXML_XPTR_ENABLED</a>;
+#define <a href="#LIBXML_VERSION_STRING">LIBXML_VERSION_STRING</a>;
+#define <a href="#LIBXML_CATALOG_ENABLED">LIBXML_CATALOG_ENABLED</a>;
+#define <a href="#LIBXML_ATTR_ALLOC_SIZE">LIBXML_ATTR_ALLOC_SIZE</a>;
+#define <a href="#LIBXML_REGEXP_ENABLED">LIBXML_REGEXP_ENABLED</a>;
+#define <a href="#LIBXML_ICU_ENABLED">LIBXML_ICU_ENABLED</a>;
+#define <a href="#LIBXML_MODULE_EXTENSION">LIBXML_MODULE_EXTENSION</a>;
+#define <a href="#LIBXML_ICONV_ENABLED">LIBXML_ICONV_ENABLED</a>;
+#define <a href="#LIBXML_HTML_ENABLED">LIBXML_HTML_ENABLED</a>;
+#define <a href="#LIBXML_UNICODE_ENABLED">LIBXML_UNICODE_ENABLED</a>;
+#define <a href="#LIBXML_FTP_ENABLED">LIBXML_FTP_ENABLED</a>;
+#define <a href="#LIBXML_AUTOMATA_ENABLED">LIBXML_AUTOMATA_ENABLED</a>;
+#define <a href="#LIBXML_ZLIB_ENABLED">LIBXML_ZLIB_ENABLED</a>;
+#define <a href="#LIBXML_WRITER_ENABLED">LIBXML_WRITER_ENABLED</a>;
+#define <a href="#LIBXML_C14N_ENABLED">LIBXML_C14N_ENABLED</a>;
+#define <a href="#LIBXML_SCHEMAS_ENABLED">LIBXML_SCHEMAS_ENABLED</a>;
+#define <a href="#DEBUG_MEMORY_LOCATION">DEBUG_MEMORY_LOCATION</a>;
+#define <a href="#LIBXML_ATTR_FORMAT">LIBXML_ATTR_FORMAT</a>;
+#define <a href="#LIBXML_TEST_VERSION">LIBXML_TEST_VERSION</a>;
+#define <a href="#LIBXML_THREAD_ALLOC_ENABLED">LIBXML_THREAD_ALLOC_ENABLED</a>;
+#define <a href="#LIBXML_XPATH_ENABLED">LIBXML_XPATH_ENABLED</a>;
+#define <a href="#LIBXML_PATTERN_ENABLED">LIBXML_PATTERN_ENABLED</a>;
+#define <a href="#LIBXML_VALID_ENABLED">LIBXML_VALID_ENABLED</a>;
+#define <a href="#LIBXML_TREE_ENABLED">LIBXML_TREE_ENABLED</a>;
+#define <a href="#LIBXML_EXPR_ENABLED">LIBXML_EXPR_ENABLED</a>;
+void	<a href="#xmlCheckVersion">xmlCheckVersion</a>			(int version);
+</pre>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Description</h2>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Details</h2>
+      <div class="refsect2" lang="en">
+        <div class="refsect2" lang="en"><h3><a name="ATTRIBUTE_UNUSED">Macro </a>ATTRIBUTE_UNUSED</h3><pre class="programlisting">#define <a href="#ATTRIBUTE_UNUSED">ATTRIBUTE_UNUSED</a>;
+</pre><p>Macro used to signal to GCC unused function parameters</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="DEBUG_MEMORY_LOCATION">Macro </a>DEBUG_MEMORY_LOCATION</h3><pre class="programlisting">#define <a href="#DEBUG_MEMORY_LOCATION">DEBUG_MEMORY_LOCATION</a>;
+</pre><p>Whether the memory debugging is configured in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_ATTR_ALLOC_SIZE">Macro </a>LIBXML_ATTR_ALLOC_SIZE</h3><pre class="programlisting">#define <a href="#LIBXML_ATTR_ALLOC_SIZE">LIBXML_ATTR_ALLOC_SIZE</a>;
+</pre><p>Macro used to indicate to GCC this is an allocator function</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_ATTR_FORMAT">Macro </a>LIBXML_ATTR_FORMAT</h3><pre class="programlisting">#define <a href="#LIBXML_ATTR_FORMAT">LIBXML_ATTR_FORMAT</a>;
+</pre><p>Macro used to indicate to GCC the parameter are printf like</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_AUTOMATA_ENABLED">Macro </a>LIBXML_AUTOMATA_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_AUTOMATA_ENABLED">LIBXML_AUTOMATA_ENABLED</a>;
+</pre><p>Whether the automata interfaces are compiled in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_C14N_ENABLED">Macro </a>LIBXML_C14N_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_C14N_ENABLED">LIBXML_C14N_ENABLED</a>;
+</pre><p>Whether the Canonicalization support is configured in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_CATALOG_ENABLED">Macro </a>LIBXML_CATALOG_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_CATALOG_ENABLED">LIBXML_CATALOG_ENABLED</a>;
+</pre><p>Whether the Catalog support is configured in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_DEBUG_ENABLED">Macro </a>LIBXML_DEBUG_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_DEBUG_ENABLED">LIBXML_DEBUG_ENABLED</a>;
+</pre><p>Whether Debugging module is configured in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_DEBUG_RUNTIME">Macro </a>LIBXML_DEBUG_RUNTIME</h3><pre class="programlisting">#define <a href="#LIBXML_DEBUG_RUNTIME">LIBXML_DEBUG_RUNTIME</a>;
+</pre><p>Whether the runtime debugging is configured in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_DOCB_ENABLED">Macro </a>LIBXML_DOCB_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_DOCB_ENABLED">LIBXML_DOCB_ENABLED</a>;
+</pre><p>Whether the SGML Docbook support is configured in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_DOTTED_VERSION">Macro </a>LIBXML_DOTTED_VERSION</h3><pre class="programlisting">#define <a href="#LIBXML_DOTTED_VERSION">LIBXML_DOTTED_VERSION</a>;
+</pre><p>the version string like "1.2.3"</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_EXPR_ENABLED">Macro </a>LIBXML_EXPR_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_EXPR_ENABLED">LIBXML_EXPR_ENABLED</a>;
+</pre><p>Whether the formal expressions interfaces are compiled in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_FTP_ENABLED">Macro </a>LIBXML_FTP_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_FTP_ENABLED">LIBXML_FTP_ENABLED</a>;
+</pre><p>Whether the FTP support is configured in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_HTML_ENABLED">Macro </a>LIBXML_HTML_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_HTML_ENABLED">LIBXML_HTML_ENABLED</a>;
+</pre><p>Whether the HTML support is configured in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_HTTP_ENABLED">Macro </a>LIBXML_HTTP_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_HTTP_ENABLED">LIBXML_HTTP_ENABLED</a>;
+</pre><p>Whether the HTTP support is configured in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_ICONV_ENABLED">Macro </a>LIBXML_ICONV_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_ICONV_ENABLED">LIBXML_ICONV_ENABLED</a>;
+</pre><p>Whether iconv support is available</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_ICU_ENABLED">Macro </a>LIBXML_ICU_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_ICU_ENABLED">LIBXML_ICU_ENABLED</a>;
+</pre><p>Whether icu support is available</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_ISO8859X_ENABLED">Macro </a>LIBXML_ISO8859X_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_ISO8859X_ENABLED">LIBXML_ISO8859X_ENABLED</a>;
+</pre><p>Whether ISO-8859-* support is made available in case iconv is not</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_LEGACY_ENABLED">Macro </a>LIBXML_LEGACY_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_LEGACY_ENABLED">LIBXML_LEGACY_ENABLED</a>;
+</pre><p>Whether the deprecated APIs are compiled in for compatibility</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_LZMA_ENABLED">Macro </a>LIBXML_LZMA_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_LZMA_ENABLED">LIBXML_LZMA_ENABLED</a>;
+</pre><p>Whether the Lzma support is compiled in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_MODULES_ENABLED">Macro </a>LIBXML_MODULES_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_MODULES_ENABLED">LIBXML_MODULES_ENABLED</a>;
+</pre><p>Whether the module interfaces are compiled in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_MODULE_EXTENSION">Macro </a>LIBXML_MODULE_EXTENSION</h3><pre class="programlisting">#define <a href="#LIBXML_MODULE_EXTENSION">LIBXML_MODULE_EXTENSION</a>;
+</pre><p>the string suffix used by dynamic modules (usually shared libraries)</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_OUTPUT_ENABLED">Macro </a>LIBXML_OUTPUT_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_OUTPUT_ENABLED">LIBXML_OUTPUT_ENABLED</a>;
+</pre><p>Whether the serialization/saving support is configured in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_PATTERN_ENABLED">Macro </a>LIBXML_PATTERN_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_PATTERN_ENABLED">LIBXML_PATTERN_ENABLED</a>;
+</pre><p>Whether the <a href="libxml2-pattern.html#xmlPattern">xmlPattern</a> node selection interface is configured in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_PUSH_ENABLED">Macro </a>LIBXML_PUSH_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_PUSH_ENABLED">LIBXML_PUSH_ENABLED</a>;
+</pre><p>Whether the push parsing interfaces are configured in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_READER_ENABLED">Macro </a>LIBXML_READER_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_READER_ENABLED">LIBXML_READER_ENABLED</a>;
+</pre><p>Whether the xmlReader parsing interface is configured in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_REGEXP_ENABLED">Macro </a>LIBXML_REGEXP_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_REGEXP_ENABLED">LIBXML_REGEXP_ENABLED</a>;
+</pre><p>Whether the regular expressions interfaces are compiled in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_SAX1_ENABLED">Macro </a>LIBXML_SAX1_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_SAX1_ENABLED">LIBXML_SAX1_ENABLED</a>;
+</pre><p>Whether the older SAX1 interface is configured in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_SCHEMAS_ENABLED">Macro </a>LIBXML_SCHEMAS_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_SCHEMAS_ENABLED">LIBXML_SCHEMAS_ENABLED</a>;
+</pre><p>Whether the Schemas validation interfaces are compiled in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_SCHEMATRON_ENABLED">Macro </a>LIBXML_SCHEMATRON_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_SCHEMATRON_ENABLED">LIBXML_SCHEMATRON_ENABLED</a>;
+</pre><p>Whether the Schematron validation interfaces are compiled in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_TEST_VERSION">Macro </a>LIBXML_TEST_VERSION</h3><pre class="programlisting">#define <a href="#LIBXML_TEST_VERSION">LIBXML_TEST_VERSION</a>;
+</pre><p>Macro to check that the libxml version in use is compatible with the version the software has been compiled against</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_THREAD_ALLOC_ENABLED">Macro </a>LIBXML_THREAD_ALLOC_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_THREAD_ALLOC_ENABLED">LIBXML_THREAD_ALLOC_ENABLED</a>;
+</pre><p>Whether the allocation hooks are per-thread</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_THREAD_ENABLED">Macro </a>LIBXML_THREAD_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_THREAD_ENABLED">LIBXML_THREAD_ENABLED</a>;
+</pre><p>Whether the thread support is configured in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_TREE_ENABLED">Macro </a>LIBXML_TREE_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_TREE_ENABLED">LIBXML_TREE_ENABLED</a>;
+</pre><p>Whether the DOM like tree manipulation API support is configured in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_UNICODE_ENABLED">Macro </a>LIBXML_UNICODE_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_UNICODE_ENABLED">LIBXML_UNICODE_ENABLED</a>;
+</pre><p>Whether the Unicode related interfaces are compiled in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_VALID_ENABLED">Macro </a>LIBXML_VALID_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_VALID_ENABLED">LIBXML_VALID_ENABLED</a>;
+</pre><p>Whether the DTD validation support is configured in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_VERSION">Macro </a>LIBXML_VERSION</h3><pre class="programlisting">#define <a href="#LIBXML_VERSION">LIBXML_VERSION</a>;
+</pre><p>the version number: 1.2.3 value is 10203</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_VERSION_EXTRA">Macro </a>LIBXML_VERSION_EXTRA</h3><pre class="programlisting">#define <a href="#LIBXML_VERSION_EXTRA">LIBXML_VERSION_EXTRA</a>;
+</pre><p>extra version information, used to show a CVS compilation</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_VERSION_STRING">Macro </a>LIBXML_VERSION_STRING</h3><pre class="programlisting">#define <a href="#LIBXML_VERSION_STRING">LIBXML_VERSION_STRING</a>;
+</pre><p>the version number string, 1.2.3 value is "10203"</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_WRITER_ENABLED">Macro </a>LIBXML_WRITER_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_WRITER_ENABLED">LIBXML_WRITER_ENABLED</a>;
+</pre><p>Whether the xmlWriter saving interface is configured in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_XINCLUDE_ENABLED">Macro </a>LIBXML_XINCLUDE_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_XINCLUDE_ENABLED">LIBXML_XINCLUDE_ENABLED</a>;
+</pre><p>Whether XInclude is configured in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_XPATH_ENABLED">Macro </a>LIBXML_XPATH_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_XPATH_ENABLED">LIBXML_XPATH_ENABLED</a>;
+</pre><p>Whether XPath is configured in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_XPTR_ENABLED">Macro </a>LIBXML_XPTR_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_XPTR_ENABLED">LIBXML_XPTR_ENABLED</a>;
+</pre><p>Whether XPointer is configured in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="LIBXML_ZLIB_ENABLED">Macro </a>LIBXML_ZLIB_ENABLED</h3><pre class="programlisting">#define <a href="#LIBXML_ZLIB_ENABLED">LIBXML_ZLIB_ENABLED</a>;
+</pre><p>Whether the Zlib support is compiled in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="WITHOUT_TRIO">Macro </a>WITHOUT_TRIO</h3><pre class="programlisting">#define <a href="#WITHOUT_TRIO">WITHOUT_TRIO</a>;
+</pre><p>defined if the trio support should not be configured in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="WITH_TRIO">Macro </a>WITH_TRIO</h3><pre class="programlisting">#define <a href="#WITH_TRIO">WITH_TRIO</a>;
+</pre><p>defined if the trio support need to be configured in</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlCheckVersion"/>xmlCheckVersion ()</h3><pre class="programlisting">void	xmlCheckVersion			(int version)<br/>
+</pre><p>check the compiled lib version against the include one. This can warn or immediately kill the application</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>version</tt></i>:</span></td><td>the include version number</td></tr></tbody></table></div></div>
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

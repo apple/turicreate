@@ -1,0 +1,4 @@
+lfs/** filter=lfs diff=lfs merge=lfs -text
+src/unity/python/turicreate/canvas/webapp/webapp.tar.gz filter=lfs diff=lfs merge=lfs -text
+src/unity/python/turicreate/mxnet/mac/mxnet.tar.gz filter=lfs diff=lfs merge=lfs -text
+src/unity/python/turicreate/mxnet/linux/mxnet.tar.gz filter=lfs diff=lfs merge=lfs -text

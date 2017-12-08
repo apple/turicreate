@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>xlink: unfinished XLink detection module</title>
+    <meta name="generator" content="Libxml2 devhelp stylesheet"/>
+    <link rel="start" href="index.html" title="libxml2 Reference Manual"/>
+    <link rel="up" href="general.html" title="API"/>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+    <link rel="chapter" href="general.html" title="API"/>
+  </head>
+  <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+    <table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+      <tr valign="middle">
+        <td>
+          <a accesskey="p" href="libxml2-xinclude.html">
+            <img src="left.png" width="24" height="24" border="0" alt="Prev"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="u" href="general.html">
+            <img src="up.png" width="24" height="24" border="0" alt="Up"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="h" href="index.html">
+            <img src="home.png" width="24" height="24" border="0" alt="Home"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="n" href="libxml2-xmlIO.html">
+            <img src="right.png" width="24" height="24" border="0" alt="Next"/>
+          </a>
+        </td>
+        <th width="100%" align="center">libxml2 Reference Manual</th>
+      </tr>
+    </table>
+    <h2>
+      <span class="refentrytitle">xlink</span>
+    </h2>
+    <p>xlink - unfinished XLink detection module</p>
+    <p>unfinished XLink detection module </p>
+    <p>Author(s): Daniel Veillard </p>
+    <div class="refsynopsisdiv">
+      <h2>Synopsis</h2>
+      <pre class="synopsis">typedef <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * <a href="#xlinkTitle">xlinkTitle</a>;
+typedef enum <a href="#xlinkShow">xlinkShow</a>;
+typedef <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * <a href="#xlinkHRef">xlinkHRef</a>;
+typedef enum <a href="#xlinkActuate">xlinkActuate</a>;
+typedef struct _xlinkHandler <a href="#xlinkHandler">xlinkHandler</a>;
+typedef <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * <a href="#xlinkRole">xlinkRole</a>;
+typedef <a href="libxml2-xlink.html#xlinkHandler">xlinkHandler</a> * <a href="#xlinkHandlerPtr">xlinkHandlerPtr</a>;
+typedef enum <a href="#xlinkType">xlinkType</a>;
+void	<a href="#xlinkSetDefaultDetect">xlinkSetDefaultDetect</a>		(<a href="libxml2-xlink.html#xlinkNodeDetectFunc">xlinkNodeDetectFunc</a> func);
+void	<a href="#xlinkSetDefaultHandler">xlinkSetDefaultHandler</a>		(<a href="libxml2-xlink.html#xlinkHandlerPtr">xlinkHandlerPtr</a> handler);
+typedef void <a href="#xlinkExtendedLinkFunk">xlinkExtendedLinkFunk</a>		(void * ctx, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node, <br/>					 int nbLocators, <br/>					 const <a href="libxml2-xlink.html#xlinkHRef">xlinkHRef</a> * hrefs, <br/>					 const <a href="libxml2-xlink.html#xlinkRole">xlinkRole</a> * roles, <br/>					 int nbArcs, <br/>					 const <a href="libxml2-xlink.html#xlinkRole">xlinkRole</a> * from, <br/>					 const <a href="libxml2-xlink.html#xlinkRole">xlinkRole</a> * to, <br/>					 <a href="libxml2-xlink.html#xlinkShow">xlinkShow</a> * show, <br/>					 <a href="libxml2-xlink.html#xlinkActuate">xlinkActuate</a> * actuate, <br/>					 int nbTitles, <br/>					 const <a href="libxml2-xlink.html#xlinkTitle">xlinkTitle</a> * titles, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** langs);
+typedef void <a href="#xlinkExtendedLinkSetFunk">xlinkExtendedLinkSetFunk</a>	(void * ctx, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node, <br/>					 int nbLocators, <br/>					 const <a href="libxml2-xlink.html#xlinkHRef">xlinkHRef</a> * hrefs, <br/>					 const <a href="libxml2-xlink.html#xlinkRole">xlinkRole</a> * roles, <br/>					 int nbTitles, <br/>					 const <a href="libxml2-xlink.html#xlinkTitle">xlinkTitle</a> * titles, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** langs);
+typedef void <a href="#xlinkSimpleLinkFunk">xlinkSimpleLinkFunk</a>		(void * ctx, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node, <br/>					 const <a href="libxml2-xlink.html#xlinkHRef">xlinkHRef</a> href, <br/>					 const <a href="libxml2-xlink.html#xlinkRole">xlinkRole</a> role, <br/>					 const <a href="libxml2-xlink.html#xlinkTitle">xlinkTitle</a> title);
+typedef void <a href="#xlinkNodeDetectFunc">xlinkNodeDetectFunc</a>		(void * ctx, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node);
+<a href="libxml2-xlink.html#xlinkHandlerPtr">xlinkHandlerPtr</a>	<a href="#xlinkGetDefaultHandler">xlinkGetDefaultHandler</a>	(void);
+<a href="libxml2-xlink.html#xlinkType">xlinkType</a>	<a href="#xlinkIsLink">xlinkIsLink</a>		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node);
+<a href="libxml2-xlink.html#xlinkNodeDetectFunc">xlinkNodeDetectFunc</a>	<a href="#xlinkGetDefaultDetect">xlinkGetDefaultDetect</a>	(void);
+</pre>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Description</h2>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Details</h2>
+      <div class="refsect2" lang="en">
+        <div class="refsect2" lang="en"><h3><a name="xlinkActuate">Enum </a>xlinkActuate</h3><pre class="programlisting">enum <a href="#xlinkActuate">xlinkActuate</a> {
+    <a name="XLINK_ACTUATE_NONE">XLINK_ACTUATE_NONE</a> = 0
+    <a name="XLINK_ACTUATE_AUTO">XLINK_ACTUATE_AUTO</a> = 1
+    <a name="XLINK_ACTUATE_ONREQUEST">XLINK_ACTUATE_ONREQUEST</a> = 2
+};
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xlinkHRef">Typedef </a>xlinkHRef</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * xlinkHRef;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xlinkHandler">Structure </a>xlinkHandler</h3><pre class="programlisting">struct _xlinkHandler {
+    <a href="libxml2-xlink.html#xlinkSimpleLinkFunk">xlinkSimpleLinkFunk</a>	simple
+    <a href="libxml2-xlink.html#xlinkExtendedLinkFunk">xlinkExtendedLinkFunk</a>	extended
+    <a href="libxml2-xlink.html#xlinkExtendedLinkSetFunk">xlinkExtendedLinkSetFunk</a>	set
+} xlinkHandler;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xlinkHandlerPtr">Typedef </a>xlinkHandlerPtr</h3><pre class="programlisting"><a href="libxml2-xlink.html#xlinkHandler">xlinkHandler</a> * xlinkHandlerPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xlinkRole">Typedef </a>xlinkRole</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * xlinkRole;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xlinkShow">Enum </a>xlinkShow</h3><pre class="programlisting">enum <a href="#xlinkShow">xlinkShow</a> {
+    <a name="XLINK_SHOW_NONE">XLINK_SHOW_NONE</a> = 0
+    <a name="XLINK_SHOW_NEW">XLINK_SHOW_NEW</a> = 1
+    <a name="XLINK_SHOW_EMBED">XLINK_SHOW_EMBED</a> = 2
+    <a name="XLINK_SHOW_REPLACE">XLINK_SHOW_REPLACE</a> = 3
+};
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xlinkTitle">Typedef </a>xlinkTitle</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * xlinkTitle;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xlinkType">Enum </a>xlinkType</h3><pre class="programlisting">enum <a href="#xlinkType">xlinkType</a> {
+    <a name="XLINK_TYPE_NONE">XLINK_TYPE_NONE</a> = 0
+    <a name="XLINK_TYPE_SIMPLE">XLINK_TYPE_SIMPLE</a> = 1
+    <a name="XLINK_TYPE_EXTENDED">XLINK_TYPE_EXTENDED</a> = 2
+    <a name="XLINK_TYPE_EXTENDED_SET">XLINK_TYPE_EXTENDED_SET</a> = 3
+};
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xlinkExtendedLinkFunk"/>Function type xlinkExtendedLinkFunk</h3><pre class="programlisting">void	xlinkExtendedLinkFunk		(void * ctx, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node, <br/>					 int nbLocators, <br/>					 const <a href="libxml2-xlink.html#xlinkHRef">xlinkHRef</a> * hrefs, <br/>					 const <a href="libxml2-xlink.html#xlinkRole">xlinkRole</a> * roles, <br/>					 int nbArcs, <br/>					 const <a href="libxml2-xlink.html#xlinkRole">xlinkRole</a> * from, <br/>					 const <a href="libxml2-xlink.html#xlinkRole">xlinkRole</a> * to, <br/>					 <a href="libxml2-xlink.html#xlinkShow">xlinkShow</a> * show, <br/>					 <a href="libxml2-xlink.html#xlinkActuate">xlinkActuate</a> * actuate, <br/>					 int nbTitles, <br/>					 const <a href="libxml2-xlink.html#xlinkTitle">xlinkTitle</a> * titles, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** langs)<br/>
+</pre><p>This is the prototype for a extended link detection callback.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctx</tt></i>:</span></td><td>user data pointer</td></tr><tr><td><span class="term"><i><tt>node</tt></i>:</span></td><td>the node carrying the link</td></tr><tr><td><span class="term"><i><tt>nbLocators</tt></i>:</span></td><td>the number of locators detected on the link</td></tr><tr><td><span class="term"><i><tt>hrefs</tt></i>:</span></td><td>pointer to the array of locator hrefs</td></tr><tr><td><span class="term"><i><tt>roles</tt></i>:</span></td><td>pointer to the array of locator roles</td></tr><tr><td><span class="term"><i><tt>nbArcs</tt></i>:</span></td><td>the number of arcs detected on the link</td></tr><tr><td><span class="term"><i><tt>from</tt></i>:</span></td><td>pointer to the array of source roles found on the arcs</td></tr><tr><td><span class="term"><i><tt>to</tt></i>:</span></td><td>pointer to the array of target roles found on the arcs</td></tr><tr><td><span class="term"><i><tt>show</tt></i>:</span></td><td>array of values for the show attributes found on the arcs</td></tr><tr><td><span class="term"><i><tt>actuate</tt></i>:</span></td><td>array of values for the actuate attributes found on the arcs</td></tr><tr><td><span class="term"><i><tt>nbTitles</tt></i>:</span></td><td>the number of titles detected on the link</td></tr><tr><td><span class="term"><i><tt>titles</tt></i>:</span></td><td/></tr><tr><td><span class="term"><i><tt>langs</tt></i>:</span></td><td>array of xml:lang values for the titles</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xlinkExtendedLinkSetFunk"/>Function type xlinkExtendedLinkSetFunk</h3><pre class="programlisting">void	xlinkExtendedLinkSetFunk	(void * ctx, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node, <br/>					 int nbLocators, <br/>					 const <a href="libxml2-xlink.html#xlinkHRef">xlinkHRef</a> * hrefs, <br/>					 const <a href="libxml2-xlink.html#xlinkRole">xlinkRole</a> * roles, <br/>					 int nbTitles, <br/>					 const <a href="libxml2-xlink.html#xlinkTitle">xlinkTitle</a> * titles, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** langs)<br/>
+</pre><p>This is the prototype for a extended link set detection callback.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctx</tt></i>:</span></td><td>user data pointer</td></tr><tr><td><span class="term"><i><tt>node</tt></i>:</span></td><td>the node carrying the link</td></tr><tr><td><span class="term"><i><tt>nbLocators</tt></i>:</span></td><td>the number of locators detected on the link</td></tr><tr><td><span class="term"><i><tt>hrefs</tt></i>:</span></td><td>pointer to the array of locator hrefs</td></tr><tr><td><span class="term"><i><tt>roles</tt></i>:</span></td><td>pointer to the array of locator roles</td></tr><tr><td><span class="term"><i><tt>nbTitles</tt></i>:</span></td><td>the number of titles detected on the link</td></tr><tr><td><span class="term"><i><tt>titles</tt></i>:</span></td><td/></tr><tr><td><span class="term"><i><tt>langs</tt></i>:</span></td><td>array of xml:lang values for the titles</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xlinkNodeDetectFunc"/>Function type xlinkNodeDetectFunc</h3><pre class="programlisting">void	xlinkNodeDetectFunc		(void * ctx, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node)<br/>
+</pre><p>This is the prototype for the link detection routine. It calls the default link detection callbacks upon link detection.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctx</tt></i>:</span></td><td>user data pointer</td></tr><tr><td><span class="term"><i><tt>node</tt></i>:</span></td><td>the node to check</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xlinkSimpleLinkFunk"/>Function type xlinkSimpleLinkFunk</h3><pre class="programlisting">void	xlinkSimpleLinkFunk		(void * ctx, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node, <br/>					 const <a href="libxml2-xlink.html#xlinkHRef">xlinkHRef</a> href, <br/>					 const <a href="libxml2-xlink.html#xlinkRole">xlinkRole</a> role, <br/>					 const <a href="libxml2-xlink.html#xlinkTitle">xlinkTitle</a> title)<br/>
+</pre><p>This is the prototype for a simple link detection callback.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctx</tt></i>:</span></td><td>user data pointer</td></tr><tr><td><span class="term"><i><tt>node</tt></i>:</span></td><td>the node carrying the link</td></tr><tr><td><span class="term"><i><tt>href</tt></i>:</span></td><td>the target of the link</td></tr><tr><td><span class="term"><i><tt>role</tt></i>:</span></td><td>the role string</td></tr><tr><td><span class="term"><i><tt>title</tt></i>:</span></td><td>the link title</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xlinkGetDefaultDetect"/>xlinkGetDefaultDetect ()</h3><pre class="programlisting"><a href="libxml2-xlink.html#xlinkNodeDetectFunc">xlinkNodeDetectFunc</a>	xlinkGetDefaultDetect	(void)<br/>
+</pre><p>Get the default xlink detection routine</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the current function or NULL;</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xlinkGetDefaultHandler"/>xlinkGetDefaultHandler ()</h3><pre class="programlisting"><a href="libxml2-xlink.html#xlinkHandlerPtr">xlinkHandlerPtr</a>	xlinkGetDefaultHandler	(void)<br/>
+</pre><p>Get the default xlink handler.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the current <a href="libxml2-xlink.html#xlinkHandlerPtr">xlinkHandlerPtr</a> value.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xlinkIsLink"/>xlinkIsLink ()</h3><pre class="programlisting"><a href="libxml2-xlink.html#xlinkType">xlinkType</a>	xlinkIsLink		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node)<br/>
+</pre><p>Check whether the given node carries the attributes needed to be a link element (or is one of the linking elements issued from the (X)HTML DtDs). This routine don't try to do full checking of the link validity but tries to detect and return the appropriate link type.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document containing the node</td></tr><tr><td><span class="term"><i><tt>node</tt></i>:</span></td><td>the node pointer itself</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the <a href="libxml2-xlink.html#xlinkType">xlinkType</a> of the node (XLINK_TYPE_NONE if there is no link detected.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xlinkSetDefaultDetect"/>xlinkSetDefaultDetect ()</h3><pre class="programlisting">void	xlinkSetDefaultDetect		(<a href="libxml2-xlink.html#xlinkNodeDetectFunc">xlinkNodeDetectFunc</a> func)<br/>
+</pre><p>Set the default xlink detection routine</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>func</tt></i>:</span></td><td>pointer to the new detection routine.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xlinkSetDefaultHandler"/>xlinkSetDefaultHandler ()</h3><pre class="programlisting">void	xlinkSetDefaultHandler		(<a href="libxml2-xlink.html#xlinkHandlerPtr">xlinkHandlerPtr</a> handler)<br/>
+</pre><p>Set the default xlink handlers</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>handler</tt></i>:</span></td><td>the new value for the xlink handler block</td></tr></tbody></table></div></div>
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

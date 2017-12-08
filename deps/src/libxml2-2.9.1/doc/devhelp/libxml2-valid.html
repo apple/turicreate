@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>valid: The DTD validation</title>
+    <meta name="generator" content="Libxml2 devhelp stylesheet"/>
+    <link rel="start" href="index.html" title="libxml2 Reference Manual"/>
+    <link rel="up" href="general.html" title="API"/>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+    <link rel="chapter" href="general.html" title="API"/>
+  </head>
+  <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+    <table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+      <tr valign="middle">
+        <td>
+          <a accesskey="p" href="libxml2-uri.html">
+            <img src="left.png" width="24" height="24" border="0" alt="Prev"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="u" href="general.html">
+            <img src="up.png" width="24" height="24" border="0" alt="Up"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="h" href="index.html">
+            <img src="home.png" width="24" height="24" border="0" alt="Home"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="n" href="libxml2-xinclude.html">
+            <img src="right.png" width="24" height="24" border="0" alt="Next"/>
+          </a>
+        </td>
+        <th width="100%" align="center">libxml2 Reference Manual</th>
+      </tr>
+    </table>
+    <h2>
+      <span class="refentrytitle">valid</span>
+    </h2>
+    <p>valid - The DTD validation</p>
+    <p>API for the DTD handling and the validity checking </p>
+    <p>Author(s): Daniel Veillard </p>
+    <div class="refsynopsisdiv">
+      <h2>Synopsis</h2>
+      <pre class="synopsis">#define <a href="#XML_CTXT_FINISH_DTD_0">XML_CTXT_FINISH_DTD_0</a>;
+#define <a href="#XML_CTXT_FINISH_DTD_1">XML_CTXT_FINISH_DTD_1</a>;
+typedef struct _xmlHashTable <a href="#xmlElementTable">xmlElementTable</a>;
+typedef <a href="libxml2-valid.html#xmlValidState">xmlValidState</a> * <a href="#xmlValidStatePtr">xmlValidStatePtr</a>;
+typedef <a href="libxml2-valid.html#xmlIDTable">xmlIDTable</a> * <a href="#xmlIDTablePtr">xmlIDTablePtr</a>;
+typedef <a href="libxml2-valid.html#xmlNotationTable">xmlNotationTable</a> * <a href="#xmlNotationTablePtr">xmlNotationTablePtr</a>;
+typedef struct _xmlValidCtxt <a href="#xmlValidCtxt">xmlValidCtxt</a>;
+typedef <a href="libxml2-valid.html#xmlElementTable">xmlElementTable</a> * <a href="#xmlElementTablePtr">xmlElementTablePtr</a>;
+typedef <a href="libxml2-valid.html#xmlRefTable">xmlRefTable</a> * <a href="#xmlRefTablePtr">xmlRefTablePtr</a>;
+typedef struct _xmlHashTable <a href="#xmlNotationTable">xmlNotationTable</a>;
+typedef struct _xmlHashTable <a href="#xmlRefTable">xmlRefTable</a>;
+typedef struct _xmlValidState <a href="#xmlValidState">xmlValidState</a>;
+typedef struct _xmlHashTable <a href="#xmlAttributeTable">xmlAttributeTable</a>;
+typedef <a href="libxml2-valid.html#xmlAttributeTable">xmlAttributeTable</a> * <a href="#xmlAttributeTablePtr">xmlAttributeTablePtr</a>;
+typedef struct _xmlHashTable <a href="#xmlIDTable">xmlIDTable</a>;
+typedef <a href="libxml2-valid.html#xmlValidCtxt">xmlValidCtxt</a> * <a href="#xmlValidCtxtPtr">xmlValidCtxtPtr</a>;
+void	<a href="#xmlFreeNotationTable">xmlFreeNotationTable</a>		(<a href="libxml2-valid.html#xmlNotationTablePtr">xmlNotationTablePtr</a> table);
+int	<a href="#xmlValidateNameValue">xmlValidateNameValue</a>		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value);
+void	<a href="#xmlSnprintfElementContent">xmlSnprintfElementContent</a>	(char * buf, <br/>					 int size, <br/>					 <a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a> content, <br/>					 int englob);
+<a href="libxml2-tree.html#xmlRefPtr">xmlRefPtr</a>	<a href="#xmlAddRef">xmlAddRef</a>		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value, <br/>					 <a href="libxml2-tree.html#xmlAttrPtr">xmlAttrPtr</a> attr);
+void	<a href="#xmlDumpAttributeDecl">xmlDumpAttributeDecl</a>		(<a href="libxml2-tree.html#xmlBufferPtr">xmlBufferPtr</a> buf, <br/>					 <a href="libxml2-tree.html#xmlAttributePtr">xmlAttributePtr</a> attr);
+int	<a href="#xmlValidateDocumentFinal">xmlValidateDocumentFinal</a>	(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc);
+int	<a href="#xmlValidateDtdFinal">xmlValidateDtdFinal</a>		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc);
+void	<a href="#xmlDumpAttributeTable">xmlDumpAttributeTable</a>		(<a href="libxml2-tree.html#xmlBufferPtr">xmlBufferPtr</a> buf, <br/>					 <a href="libxml2-valid.html#xmlAttributeTablePtr">xmlAttributeTablePtr</a> table);
+<a href="libxml2-tree.html#xmlEnumerationPtr">xmlEnumerationPtr</a>	<a href="#xmlCreateEnumeration">xmlCreateEnumeration</a>	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name);
+int	<a href="#xmlValidateOneAttribute">xmlValidateOneAttribute</a>		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> elem, <br/>					 <a href="libxml2-tree.html#xmlAttrPtr">xmlAttrPtr</a> attr, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value);
+int	<a href="#xmlValidGetValidElements">xmlValidGetValidElements</a>	(<a href="libxml2-tree.html#xmlNode">xmlNode</a> * prev, <br/>					 <a href="libxml2-tree.html#xmlNode">xmlNode</a> * next, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** names, <br/>					 int max);
+int	<a href="#xmlIsMixedElement">xmlIsMixedElement</a>		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name);
+void	<a href="#xmlDumpNotationDecl">xmlDumpNotationDecl</a>		(<a href="libxml2-tree.html#xmlBufferPtr">xmlBufferPtr</a> buf, <br/>					 <a href="libxml2-tree.html#xmlNotationPtr">xmlNotationPtr</a> nota);
+int	<a href="#xmlIsID">xmlIsID</a>			(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> elem, <br/>					 <a href="libxml2-tree.html#xmlAttrPtr">xmlAttrPtr</a> attr);
+<a href="libxml2-tree.html#xmlAttributePtr">xmlAttributePtr</a>	<a href="#xmlGetDtdQAttrDesc">xmlGetDtdQAttrDesc</a>	(<a href="libxml2-tree.html#xmlDtdPtr">xmlDtdPtr</a> dtd, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * elem, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * prefix);
+<a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a>	<a href="#xmlNewDocElementContent">xmlNewDocElementContent</a>	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>						 <a href="libxml2-tree.html#xmlElementContentType">xmlElementContentType</a> type);
+void	<a href="#xmlFreeAttributeTable">xmlFreeAttributeTable</a>		(<a href="libxml2-valid.html#xmlAttributeTablePtr">xmlAttributeTablePtr</a> table);
+typedef void <a href="#xmlValidityErrorFunc">xmlValidityErrorFunc</a>		(void * ctx, <br/>					 const char * msg, <br/>					 ... ...);
+int	<a href="#xmlValidateAttributeDecl">xmlValidateAttributeDecl</a>	(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlAttributePtr">xmlAttributePtr</a> attr);
+<a href="libxml2-tree.html#xmlElementPtr">xmlElementPtr</a>	<a href="#xmlGetDtdQElementDesc">xmlGetDtdQElementDesc</a>	(<a href="libxml2-tree.html#xmlDtdPtr">xmlDtdPtr</a> dtd, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * prefix);
+<a href="libxml2-valid.html#xmlNotationTablePtr">xmlNotationTablePtr</a>	<a href="#xmlCopyNotationTable">xmlCopyNotationTable</a>	(<a href="libxml2-valid.html#xmlNotationTablePtr">xmlNotationTablePtr</a> table);
+int	<a href="#xmlValidateDocument">xmlValidateDocument</a>		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc);
+int	<a href="#xmlValidGetPotentialChildren">xmlValidGetPotentialChildren</a>	(<a href="libxml2-tree.html#xmlElementContent">xmlElementContent</a> * ctree, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** names, <br/>					 int * len, <br/>					 int max);
+<a href="libxml2-tree.html#xmlNotationPtr">xmlNotationPtr</a>	<a href="#xmlAddNotationDecl">xmlAddNotationDecl</a>	(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDtdPtr">xmlDtdPtr</a> dtd, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * PublicID, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * SystemID);
+int	<a href="#xmlValidateElementDecl">xmlValidateElementDecl</a>		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlElementPtr">xmlElementPtr</a> elem);
+<a href="libxml2-tree.html#xmlAttributePtr">xmlAttributePtr</a>	<a href="#xmlAddAttributeDecl">xmlAddAttributeDecl</a>	(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDtdPtr">xmlDtdPtr</a> dtd, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * elem, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ns, <br/>					 <a href="libxml2-tree.html#xmlAttributeType">xmlAttributeType</a> type, <br/>					 <a href="libxml2-tree.html#xmlAttributeDefault">xmlAttributeDefault</a> def, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * defaultValue, <br/>					 <a href="libxml2-tree.html#xmlEnumerationPtr">xmlEnumerationPtr</a> tree);
+<a href="libxml2-tree.html#xmlAttrPtr">xmlAttrPtr</a>	<a href="#xmlGetID">xmlGetID</a>		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ID);
+<a href="libxml2-valid.html#xmlElementTablePtr">xmlElementTablePtr</a>	<a href="#xmlCopyElementTable">xmlCopyElementTable</a>	(<a href="libxml2-valid.html#xmlElementTablePtr">xmlElementTablePtr</a> table);
+<a href="libxml2-list.html#xmlListPtr">xmlListPtr</a>	<a href="#xmlGetRefs">xmlGetRefs</a>		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ID);
+void	<a href="#xmlSprintfElementContent">xmlSprintfElementContent</a>	(char * buf, <br/>					 <a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a> content, <br/>					 int englob);
+int	<a href="#xmlValidateOneElement">xmlValidateOneElement</a>		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> elem);
+int	<a href="#xmlValidateNmtokenValue">xmlValidateNmtokenValue</a>		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value);
+void	<a href="#xmlDumpElementTable">xmlDumpElementTable</a>		(<a href="libxml2-tree.html#xmlBufferPtr">xmlBufferPtr</a> buf, <br/>					 <a href="libxml2-valid.html#xmlElementTablePtr">xmlElementTablePtr</a> table);
+<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlValidCtxtNormalizeAttributeValue">xmlValidCtxtNormalizeAttributeValue</a>	(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>							 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>							 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> elem, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value);
+void	<a href="#xmlDumpElementDecl">xmlDumpElementDecl</a>		(<a href="libxml2-tree.html#xmlBufferPtr">xmlBufferPtr</a> buf, <br/>					 <a href="libxml2-tree.html#xmlElementPtr">xmlElementPtr</a> elem);
+void	<a href="#xmlFreeElementContent">xmlFreeElementContent</a>		(<a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a> cur);
+int	<a href="#xmlValidateOneNamespace">xmlValidateOneNamespace</a>		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> elem, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * prefix, <br/>					 <a href="libxml2-tree.html#xmlNsPtr">xmlNsPtr</a> ns, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value);
+int	<a href="#xmlValidatePushElement">xmlValidatePushElement</a>		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> elem, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * qname);
+int	<a href="#xmlIsRef">xmlIsRef</a>			(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> elem, <br/>					 <a href="libxml2-tree.html#xmlAttrPtr">xmlAttrPtr</a> attr);
+<a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a>	<a href="#xmlCopyDocElementContent">xmlCopyDocElementContent</a>	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>							 <a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a> cur);
+<a href="libxml2-tree.html#xmlIDPtr">xmlIDPtr</a>	<a href="#xmlAddID">xmlAddID</a>		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value, <br/>					 <a href="libxml2-tree.html#xmlAttrPtr">xmlAttrPtr</a> attr);
+void	<a href="#xmlFreeRefTable">xmlFreeRefTable</a>			(<a href="libxml2-valid.html#xmlRefTablePtr">xmlRefTablePtr</a> table);
+int	<a href="#xmlValidateNamesValue">xmlValidateNamesValue</a>		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value);
+int	<a href="#xmlRemoveID">xmlRemoveID</a>			(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlAttrPtr">xmlAttrPtr</a> attr);
+void	<a href="#xmlFreeElementTable">xmlFreeElementTable</a>		(<a href="libxml2-valid.html#xmlElementTablePtr">xmlElementTablePtr</a> table);
+void	<a href="#xmlFreeIDTable">xmlFreeIDTable</a>			(<a href="libxml2-valid.html#xmlIDTablePtr">xmlIDTablePtr</a> table);
+void	<a href="#xmlFreeValidCtxt">xmlFreeValidCtxt</a>		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> cur);
+<a href="libxml2-valid.html#xmlAttributeTablePtr">xmlAttributeTablePtr</a>	<a href="#xmlCopyAttributeTable">xmlCopyAttributeTable</a>	(<a href="libxml2-valid.html#xmlAttributeTablePtr">xmlAttributeTablePtr</a> table);
+<a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a>	<a href="#xmlCopyElementContent">xmlCopyElementContent</a>	(<a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a> cur);
+int	<a href="#xmlValidateAttributeValue">xmlValidateAttributeValue</a>	(<a href="libxml2-tree.html#xmlAttributeType">xmlAttributeType</a> type, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value);
+int	<a href="#xmlRemoveRef">xmlRemoveRef</a>			(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlAttrPtr">xmlAttrPtr</a> attr);
+typedef void <a href="#xmlValidityWarningFunc">xmlValidityWarningFunc</a>		(void * ctx, <br/>					 const char * msg, <br/>					 ... ...);
+int	<a href="#xmlValidatePopElement">xmlValidatePopElement</a>		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> elem, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * qname);
+void	<a href="#xmlFreeEnumeration">xmlFreeEnumeration</a>		(<a href="libxml2-tree.html#xmlEnumerationPtr">xmlEnumerationPtr</a> cur);
+<a href="libxml2-tree.html#xmlEnumerationPtr">xmlEnumerationPtr</a>	<a href="#xmlCopyEnumeration">xmlCopyEnumeration</a>	(<a href="libxml2-tree.html#xmlEnumerationPtr">xmlEnumerationPtr</a> cur);
+<a href="libxml2-tree.html#xmlAttributePtr">xmlAttributePtr</a>	<a href="#xmlGetDtdAttrDesc">xmlGetDtdAttrDesc</a>	(<a href="libxml2-tree.html#xmlDtdPtr">xmlDtdPtr</a> dtd, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * elem, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name);
+int	<a href="#xmlValidateDtd">xmlValidateDtd</a>			(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlDtdPtr">xmlDtdPtr</a> dtd);
+<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a>	<a href="#xmlNewValidCtxt">xmlNewValidCtxt</a>		(void);
+void	<a href="#xmlDumpNotationTable">xmlDumpNotationTable</a>		(<a href="libxml2-tree.html#xmlBufferPtr">xmlBufferPtr</a> buf, <br/>					 <a href="libxml2-valid.html#xmlNotationTablePtr">xmlNotationTablePtr</a> table);
+<a href="libxml2-tree.html#xmlElementPtr">xmlElementPtr</a>	<a href="#xmlAddElementDecl">xmlAddElementDecl</a>	(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDtdPtr">xmlDtdPtr</a> dtd, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 <a href="libxml2-tree.html#xmlElementTypeVal">xmlElementTypeVal</a> type, <br/>					 <a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a> content);
+<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlValidNormalizeAttributeValue">xmlValidNormalizeAttributeValue</a>	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>						 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> elem, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value);
+int	<a href="#xmlValidBuildContentModel">xmlValidBuildContentModel</a>	(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlElementPtr">xmlElementPtr</a> elem);
+int	<a href="#xmlValidateElement">xmlValidateElement</a>		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> elem);
+int	<a href="#xmlValidateNotationUse">xmlValidateNotationUse</a>		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * notationName);
+int	<a href="#xmlValidateRoot">xmlValidateRoot</a>			(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc);
+int	<a href="#xmlValidateNotationDecl">xmlValidateNotationDecl</a>		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNotationPtr">xmlNotationPtr</a> nota);
+<a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a>	<a href="#xmlNewElementContent">xmlNewElementContent</a>	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>						 <a href="libxml2-tree.html#xmlElementContentType">xmlElementContentType</a> type);
+<a href="libxml2-tree.html#xmlElementPtr">xmlElementPtr</a>	<a href="#xmlGetDtdElementDesc">xmlGetDtdElementDesc</a>	(<a href="libxml2-tree.html#xmlDtdPtr">xmlDtdPtr</a> dtd, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name);
+<a href="libxml2-tree.html#xmlNotationPtr">xmlNotationPtr</a>	<a href="#xmlGetDtdNotationDesc">xmlGetDtdNotationDesc</a>	(<a href="libxml2-tree.html#xmlDtdPtr">xmlDtdPtr</a> dtd, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name);
+int	<a href="#xmlValidatePushCData">xmlValidatePushCData</a>		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * data, <br/>					 int len);
+int	<a href="#xmlValidateNmtokensValue">xmlValidateNmtokensValue</a>	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value);
+void	<a href="#xmlFreeDocElementContent">xmlFreeDocElementContent</a>	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a> cur);
+</pre>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Description</h2>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Details</h2>
+      <div class="refsect2" lang="en">
+        <div class="refsect2" lang="en"><h3><a name="XML_CTXT_FINISH_DTD_0">Macro </a>XML_CTXT_FINISH_DTD_0</h3><pre class="programlisting">#define <a href="#XML_CTXT_FINISH_DTD_0">XML_CTXT_FINISH_DTD_0</a>;
+</pre><p>Special value for finishDtd field when embedded in an <a href="libxml2-tree.html#xmlParserCtxt">xmlParserCtxt</a></p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_CTXT_FINISH_DTD_1">Macro </a>XML_CTXT_FINISH_DTD_1</h3><pre class="programlisting">#define <a href="#XML_CTXT_FINISH_DTD_1">XML_CTXT_FINISH_DTD_1</a>;
+</pre><p>Special value for finishDtd field when embedded in an <a href="libxml2-tree.html#xmlParserCtxt">xmlParserCtxt</a></p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAttributeTable">Structure </a>xmlAttributeTable</h3><pre class="programlisting">struct _xmlHashTable {
+The content of this structure is not made public by the API.
+} xmlAttributeTable;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAttributeTablePtr">Typedef </a>xmlAttributeTablePtr</h3><pre class="programlisting"><a href="libxml2-valid.html#xmlAttributeTable">xmlAttributeTable</a> * xmlAttributeTablePtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlElementTable">Structure </a>xmlElementTable</h3><pre class="programlisting">struct _xmlHashTable {
+The content of this structure is not made public by the API.
+} xmlElementTable;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlElementTablePtr">Typedef </a>xmlElementTablePtr</h3><pre class="programlisting"><a href="libxml2-valid.html#xmlElementTable">xmlElementTable</a> * xmlElementTablePtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlIDTable">Structure </a>xmlIDTable</h3><pre class="programlisting">struct _xmlHashTable {
+The content of this structure is not made public by the API.
+} xmlIDTable;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlIDTablePtr">Typedef </a>xmlIDTablePtr</h3><pre class="programlisting"><a href="libxml2-valid.html#xmlIDTable">xmlIDTable</a> * xmlIDTablePtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlNotationTable">Structure </a>xmlNotationTable</h3><pre class="programlisting">struct _xmlHashTable {
+The content of this structure is not made public by the API.
+} xmlNotationTable;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlNotationTablePtr">Typedef </a>xmlNotationTablePtr</h3><pre class="programlisting"><a href="libxml2-valid.html#xmlNotationTable">xmlNotationTable</a> * xmlNotationTablePtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlRefTable">Structure </a>xmlRefTable</h3><pre class="programlisting">struct _xmlHashTable {
+The content of this structure is not made public by the API.
+} xmlRefTable;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlRefTablePtr">Typedef </a>xmlRefTablePtr</h3><pre class="programlisting"><a href="libxml2-valid.html#xmlRefTable">xmlRefTable</a> * xmlRefTablePtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidCtxt">Structure </a>xmlValidCtxt</h3><pre class="programlisting">struct _xmlValidCtxt {
+    void *	userData	: user specific data block
+    <a href="libxml2-valid.html#xmlValidityErrorFunc">xmlValidityErrorFunc</a>	error	: the callback in case of errors
+    <a href="libxml2-valid.html#xmlValidityWarningFunc">xmlValidityWarningFunc</a>	warning	: the callback in case of warning Node analysis stack used when validat
+    <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a>	node	: Current parsed Node
+    int	nodeNr	: Depth of the parsing stack
+    int	nodeMax	: Max depth of the parsing stack
+    <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> *	nodeTab	: array of nodes
+    unsigned int	finishDtd	: finished validating the Dtd ?
+    <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a>	doc	: the document
+    int	valid	: temporary validity check result state state used for non-determinist
+    <a href="libxml2-valid.html#xmlValidState">xmlValidState</a> *	vstate	: current state
+    int	vstateNr	: Depth of the validation stack
+    int	vstateMax	: Max depth of the validation stack
+    <a href="libxml2-valid.html#xmlValidState">xmlValidState</a> *	vstateTab	: array of validation states
+    <a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a>	am	: the automata
+    <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	state	: used to build the automata
+    void *	am
+    void *	state
+} xmlValidCtxt;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidCtxtPtr">Typedef </a>xmlValidCtxtPtr</h3><pre class="programlisting"><a href="libxml2-valid.html#xmlValidCtxt">xmlValidCtxt</a> * xmlValidCtxtPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidState">Structure </a>xmlValidState</h3><pre class="programlisting">struct _xmlValidState {
+The content of this structure is not made public by the API.
+} xmlValidState;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidStatePtr">Typedef </a>xmlValidStatePtr</h3><pre class="programlisting"><a href="libxml2-valid.html#xmlValidState">xmlValidState</a> * xmlValidStatePtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidityErrorFunc"/>Function type xmlValidityErrorFunc</h3><pre class="programlisting">void	xmlValidityErrorFunc		(void * ctx, <br/>					 const char * msg, <br/>					 ... ...)<br/>
+</pre><p>Callback called when a validity error is found. This is a message oriented function similar to an *printf function.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctx</tt></i>:</span></td><td>usually an <a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> to a validity error context, but comes from ctxt-&gt;userData (which normally contains such a pointer); ctxt-&gt;userData can be changed by the user.</td></tr><tr><td><span class="term"><i><tt>msg</tt></i>:</span></td><td>the string to format *printf like vararg</td></tr><tr><td><span class="term"><i><tt>...</tt></i>:</span></td><td>remaining arguments to the format</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidityWarningFunc"/>Function type xmlValidityWarningFunc</h3><pre class="programlisting">void	xmlValidityWarningFunc		(void * ctx, <br/>					 const char * msg, <br/>					 ... ...)<br/>
+</pre><p>Callback called when a validity warning is found. This is a message oriented function similar to an *printf function.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctx</tt></i>:</span></td><td>usually an <a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> to a validity error context, but comes from ctxt-&gt;userData (which normally contains such a pointer); ctxt-&gt;userData can be changed by the user.</td></tr><tr><td><span class="term"><i><tt>msg</tt></i>:</span></td><td>the string to format *printf like vararg</td></tr><tr><td><span class="term"><i><tt>...</tt></i>:</span></td><td>remaining arguments to the format</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAddAttributeDecl"/>xmlAddAttributeDecl ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlAttributePtr">xmlAttributePtr</a>	xmlAddAttributeDecl	(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDtdPtr">xmlDtdPtr</a> dtd, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * elem, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ns, <br/>					 <a href="libxml2-tree.html#xmlAttributeType">xmlAttributeType</a> type, <br/>					 <a href="libxml2-tree.html#xmlAttributeDefault">xmlAttributeDefault</a> def, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * defaultValue, <br/>					 <a href="libxml2-tree.html#xmlEnumerationPtr">xmlEnumerationPtr</a> tree)<br/>
+</pre><p>Register a new <a href="libxml2-SAX.html#attribute">attribute</a> declaration Note that @tree becomes the ownership of the DTD</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the validation context</td></tr><tr><td><span class="term"><i><tt>dtd</tt></i>:</span></td><td>pointer to the DTD</td></tr><tr><td><span class="term"><i><tt>elem</tt></i>:</span></td><td>the element name</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the <a href="libxml2-SAX.html#attribute">attribute</a> name</td></tr><tr><td><span class="term"><i><tt>ns</tt></i>:</span></td><td>the <a href="libxml2-SAX.html#attribute">attribute</a> namespace prefix</td></tr><tr><td><span class="term"><i><tt>type</tt></i>:</span></td><td>the <a href="libxml2-SAX.html#attribute">attribute</a> type</td></tr><tr><td><span class="term"><i><tt>def</tt></i>:</span></td><td>the <a href="libxml2-SAX.html#attribute">attribute</a> default type</td></tr><tr><td><span class="term"><i><tt>defaultValue</tt></i>:</span></td><td>the <a href="libxml2-SAX.html#attribute">attribute</a> default value</td></tr><tr><td><span class="term"><i><tt>tree</tt></i>:</span></td><td>if it's an enumeration, the associated list</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>NULL if not new, otherwise the <a href="libxml2-SAX.html#attribute">attribute</a> decl</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAddElementDecl"/>xmlAddElementDecl ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlElementPtr">xmlElementPtr</a>	xmlAddElementDecl	(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDtdPtr">xmlDtdPtr</a> dtd, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 <a href="libxml2-tree.html#xmlElementTypeVal">xmlElementTypeVal</a> type, <br/>					 <a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a> content)<br/>
+</pre><p>Register a new element declaration</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the validation context</td></tr><tr><td><span class="term"><i><tt>dtd</tt></i>:</span></td><td>pointer to the DTD</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the entity name</td></tr><tr><td><span class="term"><i><tt>type</tt></i>:</span></td><td>the element type</td></tr><tr><td><span class="term"><i><tt>content</tt></i>:</span></td><td>the element content tree or NULL</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>NULL if not, otherwise the entity</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAddID"/>xmlAddID ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlIDPtr">xmlIDPtr</a>	xmlAddID		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value, <br/>					 <a href="libxml2-tree.html#xmlAttrPtr">xmlAttrPtr</a> attr)<br/>
+</pre><p>Register a new id declaration</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the validation context</td></tr><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>pointer to the document</td></tr><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>the value name</td></tr><tr><td><span class="term"><i><tt>attr</tt></i>:</span></td><td>the <a href="libxml2-SAX.html#attribute">attribute</a> holding the ID</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>NULL if not, otherwise the new <a href="libxml2-tree.html#xmlIDPtr">xmlIDPtr</a></td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAddNotationDecl"/>xmlAddNotationDecl ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlNotationPtr">xmlNotationPtr</a>	xmlAddNotationDecl	(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDtdPtr">xmlDtdPtr</a> dtd, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * PublicID, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * SystemID)<br/>
+</pre><p>Register a new notation declaration</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the validation context</td></tr><tr><td><span class="term"><i><tt>dtd</tt></i>:</span></td><td>pointer to the DTD</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the entity name</td></tr><tr><td><span class="term"><i><tt>PublicID</tt></i>:</span></td><td>the public identifier or NULL</td></tr><tr><td><span class="term"><i><tt>SystemID</tt></i>:</span></td><td>the system identifier or NULL</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>NULL if not, otherwise the entity</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAddRef"/>xmlAddRef ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlRefPtr">xmlRefPtr</a>	xmlAddRef		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value, <br/>					 <a href="libxml2-tree.html#xmlAttrPtr">xmlAttrPtr</a> attr)<br/>
+</pre><p>Register a new ref declaration</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the validation context</td></tr><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>pointer to the document</td></tr><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>the value name</td></tr><tr><td><span class="term"><i><tt>attr</tt></i>:</span></td><td>the <a href="libxml2-SAX.html#attribute">attribute</a> holding the Ref</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>NULL if not, otherwise the new <a href="libxml2-tree.html#xmlRefPtr">xmlRefPtr</a></td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlCopyAttributeTable"/>xmlCopyAttributeTable ()</h3><pre class="programlisting"><a href="libxml2-valid.html#xmlAttributeTablePtr">xmlAttributeTablePtr</a>	xmlCopyAttributeTable	(<a href="libxml2-valid.html#xmlAttributeTablePtr">xmlAttributeTablePtr</a> table)<br/>
+</pre><p>Build a copy of an <a href="libxml2-SAX.html#attribute">attribute</a> table.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>table</tt></i>:</span></td><td>An <a href="libxml2-SAX.html#attribute">attribute</a> table</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the new <a href="libxml2-valid.html#xmlAttributeTablePtr">xmlAttributeTablePtr</a> or NULL in case of error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlCopyDocElementContent"/>xmlCopyDocElementContent ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a>	xmlCopyDocElementContent	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>							 <a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a> cur)<br/>
+</pre><p>Build a copy of an element content description.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document owning the element declaration</td></tr><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>An element content pointer.</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the new <a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a> or NULL in case of error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlCopyElementContent"/>xmlCopyElementContent ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a>	xmlCopyElementContent	(<a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a> cur)<br/>
+</pre><p>Build a copy of an element content description. Deprecated, use <a href="libxml2-valid.html#xmlCopyDocElementContent">xmlCopyDocElementContent</a> instead</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>An element content pointer.</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the new <a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a> or NULL in case of error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlCopyElementTable"/>xmlCopyElementTable ()</h3><pre class="programlisting"><a href="libxml2-valid.html#xmlElementTablePtr">xmlElementTablePtr</a>	xmlCopyElementTable	(<a href="libxml2-valid.html#xmlElementTablePtr">xmlElementTablePtr</a> table)<br/>
+</pre><p>Build a copy of an element table.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>table</tt></i>:</span></td><td>An element table</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the new <a href="libxml2-valid.html#xmlElementTablePtr">xmlElementTablePtr</a> or NULL in case of error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlCopyEnumeration"/>xmlCopyEnumeration ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlEnumerationPtr">xmlEnumerationPtr</a>	xmlCopyEnumeration	(<a href="libxml2-tree.html#xmlEnumerationPtr">xmlEnumerationPtr</a> cur)<br/>
+</pre><p>Copy an enumeration <a href="libxml2-SAX.html#attribute">attribute</a> node (recursive).</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the tree to copy.</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the <a href="libxml2-tree.html#xmlEnumerationPtr">xmlEnumerationPtr</a> just created or NULL in case of error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlCopyNotationTable"/>xmlCopyNotationTable ()</h3><pre class="programlisting"><a href="libxml2-valid.html#xmlNotationTablePtr">xmlNotationTablePtr</a>	xmlCopyNotationTable	(<a href="libxml2-valid.html#xmlNotationTablePtr">xmlNotationTablePtr</a> table)<br/>
+</pre><p>Build a copy of a notation table.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>table</tt></i>:</span></td><td>A notation table</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the new <a href="libxml2-valid.html#xmlNotationTablePtr">xmlNotationTablePtr</a> or NULL in case of error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlCreateEnumeration"/>xmlCreateEnumeration ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlEnumerationPtr">xmlEnumerationPtr</a>	xmlCreateEnumeration	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name)<br/>
+</pre><p>create and initialize an enumeration <a href="libxml2-SAX.html#attribute">attribute</a> node.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the enumeration name or NULL</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the <a href="libxml2-tree.html#xmlEnumerationPtr">xmlEnumerationPtr</a> just created or NULL in case of error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlDumpAttributeDecl"/>xmlDumpAttributeDecl ()</h3><pre class="programlisting">void	xmlDumpAttributeDecl		(<a href="libxml2-tree.html#xmlBufferPtr">xmlBufferPtr</a> buf, <br/>					 <a href="libxml2-tree.html#xmlAttributePtr">xmlAttributePtr</a> attr)<br/>
+</pre><p>This will dump the content of the <a href="libxml2-SAX.html#attribute">attribute</a> declaration as an XML DTD definition</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>buf</tt></i>:</span></td><td>the XML buffer output</td></tr><tr><td><span class="term"><i><tt>attr</tt></i>:</span></td><td>An <a href="libxml2-SAX.html#attribute">attribute</a> declaration</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlDumpAttributeTable"/>xmlDumpAttributeTable ()</h3><pre class="programlisting">void	xmlDumpAttributeTable		(<a href="libxml2-tree.html#xmlBufferPtr">xmlBufferPtr</a> buf, <br/>					 <a href="libxml2-valid.html#xmlAttributeTablePtr">xmlAttributeTablePtr</a> table)<br/>
+</pre><p>This will dump the content of the <a href="libxml2-SAX.html#attribute">attribute</a> table as an XML DTD definition</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>buf</tt></i>:</span></td><td>the XML buffer output</td></tr><tr><td><span class="term"><i><tt>table</tt></i>:</span></td><td>An <a href="libxml2-SAX.html#attribute">attribute</a> table</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlDumpElementDecl"/>xmlDumpElementDecl ()</h3><pre class="programlisting">void	xmlDumpElementDecl		(<a href="libxml2-tree.html#xmlBufferPtr">xmlBufferPtr</a> buf, <br/>					 <a href="libxml2-tree.html#xmlElementPtr">xmlElementPtr</a> elem)<br/>
+</pre><p>This will dump the content of the element declaration as an XML DTD definition</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>buf</tt></i>:</span></td><td>the XML buffer output</td></tr><tr><td><span class="term"><i><tt>elem</tt></i>:</span></td><td>An element table</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlDumpElementTable"/>xmlDumpElementTable ()</h3><pre class="programlisting">void	xmlDumpElementTable		(<a href="libxml2-tree.html#xmlBufferPtr">xmlBufferPtr</a> buf, <br/>					 <a href="libxml2-valid.html#xmlElementTablePtr">xmlElementTablePtr</a> table)<br/>
+</pre><p>This will dump the content of the element table as an XML DTD definition</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>buf</tt></i>:</span></td><td>the XML buffer output</td></tr><tr><td><span class="term"><i><tt>table</tt></i>:</span></td><td>An element table</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlDumpNotationDecl"/>xmlDumpNotationDecl ()</h3><pre class="programlisting">void	xmlDumpNotationDecl		(<a href="libxml2-tree.html#xmlBufferPtr">xmlBufferPtr</a> buf, <br/>					 <a href="libxml2-tree.html#xmlNotationPtr">xmlNotationPtr</a> nota)<br/>
+</pre><p>This will dump the content the notation declaration as an XML DTD definition</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>buf</tt></i>:</span></td><td>the XML buffer output</td></tr><tr><td><span class="term"><i><tt>nota</tt></i>:</span></td><td>A notation declaration</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlDumpNotationTable"/>xmlDumpNotationTable ()</h3><pre class="programlisting">void	xmlDumpNotationTable		(<a href="libxml2-tree.html#xmlBufferPtr">xmlBufferPtr</a> buf, <br/>					 <a href="libxml2-valid.html#xmlNotationTablePtr">xmlNotationTablePtr</a> table)<br/>
+</pre><p>This will dump the content of the notation table as an XML DTD definition</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>buf</tt></i>:</span></td><td>the XML buffer output</td></tr><tr><td><span class="term"><i><tt>table</tt></i>:</span></td><td>A notation table</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlFreeAttributeTable"/>xmlFreeAttributeTable ()</h3><pre class="programlisting">void	xmlFreeAttributeTable		(<a href="libxml2-valid.html#xmlAttributeTablePtr">xmlAttributeTablePtr</a> table)<br/>
+</pre><p>Deallocate the memory used by an entities hash table.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>table</tt></i>:</span></td><td>An <a href="libxml2-SAX.html#attribute">attribute</a> table</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlFreeDocElementContent"/>xmlFreeDocElementContent ()</h3><pre class="programlisting">void	xmlFreeDocElementContent	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a> cur)<br/>
+</pre><p>Free an element content structure. The whole subtree is removed.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document owning the element declaration</td></tr><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the element content tree to free</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlFreeElementContent"/>xmlFreeElementContent ()</h3><pre class="programlisting">void	xmlFreeElementContent		(<a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a> cur)<br/>
+</pre><p>Free an element content structure. The whole subtree is removed. Deprecated, use <a href="libxml2-valid.html#xmlFreeDocElementContent">xmlFreeDocElementContent</a> instead</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the element content tree to free</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlFreeElementTable"/>xmlFreeElementTable ()</h3><pre class="programlisting">void	xmlFreeElementTable		(<a href="libxml2-valid.html#xmlElementTablePtr">xmlElementTablePtr</a> table)<br/>
+</pre><p>Deallocate the memory used by an element hash table.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>table</tt></i>:</span></td><td>An element table</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlFreeEnumeration"/>xmlFreeEnumeration ()</h3><pre class="programlisting">void	xmlFreeEnumeration		(<a href="libxml2-tree.html#xmlEnumerationPtr">xmlEnumerationPtr</a> cur)<br/>
+</pre><p>free an enumeration <a href="libxml2-SAX.html#attribute">attribute</a> node (recursive).</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the tree to free.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlFreeIDTable"/>xmlFreeIDTable ()</h3><pre class="programlisting">void	xmlFreeIDTable			(<a href="libxml2-valid.html#xmlIDTablePtr">xmlIDTablePtr</a> table)<br/>
+</pre><p>Deallocate the memory used by an ID hash table.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>table</tt></i>:</span></td><td>An id table</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlFreeNotationTable"/>xmlFreeNotationTable ()</h3><pre class="programlisting">void	xmlFreeNotationTable		(<a href="libxml2-valid.html#xmlNotationTablePtr">xmlNotationTablePtr</a> table)<br/>
+</pre><p>Deallocate the memory used by an entities hash table.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>table</tt></i>:</span></td><td>An notation table</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlFreeRefTable"/>xmlFreeRefTable ()</h3><pre class="programlisting">void	xmlFreeRefTable			(<a href="libxml2-valid.html#xmlRefTablePtr">xmlRefTablePtr</a> table)<br/>
+</pre><p>Deallocate the memory used by an Ref hash table.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>table</tt></i>:</span></td><td>An ref table</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlFreeValidCtxt"/>xmlFreeValidCtxt ()</h3><pre class="programlisting">void	xmlFreeValidCtxt		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> cur)<br/>
+</pre><p>Free a validation context structure.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the validation context to free</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlGetDtdAttrDesc"/>xmlGetDtdAttrDesc ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlAttributePtr">xmlAttributePtr</a>	xmlGetDtdAttrDesc	(<a href="libxml2-tree.html#xmlDtdPtr">xmlDtdPtr</a> dtd, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * elem, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name)<br/>
+</pre><p>Search the DTD for the description of this <a href="libxml2-SAX.html#attribute">attribute</a> on this element.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>dtd</tt></i>:</span></td><td>a pointer to the DtD to search</td></tr><tr><td><span class="term"><i><tt>elem</tt></i>:</span></td><td>the element name</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the <a href="libxml2-SAX.html#attribute">attribute</a> name</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the <a href="libxml2-tree.html#xmlAttributePtr">xmlAttributePtr</a> if found or NULL</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlGetDtdElementDesc"/>xmlGetDtdElementDesc ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlElementPtr">xmlElementPtr</a>	xmlGetDtdElementDesc	(<a href="libxml2-tree.html#xmlDtdPtr">xmlDtdPtr</a> dtd, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name)<br/>
+</pre><p>Search the DTD for the description of this element</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>dtd</tt></i>:</span></td><td>a pointer to the DtD to search</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the element name</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the <a href="libxml2-tree.html#xmlElementPtr">xmlElementPtr</a> if found or NULL</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlGetDtdNotationDesc"/>xmlGetDtdNotationDesc ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlNotationPtr">xmlNotationPtr</a>	xmlGetDtdNotationDesc	(<a href="libxml2-tree.html#xmlDtdPtr">xmlDtdPtr</a> dtd, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name)<br/>
+</pre><p>Search the DTD for the description of this notation</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>dtd</tt></i>:</span></td><td>a pointer to the DtD to search</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the notation name</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the <a href="libxml2-tree.html#xmlNotationPtr">xmlNotationPtr</a> if found or NULL</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlGetDtdQAttrDesc"/>xmlGetDtdQAttrDesc ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlAttributePtr">xmlAttributePtr</a>	xmlGetDtdQAttrDesc	(<a href="libxml2-tree.html#xmlDtdPtr">xmlDtdPtr</a> dtd, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * elem, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * prefix)<br/>
+</pre><p>Search the DTD for the description of this qualified <a href="libxml2-SAX.html#attribute">attribute</a> on this element.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>dtd</tt></i>:</span></td><td>a pointer to the DtD to search</td></tr><tr><td><span class="term"><i><tt>elem</tt></i>:</span></td><td>the element name</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the <a href="libxml2-SAX.html#attribute">attribute</a> name</td></tr><tr><td><span class="term"><i><tt>prefix</tt></i>:</span></td><td>the <a href="libxml2-SAX.html#attribute">attribute</a> namespace prefix</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the <a href="libxml2-tree.html#xmlAttributePtr">xmlAttributePtr</a> if found or NULL</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlGetDtdQElementDesc"/>xmlGetDtdQElementDesc ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlElementPtr">xmlElementPtr</a>	xmlGetDtdQElementDesc	(<a href="libxml2-tree.html#xmlDtdPtr">xmlDtdPtr</a> dtd, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * prefix)<br/>
+</pre><p>Search the DTD for the description of this element</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>dtd</tt></i>:</span></td><td>a pointer to the DtD to search</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the element name</td></tr><tr><td><span class="term"><i><tt>prefix</tt></i>:</span></td><td>the element namespace prefix</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the <a href="libxml2-tree.html#xmlElementPtr">xmlElementPtr</a> if found or NULL</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlGetID"/>xmlGetID ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlAttrPtr">xmlAttrPtr</a>	xmlGetID		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ID)<br/>
+</pre><p>Search the <a href="libxml2-SAX.html#attribute">attribute</a> declaring the given ID</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>pointer to the document</td></tr><tr><td><span class="term"><i><tt>ID</tt></i>:</span></td><td>the ID value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>NULL if not found, otherwise the <a href="libxml2-tree.html#xmlAttrPtr">xmlAttrPtr</a> defining the ID</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlGetRefs"/>xmlGetRefs ()</h3><pre class="programlisting"><a href="libxml2-list.html#xmlListPtr">xmlListPtr</a>	xmlGetRefs		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ID)<br/>
+</pre><p>Find the set of references for the supplied ID.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>pointer to the document</td></tr><tr><td><span class="term"><i><tt>ID</tt></i>:</span></td><td>the ID value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>NULL if not found, otherwise node set for the ID.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlIsID"/>xmlIsID ()</h3><pre class="programlisting">int	xmlIsID			(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> elem, <br/>					 <a href="libxml2-tree.html#xmlAttrPtr">xmlAttrPtr</a> attr)<br/>
+</pre><p>Determine whether an <a href="libxml2-SAX.html#attribute">attribute</a> is of type ID. In case we have DTD(s) then this is done if DTD loading has been requested. In the case of HTML documents parsed with the HTML parser, then ID detection is done systematically.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>elem</tt></i>:</span></td><td>the element carrying the <a href="libxml2-SAX.html#attribute">attribute</a></td></tr><tr><td><span class="term"><i><tt>attr</tt></i>:</span></td><td>the <a href="libxml2-SAX.html#attribute">attribute</a></td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 or 1 depending on the lookup result</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlIsMixedElement"/>xmlIsMixedElement ()</h3><pre class="programlisting">int	xmlIsMixedElement		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name)<br/>
+</pre><p>Search in the DtDs whether an element accept Mixed content (or ANY) basically if it is supposed to accept text childs</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the element name</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if no, 1 if yes, and -1 if no element description is available</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlIsRef"/>xmlIsRef ()</h3><pre class="programlisting">int	xmlIsRef			(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> elem, <br/>					 <a href="libxml2-tree.html#xmlAttrPtr">xmlAttrPtr</a> attr)<br/>
+</pre><p>Determine whether an <a href="libxml2-SAX.html#attribute">attribute</a> is of type Ref. In case we have DTD(s) then this is simple, otherwise we use an heuristic: name Ref (upper or lowercase).</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>elem</tt></i>:</span></td><td>the element carrying the <a href="libxml2-SAX.html#attribute">attribute</a></td></tr><tr><td><span class="term"><i><tt>attr</tt></i>:</span></td><td>the <a href="libxml2-SAX.html#attribute">attribute</a></td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 or 1 depending on the lookup result</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlNewDocElementContent"/>xmlNewDocElementContent ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a>	xmlNewDocElementContent	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>						 <a href="libxml2-tree.html#xmlElementContentType">xmlElementContentType</a> type)<br/>
+</pre><p>Allocate an element content structure for the document.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the subelement name or NULL</td></tr><tr><td><span class="term"><i><tt>type</tt></i>:</span></td><td>the type of element content decl</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>NULL if not, otherwise the new element content structure</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlNewElementContent"/>xmlNewElementContent ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a>	xmlNewElementContent	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>						 <a href="libxml2-tree.html#xmlElementContentType">xmlElementContentType</a> type)<br/>
+</pre><p>Allocate an element content structure. Deprecated in favor of <a href="libxml2-valid.html#xmlNewDocElementContent">xmlNewDocElementContent</a></p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the subelement name or NULL</td></tr><tr><td><span class="term"><i><tt>type</tt></i>:</span></td><td>the type of element content decl</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>NULL if not, otherwise the new element content structure</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlNewValidCtxt"/>xmlNewValidCtxt ()</h3><pre class="programlisting"><a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a>	xmlNewValidCtxt		(void)<br/>
+</pre><p>Allocate a validation context structure.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>NULL if not, otherwise the new validation context structure</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlRemoveID"/>xmlRemoveID ()</h3><pre class="programlisting">int	xmlRemoveID			(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlAttrPtr">xmlAttrPtr</a> attr)<br/>
+</pre><p>Remove the given <a href="libxml2-SAX.html#attribute">attribute</a> from the ID table maintained internally.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>attr</tt></i>:</span></td><td>the <a href="libxml2-SAX.html#attribute">attribute</a></td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>-1 if the lookup failed and 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlRemoveRef"/>xmlRemoveRef ()</h3><pre class="programlisting">int	xmlRemoveRef			(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlAttrPtr">xmlAttrPtr</a> attr)<br/>
+</pre><p>Remove the given <a href="libxml2-SAX.html#attribute">attribute</a> from the Ref table maintained internally.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>attr</tt></i>:</span></td><td>the <a href="libxml2-SAX.html#attribute">attribute</a></td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>-1 if the lookup failed and 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSnprintfElementContent"/>xmlSnprintfElementContent ()</h3><pre class="programlisting">void	xmlSnprintfElementContent	(char * buf, <br/>					 int size, <br/>					 <a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a> content, <br/>					 int englob)<br/>
+</pre><p>This will dump the content of the element content definition Intended just for the debug routine</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>buf</tt></i>:</span></td><td>an output buffer</td></tr><tr><td><span class="term"><i><tt>size</tt></i>:</span></td><td>the buffer size</td></tr><tr><td><span class="term"><i><tt>content</tt></i>:</span></td><td>An element table</td></tr><tr><td><span class="term"><i><tt>englob</tt></i>:</span></td><td>1 if one must print the englobing parenthesis, 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSprintfElementContent"/>xmlSprintfElementContent ()</h3><pre class="programlisting">void	xmlSprintfElementContent	(char * buf, <br/>					 <a href="libxml2-tree.html#xmlElementContentPtr">xmlElementContentPtr</a> content, <br/>					 int englob)<br/>
+</pre><p>Deprecated, unsafe, use <a href="libxml2-valid.html#xmlSnprintfElementContent">xmlSnprintfElementContent</a></p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>buf</tt></i>:</span></td><td>an output buffer</td></tr><tr><td><span class="term"><i><tt>content</tt></i>:</span></td><td>An element table</td></tr><tr><td><span class="term"><i><tt>englob</tt></i>:</span></td><td>1 if one must print the englobing parenthesis, 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidBuildContentModel"/>xmlValidBuildContentModel ()</h3><pre class="programlisting">int	xmlValidBuildContentModel	(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlElementPtr">xmlElementPtr</a> elem)<br/>
+</pre><p>(Re)Build the automata associated to the content model of this element</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>a validation context</td></tr><tr><td><span class="term"><i><tt>elem</tt></i>:</span></td><td>an element declaration node</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 in case of success, 0 in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidCtxtNormalizeAttributeValue"/>xmlValidCtxtNormalizeAttributeValue ()</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlValidCtxtNormalizeAttributeValue	(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>							 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>							 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> elem, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value)<br/>
+</pre><p>Does the validation related extra step of the normalization of <a href="libxml2-SAX.html#attribute">attribute</a> values: If the declared value is not CDATA, then the XML processor must further process the normalized <a href="libxml2-SAX.html#attribute">attribute</a> value by discarding any leading and trailing space (#x20) characters, and by replacing sequences of space (#x20) <a href="libxml2-SAX.html#characters">characters</a> by single space (#x20) character. Also check VC: Standalone Document Declaration in P32, and update ctxt-&gt;valid accordingly</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the validation context or NULL</td></tr><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>elem</tt></i>:</span></td><td>the parent</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the <a href="libxml2-SAX.html#attribute">attribute</a> name</td></tr><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>the <a href="libxml2-SAX.html#attribute">attribute</a> value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a new normalized string if normalization is needed, NULL otherwise the caller must free the returned value.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidGetPotentialChildren"/>xmlValidGetPotentialChildren ()</h3><pre class="programlisting">int	xmlValidGetPotentialChildren	(<a href="libxml2-tree.html#xmlElementContent">xmlElementContent</a> * ctree, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** names, <br/>					 int * len, <br/>					 int max)<br/>
+</pre><p>Build/extend a list of potential children allowed by the content tree</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctree</tt></i>:</span></td><td>an element content tree</td></tr><tr><td><span class="term"><i><tt>names</tt></i>:</span></td><td>an array to store the list of child names</td></tr><tr><td><span class="term"><i><tt>len</tt></i>:</span></td><td>a pointer to the number of element in the list</td></tr><tr><td><span class="term"><i><tt>max</tt></i>:</span></td><td>the size of the array</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the number of element in the list, or -1 in case of error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidGetValidElements"/>xmlValidGetValidElements ()</h3><pre class="programlisting">int	xmlValidGetValidElements	(<a href="libxml2-tree.html#xmlNode">xmlNode</a> * prev, <br/>					 <a href="libxml2-tree.html#xmlNode">xmlNode</a> * next, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** names, <br/>					 int max)<br/>
+</pre><p>This function returns the list of authorized children to insert within an existing tree while respecting the validity constraints forced by the Dtd. The insertion point is defined using @prev and @next in the following ways: to insert before 'node': xmlValidGetValidElements(node-&gt;prev, node, ... to insert next 'node': xmlValidGetValidElements(node, node-&gt;next, ... to replace 'node': xmlValidGetValidElements(node-&gt;prev, node-&gt;next, ... to prepend a child to 'node': xmlValidGetValidElements(NULL, node-&gt;childs, to append a child to 'node': xmlValidGetValidElements(node-&gt;last, NULL, ... pointers to the element names are inserted at the beginning of the array and do not need to be freed.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>prev</tt></i>:</span></td><td>an element to insert after</td></tr><tr><td><span class="term"><i><tt>next</tt></i>:</span></td><td>an element to insert next</td></tr><tr><td><span class="term"><i><tt>names</tt></i>:</span></td><td>an array to store the list of child names</td></tr><tr><td><span class="term"><i><tt>max</tt></i>:</span></td><td>the size of the array</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the number of element in the list, or -1 in case of error. If the function returns the value @max the caller is invited to grow the receiving array and retry.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidNormalizeAttributeValue"/>xmlValidNormalizeAttributeValue ()</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlValidNormalizeAttributeValue	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>						 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> elem, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value)<br/>
+</pre><p>Does the validation related extra step of the normalization of <a href="libxml2-SAX.html#attribute">attribute</a> values: If the declared value is not CDATA, then the XML processor must further process the normalized <a href="libxml2-SAX.html#attribute">attribute</a> value by discarding any leading and trailing space (#x20) characters, and by replacing sequences of space (#x20) <a href="libxml2-SAX.html#characters">characters</a> by single space (#x20) character.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>elem</tt></i>:</span></td><td>the parent</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the <a href="libxml2-SAX.html#attribute">attribute</a> name</td></tr><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>the <a href="libxml2-SAX.html#attribute">attribute</a> value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a new normalized string if normalization is needed, NULL otherwise the caller must free the returned value.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidateAttributeDecl"/>xmlValidateAttributeDecl ()</h3><pre class="programlisting">int	xmlValidateAttributeDecl	(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlAttributePtr">xmlAttributePtr</a> attr)<br/>
+</pre><p>Try to validate a single <a href="libxml2-SAX.html#attribute">attribute</a> definition basically it does the following checks as described by the XML-1.0 recommendation: - [ VC: Attribute Default Legal ] - [ VC: Enumeration ] - [ VC: ID Attribute Default ] The ID/IDREF uniqueness and matching are done separately</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the validation context</td></tr><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>a document instance</td></tr><tr><td><span class="term"><i><tt>attr</tt></i>:</span></td><td>an <a href="libxml2-SAX.html#attribute">attribute</a> definition</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if valid or 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidateAttributeValue"/>xmlValidateAttributeValue ()</h3><pre class="programlisting">int	xmlValidateAttributeValue	(<a href="libxml2-tree.html#xmlAttributeType">xmlAttributeType</a> type, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value)<br/>
+</pre><p>Validate that the given <a href="libxml2-SAX.html#attribute">attribute</a> value match the proper production [ VC: ID ] Values of type ID must match the Name production.... [ VC: IDREF ] Values of type IDREF must match the Name production, and values of type IDREFS must match Names ... [ VC: Entity Name ] Values of type ENTITY must match the Name production, values of type ENTITIES must match Names ... [ VC: Name Token ] Values of type NMTOKEN must match the Nmtoken production; values of type NMTOKENS must match Nmtokens.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>type</tt></i>:</span></td><td>an <a href="libxml2-SAX.html#attribute">attribute</a> type</td></tr><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>an <a href="libxml2-SAX.html#attribute">attribute</a> value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if valid or 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidateDocument"/>xmlValidateDocument ()</h3><pre class="programlisting">int	xmlValidateDocument		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc)<br/>
+</pre><p>Try to validate the document instance basically it does the all the checks described by the XML Rec i.e. validates the internal and external subset (if present) and validate the document tree.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the validation context</td></tr><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>a document instance</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if valid or 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidateDocumentFinal"/>xmlValidateDocumentFinal ()</h3><pre class="programlisting">int	xmlValidateDocumentFinal	(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc)<br/>
+</pre><p>Does the final step for the document validation once all the incremental validation steps have been completed basically it does the following checks described by the XML Rec Check all the IDREF/IDREFS attributes definition for validity</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the validation context</td></tr><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>a document instance</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if valid or 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidateDtd"/>xmlValidateDtd ()</h3><pre class="programlisting">int	xmlValidateDtd			(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlDtdPtr">xmlDtdPtr</a> dtd)<br/>
+</pre><p>Try to validate the document against the dtd instance Basically it does check all the definitions in the DtD. Note the the internal subset (if present) is de-coupled (i.e. not used), which could give problems if ID or IDREF is present.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the validation context</td></tr><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>a document instance</td></tr><tr><td><span class="term"><i><tt>dtd</tt></i>:</span></td><td>a dtd instance</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if valid or 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidateDtdFinal"/>xmlValidateDtdFinal ()</h3><pre class="programlisting">int	xmlValidateDtdFinal		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc)<br/>
+</pre><p>Does the final step for the dtds validation once all the subsets have been parsed basically it does the following checks described by the XML Rec - check that ENTITY and ENTITIES type attributes default or possible values matches one of the defined entities. - check that NOTATION type attributes default or possible values matches one of the defined notations.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the validation context</td></tr><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>a document instance</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if valid or 0 if invalid and -1 if not well-formed</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidateElement"/>xmlValidateElement ()</h3><pre class="programlisting">int	xmlValidateElement		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> elem)<br/>
+</pre><p>Try to validate the subtree under an element</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the validation context</td></tr><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>a document instance</td></tr><tr><td><span class="term"><i><tt>elem</tt></i>:</span></td><td>an element instance</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if valid or 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidateElementDecl"/>xmlValidateElementDecl ()</h3><pre class="programlisting">int	xmlValidateElementDecl		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlElementPtr">xmlElementPtr</a> elem)<br/>
+</pre><p>Try to validate a single element definition basically it does the following checks as described by the XML-1.0 recommendation: - [ VC: One ID per Element Type ] - [ VC: No Duplicate Types ] - [ VC: Unique Element Type Declaration ]</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the validation context</td></tr><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>a document instance</td></tr><tr><td><span class="term"><i><tt>elem</tt></i>:</span></td><td>an element definition</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if valid or 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidateNameValue"/>xmlValidateNameValue ()</h3><pre class="programlisting">int	xmlValidateNameValue		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value)<br/>
+</pre><p>Validate that the given value match Name production</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>an Name value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if valid or 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidateNamesValue"/>xmlValidateNamesValue ()</h3><pre class="programlisting">int	xmlValidateNamesValue		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value)<br/>
+</pre><p>Validate that the given value match Names production</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>an Names value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if valid or 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidateNmtokenValue"/>xmlValidateNmtokenValue ()</h3><pre class="programlisting">int	xmlValidateNmtokenValue		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value)<br/>
+</pre><p>Validate that the given value match Nmtoken production [ VC: Name Token ]</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>an Nmtoken value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if valid or 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidateNmtokensValue"/>xmlValidateNmtokensValue ()</h3><pre class="programlisting">int	xmlValidateNmtokensValue	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value)<br/>
+</pre><p>Validate that the given value match Nmtokens production [ VC: Name Token ]</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>an Nmtokens value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if valid or 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidateNotationDecl"/>xmlValidateNotationDecl ()</h3><pre class="programlisting">int	xmlValidateNotationDecl		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNotationPtr">xmlNotationPtr</a> nota)<br/>
+</pre><p>Try to validate a single notation definition basically it does the following checks as described by the XML-1.0 recommendation: - it seems that no validity constraint exists on notation declarations But this function get called anyway ...</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the validation context</td></tr><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>a document instance</td></tr><tr><td><span class="term"><i><tt>nota</tt></i>:</span></td><td>a notation definition</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if valid or 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidateNotationUse"/>xmlValidateNotationUse ()</h3><pre class="programlisting">int	xmlValidateNotationUse		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * notationName)<br/>
+</pre><p>Validate that the given name match a notation declaration. - [ VC: Notation Declared ]</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the validation context</td></tr><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>notationName</tt></i>:</span></td><td>the notation name to check</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if valid or 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidateOneAttribute"/>xmlValidateOneAttribute ()</h3><pre class="programlisting">int	xmlValidateOneAttribute		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> elem, <br/>					 <a href="libxml2-tree.html#xmlAttrPtr">xmlAttrPtr</a> attr, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value)<br/>
+</pre><p>Try to validate a single <a href="libxml2-SAX.html#attribute">attribute</a> for an element basically it does the following checks as described by the XML-1.0 recommendation: - [ VC: Attribute Value Type ] - [ VC: Fixed Attribute Default ] - [ VC: Entity Name ] - [ VC: Name Token ] - [ VC: ID ] - [ VC: IDREF ] - [ VC: Entity Name ] - [ VC: Notation Attributes ] The ID/IDREF uniqueness and matching are done separately</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the validation context</td></tr><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>a document instance</td></tr><tr><td><span class="term"><i><tt>elem</tt></i>:</span></td><td>an element instance</td></tr><tr><td><span class="term"><i><tt>attr</tt></i>:</span></td><td>an <a href="libxml2-SAX.html#attribute">attribute</a> instance</td></tr><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>the <a href="libxml2-SAX.html#attribute">attribute</a> value (without entities processing)</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if valid or 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidateOneElement"/>xmlValidateOneElement ()</h3><pre class="programlisting">int	xmlValidateOneElement		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> elem)<br/>
+</pre><p>Try to validate a single element and it's attributes, basically it does the following checks as described by the XML-1.0 recommendation: - [ VC: Element Valid ] - [ VC: Required Attribute ] Then call xmlValidateOneAttribute() for each <a href="libxml2-SAX.html#attribute">attribute</a> present. The ID/IDREF checkings are done separately</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the validation context</td></tr><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>a document instance</td></tr><tr><td><span class="term"><i><tt>elem</tt></i>:</span></td><td>an element instance</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if valid or 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidateOneNamespace"/>xmlValidateOneNamespace ()</h3><pre class="programlisting">int	xmlValidateOneNamespace		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> elem, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * prefix, <br/>					 <a href="libxml2-tree.html#xmlNsPtr">xmlNsPtr</a> ns, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value)<br/>
+</pre><p>Try to validate a single namespace declaration for an element basically it does the following checks as described by the XML-1.0 recommendation: - [ VC: Attribute Value Type ] - [ VC: Fixed Attribute Default ] - [ VC: Entity Name ] - [ VC: Name Token ] - [ VC: ID ] - [ VC: IDREF ] - [ VC: Entity Name ] - [ VC: Notation Attributes ] The ID/IDREF uniqueness and matching are done separately</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the validation context</td></tr><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>a document instance</td></tr><tr><td><span class="term"><i><tt>elem</tt></i>:</span></td><td>an element instance</td></tr><tr><td><span class="term"><i><tt>prefix</tt></i>:</span></td><td>the namespace prefix</td></tr><tr><td><span class="term"><i><tt>ns</tt></i>:</span></td><td>an namespace declaration instance</td></tr><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>the <a href="libxml2-SAX.html#attribute">attribute</a> value (without entities processing)</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if valid or 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidatePopElement"/>xmlValidatePopElement ()</h3><pre class="programlisting">int	xmlValidatePopElement		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> elem, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * qname)<br/>
+</pre><p>Pop the element end from the validation stack.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the validation context</td></tr><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>a document instance</td></tr><tr><td><span class="term"><i><tt>elem</tt></i>:</span></td><td>an element instance</td></tr><tr><td><span class="term"><i><tt>qname</tt></i>:</span></td><td>the qualified name as appearing in the serialization</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if no validation problem was found or 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidatePushCData"/>xmlValidatePushCData ()</h3><pre class="programlisting">int	xmlValidatePushCData		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * data, <br/>					 int len)<br/>
+</pre><p>check the CData parsed for validation in the current stack</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the validation context</td></tr><tr><td><span class="term"><i><tt>data</tt></i>:</span></td><td>some character data read</td></tr><tr><td><span class="term"><i><tt>len</tt></i>:</span></td><td>the length of the data</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if no validation problem was found or 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidatePushElement"/>xmlValidatePushElement ()</h3><pre class="programlisting">int	xmlValidatePushElement		(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> elem, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * qname)<br/>
+</pre><p>Push a new element start on the validation stack.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the validation context</td></tr><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>a document instance</td></tr><tr><td><span class="term"><i><tt>elem</tt></i>:</span></td><td>an element instance</td></tr><tr><td><span class="term"><i><tt>qname</tt></i>:</span></td><td>the qualified name as appearing in the serialization</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if no validation problem was found or 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlValidateRoot"/>xmlValidateRoot ()</h3><pre class="programlisting">int	xmlValidateRoot			(<a href="libxml2-valid.html#xmlValidCtxtPtr">xmlValidCtxtPtr</a> ctxt, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc)<br/>
+</pre><p>Try to validate a the root element basically it does the following check as described by the XML-1.0 recommendation: - [ VC: Root Element Type ] it doesn't try to recurse or apply other check to the element</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the validation context</td></tr><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>a document instance</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if valid or 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

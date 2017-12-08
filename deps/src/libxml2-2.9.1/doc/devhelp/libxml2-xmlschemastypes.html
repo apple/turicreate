@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>xmlschemastypes: implementation of XML Schema Datatypes</title>
+    <meta name="generator" content="Libxml2 devhelp stylesheet"/>
+    <link rel="start" href="index.html" title="libxml2 Reference Manual"/>
+    <link rel="up" href="general.html" title="API"/>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+    <link rel="chapter" href="general.html" title="API"/>
+  </head>
+  <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+    <table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+      <tr valign="middle">
+        <td>
+          <a accesskey="p" href="libxml2-xmlschemas.html">
+            <img src="left.png" width="24" height="24" border="0" alt="Prev"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="u" href="general.html">
+            <img src="up.png" width="24" height="24" border="0" alt="Up"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="h" href="index.html">
+            <img src="home.png" width="24" height="24" border="0" alt="Home"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="n" href="libxml2-xmlstring.html">
+            <img src="right.png" width="24" height="24" border="0" alt="Next"/>
+          </a>
+        </td>
+        <th width="100%" align="center">libxml2 Reference Manual</th>
+      </tr>
+    </table>
+    <h2>
+      <span class="refentrytitle">xmlschemastypes</span>
+    </h2>
+    <p>xmlschemastypes - implementation of XML Schema Datatypes</p>
+    <p>module providing the XML Schema Datatypes implementation both definition and validity checking </p>
+    <p>Author(s): Daniel Veillard </p>
+    <div class="refsynopsisdiv">
+      <h2>Synopsis</h2>
+      <pre class="synopsis">typedef enum <a href="#xmlSchemaWhitespaceValueType">xmlSchemaWhitespaceValueType</a>;
+int	<a href="#xmlSchemaValPredefTypeNode">xmlSchemaValPredefTypeNode</a>	(<a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a> type, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> * val, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node);
+int	<a href="#xmlSchemaGetCanonValueWhtsp">xmlSchemaGetCanonValueWhtsp</a>	(<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> val, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** retValue, <br/>					 <a href="libxml2-xmlschemastypes.html#xmlSchemaWhitespaceValueType">xmlSchemaWhitespaceValueType</a> ws);
+int	<a href="#xmlSchemaValidateLengthFacetWhtsp">xmlSchemaValidateLengthFacetWhtsp</a>	(<a href="libxml2-schemasInternals.html#xmlSchemaFacetPtr">xmlSchemaFacetPtr</a> facet, <br/>						 <a href="libxml2-schemasInternals.html#xmlSchemaValType">xmlSchemaValType</a> valType, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value, <br/>						 <a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> val, <br/>						 unsigned long * length, <br/>						 <a href="libxml2-xmlschemastypes.html#xmlSchemaWhitespaceValueType">xmlSchemaWhitespaceValueType</a> ws);
+int	<a href="#xmlSchemaIsBuiltInTypeFacet">xmlSchemaIsBuiltInTypeFacet</a>	(<a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a> type, <br/>					 int facetType);
+int	<a href="#xmlSchemaGetCanonValue">xmlSchemaGetCanonValue</a>		(<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> val, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** retValue);
+<a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a>	<a href="#xmlSchemaGetBuiltInListSimpleTypeItemType">xmlSchemaGetBuiltInListSimpleTypeItemType</a>	(<a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a> type);
+int	<a href="#xmlSchemaCompareValuesWhtsp">xmlSchemaCompareValuesWhtsp</a>	(<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> x, <br/>					 <a href="libxml2-xmlschemastypes.html#xmlSchemaWhitespaceValueType">xmlSchemaWhitespaceValueType</a> xws, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> y, <br/>					 <a href="libxml2-xmlschemastypes.html#xmlSchemaWhitespaceValueType">xmlSchemaWhitespaceValueType</a> yws);
+int	<a href="#xmlSchemaValueGetAsBoolean">xmlSchemaValueGetAsBoolean</a>	(<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> val);
+<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlSchemaCollapseString">xmlSchemaCollapseString</a>	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value);
+int	<a href="#xmlSchemaValPredefTypeNodeNoNorm">xmlSchemaValPredefTypeNodeNoNorm</a>	(<a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a> type, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value, <br/>						 <a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> * val, <br/>						 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node);
+int	<a href="#xmlSchemaValidateFacet">xmlSchemaValidateFacet</a>		(<a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a> base, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaFacetPtr">xmlSchemaFacetPtr</a> facet, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> val);
+<a href="libxml2-schemasInternals.html#xmlSchemaFacetPtr">xmlSchemaFacetPtr</a>	<a href="#xmlSchemaNewFacet">xmlSchemaNewFacet</a>	(void);
+int	<a href="#xmlSchemaValueAppend">xmlSchemaValueAppend</a>		(<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> prev, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> cur);
+int	<a href="#xmlSchemaCompareValues">xmlSchemaCompareValues</a>		(<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> x, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> y);
+int	<a href="#xmlSchemaValidateLengthFacet">xmlSchemaValidateLengthFacet</a>	(<a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a> type, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaFacetPtr">xmlSchemaFacetPtr</a> facet, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> val, <br/>					 unsigned long * length);
+<a href="libxml2-schemasInternals.html#xmlSchemaValType">xmlSchemaValType</a>	<a href="#xmlSchemaGetValType">xmlSchemaGetValType</a>	(<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> val);
+<a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a>	<a href="#xmlSchemaGetPredefinedType">xmlSchemaGetPredefinedType</a>	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ns);
+int	<a href="#xmlSchemaValidatePredefinedType">xmlSchemaValidatePredefinedType</a>	(<a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a> type, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> * val);
+void	<a href="#xmlSchemaFreeFacet">xmlSchemaFreeFacet</a>		(<a href="libxml2-schemasInternals.html#xmlSchemaFacetPtr">xmlSchemaFacetPtr</a> facet);
+int	<a href="#xmlSchemaValidateListSimpleTypeFacet">xmlSchemaValidateListSimpleTypeFacet</a>	(<a href="libxml2-schemasInternals.html#xmlSchemaFacetPtr">xmlSchemaFacetPtr</a> facet, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value, <br/>						 unsigned long actualLen, <br/>						 unsigned long * expectedLen);
+unsigned long	<a href="#xmlSchemaGetFacetValueAsULong">xmlSchemaGetFacetValueAsULong</a>	(<a href="libxml2-schemasInternals.html#xmlSchemaFacetPtr">xmlSchemaFacetPtr</a> facet);
+void	<a href="#xmlSchemaFreeValue">xmlSchemaFreeValue</a>		(<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> value);
+<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a>	<a href="#xmlSchemaValueGetNext">xmlSchemaValueGetNext</a>	(<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> cur);
+const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlSchemaValueGetAsString">xmlSchemaValueGetAsString</a>	(<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> val);
+<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a>	<a href="#xmlSchemaCopyValue">xmlSchemaCopyValue</a>	(<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> val);
+<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a>	<a href="#xmlSchemaNewNOTATIONValue">xmlSchemaNewNOTATIONValue</a>	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ns);
+<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a>	<a href="#xmlSchemaNewQNameValue">xmlSchemaNewQNameValue</a>	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * namespaceName, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * localName);
+void	<a href="#xmlSchemaCleanupTypes">xmlSchemaCleanupTypes</a>		(void);
+<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlSchemaWhiteSpaceReplace">xmlSchemaWhiteSpaceReplace</a>	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value);
+<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a>	<a href="#xmlSchemaNewStringValue">xmlSchemaNewStringValue</a>	(<a href="libxml2-schemasInternals.html#xmlSchemaValType">xmlSchemaValType</a> type, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value);
+<a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a>	<a href="#xmlSchemaGetBuiltInType">xmlSchemaGetBuiltInType</a>	(<a href="libxml2-schemasInternals.html#xmlSchemaValType">xmlSchemaValType</a> type);
+void	<a href="#xmlSchemaInitTypes">xmlSchemaInitTypes</a>		(void);
+int	<a href="#xmlSchemaValidateFacetWhtsp">xmlSchemaValidateFacetWhtsp</a>	(<a href="libxml2-schemasInternals.html#xmlSchemaFacetPtr">xmlSchemaFacetPtr</a> facet, <br/>					 <a href="libxml2-xmlschemastypes.html#xmlSchemaWhitespaceValueType">xmlSchemaWhitespaceValueType</a> fws, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaValType">xmlSchemaValType</a> valType, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> val, <br/>					 <a href="libxml2-xmlschemastypes.html#xmlSchemaWhitespaceValueType">xmlSchemaWhitespaceValueType</a> ws);
+int	<a href="#xmlSchemaCheckFacet">xmlSchemaCheckFacet</a>		(<a href="libxml2-schemasInternals.html#xmlSchemaFacetPtr">xmlSchemaFacetPtr</a> facet, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a> typeDecl, <br/>					 <a href="libxml2-xmlschemas.html#xmlSchemaParserCtxtPtr">xmlSchemaParserCtxtPtr</a> pctxt, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name);
+</pre>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Description</h2>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Details</h2>
+      <div class="refsect2" lang="en">
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaWhitespaceValueType">Enum </a>xmlSchemaWhitespaceValueType</h3><pre class="programlisting">enum <a href="#xmlSchemaWhitespaceValueType">xmlSchemaWhitespaceValueType</a> {
+    <a name="XML_SCHEMA_WHITESPACE_UNKNOWN">XML_SCHEMA_WHITESPACE_UNKNOWN</a> = 0
+    <a name="XML_SCHEMA_WHITESPACE_PRESERVE">XML_SCHEMA_WHITESPACE_PRESERVE</a> = 1
+    <a name="XML_SCHEMA_WHITESPACE_REPLACE">XML_SCHEMA_WHITESPACE_REPLACE</a> = 2
+    <a name="XML_SCHEMA_WHITESPACE_COLLAPSE">XML_SCHEMA_WHITESPACE_COLLAPSE</a> = 3
+};
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaCheckFacet"/>xmlSchemaCheckFacet ()</h3><pre class="programlisting">int	xmlSchemaCheckFacet		(<a href="libxml2-schemasInternals.html#xmlSchemaFacetPtr">xmlSchemaFacetPtr</a> facet, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a> typeDecl, <br/>					 <a href="libxml2-xmlschemas.html#xmlSchemaParserCtxtPtr">xmlSchemaParserCtxtPtr</a> pctxt, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name)<br/>
+</pre><p>Checks and computes the values of facets.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>facet</tt></i>:</span></td><td>the facet</td></tr><tr><td><span class="term"><i><tt>typeDecl</tt></i>:</span></td><td>the schema type definition</td></tr><tr><td><span class="term"><i><tt>pctxt</tt></i>:</span></td><td>the schema parser context or NULL</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the optional name of the type</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if valid, a positive error code if not valid and -1 in case of an internal or API error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaCleanupTypes"/>xmlSchemaCleanupTypes ()</h3><pre class="programlisting">void	xmlSchemaCleanupTypes		(void)<br/>
+</pre><p>Cleanup the default XML Schemas type library</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaCollapseString"/>xmlSchemaCollapseString ()</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlSchemaCollapseString	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value)<br/>
+</pre><p>Removes and normalize white spaces in the string</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>a value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the new string or NULL if no change was required.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaCompareValues"/>xmlSchemaCompareValues ()</h3><pre class="programlisting">int	xmlSchemaCompareValues		(<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> x, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> y)<br/>
+</pre><p>Compare 2 values</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>x</tt></i>:</span></td><td>a first value</td></tr><tr><td><span class="term"><i><tt>y</tt></i>:</span></td><td>a second value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>-1 if x &lt; y, 0 if x == y, 1 if x &gt; y, 2 if x &lt;&gt; y, and -2 in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaCompareValuesWhtsp"/>xmlSchemaCompareValuesWhtsp ()</h3><pre class="programlisting">int	xmlSchemaCompareValuesWhtsp	(<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> x, <br/>					 <a href="libxml2-xmlschemastypes.html#xmlSchemaWhitespaceValueType">xmlSchemaWhitespaceValueType</a> xws, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> y, <br/>					 <a href="libxml2-xmlschemastypes.html#xmlSchemaWhitespaceValueType">xmlSchemaWhitespaceValueType</a> yws)<br/>
+</pre><p>Compare 2 values</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>x</tt></i>:</span></td><td>a first value</td></tr><tr><td><span class="term"><i><tt>xws</tt></i>:</span></td><td>the whitespace value of x</td></tr><tr><td><span class="term"><i><tt>y</tt></i>:</span></td><td>a second value</td></tr><tr><td><span class="term"><i><tt>yws</tt></i>:</span></td><td>the whitespace value of y</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>-1 if x &lt; y, 0 if x == y, 1 if x &gt; y, 2 if x &lt;&gt; y, and -2 in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaCopyValue"/>xmlSchemaCopyValue ()</h3><pre class="programlisting"><a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a>	xmlSchemaCopyValue	(<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> val)<br/>
+</pre><p>Copies the precomputed value. This duplicates any string within.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>the precomputed value to be copied</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the copy or NULL if a copy for a data-type is not implemented.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaFreeFacet"/>xmlSchemaFreeFacet ()</h3><pre class="programlisting">void	xmlSchemaFreeFacet		(<a href="libxml2-schemasInternals.html#xmlSchemaFacetPtr">xmlSchemaFacetPtr</a> facet)<br/>
+</pre><p>Deallocate a Schema Facet structure.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>facet</tt></i>:</span></td><td>a schema facet structure</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaFreeValue"/>xmlSchemaFreeValue ()</h3><pre class="programlisting">void	xmlSchemaFreeValue		(<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> value)<br/>
+</pre><p>Cleanup the default XML Schemas type library</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>the value to free</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaGetBuiltInListSimpleTypeItemType"/>xmlSchemaGetBuiltInListSimpleTypeItemType ()</h3><pre class="programlisting"><a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a>	xmlSchemaGetBuiltInListSimpleTypeItemType	(<a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a> type)<br/>
+</pre><p>Lookup function</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>type</tt></i>:</span></td><td>the built-in simple type.</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the item type of @type as defined by the built-in datatype hierarchy of XML Schema Part 2: Datatypes, or NULL in case of an error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaGetBuiltInType"/>xmlSchemaGetBuiltInType ()</h3><pre class="programlisting"><a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a>	xmlSchemaGetBuiltInType	(<a href="libxml2-schemasInternals.html#xmlSchemaValType">xmlSchemaValType</a> type)<br/>
+</pre><p>Gives you the type struct for a built-in type by its type id.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>type</tt></i>:</span></td><td>the type of the built in type</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the type if found, NULL otherwise.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaGetCanonValue"/>xmlSchemaGetCanonValue ()</h3><pre class="programlisting">int	xmlSchemaGetCanonValue		(<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> val, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** retValue)<br/>
+</pre><p>Get a the cononical lexical representation of the value. The caller has to FREE the returned retValue. WARNING: Some value types are not supported yet, resulting in a @retValue of "???". TODO: XML Schema 1.0 does not define canonical representations for: duration, gYearMonth, gYear, gMonthDay, gMonth, gDay, anyURI, QName, NOTATION. This will be fixed in XML Schema 1.1.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>the precomputed value</td></tr><tr><td><span class="term"><i><tt>retValue</tt></i>:</span></td><td>the returned value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if the value could be built, 1 if the value type is not supported yet and -1 in case of API errors.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaGetCanonValueWhtsp"/>xmlSchemaGetCanonValueWhtsp ()</h3><pre class="programlisting">int	xmlSchemaGetCanonValueWhtsp	(<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> val, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** retValue, <br/>					 <a href="libxml2-xmlschemastypes.html#xmlSchemaWhitespaceValueType">xmlSchemaWhitespaceValueType</a> ws)<br/>
+</pre><p>Get a the cononical representation of the value. The caller has to free the returned @retValue.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>the precomputed value</td></tr><tr><td><span class="term"><i><tt>retValue</tt></i>:</span></td><td>the returned value</td></tr><tr><td><span class="term"><i><tt>ws</tt></i>:</span></td><td>the whitespace type of the value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if the value could be built, 1 if the value type is not supported yet and -1 in case of API errors.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaGetFacetValueAsULong"/>xmlSchemaGetFacetValueAsULong ()</h3><pre class="programlisting">unsigned long	xmlSchemaGetFacetValueAsULong	(<a href="libxml2-schemasInternals.html#xmlSchemaFacetPtr">xmlSchemaFacetPtr</a> facet)<br/>
+</pre><p>Extract the value of a facet</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>facet</tt></i>:</span></td><td>an schemas type facet</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the value as a long</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaGetPredefinedType"/>xmlSchemaGetPredefinedType ()</h3><pre class="programlisting"><a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a>	xmlSchemaGetPredefinedType	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ns)<br/>
+</pre><p>Lookup a type in the default XML Schemas type library</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the type name</td></tr><tr><td><span class="term"><i><tt>ns</tt></i>:</span></td><td>the URI of the namespace usually "http://www.w3.org/2001/XMLSchema"</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the type if found, NULL otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaGetValType"/>xmlSchemaGetValType ()</h3><pre class="programlisting"><a href="libxml2-schemasInternals.html#xmlSchemaValType">xmlSchemaValType</a>	xmlSchemaGetValType	(<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> val)<br/>
+</pre><p>Accessor for the type of a value</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>a schemas value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the <a href="libxml2-schemasInternals.html#xmlSchemaValType">xmlSchemaValType</a> of the value</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaInitTypes"/>xmlSchemaInitTypes ()</h3><pre class="programlisting">void	xmlSchemaInitTypes		(void)<br/>
+</pre><p>Initialize the default XML Schemas type library</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaIsBuiltInTypeFacet"/>xmlSchemaIsBuiltInTypeFacet ()</h3><pre class="programlisting">int	xmlSchemaIsBuiltInTypeFacet	(<a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a> type, <br/>					 int facetType)<br/>
+</pre><p>Evaluates if a specific facet can be used in conjunction with a type.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>type</tt></i>:</span></td><td>the built-in type</td></tr><tr><td><span class="term"><i><tt>facetType</tt></i>:</span></td><td>the facet type</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if the facet can be used with the given built-in type, 0 otherwise and -1 in case the type is not a built-in type.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaNewFacet"/>xmlSchemaNewFacet ()</h3><pre class="programlisting"><a href="libxml2-schemasInternals.html#xmlSchemaFacetPtr">xmlSchemaFacetPtr</a>	xmlSchemaNewFacet	(void)<br/>
+</pre><p>Allocate a new Facet structure.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the newly allocated structure or NULL in case or error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaNewNOTATIONValue"/>xmlSchemaNewNOTATIONValue ()</h3><pre class="programlisting"><a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a>	xmlSchemaNewNOTATIONValue	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ns)<br/>
+</pre><p>Allocate a new NOTATION value. The given values are consumed and freed with the struct.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the notation name</td></tr><tr><td><span class="term"><i><tt>ns</tt></i>:</span></td><td>the notation namespace name or NULL</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a pointer to the new value or NULL in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaNewQNameValue"/>xmlSchemaNewQNameValue ()</h3><pre class="programlisting"><a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a>	xmlSchemaNewQNameValue	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * namespaceName, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * localName)<br/>
+</pre><p>Allocate a new QName value. The given values are consumed and freed with the struct.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>namespaceName</tt></i>:</span></td><td>the namespace name</td></tr><tr><td><span class="term"><i><tt>localName</tt></i>:</span></td><td>the local name</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a pointer to the new value or NULL in case of an error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaNewStringValue"/>xmlSchemaNewStringValue ()</h3><pre class="programlisting"><a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a>	xmlSchemaNewStringValue	(<a href="libxml2-schemasInternals.html#xmlSchemaValType">xmlSchemaValType</a> type, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value)<br/>
+</pre><p>Allocate a new simple type value. The type can be of XML_SCHEMAS_STRING. WARNING: This one is intended to be expanded for other string based types. We need this for anySimpleType as well. The given value is consumed and freed with the struct.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>type</tt></i>:</span></td><td>the value type</td></tr><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>the value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a pointer to the new value or NULL in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaValPredefTypeNode"/>xmlSchemaValPredefTypeNode ()</h3><pre class="programlisting">int	xmlSchemaValPredefTypeNode	(<a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a> type, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> * val, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node)<br/>
+</pre><p>Check that a value conforms to the lexical space of the predefined type. if true a value is computed and returned in @val.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>type</tt></i>:</span></td><td>the predefined type</td></tr><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>the value to check</td></tr><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>the return computed value</td></tr><tr><td><span class="term"><i><tt>node</tt></i>:</span></td><td>the node containing the value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if this validates, a positive error code number otherwise and -1 in case of internal or API error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaValPredefTypeNodeNoNorm"/>xmlSchemaValPredefTypeNodeNoNorm ()</h3><pre class="programlisting">int	xmlSchemaValPredefTypeNodeNoNorm	(<a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a> type, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value, <br/>						 <a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> * val, <br/>						 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node)<br/>
+</pre><p>Check that a value conforms to the lexical space of the predefined type. if true a value is computed and returned in @val. This one does apply any normalization to the value.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>type</tt></i>:</span></td><td>the predefined type</td></tr><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>the value to check</td></tr><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>the return computed value</td></tr><tr><td><span class="term"><i><tt>node</tt></i>:</span></td><td>the node containing the value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if this validates, a positive error code number otherwise and -1 in case of internal or API error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaValidateFacet"/>xmlSchemaValidateFacet ()</h3><pre class="programlisting">int	xmlSchemaValidateFacet		(<a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a> base, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaFacetPtr">xmlSchemaFacetPtr</a> facet, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> val)<br/>
+</pre><p>Check a value against a facet condition</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>base</tt></i>:</span></td><td>the base type</td></tr><tr><td><span class="term"><i><tt>facet</tt></i>:</span></td><td>the facet to check</td></tr><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>the lexical repr of the value to validate</td></tr><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>the precomputed value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if the element is schemas valid, a positive error code number otherwise and -1 in case of internal or API error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaValidateFacetWhtsp"/>xmlSchemaValidateFacetWhtsp ()</h3><pre class="programlisting">int	xmlSchemaValidateFacetWhtsp	(<a href="libxml2-schemasInternals.html#xmlSchemaFacetPtr">xmlSchemaFacetPtr</a> facet, <br/>					 <a href="libxml2-xmlschemastypes.html#xmlSchemaWhitespaceValueType">xmlSchemaWhitespaceValueType</a> fws, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaValType">xmlSchemaValType</a> valType, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> val, <br/>					 <a href="libxml2-xmlschemastypes.html#xmlSchemaWhitespaceValueType">xmlSchemaWhitespaceValueType</a> ws)<br/>
+</pre><p>Check a value against a facet condition. This takes value normalization according to the specified whitespace types into account. Note that @value needs to be the *normalized* value if the facet is of type "pattern".</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>facet</tt></i>:</span></td><td>the facet to check</td></tr><tr><td><span class="term"><i><tt>fws</tt></i>:</span></td><td>the whitespace type of the facet's value</td></tr><tr><td><span class="term"><i><tt>valType</tt></i>:</span></td><td>the built-in type of the value</td></tr><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>the lexical (or normalized for pattern) repr of the value to validate</td></tr><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>the precomputed value</td></tr><tr><td><span class="term"><i><tt>ws</tt></i>:</span></td><td>the whitespace type of the value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if the element is schemas valid, a positive error code number otherwise and -1 in case of internal or API error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaValidateLengthFacet"/>xmlSchemaValidateLengthFacet ()</h3><pre class="programlisting">int	xmlSchemaValidateLengthFacet	(<a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a> type, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaFacetPtr">xmlSchemaFacetPtr</a> facet, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> val, <br/>					 unsigned long * length)<br/>
+</pre><p>Checka a value against a "length", "minLength" and "maxLength" facet; sets @length to the computed length of @value.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>type</tt></i>:</span></td><td>the built-in type</td></tr><tr><td><span class="term"><i><tt>facet</tt></i>:</span></td><td>the facet to check</td></tr><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>the lexical repr. of the value to be validated</td></tr><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>the precomputed value</td></tr><tr><td><span class="term"><i><tt>length</tt></i>:</span></td><td>the actual length of the value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if the value is valid, a positive error code otherwise and -1 in case of an internal or API error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaValidateLengthFacetWhtsp"/>xmlSchemaValidateLengthFacetWhtsp ()</h3><pre class="programlisting">int	xmlSchemaValidateLengthFacetWhtsp	(<a href="libxml2-schemasInternals.html#xmlSchemaFacetPtr">xmlSchemaFacetPtr</a> facet, <br/>						 <a href="libxml2-schemasInternals.html#xmlSchemaValType">xmlSchemaValType</a> valType, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value, <br/>						 <a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> val, <br/>						 unsigned long * length, <br/>						 <a href="libxml2-xmlschemastypes.html#xmlSchemaWhitespaceValueType">xmlSchemaWhitespaceValueType</a> ws)<br/>
+</pre><p>Checka a value against a "length", "minLength" and "maxLength" facet; sets @length to the computed length of @value.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>facet</tt></i>:</span></td><td>the facet to check</td></tr><tr><td><span class="term"><i><tt>valType</tt></i>:</span></td><td>the built-in type</td></tr><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>the lexical repr. of the value to be validated</td></tr><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>the precomputed value</td></tr><tr><td><span class="term"><i><tt>length</tt></i>:</span></td><td>the actual length of the value</td></tr><tr><td><span class="term"><i><tt>ws</tt></i>:</span></td><td>the whitespace type of the value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if the value is valid, a positive error code otherwise and -1 in case of an internal or API error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaValidateListSimpleTypeFacet"/>xmlSchemaValidateListSimpleTypeFacet ()</h3><pre class="programlisting">int	xmlSchemaValidateListSimpleTypeFacet	(<a href="libxml2-schemasInternals.html#xmlSchemaFacetPtr">xmlSchemaFacetPtr</a> facet, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value, <br/>						 unsigned long actualLen, <br/>						 unsigned long * expectedLen)<br/>
+</pre><p>Checks the value of a list simple type against a facet.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>facet</tt></i>:</span></td><td>the facet to check</td></tr><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>the lexical repr of the value to validate</td></tr><tr><td><span class="term"><i><tt>actualLen</tt></i>:</span></td><td>the number of list items</td></tr><tr><td><span class="term"><i><tt>expectedLen</tt></i>:</span></td><td>the resulting expected number of list items</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if the value is valid, a positive error code number otherwise and -1 in case of an internal error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaValidatePredefinedType"/>xmlSchemaValidatePredefinedType ()</h3><pre class="programlisting">int	xmlSchemaValidatePredefinedType	(<a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a> type, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> * val)<br/>
+</pre><p>Check that a value conforms to the lexical space of the predefined type. if true a value is computed and returned in @val.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>type</tt></i>:</span></td><td>the predefined type</td></tr><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>the value to check</td></tr><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>the return computed value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if this validates, a positive error code number otherwise and -1 in case of internal or API error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaValueAppend"/>xmlSchemaValueAppend ()</h3><pre class="programlisting">int	xmlSchemaValueAppend		(<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> prev, <br/>					 <a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> cur)<br/>
+</pre><p>Appends a next sibling to a list of computed values.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>prev</tt></i>:</span></td><td>the value</td></tr><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the value to be appended</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if succeeded and -1 on API errors.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaValueGetAsBoolean"/>xmlSchemaValueGetAsBoolean ()</h3><pre class="programlisting">int	xmlSchemaValueGetAsBoolean	(<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> val)<br/>
+</pre><p>Accessor for the boolean value of a computed value.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>the value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if true and 0 if false, or in case of an error. Hmm.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaValueGetAsString"/>xmlSchemaValueGetAsString ()</h3><pre class="programlisting">const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlSchemaValueGetAsString	(<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> val)<br/>
+</pre><p>Accessor for the string value of a computed value.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>the value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the string value or NULL if there was none, or on API errors.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaValueGetNext"/>xmlSchemaValueGetNext ()</h3><pre class="programlisting"><a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a>	xmlSchemaValueGetNext	(<a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a> cur)<br/>
+</pre><p>Accessor for the next sibling of a list of computed values.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the next value or NULL if there was none, or on API errors.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaWhiteSpaceReplace"/>xmlSchemaWhiteSpaceReplace ()</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlSchemaWhiteSpaceReplace	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * value)<br/>
+</pre><p>Replaces 0xd, 0x9 and 0xa with a space.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>a value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the new string or NULL if no change was required.</td></tr></tbody></table></div></div>
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

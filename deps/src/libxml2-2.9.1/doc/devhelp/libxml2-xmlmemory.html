@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>xmlmemory: interface for the memory allocator</title>
+    <meta name="generator" content="Libxml2 devhelp stylesheet"/>
+    <link rel="start" href="index.html" title="libxml2 Reference Manual"/>
+    <link rel="up" href="general.html" title="API"/>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+    <link rel="chapter" href="general.html" title="API"/>
+  </head>
+  <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+    <table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+      <tr valign="middle">
+        <td>
+          <a accesskey="p" href="libxml2-xmlexports.html">
+            <img src="left.png" width="24" height="24" border="0" alt="Prev"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="u" href="general.html">
+            <img src="up.png" width="24" height="24" border="0" alt="Up"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="h" href="index.html">
+            <img src="home.png" width="24" height="24" border="0" alt="Home"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="n" href="libxml2-xmlmodule.html">
+            <img src="right.png" width="24" height="24" border="0" alt="Next"/>
+          </a>
+        </td>
+        <th width="100%" align="center">libxml2 Reference Manual</th>
+      </tr>
+    </table>
+    <h2>
+      <span class="refentrytitle">xmlmemory</span>
+    </h2>
+    <p>xmlmemory - interface for the memory allocator</p>
+    <p>provides interfaces for the memory allocator, including debugging capabilities. </p>
+    <p>Author(s): Daniel Veillard </p>
+    <div class="refsynopsisdiv">
+      <h2>Synopsis</h2>
+      <pre class="synopsis">#define <a href="#xmlRealloc">xmlRealloc</a>;
+#define <a href="#xmlMalloc">xmlMalloc</a>;
+#define <a href="#xmlMallocAtomic">xmlMallocAtomic</a>;
+#define <a href="#DEBUG_MEMORY">DEBUG_MEMORY</a>;
+#define <a href="#xmlMemStrdup">xmlMemStrdup</a>;
+void *	<a href="#xmlMemRealloc">xmlMemRealloc</a>			(void * ptr, <br/>					 size_t size);
+int	<a href="#xmlInitMemory">xmlInitMemory</a>			(void);
+void	<a href="#xmlMemFree">xmlMemFree</a>			(void * ptr);
+void *	<a href="#xmlMemMalloc">xmlMemMalloc</a>			(size_t size);
+void	<a href="#xmlMemDisplayLast">xmlMemDisplayLast</a>		(FILE * fp, <br/>					 long nbBytes);
+int	<a href="#xmlMemGet">xmlMemGet</a>			(<a href="libxml2-xmlmemory.html#xmlFreeFunc">xmlFreeFunc</a> * freeFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlMallocFunc">xmlMallocFunc</a> * mallocFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlReallocFunc">xmlReallocFunc</a> * reallocFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlStrdupFunc">xmlStrdupFunc</a> * strdupFunc);
+void	<a href="#xmlMemoryDump">xmlMemoryDump</a>			(void);
+void *	<a href="#xmlMallocLoc">xmlMallocLoc</a>			(size_t size, <br/>					 const char * file, <br/>					 int line);
+void	<a href="#xmlMemDisplay">xmlMemDisplay</a>			(FILE * fp);
+int	<a href="#xmlMemBlocks">xmlMemBlocks</a>			(void);
+int	<a href="#xmlGcMemGet">xmlGcMemGet</a>			(<a href="libxml2-xmlmemory.html#xmlFreeFunc">xmlFreeFunc</a> * freeFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlMallocFunc">xmlMallocFunc</a> * mallocFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlMallocFunc">xmlMallocFunc</a> * mallocAtomicFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlReallocFunc">xmlReallocFunc</a> * reallocFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlStrdupFunc">xmlStrdupFunc</a> * strdupFunc);
+typedef char * <a href="#xmlStrdupFunc">xmlStrdupFunc</a>			(const char * str);
+typedef void <a href="#xmlFreeFunc">xmlFreeFunc</a>			(void * mem);
+void	<a href="#xmlMemShow">xmlMemShow</a>			(FILE * fp, <br/>					 int nr);
+void *	<a href="#xmlMallocAtomicLoc">xmlMallocAtomicLoc</a>		(size_t size, <br/>					 const char * file, <br/>					 int line);
+void *	<a href="#xmlReallocLoc">xmlReallocLoc</a>			(void * ptr, <br/>					 size_t size, <br/>					 const char * file, <br/>					 int line);
+void	<a href="#xmlCleanupMemory">xmlCleanupMemory</a>		(void);
+int	<a href="#xmlMemUsed">xmlMemUsed</a>			(void);
+int	<a href="#xmlMemSetup">xmlMemSetup</a>			(<a href="libxml2-xmlmemory.html#xmlFreeFunc">xmlFreeFunc</a> freeFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlMallocFunc">xmlMallocFunc</a> mallocFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlReallocFunc">xmlReallocFunc</a> reallocFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlStrdupFunc">xmlStrdupFunc</a> strdupFunc);
+typedef void * <a href="#xmlReallocFunc">xmlReallocFunc</a>			(void * mem, <br/>					 size_t size);
+typedef void * <a href="#xmlMallocFunc">xmlMallocFunc</a>			(size_t size);
+int	<a href="#xmlGcMemSetup">xmlGcMemSetup</a>			(<a href="libxml2-xmlmemory.html#xmlFreeFunc">xmlFreeFunc</a> freeFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlMallocFunc">xmlMallocFunc</a> mallocFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlMallocFunc">xmlMallocFunc</a> mallocAtomicFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlReallocFunc">xmlReallocFunc</a> reallocFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlStrdupFunc">xmlStrdupFunc</a> strdupFunc);
+char *	<a href="#xmlMemoryStrdup">xmlMemoryStrdup</a>			(const char * str);
+char *	<a href="#xmlMemStrdupLoc">xmlMemStrdupLoc</a>			(const char * str, <br/>					 const char * file, <br/>					 int line);
+</pre>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Description</h2>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Details</h2>
+      <div class="refsect2" lang="en">
+        <div class="refsect2" lang="en"><h3><a name="DEBUG_MEMORY">Macro </a>DEBUG_MEMORY</h3><pre class="programlisting">#define <a href="#DEBUG_MEMORY">DEBUG_MEMORY</a>;
+</pre><p><a href="libxml2-xmlmemory.html#DEBUG_MEMORY">DEBUG_MEMORY</a> replaces the allocator with a collect and debug shell to the libc allocator. <a href="libxml2-xmlmemory.html#DEBUG_MEMORY">DEBUG_MEMORY</a> should only be activated when debugging libxml i.e. if libxml has been configured with --with-debug-mem too. #define DEBUG_MEMORY_FREED #define <a href="libxml2-xmlversion.html#DEBUG_MEMORY_LOCATION">DEBUG_MEMORY_LOCATION</a></p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlFreeFunc"/>Function type xmlFreeFunc</h3><pre class="programlisting">void	xmlFreeFunc			(void * mem)<br/>
+</pre><p>Signature for a free() implementation.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>mem</tt></i>:</span></td><td>an already allocated block of memory</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlMallocFunc"/>Function type xmlMallocFunc</h3><pre class="programlisting">void *	xmlMallocFunc			(size_t size)<br/>
+</pre><p>Signature for a malloc() implementation.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>size</tt></i>:</span></td><td>the size requested in bytes</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a pointer to the newly allocated block or NULL in case of error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlReallocFunc"/>Function type xmlReallocFunc</h3><pre class="programlisting">void *	xmlReallocFunc			(void * mem, <br/>					 size_t size)<br/>
+</pre><p>Signature for a realloc() implementation.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>mem</tt></i>:</span></td><td>an already allocated block of memory</td></tr><tr><td><span class="term"><i><tt>size</tt></i>:</span></td><td>the new size requested in bytes</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a pointer to the newly reallocated block or NULL in case of error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStrdupFunc"/>Function type xmlStrdupFunc</h3><pre class="programlisting">char *	xmlStrdupFunc			(const char * str)<br/>
+</pre><p>Signature for an strdup() implementation.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>str</tt></i>:</span></td><td>a zero terminated string</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the copy of the string or NULL in case of error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlCleanupMemory"/>xmlCleanupMemory ()</h3><pre class="programlisting">void	xmlCleanupMemory		(void)<br/>
+</pre><p>Free up all the memory allocated by the library for its own use. This should not be called by user level code.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlGcMemGet"/>xmlGcMemGet ()</h3><pre class="programlisting">int	xmlGcMemGet			(<a href="libxml2-xmlmemory.html#xmlFreeFunc">xmlFreeFunc</a> * freeFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlMallocFunc">xmlMallocFunc</a> * mallocFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlMallocFunc">xmlMallocFunc</a> * mallocAtomicFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlReallocFunc">xmlReallocFunc</a> * reallocFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlStrdupFunc">xmlStrdupFunc</a> * strdupFunc)<br/>
+</pre><p>Provides the memory access functions set currently in use The mallocAtomicFunc is specialized for atomic block allocations (i.e. of areas useful for garbage collected memory allocators</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>freeFunc</tt></i>:</span></td><td>place to save the free() function in use</td></tr><tr><td><span class="term"><i><tt>mallocFunc</tt></i>:</span></td><td>place to save the malloc() function in use</td></tr><tr><td><span class="term"><i><tt>mallocAtomicFunc</tt></i>:</span></td><td>place to save the atomic malloc() function in use</td></tr><tr><td><span class="term"><i><tt>reallocFunc</tt></i>:</span></td><td>place to save the realloc() function in use</td></tr><tr><td><span class="term"><i><tt>strdupFunc</tt></i>:</span></td><td>place to save the strdup() function in use</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 on success</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlGcMemSetup"/>xmlGcMemSetup ()</h3><pre class="programlisting">int	xmlGcMemSetup			(<a href="libxml2-xmlmemory.html#xmlFreeFunc">xmlFreeFunc</a> freeFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlMallocFunc">xmlMallocFunc</a> mallocFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlMallocFunc">xmlMallocFunc</a> mallocAtomicFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlReallocFunc">xmlReallocFunc</a> reallocFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlStrdupFunc">xmlStrdupFunc</a> strdupFunc)<br/>
+</pre><p>Override the default memory access functions with a new set This has to be called before any other libxml routines ! The mallocAtomicFunc is specialized for atomic block allocations (i.e. of areas useful for garbage collected memory allocators Should this be blocked if there was already some allocations done ?</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>freeFunc</tt></i>:</span></td><td>the free() function to use</td></tr><tr><td><span class="term"><i><tt>mallocFunc</tt></i>:</span></td><td>the malloc() function to use</td></tr><tr><td><span class="term"><i><tt>mallocAtomicFunc</tt></i>:</span></td><td>the malloc() function to use for atomic allocations</td></tr><tr><td><span class="term"><i><tt>reallocFunc</tt></i>:</span></td><td>the realloc() function to use</td></tr><tr><td><span class="term"><i><tt>strdupFunc</tt></i>:</span></td><td>the strdup() function to use</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 on success</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlInitMemory"/>xmlInitMemory ()</h3><pre class="programlisting">int	xmlInitMemory			(void)<br/>
+</pre><p>Initialize the memory layer.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 on success</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlMallocAtomicLoc"/>xmlMallocAtomicLoc ()</h3><pre class="programlisting">void *	xmlMallocAtomicLoc		(size_t size, <br/>					 const char * file, <br/>					 int line)<br/>
+</pre><p>a malloc() equivalent, with logging of the allocation info.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>size</tt></i>:</span></td><td>an int specifying the size in byte to allocate.</td></tr><tr><td><span class="term"><i><tt>file</tt></i>:</span></td><td>the file name or NULL</td></tr><tr><td><span class="term"><i><tt>line</tt></i>:</span></td><td>the line number</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a pointer to the allocated area or NULL in case of lack of memory.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlMallocLoc"/>xmlMallocLoc ()</h3><pre class="programlisting">void *	xmlMallocLoc			(size_t size, <br/>					 const char * file, <br/>					 int line)<br/>
+</pre><p>a malloc() equivalent, with logging of the allocation info.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>size</tt></i>:</span></td><td>an int specifying the size in byte to allocate.</td></tr><tr><td><span class="term"><i><tt>file</tt></i>:</span></td><td>the file name or NULL</td></tr><tr><td><span class="term"><i><tt>line</tt></i>:</span></td><td>the line number</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a pointer to the allocated area or NULL in case of lack of memory.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlMemBlocks"/>xmlMemBlocks ()</h3><pre class="programlisting">int	xmlMemBlocks			(void)<br/>
+</pre><p>Provides the number of memory areas currently allocated</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>an int representing the number of blocks</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlMemDisplay"/>xmlMemDisplay ()</h3><pre class="programlisting">void	xmlMemDisplay			(FILE * fp)<br/>
+</pre><p>show in-extenso the memory blocks allocated</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>fp</tt></i>:</span></td><td>a FILE descriptor used as the output file, if NULL, the result is written to the file .memorylist</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlMemDisplayLast"/>xmlMemDisplayLast ()</h3><pre class="programlisting">void	xmlMemDisplayLast		(FILE * fp, <br/>					 long nbBytes)<br/>
+</pre><p>the last nbBytes of memory allocated and not freed, useful for dumping the memory left allocated between two places at runtime.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>fp</tt></i>:</span></td><td>a FILE descriptor used as the output file, if NULL, the result is written to the file .memorylist</td></tr><tr><td><span class="term"><i><tt>nbBytes</tt></i>:</span></td><td>the amount of memory to dump</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlMemFree"/>xmlMemFree ()</h3><pre class="programlisting">void	xmlMemFree			(void * ptr)<br/>
+</pre><p>a free() equivalent, with error checking.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ptr</tt></i>:</span></td><td>the memory block pointer</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlMemGet"/>xmlMemGet ()</h3><pre class="programlisting">int	xmlMemGet			(<a href="libxml2-xmlmemory.html#xmlFreeFunc">xmlFreeFunc</a> * freeFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlMallocFunc">xmlMallocFunc</a> * mallocFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlReallocFunc">xmlReallocFunc</a> * reallocFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlStrdupFunc">xmlStrdupFunc</a> * strdupFunc)<br/>
+</pre><p>Provides the memory access functions set currently in use</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>freeFunc</tt></i>:</span></td><td>place to save the free() function in use</td></tr><tr><td><span class="term"><i><tt>mallocFunc</tt></i>:</span></td><td>place to save the malloc() function in use</td></tr><tr><td><span class="term"><i><tt>reallocFunc</tt></i>:</span></td><td>place to save the realloc() function in use</td></tr><tr><td><span class="term"><i><tt>strdupFunc</tt></i>:</span></td><td>place to save the strdup() function in use</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 on success</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlMemMalloc"/>xmlMemMalloc ()</h3><pre class="programlisting">void *	xmlMemMalloc			(size_t size)<br/>
+</pre><p>a malloc() equivalent, with logging of the allocation info.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>size</tt></i>:</span></td><td>an int specifying the size in byte to allocate.</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a pointer to the allocated area or NULL in case of lack of memory.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlMemRealloc"/>xmlMemRealloc ()</h3><pre class="programlisting">void *	xmlMemRealloc			(void * ptr, <br/>					 size_t size)<br/>
+</pre><p>a realloc() equivalent, with logging of the allocation info.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ptr</tt></i>:</span></td><td>the initial memory block pointer</td></tr><tr><td><span class="term"><i><tt>size</tt></i>:</span></td><td>an int specifying the size in byte to allocate.</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a pointer to the allocated area or NULL in case of lack of memory.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlMemSetup"/>xmlMemSetup ()</h3><pre class="programlisting">int	xmlMemSetup			(<a href="libxml2-xmlmemory.html#xmlFreeFunc">xmlFreeFunc</a> freeFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlMallocFunc">xmlMallocFunc</a> mallocFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlReallocFunc">xmlReallocFunc</a> reallocFunc, <br/>					 <a href="libxml2-xmlmemory.html#xmlStrdupFunc">xmlStrdupFunc</a> strdupFunc)<br/>
+</pre><p>Override the default memory access functions with a new set This has to be called before any other libxml routines ! Should this be blocked if there was already some allocations done ?</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>freeFunc</tt></i>:</span></td><td>the free() function to use</td></tr><tr><td><span class="term"><i><tt>mallocFunc</tt></i>:</span></td><td>the malloc() function to use</td></tr><tr><td><span class="term"><i><tt>reallocFunc</tt></i>:</span></td><td>the realloc() function to use</td></tr><tr><td><span class="term"><i><tt>strdupFunc</tt></i>:</span></td><td>the strdup() function to use</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 on success</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlMemShow"/>xmlMemShow ()</h3><pre class="programlisting">void	xmlMemShow			(FILE * fp, <br/>					 int nr)<br/>
+</pre><p>show a show display of the memory allocated, and dump the @nr last allocated areas which were not freed</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>fp</tt></i>:</span></td><td>a FILE descriptor used as the output file</td></tr><tr><td><span class="term"><i><tt>nr</tt></i>:</span></td><td>number of entries to dump</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlMemStrdupLoc"/>xmlMemStrdupLoc ()</h3><pre class="programlisting">char *	xmlMemStrdupLoc			(const char * str, <br/>					 const char * file, <br/>					 int line)<br/>
+</pre><p>a strdup() equivalent, with logging of the allocation info.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>str</tt></i>:</span></td><td>the initial string pointer</td></tr><tr><td><span class="term"><i><tt>file</tt></i>:</span></td><td>the file name or NULL</td></tr><tr><td><span class="term"><i><tt>line</tt></i>:</span></td><td>the line number</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a pointer to the new string or NULL if allocation error occurred.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlMemUsed"/>xmlMemUsed ()</h3><pre class="programlisting">int	xmlMemUsed			(void)<br/>
+</pre><p>Provides the amount of memory currently allocated</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>an int representing the amount of memory allocated.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlMemoryDump"/>xmlMemoryDump ()</h3><pre class="programlisting">void	xmlMemoryDump			(void)<br/>
+</pre><p>Dump in-extenso the memory blocks allocated to the file .memorylist</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlMemoryStrdup"/>xmlMemoryStrdup ()</h3><pre class="programlisting">char *	xmlMemoryStrdup			(const char * str)<br/>
+</pre><p>a strdup() equivalent, with logging of the allocation info.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>str</tt></i>:</span></td><td>the initial string pointer</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a pointer to the new string or NULL if allocation error occurred.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlReallocLoc"/>xmlReallocLoc ()</h3><pre class="programlisting">void *	xmlReallocLoc			(void * ptr, <br/>					 size_t size, <br/>					 const char * file, <br/>					 int line)<br/>
+</pre><p>a realloc() equivalent, with logging of the allocation info.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ptr</tt></i>:</span></td><td>the initial memory block pointer</td></tr><tr><td><span class="term"><i><tt>size</tt></i>:</span></td><td>an int specifying the size in byte to allocate.</td></tr><tr><td><span class="term"><i><tt>file</tt></i>:</span></td><td>the file name or NULL</td></tr><tr><td><span class="term"><i><tt>line</tt></i>:</span></td><td>the line number</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a pointer to the allocated area or NULL in case of lack of memory.</td></tr></tbody></table></div></div>
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,860 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>schemasInternals: internal interfaces for XML Schemas</title>
+    <meta name="generator" content="Libxml2 devhelp stylesheet"/>
+    <link rel="start" href="index.html" title="libxml2 Reference Manual"/>
+    <link rel="up" href="general.html" title="API"/>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+    <link rel="chapter" href="general.html" title="API"/>
+  </head>
+  <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+    <table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+      <tr valign="middle">
+        <td>
+          <a accesskey="p" href="libxml2-relaxng.html">
+            <img src="left.png" width="24" height="24" border="0" alt="Prev"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="u" href="general.html">
+            <img src="up.png" width="24" height="24" border="0" alt="Up"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="h" href="index.html">
+            <img src="home.png" width="24" height="24" border="0" alt="Home"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="n" href="libxml2-schematron.html">
+            <img src="right.png" width="24" height="24" border="0" alt="Next"/>
+          </a>
+        </td>
+        <th width="100%" align="center">libxml2 Reference Manual</th>
+      </tr>
+    </table>
+    <h2>
+      <span class="refentrytitle">schemasInternals</span>
+    </h2>
+    <p>schemasInternals - internal interfaces for XML Schemas</p>
+    <p>internal interfaces for the XML Schemas handling and schema validity checking The Schemas development is a Work In Progress. Some of those interfaces are not garanteed to be API or ABI stable ! </p>
+    <p>Author(s): Daniel Veillard </p>
+    <div class="refsynopsisdiv">
+      <h2>Synopsis</h2>
+      <pre class="synopsis">#define <a href="#XML_SCHEMAS_BLOCK_DEFAULT_RESTRICTION">XML_SCHEMAS_BLOCK_DEFAULT_RESTRICTION</a>;
+#define <a href="#XML_SCHEMAS_FINAL_DEFAULT_EXTENSION">XML_SCHEMAS_FINAL_DEFAULT_EXTENSION</a>;
+#define <a href="#XML_SCHEMAS_TYPE_FIXUP_1">XML_SCHEMAS_TYPE_FIXUP_1</a>;
+#define <a href="#XML_SCHEMAS_FINAL_DEFAULT_RESTRICTION">XML_SCHEMAS_FINAL_DEFAULT_RESTRICTION</a>;
+#define <a href="#XML_SCHEMAS_ELEM_CIRCULAR">XML_SCHEMAS_ELEM_CIRCULAR</a>;
+#define <a href="#XML_SCHEMAS_QUALIF_ATTR">XML_SCHEMAS_QUALIF_ATTR</a>;
+#define <a href="#XML_SCHEMAS_TYPE_BUILTIN_PRIMITIVE">XML_SCHEMAS_TYPE_BUILTIN_PRIMITIVE</a>;
+#define <a href="#XML_SCHEMAS_TYPE_DERIVATION_METHOD_RESTRICTION">XML_SCHEMAS_TYPE_DERIVATION_METHOD_RESTRICTION</a>;
+#define <a href="#XML_SCHEMAS_ATTR_USE_REQUIRED">XML_SCHEMAS_ATTR_USE_REQUIRED</a>;
+#define <a href="#XML_SCHEMAS_FACET_COLLAPSE">XML_SCHEMAS_FACET_COLLAPSE</a>;
+#define <a href="#XML_SCHEMAS_TYPE_WHITESPACE_COLLAPSE">XML_SCHEMAS_TYPE_WHITESPACE_COLLAPSE</a>;
+#define <a href="#XML_SCHEMAS_TYPE_VARIETY_UNION">XML_SCHEMAS_TYPE_VARIETY_UNION</a>;
+#define <a href="#XML_SCHEMAS_ANY_STRICT">XML_SCHEMAS_ANY_STRICT</a>;
+#define <a href="#XML_SCHEMAS_TYPE_INTERNAL_RESOLVED">XML_SCHEMAS_TYPE_INTERNAL_RESOLVED</a>;
+#define <a href="#XML_SCHEMAS_QUALIF_ELEM">XML_SCHEMAS_QUALIF_ELEM</a>;
+#define <a href="#XML_SCHEMAS_TYPE_VARIETY_LIST">XML_SCHEMAS_TYPE_VARIETY_LIST</a>;
+#define <a href="#XML_SCHEMAS_TYPE_WHITESPACE_PRESERVE">XML_SCHEMAS_TYPE_WHITESPACE_PRESERVE</a>;
+#define <a href="#XML_SCHEMAS_ELEM_INTERNAL_CHECKED">XML_SCHEMAS_ELEM_INTERNAL_CHECKED</a>;
+#define <a href="#XML_SCHEMAS_INCLUDING_CONVERT_NS">XML_SCHEMAS_INCLUDING_CONVERT_NS</a>;
+#define <a href="#XML_SCHEMAS_ATTR_INTERNAL_RESOLVED">XML_SCHEMAS_ATTR_INTERNAL_RESOLVED</a>;
+#define <a href="#XML_SCHEMAS_ATTR_USE_PROHIBITED">XML_SCHEMAS_ATTR_USE_PROHIBITED</a>;
+#define <a href="#XML_SCHEMAS_ELEM_NILLABLE">XML_SCHEMAS_ELEM_NILLABLE</a>;
+#define <a href="#XML_SCHEMAS_BLOCK_DEFAULT_SUBSTITUTION">XML_SCHEMAS_BLOCK_DEFAULT_SUBSTITUTION</a>;
+#define <a href="#XML_SCHEMAS_ATTRGROUP_REDEFINED">XML_SCHEMAS_ATTRGROUP_REDEFINED</a>;
+#define <a href="#XML_SCHEMAS_ELEM_SUBST_GROUP_HEAD">XML_SCHEMAS_ELEM_SUBST_GROUP_HEAD</a>;
+#define <a href="#XML_SCHEMAS_TYPE_BLOCK_DEFAULT">XML_SCHEMAS_TYPE_BLOCK_DEFAULT</a>;
+#define <a href="#XML_SCHEMAS_ELEM_BLOCK_SUBSTITUTION">XML_SCHEMAS_ELEM_BLOCK_SUBSTITUTION</a>;
+#define <a href="#XML_SCHEMAS_TYPE_FINAL_EXTENSION">XML_SCHEMAS_TYPE_FINAL_EXTENSION</a>;
+#define <a href="#XML_SCHEMAS_TYPE_REDEFINED">XML_SCHEMAS_TYPE_REDEFINED</a>;
+#define <a href="#XML_SCHEMAS_ELEM_FIXED">XML_SCHEMAS_ELEM_FIXED</a>;
+#define <a href="#XML_SCHEMAS_TYPE_OWNED_ATTR_WILDCARD">XML_SCHEMAS_TYPE_OWNED_ATTR_WILDCARD</a>;
+#define <a href="#XML_SCHEMAS_TYPE_VARIETY_ATOMIC">XML_SCHEMAS_TYPE_VARIETY_ATOMIC</a>;
+#define <a href="#XML_SCHEMAS_TYPE_FINAL_LIST">XML_SCHEMAS_TYPE_FINAL_LIST</a>;
+#define <a href="#XML_SCHEMAS_ATTR_USE_OPTIONAL">XML_SCHEMAS_ATTR_USE_OPTIONAL</a>;
+#define <a href="#XML_SCHEMAS_ATTR_NSDEFAULT">XML_SCHEMAS_ATTR_NSDEFAULT</a>;
+#define <a href="#XML_SCHEMAS_TYPE_WHITESPACE_REPLACE">XML_SCHEMAS_TYPE_WHITESPACE_REPLACE</a>;
+#define <a href="#XML_SCHEMAS_TYPE_BLOCK_RESTRICTION">XML_SCHEMAS_TYPE_BLOCK_RESTRICTION</a>;
+#define <a href="#XML_SCHEMAS_ANYATTR_STRICT">XML_SCHEMAS_ANYATTR_STRICT</a>;
+#define <a href="#XML_SCHEMAS_FACET_UNKNOWN">XML_SCHEMAS_FACET_UNKNOWN</a>;
+#define <a href="#XML_SCHEMAS_ATTRGROUP_MARKED">XML_SCHEMAS_ATTRGROUP_MARKED</a>;
+#define <a href="#XML_SCHEMAS_FACET_PRESERVE">XML_SCHEMAS_FACET_PRESERVE</a>;
+#define <a href="#XML_SCHEMAS_ELEM_BLOCK_EXTENSION">XML_SCHEMAS_ELEM_BLOCK_EXTENSION</a>;
+#define <a href="#XML_SCHEMAS_ATTR_GLOBAL">XML_SCHEMAS_ATTR_GLOBAL</a>;
+#define <a href="#XML_SCHEMAS_ANYATTR_SKIP">XML_SCHEMAS_ANYATTR_SKIP</a>;
+#define <a href="#XML_SCHEMAS_TYPE_DERIVATION_METHOD_EXTENSION">XML_SCHEMAS_TYPE_DERIVATION_METHOD_EXTENSION</a>;
+#define <a href="#XML_SCHEMAS_ANYATTR_LAX">XML_SCHEMAS_ANYATTR_LAX</a>;
+#define <a href="#XML_SCHEMAS_TYPE_GLOBAL">XML_SCHEMAS_TYPE_GLOBAL</a>;
+#define <a href="#XML_SCHEMAS_TYPE_ABSTRACT">XML_SCHEMAS_TYPE_ABSTRACT</a>;
+#define <a href="#XML_SCHEMAS_TYPE_MIXED">XML_SCHEMAS_TYPE_MIXED</a>;
+#define <a href="#XML_SCHEMAS_ATTR_FIXED">XML_SCHEMAS_ATTR_FIXED</a>;
+#define <a href="#XML_SCHEMAS_ELEM_INTERNAL_RESOLVED">XML_SCHEMAS_ELEM_INTERNAL_RESOLVED</a>;
+#define <a href="#XML_SCHEMAS_ANY_SKIP">XML_SCHEMAS_ANY_SKIP</a>;
+#define <a href="#XML_SCHEMAS_FINAL_DEFAULT_LIST">XML_SCHEMAS_FINAL_DEFAULT_LIST</a>;
+#define <a href="#XML_SCHEMAS_TYPE_VARIETY_ABSENT">XML_SCHEMAS_TYPE_VARIETY_ABSENT</a>;
+#define <a href="#XML_SCHEMAS_ELEM_FINAL_RESTRICTION">XML_SCHEMAS_ELEM_FINAL_RESTRICTION</a>;
+#define <a href="#XML_SCHEMAS_WILDCARD_COMPLETE">XML_SCHEMAS_WILDCARD_COMPLETE</a>;
+#define <a href="#XML_SCHEMAS_ATTRGROUP_WILDCARD_BUILDED">XML_SCHEMAS_ATTRGROUP_WILDCARD_BUILDED</a>;
+#define <a href="#XML_SCHEMAS_ELEM_NSDEFAULT">XML_SCHEMAS_ELEM_NSDEFAULT</a>;
+#define <a href="#XML_SCHEMAS_ELEM_GLOBAL">XML_SCHEMAS_ELEM_GLOBAL</a>;
+#define <a href="#XML_SCHEMAS_ELEM_TOPLEVEL">XML_SCHEMAS_ELEM_TOPLEVEL</a>;
+#define <a href="#XML_SCHEMAS_ANY_LAX">XML_SCHEMAS_ANY_LAX</a>;
+#define <a href="#XML_SCHEMAS_TYPE_FINAL_RESTRICTION">XML_SCHEMAS_TYPE_FINAL_RESTRICTION</a>;
+#define <a href="#XML_SCHEMAS_TYPE_HAS_FACETS">XML_SCHEMAS_TYPE_HAS_FACETS</a>;
+#define <a href="#XML_SCHEMAS_ELEM_FINAL_EXTENSION">XML_SCHEMAS_ELEM_FINAL_EXTENSION</a>;
+#define <a href="#XML_SCHEMAS_TYPE_NORMVALUENEEDED">XML_SCHEMAS_TYPE_NORMVALUENEEDED</a>;
+#define <a href="#XML_SCHEMAS_ELEM_FINAL_ABSENT">XML_SCHEMAS_ELEM_FINAL_ABSENT</a>;
+#define <a href="#XML_SCHEMAS_TYPE_BLOCK_EXTENSION">XML_SCHEMAS_TYPE_BLOCK_EXTENSION</a>;
+#define <a href="#XML_SCHEMAS_TYPE_INTERNAL_INVALID">XML_SCHEMAS_TYPE_INTERNAL_INVALID</a>;
+#define <a href="#XML_SCHEMAS_ATTRGROUP_HAS_REFS">XML_SCHEMAS_ATTRGROUP_HAS_REFS</a>;
+#define <a href="#XML_SCHEMAS_ELEM_ABSTRACT">XML_SCHEMAS_ELEM_ABSTRACT</a>;
+#define <a href="#XML_SCHEMAS_BLOCK_DEFAULT_EXTENSION">XML_SCHEMAS_BLOCK_DEFAULT_EXTENSION</a>;
+#define <a href="#XML_SCHEMAS_TYPE_FINAL_UNION">XML_SCHEMAS_TYPE_FINAL_UNION</a>;
+#define <a href="#XML_SCHEMAS_TYPE_FINAL_DEFAULT">XML_SCHEMAS_TYPE_FINAL_DEFAULT</a>;
+#define <a href="#XML_SCHEMAS_TYPE_FACETSNEEDVALUE">XML_SCHEMAS_TYPE_FACETSNEEDVALUE</a>;
+#define <a href="#XML_SCHEMAS_FINAL_DEFAULT_UNION">XML_SCHEMAS_FINAL_DEFAULT_UNION</a>;
+#define <a href="#XML_SCHEMAS_ELEM_BLOCK_RESTRICTION">XML_SCHEMAS_ELEM_BLOCK_RESTRICTION</a>;
+#define <a href="#XML_SCHEMAS_FACET_REPLACE">XML_SCHEMAS_FACET_REPLACE</a>;
+#define <a href="#XML_SCHEMAS_ELEM_DEFAULT">XML_SCHEMAS_ELEM_DEFAULT</a>;
+#define <a href="#XML_SCHEMAS_TYPE_MARKED">XML_SCHEMAS_TYPE_MARKED</a>;
+#define <a href="#XML_SCHEMAS_ELEM_BLOCK_ABSENT">XML_SCHEMAS_ELEM_BLOCK_ABSENT</a>;
+#define <a href="#XML_SCHEMAS_ATTRGROUP_GLOBAL">XML_SCHEMAS_ATTRGROUP_GLOBAL</a>;
+#define <a href="#XML_SCHEMAS_ELEM_REF">XML_SCHEMAS_ELEM_REF</a>;
+typedef <a href="libxml2-schemasInternals.html#xmlSchemaAttributeGroup">xmlSchemaAttributeGroup</a> * <a href="#xmlSchemaAttributeGroupPtr">xmlSchemaAttributeGroupPtr</a>;
+typedef <a href="libxml2-schemasInternals.html#xmlSchemaElement">xmlSchemaElement</a> * <a href="#xmlSchemaElementPtr">xmlSchemaElementPtr</a>;
+typedef <a href="libxml2-schemasInternals.html#xmlSchemaFacetLink">xmlSchemaFacetLink</a> * <a href="#xmlSchemaFacetLinkPtr">xmlSchemaFacetLinkPtr</a>;
+typedef struct _xmlSchemaVal <a href="#xmlSchemaVal">xmlSchemaVal</a>;
+typedef <a href="libxml2-schemasInternals.html#xmlSchemaAttributeLink">xmlSchemaAttributeLink</a> * <a href="#xmlSchemaAttributeLinkPtr">xmlSchemaAttributeLinkPtr</a>;
+typedef struct _xmlSchemaType <a href="#xmlSchemaType">xmlSchemaType</a>;
+typedef struct _xmlSchemaAnnot <a href="#xmlSchemaAnnot">xmlSchemaAnnot</a>;
+typedef <a href="libxml2-schemasInternals.html#xmlSchemaAnnot">xmlSchemaAnnot</a> * <a href="#xmlSchemaAnnotPtr">xmlSchemaAnnotPtr</a>;
+typedef struct _xmlSchemaElement <a href="#xmlSchemaElement">xmlSchemaElement</a>;
+typedef struct _xmlSchemaWildcard <a href="#xmlSchemaWildcard">xmlSchemaWildcard</a>;
+typedef <a href="libxml2-schemasInternals.html#xmlSchemaWildcard">xmlSchemaWildcard</a> * <a href="#xmlSchemaWildcardPtr">xmlSchemaWildcardPtr</a>;
+typedef <a href="libxml2-schemasInternals.html#xmlSchemaFacet">xmlSchemaFacet</a> * <a href="#xmlSchemaFacetPtr">xmlSchemaFacetPtr</a>;
+typedef struct _xmlSchemaTypeLink <a href="#xmlSchemaTypeLink">xmlSchemaTypeLink</a>;
+typedef struct _xmlSchemaAttributeLink <a href="#xmlSchemaAttributeLink">xmlSchemaAttributeLink</a>;
+typedef <a href="libxml2-schemasInternals.html#xmlSchemaVal">xmlSchemaVal</a> * <a href="#xmlSchemaValPtr">xmlSchemaValPtr</a>;
+typedef struct _xmlSchemaFacetLink <a href="#xmlSchemaFacetLink">xmlSchemaFacetLink</a>;
+typedef <a href="libxml2-schemasInternals.html#xmlSchemaWildcardNs">xmlSchemaWildcardNs</a> * <a href="#xmlSchemaWildcardNsPtr">xmlSchemaWildcardNsPtr</a>;
+typedef struct _xmlSchemaAttributeGroup <a href="#xmlSchemaAttributeGroup">xmlSchemaAttributeGroup</a>;
+typedef <a href="libxml2-schemasInternals.html#xmlSchemaTypeLink">xmlSchemaTypeLink</a> * <a href="#xmlSchemaTypeLinkPtr">xmlSchemaTypeLinkPtr</a>;
+typedef struct _xmlSchemaWildcardNs <a href="#xmlSchemaWildcardNs">xmlSchemaWildcardNs</a>;
+typedef <a href="libxml2-schemasInternals.html#xmlSchemaAttribute">xmlSchemaAttribute</a> * <a href="#xmlSchemaAttributePtr">xmlSchemaAttributePtr</a>;
+typedef <a href="libxml2-schemasInternals.html#xmlSchemaNotation">xmlSchemaNotation</a> * <a href="#xmlSchemaNotationPtr">xmlSchemaNotationPtr</a>;
+typedef enum <a href="#xmlSchemaValType">xmlSchemaValType</a>;
+typedef <a href="libxml2-schemasInternals.html#xmlSchemaType">xmlSchemaType</a> * <a href="#xmlSchemaTypePtr">xmlSchemaTypePtr</a>;
+typedef struct _xmlSchemaNotation <a href="#xmlSchemaNotation">xmlSchemaNotation</a>;
+typedef struct _xmlSchemaFacet <a href="#xmlSchemaFacet">xmlSchemaFacet</a>;
+typedef enum <a href="#xmlSchemaContentType">xmlSchemaContentType</a>;
+typedef enum <a href="#xmlSchemaTypeType">xmlSchemaTypeType</a>;
+typedef struct _xmlSchemaAttribute <a href="#xmlSchemaAttribute">xmlSchemaAttribute</a>;
+void	<a href="#xmlSchemaFreeType">xmlSchemaFreeType</a>		(<a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a> type);
+void	<a href="#xmlSchemaFreeWildcard">xmlSchemaFreeWildcard</a>		(<a href="libxml2-schemasInternals.html#xmlSchemaWildcardPtr">xmlSchemaWildcardPtr</a> wildcard);
+</pre>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Description</h2>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Details</h2>
+      <div class="refsect2" lang="en">
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ANYATTR_LAX">Macro </a>XML_SCHEMAS_ANYATTR_LAX</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ANYATTR_LAX">XML_SCHEMAS_ANYATTR_LAX</a>;
+</pre><p>Ignore validation non definition on attributes Obsolete, not used anymore.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ANYATTR_SKIP">Macro </a>XML_SCHEMAS_ANYATTR_SKIP</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ANYATTR_SKIP">XML_SCHEMAS_ANYATTR_SKIP</a>;
+</pre><p>Skip unknown <a href="libxml2-SAX.html#attribute">attribute</a> from validation Obsolete, not used anymore.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ANYATTR_STRICT">Macro </a>XML_SCHEMAS_ANYATTR_STRICT</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ANYATTR_STRICT">XML_SCHEMAS_ANYATTR_STRICT</a>;
+</pre><p>Apply strict validation rules on attributes Obsolete, not used anymore.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ANY_LAX">Macro </a>XML_SCHEMAS_ANY_LAX</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ANY_LAX">XML_SCHEMAS_ANY_LAX</a>;
+</pre><p>Used by wildcards. Validate if type found, don't worry if not found</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ANY_SKIP">Macro </a>XML_SCHEMAS_ANY_SKIP</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ANY_SKIP">XML_SCHEMAS_ANY_SKIP</a>;
+</pre><p>Skip unknown <a href="libxml2-SAX.html#attribute">attribute</a> from validation</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ANY_STRICT">Macro </a>XML_SCHEMAS_ANY_STRICT</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ANY_STRICT">XML_SCHEMAS_ANY_STRICT</a>;
+</pre><p>Used by wildcards. Apply strict validation rules</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ATTRGROUP_GLOBAL">Macro </a>XML_SCHEMAS_ATTRGROUP_GLOBAL</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ATTRGROUP_GLOBAL">XML_SCHEMAS_ATTRGROUP_GLOBAL</a>;
+</pre><p>The <a href="libxml2-SAX.html#attribute">attribute</a> wildcard has been already builded.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ATTRGROUP_HAS_REFS">Macro </a>XML_SCHEMAS_ATTRGROUP_HAS_REFS</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ATTRGROUP_HAS_REFS">XML_SCHEMAS_ATTRGROUP_HAS_REFS</a>;
+</pre><p>Whether this attr. group contains attr. group references.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ATTRGROUP_MARKED">Macro </a>XML_SCHEMAS_ATTRGROUP_MARKED</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ATTRGROUP_MARKED">XML_SCHEMAS_ATTRGROUP_MARKED</a>;
+</pre><p>Marks the attr group as marked; used for circular checks.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ATTRGROUP_REDEFINED">Macro </a>XML_SCHEMAS_ATTRGROUP_REDEFINED</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ATTRGROUP_REDEFINED">XML_SCHEMAS_ATTRGROUP_REDEFINED</a>;
+</pre><p>The attr group was redefined.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ATTRGROUP_WILDCARD_BUILDED">Macro </a>XML_SCHEMAS_ATTRGROUP_WILDCARD_BUILDED</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ATTRGROUP_WILDCARD_BUILDED">XML_SCHEMAS_ATTRGROUP_WILDCARD_BUILDED</a>;
+</pre><p>The <a href="libxml2-SAX.html#attribute">attribute</a> wildcard has been already builded.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ATTR_FIXED">Macro </a>XML_SCHEMAS_ATTR_FIXED</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ATTR_FIXED">XML_SCHEMAS_ATTR_FIXED</a>;
+</pre><p>the <a href="libxml2-SAX.html#attribute">attribute</a> has a fixed value</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ATTR_GLOBAL">Macro </a>XML_SCHEMAS_ATTR_GLOBAL</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ATTR_GLOBAL">XML_SCHEMAS_ATTR_GLOBAL</a>;
+</pre><p>allow elements in no namespace</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ATTR_INTERNAL_RESOLVED">Macro </a>XML_SCHEMAS_ATTR_INTERNAL_RESOLVED</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ATTR_INTERNAL_RESOLVED">XML_SCHEMAS_ATTR_INTERNAL_RESOLVED</a>;
+</pre><p>this is set when the "type" and "ref" references have been resolved.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ATTR_NSDEFAULT">Macro </a>XML_SCHEMAS_ATTR_NSDEFAULT</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ATTR_NSDEFAULT">XML_SCHEMAS_ATTR_NSDEFAULT</a>;
+</pre><p>allow elements in no namespace</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ATTR_USE_OPTIONAL">Macro </a>XML_SCHEMAS_ATTR_USE_OPTIONAL</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ATTR_USE_OPTIONAL">XML_SCHEMAS_ATTR_USE_OPTIONAL</a>;
+</pre><p>The <a href="libxml2-SAX.html#attribute">attribute</a> is optional.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ATTR_USE_PROHIBITED">Macro </a>XML_SCHEMAS_ATTR_USE_PROHIBITED</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ATTR_USE_PROHIBITED">XML_SCHEMAS_ATTR_USE_PROHIBITED</a>;
+</pre><p>Used by wildcards. The <a href="libxml2-SAX.html#attribute">attribute</a> is prohibited.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ATTR_USE_REQUIRED">Macro </a>XML_SCHEMAS_ATTR_USE_REQUIRED</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ATTR_USE_REQUIRED">XML_SCHEMAS_ATTR_USE_REQUIRED</a>;
+</pre><p>The <a href="libxml2-SAX.html#attribute">attribute</a> is required.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_BLOCK_DEFAULT_EXTENSION">Macro </a>XML_SCHEMAS_BLOCK_DEFAULT_EXTENSION</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_BLOCK_DEFAULT_EXTENSION">XML_SCHEMAS_BLOCK_DEFAULT_EXTENSION</a>;
+</pre><p>the schema has "extension" in the set of blockDefault.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_BLOCK_DEFAULT_RESTRICTION">Macro </a>XML_SCHEMAS_BLOCK_DEFAULT_RESTRICTION</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_BLOCK_DEFAULT_RESTRICTION">XML_SCHEMAS_BLOCK_DEFAULT_RESTRICTION</a>;
+</pre><p>the schema has "restriction" in the set of blockDefault.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_BLOCK_DEFAULT_SUBSTITUTION">Macro </a>XML_SCHEMAS_BLOCK_DEFAULT_SUBSTITUTION</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_BLOCK_DEFAULT_SUBSTITUTION">XML_SCHEMAS_BLOCK_DEFAULT_SUBSTITUTION</a>;
+</pre><p>the schema has "substitution" in the set of blockDefault.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ELEM_ABSTRACT">Macro </a>XML_SCHEMAS_ELEM_ABSTRACT</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ELEM_ABSTRACT">XML_SCHEMAS_ELEM_ABSTRACT</a>;
+</pre><p>the element is abstract</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ELEM_BLOCK_ABSENT">Macro </a>XML_SCHEMAS_ELEM_BLOCK_ABSENT</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ELEM_BLOCK_ABSENT">XML_SCHEMAS_ELEM_BLOCK_ABSENT</a>;
+</pre><p>the "block" <a href="libxml2-SAX.html#attribute">attribute</a> is absent</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ELEM_BLOCK_EXTENSION">Macro </a>XML_SCHEMAS_ELEM_BLOCK_EXTENSION</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ELEM_BLOCK_EXTENSION">XML_SCHEMAS_ELEM_BLOCK_EXTENSION</a>;
+</pre><p>disallowed substitutions are absent</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ELEM_BLOCK_RESTRICTION">Macro </a>XML_SCHEMAS_ELEM_BLOCK_RESTRICTION</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ELEM_BLOCK_RESTRICTION">XML_SCHEMAS_ELEM_BLOCK_RESTRICTION</a>;
+</pre><p>disallowed substitutions: "restriction"</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ELEM_BLOCK_SUBSTITUTION">Macro </a>XML_SCHEMAS_ELEM_BLOCK_SUBSTITUTION</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ELEM_BLOCK_SUBSTITUTION">XML_SCHEMAS_ELEM_BLOCK_SUBSTITUTION</a>;
+</pre><p>disallowed substitutions: "substituion"</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ELEM_CIRCULAR">Macro </a>XML_SCHEMAS_ELEM_CIRCULAR</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ELEM_CIRCULAR">XML_SCHEMAS_ELEM_CIRCULAR</a>;
+</pre><p>a helper flag for the search of circular references.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ELEM_DEFAULT">Macro </a>XML_SCHEMAS_ELEM_DEFAULT</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ELEM_DEFAULT">XML_SCHEMAS_ELEM_DEFAULT</a>;
+</pre><p>the element has a default value</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ELEM_FINAL_ABSENT">Macro </a>XML_SCHEMAS_ELEM_FINAL_ABSENT</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ELEM_FINAL_ABSENT">XML_SCHEMAS_ELEM_FINAL_ABSENT</a>;
+</pre><p>substitution group exclusions are absent</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ELEM_FINAL_EXTENSION">Macro </a>XML_SCHEMAS_ELEM_FINAL_EXTENSION</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ELEM_FINAL_EXTENSION">XML_SCHEMAS_ELEM_FINAL_EXTENSION</a>;
+</pre><p>substitution group exclusions: "extension"</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ELEM_FINAL_RESTRICTION">Macro </a>XML_SCHEMAS_ELEM_FINAL_RESTRICTION</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ELEM_FINAL_RESTRICTION">XML_SCHEMAS_ELEM_FINAL_RESTRICTION</a>;
+</pre><p>substitution group exclusions: "restriction"</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ELEM_FIXED">Macro </a>XML_SCHEMAS_ELEM_FIXED</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ELEM_FIXED">XML_SCHEMAS_ELEM_FIXED</a>;
+</pre><p>the element has a fixed value</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ELEM_GLOBAL">Macro </a>XML_SCHEMAS_ELEM_GLOBAL</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ELEM_GLOBAL">XML_SCHEMAS_ELEM_GLOBAL</a>;
+</pre><p>the element is global</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ELEM_INTERNAL_CHECKED">Macro </a>XML_SCHEMAS_ELEM_INTERNAL_CHECKED</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ELEM_INTERNAL_CHECKED">XML_SCHEMAS_ELEM_INTERNAL_CHECKED</a>;
+</pre><p>this is set when the elem decl has been checked against all constraints</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ELEM_INTERNAL_RESOLVED">Macro </a>XML_SCHEMAS_ELEM_INTERNAL_RESOLVED</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ELEM_INTERNAL_RESOLVED">XML_SCHEMAS_ELEM_INTERNAL_RESOLVED</a>;
+</pre><p>this is set when "type", "ref", "substitutionGroup" references have been resolved.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ELEM_NILLABLE">Macro </a>XML_SCHEMAS_ELEM_NILLABLE</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ELEM_NILLABLE">XML_SCHEMAS_ELEM_NILLABLE</a>;
+</pre><p>the element is nillable</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ELEM_NSDEFAULT">Macro </a>XML_SCHEMAS_ELEM_NSDEFAULT</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ELEM_NSDEFAULT">XML_SCHEMAS_ELEM_NSDEFAULT</a>;
+</pre><p>allow elements in no namespace Obsolete, not used anymore.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ELEM_REF">Macro </a>XML_SCHEMAS_ELEM_REF</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ELEM_REF">XML_SCHEMAS_ELEM_REF</a>;
+</pre><p>the element is a <a href="libxml2-SAX.html#reference">reference</a> to a type</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ELEM_SUBST_GROUP_HEAD">Macro </a>XML_SCHEMAS_ELEM_SUBST_GROUP_HEAD</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ELEM_SUBST_GROUP_HEAD">XML_SCHEMAS_ELEM_SUBST_GROUP_HEAD</a>;
+</pre><p>the declaration is a substitution group head</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_ELEM_TOPLEVEL">Macro </a>XML_SCHEMAS_ELEM_TOPLEVEL</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_ELEM_TOPLEVEL">XML_SCHEMAS_ELEM_TOPLEVEL</a>;
+</pre><p>the element is top level obsolete: use <a href="libxml2-schemasInternals.html#XML_SCHEMAS_ELEM_GLOBAL">XML_SCHEMAS_ELEM_GLOBAL</a> instead</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_FACET_COLLAPSE">Macro </a>XML_SCHEMAS_FACET_COLLAPSE</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_FACET_COLLAPSE">XML_SCHEMAS_FACET_COLLAPSE</a>;
+</pre><p>collapse the types of the facet</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_FACET_PRESERVE">Macro </a>XML_SCHEMAS_FACET_PRESERVE</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_FACET_PRESERVE">XML_SCHEMAS_FACET_PRESERVE</a>;
+</pre><p>preserve the type of the facet</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_FACET_REPLACE">Macro </a>XML_SCHEMAS_FACET_REPLACE</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_FACET_REPLACE">XML_SCHEMAS_FACET_REPLACE</a>;
+</pre><p>replace the type of the facet</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_FACET_UNKNOWN">Macro </a>XML_SCHEMAS_FACET_UNKNOWN</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_FACET_UNKNOWN">XML_SCHEMAS_FACET_UNKNOWN</a>;
+</pre><p>unknown facet handling</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_FINAL_DEFAULT_EXTENSION">Macro </a>XML_SCHEMAS_FINAL_DEFAULT_EXTENSION</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_FINAL_DEFAULT_EXTENSION">XML_SCHEMAS_FINAL_DEFAULT_EXTENSION</a>;
+</pre><p>the schema has "extension" in the set of finalDefault.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_FINAL_DEFAULT_LIST">Macro </a>XML_SCHEMAS_FINAL_DEFAULT_LIST</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_FINAL_DEFAULT_LIST">XML_SCHEMAS_FINAL_DEFAULT_LIST</a>;
+</pre><p>the cshema has "list" in the set of finalDefault.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_FINAL_DEFAULT_RESTRICTION">Macro </a>XML_SCHEMAS_FINAL_DEFAULT_RESTRICTION</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_FINAL_DEFAULT_RESTRICTION">XML_SCHEMAS_FINAL_DEFAULT_RESTRICTION</a>;
+</pre><p>the schema has "restriction" in the set of finalDefault.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_FINAL_DEFAULT_UNION">Macro </a>XML_SCHEMAS_FINAL_DEFAULT_UNION</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_FINAL_DEFAULT_UNION">XML_SCHEMAS_FINAL_DEFAULT_UNION</a>;
+</pre><p>the schema has "union" in the set of finalDefault.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_INCLUDING_CONVERT_NS">Macro </a>XML_SCHEMAS_INCLUDING_CONVERT_NS</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_INCLUDING_CONVERT_NS">XML_SCHEMAS_INCLUDING_CONVERT_NS</a>;
+</pre><p>the schema is currently including an other schema with no target namespace.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_QUALIF_ATTR">Macro </a>XML_SCHEMAS_QUALIF_ATTR</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_QUALIF_ATTR">XML_SCHEMAS_QUALIF_ATTR</a>;
+</pre><p>Reflects attributeFormDefault == qualified in an XML schema document.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_QUALIF_ELEM">Macro </a>XML_SCHEMAS_QUALIF_ELEM</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_QUALIF_ELEM">XML_SCHEMAS_QUALIF_ELEM</a>;
+</pre><p>Reflects elementFormDefault == qualified in an XML schema document.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_ABSTRACT">Macro </a>XML_SCHEMAS_TYPE_ABSTRACT</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_ABSTRACT">XML_SCHEMAS_TYPE_ABSTRACT</a>;
+</pre><p>the simple/complexType is abstract.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_BLOCK_DEFAULT">Macro </a>XML_SCHEMAS_TYPE_BLOCK_DEFAULT</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_BLOCK_DEFAULT">XML_SCHEMAS_TYPE_BLOCK_DEFAULT</a>;
+</pre><p>the complexType did not specify 'block' so use the default of the &lt;schema&gt; item.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_BLOCK_EXTENSION">Macro </a>XML_SCHEMAS_TYPE_BLOCK_EXTENSION</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_BLOCK_EXTENSION">XML_SCHEMAS_TYPE_BLOCK_EXTENSION</a>;
+</pre><p>the complexType has a 'block' of "extension".</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_BLOCK_RESTRICTION">Macro </a>XML_SCHEMAS_TYPE_BLOCK_RESTRICTION</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_BLOCK_RESTRICTION">XML_SCHEMAS_TYPE_BLOCK_RESTRICTION</a>;
+</pre><p>the complexType has a 'block' of "restriction".</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_BUILTIN_PRIMITIVE">Macro </a>XML_SCHEMAS_TYPE_BUILTIN_PRIMITIVE</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_BUILTIN_PRIMITIVE">XML_SCHEMAS_TYPE_BUILTIN_PRIMITIVE</a>;
+</pre><p>Marks the item as a builtin primitive.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_DERIVATION_METHOD_EXTENSION">Macro </a>XML_SCHEMAS_TYPE_DERIVATION_METHOD_EXTENSION</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_DERIVATION_METHOD_EXTENSION">XML_SCHEMAS_TYPE_DERIVATION_METHOD_EXTENSION</a>;
+</pre><p>the simple or complex type has a derivation method of "extension".</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_DERIVATION_METHOD_RESTRICTION">Macro </a>XML_SCHEMAS_TYPE_DERIVATION_METHOD_RESTRICTION</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_DERIVATION_METHOD_RESTRICTION">XML_SCHEMAS_TYPE_DERIVATION_METHOD_RESTRICTION</a>;
+</pre><p>the simple or complex type has a derivation method of "restriction".</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_FACETSNEEDVALUE">Macro </a>XML_SCHEMAS_TYPE_FACETSNEEDVALUE</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_FACETSNEEDVALUE">XML_SCHEMAS_TYPE_FACETSNEEDVALUE</a>;
+</pre><p>indicates if the facets need a computed value</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_FINAL_DEFAULT">Macro </a>XML_SCHEMAS_TYPE_FINAL_DEFAULT</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_FINAL_DEFAULT">XML_SCHEMAS_TYPE_FINAL_DEFAULT</a>;
+</pre><p>the simpleType has a final of "default".</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_FINAL_EXTENSION">Macro </a>XML_SCHEMAS_TYPE_FINAL_EXTENSION</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_FINAL_EXTENSION">XML_SCHEMAS_TYPE_FINAL_EXTENSION</a>;
+</pre><p>the complexType has a final of "extension".</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_FINAL_LIST">Macro </a>XML_SCHEMAS_TYPE_FINAL_LIST</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_FINAL_LIST">XML_SCHEMAS_TYPE_FINAL_LIST</a>;
+</pre><p>the simpleType has a final of "list".</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_FINAL_RESTRICTION">Macro </a>XML_SCHEMAS_TYPE_FINAL_RESTRICTION</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_FINAL_RESTRICTION">XML_SCHEMAS_TYPE_FINAL_RESTRICTION</a>;
+</pre><p>the simpleType/complexType has a final of "restriction".</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_FINAL_UNION">Macro </a>XML_SCHEMAS_TYPE_FINAL_UNION</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_FINAL_UNION">XML_SCHEMAS_TYPE_FINAL_UNION</a>;
+</pre><p>the simpleType has a final of "union".</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_FIXUP_1">Macro </a>XML_SCHEMAS_TYPE_FIXUP_1</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_FIXUP_1">XML_SCHEMAS_TYPE_FIXUP_1</a>;
+</pre><p>First stage of fixup was done.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_GLOBAL">Macro </a>XML_SCHEMAS_TYPE_GLOBAL</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_GLOBAL">XML_SCHEMAS_TYPE_GLOBAL</a>;
+</pre><p>the type is global</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_HAS_FACETS">Macro </a>XML_SCHEMAS_TYPE_HAS_FACETS</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_HAS_FACETS">XML_SCHEMAS_TYPE_HAS_FACETS</a>;
+</pre><p>has facets</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_INTERNAL_INVALID">Macro </a>XML_SCHEMAS_TYPE_INTERNAL_INVALID</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_INTERNAL_INVALID">XML_SCHEMAS_TYPE_INTERNAL_INVALID</a>;
+</pre><p>indicates that the type is invalid</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_INTERNAL_RESOLVED">Macro </a>XML_SCHEMAS_TYPE_INTERNAL_RESOLVED</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_INTERNAL_RESOLVED">XML_SCHEMAS_TYPE_INTERNAL_RESOLVED</a>;
+</pre><p>indicates that the type was typefixed</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_MARKED">Macro </a>XML_SCHEMAS_TYPE_MARKED</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_MARKED">XML_SCHEMAS_TYPE_MARKED</a>;
+</pre><p>Marks the item as marked; used for circular checks.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_MIXED">Macro </a>XML_SCHEMAS_TYPE_MIXED</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_MIXED">XML_SCHEMAS_TYPE_MIXED</a>;
+</pre><p>the element content type is mixed</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_NORMVALUENEEDED">Macro </a>XML_SCHEMAS_TYPE_NORMVALUENEEDED</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_NORMVALUENEEDED">XML_SCHEMAS_TYPE_NORMVALUENEEDED</a>;
+</pre><p>indicates if the facets (pattern) need a normalized value</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_OWNED_ATTR_WILDCARD">Macro </a>XML_SCHEMAS_TYPE_OWNED_ATTR_WILDCARD</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_OWNED_ATTR_WILDCARD">XML_SCHEMAS_TYPE_OWNED_ATTR_WILDCARD</a>;
+</pre><p>the complexType owns an <a href="libxml2-SAX.html#attribute">attribute</a> wildcard, i.e. it can be freed by the complexType</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_REDEFINED">Macro </a>XML_SCHEMAS_TYPE_REDEFINED</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_REDEFINED">XML_SCHEMAS_TYPE_REDEFINED</a>;
+</pre><p>The type was redefined.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_VARIETY_ABSENT">Macro </a>XML_SCHEMAS_TYPE_VARIETY_ABSENT</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_VARIETY_ABSENT">XML_SCHEMAS_TYPE_VARIETY_ABSENT</a>;
+</pre><p>the simpleType has a variety of "absent". TODO: Actually not necessary :-/, since if none of the variety flags occur then it's automatically absent.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_VARIETY_ATOMIC">Macro </a>XML_SCHEMAS_TYPE_VARIETY_ATOMIC</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_VARIETY_ATOMIC">XML_SCHEMAS_TYPE_VARIETY_ATOMIC</a>;
+</pre><p>the simpleType has a variety of "union".</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_VARIETY_LIST">Macro </a>XML_SCHEMAS_TYPE_VARIETY_LIST</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_VARIETY_LIST">XML_SCHEMAS_TYPE_VARIETY_LIST</a>;
+</pre><p>the simpleType has a variety of "list".</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_VARIETY_UNION">Macro </a>XML_SCHEMAS_TYPE_VARIETY_UNION</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_VARIETY_UNION">XML_SCHEMAS_TYPE_VARIETY_UNION</a>;
+</pre><p>the simpleType has a variety of "union".</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_WHITESPACE_COLLAPSE">Macro </a>XML_SCHEMAS_TYPE_WHITESPACE_COLLAPSE</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_WHITESPACE_COLLAPSE">XML_SCHEMAS_TYPE_WHITESPACE_COLLAPSE</a>;
+</pre><p>a whitespace-facet value of "collapse"</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_WHITESPACE_PRESERVE">Macro </a>XML_SCHEMAS_TYPE_WHITESPACE_PRESERVE</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_WHITESPACE_PRESERVE">XML_SCHEMAS_TYPE_WHITESPACE_PRESERVE</a>;
+</pre><p>a whitespace-facet value of "preserve"</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_TYPE_WHITESPACE_REPLACE">Macro </a>XML_SCHEMAS_TYPE_WHITESPACE_REPLACE</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_TYPE_WHITESPACE_REPLACE">XML_SCHEMAS_TYPE_WHITESPACE_REPLACE</a>;
+</pre><p>a whitespace-facet value of "replace"</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_SCHEMAS_WILDCARD_COMPLETE">Macro </a>XML_SCHEMAS_WILDCARD_COMPLETE</h3><pre class="programlisting">#define <a href="#XML_SCHEMAS_WILDCARD_COMPLETE">XML_SCHEMAS_WILDCARD_COMPLETE</a>;
+</pre><p>If the wildcard is complete.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaAnnot">Structure </a>xmlSchemaAnnot</h3><pre class="programlisting">struct _xmlSchemaAnnot {
+    struct _xmlSchemaAnnot *	next
+    <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a>	content	: the annotation
+} xmlSchemaAnnot;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaAnnotPtr">Typedef </a>xmlSchemaAnnotPtr</h3><pre class="programlisting"><a href="libxml2-schemasInternals.html#xmlSchemaAnnot">xmlSchemaAnnot</a> * xmlSchemaAnnotPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaAttribute">Structure </a>xmlSchemaAttribute</h3><pre class="programlisting">struct _xmlSchemaAttribute {
+    <a href="libxml2-schemasInternals.html#xmlSchemaTypeType">xmlSchemaTypeType</a>	type
+    struct _xmlSchemaAttribute *	next	: the next <a href="libxml2-SAX.html#attribute">attribute</a> (not used?)
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	name	: the name of the declaration
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	id	: Deprecated; not used
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	ref	: Deprecated; not used
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	refNs	: Deprecated; not used
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	typeName	: the local name of the type definition
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	typeNs	: the ns URI of the type definition
+    <a href="libxml2-schemasInternals.html#xmlSchemaAnnotPtr">xmlSchemaAnnotPtr</a>	annot
+    <a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a>	base	: Deprecated; not used
+    int	occurs	: Deprecated; not used
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	defValue	: The initial value of the value constraint
+    <a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a>	subtypes	: the type definition
+    <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a>	node
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	targetNamespace
+    int	flags
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	refPrefix	: Deprecated; not used
+    <a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a>	defVal	: The compiled value constraint
+    <a href="libxml2-schemasInternals.html#xmlSchemaAttributePtr">xmlSchemaAttributePtr</a>	refDecl	: Deprecated; not used
+} xmlSchemaAttribute;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaAttributeGroup">Structure </a>xmlSchemaAttributeGroup</h3><pre class="programlisting">struct _xmlSchemaAttributeGroup {
+    <a href="libxml2-schemasInternals.html#xmlSchemaTypeType">xmlSchemaTypeType</a>	type	: The kind of type
+    struct _xmlSchemaAttribute *	next	: the next <a href="libxml2-SAX.html#attribute">attribute</a> if in a group ...
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	name
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	id
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	ref	: Deprecated; not used
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	refNs	: Deprecated; not used
+    <a href="libxml2-schemasInternals.html#xmlSchemaAnnotPtr">xmlSchemaAnnotPtr</a>	annot
+    <a href="libxml2-schemasInternals.html#xmlSchemaAttributePtr">xmlSchemaAttributePtr</a>	attributes	: Deprecated; not used
+    <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a>	node
+    int	flags
+    <a href="libxml2-schemasInternals.html#xmlSchemaWildcardPtr">xmlSchemaWildcardPtr</a>	attributeWildcard
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	refPrefix	: Deprecated; not used
+    <a href="libxml2-schemasInternals.html#xmlSchemaAttributeGroupPtr">xmlSchemaAttributeGroupPtr</a>	refItem	: Deprecated; not used
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	targetNamespace
+    void *	attrUses
+} xmlSchemaAttributeGroup;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaAttributeGroupPtr">Typedef </a>xmlSchemaAttributeGroupPtr</h3><pre class="programlisting"><a href="libxml2-schemasInternals.html#xmlSchemaAttributeGroup">xmlSchemaAttributeGroup</a> * xmlSchemaAttributeGroupPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaAttributeLink">Structure </a>xmlSchemaAttributeLink</h3><pre class="programlisting">struct _xmlSchemaAttributeLink {
+    struct _xmlSchemaAttributeLink *	next	: the next <a href="libxml2-SAX.html#attribute">attribute</a> link ...
+    struct _xmlSchemaAttribute *	attr	: the linked <a href="libxml2-SAX.html#attribute">attribute</a>
+} xmlSchemaAttributeLink;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaAttributeLinkPtr">Typedef </a>xmlSchemaAttributeLinkPtr</h3><pre class="programlisting"><a href="libxml2-schemasInternals.html#xmlSchemaAttributeLink">xmlSchemaAttributeLink</a> * xmlSchemaAttributeLinkPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaAttributePtr">Typedef </a>xmlSchemaAttributePtr</h3><pre class="programlisting"><a href="libxml2-schemasInternals.html#xmlSchemaAttribute">xmlSchemaAttribute</a> * xmlSchemaAttributePtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaContentType">Enum </a>xmlSchemaContentType</h3><pre class="programlisting">enum <a href="#xmlSchemaContentType">xmlSchemaContentType</a> {
+    <a name="XML_SCHEMA_CONTENT_UNKNOWN">XML_SCHEMA_CONTENT_UNKNOWN</a> = 0
+    <a name="XML_SCHEMA_CONTENT_EMPTY">XML_SCHEMA_CONTENT_EMPTY</a> = 1
+    <a name="XML_SCHEMA_CONTENT_ELEMENTS">XML_SCHEMA_CONTENT_ELEMENTS</a> = 2
+    <a name="XML_SCHEMA_CONTENT_MIXED">XML_SCHEMA_CONTENT_MIXED</a> = 3
+    <a name="XML_SCHEMA_CONTENT_SIMPLE">XML_SCHEMA_CONTENT_SIMPLE</a> = 4
+    <a name="XML_SCHEMA_CONTENT_MIXED_OR_ELEMENTS">XML_SCHEMA_CONTENT_MIXED_OR_ELEMENTS</a> = 5 /* Obsolete */
+    <a name="XML_SCHEMA_CONTENT_BASIC">XML_SCHEMA_CONTENT_BASIC</a> = 6
+    <a name="XML_SCHEMA_CONTENT_ANY">XML_SCHEMA_CONTENT_ANY</a> = 7
+};
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaElement">Structure </a>xmlSchemaElement</h3><pre class="programlisting">struct _xmlSchemaElement {
+    <a href="libxml2-schemasInternals.html#xmlSchemaTypeType">xmlSchemaTypeType</a>	type	: The kind of type
+    struct _xmlSchemaType *	next	: Not used?
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	name
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	id	: Deprecated; not used
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	ref	: Deprecated; not used
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	refNs	: Deprecated; not used
+    <a href="libxml2-schemasInternals.html#xmlSchemaAnnotPtr">xmlSchemaAnnotPtr</a>	annot
+    <a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a>	subtypes	: the type definition
+    <a href="libxml2-schemasInternals.html#xmlSchemaAttributePtr">xmlSchemaAttributePtr</a>	attributes
+    <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a>	node
+    int	minOccurs	: Deprecated; not used
+    int	maxOccurs	: Deprecated; not used
+    int	flags
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	targetNamespace
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	namedType
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	namedTypeNs
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	substGroup
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	substGroupNs
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	scope
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	value	: The original value of the value constraint.
+    struct _xmlSchemaElement *	refDecl	: This will now be used for the substitution group affiliation
+    <a href="libxml2-xmlregexp.html#xmlRegexpPtr">xmlRegexpPtr</a>	contModel	: Obsolete for WXS, maybe used for RelaxNG
+    <a href="libxml2-schemasInternals.html#xmlSchemaContentType">xmlSchemaContentType</a>	contentType
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	refPrefix	: Deprecated; not used
+    <a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a>	defVal	: The compiled value contraint.
+    void *	idcs	: The identity-constraint defs
+} xmlSchemaElement;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaElementPtr">Typedef </a>xmlSchemaElementPtr</h3><pre class="programlisting"><a href="libxml2-schemasInternals.html#xmlSchemaElement">xmlSchemaElement</a> * xmlSchemaElementPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaFacet">Structure </a>xmlSchemaFacet</h3><pre class="programlisting">struct _xmlSchemaFacet {
+    <a href="libxml2-schemasInternals.html#xmlSchemaTypeType">xmlSchemaTypeType</a>	type	: The kind of type
+    struct _xmlSchemaFacet *	next	: the next type if in a sequence ...
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	value	: The original value
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	id	: Obsolete
+    <a href="libxml2-schemasInternals.html#xmlSchemaAnnotPtr">xmlSchemaAnnotPtr</a>	annot
+    <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a>	node
+    int	fixed	: XML_SCHEMAS_FACET_PRESERVE, etc.
+    int	whitespace
+    <a href="libxml2-schemasInternals.html#xmlSchemaValPtr">xmlSchemaValPtr</a>	val	: The compiled value
+    <a href="libxml2-xmlregexp.html#xmlRegexpPtr">xmlRegexpPtr</a>	regexp	: The regex for patterns
+} xmlSchemaFacet;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaFacetLink">Structure </a>xmlSchemaFacetLink</h3><pre class="programlisting">struct _xmlSchemaFacetLink {
+    struct _xmlSchemaFacetLink *	next	: the next facet link ...
+    <a href="libxml2-schemasInternals.html#xmlSchemaFacetPtr">xmlSchemaFacetPtr</a>	facet	: the linked facet
+} xmlSchemaFacetLink;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaFacetLinkPtr">Typedef </a>xmlSchemaFacetLinkPtr</h3><pre class="programlisting"><a href="libxml2-schemasInternals.html#xmlSchemaFacetLink">xmlSchemaFacetLink</a> * xmlSchemaFacetLinkPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaFacetPtr">Typedef </a>xmlSchemaFacetPtr</h3><pre class="programlisting"><a href="libxml2-schemasInternals.html#xmlSchemaFacet">xmlSchemaFacet</a> * xmlSchemaFacetPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaNotation">Structure </a>xmlSchemaNotation</h3><pre class="programlisting">struct _xmlSchemaNotation {
+    <a href="libxml2-schemasInternals.html#xmlSchemaTypeType">xmlSchemaTypeType</a>	type	: The kind of type
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	name
+    <a href="libxml2-schemasInternals.html#xmlSchemaAnnotPtr">xmlSchemaAnnotPtr</a>	annot
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	identifier
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	targetNamespace
+} xmlSchemaNotation;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaNotationPtr">Typedef </a>xmlSchemaNotationPtr</h3><pre class="programlisting"><a href="libxml2-schemasInternals.html#xmlSchemaNotation">xmlSchemaNotation</a> * xmlSchemaNotationPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaType">Structure </a>xmlSchemaType</h3><pre class="programlisting">struct _xmlSchemaType {
+    <a href="libxml2-schemasInternals.html#xmlSchemaTypeType">xmlSchemaTypeType</a>	type	: The kind of type
+    struct _xmlSchemaType *	next	: the next type if in a sequence ...
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	name
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	id	: Deprecated; not used
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	ref	: Deprecated; not used
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	refNs	: Deprecated; not used
+    <a href="libxml2-schemasInternals.html#xmlSchemaAnnotPtr">xmlSchemaAnnotPtr</a>	annot
+    <a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a>	subtypes
+    <a href="libxml2-schemasInternals.html#xmlSchemaAttributePtr">xmlSchemaAttributePtr</a>	attributes	: Deprecated; not used
+    <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a>	node
+    int	minOccurs	: Deprecated; not used
+    int	maxOccurs	: Deprecated; not used
+    int	flags
+    <a href="libxml2-schemasInternals.html#xmlSchemaContentType">xmlSchemaContentType</a>	contentType
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	base	: Base type's local name
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	baseNs	: Base type's target namespace
+    <a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a>	baseType	: The base type component
+    <a href="libxml2-schemasInternals.html#xmlSchemaFacetPtr">xmlSchemaFacetPtr</a>	facets	: Local facets
+    struct _xmlSchemaType *	redef	: Deprecated; not used
+    int	recurse	: Obsolete
+    <a href="libxml2-schemasInternals.html#xmlSchemaAttributeLinkPtr">xmlSchemaAttributeLinkPtr</a> *	attributeUses	: Deprecated; not used
+    <a href="libxml2-schemasInternals.html#xmlSchemaWildcardPtr">xmlSchemaWildcardPtr</a>	attributeWildcard
+    int	builtInType	: Type of built-in types.
+    <a href="libxml2-schemasInternals.html#xmlSchemaTypeLinkPtr">xmlSchemaTypeLinkPtr</a>	memberTypes	: member-types if a union type.
+    <a href="libxml2-schemasInternals.html#xmlSchemaFacetLinkPtr">xmlSchemaFacetLinkPtr</a>	facetSet	: All facets (incl. inherited)
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	refPrefix	: Deprecated; not used
+    <a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a>	contentTypeDef	: Used for the simple content of complex types. Could we use @subtypes
+    <a href="libxml2-xmlregexp.html#xmlRegexpPtr">xmlRegexpPtr</a>	contModel	: Holds the automaton of the content model
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	targetNamespace
+    void *	attrUses
+} xmlSchemaType;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaTypeLink">Structure </a>xmlSchemaTypeLink</h3><pre class="programlisting">struct _xmlSchemaTypeLink {
+    struct _xmlSchemaTypeLink *	next	: the next type link ...
+    <a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a>	type	: the linked type
+} xmlSchemaTypeLink;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaTypeLinkPtr">Typedef </a>xmlSchemaTypeLinkPtr</h3><pre class="programlisting"><a href="libxml2-schemasInternals.html#xmlSchemaTypeLink">xmlSchemaTypeLink</a> * xmlSchemaTypeLinkPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaTypePtr">Typedef </a>xmlSchemaTypePtr</h3><pre class="programlisting"><a href="libxml2-schemasInternals.html#xmlSchemaType">xmlSchemaType</a> * xmlSchemaTypePtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaTypeType">Enum </a>xmlSchemaTypeType</h3><pre class="programlisting">enum <a href="#xmlSchemaTypeType">xmlSchemaTypeType</a> {
+    <a name="XML_SCHEMA_TYPE_BASIC">XML_SCHEMA_TYPE_BASIC</a> = 1 /* A built-in datatype */
+    <a name="XML_SCHEMA_TYPE_ANY">XML_SCHEMA_TYPE_ANY</a> = 2
+    <a name="XML_SCHEMA_TYPE_FACET">XML_SCHEMA_TYPE_FACET</a> = 3
+    <a name="XML_SCHEMA_TYPE_SIMPLE">XML_SCHEMA_TYPE_SIMPLE</a> = 4
+    <a name="XML_SCHEMA_TYPE_COMPLEX">XML_SCHEMA_TYPE_COMPLEX</a> = 5
+    <a name="XML_SCHEMA_TYPE_SEQUENCE">XML_SCHEMA_TYPE_SEQUENCE</a> = 6
+    <a name="XML_SCHEMA_TYPE_CHOICE">XML_SCHEMA_TYPE_CHOICE</a> = 7
+    <a name="XML_SCHEMA_TYPE_ALL">XML_SCHEMA_TYPE_ALL</a> = 8
+    <a name="XML_SCHEMA_TYPE_SIMPLE_CONTENT">XML_SCHEMA_TYPE_SIMPLE_CONTENT</a> = 9
+    <a name="XML_SCHEMA_TYPE_COMPLEX_CONTENT">XML_SCHEMA_TYPE_COMPLEX_CONTENT</a> = 10
+    <a name="XML_SCHEMA_TYPE_UR">XML_SCHEMA_TYPE_UR</a> = 11
+    <a name="XML_SCHEMA_TYPE_RESTRICTION">XML_SCHEMA_TYPE_RESTRICTION</a> = 12
+    <a name="XML_SCHEMA_TYPE_EXTENSION">XML_SCHEMA_TYPE_EXTENSION</a> = 13
+    <a name="XML_SCHEMA_TYPE_ELEMENT">XML_SCHEMA_TYPE_ELEMENT</a> = 14
+    <a name="XML_SCHEMA_TYPE_ATTRIBUTE">XML_SCHEMA_TYPE_ATTRIBUTE</a> = 15
+    <a name="XML_SCHEMA_TYPE_ATTRIBUTEGROUP">XML_SCHEMA_TYPE_ATTRIBUTEGROUP</a> = 16
+    <a name="XML_SCHEMA_TYPE_GROUP">XML_SCHEMA_TYPE_GROUP</a> = 17
+    <a name="XML_SCHEMA_TYPE_NOTATION">XML_SCHEMA_TYPE_NOTATION</a> = 18
+    <a name="XML_SCHEMA_TYPE_LIST">XML_SCHEMA_TYPE_LIST</a> = 19
+    <a name="XML_SCHEMA_TYPE_UNION">XML_SCHEMA_TYPE_UNION</a> = 20
+    <a name="XML_SCHEMA_TYPE_ANY_ATTRIBUTE">XML_SCHEMA_TYPE_ANY_ATTRIBUTE</a> = 21
+    <a name="XML_SCHEMA_TYPE_IDC_UNIQUE">XML_SCHEMA_TYPE_IDC_UNIQUE</a> = 22
+    <a name="XML_SCHEMA_TYPE_IDC_KEY">XML_SCHEMA_TYPE_IDC_KEY</a> = 23
+    <a name="XML_SCHEMA_TYPE_IDC_KEYREF">XML_SCHEMA_TYPE_IDC_KEYREF</a> = 24
+    <a name="XML_SCHEMA_TYPE_PARTICLE">XML_SCHEMA_TYPE_PARTICLE</a> = 25
+    <a name="XML_SCHEMA_TYPE_ATTRIBUTE_USE">XML_SCHEMA_TYPE_ATTRIBUTE_USE</a> = 26
+    <a name="XML_SCHEMA_FACET_MININCLUSIVE">XML_SCHEMA_FACET_MININCLUSIVE</a> = 1000
+    <a name="XML_SCHEMA_FACET_MINEXCLUSIVE">XML_SCHEMA_FACET_MINEXCLUSIVE</a> = 1001
+    <a name="XML_SCHEMA_FACET_MAXINCLUSIVE">XML_SCHEMA_FACET_MAXINCLUSIVE</a> = 1002
+    <a name="XML_SCHEMA_FACET_MAXEXCLUSIVE">XML_SCHEMA_FACET_MAXEXCLUSIVE</a> = 1003
+    <a name="XML_SCHEMA_FACET_TOTALDIGITS">XML_SCHEMA_FACET_TOTALDIGITS</a> = 1004
+    <a name="XML_SCHEMA_FACET_FRACTIONDIGITS">XML_SCHEMA_FACET_FRACTIONDIGITS</a> = 1005
+    <a name="XML_SCHEMA_FACET_PATTERN">XML_SCHEMA_FACET_PATTERN</a> = 1006
+    <a name="XML_SCHEMA_FACET_ENUMERATION">XML_SCHEMA_FACET_ENUMERATION</a> = 1007
+    <a name="XML_SCHEMA_FACET_WHITESPACE">XML_SCHEMA_FACET_WHITESPACE</a> = 1008
+    <a name="XML_SCHEMA_FACET_LENGTH">XML_SCHEMA_FACET_LENGTH</a> = 1009
+    <a name="XML_SCHEMA_FACET_MAXLENGTH">XML_SCHEMA_FACET_MAXLENGTH</a> = 1010
+    <a name="XML_SCHEMA_FACET_MINLENGTH">XML_SCHEMA_FACET_MINLENGTH</a> = 1011
+    <a name="XML_SCHEMA_EXTRA_QNAMEREF">XML_SCHEMA_EXTRA_QNAMEREF</a> = 2000
+    <a name="XML_SCHEMA_EXTRA_ATTR_USE_PROHIB">XML_SCHEMA_EXTRA_ATTR_USE_PROHIB</a> = 2001
+};
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaVal">Structure </a>xmlSchemaVal</h3><pre class="programlisting">struct _xmlSchemaVal {
+The content of this structure is not made public by the API.
+} xmlSchemaVal;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaValPtr">Typedef </a>xmlSchemaValPtr</h3><pre class="programlisting"><a href="libxml2-schemasInternals.html#xmlSchemaVal">xmlSchemaVal</a> * xmlSchemaValPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaValType">Enum </a>xmlSchemaValType</h3><pre class="programlisting">enum <a href="#xmlSchemaValType">xmlSchemaValType</a> {
+    <a name="XML_SCHEMAS_UNKNOWN">XML_SCHEMAS_UNKNOWN</a> = 0
+    <a name="XML_SCHEMAS_STRING">XML_SCHEMAS_STRING</a> = 1
+    <a name="XML_SCHEMAS_NORMSTRING">XML_SCHEMAS_NORMSTRING</a> = 2
+    <a name="XML_SCHEMAS_DECIMAL">XML_SCHEMAS_DECIMAL</a> = 3
+    <a name="XML_SCHEMAS_TIME">XML_SCHEMAS_TIME</a> = 4
+    <a name="XML_SCHEMAS_GDAY">XML_SCHEMAS_GDAY</a> = 5
+    <a name="XML_SCHEMAS_GMONTH">XML_SCHEMAS_GMONTH</a> = 6
+    <a name="XML_SCHEMAS_GMONTHDAY">XML_SCHEMAS_GMONTHDAY</a> = 7
+    <a name="XML_SCHEMAS_GYEAR">XML_SCHEMAS_GYEAR</a> = 8
+    <a name="XML_SCHEMAS_GYEARMONTH">XML_SCHEMAS_GYEARMONTH</a> = 9
+    <a name="XML_SCHEMAS_DATE">XML_SCHEMAS_DATE</a> = 10
+    <a name="XML_SCHEMAS_DATETIME">XML_SCHEMAS_DATETIME</a> = 11
+    <a name="XML_SCHEMAS_DURATION">XML_SCHEMAS_DURATION</a> = 12
+    <a name="XML_SCHEMAS_FLOAT">XML_SCHEMAS_FLOAT</a> = 13
+    <a name="XML_SCHEMAS_DOUBLE">XML_SCHEMAS_DOUBLE</a> = 14
+    <a name="XML_SCHEMAS_BOOLEAN">XML_SCHEMAS_BOOLEAN</a> = 15
+    <a name="XML_SCHEMAS_TOKEN">XML_SCHEMAS_TOKEN</a> = 16
+    <a name="XML_SCHEMAS_LANGUAGE">XML_SCHEMAS_LANGUAGE</a> = 17
+    <a name="XML_SCHEMAS_NMTOKEN">XML_SCHEMAS_NMTOKEN</a> = 18
+    <a name="XML_SCHEMAS_NMTOKENS">XML_SCHEMAS_NMTOKENS</a> = 19
+    <a name="XML_SCHEMAS_NAME">XML_SCHEMAS_NAME</a> = 20
+    <a name="XML_SCHEMAS_QNAME">XML_SCHEMAS_QNAME</a> = 21
+    <a name="XML_SCHEMAS_NCNAME">XML_SCHEMAS_NCNAME</a> = 22
+    <a name="XML_SCHEMAS_ID">XML_SCHEMAS_ID</a> = 23
+    <a name="XML_SCHEMAS_IDREF">XML_SCHEMAS_IDREF</a> = 24
+    <a name="XML_SCHEMAS_IDREFS">XML_SCHEMAS_IDREFS</a> = 25
+    <a name="XML_SCHEMAS_ENTITY">XML_SCHEMAS_ENTITY</a> = 26
+    <a name="XML_SCHEMAS_ENTITIES">XML_SCHEMAS_ENTITIES</a> = 27
+    <a name="XML_SCHEMAS_NOTATION">XML_SCHEMAS_NOTATION</a> = 28
+    <a name="XML_SCHEMAS_ANYURI">XML_SCHEMAS_ANYURI</a> = 29
+    <a name="XML_SCHEMAS_INTEGER">XML_SCHEMAS_INTEGER</a> = 30
+    <a name="XML_SCHEMAS_NPINTEGER">XML_SCHEMAS_NPINTEGER</a> = 31
+    <a name="XML_SCHEMAS_NINTEGER">XML_SCHEMAS_NINTEGER</a> = 32
+    <a name="XML_SCHEMAS_NNINTEGER">XML_SCHEMAS_NNINTEGER</a> = 33
+    <a name="XML_SCHEMAS_PINTEGER">XML_SCHEMAS_PINTEGER</a> = 34
+    <a name="XML_SCHEMAS_INT">XML_SCHEMAS_INT</a> = 35
+    <a name="XML_SCHEMAS_UINT">XML_SCHEMAS_UINT</a> = 36
+    <a name="XML_SCHEMAS_LONG">XML_SCHEMAS_LONG</a> = 37
+    <a name="XML_SCHEMAS_ULONG">XML_SCHEMAS_ULONG</a> = 38
+    <a name="XML_SCHEMAS_SHORT">XML_SCHEMAS_SHORT</a> = 39
+    <a name="XML_SCHEMAS_USHORT">XML_SCHEMAS_USHORT</a> = 40
+    <a name="XML_SCHEMAS_BYTE">XML_SCHEMAS_BYTE</a> = 41
+    <a name="XML_SCHEMAS_UBYTE">XML_SCHEMAS_UBYTE</a> = 42
+    <a name="XML_SCHEMAS_HEXBINARY">XML_SCHEMAS_HEXBINARY</a> = 43
+    <a name="XML_SCHEMAS_BASE64BINARY">XML_SCHEMAS_BASE64BINARY</a> = 44
+    <a name="XML_SCHEMAS_ANYTYPE">XML_SCHEMAS_ANYTYPE</a> = 45
+    <a name="XML_SCHEMAS_ANYSIMPLETYPE">XML_SCHEMAS_ANYSIMPLETYPE</a> = 46
+};
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaWildcard">Structure </a>xmlSchemaWildcard</h3><pre class="programlisting">struct _xmlSchemaWildcard {
+    <a href="libxml2-schemasInternals.html#xmlSchemaTypeType">xmlSchemaTypeType</a>	type	: The kind of type
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	id	: Deprecated; not used
+    <a href="libxml2-schemasInternals.html#xmlSchemaAnnotPtr">xmlSchemaAnnotPtr</a>	annot
+    <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a>	node
+    int	minOccurs	: Deprecated; not used
+    int	maxOccurs	: Deprecated; not used
+    int	processContents
+    int	any	: Indicates if the ns constraint is of ##any
+    <a href="libxml2-schemasInternals.html#xmlSchemaWildcardNsPtr">xmlSchemaWildcardNsPtr</a>	nsSet	: The list of allowed namespaces
+    <a href="libxml2-schemasInternals.html#xmlSchemaWildcardNsPtr">xmlSchemaWildcardNsPtr</a>	negNsSet	: The negated namespace
+    int	flags
+} xmlSchemaWildcard;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaWildcardNs">Structure </a>xmlSchemaWildcardNs</h3><pre class="programlisting">struct _xmlSchemaWildcardNs {
+    struct _xmlSchemaWildcardNs *	next	: the next constraint link ...
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	value	: the value
+} xmlSchemaWildcardNs;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaWildcardNsPtr">Typedef </a>xmlSchemaWildcardNsPtr</h3><pre class="programlisting"><a href="libxml2-schemasInternals.html#xmlSchemaWildcardNs">xmlSchemaWildcardNs</a> * xmlSchemaWildcardNsPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaWildcardPtr">Typedef </a>xmlSchemaWildcardPtr</h3><pre class="programlisting"><a href="libxml2-schemasInternals.html#xmlSchemaWildcard">xmlSchemaWildcard</a> * xmlSchemaWildcardPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaFreeType"/>xmlSchemaFreeType ()</h3><pre class="programlisting">void	xmlSchemaFreeType		(<a href="libxml2-schemasInternals.html#xmlSchemaTypePtr">xmlSchemaTypePtr</a> type)<br/>
+</pre><p>Deallocate a Schema Type structure.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>type</tt></i>:</span></td><td>a schema type structure</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlSchemaFreeWildcard"/>xmlSchemaFreeWildcard ()</h3><pre class="programlisting">void	xmlSchemaFreeWildcard		(<a href="libxml2-schemasInternals.html#xmlSchemaWildcardPtr">xmlSchemaWildcardPtr</a> wildcard)<br/>
+</pre><p>Deallocates a wildcard structure.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>wildcard</tt></i>:</span></td><td>a wildcard structure</td></tr></tbody></table></div></div>
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

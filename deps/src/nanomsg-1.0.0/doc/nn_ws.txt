@@ -1,0 +1,102 @@
+nn_ws(7)
+========
+
+NAME
+----
+nn_ws - WebSocket transport mechanism
+
+
+SYNOPSIS
+--------
+*#include <nanomsg/nn.h>*
+
+*#include <nanomsg/ws.h>*
+
+
+DESCRIPTION
+-----------
+
+The WebSocket transport uses the framing protocol specified in RFC 6455 to
+transport messages. The initial handshake is done using HTTP headers, with the
+`Sec-Websocket-Protocol` header set to the SP protocol used by the server.
+For example, a REQ client will send `rep.sp.nanomsg.org`.
+
+Each SP message is transported in a single WebSocket frame, with no additional
+data or headers applied. By default this library sends and expects to receive
+binary frames.
+
+When calling either `nn_bind()` or `nn_connect()`, omitting the port defaults
+to the RFC 6455 default port 80 for HTTP. For example, `ws://127.0.0.1` is
+equivalent to `ws://127.0.0.1:80`
+
+WebSocket over TLS is not supported by this library, at this time.
+
+URI limitations
+~~~~~~~~~~~~~~~
+When calling `nn_connect()`, the URI may also optionally include the path to a
+resource and/or query parameters.
+
+.Path and query parameters
+==========================
+    s1 = nn_socket (AF_SP, NN_PAIR);
+    nn_connect (s1, "ws://example.com/path?query=value");
+==========================
+
+This implementation includes the full path and any query parameters in the
+HTTP handshake when establishing connections with `nn_connect()`. This
+information is not available via the nanomsg API afterwards, however.
+
+Likewise, this implementation does not examine or use either any path or
+query parameters that may be supplied to `nn_bind()`, as it only binds to
+the TCP port.  This implementation acts as a limited HTTP server that offers
+SP over WebSocket at all URIs for the given TCP address.
+
+Applications, however, should not depend on this behavior; intervening
+infrastructure may proxy, filter or route based on URI, and other
+implementations of the SP over WebSocket protocol may offer other
+HTTP services at the same TCP port, utilizing the path, query parameters,
+or both to determine the service to be used.
+
+Socket Options
+~~~~~~~~~~~~~~
+
+NN_WS_MSG_TYPE::
+    This option may be set to NN_WS_MSG_TYPE_TEXT or NN_WS_MSG_TYPE_BINARY.
+    The value of this determines whether data messages are sent as WebSocket
+    text frames, or binary frames, per RFC 6455.  Text frames should contain
+    only valid UTF-8 text in their payload, or they will be rejected.  Binary
+    frames may contain any data.  Not all WebSocket implementations support
+    binary frames.  The default is to send binary frames.
++
+This option may also be specified as control data when when sending
+a message with `nn_sendmsg()`.
+
+TODO: NN_TCP_NODELAY::
+    This option, when set to 1, disables Nagle's algorithm. It also disables
+    delaying of TCP acknowledgments. Using this option improves latency at
+    the expense of throughput. Type of this option is int. Default value is 0.
+
+
+EXAMPLE
+-------
+
+----
+nn_bind (s1, "ws://*:5555");
+nn_connect (s2, "ws://myserver:5555");
+----
+
+SEE ALSO
+--------
+<<nn_tcp.7.txt#,nn_tcp(7)>>
+<<nn_inproc.7.txt#,nn_inproc(7)>>
+<<nn_ipc.7.txt#,nn_ipc(7)>>
+<<nn_bind.3.txt#,nn_bind(3)>>
+<<nn_connect.3.txt#,nn_connect(3)>>
+<<nanomsg.7.txt#,nanomsg(7)>>
+
+
+AUTHORS
+-------
+link:mailto:sustrik@250bpm.com[Martin Sustrik]
+link:mailto:jack@wirebirdlabs.com[Jack R. Dunaway]
+link:mailto:garrett@damore.org[Garrett D'Amore]

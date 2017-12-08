@@ -1,0 +1,56 @@
+nn_inproc(7)
+============
+
+NAME
+----
+nn_inproc - in-process transport mechanism
+
+
+SYNOPSIS
+--------
+*#include <nanomsg/nn.h>*
+
+*#include <nanomsg/inproc.h>*
+
+
+DESCRIPTION
+-----------
+In-process transport allows to send messages between threads or modules inside a
+process. In-process address is an arbitrary case-sensitive string preceded by
+'inproc://' protocol specifier. All in-process addresses are visible from any
+module within the process. They are not visible from outside of the process.
+
+The nature of in-process transport makes it easy to pass pointers between
+threads instead of actual data. This is, however, considered a bad application
+design and violates the scalable share-nothing architecture. If you do pass
+pointers among threads, synchronising thread access to shared data becomes
+your responsibility. Such design also prevents moving the thread into different
+process or machine once the need arises. As a rule of the thumb, don't pass
+pointers among threads unless you know what you are doing.
+
+The overall buffer size for an inproc connection is determined by NN_RCVBUF
+socket option on the receiving end of the connection. NN_SNDBUF socket option
+is ignored. In addition to the buffer, one message of arbitrary size will fit
+into the buffer. That way, even messages larger than the buffer can be
+transfered via inproc connection.
+
+EXAMPLE
+-------
+
+----
+nn_bind (s1, "inproc://test");
+nn_connect (s2, "inproc://test);
+----
+
+SEE ALSO
+--------
+<<nn_ipc.7.txt#,nn_ipc(7)>>
+<<nn_tcp.7.txt#,nn_tcp(7)>>
+<<nn_bind.3.txt#,nn_bind(3)>>
+<<nn_connect.3.txt#,nn_connect(3)>>
+<<nanomsg.7.txt#,nanomsg(7)>>
+
+
+AUTHORS
+-------
+link:mailto:sustrik@250bpm.com[Martin Sustrik]

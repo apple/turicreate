@@ -1,0 +1,7 @@
+This directory contains the documentation for nanomsg library. To build the
+documentation (both man pages and web pages) do "./configure --enable-doc" and
+"make" in the build directory; man pages will be installed with "make install".
+You must have asciidoctor installed.
+
+The stylesheet.css file is taken from asciidoctor-stylesheet-factory, and
+is the colony theme.
