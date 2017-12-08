@@ -124,7 +124,7 @@ if __name__ == '__main__':
     setup(
         name="turicreate",
         version=VERSION,
-        author='Turi',
+        author='Apple Inc.',
         author_email='turi-create@group.apple.com',
         cmdclass=dict(install=InstallEngine),
         distclass=BinaryDistribution,
