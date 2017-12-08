@@ -45,8 +45,7 @@ With Turi Create, you can can tackle a number of common scenarios:
 * [Activity classifier](userguide/activity_classifier/introduction.md)
 * [Text classifier](userguide/text_classifier/introduction.md)
 
-as well as essential machine learning models, organized into algorithm-based toolkits:
-
+You can also work with essential machine learning models, organized into algorithm-based toolkits:
 * [Classifiers](userguide/supervised-learning/classifier.md)
 * [Regression](userguide/supervised-learning/regression.md)
 * [Graph analytics](userguide/graph_analytics/intro.md)
