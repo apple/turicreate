@@ -122,8 +122,8 @@ separately add it as well. Next step is to uninstall `mxnet` and install the
 CUDA-enabled `mxnet-cu80` package:
 
 ```
-(pythonenv) pip uninstall -y mxnet
-(pythonenv) pip install mxnet-cu80==0.11.0
+(venv) pip uninstall -y mxnet
+(venv) pip install mxnet-cu80==0.11.0
 ```
 
 Make sure you install the same version of MXNet as the one `turicreate` depends
