@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>threads: interfaces for thread handling</title>
+    <meta name="generator" content="Libxml2 devhelp stylesheet"/>
+    <link rel="start" href="index.html" title="libxml2 Reference Manual"/>
+    <link rel="up" href="general.html" title="API"/>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+    <link rel="chapter" href="general.html" title="API"/>
+  </head>
+  <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+    <table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+      <tr valign="middle">
+        <td>
+          <a accesskey="p" href="libxml2-schematron.html">
+            <img src="left.png" width="24" height="24" border="0" alt="Prev"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="u" href="general.html">
+            <img src="up.png" width="24" height="24" border="0" alt="Up"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="h" href="index.html">
+            <img src="home.png" width="24" height="24" border="0" alt="Home"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="n" href="libxml2-tree.html">
+            <img src="right.png" width="24" height="24" border="0" alt="Next"/>
+          </a>
+        </td>
+        <th width="100%" align="center">libxml2 Reference Manual</th>
+      </tr>
+    </table>
+    <h2>
+      <span class="refentrytitle">threads</span>
+    </h2>
+    <p>threads - interfaces for thread handling</p>
+    <p>set of generic threading related routines should work with pthreads, Windows native or TLS threads </p>
+    <p>Author(s): Daniel Veillard </p>
+    <div class="refsynopsisdiv">
+      <h2>Synopsis</h2>
+      <pre class="synopsis">typedef struct _xmlMutex <a href="#xmlMutex">xmlMutex</a>;
+typedef struct _xmlRMutex <a href="#xmlRMutex">xmlRMutex</a>;
+typedef <a href="libxml2-threads.html#xmlRMutex">xmlRMutex</a> * <a href="#xmlRMutexPtr">xmlRMutexPtr</a>;
+typedef <a href="libxml2-threads.html#xmlMutex">xmlMutex</a> * <a href="#xmlMutexPtr">xmlMutexPtr</a>;
+void	<a href="#xmlFreeRMutex">xmlFreeRMutex</a>			(<a href="libxml2-threads.html#xmlRMutexPtr">xmlRMutexPtr</a> tok);
+int	<a href="#xmlGetThreadId">xmlGetThreadId</a>			(void);
+void	<a href="#xmlMutexUnlock">xmlMutexUnlock</a>			(<a href="libxml2-threads.html#xmlMutexPtr">xmlMutexPtr</a> tok);
+void	<a href="#xmlCleanupThreads">xmlCleanupThreads</a>		(void);
+void	<a href="#xmlLockLibrary">xmlLockLibrary</a>			(void);
+<a href="libxml2-threads.html#xmlRMutexPtr">xmlRMutexPtr</a>	<a href="#xmlNewRMutex">xmlNewRMutex</a>		(void);
+void	<a href="#xmlMutexLock">xmlMutexLock</a>			(<a href="libxml2-threads.html#xmlMutexPtr">xmlMutexPtr</a> tok);
+int	<a href="#xmlIsMainThread">xmlIsMainThread</a>			(void);
+void	<a href="#xmlRMutexUnlock">xmlRMutexUnlock</a>			(<a href="libxml2-threads.html#xmlRMutexPtr">xmlRMutexPtr</a> tok);
+<a href="libxml2-globals.html#xmlGlobalStatePtr">xmlGlobalStatePtr</a>	<a href="#xmlGetGlobalState">xmlGetGlobalState</a>	(void);
+<a href="libxml2-threads.html#xmlMutexPtr">xmlMutexPtr</a>	<a href="#xmlNewMutex">xmlNewMutex</a>		(void);
+int	<a href="#xmlDllMain">xmlDllMain</a>			(void * hinstDLL, <br/>					 unsigned long fdwReason, <br/>					 void * lpvReserved);
+void	<a href="#xmlFreeMutex">xmlFreeMutex</a>			(<a href="libxml2-threads.html#xmlMutexPtr">xmlMutexPtr</a> tok);
+void	<a href="#xmlUnlockLibrary">xmlUnlockLibrary</a>		(void);
+void	<a href="#xmlInitThreads">xmlInitThreads</a>			(void);
+void	<a href="#xmlRMutexLock">xmlRMutexLock</a>			(<a href="libxml2-threads.html#xmlRMutexPtr">xmlRMutexPtr</a> tok);
+</pre>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Description</h2>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Details</h2>
+      <div class="refsect2" lang="en">
+        <div class="refsect2" lang="en"><h3><a name="xmlMutex">Structure </a>xmlMutex</h3><pre class="programlisting">struct _xmlMutex {
+The content of this structure is not made public by the API.
+} xmlMutex;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlMutexPtr">Typedef </a>xmlMutexPtr</h3><pre class="programlisting"><a href="libxml2-threads.html#xmlMutex">xmlMutex</a> * xmlMutexPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlRMutex">Structure </a>xmlRMutex</h3><pre class="programlisting">struct _xmlRMutex {
+The content of this structure is not made public by the API.
+} xmlRMutex;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlRMutexPtr">Typedef </a>xmlRMutexPtr</h3><pre class="programlisting"><a href="libxml2-threads.html#xmlRMutex">xmlRMutex</a> * xmlRMutexPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlCleanupThreads"/>xmlCleanupThreads ()</h3><pre class="programlisting">void	xmlCleanupThreads		(void)<br/>
+</pre><p>xmlCleanupThreads() is used to to cleanup all the thread related data of the libxml2 library once processing has ended. WARNING: if your application is multithreaded or has plugin support calling this may crash the application if another thread or a plugin is still using libxml2. It's sometimes very hard to guess if libxml2 is in use in the application, some libraries or plugins may use it without notice. In case of doubt abstain from calling this function or do it just before calling exit() to avoid leak reports from valgrind !</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlDllMain"/>xmlDllMain ()</h3><pre class="programlisting">int	xmlDllMain			(void * hinstDLL, <br/>					 unsigned long fdwReason, <br/>					 void * lpvReserved)<br/>
+</pre><p/>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>hinstDLL</tt></i>:</span></td><td/></tr><tr><td><span class="term"><i><tt>fdwReason</tt></i>:</span></td><td/></tr><tr><td><span class="term"><i><tt>lpvReserved</tt></i>:</span></td><td/></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td/></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlFreeMutex"/>xmlFreeMutex ()</h3><pre class="programlisting">void	xmlFreeMutex			(<a href="libxml2-threads.html#xmlMutexPtr">xmlMutexPtr</a> tok)<br/>
+</pre><p>xmlFreeMutex() is used to reclaim resources associated with a libxml2 token struct.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>tok</tt></i>:</span></td><td>the simple mutex</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlFreeRMutex"/>xmlFreeRMutex ()</h3><pre class="programlisting">void	xmlFreeRMutex			(<a href="libxml2-threads.html#xmlRMutexPtr">xmlRMutexPtr</a> tok)<br/>
+</pre><p>xmlRFreeMutex() is used to reclaim resources associated with a reentrant mutex.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>tok</tt></i>:</span></td><td>the reentrant mutex</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlGetGlobalState"/>xmlGetGlobalState ()</h3><pre class="programlisting"><a href="libxml2-globals.html#xmlGlobalStatePtr">xmlGlobalStatePtr</a>	xmlGetGlobalState	(void)<br/>
+</pre><p>xmlGetGlobalState() is called to retrieve the global state for a thread.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the thread global state or NULL in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlGetThreadId"/>xmlGetThreadId ()</h3><pre class="programlisting">int	xmlGetThreadId			(void)<br/>
+</pre><p>xmlGetThreadId() find the current thread ID number Note that this is likely to be broken on some platforms using pthreads as the specification doesn't mandate pthread_t to be an integer type</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the current thread ID number</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlInitThreads"/>xmlInitThreads ()</h3><pre class="programlisting">void	xmlInitThreads			(void)<br/>
+</pre><p>xmlInitThreads() is used to to initialize all the thread related data of the libxml2 library.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlIsMainThread"/>xmlIsMainThread ()</h3><pre class="programlisting">int	xmlIsMainThread			(void)<br/>
+</pre><p>xmlIsMainThread() check whether the current thread is the main thread.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if the current thread is the main thread, 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlLockLibrary"/>xmlLockLibrary ()</h3><pre class="programlisting">void	xmlLockLibrary			(void)<br/>
+</pre><p>xmlLockLibrary() is used to take out a re-entrant lock on the libxml2 library.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlMutexLock"/>xmlMutexLock ()</h3><pre class="programlisting">void	xmlMutexLock			(<a href="libxml2-threads.html#xmlMutexPtr">xmlMutexPtr</a> tok)<br/>
+</pre><p>xmlMutexLock() is used to lock a libxml2 token.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>tok</tt></i>:</span></td><td>the simple mutex</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlMutexUnlock"/>xmlMutexUnlock ()</h3><pre class="programlisting">void	xmlMutexUnlock			(<a href="libxml2-threads.html#xmlMutexPtr">xmlMutexPtr</a> tok)<br/>
+</pre><p>xmlMutexUnlock() is used to unlock a libxml2 token.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>tok</tt></i>:</span></td><td>the simple mutex</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlNewMutex"/>xmlNewMutex ()</h3><pre class="programlisting"><a href="libxml2-threads.html#xmlMutexPtr">xmlMutexPtr</a>	xmlNewMutex		(void)<br/>
+</pre><p>xmlNewMutex() is used to allocate a libxml2 token struct for use in synchronizing access to data.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a new simple mutex pointer or NULL in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlNewRMutex"/>xmlNewRMutex ()</h3><pre class="programlisting"><a href="libxml2-threads.html#xmlRMutexPtr">xmlRMutexPtr</a>	xmlNewRMutex		(void)<br/>
+</pre><p>xmlRNewMutex() is used to allocate a reentrant mutex for use in synchronizing access to data. token_r is a re-entrant lock and thus useful for synchronizing access to data structures that may be manipulated in a recursive fashion.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the new reentrant mutex pointer or NULL in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlRMutexLock"/>xmlRMutexLock ()</h3><pre class="programlisting">void	xmlRMutexLock			(<a href="libxml2-threads.html#xmlRMutexPtr">xmlRMutexPtr</a> tok)<br/>
+</pre><p>xmlRMutexLock() is used to lock a libxml2 token_r.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>tok</tt></i>:</span></td><td>the reentrant mutex</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlRMutexUnlock"/>xmlRMutexUnlock ()</h3><pre class="programlisting">void	xmlRMutexUnlock			(<a href="libxml2-threads.html#xmlRMutexPtr">xmlRMutexPtr</a> tok)<br/>
+</pre><p>xmlRMutexUnlock() is used to unlock a libxml2 token_r.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>tok</tt></i>:</span></td><td>the reentrant mutex</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlUnlockLibrary"/>xmlUnlockLibrary ()</h3><pre class="programlisting">void	xmlUnlockLibrary		(void)<br/>
+</pre><p>xmlUnlockLibrary() is used to release a re-entrant lock on the libxml2 library.</p>
+</div>
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

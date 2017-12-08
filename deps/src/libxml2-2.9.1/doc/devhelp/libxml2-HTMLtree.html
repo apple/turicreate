@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>HTMLtree: specific APIs to process HTML tree, especially serialization</title>
+    <meta name="generator" content="Libxml2 devhelp stylesheet"/>
+    <link rel="start" href="index.html" title="libxml2 Reference Manual"/>
+    <link rel="up" href="general.html" title="API"/>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+    <link rel="chapter" href="general.html" title="API"/>
+  </head>
+  <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+    <table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+      <tr valign="middle">
+        <td>
+          <a accesskey="p" href="libxml2-HTMLparser.html">
+            <img src="left.png" width="24" height="24" border="0" alt="Prev"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="u" href="general.html">
+            <img src="up.png" width="24" height="24" border="0" alt="Up"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="h" href="index.html">
+            <img src="home.png" width="24" height="24" border="0" alt="Home"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="n" href="libxml2-SAX.html">
+            <img src="right.png" width="24" height="24" border="0" alt="Next"/>
+          </a>
+        </td>
+        <th width="100%" align="center">libxml2 Reference Manual</th>
+      </tr>
+    </table>
+    <h2>
+      <span class="refentrytitle">HTMLtree</span>
+    </h2>
+    <p>HTMLtree - specific APIs to process HTML tree, especially serialization</p>
+    <p>this module implements a few function needed to process tree in an HTML specific way. </p>
+    <p>Author(s): Daniel Veillard </p>
+    <div class="refsynopsisdiv">
+      <h2>Synopsis</h2>
+      <pre class="synopsis">#define <a href="#HTML_ENTITY_REF_NODE">HTML_ENTITY_REF_NODE</a>;
+#define <a href="#HTML_COMMENT_NODE">HTML_COMMENT_NODE</a>;
+#define <a href="#HTML_PRESERVE_NODE">HTML_PRESERVE_NODE</a>;
+#define <a href="#HTML_TEXT_NODE">HTML_TEXT_NODE</a>;
+#define <a href="#HTML_PI_NODE">HTML_PI_NODE</a>;
+int	<a href="#htmlNodeDumpFileFormat">htmlNodeDumpFileFormat</a>		(FILE * out, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> cur, <br/>					 const char * encoding, <br/>					 int format);
+void	<a href="#htmlDocDumpMemory">htmlDocDumpMemory</a>		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> cur, <br/>					 <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** mem, <br/>					 int * size);
+int	<a href="#htmlSaveFile">htmlSaveFile</a>			(const char * filename, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> cur);
+int	<a href="#htmlDocDump">htmlDocDump</a>			(FILE * f, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> cur);
+void	<a href="#htmlDocDumpMemoryFormat">htmlDocDumpMemoryFormat</a>		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> cur, <br/>					 <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** mem, <br/>					 int * size, <br/>					 int format);
+int	<a href="#htmlIsBooleanAttr">htmlIsBooleanAttr</a>		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name);
+int	<a href="#htmlSaveFileFormat">htmlSaveFileFormat</a>		(const char * filename, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> cur, <br/>					 const char * encoding, <br/>					 int format);
+void	<a href="#htmlNodeDumpFormatOutput">htmlNodeDumpFormatOutput</a>	(<a href="libxml2-tree.html#xmlOutputBufferPtr">xmlOutputBufferPtr</a> buf, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> cur, <br/>					 const char * encoding, <br/>					 int format);
+int	<a href="#htmlSetMetaEncoding">htmlSetMetaEncoding</a>		(<a href="libxml2-HTMLparser.html#htmlDocPtr">htmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * encoding);
+int	<a href="#htmlSaveFileEnc">htmlSaveFileEnc</a>			(const char * filename, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> cur, <br/>					 const char * encoding);
+void	<a href="#htmlNodeDumpOutput">htmlNodeDumpOutput</a>		(<a href="libxml2-tree.html#xmlOutputBufferPtr">xmlOutputBufferPtr</a> buf, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> cur, <br/>					 const char * encoding);
+int	<a href="#htmlNodeDump">htmlNodeDump</a>			(<a href="libxml2-tree.html#xmlBufferPtr">xmlBufferPtr</a> buf, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> cur);
+<a href="libxml2-HTMLparser.html#htmlDocPtr">htmlDocPtr</a>	<a href="#htmlNewDoc">htmlNewDoc</a>		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * URI, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ExternalID);
+const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#htmlGetMetaEncoding">htmlGetMetaEncoding</a>	(<a href="libxml2-HTMLparser.html#htmlDocPtr">htmlDocPtr</a> doc);
+void	<a href="#htmlNodeDumpFile">htmlNodeDumpFile</a>		(FILE * out, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> cur);
+void	<a href="#htmlDocContentDumpFormatOutput">htmlDocContentDumpFormatOutput</a>	(<a href="libxml2-tree.html#xmlOutputBufferPtr">xmlOutputBufferPtr</a> buf, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> cur, <br/>					 const char * encoding, <br/>					 int format);
+<a href="libxml2-HTMLparser.html#htmlDocPtr">htmlDocPtr</a>	<a href="#htmlNewDocNoDtD">htmlNewDocNoDtD</a>		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * URI, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ExternalID);
+void	<a href="#htmlDocContentDumpOutput">htmlDocContentDumpOutput</a>	(<a href="libxml2-tree.html#xmlOutputBufferPtr">xmlOutputBufferPtr</a> buf, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> cur, <br/>					 const char * encoding);
+</pre>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Description</h2>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Details</h2>
+      <div class="refsect2" lang="en">
+        <div class="refsect2" lang="en"><h3><a name="HTML_COMMENT_NODE">Macro </a>HTML_COMMENT_NODE</h3><pre class="programlisting">#define <a href="#HTML_COMMENT_NODE">HTML_COMMENT_NODE</a>;
+</pre><p>Macro. A <a href="libxml2-SAX.html#comment">comment</a> in a HTML document is really implemented the same way as a <a href="libxml2-SAX.html#comment">comment</a> in an XML document.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="HTML_ENTITY_REF_NODE">Macro </a>HTML_ENTITY_REF_NODE</h3><pre class="programlisting">#define <a href="#HTML_ENTITY_REF_NODE">HTML_ENTITY_REF_NODE</a>;
+</pre><p>Macro. An entity <a href="libxml2-SAX.html#reference">reference</a> in a HTML document is really implemented the same way as an entity <a href="libxml2-SAX.html#reference">reference</a> in an XML document.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="HTML_PI_NODE">Macro </a>HTML_PI_NODE</h3><pre class="programlisting">#define <a href="#HTML_PI_NODE">HTML_PI_NODE</a>;
+</pre><p>Macro. A processing instruction in a HTML document is really implemented the same way as a processing instruction in an XML document.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="HTML_PRESERVE_NODE">Macro </a>HTML_PRESERVE_NODE</h3><pre class="programlisting">#define <a href="#HTML_PRESERVE_NODE">HTML_PRESERVE_NODE</a>;
+</pre><p>Macro. A preserved node in a HTML document is really implemented the same way as a CDATA section in an XML document.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="HTML_TEXT_NODE">Macro </a>HTML_TEXT_NODE</h3><pre class="programlisting">#define <a href="#HTML_TEXT_NODE">HTML_TEXT_NODE</a>;
+</pre><p>Macro. A text node in a HTML document is really implemented the same way as a text node in an XML document.</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="htmlDocContentDumpFormatOutput"/>htmlDocContentDumpFormatOutput ()</h3><pre class="programlisting">void	htmlDocContentDumpFormatOutput	(<a href="libxml2-tree.html#xmlOutputBufferPtr">xmlOutputBufferPtr</a> buf, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> cur, <br/>					 const char * encoding, <br/>					 int format)<br/>
+</pre><p>Dump an HTML document.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>buf</tt></i>:</span></td><td>the HTML buffer output</td></tr><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>encoding</tt></i>:</span></td><td>the encoding string</td></tr><tr><td><span class="term"><i><tt>format</tt></i>:</span></td><td>should formatting spaces been added</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="htmlDocContentDumpOutput"/>htmlDocContentDumpOutput ()</h3><pre class="programlisting">void	htmlDocContentDumpOutput	(<a href="libxml2-tree.html#xmlOutputBufferPtr">xmlOutputBufferPtr</a> buf, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> cur, <br/>					 const char * encoding)<br/>
+</pre><p>Dump an HTML document. Formating return/spaces are added.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>buf</tt></i>:</span></td><td>the HTML buffer output</td></tr><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>encoding</tt></i>:</span></td><td>the encoding string</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="htmlDocDump"/>htmlDocDump ()</h3><pre class="programlisting">int	htmlDocDump			(FILE * f, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> cur)<br/>
+</pre><p>Dump an HTML document to an open FILE.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>f</tt></i>:</span></td><td>the FILE*</td></tr><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the number of byte written or -1 in case of failure.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="htmlDocDumpMemory"/>htmlDocDumpMemory ()</h3><pre class="programlisting">void	htmlDocDumpMemory		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> cur, <br/>					 <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** mem, <br/>					 int * size)<br/>
+</pre><p>Dump an HTML document in memory and return the <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * and it's size. It's up to the caller to free the memory.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>mem</tt></i>:</span></td><td>OUT: the memory pointer</td></tr><tr><td><span class="term"><i><tt>size</tt></i>:</span></td><td>OUT: the memory length</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="htmlDocDumpMemoryFormat"/>htmlDocDumpMemoryFormat ()</h3><pre class="programlisting">void	htmlDocDumpMemoryFormat		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> cur, <br/>					 <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** mem, <br/>					 int * size, <br/>					 int format)<br/>
+</pre><p>Dump an HTML document in memory and return the <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * and it's size. It's up to the caller to free the memory.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>mem</tt></i>:</span></td><td>OUT: the memory pointer</td></tr><tr><td><span class="term"><i><tt>size</tt></i>:</span></td><td>OUT: the memory length</td></tr><tr><td><span class="term"><i><tt>format</tt></i>:</span></td><td>should formatting spaces been added</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="htmlGetMetaEncoding"/>htmlGetMetaEncoding ()</h3><pre class="programlisting">const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	htmlGetMetaEncoding	(<a href="libxml2-HTMLparser.html#htmlDocPtr">htmlDocPtr</a> doc)<br/>
+</pre><p>Encoding definition lookup in the Meta tags</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the current encoding as flagged in the HTML source</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="htmlIsBooleanAttr"/>htmlIsBooleanAttr ()</h3><pre class="programlisting">int	htmlIsBooleanAttr		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name)<br/>
+</pre><p>Determine if a given <a href="libxml2-SAX.html#attribute">attribute</a> is a boolean attribute.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the name of the <a href="libxml2-SAX.html#attribute">attribute</a> to check</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>false if the <a href="libxml2-SAX.html#attribute">attribute</a> is not boolean, true otherwise.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="htmlNewDoc"/>htmlNewDoc ()</h3><pre class="programlisting"><a href="libxml2-HTMLparser.html#htmlDocPtr">htmlDocPtr</a>	htmlNewDoc		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * URI, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ExternalID)<br/>
+</pre><p>Creates a new HTML document</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>URI</tt></i>:</span></td><td>URI for the dtd, or NULL</td></tr><tr><td><span class="term"><i><tt>ExternalID</tt></i>:</span></td><td>the external ID of the DTD, or NULL</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a new document</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="htmlNewDocNoDtD"/>htmlNewDocNoDtD ()</h3><pre class="programlisting"><a href="libxml2-HTMLparser.html#htmlDocPtr">htmlDocPtr</a>	htmlNewDocNoDtD		(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * URI, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ExternalID)<br/>
+</pre><p>Creates a new HTML document without a DTD node if @URI and @ExternalID are NULL</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>URI</tt></i>:</span></td><td>URI for the dtd, or NULL</td></tr><tr><td><span class="term"><i><tt>ExternalID</tt></i>:</span></td><td>the external ID of the DTD, or NULL</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a new document, do not initialize the DTD if not provided</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="htmlNodeDump"/>htmlNodeDump ()</h3><pre class="programlisting">int	htmlNodeDump			(<a href="libxml2-tree.html#xmlBufferPtr">xmlBufferPtr</a> buf, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> cur)<br/>
+</pre><p>Dump an HTML node, recursive behaviour,children are printed too, and formatting returns are added.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>buf</tt></i>:</span></td><td>the HTML buffer output</td></tr><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the current node</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the number of byte written or -1 in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="htmlNodeDumpFile"/>htmlNodeDumpFile ()</h3><pre class="programlisting">void	htmlNodeDumpFile		(FILE * out, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> cur)<br/>
+</pre><p>Dump an HTML node, recursive behaviour,children are printed too, and formatting returns are added.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>out</tt></i>:</span></td><td>the FILE pointer</td></tr><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the current node</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="htmlNodeDumpFileFormat"/>htmlNodeDumpFileFormat ()</h3><pre class="programlisting">int	htmlNodeDumpFileFormat		(FILE * out, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> cur, <br/>					 const char * encoding, <br/>					 int format)<br/>
+</pre><p>Dump an HTML node, recursive behaviour,children are printed too. TODO: if encoding == NULL try to save in the doc encoding</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>out</tt></i>:</span></td><td>the FILE pointer</td></tr><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the current node</td></tr><tr><td><span class="term"><i><tt>encoding</tt></i>:</span></td><td>the document encoding</td></tr><tr><td><span class="term"><i><tt>format</tt></i>:</span></td><td>should formatting spaces been added</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the number of byte written or -1 in case of failure.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="htmlNodeDumpFormatOutput"/>htmlNodeDumpFormatOutput ()</h3><pre class="programlisting">void	htmlNodeDumpFormatOutput	(<a href="libxml2-tree.html#xmlOutputBufferPtr">xmlOutputBufferPtr</a> buf, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> cur, <br/>					 const char * encoding, <br/>					 int format)<br/>
+</pre><p>Dump an HTML node, recursive behaviour,children are printed too.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>buf</tt></i>:</span></td><td>the HTML buffer output</td></tr><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the current node</td></tr><tr><td><span class="term"><i><tt>encoding</tt></i>:</span></td><td>the encoding string</td></tr><tr><td><span class="term"><i><tt>format</tt></i>:</span></td><td>should formatting spaces been added</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="htmlNodeDumpOutput"/>htmlNodeDumpOutput ()</h3><pre class="programlisting">void	htmlNodeDumpOutput		(<a href="libxml2-tree.html#xmlOutputBufferPtr">xmlOutputBufferPtr</a> buf, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> cur, <br/>					 const char * encoding)<br/>
+</pre><p>Dump an HTML node, recursive behaviour,children are printed too, and formatting returns/spaces are added.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>buf</tt></i>:</span></td><td>the HTML buffer output</td></tr><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the current node</td></tr><tr><td><span class="term"><i><tt>encoding</tt></i>:</span></td><td>the encoding string</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="htmlSaveFile"/>htmlSaveFile ()</h3><pre class="programlisting">int	htmlSaveFile			(const char * filename, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> cur)<br/>
+</pre><p>Dump an HTML document to a file. If @filename is "-" the stdout file is used.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>filename</tt></i>:</span></td><td>the filename (or URL)</td></tr><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the number of byte written or -1 in case of failure.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="htmlSaveFileEnc"/>htmlSaveFileEnc ()</h3><pre class="programlisting">int	htmlSaveFileEnc			(const char * filename, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> cur, <br/>					 const char * encoding)<br/>
+</pre><p>Dump an HTML document to a file using a given encoding and formatting returns/spaces are added.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>filename</tt></i>:</span></td><td>the filename</td></tr><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>encoding</tt></i>:</span></td><td>the document encoding</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the number of byte written or -1 in case of failure.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="htmlSaveFileFormat"/>htmlSaveFileFormat ()</h3><pre class="programlisting">int	htmlSaveFileFormat		(const char * filename, <br/>					 <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> cur, <br/>					 const char * encoding, <br/>					 int format)<br/>
+</pre><p>Dump an HTML document to a file using a given encoding.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>filename</tt></i>:</span></td><td>the filename</td></tr><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>encoding</tt></i>:</span></td><td>the document encoding</td></tr><tr><td><span class="term"><i><tt>format</tt></i>:</span></td><td>should formatting spaces been added</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the number of byte written or -1 in case of failure.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="htmlSetMetaEncoding"/>htmlSetMetaEncoding ()</h3><pre class="programlisting">int	htmlSetMetaEncoding		(<a href="libxml2-HTMLparser.html#htmlDocPtr">htmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * encoding)<br/>
+</pre><p>Sets the current encoding in the Meta tags NOTE: this will not change the document content encoding, just the META flag associated.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>encoding</tt></i>:</span></td><td>the encoding string</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 in case of success and -1 in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

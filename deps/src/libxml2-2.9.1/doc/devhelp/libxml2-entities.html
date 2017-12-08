@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>entities: interface for the XML entities handling</title>
+    <meta name="generator" content="Libxml2 devhelp stylesheet"/>
+    <link rel="start" href="index.html" title="libxml2 Reference Manual"/>
+    <link rel="up" href="general.html" title="API"/>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+    <link rel="chapter" href="general.html" title="API"/>
+  </head>
+  <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+    <table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+      <tr valign="middle">
+        <td>
+          <a accesskey="p" href="libxml2-encoding.html">
+            <img src="left.png" width="24" height="24" border="0" alt="Prev"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="u" href="general.html">
+            <img src="up.png" width="24" height="24" border="0" alt="Up"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="h" href="index.html">
+            <img src="home.png" width="24" height="24" border="0" alt="Home"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="n" href="libxml2-globals.html">
+            <img src="right.png" width="24" height="24" border="0" alt="Next"/>
+          </a>
+        </td>
+        <th width="100%" align="center">libxml2 Reference Manual</th>
+      </tr>
+    </table>
+    <h2>
+      <span class="refentrytitle">entities</span>
+    </h2>
+    <p>entities - interface for the XML entities handling</p>
+    <p>this module provides some of the entity API needed for the parser and applications. </p>
+    <p>Author(s): Daniel Veillard </p>
+    <div class="refsynopsisdiv">
+      <h2>Synopsis</h2>
+      <pre class="synopsis">typedef enum <a href="#xmlEntityType">xmlEntityType</a>;
+typedef struct _xmlHashTable <a href="#xmlEntitiesTable">xmlEntitiesTable</a>;
+typedef <a href="libxml2-entities.html#xmlEntitiesTable">xmlEntitiesTable</a> * <a href="#xmlEntitiesTablePtr">xmlEntitiesTablePtr</a>;
+<a href="libxml2-tree.html#xmlEntityPtr">xmlEntityPtr</a>	<a href="#xmlAddDocEntity">xmlAddDocEntity</a>		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 int type, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ExternalID, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * SystemID, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * content);
+<a href="libxml2-tree.html#xmlEntityPtr">xmlEntityPtr</a>	<a href="#xmlNewEntity">xmlNewEntity</a>		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 int type, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ExternalID, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * SystemID, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * content);
+<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlEncodeEntitiesReentrant">xmlEncodeEntitiesReentrant</a>	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * input);
+<a href="libxml2-tree.html#xmlEntityPtr">xmlEntityPtr</a>	<a href="#xmlGetDocEntity">xmlGetDocEntity</a>		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name);
+<a href="libxml2-tree.html#xmlEntityPtr">xmlEntityPtr</a>	<a href="#xmlGetDtdEntity">xmlGetDtdEntity</a>		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name);
+<a href="libxml2-tree.html#xmlEntityPtr">xmlEntityPtr</a>	<a href="#xmlAddDtdEntity">xmlAddDtdEntity</a>		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 int type, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ExternalID, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * SystemID, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * content);
+<a href="libxml2-entities.html#xmlEntitiesTablePtr">xmlEntitiesTablePtr</a>	<a href="#xmlCopyEntitiesTable">xmlCopyEntitiesTable</a>	(<a href="libxml2-entities.html#xmlEntitiesTablePtr">xmlEntitiesTablePtr</a> table);
+void	<a href="#xmlFreeEntitiesTable">xmlFreeEntitiesTable</a>		(<a href="libxml2-entities.html#xmlEntitiesTablePtr">xmlEntitiesTablePtr</a> table);
+<a href="libxml2-tree.html#xmlEntityPtr">xmlEntityPtr</a>	<a href="#xmlGetParameterEntity">xmlGetParameterEntity</a>	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name);
+void	<a href="#xmlDumpEntitiesTable">xmlDumpEntitiesTable</a>		(<a href="libxml2-tree.html#xmlBufferPtr">xmlBufferPtr</a> buf, <br/>					 <a href="libxml2-entities.html#xmlEntitiesTablePtr">xmlEntitiesTablePtr</a> table);
+void	<a href="#xmlDumpEntityDecl">xmlDumpEntityDecl</a>		(<a href="libxml2-tree.html#xmlBufferPtr">xmlBufferPtr</a> buf, <br/>					 <a href="libxml2-tree.html#xmlEntityPtr">xmlEntityPtr</a> ent);
+void	<a href="#xmlCleanupPredefinedEntities">xmlCleanupPredefinedEntities</a>	(void);
+<a href="libxml2-entities.html#xmlEntitiesTablePtr">xmlEntitiesTablePtr</a>	<a href="#xmlCreateEntitiesTable">xmlCreateEntitiesTable</a>	(void);
+const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlEncodeEntities">xmlEncodeEntities</a>	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * input);
+<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlEncodeSpecialChars">xmlEncodeSpecialChars</a>	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * input);
+<a href="libxml2-tree.html#xmlEntityPtr">xmlEntityPtr</a>	<a href="#xmlGetPredefinedEntity">xmlGetPredefinedEntity</a>	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name);
+void	<a href="#xmlInitializePredefinedEntities">xmlInitializePredefinedEntities</a>	(void);
+</pre>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Description</h2>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Details</h2>
+      <div class="refsect2" lang="en">
+        <div class="refsect2" lang="en"><h3><a name="xmlEntitiesTable">Structure </a>xmlEntitiesTable</h3><pre class="programlisting">struct _xmlHashTable {
+The content of this structure is not made public by the API.
+} xmlEntitiesTable;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlEntitiesTablePtr">Typedef </a>xmlEntitiesTablePtr</h3><pre class="programlisting"><a href="libxml2-entities.html#xmlEntitiesTable">xmlEntitiesTable</a> * xmlEntitiesTablePtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlEntityType">Enum </a>xmlEntityType</h3><pre class="programlisting">enum <a href="#xmlEntityType">xmlEntityType</a> {
+    <a name="XML_INTERNAL_GENERAL_ENTITY">XML_INTERNAL_GENERAL_ENTITY</a> = 1
+    <a name="XML_EXTERNAL_GENERAL_PARSED_ENTITY">XML_EXTERNAL_GENERAL_PARSED_ENTITY</a> = 2
+    <a name="XML_EXTERNAL_GENERAL_UNPARSED_ENTITY">XML_EXTERNAL_GENERAL_UNPARSED_ENTITY</a> = 3
+    <a name="XML_INTERNAL_PARAMETER_ENTITY">XML_INTERNAL_PARAMETER_ENTITY</a> = 4
+    <a name="XML_EXTERNAL_PARAMETER_ENTITY">XML_EXTERNAL_PARAMETER_ENTITY</a> = 5
+    <a name="XML_INTERNAL_PREDEFINED_ENTITY">XML_INTERNAL_PREDEFINED_ENTITY</a> = 6
+};
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAddDocEntity"/>xmlAddDocEntity ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlEntityPtr">xmlEntityPtr</a>	xmlAddDocEntity		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 int type, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ExternalID, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * SystemID, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * content)<br/>
+</pre><p>Register a new entity for this document.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the entity name</td></tr><tr><td><span class="term"><i><tt>type</tt></i>:</span></td><td>the entity type XML_xxx_yyy_ENTITY</td></tr><tr><td><span class="term"><i><tt>ExternalID</tt></i>:</span></td><td>the entity external ID if available</td></tr><tr><td><span class="term"><i><tt>SystemID</tt></i>:</span></td><td>the entity system ID if available</td></tr><tr><td><span class="term"><i><tt>content</tt></i>:</span></td><td>the entity content</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a pointer to the entity or NULL in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAddDtdEntity"/>xmlAddDtdEntity ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlEntityPtr">xmlEntityPtr</a>	xmlAddDtdEntity		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 int type, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ExternalID, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * SystemID, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * content)<br/>
+</pre><p>Register a new entity for this document DTD external subset.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the entity name</td></tr><tr><td><span class="term"><i><tt>type</tt></i>:</span></td><td>the entity type XML_xxx_yyy_ENTITY</td></tr><tr><td><span class="term"><i><tt>ExternalID</tt></i>:</span></td><td>the entity external ID if available</td></tr><tr><td><span class="term"><i><tt>SystemID</tt></i>:</span></td><td>the entity system ID if available</td></tr><tr><td><span class="term"><i><tt>content</tt></i>:</span></td><td>the entity content</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a pointer to the entity or NULL in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlCleanupPredefinedEntities"/>xmlCleanupPredefinedEntities ()</h3><pre class="programlisting">void	xmlCleanupPredefinedEntities	(void)<br/>
+</pre><p>Cleanup up the predefined entities table. Deprecated call</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlCopyEntitiesTable"/>xmlCopyEntitiesTable ()</h3><pre class="programlisting"><a href="libxml2-entities.html#xmlEntitiesTablePtr">xmlEntitiesTablePtr</a>	xmlCopyEntitiesTable	(<a href="libxml2-entities.html#xmlEntitiesTablePtr">xmlEntitiesTablePtr</a> table)<br/>
+</pre><p>Build a copy of an entity table.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>table</tt></i>:</span></td><td>An entity table</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the new <a href="libxml2-entities.html#xmlEntitiesTablePtr">xmlEntitiesTablePtr</a> or NULL in case of error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlCreateEntitiesTable"/>xmlCreateEntitiesTable ()</h3><pre class="programlisting"><a href="libxml2-entities.html#xmlEntitiesTablePtr">xmlEntitiesTablePtr</a>	xmlCreateEntitiesTable	(void)<br/>
+</pre><p>create and initialize an empty entities hash table. This really doesn't make sense and should be deprecated</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the <a href="libxml2-entities.html#xmlEntitiesTablePtr">xmlEntitiesTablePtr</a> just created or NULL in case of error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlDumpEntitiesTable"/>xmlDumpEntitiesTable ()</h3><pre class="programlisting">void	xmlDumpEntitiesTable		(<a href="libxml2-tree.html#xmlBufferPtr">xmlBufferPtr</a> buf, <br/>					 <a href="libxml2-entities.html#xmlEntitiesTablePtr">xmlEntitiesTablePtr</a> table)<br/>
+</pre><p>This will dump the content of the entity table as an XML DTD definition</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>buf</tt></i>:</span></td><td>An XML buffer.</td></tr><tr><td><span class="term"><i><tt>table</tt></i>:</span></td><td>An entity table</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlDumpEntityDecl"/>xmlDumpEntityDecl ()</h3><pre class="programlisting">void	xmlDumpEntityDecl		(<a href="libxml2-tree.html#xmlBufferPtr">xmlBufferPtr</a> buf, <br/>					 <a href="libxml2-tree.html#xmlEntityPtr">xmlEntityPtr</a> ent)<br/>
+</pre><p>This will dump the content of the entity table as an XML DTD definition</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>buf</tt></i>:</span></td><td>An XML buffer.</td></tr><tr><td><span class="term"><i><tt>ent</tt></i>:</span></td><td>An entity table</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlEncodeEntities"/>xmlEncodeEntities ()</h3><pre class="programlisting">const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlEncodeEntities	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * input)<br/>
+</pre><p>TODO: remove xmlEncodeEntities, once we are not afraid of breaking binary compatibility People must migrate their code to <a href="libxml2-entities.html#xmlEncodeEntitiesReentrant">xmlEncodeEntitiesReentrant</a> ! This routine will issue a warning when encountered.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document containing the string</td></tr><tr><td><span class="term"><i><tt>input</tt></i>:</span></td><td>A string to convert to XML.</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>NULL</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlEncodeEntitiesReentrant"/>xmlEncodeEntitiesReentrant ()</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlEncodeEntitiesReentrant	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * input)<br/>
+</pre><p>Do a global encoding of a string, replacing the predefined entities and non ASCII values with their entities and CharRef counterparts. Contrary to xmlEncodeEntities, this routine is reentrant, and result must be deallocated.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document containing the string</td></tr><tr><td><span class="term"><i><tt>input</tt></i>:</span></td><td>A string to convert to XML.</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>A newly allocated string with the substitution done.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlEncodeSpecialChars"/>xmlEncodeSpecialChars ()</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlEncodeSpecialChars	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * input)<br/>
+</pre><p>Do a global encoding of a string, replacing the predefined entities this routine is reentrant, and result must be deallocated.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document containing the string</td></tr><tr><td><span class="term"><i><tt>input</tt></i>:</span></td><td>A string to convert to XML.</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>A newly allocated string with the substitution done.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlFreeEntitiesTable"/>xmlFreeEntitiesTable ()</h3><pre class="programlisting">void	xmlFreeEntitiesTable		(<a href="libxml2-entities.html#xmlEntitiesTablePtr">xmlEntitiesTablePtr</a> table)<br/>
+</pre><p>Deallocate the memory used by an entities hash table.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>table</tt></i>:</span></td><td>An entity table</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlGetDocEntity"/>xmlGetDocEntity ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlEntityPtr">xmlEntityPtr</a>	xmlGetDocEntity		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name)<br/>
+</pre><p>Do an entity lookup in the document entity hash table and</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document referencing the entity</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the entity name</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the corresponding entity, otherwise a lookup is done in the predefined entities too. Returns A pointer to the entity structure or NULL if not found.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlGetDtdEntity"/>xmlGetDtdEntity ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlEntityPtr">xmlEntityPtr</a>	xmlGetDtdEntity		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name)<br/>
+</pre><p>Do an entity lookup in the DTD entity hash table and</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document referencing the entity</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the entity name</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the corresponding entity, if found. Note: the first argument is the document node, not the DTD node. Returns A pointer to the entity structure or NULL if not found.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlGetParameterEntity"/>xmlGetParameterEntity ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlEntityPtr">xmlEntityPtr</a>	xmlGetParameterEntity	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name)<br/>
+</pre><p>Do an entity lookup in the internal and external subsets and</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document referencing the entity</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the entity name</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the corresponding parameter entity, if found. Returns A pointer to the entity structure or NULL if not found.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlGetPredefinedEntity"/>xmlGetPredefinedEntity ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlEntityPtr">xmlEntityPtr</a>	xmlGetPredefinedEntity	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name)<br/>
+</pre><p>Check whether this name is an predefined entity.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the entity name</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>NULL if not, otherwise the entity</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlInitializePredefinedEntities"/>xmlInitializePredefinedEntities ()</h3><pre class="programlisting">void	xmlInitializePredefinedEntities	(void)<br/>
+</pre><p>Set up the predefined entities. Deprecated call</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlNewEntity"/>xmlNewEntity ()</h3><pre class="programlisting"><a href="libxml2-tree.html#xmlEntityPtr">xmlEntityPtr</a>	xmlNewEntity		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 int type, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ExternalID, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * SystemID, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * content)<br/>
+</pre><p>Create a new entity, this differs from xmlAddDocEntity() that if the document is NULL or has no internal subset defined, then an unlinked entity structure will be returned, it is then the responsability of the caller to link it to the document later or free it when not needed anymore.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the document</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the entity name</td></tr><tr><td><span class="term"><i><tt>type</tt></i>:</span></td><td>the entity type XML_xxx_yyy_ENTITY</td></tr><tr><td><span class="term"><i><tt>ExternalID</tt></i>:</span></td><td>the entity external ID if available</td></tr><tr><td><span class="term"><i><tt>SystemID</tt></i>:</span></td><td>the entity system ID if available</td></tr><tr><td><span class="term"><i><tt>content</tt></i>:</span></td><td>the entity content</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a pointer to the entity or NULL in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

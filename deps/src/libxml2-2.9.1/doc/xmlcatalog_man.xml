@@ -1,0 +1,450 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl"
+   href="http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+    "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+
+    <!ENTITY xmlcatalog "<command>xmlcatalog</command>">
+]>
+
+<refentry>
+
+<refentryinfo>
+	<title>xmlcatalog Manual</title>
+	<productname>libxml2</productname>
+	<copyright>
+		<year>2001</year>
+		<year>2004</year>
+	</copyright>
+	<author>
+		<firstname>John</firstname>
+		<surname>Fleck</surname>
+		<affiliation>
+			<address>
+				<email>jfleck@inkstain.net</email>
+			</address>
+		</affiliation>
+	</author>
+	<!-- date should be the date of the latest change or the release version -->
+	<date>$Date$</date>
+	<!-- still a bit buggy output, will talk to docbook-xsl upstream to fix this -->
+	<!-- <releaseinfo>This is release 0.3 of the xmlcatalog Manual.</releaseinfo> -->
+	<!-- <edition>0.3</edition> -->
+</refentryinfo>
+
+<refmeta>
+	<refentrytitle>xmlcatalog</refentrytitle>
+	<manvolnum>1</manvolnum>
+</refmeta>
+
+<refnamediv>
+	<refname>xmlcatalog</refname>
+	<refpurpose>
+		Command line tool to parse and manipulate <acronym>XML</acronym>
+		or <acronym>SGML</acronym> catalog files.
+	</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+	<cmdsynopsis>
+	<command>xmlcatalog</command>
+	<group choice="opt">
+		<arg choice="plain"><option>--sgml</option></arg>
+		<arg choice="plain"><option>--shell</option></arg>
+		<arg choice="plain"><option>--create</option></arg>
+		<arg choice="plain"><option>--del <replaceable>VALUE(S)</replaceable></option></arg>
+		<arg choice="plain">
+			<group choice="opt">
+				<arg choice="plain">
+					<option>--add
+					 <replaceable>TYPE</replaceable>
+					 <replaceable>ORIG</replaceable>
+					 <replaceable>REPLACE</replaceable>
+					</option>
+				</arg>
+				<arg choice="plain"><option>--add <replaceable>FILENAME</replaceable></option></arg>
+			</group>
+		</arg>
+		<arg choice="plain"><option>--noout</option></arg>
+		<arg choice="plain"><option>--no-super-update</option></arg>
+		<arg choice="plain">
+			<group choice="opt">
+				<arg choice="plain"><option>-v</option></arg>
+				<arg choice="plain"><option>--verbose</option></arg>
+			</group>
+		</arg>
+	</group>
+	<arg choice="req" rep="norepeat"><replaceable>CATALOGFILE</replaceable></arg>
+	<arg choice="req" rep="repeat"><replaceable>ENTITIES</replaceable></arg>
+	</cmdsynopsis>
+</refsynopsisdiv>
+
+<refsect1 id="description">
+	<title>DESCRIPTION</title>
+	<para>
+		&xmlcatalog; is a command line application allowing users to monitor and
+		manipulate <acronym>XML</acronym> and <acronym>SGML</acronym> catalogs. It
+		is included in <citerefentry>
+			<refentrytitle>libxml</refentrytitle>
+			<manvolnum>3</manvolnum>
+		</citerefentry>.
+	</para>
+	<para>
+		Its functions can be invoked from a single command from the command line,
+		or it can perform multiple functions in interactive mode. It can operate
+		on both <acronym>XML</acronym> and <acronym>SGML</acronym> files.
+	</para>
+</refsect1>
+
+<refsect1 id="options">
+	<title>OPTIONS</title>
+	<para>
+		&xmlcatalog; accepts the following options (in alphabetical order):
+	</para>
+
+	<variablelist>
+
+		<varlistentry>
+	<term>
+		<option>--add
+		 <replaceable>TYPE</replaceable>
+		 <replaceable>ORIG</replaceable>
+		 <replaceable>REPLACE</replaceable>
+		</option>
+	</term>
+	<listitem>
+		<para>
+			Add an entry to <filename>CATALOGFILE</filename>. <replaceable>TYPE</replaceable>
+			indicates the type of entry. Possible types are: <simplelist type="inline">
+				<member><parameter>public</parameter></member>
+				<member><parameter>system</parameter></member>
+				<member><parameter>uri</parameter></member>
+				<member><parameter>rewriteSystem</parameter></member>
+				<member><parameter>rewriteURI</parameter></member>
+				<member><parameter>delegatePublic</parameter></member>
+				<member><parameter>delegateSystem</parameter></member>
+				<member><parameter>delegateURI</parameter></member>
+				<member><parameter>nextCatalog</parameter></member>
+			</simplelist>. <replaceable>ORIG</replaceable> is the original
+			reference to be replaced, and <replaceable>REPLACE</replaceable>
+			is the <acronym>URI</acronym> of the replacement entity to be
+			used. The <option>--add</option> option will not overwrite
+			<filename>CATALOGFILE</filename>, outputting
+			to <filename class="devicefile">stdout</filename>, unless
+			<option>--noout</option> is used. The <option>--add</option> will
+			always take three parameters even if some of the <acronym>XML</acronym>
+			catalog constructs will have only a single argument.
+		</para>
+		<!--
+			FIXME - Is my list of possible types correct? Are SGML types the same?
+		-->
+	</listitem>
+		</varlistentry>
+
+		<varlistentry>
+	<term><option>--add <replaceable>FILENAME</replaceable></option></term>
+	<listitem>
+		<para>
+			If the <option>--add</option> option is used following
+			the <option>--sgml</option> option, only a single argument,
+			a <replaceable>FILENAME</replaceable>, is used. This is used to add
+			the name of a catalog file to an <acronym>SGML</acronym> supercatalog,
+			a file that contains references to other included <acronym>SGML</acronym>
+			catalog files.
+		</para>
+	</listitem>
+		</varlistentry>
+
+		<varlistentry>
+	<term><option>--create</option></term>
+	<listitem>
+		<para>
+			Create a new <acronym>XML</acronym> catalog. Outputs
+			to <filename class="devicefile">stdout</filename>,
+			ignoring <replaceable>filename</replaceable> unless <option>--noout</option> is
+			used, in which case it creates a new catalog
+			file <replaceable>filename</replaceable>.
+		</para>
+	</listitem>
+		</varlistentry>
+
+		<varlistentry>
+	<term><option>--del <replaceable>VALUE(S)</replaceable></option></term>
+	<listitem>
+		<para>
+			Remove entries from <replaceable>CATALOGFILE</replaceable>
+			matching <replaceable>VALUE(S)</replaceable>. The <option>--del</option>
+			option will not overwrite <replaceable>CATALOGFILE</replaceable>,
+			outputting to <filename class="devicefile">stdout</filename>,
+			unless <option>--noout</option> is used.
+		</para>
+	</listitem>
+		</varlistentry>
+
+		<varlistentry>
+	<term><option>--noout</option></term>
+	<listitem>
+		<para>
+			Save output to the named file rather than outputting
+			to <filename class="devicefile">stdout</filename>.
+		</para>
+	</listitem>
+		</varlistentry>
+
+		<varlistentry>
+	<term><option>--no-super-update</option></term>
+	<listitem>
+		<para>
+			Do not update the <acronym>SGML</acronym> super catalog.
+		</para>
+	</listitem>
+		</varlistentry>
+
+		<varlistentry>
+	<term><option>--shell</option></term>
+	<listitem>
+		<para>
+			Run a shell allowing interactive queries on catalog
+			file <replaceable>CATALOGFILE</replaceable>. For the set of available
+			commands see <xref linkend="shell"/>.
+		</para>
+	</listitem>
+		</varlistentry>
+
+		<varlistentry>
+	<term><option>--sgml</option></term>
+	<listitem>
+		<para>
+			Uses <acronym>SGML</acronym> super catalogs for <option>--add</option>
+			and <option>--del</option> options.
+		</para>
+	</listitem>
+		</varlistentry>
+
+		<varlistentry>
+	<term><option>-v</option></term>
+	<term><option>--verbose</option></term>
+	<listitem>
+		<para>Output debugging information.</para>
+	</listitem>
+		</varlistentry>
+
+	</variablelist>
+</refsect1>
+
+<refsect1 id="shell">
+	<title>SHELL COMMANDS</title>
+	<para>
+		Invoking &xmlcatalog; with
+		the <option>--shell <replaceable>CATALOGFILE</replaceable></option> option opens
+		a command line shell allowing interactive access to the catalog file
+		identified by <replaceable>CATALOGFILE</replaceable>. Invoking the shell
+		provides a command line prompt after which the following commands (described in
+		alphabetical order) can be entered.
+	</para>
+
+	<variablelist>
+
+		<varlistentry>
+	<term>
+		<option>add
+		 <replaceable>TYPE</replaceable>
+		 <replaceable>ORIG</replaceable>
+		 <replaceable>REPLACE</replaceable>
+		</option>
+	</term>
+	<listitem>
+		<para>
+			Add an entry to the catalog file. <replaceable>TYPE</replaceable>
+			indicates the type of entry. Possible types are: <simplelist type="inline">
+				<member><parameter>public</parameter></member>
+				<member><parameter>system</parameter></member>
+				<member><parameter>uri</parameter></member>
+				<member><parameter>rewriteSystem</parameter></member>
+				<member><parameter>rewriteURI</parameter></member>
+				<member><parameter>delegatePublic</parameter></member>
+				<member><parameter>delegateSystem</parameter></member>
+				<member><parameter>delegateURI</parameter></member>
+				<member><parameter>nextCatalog</parameter></member>
+			</simplelist>. <replaceable>ORIG</replaceable> is the original
+			reference to be replaced, and <replaceable>REPLACE</replaceable>
+			is the <acronym>URI</acronym> of the replacement entity to be
+			used. The <option>--add</option> option will not overwrite
+			<filename>CATALOGFILE</filename>, outputting
+			to <filename class="devicefile">stdout</filename>, unless
+			<option>--noout</option> is used. The <option>--add</option> will
+			always take three parameters even if some of the <acronym>XML</acronym>
+			catalog constructs will have only a single argument.
+		</para>
+	</listitem>
+		</varlistentry>
+
+		<varlistentry>
+	<term><option>debug</option></term>
+	<listitem>
+		<para>
+			Print debugging statements showing the steps &xmlcatalog; is executing.
+		</para>
+	</listitem>
+		</varlistentry>
+
+		<varlistentry>
+	<term><option>del <replaceable>VALUE(S)</replaceable></option></term>
+	<listitem>
+		<para>
+			Remove the catalog entry corresponding to <replaceable>VALUE(S)</replaceable>.
+		</para>
+	</listitem>
+		</varlistentry>
+
+		<varlistentry>
+	<term><option>dump</option></term>
+	<listitem>
+		<para>Print the current catalog.</para>
+	</listitem>
+		</varlistentry>
+
+		<varlistentry>
+	<term><option>exit</option></term>
+	<listitem>
+		<para>Quit the shell.</para>
+	</listitem>
+		</varlistentry>
+
+		<varlistentry>
+	<term><option>public <replaceable>PUBLIC-ID</replaceable></option></term>
+	<listitem>
+		<para>
+			Execute a Formal Public Identifier look-up of the catalog entry
+			for <replaceable>PUBLIC-ID</replaceable>. The corresponding entry will be
+			output to the command line.
+		</para>
+	</listitem>
+		</varlistentry>
+
+		<varlistentry>
+	<term><option>quiet</option></term>
+	<listitem>
+		<para>Stop printing debugging statements.</para>
+	</listitem>
+		</varlistentry>
+
+		<varlistentry>
+	<term><option>system <replaceable>SYSTEM-ID</replaceable></option></term>
+	<listitem>
+		<para>
+			Execute a Formal Public Identifier look-up of the catalog entry
+			for <replaceable>SYSTEM-ID</replaceable>. The corresponding entry will be
+			output to the command line.
+		</para>
+	</listitem>
+		</varlistentry>
+
+	</variablelist>
+</refsect1>
+
+<refsect1 id="environment">
+	<title>ENVIRONMENT</title>
+	<variablelist>
+
+		<varlistentry>
+	<term><envar>XML_CATALOG_FILES</envar></term>
+	<listitem>
+		<para><acronym>XML</acronym> catalog behavior can be changed by redirecting
+			queries to the user's own set of catalogs. This can be done by setting
+			the <envar>XML_CATALOG_FILES</envar> environment variable to a list
+			of catalogs. An empty one should deactivate loading the
+			default <filename>/etc/xml/catalog</filename> catalog.
+		</para>
+	</listitem>
+		</varlistentry>
+
+	</variablelist>
+</refsect1>
+
+<refsect1 id="diagnostics">
+	<title>DIAGNOSTICS</title>
+	<para>
+		&xmlcatalog; return codes provide information that can be used when
+		calling it from scripts.
+	</para>
+	<variablelist>
+
+		<varlistentry>
+	<term><errorcode>0</errorcode></term>
+	<listitem>
+		<para>No error</para>
+	</listitem>
+		</varlistentry>
+
+		<varlistentry>
+	<term><errorcode>1</errorcode></term>
+	<listitem>
+		<para>Failed to remove an entry from the catalog</para>
+	</listitem>
+		</varlistentry>
+
+		<varlistentry>
+	<term><errorcode>2</errorcode></term>
+	<listitem>
+		<para>Failed to save to the catalog, check file permissions</para>
+	</listitem>
+		</varlistentry>
+
+		<varlistentry>
+	<term><errorcode>3</errorcode></term>
+	<listitem>
+		<para>Failed to add an entry to the catalog</para>
+	</listitem>
+		</varlistentry>
+
+		<varlistentry>
+	<term><errorcode>4</errorcode></term>
+	<listitem>
+		<para>Failed to look up an entry in the catalog</para>
+	</listitem>
+		</varlistentry>
+
+	</variablelist>
+</refsect1>
+
+<refsect1 id="seealso">
+	<title>SEE ALSO</title>
+	<para><citerefentry>
+			<refentrytitle>libxml</refentrytitle>
+			<manvolnum>3</manvolnum>
+		</citerefentry>
+	</para>
+	<para>
+		More information can be found at
+		<itemizedlist>
+			<listitem>
+				<para><citerefentry>
+						<refentrytitle>libxml</refentrytitle>
+						<manvolnum>3</manvolnum>
+					</citerefentry> web page <ulink url="http://www.xmlsoft.org/"/>
+				</para>
+			</listitem>
+			<listitem>
+				<para><citerefentry>
+						<refentrytitle>libxml</refentrytitle>
+						<manvolnum>3</manvolnum>
+					</citerefentry> catalog support web page
+					at <ulink url="http://www.xmlsoft.org/catalog.html"/>
+				</para>
+			</listitem>
+			<listitem>
+				<para>James Clark's <acronym>SGML</acronym> catalog
+					page <ulink url="http://www.jclark.com/sp/catalog.htm"/>
+				</para>
+			</listitem>
+			<listitem>
+				<para><acronym>OASIS</acronym> <acronym>XML</acronym> catalog specification
+					<ulink url="http://www.oasis-open.org/committees/entity/spec.html"/>
+				</para>
+			</listitem>
+		</itemizedlist>
+	</para>
+</refsect1>
+
+</refentry>

@@ -1,0 +1,51 @@
+nn_ipc(7)
+=========
+
+NAME
+----
+nn_ipc - inter-process transport mechanism
+
+
+SYNOPSIS
+--------
+*#include <nanomsg/nn.h>*
+
+*#include <nanomsg/ipc.h>*
+
+
+DESCRIPTION
+-----------
+Inter-process transport allows for sending messages between processes within
+a single box. The implementation uses native IPC mechanism provided by the local
+operating system and the IPC addresses are thus OS-specific.
+
+On POSIX-compliant systems, UNIX domain sockets are used and IPC addresses are
+file references. Note that both relative (ipc://test.ipc) and absolute
+(ipc:///tmp/test.ipc) paths may be used. Also note that access rights on the IPC
+files must be set in such a way that the appropriate applications can actually
+use them.
+
+On Windows, named pipes are used for IPC. IPC address is an arbitrary
+case-insensitive string containing any character except for backslash.
+Internally, address ipc://test means that named pipe \\.\pipe\test will be used.
+
+EXAMPLE
+-------
+
+----
+nn_bind (s1, "ipc:///tmp/test.ipc");
+nn_connect (s2, "ipc:///tmp/test.ipc");
+----
+
+SEE ALSO
+--------
+<<nn_inproc.7.txt#,nn_inproc(7)>>
+<<nn_tcp.7.txt#,nn_tcp(7)>>
+<<nn_bind.3.txt#,nn_bind(3)>>
+<<nn_connect.3.txt#,nn_connect(3)>>
+<<nanomsg.7.txt#,nanomsg(7)>>
+
+
+AUTHORS
+-------
+link:mailto:sustrik@250bpm.com[Martin Sustrik]

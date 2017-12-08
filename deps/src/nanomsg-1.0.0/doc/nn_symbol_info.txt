@@ -1,0 +1,155 @@
+nn_symbol_info(3)
+=================
+
+NAME
+----
+nn_symbol_info - query the names and properties of nanomsg symbols
+
+
+SYNOPSIS
+--------
+*#include <nanomsg/nn.h>*
+
+*int nn_symbol_info (int 'i', struct nn_symbol_properties '*buf', int 'buflen');*
+
+
+DESCRIPTION
+-----------
+Retrieves the symbol name and value at index 'i'.  Indices start at 0.  An index
+has no significance to its associated symbol; the mappings may change between
+library versions.
+
+The nn_symbol_properties has the following definition:
+
+----
+struct nn_symbol_properties {
+
+    /*  The constant value  */
+    int value;
+
+    /*  The constant name  */
+    const char* name;
+
+    /*  The constant namespace, or zero for namespaces themselves */
+    int ns;
+
+    /*  The option type for socket option constants  */
+    int type;
+
+    /*  The unit for the option value for socket option constants  */
+    int unit;
+};
+----
+
+More structure members may be added in future, but the input pointer will be
+written only up to 'buflen' so the ABI is forward-compatible.
+
+Typically a client will iterate through the symbols until nn_symbol_info
+returns NULL in order to collect all the symbols.
+
+All symbols exposed by 'nn_symbol_info' are available directly in the C API,
+generally as preprocessor macros.  Thus, this function is useful mostly for
+language bindings that can't parse the header file and rely on retrieving the
+symbols at runtime.
+
+Note that the NN_MSG symbol is not exported by the 'nn_symbol_info' function.
+First, it is a pointer rather than an integer; second, the symbol is not
+supposed to be exported from language bindings to the user. Instead, language
+bindings should provide the zero-copy functionality in a language-specific way,
+if at all (zero-copy functionality may not make sense for some
+languages/bindings).
+
+AVAILABLE NAMESPACES
+--------------------
+*NN_NS_NAMESPACE*::
+Equals to zero and denotes the NN_NS_* constants themselves
+*NN_NS_VERSION*::
+Nanomsg version constants
+*NN_NS_DOMAIN*::
+Socket domain (or address family) constants AF_SP, AF_SP_RAW
+*NN_NS_TRANSPORT*::
+Transport name constants (used for socket options mainly)
+*NN_NS_PROTOCOL*::
+Socket protocol constants
+*NN_NS_OPTION_LEVEL*::
+Socket option level constants (NN_SOL_SOCKET)
+*NN_NS_SOCKET_OPTION*::
+Socket options for NN_SOL_SOCKET level
+*NN_NS_TRANSPORT_OPTION*::
+Socket options for transport level (used with transport constants)
+*NN_NS_OPTION_TYPE*::
+The option types (described below)
+*NN_NS_FLAG*::
+The nn_send/nn_recv flags (only NN_DONTWAIT for now)
+*NN_NS_ERROR*::
+The errno values
+*NN_NS_LIMIT*::
+Various nanomsg limits (only NN_SOCKADDR_MAX for now)
+*NN_NS_EVENT*::
+Event flags (bit mask) for use with nn_poll (NN_POLLIN, NN_POLLOUT)
+
+AVAILABLE OPTION TYPES
+----------------------
+*NN_TYPE_NONE*::
+No type, is returned for constants that are not socket options
+*NN_TYPE_INT*::
+The integer type
+*NN_TYPE_STR*::
+String (char *) type
+
+More types may be added in the future to nanomsg. You may enumerate all of them
+using the 'nn_symbol_info' itself by checking 'NN_NS_OPTION_TYPE' namespace.
+
+AVAILABLE OPTION UNITS
+----------------------
+*NN_UNIT_NONE*::
+No unit, is returned for constants that are not socket options, or do not have
+any meaningful unit (strings, integer values)
+*NN_UNIT_BYTES*::
+The option value is expressed in bytes
+*NN_UNIT_MILLISECONDS*::
+The option value is expressed in milliseconds
+*NN_UNIT_PRIORITY*::
+The option value is a priority, an integer from 1 to 16
+*NN_UNIT_BOOLEAN*::
+The option value is boolean, an integer 0 or 1
+
+More types may be added in the future to nanomsg. You may enumerate all of them
+using the 'nn_symbol_info' itself by checking 'NN_NS_OPTION_TYPE' namespace.
+
+
+RETURN VALUE
+------------
+If 'i' is valid, returns the number of bytes stored at the structure. The
+maximum value that can be returned is 'buflen'.
+
+If 'i' is out-of-range, nn_symbol_info returns zero.
+
+
+EXAMPLE
+-------
+
+----
+int i;
+for (i = 0; ; ++i) {
+    struct nn_symbol_properties sym;
+    int rc = nn_symbol_info (i, &sym, sizeof (sym));
+    if(rc == 0)
+        break;
+    assert (rc == sizeof (sym));
+    printf ("'%s' = %d\n", sym.name, sym.value);
+}
+----
+
+SEE ALSO
+--------
+<<nn_symbol.3.txt#,nn_symbol(3)>>
+<<nn_errno.3.txt#,nn_errno(3)>>
+<<nn_strerror.3.txt#,nn_strerror(3)>>
+<<nanomsg.7.txt#,nanomsg(7)>>
+
+
+AUTHORS
+-------
+link:mailto:paul@colomiets.name[Paul Colomiets]
+link:mailto:garrett@damore.org[Garrett D'Amore]

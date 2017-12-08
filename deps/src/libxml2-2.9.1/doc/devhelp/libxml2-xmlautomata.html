@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>xmlautomata: API to build regexp automata</title>
+    <meta name="generator" content="Libxml2 devhelp stylesheet"/>
+    <link rel="start" href="index.html" title="libxml2 Reference Manual"/>
+    <link rel="up" href="general.html" title="API"/>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+    <link rel="chapter" href="general.html" title="API"/>
+  </head>
+  <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+    <table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+      <tr valign="middle">
+        <td>
+          <a accesskey="p" href="libxml2-xmlIO.html">
+            <img src="left.png" width="24" height="24" border="0" alt="Prev"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="u" href="general.html">
+            <img src="up.png" width="24" height="24" border="0" alt="Up"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="h" href="index.html">
+            <img src="home.png" width="24" height="24" border="0" alt="Home"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="n" href="libxml2-xmlerror.html">
+            <img src="right.png" width="24" height="24" border="0" alt="Next"/>
+          </a>
+        </td>
+        <th width="100%" align="center">libxml2 Reference Manual</th>
+      </tr>
+    </table>
+    <h2>
+      <span class="refentrytitle">xmlautomata</span>
+    </h2>
+    <p>xmlautomata - API to build regexp automata</p>
+    <p>the API to build regexp automata </p>
+    <p>Author(s): Daniel Veillard </p>
+    <div class="refsynopsisdiv">
+      <h2>Synopsis</h2>
+      <pre class="synopsis">typedef <a href="libxml2-xmlautomata.html#xmlAutomataState">xmlAutomataState</a> * <a href="#xmlAutomataStatePtr">xmlAutomataStatePtr</a>;
+typedef struct _xmlAutomata <a href="#xmlAutomata">xmlAutomata</a>;
+typedef <a href="libxml2-xmlautomata.html#xmlAutomata">xmlAutomata</a> * <a href="#xmlAutomataPtr">xmlAutomataPtr</a>;
+typedef struct _xmlAutomataState <a href="#xmlAutomataState">xmlAutomataState</a>;
+void	<a href="#xmlFreeAutomata">xmlFreeAutomata</a>			(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am);
+int	<a href="#xmlAutomataNewCounter">xmlAutomataNewCounter</a>		(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>					 int min, <br/>					 int max);
+<a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	<a href="#xmlAutomataGetInitState">xmlAutomataGetInitState</a>	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am);
+<a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	<a href="#xmlAutomataNewTransition2">xmlAutomataNewTransition2</a>	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> from, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> to, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * token, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * token2, <br/>							 void * data);
+<a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	<a href="#xmlAutomataNewState">xmlAutomataNewState</a>	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am);
+<a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	<a href="#xmlAutomataNewCountTrans">xmlAutomataNewCountTrans</a>	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> from, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> to, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * token, <br/>							 int min, <br/>							 int max, <br/>							 void * data);
+<a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	<a href="#xmlAutomataNewOnceTrans2">xmlAutomataNewOnceTrans2</a>	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> from, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> to, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * token, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * token2, <br/>							 int min, <br/>							 int max, <br/>							 void * data);
+<a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	<a href="#xmlAutomataNewAllTrans">xmlAutomataNewAllTrans</a>	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>						 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> from, <br/>						 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> to, <br/>						 int lax);
+<a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	<a href="#xmlAutomataNewCountedTrans">xmlAutomataNewCountedTrans</a>	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> from, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> to, <br/>							 int counter);
+<a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	<a href="#xmlAutomataNewCounterTrans">xmlAutomataNewCounterTrans</a>	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> from, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> to, <br/>							 int counter);
+<a href="libxml2-xmlregexp.html#xmlRegexpPtr">xmlRegexpPtr</a>	<a href="#xmlAutomataCompile">xmlAutomataCompile</a>	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am);
+<a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	<a href="#xmlAutomataNewNegTrans">xmlAutomataNewNegTrans</a>	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>						 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> from, <br/>						 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> to, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * token, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * token2, <br/>						 void * data);
+<a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	<a href="#xmlAutomataNewEpsilon">xmlAutomataNewEpsilon</a>	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>						 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> from, <br/>						 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> to);
+<a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	<a href="#xmlAutomataNewCountTrans2">xmlAutomataNewCountTrans2</a>	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> from, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> to, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * token, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * token2, <br/>							 int min, <br/>							 int max, <br/>							 void * data);
+<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a>	<a href="#xmlNewAutomata">xmlNewAutomata</a>		(void);
+int	<a href="#xmlAutomataSetFinalState">xmlAutomataSetFinalState</a>	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>					 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> state);
+<a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	<a href="#xmlAutomataNewOnceTrans">xmlAutomataNewOnceTrans</a>	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>						 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> from, <br/>						 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> to, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * token, <br/>						 int min, <br/>						 int max, <br/>						 void * data);
+<a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	<a href="#xmlAutomataNewTransition">xmlAutomataNewTransition</a>	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> from, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> to, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * token, <br/>							 void * data);
+int	<a href="#xmlAutomataIsDeterminist">xmlAutomataIsDeterminist</a>	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am);
+</pre>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Description</h2>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Details</h2>
+      <div class="refsect2" lang="en">
+        <div class="refsect2" lang="en"><h3><a name="xmlAutomata">Structure </a>xmlAutomata</h3><pre class="programlisting">struct _xmlAutomata {
+The content of this structure is not made public by the API.
+} xmlAutomata;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAutomataPtr">Typedef </a>xmlAutomataPtr</h3><pre class="programlisting"><a href="libxml2-xmlautomata.html#xmlAutomata">xmlAutomata</a> * xmlAutomataPtr;
+</pre><p>A libxml automata description, It can be compiled into a regexp</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAutomataState">Structure </a>xmlAutomataState</h3><pre class="programlisting">struct _xmlAutomataState {
+The content of this structure is not made public by the API.
+} xmlAutomataState;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAutomataStatePtr">Typedef </a>xmlAutomataStatePtr</h3><pre class="programlisting"><a href="libxml2-xmlautomata.html#xmlAutomataState">xmlAutomataState</a> * xmlAutomataStatePtr;
+</pre><p>A state int the automata description,</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAutomataCompile"/>xmlAutomataCompile ()</h3><pre class="programlisting"><a href="libxml2-xmlregexp.html#xmlRegexpPtr">xmlRegexpPtr</a>	xmlAutomataCompile	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am)<br/>
+</pre><p>Compile the automata into a Reg Exp ready for being executed. The automata should be free after this point.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>am</tt></i>:</span></td><td>an automata</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the compiled regexp or NULL in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAutomataGetInitState"/>xmlAutomataGetInitState ()</h3><pre class="programlisting"><a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	xmlAutomataGetInitState	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am)<br/>
+</pre><p>Initial state lookup</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>am</tt></i>:</span></td><td>an automata</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the initial state of the automata</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAutomataIsDeterminist"/>xmlAutomataIsDeterminist ()</h3><pre class="programlisting">int	xmlAutomataIsDeterminist	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am)<br/>
+</pre><p>Checks if an automata is determinist.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>am</tt></i>:</span></td><td>an automata</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if true, 0 if not, and -1 in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAutomataNewAllTrans"/>xmlAutomataNewAllTrans ()</h3><pre class="programlisting"><a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	xmlAutomataNewAllTrans	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>						 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> from, <br/>						 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> to, <br/>						 int lax)<br/>
+</pre><p>If @to is NULL, this creates first a new target state in the automata and then adds a an ALL transition from the @from state to the target state. That transition is an epsilon transition allowed only when all transitions from the @from node have been activated.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>am</tt></i>:</span></td><td>an automata</td></tr><tr><td><span class="term"><i><tt>from</tt></i>:</span></td><td>the starting point of the transition</td></tr><tr><td><span class="term"><i><tt>to</tt></i>:</span></td><td>the target point of the transition or NULL</td></tr><tr><td><span class="term"><i><tt>lax</tt></i>:</span></td><td>allow to transition if not all all transitions have been activated</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the target state or NULL in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAutomataNewCountTrans"/>xmlAutomataNewCountTrans ()</h3><pre class="programlisting"><a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	xmlAutomataNewCountTrans	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> from, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> to, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * token, <br/>							 int min, <br/>							 int max, <br/>							 void * data)<br/>
+</pre><p>If @to is NULL, this creates first a new target state in the automata and then adds a transition from the @from state to the target state activated by a succession of input of value @token and whose number is between @min and @max</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>am</tt></i>:</span></td><td>an automata</td></tr><tr><td><span class="term"><i><tt>from</tt></i>:</span></td><td>the starting point of the transition</td></tr><tr><td><span class="term"><i><tt>to</tt></i>:</span></td><td>the target point of the transition or NULL</td></tr><tr><td><span class="term"><i><tt>token</tt></i>:</span></td><td>the input string associated to that transition</td></tr><tr><td><span class="term"><i><tt>min</tt></i>:</span></td><td>the minimum successive occurences of token</td></tr><tr><td><span class="term"><i><tt>max</tt></i>:</span></td><td>the maximum successive occurences of token</td></tr><tr><td><span class="term"><i><tt>data</tt></i>:</span></td><td>data associated to the transition</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the target state or NULL in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAutomataNewCountTrans2"/>xmlAutomataNewCountTrans2 ()</h3><pre class="programlisting"><a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	xmlAutomataNewCountTrans2	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> from, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> to, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * token, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * token2, <br/>							 int min, <br/>							 int max, <br/>							 void * data)<br/>
+</pre><p>If @to is NULL, this creates first a new target state in the automata and then adds a transition from the @from state to the target state activated by a succession of input of value @token and @token2 and whose number is between @min and @max</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>am</tt></i>:</span></td><td>an automata</td></tr><tr><td><span class="term"><i><tt>from</tt></i>:</span></td><td>the starting point of the transition</td></tr><tr><td><span class="term"><i><tt>to</tt></i>:</span></td><td>the target point of the transition or NULL</td></tr><tr><td><span class="term"><i><tt>token</tt></i>:</span></td><td>the input string associated to that transition</td></tr><tr><td><span class="term"><i><tt>token2</tt></i>:</span></td><td>the second input string associated to that transition</td></tr><tr><td><span class="term"><i><tt>min</tt></i>:</span></td><td>the minimum successive occurences of token</td></tr><tr><td><span class="term"><i><tt>max</tt></i>:</span></td><td>the maximum successive occurences of token</td></tr><tr><td><span class="term"><i><tt>data</tt></i>:</span></td><td>data associated to the transition</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the target state or NULL in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAutomataNewCountedTrans"/>xmlAutomataNewCountedTrans ()</h3><pre class="programlisting"><a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	xmlAutomataNewCountedTrans	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> from, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> to, <br/>							 int counter)<br/>
+</pre><p>If @to is NULL, this creates first a new target state in the automata and then adds an epsilon transition from the @from state to the target state which will increment the counter provided</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>am</tt></i>:</span></td><td>an automata</td></tr><tr><td><span class="term"><i><tt>from</tt></i>:</span></td><td>the starting point of the transition</td></tr><tr><td><span class="term"><i><tt>to</tt></i>:</span></td><td>the target point of the transition or NULL</td></tr><tr><td><span class="term"><i><tt>counter</tt></i>:</span></td><td>the counter associated to that transition</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the target state or NULL in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAutomataNewCounter"/>xmlAutomataNewCounter ()</h3><pre class="programlisting">int	xmlAutomataNewCounter		(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>					 int min, <br/>					 int max)<br/>
+</pre><p>Create a new counter</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>am</tt></i>:</span></td><td>an automata</td></tr><tr><td><span class="term"><i><tt>min</tt></i>:</span></td><td>the minimal value on the counter</td></tr><tr><td><span class="term"><i><tt>max</tt></i>:</span></td><td>the maximal value on the counter</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the counter number or -1 in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAutomataNewCounterTrans"/>xmlAutomataNewCounterTrans ()</h3><pre class="programlisting"><a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	xmlAutomataNewCounterTrans	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> from, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> to, <br/>							 int counter)<br/>
+</pre><p>If @to is NULL, this creates first a new target state in the automata and then adds an epsilon transition from the @from state to the target state which will be allowed only if the counter is within the right range.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>am</tt></i>:</span></td><td>an automata</td></tr><tr><td><span class="term"><i><tt>from</tt></i>:</span></td><td>the starting point of the transition</td></tr><tr><td><span class="term"><i><tt>to</tt></i>:</span></td><td>the target point of the transition or NULL</td></tr><tr><td><span class="term"><i><tt>counter</tt></i>:</span></td><td>the counter associated to that transition</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the target state or NULL in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAutomataNewEpsilon"/>xmlAutomataNewEpsilon ()</h3><pre class="programlisting"><a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	xmlAutomataNewEpsilon	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>						 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> from, <br/>						 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> to)<br/>
+</pre><p>If @to is NULL, this creates first a new target state in the automata and then adds an epsilon transition from the @from state to the target state</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>am</tt></i>:</span></td><td>an automata</td></tr><tr><td><span class="term"><i><tt>from</tt></i>:</span></td><td>the starting point of the transition</td></tr><tr><td><span class="term"><i><tt>to</tt></i>:</span></td><td>the target point of the transition or NULL</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the target state or NULL in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAutomataNewNegTrans"/>xmlAutomataNewNegTrans ()</h3><pre class="programlisting"><a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	xmlAutomataNewNegTrans	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>						 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> from, <br/>						 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> to, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * token, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * token2, <br/>						 void * data)<br/>
+</pre><p>If @to is NULL, this creates first a new target state in the automata and then adds a transition from the @from state to the target state activated by any value except (@token,@token2) Note that if @token2 is not NULL, then (X, NULL) won't match to follow # the semantic of XSD ##other</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>am</tt></i>:</span></td><td>an automata</td></tr><tr><td><span class="term"><i><tt>from</tt></i>:</span></td><td>the starting point of the transition</td></tr><tr><td><span class="term"><i><tt>to</tt></i>:</span></td><td>the target point of the transition or NULL</td></tr><tr><td><span class="term"><i><tt>token</tt></i>:</span></td><td>the first input string associated to that transition</td></tr><tr><td><span class="term"><i><tt>token2</tt></i>:</span></td><td>the second input string associated to that transition</td></tr><tr><td><span class="term"><i><tt>data</tt></i>:</span></td><td>data passed to the callback function if the transition is activated</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the target state or NULL in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAutomataNewOnceTrans"/>xmlAutomataNewOnceTrans ()</h3><pre class="programlisting"><a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	xmlAutomataNewOnceTrans	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>						 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> from, <br/>						 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> to, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * token, <br/>						 int min, <br/>						 int max, <br/>						 void * data)<br/>
+</pre><p>If @to is NULL, this creates first a new target state in the automata and then adds a transition from the @from state to the target state activated by a succession of input of value @token and whose number is between @min and @max, moreover that transition can only be crossed once.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>am</tt></i>:</span></td><td>an automata</td></tr><tr><td><span class="term"><i><tt>from</tt></i>:</span></td><td>the starting point of the transition</td></tr><tr><td><span class="term"><i><tt>to</tt></i>:</span></td><td>the target point of the transition or NULL</td></tr><tr><td><span class="term"><i><tt>token</tt></i>:</span></td><td>the input string associated to that transition</td></tr><tr><td><span class="term"><i><tt>min</tt></i>:</span></td><td>the minimum successive occurences of token</td></tr><tr><td><span class="term"><i><tt>max</tt></i>:</span></td><td>the maximum successive occurences of token</td></tr><tr><td><span class="term"><i><tt>data</tt></i>:</span></td><td>data associated to the transition</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the target state or NULL in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAutomataNewOnceTrans2"/>xmlAutomataNewOnceTrans2 ()</h3><pre class="programlisting"><a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	xmlAutomataNewOnceTrans2	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> from, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> to, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * token, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * token2, <br/>							 int min, <br/>							 int max, <br/>							 void * data)<br/>
+</pre><p>If @to is NULL, this creates first a new target state in the automata and then adds a transition from the @from state to the target state activated by a succession of input of value @token and @token2 and whose number is between @min and @max, moreover that transition can only be crossed once.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>am</tt></i>:</span></td><td>an automata</td></tr><tr><td><span class="term"><i><tt>from</tt></i>:</span></td><td>the starting point of the transition</td></tr><tr><td><span class="term"><i><tt>to</tt></i>:</span></td><td>the target point of the transition or NULL</td></tr><tr><td><span class="term"><i><tt>token</tt></i>:</span></td><td>the input string associated to that transition</td></tr><tr><td><span class="term"><i><tt>token2</tt></i>:</span></td><td>the second input string associated to that transition</td></tr><tr><td><span class="term"><i><tt>min</tt></i>:</span></td><td>the minimum successive occurences of token</td></tr><tr><td><span class="term"><i><tt>max</tt></i>:</span></td><td>the maximum successive occurences of token</td></tr><tr><td><span class="term"><i><tt>data</tt></i>:</span></td><td>data associated to the transition</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the target state or NULL in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAutomataNewState"/>xmlAutomataNewState ()</h3><pre class="programlisting"><a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	xmlAutomataNewState	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am)<br/>
+</pre><p>Create a new disconnected state in the automata</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>am</tt></i>:</span></td><td>an automata</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the new state or NULL in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAutomataNewTransition"/>xmlAutomataNewTransition ()</h3><pre class="programlisting"><a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	xmlAutomataNewTransition	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> from, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> to, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * token, <br/>							 void * data)<br/>
+</pre><p>If @to is NULL, this creates first a new target state in the automata and then adds a transition from the @from state to the target state activated by the value of @token</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>am</tt></i>:</span></td><td>an automata</td></tr><tr><td><span class="term"><i><tt>from</tt></i>:</span></td><td>the starting point of the transition</td></tr><tr><td><span class="term"><i><tt>to</tt></i>:</span></td><td>the target point of the transition or NULL</td></tr><tr><td><span class="term"><i><tt>token</tt></i>:</span></td><td>the input string associated to that transition</td></tr><tr><td><span class="term"><i><tt>data</tt></i>:</span></td><td>data passed to the callback function if the transition is activated</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the target state or NULL in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAutomataNewTransition2"/>xmlAutomataNewTransition2 ()</h3><pre class="programlisting"><a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a>	xmlAutomataNewTransition2	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> from, <br/>							 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> to, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * token, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * token2, <br/>							 void * data)<br/>
+</pre><p>If @to is NULL, this creates first a new target state in the automata and then adds a transition from the @from state to the target state activated by the value of @token</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>am</tt></i>:</span></td><td>an automata</td></tr><tr><td><span class="term"><i><tt>from</tt></i>:</span></td><td>the starting point of the transition</td></tr><tr><td><span class="term"><i><tt>to</tt></i>:</span></td><td>the target point of the transition or NULL</td></tr><tr><td><span class="term"><i><tt>token</tt></i>:</span></td><td>the first input string associated to that transition</td></tr><tr><td><span class="term"><i><tt>token2</tt></i>:</span></td><td>the second input string associated to that transition</td></tr><tr><td><span class="term"><i><tt>data</tt></i>:</span></td><td>data passed to the callback function if the transition is activated</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the target state or NULL in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlAutomataSetFinalState"/>xmlAutomataSetFinalState ()</h3><pre class="programlisting">int	xmlAutomataSetFinalState	(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am, <br/>					 <a href="libxml2-xmlautomata.html#xmlAutomataStatePtr">xmlAutomataStatePtr</a> state)<br/>
+</pre><p>Makes that state a final state</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>am</tt></i>:</span></td><td>an automata</td></tr><tr><td><span class="term"><i><tt>state</tt></i>:</span></td><td>a state in this automata</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 or -1 in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlFreeAutomata"/>xmlFreeAutomata ()</h3><pre class="programlisting">void	xmlFreeAutomata			(<a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a> am)<br/>
+</pre><p>Free an automata</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>am</tt></i>:</span></td><td>an automata</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlNewAutomata"/>xmlNewAutomata ()</h3><pre class="programlisting"><a href="libxml2-xmlautomata.html#xmlAutomataPtr">xmlAutomataPtr</a>	xmlNewAutomata		(void)<br/>
+</pre><p>Create a new automata</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the new object or NULL in case of failure</td></tr></tbody></table></div></div>
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

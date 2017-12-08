@@ -1,0 +1,175 @@
+nanocat(1)
+==========
+
+NAME
+----
+nanocat - a command-line interface to nanomsg
+
+
+SYNOPSIS
+--------
+
+    nanocat --req {--connect ADDR|--bind ADDR} {--data DATA|--file PATH} [-i SEC] [-AQ]
+    nanocat --rep {--connect ADDR|--bind ADDR} {--data DATA|--file PATH} [-AQ]
+    nanocat --push {--connect ADDR|--bind ADDR} {--data DATA|--file PATH} [-i SEC]
+    nanocat --pull {--connect ADDR|--bind ADDR} [-AQ]
+    nanocat --pub {--connect ADDR|--bind ADDR} {--data DATA|--file PATH} [-i SEC]
+    nanocat --sub {--connect ADDR|--bind ADDR} [--subscribe PREFIX ...] [-AQ]
+    nanocat --surveyor {--connect ADDR|--bind ADDR} {--data DATA|--file PATH} [-i SEC] [-AQ]
+    nanocat --respondent {--connect ADDR|--bind ADDR} {--data DATA|--file PATH} [-AQ]
+    nanocat --bus {--connect ADDR|--bind ADDR} {--data DATA|--file PATH} [-i SEC] [-AQ]
+    nanocat --pair {--connect ADDR|--bind ADDR} {--data DATA|--file PATH} [-i SEC] [-AQ]
+
+In the case symlinks are installed:
+
+    nn_req {--connect ADDR|--bind ADDR} {--data DATA|--file PATH} [-i SEC] [-AQ]
+    nn_rep {--connect ADDR|--bind ADDR} {--data DATA|--file PATH} [-AQ]
+    nn_push {--connect ADDR|--bind ADDR} {--data DATA|--file PATH} [-i SEC]
+    nn_pull {--connect ADDR|--bind ADDR} [-AQ]
+    nn_pub {--connect ADDR|--bind ADDR} {--data DATA|--file PATH} [-i SEC]
+    nn_sub {--connect ADDR|--bind ADDR} [--subscribe PREFIX ...] [-AQ]
+    nn_surveyor {--connect ADDR|--bind ADDR} {--data DATA|--file PATH} [-i SEC] [-AQ]
+    nn_respondent {--connect ADDR|--bind ADDR} {--data DATA|--file PATH} [-AQ]
+    nn_bus {--connect ADDR|--bind ADDR} {--data DATA|--file PATH} [-i SEC] [-AQ]
+    nn_pair {--connect ADDR|--bind ADDR} {--data DATA|--file PATH} [-i SEC] [-AQ]
+
+
+DESCRIPTION
+-----------
+
+The nanocat is a command-line tool to send and receive data via nanomsg
+sockets. It can be used for debugging purposes, sending files through the
+network, health checking the system or whatever else you can think of.
+
+
+OPTIONS
+-------
+
+Generic:
+
+ *--verbose,-v*::
+    Increase verbosity of the nanocat
+ *--silent,-q*::
+    Decrease verbosity of the nanocat
+ *--help,-h*::
+    This help text
+
+Socket Types:
+
+ *--push*::
+    Use NN_PUSH socket type
+ *--pull*::
+    Use NN_PULL socket type
+ *--pub*::
+    Use NN_PUB socket type
+ *--sub*::
+    Use NN_SUB socket type
+ *--req*::
+    Use NN_REQ socket type
+ *--rep*::
+    Use NN_REP socket type
+ *--surveyor*::
+    Use NN_SURVEYOR socket type
+ *--respondent*::
+    Use NN_RESPONDENT socket type
+ *--bus*::
+    Use NN_BUS socket type
+ *--pair*::
+    Use NN_PAIR socket type
+
+Socket Options:
+
+ *--bind* 'ADDR'::
+    Bind socket to the address ADDR
+ *--connect* 'ADDR'::
+    Connect socket to the address ADDR
+ *--bind-ipc,-X* 'PATH'::
+    Bind socket to the ipc address "ipc://PATH".
+ *--connect-ipc,-x* 'PATH'::
+    Connect socket to the ipc address "ipc://PATH".
+ *--bind-local,-L* 'PORT'::
+    Bind socket to the tcp address "tcp://127.0.0.1:PORT".
+ *--connect-local,-l* 'PORT'::
+    Connect socket to the tcp address "tcp://127.0.0.1:PORT".
+ *--recv-timeout* 'SEC'::
+    Set timeout for receiving a message
+ *--send-timeout* 'SEC'::
+    Set timeout for sending a message
+
+SUB Socket Options:
+
+ *--subscribe* 'PREFIX'::
+    Subscribe to the prefix PREFIX. Note: socket will be
+    subscribed to everything (empty prefix) if no prefixes
+    are specified on the command-line.
+
+Input Options:
+
+ *--format* 'FORMAT'::
+    Use echo format FORMAT (same as the options below)
+ *--raw*::
+    Dump message as is (Note: no delimiters are printed)
+ *--ascii,-A*::
+    Print ASCII part of message delimited by newline. All
+                        non-ascii characters replaced by dot.
+ *--quoted,-Q*::
+    Print each message on separate line in double quotes
+    with C-like character escaping
+ *--msgpack*::
+    Print each message as msgpacked string (raw type). This
+    is useful for programmatic parsing.
+
+Output Options:
+
+ *--interval,-i* 'SEC'::
+    Send message (or request) every SEC seconds
+ *--delay,-d* 'SEC'::
+    Wait for SEC seconds before sending message (useful for one-shot
+    PUB sockets)
+ *--data,-D* 'DATA'::
+    Send DATA to the socket and quit for PUB, PUSH, PAIR,
+    BUS socket. Use DATA to reply for REP or  RESPONDENT
+    socket. Send DATA as request for REQ or SURVEYOR socket.
+ *--file,-F* 'PATH'::
+    Same as --data but get data from file PATH
+
+
+EXAMPLES
+--------
+
+The ping-pong with nn_req/nn_rep sockets (must be run simultaneously):
+
+    nanocat --rep --bind tcp://127.0.0.1:1234 --data pong --format ascii
+    nanocat --req --connect tcp://127.0.0.1:1234 --data ping --format ascii
+
+Or in shorter to write form:
+
+    nn_rep -L1234 -Dpong -A
+    nn_req -l1234 -Dping -A
+
+Do periodic requests once a second:
+
+    nn_req -l1234 -Dping -A -i 1
+
+The rep socket that never reply (no -D option), may be used to check if
+resending the requests is actually work:
+
+    nanocat --rep --connect ipc:///var/run/app/req.socket
+
+Send an output of the ls to whatever would connect to 127.0.0.1:1234 then exit:
+
+    ls | nanocat --push -L1234 -F-
+
+Send heartbeats to imaginary monitoring service:
+
+    nanocat --pub --connect tpc://monitoring.example.org -D"I am alive!" --interval 10
+
+
+SEE ALSO
+--------
+<<nanomsg.7.txt#,nanomsg(7)>>
+
+AUTHORS
+-------
+
+link:mailto:paul@colomiets.name[Paul Colomiets]

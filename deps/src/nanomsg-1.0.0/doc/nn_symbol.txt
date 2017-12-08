@@ -1,0 +1,74 @@
+nn_symbol(3)
+============
+
+NAME
+----
+nn_symbol - query the names and values of nanomsg symbols
+
+
+SYNOPSIS
+--------
+*#include <nanomsg/nn.h>*
+
+*const char *nn_symbol (int 'i', int '*value');*
+
+
+DESCRIPTION
+-----------
+Retrieves the symbol name and value at index 'i'.  Indices start at 0.  An index
+has no significance to its associated symbol; the mappings may change between
+library versions.
+
+Typically a client will iterate through the symbols until nn_symbol returns
+NULL in order to collect all the symbols.
+
+All symbols exposed by 'nn_symbol' are available directly in the C API,
+generally as preprocessor macros.  Thus, this function is useful mostly for
+language bindings that can't parse the header file and rely on retrieving the
+symbols in the runtime.
+
+Note that the NN_MSG symbol is not exported by the _nn_symbol_ function. First,
+it is a pointer rather than an integer; second, the symbol is not supposed to
+be exported from language bindings to the user. Instead, language bindings
+should provide the zero-copy functionality in a language-specific way, if at
+all (zero-copy functionality may not make sense for some languages/bindings).
+
+
+RETURN VALUE
+------------
+If 'i' is valid, returns the name of the symbol at that index.  If the pointer
+'value' is not NULL, the symbol's value is stored there.
+
+If 'i' is out-of-range, nn_symbol returns NULL and sets 'errno' to EINVAL.
+
+
+ERRORS
+------
+*EINVAL*::
+The passed index 'i' was out-of-range; it was less than zero or greater-than-or-
+equal-to the number of symbols.
+
+
+EXAMPLE
+-------
+
+----
+int value, i;
+for (i = 0; ; ++i) {
+    const char* name = nn_symbol (i, &value);
+    if (name == NULL) break;
+    printf ("'%s' = %d\n", name, value);
+}
+----
+
+SEE ALSO
+--------
+<<nn_symbol_info.3.txt#,nn_symbol_info(3)>>
+<<nn_errno.3.txt#,nn_errno(3)>>
+<<nn_strerror.3.txt#,nn_strerror(3)>>
+<<nanomsg.7.txt#,nanomsg(7)>>
+
+
+AUTHORS
+-------
+link:mailto:evan@neomantra.net[Evan Wies]

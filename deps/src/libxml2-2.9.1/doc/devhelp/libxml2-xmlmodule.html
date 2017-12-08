@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>xmlmodule: dynamic module loading</title>
+    <meta name="generator" content="Libxml2 devhelp stylesheet"/>
+    <link rel="start" href="index.html" title="libxml2 Reference Manual"/>
+    <link rel="up" href="general.html" title="API"/>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+    <link rel="chapter" href="general.html" title="API"/>
+  </head>
+  <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+    <table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+      <tr valign="middle">
+        <td>
+          <a accesskey="p" href="libxml2-xmlmemory.html">
+            <img src="left.png" width="24" height="24" border="0" alt="Prev"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="u" href="general.html">
+            <img src="up.png" width="24" height="24" border="0" alt="Up"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="h" href="index.html">
+            <img src="home.png" width="24" height="24" border="0" alt="Home"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="n" href="libxml2-xmlreader.html">
+            <img src="right.png" width="24" height="24" border="0" alt="Next"/>
+          </a>
+        </td>
+        <th width="100%" align="center">libxml2 Reference Manual</th>
+      </tr>
+    </table>
+    <h2>
+      <span class="refentrytitle">xmlmodule</span>
+    </h2>
+    <p>xmlmodule - dynamic module loading</p>
+    <p>basic API for dynamic module loading, used by libexslt added in 2.6.17 </p>
+    <p>Author(s): Joel W. Reed </p>
+    <div class="refsynopsisdiv">
+      <h2>Synopsis</h2>
+      <pre class="synopsis">typedef struct _xmlModule <a href="#xmlModule">xmlModule</a>;
+typedef <a href="libxml2-xmlmodule.html#xmlModule">xmlModule</a> * <a href="#xmlModulePtr">xmlModulePtr</a>;
+typedef enum <a href="#xmlModuleOption">xmlModuleOption</a>;
+int	<a href="#xmlModuleFree">xmlModuleFree</a>			(<a href="libxml2-xmlmodule.html#xmlModulePtr">xmlModulePtr</a> module);
+int	<a href="#xmlModuleSymbol">xmlModuleSymbol</a>			(<a href="libxml2-xmlmodule.html#xmlModulePtr">xmlModulePtr</a> module, <br/>					 const char * name, <br/>					 void ** symbol);
+<a href="libxml2-xmlmodule.html#xmlModulePtr">xmlModulePtr</a>	<a href="#xmlModuleOpen">xmlModuleOpen</a>		(const char * name, <br/>					 int options);
+int	<a href="#xmlModuleClose">xmlModuleClose</a>			(<a href="libxml2-xmlmodule.html#xmlModulePtr">xmlModulePtr</a> module);
+</pre>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Description</h2>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Details</h2>
+      <div class="refsect2" lang="en">
+        <div class="refsect2" lang="en"><h3><a name="xmlModule">Structure </a>xmlModule</h3><pre class="programlisting">struct _xmlModule {
+The content of this structure is not made public by the API.
+} xmlModule;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlModuleOption">Enum </a>xmlModuleOption</h3><pre class="programlisting">enum <a href="#xmlModuleOption">xmlModuleOption</a> {
+    <a name="XML_MODULE_LAZY">XML_MODULE_LAZY</a> = 1 /* lazy binding */
+    <a name="XML_MODULE_LOCAL">XML_MODULE_LOCAL</a> = 2 /*  local binding */
+};
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlModulePtr">Typedef </a>xmlModulePtr</h3><pre class="programlisting"><a href="libxml2-xmlmodule.html#xmlModule">xmlModule</a> * xmlModulePtr;
+</pre><p>A handle to a dynamically loaded module</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlModuleClose"/>xmlModuleClose ()</h3><pre class="programlisting">int	xmlModuleClose			(<a href="libxml2-xmlmodule.html#xmlModulePtr">xmlModulePtr</a> module)<br/>
+</pre><p>The close operations unload the associated module and free the data associated to the module.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>module</tt></i>:</span></td><td>the module handle</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 in case of success, -1 in case of argument error and -2 if the module could not be closed/unloaded.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlModuleFree"/>xmlModuleFree ()</h3><pre class="programlisting">int	xmlModuleFree			(<a href="libxml2-xmlmodule.html#xmlModulePtr">xmlModulePtr</a> module)<br/>
+</pre><p>The free operations free the data associated to the module but does not unload the associated shared library which may still be in use.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>module</tt></i>:</span></td><td>the module handle</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 in case of success, -1 in case of argument error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlModuleOpen"/>xmlModuleOpen ()</h3><pre class="programlisting"><a href="libxml2-xmlmodule.html#xmlModulePtr">xmlModulePtr</a>	xmlModuleOpen		(const char * name, <br/>					 int options)<br/>
+</pre><p>Opens a module/shared library given its name or path NOTE: that due to portability issues, behaviour can only be guaranteed with @name using ASCII. We canot guarantee that an UTF-8 string would work, which is why name is a const char * and not a const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * . TODO: options are not yet implemented.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the module name</td></tr><tr><td><span class="term"><i><tt>options</tt></i>:</span></td><td>a set of <a href="libxml2-xmlmodule.html#xmlModuleOption">xmlModuleOption</a></td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a handle for the module or NULL in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlModuleSymbol"/>xmlModuleSymbol ()</h3><pre class="programlisting">int	xmlModuleSymbol			(<a href="libxml2-xmlmodule.html#xmlModulePtr">xmlModulePtr</a> module, <br/>					 const char * name, <br/>					 void ** symbol)<br/>
+</pre><p>Lookup for a symbol address in the given module NOTE: that due to portability issues, behaviour can only be guaranteed with @name using ASCII. We canot guarantee that an UTF-8 string would work, which is why name is a const char * and not a const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * .</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>module</tt></i>:</span></td><td>the module</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the name of the symbol</td></tr><tr><td><span class="term"><i><tt>symbol</tt></i>:</span></td><td>the resulting symbol address</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if the symbol was found, or -1 in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

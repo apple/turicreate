@@ -1,0 +1,156 @@
+nn_getsockopt(3)
+================
+
+NAME
+----
+nn_getsockopt - retrieve a socket option
+
+
+SYNOPSIS
+--------
+*#include <nanomsg/nn.h>*
+
+*int nn_getsockopt (int 's', int 'level', int 'option', void '*optval', size_t '*optvallen');*
+
+DESCRIPTION
+-----------
+Retrieves the value for the 'option'. The 'level' argument specifies
+the protocol level at which the option resides. For generic socket-level options
+use _NN_SOL_SOCKET_ level. For socket-type-specific options use socket type
+for 'level' argument (e.g. _NN_SUB_). For transport-specific options use ID of
+the transport as the 'level' argument (e.g. _NN_TCP_).
+
+The value is stored in the buffer pointed to by 'optval' argument. Size of the
+buffer is specified by the 'optvallen' argument. If the size of the option is
+greater than size of the buffer, the value will be silently truncated.
+Otherwise, the 'optvallen' will be modified to indicate the actual length of
+the option.
+
+_<nanomsg/nn.h>_ header defines generic socket-level options
+(_NN_SOL_SOCKET_ level). The options are as follows:
+
+*NN_DOMAIN*::
+    Returns the domain constant as it was passed to _nn_socket()_.
+*NN_PROTOCOL*::
+    Returns the protocol constant as it was passed to _nn_socket()_.
+*NN_LINGER*::
+    Specifies how long the socket should try to send pending outbound messages
+    after _nn_close()_ have been called, in milliseconds. Negative value means
+    infinite linger. The type of the option is int. Default value
+    is 1000 (1 second).
+*NN_SNDBUF*::
+    Size of the send buffer, in bytes. To prevent blocking for messages larger
+    than the buffer, exactly one message may be buffered in addition to the data
+    in the send buffer. The type of this option is int. Default value is 128kB.
+*NN_RCVBUF*::
+    Size of the receive buffer, in bytes. To prevent blocking for messages
+    larger than the buffer, exactly one message may be buffered in addition
+    to the data in the receive buffer. The type of this option is int. Default
+    value is 128kB.
+*NN_RCVMAXSIZE*::
+    Maximum message size that can be received, in bytes. Negative value means
+    that the received size is limited only by available addressable memory. The
+    type of this option is int. Default is 1024kB.
+*NN_SNDTIMEO*::
+    The timeout for send operation on the socket, in milliseconds. If message
+    cannot be sent within the specified timeout, EAGAIN error is returned.
+    Negative value means infinite timeout. The type of the option is int.
+    Default value is -1.
+*NN_RCVTIMEO*::
+    The timeout for recv operation on the socket, in milliseconds. If message
+    cannot be received within the specified timeout, EAGAIN error is returned.
+    Negative value means infinite timeout. The type of the option is int.
+    Default value is -1.
+*NN_RECONNECT_IVL*::
+    For connection-based transports such as TCP, this option specifies how
+    long to wait, in milliseconds, when connection is broken before trying
+    to re-establish it. Note that actual reconnect interval may be randomised
+    to some extent to prevent severe reconnection storms. The type of the option
+    is int. Default value is 100 (0.1 second).
+*NN_RECONNECT_IVL_MAX*::
+    This option is to be used only in addition to _NN_RECONNECT_IVL_ option.
+    It specifies maximum reconnection interval. On each reconnect attempt,
+    the previous interval is doubled until _NN_RECONNECT_IVL_MAX_ is reached.
+    Value of zero means that no exponential backoff is performed and reconnect
+    interval is based only on _NN_RECONNECT_IVL_. If _NN_RECONNECT_IVL_MAX_ is
+    less than _NN_RECONNECT_IVL_, it is ignored. The type of the option is int.
+    Default value is 0.
+*NN_SNDPRIO*::
+    Retrieves outbound priority currently set on the socket. This
+    option has no effect on socket types that send messages to all the peers.
+    However, if the socket type sends each message to a single peer
+    (or a limited set of peers), peers with high priority take precedence
+    over peers with low priority. The type of the option is int. Highest
+    priority is 1, lowest priority is 16. Default value is 8.
+*NN_RCVPRIO*::
+    Sets inbound priority for endpoints subsequently added to the socket. This
+    option has no effect on socket types that are not able to receive messages.
+    When receiving a message, messages from peer with higher priority are
+    received before messages from peer with lower priority. The type of the
+    option is int. Highest priority is 1, lowest priority is 16. Default value
+    is 8.
+*NN_IPV4ONLY*::
+    If set to 1, only IPv4 addresses are used. If set to 0, both IPv4 and IPv6
+    addresses are used. The type of the option is int. Default value is 1.
+*NN_SNDFD*::
+    Retrieves a file descriptor that is readable when a message can be sent
+    to the socket. The descriptor should be used only for polling and never
+    read from or written to. The type of the option is same as the type of
+    file descriptor on the platform. That is, int on POSIX-complaint platforms
+    and SOCKET on Windows. The descriptor becomes invalid and should not be
+    used any more once the socket is closed. This socket option is not available
+    for unidirectional recv-only socket types.
+*NN_RCVFD*::
+    Retrieves a file descriptor that is readable when a message can be received
+    from the socket. The descriptor should be used only for polling and never
+    read from or written to. The type of the option is same as the type of
+    file descriptor on the platform. That is, int on POSIX-complaint platforms
+    and SOCKET on Windows. The descriptor becomes invalid and should not be
+    used any more once the socket is closed. This socket option is not available
+    for unidirectional send-only socket types.
+*NN_SOCKET_NAME*::
+    Socket name for error reporting and statistics. The type of the option
+    is string. Default value is "N" where N is socket integer.
+    *This option is experimental, see <<nn_env.7.txt#,nn_env(7)>> for details*
+*NN_TTL*::
+    Retrieves the maximum number of "hops" a message can go through before
+    it is dropped.  Each time the message is received (for example via
+    the <<nn_device.3.txt#,nn_device(3)>> function) counts as a single hop.
+    This provides a form of protection against inadvertent loops.
+
+
+RETURN VALUE
+------------
+If the function succeeds zero is returned. Otherwise, -1 is
+returned and 'errno' is set to to one of the values defined below.
+
+
+ERRORS
+------
+*EBADF*::
+The provided socket is invalid.
+*ENOPROTOOPT*::
+The option is unknown at the level indicated.
+*ETERM*::
+The library is terminating.
+
+EXAMPLE
+-------
+
+----
+int linger;
+size_t sz = sizeof (linger);
+nn_getsockopt (s, NN_SOL_SOCKET, NN_LINGER, &linger, &sz);
+----
+
+
+SEE ALSO
+--------
+<<nn_socket.3.txt#,nn_socket(3)>>
+<<nn_setsockopt.3.txt#,nn_setsockopt(3)>>
+<<nanomsg.7.txt#,nanomsg(7)>>
+
+AUTHORS
+-------
+link:mailto:sustrik@250bpm.com[Martin Sustrik]
+link:mailto:garrett@damore.org[Garrett D'Amore]

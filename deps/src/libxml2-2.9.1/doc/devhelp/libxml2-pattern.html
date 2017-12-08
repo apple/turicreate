@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>pattern: pattern expression handling</title>
+    <meta name="generator" content="Libxml2 devhelp stylesheet"/>
+    <link rel="start" href="index.html" title="libxml2 Reference Manual"/>
+    <link rel="up" href="general.html" title="API"/>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+    <link rel="chapter" href="general.html" title="API"/>
+  </head>
+  <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+    <table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+      <tr valign="middle">
+        <td>
+          <a accesskey="p" href="libxml2-parserInternals.html">
+            <img src="left.png" width="24" height="24" border="0" alt="Prev"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="u" href="general.html">
+            <img src="up.png" width="24" height="24" border="0" alt="Up"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="h" href="index.html">
+            <img src="home.png" width="24" height="24" border="0" alt="Home"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="n" href="libxml2-relaxng.html">
+            <img src="right.png" width="24" height="24" border="0" alt="Next"/>
+          </a>
+        </td>
+        <th width="100%" align="center">libxml2 Reference Manual</th>
+      </tr>
+    </table>
+    <h2>
+      <span class="refentrytitle">pattern</span>
+    </h2>
+    <p>pattern - pattern expression handling</p>
+    <p>allows to compile and test pattern expressions for nodes either in a tree or based on a parser state. </p>
+    <p>Author(s): Daniel Veillard </p>
+    <div class="refsynopsisdiv">
+      <h2>Synopsis</h2>
+      <pre class="synopsis">typedef <a href="libxml2-pattern.html#xmlStreamCtxt">xmlStreamCtxt</a> * <a href="#xmlStreamCtxtPtr">xmlStreamCtxtPtr</a>;
+typedef enum <a href="#xmlPatternFlags">xmlPatternFlags</a>;
+typedef struct _xmlStreamCtxt <a href="#xmlStreamCtxt">xmlStreamCtxt</a>;
+typedef struct _xmlPattern <a href="#xmlPattern">xmlPattern</a>;
+typedef <a href="libxml2-pattern.html#xmlPattern">xmlPattern</a> * <a href="#xmlPatternPtr">xmlPatternPtr</a>;
+int	<a href="#xmlPatternMinDepth">xmlPatternMinDepth</a>		(<a href="libxml2-pattern.html#xmlPatternPtr">xmlPatternPtr</a> comp);
+<a href="libxml2-pattern.html#xmlStreamCtxtPtr">xmlStreamCtxtPtr</a>	<a href="#xmlPatternGetStreamCtxt">xmlPatternGetStreamCtxt</a>	(<a href="libxml2-pattern.html#xmlPatternPtr">xmlPatternPtr</a> comp);
+int	<a href="#xmlPatternFromRoot">xmlPatternFromRoot</a>		(<a href="libxml2-pattern.html#xmlPatternPtr">xmlPatternPtr</a> comp);
+void	<a href="#xmlFreePatternList">xmlFreePatternList</a>		(<a href="libxml2-pattern.html#xmlPatternPtr">xmlPatternPtr</a> comp);
+int	<a href="#xmlPatternStreamable">xmlPatternStreamable</a>		(<a href="libxml2-pattern.html#xmlPatternPtr">xmlPatternPtr</a> comp);
+int	<a href="#xmlStreamPushAttr">xmlStreamPushAttr</a>		(<a href="libxml2-pattern.html#xmlStreamCtxtPtr">xmlStreamCtxtPtr</a> stream, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ns);
+int	<a href="#xmlPatternMatch">xmlPatternMatch</a>			(<a href="libxml2-pattern.html#xmlPatternPtr">xmlPatternPtr</a> comp, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node);
+int	<a href="#xmlStreamWantsAnyNode">xmlStreamWantsAnyNode</a>		(<a href="libxml2-pattern.html#xmlStreamCtxtPtr">xmlStreamCtxtPtr</a> streamCtxt);
+int	<a href="#xmlStreamPop">xmlStreamPop</a>			(<a href="libxml2-pattern.html#xmlStreamCtxtPtr">xmlStreamCtxtPtr</a> stream);
+void	<a href="#xmlFreePattern">xmlFreePattern</a>			(<a href="libxml2-pattern.html#xmlPatternPtr">xmlPatternPtr</a> comp);
+int	<a href="#xmlStreamPush">xmlStreamPush</a>			(<a href="libxml2-pattern.html#xmlStreamCtxtPtr">xmlStreamCtxtPtr</a> stream, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ns);
+int	<a href="#xmlPatternMaxDepth">xmlPatternMaxDepth</a>		(<a href="libxml2-pattern.html#xmlPatternPtr">xmlPatternPtr</a> comp);
+<a href="libxml2-pattern.html#xmlPatternPtr">xmlPatternPtr</a>	<a href="#xmlPatterncompile">xmlPatterncompile</a>	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * pattern, <br/>					 <a href="libxml2-dict.html#xmlDict">xmlDict</a> * dict, <br/>					 int flags, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** namespaces);
+int	<a href="#xmlStreamPushNode">xmlStreamPushNode</a>		(<a href="libxml2-pattern.html#xmlStreamCtxtPtr">xmlStreamCtxtPtr</a> stream, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ns, <br/>					 int nodeType);
+void	<a href="#xmlFreeStreamCtxt">xmlFreeStreamCtxt</a>		(<a href="libxml2-pattern.html#xmlStreamCtxtPtr">xmlStreamCtxtPtr</a> stream);
+</pre>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Description</h2>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Details</h2>
+      <div class="refsect2" lang="en">
+        <div class="refsect2" lang="en"><h3><a name="xmlPattern">Structure </a>xmlPattern</h3><pre class="programlisting">struct _xmlPattern {
+The content of this structure is not made public by the API.
+} xmlPattern;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlPatternFlags">Enum </a>xmlPatternFlags</h3><pre class="programlisting">enum <a href="#xmlPatternFlags">xmlPatternFlags</a> {
+    <a name="XML_PATTERN_DEFAULT">XML_PATTERN_DEFAULT</a> = 0 /* simple pattern match */
+    <a name="XML_PATTERN_XPATH">XML_PATTERN_XPATH</a> = 1 /* standard XPath pattern */
+    <a name="XML_PATTERN_XSSEL">XML_PATTERN_XSSEL</a> = 2 /* XPath subset for schema selector */
+    <a name="XML_PATTERN_XSFIELD">XML_PATTERN_XSFIELD</a> = 4 /*  XPath subset for schema field */
+};
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlPatternPtr">Typedef </a>xmlPatternPtr</h3><pre class="programlisting"><a href="libxml2-pattern.html#xmlPattern">xmlPattern</a> * xmlPatternPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStreamCtxt">Structure </a>xmlStreamCtxt</h3><pre class="programlisting">struct _xmlStreamCtxt {
+The content of this structure is not made public by the API.
+} xmlStreamCtxt;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStreamCtxtPtr">Typedef </a>xmlStreamCtxtPtr</h3><pre class="programlisting"><a href="libxml2-pattern.html#xmlStreamCtxt">xmlStreamCtxt</a> * xmlStreamCtxtPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlFreePattern"/>xmlFreePattern ()</h3><pre class="programlisting">void	xmlFreePattern			(<a href="libxml2-pattern.html#xmlPatternPtr">xmlPatternPtr</a> comp)<br/>
+</pre><p>Free up the memory allocated by @comp</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>comp</tt></i>:</span></td><td>an XSLT comp</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlFreePatternList"/>xmlFreePatternList ()</h3><pre class="programlisting">void	xmlFreePatternList		(<a href="libxml2-pattern.html#xmlPatternPtr">xmlPatternPtr</a> comp)<br/>
+</pre><p>Free up the memory allocated by all the elements of @comp</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>comp</tt></i>:</span></td><td>an XSLT comp list</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlFreeStreamCtxt"/>xmlFreeStreamCtxt ()</h3><pre class="programlisting">void	xmlFreeStreamCtxt		(<a href="libxml2-pattern.html#xmlStreamCtxtPtr">xmlStreamCtxtPtr</a> stream)<br/>
+</pre><p>Free the stream context</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>stream</tt></i>:</span></td><td>the stream context</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlPatternFromRoot"/>xmlPatternFromRoot ()</h3><pre class="programlisting">int	xmlPatternFromRoot		(<a href="libxml2-pattern.html#xmlPatternPtr">xmlPatternPtr</a> comp)<br/>
+</pre><p>Check if the pattern must be looked at from the root.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>comp</tt></i>:</span></td><td>the precompiled pattern</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if true, 0 if false and -1 in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlPatternGetStreamCtxt"/>xmlPatternGetStreamCtxt ()</h3><pre class="programlisting"><a href="libxml2-pattern.html#xmlStreamCtxtPtr">xmlStreamCtxtPtr</a>	xmlPatternGetStreamCtxt	(<a href="libxml2-pattern.html#xmlPatternPtr">xmlPatternPtr</a> comp)<br/>
+</pre><p>Get a streaming context for that pattern Use <a href="libxml2-pattern.html#xmlFreeStreamCtxt">xmlFreeStreamCtxt</a> to free the context.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>comp</tt></i>:</span></td><td>the precompiled pattern</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a pointer to the context or NULL in case of failure</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlPatternMatch"/>xmlPatternMatch ()</h3><pre class="programlisting">int	xmlPatternMatch			(<a href="libxml2-pattern.html#xmlPatternPtr">xmlPatternPtr</a> comp, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node)<br/>
+</pre><p>Test whether the node matches the pattern</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>comp</tt></i>:</span></td><td>the precompiled pattern</td></tr><tr><td><span class="term"><i><tt>node</tt></i>:</span></td><td>a node</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if it matches, 0 if it doesn't and -1 in case of failure</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlPatternMaxDepth"/>xmlPatternMaxDepth ()</h3><pre class="programlisting">int	xmlPatternMaxDepth		(<a href="libxml2-pattern.html#xmlPatternPtr">xmlPatternPtr</a> comp)<br/>
+</pre><p>Check the maximum depth reachable by a pattern</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>comp</tt></i>:</span></td><td>the precompiled pattern</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>-2 if no limit (using //), otherwise the depth, and -1 in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlPatternMinDepth"/>xmlPatternMinDepth ()</h3><pre class="programlisting">int	xmlPatternMinDepth		(<a href="libxml2-pattern.html#xmlPatternPtr">xmlPatternPtr</a> comp)<br/>
+</pre><p>Check the minimum depth reachable by a pattern, 0 mean the / or . are part of the set.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>comp</tt></i>:</span></td><td>the precompiled pattern</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>-1 in case of error otherwise the depth,</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlPatternStreamable"/>xmlPatternStreamable ()</h3><pre class="programlisting">int	xmlPatternStreamable		(<a href="libxml2-pattern.html#xmlPatternPtr">xmlPatternPtr</a> comp)<br/>
+</pre><p>Check if the pattern is streamable i.e. xmlPatternGetStreamCtxt() should work.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>comp</tt></i>:</span></td><td>the precompiled pattern</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if streamable, 0 if not and -1 in case of error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlPatterncompile"/>xmlPatterncompile ()</h3><pre class="programlisting"><a href="libxml2-pattern.html#xmlPatternPtr">xmlPatternPtr</a>	xmlPatterncompile	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * pattern, <br/>					 <a href="libxml2-dict.html#xmlDict">xmlDict</a> * dict, <br/>					 int flags, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** namespaces)<br/>
+</pre><p>Compile a pattern.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>pattern</tt></i>:</span></td><td>the pattern to compile</td></tr><tr><td><span class="term"><i><tt>dict</tt></i>:</span></td><td>an optional dictionary for interned strings</td></tr><tr><td><span class="term"><i><tt>flags</tt></i>:</span></td><td>compilation flags, see <a href="libxml2-pattern.html#xmlPatternFlags">xmlPatternFlags</a></td></tr><tr><td><span class="term"><i><tt>namespaces</tt></i>:</span></td><td>the prefix definitions, array of [URI, prefix] or NULL</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the compiled form of the pattern or NULL in case of error</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStreamPop"/>xmlStreamPop ()</h3><pre class="programlisting">int	xmlStreamPop			(<a href="libxml2-pattern.html#xmlStreamCtxtPtr">xmlStreamCtxtPtr</a> stream)<br/>
+</pre><p>push one level from the stream.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>stream</tt></i>:</span></td><td>the stream context</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>-1 in case of error, 0 otherwise.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStreamPush"/>xmlStreamPush ()</h3><pre class="programlisting">int	xmlStreamPush			(<a href="libxml2-pattern.html#xmlStreamCtxtPtr">xmlStreamCtxtPtr</a> stream, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ns)<br/>
+</pre><p>Push new data onto the stream. NOTE: if the call xmlPatterncompile() indicated a dictionary, then strings for name and ns will be expected to come from the dictionary. Both @name and @ns being NULL means the / i.e. the root of the document. This can also act as a reset. Otherwise the function will act as if it has been given an element-node.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>stream</tt></i>:</span></td><td>the stream context</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the current name</td></tr><tr><td><span class="term"><i><tt>ns</tt></i>:</span></td><td>the namespace name</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>-1 in case of error, 1 if the current state in the stream is a match and 0 otherwise.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStreamPushAttr"/>xmlStreamPushAttr ()</h3><pre class="programlisting">int	xmlStreamPushAttr		(<a href="libxml2-pattern.html#xmlStreamCtxtPtr">xmlStreamCtxtPtr</a> stream, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ns)<br/>
+</pre><p>Push new <a href="libxml2-SAX.html#attribute">attribute</a> data onto the stream. NOTE: if the call xmlPatterncompile() indicated a dictionary, then strings for name and ns will be expected to come from the dictionary. Both @name and @ns being NULL means the / i.e. the root of the document. This can also act as a reset. Otherwise the function will act as if it has been given an attribute-node.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>stream</tt></i>:</span></td><td>the stream context</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the current name</td></tr><tr><td><span class="term"><i><tt>ns</tt></i>:</span></td><td>the namespace name</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>-1 in case of error, 1 if the current state in the stream is a match and 0 otherwise.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStreamPushNode"/>xmlStreamPushNode ()</h3><pre class="programlisting">int	xmlStreamPushNode		(<a href="libxml2-pattern.html#xmlStreamCtxtPtr">xmlStreamCtxtPtr</a> stream, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>					 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ns, <br/>					 int nodeType)<br/>
+</pre><p>Push new data onto the stream. NOTE: if the call xmlPatterncompile() indicated a dictionary, then strings for name and ns will be expected to come from the dictionary. Both @name and @ns being NULL means the / i.e. the root of the document. This can also act as a reset. Different from xmlStreamPush() this function can be fed with nodes of type: element-, attribute-, text-, cdata-section-, comment- and processing-instruction-node.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>stream</tt></i>:</span></td><td>the stream context</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>the current name</td></tr><tr><td><span class="term"><i><tt>ns</tt></i>:</span></td><td>the namespace name</td></tr><tr><td><span class="term"><i><tt>nodeType</tt></i>:</span></td><td>the type of the node being pushed</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>-1 in case of error, 1 if the current state in the stream is a match and 0 otherwise.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlStreamWantsAnyNode"/>xmlStreamWantsAnyNode ()</h3><pre class="programlisting">int	xmlStreamWantsAnyNode		(<a href="libxml2-pattern.html#xmlStreamCtxtPtr">xmlStreamCtxtPtr</a> streamCtxt)<br/>
+</pre><p>Query if the streaming pattern additionally needs to be fed with text-, cdata-section-, comment- and processing-instruction-nodes. If the result is 0 then only element-nodes and attribute-nodes need to be pushed.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>streamCtxt</tt></i>:</span></td><td>the stream context</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 in case of need of nodes of the above described types, 0 otherwise. -1 on API errors.</td></tr></tbody></table></div></div>
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>xpath: XML Path Language implementation</title>
+    <meta name="generator" content="Libxml2 devhelp stylesheet"/>
+    <link rel="start" href="index.html" title="libxml2 Reference Manual"/>
+    <link rel="up" href="general.html" title="API"/>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+    <link rel="chapter" href="general.html" title="API"/>
+  </head>
+  <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+    <table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+      <tr valign="middle">
+        <td>
+          <a accesskey="p" href="libxml2-xmlwriter.html">
+            <img src="left.png" width="24" height="24" border="0" alt="Prev"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="u" href="general.html">
+            <img src="up.png" width="24" height="24" border="0" alt="Up"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="h" href="index.html">
+            <img src="home.png" width="24" height="24" border="0" alt="Home"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="n" href="libxml2-xpathInternals.html">
+            <img src="right.png" width="24" height="24" border="0" alt="Next"/>
+          </a>
+        </td>
+        <th width="100%" align="center">libxml2 Reference Manual</th>
+      </tr>
+    </table>
+    <h2>
+      <span class="refentrytitle">xpath</span>
+    </h2>
+    <p>xpath - XML Path Language implementation</p>
+    <p>API for the XML Path Language implementation  XML Path Language implementation XPath is a language for addressing parts of an XML document, designed to be used by both XSLT and XPointer</p>
+    <p>Author(s): Daniel Veillard </p>
+    <div class="refsynopsisdiv">
+      <h2>Synopsis</h2>
+      <pre class="synopsis">#define <a href="#xmlXPathNodeSetGetLength">xmlXPathNodeSetGetLength</a>(ns);
+#define <a href="#XML_XPATH_CHECKNS">XML_XPATH_CHECKNS</a>;
+#define <a href="#XML_XPATH_NOVAR">XML_XPATH_NOVAR</a>;
+#define <a href="#xmlXPathNodeSetItem">xmlXPathNodeSetItem</a>(ns, index);
+#define <a href="#xmlXPathNodeSetIsEmpty">xmlXPathNodeSetIsEmpty</a>(ns);
+typedef enum <a href="#xmlXPathObjectType">xmlXPathObjectType</a>;
+typedef <a href="libxml2-xpath.html#xmlXPathVariable">xmlXPathVariable</a> * <a href="#xmlXPathVariablePtr">xmlXPathVariablePtr</a>;
+typedef struct _xmlXPathContext <a href="#xmlXPathContext">xmlXPathContext</a>;
+typedef enum <a href="#xmlXPathError">xmlXPathError</a>;
+typedef struct _xmlXPathFunct <a href="#xmlXPathFunct">xmlXPathFunct</a>;
+typedef <a href="libxml2-xpath.html#xmlXPathType">xmlXPathType</a> * <a href="#xmlXPathTypePtr">xmlXPathTypePtr</a>;
+typedef struct _xmlXPathType <a href="#xmlXPathType">xmlXPathType</a>;
+typedef <a href="libxml2-xpath.html#xmlNodeSet">xmlNodeSet</a> * <a href="#xmlNodeSetPtr">xmlNodeSetPtr</a>;
+typedef <a href="libxml2-xpath.html#xmlXPathFunct">xmlXPathFunct</a> * <a href="#xmlXPathFuncPtr">xmlXPathFuncPtr</a>;
+typedef <a href="libxml2-xpath.html#xmlXPathCompExpr">xmlXPathCompExpr</a> * <a href="#xmlXPathCompExprPtr">xmlXPathCompExprPtr</a>;
+typedef struct _xmlXPathObject <a href="#xmlXPathObject">xmlXPathObject</a>;
+typedef struct _xmlXPathCompExpr <a href="#xmlXPathCompExpr">xmlXPathCompExpr</a>;
+typedef <a href="libxml2-xpath.html#xmlXPathContext">xmlXPathContext</a> * <a href="#xmlXPathContextPtr">xmlXPathContextPtr</a>;
+typedef <a href="libxml2-xpath.html#xmlXPathParserContext">xmlXPathParserContext</a> * <a href="#xmlXPathParserContextPtr">xmlXPathParserContextPtr</a>;
+typedef struct _xmlNodeSet <a href="#xmlNodeSet">xmlNodeSet</a>;
+typedef struct _xmlXPathVariable <a href="#xmlXPathVariable">xmlXPathVariable</a>;
+typedef <a href="libxml2-xpath.html#xmlXPathObject">xmlXPathObject</a> * <a href="#xmlXPathObjectPtr">xmlXPathObjectPtr</a>;
+typedef struct _xmlXPathAxis <a href="#xmlXPathAxis">xmlXPathAxis</a>;
+typedef <a href="libxml2-xpath.html#xmlXPathAxis">xmlXPathAxis</a> * <a href="#xmlXPathAxisPtr">xmlXPathAxisPtr</a>;
+typedef struct _xmlXPathParserContext <a href="#xmlXPathParserContext">xmlXPathParserContext</a>;
+int	<a href="#xmlXPathCastNodeSetToBoolean">xmlXPathCastNodeSetToBoolean</a>	(<a href="libxml2-xpath.html#xmlNodeSetPtr">xmlNodeSetPtr</a> ns);
+typedef <a href="libxml2-xpath.html#xmlXPathFunction">xmlXPathFunction</a> <a href="#xmlXPathFuncLookupFunc">xmlXPathFuncLookupFunc</a>	(void * ctxt, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ns_uri);
+<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	<a href="#xmlXPathNodeEval">xmlXPathNodeEval</a>	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str, <br/>						 <a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a> ctx);
+<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlXPathCastNodeToString">xmlXPathCastNodeToString</a>	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node);
+int	<a href="#xmlXPathIsNaN">xmlXPathIsNaN</a>			(double val);
+int	<a href="#xmlXPathContextSetCache">xmlXPathContextSetCache</a>		(<a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a> ctxt, <br/>					 int active, <br/>					 int value, <br/>					 int options);
+<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	<a href="#xmlXPathConvertString">xmlXPathConvertString</a>	(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> val);
+int	<a href="#xmlXPathCompiledEvalToBoolean">xmlXPathCompiledEvalToBoolean</a>	(<a href="libxml2-xpath.html#xmlXPathCompExprPtr">xmlXPathCompExprPtr</a> comp, <br/>					 <a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a> ctxt);
+int	<a href="#xmlXPathIsInf">xmlXPathIsInf</a>			(double val);
+long	<a href="#xmlXPathOrderDocElems">xmlXPathOrderDocElems</a>		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc);
+<a href="libxml2-xpath.html#xmlNodeSetPtr">xmlNodeSetPtr</a>	<a href="#xmlXPathNodeSetCreate">xmlXPathNodeSetCreate</a>	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> val);
+double	<a href="#xmlXPathCastBooleanToNumber">xmlXPathCastBooleanToNumber</a>	(int val);
+double	<a href="#xmlXPathCastNodeToNumber">xmlXPathCastNodeToNumber</a>	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node);
+double	<a href="#xmlXPathCastStringToNumber">xmlXPathCastStringToNumber</a>	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * val);
+typedef <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> <a href="#xmlXPathAxisFunc">xmlXPathAxisFunc</a>	(<a href="libxml2-xpath.html#xmlXPathParserContextPtr">xmlXPathParserContextPtr</a> ctxt, <br/>						 <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> cur);
+double	<a href="#xmlXPathCastToNumber">xmlXPathCastToNumber</a>		(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> val);
+int	<a href="#xmlXPathCastStringToBoolean">xmlXPathCastStringToBoolean</a>	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * val);
+<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlXPathCastNumberToString">xmlXPathCastNumberToString</a>	(double val);
+typedef <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> <a href="#xmlXPathVariableLookupFunc">xmlXPathVariableLookupFunc</a>	(void * ctxt, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ns_uri);
+void	<a href="#xmlXPathFreeObject">xmlXPathFreeObject</a>		(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> obj);
+int	<a href="#xmlXPathEvalPredicate">xmlXPathEvalPredicate</a>		(<a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a> ctxt, <br/>					 <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> res);
+void	<a href="#xmlXPathFreeContext">xmlXPathFreeContext</a>		(<a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a> ctxt);
+<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	<a href="#xmlXPathObjectCopy">xmlXPathObjectCopy</a>	(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> val);
+void	<a href="#xmlXPathFreeNodeSetList">xmlXPathFreeNodeSetList</a>		(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> obj);
+<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	<a href="#xmlXPathEval">xmlXPathEval</a>	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str, <br/>					 <a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a> ctx);
+<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlXPathCastNodeSetToString">xmlXPathCastNodeSetToString</a>	(<a href="libxml2-xpath.html#xmlNodeSetPtr">xmlNodeSetPtr</a> ns);
+<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	<a href="#xmlXPathCompiledEval">xmlXPathCompiledEval</a>	(<a href="libxml2-xpath.html#xmlXPathCompExprPtr">xmlXPathCompExprPtr</a> comp, <br/>						 <a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a> ctx);
+<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	<a href="#xmlXPathEvalExpression">xmlXPathEvalExpression</a>	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str, <br/>						 <a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a> ctxt);
+void	<a href="#xmlXPathInit">xmlXPathInit</a>			(void);
+<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	<a href="#xmlXPathConvertBoolean">xmlXPathConvertBoolean</a>	(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> val);
+typedef int <a href="#xmlXPathConvertFunc">xmlXPathConvertFunc</a>		(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> obj, <br/>					 int type);
+typedef void <a href="#xmlXPathFunction">xmlXPathFunction</a>		(<a href="libxml2-xpath.html#xmlXPathParserContextPtr">xmlXPathParserContextPtr</a> ctxt, <br/>					 int nargs);
+int	<a href="#xmlXPathCmpNodes">xmlXPathCmpNodes</a>		(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node1, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node2);
+<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlXPathCastToString">xmlXPathCastToString</a>	(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> val);
+<a href="libxml2-xpath.html#xmlXPathCompExprPtr">xmlXPathCompExprPtr</a>	<a href="#xmlXPathCtxtCompile">xmlXPathCtxtCompile</a>	(<a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a> ctxt, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str);
+typedef void <a href="#xmlXPathEvalFunc">xmlXPathEvalFunc</a>		(<a href="libxml2-xpath.html#xmlXPathParserContextPtr">xmlXPathParserContextPtr</a> ctxt, <br/>					 int nargs);
+<a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	<a href="#xmlXPathCastBooleanToString">xmlXPathCastBooleanToString</a>	(int val);
+int	<a href="#xmlXPathSetContextNode">xmlXPathSetContextNode</a>		(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node, <br/>					 <a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a> ctx);
+int	<a href="#xmlXPathCastNumberToBoolean">xmlXPathCastNumberToBoolean</a>	(double val);
+void	<a href="#xmlXPathFreeNodeSet">xmlXPathFreeNodeSet</a>		(<a href="libxml2-xpath.html#xmlNodeSetPtr">xmlNodeSetPtr</a> obj);
+void	<a href="#xmlXPathFreeCompExpr">xmlXPathFreeCompExpr</a>		(<a href="libxml2-xpath.html#xmlXPathCompExprPtr">xmlXPathCompExprPtr</a> comp);
+<a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a>	<a href="#xmlXPathNewContext">xmlXPathNewContext</a>	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc);
+<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	<a href="#xmlXPathConvertNumber">xmlXPathConvertNumber</a>	(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> val);
+<a href="libxml2-xpath.html#xmlXPathCompExprPtr">xmlXPathCompExprPtr</a>	<a href="#xmlXPathCompile">xmlXPathCompile</a>	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str);
+double	<a href="#xmlXPathCastNodeSetToNumber">xmlXPathCastNodeSetToNumber</a>	(<a href="libxml2-xpath.html#xmlNodeSetPtr">xmlNodeSetPtr</a> ns);
+int	<a href="#xmlXPathCastToBoolean">xmlXPathCastToBoolean</a>		(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> val);
+</pre>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Description</h2>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Details</h2>
+      <div class="refsect2" lang="en">
+        <div class="refsect2" lang="en"><h3><a name="XML_XPATH_CHECKNS">Macro </a>XML_XPATH_CHECKNS</h3><pre class="programlisting">#define <a href="#XML_XPATH_CHECKNS">XML_XPATH_CHECKNS</a>;
+</pre><p>check namespaces at compilation</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="XML_XPATH_NOVAR">Macro </a>XML_XPATH_NOVAR</h3><pre class="programlisting">#define <a href="#XML_XPATH_NOVAR">XML_XPATH_NOVAR</a>;
+</pre><p>forbid variables in expression</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathNodeSetGetLength">Macro </a>xmlXPathNodeSetGetLength</h3><pre class="programlisting">#define <a href="#xmlXPathNodeSetGetLength">xmlXPathNodeSetGetLength</a>(ns);
+</pre><p>Implement a functionality similar to the DOM NodeList.length. Returns the number of nodes in the node-set.</p><div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ns</tt></i>:</span></td><td>a node-set</td></tr></tbody></table></div>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathNodeSetIsEmpty">Macro </a>xmlXPathNodeSetIsEmpty</h3><pre class="programlisting">#define <a href="#xmlXPathNodeSetIsEmpty">xmlXPathNodeSetIsEmpty</a>(ns);
+</pre><p>Checks whether @ns is empty or not. Returns %TRUE if @ns is an empty node-set.</p><div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ns</tt></i>:</span></td><td>a node-set</td></tr></tbody></table></div>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathNodeSetItem">Macro </a>xmlXPathNodeSetItem</h3><pre class="programlisting">#define <a href="#xmlXPathNodeSetItem">xmlXPathNodeSetItem</a>(ns, index);
+</pre><p>Implements a functionality similar to the DOM NodeList.item(). Returns the <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> at the given @index in @ns or NULL if @index is out of range (0 to length-1)</p><div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ns</tt></i>:</span></td><td>a node-set</td></tr><tr><td><span class="term"><i><tt>index</tt></i>:</span></td><td>index of a node in the set</td></tr></tbody></table></div>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlNodeSet">Structure </a>xmlNodeSet</h3><pre class="programlisting">struct _xmlNodeSet {
+    int	nodeNr	: number of nodes in the set
+    int	nodeMax	: size of the array as allocated
+    <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> *	nodeTab	: array of nodes in no particular order @@ with_ns to check wether name
+} xmlNodeSet;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlNodeSetPtr">Typedef </a>xmlNodeSetPtr</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlNodeSet">xmlNodeSet</a> * xmlNodeSetPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathAxis">Structure </a>xmlXPathAxis</h3><pre class="programlisting">struct _xmlXPathAxis {
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	name	: the axis name
+    <a href="libxml2-xpath.html#xmlXPathAxisFunc">xmlXPathAxisFunc</a>	func	: the search function
+} xmlXPathAxis;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathAxisPtr">Typedef </a>xmlXPathAxisPtr</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathAxis">xmlXPathAxis</a> * xmlXPathAxisPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathCompExpr">Structure </a>xmlXPathCompExpr</h3><pre class="programlisting">struct _xmlXPathCompExpr {
+The content of this structure is not made public by the API.
+} xmlXPathCompExpr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathCompExprPtr">Typedef </a>xmlXPathCompExprPtr</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathCompExpr">xmlXPathCompExpr</a> * xmlXPathCompExprPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathContext">Structure </a>xmlXPathContext</h3><pre class="programlisting">struct _xmlXPathContext {
+    <a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a>	doc	: The current document
+    <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a>	node	: The current node
+    int	nb_variables_unused	: unused (hash table)
+    int	max_variables_unused	: unused (hash table)
+    <a href="libxml2-hash.html#xmlHashTablePtr">xmlHashTablePtr</a>	varHash	: Hash table of defined variables
+    int	nb_types	: number of defined types
+    int	max_types	: max number of types
+    <a href="libxml2-xpath.html#xmlXPathTypePtr">xmlXPathTypePtr</a>	types	: Array of defined types
+    int	nb_funcs_unused	: unused (hash table)
+    int	max_funcs_unused	: unused (hash table)
+    <a href="libxml2-hash.html#xmlHashTablePtr">xmlHashTablePtr</a>	funcHash	: Hash table of defined funcs
+    int	nb_axis	: number of defined axis
+    int	max_axis	: max number of axis
+    <a href="libxml2-xpath.html#xmlXPathAxisPtr">xmlXPathAxisPtr</a>	axis	: Array of defined axis the namespace nodes of the context node
+    <a href="libxml2-tree.html#xmlNsPtr">xmlNsPtr</a> *	namespaces	: Array of namespaces
+    int	nsNr	: number of namespace in scope
+    void *	user	: function to free extra variables
+    int	contextSize	: the context size
+    int	proximityPosition	: the proximity position extra stuff for XPointer
+    int	xptr	: is this an XPointer context?
+    <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a>	here	: for here()
+    <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a>	origin	: for origin() the set of namespace declarations in scope for the expre
+    <a href="libxml2-hash.html#xmlHashTablePtr">xmlHashTablePtr</a>	nsHash	: The namespaces hash table
+    <a href="libxml2-xpath.html#xmlXPathVariableLookupFunc">xmlXPathVariableLookupFunc</a>	varLookupFunc	: variable lookup func
+    void *	varLookupData	: variable lookup data Possibility to link in an extra item
+    void *	extra	: needed for XSLT The function name and URI when calling a function
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	function
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	functionURI	: function lookup function and data
+    <a href="libxml2-xpath.html#xmlXPathFuncLookupFunc">xmlXPathFuncLookupFunc</a>	funcLookupFunc	: function lookup func
+    void *	funcLookupData	: function lookup data temporary namespace lists kept for walking the n
+    <a href="libxml2-tree.html#xmlNsPtr">xmlNsPtr</a> *	tmpNsList	: Array of namespaces
+    int	tmpNsNr	: number of namespaces in scope error reporting mechanism
+    void *	userData	: user specific data block
+    <a href="libxml2-xmlerror.html#xmlStructuredErrorFunc">xmlStructuredErrorFunc</a>	error	: the callback in case of errors
+    <a href="libxml2-xmlerror.html#xmlError">xmlError</a>	lastError	: the last error
+    <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a>	debugNode	: the source node XSLT dictionary
+    <a href="libxml2-dict.html#xmlDictPtr">xmlDictPtr</a>	dict	: dictionary if any
+    int	flags	: flags to control compilation Cache for reusal of XPath objects
+    void *	cache
+} xmlXPathContext;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathContextPtr">Typedef </a>xmlXPathContextPtr</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathContext">xmlXPathContext</a> * xmlXPathContextPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathError">Enum </a>xmlXPathError</h3><pre class="programlisting">enum <a href="#xmlXPathError">xmlXPathError</a> {
+    <a name="XPATH_EXPRESSION_OK">XPATH_EXPRESSION_OK</a> = 0
+    <a name="XPATH_NUMBER_ERROR">XPATH_NUMBER_ERROR</a> = 1
+    <a name="XPATH_UNFINISHED_LITERAL_ERROR">XPATH_UNFINISHED_LITERAL_ERROR</a> = 2
+    <a name="XPATH_START_LITERAL_ERROR">XPATH_START_LITERAL_ERROR</a> = 3
+    <a name="XPATH_VARIABLE_REF_ERROR">XPATH_VARIABLE_REF_ERROR</a> = 4
+    <a name="XPATH_UNDEF_VARIABLE_ERROR">XPATH_UNDEF_VARIABLE_ERROR</a> = 5
+    <a name="XPATH_INVALID_PREDICATE_ERROR">XPATH_INVALID_PREDICATE_ERROR</a> = 6
+    <a name="XPATH_EXPR_ERROR">XPATH_EXPR_ERROR</a> = 7
+    <a name="XPATH_UNCLOSED_ERROR">XPATH_UNCLOSED_ERROR</a> = 8
+    <a name="XPATH_UNKNOWN_FUNC_ERROR">XPATH_UNKNOWN_FUNC_ERROR</a> = 9
+    <a name="XPATH_INVALID_OPERAND">XPATH_INVALID_OPERAND</a> = 10
+    <a name="XPATH_INVALID_TYPE">XPATH_INVALID_TYPE</a> = 11
+    <a name="XPATH_INVALID_ARITY">XPATH_INVALID_ARITY</a> = 12
+    <a name="XPATH_INVALID_CTXT_SIZE">XPATH_INVALID_CTXT_SIZE</a> = 13
+    <a name="XPATH_INVALID_CTXT_POSITION">XPATH_INVALID_CTXT_POSITION</a> = 14
+    <a name="XPATH_MEMORY_ERROR">XPATH_MEMORY_ERROR</a> = 15
+    <a name="XPTR_SYNTAX_ERROR">XPTR_SYNTAX_ERROR</a> = 16
+    <a name="XPTR_RESOURCE_ERROR">XPTR_RESOURCE_ERROR</a> = 17
+    <a name="XPTR_SUB_RESOURCE_ERROR">XPTR_SUB_RESOURCE_ERROR</a> = 18
+    <a name="XPATH_UNDEF_PREFIX_ERROR">XPATH_UNDEF_PREFIX_ERROR</a> = 19
+    <a name="XPATH_ENCODING_ERROR">XPATH_ENCODING_ERROR</a> = 20
+    <a name="XPATH_INVALID_CHAR_ERROR">XPATH_INVALID_CHAR_ERROR</a> = 21
+    <a name="XPATH_INVALID_CTXT">XPATH_INVALID_CTXT</a> = 22
+    <a name="XPATH_STACK_ERROR">XPATH_STACK_ERROR</a> = 23
+    <a name="XPATH_FORBID_VARIABLE_ERROR">XPATH_FORBID_VARIABLE_ERROR</a> = 24
+};
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathFuncPtr">Typedef </a>xmlXPathFuncPtr</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathFunct">xmlXPathFunct</a> * xmlXPathFuncPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathFunct">Structure </a>xmlXPathFunct</h3><pre class="programlisting">struct _xmlXPathFunct {
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	name	: the function name
+    <a href="libxml2-xpath.html#xmlXPathEvalFunc">xmlXPathEvalFunc</a>	func	: the evaluation function
+} xmlXPathFunct;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathObject">Structure </a>xmlXPathObject</h3><pre class="programlisting">struct _xmlXPathObject {
+    <a href="libxml2-xpath.html#xmlXPathObjectType">xmlXPathObjectType</a>	type
+    <a href="libxml2-xpath.html#xmlNodeSetPtr">xmlNodeSetPtr</a>	nodesetval
+    int	boolval
+    double	floatval
+    <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	stringval
+    void *	user
+    int	index
+    void *	user2
+    int	index2
+} xmlXPathObject;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathObjectPtr">Typedef </a>xmlXPathObjectPtr</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathObject">xmlXPathObject</a> * xmlXPathObjectPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathObjectType">Enum </a>xmlXPathObjectType</h3><pre class="programlisting">enum <a href="#xmlXPathObjectType">xmlXPathObjectType</a> {
+    <a name="XPATH_UNDEFINED">XPATH_UNDEFINED</a> = 0
+    <a name="XPATH_NODESET">XPATH_NODESET</a> = 1
+    <a name="XPATH_BOOLEAN">XPATH_BOOLEAN</a> = 2
+    <a name="XPATH_NUMBER">XPATH_NUMBER</a> = 3
+    <a name="XPATH_STRING">XPATH_STRING</a> = 4
+    <a name="XPATH_POINT">XPATH_POINT</a> = 5
+    <a name="XPATH_RANGE">XPATH_RANGE</a> = 6
+    <a name="XPATH_LOCATIONSET">XPATH_LOCATIONSET</a> = 7
+    <a name="XPATH_USERS">XPATH_USERS</a> = 8
+    <a name="XPATH_XSLT_TREE">XPATH_XSLT_TREE</a> = 9 /*  An XSLT value tree, non modifiable */
+};
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathParserContext">Structure </a>xmlXPathParserContext</h3><pre class="programlisting">struct _xmlXPathParserContext {
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	cur	: the current char being parsed
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	base	: the full expression
+    int	error	: error code
+    <a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a>	context	: the evaluation context
+    <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	value	: the current value
+    int	valueNr	: number of values stacked
+    int	valueMax	: max number of values stacked
+    <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> *	valueTab	: stack of values
+    <a href="libxml2-xpath.html#xmlXPathCompExprPtr">xmlXPathCompExprPtr</a>	comp	: the precompiled expression
+    int	xptr	: it this an XPointer expression
+    <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a>	ancestor	: used for walking preceding axis
+    int	valueFrame	: used to limit Pop on the stack
+} xmlXPathParserContext;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathParserContextPtr">Typedef </a>xmlXPathParserContextPtr</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathParserContext">xmlXPathParserContext</a> * xmlXPathParserContextPtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathType">Structure </a>xmlXPathType</h3><pre class="programlisting">struct _xmlXPathType {
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	name	: the type name
+    <a href="libxml2-xpath.html#xmlXPathConvertFunc">xmlXPathConvertFunc</a>	func	: the conversion function
+} xmlXPathType;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathTypePtr">Typedef </a>xmlXPathTypePtr</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathType">xmlXPathType</a> * xmlXPathTypePtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathVariable">Structure </a>xmlXPathVariable</h3><pre class="programlisting">struct _xmlXPathVariable {
+    const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	name	: the variable name
+    <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	value	: the value
+} xmlXPathVariable;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathVariablePtr">Typedef </a>xmlXPathVariablePtr</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathVariable">xmlXPathVariable</a> * xmlXPathVariablePtr;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathAxisFunc"/>Function type xmlXPathAxisFunc</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	xmlXPathAxisFunc	(<a href="libxml2-xpath.html#xmlXPathParserContextPtr">xmlXPathParserContextPtr</a> ctxt, <br/>						 <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> cur)<br/>
+</pre><p>An axis traversal function. To traverse an axis, the engine calls the first time with cur == NULL and repeat until the function returns NULL indicating the end of the axis traversal.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the XPath interpreter context</td></tr><tr><td><span class="term"><i><tt>cur</tt></i>:</span></td><td>the previous node being explored on that axis</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the next node in that axis or NULL if at the end of the axis.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathConvertFunc"/>Function type xmlXPathConvertFunc</h3><pre class="programlisting">int	xmlXPathConvertFunc		(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> obj, <br/>					 int type)<br/>
+</pre><p>A conversion function is associated to a type and used to cast the new type to primitive values.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>obj</tt></i>:</span></td><td>an XPath object</td></tr><tr><td><span class="term"><i><tt>type</tt></i>:</span></td><td>the number of the target type</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>-1 in case of error, 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathEvalFunc"/>Function type xmlXPathEvalFunc</h3><pre class="programlisting">void	xmlXPathEvalFunc		(<a href="libxml2-xpath.html#xmlXPathParserContextPtr">xmlXPathParserContextPtr</a> ctxt, <br/>					 int nargs)<br/>
+</pre><p>An XPath evaluation function, the parameters are on the XPath context stack.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>an XPath parser context</td></tr><tr><td><span class="term"><i><tt>nargs</tt></i>:</span></td><td>the number of arguments passed to the function</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathFuncLookupFunc"/>Function type xmlXPathFuncLookupFunc</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathFunction">xmlXPathFunction</a>	xmlXPathFuncLookupFunc	(void * ctxt, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ns_uri)<br/>
+</pre><p>Prototype for callbacks used to plug function lookup in the XPath engine.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>an XPath context</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>name of the function</td></tr><tr><td><span class="term"><i><tt>ns_uri</tt></i>:</span></td><td>the namespace name hosting this function</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the XPath function or NULL if not found.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathFunction"/>Function type xmlXPathFunction</h3><pre class="programlisting">void	xmlXPathFunction		(<a href="libxml2-xpath.html#xmlXPathParserContextPtr">xmlXPathParserContextPtr</a> ctxt, <br/>					 int nargs)<br/>
+</pre><p>An XPath function. The arguments (if any) are popped out from the context stack and the result is pushed on the stack.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the XPath interprestation context</td></tr><tr><td><span class="term"><i><tt>nargs</tt></i>:</span></td><td>the number of arguments</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathVariableLookupFunc"/>Function type xmlXPathVariableLookupFunc</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	xmlXPathVariableLookupFunc	(void * ctxt, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * name, <br/>							 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * ns_uri)<br/>
+</pre><p>Prototype for callbacks used to plug variable lookup in the XPath engine.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>an XPath context</td></tr><tr><td><span class="term"><i><tt>name</tt></i>:</span></td><td>name of the variable</td></tr><tr><td><span class="term"><i><tt>ns_uri</tt></i>:</span></td><td>the namespace name hosting this variable</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the XPath object value or NULL if not found.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathNAN">Variable </a>xmlXPathNAN</h3><pre class="programlisting">double xmlXPathNAN;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathNINF">Variable </a>xmlXPathNINF</h3><pre class="programlisting">double xmlXPathNINF;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathPINF">Variable </a>xmlXPathPINF</h3><pre class="programlisting">double xmlXPathPINF;
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathCastBooleanToNumber"/>xmlXPathCastBooleanToNumber ()</h3><pre class="programlisting">double	xmlXPathCastBooleanToNumber	(int val)<br/>
+</pre><p>Converts a boolean to its number value</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>a boolean</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the number value</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathCastBooleanToString"/>xmlXPathCastBooleanToString ()</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlXPathCastBooleanToString	(int val)<br/>
+</pre><p>Converts a boolean to its string value.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>a boolean</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a newly allocated string.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathCastNodeSetToBoolean"/>xmlXPathCastNodeSetToBoolean ()</h3><pre class="programlisting">int	xmlXPathCastNodeSetToBoolean	(<a href="libxml2-xpath.html#xmlNodeSetPtr">xmlNodeSetPtr</a> ns)<br/>
+</pre><p>Converts a node-set to its boolean value</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ns</tt></i>:</span></td><td>a node-set</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the boolean value</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathCastNodeSetToNumber"/>xmlXPathCastNodeSetToNumber ()</h3><pre class="programlisting">double	xmlXPathCastNodeSetToNumber	(<a href="libxml2-xpath.html#xmlNodeSetPtr">xmlNodeSetPtr</a> ns)<br/>
+</pre><p>Converts a node-set to its number value</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ns</tt></i>:</span></td><td>a node-set</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the number value</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathCastNodeSetToString"/>xmlXPathCastNodeSetToString ()</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlXPathCastNodeSetToString	(<a href="libxml2-xpath.html#xmlNodeSetPtr">xmlNodeSetPtr</a> ns)<br/>
+</pre><p>Converts a node-set to its string value.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ns</tt></i>:</span></td><td>a node-set</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a newly allocated string.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathCastNodeToNumber"/>xmlXPathCastNodeToNumber ()</h3><pre class="programlisting">double	xmlXPathCastNodeToNumber	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node)<br/>
+</pre><p>Converts a node to its number value</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>node</tt></i>:</span></td><td>a node</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the number value</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathCastNodeToString"/>xmlXPathCastNodeToString ()</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlXPathCastNodeToString	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node)<br/>
+</pre><p>Converts a node to its string value.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>node</tt></i>:</span></td><td>a node</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a newly allocated string.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathCastNumberToBoolean"/>xmlXPathCastNumberToBoolean ()</h3><pre class="programlisting">int	xmlXPathCastNumberToBoolean	(double val)<br/>
+</pre><p>Converts a number to its boolean value</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>a number</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the boolean value</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathCastNumberToString"/>xmlXPathCastNumberToString ()</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlXPathCastNumberToString	(double val)<br/>
+</pre><p>Converts a number to its string value.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>a number</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>a newly allocated string.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathCastStringToBoolean"/>xmlXPathCastStringToBoolean ()</h3><pre class="programlisting">int	xmlXPathCastStringToBoolean	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * val)<br/>
+</pre><p>Converts a string to its boolean value</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>a string</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the boolean value</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathCastStringToNumber"/>xmlXPathCastStringToNumber ()</h3><pre class="programlisting">double	xmlXPathCastStringToNumber	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * val)<br/>
+</pre><p>Converts a string to its number value</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>a string</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the number value</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathCastToBoolean"/>xmlXPathCastToBoolean ()</h3><pre class="programlisting">int	xmlXPathCastToBoolean		(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> val)<br/>
+</pre><p>Converts an XPath object to its boolean value</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>an XPath object</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the boolean value</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathCastToNumber"/>xmlXPathCastToNumber ()</h3><pre class="programlisting">double	xmlXPathCastToNumber		(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> val)<br/>
+</pre><p>Converts an XPath object to its number value</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>an XPath object</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the number value</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathCastToString"/>xmlXPathCastToString ()</h3><pre class="programlisting"><a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> *	xmlXPathCastToString	(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> val)<br/>
+</pre><p>Converts an existing object to its string() equivalent</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>an XPath object</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the allocated string value of the object, NULL in case of error. It's up to the caller to free the string memory with xmlFree().</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathCmpNodes"/>xmlXPathCmpNodes ()</h3><pre class="programlisting">int	xmlXPathCmpNodes		(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node1, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node2)<br/>
+</pre><p>Compare two nodes w.r.t document order</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>node1</tt></i>:</span></td><td>the first node</td></tr><tr><td><span class="term"><i><tt>node2</tt></i>:</span></td><td>the second node</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>-2 in case of error 1 if first point &lt; second point, 0 if it's the same node, -1 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathCompile"/>xmlXPathCompile ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathCompExprPtr">xmlXPathCompExprPtr</a>	xmlXPathCompile	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str)<br/>
+</pre><p>Compile an XPath expression</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>str</tt></i>:</span></td><td>the XPath expression</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the <a href="libxml2-xpath.html#xmlXPathCompExprPtr">xmlXPathCompExprPtr</a> resulting from the compilation or NULL. the caller has to free the object.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathCompiledEval"/>xmlXPathCompiledEval ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	xmlXPathCompiledEval	(<a href="libxml2-xpath.html#xmlXPathCompExprPtr">xmlXPathCompExprPtr</a> comp, <br/>						 <a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a> ctx)<br/>
+</pre><p>Evaluate the Precompiled XPath expression in the given context.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>comp</tt></i>:</span></td><td>the compiled XPath expression</td></tr><tr><td><span class="term"><i><tt>ctx</tt></i>:</span></td><td>the XPath context</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> resulting from the evaluation or NULL. the caller has to free the object.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathCompiledEvalToBoolean"/>xmlXPathCompiledEvalToBoolean ()</h3><pre class="programlisting">int	xmlXPathCompiledEvalToBoolean	(<a href="libxml2-xpath.html#xmlXPathCompExprPtr">xmlXPathCompExprPtr</a> comp, <br/>					 <a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a> ctxt)<br/>
+</pre><p>Applies the XPath boolean() function on the result of the given compiled expression.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>comp</tt></i>:</span></td><td>the compiled XPath expression</td></tr><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the XPath context</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if the expression evaluated to true, 0 if to false and -1 in API and internal errors.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathContextSetCache"/>xmlXPathContextSetCache ()</h3><pre class="programlisting">int	xmlXPathContextSetCache		(<a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a> ctxt, <br/>					 int active, <br/>					 int value, <br/>					 int options)<br/>
+</pre><p>Creates/frees an object cache on the XPath context. If activates XPath objects (xmlXPathObject) will be cached internally to be reused. @options: 0: This will set the XPath object caching: @value: This will set the maximum number of XPath objects to be cached per slot There are 5 slots for: node-set, string, number, boolean, and misc objects. Use &lt;0 for the default number (100). Other values for @options have currently no effect.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the XPath context</td></tr><tr><td><span class="term"><i><tt>active</tt></i>:</span></td><td>enables/disables (creates/frees) the cache</td></tr><tr><td><span class="term"><i><tt>value</tt></i>:</span></td><td>a value with semantics dependant on @options</td></tr><tr><td><span class="term"><i><tt>options</tt></i>:</span></td><td>options (currently only the value 0 is used)</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>0 if the setting succeeded, and -1 on API or internal errors.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathConvertBoolean"/>xmlXPathConvertBoolean ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	xmlXPathConvertBoolean	(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> val)<br/>
+</pre><p>Converts an existing object to its boolean() equivalent</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>an XPath object</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the new object, the old one is freed (or the operation is done directly on @val)</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathConvertNumber"/>xmlXPathConvertNumber ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	xmlXPathConvertNumber	(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> val)<br/>
+</pre><p>Converts an existing object to its number() equivalent</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>an XPath object</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the new object, the old one is freed (or the operation is done directly on @val)</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathConvertString"/>xmlXPathConvertString ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	xmlXPathConvertString	(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> val)<br/>
+</pre><p>Converts an existing object to its string() equivalent</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>an XPath object</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the new object, the old one is freed (or the operation is done directly on @val)</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathCtxtCompile"/>xmlXPathCtxtCompile ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathCompExprPtr">xmlXPathCompExprPtr</a>	xmlXPathCtxtCompile	(<a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a> ctxt, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str)<br/>
+</pre><p>Compile an XPath expression</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>an XPath context</td></tr><tr><td><span class="term"><i><tt>str</tt></i>:</span></td><td>the XPath expression</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the <a href="libxml2-xpath.html#xmlXPathCompExprPtr">xmlXPathCompExprPtr</a> resulting from the compilation or NULL. the caller has to free the object.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathEval"/>xmlXPathEval ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	xmlXPathEval	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str, <br/>					 <a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a> ctx)<br/>
+</pre><p>Evaluate the XPath Location Path in the given context.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>str</tt></i>:</span></td><td>the XPath expression</td></tr><tr><td><span class="term"><i><tt>ctx</tt></i>:</span></td><td>the XPath context</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> resulting from the evaluation or NULL. the caller has to free the object.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathEvalExpression"/>xmlXPathEvalExpression ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	xmlXPathEvalExpression	(const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str, <br/>						 <a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a> ctxt)<br/>
+</pre><p>Evaluate the XPath expression in the given context.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>str</tt></i>:</span></td><td>the XPath expression</td></tr><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the XPath context</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> resulting from the evaluation or NULL. the caller has to free the object.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathEvalPredicate"/>xmlXPathEvalPredicate ()</h3><pre class="programlisting">int	xmlXPathEvalPredicate		(<a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a> ctxt, <br/>					 <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> res)<br/>
+</pre><p>Evaluate a predicate result for the current node. A PredicateExpr is evaluated by evaluating the Expr and converting the result to a boolean. If the result is a number, the result will be converted to true if the number is equal to the position of the context node in the context node list (as returned by the position function) and will be converted to false otherwise; if the result is not a number, then the result will be converted as if by a call to the boolean function.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the XPath context</td></tr><tr><td><span class="term"><i><tt>res</tt></i>:</span></td><td>the Predicate Expression evaluation result</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if predicate is true, 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathFreeCompExpr"/>xmlXPathFreeCompExpr ()</h3><pre class="programlisting">void	xmlXPathFreeCompExpr		(<a href="libxml2-xpath.html#xmlXPathCompExprPtr">xmlXPathCompExprPtr</a> comp)<br/>
+</pre><p>Free up the memory allocated by @comp</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>comp</tt></i>:</span></td><td>an XPATH comp</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathFreeContext"/>xmlXPathFreeContext ()</h3><pre class="programlisting">void	xmlXPathFreeContext		(<a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a> ctxt)<br/>
+</pre><p>Free up an <a href="libxml2-xpath.html#xmlXPathContext">xmlXPathContext</a></p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>ctxt</tt></i>:</span></td><td>the context to free</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathFreeNodeSet"/>xmlXPathFreeNodeSet ()</h3><pre class="programlisting">void	xmlXPathFreeNodeSet		(<a href="libxml2-xpath.html#xmlNodeSetPtr">xmlNodeSetPtr</a> obj)<br/>
+</pre><p>Free the NodeSet compound (not the actual nodes !).</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>obj</tt></i>:</span></td><td>the <a href="libxml2-xpath.html#xmlNodeSetPtr">xmlNodeSetPtr</a> to free</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathFreeNodeSetList"/>xmlXPathFreeNodeSetList ()</h3><pre class="programlisting">void	xmlXPathFreeNodeSetList		(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> obj)<br/>
+</pre><p>Free up the <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> @obj but don't deallocate the objects in the list contrary to xmlXPathFreeObject().</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>obj</tt></i>:</span></td><td>an existing NodeSetList object</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathFreeObject"/>xmlXPathFreeObject ()</h3><pre class="programlisting">void	xmlXPathFreeObject		(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> obj)<br/>
+</pre><p>Free up an <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> object.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>obj</tt></i>:</span></td><td>the object to free</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathInit"/>xmlXPathInit ()</h3><pre class="programlisting">void	xmlXPathInit			(void)<br/>
+</pre><p>Initialize the XPath environment</p>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathIsInf"/>xmlXPathIsInf ()</h3><pre class="programlisting">int	xmlXPathIsInf			(double val)<br/>
+</pre><p>Provides a portable isinf() function to detect whether a double is a +Infinite or -Infinite. Based on trio code http://sourceforge.net/projects/ctrio/</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>a double value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 vi the value is +Infinite, -1 if -Infinite, 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathIsNaN"/>xmlXPathIsNaN ()</h3><pre class="programlisting">int	xmlXPathIsNaN			(double val)<br/>
+</pre><p>Provides a portable isnan() function to detect whether a double is a NotaNumber. Based on trio code http://sourceforge.net/projects/ctrio/</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>a double value</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if the value is a NaN, 0 otherwise</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathNewContext"/>xmlXPathNewContext ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a>	xmlXPathNewContext	(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc)<br/>
+</pre><p>Create a new <a href="libxml2-xpath.html#xmlXPathContext">xmlXPathContext</a></p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the XML document</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the <a href="libxml2-xpath.html#xmlXPathContext">xmlXPathContext</a> just allocated. The caller will need to free it.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathNodeEval"/>xmlXPathNodeEval ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	xmlXPathNodeEval	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node, <br/>						 const <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> * str, <br/>						 <a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a> ctx)<br/>
+</pre><p>Evaluate the XPath Location Path in the given context. The node 'node' is set as the context node. The context node is not restored.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>node</tt></i>:</span></td><td>the node to to use as the context node</td></tr><tr><td><span class="term"><i><tt>str</tt></i>:</span></td><td>the XPath expression</td></tr><tr><td><span class="term"><i><tt>ctx</tt></i>:</span></td><td>the XPath context</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the <a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> resulting from the evaluation or NULL. the caller has to free the object.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathNodeSetCreate"/>xmlXPathNodeSetCreate ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlNodeSetPtr">xmlNodeSetPtr</a>	xmlXPathNodeSetCreate	(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> val)<br/>
+</pre><p>Create a new <a href="libxml2-xpath.html#xmlNodeSetPtr">xmlNodeSetPtr</a> of type double and of value @val</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>an initial xmlNodePtr, or NULL</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the newly created object.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathObjectCopy"/>xmlXPathObjectCopy ()</h3><pre class="programlisting"><a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a>	xmlXPathObjectCopy	(<a href="libxml2-xpath.html#xmlXPathObjectPtr">xmlXPathObjectPtr</a> val)<br/>
+</pre><p>allocate a new copy of a given object</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>val</tt></i>:</span></td><td>the original object</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the newly created object.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathOrderDocElems"/>xmlXPathOrderDocElems ()</h3><pre class="programlisting">long	xmlXPathOrderDocElems		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc)<br/>
+</pre><p>Call this routine to speed up XPath computation on static documents. This stamps all the element nodes with the document order Like for line information, the order is kept in the element-&gt;content field, the value stored is actually - the node number (starting at -1) to be able to differentiate from line numbers.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>an input document</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the number of elements found in the document or -1 in case of error.</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlXPathSetContextNode"/>xmlXPathSetContextNode ()</h3><pre class="programlisting">int	xmlXPathSetContextNode		(<a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node, <br/>					 <a href="libxml2-xpath.html#xmlXPathContextPtr">xmlXPathContextPtr</a> ctx)<br/>
+</pre><p>Sets 'node' as the context node. The node must be in the same document as that associated with the context.</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>node</tt></i>:</span></td><td>the node to to use as the context node</td></tr><tr><td><span class="term"><i><tt>ctx</tt></i>:</span></td><td>the XPath context</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>-1 in case of error or 0 if successful</td></tr></tbody></table></div></div>
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

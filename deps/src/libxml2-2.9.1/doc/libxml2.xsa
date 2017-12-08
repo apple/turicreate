@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+<!DOCTYPE xsa PUBLIC "-//LM Garshol//DTD XML Software Autoupdate 1.0//EN//XML" "http://www.garshol.priv.no/download/xsa/xsa.dtd">
+<xsa>
+  <vendor>
+    <name>Daniel Veillard</name>
+    <email>daniel@veillard.com</email>
+    <url>http://veillard.com/</url>
+  </vendor>
+  <product id="libxml2">
+    <name>libxml2</name>
+    <version>2.8.0</version>
+    <last-release> May 23 2012</last-release>
+    <info-url>http://xmlsoft.org/</info-url>
+    <changes>   - Features:
+  add lzma compression support (Anders F Bjorklund)
+
+   - Documentation:
+    xmlcatalog: Add uri and delegateURI to possible add types in man page. (Ville Skyttä),
+    Update README.tests (Daniel Veillard),
+    URI handling code is not OOM resilient (Daniel Veillard),
+    Fix an error in comment (Daniel Veillard),
+    Fixed bug #617016 (Daniel Mustieles),
+    Fixed two typos in the README document (Daniel Neel),
+    add generated html files (Anders F Bjorklund),
+    Clarify the need to use xmlFreeNode after xmlUnlinkNode (Daniel Veillard),
+    Improve documentation a bit (Daniel Veillard),
+    Updated URL for lxml python bindings (Daniel Veillard)
+
+   - Portability:
+    Restore code for Windows compilation (Daniel Veillard),
+    Remove git error message during configure (Christian Dywan),
+    xmllint: Build fix for endTimer if !defined(HAVE_GETTIMEOFDAY) (Patrick R. Gansterer),
+    remove a bashism in confgure.in (John Hein),
+    undef ERROR if already defined (Patrick R. Gansterer),
+    Fix library problems with mingw-w64 (Michael Cronenworth),
+    fix windows build. ifdef addition from bug 666491 makes no sense (Rob Richards),
+    prefer native threads on win32 (Sam Thursfield),
+    Allow to compile with Visual Studio 2010 (Thomas Lemm),
+    Fix mingw's snprintf configure check (Andoni Morales),
+    fixed a 64bit big endian issue (Marcus Meissner),
+    Fix portability failure if netdb.h lacks NO_ADDRESS (Daniel Veillard),
+    Fix windows build from lzma addition (Rob Richards),
+    autogen: Only check for libtoolize (Colin Walters),
+    Fix the Windows build files (Patrick von Reth),
+    634846 Remove a linking option breaking Windows VC10 (Daniel Veillard),
+    599241 fix an initialization problem on Win64 (Andrew W. Nosenko),
+    fix win build (Rob Richards)
+
+   - Bug fixes:
+    Part for rand_r checking missing (Daniel Veillard),
+    Cleanup on randomization (Daniel Veillard),
+    Fix undefined reference in python module (Pacho Ramos),
+    Fix a race in xmlNewInputStream (Daniel Veillard),
+    Fix weird streaming RelaxNG errors (Noam),
+    Fix various bugs in new code raised by the API checking (Daniel Veillard),
+    Fix various problems with "make dist" (Daniel Veillard),
+    Fix a memory leak in the xzlib code (Daniel Veillard),
+    HTML parser error with &lt;noscript&gt; in the &lt;head&gt; (Denis Pauk),
+    XSD: optional element in complex type extension (Remi Gacogne),
+    Fix html serialization error and htmlSetMetaEncoding() (Daniel Veillard),
+    Fix a wrong return value in previous patch (Daniel Veillard),
+    Fix an uninitialized variable use (Daniel Veillard),
+    Fix a compilation problem with --minimum (Brandon Slack),
+    Remove redundant and ungarded include of resolv.h (Daniel Veillard),
+    xinclude with parse="text" does not use the entity loader (Shaun McCance),
+    Allow to parse 1 byte HTML files (Denis Pauk),
+    Patch that fixes the skipping of the HTML_PARSE_NOIMPLIED flag (Martin Schröder),
+    Avoid memory leak if xmlParserInputBufferCreateIO fails (Lin Yi-Li),
+    Prevent an infinite loop when dumping a node with encoding problems (Timothy Elliott),
+    xmlParseNodeInContext problems with an empty document (Tim Elliott),
+    HTML element position is not detected propperly (Pavel Andrejs),
+    Fix an off by one pointer access (Jüri Aedla),
+    Try to fix a problem with entities in SAX mode (Daniel Veillard),
+    Fix a crash with xmllint --path on empty results (Daniel Veillard),
+    Fixed bug #667946 (Daniel Mustieles),
+    Fix a logic error in Schemas Component Constraints (Ryan Sleevi),
+    Fix a wrong enum type use in Schemas Types (Nico Weber),
+    Fix SAX2 builder in case of undefined attributes namespace (Daniel Veillard),
+    Fix SAX2 builder in case of undefined element namespaces (Daniel Veillard),
+    fix reference to STDOUT_FILENO on MSVC (Tay Ray Chuan),
+    fix a pair of possible out of array char references (Daniel Veillard),
+    Fix an allocation error when copying entities (Daniel Veillard),
+    Make sure the parser returns when getting a Stop order (Chris Evans),
+    Fix some potential problems on reallocation failures(parser.c) (Xia Xinfeng),
+    Fix a schema type duration comparison overflow (Daniel Veillard),
+    Fix an unimplemented part in RNG value validation (Daniel Veillard),
+    Fix missing error status in XPath evaluation (Daniel Veillard),
+    Hardening of XPath evaluation (Daniel Veillard),
+    Fix an off by one error in encoding (Daniel Veillard),
+    Fix RELAX NG include bug #655288 (Shaun McCance),
+    Fix XSD validation bug #630130 (Toyoda Eizi),
+    Fix some potential problems on reallocation failures (Chris Evans),
+    __xmlRaiseError: fix use of the structured callback channel (Dmitry V. Levin),
+    __xmlRaiseError: fix the structured callback channel's data initialization (Dmitry V. Levin),
+    Fix memory corruption when xmlParseBalancedChunkMemoryInternal is called from xmlParseBalancedChunk (Rob Richards),
+    Small fix for previous commit (Daniel Veillard),
+    Fix a potential freeing error in XPath (Daniel Veillard),
+    Fix a potential memory access error (Daniel Veillard),
+    Reactivate the shared library versionning script (Daniel Veillard)
+
+   - Improvements:
+    use mingw C99 compatible functions {v}snprintf instead those from MSVC runtime (Roumen Petrov),
+    New symbols added for the next release (Daniel Veillard),
+    xmlTextReader bails too quickly on error (Andy Lutomirski),
+    Use a hybrid allocation scheme in xmlNodeSetContent (Conrad Irwin),
+    Use buffers when constructing string node lists. (Conrad Irwin),
+    Add HTML parser support for HTML5 meta charset encoding declaration (Denis Pauk),
+    wrong message for double hyphen in comment XML error (Bryan Henderson),
+    Fix "make tst" to grab lzma lib too (Daniel Veillard),
+    Add "whereis" command to xmllint shell (Ryan),
+    Improve xmllint shell (Ryan),
+    add function xmlTextReaderRelaxNGValidateCtxt() (Noam Postavsky),
+    Add --system support to autogen.sh (Daniel Veillard),
+    Add hash randomization to hash and dict structures (Daniel Veillard),
+    included xzlib in dist (Anders F Bjorklund),
+    move xz/lzma helpers to separate included files (Anders F Bjorklund),
+    add generated devhelp files (Anders F Bjorklund),
+    add XML_WITH_LZMA to api (Anders F Bjorklund),
+    autogen.sh: Honor NOCONFIGURE environment variable (Colin Walters),
+    Improve the error report on undefined REFs (Daniel Veillard),
+    Add exception for new W3C PI xml-model (Daniel Veillard),
+    Add options to ignore the internal encoding (Daniel Veillard),
+    testapi: use the right type for the check (Stefan Kost),
+    various: handle return values of write calls (Stefan Kost),
+    testWriter: xmlTextWriterWriteFormatElement wants an int instead of a long int (Stefan Kost),
+    runxmlconf: update to latest testsuite version (Stefan Kost),
+    configure: add -Wno-long-long to CFLAGS (Stefan Kost),
+    configure: support silent automake rules if possible (Stefan Kost),
+    xmlmemory: add a cast as size_t has no portable printf modifier (Stefan Kost),
+    __xmlRaiseError: remove redundant schannel initialization (Dmitry V. Levin),
+    __xmlRaiseError: do cheap code check early (Dmitry V. Levin)
+
+   - Cleanups:
+    Cleanups before 2.8.0-rc2 (Daniel Veillard),
+    Avoid an extra operation (Daniel Veillard),
+    Remove vestigial de-ANSI-fication support. (Javier Jardón),
+    autogen.sh: Fix typo (Javier Jardón),
+    Do not use unsigned but unsigned int (Daniel Veillard),
+    Remove two references to u_short (Daniel Veillard),
+    Fix -Wempty-body warning from clang (Nico Weber),
+    Cleanups of lzma support (Daniel Veillard),
+    Augment the list of ignored files (Daniel Veillard),
+    python: remove unused variable (Stefan Kost),
+    python: flag two unused args (Stefan Kost),
+    configure: acconfig.h is deprecated since autoconf-2.50 (Stefan Kost),
+    xpath: remove unused variable (Stefan Kost)
+
+
+</changes>
+  </product>
+</xsa>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>c14n: Provide Canonical XML and Exclusive XML Canonicalization</title>
+    <meta name="generator" content="Libxml2 devhelp stylesheet"/>
+    <link rel="start" href="index.html" title="libxml2 Reference Manual"/>
+    <link rel="up" href="general.html" title="API"/>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+    <link rel="chapter" href="general.html" title="API"/>
+  </head>
+  <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+    <table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+      <tr valign="middle">
+        <td>
+          <a accesskey="p" href="libxml2-SAX2.html">
+            <img src="left.png" width="24" height="24" border="0" alt="Prev"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="u" href="general.html">
+            <img src="up.png" width="24" height="24" border="0" alt="Up"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="h" href="index.html">
+            <img src="home.png" width="24" height="24" border="0" alt="Home"/>
+          </a>
+        </td>
+        <td>
+          <a accesskey="n" href="libxml2-catalog.html">
+            <img src="right.png" width="24" height="24" border="0" alt="Next"/>
+          </a>
+        </td>
+        <th width="100%" align="center">libxml2 Reference Manual</th>
+      </tr>
+    </table>
+    <h2>
+      <span class="refentrytitle">c14n</span>
+    </h2>
+    <p>c14n - Provide Canonical XML and Exclusive XML Canonicalization</p>
+    <p>the c14n modules provides a  "Canonical XML" implementation</p>
+    <p>Author(s): Aleksey Sanin &lt;aleksey@aleksey.com&gt; </p>
+    <div class="refsynopsisdiv">
+      <h2>Synopsis</h2>
+      <pre class="synopsis">typedef enum <a href="#xmlC14NMode">xmlC14NMode</a>;
+int	<a href="#xmlC14NExecute">xmlC14NExecute</a>			(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-c14n.html#xmlC14NIsVisibleCallback">xmlC14NIsVisibleCallback</a> is_visible_callback, <br/>					 void * user_data, <br/>					 int mode, <br/>					 <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** inclusive_ns_prefixes, <br/>					 int with_comments, <br/>					 <a href="libxml2-tree.html#xmlOutputBufferPtr">xmlOutputBufferPtr</a> buf);
+int	<a href="#xmlC14NDocSaveTo">xmlC14NDocSaveTo</a>		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-xpath.html#xmlNodeSetPtr">xmlNodeSetPtr</a> nodes, <br/>					 int mode, <br/>					 <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** inclusive_ns_prefixes, <br/>					 int with_comments, <br/>					 <a href="libxml2-tree.html#xmlOutputBufferPtr">xmlOutputBufferPtr</a> buf);
+typedef int <a href="#xmlC14NIsVisibleCallback">xmlC14NIsVisibleCallback</a>	(void * user_data, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> parent);
+int	<a href="#xmlC14NDocSave">xmlC14NDocSave</a>			(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-xpath.html#xmlNodeSetPtr">xmlNodeSetPtr</a> nodes, <br/>					 int mode, <br/>					 <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** inclusive_ns_prefixes, <br/>					 int with_comments, <br/>					 const char * filename, <br/>					 int compression);
+int	<a href="#xmlC14NDocDumpMemory">xmlC14NDocDumpMemory</a>		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-xpath.html#xmlNodeSetPtr">xmlNodeSetPtr</a> nodes, <br/>					 int mode, <br/>					 <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** inclusive_ns_prefixes, <br/>					 int with_comments, <br/>					 <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** doc_txt_ptr);
+</pre>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Description</h2>
+    </div>
+    <div class="refsect1" lang="en">
+      <h2>Details</h2>
+      <div class="refsect2" lang="en">
+        <div class="refsect2" lang="en"><h3><a name="xmlC14NMode">Enum </a>xmlC14NMode</h3><pre class="programlisting">enum <a href="#xmlC14NMode">xmlC14NMode</a> {
+    <a name="XML_C14N_1_0">XML_C14N_1_0</a> = 0 /* Origianal C14N 1.0 spec */
+    <a name="XML_C14N_EXCLUSIVE_1_0">XML_C14N_EXCLUSIVE_1_0</a> = 1 /* Exclusive C14N 1.0 spec */
+    <a name="XML_C14N_1_1">XML_C14N_1_1</a> = 2 /*  C14N 1.1 spec */
+};
+</pre><p/>
+</div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlC14NIsVisibleCallback"/>Function type xmlC14NIsVisibleCallback</h3><pre class="programlisting">int	xmlC14NIsVisibleCallback	(void * user_data, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> node, <br/>					 <a href="libxml2-tree.html#xmlNodePtr">xmlNodePtr</a> parent)<br/>
+</pre><p>Signature for a C14N callback on visible nodes</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>user_data</tt></i>:</span></td><td>user data</td></tr><tr><td><span class="term"><i><tt>node</tt></i>:</span></td><td>the curent node</td></tr><tr><td><span class="term"><i><tt>parent</tt></i>:</span></td><td>the parent node</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>1 if the node should be included</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlC14NDocDumpMemory"/>xmlC14NDocDumpMemory ()</h3><pre class="programlisting">int	xmlC14NDocDumpMemory		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-xpath.html#xmlNodeSetPtr">xmlNodeSetPtr</a> nodes, <br/>					 int mode, <br/>					 <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** inclusive_ns_prefixes, <br/>					 int with_comments, <br/>					 <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** doc_txt_ptr)<br/>
+</pre><p>Dumps the canonized image of given XML document into memory. For details see "Canonical XML" (http://www.w3.org/TR/xml-c14n) or "Exclusive XML Canonicalization" (http://www.w3.org/TR/xml-exc-c14n)</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the XML document for canonization</td></tr><tr><td><span class="term"><i><tt>nodes</tt></i>:</span></td><td>the nodes set to be included in the canonized image or NULL if all document nodes should be included</td></tr><tr><td><span class="term"><i><tt>mode</tt></i>:</span></td><td>the c14n mode (see @xmlC14NMode)</td></tr><tr><td><span class="term"><i><tt>inclusive_ns_prefixes</tt></i>:</span></td><td>the list of inclusive namespace prefixes ended with a NULL or NULL if there is no inclusive namespaces (only for exclusive canonicalization, ignored otherwise)</td></tr><tr><td><span class="term"><i><tt>with_comments</tt></i>:</span></td><td>include comments in the result (!=0) or not (==0)</td></tr><tr><td><span class="term"><i><tt>doc_txt_ptr</tt></i>:</span></td><td>the memory pointer for allocated canonical XML text; the caller of this functions is responsible for calling xmlFree() to free allocated memory</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the number of bytes written on success or a negative value on fail</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlC14NDocSave"/>xmlC14NDocSave ()</h3><pre class="programlisting">int	xmlC14NDocSave			(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-xpath.html#xmlNodeSetPtr">xmlNodeSetPtr</a> nodes, <br/>					 int mode, <br/>					 <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** inclusive_ns_prefixes, <br/>					 int with_comments, <br/>					 const char * filename, <br/>					 int compression)<br/>
+</pre><p>Dumps the canonized image of given XML document into the file. For details see "Canonical XML" (http://www.w3.org/TR/xml-c14n) or "Exclusive XML Canonicalization" (http://www.w3.org/TR/xml-exc-c14n)</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the XML document for canonization</td></tr><tr><td><span class="term"><i><tt>nodes</tt></i>:</span></td><td>the nodes set to be included in the canonized image or NULL if all document nodes should be included</td></tr><tr><td><span class="term"><i><tt>mode</tt></i>:</span></td><td>the c14n mode (see @xmlC14NMode)</td></tr><tr><td><span class="term"><i><tt>inclusive_ns_prefixes</tt></i>:</span></td><td>the list of inclusive namespace prefixes ended with a NULL or NULL if there is no inclusive namespaces (only for exclusive canonicalization, ignored otherwise)</td></tr><tr><td><span class="term"><i><tt>with_comments</tt></i>:</span></td><td>include comments in the result (!=0) or not (==0)</td></tr><tr><td><span class="term"><i><tt>filename</tt></i>:</span></td><td>the filename to store canonical XML image</td></tr><tr><td><span class="term"><i><tt>compression</tt></i>:</span></td><td>the compression level (zlib requred): -1 - libxml default, 0 - uncompressed, &gt;0 - compression level</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>the number of bytes written success or a negative value on fail</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlC14NDocSaveTo"/>xmlC14NDocSaveTo ()</h3><pre class="programlisting">int	xmlC14NDocSaveTo		(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-xpath.html#xmlNodeSetPtr">xmlNodeSetPtr</a> nodes, <br/>					 int mode, <br/>					 <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** inclusive_ns_prefixes, <br/>					 int with_comments, <br/>					 <a href="libxml2-tree.html#xmlOutputBufferPtr">xmlOutputBufferPtr</a> buf)<br/>
+</pre><p>Dumps the canonized image of given XML document into the provided buffer. For details see "Canonical XML" (http://www.w3.org/TR/xml-c14n) or "Exclusive XML Canonicalization" (http://www.w3.org/TR/xml-exc-c14n)</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the XML document for canonization</td></tr><tr><td><span class="term"><i><tt>nodes</tt></i>:</span></td><td>the nodes set to be included in the canonized image or NULL if all document nodes should be included</td></tr><tr><td><span class="term"><i><tt>mode</tt></i>:</span></td><td>the c14n mode (see @xmlC14NMode)</td></tr><tr><td><span class="term"><i><tt>inclusive_ns_prefixes</tt></i>:</span></td><td>the list of inclusive namespace prefixes ended with a NULL or NULL if there is no inclusive namespaces (only for exclusive canonicalization, ignored otherwise)</td></tr><tr><td><span class="term"><i><tt>with_comments</tt></i>:</span></td><td>include comments in the result (!=0) or not (==0)</td></tr><tr><td><span class="term"><i><tt>buf</tt></i>:</span></td><td>the output buffer to store canonical XML; this buffer MUST have encoder==NULL because C14N requires UTF-8 output</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>non-negative value on success or a negative value on fail</td></tr></tbody></table></div></div>
+        <hr/>
+        <div class="refsect2" lang="en"><h3><a name="xmlC14NExecute"/>xmlC14NExecute ()</h3><pre class="programlisting">int	xmlC14NExecute			(<a href="libxml2-tree.html#xmlDocPtr">xmlDocPtr</a> doc, <br/>					 <a href="libxml2-c14n.html#xmlC14NIsVisibleCallback">xmlC14NIsVisibleCallback</a> is_visible_callback, <br/>					 void * user_data, <br/>					 int mode, <br/>					 <a href="libxml2-xmlstring.html#xmlChar">xmlChar</a> ** inclusive_ns_prefixes, <br/>					 int with_comments, <br/>					 <a href="libxml2-tree.html#xmlOutputBufferPtr">xmlOutputBufferPtr</a> buf)<br/>
+</pre><p>Dumps the canonized image of given XML document into the provided buffer. For details see "Canonical XML" (http://www.w3.org/TR/xml-c14n) or "Exclusive XML Canonicalization" (http://www.w3.org/TR/xml-exc-c14n)</p>
+<div class="variablelist"><table border="0"><col align="left"/><tbody><tr><td><span class="term"><i><tt>doc</tt></i>:</span></td><td>the XML document for canonization</td></tr><tr><td><span class="term"><i><tt>is_visible_callback</tt></i>:</span></td><td>the function to use to determine is node visible or not</td></tr><tr><td><span class="term"><i><tt>user_data</tt></i>:</span></td><td>the first parameter for @is_visible_callback function (in most cases, it is nodes set)</td></tr><tr><td><span class="term"><i><tt>mode</tt></i>:</span></td><td>the c14n mode (see @xmlC14NMode)</td></tr><tr><td><span class="term"><i><tt>inclusive_ns_prefixes</tt></i>:</span></td><td>the list of inclusive namespace prefixes ended with a NULL or NULL if there is no inclusive namespaces (only for exclusive canonicalization, ignored otherwise)</td></tr><tr><td><span class="term"><i><tt>with_comments</tt></i>:</span></td><td>include comments in the result (!=0) or not (==0)</td></tr><tr><td><span class="term"><i><tt>buf</tt></i>:</span></td><td>the output buffer to store canonical XML; this buffer MUST have encoder==NULL because C14N requires UTF-8 output</td></tr><tr><td><span class="term"><i><tt>Returns</tt></i>:</span></td><td>non-negative value on success or a negative value on fail</td></tr></tbody></table></div></div>
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>
