@@ -1,5 +1,7 @@
+<img src="https://docs-assets.developer.apple.com/turicreate/turi-dog.svg" alt="Turi Create" width="80">
+
 Turi Create
-===============
+--------------------------------------------------
 
 Turi Create simplifies the development of custom machine learning models. You
 don't have to be a machine learning expert to add recommendations, object
