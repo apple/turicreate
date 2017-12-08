@@ -8,9 +8,40 @@ detector will produce instance predictions that may look something like this:
 This particular model was instructed to detect instances of cat and dog faces. The
 notion of localization is here provided by bounding boxes around the instances.
 
+#### Introductory Example
+
+The task is to **predict** whether there is a **cat or a dog** in a picture and where they are.  Let’s
+explore the use of the image classifier on the Cats vs. Dogs dataset.
+
+```python
+import turicreate as tc
+
+# Load the data
+data =  tc.SFrame('cats-dogs.sframe')
+
+# Make a train-test split
+train_data, test_data = data.random_split(0.8)
+
+# Create a model
+model = tc.object_detector.create(train_data, target='label')
+
+# Save predictions to an SArray
+predictions = model.predict(test_data)
+
+# Evaluate the model and save the results into a dictionary
+metrics = model.evaluate(test_data)
+
+# Save the model for later use in Turi Create
+model.save('mymodel.model')
+
+# Export for use in Core ML
+model.export_coreml('MyCustomObjectDetector.mlmodel')
+```
+
 #### Data Acquisition
-Before we create our model, we need data that define the task and
-help the model to learn it. This data should consist of images and *ground truth*
+
+The introductory example creates a model assuming the data already exists, but before we create our model, 
+we require labelled data. This data should consist of images and *ground truth*
 annotations (correct class label and bounding box for each instance). The more data we
 have, the better our predictions will be. Ground truth data should look similar
 to prediction data, at least what you hope it will look like. Here is an example:
