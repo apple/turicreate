@@ -10,7 +10,7 @@ notion of localization is here provided by bounding boxes around the instances.
 
 #### Introductory Example
 
-In this example, the goal is **predict** if there is a **cats or a dogs** in a picture and where in the picture they are located.
+In this example, the goal is to **predict** if there are **cats or dogs** in a picture and where in the picture they are located.
 
 ```python
 import turicreate as tc
@@ -40,7 +40,7 @@ model.export_coreml('MyCustomObjectDetector.mlmodel')
 #### Data Acquisition
 
 The introductory example creates a model assuming the data already exists, but before we create our model, 
-we require labelled data. This data should consist of images and *ground truth*
+we require labeled data. This data should consist of images and *ground truth*
 annotations (correct class label and bounding box for each instance). The more data we
 have, the better our predictions will be. Ground truth data should look similar
 to prediction data, at least what you hope it will look like. Here is an example:
