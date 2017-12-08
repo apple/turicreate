@@ -68,7 +68,7 @@ virtualenv venv
 ```
 
 To activate your new virtual environment and install `Turi Create` in this environment, follow these steps:
-```
+```shell
 # Active your virtual environment
 source ~/venv/bin/activate
 
