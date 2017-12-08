@@ -12,7 +12,27 @@ your app.
 * **Fast and Scalable:** Work with large datasets on a single machine
 * **Ready To Deploy:** Export models to Core ML for use in iOS, macOS, watchOS, and tvOS apps
 
-<img src="https://docs-assets.developer.apple.com/published/a2c37bce1f/689f61a6-1087-4112-99d9-bbfb326e3138.png" alt="Turi Create" width="600">
+Example: Image classifier with a few lines of code
+-------------------
+
+If you want your app to recognize specific objects in images, you can build your own model with just a few lines of code.
+
+```shell
+import turicreate as tc
+
+# Load data 
+data = tc.SFrame('photoLabel.data')
+
+# Create a model
+model = tc.image_classifier.create(data, 'photoLabel')
+
+# Export to Core ML
+model.export_coreml('MyClassifier.mlmodel')
+```
+
+The resulting model can easily be used in your app to label images.
+
+<p align="center"><img src="https://docs-assets.developer.apple.com/published/a2c37bce1f/689f61a6-1087-4112-99d9-bbfb326e3138.png" alt="Turi Create" width="600"></p>
 
 System Requirements
 -------------------
@@ -52,6 +72,9 @@ source ~/venv/bin/activate
 # Install Turi Create in the new virtual environment, pythonenv
 (venv) pip install -U turicreate
 ```
+
+Documentation
+------------
 
 The package [User Guide](https://apple.github.io/turicreate/docs/userguide) and [API Docs](https://apple.github.io/turicreate/docs/api) contain
 more details on how to use Turi Create.
