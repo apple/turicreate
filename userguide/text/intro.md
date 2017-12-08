@@ -1,4 +1,4 @@
-#Text analysis
+# Text analysis
 
 Turi Create. Applications for automated text analytics include:
 In this chapter we will show how to do standard text analytics using
