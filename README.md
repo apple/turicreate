@@ -37,6 +37,23 @@ The resulting model can easily be used in your app to label images.
 
 <p align="center"><img src="https://docs-assets.developer.apple.com/published/a2c37bce1f/689f61a6-1087-4112-99d9-bbfb326e3138.png" alt="Turi Create" width="600"></p>
 
+In addition to image classification, you can can tackle a number of common scenarios:
+* [Recommender systems](userguide/recommender/introduction.md)
+* [Image classification](userguide/image_classifier/introduction.md)
+* [Image similarity](userguide/image_similarity/introduction.md)
+* [Object detection](userguide/object_detector/introduction.md)
+* [Activity classifier](userguide/activity_classifier/introduction.md)
+* [Text classifier](userguide/text_classifier/introduction.md)
+
+as well as essential machine learning models, organized into algorithm-based toolkits:
+
+* [Classifiers](userguide/supervised-learning/classifier.md)
+* [Regression](userguide/supervised-learning/regression.md)
+* [Graph analytics](userguide/graph_analytics/intro.md)
+* [Clustering](userguide/clustering/intro.md)
+* [Nearest Neighbors](userguide/nearest_neighbors/nearest_neighbors.md)
+* [Topic models](userguide/text/intro.md)
+
 System Requirements
 -------------------
 
@@ -77,12 +94,10 @@ source ~/venv/bin/activate
 ```
 
 Documentation
-------------
+-------------
 
-Learn more about using Turi Create with our detailed documentation. 
-
- * [User Guide](https://apple.github.io/turicreate/docs/userguide): Step-by-step instructions for creating models with Turi Create.
- * [API Docs](https://apple.github.io/turicreate/docs/api): Details on each programming method available in Turi Create.
+The package [User Guide](https://apple.github.io/turicreate/docs/userguide) and [API Docs](https://apple.github.io/turicreate/docs/api) contain
+more details on how to use Turi Create.
 
 GPU Support
 -----------
@@ -116,10 +131,10 @@ on (currently `0.11.0`). If you have trouble setting up the GPU, the [MXNet
 installation instructions](https://mxnet.incubator.apache.org/get_started/install.html) may
 offer additional help.
 
-Compiling
----------
+Building From Source
+---------------------
 
-Most users will prefer to pip install a release build. If you want to compile from source, See [BUILD.md](BUILD.md).
+If you want to build Turi Create from source, See [BUILD.md](BUILD.md).
 
 Contributing
 ------------
