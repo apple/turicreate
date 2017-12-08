@@ -15,7 +15,7 @@ your app.
 Example: Image classifier with a few lines of code
 --------------------------------------------------
 
-If you want your app to recognize specific objects in images, you can build your own model with just a few lines of code.
+If you want your app to recognize specific objects in images, you can build your own model with just a few lines of code:
 
 ```python
 import turicreate as tc
@@ -24,7 +24,7 @@ import turicreate as tc
 data = tc.SFrame('photoLabel.sframe')
 
 # Create a model
-model = tc.image_classifier.create(data, target = 'photoLabel')
+model = tc.image_classifier.create(data, target='photoLabel')
 
 # Make predictions
 predictions = model.predict(data)
@@ -32,8 +32,8 @@ predictions = model.predict(data)
 # Export to Core ML
 model.export_coreml('MyClassifier.mlmodel')
 ```
-
-The resulting model can easily be used in your app to label images.
+ 
+It is easy to use the resulting model in an [iOS application](https://developer.apple.com/documentation/vision/classifying_images_with_vision_and_core_ml):
 
 <p align="center"><img src="https://docs-assets.developer.apple.com/published/a2c37bce1f/689f61a6-1087-4112-99d9-bbfb326e3138.png" alt="Turi Create" width="600"></p>
 
@@ -41,7 +41,7 @@ In addition to image classification, you can can tackle a number of common scena
 * [Recommender systems](userguide/recommender/introduction.md)
 * [Image classification](userguide/image_classifier/introduction.md)
 * [Image similarity](userguide/image_similarity/introduction.md)
-* [Object detection](userguide/object_detector/introduction.md)
+* [Object detection](userguide/object_detection/introduction.md)
 * [Activity classifier](userguide/activity_classifier/introduction.md)
 * [Text classifier](userguide/text_classifier/introduction.md)
 
