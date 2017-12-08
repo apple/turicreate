@@ -10,8 +10,7 @@ notion of localization is here provided by bounding boxes around the instances.
 
 #### Introductory Example
 
-The task is to **predict** whether there is a **cat or a dog** in a picture and where they are.  Let’s
-explore the use of the image classifier on the Cats vs. Dogs dataset.
+In this example, the goal is **predict** if there is a **cats or a dogs** in a picture and where in the picture they are located.
 
 ```python
 import turicreate as tc
