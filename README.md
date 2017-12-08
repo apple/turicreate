@@ -79,8 +79,10 @@ source ~/venv/bin/activate
 Documentation
 ------------
 
-The package [User Guide](https://apple.github.io/turicreate/docs/userguide) and [API Docs](https://apple.github.io/turicreate/docs/api) contain
-more details on how to use Turi Create.
+Learn more about using Turi Create with our detailed documentation. 
+
+ * [User Guide](https://apple.github.io/turicreate/docs/userguide): Step-by-step instructions for creating models with Turi Create.
+ * [API Docs](https://apple.github.io/turicreate/docs/api): Details on each programming method available in Turi Create.
 
 GPU Support
 -----------
