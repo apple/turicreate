@@ -26,7 +26,7 @@ data['label'] = data['path'].apply(lambda path: 'dog' if 'dog' in path else 'cat
 # Save the data for future use
 data.save('cats-dogs.sframe')
 
-# Explore interatively
+# Explore interactively
 data.explore()
 ```
 
@@ -80,4 +80,3 @@ In addition, the following chapters contain more information on how to use class
 * [Accessing attributes of the model](../supervised-learning/linear-regression.md#linregr-model-access)
 * [Evaluating Results](../supervised-learning/logistic-regression.md#logregr-evaluation)
 * [Multiclass Classification](../supervised-learning/logistic-regression.md#logregr-multiclass)
-
