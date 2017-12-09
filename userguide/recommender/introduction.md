@@ -33,7 +33,7 @@ actions = tc.SFrame.read_csv('./dataset/ml-20m/ratings.csv')
 ```
 
 For information on how to load data into an SFrame from other sources,
-see the chapter on [SFrames](../sframe/sframe-intro.html).
+see the chapter on [SFrames](../sframe/sframe-intro.md).
 
 You may have additional data about users or items. For example we might
 have a dataset of movie metadata.
