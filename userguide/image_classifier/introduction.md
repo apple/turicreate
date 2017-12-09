@@ -18,7 +18,7 @@ Suppose we have a dataset containing labeled cat and dog images.
 import turicreate as tc
 
 # Load images
-sf = tc.image_analysis.load_images('train', with_path=True)
+data = tc.image_analysis.load_images('train', with_path=True)
 
 # From the path-name, create a label column
 data['label'] = data['path'].apply(lambda path: 'dog' if 'dog' in path else 'cat')
