@@ -26,6 +26,7 @@ Export models in Core ML format with the
 ```python
 model.export_coreml('MyModel.mlmodel')
 ```
+Once the model is exported, you can also edit model metadata (author, license, description etc.) using [coremltools](https://github.com/apple/coremltools). [This example](https://apple.github.io/coremltools/generated/coremltools.models.MLModel.html#coremltools.models.MLModel) contains more details on how to do so.
 
 #### Using Core ML
 
