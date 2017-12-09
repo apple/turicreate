@@ -9,7 +9,7 @@ statistics.
 
 With Turi Create, you can work with:
 - [Tabular data](sframe-intro.md)
-- [Graphs](../sgraph/sfraph.md)
+- [Graphs](../sgraph/sgraph.md)
 - [Text data](../text/analysis.md)
 - [Visualization](../vis/introduction.md)
 
