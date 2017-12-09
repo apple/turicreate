@@ -141,7 +141,7 @@ offer additional help.
 Building From Source
 ---------------------
 
-If you want to build Turi Create from source, See [BUILD.md](BUILD.md).
+If you want to build Turi Create from source, see [BUILD.md](BUILD.md).
 
 Contributing
 ------------
