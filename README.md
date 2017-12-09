@@ -59,7 +59,7 @@ Supported Platforms
 
 Turi Create supports:
 
-* MacOS 10.11+
+* macOS 10.11+
 * Linux (with glibc 2.12+)
 * Windows 10 (via WSL)
 
