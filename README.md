@@ -54,14 +54,20 @@ You can also work with essential machine learning models, organized into algorit
 * [Nearest Neighbors](userguide/nearest_neighbors/nearest_neighbors.md)
 * [Topic models](userguide/text/intro.md)
 
+Supported Platforms
+-------------------
+
+Turi Create supports:
+
+* MacOS 10.11+
+* Linux (with glibc 2.12+)
+* Windows 10 (via WSL)
+
 System Requirements
 -------------------
 
-Turicreate works on **Mac**, **Linux**, and **Windows**.
-
 * Python 2.7 (Python 3.5+ support coming soon)
 * x86\_64 architecture
-* macOS 10.11+, Linux with glibc 2.12+ (including WSL on Windows 10)
 
 Installation
 ------------
@@ -104,7 +110,7 @@ more details on how to use Turi Create.
 GPU Support
 -----------
 
-Turiceate **does not require a GPU**, but certain models can be accelerated by the use of a GPU. 
+Turi Create **does not require a GPU**, but certain models can be accelerated by the use of a GPU. 
 To enable GPU support after installation of the `turicreate` package, please perform the following steps:
 
  * Install CUDA 8.0 ([instructions](http://docs.nvidia.com/cuda/cuda-installation-guide-linux/))
