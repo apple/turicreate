@@ -57,7 +57,7 @@ You can also work with essential machine learning models, organized into algorit
 System Requirements
 -------------------
 
-Turi create works on **Mac**, **Linux**, and **Windows**.
+Turicreate works on **Mac**, **Linux**, and **Windows**.
 
 * Python 2.7 (Python 3.5+ support coming soon)
 * x86\_64 architecture
@@ -105,7 +105,7 @@ GPU Support
 -----------
 
 Turiceate **does not require a GPU**, but certain models can be accelerated by the use of a GPU. 
-Since `turicreate` depends on the default installation of `mxnet`. To enable GPU support after installation of the `turicreate` package, please perform the following steps:
+To enable GPU support after installation of the `turicreate` package, please perform the following steps:
 
  * Install CUDA 8.0 ([instructions](http://docs.nvidia.com/cuda/cuda-installation-guide-linux/))
  * Install cuDNN 5 for CUDA 8.0 ([instructions](https://developer.nvidia.com/cudnn))
