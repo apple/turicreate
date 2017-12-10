@@ -474,9 +474,9 @@ class ImageClassifier(_CustomModel):
         del bias.floatValue[:]
 
         import numpy as np
-        W = np.array(coefs[coefs['index'] != None]['value'], ndmin = 2).reshape(
+        W = np.array(coefs[coefs['index'] is not None]['value'], ndmin = 2).reshape(
                                           inputChannels, num_classes - 1, order = 'F')
-        b =  coefs[coefs['index'] == None]['value']
+        b =  coefs[coefs['index'] is None]['value']
         Wa = np.hstack((np.zeros((inputChannels, 1)), W))
         weights.floatValue.extend(Wa.flatten(order = 'F'))
         bias.floatValue.extend([0.0] + list(b))

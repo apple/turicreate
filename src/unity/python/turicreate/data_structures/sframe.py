@@ -962,7 +962,7 @@ class SFrame(object):
         if na_values is not None and len(na_values) > 0:
             parsing_config["na_values"] = na_values
 
-        if nrows != None:
+        if nrows is not None:
           parsing_config["row_limit"] = nrows
 
         proxy = UnitySFrameProxy()
@@ -2769,7 +2769,7 @@ class SFrame(object):
         >>> sf.save('data/training_data.csv', format='csv')
         """
 
-        if format == None:
+        if format is None:
             if filename.endswith(('.csv', '.csv.gz')):
                 format = 'csv'
             else:
@@ -4393,7 +4393,7 @@ class SFrame(object):
                 tmp = SFrame(_proxy=self.__proxy__.join(value_sf.__proxy__,
                                                      'left',
                                                      {column_name:column_name}))
-                ret_sf = tmp[tmp[id_name] == None]
+                ret_sf = tmp[tmp[id_name] is None]
                 del ret_sf[id_name]
                 return ret_sf
             else:
@@ -4623,19 +4623,19 @@ class SFrame(object):
         [4 rows x 2 columns]
         """
 
-        if column_names != None and column_name_prefix != None:
+        if column_names is not None and column_name_prefix is not None:
             raise ValueError("'column_names' and 'column_name_prefix' parameter cannot be given at the same time.")
 
-        if new_column_name == None and column_name_prefix != None:
+        if new_column_name is None and column_name_prefix is not None:
             new_column_name = column_name_prefix
 
-        if column_name_prefix != None:
+        if column_name_prefix is not None:
             if type(column_name_prefix) != str:
                 raise TypeError("'column_name_prefix' must be a string")
             column_names = [name for name in self.column_names() if name.startswith(column_name_prefix)]
             if len(column_names) == 0:
                 raise ValueError("There is no column starts with prefix '" + column_name_prefix + "'")
-        elif column_names == None:
+        elif column_names is None:
             column_names = self.column_names()
         else:
             if not _is_non_string_iterable(column_names):
@@ -4655,7 +4655,7 @@ class SFrame(object):
 
         # fill_na value for array needs to be numeric
         if dtype == array.array:
-            if (fill_na != None) and (type(fill_na) not in (int, float)):
+            if (fill_na is not None) and (type(fill_na) not in (int, float)):
                 raise ValueError("fill_na value for array needs to be numeric type")
             # all column_names have to be numeric type
             for column in column_names:
@@ -4666,7 +4666,7 @@ class SFrame(object):
         # we try to be smart here
         # if all column names are like: a.b, a.c, a.d,...
         # we then use "b", "c", "d", etc as the dictionary key during packing
-        if (dtype == dict) and (column_name_prefix != None) and (remove_prefix == True):
+        if (dtype == dict) and (column_name_prefix is not None) and (remove_prefix == True):
             size_prefix = len(column_name_prefix)
             first_char = set([c[size_prefix:size_prefix+1] for c in column_names])
             if ((len(first_char) == 1) and first_char.pop() in ['.','-','_']):
@@ -4678,7 +4678,7 @@ class SFrame(object):
             dict_keys = column_names
 
         rest_columns = [name for name in self.column_names() if name not in column_names]
-        if new_column_name != None:
+        if new_column_name is not None:
             if type(new_column_name) != str:
                 raise TypeError("'new_column_name' has to be a string")
             if new_column_name in rest_columns:
@@ -4765,7 +4765,7 @@ class SFrame(object):
         if column_name not in self.column_names():
             raise KeyError("column '" + column_name + "' does not exist in current SFrame")
 
-        if column_name_prefix == None:
+        if column_name_prefix is None:
             column_name_prefix = column_name
 
         new_sf = self[column_name].split_datetime(column_name_prefix, limit, timezone)
@@ -4905,7 +4905,7 @@ class SFrame(object):
         if column_name not in self.column_names():
             raise KeyError("column '" + column_name + "' does not exist in current SFrame")
 
-        if column_name_prefix == None:
+        if column_name_prefix is None:
             column_name_prefix = column_name
 
         new_sf = self[column_name].unpack(column_name_prefix, column_types, na_value, limit)
@@ -5055,7 +5055,7 @@ class SFrame(object):
             raise TypeError("Stack is only supported for column of dict/list/array type.")
 
         # user defined types. do some checking
-        if new_column_type != None:
+        if new_column_type is not None:
             # if new_column_type is a single type, just make it a list of one type
             if type(new_column_type) is type:
                 new_column_type = [new_column_type]
@@ -5066,7 +5066,7 @@ class SFrame(object):
             if (stack_column_type in [dict]) and len(new_column_type) != 2:
                 raise ValueError("Expecting two column types to unpack a dict column")
 
-        if (new_column_name != None):
+        if (new_column_name is not None):
             if stack_column_type == dict:
                 if (type(new_column_name) is not list):
                     raise TypeError("new_column_name has to be a list to stack dict type")
@@ -5092,7 +5092,7 @@ class SFrame(object):
         if (len(head_row) == 0):
             raise ValueError("Cannot infer column type because there is not enough rows to infer value")
 
-        if new_column_type == None:
+        if new_column_type is None:
             # we have to perform type inference
             if stack_column_type == dict:
                 # infer key/value type
@@ -5100,7 +5100,7 @@ class SFrame(object):
                 for row in head_row:
                     for val in row:
                         keys.append(val)
-                        if val != None: values.append(row[val])
+                        if val is not None: values.append(row[val])
 
                 new_column_type = [
                     infer_type_of_list(keys),
@@ -5195,13 +5195,13 @@ class SFrame(object):
         with cython_context():
             if type(column_names) == str:
                 key_columns = [i for i in self.column_names() if i != column_names]
-                if new_column_name != None:
+                if new_column_name is not None:
                     return self.groupby(key_columns, {new_column_name : aggregate.CONCAT(column_names)})
                 else:
                     return self.groupby(key_columns, aggregate.CONCAT(column_names))
             elif len(column_names) == 2:
                 key_columns = [i for i in self.column_names() if i not in column_names]
-                if new_column_name != None:
+                if new_column_name is not None:
                     return self.groupby(key_columns, {new_column_name: aggregate.CONCAT(column_names[0], column_names[1])})
                 else:
                     return self.groupby(key_columns, aggregate.CONCAT(column_names[0], column_names[1]))

@@ -715,7 +715,7 @@ class Sketch(object):
          +-----+-----+-----+-----+-----+-----+-----+-----+------+}
         """
         single_val = False
-        if keys == None:
+        if keys is None:
             keys = []
         else:
             if not isinstance(keys, list):

@@ -486,8 +486,8 @@ class KnnClassifierPredictTest(unittest.TestCase):
         ystar = self.model.classify(self.sf_test, max_neighbors=None,
                                     radius=1e-6, verbose=False)
 
-        self.assertTrue(all(ystar['class'] == None))
-        self.assertTrue(all(ystar['probability'] == None))
+        self.assertTrue(all(ystar['class'] is None))
+        self.assertTrue(all(ystar['probability'] is None))
 
         ## Check that the results are correct if *some*, but not *all* of the
         #  test points have no qualified neighbors in the training set.
@@ -585,8 +585,8 @@ class KnnClassifierPredictTest(unittest.TestCase):
         cf_mat = evals['confusion_matrix']
 
         self.assertTrue(acc == 0.)
-        self.assertTrue(all(cf_mat['target_label'] != None))
-        self.assertTrue(all(cf_mat['predicted_label'] == None))
+        self.assertTrue(all(cf_mat['target_label'] is not None))
+        self.assertTrue(all(cf_mat['predicted_label'] is None))
         self.assertItemsEqual(cf_mat.column_types(), [str, float, int])
         self.assertEqual(cf_mat['count'].sum(), self.sf_test.num_rows())
 
