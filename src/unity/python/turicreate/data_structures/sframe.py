@@ -990,7 +990,7 @@ class SFrame(object):
                                  verbose=verbose)
                 column_type_hints = SFrame._infer_column_types_from_lines(first_rows)
                 typelist = '[' + ','.join(t.__name__ for t in column_type_hints) + ']'
-                if verbose != False:
+                if verbose:
                     print("------------------------------------------------------")
                     print("Inferred types from first %d line(s) of file as " % nrows_to_infer)
                     print("column_type_hints="+ typelist)
@@ -1004,7 +1004,7 @@ class SFrame(object):
                     raise e
                 # If the above fails, default back to str for all columns.
                 column_type_hints = str
-                if verbose != False:
+                if verbose:
                     print('Could not detect types. Using str for each column.')
 
         if type(column_type_hints) is type:
@@ -1040,7 +1040,7 @@ class SFrame(object):
                 if type(e) == RuntimeError and ("cancel" in e.message or "Cancel" in e.message):
                     raise e
                 # If the above fails, default back to str for unmatched columns
-                if verbose != False:
+                if verbose:
                     print('Could not detect types. Using str for all unspecified columns.')
             type_hints = column_type_hints
         else:
@@ -1064,7 +1064,7 @@ class SFrame(object):
                 raise e
             if column_type_inference_was_used:
                 # try again
-                if verbose != False:
+                if verbose:
                     print("Unable to parse the file with automatic type inference.")
                     print("Defaulting to column_type_hints=str")
                 type_hints = {'__all_columns__': str}

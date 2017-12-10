@@ -87,7 +87,7 @@ class GFrame(SFrame):
         if not isinstance(column_name, str):
             raise TypeError("Invalid column name: must be str")
 
-        if inplace == True:
+        if inplace:
             self.__is_dirty__ = True
             with cython_context():
                 if self._is_vertex_frame():
@@ -146,7 +146,7 @@ class GFrame(SFrame):
             if not all([isinstance(x, str) for x in column_names]):
                 raise TypeError("Invalid column name in list : must all be str")
 
-        if inplace == True:
+        if inplace:
             for (data, name) in zip(datalist, column_names):
                 self.add_column(data, name)
             return self
@@ -174,7 +174,7 @@ class GFrame(SFrame):
         """
         if column_name not in self.column_names():
             raise KeyError('Cannot find column %s' % column_name)
-        if inplace == True:
+        if inplace:
             self.__is_dirty__ = True
             try:
                 with cython_context():
@@ -229,7 +229,7 @@ class GFrame(SFrame):
         inplace : bool, optional. Defaults to False.
             Whether the SFrame is modified in place.
         """
-        if inplace == True:
+        if inplace:
             self.__is_dirty__ = True
             with cython_context():
                 if self._is_vertex_frame():
@@ -265,7 +265,7 @@ class GFrame(SFrame):
         if (type(names) is not dict):
             raise TypeError('names must be a dictionary: oldname -> newname')
 
-        if inplace == True:
+        if inplace:
             self.__is_dirty__ = True
             with cython_context():
                 if self._is_vertex_frame():
@@ -287,7 +287,7 @@ class GFrame(SFrame):
 
         if type(start) is not int:
             raise TypeError("Must give start as int")
-        if inplace == True:
+        if inplace:
             the_col = _create_sequential_sarray(self.num_rows(), start)
 
             self[column_name] = the_col
