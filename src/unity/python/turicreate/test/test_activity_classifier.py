@@ -123,8 +123,6 @@ class ActivityClassifierTest(unittest.TestCase):
             'training_time': lambda x: x > 0,
             'target': lambda x: x == self.target,
             'verbose': lambda x: x == True,
-            'target': lambda x: x == self.target,
-            'features': lambda x: x == self.features,
             'session_id': lambda x: x == self.session_id,
             'prediction_window': lambda x: x == self.prediction_window,
             'training_accuracy': lambda x: x >= 0 and x <= 1 ,
