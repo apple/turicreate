@@ -12,7 +12,7 @@ SFrames can extract data from the following static file formats:
 A very common data format is the comma separated value (csv) file, which
 is what we'll use for these examples.  We will use some preprocessed data from
 the
-[Million Song Dataset](http://labrosa.ee.columbia.edu/millionsong/) to
+[Million Song Dataset](https://labrosa.ee.columbia.edu/millionsong/) to
 aid our SFrame-related examples.  The first table contains metadata
 about each song in the database.  Here's how we load it into an SFrame:
 

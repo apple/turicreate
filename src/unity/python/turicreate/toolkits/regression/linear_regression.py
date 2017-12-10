@@ -217,7 +217,7 @@ def create(dataset, target, features=None, l2_penalty=1e-2, l1_penalty=0.0,
 
     - Zhu, C., et al. (1997) `Algorithm 778: L-BFGS-B: Fortran subroutines for
       large-scale bound-constrained optimization
-      <http://dl.acm.org/citation.cfm?id=279236>`_. ACM Transactions on
+      <https://dl.acm.org/citation.cfm?id=279236>`_. ACM Transactions on
       Mathematical Software 23(4) pp.550-560.
 
     - Barzilai, J. and Borwein, J. `Two-Point Step Size Gradient Methods
@@ -231,7 +231,7 @@ def create(dataset, target, features=None, l2_penalty=1e-2, l1_penalty=0.0,
 
     - Zhang, T. (2004) `Solving large scale linear prediction problems using
       stochastic gradient descent algorithms
-      <http://dl.acm.org/citation.cfm?id=1015332>`_. ICML '04: Proceedings of
+      <https://dl.acm.org/citation.cfm?id=1015332>`_. ICML '04: Proceedings of
       the twenty-first international conference on Machine learning p.116.
 
 

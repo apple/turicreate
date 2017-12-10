@@ -6,18 +6,18 @@ exported for use in Core ML. These include
 
 * [Image Classifier](../image_classifier/introduction.md)
 * [Activity Classifier](../activity_classifier/introduction.md)
-* [Object Detector](../object_detector/introduction.md)
+* [Object Detector](../object_detection/introduction.md)
 * Classifiers
-  * [Logistic regression](../supervised_learning/logistic-regression.md)
-  * [Support vector machines (SVM) ](../supervised_learning/svm.md)
-  * [Boosted Decision Trees](../supervised_learning/boosted_trees_classifier.md)
-  * [Random Forests](../supervised_learning/random_forest_classifier.md)
-  * [Decision Tree](../supervised_learning/decision_tree_classifier.md)
+  * [Logistic regression](../supervised-learning/logistic-regression.md)
+  * [Support vector machines (SVM) ](../supervised-learning/svm.md)
+  * [Boosted Decision Trees](../supervised-learning/boosted_trees_classifier.md)
+  * [Random Forests](../supervised-learning/random_forest_classifier.md)
+  * [Decision Tree](../supervised-learning/decision_tree_classifier.md)
 * Regression
-  * [Linear regression](linear-regression.md)
-  * [Boosted Decision Trees](../supervised_learning/boosted_trees_regression.md)
-  * [Random Forests](../supervised_learning/boosted_trees_regression.md)
-  * [Decision Tree](../supervised_learning/boosted_trees_regression.md)
+  * [Linear regression](../supervised-learning/linear-regression.md)
+  * [Boosted Decision Trees](../supervised-learning/boosted_trees_regression.md)
+  * [Random Forests](../supervised-learning/boosted_trees_regression.md)
+  * [Decision Tree](../supervised-learning/boosted_trees_regression.md)
 
 
 Export models in Core ML format with the

@@ -129,7 +129,7 @@ def create(dataset, features=None, distance=None, radius=1.,
     ----------
     - Ester, M., et al. (1996) `A Density-Based Algorithm for Discovering
       Clusters in Large Spatial Databases with Noise
-      <http://www.aaai.org/Papers/KDD/1996/KDD96-037>`_. In Proceedings of the
+      <https://www.aaai.org/Papers/KDD/1996/KDD96-037.pdf>`_. In Proceedings of the
       Second International Conference on Knowledge Discovery and Data Mining.
       pp. 226-231.
 
