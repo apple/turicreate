@@ -9,4 +9,4 @@ class DriverTest(unittest.TestCase):
         raise unittest.SkipTest("expected skip")
 
     def test_driver_passthrough(self):
-        self.assertTrue(os.environ.get("TEST_ENVIRON_SET") == None)
+        self.assertTrue(os.environ.get("TEST_ENVIRON_SET") is None)

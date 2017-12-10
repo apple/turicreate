@@ -283,7 +283,7 @@ def translate(fn):
         pass
 
     try:
-        if ast_node == None:
+        if ast_node is None:
             ast_node = meta.decompiler.decompile_func(fn)
     except:
         pass

@@ -38,8 +38,8 @@ class SFrameComparer():
         for i in range(len(l1)):
             v1 = l1[i]
             v2 = l2[i]
-            if v1 == None:
-                assert v2 == None
+            if v1 is None:
+                assert v2 is None
             else:
                 if type(v1) == dict:
                     assert len(v1) == len(v2)
@@ -87,7 +87,7 @@ class TempDirectory():
     def __enter__(self):
         return self.name
     def __exit__(self, type, value, traceback):
-        if self.name != None:
+        if self.name is not None:
             shutil.rmtree(self.name)
 
 

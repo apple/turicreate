@@ -99,8 +99,8 @@ class BoostedTreesRegressionTest(unittest.TestCase):
                 'metric': lambda x: x == 'auto',
                 'early_stopping_rounds': lambda x: x is None,
                 'model_checkpoint_interval': lambda x: x == 5,
-                'model_checkpoint_path': lambda x: x == None,
-                'resume_from_checkpoint': lambda x: x == None,
+                'model_checkpoint_path': lambda x: x is None,
+                'resume_from_checkpoint': lambda x: x is None,
                 }
 
         self.metrics = ["rmse", "max_error"]
@@ -384,8 +384,8 @@ def binary_classification_integer_target(cls):
             'metric': lambda x: x == 'auto',
             'early_stopping_rounds': lambda x: x is None,
             'model_checkpoint_interval': lambda x: x == 5,
-            'model_checkpoint_path': lambda x: x == None,
-            'resume_from_checkpoint': lambda x: x == None,
+            'model_checkpoint_path': lambda x: x is None,
+            'resume_from_checkpoint': lambda x: x is None,
             }
     cls.fields_ans = cls.get_ans.keys()
 
