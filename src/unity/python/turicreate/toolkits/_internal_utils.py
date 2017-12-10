@@ -152,7 +152,7 @@ def _summarize_coefficients(top_coefs, bottom_coefs):
     """
 
     def get_row_name(row):
-        if row['index'] == None:
+        if row['index'] is None:
             return row['name']
         else:
             return "%s[%s]" % (row['name'], row['index'])

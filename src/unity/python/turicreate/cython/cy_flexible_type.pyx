@@ -323,7 +323,6 @@ cdef dict _code_by_name_lookup = {
     'uint64'   : FT_INT_TYPE     + FT_SAFE,
     'uint128'  : FT_INT_TYPE     + FT_SAFE,
     'short'    : FT_INT_TYPE     + FT_SAFE,
-    'bool_'    : FT_INT_TYPE     + FT_SAFE,
     'float'    : FT_FLOAT_TYPE   + FT_SAFE,
     'double'   : FT_FLOAT_TYPE   + FT_SAFE,
     'float16'  : FT_FLOAT_TYPE   + FT_SAFE,
@@ -1251,7 +1250,7 @@ cdef inline tr_datetime_to_ft(flexible_type& ret, v):
     # before the introduction of the Gregorian calendar
     if(v.year < 1400 or v.year > 10000):
         raise TypeError('Year is out of valid range: 1400..10000')
-    if(v.tzinfo != None):
+    if(v.tzinfo is not None):
         offset = int(v.tzinfo.utcoffset(v).total_seconds() / TIMEZONE_RESOLUTION_IN_SECONDS) #store timezone offset at the granularity of half an hour.
         ret.set_date_time((<long long>(calendar.timegm(v.utctimetuple())),offset), v.microsecond)
     else:

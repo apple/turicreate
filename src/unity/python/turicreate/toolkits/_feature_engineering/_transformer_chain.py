@@ -139,7 +139,7 @@ class TransformerChain(_TransformerBase):
         if 'features' in fields:
             fields.remove('features')
             features = obj.get("features")
-            if features != None:
+            if features is not None:
                 post_repr_string = ' on %s feature(s)' % len(features)
         if 'excluded_features' in fields:
             fields.remove('excluded_features')

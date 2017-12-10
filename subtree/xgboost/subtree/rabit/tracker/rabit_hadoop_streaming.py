@@ -23,15 +23,15 @@ hadoop_streaming_jar = None
 
 # code 
 hadoop_home = os.getenv('HADOOP_HOME')
-if hadoop_home != None:
-    if hadoop_binary == None:
+if hadoop_home is not None:
+    if hadoop_binary is None:
         hadoop_binary = hadoop_home + '/bin/hadoop'
         assert os.path.exists(hadoop_binary), "HADOOP_HOME does not contain the hadoop binary"
-    if hadoop_streaming_jar == None:
+    if hadoop_streaming_jar is None:
         hadoop_streaming_jar = hadoop_home + '/lib/hadoop-streaming.jar'
         assert os.path.exists(hadoop_streaming_jar), "HADOOP_HOME does not contain the hadoop streaming jar"
 
-if hadoop_binary == None or hadoop_streaming_jar == None:
+if hadoop_binary is None or hadoop_streaming_jar is None:
     warnings.warn('Warning: Cannot auto-detect path to hadoop or hadoop-streaming jar\n'\
                       '\tneed to set them via arguments -hs and -hb\n'\
                       '\tTo enable auto-detection, you can set enviroment variable HADOOP_HOME'\
@@ -69,14 +69,14 @@ parser.add_argument('-mem', '--memory_mb', default=-1, type=int,
                     help = 'maximum memory used by the process. Guide: set it large (near mapred.cluster.max.map.memory.mb)'\
                         'if you are running multi-threading rabit,'\
                         'so that each node can occupy all the mapper slots in a machine for maximum performance')
-if hadoop_binary == None:
+if hadoop_binary is None:
     parser.add_argument('-hb', '--hadoop_binary', required = True,
                         help="path to hadoop binary file")  
 else:
     parser.add_argument('-hb', '--hadoop_binary', default = hadoop_binary, 
                         help="path to hadoop binary file")  
 
-if hadoop_streaming_jar == None:
+if hadoop_streaming_jar is None:
     parser.add_argument('-hs', '--hadoop_streaming_jar', required = True,
                         help='path to hadoop streamimg jar file')
 else:
@@ -152,7 +152,7 @@ def hadoop_streaming(nworker, worker_args, worker_envs, use_yarn):
 
     cmd += ' -input %s -output %s' % (args.input, args.output)
     cmd += ' -mapper \"%s\" -reducer \"/bin/cat\" ' % (' '.join(args.command + worker_args))
-    if args.files != None:
+    if args.files is not None:
         for flst in args.files:
             for f in flst.split('#'):
                 fset.add(f)

@@ -420,7 +420,6 @@ class ActivityClassifier(_CustomModel):
                 'session_id': self.session_id,
                 'target': self.target,
                 'features': ','.join(self.features),
-                'prediction_window': str(self.prediction_window),
                 'max_iterations': str(self.max_iterations),
             }, version=ActivityClassifier._PYTHON_ACTIVITY_CLASSIFIER_VERSION)
         spec = mlmodel.get_spec()

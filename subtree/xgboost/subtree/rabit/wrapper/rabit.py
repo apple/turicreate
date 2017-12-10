@@ -25,7 +25,7 @@ _LIB = None
 def _loadlib(lib='standard'):
     """Load rabit library."""
     global _LIB
-    if _LIB != None:
+    if _LIB is not None:
         warnings.warn('rabit.int call was ignored because it has'\
                           ' already been initialized', level=2)
         return

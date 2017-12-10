@@ -152,7 +152,7 @@ def _run_toolkit_function(fnname, arguments, args, kwargs):
     with cython_context():
         ret = _get_unity().run_toolkit(fnname, argument_dict)
     # handle errors
-    if ret[0] != True:
+    if not ret[0]:
         if len(ret[1]) > 0:
             raise _ToolkitError(ret[1])
         else:
@@ -492,7 +492,7 @@ def _add_meta_path():
     """
     import sys
     global _ext_meta_path_singleton
-    if _ext_meta_path_singleton == None:
+    if _ext_meta_path_singleton is None:
         _ext_meta_path_singleton = _ExtMetaPath()
         sys.meta_path += [_ext_meta_path_singleton]
 

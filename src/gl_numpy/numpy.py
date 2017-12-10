@@ -60,7 +60,7 @@ def _sframe_to_nparray(sf):
     # only sframes have save_reference
     sf._save_reference(temp_dir)
     unity_dll = _get_unity_dll()
-    if unity_dll == None:
+    if unity_dll is None:
         raise RuntimeError("fast Converter not loaded")
     if all(d in [int] for d in sf.dtype()):
         ptr = unity_dll.pointer_from_sframe(temp_dir.encode(), True)
@@ -241,7 +241,7 @@ def _fast_numpy_to_sarray(arr):
     """
 
     unity_dll = _get_unity_dll()
-    if unity_dll == None:
+    if unity_dll is None:
         raise RuntimeError("Fast Conversion cannot be performed")
 
     import numpy as np

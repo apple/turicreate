@@ -295,7 +295,7 @@ class DecisionTree:
 
         # Set the root_id.
         for nid, n in self.nodes.items():
-            if n.parent == None:
+            if n.parent is None:
                 self._root_id = n.node_id
                 break
 
@@ -364,10 +364,10 @@ class DecisionTree:
 
         node = self.nodes[root_id]
         output = node.to_dict()
-        if node.left_id != None:
+        if node.left_id is not None:
             j = node.left_id
             output['left'] = self.to_json(j, output)
-        if node.right_id != None:
+        if node.right_id is not None:
             j = node.right_id
             output['right'] = self.to_json(j, output)
         return output

@@ -227,14 +227,14 @@ class SFrameIter(DataIter):
             return False
 
     def getdata(self):
-        if self.data_mx_ndarray == None:
+        if self.data_mx_ndarray is None:
             self.data_mx_ndarray = array(self.data_ndarray)
         return [self.data_mx_ndarray]
 
     def getlabel(self):
-        if self.label_field == None:
+        if self.label_field is None:
             return None
-        if self.label_mx_ndarray == None:
+        if self.label_mx_ndarray is None:
             self.label_mx_ndarray = array(self.label_ndarray)
         return [self.label_mx_ndarray]
 

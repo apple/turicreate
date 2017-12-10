@@ -41,14 +41,14 @@ def cpu_count():
 
 def pid_is_running(i):
     global _lib
-    if _lib == None:
+    if _lib is None:
         return True
     else:
         return _lib.pid_is_running(_ctypes.c_int32(i)) == 1
 
 def kill_process(i):
     global _lib
-    if _lib == None:
+    if _lib is None:
         return True
     else:
         return _lib.kill_process(_ctypes.c_int32(i)) == 1

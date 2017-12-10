@@ -157,7 +157,7 @@ class PythonDecisionTreeCorrectness(unittest.TestCase):
         # Assert.
         self.assertEquals(len(tree.nodes), 7)
         self.assertEquals(root.to_dict(), {'is_leaf': False, 'left_id': 1,
-            'node_id': 0, 'node_type': u'float', 'parent_id': None, 'right_id':
+            'node_id': 0, 'parent_id': None, 'right_id':
             2, 'split_feature_column': 'dict2', 'split_feature_index': '1',
             'value': 2.05, 'node_type': 'float', 'missing_id': 1})
 
@@ -177,7 +177,7 @@ class PythonDecisionTreeCorrectness(unittest.TestCase):
         # Assert.
         self.assertEquals(len(tree.nodes), 9)
         self.assertEquals(root.to_dict(), {'is_leaf': False, 'left_id': 1,
-            'node_id': 0, 'node_type': u'float', 'parent_id': None, 'right_id':
+            'node_id': 0, 'parent_id': None, 'right_id':
             2, 'split_feature_column': 'num1', 'split_feature_index': None,
             'value': 4.5, 'node_type': 'float', 'missing_id': 1})
 
@@ -197,7 +197,7 @@ class PythonDecisionTreeCorrectness(unittest.TestCase):
         # Assert.
         self.assertEquals(len(tree.nodes), 9)
         self.assertEquals(root.to_dict(), {'is_leaf': False, 'left_id': 1,
-            'node_id': 0, 'node_type': u'float', 'parent_id': None, 'right_id':
+            'node_id': 0, 'parent_id': None, 'right_id':
             2, 'split_feature_column': 'num1', 'split_feature_index': None,
             'value': 4.5, 'node_type': 'float', 'missing_id': 1})
 
@@ -222,7 +222,7 @@ class PythonDecisionTreeCorrectness(unittest.TestCase):
         # Assert.
         self.assertEquals(len(tree.nodes), 7)
         self.assertEquals(root.to_dict(), {'is_leaf': False, 'left_id': 1,
-            'node_id': 0, 'node_type': u'float', 'parent_id': None, 'right_id':
+            'node_id': 0, 'parent_id': None, 'right_id':
             2, 'split_feature_column': 'dict[2]', 'split_feature_index': '1',
             'value': 2.05, 'node_type': 'float', 'missing_id': 1})
 
@@ -244,7 +244,7 @@ class PythonDecisionTreeAllModelsTest(unittest.TestCase):
             tree = DecisionTree.from_model(m)
             for nid, node in tree.nodes.items():
                 val = tree.get_prediction_score(nid)
-                if node.is_leaf == True:
+                if node.is_leaf:
                     self.assertTrue(type(val) in {float, int})
                 else:
                     self.assertEquals(val, None)
