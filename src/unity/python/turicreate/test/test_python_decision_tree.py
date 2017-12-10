@@ -244,7 +244,7 @@ class PythonDecisionTreeAllModelsTest(unittest.TestCase):
             tree = DecisionTree.from_model(m)
             for nid, node in tree.nodes.items():
                 val = tree.get_prediction_score(nid)
-                if node.is_leaf == True:
+                if node.is_leaf:
                     self.assertTrue(type(val) in {float, int})
                 else:
                     self.assertEquals(val, None)
