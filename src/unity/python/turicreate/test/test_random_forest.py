@@ -94,8 +94,8 @@ class RandomForestRegressionTest(unittest.TestCase):
            'progress': lambda x: isinstance(x, tc.SFrame) or (x is None),
            'metric': lambda x: x == 'auto',
            'model_checkpoint_interval': lambda x: x == 5,
-           'model_checkpoint_path': lambda x: x == None,
-           'resume_from_checkpoint': lambda x: x == None,
+           'model_checkpoint_path': lambda x: x is None,
+           'resume_from_checkpoint': lambda x: x is None,
            }
         self.metrics = ["rmse", "max_error"]
         self.fields_ans = self.get_ans.keys()
@@ -404,8 +404,8 @@ def binary_classification_integer_target(cls):
             'progress': lambda x: isinstance(x, tc.SFrame) or (x is None),
             'metric': lambda x: x == 'auto',
             'model_checkpoint_interval': lambda x: x == 5,
-            'model_checkpoint_path': lambda x: x == None,
-            'resume_from_checkpoint': lambda x: x == None,
+            'model_checkpoint_path': lambda x: x is None,
+            'resume_from_checkpoint': lambda x: x is None,
             }
     cls.fields_ans = cls.get_ans.keys()
 

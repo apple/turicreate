@@ -94,7 +94,7 @@ class SFrameTest(unittest.TestCase):
         for i in range(len(l1)):
             v1 = l1[i]
             v2 = l2[i]
-            if v1 == None:
+            if v1 is None:
                 self.assertEqual(v2, None)
             else:
                 if type(v1) == dict:
@@ -1376,17 +1376,17 @@ class SFrameTest(unittest.TestCase):
             self.assertEqual(len(c1), len(c2))
             if (column in list_columns):
                 for i in range(len(c1)):
-                    if (c1[i] == None):
-                        self.assertTrue(c2[i] == None)
+                    if (c1[i] is None):
+                        self.assertTrue(c2[i] is None)
                         continue
                     if (c1.dtype == dict):
                         for k in c1[i]:
                             self.assertEqual(c2[i][k], c1[i][k])
                     else:
                         s1 = list(c1[i]);
-                        if s1 != None: s1.sort()
+                        if s1 is not None: s1.sort()
                         s2 = list(c2[i]);
-                        if s2 != None: s2.sort()
+                        if s2 is not None: s2.sort()
                         self.assertEqual(s1, s2)
             else:
                 self.assertEqual(list(c1),list(c2))

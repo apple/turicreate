@@ -492,7 +492,7 @@ def _add_meta_path():
     """
     import sys
     global _ext_meta_path_singleton
-    if _ext_meta_path_singleton == None:
+    if _ext_meta_path_singleton is None:
         _ext_meta_path_singleton = _ExtMetaPath()
         sys.meta_path += [_ext_meta_path_singleton]
 

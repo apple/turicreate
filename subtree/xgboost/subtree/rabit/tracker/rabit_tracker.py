@@ -269,7 +269,7 @@ class Tracker:
                 continue
             assert s.cmd == 'start' or s.cmd == 'recover'
             # lazily initialize the slaves
-            if tree_map == None:
+            if tree_map is None:
                 assert s.cmd == 'start'
                 if s.world_size > 0:
                     nslave = s.world_size

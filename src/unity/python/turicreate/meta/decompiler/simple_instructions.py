@@ -637,7 +637,7 @@ class SimpleInstructions(object):
         else:
             print_ = None
 
-        if isinstance(print_, _ast_Print) and not print_.nl and print_.dest == None:
+        if isinstance(print_, _ast_Print) and not print_.nl and print_.dest is None:
             print_.values.append(item)
         else:
             print_ = _ast_Print(dest=None, values=[item], nl=False, lineno=instr.lineno, col_offset=0)
@@ -646,7 +646,7 @@ class SimpleInstructions(object):
     def PRINT_NEWLINE(self, instr):
         item = self.ast_stack[-1]
 
-        if isinstance(item, _ast_Print) and not item.nl and item.dest == None:
+        if isinstance(item, _ast_Print) and not item.nl and item.dest is None:
             item.nl = True
         else:
             print_ = _ast_Print(dest=None, values=[], nl=True, lineno=instr.lineno, col_offset=0)

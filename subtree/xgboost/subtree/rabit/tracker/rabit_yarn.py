@@ -26,8 +26,8 @@ hadoop_binary  = None
 # code 
 hadoop_home = os.getenv('HADOOP_HOME')
 
-if hadoop_home != None:
-    if hadoop_binary == None:
+if hadoop_home is not None:
+    if hadoop_binary is None:
         hadoop_binary = hadoop_home + '/bin/hadoop'
         assert os.path.exists(hadoop_binary), "HADOOP_HOME does not contain the hadoop binary"
 
@@ -71,7 +71,7 @@ args = parser.parse_args()
 if args.jobname == 'auto':
     args.jobname = ('Rabit[nworker=%d]:' % args.nworker) + args.command[0].split('/')[-1];
 
-if hadoop_binary == None:
+if hadoop_binary is None:
     parser.add_argument('-hb', '--hadoop_binary', required = True,
                         help="path to hadoop binary file")  
 else:
@@ -123,7 +123,7 @@ def submit_yarn(nworker, worker_args, worker_env):
     env['rabit_hdfs_opts'] = str(args.libhdfs_opts)
     env['rabit_hdfs_namenode'] = str(args.name_node)
 
-    if args.files != None:
+    if args.files is not None:
         for flst in args.files:
             for f in flst.split('#'):
                 fset.add(f)

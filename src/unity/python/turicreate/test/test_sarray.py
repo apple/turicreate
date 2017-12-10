@@ -339,7 +339,7 @@ class SArrayTest(unittest.TestCase):
     def test_transform_dict(self):
         # lambda accesses dict
         sa_dict = SArray([{'a':1}, {1:2}, {'c': 'a'}, None], dict)
-        sa_bool_r = sa_dict.apply(lambda x: 'a' in x if x != None else None, skip_na=False)
+        sa_bool_r = sa_dict.apply(lambda x: 'a' in x if x is not None else None, skip_na=False)
         expected_output = [1, 0, 0, None]
         self.__test_equal(sa_bool_r, expected_output, int)
 
@@ -843,8 +843,8 @@ class SArrayTest(unittest.TestCase):
         self.__test_equal(s * 2, [array.array('d', [float(j) * 2 for j in i]) for i in self.vec_data], array.array)
         self.__test_equal(s / 2, [array.array('d', [float(j) / 2 for j in i]) for i in self.vec_data], array.array)
         s = SArray([1,2,3,4,None])
-        self.__test_equal(s == None, [0,0,0,0,1], int)
-        self.__test_equal(s != None, [1,1,1,1,0], int)
+        self.__test_equal(s is None, [0, 0, 0, 0, 1], int)
+        self.__test_equal(s is not None, [1, 1, 1, 1, 0], int)
 
     def test_modulus_operator(self):
         l = [-5,-4,-3,-2,-1,0,1,2,3,4,5]
@@ -1746,7 +1746,7 @@ class SArrayTest(unittest.TestCase):
         expected = [float(x.microsecond) / 1000000.0 if x is not None else x for x in self.datetime_data2]
         self.assertEqual(len(res), len(expected))
         for i in range(len(res)):
-            if res[i] == None:
+            if res[i] is None:
                 self.assertEqual(res[i], expected[i])
             else:
                 self.assertAlmostEqual(res[i], expected[i], places=6)

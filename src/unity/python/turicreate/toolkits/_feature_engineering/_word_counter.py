@@ -325,7 +325,7 @@ class WordCounter(Transformer):
         _raise_error_if_not_of_type(delimiters, [list, _NoneType])
         _raise_error_if_not_of_type(output_column_prefix, [str, _NoneType])
 
-        if delimiters != None:
+        if delimiters is not None:
             for delim in delimiters:
                 _raise_error_if_not_of_type(delim, str, "delimiters")
                 if (len(delim) != 1):

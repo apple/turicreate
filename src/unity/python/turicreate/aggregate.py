@@ -217,7 +217,7 @@ def CONCAT(src_column, dict_value_column = None):
   "count" into a dictionary with keys being words and values being
   counts.
   """
-  if dict_value_column == None:
+  if dict_value_column is None:
     return ("__builtin__concat__list__", [src_column])
   else:
     return ("__builtin__concat__dict__", [src_column, dict_value_column])
