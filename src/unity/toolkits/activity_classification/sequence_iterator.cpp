@@ -247,8 +247,11 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
                        feature_size,
                        predictions_in_chunk,
                        use_target);
-        number_of_sessions++;
     }
+
+    // Update the count of the last session in the dataset
+    number_of_sessions++;
+
 
     if (verbose) {
         logprogress_stream << "Processed a total of " << number_of_sessions << " sessions." << std::endl;
