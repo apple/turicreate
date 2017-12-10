@@ -291,7 +291,7 @@ class LinearRegressionCreateTest(unittest.TestCase):
       coefs = model.coefficients
       coef_list = list(coefs['value'])
       self.assertTrue(np.allclose(coef_list, self.coef, rtol=1e-01, atol=1e-01))
-      if test_stderr == True:
+      if test_stderr:
         stderr_list = list(coefs['stderr'])
         self.assertTrue(np.allclose(stderr_list, self.stderr, rtol=1e-03, atol=1e-03))
       else:
