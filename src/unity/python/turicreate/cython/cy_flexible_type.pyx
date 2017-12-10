@@ -323,7 +323,6 @@ cdef dict _code_by_name_lookup = {
     'uint64'   : FT_INT_TYPE     + FT_SAFE,
     'uint128'  : FT_INT_TYPE     + FT_SAFE,
     'short'    : FT_INT_TYPE     + FT_SAFE,
-    'bool_'    : FT_INT_TYPE     + FT_SAFE,
     'float'    : FT_FLOAT_TYPE   + FT_SAFE,
     'double'   : FT_FLOAT_TYPE   + FT_SAFE,
     'float16'  : FT_FLOAT_TYPE   + FT_SAFE,
