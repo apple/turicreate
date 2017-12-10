@@ -135,7 +135,7 @@ def log_loss(targets, predictions):
 
     References
     ----------
-    https://www.kaggle.com/wiki/LogarithmicLoss
+    https://www.kaggle.com/wiki/LogLoss
 
     Examples
     --------

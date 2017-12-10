@@ -208,7 +208,7 @@ def create(dataset, target, features=None, distance=None, verbose=True):
       <http://en.wikipedia.org/wiki/Nearest_neighbour_classifiers>`_
 
     - Hastie, T., Tibshirani, R., Friedman, J. (2009). `The Elements of
-      Statistical Learning <http://statweb.stanford.edu/~tibs/ElemStatLearn/>`_.
+      Statistical Learning <https://web.stanford.edu/~hastie/ElemStatLearn/>`_.
       Vol. 2. New York. Springer. pp. 463-481.
 
     Examples

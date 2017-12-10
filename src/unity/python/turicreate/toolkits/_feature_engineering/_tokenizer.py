@@ -182,7 +182,7 @@ class Tokenizer(Transformer):
 
     References
     ----------
-    - `Penn treebank tokenization <https://www.cis.upenn.edu/~treebank/tokenization.html>`_
+    - `Penn treebank tokenization <https://web.archive.org/web/19970614072242/http://www.cis.upenn.edu:80/~treebank/tokenization.html>`_
 
     See Also
     --------

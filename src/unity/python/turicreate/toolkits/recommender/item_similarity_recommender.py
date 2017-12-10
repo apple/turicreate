@@ -358,8 +358,8 @@ class ItemSimilarityRecommender(_Recommender):
     ----------
     .. [Ricci_et_al] Francesco Ricci, Lior Rokach, and Bracha Shapira.
         `Introduction to recommender systems handbook
-        <http://www.ics.uci.edu/~smyth/courses/cs27
-        7/papers/intro-rec-sys-handbook.pdf>`_. Springer US, 2011.
+        <http://www.inf.unibz.it/~ricci/papers
+        /intro-rec-sys-handbook.pdf>`_. Springer US, 2011.
     """
 
     def __init__(self, model_proxy):

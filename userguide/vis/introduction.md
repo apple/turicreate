@@ -30,7 +30,7 @@ There are three primary visualization methods in Turi Create:
   SArray on the X axis, and an SArray on the Y axis. The specific plot rendered
   is determined automatically by the underlying `dtype` of both `x` and `y`.
   See
-  [turicreate.show](https://apple.github.io/turicreate/docs/generated/turicreate.show.html).
+  [turicreate.show](https://apple.github.io/turicreate/docs/api/generated/turicreate.show.html).
 * `explore` opens an interactive view of the data structure. For SFrame and
   SArray, this takes the form of a scrollable table of rows and columns of
   data. See
@@ -156,4 +156,4 @@ For specific methods and their API parameters, see:
 * [SFrame.show](https://apple.github.io/turicreate/docs/api/generated/turicreate.SFrame.show.html)
 * [SArray.explore](https://apple.github.io/turicreate/docs/api/generated/turicreate.SArray.explore.html)
 * [SArray.show](https://apple.github.io/turicreate/docs/api/generated/turicreate.SArray.show.html)
-* [turicreate.show](https://apple.github.io/turicreate/docs/generated/turicreate.show.html)
+* [turicreate.show](https://apple.github.io/turicreate/docs/api/generated/turicreate.show.html)

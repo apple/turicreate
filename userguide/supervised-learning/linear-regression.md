@@ -92,58 +92,7 @@ machines (SVM)** conform to **almost** all of the API discussed below.
 
 The attributes of all Turi Create models, which include training statistics, model
 hyper-parameters, and model results can be accessed in the same way as python
-dictionaries. To get a list of all fields that can be accessed, you can use the
-[list_fields()](https://apple.github.io/turicreate/docs/api/generated/turicreate.linear_regression.LinearRegression.list_fields.html)
-function:
-
-
-```python
-fields = model.list_fields()
-print fields
-```
-```python
-['auto_tuning',
- 'coefficients',
- 'convergence_threshold',
- 'feature_rescaling',
- 'features',
- 'l1_penalty',
- 'l2_penalty',
- 'lbfgs_memory_level',
- 'max_iterations',
- 'mini_batch_size',
- 'num_coefficients',
- 'num_examples',
- 'num_features',
- 'num_unpacked_features',
- 'solver',
- 'step_size',
- 'target',
- 'training_iterations',
- 'training_loss',
- 'training_rmse',
- 'training_solver_status',
- 'training_time',
- 'unpacked_features']
-```
-
-Each of these fields can be accessed using dictionary-like lookups. For
-example, the ``training_rmse`` measures the
-[root-mean-squared error](http://en.wikipedia.org/wiki/Root-mean-square_deviation) during
-training. It can be accessed as follows:
-
-```python
-print(model['training_rmse'])
-```
-```python
-0.971003765928
-```
-
-
-The
-[API docs](https://apple.github.io/turicreate/docs/api/generated/turicreate.linear_regression.LinearRegression.get.html)
-provide a detailed description of each of the model's
-atrributes.
+dictionaries.
 
 ###### <a name="linregr-interpreting-results"></a> Interpreting results
 
@@ -225,9 +174,6 @@ category.  The number of these dummy coefficients is equal to the total number
 of categories minus 1 (for the reference category). The following figure
 illustrates how categorical variables are encoded using the **simple encoding**
 scheme.
-[This article](http://www.ats.ucla.edu/stat/sas/webbooks/reg/chapter5/sasreg5.htm)
-provides more details about simple encoding for regression models.
-
 
 [<img alt="Categorical variable summary" src="images/supervised-learning-categorical-variable-encoding.png" style="max-width: 70%; margin-left: 15%;" />](images/supervised-learning-categorical-variable-encoding.png)
 

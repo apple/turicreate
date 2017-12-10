@@ -304,7 +304,7 @@ def create(dataset, label=None, features=None, distance=None, method='auto',
       fixed-norm vectors, and then the minimum `dot_product` distance search
       problem can be solved via finding the reference data with smallest
       `cosine` distances. See the paper `[Neyshabur and Srebro, ICML 2015]
-      <http://jmlr.org/proceedings/papers/v37/neyshabur15.html>`_ for details.
+      <http://proceedings.mlr.press/v37/neyshabur15.html>`_ for details.
 
     References
     ----------

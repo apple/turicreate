@@ -58,7 +58,7 @@ def count_words(sa, to_lower=True,
     References
     ----------
     - `Bag of words model <http://en.wikipedia.org/wiki/Bag-of-words_model>`_
-    - `Penn treebank tokenization <https://www.cis.upenn.edu/~treebank/tokenization.html>`_
+    - `Penn treebank tokenization <https://web.archive.org/web/19970614072242/http://www.cis.upenn.edu:80/~treebank/tokenization.html>`_
 
     Examples
     --------
@@ -194,7 +194,7 @@ def count_ngrams(sa, n=2, method="word", to_lower=True,
     References
     ----------
     - `N-gram wikipedia article <http://en.wikipedia.org/wiki/N-gram>`_
-    - `Penn treebank tokenization <https://www.cis.upenn.edu/~treebank/tokenization.html>`_
+    - `Penn treebank tokenization <https://web.archive.org/web/19970614072242/http://www.cis.upenn.edu:80/~treebank/tokenization.html>`_
 
     Examples
     --------
@@ -359,7 +359,7 @@ def trim_rare_words(sa, threshold=2, to_lower=True,
 
     References
     ----------
-    - `Penn treebank tokenization <https://www.cis.upenn.edu/~treebank/tokenization.html>`_
+    - `Penn treebank tokenization <https://web.archive.org/web/19970614072242/http://www.cis.upenn.edu:80/~treebank/tokenization.html>`_
 
     Examples
     --------
@@ -450,7 +450,7 @@ def tokenize(sa, to_lower=False,
 
     References
     ----------
-    - `Penn treebank tokenization <https://www.cis.upenn.edu/~treebank/tokenization.html>`_
+    - `Penn treebank tokenization <https://web.archive.org/web/19970614072242/http://www.cis.upenn.edu:80/~treebank/tokenization.html>`_
 
     Examples
     --------

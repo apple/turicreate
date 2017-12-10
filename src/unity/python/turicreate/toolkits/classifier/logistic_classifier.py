@@ -249,7 +249,7 @@ def create(dataset, target, features=None,
 
     - Zhu, C., et al. (1997) `Algorithm 778: L-BFGS-B: Fortran subroutines for
       large-scale bound-constrained optimization
-      <http://dl.acm.org/citation.cfm?id=279236>`_. ACM Transactions on
+      <https://dl.acm.org/citation.cfm?id=279236>`_. ACM Transactions on
       Mathematical Software 23(4) pp.550-560.
 
     - Beck, A. and Teboulle, M. (2009) `A Fast Iterative Shrinkage-Thresholding

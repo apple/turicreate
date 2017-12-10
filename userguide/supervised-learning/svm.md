@@ -35,7 +35,7 @@ determines the weight in the loss function towards the regularizer. The larger
 the value of $$\lambda$$, the more is the weight given to the mis-classification
 loss. Turi Create solves the Linear-SVM formulation by approximating the
 hinge-loss with a smooth function (see
-[Zhang et. al.](http://machinelearning.wustl.edu/mlpapers/paper_files/icml2003_ZhangJYH03.pdf)
+[Zhang et. al.](https://www.aaai.org/Papers/ICML/2003/ICML03-115.pdf)
 for details).
 
 ##### Introductory Example

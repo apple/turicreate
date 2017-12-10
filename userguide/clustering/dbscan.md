@@ -217,7 +217,7 @@ sf.save('wikipedia.sframe')
 This particular subset of wikipedia has over 72,000 documents; in the interest
 of speed for the demo we sample 20% of this. We also preprocess the data by
 constructing a bag-of-words representation for each article and trimming out
-stopwords. See Turi Create's [text analytics](https://apple.github.io/turicreate/docs/api/turicreate.toolkits.text_analytics.html and
+stopwords. See Turi Create's [text analytics](https://apple.github.io/turicreate/docs/api/turicreate.toolkits.text_analytics.html) and
 [SArray](https://apple.github.io/turicreate/docs/api/generated/turicreate.SArray.html)
 documentation for more details.
 
@@ -352,11 +352,11 @@ There are two important caveats regarding distance functions in DBSCAN:
 
 - Ester, M., et al. (1996) [A Density-Based Algorithm for Discovering Clustersin
   Large Spatial Databases with
-  Noise](http://www.aaai.org/Papers/KDD/1996/KDD96-037). In Proceedings of the
+  Noise](http://www.aaai.org/Papers/KDD/1996/KDD96-037.pdf). In Proceedings of the
   Second International Conference on Knowledge Discovery and Data Mining. pp.
   226-231.
 
 - [Wikipedia - DBSCAN](https://en.wikipedia.org/wiki/DBSCAN)
 
 - [Visualizing DBSCAN
-  Clustering](http://www.naftaliharris.com/blog/visualizing-dbscan-clustering/)
+  Clustering](https://www.naftaliharris.com/blog/visualizing-dbscan-clustering/)
