@@ -21,7 +21,7 @@ If you want your app to recognize specific objects in images, you can build your
 ```python
 import turicreate as tc
 
-# Load data 
+# Load data
 data = tc.SFrame('photoLabel.sframe')
 
 # Create a model
