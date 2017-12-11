@@ -16,3 +16,24 @@ You need to install Blas and Lapack. See [LINUX\_INSTALL.md](LINUX_INSTALL.md) f
 ### `I get an error "ImportError: liblapack.so.3: Cannot open shared object file: No such file or directory"`
 
 You need to install Blas and Lapack. See [LINUX\_INSTALL.md](LINUX_INSTALL.md) for details.
+
+# Have conda?
+
+If you have conda, then system pip installs may not work properly.
+
+Try pointing to system pip manually:
+
+```python
+# install virtualenv with system pip
+# path may be /usr/bin/pip
+/usr/local/bin/pip install virtualenv
+
+# initialize environment
+/usr/local/bin/virtualenv venv
+
+# activate environment
+source ~/venv/bin/activate
+
+# install turicreate inside environment
+(venv) pip install -U turicreate
+```
