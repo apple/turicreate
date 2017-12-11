@@ -8,7 +8,7 @@ from setup_reporter import try_execfile
 
 def print_help():
     print("""\
-{} [sub_directory] [Optional output xunit xml path prefix]
+%s [sub_directory] [Optional output xunit xml path prefix]
 
 This test runs the scenario test located in the sub directory.
 Every python file in the sub directory will be executed against pytest.

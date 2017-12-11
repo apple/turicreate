@@ -191,7 +191,7 @@ cdef class lambda_evaluator(object):
         for i in range(n):
             if lcd.input_keys[0][i].size() != n_keys:
                 raise ValueError("Row %d does not have the correct number of rows (%d, should be %d)"
-                                 % (lcd.input_keys[0][i].size(), n))
+                                 % (i, lcd.input_keys[0][i].size(), n))
 
             arg_dict = self.arg_dict_base.copy()
             
