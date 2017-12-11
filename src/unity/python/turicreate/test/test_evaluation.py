@@ -8,13 +8,39 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import unittest
 import turicreate
-import random
-from sklearn.metrics import *
+from sklearn.metrics import (fbeta_score, recall_score, precision_score,
+                             accuracy_score, f1_score, roc_auc_score)
 from turicreate.toolkits._main import ToolkitError
 import math
 from numpy import inf
+import numpy as np
 
 DELTA = 0.00001
+
+
+def _round_scores(p):
+    """
+    Since turicreate uses fixed threshold (100001) and scikit-learn
+    uses all threshold for things like AUC, we might get slightly different
+    results if some scores fall between the cracks. To make sure this does
+    not happen during our unit tests, we snap numbers to the centers between
+    thresholds.
+    """
+    return (np.round(p, decimals=5) + 0.5/100001).clip(max=1)
+
+
+def _generate_classes_and_scores(num_classes, n, seed=42,
+                                 hard_predictions=False):
+    rs = np.random.RandomState(seed)
+    t = rs.randint(num_classes, size=n)
+    if hard_predictions:
+        p = rs.randint(num_classes, size=n)
+    else:
+        p = rs.uniform(size=(n, num_classes))
+        p /= p.sum(-1, keepdims=True)
+        p = _round_scores(p)
+    return t, p
+
 
 class MetricsTest(unittest.TestCase):
 
@@ -145,9 +171,9 @@ class MetricsTest(unittest.TestCase):
         y    = turicreate.SArray([ 0, 1, 0, 0])
         yhat = turicreate.SArray([ 0, 1, 0, 0])
 
-        log_loss = turicreate.toolkits.evaluation.log_loss(y, yhat)
-        auc = turicreate.toolkits.evaluation.auc(y, yhat)
-        roc_curve = turicreate.toolkits.evaluation.roc_curve(y, yhat)
+        turicreate.toolkits.evaluation.log_loss(y, yhat)
+        turicreate.toolkits.evaluation.auc(y, yhat)
+        turicreate.toolkits.evaluation.roc_curve(y, yhat)
 
     def test_none_probabilities(self):
 
@@ -175,37 +201,36 @@ class MetricsTest(unittest.TestCase):
 
 
         with self.assertRaises(ToolkitError):
-            log_loss = turicreate.toolkits.evaluation.log_loss(y, yhat)
+            turicreate.toolkits.evaluation.log_loss(y, yhat)
         with self.assertRaises(ToolkitError):
-            auc = turicreate.toolkits.evaluation.auc(y, yhat)
+            turicreate.toolkits.evaluation.auc(y, yhat)
         with self.assertRaises(ToolkitError):
-            roc_curve = turicreate.toolkits.evaluation.roc_curve(y, yhat)
+            turicreate.toolkits.evaluation.roc_curve(y, yhat)
 
         # Test the case when probabilities are integer (sigh!)
         y    = turicreate.SArray([ 0, 1, 0, 0])
         yhat = turicreate.SArray([ 0, 1, 0, None])
 
         with self.assertRaises(ToolkitError):
-          log_loss = turicreate.toolkits.evaluation.log_loss(y, yhat)
+            turicreate.toolkits.evaluation.log_loss(y, yhat)
         with self.assertRaises(ToolkitError):
-          auc = turicreate.toolkits.evaluation.auc(y, yhat)
+            turicreate.toolkits.evaluation.auc(y, yhat)
         with self.assertRaises(ToolkitError):
-          roc_curve = turicreate.toolkits.evaluation.roc_curve(y, yhat)
+            turicreate.toolkits.evaluation.roc_curve(y, yhat)
 
         # Test the case when probabilities are integer (sigh!)
         y    = turicreate.SArray([ 0, 1, 0, 0])
         yhat = turicreate.SArray([ 0.1, 0.1, 0.9, None])
 
         with self.assertRaises(ToolkitError):
-          log_loss = turicreate.toolkits.evaluation.log_loss(y, yhat)
+            turicreate.toolkits.evaluation.log_loss(y, yhat)
         with self.assertRaises(ToolkitError):
-          auc = turicreate.toolkits.evaluation.auc(y, yhat)
+            turicreate.toolkits.evaluation.auc(y, yhat)
         with self.assertRaises(ToolkitError):
-          roc_curve = turicreate.toolkits.evaluation.roc_curve(y, yhat)
+            turicreate.toolkits.evaluation.roc_curve(y, yhat)
 
 
-    def test_none_prec_recall_scores(self):
-
+    def test_none_prec_recall_scores_binary(self):
         # Arrange
         y    = turicreate.SArray([0, 1])
         yhat = turicreate.SArray([0, 0])
@@ -217,11 +242,10 @@ class MetricsTest(unittest.TestCase):
         fbeta = turicreate.toolkits.evaluation.fbeta_score(y, yhat, beta = 2.0)
 
         # Assert
-        self.assertEquals(pr, None)
-        self.assertEquals(rec, 0.0)
-        self.assertEquals(f1, 0.0)
-        self.assertEquals(fbeta, 0.0)
-
+        self.assertEqual(pr, None)
+        self.assertEqual(rec, 0.0)
+        self.assertEqual(f1, 0.0)
+        self.assertEqual(fbeta, 0.0)
 
         # Arrange
         y    = turicreate.SArray([0, 0])
@@ -234,10 +258,10 @@ class MetricsTest(unittest.TestCase):
         fbeta = turicreate.toolkits.evaluation.fbeta_score(y, yhat, beta = 2.0)
 
         # Assert
-        self.assertEquals(pr, 0.0)
-        self.assertEquals(rec, None)
-        self.assertEquals(f1, 0.0)
-        self.assertEquals(fbeta, 0.0)
+        self.assertEqual(pr, 0.0)
+        self.assertEqual(rec, None)
+        self.assertEqual(f1, 0.0)
+        self.assertEqual(fbeta, 0.0)
 
         # Arrange
         y    = turicreate.SArray(["0", "1"])
@@ -250,11 +274,10 @@ class MetricsTest(unittest.TestCase):
         fbeta = turicreate.toolkits.evaluation.fbeta_score(y, yhat, beta = 2.0)
 
         # Assert
-        self.assertEquals(pr, None)
-        self.assertEquals(rec, 0.0)
-        self.assertEquals(f1, 0.0)
-        self.assertEquals(fbeta, 0.0)
-
+        self.assertEqual(pr, None)
+        self.assertEqual(rec, 0.0)
+        self.assertEqual(f1, 0.0)
+        self.assertEqual(fbeta, 0.0)
 
         # Arrange
         y    = turicreate.SArray(["0", "0"])
@@ -267,13 +290,12 @@ class MetricsTest(unittest.TestCase):
         fbeta = turicreate.toolkits.evaluation.fbeta_score(y, yhat, beta = 2.0)
 
         # Assert
-        self.assertEquals(pr, 0.0)
-        self.assertEquals(rec, None)
-        self.assertEquals(f1, 0.0)
-        self.assertEquals(fbeta, 0.0)
+        self.assertEqual(pr, 0.0)
+        self.assertEqual(rec, None)
+        self.assertEqual(f1, 0.0)
+        self.assertEqual(fbeta, 0.0)
 
     def test_none_prec_recall_scores(self):
-
         # Arrange
         y    = turicreate.SArray([0, 1, 2])
         yhat = turicreate.SArray([0, 0, 2])
@@ -298,10 +320,10 @@ class MetricsTest(unittest.TestCase):
         self.assertAlmostEqual(f1["macro"], 0.5555555555555555)
         self.assertAlmostEqual(fbeta["macro"], 0.6111111111111112)
 
-        self.assertEquals(pr[None][1], None)
-        self.assertEquals(rec[None][1], 0.0)
-        self.assertEquals(f1[None][1], 0.0)
-        self.assertEquals(fbeta[None][1], 0.0)
+        self.assertEqual(pr[None][1], None)
+        self.assertEqual(rec[None][1], 0.0)
+        self.assertEqual(f1[None][1], 0.0)
+        self.assertEqual(fbeta[None][1], 0.0)
 
         # Arrange
         y    = turicreate.SArray(["0", "1", "2"])
@@ -327,10 +349,10 @@ class MetricsTest(unittest.TestCase):
         self.assertAlmostEqual(f1["macro"], 0.5555555555555555)
         self.assertAlmostEqual(fbeta["macro"], 0.6111111111111112)
 
-        self.assertEquals(pr[None]["1"], None)
-        self.assertEquals(rec[None]["1"], 0.0)
-        self.assertEquals(f1[None]["1"], 0.0)
-        self.assertEquals(fbeta[None]["1"], 0.0)
+        self.assertEqual(pr[None]["1"], None)
+        self.assertEqual(rec[None]["1"], 0.0)
+        self.assertEqual(f1[None]["1"], 0.0)
+        self.assertEqual(fbeta[None]["1"], 0.0)
 
         # Arrange
         y    = turicreate.SArray([0, 0, 2])
@@ -356,10 +378,10 @@ class MetricsTest(unittest.TestCase):
         self.assertAlmostEqual(f1["macro"], 0.5555555555555555)
         self.assertAlmostEqual(fbeta["macro"], 0.5185185185185185)
 
-        self.assertEquals(pr[None][1], 0.0)
-        self.assertEquals(rec[None][1], None)
-        self.assertEquals(f1[None][1], 0.0)
-        self.assertEquals(fbeta[None][1], 0.0)
+        self.assertEqual(pr[None][1], 0.0)
+        self.assertEqual(rec[None][1], None)
+        self.assertEqual(f1[None][1], 0.0)
+        self.assertEqual(fbeta[None][1], 0.0)
 
         # Arrange
         y    = turicreate.SArray(["0", "0", "2"])
@@ -385,14 +407,12 @@ class MetricsTest(unittest.TestCase):
         self.assertAlmostEqual(f1["macro"], 0.5555555555555555)
         self.assertAlmostEqual(fbeta["macro"], 0.5185185185185185)
 
-        self.assertEquals(pr[None]["1"], 0.0)
-        self.assertEquals(rec[None]["1"], None)
-        self.assertEquals(f1[None]["1"], 0.0)
-        self.assertEquals(fbeta[None]["1"], 0.0)
-
+        self.assertEqual(pr[None]["1"], 0.0)
+        self.assertEqual(rec[None]["1"], None)
+        self.assertEqual(f1[None]["1"], 0.0)
+        self.assertEqual(fbeta[None]["1"], 0.0)
 
     def test_confusion_matrix(self):
-
         y    = turicreate.SArray([ 1, 1,  0,  1, 1,  0,  1])
         yhat = turicreate.SArray([0, 1, 0, 0, 1,  1, 0])
 
@@ -403,7 +423,6 @@ class MetricsTest(unittest.TestCase):
     def test_roc_curve(self):
         # Example from p.864
         # https://ccrma.stanford.edu/workshops/mir2009/references/ROCintro.pdf
-
         y    = turicreate.SArray(
                 [1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0])
         yhat = turicreate.SArray(
@@ -414,7 +433,6 @@ class MetricsTest(unittest.TestCase):
             .4, .5, .5, .6, .7, .8, .8, .9, .9, 1.0])
         true_tpr = turicreate.SArray([0, .1, .2, .2, .3, .4, .5, .5, .5, .6, .6,
             .7, .7, .8, .8, .8, .8, .9, .9, 1.0, 1.0])
-
 
         res = turicreate.toolkits.evaluation.roc_curve(y, yhat)
         points = res[['fpr', 'tpr']].unique().sort(['fpr', 'tpr'])
@@ -446,24 +464,20 @@ class MetricsTest(unittest.TestCase):
         pr = turicreate.recommender.util.precision_recall_by_user(test_data,
                                                             recs, cutoffs=[3])
 
-        self.assertEquals(type(pr), turicreate.SFrame)
-        self.assertEquals(pr.column_names(), ['user_id',
+        self.assertEqual(type(pr), turicreate.SFrame)
+        self.assertEqual(pr.column_names(), ['user_id',
                                      'cutoff',
                                      'precision',
                                      'recall',
                                      'count'])
-        self.assertEquals(list(pr['user_id']), list(turicreate.SArray(['a', 'b', 'c'])))
+        self.assertEqual(list(pr['user_id']), list(turicreate.SArray(['a', 'b', 'c'])))
         pr = turicreate.recommender.util.precision_recall_by_user(test_data,
                                                     recs, cutoffs=[5, 10, 15])
-        self.assertEquals(pr.num_rows(), 9)
+        self.assertEqual(pr.num_rows(), 9)
 
     def test_fbeta_binary_score(self):
-
         # Arrange
-        random.seed(42)
-        n = 100
-        t =  [random.randint(0, 1) for i in range(n)]
-        p =  [random.randint(0, 1) for i in range(n)]
+        t, p = _generate_classes_and_scores(2, n=100, hard_predictions=True)
         targets = turicreate.SArray(t)
         predictions = turicreate.SArray(p)
         str_targets = targets.astype(str)
@@ -471,7 +485,7 @@ class MetricsTest(unittest.TestCase):
 
         # Act
         skl_beta = fbeta_score(list(targets), list(predictions), beta=2.0,
-                               average='macro')
+                               average='binary')
         beta = turicreate.toolkits.evaluation.fbeta_score(targets, predictions,
                                                  beta=2.0)
         str_beta = turicreate.toolkits.evaluation.fbeta_score(str_targets,
@@ -495,12 +509,8 @@ class MetricsTest(unittest.TestCase):
         self.assertAlmostEqual(skl_beta, str_beta)
 
     def test_fbeta_multi_class_score(self):
-
         # Arrange
-        random.seed(42)
-        n = 100
-        t =  [random.randint(0, 2) for i in range(n)]
-        p =  [random.randint(0, 2) for i in range(n)]
+        t, p = _generate_classes_and_scores(3, n=100, seed=42, hard_predictions=True)
         targets = turicreate.SArray(t)
         predictions = turicreate.SArray(p)
         str_targets = targets.astype(str)
@@ -579,9 +589,9 @@ class MetricsTest(unittest.TestCase):
                                                   beta=2.0,
                                                   average = None)
         # Assert
-        self.assertEquals(type(beta), dict)
-        self.assertEquals(set(beta.keys()), set([0, 1, 2]))
-        self.assertEquals(set(str_beta.keys()), set(["0", "1", "2"]))
+        self.assertEqual(type(beta), dict)
+        self.assertEqual(set(beta.keys()), set([0, 1, 2]))
+        self.assertEqual(set(str_beta.keys()), set(["0", "1", "2"]))
 
         # Note: Explicitly not putting it into a for loop for ease of
         # debugging when the tests fail.
@@ -595,10 +605,7 @@ class MetricsTest(unittest.TestCase):
     def test_f1_binary_score(self):
 
         # Arrange
-        random.seed(42)
-        n = 100
-        t =  [random.randint(0, 1) for i in range(n)]
-        p =  [random.randint(0, 1) for i in range(n)]
+        t, p = _generate_classes_and_scores(2, n=100, hard_predictions=True)
         targets = turicreate.SArray(t)
         predictions = turicreate.SArray(p)
         str_targets = targets.astype(str)
@@ -615,12 +622,8 @@ class MetricsTest(unittest.TestCase):
         self.assertAlmostEqual(skl_score, str_score)
 
     def test_f1_multi_class_score(self):
-
         # Arrange
-        random.seed(42)
-        n = 100
-        t =  [random.randint(0, 2) for i in range(n)]
-        p =  [random.randint(0, 2) for i in range(n)]
+        t, p = _generate_classes_and_scores(3, n=100, hard_predictions=True)
         targets = turicreate.SArray(t)
         predictions = turicreate.SArray(p)
         str_targets = targets.astype(str)
@@ -647,11 +650,11 @@ class MetricsTest(unittest.TestCase):
                                                str_predictions,
                                                average = 'macro')
 
-        ## Assert
+        # Assert
         self.assertAlmostEqual(skl_score, score)
         self.assertAlmostEqual(skl_score, str_score)
 
-        ## Act [Average = 'micro']
+        # Act [Average = 'micro']
         skl_score = f1_score(list(targets), list(predictions),
                             average = 'micro')
         score= turicreate.toolkits.evaluation.f1_score(targets,
@@ -675,9 +678,9 @@ class MetricsTest(unittest.TestCase):
                                                str_predictions,
                                                average = None)
         # Assert
-        self.assertEquals(type(score), dict)
-        self.assertEquals(set(score.keys()), set([0, 1, 2]))
-        self.assertEquals(set(str_score.keys()), set(["0", "1", "2"]))
+        self.assertEqual(type(score), dict)
+        self.assertEqual(set(score.keys()), set([0, 1, 2]))
+        self.assertEqual(set(str_score.keys()), set(["0", "1", "2"]))
 
         # Note: Explicitly not putting it into a for loop for ease of
         # debugging when the tests fail.
@@ -689,12 +692,8 @@ class MetricsTest(unittest.TestCase):
         self.assertAlmostEqual(skl_score[2], str_score['2'])
 
     def test_precision_binary_score(self):
-
         # Arrange
-        random.seed(42)
-        n = 100
-        t =  [random.randint(0, 1) for i in range(n)]
-        p =  [random.randint(0, 1) for i in range(n)]
+        t, p = _generate_classes_and_scores(2, n=100, hard_predictions=True)
         targets = turicreate.SArray(t)
         predictions = turicreate.SArray(p)
         str_targets = targets.astype(str)
@@ -711,12 +710,8 @@ class MetricsTest(unittest.TestCase):
         self.assertAlmostEqual(skl_score, str_score)
 
     def test_precision_multi_class_score(self):
-
         # Arrange
-        random.seed(42)
-        n = 100
-        t =  [random.randint(0, 2) for i in range(n)]
-        p =  [random.randint(0, 2) for i in range(n)]
+        t, p = _generate_classes_and_scores(3, n=100, hard_predictions=True)
         targets = turicreate.SArray(t)
         predictions = turicreate.SArray(p)
         str_targets = targets.astype(str)
@@ -771,9 +766,9 @@ class MetricsTest(unittest.TestCase):
                                                str_predictions,
                                                average = None)
         # Assert
-        self.assertEquals(type(score), dict)
-        self.assertEquals(set(score.keys()), set([0, 1, 2]))
-        self.assertEquals(set(str_score.keys()), set(["0", "1", "2"]))
+        self.assertEqual(type(score), dict)
+        self.assertEqual(set(score.keys()), set([0, 1, 2]))
+        self.assertEqual(set(str_score.keys()), set(["0", "1", "2"]))
 
         # Note: Explicitly not putting it into a for loop for ease of
         # debugging when the tests fail.
@@ -785,12 +780,8 @@ class MetricsTest(unittest.TestCase):
         self.assertAlmostEqual(skl_score[2], str_score['2'])
 
     def test_recall_binary_score(self):
-
         # Arrange
-        random.seed(42)
-        n = 100
-        t =  [random.randint(0, 1) for i in range(n)]
-        p =  [random.randint(0, 1) for i in range(n)]
+        t, p = _generate_classes_and_scores(2, n=100, hard_predictions=True)
         targets = turicreate.SArray(t)
         predictions = turicreate.SArray(p)
         str_targets = targets.astype(str)
@@ -807,12 +798,8 @@ class MetricsTest(unittest.TestCase):
         self.assertAlmostEqual(skl_score, str_score)
 
     def test_recall_multi_class_score(self):
-
         # Arrange
-        random.seed(42)
-        n = 100
-        t =  [random.randint(0, 2) for i in range(n)]
-        p =  [random.randint(0, 2) for i in range(n)]
+        t, p = _generate_classes_and_scores(3, n=100, hard_predictions=True)
         targets = turicreate.SArray(t)
         predictions = turicreate.SArray(p)
         str_targets = targets.astype(str)
@@ -839,11 +826,11 @@ class MetricsTest(unittest.TestCase):
                                                str_predictions,
                                                average = 'macro')
 
-        ## Assert
+        # Assert
         self.assertAlmostEqual(skl_score, score)
         self.assertAlmostEqual(skl_score, str_score)
 
-        ## Act [Average = 'micro']
+        # Act [Average = 'micro']
         skl_score = recall_score(list(targets), list(predictions),
                             average = 'micro')
         score= turicreate.toolkits.evaluation.recall(targets,
@@ -867,9 +854,9 @@ class MetricsTest(unittest.TestCase):
                                                str_predictions,
                                                average = None)
         # Assert
-        self.assertEquals(type(score), dict)
-        self.assertEquals(set(score.keys()), set([0, 1, 2]))
-        self.assertEquals(set(str_score.keys()), set(["0", "1", "2"]))
+        self.assertEqual(type(score), dict)
+        self.assertEqual(set(score.keys()), set([0, 1, 2]))
+        self.assertEqual(set(str_score.keys()), set(["0", "1", "2"]))
 
         # Note: Explicitly not putting it into a for loop for ease of
         # debugging when the tests fail.
@@ -881,12 +868,8 @@ class MetricsTest(unittest.TestCase):
         self.assertAlmostEqual(skl_score[2], str_score['2'])
 
     def test_accuracy_binary_score(self):
-
         # Arrange
-        random.seed(42)
-        n = 100
-        t =  [random.randint(0, 1) for i in range(n)]
-        p =  [random.randint(0, 1) for i in range(n)]
+        t, p = _generate_classes_and_scores(2, n=100, hard_predictions=True)
         targets = turicreate.SArray(t)
         predictions = turicreate.SArray(p)
         str_targets = targets.astype(str)
@@ -903,12 +886,8 @@ class MetricsTest(unittest.TestCase):
         self.assertAlmostEqual(skl_score, str_score)
 
     def test_accuracy_multi_class_score(self):
-
         # Arrange
-        random.seed(42)
-        n = 100
-        t =  [random.randint(0, 2) for i in range(n)]
-        p =  [random.randint(0, 2) for i in range(n)]
+        t, p = _generate_classes_and_scores(3, n=100, hard_predictions=True)
         targets = turicreate.SArray(t)
         predictions = turicreate.SArray(p)
         str_targets = targets.astype(str)
@@ -964,9 +943,9 @@ class MetricsTest(unittest.TestCase):
                                                str_predictions,
                                                average = None)
         # Assert
-        self.assertEquals(type(score), dict)
-        self.assertEquals(set(score.keys()), set([0, 1, 2]))
-        self.assertEquals(set(str_score.keys()), set(["0", "1", "2"]))
+        self.assertEqual(type(score), dict)
+        self.assertEqual(set(score.keys()), set([0, 1, 2]))
+        self.assertEqual(set(str_score.keys()), set(["0", "1", "2"]))
 
         # Note: Explicitly not putting it into a for loop for ease of
         # debugging when the tests fail.
@@ -977,16 +956,11 @@ class MetricsTest(unittest.TestCase):
         self.assertAlmostEqual(cls_skl_score[2], score[2])
         self.assertAlmostEqual(cls_skl_score[2], str_score['2'])
 
-
     def test_missing_values(self):
-
         # Arrange
-        random.seed(42)
-        n = 100
-        t =  [random.randint(0, 1) for i in range(n)]
-        p =  [random.randint(0, 1) for i in range(n)]
-        pm = [1 if x == 1 else None for x in p]
-        tm = [1 if x == 1 else None for x in t]
+        t, p = _generate_classes_and_scores(3, n=100, hard_predictions=True)
+        pm = [None if x == 2 else x for x in p]
+        tm = [None if x == 2 else x for x in t]
 
         targets = turicreate.SArray(tm)
         predictions = turicreate.SArray(pm)
@@ -1037,12 +1011,11 @@ class MetricsTest(unittest.TestCase):
         self.assertAlmostEqual(glc_str_auc, scikit_auc)
 
     def test_auc_binary(self):
-
         # Arrange
-        random.seed(42)
+        rs = np.random.RandomState(42)
         n = 100
-        y = turicreate.SArray([random.randint(0,1) for p in range(n)])
-        yhat = turicreate.SArray([random.random() for p in range(n)])
+        y = turicreate.SArray(rs.randint(2, size=n))
+        yhat = turicreate.SArray(rs.uniform(size=n))
 
         # Act & Assert
         scikit_auc = roc_auc_score(list(y), list(yhat), average = "macro")
@@ -1058,26 +1031,14 @@ class MetricsTest(unittest.TestCase):
         self.assertAlmostEqual(glc_int_auc, scikit_auc)
         self.assertAlmostEqual(glc_str_auc, scikit_auc)
 
-
     def test_auc_multi_class_score(self):
-
         # Arrange
-        random.seed(42)
-        n = 100
-        def generate():
-            x = random.uniform(0,1)
-            y = random.uniform(0,1)
-            z = random.uniform(0,1)
-            s = x + y + z
-            return [x/s, y/s, z/s]
-
-        t =  [random.randint(0, 2) for i in range(n)]
-        p =  [generate() for i in range(n)]
+        t, p = _generate_classes_and_scores(3, n=100, hard_predictions=False)
         sk_p = {}
         sk_t = {}
         for i in range(3):
-          sk_p[i] = list(map(lambda x: x[i], p))
-          sk_t[i] = list(map(lambda x: x == i, t))
+            sk_p[i] = p[:, i]
+            sk_t[i] = t == i
         targets = turicreate.SArray(t)
         predictions = turicreate.SArray(p)
         str_targets = targets.astype(str)
@@ -1085,7 +1046,7 @@ class MetricsTest(unittest.TestCase):
         # Act
         sk_score = {}
         for i in range(3):
-          sk_score[i] = roc_auc_score(sk_t[i], sk_p[i])
+            sk_score[i] = roc_auc_score(sk_t[i], sk_p[i])
 
         # Act [Average = None]
         score = turicreate.toolkits.evaluation.auc(targets,
@@ -1095,9 +1056,9 @@ class MetricsTest(unittest.TestCase):
                                            predictions,
                                            average = None)
         # Assert
-        self.assertEquals(type(score), dict)
-        self.assertEquals(set(score.keys()), set([0, 1, 2]))
-        self.assertEquals(set(str_score.keys()), set(["0", "1", "2"]))
+        self.assertEqual(type(score), dict)
+        self.assertEqual(set(score.keys()), set([0, 1, 2]))
+        self.assertEqual(set(str_score.keys()), set(["0", "1", "2"]))
 
         # Note: Explicitly not putting it into a for loop for ease of
         # debugging when the tests fail.
@@ -1123,47 +1084,36 @@ class MetricsTest(unittest.TestCase):
         self.assertAlmostEqual(avg_score, str_score)
 
     def test_bogus_input_prob_evaluators(self):
-
-        # Arrange
-        random.seed(42)
-        n = 100
-        def generate():
-            x = random.uniform(0,1)
-            y = random.uniform(0,1)
-            z = random.uniform(0,1)
-            w = random.uniform(0,1)
-            s = x + y + z + w
-            return [x/s, y/s, z/s, w/s]
-
-        t =  [random.randint(0, 2) for i in range(n)]
-        p =  [generate() for i in range(n)]
+        # Arrange (mismatch number of classes)
+        t, _ = _generate_classes_and_scores(3, n=100, hard_predictions=False)
+        _, p = _generate_classes_and_scores(4, n=100, hard_predictions=False)
         sk_p = {}
         sk_t = {}
         for i in range(3):
-          sk_p[i] = map(lambda x: x[i], p)
-          sk_t[i] = map(lambda x: x == i, t)
+            sk_p[i] = p[:, i]
+            sk_t[i] = t == i
         targets = turicreate.SArray(list(t))
         predictions = turicreate.SArray(list(p))
         float_predictions = predictions.apply(lambda x: x[0])
 
         with self.assertRaises(ToolkitError):
-          score = turicreate.toolkits.evaluation.auc(targets,
+            score = turicreate.toolkits.evaluation.auc(targets,
                                           predictions)
         with self.assertRaises(ToolkitError):
-          score = turicreate.toolkits.evaluation.roc_curve(targets,
+            score = turicreate.toolkits.evaluation.roc_curve(targets,
                                           predictions)
         with self.assertRaises(ToolkitError):
-          score = turicreate.toolkits.evaluation.log_loss(targets,
+            score = turicreate.toolkits.evaluation.log_loss(targets,
                                           predictions)
 
         with self.assertRaises(ToolkitError):
           score = turicreate.toolkits.evaluation.auc(targets,
                                           float_predictions)
         with self.assertRaises(ToolkitError):
-          score = turicreate.toolkits.evaluation.roc_curve(targets,
+            score = turicreate.toolkits.evaluation.roc_curve(targets,
                                           float_predictions)
         with self.assertRaises(ToolkitError):
-          score = turicreate.toolkits.evaluation.log_loss(targets,
+            score = turicreate.toolkits.evaluation.log_loss(targets,
                                           float_predictions)
 
         bad_range_targets = turicreate.SArray([0, 1, 0, 1])
@@ -1182,9 +1132,9 @@ class MetricsTest(unittest.TestCase):
 
         bad_range_targets = turicreate.SArray([0, 1, 0, 1])
         bad_range_predictions = turicreate.SArray([[1.0, 2.0],
-                                           [2.0, 3.0],
-                                           [3.0, 4.0],
-                                           [4.0, 5.0]])
+                                                   [2.0, 3.0],
+                                                   [3.0, 4.0],
+                                                   [4.0, 5.0]])
         with self.assertRaises(ToolkitError):
             score = turicreate.toolkits.evaluation.log_loss(bad_range_targets,
                                                  bad_range_predictions)
