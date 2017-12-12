@@ -48,10 +48,10 @@ class GraphTests(unittest.TestCase):
         g = SGraph().add_vertices(self.vertices, 'vid').add_edges(self.edges, 'src_id', 'dst_id')
         g2 = SGraph(g.vertices, g.edges)
         g3 = SGraph(g.vertices, g.edges, src_field="__dst_id", dst_field="__src_id") #flip around src and dst
-        assert_frame_equal(g.vertices.to_dataframe().sort('__id').reset_index(drop=True),
-                           g2.vertices.to_dataframe().sort('__id').reset_index(drop=True))
-        assert_frame_equal(g.edges.to_dataframe().sort(['__src_id', '__dst_id']).reset_index(drop=True),
-                           g2.edges.to_dataframe().sort(['__src_id', '__dst_id']).reset_index(drop=True))
+        assert_frame_equal(g.vertices.to_dataframe().sort_values('__id').reset_index(drop=True),
+                           g2.vertices.to_dataframe().sort_values('__id').reset_index(drop=True))
+        assert_frame_equal(g.edges.to_dataframe().sort_values(['__src_id', '__dst_id']).reset_index(drop=True),
+                           g2.edges.to_dataframe().sort_values(['__src_id', '__dst_id']).reset_index(drop=True))
         self.assertRaises(ValueError, lambda: SGraph(SFrame(self.vertices), SFrame(self.edges)))
         self.assertRaises(ValueError, lambda: SGraph(SFrame(self.vertices), SFrame(self.edges), 'vid', '__src_id', '__dst_id'))
         self.assertRaises(ValueError, lambda: SGraph(SFrame(self.vertices), SFrame(self.edges), vid_field=None, src_field='src_id', dst_field='dst_id'))
@@ -100,21 +100,21 @@ class GraphTests(unittest.TestCase):
         # basic check
         g2 = g.get_neighborhood(ids=['b'], radius=1, full_subgraph=False)
         out = g2.get_edges(format='dataframe')
-        out.sort(columns=['__src_id', '__dst_id'], axis=0, inplace=True)
+        out.sort_values(by=['__src_id', '__dst_id'], axis=0, inplace=True)
         out.index = range(len(out))
 
         correct = pd.DataFrame.from_records([('b', 'd'),
                                           ('a', 'b'),
                                           ('c', 'b')],
                                           columns=['__src_id', '__dst_id'])
-        correct.sort(columns=['__src_id', '__dst_id'], axis=0, inplace=True)
+        correct.sort_values(by=['__src_id', '__dst_id'], axis=0, inplace=True)
         correct.index = range(len(correct))
         assert_frame_equal(out, correct, check_dtype=False)
 
         # check larger radius, full subgraph, and multiple vertices
         g2 = g.get_neighborhood(ids=['a', 'g'], radius=2, full_subgraph=True)
         out = g2.get_edges(format='dataframe')
-        out.sort(columns=['__src_id', '__dst_id'], axis=0, inplace=True)
+        out.sort_values(by=['__src_id', '__dst_id'], axis=0, inplace=True)
         out.index = range(len(out))
 
         correct = pd.DataFrame.from_records([('a', 'b'),
@@ -126,7 +126,7 @@ class GraphTests(unittest.TestCase):
                                             ('f', 'e'),
                                             ('g', 'f')],
                                             columns=['__src_id', '__dst_id'])
-        correct.sort(columns=['__src_id', '__dst_id'], axis=0, inplace=True)
+        correct.sort_values(by=['__src_id', '__dst_id'], axis=0, inplace=True)
         correct.index = range(len(correct))
         assert_frame_equal(out, correct, check_dtype=False)
 
@@ -297,10 +297,10 @@ class GraphTests(unittest.TestCase):
         new_edata['src_id_col'] = new_edata['__src_id']
         new_edata['dst_id_col'] = new_edata['__dst_id']
         g2 = SGraph().add_vertices(new_vdata, '__id').add_edges(new_edata, '__src_id', '__dst_id')
-        assert_frame_equal(g.get_vertices().to_dataframe().sort('__id').reset_index(drop=True),
-                           g2.get_vertices().to_dataframe().sort('__id').reset_index(drop=True))
-        assert_frame_equal(g.get_edges().to_dataframe().sort(['__src_id', '__dst_id']).reset_index(drop=True),
-                           g2.get_edges().to_dataframe().sort(['__src_id', '__dst_id']).reset_index(drop=True))
+        assert_frame_equal(g.get_vertices().to_dataframe().sort_values('__id').reset_index(drop=True),
+                           g2.get_vertices().to_dataframe().sort_values('__id').reset_index(drop=True))
+        assert_frame_equal(g.get_edges().to_dataframe().sort_values(['__src_id', '__dst_id']).reset_index(drop=True),
+                           g2.get_edges().to_dataframe().sort_values(['__src_id', '__dst_id']).reset_index(drop=True))
 
         # check delete a column with exception, and edges is still in a valid state
         self.assertRaises(KeyError, lambda: remove_edge_column(g.edges, 'badcolumn'))
