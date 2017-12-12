@@ -94,7 +94,7 @@ virtualenv venv
 
 To activate your new virtual environment and install `Turi Create` in this environment, follow these steps:
 ```shell
-# Active your virtual environment
+# Activate your virtual environment
 source ~/venv/bin/activate
 
 # Install Turi Create in the new virtual environment, pythonenv
