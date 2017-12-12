@@ -64,7 +64,7 @@ def _get_data():
 
 class ImageClassifierTest(unittest.TestCase):
     @classmethod
-    def setUpClass(self, model='resnet-50', input_image_shape=(3, 224, 224), tol=0.005):
+    def setUpClass(self, model='resnet-50', input_image_shape=(3, 224, 224), tol=0.02):
         self.feature = 'awesome_image'
         self.target = 'awesome_label'
         self.input_image_shape = input_image_shape
@@ -73,7 +73,8 @@ class ImageClassifierTest(unittest.TestCase):
 
         self.sf = _get_data()
         self.model = tc.image_classifier.create(self.sf, target=self.target,
-                                                model=self.pre_trained_model)
+                                                model=self.pre_trained_model,
+                                                seed=42)
         self.nn_model = self.model.feature_extractor
         self.lm_model = self.model.classifier
         self.max_iterations = 10
