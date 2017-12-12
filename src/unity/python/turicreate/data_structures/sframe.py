@@ -4393,7 +4393,7 @@ class SFrame(object):
                 tmp = SFrame(_proxy=self.__proxy__.join(value_sf.__proxy__,
                                                      'left',
                                                      {column_name:column_name}))
-                ret_sf = tmp[tmp[id_name] is None]
+                ret_sf = tmp[tmp[id_name] == None]
                 del ret_sf[id_name]
                 return ret_sf
             else:
