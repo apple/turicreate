@@ -20,7 +20,7 @@ In contrast, here is a 3-seconds example of 'sitting' data:
 
 <img src="images/sitting.png"></img>
 
-The goal of an activity classifier is to distinguish between such samples. Let's see how we can do that with Turi Create. Here is a complete example of loading the HAPT dataset, and creating an activity classifier to distinguish between these examples. 
+The goal of an activity classifier is to distinguish between such samples. Let's see how we can do that with Turi Create. Below is a complete example of loading the HAPT dataset, and creating an activity classifier to distinguish between these examples. The code for getting the data into an SFrame can be found [here](data-preperation.md).
 
 ```python
 import turicreate as tc
@@ -29,10 +29,10 @@ import turicreate as tc
 data = tc.SFrame('hapt_data.sframe')
 
 # Train/test split by recording sessions
-train, test = tc.activity_classifier.util.random_split_by_session(data, session_id='user_id', fraction=0.8)
+train, test = tc.activity_classifier.util.random_split_by_session(data, session_id='exp_id', fraction=0.8)
 
 # Create an activity classifier
-model = tc.activity_classifier.create(train, session_id='user_id', target='activity', prediction_window=50)
+model = tc.activity_classifier.create(train, session_id='exp_id', target='activity', prediction_window=50)
 
 # Evaluate the model and save the results into a dictionary
 metrics = model.evaluate(test)
@@ -48,17 +48,17 @@ model.export_coreml('MyActivityClassifier.mlmodel')
 Since we have created the model with samples taken at 50Hz and set the ```prediction_window``` to 50, we will get one prediction per second. Invoking our newly created model on the above 3-seconds walking example produces the following per-second predictions:
 
 ```python
-walking_3_sec = data[(data['activity'] == 'walking') & (data['user_id'] == 1)][50:200]
+walking_3_sec = data[(data['activity'] == 'walking') & (data['exp_id'] == 1)][1000:1150]
 model.predict(walking_3_sec, output_frequency='per_window')
 ```
 ```no-highlight
-+---------------+---------+---------+
-| prediction_id | user_id |  class  |
-+---------------+---------+---------+
-|       0       |    1    | walking |
-|       1       |    1    | walking |
-|       2       |    1    | walking |
-+---------------+---------+---------+
++---------------+--------+---------+
+| prediction_id | exp_id |  class  |
++---------------+--------+---------+
+|       0       |   1    | walking |
+|       1       |   1    | walking |
+|       2       |   1    | walking |
++---------------+--------+---------+
 [3 rows x 3 columns]
 ```
 
