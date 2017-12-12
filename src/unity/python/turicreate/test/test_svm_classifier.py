@@ -128,7 +128,7 @@ class SVMClassifierTest(unittest.TestCase):
         """
         model = self.model
         fields = model._list_fields()
-        self.assertEquals(set(fields), set(self.fields_ans))
+        self.assertEqual(set(fields), set(self.fields_ans))
 
     def test_get(self):
         """
@@ -180,7 +180,7 @@ class SVMClassifierTest(unittest.TestCase):
         """
         model = self.model
         ans =  model.classify(self.sf)
-        self.assertEquals(len(ans) ,len(self.sf))
+        self.assertEqual(len(ans) ,len(self.sf))
 
     def test_evaluate(self):
         """
@@ -655,10 +655,10 @@ class VectorSVMTest(unittest.TestCase):
 
     model = tc.svm_classifier.create(self.sf, self.target, self.features,
         feature_rescaling = False)
-    self.assertEquals(model.num_features, len(self.features))
-    self.assertEquals(model.features, self.features)
-    self.assertEquals(model.num_unpacked_features, len(self.unpacked_features))
-    self.assertEquals(model.unpacked_features, self.unpacked_features)
+    self.assertEqual(model.num_features, len(self.features))
+    self.assertEqual(model.features, self.features)
+    self.assertEqual(model.num_unpacked_features, len(self.unpacked_features))
+    self.assertEqual(model.unpacked_features, self.unpacked_features)
 
 
 class DictSVMTest(unittest.TestCase):
@@ -745,10 +745,10 @@ class DictSVMTest(unittest.TestCase):
 
     model = tc.svm_classifier.create(self.sf, self.target, self.features,
         feature_rescaling = False)
-    self.assertEquals(model.num_features, len(self.features))
-    self.assertEquals(model.features, self.features)
-    self.assertEquals(model.num_unpacked_features, len(self.unpacked_features))
-    self.assertEquals(model.unpacked_features, self.unpacked_features)
+    self.assertEqual(model.num_features, len(self.features))
+    self.assertEqual(model.features, self.features)
+    self.assertEqual(model.num_unpacked_features, len(self.unpacked_features))
+    self.assertEqual(model.unpacked_features, self.unpacked_features)
 
 
 class SVMStringTargetTest(unittest.TestCase):
@@ -844,5 +844,5 @@ class TestStringTarget(unittest.TestCase):
         evaluation = model.evaluate(sf)
 
         # Assert
-        self.assertEquals(['cat-0', 'cat-1'],
+        self.assertEqual(['cat-0', 'cat-1'],
             sorted(list(evaluation['confusion_matrix']['target_label'].unique())))

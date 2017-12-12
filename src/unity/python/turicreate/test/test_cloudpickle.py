@@ -34,9 +34,9 @@ class CloudPicleTest(unittest.TestCase):
                 super(B, self).__init__()
                 self.name2 = 'B'
         b = B()
-        self.assertEquals(b.name, "A")
-        self.assertEquals(b.name2, "B")
+        self.assertEqual(b.name, "A")
+        self.assertEqual(b.name2, "B")
 
         b2 = pickle.loads(cloudpickle.dumps(b))
-        self.assertEquals(b.name, b2.name)
-        self.assertEquals(b.name2, b2.name2)
+        self.assertEqual(b.name, b2.name)
+        self.assertEqual(b.name2, b2.name2)

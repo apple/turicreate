@@ -181,11 +181,11 @@ class ObjectDetectorTest(unittest.TestCase):
     def test_extra_classes(self):
         # Create while the data has extra classes
         model = tc.object_detector.create(self.sf, classes=_CLASSES[:2], max_iterations=1)
-        self.assertEquals(len(model.classes), 2)
+        self.assertEqual(len(model.classes), 2)
 
         # Evaluate while the data has extra classes
         ret = model.evaluate(self.sf.head())
-        self.assertEquals(len(ret['average_precision']), 2)
+        self.assertEqual(len(ret['average_precision']), 2)
 
     def test_predict(self):
         sf = self.sf.head()
@@ -196,22 +196,22 @@ class ObjectDetectorTest(unittest.TestCase):
 
         # Check the structure of the output
         _raise_error_if_not_sarray(pred)
-        self.assertEquals(len(pred), len(sf))
+        self.assertEqual(len(pred), len(sf))
 
         # Make sure SFrame was not altered
-        self.assertEquals([col for col in sf.column_names() if col.startswith('_')],
-                          [])
+        self.assertEqual([col for col in sf.column_names() if col.startswith('_')],
+                         [])
 
         # Predict should work on no input (and produce no predictions)
         pred0 = self.model.predict(sf[:0])
-        self.assertEquals(len(pred0), 0)
+        self.assertEqual(len(pred0), 0)
 
     def test_confidence_threshold(self):
         sf = self.sf.head()
         pred = self.model.predict(sf.head(), confidence_threshold=1.0)
         stacked = tc.object_detector.util.stack_annotations(pred)
         # This should return no predictions, especially with an unconverged model
-        self.assertEquals(len(stacked), 0)
+        self.assertEqual(len(stacked), 0)
 
         pred = self.model.predict(sf.head(), confidence_threshold=0.0)
         stacked = tc.object_detector.util.stack_annotations(pred)
@@ -222,7 +222,7 @@ class ObjectDetectorTest(unittest.TestCase):
         ret = self.model.evaluate(self.sf.head(), metric='average_precision')
 
         self.assertTrue(set(ret), {'average_precision'})
-        self.assertEquals(set(ret['average_precision'].keys()), set(_CLASSES))
+        self.assertEqual(set(ret['average_precision'].keys()), set(_CLASSES))
 
         ret = self.model.evaluate(self.sf.head())
 
@@ -232,7 +232,7 @@ class ObjectDetectorTest(unittest.TestCase):
         # Empty dataset should not fail with error (although it should to 0
         # metrics)
         ret = self.model.evaluate(self.sf[:0])
-        self.assertEquals(ret['mean_average_precision'], 0.0)
+        self.assertEqual(ret['mean_average_precision'], 0.0)
 
     @pytest.mark.xfail(rases = _ToolkitError)
     def test_evaluate_invalid_metric(self):
@@ -260,9 +260,9 @@ class ObjectDetectorTest(unittest.TestCase):
         pil_img = Image.fromarray(img_fixed.pixel_data)
         if _mac_ver() >= (10, 13):
             ret = coreml_model.predict({self.feature: pil_img}, usesCPUOnly = True)
-            self.assertEquals(ret['coordinates'].shape[1], 4)
-            self.assertEquals(ret['confidence'].shape[1], len(_CLASSES))
-            self.assertEquals(ret['coordinates'].shape[0], ret['confidence'].shape[0])
+            self.assertEqual(ret['coordinates'].shape[1], 4)
+            self.assertEqual(ret['confidence'].shape[1], len(_CLASSES))
+            self.assertEqual(ret['coordinates'].shape[0], ret['confidence'].shape[0])
             # A numeric comparison of the resulting of top bounding boxes is
             # not that meaningful unless the model has converged
 
@@ -287,7 +287,7 @@ class ObjectDetectorTest(unittest.TestCase):
     def test__list_fields(self):
         model = self.model
         fields = model._list_fields()
-        self.assertEquals(set(fields), set(self.fields_ans))
+        self.assertEqual(set(fields), set(self.fields_ans))
 
     def test_get(self):
         model = self.model

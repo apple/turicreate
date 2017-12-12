@@ -102,7 +102,7 @@ class LocalFSConnectorTests(unittest.TestCase):
         url = util._make_internal_url(url)
         glconnect.get_unity().__write__(url, content)
         content_read = glconnect.get_unity().__read__(url)
-        self.assertEquals(content_read, content)
+        self.assertEqual(content_read, content)
         if os.path.exists(url):
             os.remove(url)
 
@@ -127,7 +127,7 @@ class HttpConnectorTests(unittest.TestCase):
     def _test_read_helper(self, url, content_expected):
         url = util._make_internal_url(url)
         content_read = glconnect.get_unity().__read__(url)
-        self.assertEquals(content_read, content_expected)
+        self.assertEqual(content_read, content_expected)
 
     def test_read(self):
         expected = "\n".join([str(unichr(i + ord('a'))) for i in range(26)])
@@ -152,7 +152,7 @@ class HDFSConnectorTests(unittest.TestCase):
         url = util._make_internal_url(url)
         glconnect.get_unity().__write__(url, content_expected)
         content_read = glconnect.get_unity().__read__(url)
-        self.assertEquals(content_read, content_expected)
+        self.assertEqual(content_read, content_expected)
         # clean up the file we wrote
         status, output = commands.getstatusoutput('hadoop fs -test -e ' + url)
         if status is 0:
@@ -224,7 +224,7 @@ class S3ConnectorTests(unittest.TestCase):
         s3url = util._make_internal_url(url)
         glconnect.get_unity().__write__(s3url, content_expected)
         content_read = glconnect.get_unity().__read__(s3url)
-        self.assertEquals(content_read, content_expected)
+        self.assertEqual(content_read, content_expected)
         (status, output) = commands.getstatusoutput('aws s3 rm --region us-west-2 ' + url)
         if status is not 0:
             logging.getLogger(__name__).warning("Cannot remove file: " + url)

@@ -48,14 +48,14 @@ image_info = [image_info(u) for u in image_urls]
 _SFrameComparer = util.SFrameComparer()
 
 class JSONTest(unittest.TestCase):
-    def _assertEquals(self, x, y):
+    def _assertEqual(self, x, y):
         from ..data_structures.sarray import SArray
         from ..data_structures.sframe import SFrame
         from ..data_structures.sgraph import SGraph
         if type(x) in [long,int]:
             self.assertTrue(type(y) in [long,int])
         else:
-            self.assertEquals(type(x), type(y))
+            self.assertEqual(type(x), type(y))
         if isinstance(x, SArray):
             _SFrameComparer._assert_sarray_equal(x, y)
         elif isinstance(x, SFrame):
@@ -64,13 +64,13 @@ class JSONTest(unittest.TestCase):
             _SFrameComparer._assert_sgraph_equal(x, y)
         elif isinstance(x, dict):
             for (k1,v1),(k2,v2) in zip(sorted(x.items()), sorted(y.items())):
-                self._assertEquals(k1, k2)
-                self._assertEquals(v1, v2)
+                self._assertEqual(k1, k2)
+                self._assertEqual(v1, v2)
         elif isinstance(x, list):
             for v1,v2 in zip(x, y):
-                self._assertEquals(v1, v2)
+                self._assertEqual(v1, v2)
         else:
-            self.assertEquals(x, y)
+            self.assertEqual(x, y)
 
     def _run_test_case(self, value):
         # test that JSON serialization is invertible with respect to both
@@ -88,11 +88,11 @@ class JSONTest(unittest.TestCase):
         result = _json.from_serializable(data, schema)
         #print("Deserialized Result: %s" % result)
         #print("----------------------------------")
-        self._assertEquals(result, value)
+        self._assertEqual(result, value)
         # test that JSON serialization gives expected result
         serialized = _json.dumps(value)
         deserialized = _json.loads(serialized)
-        self._assertEquals(deserialized, value)
+        self._assertEqual(deserialized, value)
 
     @unittest.skipIf(sys.platform == 'win32', "Windows long issue")
     def test_int(self):

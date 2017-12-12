@@ -146,7 +146,7 @@ class SentenceClassifierCreateTests(unittest.TestCase):
 
     def test_sentiment_classifier(self):
         m = self.model
-        self.assertEquals(m.classifier.classes, [1, 2, 3, 5])
+        self.assertEqual(m.classifier.classes, [1, 2, 3, 5])
 
     def test_predict(self):
         m = self.model

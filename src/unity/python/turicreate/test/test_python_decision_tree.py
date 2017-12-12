@@ -34,44 +34,44 @@ class PythonDecisionTreeCorrectness(unittest.TestCase):
         root = tree.root
 
         # Check the root node.
-        self.assertEquals(len(tree.nodes), 7)
-        self.assertEquals(root.to_dict(), {'is_leaf': False,
-                                           'left_id': 2,
-                                           'node_id': 0,
-                                           'missing_id': 1,
-                                           'node_type': u'indicator',
-                                           'parent_id': None,
-                                           'right_id': 1,
-                                           'split_feature_column': 'cat1',
-                                           'split_feature_index': '1',
-                                           'value': 1})
+        self.assertEqual(len(tree.nodes), 7)
+        self.assertEqual(root.to_dict(), {'is_leaf': False,
+                                          'left_id': 2,
+                                          'node_id': 0,
+                                          'missing_id': 1,
+                                          'node_type': u'indicator',
+                                          'parent_id': None,
+                                          'right_id': 1,
+                                          'split_feature_column': 'cat1',
+                                          'split_feature_index': '1',
+                                          'value': 1})
 
         # Check prediction paths.
-        self.assertEquals(tree.get_prediction_path(0), [])
-        self.assertEquals(tree.get_prediction_path(1), [
+        self.assertEqual(tree.get_prediction_path(0), [])
+        self.assertEqual(tree.get_prediction_path(1), [
           {'child_id': 1, 'feature': 'cat1', 'index': '1',
           'node_type': 'indicator', 'node_id': 0, 'sign': '!=',
           'value': 1, 'is_missing': False}])
-        self.assertEquals(tree.get_prediction_path(2), [{'child_id': 2,
+        self.assertEqual(tree.get_prediction_path(2), [{'child_id': 2,
           'feature': 'cat1', 'index': '1', 'node_id': 0, 'sign': '=',
           'value': 1, 'node_type': 'indicator', 'is_missing': False}])
-        self.assertEquals(tree.get_prediction_path(3), [{'child_id': 1,
+        self.assertEqual(tree.get_prediction_path(3), [{'child_id': 1,
           'feature': 'cat1', 'index': '1', 'node_id': 0, 'sign': '!=',
           'value': 1, 'node_type': 'indicator', 'is_missing': False},
           {'child_id': 3, 'feature': 'cat2', 'index': '1', 'node_id': 1,
            'sign': '!=', 'value': 1, 'node_type': 'indicator',
            'is_missing': False}])
-        self.assertEquals(tree.get_prediction_path(4), [{'child_id': 1,
+        self.assertEqual(tree.get_prediction_path(4), [{'child_id': 1,
           'feature': 'cat1', 'index': '1', 'node_id': 0, 'sign': '!=',
           'value': 1, 'node_type': 'indicator', 'is_missing': False}, {'child_id': 4,
           'feature': 'cat2', 'index': '1', 'node_id': 1, 'sign': '=', 'value': 1,
           'node_type': 'indicator', 'is_missing': False}])
-        self.assertEquals(tree.get_prediction_path(5), [{'child_id': 2,
+        self.assertEqual(tree.get_prediction_path(5), [{'child_id': 2,
             'feature': 'cat1', 'index': '1', 'node_id': 0, 'sign': '=',
             'value': 1, 'node_type': 'indicator', 'is_missing': False},
             {'child_id': 5, 'feature': 'cat2', 'index': '1', 'node_id': 2,
              'sign': '!=', 'value': 1,'node_type': 'indicator', 'is_missing': False}])
-        self.assertEquals(tree.get_prediction_path(6), [{'child_id': 2,
+        self.assertEqual(tree.get_prediction_path(6), [{'child_id': 2,
             'feature': 'cat1', 'index': '1', 'node_id': 0, 'sign': '=',
             'value': 1, 'node_type': 'indicator', 'is_missing': False},
             {'child_id': 6, 'feature': 'cat2', 'index': '1', 'node_id': 2,
@@ -93,45 +93,45 @@ class PythonDecisionTreeCorrectness(unittest.TestCase):
         root = tree.root
 
         # Check the root node.
-        self.assertEquals(len(tree.nodes), 7)
-        self.assertEquals(root.to_dict(), {'is_leaf': False,
-                                           'left_id': 1,
-                                           'node_id': 0,
-                                           'node_type': u'float',
-                                           'parent_id': None,
-                                           'right_id': 2,
-                                           'missing_id': 1,
-                                           'split_feature_column': 'cat1',
-                                           'split_feature_index': '1',
-                                           'value': -1e-5})
+        self.assertEqual(len(tree.nodes), 7)
+        self.assertEqual(root.to_dict(), {'is_leaf': False,
+                                          'left_id': 1,
+                                          'node_id': 0,
+                                          'node_type': u'float',
+                                          'parent_id': None,
+                                          'right_id': 2,
+                                          'missing_id': 1,
+                                          'split_feature_column': 'cat1',
+                                          'split_feature_index': '1',
+                                          'value': -1e-5})
 
         # Check prediction paths.
-        self.assertEquals(tree.get_prediction_path(0), [])
-        self.assertEquals(tree.get_prediction_path(1), [
+        self.assertEqual(tree.get_prediction_path(0), [])
+        self.assertEqual(tree.get_prediction_path(1), [
             {'child_id': 1, 'feature': 'cat1', 'index': '1',
              'node_id': 0, 'sign': '<', 'value': -1e-5,'node_type': 'float',
              'is_missing': False}])
-        self.assertEquals(tree.get_prediction_path(2), [{'child_id': 2,
+        self.assertEqual(tree.get_prediction_path(2), [{'child_id': 2,
              'feature': 'cat1', 'index': '1', 'node_id': 0, 'sign': '>=',
              'value': -1e-5, 'node_type': 'float', 'is_missing': False}])
-        self.assertEquals(tree.get_prediction_path(3), [{'child_id': 1,
+        self.assertEqual(tree.get_prediction_path(3), [{'child_id': 1,
             'feature': 'cat1', 'index': '1', 'node_id': 0, 'sign': '<',
             'value': -1e-05, 'node_type': 'float', 'is_missing': False}, {'child_id': 3,
             'feature': 'cat2', 'index': '1', 'node_id': 1, 'sign': '<',
             'value': -1e-05, 'node_type': 'float', 'is_missing': False}])
-        self.assertEquals(tree.get_prediction_path(4), [{'child_id': 1,
+        self.assertEqual(tree.get_prediction_path(4), [{'child_id': 1,
             'feature': 'cat1', 'index': '1', 'node_id': 0, 'sign': '<',
             'value': -1e-05, 'node_type': 'float', 'is_missing': False},
             {'child_id': 4, 'feature': 'cat2', 'index': '1', 'node_id': 1,
              'sign': '>=', 'value': -1e-05, 'node_type': 'float',
              'is_missing': False}])
-        self.assertEquals(tree.get_prediction_path(5), [{'child_id': 2,
+        self.assertEqual(tree.get_prediction_path(5), [{'child_id': 2,
             'feature': 'cat1', 'index': '1', 'node_id': 0, 'sign': '>=',
             'value': -1e-05, 'node_type': 'float', 'is_missing': False},
             {'child_id': 5, 'feature': 'cat2', 'index': '1', 'node_id': 2,
              'sign': '<', 'value': -1e-05, 'node_type': 'float',
              'is_missing': False}])
-        self.assertEquals(tree.get_prediction_path(6), [{'child_id': 2,
+        self.assertEqual(tree.get_prediction_path(6), [{'child_id': 2,
             'feature': 'cat1', 'index': '1', 'node_id': 0, 'sign': '>=',
             'value': -1e-05, 'node_type': 'float', 'is_missing': False},
             {'child_id': 6, 'feature': 'cat2', 'index': '1', 'node_id': 2,
@@ -155,8 +155,8 @@ class PythonDecisionTreeCorrectness(unittest.TestCase):
         root = tree.root
 
         # Assert.
-        self.assertEquals(len(tree.nodes), 7)
-        self.assertEquals(root.to_dict(), {'is_leaf': False, 'left_id': 1,
+        self.assertEqual(len(tree.nodes), 7)
+        self.assertEqual(root.to_dict(), {'is_leaf': False, 'left_id': 1,
             'node_id': 0, 'parent_id': None, 'right_id':
             2, 'split_feature_column': 'dict2', 'split_feature_index': '1',
             'value': 2.05, 'node_type': 'float', 'missing_id': 1})
@@ -175,8 +175,8 @@ class PythonDecisionTreeCorrectness(unittest.TestCase):
         root = tree.root
 
         # Assert.
-        self.assertEquals(len(tree.nodes), 9)
-        self.assertEquals(root.to_dict(), {'is_leaf': False, 'left_id': 1,
+        self.assertEqual(len(tree.nodes), 9)
+        self.assertEqual(root.to_dict(), {'is_leaf': False, 'left_id': 1,
             'node_id': 0, 'parent_id': None, 'right_id':
             2, 'split_feature_column': 'num1', 'split_feature_index': None,
             'value': 4.5, 'node_type': 'float', 'missing_id': 1})
@@ -195,8 +195,8 @@ class PythonDecisionTreeCorrectness(unittest.TestCase):
         root = tree.root
 
         # Assert.
-        self.assertEquals(len(tree.nodes), 9)
-        self.assertEquals(root.to_dict(), {'is_leaf': False, 'left_id': 1,
+        self.assertEqual(len(tree.nodes), 9)
+        self.assertEqual(root.to_dict(), {'is_leaf': False, 'left_id': 1,
             'node_id': 0, 'parent_id': None, 'right_id':
             2, 'split_feature_column': 'num1', 'split_feature_index': None,
             'value': 4.5, 'node_type': 'float', 'missing_id': 1})
@@ -220,8 +220,8 @@ class PythonDecisionTreeCorrectness(unittest.TestCase):
         root = tree.root
 
         # Assert.
-        self.assertEquals(len(tree.nodes), 7)
-        self.assertEquals(root.to_dict(), {'is_leaf': False, 'left_id': 1,
+        self.assertEqual(len(tree.nodes), 7)
+        self.assertEqual(root.to_dict(), {'is_leaf': False, 'left_id': 1,
             'node_id': 0, 'parent_id': None, 'right_id':
             2, 'split_feature_column': 'dict[2]', 'split_feature_index': '1',
             'value': 2.05, 'node_type': 'float', 'missing_id': 1})
@@ -247,7 +247,7 @@ class PythonDecisionTreeAllModelsTest(unittest.TestCase):
                 if node.is_leaf:
                     self.assertTrue(type(val) in {float, int})
                 else:
-                    self.assertEquals(val, None)
+                    self.assertEqual(val, None)
 
 
     def test_categorical_1(self):
@@ -373,7 +373,7 @@ class PythonDecisionTreeTest(unittest.TestCase):
         out = tree.__repr__()
 
         # Assert
-        self.assertEquals(type(out), str)
+        self.assertEqual(type(out), str)
 
     def test_to_json(self):
         # Arrange
@@ -383,7 +383,7 @@ class PythonDecisionTreeTest(unittest.TestCase):
         out = tree.to_json()
 
         # Assert
-        self.assertEquals(type(out), dict)
+        self.assertEqual(type(out), dict)
         with self.assertRaises(TypeError):
             score = tree.to_json("foo")
         with self.assertRaises(ToolkitError):
@@ -398,8 +398,8 @@ class PythonDecisionTreeTest(unittest.TestCase):
         out_2 = tree.get_prediction_score(5)
 
         # Assert
-        self.assertEquals(out_1, None)
-        self.assertEquals(type(out_1), float)
+        self.assertEqual(out_1, None)
+        self.assertEqual(type(out_1), float)
         with self.assertRaises(TypeError):
             score = tree.get_prediction_score("foo")
         with self.assertRaises(ToolkitError):
@@ -415,8 +415,8 @@ class PythonDecisionTreeTest(unittest.TestCase):
         out_2 = tree.get_prediction_path(5)
 
         # Assert
-        self.assertEquals(type(out_1), dict)
-        self.assertEquals(type(out_2), dict)
+        self.assertEqual(type(out_1), dict)
+        self.assertEqual(type(out_2), dict)
         with self.assertRaises(TypeError):
             score = tree.get_prediction_path("foo")
         with self.assertRaises(ToolkitError):
@@ -430,7 +430,7 @@ class PythonDecisionTreeTest(unittest.TestCase):
         out = tree.root
 
         # Assert
-        self.assertEquals(type(out), Node)
+        self.assertEqual(type(out), Node)
 
     def test_getitem(self):
         # Arrange
@@ -438,7 +438,7 @@ class PythonDecisionTreeTest(unittest.TestCase):
 
         # Act & Assert
         for i in range(tree.num_nodes):
-            self.assertEquals(type(tree[i]), Node)
+            self.assertEqual(type(tree[i]), Node)
 
     def test_iter(self):
         # Arrange
@@ -446,4 +446,4 @@ class PythonDecisionTreeTest(unittest.TestCase):
 
         # Act & Assert
         for node in tree:
-            self.assertEquals(type(node), Node)
+            self.assertEqual(type(node), Node)

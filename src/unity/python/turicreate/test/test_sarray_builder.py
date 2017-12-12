@@ -22,13 +22,13 @@ class SArrayBuilderTest(unittest.TestCase):
     def __test_append(self, sb, data, dtype):
         for i in data:
             sb.append(i)
-        self.assertEquals(sb.get_type(), dtype)
+        self.assertEqual(sb.get_type(), dtype)
         sa = sb.close()
         self.__test_equal(sa, data, dtype)
 
     def __test_append_multiple(self, sb, data, dtype):
         sb.append_multiple(data)
-        self.assertEquals(sb.get_type(), dtype)
+        self.assertEqual(sb.get_type(), dtype)
         sa = sb.close()
         self.__test_equal(sa, data, dtype)
 
@@ -54,25 +54,25 @@ class SArrayBuilderTest(unittest.TestCase):
         sb = SArrayBuilder(int, history_size=10)
         sb.append_multiple((i for i in range(8)))
         hist = sb.read_history(3)
-        self.assertEquals(hist,[5,6,7])
+        self.assertEqual(hist,[5,6,7])
 
         hist = sb.read_history(20)
-        self.assertEquals(hist, [i for i in range(8)])
+        self.assertEqual(hist, [i for i in range(8)])
         hist = sb.read_history()
-        self.assertEquals(hist, [i for i in range(8)])
+        self.assertEqual(hist, [i for i in range(8)])
 
         sb.append_multiple((i for i in range(5)))
         hist = sb.read_history(10)
-        self.assertEquals(hist, [3,4,5,6,7,0,1,2,3,4])
+        self.assertEqual(hist, [3,4,5,6,7,0,1,2,3,4])
 
         sb.append(50)
         hist = sb.read_history(10)
-        self.assertEquals(hist, [4,5,6,7,0,1,2,3,4,50])
+        self.assertEqual(hist, [4,5,6,7,0,1,2,3,4,50])
 
         hist = sb.read_history(-1)
-        self.assertEquals(hist, [])
+        self.assertEqual(hist, [])
         hist = sb.read_history(0)
-        self.assertEquals(hist, [])
+        self.assertEqual(hist, [])
 
         sa = sb.close()
         self.__test_equal(sa,[i for i in range(8)] + [i for i in range(5)] + [50],int)

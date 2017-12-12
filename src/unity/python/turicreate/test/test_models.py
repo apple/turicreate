@@ -18,7 +18,7 @@ temp_number = random.randint(0, 2**64)
 
 class TestModel(unittest.TestCase):
     def __assert_model_equals__(self, m1, m2):
-        self.assertEquals(type(m1), type(m2))
+        self.assertEqual(type(m1), type(m2))
         self.assertSequenceEqual(m1._list_fields(), m2._list_fields())
 
     def __remove_file(self, path):

@@ -99,9 +99,9 @@ class CoreMLExportTest(unittest.TestCase):
                 coreml_prediction = coreml_model.predict(array_to_numpy(row))
                 tc_prediction = model.predict(row)[0]
                 if (self.regression == False) and (type(model.classes[0]) == str):
-                    self.assertEquals(coreml_prediction[self.target], tc_prediction)
+                    self.assertEqual(coreml_prediction[self.target], tc_prediction)
                 else:
-                    self.assertAlmostEquals(coreml_prediction[self.target], tc_prediction, delta = 1e-5)
+                    self.assertAlmostEqual(coreml_prediction[self.target], tc_prediction, delta = 1e-5)
 
                 # If applicable, compare probabilistic output
                 if self.has_probability and not self.regression:

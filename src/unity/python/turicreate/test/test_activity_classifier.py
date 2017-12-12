@@ -161,7 +161,7 @@ class ActivityClassifierTest(unittest.TestCase):
             preds = model.predict(
                 self.data, output_type=output_type, output_frequency='per_window')
             expected_len = self._calc_expected_predictions_length(self.data)
-            self.assertEquals(len(preds), expected_len)
+            self.assertEqual(len(preds), expected_len)
 
     def test_export_coreml(self):
         """
@@ -213,7 +213,7 @@ class ActivityClassifierTest(unittest.TestCase):
         model = self.model
         preds = model.classify(self.data, output_frequency='per_window')
         expected_len = self._calc_expected_predictions_length(self.data)
-        self.assertEquals(len(preds), expected_len)
+        self.assertEqual(len(preds), expected_len)
 
     def test_predict_topk(self):
         """
@@ -224,12 +224,12 @@ class ActivityClassifierTest(unittest.TestCase):
             preds = model.predict_topk(
                 self.data, output_type=output_type, output_frequency='per_window')
             expected_len = self._calc_expected_predictions_length(self.data, top_k=3)
-            self.assertEquals(len(preds), expected_len)
+            self.assertEqual(len(preds), expected_len)
 
             preds = model.predict_topk(
                 self.data.head(100), k=5, output_frequency='per_window')
             expected_len = self._calc_expected_predictions_length(self.data.head(100), top_k=5)
-            self.assertEquals(len(preds), expected_len)
+            self.assertEqual(len(preds), expected_len)
 
     def test__list_fields(self):
         """
@@ -237,7 +237,7 @@ class ActivityClassifierTest(unittest.TestCase):
         """
         model = self.model
         fields = model._list_fields()
-        self.assertEquals(set(fields), set(self.fields_ans))
+        self.assertEqual(set(fields), set(self.fields_ans))
 
     def test_get(self):
         """

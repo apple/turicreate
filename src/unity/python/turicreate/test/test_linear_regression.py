@@ -134,7 +134,7 @@ class LinearRegressionTest(unittest.TestCase):
         """
         model = self.model
         fields =  model._list_fields()
-        self.assertEquals(set(fields), set(self.fields_ans))
+        self.assertEqual(set(fields), set(self.fields_ans))
 
     def test_get(self):
         """
@@ -176,7 +176,7 @@ class LinearRegressionTest(unittest.TestCase):
         """
         model = self.model
         ans =  str(model)
-        self.assertEquals(type(ans), str)
+        self.assertEqual(type(ans), str)
 
 
     def test_predict(self):
@@ -511,10 +511,10 @@ class VectorLinearRegressionTest(unittest.TestCase):
 
     model = tc.linear_regression.create(self.sf, self.target, self.features,
         feature_rescaling = False, validation_set = None)
-    self.assertEquals(model.num_features, len(self.features))
-    self.assertEquals(model.features, self.features)
-    self.assertEquals(model.num_unpacked_features, len(self.unpacked_features))
-    self.assertEquals(model.unpacked_features, self.unpacked_features)
+    self.assertEqual(model.num_features, len(self.features))
+    self.assertEqual(model.features, self.features)
+    self.assertEqual(model.num_unpacked_features, len(self.unpacked_features))
+    self.assertEqual(model.unpacked_features, self.unpacked_features)
 
 class DictLinearRegressionTest(unittest.TestCase):
   """
@@ -611,10 +611,10 @@ class DictLinearRegressionTest(unittest.TestCase):
       range(d)})
     model = tc.linear_regression.create(self.sf, self.target, self.features,
         feature_rescaling = False, validation_set = None)
-    self.assertEquals(model.num_features, len(self.features))
-    self.assertEquals(model.features, self.features)
-    self.assertEquals(model.num_unpacked_features, len(self.unpacked_features))
-    self.assertEquals(model.unpacked_features, self.unpacked_features)
+    self.assertEqual(model.num_features, len(self.features))
+    self.assertEqual(model.features, self.features)
+    self.assertEqual(model.num_unpacked_features, len(self.unpacked_features))
+    self.assertEqual(model.unpacked_features, self.unpacked_features)
 
   def test_predict_extra_cols(self):
 
@@ -625,7 +625,7 @@ class DictLinearRegressionTest(unittest.TestCase):
     sf['dict'] = sf['dict'].apply(lambda x: dict(list(x.items())
       + list({'extra_col': 0, 'extra_col_2': 1}.items())))
     pred2 = model.predict(sf)
-    self.assertEquals(list(pred), list(pred2))
+    self.assertEqual(list(pred), list(pred2))
 
   def test_evaluate_extra_cols(self):
 
@@ -636,7 +636,7 @@ class DictLinearRegressionTest(unittest.TestCase):
     sf['dict'] = sf['dict'].apply(lambda x: dict(list(x.items())
       + list({'extra_col': 0, 'extra_col_2': 1}.items())))
     eval2 = model.evaluate(sf)
-    self.assertEquals(eval1, eval2)
+    self.assertEqual(eval1, eval2)
 
 
 class ListCategoricalLinearRegressionTest(unittest.TestCase):
@@ -865,10 +865,10 @@ class CategoricalLinearRegressionTest(unittest.TestCase):
 
     model = tc.linear_regression.create(self.sf, self.target, self.features,
         feature_rescaling = False, validation_set = None)
-    self.assertEquals(model.num_features, len(self.features))
-    self.assertEquals(model.features, self.features)
-    self.assertEquals(model.num_unpacked_features, len(self.unpacked_features))
-    self.assertEquals(model.unpacked_features, self.unpacked_features)
+    self.assertEqual(model.num_features, len(self.features))
+    self.assertEqual(model.features, self.features)
+    self.assertEqual(model.num_unpacked_features, len(self.unpacked_features))
+    self.assertEqual(model.unpacked_features, self.unpacked_features)
 
 
 class L1LinearRegressionTest(unittest.TestCase):
