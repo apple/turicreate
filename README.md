@@ -87,14 +87,22 @@ The method for installing *Turi Create* follows the
 To create a Python virtual environment called `venv` follow these steps:
 
 ```shell
-# Create a Python virtual environment
+# Create a Python virtual environment on Windows
+cd C:\Users\{Username}\Desktop
+virtualenv venv
+
+# Create a Python virtual environment on Mac and Linux
 cd ~
 virtualenv venv
 ```
 
 To activate your new virtual environment and install `Turi Create` in this environment, follow these steps:
 ```shell
-# Active your virtual environment
+# Activate your virtual environment on Windows
+# (From Desktop)
+.\venv\Scripts\activate
+
+# Activate your virtual environment on Mac and Linux
 source ~/venv/bin/activate
 
 # Install Turi Create in the new virtual environment, pythonenv
