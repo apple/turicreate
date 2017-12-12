@@ -66,7 +66,8 @@ def make_unity_server_env():
 
     # Set mxnet envvars
     if 'MXNET_CPU_WORKER_NTHREADS' not in env:
-        env['MXNET_CPU_WORKER_NTHREADS'] = max(2, env.get('OMP_NUM_THREADS', str(_sys_info.NUM_CPUS)))
+        num_workers = min(2, int(env.get('OMP_NUM_THREADS', _sys_info.NUM_CPUS)))
+        env['MXNET_CPU_WORKER_NTHREADS'] = str(num_workers)
 
     ## set local to be c standard so that unity_server will run ##
     env['LC_ALL']='C'
