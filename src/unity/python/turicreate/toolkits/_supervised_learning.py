@@ -296,7 +296,7 @@ def print_validation_track_notification():
 
 def create(dataset, target, model_name, features=None,
            validation_set='auto', distributed='auto',
-           seed=None, verbose=True, **kwargs):
+           verbose=True, seed=None, **kwargs):
     """
     Create a :class:`~turicreate.toolkits.SupervisedLearningModel`,
 
@@ -333,12 +333,12 @@ def create(dataset, target, model_name, features=None,
     distributed: env
         The distributed environment
 
+    verbose : boolean
+        whether print out messages during training
+
     seed : int, optional
         Seed for random number generation. Set this value to ensure that the
         same model is created every time.
-
-    verbose : boolean
-        whether print out messages during training
 
     kwargs : dict
         Additional parameter options that can be passed
