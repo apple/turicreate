@@ -843,8 +843,8 @@ class SArrayTest(unittest.TestCase):
         self.__test_equal(s * 2, [array.array('d', [float(j) * 2 for j in i]) for i in self.vec_data], array.array)
         self.__test_equal(s / 2, [array.array('d', [float(j) / 2 for j in i]) for i in self.vec_data], array.array)
         s = SArray([1,2,3,4,None])
-        self.__test_equal(s is None, [0, 0, 0, 0, 1], int)
-        self.__test_equal(s is not None, [1, 1, 1, 1, 0], int)
+        self.__test_equal(s == None, [0, 0, 0, 0, 1], int)
+        self.__test_equal(s != None, [1, 1, 1, 1, 0], int)
 
     def test_modulus_operator(self):
         l = [-5,-4,-3,-2,-1,0,1,2,3,4,5]
