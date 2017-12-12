@@ -36,8 +36,8 @@ def create(dataset, target, features=None,
     max_iterations = _DEFAULT_SOLVER_OPTIONS['max_iterations'],
     class_weights = None,
     validation_set = 'auto',
-    seed=None,
-    verbose=True):
+    verbose=True,
+    seed=None):
     """
     Create a :class:`~turicreate.logistic_classifier.LogisticClassifier` (using
     logistic regression as a classifier) to predict the class of a discrete
@@ -194,12 +194,12 @@ def create(dataset, target, features=None,
         validation_set is set to None, then no additional metrics
         are computed. The default value is 'auto'.
 
+    verbose : bool, optional
+        If True, print progress updates.
+
     seed : int, optional
         Seed for random number generation. Set this value to ensure that the
         same model is created every time.
-
-    verbose : bool, optional
-        If True, print progress updates.
 
     Returns
     -------
