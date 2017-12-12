@@ -27,7 +27,8 @@ from .. import _image_feature_extractor
 from turicreate.toolkits._internal_utils import (_raise_error_if_not_sframe,
                                                  _numeric_param_check_range)
 
-def create(dataset, target, feature = None, model = 'resnet-50', max_iterations = 10, verbose = True):
+def create(dataset, target, feature = None, model = 'resnet-50',
+           max_iterations=10, seed=None, verbose=True):
     """
     Create a :class:`ImageClassifier` model.
 
@@ -66,6 +67,10 @@ def create(dataset, target, feature = None, model = 'resnet-50', max_iterations 
         the data can result in a more accurately trained model. Consider
         increasing this (the default value is 10) if the training accuracy is
         low and the *Grad-Norm* in the display is large.
+
+    seed : int, optional
+        Seed for random number generation. Set this value to ensure that the
+        same model is created every time.
 
     verbose : bool, optional
         If True, prints progress updates and model details.
@@ -120,7 +125,7 @@ def create(dataset, target, feature = None, model = 'resnet-50', max_iterations 
     # Train a classifier using the extracted features
     extracted_features[target] = dataset[target]
     lr_model = _tc.logistic_classifier.create(extracted_features, features = ['__image_features__'],
-            target = target, max_iterations =  max_iterations, verbose=verbose)
+            target = target, max_iterations =  max_iterations, seed=seed, verbose=verbose)
 
     # Save the model
     state = {
