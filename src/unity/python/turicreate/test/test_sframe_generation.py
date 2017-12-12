@@ -46,7 +46,7 @@ class SFrameGeneration(unittest.TestCase):
         column_names = X.column_names()
 
         for c, n in zip(test_codes, column_names):
-            self.assertEquals(X[n].dtype, column_codes[c])
+            self.assertEqual(X[n].dtype, column_codes[c])
 
     def test_regression_result(self):
 

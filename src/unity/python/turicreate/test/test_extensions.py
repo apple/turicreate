@@ -24,9 +24,9 @@ class VariantCheckTest(unittest.TestCase):
         if type(reference) in [int, long]:
             self.assertIn(type(b), [int, long])
         else:
-            self.assertEquals(type(reference), type(b))
+            self.assertEqual(type(reference), type(b))
         if isinstance(reference, list):
-            self.assertEquals(len(reference), len(b))
+            self.assertEqual(len(reference), len(b))
             for i in range(len(reference)):
                 self.identical(reference[i], b[i])
         if isinstance(reference, dict):

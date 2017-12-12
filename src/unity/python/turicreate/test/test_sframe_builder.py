@@ -55,25 +55,25 @@ class SFrameBuilderTest(unittest.TestCase):
         sb = SFrameBuilder([int,float], history_size=10)
         sb.append_multiple(([i,i+0.0] for i in range(8)))
         hist = sb.read_history(3)
-        self.assertEquals(hist,[[5,5.0],[6,6.0],[7,7.0]])
+        self.assertEqual(hist,[[5,5.0],[6,6.0],[7,7.0]])
 
         hist = sb.read_history(20)
-        self.assertEquals(hist, [[i,i+0.0] for i in range(8)])
+        self.assertEqual(hist, [[i,i+0.0] for i in range(8)])
         hist = sb.read_history()
-        self.assertEquals(hist, [[i,i+0.0] for i in range(8)])
+        self.assertEqual(hist, [[i,i+0.0] for i in range(8)])
 
         sb.append_multiple(([i,i+0.0] for i in range(5)))
         hist = sb.read_history(10)
-        self.assertEquals(hist, [[i,i+0.0] for i in [3,4,5,6,7,0,1,2,3,4]])
+        self.assertEqual(hist, [[i,i+0.0] for i in [3,4,5,6,7,0,1,2,3,4]])
 
         sb.append([50,50.0])
         hist = sb.read_history(10)
-        self.assertEquals(hist, [[i,i+0.0] for i in [4,5,6,7,0,1,2,3,4,50]])
+        self.assertEqual(hist, [[i,i+0.0] for i in [4,5,6,7,0,1,2,3,4,50]])
 
         hist = sb.read_history(-1)
-        self.assertEquals(hist, [])
+        self.assertEqual(hist, [])
         hist = sb.read_history(0)
-        self.assertEquals(hist, [])
+        self.assertEqual(hist, [])
 
         expected_data = [[i,i+0.0] for i in range(8)] + [[i,i+0.0] for i in range(5)] + [[50,50.0]]
         cols = [[],[]]
