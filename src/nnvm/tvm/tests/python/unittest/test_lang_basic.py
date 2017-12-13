@@ -29,7 +29,8 @@ def test_let():
     x = tvm.var('x')
     y = tvm.var('y')
     stmt = tvm.make.LetStmt(
-        x, 10, tvm.make.Evaluate(x + 1));
+        x, 10, tvm.make.Evaluate(x + 1))
+
 
 def test_cast():
     x = tvm.var('x', dtype="float32")
@@ -44,7 +45,7 @@ def test_attr():
     x = tvm.var('x')
     y = tvm.var('y')
     stmt = tvm.make.AttrStmt(
-        y, "stride", 10, tvm.make.Evaluate(x + 1));
+        y, "stride", 10, tvm.make.Evaluate(x + 1))
     assert stmt.node == y
 
     a = tvm.convert(1)

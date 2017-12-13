@@ -554,9 +554,9 @@ class SArrayTest(unittest.TestCase):
                 self.assertAlmostEqual(ffclip_out[i], self.float_data[i])
                 self.assertAlmostEqual(ficlip_out[i], self.float_data[i])
 
-        vs = SArray(self.vec_data, array.array);
+        vs = SArray(self.vec_data, array.array)
         clipvs = vs.clip(3, 7).head(100)
-        self.assertEqual(len(clipvs), len(self.vec_data));
+        self.assertEqual(len(clipvs), len(self.vec_data))
         for i in range(0, len(clipvs)):
             a = clipvs[i]
             b = self.vec_data[i]
@@ -795,7 +795,7 @@ class SArrayTest(unittest.TestCase):
         self.__test_equal(SArray(abs(t)[0]), list(abs(s)), float)
 
     def test_scalar_operators(self):
-        s=np.array([1,2,3,4,5,6,7,8,9,10]);
+        s=np.array([1,2,3,4,5,6,7,8,9,10])
         t = SArray(s, int)
         self.__test_equal(t + 1, list(s + 1), int)
         self.__test_equal(t - 1, list(s - 1), int)
@@ -822,7 +822,7 @@ class SArrayTest(unittest.TestCase):
         self.__test_equal(2.5 * t, list(2.5 * s), float)
         self.__test_equal(2**t, list(2**s), float)
 
-        s_neg = np.array([-1,-2,-3,5,6,7,8,9,10]);
+        s_neg = np.array([-1,-2,-3,5,6,7,8,9,10])
         t_neg = SArray(s_neg, int)
         self.__test_equal(t_neg // 5, list(s_neg // 5), int)
         self.__test_equal(t_neg % 5, list(s_neg % 5), int)
@@ -853,8 +853,8 @@ class SArrayTest(unittest.TestCase):
         self.__test_equal(t % -2, [i % -2 for i in l], int)
 
     def test_vector_operators(self):
-        s=np.array([1,2,3,4,5,6,7,8,9,10]);
-        s2=np.array([5,4,3,2,1,10,9,8,7,6]);
+        s=np.array([1,2,3,4,5,6,7,8,9,10])
+        s2=np.array([5,4,3,2,1,10,9,8,7,6])
         t = SArray(s, int)
         t2 = SArray(s2, int)
         self.__test_equal(t + t2, list(s + s2), int)
@@ -1029,16 +1029,16 @@ class SArrayTest(unittest.TestCase):
         try_eq_sa_correct(0, [1.0, 0], [0., float('nan')])
 
     def test_logical_ops(self):
-        s=np.array([0,0,0,0,1,1,1,1]);
-        s2=np.array([0,1,0,1,0,1,0,1]);
+        s=np.array([0,0,0,0,1,1,1,1])
+        s2=np.array([0,1,0,1,0,1,0,1])
         t = SArray(s, int)
         t2 = SArray(s2, int)
         self.__test_equal(t & t2, list(((s & s2) > 0).astype(int)), int)
         self.__test_equal(t | t2, list(((s | s2) > 0).astype(int)), int)
 
     def test_string_operators(self):
-        s=["a","b","c","d","e","f","g","h","i","j"];
-        s2=["e","d","c","b","a","j","i","h","g","f"];
+        s=["a","b","c","d","e","f","g","h","i","j"]
+        s2=["e","d","c","b","a","j","i","h","g","f"]
 
         t = SArray(s, str)
         t2 = SArray(s2, str)
@@ -1055,9 +1055,9 @@ class SArrayTest(unittest.TestCase):
     def test_vector_operator_missing_propagation(self):
         t = SArray([1,2,3,4,None,6,7,8,9,None], float) # missing 4th and 9th
         t2 = SArray([None,4,3,2,np.nan,10,9,8,7,6], float) # missing 0th and 4th
-        self.assertEqual(len((t + t2).dropna()), 7);
-        self.assertEqual(len((t - t2).dropna()), 7);
-        self.assertEqual(len((t * t2).dropna()), 7);
+        self.assertEqual(len((t + t2).dropna()), 7)
+        self.assertEqual(len((t - t2).dropna()), 7)
+        self.assertEqual(len((t * t2).dropna()), 7)
 
     def test_dropna(self):
         no_nas = ['strings', 'yeah', 'nan', 'NaN', 'NA', 'None']
@@ -1148,7 +1148,7 @@ class SArrayTest(unittest.TestCase):
         self.assertEqual(list(g.vector_slice(0,2).head()), [None,array.array('d', [1,2]),array.array('d', [1,2])])
         self.assertEqual(list(g.vector_slice(0,3).head()), [None,None,array.array('d', [1,2,3])])
 
-        g=SArray(self.vec_data, array.array);
+        g=SArray(self.vec_data, array.array)
         self.__test_equal(g.vector_slice(0), self.float_data, float)
         self.__test_equal(g.vector_slice(0, 2), self.vec_data, array.array)
 
@@ -1163,31 +1163,31 @@ class SArrayTest(unittest.TestCase):
     def test_element_slice(self):
         #string slicing
         g=SArray(range(1,1000, 10)).astype(str)
-        self._slice_equality_test(g, 0, 2);
-        self._slice_equality_test(g, 0, -1, 2);
-        self._slice_equality_test(g, -1, -3);
-        self._slice_equality_test(g, -1, -2, -1);
-        self._slice_equality_test(g, None, None, -1);
-        self._slice_equality_test(g, -100, -1);
+        self._slice_equality_test(g, 0, 2)
+        self._slice_equality_test(g, 0, -1, 2)
+        self._slice_equality_test(g, -1, -3)
+        self._slice_equality_test(g, -1, -2, -1)
+        self._slice_equality_test(g, None, None, -1)
+        self._slice_equality_test(g, -100, -1)
 
         #list slicing
         g=SArray(range(1,10)).apply(lambda x: list(range(x)), list)
-        self._slice_equality_test(g, 0, 2);
-        self._slice_equality_test(g, 0, -1, 2);
-        self._slice_equality_test(g, -1, -3);
-        self._slice_equality_test(g, -1, -2, -1);
-        self._slice_equality_test(g, None, None, -1);
-        self._slice_equality_test(g, -100, -1);
+        self._slice_equality_test(g, 0, 2)
+        self._slice_equality_test(g, 0, -1, 2)
+        self._slice_equality_test(g, -1, -3)
+        self._slice_equality_test(g, -1, -2, -1)
+        self._slice_equality_test(g, None, None, -1)
+        self._slice_equality_test(g, -100, -1)
 
         #array slicing
         import array
         g=SArray(range(1,10)).apply(lambda x: array.array('d', range(x)))
-        self._slice_equality_test(g, 0, 2);
-        self._slice_equality_test(g, 0, -1, 2);
-        self._slice_equality_test(g, -1, -3);
-        self._slice_equality_test(g, -1, -2, -1);
-        self._slice_equality_test(g, None, None, -1);
-        self._slice_equality_test(g, -100, -1);
+        self._slice_equality_test(g, 0, 2)
+        self._slice_equality_test(g, 0, -1, 2)
+        self._slice_equality_test(g, -1, -3)
+        self._slice_equality_test(g, -1, -2, -1)
+        self._slice_equality_test(g, None, None, -1)
+        self._slice_equality_test(g, -100, -1)
 
         #this should fail
         with self.assertRaises(TypeError):
@@ -1513,7 +1513,7 @@ class SArrayTest(unittest.TestCase):
             self.assertTrue(file_count > 2)
 
             # sf1 now references the on disk file
-            sa1 = SArray(f);
+            sa1 = SArray(f)
 
             # create another SFrame and save to the same location
             sa2 = SArray([str(i) for i in range(1,100000)])
@@ -1596,7 +1596,7 @@ class SArrayTest(unittest.TestCase):
 
         # vector type
         test = SArray([[], [1], [1,2], [1,2,3], None])
-        item_length = test.item_length();
+        item_length = test.item_length()
         self.assertEqual(list(item_length), list([0, 1,2,3,None]))
 
         # dict type
@@ -2572,7 +2572,7 @@ class SArrayTest(unittest.TestCase):
     def test_cumulative_sum(self):
 
         def single_test(src, ans):
-            out = src.cumulative_sum();
+            out = src.cumulative_sum()
             self.cumulative_aggregate_comparison(out, ans)
 
         with self.assertRaises(RuntimeError):
@@ -2616,7 +2616,7 @@ class SArrayTest(unittest.TestCase):
     def test_cumulative_mean(self):
 
         def single_test(src, ans):
-            out = src.cumulative_mean();
+            out = src.cumulative_mean()
             self.cumulative_aggregate_comparison(out, ans)
 
         with self.assertRaises(RuntimeError):
@@ -2661,7 +2661,7 @@ class SArrayTest(unittest.TestCase):
     def test_cumulative_min(self):
 
         def single_test(src, ans):
-            out = src.cumulative_min();
+            out = src.cumulative_min()
             self.cumulative_aggregate_comparison(out, ans)
 
         with self.assertRaises(RuntimeError):
@@ -2695,7 +2695,7 @@ class SArrayTest(unittest.TestCase):
     def test_cumulative_max(self):
 
         def single_test(src, ans):
-            out = src.cumulative_max();
+            out = src.cumulative_max()
             self.cumulative_aggregate_comparison(out, ans)
 
         with self.assertRaises(RuntimeError):
@@ -2729,7 +2729,7 @@ class SArrayTest(unittest.TestCase):
     def test_cumulative_std(self):
 
         def single_test(src, ans):
-            out = src.cumulative_std();
+            out = src.cumulative_std()
             self.cumulative_aggregate_comparison(out, ans)
 
         with self.assertRaises(RuntimeError):
@@ -2769,7 +2769,7 @@ class SArrayTest(unittest.TestCase):
     def test_cumulative_var(self):
 
         def single_test(src, ans):
-            out = src.cumulative_var();
+            out = src.cumulative_var()
             self.cumulative_aggregate_comparison(out, ans)
 
         with self.assertRaises(RuntimeError):

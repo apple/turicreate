@@ -2719,7 +2719,7 @@ class SArray(object):
             value_types = set([type(i) for i in sub_sketch_keys])
             if (len(value_types) != 1):
                 raise ValueError("sub_sketch_keys member values need to have the same type.")
-            value_type = value_types.pop();
+            value_type = value_types.pop()
             if (self.dtype == dict and value_type != str):
                 raise TypeError("Only string value(s) can be passed to sub_sketch_keys for SArray of dictionary type. "+
                     "For dictionary types, sketch summary is computed by casting keys to string values.")
@@ -3050,7 +3050,7 @@ class SArray(object):
         # convert limit to column_keys
         if limit is not None:
             if not _is_non_string_iterable(limit):
-                raise TypeError("'limit' must be a list");
+                raise TypeError("'limit' must be a list")
 
             name_types = set([type(i) for i in limit])
             if (len(name_types) != 1):
@@ -3216,7 +3216,7 @@ class SArray(object):
         # validdate 'limit'
         if limit is not None:
             if (not _is_non_string_iterable(limit)):
-                raise TypeError("'limit' must be a list");
+                raise TypeError("'limit' must be a list")
 
             name_types = set([type(i) for i in limit])
             if (len(name_types) != 1):
@@ -3231,7 +3231,7 @@ class SArray(object):
 
         if (column_types is not None):
             if not _is_non_string_iterable(column_types):
-                raise TypeError("column_types must be a list");
+                raise TypeError("column_types must be a list")
 
             for column_type in column_types:
                 if (column_type not in (int, float, str, list, dict, array.array)):

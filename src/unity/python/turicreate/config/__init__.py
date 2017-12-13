@@ -289,4 +289,4 @@ def set_runtime_config(name, value):
     unity = _glconnect.get_unity()
     ret = unity.set_global(name, value)
     if ret != "":
-        raise RuntimeError(ret);
+        raise RuntimeError(ret)

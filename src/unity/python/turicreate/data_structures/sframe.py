@@ -3757,8 +3757,7 @@ class SFrame(object):
         for i in range(len(my_column_names)):
             if other_column_names[i] != my_column_names[i]:
                 column_name_order_match = False
-                break;
-
+                break
 
         processed_other_frame = other
         if not column_name_order_match:
@@ -3770,7 +3769,7 @@ class SFrame(object):
                 if(col_name not in other_column_names):
                     raise RuntimeError("Column " + my_column_names[i] + " does not exist in second SFrame")
 
-                other_column = other.select_column(col_name);
+                other_column = other.select_column(col_name)
                 processed_other_frame.add_column(other_column, col_name, inplace=True)
 
                 # check column type
