@@ -89,7 +89,7 @@ def _listen_loop(sock):
             conn.sendall(struct.pack("@i", RPC_MAGIC))
         logging.info("Connection from %s", addr)
         process = multiprocessing.Process(target=_serve_loop, args=(conn, addr))
-        process.deamon = True
+        process.daemon = True
         process.start()
         # close from our side.
         conn.close()
@@ -112,7 +112,7 @@ def _connect_proxy_loop(addr, key):
             raise RuntimeError("%s is not RPC Proxy" % str(addr))
         logging.info("RPCProxy connected to %s", str(addr))
         process = multiprocessing.Process(target=_serve_loop, args=(sock, addr))
-        process.deamon = True
+        process.daemon = True
         process.start()
         process.join()
 
@@ -171,7 +171,7 @@ class Server(object):
         else:
             self.proc = multiprocessing.Process(
                 target=_connect_proxy_loop, args=((host, port), key))
-        self.proc.deamon = True
+        self.proc.daemon = True
         self.proc.start()
 
     def terminate(self):
