@@ -394,10 +394,10 @@ def rhs(node):
 
 def conditional_lhs(node):
     '''
-    Group outputs into contitional and stable
+    Group outputs into conditional and stable
     :param node: ast node 
     
-    :returns: tuple of (contitional, stable)
+    :returns: tuple of (conditional, stable)
     
     '''
 
@@ -408,10 +408,10 @@ def conditional_lhs(node):
 
 def conditional_symbols(node):
     '''
-    Group lhs and rhs into contitional, stable and undefined
+    Group lhs and rhs into conditional, stable and undefined
     :param node: ast node 
     
-    :returns: tuple of (contitional_lhs, stable_lhs),(contitional_rhs, stable_rhs), undefined
+    :returns: tuple of (conditional_lhs, stable_lhs),(conditional_rhs, stable_rhs), undefined
     
     '''
 

@@ -466,7 +466,7 @@ class ActivityClassifier(_CustomModel):
 
             - 'per_window': Return a single prediction for each
               ``prediction_window`` rows in ``dataset`` per ``session_id``.
-            - 'per_row': Convinience option to make sure the number of
+            - 'per_row': Convenience option to make sure the number of
               predictions match the number of rows in the dataset. Each
               prediction from the model is repeated ``prediction_window``
               times during that window.

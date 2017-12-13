@@ -556,7 +556,7 @@ def precision_recall_by_user(observed_user_items,
     The corner cases that involve empty lists were chosen to be consistent
     with the feasible set of precision-recall curves, which start at
     (precision, recall) = (1,0) and end at (0,1). However, we do not believe
-    there is a well-known concensus on this choice.
+    there is a well-known consensus on this choice.
 
     Examples
     --------

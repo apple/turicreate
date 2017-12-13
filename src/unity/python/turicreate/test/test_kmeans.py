@@ -280,7 +280,7 @@ class KmeansCreateTest(unittest.TestCase):
 
     def test_default_inputs(self):
         """
-        Test that model creation works corrqectly with only default inputs.
+        Test that model creation works correctly with only default inputs.
         """
         ## Need to specify at least a number of centers
         with self.assertRaises(ValueError):
@@ -394,7 +394,7 @@ class KmeansCreateTest(unittest.TestCase):
 
     def test_batch_size(self):
         """
-        Test that the batch size parameter is dealth with correctly, including
+        Test that the batch size parameter is dealt with correctly, including
         the choice of training method, re-sizing of 'batch_size', and existence
         of complete results.
         """

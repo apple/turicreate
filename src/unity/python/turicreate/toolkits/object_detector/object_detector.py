@@ -219,7 +219,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         set_keys = set(params.keys()) 
         unsupported = new_keys - set_keys
         if unsupported:
-            raise _ToolkitError('Uknown advanced parameters: {}'.format(unsupported))
+            raise _ToolkitError('Unknown advanced parameters: {}'.format(unsupported))
 
         params.update(kwargs['_advanced_parameters'])
 
@@ -472,7 +472,7 @@ class ObjectDetector(_CustomModel):
         model_fields = [
             ('Model', 'model'),
             ('Number of classes', 'num_classes'),
-            ('Non-maximum supression threshold', 'non_maximum_suppression_threshold'),
+            ('Non-maximum suppression threshold', 'non_maximum_suppression_threshold'),
             ('Input image shape', 'input_image_shape'),
         ]
         training_fields = [

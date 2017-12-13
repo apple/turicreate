@@ -324,7 +324,7 @@ class Instructions(CtrlFlowInstructions, SimpleInstructions):
         else:
             if raise_:
 #                print(block)
-                raise IndexError("no instrcution i=%s " % (to,))
+                raise IndexError("no instruction i=%s " % (to,))
 
         return block
     
