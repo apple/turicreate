@@ -92,7 +92,7 @@ class KnnClassifierCreateTest(unittest.TestCase):
         distance = copy.deepcopy(self.distance)
         verbose = self.verbose
 
-        ## Create a model with the copied opbjects
+        ## Create a model with the copied objects
         m = tc.nearest_neighbor_classifier.create(sf, target='class',
                                                   distance=distance,
                                                   verbose=self.verbose)
