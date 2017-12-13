@@ -525,7 +525,7 @@ class SFrameTest(unittest.TestCase):
         os.remove(windows_file_url)
 
     def test_skip_rows(self):
-        # test line skippng
+        # test line skipping
         if os.path.exists('./skip_lines.csv'):
             os.remove('./skip_lines.csv')
         skip_file_url = None
@@ -1908,7 +1908,7 @@ class SFrameTest(unittest.TestCase):
         with self.assertRaises(TypeError):
             sf.pack_columns(dtype=array.array)
 
-        # cannnot given non numeric na vlaue to array
+        # cannot given non numeric na vlaue to array
         with self.assertRaises(ValueError):
             sf.pack_columns(dtype=array.array, fill_na='c')
 
@@ -2353,7 +2353,7 @@ class SFrameTest(unittest.TestCase):
         sf = sa.unpack()
         self.assertEqual(sf.column_types(), [int])
 
-        # type inferrence is already at server side even if limit is given
+        # type inference is already at server side even if limit is given
         sa = SArray([{'c'+str(i): i if i % 2 == 0 else 'v' + str(i)} for i in range(1000)])
         unpacked = sa.unpack(limit=['c'+str(i) for i in range(10)], column_name_prefix="")
         for i in range(10):
@@ -2736,7 +2736,7 @@ class SFrameTest(unittest.TestCase):
         self.assertEqual(s[-1], t[-1])
         self.assertEqual(s[-10],t[-10])
 
-        # edge case odities
+        # edge case oddities
         self.__test_equal(s[10:100:100], pd.DataFrame(t[10:100:100]))
         self.__test_equal(s[-100:len(s):10], pd.DataFrame(t[-100:len(t):10]))
         self.assertEqual(len(s[-1:-2]), 0)
@@ -3103,7 +3103,7 @@ class SFrameTest(unittest.TestCase):
         self.assertEqual(list(sa), ['x1', 'x2', 'x3', 'x4', 'x5'])
 
     def test_save_sframe(self):
-        '''save lazily evaluated SFrame should not matrialize to target folder
+        '''save lazily evaluated SFrame should not materialize to target folder
         '''
         data = SFrame()
         data['x'] = range(100)
