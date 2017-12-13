@@ -521,8 +521,8 @@ def create(dataset, target,
         Print progress information during training (if set to true).
 
     random_seed : int, optional
-        Seeds random opertations such as column and row subsampling, such that
-        results are reproducable.
+        Seeds random operations such as column and row subsampling, such that
+        results are reproducible.
 
     metric : str or list[str], optional
         Performance metric(s) that are tracked during training. When specified,
@@ -558,7 +558,7 @@ def create(dataset, target,
       >>> train, test = data.random_split(0.8)
       >>> model = turicreate.decision_tree_classifier.create(train, target='label')
 
-      >>> predicitons = model.classify(test)
+      >>> predictions = model.classify(test)
       >>> results = model.evaluate(test)
     """
     if random_seed is not None:

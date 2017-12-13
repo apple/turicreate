@@ -14,7 +14,7 @@ from __future__ import absolute_import as _
 import _ast
 from ...asttools import Visitor, visit_children
 
-def removeable(self, node):
+def removable(self, node):
     '''
     node is removable only if all of its children are as well.
     '''
@@ -29,7 +29,7 @@ def removeable(self, node):
     else:
         raise TypeError("mode must be one of 'exclusive' or 'inclusive'")
 
-# Helper function to create a pass node with a line numer and col_offset 
+# Helper function to create a pass node with a line number and col_offset
 Pass = lambda node: _ast.Pass(lineno=node.lineno, col_offset=node.col_offset)
 
 class PruneVisitor(Visitor):
@@ -47,7 +47,7 @@ class PruneVisitor(Visitor):
         
         self.mode = mode
 
-    visitDefault = removeable
+    visitDefault = removable
     
     def reduce(self, body):
         '''

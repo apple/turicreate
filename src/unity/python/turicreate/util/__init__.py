@@ -148,7 +148,7 @@ def _make_internal_url(url):
     elif protocol == '':
         is_local = True
     elif (protocol == 'local' or protocol == 'remote'):
-        # local and remote are legacy protocol for seperate server process
+        # local and remote are legacy protocol for separate server process
         is_local = True
         # This code assumes local and remote are same machine
         url = _re.sub(protocol+'://','',url,count=1)
@@ -204,7 +204,7 @@ def _download_dataset(url_str, extract=True, force=False, output_dir="."):
 
 def is_directory_archive(path):
     """
-    Utiilty function that returns True if the path provided is a directory that has an SFrame or SGraph in it.
+    Utility function that returns True if the path provided is a directory that has an SFrame or SGraph in it.
 
     SFrames are written to disk as a directory archive, this function identifies if a given directory is an archive
     for an SFrame.

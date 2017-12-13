@@ -92,11 +92,11 @@ def create(graph, kmin=0, kmax=10, verbose=True):
         The graph on which to compute the k-core decomposition.
 
     kmin : int, optional
-        Minimun core id. Vertices having smaller core id than `kmin` will be
+        Minimum core id. Vertices having smaller core id than `kmin` will be
         assigned with core_id = `kmin`.
 
     kmax : int, optional
-        Maximun core id. Vertices having larger core id than `kmax` will be
+        Maximum core id. Vertices having larger core id than `kmax` will be
         assigned with core_id=`kmax`.
 
     verbose : bool, optional

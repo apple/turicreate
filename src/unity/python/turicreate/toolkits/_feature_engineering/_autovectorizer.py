@@ -205,7 +205,7 @@ class _ColumnFunctionTransformation(_TransformerBase):
 class _interpretations_class(object):
     """
 
-    The actions taken for each conntent interpretation and column type.
+    The actions taken for each content interpretation and column type.
     These are looked up as '<interpretation>__<type>'.  Adding a method
     to this class is sufficient to add a new transformation type.
     """
@@ -450,7 +450,7 @@ class AutoVectorizer(_TransformerBase, ExposeAttributesFromProxy):
     data that turns arbitrary content into informative features usable
     by any Turi ML algorithm.  For example, text is parsed and
     converted into a sparse dictionary of features based on word
-    occurance and JSON blobs are flattened into a single sparse
+    occurrence and JSON blobs are flattened into a single sparse
     dictionary.
 
     WARNING: This feature transformer is still in beta, and some

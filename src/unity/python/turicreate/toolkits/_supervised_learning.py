@@ -221,7 +221,7 @@ class SupervisedLearningModel(Model):
 
 class Classifier(SupervisedLearningModel):
     """
-    Clasifier module to predict a discrete target variable as a function of
+    Classifier module to predict a discrete target variable as a function of
     several feature variables.
     """
 

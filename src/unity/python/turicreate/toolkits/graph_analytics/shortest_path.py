@@ -199,7 +199,7 @@ def create(graph, source_vid, weight_field="", max_distance=1e30, verbose=True):
     """
     Compute the single source shortest path distance from the source vertex to
     all vertices in the graph. Note that because SGraph is directed, shortest
-    paths are also directed. To find undirected shortes paths add edges to the
+    paths are also directed. To find undirected shortest paths add edges to the
     SGraph in both directions. Return a model object with distance each of
     vertex in the graph.
 
@@ -274,7 +274,7 @@ def _compute_shortest_path(graph, source_vids, dest_vids, weight_field=""):
     """
     Computes shortest paths from any vertex in source_vids to any vertex
     in dest_vids.  Note that because SGraph is directed, shortest paths are
-    also directed. To find undirected shortes paths add edges to the SGraph in
+    also directed. To find undirected shortest paths add edges to the SGraph in
     both directions. Returns a list of shortest paths between source_vids
     and dest_vids.
 

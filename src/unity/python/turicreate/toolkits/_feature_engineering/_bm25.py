@@ -340,8 +340,8 @@ class BM25(Transformer):
             ("query", 'query'),
             ("k1", 'k1'),
             ("b", 'b'),
-            ("Minimimum Document Frequency", 'min_document_frequency'),
-            ("Maximimum Document Frequency", 'max_document_frequency'),
+            ("Minimum Document Frequency", 'min_document_frequency'),
+            ("Maximum Document Frequency", 'max_document_frequency'),
             ("Output Column Name", 'output_column_name')
         ]
         section_titles = ['Model fields']

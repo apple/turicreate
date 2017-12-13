@@ -493,7 +493,7 @@ class SFrame(object):
     >>> !cat interesting_dicts.csv
     dict
     {"classic":1,"dict":1}
-    {space:1 seperated:1}
+    {space:1 separated:1}
     {emptyvalue:}
     {}
     {:}
@@ -508,7 +508,7 @@ class SFrame(object):
     |             dict             |
     +------------------------------+
     |  {'dict': 1, 'classic': 1}   |
-    | {'seperated': 1, 'space': 1} |
+    | {'separated': 1, 'space': 1} |
     |     {'emptyvalue': None}     |
     |              {}              |
     |         {None: None}         |
@@ -880,7 +880,7 @@ class SFrame(object):
                   column_type_hints[j] = currow[j]
             else:
               column_type_hints[j] = str
-        # final pass. everything whih is still NoneType is now a str
+        # final pass. everything which is still NoneType is now a str
         for i in range(len(column_type_hints)):
           if column_type_hints[i] == type(None):
             column_type_hints[i] = str
@@ -3033,7 +3033,7 @@ class SFrame(object):
         """
         Selects all columns where the name of the column or the type of column
         is included in the column_names. An exception is raised if duplicate columns
-        are selected i.e. sf.select_columns(['a','a']), or non-existant columns
+        are selected i.e. sf.select_columns(['a','a']), or non-existent columns
         are selected.
 
         Throws an exception for all other input types.
@@ -3148,7 +3148,7 @@ class SFrame(object):
         --------
         >>> sf = turicreate.SFrame({'id': [1, 2, 3], 'val': ['A', 'B', 'C']})
         >>> sa = turicreate.SArray(['cat', 'dog', 'fossa'])
-        >>> # This line is equivalant to `sf['species'] = sa`
+        >>> # This line is equivalent to `sf['species'] = sa`
         >>> res = sf.add_column(sa, 'species')
         >>> res
         +----+-----+---------+

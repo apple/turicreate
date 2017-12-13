@@ -183,7 +183,7 @@ def _toolkit_get_topk_bottomk(values, k=5):
     ----------
     values : SFrame of model coefficients
 
-    k: Maximum number of largest postive and k lowest negative numbers to return
+    k: Maximum number of largest positive and k lowest negative numbers to return
 
     Returns
     -------

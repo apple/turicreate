@@ -218,7 +218,7 @@ class NGramCounter(Transformer):
 
     * **string** : By default, all letters are first converted to lower case.
       Then, if computing word ngrams, each string is tokenized by space and
-      puncutation characters. (The user can specify a custom delimiter
+      punctuation characters. (The user can specify a custom delimiter
       list, or use Penn tree-bank style tokenization. See input parameter
       description for details.) If computing character ngrams, then each
       accepted character is understood to be a token. What is accepted is

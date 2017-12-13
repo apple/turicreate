@@ -140,7 +140,7 @@ class HttpConnectorTests(unittest.TestCase):
 
 @unittest.skip("Disabling HDFS Connector Tests")
 class HDFSConnectorTests(unittest.TestCase):
-    # This test requires hadoop to be installed and avaiable in $PATH.
+    # This test requires hadoop to be installed and available in $PATH.
     # If not, the tests will be skipped.
     @classmethod
     def setUpClass(self):
@@ -162,14 +162,14 @@ class HDFSConnectorTests(unittest.TestCase):
         if self.has_hdfs:
             self._test_read_write_helper("hdfs://" + self.tempfile, 'hello,world,woof')
         else:
-            logging.getLogger(__name__).info("No hdfs avaiable. Test pass.")
+            logging.getLogger(__name__).info("No hdfs available. Test pass.")
 
     def test_gzip(self):
         if self.has_hdfs:
             self._test_read_write_helper("hdfs://" + self.tempfile + ".gz", 'hello,world,woof')
             self._test_read_write_helper("hdfs://" + self.tempfile + ".csv.gz", 'hello,world,woof')
         else:
-            logging.getLogger(__name__).info("No hdfs avaiable. Test pass.")
+            logging.getLogger(__name__).info("No hdfs available. Test pass.")
 
     def test_object_save_load(self):
         if self.has_hdfs:
@@ -177,7 +177,7 @@ class HDFSConnectorTests(unittest.TestCase):
             _test_save_load_object_helper(self, self.graph, prefix + self.tempfile)
             _test_save_load_object_helper(self, self.sframe, prefix + self.tempfile)
         else:
-            logging.getLogger(__name__).info("No hdfs avaiable. Test pass.")
+            logging.getLogger(__name__).info("No hdfs available. Test pass.")
 
     def test_exception(self):
         bad_url = "hdfs:///root/"
@@ -192,7 +192,7 @@ class HDFSConnectorTests(unittest.TestCase):
             self.assertRaises(IOError, lambda: load_sframe(bad_url + "x.frame_idx"))
             self.assertRaises(IOError, lambda: load_model(bad_url + "x.model"))
         else:
-            logging.getLogger(__name__).info("No hdfs avaiable. Test pass.")
+            logging.getLogger(__name__).info("No hdfs available. Test pass.")
 
 
 @unittest.skip("Disabling S3 Connector Tests")
@@ -234,13 +234,13 @@ class S3ConnectorTests(unittest.TestCase):
             for bucket in [self.standard_bucket, self.regional_bucket]:
                 self._test_read_write_helper("s3://" + bucket + self.tempfile, 'hello,world,woof')
         else:
-            logging.getLogger(__name__).info("No s3 bucket avaiable. Test pass.")
+            logging.getLogger(__name__).info("No s3 bucket available. Test pass.")
 
     def test_gzip(self):
         if self.has_s3:
             self._test_read_write_helper("s3://" + self.standard_bucket + self.tempfile + ".gz", 'hello,world,woof')
         else:
-            logging.getLogger(__name__).info("No s3 bucket avaiable. Test pass.")
+            logging.getLogger(__name__).info("No s3 bucket available. Test pass.")
 
     def test_object_save_load(self):
         if self.has_s3:
@@ -248,7 +248,7 @@ class S3ConnectorTests(unittest.TestCase):
             _test_save_load_object_helper(self, self.graph, prefix + self.tempfile)
             _test_save_load_object_helper(self, self.sframe, prefix + self.tempfile)
         else:
-            logging.getLogger(__name__).info("No s3 bucket avaiable. Test pass.")
+            logging.getLogger(__name__).info("No s3 bucket available. Test pass.")
 
     def test_exception(self):
         if self.has_s3:
@@ -265,4 +265,4 @@ class S3ConnectorTests(unittest.TestCase):
             self.assertRaises(IOError, lambda: load_sframe(prefix + "/x.frame_idx"))
             self.assertRaises(IOError, lambda: load_model(prefix + "/x.model"))
         else:
-            logging.getLogger(__name__).info("No s3 bucket avaiable. Test pass.")
+            logging.getLogger(__name__).info("No s3 bucket available. Test pass.")

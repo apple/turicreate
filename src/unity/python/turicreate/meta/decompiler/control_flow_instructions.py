@@ -302,7 +302,7 @@ class CtrlFlowInstructions(object):
 
         end, handlers = self.split_handlers(handlers_blocks)
         
-        #raise exception in python 3 (python 2 ilst does not include end so else may go beond)
+        #raise exception in python 3 (python 2 ilst does not include end so else may go beyond)
         else_block = self.make_block(end, inclusive=False, raise_=py3)
 
         else_stmnts = self.decompile_block(else_block).stmnt()

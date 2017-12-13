@@ -13,7 +13,7 @@ import pickle
 import turicreate.util.cloudpickle as cloudpickle
 
 
-class CloudPicleTest(unittest.TestCase):
+class CloudPickleTest(unittest.TestCase):
 
     def test_pickle_unity_object_exception(self):
         sa = tc.SArray()
