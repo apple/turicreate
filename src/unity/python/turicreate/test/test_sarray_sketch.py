@@ -286,7 +286,7 @@ class SArraySketchTest(unittest.TestCase):
         sk = sa.summary()
         self.__validate_sketch_result(sa.summary(), sa, 1E-5)
 
-    def test_cancelation(self):
+    def test_cancellation(self):
         sa = SArray(range(1,10000))
         s = sa.summary(background=True)
         s.cancel()

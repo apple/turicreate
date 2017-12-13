@@ -4,9 +4,9 @@
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 '''
-Module to augment and analize python ast nodes.
+Module to augment and analyze python ast nodes.
 
-This module uses the python `ast` moduel exclusivly not the depricated `compiler.ast`.  
+This module uses the python `ast` module exclusively not the deprecated `compiler.ast`.
 '''
 from __future__ import print_function as _
 from __future__ import division as _

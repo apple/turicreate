@@ -83,7 +83,7 @@ class_uid_to_class = {}
 def _wrap_function_return(val):
     """
     Recursively walks each thing in val, opening lists and dictionaries,
-    converting all occurances of UnityGraphProxy to an SGraph,
+    converting all occurrences of UnityGraphProxy to an SGraph,
     UnitySFrameProxy to SFrame, and UnitySArrayProxy to SArray.
     """
 

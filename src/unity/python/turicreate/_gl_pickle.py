@@ -77,7 +77,7 @@ def _get_gl_class_type(obj_class):
 
     Parameters
     ----------
-    obj_class    : Class which has to be categoriized.
+    obj_class    : Class which has to be categorized.
 
     Returns
     ----------
@@ -122,7 +122,7 @@ def _get_gl_object_from_persistent_id(type_tag, gl_archive_abs_path):
         from . import load_model as _load_model
         obj = _load_model(gl_archive_abs_path)
     else:
-        raise _pickle.UnpicklingError("Turi pickling Error: Unspported object."
+        raise _pickle.UnpicklingError("Turi pickling Error: Unsupported object."
               " Only SFrames, SGraphs, SArrays, and Models are supported.")
     return obj
 
@@ -222,7 +222,7 @@ class GLPickler(_cloudpickle.CloudPickler):
                     all objects (including GLC objects).
 
         protocol  : Pickle protocol (see pickle docs). Note that all pickle protocols
-                    may not be compatable with GLC objects.
+                    may not be compatible with GLC objects.
 
         min_bytes_to_save : Cloud pickle option (see cloud pickle docs).
 
@@ -286,13 +286,13 @@ class GLPickler(_cloudpickle.CloudPickler):
 
     def persistent_id(self, obj):
         """
-        Provide a persistant ID for "saving" GLC objects by reference. Return
+        Provide a persistent ID for "saving" GLC objects by reference. Return
         None for all non GLC objects.
 
         Parameters
         ----------
 
-        obj: Name of the object whose persistant ID is extracted.
+        obj: Name of the object whose persistent ID is extracted.
 
         Returns
         --------

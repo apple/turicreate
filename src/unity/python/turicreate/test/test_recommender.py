@@ -1499,7 +1499,7 @@ U1103,135104,0'''
         test_users = SArray(list(set(self.test['userID'])))
 
         recs = m.recommend(users=train_users, k=num_recommendations)
-        assert recs.num_rows() == num_recommendations * 3  # 3 uniqe users in train
+        assert recs.num_rows() == num_recommendations * 3  # 3 unique users in train
 
         selected_users = SArray(list(set(self.test[self.user_id]))[:2])
         recs = m.recommend(users=selected_users, k=num_recommendations)

@@ -98,7 +98,7 @@ def create(observation_data,
     ranking_regularization : float, optional
         Penalize the predicted value of user-item pairs not in the
         training set. Larger values increase this penalization.
-        Suggeseted values: 0, 0.1, 0.5, 1.  NOTE: if no target column
+        Suggested values: 0, 0.1, 0.5, 1.  NOTE: if no target column
         is present, this parameter is ignored.
 
     unobserved_rating_value : float, optional
@@ -473,7 +473,7 @@ class RankingFactorizationRecommender(_Recommender):
     ** Implicit Matrix Factorization**
 
     `RankingFactorizationRecommender` had an additional option of optimizing
-    for ranking using the implcit matrix factorization model. The internal coefficients of
+    for ranking using the implicit matrix factorization model. The internal coefficients of
     the model and its interpretation are identical to the model described above.
     The difference between the two models is in the nature in which the objective
     is achieved. Currently, this model does not incorporate any columns

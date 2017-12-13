@@ -28,7 +28,7 @@ class TreeModelMixin(object):
         Get the importance of features used by the model.
 
         The measure of importance of feature X
-        is determined by the sum of occurence of X
+        is determined by the sum of occurrence of X
         as a branching node in all trees.
 
         When X is a categorical feature, e.g. "Gender",
@@ -39,7 +39,7 @@ class TreeModelMixin(object):
         -------
         out : SFrame
             A table with three columns: name, index, count,
-            ordered by 'count' in desending order.
+            ordered by 'count' in descending order.
 
         Examples
         --------
@@ -214,7 +214,7 @@ class TreeModelMixin(object):
         -------
         out : SFrame
             A table with two columns: feature, count,
-            ordered by 'count' in desending order.
+            ordered by 'count' in descending order.
         """
         return tc.extensions._xgboost_dump_model(self.__proxy__, with_stats=with_stats, format='text')
 
@@ -232,7 +232,7 @@ class TreeModelMixin(object):
         -------
         out : SFrame
             A table with two columns: feature, count,
-            ordered by 'count' in desending order.
+            ordered by 'count' in descending order.
         """
         import json
         trees_json_str = tc.extensions._xgboost_dump_model(self.__proxy__, with_stats=with_stats, format='json')

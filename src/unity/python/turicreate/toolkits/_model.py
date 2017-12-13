@@ -75,7 +75,7 @@ def load_model(location):
             # this is a native model
             return cls(saved_state['model'])
         else:
-            # this is a CustomModle
+            # this is a CustomModel
             model_data = saved_state['side_data']
             model_version = model_data['model_version']
             del model_data['model_version']

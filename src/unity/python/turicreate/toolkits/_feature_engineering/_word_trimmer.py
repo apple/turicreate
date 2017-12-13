@@ -183,13 +183,13 @@ class RareWordTrimmer(Transformer):
 
     * **string** : The string is first tokenized. By default, all letters are
       first converted to lower case, then tokenized by space characters. Each
-      token is taken to be a word, and the words occuring below a threshold
+      token is taken to be a word, and the words occurring below a threshold
       number of times across the entire column are removed, then the remaining
       tokens are concatenated back into a string.
 
     * **list** : Each element of the list must be a string, where each element
       is assumed to be a token. The remaining tokens are then filtered
-      by count occurences and a threshold value.
+      by count occurrences and a threshold value.
 
     * **dict** : The method first obtains the list of keys in the dictionary.
       This list is then processed as a standard list, except the value of each

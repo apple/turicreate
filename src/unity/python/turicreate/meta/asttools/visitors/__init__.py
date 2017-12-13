@@ -48,14 +48,14 @@ class Visitor(object):
         attr = 'visit' + node_name
 
         if hasattr(self, attr):
-            mehtod = getattr(self, 'visit' + node_name)
-            return mehtod(node, *args, **kwargs)
+            method = getattr(self, 'visit' + node_name)
+            return method(node, *args, **kwargs)
         elif hasattr(self, 'visitDefault'):
-            mehtod = getattr(self, 'visitDefault')
-            return mehtod(node, *args, **kwargs)
+            method = getattr(self, 'visitDefault')
+            return method(node, *args, **kwargs)
         else:
-            mehtod = getattr(self, 'visit' + node_name)
-            return mehtod(node, *args, **kwargs)
+            method = getattr(self, 'visit' + node_name)
+            return method(node, *args, **kwargs)
 
 
 

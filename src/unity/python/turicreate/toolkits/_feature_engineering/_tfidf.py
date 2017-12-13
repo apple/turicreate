@@ -319,8 +319,8 @@ class TFIDF(Transformer):
             _internal_utils.pretty_print_list(self.get('features')))
         fields = [
             ("Features", _features),
-            ("Minimimum Document Frequency", 'min_document_frequency'),
-            ("Maximimum Document Frequency", 'max_document_frequency'),
+            ("Minimum Document Frequency", 'min_document_frequency'),
+            ("Maximum Document Frequency", 'max_document_frequency'),
             ("Output Column Prefix", 'output_column_prefix')
         ]
         section_titles = ['Model fields']
