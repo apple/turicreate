@@ -13,13 +13,47 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-import opcode
-from dis import findlabels, findlinestarts
+import dis
 import sys
 from . import Instruction
 
 py3 = sys.version_info.major >= 3
-co_ord = (lambda c:c) if py3 else ord
+
+
+if sys.version_info < (3, 4):
+    co_ord = (lambda c:c) if py3 else ord
+    def _walk_ops(code):
+        """
+        Yield (offset, opcode, argument number) tuples for all
+        instructions in *code*.
+        """
+        code = getattr(code, 'co_code', b'')
+        code = [co_ord(instr) for instr in code]
+
+        n = len(code)
+        i = 0
+        extended_arg = 0
+        while i < n:
+            op = code[i]
+            i += 1
+            if op >= dis.HAVE_ARGUMENT:
+                oparg = code[i] + code[i + 1] * 256 + extended_arg
+                extended_arg = 0
+                i += 2
+                if op == dis.EXTENDED_ARG:
+                    extended_arg = oparg * 65536
+            yield i, op, oparg
+
+else:
+    def _walk_ops(code):
+        """
+        Yield (offset, opcode, argument number) tuples for all
+        instructions in *code*.
+        """
+        for instr in dis.get_instructions(code):
+            op = instr.opcode
+            yield instr.offset, op, instr.arg
+
 
 def disassembler(co, lasti= -1):
     """Disassemble a code object. 
@@ -31,21 +65,15 @@ def disassembler(co, lasti= -1):
     """
 
     code = co.co_code
-    labels = findlabels(code)
-    linestarts = dict(findlinestarts(co))
-    n = len(code)
+    labels = dis.findlabels(code)
+    linestarts = dict(dis.findlinestarts(co))
     i = 0
     extended_arg = 0
     lineno = 0
     free = None
-    while i < n:
-        c = code[i]
-        op = co_ord(c)
-    
-    
+    for i, op, oparg in _walk_ops(co):
         if i in linestarts:
             lineno = linestarts[i]
-
         instr = Instruction(i=i, op=op, lineno=lineno)
         instr.linestart = i in linestarts
 
@@ -59,26 +87,23 @@ def disassembler(co, lasti= -1):
         else:
             instr.label = False
 
-        i = i + 1
-        if op >= opcode.HAVE_ARGUMENT:
-            oparg = co_ord(code[i]) + co_ord(code[i + 1]) * 256 + extended_arg
-            instr.oparg = oparg
-            extended_arg = 0
-            i = i + 2
-            if op == opcode.EXTENDED_ARG:
-                extended_arg = oparg * 65536
-            instr.extended_arg = extended_arg
-            if op in opcode.hasconst:
+        instr.oparg = oparg
+        extended_arg = 0
+        if op == dis.EXTENDED_ARG:
+            extended_arg = oparg * 65536
+        instr.extended_arg = extended_arg
+        if op >= dis.HAVE_ARGUMENT:
+            if op in dis.hasconst:
                 instr.arg = co.co_consts[oparg]
-            elif op in opcode.hasname:
+            elif op in dis.hasname:
                 instr.arg = co.co_names[oparg]
-            elif op in opcode.hasjrel:
+            elif op in dis.hasjrel:
                 instr.arg = i + oparg
-            elif op in opcode.haslocal:
+            elif op in dis.haslocal:
                 instr.arg = co.co_varnames[oparg]
-            elif op in opcode.hascompare:
-                instr.arg = opcode.cmp_op[oparg]
-            elif op in opcode.hasfree:
+            elif op in dis.hascompare:
+                instr.arg = dis.cmp_op[oparg]
+            elif op in dis.hasfree:
                 if free is None:
                     free = co.co_cellvars + co.co_freevars
                 instr.arg = free[oparg]
