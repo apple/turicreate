@@ -267,7 +267,7 @@ class SArrayTest(unittest.TestCase):
         expected_output = [x for x in range(ord('a'), ord('a') + 26)]
         self.__test_equal(sa_int, expected_output, int)
 
-        # Test randomness across segments, randomized sarray should have different elemetns.
+        # Test randomness across segments, randomized sarray should have different elements.
         sa_random = SArray(range(0, 16), int).apply(lambda x: random.randint(0, 1000), int)
         vec = list(sa_random.head(len(sa_random)))
         self.assertFalse(all([x == vec[0] for x in vec]))
@@ -306,7 +306,7 @@ class SArrayTest(unittest.TestCase):
         # # divide by 0 exception
         self.assertRaises(ZeroDivisionError, lambda: sa_char.apply(lambda char: ord(char) / 0))
 
-        # Test randomness across segments, randomized sarray should have different elemetns.
+        # Test randomness across segments, randomized sarray should have different elements.
         sa_random = SArray(range(0, 16), int).apply(lambda x: random.randint(0, 1000))
         vec = list(sa_random.head(len(sa_random)))
         self.assertFalse(all([x == vec[0] for x in vec]))
@@ -1503,7 +1503,7 @@ class SArrayTest(unittest.TestCase):
         self.assertEqual(list(sa.dict_has_all_keys([]).head(10)), [], list)
 
     def test_save_load_cleanup_file(self):
-        # simlarly for SArray
+        # similarly for SArray
         with util.TempDirectory() as f:
             sa = SArray(range(1,1000000))
             sa.save(f)
@@ -1634,7 +1634,7 @@ class SArrayTest(unittest.TestCase):
         # totally different
         self.assertEqual(s[19312], t[19312])
 
-        # edge case odities
+        # edge case oddities
         self.__test_equal(s[10:100:100], t[10:100:100], int)
         self.__test_equal(s[-100:len(s):10], t[-100:len(t):10], int)
         self.__test_equal(s[-1:-2], t[-1:-2], int)
@@ -1920,7 +1920,7 @@ class SArrayTest(unittest.TestCase):
         self.assertEqual(list(rets), list(sastr))
 
     def test_save_sarray(self):
-        '''save lazily evaluated SArray should not matrialize to target folder
+        '''save lazily evaluated SArray should not materialize to target folder
         '''
         data = SArray(range(1000))
         data = data[data > 50]
