@@ -1588,7 +1588,7 @@ class NearestNeighborsSparseQueryTest(unittest.TestCase):
             elif distance == 'manhattan':
                 ans = manhattan(query, ref)
             else:
-                raise "Unknown distance"
+                raise RuntimeError("Unknown distance")
             self.assertAlmostEqual(score, ans)
 
     def test_query_distances(self):
