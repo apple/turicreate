@@ -459,7 +459,7 @@ def tokenize(sa, to_lower=False,
         >>> import turicreate
 
         >>> docs = turicreate.SArray(['This is the first sentence.',
-        ...                         'This one, it\'s the second sentence.'])
+        ...                         "This one, it's the second sentence."])
 
         # Default tokenization by space characters
         >>> turicreate.text_analytics.tokenize(docs)
