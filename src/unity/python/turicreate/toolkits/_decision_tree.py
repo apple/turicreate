@@ -310,7 +310,7 @@ class DecisionTree:
 
         Returns
         -------
-        dict: A tree in JSON format. Starts at the root node and recusively
+        dict: A tree in JSON format. Starts at the root node and recursively
         represents each node in JSON.
 
         - node_id              : ID of the node.
@@ -383,7 +383,7 @@ class DecisionTree:
 
         Returns
         -------
-        float or None: returns float value of predictio if leaf node and None
+        float or None: returns float value of prediction if leaf node and None
         if not.
 
         Examples

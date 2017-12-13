@@ -91,7 +91,7 @@ class lambda_closure_visitor(ast.NodeVisitor):
     This implements a *very* limited decompiler. It only handles cases of
     lambda x: fn(a, b, x, ...) 
     where a,b, etc are variables captured from the surrounding scope, and there 
-    may be some occurances of x.
+    may be some occurrences of x.
     No additional statements or expressions are permitted
     """
     FUNCTION = 0 # I am translating the wrapping lambda function

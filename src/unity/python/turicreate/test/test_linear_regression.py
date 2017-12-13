@@ -227,7 +227,7 @@ class LinearRegressionTest(unittest.TestCase):
             self.test_summary()
             print("Summary passed")
             self.test_repr()
-            print("Repr paassed")
+            print("Repr passed")
             self.test_predict()
             print("Predict passed")
             self.test_evaluate()

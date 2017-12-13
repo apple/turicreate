@@ -95,7 +95,7 @@ def create(observation_data,
 
     seed_item_set_size : int, optional
         For users that have not yet rated any items, or have only
-        rated uniquely occuring items with no similar item info,
+        rated uniquely occurring items with no similar item info,
         the model seeds the user's item set with the average
         ratings of the seed_item_set_size most popular items when
         making predictions and recommendations.  If set to 0, then
@@ -185,7 +185,7 @@ def create(observation_data,
     recommendations. The SFrame must contain (at least) three columns:
 
     * 'item_id': a column with the same name as that provided to the `item_id`
-      arugment (which defaults to the string "item_id").
+      argument (which defaults to the string "item_id").
     * 'similar': a column containing the nearest items for the given item id.
       This should have the same type as the `item_id` column.
     * 'score': a numeric score measuring how similar these two items are.

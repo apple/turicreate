@@ -52,7 +52,7 @@ def replace_nodes(root, old, new):
     Replace the old node with the new one. 
     Old must be an indirect child of root
      
-    :param root: ast node that contains an indirect refrence to old 
+    :param root: ast node that contains an indirect reference to old
     :param old: node to replace
     :param new: node to replace `old` with 
     '''

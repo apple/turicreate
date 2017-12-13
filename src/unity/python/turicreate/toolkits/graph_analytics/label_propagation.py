@@ -22,7 +22,7 @@ class LabelPropagationModel(_ModelBase):
         .. math::
           Pr_i(label=k) = I(label[i] == k)
 
-    where :math:`I()` is the indicator funtion.
+    where :math:`I()` is the indicator function.
 
     For all unlabeled vertices, the probability for each class k is computed
     from applying the following update iteratively:

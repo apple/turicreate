@@ -29,7 +29,7 @@ import os as _os
 _lfs = _os.environ['LFS_ROOT']
 
 #
-# Various test cases for the _LogisticRegressionClassiferModelTest
+# Various test cases for the _LogisticRegressionClassifierModelTest
 #
 def binary_classification_integer_target(cls):
     """
@@ -311,7 +311,7 @@ def multiclass_string_target(cls):
 
 def test_suite():
     """
-    Create a test suite for each test case in LogisticRegressionClassiferModelTest
+    Create a test suite for each test case in LogisticRegressionClassifierModelTest
     """
     testCases = [binary_classification_integer_target,
                  binary_classification_string_target,
@@ -323,7 +323,7 @@ def test_suite():
         testcase_members[t.__name__] = classmethod(t)
         testcase_class = type(
             'LogisticRegressionClassifierModelTest_%s' % t.__name__,
-            (LogisticRegressionClassiferModelTest,),
+            (LogisticRegressionClassifierModelTest,),
             testcase_members
         )
         getattr(testcase_class, t.__name__)()
@@ -337,7 +337,7 @@ def test_suite():
                 if callable(method_instance):
                     method_instance()
 
-class LogisticRegressionClassiferModelTest(unittest.TestCase):
+class LogisticRegressionClassifierModelTest(unittest.TestCase):
     __test__ = False
     """
     Unit test class for a LogisticRegressionModel that has already been created.

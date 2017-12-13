@@ -595,7 +595,7 @@ class TopicModel(_Model):
 
             - assignment: the returned values are integers in [0, num_topics)
             - probability: each returned prediction is a vector with length
-              num_topics, where element k prepresents the probability that
+              num_topics, where element k represents the probability that
               document belongs to topic k.
 
         num_burnin : int, optional
@@ -771,7 +771,7 @@ def perplexity(test_data, predictions, topics, vocabulary):
 
     Parameters
     ----------
-    test_data : SArray of type dict or SFrame with a single colum of type dict
+    test_data : SArray of type dict or SFrame with a single column of type dict
         Documents in bag-of-words format.
 
     predictions : SArray
