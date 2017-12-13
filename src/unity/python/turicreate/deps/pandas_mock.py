@@ -5,7 +5,7 @@
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 """"
 Dummy mocking module for pandas.
-When pandas is not avaialbe we will import this module as turicreate.deps.pandas,
+When pandas is not available we will import this module as turicreate.deps.pandas,
 and set HAS_pandas to false. All methods that access pandas should check the HAS_pandas
 flag, therefore, attributes/class/methods in this module should never be actually used.
 """
