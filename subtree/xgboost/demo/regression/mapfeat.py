@@ -21,7 +21,7 @@ fo.close()
 # create feature map for machine data
 fo = open('featmap.txt', 'w')
 # list from machine.names
-names = ['vendor','MYCT', 'MMIN', 'MMAX', 'CACH', 'CHMIN', 'CHMAX', 'PRP', 'ERP' ]
+names = ['vendor','MYCT', 'MMIN', 'MMAX', 'CACH', 'CHMIN', 'CHMAX', 'PRP', 'ERP' ];
 
 for i in range(0,6):
     fo.write( '%d\t%s\tint\n' % (i, names[i+1]))
