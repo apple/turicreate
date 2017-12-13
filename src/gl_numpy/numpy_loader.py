@@ -85,7 +85,8 @@ def _load_numpy_alt_malloc_via_environment_variable():
         if os.path.exists(i):
             os.environ["NUMPY_ALTERNATE_MALLOC"] = i
             os.environ["NUMPY_ALTERNATE_MALLOC_PREFIX"] = "my_"
-            break;
+            break
+
 
 def _load_numpy_alt_malloc_via_binary_injection():
     import sys

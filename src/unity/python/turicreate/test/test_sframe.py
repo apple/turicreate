@@ -143,12 +143,12 @@ class SFrameTest(unittest.TestCase):
         expected ['ttt.minute'] = [37,7]
         expected ['ttt.second'] = [21,21]
 
-        result = sa.split_datetime(column_name_prefix='ttt',limit=['year','minute','second']);
+        result = sa.split_datetime(column_name_prefix='ttt',limit=['year','minute','second'])
         self.assertEqual(result.column_names(), ['ttt.year', 'ttt.minute', 'ttt.second'])
         assert_frame_equal(result.to_dataframe(), expected.to_dataframe())
 
         sf = SFrame({'datetime': sa})
-        result = sf.split_datetime('datetime', column_name_prefix='ttt',limit=['year','minute','second']);
+        result = sf.split_datetime('datetime', column_name_prefix='ttt',limit=['year','minute','second'])
         self.assertEqual(result.column_names(), ['ttt.year', 'ttt.minute', 'ttt.second'])
         assert_frame_equal(result.to_dataframe(), expected.to_dataframe())
 
@@ -287,10 +287,10 @@ class SFrameTest(unittest.TestCase):
 
             # many for each sarray, 1 sframe_idx, 1 object.bin, 1 ini
             file_count = len(os.listdir(f))
-            self.assertTrue(file_count > 3);
+            self.assertTrue(file_count > 3)
 
             # sf1 now references the on disk file
-            sf1 = SFrame(f);
+            sf1 = SFrame(f)
 
             # create another SFrame and save to the same location
             sf2 = SFrame()
@@ -299,7 +299,7 @@ class SFrameTest(unittest.TestCase):
             sf2.save(f)
 
             file_count = len(os.listdir(f))
-            self.assertTrue(file_count > 3);
+            self.assertTrue(file_count > 3)
 
             # now sf1 should still be accessible
             self.__test_equal(sf1, sf.to_dataframe())
@@ -312,7 +312,7 @@ class SFrameTest(unittest.TestCase):
             sf1 = 1
             time.sleep(1)  # give time for the files being deleted
             file_count = len(os.listdir(f))
-            self.assertTrue(file_count > 3);
+            self.assertTrue(file_count > 3)
 
     def test_save_load(self):
 
@@ -530,8 +530,8 @@ class SFrameTest(unittest.TestCase):
             os.remove('./skip_lines.csv')
         skip_file_url = None
         with open('./skip_lines.csv', 'w') as f:
-            f.write("trash\n");
-            f.write("junk\n");
+            f.write("trash\n")
+            f.write("junk\n")
             skip_file_url = f.name
             def_writer = csv.writer(f, dialect='excel')
             column_list = ['numbers']
@@ -693,7 +693,7 @@ class SFrameTest(unittest.TestCase):
 
         # SFrame apply returns list of vector of numeric should be vector, not list
         sa = sf.apply(lambda x: [x['int_data'], x['float_data']])
-        self.assertEqual(sa.dtype, array.array);
+        self.assertEqual(sa.dtype, array.array)
 
     def test_transform_with_exception(self):
         sf = SFrame(data=self.dataframe)
@@ -1383,9 +1383,9 @@ class SFrameTest(unittest.TestCase):
                         for k in c1[i]:
                             self.assertEqual(c2[i][k], c1[i][k])
                     else:
-                        s1 = list(c1[i]);
+                        s1 = list(c1[i])
                         if s1 is not None: s1.sort()
-                        s2 = list(c2[i]);
+                        s2 = list(c2[i])
                         if s2 is not None: s2.sort()
                         self.assertEqual(s1, s2)
             else:
@@ -2085,10 +2085,10 @@ class SFrameTest(unittest.TestCase):
         # pack large number of rows
         sf = SFrame()
         num_rows = 100000
-        sf['a'] = range(0, num_rows);
-        sf['b'] = range(0, num_rows);
-        result = sf.pack_columns(['a', 'b']);
-        self.assertEqual(len(result), num_rows);
+        sf['a'] = range(0, num_rows)
+        sf['b'] = range(0, num_rows)
+        result = sf.pack_columns(['a', 'b'])
+        self.assertEqual(len(result), num_rows)
 
     def test_pack_columns_dtype(self):
         a = SFrame({'name':[-140500967,-1405039672],'data':[3,4]})
@@ -2133,29 +2133,29 @@ class SFrameTest(unittest.TestCase):
         expected ['b'] = [None,  '2',  '3',  None, '5']
         expected ['c'] = [None,  2.0,  3.0,  None, 5.0]
 
-        result = sa.unpack();
+        result = sa.unpack()
         result.rename(dict(zip(result.column_names(), ['a','b','c'])), inplace=True)
         assert_frame_equal(result.to_dataframe(), expected.to_dataframe())
 
-        result = sa.unpack(column_name_prefix='ttt');
+        result = sa.unpack(column_name_prefix='ttt')
         self.assertEqual(result.column_names(), ['ttt.0', 'ttt.1', 'ttt.2'])
         result.rename(dict(zip(result.column_names(), ['a','b','c'])), inplace=True)
         assert_frame_equal(result.to_dataframe(), expected.to_dataframe())
 
         # column types
-        result = sa.unpack(column_types=[int, str, float]);
+        result = sa.unpack(column_types=[int, str, float])
         result.rename(dict(zip(result.column_names(), ['a','b','c'])), inplace=True)
         assert_frame_equal(result.to_dataframe(), expected.to_dataframe())
 
         # more column types
-        result = sa.unpack(column_types=[int, str, float, int]);
+        result = sa.unpack(column_types=[int, str, float, int])
         result.rename(dict(zip(result.column_names(), ['a','b','c','d'])), inplace=True)
         e = expected.select_columns(['a','b','c'])
         e.add_column(SArray([None for i in range(5)], int),'d', inplace=True)
         assert_frame_equal(result.to_dataframe(), e.to_dataframe())
 
         # less column types
-        result = sa.unpack(column_types=[int, str]);
+        result = sa.unpack(column_types=[int, str])
         result.rename(dict(zip(result.column_names(), ['a','b'])), inplace=True)
         e = expected.select_columns(['a','b'])
         assert_frame_equal(result.to_dataframe(), e.to_dataframe())
@@ -2165,7 +2165,7 @@ class SFrameTest(unittest.TestCase):
         e['a'] = [1,     2,    None,    4,    5]
         e['b'] = [None,  '2',  '3',  None, '5']
         e['c'] = [None,  2.0,  None,  None, 5.0]
-        result = sa.unpack(na_value=3);
+        result = sa.unpack(na_value=3)
         result.rename(dict(zip(result.column_names(), ['a','b','c'])), inplace=True)
         assert_frame_equal(result.to_dataframe(), e.to_dataframe())
 
@@ -2216,18 +2216,18 @@ class SFrameTest(unittest.TestCase):
         expected ['b'] = [1.0, -1.0,  3.0, 2.0,  5.0]
         expected ['c'] = [0.0, 1.0,   2.0, 3.0,  4.0]
 
-        result = sa.unpack();
+        result = sa.unpack()
         result.rename(dict(zip(result.column_names(), ['a','b','c'])), inplace=True)
         assert_frame_equal(result.to_dataframe(), expected.to_dataframe())
 
         # right amount column names
-        result = sa.unpack(column_name_prefix = 'unpacked');
+        result = sa.unpack(column_name_prefix = 'unpacked')
         result.rename(dict(zip(result.column_names(), ['t.0', 't.1', 't.2'])), inplace=True)
         result.rename(dict(zip(result.column_names(), ['a','b','c'])), inplace=True)
         assert_frame_equal(result.to_dataframe(), expected.to_dataframe())
 
         # column types
-        result = sa.unpack(column_types=[int, str, float]);
+        result = sa.unpack(column_types=[int, str, float])
         result.rename(dict(zip(result.column_names(), ['a','b','c'])), inplace=True)
         expected['a'] = expected['a'].astype(int)
         expected['b'] = expected['b'].astype(str)
@@ -2235,14 +2235,14 @@ class SFrameTest(unittest.TestCase):
         assert_frame_equal(result.to_dataframe(), expected.to_dataframe())
 
         # more column types
-        result = sa.unpack(column_types=[int, str, float, int]);
+        result = sa.unpack(column_types=[int, str, float, int])
         result.rename(dict(zip(result.column_names(), ['a','b','c','d'])), inplace=True)
         e = expected.select_columns(['a','b','c'])
         e.add_column(SArray([None for i in range(5)], int),'d', inplace=True)
         assert_frame_equal(result.to_dataframe(), e.to_dataframe())
 
         # less column types
-        result = sa.unpack(column_types=[int, str]);
+        result = sa.unpack(column_types=[int, str])
         result.rename(dict(zip(result.column_names(), ['a','b'])), inplace=True)
         e = expected.select_columns(['a','b'])
         assert_frame_equal(result.to_dataframe(), e.to_dataframe())
@@ -2252,7 +2252,7 @@ class SFrameTest(unittest.TestCase):
         e['a'] = SArray([1,     2,    3,    None,  5], float)
         e['b'] = SArray([1,  None,    3,    2,     5], float)
         e['c'] = SArray([0,     1,    2,     3,    4], float)
-        result = sa.unpack(na_value=-1);
+        result = sa.unpack(na_value=-1)
         result.rename(dict(zip(result.column_names(), ['a','b','c'])), inplace=True)
         assert_frame_equal(result.to_dataframe(), e.to_dataframe())
 
@@ -2335,9 +2335,9 @@ class SFrameTest(unittest.TestCase):
             for j in range(500):
                 val = v['X.' + str(j)]
                 if (j == i):
-                    self.assertEqual(val, i);
+                    self.assertEqual(val, i)
                 else:
-                    self.assertEqual(val, None);
+                    self.assertEqual(val, None)
             i = i + 1
 
         # if types don't agree, convert to string automatically
@@ -2471,7 +2471,7 @@ class SFrameTest(unittest.TestCase):
           {},
           None]
 
-        expected_sf = SFrame();
+        expected_sf = SFrame()
         expected_sf["user_id"] = [1,2, 2, 3,4,5]
         expected_sf["user_name"] = ['user' + str(i) for i in list(expected_sf['user_id'])]
         expected_sf['category'] = ['is_restaurant', 'is_restaurant', 'is_retail', 'is_retail', None, None]
@@ -2505,7 +2505,7 @@ class SFrameTest(unittest.TestCase):
         assert_frame_equal(stacked_sf.to_dataframe().sort_values(["user_id", new_column_names[2]]).reset_index(drop=True), df_expected)
 
         #dropna
-        expected_sf = SFrame();
+        expected_sf = SFrame()
         expected_sf["user_id"] = [1,2, 2, 3, 4, 5]
         expected_sf["user_name"] = ['user' + str(i) for i in list(expected_sf['user_id'])]
         expected_sf['category'] = ['is_restaurant', 'is_restaurant', 'is_retail', 'is_retail', None, None]
@@ -2717,7 +2717,7 @@ class SFrameTest(unittest.TestCase):
     def test_random_access(self):
         t1 = list(range(0,100000))
         t2 = [str(i) for i in t1]
-        t = [{'t1':t1[i], 't2':t2[i]} for i in range(len(t1))];
+        t = [{'t1':t1[i], 't2':t2[i]} for i in range(len(t1))]
         s = SFrame({'t1':t1,'t2':t2})
         # simple slices
         self.__test_equal(s[1:10000], pd.DataFrame(t[1:10000]))
@@ -2774,35 +2774,35 @@ class SFrameTest(unittest.TestCase):
             sf.sort({'a':True})
 
         result = sf.sort('a')
-        assert_frame_equal(sf.to_dataframe(), result.to_dataframe());
+        assert_frame_equal(sf.to_dataframe(), result.to_dataframe())
 
         # try a lazy input
         result = sf[sf['a'] > 10].sort('a')
-        assert_frame_equal(sf[sf['a'] > 10].to_dataframe(), result.to_dataframe());
+        assert_frame_equal(sf[sf['a'] > 10].to_dataframe(), result.to_dataframe())
 
         result = sf.sort('a', ascending = False)
-        assert_frame_equal(reversed_sf.to_dataframe(), result.to_dataframe());
-        
-        # lazy reversed
-        result = sf[sf['a'] > 10].sort('a', ascending = False)
-        assert_frame_equal(reversed_sf[reversed_sf['a'] > 10].to_dataframe(), result.to_dataframe());
+        assert_frame_equal(reversed_sf.to_dataframe(), result.to_dataframe())
 
         # lazy reversed
         result = sf[sf['a'] > 10].sort('a', ascending = False)
-        assert_frame_equal(reversed_sf[reversed_sf['a'] > 10].to_dataframe(), result.to_dataframe());
+        assert_frame_equal(reversed_sf[reversed_sf['a'] > 10].to_dataframe(), result.to_dataframe())
+
+        # lazy reversed
+        result = sf[sf['a'] > 10].sort('a', ascending = False)
+        assert_frame_equal(reversed_sf[reversed_sf['a'] > 10].to_dataframe(), result.to_dataframe())
 
         # sort two columns
         result = sf.sort(['a', 'b'])
-        assert_frame_equal(sf.to_dataframe(), result.to_dataframe());
+        assert_frame_equal(sf.to_dataframe(), result.to_dataframe())
 
         result = sf.sort(['a', 'c'], ascending = False)
-        assert_frame_equal(reversed_sf.to_dataframe(), result.to_dataframe());
+        assert_frame_equal(reversed_sf.to_dataframe(), result.to_dataframe())
 
         result = sf.sort([('a', True), ('b', False)])
-        assert_frame_equal(sf.to_dataframe(), result.to_dataframe());
+        assert_frame_equal(sf.to_dataframe(), result.to_dataframe())
 
         result = sf.sort([('a', False), ('b', True)])
-        assert_frame_equal(reversed_sf.to_dataframe(), result.to_dataframe());
+        assert_frame_equal(reversed_sf.to_dataframe(), result.to_dataframe())
 
         # empty sort should not throw
         sf = SFrame({'x':[]})

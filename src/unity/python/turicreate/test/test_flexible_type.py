@@ -329,7 +329,7 @@ class FlexibleTypeTest(unittest.TestCase):
     def test_none(self):
         self.assert_equal_with_lambda_check(_flexible_type(None), None)
     def test_date_time(self):
-        d = datetime.datetime(2010, 10, 10, 10, 10, 10);
+        d = datetime.datetime(2010, 10, 10, 10, 10, 10)
         self.assert_equal_with_lambda_check(_flexible_type(d),d)
     def test_int(self):
         self.assert_equal_with_lambda_check(_flexible_type(1), 1)

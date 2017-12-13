@@ -302,7 +302,7 @@ class MetricsTest(unittest.TestCase):
 
         # Act
         avg_cases = ["micro", "macro", None]
-        pr = {}; rec = {}; f1 = {}; fbeta = {};
+        pr = {}; rec = {}; f1 = {}; fbeta = {}
         for avg in avg_cases:
             pr[avg]    = turicreate.toolkits.evaluation.precision(y, yhat, avg)
             rec[avg]   = turicreate.toolkits.evaluation.recall(y, yhat, avg)
@@ -331,7 +331,7 @@ class MetricsTest(unittest.TestCase):
 
         # Act
         avg_cases = ["micro", "macro", None]
-        pr = {}; rec = {}; f1 = {}; fbeta = {};
+        pr = {}; rec = {}; f1 = {}; fbeta = {}
         for avg in avg_cases:
             pr[avg]    = turicreate.toolkits.evaluation.precision(y, yhat, avg)
             rec[avg]   = turicreate.toolkits.evaluation.recall(y, yhat, avg)
@@ -360,7 +360,7 @@ class MetricsTest(unittest.TestCase):
 
         # Act
         avg_cases = ["micro", "macro", None]
-        pr = {}; rec = {}; f1 = {}; fbeta = {};
+        pr = {}; rec = {}; f1 = {}; fbeta = {}
         for avg in avg_cases:
             pr[avg]    = turicreate.toolkits.evaluation.precision(y, yhat, avg)
             rec[avg]   = turicreate.toolkits.evaluation.recall(y, yhat, avg)
@@ -389,7 +389,7 @@ class MetricsTest(unittest.TestCase):
 
         # Act
         avg_cases = ["micro", "macro", None]
-        pr = {}; rec = {}; f1 = {}; fbeta = {};
+        pr = {}; rec = {}; f1 = {}; fbeta = {}
         for avg in avg_cases:
             pr[avg]    = turicreate.toolkits.evaluation.precision(y, yhat, avg)
             rec[avg]   = turicreate.toolkits.evaluation.recall(y, yhat, avg)
