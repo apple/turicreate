@@ -19,7 +19,7 @@ import logging
 """ The module level logger object """
 __LOGGER__ = logging.getLogger(__name__)
 
-""" Global varialbes """
+""" Global variables """
 __UNITY_GLOBAL_PROXY__ = None
 __SERVER__ = None
 
