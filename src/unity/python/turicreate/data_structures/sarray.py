@@ -2423,7 +2423,7 @@ class SArray(object):
         out_of_range_values = [(val > 255 or val < 0) for x in range(num_test) for val in self[x]]
 
         if sum(mod_values) != 0.0 and not allow_rounding:
-            raise ValueError("There are non-integer values in the array data. Images only support integer data values between 0 and 255. To permit rounding, set the 'allow_rounding' paramter to 1.")
+            raise ValueError("There are non-integer values in the array data. Images only support integer data values between 0 and 255. To permit rounding, set the 'allow_rounding' parameter to 1.")
 
         if sum(out_of_range_values) != 0:
             raise ValueError("There are values outside the range of 0 to 255. Images only support integer data values between 0 and 255.")
@@ -3213,7 +3213,7 @@ class SArray(object):
         if type(column_name_prefix) != str:
             raise TypeError("'column_name_prefix' must be a string")
 
-        # validdate 'limit'
+        # validate 'limit'
         if limit is not None:
             if (not _is_non_string_iterable(limit)):
                 raise TypeError("'limit' must be a list");
@@ -3932,7 +3932,7 @@ class SArray(object):
         Count the number of non-NULL values of different subsets over this
         SArray.
 
-        The subset that the count is excecuted on is defined as an inclusive
+        The subset that the count is executed on is defined as an inclusive
         range relative to the position to each value in the SArray, using
         `window_start` and `window_end`. For a better understanding of this,
         see the examples below.
