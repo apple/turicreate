@@ -6,8 +6,9 @@ models. You don’t have to be a machine learning expert to add
 recommendations, object detection, image classification, image
 similarity or activity classification to your app.
 
-Supported Platforms Turi Create supports:
------------------------------------------
+Supported Platforms
+-------------------
+Turi Create supports:
 
 -  macOS 10.12+
 -  Linux (with glibc 2.12+)
