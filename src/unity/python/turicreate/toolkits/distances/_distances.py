@@ -239,7 +239,7 @@ def cosine(x, y):
 def levenshtein(x, y):
     """
     Compute the Levenshtein distance between between strings. The
-    distance is the number of insertion, deletion, and substituion edits
+    distance is the number of insertion, deletion, and substitution edits
     needed to transform string `x` into string `y`. The mathematical
     definition of Levenshtein is recursive:
 
