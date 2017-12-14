@@ -34,7 +34,7 @@ def rpc_proxy_check():
                 args=("ws://localhost:%d/ws" % web_port,"x1"))
             # Need to make sure that the connection start after proxy comes up
             time.sleep(0.1)
-            server.deamon = True
+            server.daemon = True
             server.start()
             client = rpc.connect(prox.host, prox.port, key="x1")
             f1 = client.get_function("rpc.test2.addone")
