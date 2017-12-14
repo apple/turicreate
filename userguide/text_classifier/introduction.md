@@ -83,7 +83,7 @@ model.export_coreml('MySentenceClassifier.mlmodel')
 Dragging the saved model into Xcode and inspecting it looks like the following:
 <img src="images/sentence_calssifier_model.png"></img>
 
-To use the model in Swift we can use the following code. Note that the model expects a bag-of-words representation of the input text.
+To use the model in Swift we can use the code below. Note that the model expects a bag-of-words representation of the input text.
 
 ```swift
 let bagOfWords = bow(text: text)
