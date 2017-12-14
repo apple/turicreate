@@ -5,6 +5,7 @@
  */
 #include <vector>
 #include <string>
+#include <map>
 #include <boost/algorithm/string/predicate.hpp>
 #include <fileio/get_s3_endpoint.hpp>
 #include <fileio/get_s3_endpoint.hpp>
@@ -15,14 +16,31 @@ namespace fileio {
 // Endpoint addresses specified on http://docs.aws.amazon.com/general/latest/gr/rande.html
 const std::vector<std::string> AWS_S3_END_POINTS {
   "s3.amazonaws.com",
-  "s3-us-west-2.amazonaws.com",
   "s3-us-west-1.amazonaws.com",
+  "s3-us-west-2.amazonaws.com",
   "s3-eu-west-1.amazonaws.com",
+  "s3-eu-central-1.amazonaws.com",
   "s3-ap-southeast-1.amazonaws.com",
   "s3-ap-southeast-2.amazonaws.com",
   "s3-ap-northeast-1.amazonaws.com",
+  "s3-ap-northeast-2.amazonaws.com",
   "s3-sa-east-1.amazonaws.com",
+  "s3-ap-south-1.amazonaws.com",
 };
+
+const std::map<std::string, std::string> AWS_S3_ENDPOINT_TO_REGION {
+  {"s3.amazonaws.com","us-east-1"},
+  {"s3-us-west-1.amazonaws.com","us-west-1"},
+  {"s3-us-west-2.amazonaws.com","us-west-2"},
+  {"s3-eu-west-1.amazonaws.com","eu-west-1"},
+  {"s3-eu-central-1.amazonaws.com","eu-central-1"},
+  {"s3-ap-southeast-1.amazonaws.com","ap-southeast-1"},
+  {"s3-ap-southeast-2.amazonaws.com","ap-southeast-2"},
+  {"s3-ap-northeast-1.amazonaws.com","ap-northeast-1"},
+  {"s3-ap-northeast-2.amazonaws.com","ap-northeast-2"},
+  {"s3-sa-east-1.amazonaws.com","sa-east-1"},
+  {"s3-ap-south-1.amazonaws.com","ap-south-1"}};
+
 
 std::vector<std::string> get_s3_endpoints() {
   if (S3_ENDPOINT.empty()) {
@@ -35,6 +53,12 @@ std::vector<std::string> get_s3_endpoints() {
     }
     return {ret};
   }
+}
+
+std::string get_region_name_from_endpoint(std::string endpoint) {
+  auto iter = AWS_S3_ENDPOINT_TO_REGION.find(endpoint);
+  if (iter != AWS_S3_ENDPOINT_TO_REGION.end()) return iter->second;
+  else return "";
 }
 
 std::string get_bucket_path(const std::string& bucket) {
