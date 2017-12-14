@@ -34,7 +34,7 @@ def select_feature_subset(data, feature_columns):
     result = total_set.intersection(feature_set)
 
     if len(result) != len(feature_set):
-        _logging.warning("Warning: The model was fit with " + str(len(feature_columns)) + " feature columns but only " + str(len(result)) + " were present during transform()." +" Procedding with transform by ignoring the missing columns.")
+        _logging.warning("Warning: The model was fit with " + str(len(feature_columns)) + " feature columns but only " + str(len(result)) + " were present during transform()." +" Proceeding with transform by ignoring the missing columns.")
 
     return [f for f in feature_columns if f in result]
 
