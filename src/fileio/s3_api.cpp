@@ -308,6 +308,7 @@ list_objects_response list_objects_impl(s3url parsed_url,
     clientConfiguration.proxyHost = proxy.c_str();
     clientConfiguration.requestTimeoutMs = 5 * 60000;
     clientConfiguration.connectTimeoutMs = 20000;
+    clientConfiguration.region = fileio::get_region_name_from_endpoint(clientConfiguration.endpointOverride.c_str());
 
     S3Client client(credentials, clientConfiguration);
 
@@ -413,6 +414,7 @@ std::string delete_object_impl(s3url parsed_url,
     clientConfiguration.proxyHost = proxy.c_str();
     clientConfiguration.requestTimeoutMs = 5 * 60000;
     clientConfiguration.connectTimeoutMs = 20000;
+    clientConfiguration.region = fileio::get_region_name_from_endpoint(clientConfiguration.endpointOverride.c_str());
 
     S3Client client(credentials, clientConfiguration);
 
@@ -467,6 +469,7 @@ std::string delete_prefix_impl(s3url parsed_url,
     clientConfiguration.proxyHost = proxy.c_str();
     clientConfiguration.requestTimeoutMs = 5 * 60000;
     clientConfiguration.connectTimeoutMs = 20000;
+    clientConfiguration.region = fileio::get_region_name_from_endpoint(clientConfiguration.endpointOverride.c_str());
 
     S3Client client(credentials, clientConfiguration);
 
