@@ -90,22 +90,22 @@ let bagOfWords = bow(text: text)
 let prediction = try? MySentenceClassifier().prediction(text: bagOfWords)
 
 func bow(text: String) -> [String: Double] {
-        var bagOfWords = [String: Double]()
-        
-        let tagger = NSLinguisticTagger(tagSchemes: [.tokenType], options: 0)
-        let range = NSRange(location: 0, length: text.utf16.count)
-        let options: NSLinguisticTagger.Options = [.omitPunctuation, .omitWhitespace]
-        tagger.string = text
-        
-        tagger.enumerateTags(in: range, unit: .word, scheme: .tokenType, options: options) { _, tokenRange, _ in
-            let word = (text as NSString).substring(with: tokenRange)
-            if bagOfWords[word] != nil {
-                bagOfWords[word]! += 1
-            } else {
-                bagOfWords[word] = 1
-            }
+    var bagOfWords = [String: Double]()
+    
+    let tagger = NSLinguisticTagger(tagSchemes: [.tokenType], options: 0)
+    let range = NSRange(location: 0, length: text.utf16.count)
+    let options: NSLinguisticTagger.Options = [.omitPunctuation, .omitWhitespace]
+    tagger.string = text
+    
+    tagger.enumerateTags(in: range, unit: .word, scheme: .tokenType, options: options) { _, tokenRange, _ in
+        let word = (text as NSString).substring(with: tokenRange)
+        if bagOfWords[word] != nil {
+            bagOfWords[word]! += 1
+        } else {
+            bagOfWords[word] = 1
         }
-        
-        return bagOfWords
     }
+    
+    return bagOfWords
+}
 ```
