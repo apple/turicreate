@@ -71,3 +71,37 @@ classifier model using:
 ```python
 classifier = model.classifier
 ```
+
+##### Deploying to Core ML
+
+You can use the trained sentence classifier in Xcode by exporting it to Core ML. Exporting is done by:
+
+```python
+model.export_coreml('MySentenceClassifier.mlmodel')
+```
+
+Dragging the saved model into Xcode and inspecting it looks like the following:
+<img src="images/sentence_calssifier_model.png"></img>
+
+To use the model in Swift we can use the following code. Note that the model expects a bag-of-words representation of the input text.
+
+```swift
+let bagOfWords = bow(text: text)
+let prediction = try? MySentenceClassifier().prediction(text: bagOfWords)
+
+func bow(text: String) -> [String: Double] {
+    let words = text.split(separator: " ")
+    var bagOfWords = [String: Double]()
+    
+    for word in words {
+        let str_word = String(word)
+
+        if bagOfWords[str_word] != nil {
+            bagOfWords[str_word]! += 1
+        } else {
+            bagOfWords[str_word] = 1
+        }
+    }
+    return bagOfWords
+}
+```
