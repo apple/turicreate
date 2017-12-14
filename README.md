@@ -93,7 +93,7 @@ virtualenv venv
 # Activate your virtual environment
 source ~/venv/bin/activate
 ```
-Alternatively, if you are using Anaconda, you may use its virtual environment:
+Alternatively, if you are using [Anaconda](https://www.anaconda.com/what-is-anaconda/), you may use its virtual environment:
 ```shell
 conda create -n venv python=2.7 anaconda
 source activate venv
