@@ -35,7 +35,7 @@ class PagerankModel(_ModelBase):
     +-------------------+-----------------------------------------------------------+
     | Field             | Description                                               |
     +===================+===========================================================+
-    | reset_probability | The probability of random jumps to any node in the graph   |
+    | reset_probability | The probability of random jumps to any node in the graph  |
     +-------------------+-----------------------------------------------------------+
     | graph             | A new SGraph with the pagerank as a vertex property       |
     +-------------------+-----------------------------------------------------------+

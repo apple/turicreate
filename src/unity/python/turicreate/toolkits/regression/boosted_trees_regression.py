@@ -129,7 +129,7 @@ class BoostedTreesRegression(_SupervisedLearningModel, _TreeModelMixin):
         +-------------------------+--------------------------------------------------------------------------------+
         | trees_json              | Tree encoded using JSON                                                        |
         +-------------------------+--------------------------------------------------------------------------------+
-        | validation_error         | Error on validation data                                                       |
+        | validation_error        | Error on validation data                                                       |
         +-------------------------+--------------------------------------------------------------------------------+
         | unpacked_features       | Feature names (including expanded list/dict features)                          |
         +-------------------------+--------------------------------------------------------------------------------+
