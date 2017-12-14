@@ -35,7 +35,7 @@ class PagerankModel(_ModelBase):
     +-------------------+-----------------------------------------------------------+
     | Field             | Description                                               |
     +===================+===========================================================+
-    | reset_probability | The probablity of random jumps to any node in the graph   |
+    | reset_probability | The probability of random jumps to any node in the graph   |
     +-------------------+-----------------------------------------------------------+
     | graph             | A new SGraph with the pagerank as a vertex property       |
     +-------------------+-----------------------------------------------------------+
@@ -50,7 +50,7 @@ class PagerankModel(_ModelBase):
     +-------------------+-----------------------------------------------------------+
     | training_time     | Total training time of the model                          |
     +-------------------+-----------------------------------------------------------+
-    | max_iterations    | The maximun number of iterations to run                   |
+    | max_iterations    | The maximum number of iterations to run                   |
     +-------------------+-----------------------------------------------------------+
 
 
@@ -80,9 +80,9 @@ class PagerankModel(_ModelBase):
 
     def _setting_fields(self):
         ret = super(PagerankModel, self)._setting_fields()
-        ret['probablity of random jumps to any node in the graph'] = 'reset_probability'
+        ret['probability of random jumps to any node in the graph'] = 'reset_probability'
         ret['convergence threshold (L1 norm)'] = 'threshold'
-        ret['maximun number of iterations'] = 'max_iterations'
+        ret['maximum number of iterations'] = 'max_iterations'
         return ret
 
     def _get_version(self):
@@ -126,7 +126,7 @@ def create(graph, reset_probability=0.15,
         pagerank value.
 
     max_iterations : int, optional
-        The maximun number of iterations to run.
+        The maximum number of iterations to run.
 
     _single_precision : bool, optional
         If true, running pagerank in single precision. The resulting
