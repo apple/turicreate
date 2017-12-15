@@ -29,7 +29,7 @@ def load_images(url, format='auto', with_path=True, recursive=True, ignore_failu
         holds a path string for each Image object.
 
     recursive : bool, optional
-        Inicates whether 'load_images' should do recursive directory traversal,
+        Indicates whether 'load_images' should do recursive directory traversal,
         or a flat directory traversal.
 
     ignore_failure : bool, optional

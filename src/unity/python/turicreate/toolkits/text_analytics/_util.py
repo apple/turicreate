@@ -78,7 +78,7 @@ def count_words(sa, to_lower=True,
          {'word,': 1, 'word!!!word': 1, 'word': 2}]
 
         # Run count_words with Penn treebank style tokenization to handle
-        # puntuations
+        # punctuations
         >>> turicreate.text_analytics.count_words(sa, delimiters=None)
         dtype: dict
         Rows: 2
@@ -189,7 +189,7 @@ def count_ngrams(sa, n=2, method="word", to_lower=True,
 
     - Punctuation and spaces are both delimiters by default when counting
       word n-grams. When counting character n-grams, one may choose to ignore
-      puncutations, spaces, neither, or both.
+      punctuations, spaces, neither, or both.
 
     References
     ----------
@@ -313,13 +313,13 @@ def trim_rare_words(sa, threshold=2, to_lower=True,
 
     * **string** : The string is first tokenized. By default, all letters are
       first converted to lower case, then tokenized by space characters. Each
-      token is taken to be a word, and the words occuring below a threshold
+      token is taken to be a word, and the words occurring below a threshold
       number of times across the entire column are removed, then the remaining
       tokens are concatenated back into a string.
 
     * **list** : Each element of the list must be a string, where each element
       is assumed to be a token. The remaining tokens are then filtered
-      by count occurences and a threshold value.
+      by count occurrences and a threshold value.
 
     * **dict** : The method first obtains the list of keys in the dictionary.
       This list is then processed as a standard list, except the value of each
@@ -378,7 +378,7 @@ def trim_rare_words(sa, threshold=2, to_lower=True,
         ['fox fox', 'word word']
 
         # Run trim_rare_words with Penn treebank style tokenization to handle
-        # puntuations
+        # punctuations
         >>> turicreate.text_analytics.trim_rare_words(sa, delimiters=None)
         dtype: str
         Rows: 2
@@ -508,7 +508,7 @@ def bm25(dataset, query, k1=1.5, b=.75):
     Parameters
     ----------
     dataset : SArray of type dict, list, or str
-        An SArray where each element eitherrepresents a document in:
+        An SArray where each element either represents a document in:
 
         * **dict** : a bag-of-words format, where each key is a word and each
           value is the number of times that word occurs in the document.
@@ -630,7 +630,7 @@ def parse_sparse(filename, vocab_filename):
     1. "It was the best of times, it was the worst of times"
     2. "It was the age of wisdom, it was the age of foolishness"
 
-    Then the vocabular file might contain the unique words, with a word
+    Then the vocabulary file might contain the unique words, with a word
     on each line, in the following order:
     it, was, the, best, of, times, worst, age, wisdom, foolishness
 

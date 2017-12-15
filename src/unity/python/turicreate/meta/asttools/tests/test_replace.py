@@ -31,7 +31,7 @@ class Test(unittest.TestCase):
         assert_ast_eq(self, root, expected)
 
 
-    def test_replace_non_existant(self):
+    def test_replace_non_existent(self):
 
         root = ast.parse('a = 1')
 

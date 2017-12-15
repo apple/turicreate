@@ -56,7 +56,7 @@ def depyc(args):
         return
         
     
-    raise  Exception("unknow output type %r" % args.output_type)
+    raise  Exception("unknown output type %r" % args.output_type)
 
 def src_tool(args):
     print("Analysing python module %r" % (args.input.name,), file=sys.stderr)
@@ -86,7 +86,7 @@ def src_tool(args):
             args.output = sys.stdout.buffer
         create_pyc(source, cfile=args.output, timestamp=timestamp)
     else:
-        raise  Exception("unknow output type %r" % args.output_type)
+        raise  Exception("unknown output type %r" % args.output_type)
 
     return
     

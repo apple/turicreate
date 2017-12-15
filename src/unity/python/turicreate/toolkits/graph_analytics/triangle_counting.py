@@ -12,7 +12,7 @@ from turicreate.toolkits.graph_analytics._model_base import GraphAnalyticsModel 
 
 class TriangleCountingModel(_ModelBase):
     """
-    Model object containing the traingle count for each vertex, and the total
+    Model object containing the triangle count for each vertex, and the total
     number of triangles. The model ignores the edge directions in that
     it assumes there are no multiple edges between
     the same source ang target pair and ignores bidirectional edges.
@@ -99,7 +99,7 @@ def create(graph, verbose=True):
     Examples
     --------
     If given an :class:`~turicreate.SGraph` ``g``, we can create a
-    :class:`~turicreate.traingle_counting.TriangleCountingModel` as follows:
+    :class:`~turicreate.triangle_counting.TriangleCountingModel` as follows:
 
     >>> g =
     >>> turicreate.load_graph('http://snap.stanford.edu/data/email-Enron.txt.gz',

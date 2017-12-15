@@ -85,7 +85,7 @@ class MXFeatureExtractor(ImageFeatureExtractor):
         if len(dataset) == 0:
             return _tc.SArray([], array.array)
 
-        # Resize images if neeeded
+        # Resize images if needed
         preprocessed_dataset =  _tc.SFrame()
         if verbose:
             print("Resizing images...")
