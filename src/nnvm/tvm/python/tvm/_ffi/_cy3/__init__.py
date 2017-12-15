@@ -1,1 +1,0 @@
-"""cython3 namespace"""
