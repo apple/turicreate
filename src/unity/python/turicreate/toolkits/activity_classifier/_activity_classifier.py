@@ -13,6 +13,7 @@ from __future__ import division as _
 import numpy as _np
 import time as _time
 import sys as _sys
+import six as _six
 
 from turicreate import SArray as _SArray, SFrame as _SFrame
 from turicreate import aggregate as _agg
@@ -141,7 +142,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
         raise _ToolkitError('session_id must be of type str')
     _tkutl._raise_error_if_sframe_empty(dataset, 'dataset')
     _tkutl._numeric_param_check_range('prediction_window', prediction_window, 1, 400)
-    _tkutl._numeric_param_check_range('max_iterations', max_iterations, 0, _sys.maxint)
+    _tkutl._numeric_param_check_range('max_iterations', max_iterations, 0, _six.MAXSIZE)
 
     if features is None:
         features = _fe_tkutl.get_column_names(dataset,

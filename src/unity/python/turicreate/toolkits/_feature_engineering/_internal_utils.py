@@ -11,7 +11,7 @@ from turicreate.util import _raise_error_if_not_of_type
 import logging as _logging
 import os as _os
 from distutils.version import LooseVersion
-from urllib import urlretrieve
+from six.moves.urllib.request import urlretrieve
 import zipfile
 
 NoneType = type(None)

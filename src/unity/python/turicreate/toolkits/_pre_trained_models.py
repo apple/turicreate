@@ -10,8 +10,8 @@ import os as _os
 import sys as _sys
 import requests as _requests
 import turicreate as _tc
-import urlparse as _urlparse
 import hashlib as _hashlib
+from six.moves.urllib import parse as _urlparse
 
 MODELS_URL_ROOT = 'https://docs-assets.developer.apple.com/turicreate/models/'
 
