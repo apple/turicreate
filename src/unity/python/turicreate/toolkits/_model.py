@@ -26,6 +26,35 @@ import six as _six
 
 MODEL_NAME_MAP = {}
 
+if _six.PY3:
+    def _state_str_conversion(data):
+        """
+        Conversion of data from type bytes to str (unicode). If data is a
+        container (dict, list, tuple) it applies itself recursively.
+        """
+        if isinstance(data, dict):
+            new_dict = {}
+            for k, v in data.items():
+                if isinstance(k, bytes):
+                    new_k = k.decode('utf-8')
+                else:
+                    new_k = k
+                new_dict[new_k] = _state_str_conversion(v)
+            return new_dict
+        elif isinstance(data, bytes):
+            return data.decode('utf-8')
+        elif isinstance(data, (list, tuple)):
+            new_list = []
+            for l in data:
+                new_list.append(_state_str_conversion(l))
+            return data.__class__(new_list)
+        else:
+            return data
+else:
+    def _state_str_conversion(data):
+        return data
+
+
 def load_model(location):
     """
     Load any Turi Create model that was previously saved.
@@ -69,6 +98,7 @@ def load_model(location):
 
     _internal_url = _make_internal_url(location)
     saved_state = glconnect.get_unity().load_model(_internal_url)
+    saved_state = _state_str_conversion(saved_state)
     if saved_state['archive_version'] == 1:
         cls = MODEL_NAME_MAP[saved_state['model_name']]
         if 'model' in saved_state:
