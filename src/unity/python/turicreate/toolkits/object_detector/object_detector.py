@@ -9,11 +9,11 @@ Class definition and utilities for the object detection toolkit.
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-import sys as _sys
 import time as _time
 import itertools as _itertools
 from datetime import datetime as _datetime
 
+import six as _six
 import turicreate as _tc
 import numpy as _np
 
@@ -149,7 +149,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     if len(dataset) == 0:
         raise _ToolkitError('Unable to train on empty dataset')
 
-    _numeric_param_check_range('max_iterations', max_iterations, 0, _sys.maxint)
+    _numeric_param_check_range('max_iterations', max_iterations, 0, _six.MAXSIZE)
     start_time = _time.time()
 
     supported_detectors = ['darknet-yolo']

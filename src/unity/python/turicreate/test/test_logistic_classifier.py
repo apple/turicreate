@@ -182,8 +182,8 @@ def multiclass_integer_target(cls):
 
     # Predict
     raw_predictions = sm_model.predict()
-    cls.yhat_class = map(np.argmax, raw_predictions)
-    cls.yhat_max_prob = map(np.max, raw_predictions)
+    cls.yhat_class = raw_predictions.argmax(-1)
+    cls.yhat_max_prob = raw_predictions.max(-1)
     cls.sm_accuracy = np.diag(sm_model.pred_table()).sum() / sm_model.nobs
     cls.sm_cf_matrix = sm_model.pred_table().flatten()
 
@@ -452,12 +452,12 @@ class LogisticRegressionClassiferModelTest(unittest.TestCase):
         # class
         ans =  model.predict(self.sf, output_type='class')
         self.assertEqual(ans.dtype, self.type)
-        self.assertTrue((ans == tc.SArray(map(self.type, self.yhat_class))).all())
+        self.assertTrue((ans == tc.SArray(list(map(self.type, self.yhat_class)))).all())
 
         # Default is class
         ans =  model.predict(self.sf)
         self.assertEqual(ans.dtype, self.type)
-        self.assertTrue((ans == tc.SArray(map(self.type, self.yhat_class))).all())
+        self.assertTrue((ans == tc.SArray(list(map(self.type, self.yhat_class)))).all())
 
     def test_classify(self):
         """
@@ -468,7 +468,7 @@ class LogisticRegressionClassiferModelTest(unittest.TestCase):
         ans =  model.classify(self.sf)
         tol = 1e-3
         self.assertEqual(ans['class'].dtype, self.type)
-        self.assertTrue((ans['class'] == tc.SArray(map(self.type, self.yhat_class))).all())
+        self.assertTrue((ans['class'] == tc.SArray(list(map(self.type, self.yhat_class)))).all())
         self.assertTrue(np.allclose(ans['probability'], self.yhat_max_prob, tol, tol))
 
     def test_evaluate(self):
