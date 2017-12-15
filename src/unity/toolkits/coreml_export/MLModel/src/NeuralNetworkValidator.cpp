@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <sstream>
 #include <type_traits>
+#include <functional>
 
 namespace CoreML {
 
