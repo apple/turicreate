@@ -166,6 +166,15 @@ def _get_global_dbapi_info(dbapi_module, conn):
 
     return ret_dict
 
+def _convert_rows_to_builtin_seq(data):
+    # Flexible type expects a builtin type (like list or tuple) for conversion.
+    # Some DBAPI modules abstract rows as classes that act as single sequences
+    # and this allows these to work with flexible type. list is chosen to allow
+    # mutation in case we need to force cast any entries
+    if len(data) > 0 and type(data[0]) != list:
+        data = [list(row) for row in data]
+    return data
+
 # Expects list of tuples
 def _force_cast_sql_types(data, result_types, force_cast_cols):
     if len(force_cast_cols) == 0:
@@ -173,7 +182,6 @@ def _force_cast_sql_types(data, result_types, force_cast_cols):
 
     ret_data = []
     for row in data:
-        row = list(row)
         for idx in force_cast_cols:
             if row[idx] is not None and result_types[idx] != datetime.datetime:
                 row[idx] = result_types[idx](row[idx])
@@ -1813,9 +1821,11 @@ class SFrame(object):
                 result_types[i] = str
             sb = SFrameBuilder(result_types, column_names=result_names)
 
+        temp_vals = _convert_rows_to_builtin_seq(temp_vals)
         sb.append_multiple(_force_cast_sql_types(temp_vals, result_types, cols_to_force_cast))
         rows = c.fetchmany()
         while len(rows) > 0:
+            rows = _convert_rows_to_builtin_seq(rows)
             sb.append_multiple(_force_cast_sql_types(rows, result_types, cols_to_force_cast))
             rows = c.fetchmany()
         cls = sb.close()
