@@ -81,27 +81,31 @@ model.export_coreml('MySentenceClassifier.mlmodel')
 ```
 
 Dragging the saved model into Xcode and inspecting it looks like the following:
-<img src="images/sentence_calssifier_model.png"></img>
+<img src="images/sentence_classifier_model.png"></img>
 
-To use the model in Swift we can use the following code. Note that the model expects a bag-of-words representation of the input text.
+The model expects a bag-of-words representation of the input text. In Swift, we can use the [NSLinguisticTagger](https://developer.apple.com/documentation/foundation/nslinguistictagger/tokenizing_natural_language_text) to parse the input string into words and create this representation. The example below demonstrates how to use the NSLinguisticTagger, and get predictions from the exported model.
 
 ```swift
 let bagOfWords = bow(text: text)
 let prediction = try? MySentenceClassifier().prediction(text: bagOfWords)
 
 func bow(text: String) -> [String: Double] {
-    let words = text.split(separator: " ")
-    var bagOfWords = [String: Double]()
-    
-    for word in words {
-        let str_word = String(word)
-
-        if bagOfWords[str_word] != nil {
-            bagOfWords[str_word]! += 1
-        } else {
-            bagOfWords[str_word] = 1
+        var bagOfWords = [String: Double]()
+        
+        let tagger = NSLinguisticTagger(tagSchemes: [.tokenType], options: 0)
+        let range = NSRange(location: 0, length: text.utf16.count)
+        let options: NSLinguisticTagger.Options = [.omitPunctuation, .omitWhitespace]
+        tagger.string = text
+        
+        tagger.enumerateTags(in: range, unit: .word, scheme: .tokenType, options: options) { _, tokenRange, _ in
+            let word = (text as NSString).substring(with: tokenRange)
+            if bagOfWords[word] != nil {
+                bagOfWords[word]! += 1
+            } else {
+                bagOfWords[word] = 1
+            }
         }
+        
+        return bagOfWords
     }
-    return bagOfWords
-}
 ```
