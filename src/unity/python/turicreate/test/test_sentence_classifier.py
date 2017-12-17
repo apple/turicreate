@@ -92,20 +92,18 @@ class SentenceClassifierTest(unittest.TestCase):
         filename = tempfile.mkstemp('bingo.mlmodel')[1]
         self.model.export_coreml(filename)
 
-    @unittest.skipIf(sys.platform != 'darwin', 'Only supported on Mac')
+    @unittest.skipIf(_mac_ver() < (10, 13), 'Only supported on Mac')
     def test_export_coreml_with_predict(self):
         filename = tempfile.mkstemp('bingo.mlmodel')[1]
         self.model.export_coreml(filename)
         preds = self.model.predict(self.docs, output_type='probability_vector')
 
         coreml_model = coremltools.models.MLModel(filename)
-
-        if _mac_ver() >= (10, 13):
-            coreml_preds = coreml_model.predict({
-                'text': {'hello': 1, 'friend': 1}
-            })
-            self.assertAlmostEqual(preds[0][0], coreml_preds['scoreProbability'][0])
-            self.assertAlmostEqual(preds[0][1], coreml_preds['scoreProbability'][1])
+        coreml_preds = coreml_model.predict({
+            'text': {'hello': 1, 'friend': 1}
+        })
+        self.assertAlmostEqual(preds[0][0], coreml_preds['scoreProbability'][0])
+        self.assertAlmostEqual(preds[0][1], coreml_preds['scoreProbability'][1])
 
     def test_save_and_load(self):
         """
