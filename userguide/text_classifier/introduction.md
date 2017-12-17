@@ -72,7 +72,7 @@ classifier model using:
 classifier = model.classifier
 ```
 
-##### Deploying to Core ML
+#### Deploying to Core ML
 
 You can use the trained sentence classifier in Xcode by exporting it to Core ML. Exporting is done by:
 
