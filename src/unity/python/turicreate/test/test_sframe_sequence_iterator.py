@@ -13,7 +13,6 @@ from turicreate.toolkits.activity_classifier import _sframe_sequence_iterator as
 
 
 class SFrameActivityIteratorTest(unittest.TestCase):
-    @classmethod
     def setUp(self):
         self.features = ['feature_1', 'feature_2']
         self.target = 'target'
@@ -120,7 +119,7 @@ class SFrameActivityIteratorTest(unittest.TestCase):
             np.testing.assert_array_equal(expected_batch['features'] , observed_batch.data[0].asnumpy(),
                                           "Error - features in batch %d" % batch_num)
 
-            if (use_taget):
+            if use_taget:
                 np.testing.assert_array_equal(expected_batch['target'] , observed_batch.label[0].asnumpy(),
                                               "Error - target in batch %d" % batch_num)
 
@@ -129,7 +128,7 @@ class SFrameActivityIteratorTest(unittest.TestCase):
             else:
                 self.assertTrue(observed_batch.label is None)
 
-            if (use_pad and "padding" in expected_batch):
+            if use_pad and ("padding" in expected_batch):
                 self.assertTrue(observed_batch.pad == expected_batch["padding"])
             else:
                 self.assertTrue(observed_batch.pad == 0)
@@ -143,7 +142,6 @@ class SFrameActivityIteratorTest(unittest.TestCase):
             stop_iteration_raised = True
         self.assertTrue(stop_iteration_raised , "Error - the iterator is longer than expected")
 
-    @classmethod
     def _prepare_expected_chunked_dataset(self):
         # Expcted result of prep_data with p_w = 3, predictions_in_chunk = 2
         builder = tc.SFrameBuilder([np.ndarray , int , str , np.ndarray , np.ndarray] , ['features' , 'chunk_len' , 'session_id' , 'target' , 'weights'])
@@ -168,7 +166,6 @@ class SFrameActivityIteratorTest(unittest.TestCase):
         builder.append([[10, 100, 11, 110, 12, 120, 13, 130, 14, 140, 15, 150, 16, 160, 17, 170] , 8 , 's3' , [1 , 2], [1 , 1] ])
         self.expected_chunked_4_2 = builder.close()
 
-    @classmethod
     def _prepare_expected_batches(self):
         chunk_len = self.prediction_window * self.predictions_in_chunk
         num_features = len(self.features)
