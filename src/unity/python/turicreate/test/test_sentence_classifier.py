@@ -92,7 +92,7 @@ class SentenceClassifierTest(unittest.TestCase):
         filename = tempfile.mkstemp('bingo.mlmodel')[1]
         self.model.export_coreml(filename)
 
-    @unittest.skipIf(_mac_ver() < (10, 13), 'Only supported on Mac')
+    @unittest.skipIf(_mac_ver() < (10, 13), 'Only supported on macOS 10.13+')
     def test_export_coreml_with_predict(self):
         filename = tempfile.mkstemp('bingo.mlmodel')[1]
         self.model.export_coreml(filename)
