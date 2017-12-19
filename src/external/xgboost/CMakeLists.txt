@@ -4,11 +4,11 @@ make_library(xgboost
   SOURCES
     src/gbm/gbm.cpp
     src/tree/updater.cpp
+    src/io/dmlc_simple.cpp
     src/io/io.cpp
     subtree/rabit/src/engine_empty.cc
   REQUIRES
     libjson
-    dmlc
   EXTERNAL_VISIBILITY
 )
 
