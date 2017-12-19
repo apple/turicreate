@@ -206,12 +206,15 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     # Train the model
     log = _fit_model(loss_model, data_iter, valid_iter,
                      max_iterations, num_gpus, verbose)
+
+    # Set up prediction model
     pred_model.bind(data_shapes=data_iter.provide_data, label_shapes=None,
-                    for_training=False, shared_module=loss_model)
+                    for_training=False)
+    arg_params, aux_params = loss_model.get_params()
+    pred_model.init_params(arg_params=arg_params, aux_params=aux_params)
 
     # Save the model
     state = {
-        '_loss_model': loss_model,
         '_pred_model': pred_model,
         'verbose': verbose,
         'training_time': _time.time() - start_time,
@@ -258,14 +261,13 @@ class ActivityClassifier(_CustomModel):
     This model should not be constructed directly.
     """
 
-    _PYTHON_ACTIVITY_CLASSIFIER_VERSION = 1
+    _PYTHON_ACTIVITY_CLASSIFIER_VERSION = 2
 
     def __init__(self, state):
         self.__proxy__ = _PythonProxy(state)
 
     def _get_native_state(self):
         state = self.__proxy__.get_state()
-        state['_loss_model'] = _mxnet_utils.get_mxnet_state(state['_loss_model'])
         state['_pred_model'] = _mxnet_utils.get_mxnet_state(state['_pred_model'])
         return state
 
@@ -281,12 +283,27 @@ class ActivityClassifier(_CustomModel):
             ('weights', (state['_recalibrated_batch_size'], state['_predictions_in_chunk'], 1))
         ]
 
+        from ._model_architecture import _define_model
+        import mxnet as _mx
         context = _mxnet_utils.get_mxnet_context(max_devices=state['num_sessions'])
-        state['_loss_model'] = _mxnet_utils.load_mxnet_model_from_state(
-            state['_loss_model'], data, labels, None, context)
+        _, _pred_model = _define_model(state['features'], state['_target_id_map'], 
+                                       state['prediction_window'],
+                                       state['_predictions_in_chunk'], context)
 
-        state['_pred_model'] = _mxnet_utils.load_mxnet_model_from_state(
-            state['_pred_model'], data, None, state['_loss_model'], context)
+        batch_size = state['batch_size']
+        preds_in_chunk = state['_predictions_in_chunk']
+        win = state['prediction_window'] * preds_in_chunk
+        num_features = len(state['features'])
+        data_shapes = [('data', (batch_size, win, num_features))]
+        target_shape= (batch_size, preds_in_chunk, 1)
+
+        _pred_model.bind(data_shapes=data_shapes, label_shapes=None,
+                         for_training=False)
+        arg_params = _mxnet_utils.params_from_dict(state['_pred_model']['arg_params'])
+        aux_params = _mxnet_utils.params_from_dict(state['_pred_model']['aux_params'])
+        _pred_model.init_params(arg_params=arg_params, aux_params=aux_params)
+        state['_pred_model'] = _pred_model
+
         return ActivityClassifier(state)
 
     @classmethod
@@ -322,7 +339,7 @@ class ActivityClassifier(_CustomModel):
             (prob_name, _cmt.models.datatypes.Array(*(self.num_classes,)))
         ]
 
-        model_params = self._loss_model.get_params()
+        model_params = self._pred_model.get_params()
         weights = {k: v.asnumpy() for k, v in model_params[0].items()}
         weights = _mx.rnn.LSTMCell(num_hidden=_net_params['lstm_h']).unpack_weights(weights)
         moving_weights = {k: v.asnumpy() for k, v in model_params[1].items()}
