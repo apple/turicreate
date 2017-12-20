@@ -182,11 +182,12 @@ class ImageClassifier(_CustomModel):
         return state
 
     @classmethod
-    def _load_version(self, state, version):
+    def _load_version(cls, state, version):
         """
         A function to load a previously saved ImageClassifier
         instance.
         """
+        _tkutl._model_version_check(version, cls._PYTHON_IMAGE_CLASSIFIER_VERSION)
         from turicreate.toolkits.classifier.logistic_classifier import LogisticClassifier
         state['classifier'] = LogisticClassifier(state['classifier'])
         state['classes'] = state['classifier'].classes
