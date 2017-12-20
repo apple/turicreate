@@ -273,8 +273,7 @@ class ActivityClassifier(_CustomModel):
 
     @classmethod
     def _load_version(cls, state, version):
-        if (version > cls._PYTHON_ACTIVITY_CLASSIFIER_VERSION):
-            raise RuntimeError("Corrupted model. Cannot load a model with this version.")
+        _tkutl._model_version_check(version, cls._PYTHON_ACTIVITY_CLASSIFIER_VERSION)
 
         data_seq_len = state['prediction_window'] * state['_predictions_in_chunk']
         data = {'data': (state['_recalibrated_batch_size'], data_seq_len, len(state['features']))}

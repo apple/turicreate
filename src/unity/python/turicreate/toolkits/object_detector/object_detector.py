@@ -411,9 +411,8 @@ class ObjectDetector(_CustomModel):
 
     @classmethod
     def _load_version(cls, state, version):
+        _tkutl._model_version_check(version, cls._PYTHON_OBJECT_DETECTOR_VERSION)
         from ._model import tiny_darknet as _tiny_darknet
-        if (version > cls._PYTHON_OBJECT_DETECTOR_VERSION):
-            raise RuntimeError("Corrupted model. Cannot load a model with this version.")
 
         num_anchors = len(state['anchors'])
         num_classes = state['num_classes']
