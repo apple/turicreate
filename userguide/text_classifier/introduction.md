@@ -47,6 +47,13 @@ model = tc.sentence_classifier.create(data, 'rating', features=['text'])
 # Make predictions & evaluation the model
 predictions = model.predict(data)
 results = model.evaluate(data)
+
+# Save the model for later use in Turi Create
+model.save('MySentenceClassifier.model')
+
+# Export for use in Core ML
+model.export_coreml('MySentenceClassifier.mlmodel')
+
 ```
 
 #### How it works
