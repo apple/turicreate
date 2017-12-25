@@ -7,13 +7,16 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 import unittest
+import tempfile
+import coremltools
 import turicreate as tc
+from turicreate.toolkits._internal_utils import _mac_ver
 from . import util as test_util
 
 import sys
 if sys.version_info.major == 3:
     unittest.TestCase.assertItemsEqual = unittest.TestCase.assertCountEqual
-import os as _os
+
 
 class SentenceClassifierTest(unittest.TestCase):
     """
@@ -24,16 +27,16 @@ class SentenceClassifierTest(unittest.TestCase):
     def setUpClass(self):
         text = ['hello friend', 'how exciting', 'hello again']
         score = [0, 1, 0]
-        self.docs = tc.SFrame({'text':  text, 'score': score})
+        self.docs = tc.SFrame({'text': text, 'score': score})
 
         self.features = ['text']
         self.num_features = 1
         self.target = 'score'
         self.method = 'bow-logistic'
         self.model = tc.sentence_classifier.create(self.docs,
-                                                  target=self.target,
-                                                  features=self.features,
-                                                  method='auto')
+                                                   target=self.target,
+                                                   features=self.features,
+                                                   method='auto')
 
         self.num_examples = 3
 
@@ -84,6 +87,23 @@ class SentenceClassifierTest(unittest.TestCase):
         Tests for evaluating the model.
         """
         self.model.evaluate(self.docs)
+
+    def test_export_coreml(self):
+        filename = tempfile.mkstemp('bingo.mlmodel')[1]
+        self.model.export_coreml(filename)
+
+    @unittest.skipIf(_mac_ver() < (10, 13), 'Only supported on macOS 10.13+')
+    def test_export_coreml_with_predict(self):
+        filename = tempfile.mkstemp('bingo.mlmodel')[1]
+        self.model.export_coreml(filename)
+        preds = self.model.predict(self.docs, output_type='probability_vector')
+
+        coreml_model = coremltools.models.MLModel(filename)
+        coreml_preds = coreml_model.predict({
+            'text': {'hello': 1, 'friend': 1}
+        })
+        self.assertAlmostEqual(preds[0][0], coreml_preds['scoreProbability'][0])
+        self.assertAlmostEqual(preds[0][1], coreml_preds['scoreProbability'][1])
 
     def test_save_and_load(self):
         """
@@ -182,4 +202,3 @@ class SentenceClassifierCreateBadValues(unittest.TestCase):
           target=self.rating_column,
           features=self.features)
         self.assertTrue(model is not None)
-
