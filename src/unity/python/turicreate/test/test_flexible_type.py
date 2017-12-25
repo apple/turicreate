@@ -329,7 +329,7 @@ class FlexibleTypeTest(unittest.TestCase):
     def test_none(self):
         self.assert_equal_with_lambda_check(_flexible_type(None), None)
     def test_date_time(self):
-        d = datetime.datetime(2010, 10, 10, 10, 10, 10);
+        d = datetime.datetime(2010, 10, 10, 10, 10, 10)
         self.assert_equal_with_lambda_check(_flexible_type(d),d)
     def test_int(self):
         self.assert_equal_with_lambda_check(_flexible_type(1), 1)
@@ -382,11 +382,11 @@ class FlexibleTypeTest(unittest.TestCase):
         # numpy ndarray
         expected = np.asarray([1, 2, 3])
         self.assertSequenceEqual(_flexible_type(expected), list(expected))
-        self.assertEquals(from_lambda(expected), array.array('d', expected))
+        self.assertEqual(from_lambda(expected), array.array('d', expected))
 
         expected = np.asarray([.1, .2, .3])
         self.assertSequenceEqual(_flexible_type(expected), list(expected))
-        self.assertEquals(from_lambda(expected), array.array('d', expected))
+        self.assertEqual(from_lambda(expected), array.array('d', expected))
 
     def test_dict(self):
         d = dt.datetime(2010, 10, 10, 10, 10, 10)
@@ -484,16 +484,16 @@ class FlexibleTypeTest(unittest.TestCase):
                                             [{}, {'a': 1}, None])
 
     def test_infer_list_type(self):
-        self.assertEquals(infer_type_of_list([image.Image(current_file_dir + "/images/nested/sample_grey.png"), image.Image(current_file_dir + "/images/sample.jpg","JPG"), image.Image(current_file_dir + "/images/sample.png")
+        self.assertEqual(infer_type_of_list([image.Image(current_file_dir + "/images/nested/sample_grey.png"), image.Image(current_file_dir + "/images/sample.jpg","JPG"), image.Image(current_file_dir + "/images/sample.png")
 ]), image.Image)
-        self.assertEquals(infer_type_of_list([dt.datetime(2010, 10, 10, 10, 10, 10), dt.datetime(2000, 5, 7, 10, 4, 10),dt.datetime(1845, 5, 7, 4, 4, 10)]), dt.datetime)
-        self.assertEquals(infer_type_of_list([0, 1, 2]), int)
-        self.assertEquals(infer_type_of_list([0, 1, 2.0]), float)
-        self.assertEquals(infer_type_of_list(['foo', u'bar']), str)
-        self.assertEquals(infer_type_of_list([array.array('d', [1, 2, 3]), array.array('d', [1, 2, 3])]), array.array)
-        self.assertEquals(infer_type_of_list([[], [1.0, 2.0, 3.0], array.array('d', [1, 2, 3])]), array.array)
-        self.assertEquals(infer_type_of_list([[], [1, 2, 3], array.array('d', [1, 2, 3])]), array.array)
-        self.assertEquals(infer_type_of_list([{'a': 1}, {'b': 2}]), dict)
+        self.assertEqual(infer_type_of_list([dt.datetime(2010, 10, 10, 10, 10, 10), dt.datetime(2000, 5, 7, 10, 4, 10),dt.datetime(1845, 5, 7, 4, 4, 10)]), dt.datetime)
+        self.assertEqual(infer_type_of_list([0, 1, 2]), int)
+        self.assertEqual(infer_type_of_list([0, 1, 2.0]), float)
+        self.assertEqual(infer_type_of_list(['foo', u'bar']), str)
+        self.assertEqual(infer_type_of_list([array.array('d', [1, 2, 3]), array.array('d', [1, 2, 3])]), array.array)
+        self.assertEqual(infer_type_of_list([[], [1.0, 2.0, 3.0], array.array('d', [1, 2, 3])]), array.array)
+        self.assertEqual(infer_type_of_list([[], [1, 2, 3], array.array('d', [1, 2, 3])]), array.array)
+        self.assertEqual(infer_type_of_list([{'a': 1}, {'b': 2}]), dict)
 
     def test_datetime_lambda(self):
         d = dt.datetime.now()
@@ -530,13 +530,13 @@ class FlexibleTypeTest(unittest.TestCase):
 
     def test_pytype_from_type_name(self):
 
-        self.assertEquals(pytype_from_type_name("str"), str)
-        self.assertEquals(pytype_from_type_name("string"), str)
-        self.assertEquals(pytype_from_type_name("float"), float)
-        self.assertEquals(pytype_from_type_name("datetime"), datetime.datetime)
-        self.assertEquals(pytype_from_type_name("image"), image.Image)
-        self.assertEquals(pytype_from_type_name("list"), list)
-        self.assertEquals(pytype_from_type_name("undefined"), type(None))
+        self.assertEqual(pytype_from_type_name("str"), str)
+        self.assertEqual(pytype_from_type_name("string"), str)
+        self.assertEqual(pytype_from_type_name("float"), float)
+        self.assertEqual(pytype_from_type_name("datetime"), datetime.datetime)
+        self.assertEqual(pytype_from_type_name("image"), image.Image)
+        self.assertEqual(pytype_from_type_name("list"), list)
+        self.assertEqual(pytype_from_type_name("undefined"), type(None))
 
         self.assertRaises(ValueError, lambda: pytype_from_type_name("happiness"))
         

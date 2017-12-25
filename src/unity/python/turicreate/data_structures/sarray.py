@@ -690,7 +690,7 @@ class SArray(object):
         """
         from .sframe import SFrame as _SFrame
 
-        if format == None:
+        if format is None:
             if filename.endswith(('.csv', '.csv.gz', 'txt')):
                 format = 'text'
             else:
@@ -1405,7 +1405,7 @@ class SArray(object):
         """
         if (self.dtype != array.array) and (self.dtype != list):
             raise RuntimeError("Only Vector type can be sliced")
-        if end == None:
+        if end is None:
             end = start + 1
 
         with cython_context():
@@ -1855,7 +1855,7 @@ class SArray(object):
         assert callable(fn), "Input function must be callable."
 
         dryrun = [fn(i) for i in self.head(100) if i is not None]
-        if dtype == None:
+        if dtype is None:
             dtype = infer_type_of_list(dryrun)
         if seed is None:
             seed = abs(hash("%0.20f" % time.time())) % (2 ** 31)
@@ -2423,7 +2423,7 @@ class SArray(object):
         out_of_range_values = [(val > 255 or val < 0) for x in range(num_test) for val in self[x]]
 
         if sum(mod_values) != 0.0 and not allow_rounding:
-            raise ValueError("There are non-integer values in the array data. Images only support integer data values between 0 and 255. To permit rounding, set the 'allow_rounding' paramter to 1.")
+            raise ValueError("There are non-integer values in the array data. Images only support integer data values between 0 and 255. To permit rounding, set the 'allow_rounding' parameter to 1.")
 
         if sum(out_of_range_values) != 0:
             raise ValueError("There are values outside the range of 0 to 255. Images only support integer data values between 0 and 255.")
@@ -2711,7 +2711,7 @@ class SArray(object):
             raise TypeError("summary() is not supported for arrays of image type")
         if (type(background) != bool):
             raise TypeError("'background' parameter has to be a boolean value")
-        if (sub_sketch_keys != None):
+        if (sub_sketch_keys is not None):
             if (self.dtype != dict and self.dtype != array.array):
                 raise TypeError("sub_sketch_keys is only supported for SArray of dictionary or array type")
             if not _is_non_string_iterable(sub_sketch_keys):
@@ -2719,7 +2719,7 @@ class SArray(object):
             value_types = set([type(i) for i in sub_sketch_keys])
             if (len(value_types) != 1):
                 raise ValueError("sub_sketch_keys member values need to have the same type.")
-            value_type = value_types.pop();
+            value_type = value_types.pop()
             if (self.dtype == dict and value_type != str):
                 raise TypeError("Only string value(s) can be passed to sub_sketch_keys for SArray of dictionary type. "+
                     "For dictionary types, sketch summary is computed by casting keys to string values.")
@@ -3042,15 +3042,15 @@ class SArray(object):
         if self.dtype != datetime.datetime:
             raise TypeError("Only column of datetime type is supported.")
 
-        if column_name_prefix == None:
+        if column_name_prefix is None:
             column_name_prefix = ""
         if type(column_name_prefix) != str:
             raise TypeError("'column_name_prefix' must be a string")
 
         # convert limit to column_keys
-        if limit != None:
+        if limit is not None:
             if not _is_non_string_iterable(limit):
-                raise TypeError("'limit' must be a list");
+                raise TypeError("'limit' must be a list")
 
             name_types = set([type(i) for i in limit])
             if (len(name_types) != 1):
@@ -3064,7 +3064,7 @@ class SArray(object):
 
         column_types = []
 
-        if(limit == None):
+        if(limit is None):
             limit = ['year','month','day','hour','minute','second']
 
         column_types = [int] * len(limit)
@@ -3208,15 +3208,15 @@ class SArray(object):
         if self.dtype not in [dict, array.array, list]:
             raise TypeError("Only SArray of dict/list/array type supports unpack")
 
-        if column_name_prefix == None:
+        if column_name_prefix is None:
             column_name_prefix = ""
         if type(column_name_prefix) != str:
             raise TypeError("'column_name_prefix' must be a string")
 
-        # validdate 'limit'
-        if limit != None:
+        # validate 'limit'
+        if limit is not None:
             if (not _is_non_string_iterable(limit)):
-                raise TypeError("'limit' must be a list");
+                raise TypeError("'limit' must be a list")
 
             name_types = set([type(i) for i in limit])
             if (len(name_types) != 1):
@@ -3229,15 +3229,15 @@ class SArray(object):
             if len(set(limit)) != len(limit):
                 raise ValueError("'limit' contains duplicate values")
 
-        if (column_types != None):
+        if (column_types is not None):
             if not _is_non_string_iterable(column_types):
-                raise TypeError("column_types must be a list");
+                raise TypeError("column_types must be a list")
 
             for column_type in column_types:
                 if (column_type not in (int, float, str, list, dict, array.array)):
                     raise TypeError("column_types contains unsupported types. Supported types are ['float', 'int', 'list', 'dict', 'str', 'array.array']")
 
-            if limit != None:
+            if limit is not None:
                 if len(limit) != len(column_types):
                     raise ValueError("limit and column_types do not have the same length")
             elif self.dtype == dict:
@@ -3254,7 +3254,7 @@ class SArray(object):
             # infer column types for dict type at server side, for list and array, infer from client side
             if self.dtype != dict:
                 length = max(lengths)
-                if limit == None:
+                if limit is None:
                     limit = range(length)
                 else:
                     # adjust the length
@@ -3270,8 +3270,8 @@ class SArray(object):
 
 
         with cython_context():
-            if (self.dtype == dict and column_types == None):
-                limit = limit if limit != None else []
+            if (self.dtype == dict and column_types is None):
+                limit = limit if limit is not None else []
                 return _SFrame(_proxy=self.__proxy__.unpack_dict(column_name_prefix.encode(), limit, na_value))
             else:
                 return _SFrame(_proxy=self.__proxy__.unpack(column_name_prefix.encode(), limit, column_types, na_value))
@@ -3932,7 +3932,7 @@ class SArray(object):
         Count the number of non-NULL values of different subsets over this
         SArray.
 
-        The subset that the count is excecuted on is defined as an inclusive
+        The subset that the count is executed on is defined as an inclusive
         range relative to the position to each value in the SArray, using
         `window_start` and `window_end`. For a better understanding of this,
         see the examples below.

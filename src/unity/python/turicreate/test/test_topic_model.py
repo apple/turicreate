@@ -246,7 +246,7 @@ class BasicTest(unittest.TestCase):
             # topic_probs = m.get_topics(num_words=5)
             # expected = [w for w in topic_probs['word'][:5]]
             # observed = topic_words['words'][0]
-            # self.assertEquals(observed[0], expected[0])
+            # self.assertEqual(observed[0], expected[0])
 
     def test_get_vocabulary(self):
         """

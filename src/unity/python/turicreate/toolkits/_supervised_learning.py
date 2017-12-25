@@ -221,7 +221,7 @@ class SupervisedLearningModel(Model):
 
 class Classifier(SupervisedLearningModel):
     """
-    Clasifier module to predict a discrete target variable as a function of
+    Classifier module to predict a discrete target variable as a function of
     several feature variables.
     """
 
@@ -295,7 +295,8 @@ def print_validation_track_notification():
 
 
 def create(dataset, target, model_name, features=None,
-           validation_set='auto', verbose=True, distributed='auto', **kwargs):
+           validation_set='auto', distributed='auto',
+           verbose=True, seed=None, **kwargs):
     """
     Create a :class:`~turicreate.toolkits.SupervisedLearningModel`,
 
@@ -335,6 +336,10 @@ def create(dataset, target, model_name, features=None,
     verbose : boolean
         whether print out messages during training
 
+    seed : int, optional
+        Seed for random number generation. Set this value to ensure that the
+        same model is created every time.
+
     kwargs : dict
         Additional parameter options that can be passed
     """
@@ -347,7 +352,7 @@ def create(dataset, target, model_name, features=None,
             if dataset.num_rows() >= 100:
                 if verbose:
                     print_validation_track_notification()
-                dataset, validation_set = dataset.random_split(.95)
+                dataset, validation_set = dataset.random_split(.95, seed=seed)
             else:
                 validation_set = None
         else:

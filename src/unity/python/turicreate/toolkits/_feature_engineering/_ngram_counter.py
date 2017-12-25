@@ -218,7 +218,7 @@ class NGramCounter(Transformer):
 
     * **string** : By default, all letters are first converted to lower case.
       Then, if computing word ngrams, each string is tokenized by space and
-      puncutation characters. (The user can specify a custom delimiter
+      punctuation characters. (The user can specify a custom delimiter
       list, or use Penn tree-bank style tokenization. See input parameter
       description for details.) If computing character ngrams, then each
       accepted character is understood to be a token. What is accepted is
@@ -456,7 +456,7 @@ class NGramCounter(Transformer):
         _raise_error_if_not_of_type(delimiters, [list, _NoneType])
         _raise_error_if_not_of_type(output_column_prefix, [str, _NoneType])
 
-        if delimiters != None:
+        if delimiters is not None:
             for delim in delimiters:
                 _raise_error_if_not_of_type(delim, str, "delimiters")
                 if (len(delim) != 1):

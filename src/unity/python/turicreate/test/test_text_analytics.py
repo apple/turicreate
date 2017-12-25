@@ -58,13 +58,13 @@ class FeatureEngineeringTest(unittest.TestCase):
         expected3 = [{'I like big': 1, 'fun I LIKE': 1, 'I LIKE BIG': 1, 'LIKE BIG DOGS': 1, 'They are fun': 1, 'big dogs They': 1, 'like big dogs': 1, 'are fun I': 1, 'dogs They are': 1}, {}, {'I like big': 1}]
         expected4 = [{'I like': 1, 'like big': 1, 'I LIKE': 1, 'BIG DOGS': 1, 'are fun': 1, 'LIKE BIG': 1, 'big dogs': 1, 'They are': 1, 'dogs They': 1, 'fun I': 1}, {'I like': 1}, {'I like': 1, 'like big': 1}]
 
-        self.assertEquals(result.dtype, dict)
+        self.assertEqual(result.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(result, expected)
-        self.assertEquals(result2.dtype, dict)
+        self.assertEqual(result2.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(result2, expected2)
-        self.assertEquals(result3.dtype, dict)
+        self.assertEqual(result3.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(result3, expected3)
-        self.assertEquals(result4.dtype, dict)
+        self.assertEqual(result4.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(result4, expected4)
 
 
@@ -94,29 +94,29 @@ class FeatureEngineeringTest(unittest.TestCase):
         expected15 = [{'s.f': 1, 'n.i': 1, 'Fun': 1, '.fu': 1, 'is.': 1, 'fun': 1, '.is': 1, 'un.': 1}, {'sfu': 1, 'Fun': 1, 'uni': 1, 'fun': 1, 'nis': 1, 'isf': 1, 'un.': 1}, {}, {'fun': 1}]
         expected16 = [{'.i': 1, 'fu': 1, 'n.': 1, 'is': 1, '.f': 1, 'un': 2, 's.': 1, 'Fu': 1}, {'ni': 1, 'fu': 1, 'n.': 1, 'is': 1, 'un': 2, 'sf': 1, 'Fu': 1}, {'fu': 1}, {'un': 1, 'fu': 1}]
 
-        self.assertEquals(result5.dtype, dict)
+        self.assertEqual(result5.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(result5, expected5)
-        self.assertEquals(result6.dtype, dict)
+        self.assertEqual(result6.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(result6, expected6)
-        self.assertEquals(result7.dtype, dict)
+        self.assertEqual(result7.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(result7, expected7)
-        self.assertEquals(result8.dtype, dict)
+        self.assertEqual(result8.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(result8, expected8)
-        self.assertEquals(result9.dtype, dict)
+        self.assertEqual(result9.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(result9, expected9)
-        self.assertEquals(result10.dtype, dict)
+        self.assertEqual(result10.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(result10, expected10)
-        self.assertEquals(result11.dtype, dict)
+        self.assertEqual(result11.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(result11, expected11)
-        self.assertEquals(result12.dtype, dict)
+        self.assertEqual(result12.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(result12, expected12)
-        self.assertEquals(result13.dtype, dict)
+        self.assertEqual(result13.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(result13, expected13)
-        self.assertEquals(result14.dtype, dict)
+        self.assertEqual(result14.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(result14, expected14)
-        self.assertEquals(result15.dtype, dict)
+        self.assertEqual(result15.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(result15, expected15)
-        self.assertEquals(result16.dtype, dict)
+        self.assertEqual(result16.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(result16, expected16)
 
 
@@ -165,11 +165,11 @@ class FeatureEngineeringTest(unittest.TestCase):
 
 
         result = tc.text_analytics.trim_rare_words(self.languages_double)
-        self.assertEquals(result.dtype, str)
+        self.assertEqual(result.dtype, str)
         self.sframe_comparer._assert_sarray_equal(result, expected)
 
         result = tc.text_analytics.trim_rare_words(self.languages_double, to_lower=False)
-        self.assertEquals(result.dtype, str)
+        self.assertEqual(result.dtype, str)
         self.sframe_comparer._assert_sarray_equal(result, expected2)
 
 
@@ -181,9 +181,9 @@ class FeatureEngineeringTest(unittest.TestCase):
         word_counts2 = tc.text_analytics.trim_rare_words(self.punctuated_double,
                                                      delimiters=["?", "!", ","," "])
 
-        self.assertEquals(word_counts1.dtype, str)
+        self.assertEqual(word_counts1.dtype, str)
         self.sframe_comparer._assert_sarray_equal(word_counts1, expected1)
-        self.assertEquals(word_counts2.dtype, str)
+        self.assertEqual(word_counts2.dtype, str)
         self.sframe_comparer._assert_sarray_equal(word_counts2, expected2)
 
 
@@ -210,11 +210,11 @@ class FeatureEngineeringTest(unittest.TestCase):
                      {"Сблъсъкът": 1, "между": 1}]
 
         result = tc.text_analytics.count_words(self.languages)
-        self.assertEquals(result.dtype, dict)
+        self.assertEqual(result.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(result, expected)
 
         result = tc.text_analytics.count_words(self.languages, to_lower=False)
-        self.assertEquals(result.dtype, dict)
+        self.assertEqual(result.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(result, expected2)
 
 
@@ -228,9 +228,9 @@ class FeatureEngineeringTest(unittest.TestCase):
         word_counts2 = tc.text_analytics.count_words(self.punctuated,
                                                      delimiters=["?", "!", ","])
 
-        self.assertEquals(word_counts1.dtype, dict)
+        self.assertEqual(word_counts1.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(word_counts1, expected1)
-        self.assertEquals(word_counts2.dtype, dict)
+        self.assertEqual(word_counts2.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(word_counts2, expected2)
 
     def test_stopwords(self):
@@ -252,7 +252,7 @@ class FeatureEngineeringTest(unittest.TestCase):
         self.assertAlmostEqual(tfidf_docs[0]['is'], 1 * math.log(1))
 
         empty_sa = tc.text_analytics.tf_idf(tc.SArray())
-        self.assertEquals(len(empty_sa), 0)
+        self.assertEqual(len(empty_sa), 0)
 
         empty_dict_sf = tc.text_analytics.tf_idf(tc.SArray([{}]))
         assert len(empty_dict_sf) == 1

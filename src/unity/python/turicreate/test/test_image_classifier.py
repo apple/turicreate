@@ -64,7 +64,7 @@ def _get_data():
 
 class ImageClassifierTest(unittest.TestCase):
     @classmethod
-    def setUpClass(self, model='resnet-50', input_image_shape=(3, 224, 224), tol=0.005):
+    def setUpClass(self, model='resnet-50', input_image_shape=(3, 224, 224), tol=0.02):
         self.feature = 'awesome_image'
         self.target = 'awesome_label'
         self.input_image_shape = input_image_shape
@@ -73,7 +73,8 @@ class ImageClassifierTest(unittest.TestCase):
 
         self.sf = _get_data()
         self.model = tc.image_classifier.create(self.sf, target=self.target,
-                                                model=self.pre_trained_model)
+                                                model=self.pre_trained_model,
+                                                seed=42)
         self.nn_model = self.model.feature_extractor
         self.lm_model = self.model.classifier
         self.max_iterations = 10
@@ -125,7 +126,7 @@ class ImageClassifierTest(unittest.TestCase):
         model = self.model
         for output_type in ['score', 'probability', 'class']:
             preds = model.predict(self.sf.head())
-            self.assertEquals(len(preds), len(self.sf.head()))
+            self.assertEqual(len(preds), len(self.sf.head()))
 
     def test_export_coreml(self):
         filename = tempfile.mkstemp('bingo.mlmodel')[1]
@@ -156,21 +157,21 @@ class ImageClassifierTest(unittest.TestCase):
     def test_classify(self):
         model = self.model
         preds = model.classify(self.sf.head())
-        self.assertEquals(len(preds), len(self.sf.head()))
+        self.assertEqual(len(preds), len(self.sf.head()))
 
     def test_predict_topk(self):
         model = self.model
         for output_type in ['score', 'probability', 'class']:
             preds = model.predict_topk(self.sf.head())
-            self.assertEquals(len(preds), 3 * len(self.sf.head()))
+            self.assertEqual(len(preds), 3 * len(self.sf.head()))
 
             preds = model.predict_topk(self.sf.head(), k = 5)
-            self.assertEquals(len(preds), 5 * len(self.sf.head()))
+            self.assertEqual(len(preds), 5 * len(self.sf.head()))
 
     def test__list_fields(self):
         model = self.model
         fields = model._list_fields()
-        self.assertEquals(set(fields), set(self.fields_ans))
+        self.assertEqual(set(fields), set(self.fields_ans))
 
     def test_get(self):
         model = self.model

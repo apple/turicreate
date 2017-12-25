@@ -154,7 +154,7 @@ def create(observation_data,
     >>> user_info = turicreate.SFrame({'user_id': ["0", "1", "2"],
     ...                              'name': ["Alice", "Bob", "Charlie"],
     ...                              'numeric_feature': [0.1, 12, 22]})
-    >>> item_info = turicreate.SFrame({'item_id': ["a", "b", "c", d"],
+    >>> item_info = turicreate.SFrame({'item_id': ["a", "b", "c", "d"],
     ...                              'name': ["item1", "item2", "item3", "item4"],
     ...                              'dict_feature': [{'a' : 23}, {'a' : 13},
     ...                                               {'b' : 1},

@@ -11,7 +11,7 @@ from turicreate.util import _raise_error_if_not_of_type
 import logging as _logging
 import os as _os
 from distutils.version import LooseVersion
-from urllib import urlretrieve
+from six.moves.urllib.request import urlretrieve
 import zipfile
 
 NoneType = type(None)
@@ -34,7 +34,7 @@ def select_feature_subset(data, feature_columns):
     result = total_set.intersection(feature_set)
 
     if len(result) != len(feature_set):
-        _logging.warning("Warning: The model was fit with " + str(len(feature_columns)) + " feature columns but only " + str(len(result)) + " were present during transform()." +" Procedding with transform by ignoring the missing columns.")
+        _logging.warning("Warning: The model was fit with " + str(len(feature_columns)) + " feature columns but only " + str(len(result)) + " were present during transform()." +" Proceeding with transform by ignoring the missing columns.")
 
     return [f for f in feature_columns if f in result]
 

@@ -30,10 +30,10 @@ class TreeExtractFeaturesTest(unittest.TestCase):
                     max_iterations=5, max_depth=2)
 
             out = m.extract_features(sf)
-            self.assertEquals(len(out), len(sf))
+            self.assertEqual(len(out), len(sf))
 
             out = m._extract_features_with_missing(sf)
-            self.assertEquals(len(out), len(sf))
+            self.assertEqual(len(out), len(sf))
 
 
         for model in [tc.regression.random_forest_regression,
@@ -43,10 +43,10 @@ class TreeExtractFeaturesTest(unittest.TestCase):
             m = model.create(sf, 'target', validation_set = None, max_depth=2)
 
             out = m.extract_features(sf)
-            self.assertEquals(len(out), len(sf))
+            self.assertEqual(len(out), len(sf))
 
             out = m._extract_features_with_missing(sf)
-            self.assertEquals(len(out), len(sf))
+            self.assertEqual(len(out), len(sf))
 
     def test_categorical_1(self):
 

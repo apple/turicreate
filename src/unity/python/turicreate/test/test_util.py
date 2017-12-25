@@ -30,7 +30,7 @@ class UtilTests(unittest.TestCase):
 
             # Act & Assert
             self.assertTrue(glutil.is_directory_archive(dir))
-            self.assertEquals(glutil.get_archive_type(dir), 'sframe')
+            self.assertEqual(glutil.get_archive_type(dir), 'sframe')
             self.assertFalse(glutil.is_directory_archive('/tmp'))
             self.assertRaises(TypeError, lambda: glutil.get_archive_type('/tmp'))
         finally:
@@ -56,7 +56,7 @@ class UtilTests(unittest.TestCase):
         with util.TempDirectory() as temp_dir:
             obj.save(temp_dir)
             t = get_turicreate_object_type(temp_dir)
-            self.assertEquals(t, expected)
+            self.assertEqual(t, expected)
 
     def test_get_turicreate_object_type(self):
         sf = SFrame({"a":[1,2]})
@@ -231,11 +231,11 @@ class UtilTests(unittest.TestCase):
 class SubprocessExecTest(unittest.TestCase):
     def test_exec(self):
         ret_dict = glutil.subprocess_exe('echo', ['hello_world'])
-        self.assertEquals(ret_dict['success'], True)
-        self.assertEquals(ret_dict['return_code'], 0)
-        self.assertEquals(ret_dict['stdout'], 'hello_world\n')
-        self.assertEquals(ret_dict['stderr'], '')
-        self.assertEquals(ret_dict['python_exception'], None)
+        self.assertEqual(ret_dict['success'], True)
+        self.assertEqual(ret_dict['return_code'], 0)
+        self.assertEqual(ret_dict['stdout'], 'hello_world\n')
+        self.assertEqual(ret_dict['stderr'], '')
+        self.assertEqual(ret_dict['python_exception'], None)
 
     def test_exec_with_setup_teardown(self):
         f = tempfile.NamedTemporaryFile(delete=False)
@@ -248,43 +248,43 @@ class SubprocessExecTest(unittest.TestCase):
             os.remove(f.name)
 
         ret_dict = glutil.subprocess_exe('cat', [f.name], setup_fn, teardown_fn)
-        self.assertEquals(ret_dict['success'], True)
-        self.assertEquals(ret_dict['return_code'], 0)
-        self.assertEquals(ret_dict['stdout'], 'hello_world\n')
-        self.assertEquals(ret_dict['stderr'], '')
-        self.assertEquals(ret_dict['python_exception'], None)
+        self.assertEqual(ret_dict['success'], True)
+        self.assertEqual(ret_dict['return_code'], 0)
+        self.assertEqual(ret_dict['stdout'], 'hello_world\n')
+        self.assertEqual(ret_dict['stderr'], '')
+        self.assertEqual(ret_dict['python_exception'], None)
 
     def test_setup_exception(self):
         def setup_fn():
             raise RuntimeError('error')
 
         ret_dict = glutil.subprocess_exe('ls', [], setup_fn)
-        self.assertEquals(ret_dict['success'], False)
-        self.assertEquals(ret_dict['return_code'], None)
-        self.assertEquals(ret_dict['stdout'], None)
-        self.assertEquals(ret_dict['stderr'], None)
-        self.assertEquals(type(ret_dict['python_exception']), RuntimeError)
-        self.assertEquals(str(ret_dict['python_exception']), 'error')
+        self.assertEqual(ret_dict['success'], False)
+        self.assertEqual(ret_dict['return_code'], None)
+        self.assertEqual(ret_dict['stdout'], None)
+        self.assertEqual(ret_dict['stderr'], None)
+        self.assertEqual(type(ret_dict['python_exception']), RuntimeError)
+        self.assertEqual(str(ret_dict['python_exception']), 'error')
 
     def test_process_exception(self):
         ret_dict = glutil.subprocess_exe('cp', [])
-        self.assertEquals(ret_dict['success'], False)
+        self.assertEqual(ret_dict['success'], False)
         self.assertNotEquals(ret_dict['return_code'], 0)
-        self.assertEquals(ret_dict['stdout'], "")
+        self.assertEqual(ret_dict['stdout'], "")
         self.assertNotEquals(ret_dict['stderr'], "")
-        self.assertEquals(ret_dict['python_exception'], None)
+        self.assertEqual(ret_dict['python_exception'], None)
 
     def test_tear_down_exception(self):
         def teardown_fn():
             raise RuntimeError('error')
         ret_dict = glutil.subprocess_exe('echo', [], teardown=teardown_fn)
-        self.assertEquals(ret_dict['success'], True)
-        self.assertEquals(ret_dict['return_code'], 0)
-        self.assertEquals(ret_dict['stdout'], "\n")
-        self.assertEquals(ret_dict['stderr'], "")
-        self.assertEquals(ret_dict['python_exception'], None)
-        self.assertEquals(type(ret_dict['_tear_down_exception']), RuntimeError)
-        self.assertEquals(str(ret_dict['_tear_down_exception']), 'error')
+        self.assertEqual(ret_dict['success'], True)
+        self.assertEqual(ret_dict['return_code'], 0)
+        self.assertEqual(ret_dict['stdout'], "\n")
+        self.assertEqual(ret_dict['stderr'], "")
+        self.assertEqual(ret_dict['python_exception'], None)
+        self.assertEqual(type(ret_dict['_tear_down_exception']), RuntimeError)
+        self.assertEqual(str(ret_dict['_tear_down_exception']), 'error')
 
     def test_exec_with_logfile(self):
         log_prefix = 'test-log-' + str(uuid.uuid4())
@@ -292,14 +292,14 @@ class SubprocessExecTest(unittest.TestCase):
         expected_ferr = log_prefix + '.stderr'
         ret_dict = glutil.subprocess_exe('echo', ['hello_world'],
                                       out_log_prefix=log_prefix)
-        self.assertEquals(ret_dict['success'], True)
-        self.assertEquals(ret_dict['return_code'], 0)
-        self.assertEquals(ret_dict['stdout'], expected_fout)
-        self.assertEquals(ret_dict['stderr'], expected_ferr)
-        self.assertEquals(ret_dict['python_exception'], None)
+        self.assertEqual(ret_dict['success'], True)
+        self.assertEqual(ret_dict['return_code'], 0)
+        self.assertEqual(ret_dict['stdout'], expected_fout)
+        self.assertEqual(ret_dict['stderr'], expected_ferr)
+        self.assertEqual(ret_dict['python_exception'], None)
         with open(expected_fout) as f:
             stdout = f.read()
-            self.assertEquals(stdout, 'hello_world\n')
+            self.assertEqual(stdout, 'hello_world\n')
         os.remove(expected_fout)
         os.remove(expected_ferr)
 
@@ -307,9 +307,9 @@ class SubprocessExecTest(unittest.TestCase):
         log_prefix = 'unknown_protocol://test-log-' + str(uuid.uuid4())
         ret_dict = glutil.subprocess_exe('echo', ['hello_world'],
                                       out_log_prefix=log_prefix)
-        self.assertEquals(ret_dict['success'], True)
-        self.assertEquals(ret_dict['return_code'], 0)
-        self.assertEquals(ret_dict['stdout'], None)
-        self.assertEquals(ret_dict['stderr'], None)
-        self.assertEquals(ret_dict['python_exception'], None)
+        self.assertEqual(ret_dict['success'], True)
+        self.assertEqual(ret_dict['return_code'], 0)
+        self.assertEqual(ret_dict['stdout'], None)
+        self.assertEqual(ret_dict['stderr'], None)
+        self.assertEqual(ret_dict['python_exception'], None)
         self.assertNotEquals(ret_dict['_save_log_exception'], None)

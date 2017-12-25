@@ -87,11 +87,11 @@ class FastPathPredictionTest(unittest.TestCase):
             sf_new['new_column'] = 1
             dp_new = model.classify(sf_new)
 
-            self.assertEquals(len(dp), 1)
-            self.assertEquals(list(bp), list(lp))
-            self.assertEquals(bp[0], dp[0])
-            self.assertEquals(lp[0], dp[0])
-            self.assertEquals(lp[0], dp_new[0])
+            self.assertEqual(len(dp), 1)
+            self.assertEqual(list(bp), list(lp))
+            self.assertEqual(bp[0], dp[0])
+            self.assertEqual(lp[0], dp[0])
+            self.assertEqual(lp[0], dp_new[0])
 
     def test_predict_topk(self):
         if self.model is None:
@@ -113,13 +113,13 @@ class FastPathPredictionTest(unittest.TestCase):
             sf_new['new_column'] = 1
             dp_new = model.predict_topk(sf_new, output_type, k)
 
-            self.assertEquals(len(dp), 2)
-            self.assertEquals(list(bp), list(lp))
-            self.assertEquals(bp[0], dp[0])
-            self.assertEquals(bp[0], dp_new[0])
-            self.assertEquals(lp[0], dp[0])
-            self.assertEquals(bp[1], dp[1])
-            self.assertEquals(lp[1], dp[1])
+            self.assertEqual(len(dp), 2)
+            self.assertEqual(list(bp), list(lp))
+            self.assertEqual(bp[0], dp[0])
+            self.assertEqual(bp[0], dp_new[0])
+            self.assertEqual(lp[0], dp[0])
+            self.assertEqual(bp[1], dp[1])
+            self.assertEqual(lp[1], dp[1])
 
             # Act & Assert
             output_type = 'probability'
@@ -128,13 +128,13 @@ class FastPathPredictionTest(unittest.TestCase):
             dp = model.predict_topk(sf[0], output_type, k)
             dp_new = model.predict_topk(sf_new, output_type, k)
 
-            self.assertEquals(len(dp), 2)
-            self.assertEquals(list(bp), list(lp))
-            self.assertEquals(bp[0], dp[0])
-            self.assertEquals(bp[0], dp_new[0])
-            self.assertEquals(lp[0], dp[0])
-            self.assertEquals(bp[1], dp[1])
-            self.assertEquals(lp[1], dp[1])
+            self.assertEqual(len(dp), 2)
+            self.assertEqual(list(bp), list(lp))
+            self.assertEqual(bp[0], dp[0])
+            self.assertEqual(bp[0], dp_new[0])
+            self.assertEqual(lp[0], dp[0])
+            self.assertEqual(bp[1], dp[1])
+            self.assertEqual(lp[1], dp[1])
 
             # Act & Assert
             output_type = 'margin'
@@ -143,13 +143,13 @@ class FastPathPredictionTest(unittest.TestCase):
             dp = model.predict_topk(sf[0], output_type, k)
             dp_new = model.predict_topk(sf_new, output_type, k)
 
-            self.assertEquals(len(dp), 2)
-            self.assertEquals(list(bp), list(lp))
-            self.assertEquals(bp[0], dp[0])
-            self.assertEquals(bp[0], dp_new[0])
-            self.assertEquals(lp[0], dp[0])
-            self.assertEquals(bp[1], dp[1])
-            self.assertEquals(lp[1], dp[1])
+            self.assertEqual(len(dp), 2)
+            self.assertEqual(list(bp), list(lp))
+            self.assertEqual(bp[0], dp[0])
+            self.assertEqual(bp[0], dp_new[0])
+            self.assertEqual(lp[0], dp[0])
+            self.assertEqual(bp[1], dp[1])
+            self.assertEqual(lp[1], dp[1])
 
     def test_predict(self):
         if self.model is None:
@@ -171,11 +171,11 @@ class FastPathPredictionTest(unittest.TestCase):
             sf_new['new_column'] = 1
             dp_new = model.predict(sf_new, output_type)
 
-            self.assertEquals(len(dp), 1)
-            self.assertEquals(list(bp), list(lp))
-            self.assertEquals(bp[0], dp_new[0])
-            self.assertEquals(bp[0], dp[0])
-            self.assertEquals(lp[0], dp[0])
+            self.assertEqual(len(dp), 1)
+            self.assertEqual(list(bp), list(lp))
+            self.assertEqual(bp[0], dp_new[0])
+            self.assertEqual(bp[0], dp[0])
+            self.assertEqual(lp[0], dp[0])
 
             # act & assert
             output_type = 'margin'
@@ -184,11 +184,11 @@ class FastPathPredictionTest(unittest.TestCase):
             dp = model.predict(sf[0], output_type)
             dp_new = model.predict(sf_new, output_type)
 
-            self.assertEquals(len(dp), 1)
-            self.assertEquals(list(bp), list(lp))
-            self.assertEquals(bp[0], dp_new[0])
-            self.assertEquals(bp[0], dp[0])
-            self.assertEquals(lp[0], dp[0])
+            self.assertEqual(len(dp), 1)
+            self.assertEqual(list(bp), list(lp))
+            self.assertEqual(bp[0], dp_new[0])
+            self.assertEqual(bp[0], dp[0])
+            self.assertEqual(lp[0], dp[0])
 
             # act & assert
             if self.has_probability_vector:
@@ -198,11 +198,11 @@ class FastPathPredictionTest(unittest.TestCase):
                 dp = model.predict(sf[0], output_type)
                 dp_new = model.predict(sf_new, output_type)
 
-                self.assertEquals(len(dp), 1)
-                self.assertEquals(list(bp), list(lp))
-                self.assertEquals(bp[0], dp_new[0])
-                self.assertEquals(bp[0], dp[0])
-                self.assertEquals(lp[0], dp[0])
+                self.assertEqual(len(dp), 1)
+                self.assertEqual(list(bp), list(lp))
+                self.assertEqual(bp[0], dp_new[0])
+                self.assertEqual(bp[0], dp[0])
+                self.assertEqual(lp[0], dp[0])
 
             # act & assert
             if self.has_probability:
@@ -212,11 +212,11 @@ class FastPathPredictionTest(unittest.TestCase):
                 dp = model.predict(sf[0], output_type)
                 dp_new = model.predict(sf_new, output_type)
 
-                self.assertEquals(len(dp), 1)
-                self.assertEquals(list(bp), list(lp))
-                self.assertEquals(bp[0], dp_new[0])
-                self.assertEquals(bp[0], dp[0])
-                self.assertEquals(lp[0], dp[0])
+                self.assertEqual(len(dp), 1)
+                self.assertEqual(list(bp), list(lp))
+                self.assertEqual(bp[0], dp_new[0])
+                self.assertEqual(bp[0], dp[0])
+                self.assertEqual(lp[0], dp[0])
 
         # Act & Assert
         if self.regression:
@@ -228,11 +228,11 @@ class FastPathPredictionTest(unittest.TestCase):
             sf_new['new_column'] = 1
             dp_new = model.predict(sf_new)
 
-            self.assertEquals(len(dp), 1)
-            self.assertEquals(list(bp), list(lp))
-            self.assertEquals(lp[0], dp_new[0])
-            self.assertEquals(bp[0], dp[0])
-            self.assertEquals(lp[0], dp[0])
+            self.assertEqual(len(dp), 1)
+            self.assertEqual(list(bp), list(lp))
+            self.assertEqual(lp[0], dp_new[0])
+            self.assertEqual(bp[0], dp[0])
+            self.assertEqual(lp[0], dp[0])
 
     def test_wrong_input_type(self):
         if self.model is None:

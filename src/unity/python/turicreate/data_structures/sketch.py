@@ -416,7 +416,7 @@ class Sketch(object):
         also appear in the result. The item counts are estimated using
         the CountSketch.
 
-        Missing values are not taken into account when copmuting frequent items.
+        Missing values are not taken into account when computing frequent items.
 
         If this function returns no elements, it means that all elements appear
         with less than 0.01% occurrence.
@@ -715,7 +715,7 @@ class Sketch(object):
          +-----+-----+-----+-----+-----+-----+-----+-----+------+}
         """
         single_val = False
-        if keys == None:
+        if keys is None:
             keys = []
         else:
             if not isinstance(keys, list):

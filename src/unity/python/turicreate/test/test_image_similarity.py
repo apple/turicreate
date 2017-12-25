@@ -130,20 +130,20 @@ class ImageSimilarityTest(unittest.TestCase):
     def test_query(self):
         model = self.model
         preds = model.query(self.sf)
-        self.assertEquals(len(preds), len(self.sf) * 5)
+        self.assertEqual(len(preds), len(self.sf) * 5)
 
     def test_similarity_graph(self):
         model = self.model
         preds = model.similarity_graph()
-        self.assertEquals(len(preds.edges), len(self.sf) * 5)
+        self.assertEqual(len(preds.edges), len(self.sf) * 5)
 
         preds = model.similarity_graph(output_type = 'SFrame')
-        self.assertEquals(len(preds), len(self.sf) * 5)
+        self.assertEqual(len(preds), len(self.sf) * 5)
 
     def test__list_fields(self):
         model = self.model
         fields = model._list_fields()
-        self.assertEquals(set(fields), set(self.fields_ans))
+        self.assertEqual(set(fields), set(self.fields_ans))
 
     def test_get(self):
         """

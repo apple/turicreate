@@ -22,6 +22,7 @@ from turicreate.toolkits._main import ToolkitError
 import turicreate.util.file_util as file_util
 import os
 from copy import copy as _copy
+import six as _six
 
 MODEL_NAME_MAP = {}
 
@@ -74,7 +75,7 @@ def load_model(location):
             # this is a native model
             return cls(saved_state['model'])
         else:
-            # this is a CustomModle
+            # this is a CustomModel
             model_data = saved_state['side_data']
             model_version = model_data['model_version']
             del model_data['model_version']
@@ -323,6 +324,7 @@ class ExposeAttributesFromProxy(object):
         else:
             return object.__getattribute__(self, attr)
 
+@_six.add_metaclass(RegistrationMetaClass)
 class Model(ExposeAttributesFromProxy):
     """
     This class defines the minimal interface of a model object which is 
@@ -350,8 +352,6 @@ class Model(ExposeAttributesFromProxy):
         def _native_name(cls):
             return ["nearest_neighbors_ball_tree", "nearest_neighbors_brute_force", "nearest_neighbors_lsh"]
     """
-
-    __metaclass__ = RegistrationMetaClass
 
     def _name(self):
         """
@@ -461,6 +461,7 @@ class Model(ExposeAttributesFromProxy):
         return self.__repr__()
 
 
+@_six.add_metaclass(RegistrationMetaClass)
 class CustomModel(ExposeAttributesFromProxy):
     """
     This class is used to implement Python-only models. 
@@ -559,8 +560,6 @@ class CustomModel(ExposeAttributesFromProxy):
     >>> model.save('my_model_file')
     >>> loaded_model = tc.load_model('my_model_file')
     """
-
-    __metaclass__ = RegistrationMetaClass
 
     def __init__(self):
         pass

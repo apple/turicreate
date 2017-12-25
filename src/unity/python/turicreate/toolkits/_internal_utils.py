@@ -152,7 +152,7 @@ def _summarize_coefficients(top_coefs, bottom_coefs):
     """
 
     def get_row_name(row):
-        if row['index'] == None:
+        if row['index'] is None:
             return row['name']
         else:
             return "%s[%s]" % (row['name'], row['index'])
@@ -183,7 +183,7 @@ def _toolkit_get_topk_bottomk(values, k=5):
     ----------
     values : SFrame of model coefficients
 
-    k: Maximum number of largest postive and k lowest negative numbers to return
+    k: Maximum number of largest positive and k lowest negative numbers to return
 
     Returns
     -------
@@ -527,6 +527,20 @@ def _validate_row_label(dataset, label=None, default_label='__id'):
 
     ## Return the modified dataset and label
     return dataset, label
+
+def _model_version_check(file_version, code_version):
+    """
+    Checks if a saved model file with version (file_version)
+    is compatible with the current code version (code_version).
+    Throws an exception telling the user to upgrade.
+    """
+    if (file_version > code_version):
+        raise RuntimeError("Failed to load model file.\n\n"
+           "The model that you are trying to load was saved with a newer version of\n"
+           "Turi Create than what you have. Please upgrade before attempting to load\n"
+           "the file again:\n"
+           "\n"
+           "    pip install -U turicreate\n")
 
 def _mac_ver():
     """

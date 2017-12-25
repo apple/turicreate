@@ -73,7 +73,7 @@ class SFrameIter(DataIter):
     sframe : SFrame object
         source SFrame
     data_field : string or list(string)
-        data fields of the SFrame. The seleted fields may be either a single image typed column,
+        data fields of the SFrame. The selected fields may be either a single image typed column,
         or multiple numerical columns (int, float, array).
     label_field : string, optional
         label field in SFrame
@@ -227,14 +227,14 @@ class SFrameIter(DataIter):
             return False
 
     def getdata(self):
-        if self.data_mx_ndarray == None:
+        if self.data_mx_ndarray is None:
             self.data_mx_ndarray = array(self.data_ndarray)
         return [self.data_mx_ndarray]
 
     def getlabel(self):
-        if self.label_field == None:
+        if self.label_field is None:
             return None
-        if self.label_mx_ndarray == None:
+        if self.label_mx_ndarray is None:
             self.label_mx_ndarray = array(self.label_ndarray)
         return [self.label_mx_ndarray]
 
@@ -265,7 +265,7 @@ class SFrameImageIter(SFrameIter):
     mean_nd : np.ndarray, optional
         normalize the image by subtracting the ndarray of mean pixel values.
         The mean_nd array stores the pixel values in the order of [height, width, channel]
-        This option will surpress mean_r, mean_g, and mean_b.
+        This option will suppress mean_r, mean_g, and mean_b.
     scale : float, optional
         multiply each pixel value by the scale (this operation is performed after mean subtraction)
     random_flip : bool, optional

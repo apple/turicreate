@@ -52,7 +52,7 @@ class TuriConfig:
                 if "TEMP" in os.environ:
                     log_dir = os.environ["TEMP"]
                 else:
-                    raise "Please set the TEMP environment variable"
+                    raise RuntimeError("Please set the TEMP environment variable")
             else:
                 log_dir = "/tmp"
 

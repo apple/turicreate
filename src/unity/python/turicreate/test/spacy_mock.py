@@ -20,7 +20,7 @@ import turicreate as tc
 # >>> [s.text for s in doc.sents]
 #
 # Rather than supply real answers, this mock does the following:
-# - splits sentences by spliting on '. '
+# - splits sentences by splitting on '. '
 # - tokenizes into words by splitting on ' '
 # - assigns parts of speech to always be NOUN
 

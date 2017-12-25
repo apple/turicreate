@@ -5,7 +5,7 @@
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 '''
 Dummy mocking module for numpy.
-When numpy is not avaialbe we will import this module as turicreate.deps.numpy,
+When numpy is not available we will import this module as turicreate.deps.numpy,
 and set HAS_NUMPY to false. All methods that access numpy should check the HAS_NUMPY
 flag, therefore, attributes/class/methods in this module should never be actually used.
 '''

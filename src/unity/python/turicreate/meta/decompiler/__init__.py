@@ -54,7 +54,7 @@ def compile_func(ast_node, filename, globals, **defaults):
     :return: A python function object
     '''
 
-    funcion_name = ast_node.name
+    function_name = ast_node.name
     module = _ast.Module(body=[ast_node])
 
     ctx = {'%s_default' % key : arg for key, arg in defaults.items()}
@@ -63,7 +63,7 @@ def compile_func(ast_node, filename, globals, **defaults):
 
     eval(code, globals, ctx)
 
-    function = ctx[funcion_name]
+    function = ctx[function_name]
 
     return function
 

@@ -135,9 +135,9 @@ class ActivityClassifierTest(unittest.TestCase):
             'batch_size' : lambda x: x == self.def_opts['batch_size'],
             'classes': lambda x: sorted(x) == sorted(self.data[self.target].unique())
         }
-        self.exposed_fields_ans = self.get_ans.keys()
+        self.exposed_fields_ans = list(self.get_ans.keys())
         self.fields_ans = self.exposed_fields_ans + ['_recalibrated_batch_size',
-                '_loss_model', '_pred_model', '_id_target_map',
+                '_pred_model', '_id_target_map',
                 '_predictions_in_chunk', '_target_id_map']
 
 
@@ -161,7 +161,7 @@ class ActivityClassifierTest(unittest.TestCase):
             preds = model.predict(
                 self.data, output_type=output_type, output_frequency='per_window')
             expected_len = self._calc_expected_predictions_length(self.data)
-            self.assertEquals(len(preds), expected_len)
+            self.assertEqual(len(preds), expected_len)
 
     def test_export_coreml(self):
         """
@@ -213,7 +213,7 @@ class ActivityClassifierTest(unittest.TestCase):
         model = self.model
         preds = model.classify(self.data, output_frequency='per_window')
         expected_len = self._calc_expected_predictions_length(self.data)
-        self.assertEquals(len(preds), expected_len)
+        self.assertEqual(len(preds), expected_len)
 
     def test_predict_topk(self):
         """
@@ -224,12 +224,12 @@ class ActivityClassifierTest(unittest.TestCase):
             preds = model.predict_topk(
                 self.data, output_type=output_type, output_frequency='per_window')
             expected_len = self._calc_expected_predictions_length(self.data, top_k=3)
-            self.assertEquals(len(preds), expected_len)
+            self.assertEqual(len(preds), expected_len)
 
             preds = model.predict_topk(
                 self.data.head(100), k=5, output_frequency='per_window')
             expected_len = self._calc_expected_predictions_length(self.data.head(100), top_k=5)
-            self.assertEquals(len(preds), expected_len)
+            self.assertEqual(len(preds), expected_len)
 
     def test__list_fields(self):
         """
@@ -237,7 +237,7 @@ class ActivityClassifierTest(unittest.TestCase):
         """
         model = self.model
         fields = model._list_fields()
-        self.assertEquals(set(fields), set(self.fields_ans))
+        self.assertEqual(set(fields), set(self.fields_ans))
 
     def test_get(self):
         """
@@ -287,7 +287,7 @@ class ActivityClassifierTest(unittest.TestCase):
                     pass
                 except Exception as e:
                     self.assertTrue(False, "After model save and load, method " + test_method +
-                                    " has failed with error: " + e.message)
+                                    " has failed with error: " + str(e))
 
 
 @unittest.skipIf(tc.util._num_available_gpus() == 0, 'Requires GPU')

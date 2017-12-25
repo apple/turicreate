@@ -29,7 +29,7 @@ import os as _os
 _lfs = _os.environ['LFS_ROOT']
 
 #
-# Various test cases for the _LogisticRegressionClassiferModelTest
+# Various test cases for the _LogisticRegressionClassifierModelTest
 #
 def binary_classification_integer_target(cls):
     """
@@ -182,8 +182,8 @@ def multiclass_integer_target(cls):
 
     # Predict
     raw_predictions = sm_model.predict()
-    cls.yhat_class = map(np.argmax, raw_predictions)
-    cls.yhat_max_prob = map(np.max, raw_predictions)
+    cls.yhat_class = raw_predictions.argmax(-1)
+    cls.yhat_max_prob = raw_predictions.max(-1)
     cls.sm_accuracy = np.diag(sm_model.pred_table()).sum() / sm_model.nobs
     cls.sm_cf_matrix = sm_model.pred_table().flatten()
 
@@ -311,7 +311,7 @@ def multiclass_string_target(cls):
 
 def test_suite():
     """
-    Create a test suite for each test case in LogisticRegressionClassiferModelTest
+    Create a test suite for each test case in LogisticRegressionClassifierModelTest
     """
     testCases = [binary_classification_integer_target,
                  binary_classification_string_target,
@@ -323,7 +323,7 @@ def test_suite():
         testcase_members[t.__name__] = classmethod(t)
         testcase_class = type(
             'LogisticRegressionClassifierModelTest_%s' % t.__name__,
-            (LogisticRegressionClassiferModelTest,),
+            (LogisticRegressionClassifierModelTest,),
             testcase_members
         )
         getattr(testcase_class, t.__name__)()
@@ -337,7 +337,7 @@ def test_suite():
                 if callable(method_instance):
                     method_instance()
 
-class LogisticRegressionClassiferModelTest(unittest.TestCase):
+class LogisticRegressionClassifierModelTest(unittest.TestCase):
     __test__ = False
     """
     Unit test class for a LogisticRegressionModel that has already been created.
@@ -389,7 +389,7 @@ class LogisticRegressionClassiferModelTest(unittest.TestCase):
         """
         model = self.model
         ans =  str(model)
-        self.assertEquals(type(ans), str)
+        self.assertEqual(type(ans), str)
 
     def test_predict_topk(self):
         """
@@ -452,12 +452,12 @@ class LogisticRegressionClassiferModelTest(unittest.TestCase):
         # class
         ans =  model.predict(self.sf, output_type='class')
         self.assertEqual(ans.dtype, self.type)
-        self.assertTrue((ans == tc.SArray(map(self.type, self.yhat_class))).all())
+        self.assertTrue((ans == tc.SArray(list(map(self.type, self.yhat_class)))).all())
 
         # Default is class
         ans =  model.predict(self.sf)
         self.assertEqual(ans.dtype, self.type)
-        self.assertTrue((ans == tc.SArray(map(self.type, self.yhat_class))).all())
+        self.assertTrue((ans == tc.SArray(list(map(self.type, self.yhat_class)))).all())
 
     def test_classify(self):
         """
@@ -468,7 +468,7 @@ class LogisticRegressionClassiferModelTest(unittest.TestCase):
         ans =  model.classify(self.sf)
         tol = 1e-3
         self.assertEqual(ans['class'].dtype, self.type)
-        self.assertTrue((ans['class'] == tc.SArray(map(self.type, self.yhat_class))).all())
+        self.assertTrue((ans['class'] == tc.SArray(list(map(self.type, self.yhat_class)))).all())
         self.assertTrue(np.allclose(ans['probability'], self.yhat_max_prob, tol, tol))
 
     def test_evaluate(self):
@@ -488,7 +488,7 @@ class LogisticRegressionClassiferModelTest(unittest.TestCase):
             self.assertTrue(ans is not None)
             self.assertTrue('roc_curve' in ans)
             roc = ans['roc_curve']
-            self.assertEquals(type(roc), tc.SFrame)
+            self.assertEqual(type(roc), tc.SFrame)
 
         def check_metric(ans, metric):
             if metric == 'confusion_matrix':
@@ -506,7 +506,7 @@ class LogisticRegressionClassiferModelTest(unittest.TestCase):
 
         # Default
         ans = model.evaluate(self.sf)
-        self.assertEquals(sorted(ans.keys()), sorted(self.metrics))
+        self.assertEqual(sorted(ans.keys()), sorted(self.metrics))
         for m in self.metrics:
           check_metric(ans, m)
 
@@ -991,10 +991,10 @@ class VectorLogisticRegressionTest(unittest.TestCase):
 
     model = tc.logistic_classifier.create(self.sf, self.target, self.features,
         feature_rescaling = False)
-    self.assertEquals(model.num_features, len(self.features))
-    self.assertEquals(model.features, self.features)
-    self.assertEquals(model.num_unpacked_features, len(self.unpacked_features))
-    self.assertEquals(model.unpacked_features, self.unpacked_features)
+    self.assertEqual(model.num_features, len(self.features))
+    self.assertEqual(model.features, self.features)
+    self.assertEqual(model.num_unpacked_features, len(self.unpacked_features))
+    self.assertEqual(model.unpacked_features, self.unpacked_features)
 
 
 class DictLogisticRegressionTest(unittest.TestCase):
@@ -1052,10 +1052,10 @@ class DictLogisticRegressionTest(unittest.TestCase):
 
     model = tc.logistic_classifier.create(self.sf, self.target, self.features,
         feature_rescaling = False)
-    self.assertEquals(model.num_features, len(self.features))
-    self.assertEquals(model.features, self.features)
-    self.assertEquals(model.num_unpacked_features, len(self.unpacked_features))
-    self.assertEquals(model.unpacked_features, self.unpacked_features)
+    self.assertEqual(model.num_features, len(self.features))
+    self.assertEqual(model.features, self.features)
+    self.assertEqual(model.num_unpacked_features, len(self.unpacked_features))
+    self.assertEqual(model.unpacked_features, self.unpacked_features)
 
   def _test_create(self, sf, target, features, solver, opts, rescaling):
 
@@ -1088,7 +1088,7 @@ class DictLogisticRegressionTest(unittest.TestCase):
     self.sf['dict'] = self.sf['dict'].apply(lambda x: dict(list(x.items())
       + list({'extra_col': 0, 'extra_col_2': 1}.items())))
     pred2 = model.predict(self.sf)
-    self.assertEquals(sum(pred - pred2), 0)
+    self.assertEqual(sum(pred - pred2), 0)
     self.sf['dict'] = self.sf['dict'].apply(lambda x: {k:v for k,v in x.items() \
                                 if k not in ['extra_col', 'extra_col_2']})
 
@@ -1102,7 +1102,7 @@ class DictLogisticRegressionTest(unittest.TestCase):
     eval2 = model.evaluate(self.sf)
     self.sf['dict'] = self.sf['dict'].apply(lambda x: {k:v for k,v in x.items() \
                                 if k not in ['extra_col', 'extra_col_2']})
-    self.assertEquals(eval1["accuracy"], eval2["accuracy"])
+    self.assertEqual(eval1["accuracy"], eval2["accuracy"])
 
 class RegularizedLogisticRegressionTest(unittest.TestCase):
     """
@@ -1413,5 +1413,5 @@ class TestStringTarget(unittest.TestCase):
         evaluation = model.evaluate(sf)
 
         # Assert
-        self.assertEquals(['cat-0', 'cat-1'],
+        self.assertEqual(['cat-0', 'cat-1'],
             sorted(list(evaluation['confusion_matrix']['target_label'].unique())))

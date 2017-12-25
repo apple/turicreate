@@ -27,10 +27,10 @@ def random_split_by_session(dataset, session_id, fraction=0.9, seed=None):
         The name of the column in `dataset` that corresponds to the
         a unique identifier for each session.
 
-    fraction : float, optiona;
+    fraction : float, optional
         Fraction of the sessions to fetch for the first returned SFrame.  Must
         be between 0 and 1. Once the sessions are split, all data from a single
-        session is in the same SFraem.
+        session is in the same SFrame.
 
     seed : int, optional
         Seed for the random number generator used to split.

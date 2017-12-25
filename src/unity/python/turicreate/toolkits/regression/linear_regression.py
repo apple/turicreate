@@ -196,8 +196,8 @@ def create(dataset, target, features=None, l2_penalty=1e-2, l1_penalty=0.0,
     - A constant term is automatically added for the model intercept. This term
       is not regularized.
 
-    - Standard errors on coefficients are only availiable when `solver=newton`
-      or when the default `auto` solver option choses the newton method and if
+    - Standard errors on coefficients are only available when `solver=newton`
+      or when the default `auto` solver option chooses the newton method and if
       the number of examples in the training data is more than the number of
       coefficients. If standard errors cannot be estimated, a column of `None`
       values are returned.

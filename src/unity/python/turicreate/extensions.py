@@ -21,6 +21,7 @@ from __future__ import absolute_import as _
 # This is a fake meta namespace which contains toolkit functions and toolkit
 # models implemented as extensions in C++
 
+import sys as _sys
 from . import SArray as _SArray, SFrame as _SFrame, SGraph as _SGraph
 from .connect.main import get_unity as _get_unity
 from .util import _make_internal_url
@@ -32,6 +33,11 @@ from .toolkits._main import ToolkitError as _ToolkitError
 from .cython.context import debug_trace as cython_context
 from sys import version_info as _version_info
 import types as _types
+if _sys.version_info.major == 2:
+    from types import ClassType as _ClassType
+    _class_type = _ClassType
+else:
+    _class_type = type
 
 
 # Now. a bit of magic hackery is going to happen to this module.
@@ -77,7 +83,7 @@ class_uid_to_class = {}
 def _wrap_function_return(val):
     """
     Recursively walks each thing in val, opening lists and dictionaries,
-    converting all occurances of UnityGraphProxy to an SGraph,
+    converting all occurrences of UnityGraphProxy to an SGraph,
     UnitySFrameProxy to SFrame, and UnitySArrayProxy to SArray.
     """
 
@@ -380,7 +386,7 @@ def _publish():
         # default construct correctly
         new_class['__init__'].tkclass_name = tkclass
 
-        newclass = _types.ClassType(tkclass, (), new_class)
+        newclass = _class_type(tkclass, (), new_class)
         setattr(newclass, '__glmeta__', {'extension_name':tkclass})
         class_uid_to_class[m['uid']] = newclass
         modpath = tkclass.split('.')
@@ -492,7 +498,7 @@ def _add_meta_path():
     """
     import sys
     global _ext_meta_path_singleton
-    if _ext_meta_path_singleton == None:
+    if _ext_meta_path_singleton is None:
         _ext_meta_path_singleton = _ExtMetaPath()
         sys.meta_path += [_ext_meta_path_singleton]
 

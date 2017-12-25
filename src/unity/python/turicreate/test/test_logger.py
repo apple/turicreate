@@ -42,9 +42,9 @@ class LoggingConfigurationTests(TestCase):
     def test_config(self):
         tc_config.init_logger()
 
-        self.assertEquals(self.logger.level, logging.INFO)
-        self.assertEquals(len(self.logger.handlers), 2)
-        self.assertEquals(len(self.rt_logger.handlers), 0)
+        self.assertEqual(self.logger.level, logging.INFO)
+        self.assertEqual(len(self.logger.handlers), 2)
+        self.assertEqual(len(self.rt_logger.handlers), 0)
 
-        self.assertEquals(self.logger.level, logging.INFO)
-        self.assertEquals(self.rt_logger.level, logging.CRITICAL)
+        self.assertEqual(self.logger.level, logging.INFO)
+        self.assertEqual(self.rt_logger.level, logging.CRITICAL)

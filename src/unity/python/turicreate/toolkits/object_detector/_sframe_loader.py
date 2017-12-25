@@ -125,7 +125,10 @@ class SFrameDetectionIter(_mx.io.DataIter):
         self.cur_batch = 0
 
     def __next__(self):
-        return next(self)
+        return self._next()
+
+    def next(self):
+        return self._next()
 
     @property
     def provide_data(self):
@@ -135,7 +138,7 @@ class SFrameDetectionIter(_mx.io.DataIter):
     def provide_label(self):
         return self._provide_label
 
-    def next(self):
+    def _next(self):
         images = []
         ymaps = []
         indices = []

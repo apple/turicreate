@@ -14,7 +14,7 @@ def _get_unity_dll():
     if sys.platform == 'win32':
         _load_attempted = True
         return None
-    if _unity_dll == None and _load_attempted == False:
+    if _unity_dll is None and not _load_attempted:
         import ctypes
         import os
         import sys
@@ -31,7 +31,7 @@ def _get_unity_dll():
                 good_file = sopath
                 break
 
-        if good_file == None:
+        if good_file is None:
             return
 
         _unity_dll=ctypes.CDLL(good_file, mode=ctypes.RTLD_GLOBAL)
@@ -85,7 +85,8 @@ def _load_numpy_alt_malloc_via_environment_variable():
         if os.path.exists(i):
             os.environ["NUMPY_ALTERNATE_MALLOC"] = i
             os.environ["NUMPY_ALTERNATE_MALLOC_PREFIX"] = "my_"
-            break;
+            break
+
 
 def _load_numpy_alt_malloc_via_binary_injection():
     import sys
@@ -148,7 +149,7 @@ def numpy_activation_successful():
 
     np.arange(100)
     unity_dll = _get_unity_dll()
-    if unity_dll == None:
+    if unity_dll is None:
         return False
     try:
         return unity_dll.malloc_injection_successful()
