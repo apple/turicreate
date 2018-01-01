@@ -35,7 +35,7 @@ things can be up to 20x faster using GPUs.
 
 ```python
 # Use all GPUs (default)
-turicreate.config.set_num_gpus(-11)
+turicreate.config.set_num_gpus(-1)
 
 # Use only 1 GPU
 turicreate.config.set_num_gpus(1)
