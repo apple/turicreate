@@ -30,7 +30,7 @@ model = tc.image_classifier.create(
 GPUs can be extremely fast for creating an image classifier model. If
 your machine has an NVIDIA GPU, you can setup a GPU version of Turi
 Create using the [instructions
-here](https://github.com/apple/turicreate). Depending on your setup,
+here](https://github.com/apple/turicreate#gpu-support). Depending on your setup,
 things can be up to 20x faster using GPUs.
 
 ```python
