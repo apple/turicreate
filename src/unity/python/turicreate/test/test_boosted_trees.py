@@ -235,6 +235,11 @@ class BoostedTreesRegressionTest(unittest.TestCase):
         sf = self.model.get_feature_importance()
         self.assertEqual(sf.column_names(), ["name", "index", "count"])
 
+    def test_trees_json(self):
+        tree_0_vert_0 = eval(self.model.trees_json[0])['vertices'][0]
+        self.assertEquals(set(tree_0_vert_0.keys()),
+                          set(['name','value_hexadecimal','yes_child','cover','missing_child','no_child','type','id','value','gain']))
+
     def test_list_and_dict_type(self):
         rmse_threshold = 0.2
 
