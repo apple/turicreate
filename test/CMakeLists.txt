@@ -1,5 +1,7 @@
 project(TuriTest)
 
+enable_testing()
+
 subdirs(
         toolkits
         ml_data
