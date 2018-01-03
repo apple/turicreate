@@ -72,6 +72,6 @@ From the repo root:
 
     cd debug/test
     make
-    ctest
+    ctest .
 
 
