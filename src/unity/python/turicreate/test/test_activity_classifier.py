@@ -137,7 +137,7 @@ class ActivityClassifierTest(unittest.TestCase):
         }
         self.exposed_fields_ans = list(self.get_ans.keys())
         self.fields_ans = self.exposed_fields_ans + ['_recalibrated_batch_size',
-                '_loss_model', '_pred_model', '_id_target_map',
+                '_pred_model', '_id_target_map',
                 '_predictions_in_chunk', '_target_id_map']
 
 

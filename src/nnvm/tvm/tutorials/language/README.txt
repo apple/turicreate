@@ -1,2 +1,0 @@
-Lanuage and Schedules
----------------------

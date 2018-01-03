@@ -7,14 +7,11 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 import turicreate as _tc
-import re as _re
-import os as _os
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits._internal_utils import _toolkit_repr_print
-import operator as _operator
-import turicreate as _turicreate
 import logging as _logging
+
 
 def _BOW_FEATURE_EXTRACTOR(sf):
     """
@@ -125,7 +122,6 @@ class SentenceClassifier(_CustomModel):
 
         self.__proxy__ = _PythonProxy(state)
 
-
     @classmethod
     def _native_name(cls):
         return "sentence_classifier"
@@ -146,7 +142,7 @@ class SentenceClassifier(_CustomModel):
         state = _PythonProxy(state)
         return SentenceClassifier(state)
 
-    def predict(self, dataset):
+    def predict(self, dataset, output_type='class'):
         """
         Return predictions for ``dataset``, using the trained model.
 
@@ -156,6 +152,16 @@ class SentenceClassifier(_CustomModel):
             dataset of new observations. Must include columns with the same
             names as the features used for model training, but does not require
             a target column. Additional columns are ignored.
+
+        output_type : {'class', 'probability_vector'}, optional
+            Form of the predictions which are one of:
+
+            - 'probability_vector': Prediction probability associated with each
+              class as a vector. The probability of the first class (sorted
+              alphanumerically by name of the class in the training set) is in
+              position 0 of the vector, the second in position 1 and so on.
+            - 'class': Class prediction. For multi-class classification, this
+              returns the class with maximum probability.
 
         Returns
         -------
@@ -177,7 +183,7 @@ class SentenceClassifier(_CustomModel):
         """
         m = self.__proxy__['classifier']
         f = _BOW_FEATURE_EXTRACTOR
-        return m.predict(f(dataset))
+        return m.predict(f(dataset), output_type=output_type)
 
     def classify(self, dataset):
         """
@@ -237,12 +243,11 @@ class SentenceClassifier(_CustomModel):
 
     def __repr__(self):
         width = 32
-        key_str = "{:<{}}: {}"
         (sections, section_titles) = self._get_summary_struct()
         out = _toolkit_repr_print(self, sections, section_titles, width=width)
         return out
 
-    def evaluate(self, dataset, metric = 'auto', **kwargs):
+    def evaluate(self, dataset, metric='auto', **kwargs):
         """
         Evaluate the model by making predictions of target values and comparing
         these to actual values.
@@ -281,11 +286,10 @@ class SentenceClassifier(_CustomModel):
         create, predict, classify
 
         """
-        target = self.__proxy__['target']
         m = self.__proxy__['classifier']
         f = _BOW_FEATURE_EXTRACTOR
         test = f(dataset)
-        return m.evaluate(test, **kwargs)
+        return m.evaluate(test, metric, **kwargs)
 
     def summary(self):
         """
@@ -293,10 +297,33 @@ class SentenceClassifier(_CustomModel):
         """
         return self.__proxy__['classifier'].summary()
 
+    def export_coreml(self, filename):
+        """
+        Export the model in Core ML format.
+
+        Parameters
+        ----------
+        filename: str
+          A valid filename where the model can be saved.
+
+        Examples
+        --------
+        >>> model.export_coreml("MyModel.mlmodel")
+        """
+        from turicreate.extensions import _logistic_classifier_export_as_model_asset
+        from turicreate.toolkits import _coreml_utils
+
+        display_name = 'sentence classifier'
+        short_description = _coreml_utils._mlmodel_short_description(display_name)
+        context = {'class': self.__class__.__name__,
+                   'version': _tc.__version__,
+                   'short_description': short_description}
+        model = self.__proxy__['classifier'].__proxy__
+        _logistic_classifier_export_as_model_asset(model, filename, context)
+
 
 def _get_str_columns(sf):
     """
     Returns a list of names of columns that are string type.
     """
     return [name for name in sf.column_names() if sf[name].dtype == str]
-

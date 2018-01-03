@@ -18,7 +18,6 @@ subdirs(
   logger
   ml_data
   nanosockets
-  nnvm
   optimization
   platform
   random

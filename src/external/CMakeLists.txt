@@ -9,4 +9,5 @@ subdirs(
   lz4
   aws-sdk-cpp
   uuid
+  xgboost
   )
