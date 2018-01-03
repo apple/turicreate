@@ -38,7 +38,6 @@ class Pipe {
              * of the real path of Pipe -> VegaContainer -> embedded WebKit view -> Vega
              * and of the vega rendering part.
              */
-            
             if let _ = ProcessInfo.processInfo.environment["TC_VISUALIZATION_CLIENT_USE_FAKE_INPUT"] {
                 process_data(data: Debugging.TableViewWithImage.spec)
                 process_data(data: Debugging.TableViewWithImage.data1)

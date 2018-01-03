@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="13770" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13770"/>
-        <plugIn identifier="com.apple.WebKit2IBPlugin" version="13770"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
+        <plugIn identifier="com.apple.WebKit2IBPlugin" version="13771"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -66,12 +66,12 @@
                                                 <action selector="performClose:" target="Ady-hI-5gd" id="HmO-Ls-i7Q"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Save…" keyEquivalent="s" id="pxx-59-PXV">
+                                        <menuItem title="Export as PNG" keyEquivalent="s" id="pxx-59-PXV">
                                             <connections>
                                                 <action selector="save_image:" target="GPs-HY-Geb" id="Ibn-21-ffD"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Save Vega…" keyEquivalent="S" id="Bw7-FT-i3A">
+                                        <menuItem title="Export as Vega JSON" keyEquivalent="S" id="Bw7-FT-i3A">
                                             <connections>
                                                 <action selector="save_vega:" target="GPs-HY-Geb" id="7xq-gR-w7n"/>
                                             </connections>
@@ -85,7 +85,7 @@
                                         </menuItem>
                                         <menuItem title="Print…" keyEquivalent="p" id="aTl-1u-JFS">
                                             <connections>
-                                                <action selector="print:" target="Ady-hI-5gd" id="qaZ-4w-aoO"/>
+                                                <action selector="print_vega:" target="GPs-HY-Geb" id="hGz-uJ-sBi"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -631,7 +631,14 @@
                     </connections>
                 </application>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-                <customObject id="GPs-HY-Geb" customClass="AppDelegate" customModule="Turi Create Visualization" customModuleProvider="target"/>
+                <customObject id="GPs-HY-Geb" customClass="AppDelegate" customModule="Turi_Create_Visualization" customModuleProvider="target">
+                    <connections>
+                        <outlet property="page_setup_object" destination="qIS-W8-SiK" id="G5m-Ln-QYG"/>
+                        <outlet property="print_vega_image" destination="aTl-1u-JFS" id="j9A-ta-bDL"/>
+                        <outlet property="save_image_object" destination="pxx-59-PXV" id="KoK-s6-5fk"/>
+                        <outlet property="save_vega_object" destination="Bw7-FT-i3A" id="17L-Q5-a7Y"/>
+                    </connections>
+                </customObject>
             </objects>
             <point key="canvasLocation" x="-73" y="-322"/>
         </scene>
@@ -639,7 +646,7 @@
         <scene sceneID="R2V-B0-nI4">
             <objects>
                 <windowController storyboardIdentifier="mainWindow" id="B8D-0N-5wS" sceneMemberID="viewController">
-                    <window key="window" title="Turi Create Visualization " allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA" customClass="NSWindowWorkaround" customModule="Turi Create Visualization" customModuleProvider="target">
+                    <window key="window" title="Turi Create Visualization " allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA" customClass="NSWindowWorkaround" customModule="Turi_Create_Visualization" customModuleProvider="target">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="196" y="240" width="820" height="630"/>
@@ -660,7 +667,7 @@
         <!--View Controller-->
         <scene sceneID="hIz-AP-VOD">
             <objects>
-                <viewController id="XfG-lQ-9wD" customClass="ViewController" customModule="Turi Create Visualization" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="XfG-lQ-9wD" customClass="ViewController" customModule="Turi_Create_Visualization" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" wantsLayer="YES" id="m2S-Jp-Qdl">
                         <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
                         <autoresizingMask key="autoresizingMask"/>
