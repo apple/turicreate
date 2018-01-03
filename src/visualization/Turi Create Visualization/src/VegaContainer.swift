@@ -157,12 +157,26 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
     public func set_table(table_spec: [String: Any]) {
         self.data_spec.removeAll()
         self.table_spec = table_spec
+        
+        DispatchQueue.main.async {
+            SharedData.shared.save_image?.isHidden = true
+            SharedData.shared.save_vega?.isHidden = true
+            SharedData.shared.print_vega?.isHidden = true
+            SharedData.shared.page_setup?.isHidden = true
+        }
     }
     
     public func set_vega(vega_spec: [String: Any]) {
         // TODO: write function to check valid vega spec
         self.data_spec.removeAll()
         self.vega_spec = vega_spec
+        
+        DispatchQueue.main.async {
+            SharedData.shared.save_image?.isHidden = false
+            SharedData.shared.save_vega?.isHidden = false
+            SharedData.shared.print_vega?.isHidden = false
+            SharedData.shared.page_setup?.isHidden = false
+        }
     }
     
     public func add_data(data_spec: [String: Any]) {
@@ -221,11 +235,12 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
         
         // open save panel
         let savePanel = NSSavePanel()
+        savePanel.allowedFileTypes = ["json"];
         
         // start the saving of the json
         savePanel.begin { (result: Int) -> Void in
             if result == NSFileHandlingPanelOKButton {
-                let exportedFileURL = savePanel.url?.appendingPathExtension("json")
+                let exportedFileURL = savePanel.url
                 
                 let jsString = String(format: "getSpec();");
                 
@@ -250,11 +265,12 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
         
         // open save panel
         let savePanel = NSSavePanel()
+        savePanel.allowedFileTypes = ["png"];
         
         // start the saving of the image
         savePanel.begin { (result: Int) -> Void in
             if result == NSFileHandlingPanelOKButton {
-                let exportedFileURL = savePanel.url?.appendingPathExtension("png")
+                let exportedFileURL = savePanel.url
                 let jsString = String(format: "export_png();");
                 
                 // call function to get images
@@ -270,6 +286,22 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
                 });
             }
         }
+    }
+    
+    public func get_image(completion: @escaping (NSImage) -> Void) {
+        let jsString = String(format: "export_png();");
+        self.view.evaluateJavaScript(jsString, completionHandler: { (value , err) in
+            
+            if(err != nil){
+                return
+            }
+            
+            let s = String(describing: value!)
+            let dataDecoded = Data(base64Encoded: s, options: .ignoreUnknownCharacters)!
+            let image = NSImage(data: dataDecoded)
+            
+            completion(image!);
+        });
     }
 
     
