@@ -69,7 +69,14 @@ def load_model(location):
 
     _internal_url = _make_internal_url(location)
     saved_state = glconnect.get_unity().load_model(_internal_url)
-    if saved_state['archive_version'] == 1:
+    # The archive version could be both bytes/unicode
+    key = u'archive_version'
+    archive_version = saved_state[key] if key in saved_state else saved_state[key.encode()]
+    if archive_version > 1:
+        raise ToolkitError("Unable to load model.\n\n"
+                           "This model looks to have been saved with a future version of Turi Create.\n"
+                           "Please upgrade Turi Create before attempting to load this model file.")
+    elif archive_version == 1:
         cls = MODEL_NAME_MAP[saved_state['model_name']]
         if 'model' in saved_state:
             # this is a native model
@@ -84,6 +91,12 @@ def load_model(location):
         # very legacy model format. Attempt pickle loading
         import sys
         sys.stderr.write("This model was saved in a legacy model format. Compatibility cannot be guaranteed in future versions.\n")
+        if _six.PY3:
+            raise ToolkitError("Unable to load legacy model in Python 3.\n\n"
+                               "To migrate a model, try loading it using Turi Create 4.0 or\n"
+                               "later in Python 2 and then re-save it. The re-saved model should\n"
+                               "work in Python 3.")
+
         if 'graphlab' not in sys.modules:
             sys.modules['graphlab'] = sys.modules['turicreate']
             # backward compatibility. Otherwise old pickles will not load
@@ -96,8 +109,8 @@ def load_model(location):
                     sys.modules[k.replace('turicreate', 'graphlab')] = v
         #legacy loader
         import pickle
-        model_wrapper = pickle.loads(saved_state['model_wrapper'])
-        return model_wrapper(saved_state['model_base'])
+        model_wrapper = pickle.loads(saved_state[b'model_wrapper'])
+        return model_wrapper(saved_state[b'model_base'])
 
 
 def _get_default_options_wrapper(unity_server_model_name,
