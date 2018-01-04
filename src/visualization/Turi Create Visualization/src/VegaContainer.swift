@@ -200,7 +200,7 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
             if result == NSFileHandlingPanelOKButton {
                 let exportedFileURL = savePanel.url?.appendingPathExtension("csv")
                 
-                let jsString = String(format: "getData();");
+                let jsString = "getData();";
                 
                 self.view.evaluateJavaScript(jsString, completionHandler: { (value , err) in
                     
@@ -242,7 +242,7 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
             if result == NSFileHandlingPanelOKButton {
                 let exportedFileURL = savePanel.url
                 
-                let jsString = String(format: "getSpec();");
+                let jsString = "getSpec();";
                 
                 self.view.evaluateJavaScript(jsString, completionHandler: { (value , err) in
                     
@@ -271,7 +271,7 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
         savePanel.begin { (result: Int) -> Void in
             if result == NSFileHandlingPanelOKButton {
                 let exportedFileURL = savePanel.url
-                let jsString = String(format: "export_png();");
+                let jsString = "export_png();";
                 
                 // call function to get images
                 self.view.evaluateJavaScript(jsString, completionHandler: { (value , err) in
@@ -289,7 +289,7 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
     }
     
     public func get_image(completion: @escaping (NSImage) -> Void) {
-        let jsString = String(format: "export_png();");
+        let jsString = "export_png();";
         self.view.evaluateJavaScript(jsString, completionHandler: { (value , err) in
             
             if(err != nil){
