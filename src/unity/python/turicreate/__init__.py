@@ -125,17 +125,26 @@ _sys.modules["turicreate.extensions"] = _extensions_wrapper(_sys.modules["turicr
 # rewrite the import
 extensions = _sys.modules["turicreate.extensions"]
 
-try:
-    import mxnet as _mx
-    if _mx.__version__ != '0.11.0':
-        print('WARNING: Currently only mxnet version 0.11.0 is officially supported.')
-        print('         You are using version', _mx.__version__, 'which may result in breaking behavior,')
-        print('         especially during saving and loading models. To fix this, please run:')
-        print()
-        print('             pip uninstall -y mxnet && pip install mxnet==0.11.0')
-        print()
-except (ImportError, OSError):
-    pass
+
+def _mxnet_check():
+    try:
+        import mxnet as _mx
+        version_tuple = tuple(int(x) for x in _mx.__version__.split('.') if x.isdigit())
+        lowest_version = (0, 11, 0)
+        not_yet_supported_version = (1, 0, 0)
+        recommended_version_str = '0.12.1'
+        if not (lowest_version <= version_tuple < not_yet_supported_version):
+            print('WARNING: You are using MXNet', _mx.__version__, 'which may result in breaking behavior.')
+            print('         To fix this, please install the currently recommended version:')
+            print()
+            print('             pip uninstall -y mxnet && pip install mxnet==%s' % recommended_version_str)
+            print()
+            print("         If you want to use a CUDA GPU, then change 'mxnet' to 'mxnet-cu90' (adjust 'cu90' depending on your CUDA version):")
+            print()
+    except (ImportError, OSError):
+        pass
+
+_mxnet_check()
 
 from .visualization import show
 

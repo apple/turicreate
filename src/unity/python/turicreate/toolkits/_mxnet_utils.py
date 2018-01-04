@@ -63,11 +63,12 @@ def get_mxnet_context(max_devices=None):
             # extra attention to this message
             print()
             print('ERROR: Incomplete installation for leveraging GPUs for computations.')
-            print('Please make sure you have CUDA 8.0 installed and run the following line in')
+            print('Please make sure you have CUDA installed and run the following line in')
             print('your terminal and try again:')
             print()
-            print('    pip uninstall -y mxnet && pip install mxnet_cu80=={}'.format(_mx.__version__))
+            print('    pip uninstall -y mxnet && pip install mxnet-cu90=={}'.format(_mx.__version__))
             print()
+            print("Adjust 'cu90' depending on your CUDA version ('cu75' and 'cu80' are also available).")
             print('You can also disable GPU usage altogether by invoking turicreate.config.set_num_gpus(0)')
             _sys.exit(1)
         return ctx
