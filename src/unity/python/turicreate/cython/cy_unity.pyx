@@ -6,6 +6,7 @@
 from .cy_variant cimport variant_type
 from .cy_variant cimport from_dict as variant_map_from_dict
 from .cy_variant cimport to_dict as variant_map_to_dict
+from .cy_variant cimport read_archive_version
 from .cy_variant cimport from_value as variant_from_value
 from .cy_variant cimport make_shared_variant
 
@@ -98,12 +99,19 @@ cdef class UnityGlobalProxy:
         with nogil:
             response = self.thisptr.load_model(url)
 
-        try:
-            disable_cpp_str_decode()
+        version = read_archive_version(response)
+        if version == 0:
+            # Legacy model, read all strings as bytes
+            try:
+                disable_cpp_str_decode()
+                variant_dict = variant_map_to_dict(response)
+                return variant_dict
+            finally:
+                enable_cpp_str_decode()
+        else:
             variant_dict = variant_map_to_dict(response)
             return variant_dict
-        finally:
-             enable_cpp_str_decode()
+
 
     cpdef eval_lambda(self, object fn, object arg):
         assert inspect.isfunction(fn), "First argument must be a function"
