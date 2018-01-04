@@ -26,6 +26,12 @@ from __future__ import division as _
 from . import _add_pooling
 from ast import literal_eval
 
+def _get_attr(node):
+    if 'attr' in node:
+        return node['attr']
+    elif 'attrs' in node:
+        return node['attrs']
+
 def _get_input_output_name(net, node, index=0):
     name = node['name']
     inputs = node['inputs']
@@ -102,7 +108,7 @@ def convert_transpose(net, node, module, builder):
     """
     input_name, output_name = _get_input_output_name(net, node)
     name = node['name']
-    param = node['attr']
+    param = _get_attr(node)
 
     axes = literal_eval(param['axes'])
     builder.add_permute(name, axes, input_name, output_name)
@@ -174,7 +180,7 @@ def convert_activation(net, node, module, builder):
     """
     input_name, output_name = _get_input_output_name(net, node)
     name = node['name']
-    mx_non_linearity = node['attr']['act_type']
+    mx_non_linearity = _get_attr(node)['act_type']
     if mx_non_linearity == 'relu':
         non_linearity = 'RELU'
     elif mx_non_linearity == 'tanh':
@@ -192,8 +198,9 @@ def convert_activation(net, node, module, builder):
 def convert_leaky_relu(net, node, module, builder):
     input_name, output_name = _get_input_output_name(net, node)
     name = node['name']
-    assert node['attr']['act_type'] == 'leaky'
-    slope = literal_eval(node['attr']['slope'])
+    param = _get_attr(node)
+    assert param['act_type'] == 'leaky'
+    slope = literal_eval(param['slope'])
     builder.add_activation(name=name,
                            non_linearity='LEAKYRELU',
                            input_name=input_name,
@@ -251,7 +258,7 @@ def convert_elementwise_mul_scalar(net, node, module, builder):
     import numpy
     input_name, output_name = _get_input_output_name(net, node)
     name = node['name']
-    param = node['attr']
+    param = _get_attr(node)
 
     mult = literal_eval(param['scalar'])
     builder.add_scale(name=name,
@@ -282,7 +289,7 @@ def convert_elementwise_div_scalar(net, node, module, builder):
     import numpy
     input_name, output_name = _get_input_output_name(net, node)
     name = node['name']
-    param = node['attr']
+    param = _get_attr(node)
 
     denominator = literal_eval(param['scalar'])
     builder.add_scale(name=name,
@@ -354,7 +361,7 @@ def convert_convolution(net, node, module, builder):
     """
     input_name, output_name = _get_input_output_name(net, node)
     name = node['name']
-    param = node['attr']
+    param = _get_attr(node)
     inputs = node['inputs']
     args, _ = module.get_params()
 
@@ -448,7 +455,7 @@ def convert_pooling(net, node, module, builder):
     """
     input_name, output_name = _get_input_output_name(net, node)
     name = node['name']
-    param = node['attr']
+    param = _get_attr(node)
 
     layer_type_mx = param['pool_type']
     if layer_type_mx == 'max':
@@ -538,11 +545,12 @@ def convert_batchnorm(net, node, module, builder):
     mean = aux[_get_node_name(net, inputs[3][0])].asnumpy()
     variance = aux[_get_node_name(net, inputs[4][0])].asnumpy()
     nb_channels = gamma.shape[0]
-    if 'attr' in node:
-        if 'eps' in node['attr']:
-            eps = literal_eval(node['attr']['eps'])
-        if 'fix_gamma' in node['attr']:
-            if literal_eval(node['attr']['fix_gamma']):
+    param = _get_attr(node)
+    if param is not None:
+        if 'eps' in param:
+            eps = literal_eval(param['eps'])
+        if 'fix_gamma' in param:
+            if literal_eval(param['fix_gamma']):
                 gamma[:] = 1.0
 
     builder.add_batchnorm(
@@ -601,7 +609,7 @@ def convert_deconvolution(net, node, module, builder):
     """
     input_name, output_name = _get_input_output_name(net, node)
     name = node['name']
-    param = node['attr']
+    param = _get_attr(node)
     inputs = node['inputs']
     args, _ = module.get_params()
 
@@ -671,7 +679,7 @@ def convert_deconvolution(net, node, module, builder):
 def convert_slice_axis(net, node, module, builder):
     input_name, output_name = _get_input_output_name(net, node)
     name = node['name']
-    param = node['attr']
+    param = _get_attr(node)
     inputs = node['inputs']
     args, _ = module.get_params()
 
@@ -698,7 +706,7 @@ def convert_slice_axis(net, node, module, builder):
 def convert_softmax(net, node, module, builder):
     input_name, output_name = _get_input_output_name(net, node)
     name = node['name']
-    param = node['attr']
+    param = _get_attr(node)
 
     if 'axis' in param:
         axis = literal_eval(param['axis'])
@@ -723,8 +731,8 @@ def convert_custom(net, node, module, builder):
     """Convert highly specific ops"""
     input_name, output_name = _get_input_output_name(net, node)
     name = node['name']
-    param = node['attr']
-    if node['attr']['op_type'] == 'special-darknet-maxpool':
+    param = _get_attr(node)
+    if param['op_type'] == 'special-darknet-maxpool':
         _add_pooling.add_pooling_with_padding_types(
             builder=builder,
             name=name,
