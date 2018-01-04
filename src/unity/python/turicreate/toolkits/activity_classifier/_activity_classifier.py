@@ -418,7 +418,7 @@ class ActivityClassifier(_CustomModel):
                             output_name=prob_name)
 
 
-        labels = map(str, sorted(self._target_id_map.keys()))
+        labels = list(map(str, sorted(self._target_id_map.keys())))
         builder.set_class_labels(labels)
         mlmodel = _cmt.models.MLModel(builder.spec)
         model_type = 'activity classifier'

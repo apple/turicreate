@@ -888,7 +888,7 @@ class ObjectDetector(_CustomModel):
         input_names = [self.feature]
         input_dims = [list(self.input_image_shape)]
         input_types = [datatypes.Array(*dim) for dim in input_dims]
-        input_features = zip(input_names, input_types)
+        input_features = list(zip(input_names, input_types))
 
         num_spatial = self._grid_shape[0] * self._grid_shape[1]
         output_names = [
@@ -900,7 +900,7 @@ class ObjectDetector(_CustomModel):
             (num_anchors * num_spatial, 4),
         ]
         output_types = [datatypes.Array(*dim) for dim in output_dims]
-        output_features = zip(output_names, output_types)
+        output_features = list(zip(output_names, output_types))
         mode = None
         builder = neural_network.NeuralNetworkBuilder(input_features, output_features, mode)
         _mxnet_converter.convert(mod, mode=None,
