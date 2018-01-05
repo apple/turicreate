@@ -4,10 +4,11 @@
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 from .cy_variant cimport variant_type
+from .cy_variant cimport variant_map_type_iterator
 from .cy_variant cimport from_dict as variant_map_from_dict
 from .cy_variant cimport to_dict as variant_map_to_dict
-from .cy_variant cimport read_archive_version
 from .cy_variant cimport from_value as variant_from_value
+from .cy_variant cimport to_value as variant_to_value
 from .cy_variant cimport make_shared_variant
 
 from .cy_flexible_type cimport pylist_from_flex_list
@@ -30,9 +31,24 @@ from libcpp.map cimport map
 from .cy_cpp_utils cimport str_to_cpp, cpp_to_str, from_vector_of_strings, disable_cpp_str_decode, enable_cpp_str_decode
 
 from cython.operator cimport dereference as deref
+from cython.operator cimport preincrement as inc
 import inspect
 from ..util import cloudpickle
 import pickle
+
+
+cdef read_archive_version(variant_map_type& d):
+    """
+    Reads only the 'archive_version' from a model state.
+    """
+    cdef variant_map_type_iterator it = d.begin()
+    ret = 0
+    while (it != d.end()):
+        if cpp_to_str(deref(it).first) == 'archive_version':
+            ret = variant_to_value(deref(it).second)
+            break
+        inc(it)
+    return ret
 
 
 cdef class UnityGlobalProxy:

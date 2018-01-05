@@ -60,7 +60,6 @@ ctypedef map[string, variant_type].iterator variant_map_type_iterator
 ctypedef vector[variant_type] variant_vector_type
 ctypedef vector[variant_type].iterator variant_vector_type_iterator
 
-cdef read_archive_version(variant_map_type& d)
 cdef dict to_dict(variant_map_type& d)
 cdef list to_vector(variant_vector_type& d)
 

@@ -694,19 +694,6 @@ cdef variant_type from_value(object v) except *:
 
 ################################################################################
 
-cdef read_archive_version(variant_map_type& d):
-    """
-    Reads only the 'archive_version' from a model state.
-    """
-    cdef variant_map_type_iterator it = d.begin()
-    ret = 0
-    while (it != d.end()):
-        if cpp_to_str(deref(it).first) == 'archive_version':
-            ret = to_value(deref(it).second)
-            break
-        inc(it)
-    return ret
-
 
 cdef dict to_dict(variant_map_type& d):
     """
