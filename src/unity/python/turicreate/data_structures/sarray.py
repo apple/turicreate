@@ -3077,6 +3077,84 @@ class SArray(object):
         with cython_context():
            return _SFrame(_proxy=self.__proxy__.expand(column_name_prefix, limit, column_types))
 
+    def stack(self, new_column_name=None, drop_na=False, new_column_type=None):
+        """
+        Convert a "wide" SArray to one or two "tall" columns in an SFrame by
+        stacking all values.
+
+        The stack works only for columns of dict, list, or array type.  If the
+        column is dict type, two new columns are created as a result of
+        stacking: one column holds the key and another column holds the value.
+        The rest of the columns are repeated for each key/value pair.
+
+        If the column is array or list type, one new column is created as a
+        result of stacking. With each row holds one element of the array or list
+        value, and the rest columns from the same original row repeated.
+
+        The returned SFrame includes the newly created column(s).
+
+        Parameters
+        --------------
+        new_column_name : str | list of str, optional
+            The new column name(s). If original column is list/array type,
+            new_column_name must a string. If original column is dict type,
+            new_column_name must be a list of two strings. If not given, column
+            names are generated automatically.
+
+        drop_na : boolean, optional
+            If True, missing values and empty list/array/dict are all dropped
+            from the resulting column(s). If False, missing values are
+            maintained in stacked column(s).
+
+        new_column_type : type | list of types, optional
+            The new column types. If original column is a list/array type
+            new_column_type must be a single type, or a list of one type. If
+            original column is of dict type, new_column_type must be a list of
+            two types. If not provided, the types are automatically inferred
+            from the first 100 values of the SFrame.
+
+        Returns
+        -------
+        out : SFrame
+            A new SFrame that contains newly stacked column(s) plus columns in
+            original SFrame other than the stacked column.
+
+        Examples
+        ---------
+        Suppose 'sa' is an SArray of dict type:
+
+        >>> sa = turicreate.SArray([{'a':3, 'cat':2},
+        ...                         {'a':1, 'the':2},
+        ...                         {'the':1, 'dog':3},
+        ...                         {}])
+        [{'a': 3, 'cat': 2}, {'a': 1, 'the': 2}, {'the': 1, 'dog': 3}, {}]
+
+        Stack would stack all keys in one column and all values in another
+        column:
+
+        >>> sa.stack(new_column_name=['word', 'count'])
+        +------+-------+
+        | word | count |
+        +------+-------+
+        |  a   |   3   |
+        | cat  |   2   |
+        |  a   |   1   |
+        | the  |   2   |
+        | the  |   1   |
+        | dog  |   3   |
+        | None |  None |
+        +------+-------+
+        [7 rows x 2 columns]
+
+        Observe that since topic 4 had no words, an empty row is inserted.
+        To drop that row, set drop_na=True in the parameters to stack.
+        """
+        from .sframe import SFrame as _SFrame
+        return _SFrame({'SArray': self}).stack('SArray',
+                                               new_column_name=new_column_name,
+                                               drop_na=drop_na,
+                                               new_column_type=new_column_type)
+
     def unpack(self, column_name_prefix = "X", column_types=None, na_value=None, limit=None):
         """
         Convert an SArray of list, array, or dict type to an SFrame with
