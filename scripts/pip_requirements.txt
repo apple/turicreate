@@ -1,4 +1,0 @@
-prettytable==0.7.2
-argparse==1.2.1
-wheel==0.29.0
-nose-htmloutput==0.6.0

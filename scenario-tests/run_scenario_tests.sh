@@ -70,7 +70,8 @@ if [[ ! -e venv ]]; then
     virtualenv venv
 fi
 source venv/bin/activate
-pip install -r pip_requirements.txt
+pip install -r ../scripts/requirements.txt
+pip install -r additional_requirements.txt
 pip install $GLC_EGG_UNDER_TEST
 
 export TEST_EXCLUDE_REGEX

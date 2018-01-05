@@ -70,14 +70,8 @@ if [[ $haspython == 0 ]]; then
                 fi
         fi
 fi
-if [[ $OSTYPE == darwin* ]]; then
-        $python_scripts/pip install -r scripts/pip_mac_requirements.txt
-else
-        # Need pip>=8.1 to support linux manywheel so that scikit-learn will install without error
-        $python_scripts/pip install --upgrade "pip>=8.1"
-        $python_scripts/pip install -r scripts/pip_linux_initial_requirements.txt
-        $python_scripts/pip install -r scripts/pip_linux_requirements.txt
-fi
+$python_scripts/pip install --upgrade "pip>=8.1"
+$python_scripts/pip install -r scripts/requirements.txt
 
 mkdir -p deps/local/lib
 mkdir -p deps/local/include
