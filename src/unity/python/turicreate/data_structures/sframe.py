@@ -4944,8 +4944,8 @@ class SFrame(object):
         result of stacking. With each row holds one element of the array or list
         value, and the rest columns from the same original row repeated.
 
-        The new SFrame includes the newly created column and all columns other
-        than the one that is stacked.
+        The returned SFrame includes the newly created column(s) and all
+        columns other than the one that is stacked.
 
         Parameters
         --------------
@@ -5018,7 +5018,7 @@ class SFrame(object):
         [7 rows x 3 columns]
 
         Observe that since topic 4 had no words, an empty row is inserted.
-        To drop that row, set dropna=True in the parameters to stack.
+        To drop that row, set drop_na=True in the parameters to stack.
 
         Suppose 'sf' is an SFrame that contains a user and his/her friends,
         where 'friends' columns is an array type. Stack on 'friends' column
