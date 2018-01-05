@@ -297,7 +297,7 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
             }
             
             let s = String(describing: value!)
-            let dataDecoded = Data(base64Encoded: s, options: .ignoreUnknownCharacters)!
+            let dataDecoded = Data(base64Encoded: s, options: Data.Base64DecodingOptions(rawValue: NSData.Base64DecodingOptions.RawValue(0)))!
             let image = NSImage(data: dataDecoded)
             
             completion(image!);
