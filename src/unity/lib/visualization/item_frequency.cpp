@@ -70,7 +70,19 @@ std::string item_frequency_result::vega_column_data(bool sframe) const {
   }
 
   std::sort(items_list.begin(), items_list.end(), [](const std::pair<turi::flexible_type,flexible_type> &left, const std::pair<turi::flexible_type,flexible_type> &right) {
+    DASSERT_EQ(left.second.get_type(), flex_type_enum::INTEGER);
+    DASSERT_EQ(right.second.get_type(), flex_type_enum::INTEGER);
+
     if (left.second == right.second) {
+      // ignore undefined (always sort lower -- it'll get ignored later)
+      if (left.first.get_type() == flex_type_enum::UNDEFINED ||
+          right.first.get_type() == flex_type_enum::UNDEFINED) {
+        return false;
+      }
+
+      DASSERT_EQ(left.first.get_type(), flex_type_enum::STRING);
+      DASSERT_EQ(right.first.get_type(), flex_type_enum::STRING);
+
       // if count is equal, sort ascending by label
       return right.first > left.first;
     }
