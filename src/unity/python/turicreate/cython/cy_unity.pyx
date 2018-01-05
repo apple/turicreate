@@ -42,7 +42,7 @@ cdef read_archive_version(variant_map_type& d):
     Reads only the 'archive_version' from a model state.
     """
     cdef variant_map_type_iterator it = d.begin()
-    ret = 0
+    ret = -1
     while (it != d.end()):
         if cpp_to_str(deref(it).first) == 'archive_version':
             ret = variant_to_value(deref(it).second)
@@ -116,7 +116,7 @@ cdef class UnityGlobalProxy:
             response = self.thisptr.load_model(url)
 
         version = read_archive_version(response)
-        if version == 0:
+        if version <= 0:
             # Legacy model, read all strings as bytes
             try:
                 disable_cpp_str_decode()
