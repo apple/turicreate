@@ -72,7 +72,9 @@ def load_model(location):
     # The archive version could be both bytes/unicode
     key = u'archive_version'
     archive_version = saved_state[key] if key in saved_state else saved_state[key.encode()]
-    if archive_version > 1:
+    if archive_version < 0:
+        raise ToolkitError("File does not appear to be a Turi Create model.")
+    elif archive_version > 1:
         raise ToolkitError("Unable to load model.\n\n"
                            "This model looks to have been saved with a future version of Turi Create.\n"
                            "Please upgrade Turi Create before attempting to load this model file.")
