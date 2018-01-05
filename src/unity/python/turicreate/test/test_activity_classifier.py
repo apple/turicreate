@@ -184,7 +184,7 @@ class ActivityClassifierTest(unittest.TestCase):
 
         if _mac_ver() >= (10, 13):
             w = self.prediction_window
-            labels = map(str, sorted(self.model._target_id_map.keys()))
+            labels = list(map(str, sorted(self.model._target_id_map.keys())))
 
             data_list = [dataset[f].to_numpy()[:, np.newaxis] for f in self.features]
             np_data = np.concatenate(data_list, 1)[np.newaxis]
