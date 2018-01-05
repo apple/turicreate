@@ -3116,8 +3116,7 @@ class SArray(object):
         Returns
         -------
         out : SFrame
-            A new SFrame that contains newly stacked column(s) plus columns in
-            original SFrame other than the stacked column.
+            A new SFrame that contains the newly stacked column(s).
 
         Examples
         ---------
