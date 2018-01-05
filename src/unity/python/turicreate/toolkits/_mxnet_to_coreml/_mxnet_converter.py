@@ -194,8 +194,8 @@ def convert(model, input_shape, order=None, class_labels=None, mode=None,
     output_types = [_datatypes.Array(*dim) for dim in output_dims]
 
     # Make the builder
-    input_features = zip(input_names, input_types)
-    output_features = zip(output_names, output_types)
+    input_features = list(zip(input_names, input_types))
+    output_features = list(zip(output_names, output_types))
     finalize = builder is None
     if builder is None:
         builder = _neural_network.NeuralNetworkBuilder(input_features, output_features, mode)
