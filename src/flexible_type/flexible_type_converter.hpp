@@ -10,623 +10,844 @@
 #include <unordered_map>
 #include <tuple>
 #include <type_traits>
-#include <boost/mpl/contains.hpp>
-#include <boost/mpl/range_c.hpp>
-#include <boost/mpl/vector.hpp>
-#include <boost/mpl/bool.hpp>
-#include <boost/mpl/count.hpp>
-#include <boost/mpl/transform.hpp>
-#include <boost/fusion/mpl.hpp>
-#include <boost/fusion/algorithm/iteration/for_each.hpp>
+#include <util/code_optimization.hpp>
 #include <flexible_type/flexible_type.hpp>
-#include <flexible_type/flexible_type_mpl.hpp>
+#include <flexible_type/type_traits.hpp>
+#include <flexible_type/flexible_type_conversion_utilities.hpp>
+
 namespace turi {
 
-/**
- * \ingroup group_gl_flexible_type
- * is_flexible_type_member<T>::value is true if T is a type contained by the
- * flexible_type, and is false otherwise.
+/** The primary functions/structs available for doing the flexible
+ *  type conversion.
  *
- * \code
- * is_flexible_type_member<size_t>::value // false
- * is_flexible_type_member<flex_int>::value // true  (flex_int == int64_t)
- * is_flexible_type_member<std::vector<flexible_type>>::value // true
- * \endcode
  */
-template <typename T>
-using is_flexible_type_member =  boost::mpl::contains<flexible_type_types, T>;
+template <typename T> struct is_flexible_type_convertible;
+template <typename T> static void convert_from_flexible_type(T& t, const flexible_type& f);
+template <typename T> static void convert_to_flexible_type(flexible_type& f, const T& t);
+template <typename T> static flexible_type convert_to_flexible_type(const T& t);
 
-// forward declaration
-template <typename T>
-struct is_flexible_type_convertible;
+namespace flexible_type_internals {
 
-// forward declaration
-template <typename... Args>
-struct all_flexible_type_convertible;
+////////////////////////////////////////////////////////////////////////////////
 
-/**
- * all_arithmetic<Args...>::value is true if every type in 
- * Args are arithmetic types (numeric).
+/** The conversion path is chosen based on a list of possible
+ *  conversions ranked by priority, with the lowest numbered converter
+ *  that matches the particular type chosen as the conversion path.
+ *  The constants below declare the particular converters available,
+ *  and the actual definitions -- defined as specialized structs --
+ *  are given after that.
+ *
+ *  The conversion mechanism works by testing the matches() constexpr
+ *  condition on each numbered struct, then choosing the struct number
+ *  that matches with no lower numbers matching.  A static_assert
+ *  failure occurs if there are no matches.
  */
-template <typename... Args>
-struct all_arithmetic {
-  typedef boost::mpl::vector<Args...> type_sequence;
-  // makes an mpl::vector<true_, false_ ....> where each element transforms
-  // each arg to whether it is flexible_type convertible
-  typedef typename 
-      boost::mpl::transform<type_sequence, 
-      std::is_arithmetic<boost::mpl::_1>>::type transformed_sequence; 
 
-  // the number of good types (number which are true)
-  typedef typename 
-      boost::mpl::count<transformed_sequence, 
-                        std::integral_constant<bool, true>>::type num_good;
- 
-  // true if all args are convertible.  
-  static constexpr bool value = (num_good::value == sizeof...(Args));
-};
+// The obvious case of another flexible type.
+static constexpr int CVTR__FLEXIBLE_TYPE                  = 1;
 
+// Numeric types.
+static constexpr int CVTR__FLOATING_POINT                 = 2;
+static constexpr int CVTR__INTEGER                        = 3;
 
-/**
- * \ingroup group_gl_flexible_type
- * The flexible_type_converter<T> is a class which exposes two member functions.
- * \code
- *   T flexible_type_converter<T>::get(const flexible_type&)
- *   flexible_type flexible_type<T>::set(const T&)
- * \endcode
- *
- * Essentially flexible_type_converter::get converts from a flexible_type to an
- * arbitrary type T, and flexible_type_converter::set converts from an
- * arbitrary type T to a flexible_type.
- *
- * The key is to support as interesting types for T as possible.
- * The following are currently supported:
- *  - flexible_type itself
- *  - flexible_type castable cases:
- *     - Any direct member of flexible_type:
- *        - flex_int (int64_t)
- *        - flex_float (double)
- *        - flex_string (std::string)
- *        - flex_vec (std::vector<double>)
- *        - flex_list (std::vector<flexible_type>)
- *        - flex_dict (std::vector<std::pair<flexible_type, flexible_type> >)
- *        - flex_date_time (boost::ptime)
- *  - Any scalar type (any boolean, integer, or floating point type)
- *  - Recursive cases
- *     - std::vector<T> where T is of any type in this list including the
- *     recursive cases.  
- *     - std::map<S, T> where S and T are of any type in this list including
- *     the recursive cases.  (though note that complicated S types may not be
- *     representable in Python.)
- *     - std::unordered_map<S, T> where S and T are of any type in this list
- *     including the recursive cases.  (though note that complicated S types
- *     may not be representable in Python.)
- *     - std::pair<S, T> where S, T are of any type in this list including the
- *     recursive cases.
- *     - std::tuple<T...> where T... are of any type in this list including the
- *     recursive cases.
- * 
- * flexible_type_converter_implementation Details
- * ----------------------
- * The key difficulty is to make sure that every T matches *exactly* one case.
- * Each case below is numbered, and we document here how each situation maps
- * to each case.
- *
- * Base case. 
- * All failed templatizations will come here where compilation will fail.
- */
-template <typename T, class Enable=void>
-struct flexible_type_converter {
-  // every successful specialization has a value = True. 
-  // This one has a value = False.
-  // This value is used in is_flexible_type_convertible<T> and 
-  // all_flexible_type_convertible<Args...> to test if stuff are convertible 
-  // to flexible_type via flexible_type_converter<T>
-  static constexpr bool value = false;
-};
+// Vectors -- sequences of numeric elements that can be exactly
+// converted into a flex_vec type.  Prioritized above lists.
+static constexpr int CVTR__FLEX_VEC_EXACT                 = 4;
+static constexpr int CVTR__FLEX_VEC_CONVERTIBLE_SEQUENCE  = 5;
+static constexpr int CVTR__FLEX_VEC_CONVERTIBLE_PAIR      = 6;
+static constexpr int CVTR__FLEX_VEC_CONVERTIBLE_TUPLE     = 7;
+
+// Dictionaries -- sequences convertible to an exact match.
+static constexpr int CVTR__FLEX_DICT_EXACT                = 8;
+static constexpr int CVTR__FLEX_DICT_CONVERTIBLE_SEQUENCE = 9;
+static constexpr int CVTR__FLEX_DICT_CONVERTIBLE_MAPS     = 10;
+
+// Lists -- any other sequences that cannot be converted into a
+// dictionary or vector but can be converted into a list of flexible
+// type.
+static constexpr int CVTR__FLEX_LIST_EXACT                = 11;
+static constexpr int CVTR__FLEX_LIST_CONVERTIBLE_PAIR     = 12;
+static constexpr int CVTR__FLEX_LIST_CONVERTIBLE_TUPLE    = 13;
+static constexpr int CVTR__FLEX_LIST_CONVERTIBLE_SEQUENCE = 14;
+
+// Strings.
+static constexpr int CVTR__FLEX_STRING_EXACT              = 15;
+static constexpr int CVTR__FLEX_STRING_CONVERTIBLE        = 16;
+
+// Date time types.
+static constexpr int CVTR__FLEX_DATE_TIME_EXACT           = 17;
+
+// Enum types.
+static constexpr int CVTR__ENUM                           = 18;
+
+// The last value -- this tells the resolver how many options there
+// are out there.
+static constexpr int NUM_CONVERTER_STRUCTS                = 19;
 
 /**
- * Case 1a: Cover all the direct members of flexible_type, 
- *         EXCEPT for numeric types (flex_int, flex_float), and flex_list.
- *        - flex_string (std::string)
- *        - flex_vec (std::vector<double>)
- *        - flex_dict (std::vector<std::pair<flexible_type, flexible_type> >)
- *        - flex_date_time (boost::ptime)
+ * Type conversion priority is done according to the lowest numbered
+ * ft_converter for which matches<T>() returns true.  If no converter
+ * correctly converts things, then a static assert is raised if
+ * convert is attempted.
+ *
+ * If matches() is not true, then the get and set methods are never
+ * instantiated.
  */
-template <typename T>
-struct flexible_type_converter<T,
-    typename std::enable_if<is_flexible_type_member<T>::value &&
-                            !std::is_arithmetic<T>::value &&
-                            !std::is_same<T, flex_list>::value>::type> {
-  static constexpr bool value = true;
-  T get(const flexible_type& val) {
-    if (type_to_enum<T>::value != val.get_type()) {
-      std::string errormsg = std::string("Expecting ")
-          + flex_type_enum_to_name(type_to_enum<T>::value) 
-          + ". But we got a " + flex_type_enum_to_name(val.get_type());
-      throw(errormsg);
-    }
-    return val.get<T>();
+template <int> struct ft_converter {
+  template <typename T> static constexpr bool matches() { return false; }
+
+  template <typename T> static inline void get(T& t, const flexible_type& v) {
+    static_assert(swallow_to_false<T>::value, "get with bad match.");
   }
-  flexible_type set(const T& val) {
-    return flexible_type(val);
+
+  template <typename T>
+  static inline void set(flexible_type& t, const T& v) {
+    static_assert(swallow_to_false<T>::value, "set with bad match.");
   }
 };
 
+////////////////////////////////////////////////////////////////////////////////
+//
+//  flexible_type
+//
+////////////////////////////////////////////////////////////////////////////////
 
-/**
- * Case 1b: flex_list: std::vector<flexible_type> 
+/** straight flexible_type.  Always given priority.
  */
-template <>
-struct flexible_type_converter<flex_list, void> {
-  static constexpr bool value = true;
-  flex_list get(const flexible_type& val) {
-    if (val.get_type() == flex_type_enum::LIST) {
-      return val;
-    }
-    else if (val.get_type() == flex_type_enum::VECTOR) {
-      flex_vec f = val.to<flex_vec>();
-      flex_list ret;
-      ret.resize(f.size());
-      for (size_t i = 0;i < f.size(); ++i) ret[i] = f[i];
-      return ret;
+template <> struct ft_converter<CVTR__FLEXIBLE_TYPE> {
+
+  template <typename T> static constexpr bool matches() {
+    return std::is_same<T, flexible_type>::value;
+  }
+
+  static void get(flexible_type& dest, const flexible_type& src) {
+    dest = src;
+  }
+
+  static void set(flexible_type& dest, const flexible_type& src) {
+    dest = src;
+  }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+//
+//  numeric types.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+/** Any floating point values.
+ */
+template <> struct ft_converter<CVTR__FLOATING_POINT> {
+
+  template <typename T> static constexpr bool matches() {
+    return std::is_floating_point<T>::value;
+  }
+
+  template <typename Float>
+  static void get(Float& dest, const flexible_type& src) {
+    if(src.get_type() == flex_type_enum::FLOAT) {
+      dest = static_cast<Float>(src.get<flex_float>());
+    } else if(src.get_type() == flex_type_enum::INTEGER) {
+      dest = static_cast<Float>(src.get<flex_int>());
     } else {
-      std::string errormsg = 
-          std::string("Expecting a list or array, but we got a ") 
-          + flex_type_enum_to_name(val.get_type());
-      throw(errormsg);
+      throw_type_conversion_error(src, "numeric");
     }
   }
-  flexible_type set(const flex_list& val) {
-    return flexible_type(val);
+
+  template <typename Float>
+  static void set(Float& dest, const flexible_type& src) {
+    dest = flex_float(src);
   }
 };
 
+////////////////////////////////////////////////////////////////////////////////
 
-/**
- * Case 2: Cover's flexible_type itself
+/** Integer values.
  */
-template <>
-struct flexible_type_converter<flexible_type, void> {
-  static constexpr bool value = true;
-  flexible_type get(const flexible_type& val) {
-    return val;
+template <> struct ft_converter<CVTR__INTEGER> {
+
+  template <typename T> static constexpr bool matches() {
+    return std::is_integral<T>::value || std::is_same<T, bool>::value;
   }
-  flexible_type set(const flexible_type& val) {
-    return val;
+
+  template <typename Integer>
+  static void get(Integer& dest, const flexible_type& src) {
+    if(src.get_type() == flex_type_enum::FLOAT) {
+      flex_float v = src.get<flex_float>();
+      if(static_cast<Integer>(v) != v) {
+        throw_type_conversion_error(src, "integer / convertable float");
+      }
+      dest = static_cast<Integer>(v);
+    } else if(src.get_type() == flex_type_enum::INTEGER) {
+      dest = static_cast<Integer>(src.get<flex_int>());
+    } else {
+      throw_type_conversion_error(src, "integer");
+    }
+  }
+
+  template <typename Integer>
+  static void set(Integer& dest, const flexible_type& src) {
+    dest = Integer(flex_int(src));
   }
 };
 
+////////////////////////////////////////////////////////////////////////////////
+//
+//  Vectors
+//
+////////////////////////////////////////////////////////////////////////////////
 
-/**
- * Case 3: All numeric types.
+/** Any sequence containers (vectors, lists, deques, etc.) of floating
+ *  point values.
  */
-template <typename T>
-struct flexible_type_converter<T, 
-    typename std::enable_if<std::is_arithmetic<T>::value>::type> {
-  static constexpr bool value = true;
-  T get(const flexible_type& val) {
-    if (val.get_type() != flex_type_enum::INTEGER && 
-        val.get_type() != flex_type_enum::FLOAT) {
-      std::string errormsg = 
-          std::string("Expecting a numeric type, But we got a ") 
-          + flex_type_enum_to_name(val.get_type());
-      throw(errormsg);
-    }
-    return T(val);
+template <> struct ft_converter<CVTR__FLEX_VEC_CONVERTIBLE_SEQUENCE> {
+
+  template <typename V> static constexpr bool matches() {
+    return (is_sequence_container<V>::value
+            && std::is_floating_point<typename first_nested_type<V>::type>::value);
   }
-  flexible_type set(const T& val) {
-    return flexible_type(val);
+
+  template <typename Vector>
+  static void get(Vector& dest, const flexible_type& src) {
+    if(src.get_type() == flex_type_enum::VECTOR) {
+      const flex_vec& v = src.get<flex_vec>();
+      dest.assign(v.begin(), v.end());
+    } else if(src.get_type() == flex_type_enum::LIST) {
+      const flex_list& f = src.get<flex_list>();
+      dest.assign(f.begin(), f.end());
+    } else {
+      throw_type_conversion_error(src, "flex_vec");
+    }
+  }
+
+  template <typename Vector>
+  static void set(flexible_type& dest, const Vector& src) {
+    dest = flex_vec(src.begin(), src.end());
   }
 };
 
-/**
- * Case 4: std::vector<T> where T is a numeric type. Converts to flex_vec.
- * Must exclude the types already handled by case 1.
+////////////////////////////////////////////////////////////////////////////////
+
+/** flex_vec type, exact converter.  Prioritized above
+ *  flex_vec_convertible, but defined afterwards so we can call the
+ *  get method if the flexible_type isn't a flex_vec as well.
  */
-template <typename T>
-struct flexible_type_converter<std::vector<T>, 
-    typename std::enable_if<std::is_arithmetic<T>::value &&
-                            !is_flexible_type_member<std::vector<T>>::value
-                            >::type> {
-  static constexpr bool value = true;
-  std::vector<T> get(const flexible_type& val) {
+template <> struct ft_converter<CVTR__FLEX_VEC_EXACT> {
 
-    if (val.get_type() != flex_type_enum::VECTOR) {
-      std::string errormsg = 
-          std::string("Expecting an array of numbers, But we got a ") 
-          + flex_type_enum_to_name(val.get_type());
-      throw(errormsg);
-    }
-
-    flex_vec f = val.to<flex_vec>();
-    std::vector<T> ret;
-    ret.resize(f.size());
-    for (size_t i = 0;i < f.size(); ++i) ret[i] = f[i];
-    return ret;
+  template <typename V> static constexpr bool matches() {
+    return std::is_same<V, flex_vec>::value;
   }
-  flexible_type set(const std::vector<T>& val) {
-    flex_vec f;
-    f.resize(val.size());
-    for (size_t i = 0;i < val.size(); ++i) f[i] = val[i];
-    return f;
+
+  static void get(flex_vec& dest, const flexible_type& src) {
+    if(src.get_type() == flex_type_enum::VECTOR) {
+      dest = src.get<flex_vec>();
+    } else {
+      // Punt to the general case
+      ft_converter<CVTR__FLEX_VEC_CONVERTIBLE_SEQUENCE>::get(dest, src);
+    }
+  }
+
+  static void set(flexible_type& dest, const flex_vec& src) {
+    dest = src;
   }
 };
 
+////////////////////////////////////////////////////////////////////////////////
 
-/**
- * Case 5: std::vector<T> where T is is of any type convertible to flexible_type.
- * Must exclude the types already handled by case 1, and the numeric types
- * handled by case 3. Converts to flex_list.
+/** Any pairs of numeric values. This is different from the general
+ *  pair of flex_type_converible values since this allows the the
+ *  std::pair to convert to and from a 2-element flex_vec if the types
+ *  in the std::pair are numeric.  Internally, the logic is the same
+ *  as the case below if they are not strictly doubles.
  */
-template <typename T>
-struct flexible_type_converter<std::vector<T>, 
-    typename std::enable_if<is_flexible_type_convertible<T>::value &&
-                            !is_flexible_type_member<std::vector<T>>::value &&
-                            !std::is_arithmetic<T>::value>::type> {
-  static constexpr bool value = true;
-  std::vector<T> get(const flexible_type& val) {
+template <> struct ft_converter<CVTR__FLEX_VEC_CONVERTIBLE_PAIR> {
 
-    if (val.get_type() != flex_type_enum::LIST) {
-      std::string errormsg = std::string("Expecting a list, But we got a ") 
-          + flex_type_enum_to_name(val.get_type());
-      throw(errormsg);
-    }
+  template <typename T> static constexpr bool matches() {
+    typedef typename first_nested_type<T>::type  U1;
+    typedef typename second_nested_type<T>::type U2;
 
-    const flex_list& d = val.get<flex_list>();
-    std::vector<T> ret(d.size());
-    for (size_t i = 0;i < d.size(); ++i) {
-      ret[i] = flexible_type_converter<T>().get(d[i]);
-    }
-    return ret;
+    return (is_std_pair<T>::value
+            && std::is_floating_point<U1>::value
+            && std::is_floating_point<U2>::value);
   }
-  flexible_type set(const std::vector<T>& val) {
-    flex_list ret(val.size());
-    for (size_t i = 0;i < val.size(); ++i) {
-      ret[i] = flexible_type_converter<T>().set(val[i]);
+
+  template <typename T, typename U>
+  static void get(std::pair<T, U>& dest, const flexible_type& src) {
+    if(src.get_type() == flex_type_enum::LIST) {
+      const flex_list& l = src.get<flex_list>();
+      if(l.size() != 2) {
+        throw_type_conversion_error(src, "2-element flex_list/flex_vec (list size != 2)");
+      }
+      convert_from_flexible_type(dest.first, l[0]);
+      convert_from_flexible_type(dest.second, l[1]);
+    } else if(src.get_type() == flex_type_enum::VECTOR) {
+      const flex_vec& v = src.get<flex_vec>();
+      if(v.size() != 2){
+        throw_type_conversion_error(src, "2-element flex_list/flex_vec (vector size != 2)");
+      }
+      dest.first = static_cast<T>(v[0]);
+      dest.second = static_cast<U>(v[1]);
+    } else {
+      throw_type_conversion_error(src, "2-element flex_list/flex_vec");
     }
-    return ret;
+  }
+
+  template <typename T, typename U>
+  static void set(flexible_type& dest, const std::pair<T,U>& src) {
+    if(std::is_floating_point<T>::value && std::is_floating_point<U>::value) {
+      dest = flex_vec{flex_float(src.first), flex_float(src.second)};
+    } else {
+      dest = flex_list{convert_to_flexible_type(src.first), convert_to_flexible_type(src.second)};
+    }
   }
 };
 
-/**
- * Case 6: Covers the case std::map<S, T> where S, T are convertible to 
- * flexible_type.
+////////////////////////////////////////////////////////////////////////////////
+
+/** std::tuple of numeric values.
  */
-template <typename S, typename T>
-struct flexible_type_converter<std::map<S, T>,
-    typename std::enable_if<(is_flexible_type_convertible<S>::value && 
-                             is_flexible_type_convertible<T>::value)>::type> {
-  static constexpr bool value = true;
-  std::map<S, T> get(const flexible_type& val) {
+template <> struct ft_converter<CVTR__FLEX_VEC_CONVERTIBLE_TUPLE> {
 
-    if (val.get_type() != flex_type_enum::DICT) {
-      std::string errormsg = 
-          std::string("Expecting a dictionary, But we got a ") 
-          + flex_type_enum_to_name(val.get_type());
-      throw(errormsg);
-    }
-
-    const flex_dict& d = val.get<flex_dict>();
-    std::map<S, T> ret;
-    for (const auto& elem: d) {
-      ret.insert({flexible_type_converter<S>().get(elem.first), 
-                  flexible_type_converter<T>().get(elem.second)});
-    }
-    return ret;
+  template <typename T> static constexpr bool matches() {
+    return (is_tuple<T>::value && all_nested_true<std::is_arithmetic, T>::value);
   }
-  flexible_type set(const std::map<S, T>& val) {
-    flex_dict ret;
-    for (const auto& elem: val) {
-      ret.push_back({flexible_type_converter<S>().set(elem.first), 
-                     flexible_type_converter<T>().set(elem.second)});
+
+  template <typename... Args>
+  static void get(std::tuple<Args...>& dest, const flexible_type& src) {
+    switch(src.get_type()) {
+      case flex_type_enum::LIST: {
+        const flex_list& d = src.get<flex_list>();
+
+        if (d.size() != sizeof...(Args)) {
+          std::string errormsg =
+              std::string("Expecting a list or vector of length ")
+              + std::to_string(sizeof...(Args)) + ", but we got a list of length "
+              + std::to_string(d.size());
+          throw(errormsg);
+        }
+        pack_tuple(dest, d);
+        break;
+      }
+
+      case flex_type_enum::VECTOR: {
+        const flex_vec& d = src.get<flex_vec>();
+        if (d.size() != sizeof...(Args)) {
+          std::string errormsg =
+              std::string("Expecting a list or vector of length ")
+              + std::to_string(sizeof...(Args)) + ", but we got a vector of length "
+              + std::to_string(d.size());
+          throw(errormsg);
+        }
+        pack_tuple(dest, d);
+        break;
+      }
+
+      default: {
+        std::string errormsg =
+            std::string("Expecting a list or vector of length ")
+            + std::to_string(sizeof...(Args)) + ", but we got a "
+            + flex_type_enum_to_name(src.get_type());
+        throw(errormsg);
+      }
     }
-    return flexible_type(ret);
+  }
+
+  template <typename... Args>
+  static void set(flexible_type& dest, const std::tuple<Args...> & src) {
+    flex_vec v(sizeof...(Args));
+    unpack_tuple(v, src);
+    dest = std::move(v);
   }
 };
 
-/**
- * Case 7: Covers the case std::unordered_map<S, T> where S, T are convertible
- * to flexible_type.
+
+
+////////////////////////////////////////////////////////////////////////////////
+//
+//   Dictionaries
+//
+////////////////////////////////////////////////////////////////////////////////
+
+/** Any sequence containers of pairs of flexible type convertable
+ *  values (may be numeric).  Put into a dictionary.
  */
-template <typename S, typename T>
-struct flexible_type_converter<std::unordered_map<S, T>,
-    typename std::enable_if<(is_flexible_type_convertible<S>::value && 
-                             is_flexible_type_convertible<T>::value)>::type> {
-  static constexpr bool value = true;
-  std::unordered_map<S, T> get(const flexible_type& val) {
+template <> struct ft_converter<CVTR__FLEX_DICT_CONVERTIBLE_SEQUENCE> {
 
-    if (val.get_type() != flex_type_enum::DICT) {
-      std::string errormsg = 
-          std::string("Expecting a dictionary, But we got a ") 
-          + flex_type_enum_to_name(val.get_type());
-      throw(errormsg);
-    }
+  template <typename T> static constexpr bool matches() {
+    typedef typename first_nested_type<T>::type pair_type;
 
-    const flex_dict& d = val.get<flex_dict>();
-    std::unordered_map<S, T> ret;
-    for (const auto& elem: d) {
-      ret.insert({flexible_type_converter<S>().get(elem.first), 
-                  flexible_type_converter<T>().get(elem.second)});
-    }
-    return ret;
+    return conditional_test<is_sequence_container<T>::value && is_std_pair<pair_type>::value,
+                            is_flexible_type_convertible, pair_type>::value;
   }
-  flexible_type set(const std::unordered_map<S, T>& val) {
-    flex_dict ret;
-    for (const auto& elem: val) {
-      ret.push_back({flexible_type_converter<S>().set(elem.first), 
-                     flexible_type_converter<T>().set(elem.second)});
+
+  template <typename T, typename U, template <typename...> class C>
+  static void get(C<std::pair<T, U> >& dest, const flexible_type& src) {
+    if(src.get_type() == flex_type_enum::DICT) {
+      const flex_dict& fd = src.get<flex_dict>();
+      dest.resize(fd.size());
+      for(size_t i = 0; i < fd.size(); ++i) {
+        convert_from_flexible_type(dest[i].first, fd[i].first);
+        convert_from_flexible_type(dest[i].second, fd[i].second);
+      }
+    } else if(src.get_type() == flex_type_enum::LIST) {
+      const flex_list& fl = src.get<flex_list>();
+      dest.resize(fl.size());
+      for(size_t i = 0; i < fl.size(); ++i) {
+        convert_from_flexible_type(dest[i], fl[i]);
+      }
+    } else {
+      throw_type_conversion_error(src, "flex_dict or flex_list of 2-element list/vectors");
     }
-    return ret;
+  }
+
+  template <typename T, typename U, template <typename...> class C>
+  static void set(flexible_type& dest, const C<std::pair<T, U> >& src) {
+   flex_dict d(src.size());
+    for(size_t i = 0; i < src.size();++i) {
+      d[i] = std::make_pair(convert_to_flexible_type(src[i].first), convert_to_flexible_type(src[i].second));
+    }
+    dest = std::move(d);
   }
 };
 
+////////////////////////////////////////////////////////////////////////////////
 
-/**
- * Case 8: Covers the case std::pair<S, T> where S, T are convertible
- * to flexible_type.
+/** flex_dict exact type.  Prioritized above flex_dict convertible,
+ *  but defined afterwards so we can call the get method if the
+ *  flexible_type isn't a flex_dict as well.
  */
-template <typename S, typename T>
-struct flexible_type_converter<std::pair<S, T>,
-    typename std::enable_if<is_flexible_type_convertible<S>::value && 
-                            is_flexible_type_convertible<T>::value &&
-                            !(std::is_arithmetic<S>::value &&
-                              std::is_arithmetic<T>::value)>::type> {
-  static constexpr bool value = true;
-  std::pair<S, T> get(const flexible_type& val) {
-    if (val.get_type() != flex_type_enum::LIST) {
-      std::string errormsg = 
-          std::string("Expecting a list of length 2, But we got a ") 
-          + flex_type_enum_to_name(val.get_type());
-      throw(errormsg);
-    }
-    const flex_list& d = val.get<flex_list>();
-    if (d.size() != 2) {
-      std::string errormsg = 
-          std::string("Expecting a list of length 2, But got a list of length ") 
-          + std::to_string(d.size());
-      throw(errormsg);
-    }
-    return {flexible_type_converter<S>().get(d[0]), 
-            flexible_type_converter<T>().get(d[1])};
+template <> struct ft_converter<CVTR__FLEX_DICT_EXACT> {
+
+  template <typename V> static constexpr bool matches() {
+    return std::is_same<V, flex_dict>::value;
   }
-  flexible_type set(const std::pair<S, T>& val) {
-    flex_list ret;
-    ret.push_back(flexible_type_converter<S>().set(val.first)); 
-    ret.push_back(flexible_type_converter<T>().set(val.second));
-    return ret;
+
+  static void get(flex_dict& dest, const flexible_type& src) {
+    if(src.get_type() == flex_type_enum::DICT) {
+      dest = src.get<flex_dict>();
+    } else {
+      // Punt to the general case
+      ft_converter<CVTR__FLEX_DICT_CONVERTIBLE_SEQUENCE>::get(dest, src);
+    }
+  }
+
+  static void set(flexible_type& dest, const flex_dict& src) {
+    dest = src;
   }
 };
 
+////////////////////////////////////////////////////////////////////////////////
 
-/**
- * Case 9: Covers the case std::pair<S, T> where S, T are numeric.
+/** std::map<T, U>, std::unordered_map<T, U>, or boost::unordered_map,
+ *  with T and U convertable to flexible_type.
  */
-template <typename S, typename T>
-struct flexible_type_converter<std::pair<S, T>,
-    typename std::enable_if<std::is_arithmetic<S>::value &&
-                            std::is_arithmetic<T>::value>::type> {
-  static constexpr bool value = true;
-  std::pair<S, T> get(const flexible_type& val) {
-    if (val.get_type() != flex_type_enum::VECTOR) {
-      std::string errormsg = 
-          std::string("Expecting a numeric array of length 2, But we got a ") 
-          + flex_type_enum_to_name(val.get_type());
-      throw(errormsg);
+template <> struct ft_converter<CVTR__FLEX_DICT_CONVERTIBLE_MAPS> {
+
+  template <typename T> static constexpr bool matches() {
+
+    typedef typename first_nested_type<T>::type U1;
+    typedef typename second_nested_type<T>::type U2;
+
+    return (is_map<T>::value
+            && conditional_test<is_map<T>::value, is_flexible_type_convertible, U1>::value
+            && conditional_test<is_map<T>::value, is_flexible_type_convertible, U2>::value);
+  }
+
+  template <typename T>
+  static void get(T& dest, const flexible_type& src) {
+    std::pair<typename T::key_type, typename T::mapped_type> p;
+
+    if(src.get_type() == flex_type_enum::DICT) {
+
+      const flex_dict& fd = src.get<flex_dict>();
+
+      for(size_t i = 0; i < fd.size(); ++i) {
+        convert_from_flexible_type(p.first, fd[i].first);
+        convert_from_flexible_type(p.second, fd[i].second);
+        dest.insert(std::move(p));
+      }
+    } else if(src.get_type() == flex_type_enum::LIST) {
+      const flex_list& l = src.get<flex_list>();
+      for(size_t i = 0; i < l.size(); ++i) {
+        convert_from_flexible_type(p, l[i]);
+        dest.insert(std::move(p));
+      }
+    } else {
+      throw_type_conversion_error(src, "flex_dict / list of 2-element flex_lists/flex_vec");
     }
-    const flex_vec& d = val.get<flex_vec>();
-    if (d.size() != 2) {
-      std::string errormsg = 
-          std::string("Expecting a numeric array of length 2, "
-                      "But we got an array of length ") 
-          + std::to_string(d.size());
-      throw(errormsg);
+  }
+
+  template <typename T>
+  static void set(flexible_type& dest, const T& src) {
+    flex_dict fd;
+    fd.reserve(src.size());
+    for(const auto& p : src) {
+      fd.push_back({convert_to_flexible_type(p.first), convert_to_flexible_type(p.second)});
     }
-    return {d[0],d[1]};
-  }
-  flexible_type set(const std::pair<S, T>& val) {
-    flex_vec ret;
-    ret.push_back(val.first);
-    ret.push_back(val.second);
-    return ret;
+    dest = std::move(fd);
   }
 };
 
 
-namespace flexible_type_converter_impl {
+////////////////////////////////////////////////////////////////////////////////
+//
+//  Lists.
+//
+////////////////////////////////////////////////////////////////////////////////
 
-/**
- * Fills in a tuple<T ...> with values from a flex_list, using
- * the flexible_type_converter to convert each value.
- * 
- * operator()<int i> essentially performs
- *    tuple[i] = (convert to tuple_i type)input[i]
- * where input[i] is a vector of flexible_type
+/** Any sequence container of values that are convertable to a
+ *  flexible type, but for which the flex_dict and flex_vec converters
+ *  do not apply.
  */
-template <typename TupleType>
-struct fill_tuple_from_flex_list {
-  const flex_list* input;
-  mutable TupleType tuple;
-  template<int n>
-  void operator()(boost::mpl::integral_c<int, n> t) const { 
-    typedef typename std::decay<decltype(std::get<n>(tuple))>::type TargetType;
-    std::get<n>(tuple) = 
-        flexible_type_converter<TargetType>().get(input->at(n));
+template <> struct ft_converter<CVTR__FLEX_LIST_CONVERTIBLE_SEQUENCE> {
+
+  template <typename T> static constexpr bool matches() {
+    return (conditional_test<
+               is_sequence_container<T>::value,
+               is_flexible_type_convertible, typename first_nested_type<T>::type>::value);
   }
-};
 
+  template <typename FlexContainer>
+  static void get(FlexContainer& dest, const flexible_type& src) {
+    switch(src.get_type()) {
+      case flex_type_enum::LIST: {
+        const flex_list& fl = src.get<flex_list>();
+        dest.resize(fl.size());
+        auto it = dest.begin();
+        for(size_t i = 0; i < fl.size(); ++i, ++it) {
+          typename FlexContainer::value_type t;
+          convert_from_flexible_type(t, fl[i]);
+          *it = std::move(t);
+        }
+        break;
+      }
+      case flex_type_enum::VECTOR: {
+        const flex_vec& fv = src.get<flex_vec>();
+        dest.resize(fv.size());
 
-/**
- * Fills in a flex_list from tuple<T ...> 
- * the flexible_type_converter to convert each value.
- * 
- * operator()<int i> essentially performs
- *    output[i] = (convert to flexible_type type)tuple[i]
- * where output[i] is a vector of flexible_type
- */
-template <typename TupleType>
-struct fill_flex_list_from_tuple{
-  const TupleType* input;
-  mutable flex_list output;
-  template<int n>
-  void operator()(boost::mpl::integral_c<int, n> t) const { 
-    typedef typename std::decay<decltype(std::get<n>(*input))>::type TargetType;
-    output.at(n) = 
-        flexible_type_converter<TargetType>().set(std::get<n>(*input));
-  }
-};
-
-
-/**
- * Fills in a tuple<T ...> with values from a flex_vec. 
- * T... must be all arithmetic.
- * 
- * operator()<int i> essentially performs
- *    tuple[i] = input[i]
- * where input[i] is a double vector 
- */
-template <typename TupleType>
-struct fill_tuple_from_flex_vec {
-  const flex_vec* input;
-  mutable TupleType tuple;
-  template<int n>
-  void operator()(boost::mpl::integral_c<int, n> t) const { 
-    typedef typename std::decay<decltype(std::get<n>(tuple))>::type TargetType;
-    std::get<n>(tuple) = input->at(n);
-  }
-};
-
-
-/**
- * Fills in a vector<flexible_type> from tuple<T ...> 
- * the flexible_type_converter to convert each value.
- * 
- * operator()<int i> essentially performs
- *    output[i] = tuple[i]
- * where output[i] is a double vector 
- */
-template <typename TupleType>
-struct fill_flex_vec_from_tuple{
-  const TupleType* input;
-  mutable flex_vec output;
-  template<int n>
-  void operator()(boost::mpl::integral_c<int, n> t) const { 
-    typedef typename std::decay<decltype(std::get<n>(*input))>::type TargetType;
-    output.at(n) = std::get<n>(*input);
-  }
-};
-
-} // flexible_type_converter_impl
-
-/**
- * Case 10: std::tuple<T...> where T... are all convertible to flexible_type
- */
-template <typename... Args>
-struct flexible_type_converter<std::tuple<Args...>, 
-      typename std::enable_if<all_flexible_type_convertible<Args...>::value &&
-                             !all_arithmetic<Args...>::value>::type > {
-  static constexpr bool value = true;
-  std::tuple<Args...> get(const flexible_type& val) {
-
-    if (val.get_type() != flex_type_enum::LIST) {
-      std::string errormsg = 
-          std::string("Expecting a list of length ") 
-          + std::to_string(sizeof...(Args)) + ", But we got a " 
-          + flex_type_enum_to_name(val.get_type());
-      throw(errormsg);
+        auto it = dest.begin();
+        for(size_t i = 0; i < fv.size(); ++i, ++it) {
+          typename FlexContainer::value_type t;
+          // To prevent difficult compiler-time issues on this
+          // conversion path, convert these through a flexible_type
+          // double first to get proper dynamic type checking.  The
+          // fast path should be compiled in given the flattening
+          // here.
+          convert_from_flexible_type(t, flexible_type(fv[i]));
+          *it = std::move(t);
+        }
+        break;
+      }
+      default: {
+        throw_type_conversion_error(src, "flex_list");
+      }
     }
-    const flex_list& d = val.get<flex_list>();
-    if (d.size() != sizeof...(Args)) {
-      std::string errormsg = 
-          std::string("Expecting a list of length ") 
-          + std::to_string(sizeof...(Args)) + ", But we got a list of length " 
-          + std::to_string(d.size());
-      throw(errormsg);
-    }
-    typename boost::mpl::range_c<int, 0, sizeof...(Args)>::type tuple_range;
-    flexible_type_converter_impl::
-        fill_tuple_from_flex_list<std::tuple<Args...>> filler;
-    filler.input = &d;
-    boost::fusion::for_each(tuple_range, filler);
-    return filler.tuple;
   }
-  flexible_type set(const std::tuple<Args...> & val) {
-    typename boost::mpl::range_c<int, 0, sizeof...(Args)>::type tuple_range;
-    flexible_type_converter_impl::
-        fill_flex_list_from_tuple<std::tuple<Args...>> filler;
-    filler.input = &val;
-    filler.output.resize(sizeof...(Args));
-    boost::fusion::for_each(tuple_range, filler);
-    return filler.output;
+
+  template <typename FlexContainer>
+  static void set(flexible_type& dest, const FlexContainer& src) {
+    flex_list fl(src.size());
+
+    auto it = src.begin();
+    for(size_t i = 0; i < fl.size(); ++i, ++it) {
+      // This explicit clast here is to get around the vector<bool> reference class,
+      // when the type is actually bool.
+      typename first_nested_type<FlexContainer>::type v = *it;
+      fl[i] = convert_to_flexible_type(std::move(v));
+    }
+
+    dest = std::move(fl);
   }
 };
 
+////////////////////////////////////////////////////////////////////////////////
 
-/**
- * Case 11: std::tuple<T...> where T... are all arithmetic (numeric) types
+/** flex_list exact type.  Prioritized above flex_list_convertible,
+ *  but defined afterwards so we can call the get method if the
+ *  flexible_type isn't a flex_list as well.
  */
-template <typename... Args>
-struct flexible_type_converter<std::tuple<Args...>, 
-      typename std::enable_if<all_arithmetic<Args...>::value>::type > {
-  static constexpr bool value = true;
-  std::tuple<Args...> get(const flexible_type& val) {
+template <> struct ft_converter<CVTR__FLEX_LIST_EXACT> {
 
-    if (val.get_type() != flex_type_enum::VECTOR) {
-      std::string errormsg = 
-          std::string("Expecting a numeric array of length ") 
-          + std::to_string(sizeof...(Args)) + ", But we got a " 
-          + flex_type_enum_to_name(val.get_type());
-      throw(errormsg);
-    }
-    const flex_vec& d = val.get<flex_vec>();
-    if (d.size() != sizeof...(Args)) {
-      std::string errormsg = 
-          std::string("Expecting a numeric array of length ") 
-          + std::to_string(sizeof...(Args)) 
-          + ", But we got a numeric array of length " 
-          + std::to_string(d.size());
-      throw(errormsg);
-    }
-    typename boost::mpl::range_c<int, 0, sizeof...(Args)>::type tuple_range;
-    flexible_type_converter_impl::
-        fill_tuple_from_flex_vec<std::tuple<Args...>> filler;
-    filler.input = &d;
-    boost::fusion::for_each(tuple_range, filler);
-    return filler.tuple;
+  template <typename V> static constexpr bool matches() {
+    return std::is_same<V, flex_list>::value;
   }
-  flexible_type set(const std::tuple<Args...> & val) {
-    typename boost::mpl::range_c<int, 0, sizeof...(Args)>::type tuple_range;
-    flexible_type_converter_impl::
-        fill_flex_vec_from_tuple<std::tuple<Args...>> filler;
-    filler.input = &val;
-    filler.output.resize(sizeof...(Args));
-    boost::fusion::for_each(tuple_range, filler);
-    return filler.output;
+
+  static void get(flex_list& dest, const flexible_type& src) {
+    if(src.get_type() == flex_type_enum::LIST) {
+      dest = src.get<flex_list>();
+    } else {
+      // Punt to the general case
+      ft_converter<CVTR__FLEX_LIST_CONVERTIBLE_SEQUENCE>::get(dest, src);
+    }
+  }
+
+  static void set(flexible_type& dest, const flex_list& src) {
+    dest = src;
   }
 };
 
-/**
- * Case 12: All enums.
+////////////////////////////////////////////////////////////////////////////////
+
+/** std::pair of flexible_type convertable stuff.  Note that a pair of
+ *  numeric values is taken care of by the numeric case.
  */
-template <typename T>
-struct flexible_type_converter<T, 
-    typename std::enable_if<std::is_enum<T>::value>::type> {
-  static constexpr bool value = true;
-  T get(const flexible_type& val) {
-    if (val.get_type() != flex_type_enum::INTEGER) {
-      std::string errormsg = 
-          (std::string("Expecting a integer type convertable to enum type '")
-           + typeid(T).name() + "', but we got a "
-           + flex_type_enum_to_name(val.get_type()));
-      throw(errormsg);
-    }
-    return static_cast<T>(val.get<flex_int>());
+template <> struct ft_converter<CVTR__FLEX_LIST_CONVERTIBLE_PAIR> {
+
+  template <typename T> static constexpr bool matches() {
+    typedef typename first_nested_type<T>::type  U1;
+    typedef typename second_nested_type<T>::type U2;
+
+    return (is_std_pair<T>::value
+            && conditional_test<is_std_pair<T>::value, is_flexible_type_convertible, U1>::value
+            && conditional_test<is_std_pair<T>::value, is_flexible_type_convertible, U2>::value);
   }
-  flexible_type set(const T& val) {
-    return flexible_type(static_cast<flex_int>(val));
+
+  template <typename T, typename U>
+  static void get(std::pair<T, U>& dest, const flexible_type& src) {
+    if(src.get_type() == flex_type_enum::LIST) {
+      const flex_list& l = src.get<flex_list>();
+      if(l.size() != 2) {
+        throw_type_conversion_error(src, "2-element flex_list/flex_vec (list size != 2)");
+      }
+      convert_from_flexible_type(dest.first, l[0]);
+      convert_from_flexible_type(dest.second, l[1]);
+    } else {
+      throw_type_conversion_error(src, "2-element flex_list/flex_vec");
+    }
+  }
+
+  template <typename T, typename U>
+  static void set(flexible_type& dest, const std::pair<T,U>& src) {
+    dest = flex_list{convert_to_flexible_type(src.first), convert_to_flexible_type(src.second)};
   }
 };
 
+////////////////////////////////////////////////////////////////////////////////
+
+/** std::tuple of flexible_type-convertable values.  (Note that tuples
+ * of arithmetic values are taken care of by the numeric tuple case).
+ */
+template <> struct ft_converter<CVTR__FLEX_LIST_CONVERTIBLE_TUPLE> {
+
+  template <typename T> static constexpr bool matches() {
+    return (is_tuple<T>::value && all_nested_true<is_flexible_type_convertible, T>::value);
+  }
+
+  template <typename... Args>
+  static void get(std::tuple<Args...>& dest, const flexible_type& src) {
+    switch(src.get_type()) {
+      case flex_type_enum::LIST: {
+        const flex_list& d = src.get<flex_list>();
+
+        if (d.size() != sizeof...(Args)) {
+          std::string errormsg =
+              std::string("Expecting a list or vector of length ")
+              + std::to_string(sizeof...(Args)) + ", but we got a list of length "
+              + std::to_string(d.size());
+          throw(errormsg);
+        }
+        pack_tuple(dest, d);
+        break;
+      }
+
+      default: {
+        std::string errormsg =
+            std::string("Expecting a list or vector of length ")
+            + std::to_string(sizeof...(Args)) + ", but we got a "
+            + flex_type_enum_to_name(src.get_type());
+        throw(errormsg);
+      }
+    }
+  }
+
+  template <typename... Args>
+  static void set(flexible_type& dest, const std::tuple<Args...> & src) {
+    flex_list v(sizeof...(Args));
+    unpack_tuple(v, src);
+    dest = std::move(v);
+  }
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
+//
+//  Strings
+//
+////////////////////////////////////////////////////////////////////////////////
+
+/** flex_string type exact.
+ */
+template <> struct ft_converter<CVTR__FLEX_STRING_EXACT> {
+
+  template <typename V> static constexpr bool matches() {
+    return std::is_same<V, flex_string>::value;
+  }
+
+  static void get(flex_string& dest, const flexible_type& src) {
+    if(src.get_type() == flex_type_enum::STRING) {
+      dest = src.get<flex_string>();
+    } else {
+      throw_type_conversion_error(src, "flex_string");
+    }
+  }
+
+  static void set(flexible_type& dest, const flex_string& src) {
+    dest = src;
+  }
+};
+
+/** Any string types not exactly flex_string.
+ */
+template <> struct ft_converter<CVTR__FLEX_STRING_CONVERTIBLE> {
+
+  template <typename T> static constexpr bool matches() {
+    return is_string<T>::value;
+  }
+
+  template <typename String>
+  static void get(String& dest, const flexible_type& src) {
+    if(src.get_type() == flex_type_enum::STRING) {
+      const flex_string& s = src.get<flex_string>();
+      dest.assign(s.begin(), s.end());
+    } else {
+      flex_string s = src.to<flex_string>();
+      dest.assign(s.begin(), s.end());
+    }
+  }
+
+  template <typename String>
+  static void set(flexible_type& dest, const String& src) {
+    dest = flex_string(src.begin(), src.end());
+  }
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
+//
+//  Date time types
+//
+////////////////////////////////////////////////////////////////////////////////
+
+/** flex_date_time
+ */
+template <> struct ft_converter<CVTR__FLEX_DATE_TIME_EXACT> {
+
+  template <typename T> static constexpr bool matches() {
+    return std::is_same<T, flex_date_time>::value;
+  }
+
+  static void get(flex_date_time& dest, const flexible_type& src) {
+    if(src.get_type() == flex_type_enum::DATETIME) {
+      dest = src.get<flex_date_time>();
+    } else {
+      throw_type_conversion_error(src, "flex_date_time");
+    }
+  }
+
+  static void set(flexible_type& dest, const flex_date_time& src) {
+    dest = src;
+  }
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
+//
+//  Enum types.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+/**  Enum types.
+ */
+template <> struct ft_converter<CVTR__ENUM> {
+
+  template <typename T> static constexpr bool matches() {
+    return std::is_enum<T>::value;
+  }
+
+  template <typename Enum>
+  static void get(Enum& dest, const flexible_type& src) {
+    if(src.get_type() == flex_type_enum::INTEGER) {
+      dest = static_cast<Enum>(src.get<flex_int>());
+    } else {
+      throw_type_conversion_error(src, "integer / enum.");
+    }
+  }
+
+  template <typename Enum>
+  static void set(flexible_type& dest, const Enum& val) {
+    dest = static_cast<flex_int>(val);
+  }
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
+//
+//  All the boilerplate code to make the above work well.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+template <int idx> struct ft_resolver {
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // Do any of the converters of this idx or lower match on this one?
+
+  // This match is true
+  template <typename T> static constexpr bool any_match(
+      typename std::enable_if<ft_converter<idx>::template matches<T>()>::type* = NULL) {
+    return true;
+  }
+
+  // This match is false -- recurse
+  template <typename T> static constexpr bool any_match(
+      typename std::enable_if<!ft_converter<idx>::template matches<T>()>::type* = NULL) {
+    return ft_resolver<idx - 1>::template any_match<T>();
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // Does this idx, and none before this one, match?
+
+  template <typename T> static constexpr bool matches() {
+      return (ft_converter<idx>::template matches<T>()
+              && !ft_resolver<idx - 1>::template any_match<T>());
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // Does this idx, and none before this one, match?
+
+  template <typename T>
+  static void get(T& t, const flexible_type& v,
+                  typename std::enable_if<matches<T>()>::type* = NULL) {
+    ft_converter<idx>::get(t, v);
+  }
+
+  template <typename T>
+  static void get(T& t, const flexible_type& v,
+                  typename std::enable_if<!matches<T>()>::type* = NULL) {
+    ft_resolver<idx - 1>::get(t, v);
+  }
+
+  template <typename T>
+  static void set(flexible_type& t, const T& v,
+                  typename std::enable_if<matches<T>()>::type* = NULL) {
+    ft_converter<idx>::set(t, v);
+  }
+
+  template <typename T>
+  static void set(flexible_type& t, const T& v,
+                  typename std::enable_if<!matches<T>()>::type* = NULL) {
+    ft_resolver<idx - 1>::set(t, v);
+  }
+};
+
+// The base case in which any_match finally returns false
+template <> struct ft_resolver<0> {
+  template <typename T> static constexpr bool any_match() { return false; }
+  template <typename T> static constexpr bool matches() { return false; }
+  template <typename... T> static void set(T...) {}
+  template <typename... T> static void get(T...) {}
+};
+
+}
 
 /**
  * is_flexible_type_convertible<T>::value is true if T can be converted
@@ -634,33 +855,54 @@ struct flexible_type_converter<T,
  */
 template <typename T>
 struct is_flexible_type_convertible {
-  static constexpr bool value = flexible_type_converter<T>::value;
-  typedef boost::mpl::bool_<value> type;
+  static constexpr bool value = flexible_type_internals::ft_resolver<
+    flexible_type_internals::NUM_CONVERTER_STRUCTS-1>::template any_match<T>();
 };
 
-/**
- * all_flexible_type_convertible<Args...>::value is true if every type in 
- * Args can be converted to and from a flexible_type via 
- * flexible_type_converter<T>.
+template <typename T> GL_HOT_INLINE_FLATTEN
+static void convert_from_flexible_type(T& t, const flexible_type& f) {
+  static_assert(is_flexible_type_convertible<T>::value, "Type not convertable from flexible_type.");
+
+  flexible_type_internals::ft_resolver<flexible_type_internals::NUM_CONVERTER_STRUCTS-1>::get(t, f);
+};
+
+template <typename T> GL_HOT_INLINE_FLATTEN
+static void convert_to_flexible_type(flexible_type& f, const T& t) {
+  static_assert(is_flexible_type_convertible<T>::value, "Type not convertable to flexible_type.");
+
+  flexible_type_internals::ft_resolver<flexible_type_internals::NUM_CONVERTER_STRUCTS-1>::set(f, t);
+};
+
+template <typename T> GL_HOT_INLINE_FLATTEN
+static flexible_type convert_to_flexible_type(const T& t) {
+  static_assert(is_flexible_type_convertible<T>::value, "Type not convertable to flexible_type.");
+
+  flexible_type f;
+  flexible_type_internals::ft_resolver<flexible_type_internals::NUM_CONVERTER_STRUCTS-1>::set(f, t);
+  return f;
+};
+
+/** A class that wraps the above functions in a convenient way for testing.
+ */
+template <typename T>
+struct flexible_type_converter {
+
+  static constexpr bool value = is_flexible_type_convertible<T>::value;
+
+  flexible_type set(const T& t) const { return convert_to_flexible_type(t); }
+  T get(const flexible_type& f) const {
+    T t;
+    convert_from_flexible_type(t, f);
+    return t;
+  }
+};
+
+/** A convenience class that is true if all arguments are flexible type convertable.
  */
 template <typename... Args>
 struct all_flexible_type_convertible {
-  typedef boost::mpl::vector<Args...> type_sequence;
-  // makes an mpl::vector<true_, false_ ....> where each element transforms
-  // each arg to whether it is flexible_type convertible
-  typedef typename 
-      boost::mpl::transform<type_sequence, 
-      is_flexible_type_convertible<boost::mpl::_1>>::type transformed_sequence; 
-
-  // the number of good types (number which are true)
-  typedef 
-      typename boost::mpl::count<transformed_sequence, 
-                                 boost::mpl::bool_<true>>::type num_good;
- 
-  // true if all args are convertible.  
-  static constexpr bool value = (num_good::value == sizeof...(Args));
+  static constexpr bool value = all_true<is_flexible_type_convertible, Args...>::value;
 };
-
 
 } // namespace turi
 #endif

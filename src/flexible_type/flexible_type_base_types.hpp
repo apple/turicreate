@@ -3,6 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
 #ifndef TURI_UNITY_FLEXIBLE_TYPE_BASE_TYPES_HPP
 #define TURI_UNITY_FLEXIBLE_TYPE_BASE_TYPES_HPP
 #include <string>
@@ -769,7 +770,6 @@ struct has_direct_conversion_to_flexible_type {
 };
 
 /**
- * \ingroup group_gl_flexible_type
  * Given a set of types, choose a common type that all types in the set can be
  * converted to and preserves the most data. Not designed to be passed a set
  * with UNDEFINED in it.
@@ -791,8 +791,8 @@ inline flex_type_enum get_common_type(const std::set<flex_type_enum> &types) {
   return flex_type_enum::UNDEFINED;
 }
 
-
-inline std::ostream& operator<<(std::ostream& out, const flex_type_enum e) {
+// Allow printing of the flex_type_enum
+static inline std::ostream& operator<<(std::ostream& out, const flex_type_enum e) {
   out << (int)e;
   return out;
 }

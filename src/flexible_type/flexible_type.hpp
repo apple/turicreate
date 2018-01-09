@@ -3,6 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
 #ifndef TURI_FLEXIBLE_TYPE_HPP
 #define TURI_FLEXIBLE_TYPE_HPP
 #include <string>
@@ -281,7 +282,14 @@ class flexible_type {
    */
   flexible_type(flexible_type& other) noexcept;
 
+  template <size_t N>
+  flexible_type(const char v[N]):flexible_type() {
+    (*this) = flex_string(v, N);
+  }
 
+  flexible_type(const char* c):flexible_type() {
+    (*this) = flex_string(c);
+  }
   /**
    * Copy constructor. Assigns this from arbitrary type.
    * See \ref flexible_type::operator=
@@ -362,6 +370,16 @@ class flexible_type {
       flexible_type&>::type operator=(const T& other);
 
 
+  template <size_t N>
+  flexible_type& operator=(const char v[N]) {
+    (*this) = flex_string(v, N);
+    return (*this);
+  }
+
+  flexible_type& operator=(const char* c) {
+    (*this) = flex_string(c);
+    return (*this);
+  }
   /**
    * operator= for the undefined type
    * See \ref flexible_type::operator=

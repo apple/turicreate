@@ -8,11 +8,13 @@
 #include <type_traits>
 #include <boost/mpl/vector.hpp>
 #include <boost/mpl/size.hpp>
+#include <boost/mpl/contains.hpp>
 #include <boost/mpl/assert.hpp>
 #include <boost/mpl/int.hpp>
 #include <boost/mpl/placeholders.hpp>
 #include <boost/mpl/range_c.hpp>
 #include <boost/mpl/transform.hpp>
+#include <boost/fusion/mpl.hpp>
 #include <boost/fusion/mpl/at.hpp>
 #include <boost/fusion/include/vector.hpp>
 #include <boost/fusion/include/as_vector.hpp>
