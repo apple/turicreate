@@ -69,6 +69,9 @@ def show(x, y, xlabel="X", ylabel="Y", title=None):
     (tcviz_dir, _) = os.path.split(os.path.dirname(__file__))
     path_to_client = os.path.join(tcviz_dir, 'Turi Create Visualization.app', 'Contents', 'MacOS', 'Turi Create Visualization')
 
+    if title is "":
+        title = " "
+
     if title is None:
         title = ""
 
