@@ -8,7 +8,11 @@ function print_help {
   echo
   echo "Values for <target>: "
   echo
-  echo "   python-egg                      Build python egg (default)."
+  echo    python                           Build python, inplace.
+  echo    python-egg                       Build python egg.
+  echo    capi                             Build C-API.
+  echo    capi-framework                   Build C-API as OSX Framework.
+  echo    capi-framework-tests             Build C-API Framework tests
   echo
   echo "Common Options:"
   echo "  --target-dir, -t                 The target directory to install artifacts to."
@@ -32,8 +36,23 @@ function print_help {
   echo
   echo "  --build-number                   Set build number.  "
   echo "                                   Defaults to part of git commit hash. "
+
+  echo "capi-framework options"
+  echo "------------------------------------------------------------------------"
+  echo "  --install-sysroot,-i             Also install headers/libraries to this directory. "
+  echo "                                   If target is a framework, it will be installed to "
+  echo "                                   <install-sysroot>/<name>.framework. If given multiple times, "
+  echo "                                   copies will be installed in each."
   echo
-  echo "Example: ./build.sh python-framework && cp -R targets/TuriCore.framework."
+  echo "  --system-framework               Prepares the framework to be put in "
+  echo "                                   /System/Library/PrivateFrameworks/."
+  echo
+  echo "  --no-sudo                        Disable use of sudo when installing."
+  echo
+  echo "  --copy-links                     Do not use links in installing XCode framework (workaround for XCode bug)."
+  echo
+  echo
+  echo "Example: ./build.sh capi-framework && cp -R targets/TuriCore.framework."
   echo
   exit 1
 } # end of print help
@@ -58,7 +77,7 @@ fi
 
 
 # command flag options
-target="python-egg"
+target=""
 cleanup=0
 skip_configure=0
 jobs=4
@@ -81,11 +100,28 @@ while [ $# -gt 0 ]
 
     python-egg)             target="python-egg";;
 
+    capi)                   target="capi";;
+
+    capi-framework)         target="capi-framework";;
+
+    capi-framework-tests)   target="capi-framework-tests";;
+
     --cleanup|-c)           cleanup=1;;
 
     --skip-configure|-s)    skip_configure=1;;
 
     --copy-links)           copy_links=1;;
+
+    --install-sysroot=*)    install_sysroot="${install_sysroot}
+                                             ${1##--install-sysroot=}" ;;
+
+    --install-sysroot|-i)   install_sysroot="${install_sysroot}
+                                             $2"; shift;;
+
+    --system-framework)     configure_options="${configure_options} -D TC_CAPI_AS_SYSTEM_FRAMEWORK=1"; install_sysroot="${install_sysroot} /System/Library/PrivateFrameworks/";;
+
+    --release|-r)           build_mode="release";;
+    --debug|-d)             build_mode="debug";;
 
     --no-sudo)              no_sudo=1 ;;
 
@@ -137,7 +173,7 @@ if [[ ${cleanup} -eq 1 ]]; then
 fi
 
 function build_python_egg {
-  run_configure --with-python
+  run_configure --with-python --no-capi
 
   install_dir=${target_dir}/python
   rm -rf ${target_dir}/python
@@ -185,8 +221,157 @@ function prepare_install_directory {
   fi
 }
 
+function build_capi {
+  echo
+  echo "Building C-API"
+  echo
+  run_configure --with-capi --no-python --no-visualization || exit 1
+  install_dir=${target_dir}/capi
+  rm -rf ${target_dir}/capi
+  mkdir -p ${target_dir}/capi
+
+  cd ${build_dir}/src/capi && make -j ${jobs} || exit 1
+  echo "Installing C API header and shared library to ${install_dir}."
+  cp libturi.* ${install_dir} || exit 1
+  cp ${src_dir}/src/capi/TuriCore.h ${install_dir}/turi.h || exit 1
+
+
+  if [[ ! $install_sysroot -eq "" ]] ; then
+
+    for inst_dir in ${install_sysroot} ; do
+
+      sudo_cmd=`prepare_install_directory ${inst_dir}`
+
+      if [[ $sudo_cmd == "sudo" ]] ; then
+        echo "Copying headers/libraries into $inst_dir/ using sudo."
+      else
+        echo "Copying headers/libraries into $inst_dir/."
+      fi
+
+      ${sudocmd} bash -e -c "
+      mkdir -p $inst_dir/include/
+      cp ${install_dir}/turi.h  $inst_dir/include/
+      mkdir -p $inst_dir/lib/
+      cp ${install_dir}/libturi.\*  $inst_dir/lib/"
+
+    done
+  fi
+}
+
+function build_capi_framework {
+  echo
+  echo "Building C-API as OSX Framework"
+  echo
+
+  run_configure --with-capi-framework --no-python --no-visualization || exit 1
+  mkdir -p ${target_dir}
+  cd ${build_dir}/src/capi || exit 1
+  make -j ${jobs} || exit 1
+
+  echo "Installing C API Framework to ${target_dir}."
+
+  rsync -a --delete ${build_dir}/src/capi/TuriCore.framework/ ${target_dir}/TuriCore.framework/ || exit 1
+
+  for inst_dir in ${install_sysroot} ; do
+
+    sudo_cmd=`prepare_install_directory ${inst_dir}`
+
+    if [[ $sudo_cmd == "sudo" ]] ; then
+      echo "Copying framework into $inst_dir/TuriCore.framework using sudo."
+    else
+      echo "Copying framework into $inst_dir/TuriCore.framework."
+    fi
+
+    rsync_error=0
+    $sudo_cmd bash -c "
+      rsync -rlptDv --delete ${target_dir}/TuriCore.framework/ ${inst_dir}/TuriCore.framework/"
+
+    if [[ $? -ne 0 ]] ; then
+      rsync_error=1
+    fi
+
+    if [[ $copy_links == 1 ]] ; then
+      echo "Copying over links as absolute directories."
+      # HAve to copy first over so the symlinks are valid.
+      $sudo_cmd bash -c "
+        rsync -rLptDv --delete ${target_dir}/TuriCore.framework/ ${inst_dir}/TuriCore.framework/"
+
+      if [[ $? -ne 0 ]] ; then
+        rsync_error=1
+      fi
+    fi
+
+    if [[ $rsync_error == 1 ]] ; then
+      echo "WARNING: Possible error installing framework into ${inst_dir}."
+    fi
+
+  done
+}
+
+function build_capi_tests {
+  echo
+  echo "Building C-API Tests"
+  echo
+
+  run_configure --with-capi-framework --no-python --no-visualization || exit 1
+  mkdir -p ${target_dir}
+  cd ${build_dir}/test/capi || exit 1
+  make -j ${jobs} || exit 1
+
+  echo "Gathering ctest, cxxtest binaries and creating tarball"
+  rsync -rLptDv --delete-excluded --include '*.cxxtest' --exclude '*'  ${build_dir}/test/capi/ ${target_dir}/Tests/ || exit 1
+  rsync -rLptDv ${build_dir}/../deps/local/bin/ctest ${target_dir}/Tests/
+  pushd ${target_dir}/Tests/
+  tar -czvf turi_capi_tests.tar.gz ./*
+  rm ./*.cxxtest ./ctest
+  popd
+
+  for inst_dir in ${install_sysroot} ; do
+
+    sudo_cmd=`prepare_install_directory ${inst_dir}`
+
+    if [[ $sudo_cmd == "sudo" ]] ; then
+      echo "Copying tests into $inst_dir using sudo."
+    else
+      echo "Copying tests into $inst_dir."
+    fi
+
+    rsync_error=0
+    $sudo_cmd bash -c "
+      rsync -rlptDv --delete ${target_dir}/Tests/ ${inst_dir}"
+
+    if [[ $? -ne 0 ]] ; then
+      rsync_error=1
+    fi
+
+    if [[ $copy_links == 1 ]] ; then
+      echo "Copying over links as absolute directories."
+      # HAve to copy first over so the symlinks are valid.
+      $sudo_cmd bash -c "
+        rsync -rLptDv --delete ${target_dir}/Tests/ ${inst_dir}"
+
+      if [[ $? -ne 0 ]] ; then
+        rsync_error=1
+      fi
+    fi
+
+    if [[ $rsync_error == 1 ]] ; then
+      echo "WARNING: Possible error installing framework into ${inst_dir}."
+    fi
+
+  done
+
+
+}
+
+
+
+
 
 case $target in
   python-egg)             build_python_egg;;
+  capi)                   build_capi;;
+  capi-framework)         build_capi_framework;;
+  capi-framework-tests)   build_capi_tests;;
   *)                      echo "NOT IMPLEMENTED" && exit 1;;
 esac

@@ -1,8 +1,7 @@
 project(TuriTest)
 
-enable_testing()
-
 subdirs(
+        capi
         toolkits
         ml_data
         optimization
@@ -12,6 +11,7 @@ subdirs(
         logger
         timer
         random
+        # fault
         nanosockets
         fileio
         shmipc
