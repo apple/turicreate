@@ -2730,6 +2730,43 @@ class SArray(object):
 
         return Sketch(self, background, sub_sketch_keys = sub_sketch_keys)
 
+    def value_counts(self):
+        """
+        Return an SFrame containing counts of unique values. The resulting
+        SFrame will be sorted in descending frequency.
+
+        Returns
+        -------
+        out : SFrame
+            An SFrame containing 2 columns : 'value', and 'count'. The SFrame will
+            be sorted in descending order by the column 'count'.
+
+        See Also
+        --------
+        SFrame.summary
+
+        Examples
+        --------
+        >>> sa = turicreate.SArray([1,1,2,2,2,2,3,3,3,3,3,3,3])
+        >>> sa.value_counts()
+            Columns:
+                    value	int
+                    count	int
+            Rows: 3
+            Data:
+            +-------+-------+
+            | value | count |
+            +-------+-------+
+            |   3   |   7   |
+            |   2   |   4   |
+            |   1   |   2   |
+            +-------+-------+
+            [3 rows x 2 columns]
+        """
+        from .sframe import SFrame as _SFrame
+        return _SFrame({'value':self}).groupby('value', {'count':_aggregate.COUNT}).sort('count', ascending=False)
+
+
     def append(self, other):
         """
         Append an SArray to the current SArray. Creates a new SArray with the
