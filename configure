@@ -11,15 +11,15 @@ function print_help {
   echo "Configures the build with the specified toolchain. "
   echo
   echo "If configure has already been run before, running configure "
-  echo "will simply reconfigures the build with no changes. "
+  echo "will simply reconfigure the build with no changes. "
   echo
   echo "Usage: ./configure <options>"
   echo
-  echo "  --cleanup                        Clean up everything"
+  echo "  --cleanup                         Clean up everything."
   echo
-  echo "  --install-python-toolchain       Install python "
+  echo "  --install-python-toolchain        Install python in local virtualenv."
   echo  
-  echo "  --with-system-cmake (default)    Use system cmake, if avaliable."
+  echo "  --with-system-cmake (default)     Use system cmake, if avaliable."
   echo "  --no-system-cmake "
   echo 
   echo "  --with-ccache (default)           Use ccache, if available."
@@ -40,10 +40,7 @@ function print_help {
   echo 
   echo "  --yes                             Defaults to yes on a prompt"
   echo
-  echo "  --with-cuda                       Builds an install on CUDA"                      
-  echo "  --no-cuda (default) "
-  echo
-  echo "  -D var=value            Specify CFLAGS definitions to be passed on to cmake."
+  echo "  -D var=value                      Specify CFLAGS definitions to be passed on to cmake."
   echo
   echo "Example: ./configure"
   echo
