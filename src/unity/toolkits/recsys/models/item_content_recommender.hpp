@@ -25,7 +25,8 @@ namespace recsys {
 
 class EXPORT recsys_item_content_recommender : public recsys_itemcf {
  public:
-  std::string name() const { return "item_content_recommender"; }
+  BEGIN_CLASS_MEMBER_REGISTRATION("item_content_recommender")
+  END_CLASS_MEMBER_REGISTRATION
 };
 
 }}

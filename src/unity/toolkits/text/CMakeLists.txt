@@ -7,6 +7,7 @@ make_library(unity_text
     cgs.cpp
     alias.cpp
     perplexity.cpp
+    class_registrations.cpp
   REQUIRES
     numerics
     unity_core

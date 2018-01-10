@@ -23,11 +23,6 @@ class EXPORT boosted_trees_regression: public xgboost_model {
   public:
   
   /**
-   * Returns the name of the model.
-   */
-  std::string name(void) override;
-
-  /**
    * Set one of the options in the algorithm.
    *
    * This values is checked	against the requirements given by the option
@@ -41,21 +36,22 @@ class EXPORT boosted_trees_regression: public xgboost_model {
    * Configure booster from options 
    */
   void configure(void) override;
-};
 
+  void export_to_coreml(const std::string& filename);
+
+  SUPERVISED_LEARNING_METHODS_REGISTRATION(
+      "boosted_trees_regression", 
+      boosted_trees_regression)
+
+};
 
 /**It can also be used to predict the class of
  * Boosted trees classifier.
  *
  */
-class EXPORT boosted_trees_classifier: public xgboost_model {  
+class EXPORT boosted_trees_classifier : public xgboost_model {  
   
   public:
-  
-  /**
-   * Returns the name of the model.
-   */
-  std::string name(void) override;
   
   /**
    * Initialize things that are specific to your model.
@@ -105,10 +101,14 @@ class EXPORT boosted_trees_classifier: public xgboost_model {
         "accuracy", "log_loss"
        });
   }
+ 
+  void export_to_coreml(const std::string& filename);
 
+  SUPERVISED_LEARNING_METHODS_REGISTRATION(
+      "boosted_trees_classifier", 
+      boosted_trees_classifier)
 
 };
-
 
 }  // namespace xgboost
 }  // namespace supervised

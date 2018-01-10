@@ -92,10 +92,8 @@ namespace recsys {
  *
  */
 
-class EXPORT recsys_itemcf : public recsys_model_base {
+class recsys_itemcf : public recsys_model_base {
  public:
-  std::string name() const { return "item_similarity"; }
-
   bool use_target_column(bool target_is_present) const { return target_is_present; }
 
   static constexpr size_t ITEMCF_VERSION = 2;
@@ -224,9 +222,12 @@ public:
                             sgraph& g);
 
   std::shared_ptr<sparse_similarity_lookup> create_similarity_lookup() const;
-  
-};
-
+ 
+ public: 
+  // TODO: convert interface above to use the extensions methods here
+  BEGIN_CLASS_MEMBER_REGISTRATION("item_similarity")
+  END_CLASS_MEMBER_REGISTRATION
+}; 
 
 }}
 

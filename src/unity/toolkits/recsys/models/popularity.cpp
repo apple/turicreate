@@ -337,7 +337,6 @@ void recsys_popularity::internal_load(turi::iarchive& iarc, size_t version) {
     iarc >> *m;
   }
 }
-
 }}
 
 

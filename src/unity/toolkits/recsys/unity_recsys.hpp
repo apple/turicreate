@@ -7,7 +7,6 @@
 #define TURI_RECSYS_TOOLKIT_MODEL_FUNCTIONS_H_
 
 #include <unity/toolkits/recsys/recsys_model_base.hpp>
-#include <unity/toolkits/recsys/models.hpp>
 #include <unity/lib/toolkit_function_specification.hpp>
 #include <unity/lib/unity_base_types.hpp>
 #include <unity/lib/api/model_interface.hpp>

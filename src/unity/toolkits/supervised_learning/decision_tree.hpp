@@ -17,11 +17,6 @@ namespace xgboost {
 class EXPORT decision_tree_regression: public xgboost_model {  
   
   public:
-  
-  /**
-   * Returns the name of the model.
-   */
-  std::string name(void) override;
 
   /**
    * Set one of the options in the algorithm.
@@ -37,17 +32,17 @@ class EXPORT decision_tree_regression: public xgboost_model {
    * Configure booster from options 
    */
   void configure(void) override;
-};
+  
+  void export_to_coreml(const std::string& filename);
 
+  SUPERVISED_LEARNING_METHODS_REGISTRATION(
+      "decision_tree_regression", 
+      decision_tree_regression)
+};
 
 class EXPORT decision_tree_classifier: public xgboost_model {  
   
   public:
-  
-  /**
-   * Returns the name of the model.
-   */
-  std::string name(void) override;
   
   /**
    * Initialize things that are specific to your model.
@@ -97,10 +92,15 @@ class EXPORT decision_tree_classifier: public xgboost_model {
         "accuracy", "log_loss"
        });
   }
+  
+  void export_to_coreml(const std::string& filename);
+
+  SUPERVISED_LEARNING_METHODS_REGISTRATION(
+      "decision_tree_classifier", 
+      decision_tree_classifier)
 
 
 };
-
 
 }  // namespace xgboost
 }  // namespace supervised

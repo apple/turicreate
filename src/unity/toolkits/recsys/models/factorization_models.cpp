@@ -418,6 +418,4 @@ std::map<std::string, variant_type> recsys_factorization_model_base::get(const s
   return ret;
 }
 
-
-
 }}

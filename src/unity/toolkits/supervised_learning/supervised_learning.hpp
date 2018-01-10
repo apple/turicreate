@@ -25,9 +25,11 @@
 #include <unity/lib/variant_deep_serialize.hpp>
 
 #include <numerics/armadillo.hpp>
-#include <numerics/armadillo.hpp>
 
 #include <export.hpp>
+
+#include <unity/lib/toolkit_class_macros.hpp>
+
 // TODO: List of todo's for this file
 //------------------------------------------------------------------------------
 // 1. ml_data_example type for predict.
@@ -654,6 +656,54 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
    * Returns true if the model can handle missing value
    */
   virtual bool support_missing_value() const { return false; }
+
+  /**
+   *  API interface through the unity server.
+   *
+   *  Train the model 
+   */
+  void api_train(gl_sframe data, const std::string& target,
+                 gl_sframe validation_data,
+                 const std::map<std::string, flexible_type>& options);
+
+  /**
+   *  API interface through the unity server.
+   *
+   *  Run prediction. 
+   */
+  gl_sarray api_predict(gl_sframe data, std::string missing_value_action,
+                        std::string output_type);  // TODO: This should be const
+
+
+  /** Export to CoreML. 
+   */
+  virtual void export_to_coreml(const std::string& filename) {} 
+
+#define SUPERVISED_LEARNING_METHODS_REGISTRATION(name, class_name)             \
+                                                                               \
+  BEGIN_CLASS_MEMBER_REGISTRATION(name)                                        \
+                                                                               \
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("train", class_name::api_train, "data", \
+                                       "target", "validation_data",            \
+                                       "options");                             \
+  register_defaults(                                                           \
+      "train",                                                                 \
+      {{"validation_data", to_variant(gl_sframe())},                           \
+       {"options", to_variant(std::map<std::string, flexible_type>())}});      \
+                                                                               \
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("predict", class_name::api_predict,     \
+                                       "data", "missing_value_action",         \
+                                       "output_type");                         \
+                                                                               \
+  register_defaults("predict",                                                 \
+                    {{"missing_value_action", std::string("error")},           \
+                     {"output_type", std::string("")}});                       \
+                                                                               \
+  REGISTER_CLASS_MEMBER_FUNCTION(class_name::get_feature_names);               \
+                                                                               \
+  REGISTER_CLASS_MEMBER_FUNCTION(class_name::export_to_coreml, "filename");    \
+                                                                               \
+  END_CLASS_MEMBER_REGISTRATION
 };
 
 

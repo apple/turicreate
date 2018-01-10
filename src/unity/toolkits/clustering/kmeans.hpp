@@ -416,12 +416,12 @@ public:
    */
   ml_model_base* ml_model_base_clone();
 
-  /**
-   * Return the name of the model.
-   */
-  std::string name();
+  // TODO: convert interface above to use the extensions methods here
+  BEGIN_CLASS_MEMBER_REGISTRATION("kmeans")
+  END_CLASS_MEMBER_REGISTRATION
 
 };  // kmeans_model class
+
 
 
 } // namespace kmeans

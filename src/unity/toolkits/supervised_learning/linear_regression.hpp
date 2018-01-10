@@ -9,6 +9,7 @@
 // ML-Data Utils
 #include <ml_data/metadata.hpp>
 
+
 // Toolkits
 #include <toolkits/supervised_learning/supervised_learning.hpp>
 
@@ -28,6 +29,7 @@ class linear_regression_opt_interface;
  * Linear Regression Model
  * ****************************************************************************
  */
+
 
 /**
  * Linear regression model class definition.
@@ -51,11 +53,6 @@ class EXPORT linear_regression: public supervised_learning_model_base {
    */
   ~linear_regression();
 
-
-  /**
-   * Returns the name of the model.
-   */
-  std::string name();
 
   /**
    * Initialize things that are specific to your model.
@@ -130,9 +127,12 @@ class EXPORT linear_regression: public supervised_learning_model_base {
     _coefs = coefs;
   }
 
+  void export_to_coreml(const std::string& filename);
 
+  SUPERVISED_LEARNING_METHODS_REGISTRATION(
+      "regression_linear_regression", linear_regression); 
+      
 };
-
 
 } // supervised
 } // turicreate

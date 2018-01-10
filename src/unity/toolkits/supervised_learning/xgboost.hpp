@@ -51,14 +51,6 @@ class EXPORT xgboost_model : public supervised_learning_model_base {
 
   xgboost_model();
 
-  /**
-   * Methods with no current implementation.
-   * -------------------------------------------------------------------------
-   */
-  /**
-   * Returns the name of the model.
-   */
-  virtual std::string name(void) = 0;
 
   /**
    * Configure booster from options
@@ -312,6 +304,11 @@ protected:
   storage_mode_enum storage_mode_ = storage_mode_enum::AUTO;
 
   size_t num_batches_ = 0;
+  
+  void _export_xgboost_model(const std::string& filename,
+      bool is_classifier, bool is_random_forest,
+      const std::map<std::string, flexible_type>& context);
+
 };
 
 }  // namespace xgboost

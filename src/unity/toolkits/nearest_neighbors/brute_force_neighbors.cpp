@@ -60,14 +60,6 @@ nearest_neighbors_model* brute_force_neighbors::nearest_neighbors_clone() {
 
 
 /**
- * Returns the name of the model.
- */
-std::string brute_force_neighbors::name() {
-  return "nearest_neighbors_brute_force";
-}
-
-
-/**
 * Set options
 */
 void brute_force_neighbors::init_options(const std::map<std::string,

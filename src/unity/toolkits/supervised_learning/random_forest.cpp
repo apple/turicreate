@@ -140,12 +140,6 @@ void set_xgboost_random_forest_common_options(
  * Regression
  * -------------------------------------------------------------------------
  */
-/**
- * Returns the name of the model.
- */
-std::string random_forest_regression::name(void) {
-  return "random_forest_regression";
-}
 
 /**
  * Set XGBoost options
@@ -177,6 +171,16 @@ void random_forest_regression::init_options(
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
 }
 
+void random_forest_regression::export_to_coreml(const std::string& filename) { 
+  
+  std::map<std::string, flexible_type> context = { 
+    {"model_type", "random_forest"}, 
+    {"version", std::to_string(get_version())}, 
+    {"class", name()}, 
+    {"short_description", "Random Forest Regression model."}};
+
+  this->_export_xgboost_model(filename, false, true, context); 
+}
 
 /**
  * classifier
@@ -195,14 +199,6 @@ void random_forest_classifier::model_specific_init(const ml_data& data,
   state["num_examples_per_class"] =
              to_variant(supervised::get_num_examples_per_class(this->ml_mdata));
 
-}
-
-
-/**
- * Returns the name of the model.
- */
-std::string random_forest_classifier::name(void) {
-  return "random_forest_classifier";
 }
 
 /**
@@ -251,6 +247,18 @@ void random_forest_classifier::init_options(
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
 
 }
+
+void random_forest_classifier::export_to_coreml(const std::string& filename) { 
+  
+  std::map<std::string, flexible_type> context = { 
+    {"model_type", "random_forest"}, 
+    {"version", get_version()}, 
+    {"class", name()}, 
+    {"short_description", "Random Forest Classifier model."}};
+
+  this->_export_xgboost_model(filename, true, true, context); 
+}
+
 
 
 }  // namespace xgboost

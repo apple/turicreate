@@ -52,14 +52,6 @@ nearest_neighbors_model* ball_tree_neighbors::nearest_neighbors_clone() {
 
 
 /**
- * Returns the name of the model.
- */
-std::string ball_tree_neighbors::name() {
-  return "nearest_neighbors_ball_tree";
-}
-
-       
-/**
 * Set options
 */ 
 void ball_tree_neighbors::init_options(
@@ -761,7 +753,6 @@ bool ball_tree_neighbors::activate_query_node(size_t k, double radius,
 
   return activate;
 }
-
 
 }  // namespace nearest_neighbors
 }  // namespace turi

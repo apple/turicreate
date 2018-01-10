@@ -39,11 +39,6 @@ class EXPORT cgs_topic_model : public topic_model {
   topic_model* topic_model_clone();
 
   /**
-   * Return the name of the model.
-   */
-  std::string name();
-
-  /**
    * Set the model options. Use the option manager to set these options. The
    * option manager should throw errors if the options do not satisfy the option
    * manager's conditions.
@@ -106,8 +101,12 @@ class EXPORT cgs_topic_model : public topic_model {
                     count_matrix_type& topic_doc_counts,
                     std::shared_ptr<sarray<std::vector<size_t>>>& assignments);
 
+  // TODO: convert interface above to use the extensions methods here
+  BEGIN_CLASS_MEMBER_REGISTRATION("cgs_topic_model")
+  END_CLASS_MEMBER_REGISTRATION
 
-};
+};  // kmeans_model class
+
 }
 }
 #endif

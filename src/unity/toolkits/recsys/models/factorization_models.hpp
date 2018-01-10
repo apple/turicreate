@@ -86,7 +86,7 @@ class EXPORT recsys_factorization_model_base : public recsys_model_base {
                   const v2::ml_data& training_data_by_item);
  private:
   std::shared_ptr<factorization::factorization_model> model;
-  
+
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -97,9 +97,7 @@ class EXPORT recsys_factorization_model_base : public recsys_model_base {
 class recsys_factorization_model : public recsys_factorization_model_base {
 
  public:
-  std::string name() const { return "factorization_recommender"; }
-
-   bool use_target_column(bool target_is_present) const { return true; }
+  bool use_target_column(bool target_is_present) const { return true; }
 
  private:
   bool include_ranking_options() const { return false; }
@@ -107,7 +105,11 @@ class recsys_factorization_model : public recsys_factorization_model_base {
   recsys_model_base* internal_clone() {
     return new recsys_factorization_model(*this);
   }
-
+ 
+ public: 
+   // TODO: convert interface above to use the extensions methods here
+  BEGIN_CLASS_MEMBER_REGISTRATION("factorization_recommender")
+  END_CLASS_MEMBER_REGISTRATION
 };
 
 /** Implements linear_model.
@@ -115,8 +117,6 @@ class recsys_factorization_model : public recsys_factorization_model_base {
 class recsys_ranking_factorization_model : public recsys_factorization_model_base {
 
  public:
-  std::string name() const { return "ranking_factorization_recommender"; }
-
   bool use_target_column(bool target_is_present) const { return target_is_present; }
 
  private:
@@ -126,9 +126,12 @@ class recsys_ranking_factorization_model : public recsys_factorization_model_bas
     return new recsys_ranking_factorization_model(*this);
   }
 
+ public: 
+   // TODO: convert interface above to use the extensions methods here
+  BEGIN_CLASS_MEMBER_REGISTRATION("ranking_factorization_recommender")
+  END_CLASS_MEMBER_REGISTRATION
+
 };
-
-
 
 
 }}

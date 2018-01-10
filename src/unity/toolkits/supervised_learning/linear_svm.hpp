@@ -46,12 +46,7 @@ class EXPORT linear_svm: public supervised_learning_model_base {
   /**
    * Destructor. Make sure bad things don't happen
    */
-  ~linear_svm();
-
-  /**
-   * Returns the name of the model.
-   */
-  std::string name();
+  virtual ~linear_svm();
   
   /**
    * Set the default evaluation metric during model evaluation..
@@ -172,11 +167,13 @@ class EXPORT linear_svm: public supervised_learning_model_base {
     _coefs.resize(coefs.size());
     _coefs = coefs;
   }
+  
+  void export_to_coreml(const std::string& filename);
 
-
+  SUPERVISED_LEARNING_METHODS_REGISTRATION(
+      "classifier_svm", linear_svm); 
+ 
 };
-
-
 
 } // supervised
 } // turicreate

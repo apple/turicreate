@@ -584,14 +584,6 @@ ml_model_base* kmeans_model::ml_model_base_clone() {
 }
 
 
-/**
- * Return the name of the model
- */
-std::string kmeans_model::name() {
-  return "kmeans";
-}
-
-
 
 // ***************************************
 // *** Private kmeans training methods ***
@@ -1149,7 +1141,6 @@ void kmeans_model::set_exact_point_distances() {
     }
   });
 }
-
 
 } // end of namespace kmeans
 } // end of namespace turi

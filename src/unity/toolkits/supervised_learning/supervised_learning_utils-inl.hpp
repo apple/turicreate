@@ -39,13 +39,9 @@ namespace supervised {
 inline arma::vec get_stderr_from_hessian(
     const arma::mat& hessian) {
   DASSERT_EQ(hessian.n_rows, hessian.n_cols);
-  try {
-    return arma::sqrt(arma::diagvec(arma::inv_sympd(hessian)));
-  } catch (const std::runtime_error&) {
-    arma::vec v(hessian.n_rows);
-    v.fill(arma::datum::nan);
-    return v;
-  }
+  arma::mat I;
+  I.eye(hessian.n_rows, hessian.n_cols);
+  return arma::sqrt(arma::diagvec(arma::inv_sympd(hessian + 1E-8 * I)));
 }
 
 /**

@@ -980,6 +980,69 @@ std::vector<std::vector<flexible_type>>
   return ret; 
 }
 
+void supervised_learning_model_base::api_train(
+    gl_sframe data, 
+    const std::string& target,
+    gl_sframe validation_data,
+    const std::map<std::string, flexible_type>& options) {
+
+  // TODO: remove this plumbing now that neural nets has been 
+  // moved out. 
+  constexpr bool support_image_type = false;
+
+  gl_sframe f_data = data;
+  f_data.remove_column(target);
+  sframe X = f_data.materialize_to_sframe(); 
+    
+  sframe y = data.select_columns({target}).materialize_to_sframe();
+
+  ml_missing_value_action missing_value_action =
+    this->support_missing_value() ? ml_missing_value_action::USE_NAN
+                                  : ml_missing_value_action::ERROR;
+
+  sframe valid_X, valid_y; 
+
+  if(validation_data.num_columns() != 0) {
+
+    gl_sframe f_v_data = validation_data;
+    f_v_data.remove_column(target);
+    valid_X = f_v_data.materialize_to_sframe(); 
+    
+    valid_y = validation_data.select_columns({target}).materialize_to_sframe();
+    
+    check_feature_column_types(valid_X, support_image_type);
+    check_target_column_type(this->name(), valid_y);
+    check_feature_column_types_match(X, valid_X);
+  }
+
+  this->init_options(options); 
+  this->init(X, y, valid_X, valid_y, missing_value_action);
+  this->train();
+}
+
+/**
+*  API interface through the unity server.
+*
+*  Prediction stuff
+*/
+gl_sarray supervised_learning_model_base::api_predict(
+    gl_sframe data, std::string missing_value_action_str,
+    std::string output_type) {
+
+  ml_missing_value_action missing_value_action =
+      get_missing_value_enum_from_string(missing_value_action_str);
+
+  sframe X = setup_test_data_sframe(
+      data.materialize_to_sframe(),
+      std::dynamic_pointer_cast<supervised_learning_model_base>(shared_from_this()),
+      missing_value_action);
+
+  ml_data m_data = this->construct_ml_data_using_current_metadata(X, missing_value_action);
+  
+  return gl_sarray(this->predict(m_data, output_type));
+}
+
+
 /**
  * Compute the width of the data.
  *

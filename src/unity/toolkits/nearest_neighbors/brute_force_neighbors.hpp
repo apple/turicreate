@@ -39,12 +39,7 @@ class EXPORT brute_force_neighbors: public nearest_neighbors_model {
    * Clone objects to a nearest_neighbors_model class
    */
   nearest_neighbors_model* nearest_neighbors_clone();
-
-  /**
-   * Return the name of the model.
-   */
-  std::string name();
-
+  
   /**
    * Set the model options. Use the option manager to set these options. The
    * option manager should throw errors if the options do not satisfy the option
@@ -161,8 +156,12 @@ class EXPORT brute_force_neighbors: public nearest_neighbors_model {
    * Turi serialization save
    */
   void load_version(turi::iarchive& iarc, size_t version);
+  
+  // TODO: convert interface above to use the extensions methods here
+  BEGIN_CLASS_MEMBER_REGISTRATION("nearest_neighbors_brute_force")
+  END_CLASS_MEMBER_REGISTRATION
 
-};
+}; 
 
 
 }  // namespace nearest_neighbors

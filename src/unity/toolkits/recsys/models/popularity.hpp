@@ -26,7 +26,6 @@ namespace recsys {
 
 class EXPORT recsys_popularity : public recsys_model_base {
  public:
-  std::string name() const { return "popularity"; }
 
   // Implement the bare minimum of the pure virtual methods
   void init_options(const std::map<std::string, flexible_type>&_options);
@@ -76,6 +75,11 @@ class EXPORT recsys_popularity : public recsys_model_base {
   std::vector<double> item_predictions;
   double unseen_item_prediction;
   std::shared_ptr<nearest_neighbors::ball_tree_neighbors> nearest_items_model;
+
+ public: 
+  BEGIN_CLASS_MEMBER_REGISTRATION("popularity")
+  END_CLASS_MEMBER_REGISTRATION
+
 
 };
 

@@ -57,6 +57,11 @@ class EXPORT recsys_model_base : public ml_model_base {
   //
   ////////////////////////////////////////////////////////////////////////////////
 
+  // A const overload of the non-const base class name() method, which cannot be
+  // const.
+  std::string name() const { return const_cast<recsys_model_base*>(this)->name(); }
+
+
  protected:
 
   /** Train the algorithm.
@@ -189,17 +194,6 @@ public:
    * can effectively replace the training stage.
    */
   virtual void internal_load(turi::iarchive& iarc, size_t version) = 0;
-
-  // Much easier if this is const
-  virtual std::string name() const = 0;
-
-
- public:
-   // Hooks and redirects the base name() method to avoid const
-  // casting.
-
-  std::string name() { return ((const recsys_model_base*)this)->name(); }
-
 
   ////////////////////////////////////////////////////////////////////////////////
   //

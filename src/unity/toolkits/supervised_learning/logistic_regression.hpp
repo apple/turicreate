@@ -52,11 +52,6 @@ class EXPORT logistic_regression: public supervised_learning_model_base {
    */
   ~logistic_regression();
 
-
-  /**
-   * Returns the name of the model.
-   */
-  std::string name();
   
   /**
    * Set the default evaluation metric during model evaluation..
@@ -167,11 +162,13 @@ class EXPORT logistic_regression: public supervised_learning_model_base {
     _coefs.resize(coefs.size());
     _coefs = coefs;
   }
+  
+  void export_to_coreml(const std::string& filename);
+
+  SUPERVISED_LEARNING_METHODS_REGISTRATION(
+      "classifier_logistic_regression", logistic_regression);
 
 };
-
-
-
 } // supervised
 } // turicreate
 

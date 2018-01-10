@@ -90,16 +90,7 @@ void set_xgboost_decision_tree_common_options(
  * -------------------------------------------------------------------------
  */
 
-/**
- * Returns the name of the model.
- */
-std::string decision_tree_regression::name(void) {
-  return "decision_tree_regression";
-}
 
-/**
- * Set XGBoost options
- */
 void decision_tree_regression::configure(void) {
 
   booster_->SetParam("silent", "1");
@@ -129,6 +120,17 @@ void decision_tree_regression::init_options(
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
 }
 
+void decision_tree_regression::export_to_coreml(const std::string& filename) { 
+  
+  std::map<std::string, flexible_type> context = { 
+    {"model_type", "decision_tree"}, 
+    {"version", get_version()}, 
+    {"class", name()}, 
+    {"short_description", "Decision Tree Regression model."}};
+
+  this->_export_xgboost_model(filename, false, true, context); 
+}
+
 /**
  * classifier
  * -------------------------------------------------------------------------
@@ -148,12 +150,6 @@ void decision_tree_classifier::model_specific_init(const ml_data& data,
 }
 
 
-/**
- * Returns the name of the model.
- */
-std::string decision_tree_classifier::name(void) {
-  return "decision_tree_classifier";
-}
 
 /**
  * Set XGBoost options
@@ -201,6 +197,19 @@ void decision_tree_classifier::init_options(
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
 
 }
+
+void decision_tree_classifier::export_to_coreml(const std::string& filename) { 
+  
+  std::map<std::string, flexible_type> context = { 
+    {"model_type", "decision_tree"}, 
+    {"version", std::to_string(get_version())}, 
+    {"class", name()}, 
+    {"short_description", "Decision Tree classification model."}};
+
+  this->_export_xgboost_model(filename, true, true, context); 
+}
+
+
 
 }  // namespace xgboost
 }  // namespace supervised

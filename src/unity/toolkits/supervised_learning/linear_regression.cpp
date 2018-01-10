@@ -8,6 +8,12 @@
 // ML Data
 #include <ml_data/ml_data.hpp>
 
+// Core ML
+#include <unity/toolkits/coreml_export/MLModel/src/transforms/LinearModel.hpp>
+#include <unity/toolkits/coreml_export/MLModel/src/transforms/LogisticModel.hpp>
+#include <unity/toolkits/coreml_export/mldata_exporter.hpp>
+#include <unity/toolkits/coreml_export/coreml_export_utils.hpp>
+
 // Toolkits
 #include <toolkits/supervised_learning/linear_regression_opt_interface.hpp>
 #include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
@@ -51,15 +57,6 @@ namespace supervised {
  */
 linear_regression::~linear_regression(){
   lr_interface.reset();
-}
-
-
-
-/**
- * Returns the name of the model.
- */
-std::string linear_regression::name(){
-  return "regression_linear_regression";
 }
 
 /**
@@ -412,6 +409,51 @@ size_t linear_regression::get_version() const{
   //  4 -  Version 1.7
   return LINEAR_REGRESSION_MODEL_VERSION;  
 }
+
+void linear_regression::export_to_coreml(const std::string& filename) {
+
+  CoreML::Pipeline pipeline = CoreML::Pipeline::Regressor(
+      ml_mdata->target_column_name(),
+      "");
+
+  setup_pipeline_from_mldata(pipeline, ml_mdata);
+
+  // Build the actual model
+  CoreML::LinearModel lr = CoreML::LinearModel(ml_mdata->target_column_name(), "");
+
+  std::vector<double> one_hot_coefs;
+  supervised::get_one_hot_encoded_coefs(coefs, ml_mdata, one_hot_coefs);
+
+  // Push the offset
+  double offset = one_hot_coefs.back();
+  lr.setOffsets({offset});
+
+  // Push the coefs
+  one_hot_coefs.pop_back();
+  lr.setWeights({one_hot_coefs});
+
+  lr.addInput("__vectorized_features__",
+              CoreML::FeatureType::Array({ml_mdata->num_dimensions()}));
+  lr.addOutput(ml_mdata->target_column_name(), CoreML::FeatureType::Double());
+
+  pipeline.add(lr);
+  pipeline.addOutput(ml_mdata->target_column_name(), CoreML::FeatureType::Double());
+
+  // Add metadata
+  std::map<std::string, flexible_type> context_metadata = {
+    {"class", name()},
+    {"version", std::to_string(get_version())},
+    {"short_description", "Linear regression model."}};
+
+  add_metadata(pipeline.m_spec, context_metadata);
+
+  CoreML::Result r = pipeline.save(filename);
+
+  if(!r.good()) {
+    log_and_throw("Could not export model: " + r.message());
+  }
+}
+
 
 
 } // supervised

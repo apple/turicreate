@@ -52,15 +52,6 @@ nearest_neighbors_model* lsh_neighbors::nearest_neighbors_clone() {
   return (nearest_neighbors_model*) nn;
 }
 
-
-/**
- * Returns the name of the model.
- */
-std::string lsh_neighbors::name() {
-  return "nearest_neighbors_lsh";
-}
-
-
 /**
 * Set options
 */
