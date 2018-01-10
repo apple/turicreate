@@ -97,6 +97,12 @@ variant_type toolkit_class_base::call_function(std::string function,
                                                variant_map_type argument) {
   perform_registration();
   if (m_function_list.count(function)) {
+    // fill in default args if any
+    if (m_function_default_args.count(function)) {
+      for (const auto& p : m_function_default_args[function]) {
+        if (!argument.count(p.first)) argument[p.first] = p.second;
+      }
+    }
     return m_function_list[function](this, argument);
   } else {
     throw(std::string("No such property"));
@@ -144,6 +150,11 @@ void toolkit_class_base::register_function(std::string fnname,
 
   m_function_args[fnname] = arguments;
   m_function_list[fnname] = fn;
+}
+
+void toolkit_class_base::register_defaults(std::string fnname, 
+                                           const variant_map_type& arguments) {
+  m_function_default_args[fnname] = arguments;
 }
 
 /**

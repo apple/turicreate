@@ -67,7 +67,7 @@ class EXPORT toolkit_class_base: public model_base {
   /**
    * Returns the name of the toolkit class.
    */
-  virtual std::string name() = 0; 
+  virtual std::string name() = 0;
 
   /**
    * Returns a unique identifier for the toolkit class. It can be *any* unique
@@ -97,7 +97,7 @@ class EXPORT toolkit_class_base: public model_base {
    * Lists all the registered functions.
    * Returns a map of function name to array of arguments of the function.
    */
-  virtual std::map<std::string, std::vector<std::string>> list_functions();
+  virtual std::map<std::string, std::vector<std::string> > list_functions();
 
   /**
    * Lists all the get-table properties of the class.
@@ -140,6 +140,9 @@ class EXPORT toolkit_class_base: public model_base {
   // list_functions()
   std::map<std::string, std::vector<std::string>> m_function_args;
 
+  // default arguments if any
+  std::map<std::string, variant_map_type> m_function_default_args;
+
   // The implementation of each function
   std::map<std::string, 
       std::function<variant_type(toolkit_class_base*, 
@@ -161,6 +164,12 @@ class EXPORT toolkit_class_base: public model_base {
   void register_function(std::string fnname, 
                          std::vector<std::string> arguments,
                          std::function<variant_type(toolkit_class_base*, variant_map_type)> fn);
+
+  /**
+   * Registers default argument values
+   */
+  void register_defaults(std::string fnname, 
+                         const variant_map_type& arguments);
 
   /**
    * Adds a property setter with the specified name.
