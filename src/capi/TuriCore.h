@@ -258,7 +258,7 @@ tc_datetime* tc_datetime_create_from_posix_timestamp(int64_t posix_timestamp, tc
 
 // Create and set a datetime object from a high res posix timestamp value -- 
 // the number of seconds since January 1, 1970, UTC, in double precision. 
-tc_datetime* tc_datetime_create_from_posix_timestamp(double posix_timestamp, tc_error**);
+tc_datetime* tc_datetime_create_from_posix_highres_timestamp(double posix_timestamp, tc_error**);
 
 // Set the datetime value from a string timestamp of the date and/or time.
 tc_datetime* tc_datetime_create_from_string(const char* datetime_str, tc_error**);

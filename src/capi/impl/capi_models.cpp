@@ -1,5 +1,6 @@
 #include <capi/impl/capi_models.hpp>
 #include <capi/impl/capi_parameters.hpp>
+#include <capi/impl/capi_variant.hpp>
 #include <capi/impl/capi_error_handling.hpp>
 
 #include <unity/server/unity_server_control.hpp>
@@ -61,31 +62,14 @@ EXPORT const char* tc_model_name(const tc_model* model, tc_error **error) {
   ERROR_HANDLE_END(error, "");
 }
 
-EXPORT tc_parameters* tc_model_call_method(const tc_model* model, const char* method, 
+EXPORT tc_variant* tc_model_call_method(const tc_model* model, const char* method, 
                                            const tc_parameters* arguments, tc_error** error) {
   
   ERROR_HANDLE_START();
 
   turi::variant_type result = model->value->call_function(method, arguments->value); 
 
-  turi::variant_map_type ret;
-
-
-  switch(result.which()) { 
-    case 0: // flexible type
-    case 4: // sframe
-    case 5: // sarray
-      ret["result"] = result; 
-      break;
-    case 6: 
-      ret = turi::variant_get_ref<turi::variant_map_type>(result);
-      break; 
-    default:
-      throw std::runtime_error(std::string("Return type of method ") + method + " not supported (" + std::to_string(result.which()));
-  }
-
-  // See what's returned. 
-  return new_tc_parameters(std::move(ret));
+  return new_tc_variant(result);
   
   ERROR_HANDLE_END(error, NULL);
 }
