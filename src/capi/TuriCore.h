@@ -9,6 +9,67 @@ extern "C" {
 #include <stddef.h>
 #include <stdbool.h>
 
+/******************************************************************************/
+/*                                                                            */
+/*    CLASS DECLARATIONS                                                      */
+/*                                                                            */
+/******************************************************************************/
+
+// Error message struct
+struct tc_error_struct; 
+typedef struct tc_error_struct tc_error; 
+
+// Flexible type -- holds numeric, string, array, list, datetime, and image
+// types for use in SFrame or SArray.
+struct tc_flexible_type_struct; 
+typedef struct tc_flexible_type_struct tc_flexible_type;
+
+// flex_list -- list of flexible types
+struct tc_flex_list_struct;
+typedef struct tc_flex_list_struct tc_flex_list;
+
+// flex_dict -- list of key/value pairs of flexible types
+struct tc_flex_dict_struct;
+typedef struct tc_flex_dict_struct tc_flex_dict;
+
+// datetime
+struct tc_datetime_struct;
+typedef struct tc_datetime_struct tc_datetime;
+
+// Image
+struct tc_flex_image_struct;
+typedef struct tc_flex_image_struct tc_flex_image;
+
+// SArray
+struct tc_sarray_struct; 
+typedef struct tc_sarray_struct tc_sarray; 
+
+// SFrame
+struct tc_sframe_struct; 
+typedef struct tc_sframe_struct tc_sframe; 
+
+// Variant type -- extends flexible type; holds sarrays, sframes, and models as well
+struct tc_variant_struct;
+typedef struct tc_variant_struct tc_variant;
+
+// Parameters -- map of string to variant type
+struct tc_parameters_struct;
+typedef struct tc_parameters_struct tc_parameters;
+
+// Model offering predictions
+struct tc_model_struct; 
+typedef struct tc_model_struct tc_model;
+
+/******************************************************************************/
+/*                                                                            */
+/*    INITIALIZATION                                                          */
+/*                                                                            */
+/******************************************************************************/
+
+/** Initialize the framework. Call before calling any previous function.
+ *
+ */
+void tc_initialize(const char* log_file, tc_error**); 
 
 /******************************************************************************/
 /*                                                                            */
@@ -35,9 +96,6 @@ extern "C" {
 
   *************************/
 
-struct tc_error_struct; 
-typedef struct tc_error_struct tc_error; 
-
 /** Retrieves the error message on an active error.
  *
  *  Return object is a null-terminated c-style message string. 
@@ -57,16 +115,6 @@ void tc_error_destroy(tc_error** error_ptr);
 
 
 
-/******************************************************************************/
-/*                                                                            */
-/*    INITIALIZATION                                                          */
-/*                                                                            */
-/******************************************************************************/
-
-/** Initialize the framework. Call before calling any previous function.
- *
- */
-void tc_initialize(const char* log_file, tc_error**); 
 
 /******************************************************************************/
 /*                                                                            */
@@ -75,61 +123,83 @@ void tc_initialize(const char* log_file, tc_error**);
 /******************************************************************************/
 
 
-struct tc_flexible_type_struct; 
-typedef struct tc_flexible_type_struct tc_flexible_type;
-
-/** Type enum.  Ones commented out are not yet implemented in the C API. */ 
-typedef enum {
-  FT_TYPE_INTEGER = 0,  
-  FT_TYPE_FLOAT = 1,   
-  FT_TYPE_STRING = 2,   
-  // FT_TYPE_VECTOR = 3, 
-  FT_TYPE_LIST = 4, 
-  FT_TYPE_DICT = 5, 
-  // FT_TYPE_DATETIME = 6, 
-  FT_TYPE_UNDEFINED = 7,
-  FT_TYPE_IMAGE= 8
-} tc_ft_type_enum; 
-
-/****************************************************/
+/*****************************************************/
+/* Creating flexible type                            */
+/*****************************************************/
 
 tc_flexible_type* tc_ft_create_empty(tc_error** error);
-
 tc_flexible_type* tc_ft_create_copy(const tc_flexible_type*, tc_error** error);
-
-tc_flexible_type* tc_ft_create_from_cstring(const char* str, tc_error** error);
-
-tc_flexible_type* tc_ft_create_from_string(const char* str, uint64_t n, tc_error** error);
-
-tc_flexible_type* tc_ft_create_from_double(double, tc_error** error);
-
 tc_flexible_type* tc_ft_create_from_int64(int64_t, tc_error** error);
+tc_flexible_type* tc_ft_create_from_double(double, tc_error** error);
+tc_flexible_type* tc_ft_create_from_cstring(const char* str, tc_error** error);
+tc_flexible_type* tc_ft_create_from_string(const char* str, uint64_t n, tc_error** error);
+tc_flexible_type* tc_ft_create_from_double_array(const double* data, uint64_t n, tc_error** error);
+tc_flexible_type* tc_ft_create_from_flex_list(const tc_flex_list*, tc_error** error);
+tc_flexible_type* tc_ft_create_from_flex_dict(const tc_flex_dict*, tc_error** error);
+tc_flexible_type* tc_ft_create_from_datetime(const tc_datetime* dt, tc_error**);
+tc_flexible_type* tc_ft_create_from_image(const tc_flex_image*, tc_error** error);
 
-/****************************************************/
+
+/*****************************************************/
+/* Testing types in flexible type                    */
+/*****************************************************/
+
+/** Type enum. */
+typedef enum {
+  FT_TYPE_INTEGER = 0,  
+  FT_TYPE_DOUBLE  = 1,   
+  FT_TYPE_STRING  = 2,   
+  FT_TYPE_ARRAY   = 3, 
+  FT_TYPE_LIST    = 4, 
+  FT_TYPE_DICT    = 5, 
+  FT_TYPE_DATETIME = 6, 
+  FT_TYPE_UNDEFINED = 7,
+  FT_TYPE_IMAGE   = 8
+} tc_ft_type_enum; 
 
 tc_ft_type_enum tc_ft_type(const tc_flexible_type*);
 
-int tc_ft_is_string(const tc_flexible_type*); 
 int tc_ft_is_double(const tc_flexible_type*);
 int tc_ft_is_int64(const tc_flexible_type*); 
+int tc_ft_is_string(const tc_flexible_type*); 
+int tc_ft_is_array(const tc_flexible_type*); 
+int tc_ft_is_list(const tc_flexible_type*); 
+int tc_ft_is_dict(const tc_flexible_type*); 
+int tc_ft_is_datetime(const tc_flexible_type*); 
+int tc_ft_is_undefined(const tc_flexible_type*); 
 int tc_ft_is_image(const tc_flexible_type*); 
+int tc_ft_is_datetime(const tc_flexible_type*);
 
-/****************************************************/
-
-double tc_ft_double(const tc_flexible_type* ft, tc_error** error); 
+/*****************************************************/
+/* Extracting values from flexible type              */
+/*****************************************************/
 
 int64_t tc_ft_int64(const tc_flexible_type* ft, tc_error** error); 
 
-uint64_t tc_ft_string_length(const tc_flexible_type* ft, tc_error** error); 
+double tc_ft_double(const tc_flexible_type* ft, tc_error** error); 
 
+uint64_t tc_ft_string_length(const tc_flexible_type* ft, tc_error** error); 
 const char* tc_ft_string_data(const tc_flexible_type* ft, tc_error** error);
 
+uint64_t tc_ft_array_length(const tc_flexible_type* ft, tc_error** error); 
+const double* tc_ft_array_data(const tc_flexible_type* ft, tc_error** error);
 
-// Cast the type to string.  Can be used to print the type.
-tc_flexible_type* tc_ft_as_string(const tc_flexible_type*, tc_error** error); 
+tc_flex_list* tc_ft_flex_list(const tc_flexible_type*, tc_error**);
+tc_flex_dict* tc_ft_flex_dict(const tc_flexible_type*, tc_error**);
+tc_datetime* tc_ft_datetime(const tc_flexible_type* dt, tc_error**);
+tc_flex_image* tc_ft_flex_image(const tc_flexible_type*, tc_error**); 
 
+/*****************************************************/
+/*    Casting flexible types                         */
+/*****************************************************/
 
-/****************************************************/
+// Cast any type to a string.  Sets the error and returns NULL if it's not possible.
+// Casting to string can be used to print the value. 
+tc_flexible_type* tc_ft_as_string(const tc_flexible_type*, tc_error** error);
+
+/*****************************************************/
+/*    Destructor                                     */
+/*****************************************************/
 
 void tc_ft_destroy(tc_flexible_type*); 
 
@@ -139,8 +209,6 @@ void tc_ft_destroy(tc_flexible_type*);
 /*                                                                            */
 /******************************************************************************/
 
-struct tc_flex_list_struct;
-typedef struct tc_flex_list_struct tc_flex_list;
 
 tc_flex_list* tc_flex_list_create(tc_error**);
 tc_flex_list* tc_flex_list_create_with_capacity(uint64_t capacity, tc_error**);
@@ -152,12 +220,6 @@ tc_flexible_type* tc_flex_list_extract_element(
 
 uint64_t tc_flex_list_size(const tc_flex_list*);
 
-
-// Conversion to flexible type
-tc_flexible_type* tc_ft_create_from_flex_list(const tc_flex_list*, tc_error** error);
-
-tc_flex_list* tc_ft_flex_list(const tc_flexible_type*, tc_error**);
-
 void tc_flex_list_destroy(tc_flex_list*);
 
 
@@ -167,18 +229,11 @@ void tc_flex_list_destroy(tc_flex_list*);
 /*                                                                            */
 /******************************************************************************/
 
-// NOTE: flex_dicts are simply key-value lists; lookups by key are not efficient
+// NOTE: flex_dicts are simply key-value lists; lookup-by-key is not efficient
 // and thus not implemented.
-
-struct tc_flex_dict_struct;
-typedef struct tc_flex_dict_struct tc_flex_dict;
 
 // Creates an empty flex_dict object.
 tc_flex_dict* tc_flex_dict_create(tc_error**);
-
-// Conversion to/from flexible type
-tc_flexible_type* tc_ft_create_from_flex_dict(const tc_flex_dict*, tc_error** error);
-tc_flex_dict* tc_ft_flex_dict(const tc_flexible_type*, tc_error**);
 
 // Adds a key to the dictionary, returning the entry index.. 
 uint64_t tc_flex_dict_add_element(tc_flex_dict* ft, const tc_flexible_type* first, const tc_flexible_type* second, tc_error**);
@@ -191,12 +246,54 @@ void tc_flex_dict_destroy(tc_flex_dict*);
 
 /******************************************************************************/
 /*                                                                            */
-/*    flex_image                                                              */
+/*    flex_datetime                                                           */
 /*                                                                            */
 /******************************************************************************/
 
-struct tc_flex_image_struct;
-typedef struct tc_flex_image_struct tc_flex_image;
+tc_datetime* tc_datetime_create_empty(tc_error**);
+
+// Create and set a datetime object from a posix timestamp value -- 
+// the number of seconds since January 1, 1970, UTC. 
+tc_datetime* tc_datetime_create_from_posix_timestamp(int64_t posix_timestamp, tc_error**);
+
+// Create and set a datetime object from a high res posix timestamp value -- 
+// the number of seconds since January 1, 1970, UTC, in double precision. 
+tc_datetime* tc_datetime_create_from_posix_timestamp(double posix_timestamp, tc_error**);
+
+// Set the datetime value from a string timestamp of the date and/or time.
+tc_datetime* tc_datetime_create_from_string(const char* datetime_str, tc_error**);
+
+// Set and get the time zone.  The time zone has 15 min resolution.  
+void tc_datetime_set_time_zone_offset(tc_datetime* dt, int64_t n_tz_hour_offset, int64_t n_tz_15min_offsets, tc_error**);
+int64_t tc_datetime_get_time_zone_offset_minutes(const tc_datetime* dt, tc_error**);  
+
+// Set and get the microsecond part of the time zone.
+void tc_datetime_set_microsecond(tc_datetime* dt, uint64_t microseconds, tc_error**);
+uint64_t tc_datetime_get_microsecond(const tc_datetime* dt, tc_error**);
+
+// Set and get the posix style timestamp -- number of seconds since January 1, 1970, UTC. 
+void tc_datetime_set_timestamp(tc_datetime* dt, int64_t d, tc_error**);
+int64_t tc_datetime_get_timestamp(tc_datetime* dt, tc_error**);
+
+// Set and get the posix style timestamp with high res counter -- number of seconds since January 1, 1970, UTC.  
+void tc_datetime_set_highres_timestamp(tc_datetime* dt, double d, tc_error**);
+double tc_datetime_get_highres_timestamp(tc_datetime* dt, tc_error**);
+
+// Returns true if the time dt1 is before the time dt2 
+bool tc_datetime_less_than(const tc_datetime* dt1, const tc_datetime* dt2, tc_error**); 
+
+// Returns true if the time dt1 is equal to the time dt2
+bool tc_datetime_equal(const tc_datetime* dt1, const tc_datetime* dt2, tc_error**); 
+
+// Destructor
+void tc_datetime_destroy(tc_datetime*); 
+
+
+/******************************************************************************/
+/*                                                                            */
+/*    flex_image                                                              */
+/*                                                                            */
+/******************************************************************************/
 
 // Load an image into a flexible type from a path
 tc_flex_image* tc_flex_image_create_from_path(
@@ -215,10 +312,6 @@ uint64_t tc_flex_image_data_size(const tc_flex_image*, tc_error**);
 const char* tc_flex_image_data(const tc_flex_image*, tc_error**); 
 const char* tc_flex_image_format(const tc_flex_image*, tc_error**); 
 
-// Flexible type interaction 
-tc_flexible_type* tc_ft_create_from_image(const tc_flex_image*, tc_error** error);
-tc_flex_image* tc_ft_flex_image(const tc_flexible_type*, tc_error**); 
-
 // Destructor
 void tc_flex_image_destroy(tc_flex_image*); 
 
@@ -230,10 +323,9 @@ void tc_flex_image_destroy(tc_flex_image*);
 /******************************************************************************/
 
 
-struct tc_sarray_struct; 
-typedef struct tc_sarray_struct tc_sarray; 
+tc_sarray* tc_sarray_create_empty(tc_error**);
 
-tc_sarray* tc_sarray_create(const tc_flex_list* data, tc_error**);
+tc_sarray* tc_sarray_create_from_data(const tc_flex_list* data, tc_error**);
 
 tc_sarray* tc_sarray_create_from_sequence(
     uint64_t start, uint64_t end, tc_error** error);
@@ -288,48 +380,12 @@ tc_sarray* tc_sarray_apply(const tc_sarray*,
 void tc_sarray_destroy(tc_sarray* sa);
 
 
-/******************************************************************************/
-/*                                                                            */
-/*    SKETCH                                                                  */
-/*                                                                            */
-/******************************************************************************/
-
-struct tc_sketch_struct;
-typedef struct tc_sketch_struct tc_sketch;
-
-tc_sketch* tc_sketch_create(const tc_sarray*, bool background, const tc_flex_list* keys, tc_error **);
-
-bool tc_sketch_ready(tc_sketch*);
-size_t tc_sketch_num_elements_processed(tc_sketch*);
-double tc_sketch_get_quantile(tc_sketch*, double quantile, tc_error**);
-double tc_sketch_frequency_count(tc_sketch*, const tc_flexible_type* value, tc_error**);
-tc_flex_dict* tc_sketch_frequent_items(tc_sketch*);
-double tc_sketch_num_unique(tc_sketch*);
-tc_sketch* tc_sketch_element_sub_sketch(const tc_sketch*, const tc_flexible_type* key, tc_error**);
-tc_sketch* tc_sketch_element_length_summary(const tc_sketch*, tc_error**);
-tc_sketch* tc_sketch_element_summary(const tc_sketch*, tc_error**);
-tc_sketch* tc_sketch_dict_key_summary(const tc_sketch*, tc_error **error);
-tc_sketch* tc_sketch_dict_value_summary(const tc_sketch*, tc_error **error);
-double tc_sketch_mean(const tc_sketch*, tc_error**);
-double tc_sketch_max(const tc_sketch*, tc_error**);
-double tc_sketch_min(const tc_sketch*, tc_error**);
-double tc_sketch_sum(const tc_sketch*, tc_error**);
-double tc_sketch_variance(const tc_sketch*, tc_error**);
-size_t tc_sketch_size(const tc_sketch*);
-size_t tc_sketch_num_undefined(const tc_sketch*);
-void tc_sketch_cancel(tc_sketch*);
-
-void tc_sketch_destroy(tc_sketch *);
-
 
 /******************************************************************************/
 /*                                                                            */
 /*   SFRAME                                                                   */
 /*                                                                            */
 /******************************************************************************/
-
-struct tc_sframe_struct; 
-typedef struct tc_sframe_struct tc_sframe; 
 
 tc_sframe* tc_sframe_create_empty(tc_error**);
 
@@ -399,54 +455,132 @@ tc_sframe* tc_sframe_append(tc_sframe* top, tc_sframe* bottom, tc_error **error)
 // Destructor
 void tc_sframe_destroy(tc_sframe* sa);
 
+/******************************************************************************/
+/*                                                                            */
+/*   Variant Container Type                                                   */
+/*                                                                            */
+/******************************************************************************/
+
+// A variant type can hold almost any object type, but cannot go inside of a
+// SFrame or SArray.   
+
+/*****************************************************/
+/* Creating variant types                            */
+/*****************************************************/
+
+tc_variant* tc_variant_create_from_int64(int64_t, tc_error** error);
+tc_variant* tc_variant_create_from_double(double, tc_error** error);
+tc_variant* tc_variant_create_from_cstring(const char* str, tc_error** error);
+tc_variant* tc_variant_create_from_string(const char* str, uint64_t n, tc_error** error);
+tc_variant* tc_variant_create_from_double_array(const double* data, uint64_t n, tc_error** error);
+tc_variant* tc_variant_create_from_flex_list(const tc_flex_list*, tc_error** error);
+tc_variant* tc_variant_create_from_flex_dict(const tc_flex_dict*, tc_error** error);
+tc_variant* tc_variant_create_from_datetime(const tc_datetime* dt, tc_error**);
+tc_variant* tc_variant_create_from_image(const tc_flex_image*, tc_error** error);
+tc_variant* tc_variant_create_from_flexible_type(const tc_flexible_type*, tc_error** error);
+tc_variant* tc_variant_create_from_sarray(const tc_sarray*, tc_error** error);
+tc_variant* tc_variant_create_from_sframe(const tc_sframe*, tc_error** error);
+tc_variant* tc_variant_create_from_parameters(const tc_parameters*, tc_error** error);
+tc_variant* tc_variant_create_from_model(const tc_model*, tc_error** error);
+tc_variant* tc_variant_create_copy(const tc_variant*, tc_error** error);
+
+int tc_variant_is_int64(const tc_variant*);
+int tc_variant_is_double(const tc_variant*);
+int tc_variant_is_cstring(const tc_variant*);
+int tc_variant_is_string(const tc_variant*);
+int tc_variant_is_double_array(const tc_variant*);
+int tc_variant_is_flex_list(const tc_variant*);
+int tc_variant_is_flex_dict(const tc_variant*);
+int tc_variant_is_datetime(const tc_variant*);
+int tc_variant_is_image(const tc_variant*);
+int tc_variant_is_flexible_type(const tc_variant*);
+int tc_variant_is_sarray(const tc_variant*);
+int tc_variant_is_sframe(const tc_variant*);
+int tc_variant_is_parameters(const tc_variant*);
+int tc_variant_is_model(const tc_variant*);
 
 
+int64_t tc_variant_int64(const tc_variant* ft, tc_error** error); 
 
+double tc_variant_double(const tc_variant* ft, tc_error** error); 
+
+uint64_t tc_variant_string_length(const tc_variant* ft, tc_error** error); 
+const char* tc_variant_string_data(const tc_variant* ft, tc_error** error);
+
+uint64_t tc_variant_array_length(const tc_variant* ft, tc_error** error); 
+const double* tc_variant_array_data(const tc_variant* ft, tc_error** error);
+
+tc_flex_list* tc_variant_flex_list(const tc_variant*, tc_error**);
+tc_flex_dict* tc_variant_flex_dict(const tc_variant*, tc_error**);
+tc_datetime* tc_variant_datetime(const tc_variant* dt, tc_error**);
+tc_flex_image* tc_variant_flex_image(const tc_variant*, tc_error**); 
+tc_flexible_type* tc_variant_flexible_type(const tc_variant*, tc_error**); 
+tc_sarray* tc_variant_sarray(const tc_variant*, tc_error**); 
+tc_sframe* tc_variant_sframe(const tc_variant*, tc_error**); 
+tc_parameters* tc_variant_parameters(const tc_variant*, tc_error** error);
+tc_model* tc_variant_model(const tc_variant*, tc_error**); 
 
 
 /******************************************************************************/
 /*                                                                            */
-/*   Parameter List                                                           */
+/*   Parameter Specification                                                  */
 /*                                                                            */
 /******************************************************************************/
 
+// A parameter specification is simply a map of names to variant types holding the 
+// possible parameters. 
 
-struct tc_parameters_struct; 
-typedef struct tc_parameters_struct tc_parameters;
+// Primary methods.
+tc_parameters* tc_parameters_create_empty(tc_error**);
+void tc_parameters_add(tc_parameters*, const char* name, const tc_variant*, tc_error** error);
+int tc_parameters_entry_exists(tc_parameters*, const char* name);
+tc_variant* tc_parameters_retrieve(tc_parameters*, const char* name, tc_error** error);
 
-// Create a new set of parameters
-tc_parameters* tc_parameters_create_empty(tc_error**); 
+// Convenience methods -- these can be expressed as combinations of the above methods, 
+// but are provided here for convenience and to avoid the additional overhead of multiple function calls. 
+void tc_parameters_add_int64(tc_parameters*, const char* name, int64_t value, tc_error** error);
+void tc_parameters_add_double(tc_parameters*, const char* name, double value, tc_error** error);
+void tc_parameters_add_cstring(tc_parameters*, const char* name, const char* str, tc_error** error);
+void tc_parameters_add_string(tc_parameters*, const char* name, const char* str, uint64_t n, tc_error** error);
+void tc_parameters_add_double_array(tc_parameters*, const char* name, const double* data, uint64_t n, tc_error** error);
+void tc_parameters_add_flex_list(tc_parameters*, const char* name, const tc_flex_list* value, tc_error** error);
+void tc_parameters_add_flex_dict(tc_parameters*, const char* name, const tc_flex_dict* value, tc_error** error);
+void tc_parameters_add_datetime(tc_parameters*, const char* name, const tc_datetime* dt, tc_error**);
+void tc_parameters_add_image(tc_parameters*, const char* name, const tc_flex_image*, tc_error** error);
+void tc_parameters_add_flexible_type(tc_parameters*, const char* name, const tc_flexible_type*, tc_error** error);
+void tc_parameters_add_sarray(tc_parameters*, const char* name, const tc_sarray*, tc_error** error);
+void tc_parameters_add_sframe(tc_parameters*, const char* name, const tc_sframe*, tc_error** error);
+void tc_parameters_add_parameters(tc_parameters*, const char* name, const tc_parameters*, tc_error** error);
+void tc_parameters_add_model(tc_parameters*, const char* name, const tc_model*, tc_error** error);
 
-// Add a new SFrame to the set of parameters. 
-void tc_parameters_add_sframe(tc_parameters* params, const char* name, tc_sframe* sframe, tc_error**); 
+int tc_parameter_is_int64(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameter_is_double(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameter_is_cstring(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameter_is_string(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameter_is_double_array(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameter_is_flex_list(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameter_is_flex_dict(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameter_is_datetime(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameter_is_image(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameter_is_flexible_type(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameter_is_sarray(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameter_is_sframe(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameter_is_parameters(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameter_is_model(const tc_parameters*, const char* name, tc_error** error);
 
-// Add a new SArray to the set of parameters.
-void tc_parameters_add_sarray(tc_parameters* params, const char* name, 
-                              tc_sarray* sa, tc_error** error);
-
-// Add a new flexible type parameter to the set of parameters. 
-void tc_parameters_add_flexible_type(tc_parameters* params, const char* name, tc_flexible_type* ft, tc_error**); 
-
-// Returns true if an entry exists, false otherwise   
-bool tc_parameters_entry_exists(const tc_parameters* params, const char* name, tc_error**); 
-
-// Query the type of a return parameter
-bool tc_parameters_is_sframe(const tc_parameters* params, const char* name, tc_error**);
-
-// Query the type of a return parameter
-bool tc_parameters_is_sarray(const tc_parameters* params, const char* name, tc_error**);
-
-// Query the type of a return vector
-bool tc_parameters_is_flexible_type(const tc_parameters* params, const char* name, tc_error**); 
-
-// Retrieve the value of an sframe as returned parameter.
-tc_sarray* tc_parameters_retrieve_sarray(const tc_parameters* params, const char* name, tc_error**);
-
-// Retrieve the value of an sframe as returned parameter.
-tc_sframe* tc_parameters_retrieve_sframe(const tc_parameters* params, const char* name, tc_error**);
-
-// Retrieve the value of an sframe as returned parameter.
-tc_flexible_type* tc_parameters_retrieve_flexible_type(const tc_parameters* params, const char* name, tc_error**);
+int64_t tc_parameter_retrieve_int64(const tc_parameters* ft, tc_error** error); 
+double tc_parameters_retrieve_double(const tc_parameters* ft, tc_error** error); 
+tc_flexible_type* tc_parameters_retrieve_string(const tc_parameters* ft, const char* name, tc_error** error);
+tc_flexible_type* tc_parameters_retrieve_array(const tc_parameters* ft, const char* name, tc_error** error); 
+tc_flex_list* tc_parameters_retrieve_flex_list(const tc_parameters*, const char* name, tc_error**);
+tc_flex_dict* tc_parameters_retrieve_flex_dict(const tc_parameters*, const char* name, tc_error**);
+tc_datetime* tc_parameters_retrieve_datetime(const tc_parameters* dt, const char* name, tc_error**);
+tc_flex_image* tc_parameters_retrieve_image(const tc_parameters*, const char* name, tc_error**); 
+tc_flexible_type* tc_parameters_retrieve_flexible_type(const tc_parameters*, const char* name, tc_error**);
+tc_sarray* tc_parameters_retrieve_sarray(const tc_parameters*, const char* name, tc_error**); 
+tc_sframe* tc_parameters_retrieve_sframe(const tc_parameters*, const char* name, tc_error**); 
+tc_parameters* tc_parameters_retrieve_parameters(const tc_parameters*, const char* name, tc_error**); 
+tc_model* tc_parameters_retrieve_model(const tc_parameters*, const char* name, tc_error**); 
 
 // delete the parameter container. 
 void tc_parameters_destroy(tc_parameters*); 
@@ -454,28 +588,64 @@ void tc_parameters_destroy(tc_parameters*);
 
 /******************************************************************************/
 /*                                                                            */
-/*   Models                                                                   */
+/*   Interaction with registered models                                       */
 /*                                                                            */
 /******************************************************************************/
 
-struct tc_model_struct; 
-typedef struct tc_model_struct tc_model;
-
-tc_model* tc_model_new(const char* model_name, tc_error**);
-
-tc_model* tc_model_load(const char* file_name, tc_error**);
+tc_model* tc_model_create(const char* model_name, tc_error**);
 
 const char* tc_model_name(const tc_model*, tc_error**);
 
-tc_parameters* tc_model_call_method(const tc_model* model, const char* method, 
-                                    const tc_parameters* arguments, tc_error**);
-
+tc_variant* tc_model_call_method(const tc_model* model, const char* method, 
+                                 const tc_parameters* arguments, tc_error**);
 
 void tc_model_destroy(tc_model*);
 
+/******************************************************************************/
+/*                                                                            */
+/*   Interaction with registered functions                                    */
+/*                                                                            */
+/******************************************************************************/
+
+tc_parameters* tc_model_call_function(const char* function_name, const tc_parameters* arguments, tc_error**);
 
 
 
+
+
+
+/******************************************************************************/
+/*                                                                            */
+/*    SKETCH                                                                  */
+/*                                                                            */
+/******************************************************************************/
+
+struct tc_sketch_struct;
+typedef struct tc_sketch_struct tc_sketch;
+
+tc_sketch* tc_sketch_create(const tc_sarray*, bool background, const tc_flex_list* keys, tc_error **);
+
+bool tc_sketch_ready(tc_sketch*);
+size_t tc_sketch_num_elements_processed(tc_sketch*);
+double tc_sketch_get_quantile(tc_sketch*, double quantile, tc_error**);
+double tc_sketch_frequency_count(tc_sketch*, const tc_flexible_type* value, tc_error**);
+tc_flex_dict* tc_sketch_frequent_items(tc_sketch*);
+double tc_sketch_num_unique(tc_sketch*);
+tc_sketch* tc_sketch_element_sub_sketch(const tc_sketch*, const tc_flexible_type* key, tc_error**);
+tc_sketch* tc_sketch_element_length_summary(const tc_sketch*, tc_error**);
+tc_sketch* tc_sketch_element_summary(const tc_sketch*, tc_error**);
+tc_sketch* tc_sketch_dict_key_summary(const tc_sketch*, tc_error **error);
+tc_sketch* tc_sketch_dict_value_summary(const tc_sketch*, tc_error **error);
+double tc_sketch_mean(const tc_sketch*, tc_error**);
+double tc_sketch_max(const tc_sketch*, tc_error**);
+double tc_sketch_min(const tc_sketch*, tc_error**);
+double tc_sketch_sum(const tc_sketch*, tc_error**);
+double tc_sketch_variance(const tc_sketch*, tc_error**);
+size_t tc_sketch_size(const tc_sketch*);
+size_t tc_sketch_num_undefined(const tc_sketch*);
+void tc_sketch_cancel(tc_sketch*);
+
+void tc_sketch_destroy(tc_sketch *);
 
 
 
