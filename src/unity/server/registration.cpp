@@ -42,8 +42,6 @@
 #include <unity/toolkits/pattern_mining/class_registrations.hpp>
 #include <unity/toolkits/clustering/class_registrations.hpp>
 
-#include <proprietary/registration.hpp>
-
 namespace turi {
 
 void register_functions(toolkit_function_registry& registry) {
@@ -115,8 +113,6 @@ void register_models(toolkit_class_registry& registry) {
   // Pattern Mining
   registry.register_toolkit_class(turi::pattern_mining::get_toolkit_class_registration());
 
-  // Proprietary
-  registry.register_toolkit_class(turi::proprietary::get_toolkit_class_registration());
 }
 
 }
