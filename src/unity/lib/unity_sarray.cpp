@@ -2826,7 +2826,6 @@ void unity_sarray::show(const std::string& path_to_client,
     case flex_type_enum::FLOAT:
       ::turi::visualization::run_thread([path_to_client, _title, _xlabel, _ylabel, self]() {
         process_wrapper ew(path_to_client);
-        vega_spec vs;
 
         histogram hist;
         std::string title = _title;
@@ -2847,8 +2846,7 @@ void unity_sarray::show(const std::string& path_to_client,
           ylabel = "Count";
         }
 
-        vs << histogram_spec(title, xlabel, ylabel);
-        ew << vs.get_spec();
+        ew << histogram_spec(title, xlabel, ylabel);
 
         hist.init(self);
         while (ew.good()) {
@@ -2873,7 +2871,6 @@ void unity_sarray::show(const std::string& path_to_client,
     case flex_type_enum::STRING:
       ::turi::visualization::run_thread([path_to_client, _title, _xlabel, _ylabel, self]() {
         process_wrapper ew(path_to_client);
-        vega_spec vs;
 
         item_frequency item_freq;
         item_freq.init(self);
@@ -2898,8 +2895,7 @@ void unity_sarray::show(const std::string& path_to_client,
           ylabel = "Values";
         }
 
-        vs << categorical_spec(length_list, title, xlabel, ylabel);
-        ew << vs.get_spec();
+        ew << categorical_spec(length_list, title, xlabel, ylabel);
 
         while (ew.good()) {
           vega_data vd;
