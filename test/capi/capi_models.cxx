@@ -90,16 +90,15 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
     TS_ASSERT(error == NULL);
     tc_sframe_destroy(sf_2);
 
-    tc_parameters* ret = tc_model_call_method(model, "predict", p_args, &error);
+    tc_variant* ret = tc_model_call_method(model, "predict", p_args, &error);
     TS_ASSERT(error == NULL);
     tc_parameters_destroy(p_args);
 
-    int has_prediction = tc_parameters_entry_exists(ret, "result", &error);
-    TS_ASSERT(error == NULL);
-
-    TS_ASSERT(has_prediction == 1);
-
-    tc_sarray* sa = tc_parameters_retrieve_sarray(ret, "result", &error);
+#ifdef TC_VARIANT_FUNCTIONS_DEFINED
+    int is_sarray = tc_variant_is_sarray(ret);
+    TS_ASSERT(is_sarray);
+    
+    tc_sarray* sa = tc_variant_sarray(ret, &error);
     TS_ASSERT(error == NULL);
 
     const auto& target_values = data.back().second;
@@ -116,6 +115,7 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
       // setting
       TS_ASSERT_DELTA(v, target_values[i], 0.5);
     }
+#endif
 
     { 
       tc_parameters* export_args = tc_parameters_create_empty(&error); 
@@ -130,7 +130,7 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
         tc_ft_destroy(ft_name);
       }
 
-      tc_parameters* ret_2 = tc_model_call_method(model, "export_to_coreml", export_args, &error);
+      tc_variant* ret_2 = tc_model_call_method(model, "export_to_coreml", export_args, &error);
       TS_ASSERT(error == NULL);
       tc_parameters_destroy(export_args);
     }

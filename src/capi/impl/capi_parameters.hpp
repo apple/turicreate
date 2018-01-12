@@ -20,7 +20,7 @@ static inline tc_parameters* new_tc_parameters() {
   return new tc_parameters_struct(); 
 }
 
-static inline tc_parameters* new_tc_parameters(turi::variant_map_type&& v) { 
+static inline tc_parameters* new_tc_parameters(turi::variant_map_type v) { 
   tc_parameters* ret = new_tc_parameters();
   ret->value = std::move(v);
   return ret;

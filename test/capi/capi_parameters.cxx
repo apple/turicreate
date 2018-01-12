@@ -30,14 +30,24 @@ struct capi_test_parameters {
 
 
    ft = tc_parameters_retrieve_flexible_type(p, "arg1", &error); 
+   TS_ASSERT(error == NULL); 
 
    int is_dbl = tc_ft_is_double(ft); 
-   TS_ASSERT(error == NULL); 
+   TS_ASSERT(is_dbl);
 
    double x = tc_ft_double(ft, &error); 
    TS_ASSERT(error == NULL); 
+   TS_ASSERT_EQUALS(x, 9.0);
+   tc_ft_destroy(ft);
 
-   TS_ASSERT_EQUALS(x, 9.0); 
+   is_dbl = tc_parameters_is_double(p, "arg1", &error);
+   TS_ASSERT(error == NULL); 
+   TS_ASSERT(is_dbl);
+
+   x = tc_parameters_retrieve_double(p, "arg1", &error);
+   TS_ASSERT(error == NULL); 
+   TS_ASSERT_EQUALS(x, 9.0);
+
    tc_parameters_destroy(p);
  }
  
