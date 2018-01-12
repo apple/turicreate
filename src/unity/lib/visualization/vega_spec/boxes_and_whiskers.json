@@ -1,0 +1,328 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v3.0.json",
+  "autosize": "pad",
+  "metadata": {
+    "bubbleOpts": {
+      "showAllFields": false,
+      "fields": [
+        {
+          "field": "x"
+        },
+        {
+          "field": "min"
+        },
+        {
+          "field": "lower quartile"
+        },
+        {
+          "field": "median"
+        },
+        {
+          "field": "upper quartile"
+        },
+        {
+          "field": "max"
+        }
+      ]
+    }
+  },
+  "title": {
+    "text": %1%,
+    "offset": 30
+  },
+  "padding": 5,
+  "height": 480,
+  "style": "cell",
+  "data": [
+    {
+      "name": "source_2"
+    }
+  ],
+  "signals": [
+    {
+      "name": "x_step",
+      "value": 42
+    },
+    {
+      "name": "width",
+      "update": "bandspace(domain('x').length, 0.1, 0.1) * x_step"
+    }
+  ],
+  "marks": [
+    {
+      "name": "layer_0_marks",
+      "type": "rule",
+      "style": [
+        "boxWhisker"
+      ],
+      "from": {
+        "data": "source_2"
+      },
+      "encode": {
+        "update": {
+          "x": {
+            "scale": "x",
+            "field": "x",
+            "band": 0.5
+          },
+          "y": {
+            "scale": "y",
+            "field": "min"
+          },
+          "y2": {
+            "scale": "y",
+            "field": "lower quartile"
+          },
+          "stroke": {
+            "value": "black"
+          }
+        }
+      }
+    },
+    {
+      "name": "layer_1_marks",
+      "type": "rule",
+      "style": [
+        "boxWhisker"
+      ],
+      "from": {
+        "data": "source_2"
+      },
+      "encode": {
+        "update": {
+          "x": {
+            "scale": "x",
+            "field": "x",
+            "band": 0.5
+          },
+          "y": {
+            "scale": "y",
+            "field": "upper quartile"
+          },
+          "y2": {
+            "scale": "y",
+            "field": "max"
+          },
+          "stroke": {
+            "value": "black"
+          }
+        }
+      }
+    },
+    {
+      "name": "layer_2_marks",
+      "type": "rect",
+      "style": [
+        "box"
+      ],
+      "from": {
+        "data": "source_2"
+      },
+      "encode": {
+        "hover": {
+          "fill": {
+            "value": "#7EC2F3"
+          }
+        },
+        "update": {
+          "xc": {
+            "scale": "x",
+            "field": "x",
+            "band": 0.5
+          },
+          "width": {
+            "value": 20
+          },
+          "y": {
+            "scale": "y",
+            "field": "lower quartile"
+          },
+          "y2": {
+            "scale": "y",
+            "field": "upper quartile"
+          },
+          "fill": {
+            "value": "#108EE9"
+          }
+        }
+      }
+    },
+    {
+      "name": "layer_3_marks",
+      "type": "rect",
+      "style": [
+        "boxMid"
+      ],
+      "from": {
+        "data": "source_2"
+      },
+      "encode": {
+        "update": {
+          "xc": {
+            "scale": "x",
+            "field": "x",
+            "band": 0.5
+          },
+          "yc": {
+            "scale": "y",
+            "field": "median"
+          },
+          "width": {
+            "value": 20
+          },
+          "height": {
+            "value": 1
+          },
+          "fill": {
+            "value": "black"
+          },
+          "opacity": {
+            "value": 0.7
+          }
+        }
+      }
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "type": "band",
+      "domain": {
+        "fields": [
+          {
+            "data": "source_2",
+            "field": "x"
+          }
+        ]
+      },
+      "range": {
+        "step": {
+          "signal": "x_step"
+        }
+      },
+      "paddingInner": 0.1,
+      "paddingOuter": 0.05
+    },
+    {
+      "name": "y",
+      "type": "linear",
+      "domain": {
+        "fields": [
+          {
+            "data": "source_2",
+            "field": "min"
+          },
+          {
+            "data": "source_2",
+            "field": "lower quartile"
+          },
+          {
+            "data": "source_2",
+            "field": "upper quartile"
+          },
+          {
+            "data": "source_2",
+            "field": "max"
+          },
+          {
+            "data": "source_2",
+            "field": "lower quartile"
+          },
+          {
+            "data": "source_2",
+            "field": "upper quartile"
+          },
+          {
+            "data": "source_2",
+            "field": "median"
+          }
+        ],
+        "sort": true
+      },
+      "range": [
+        {
+          "signal": "height"
+        },
+        0
+      ],
+      "nice": true,
+      "zero": true
+    }
+  ],
+  "axes": [
+    {
+      "scale": "x",
+      "labelOverlap": true,
+      "orient": "bottom",
+      "title": %2%,
+      "zindex": 1,
+      "encode": {
+        "labels": {
+          "update": {
+            "angle": {
+              "value": 270
+            },
+            "align": {
+              "value": "right"
+            },
+            "baseline": {
+              "value": "middle"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": %3%,
+      "scale": "y",
+      "labelOverlap": true,
+      "orient": "left",
+      "tickCount": {
+        "signal": "ceil(height/40)"
+      },
+      "zindex": 1
+    },
+    {
+      "scale": "y",
+      "domain": false,
+      "grid": true,
+      "labels": false,
+      "maxExtent": 0,
+      "minExtent": 0,
+      "orient": "left",
+      "tickCount": {
+        "signal": "ceil(height/40)"
+      },
+      "ticks": false,
+      "zindex": 0,
+      "gridScale": "x"
+    }
+  ],
+  "config": {
+    "axis": {
+      "labelFont": "HelveticaNeue",
+      "labelFontSize": 12,
+      "labelPadding": 10,
+      "labelColor": "rgba(0,0,0,0.65)",
+      "titleFont": "HelveticaNeue-Medium",
+      "titleFontWeight": "normal",
+      "titlePadding": 30,
+      "titleFontSize": 15,
+      "titleColor": "rgba(0,0,0,0.65)"
+    },
+    "axisY": {
+      "minExtent": 30
+    },
+    "style": {
+      "rect": {
+        "stroke": "rgba(200, 200, 200, 0.5)"
+      },
+      "group-title": {
+        "fontSize": 29,
+        "font": "HelveticaNeue",
+        "fontWeight": "normal",
+        "fill": "rgba(0,0,0,0.65)"
+      }
+    }
+  }
+}

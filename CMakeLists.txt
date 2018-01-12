@@ -793,6 +793,8 @@ include_directories(SYSTEM src/external)
 include_directories(SYSTEM src/old)
 include_directories(SYSTEM src/platform)
 
+# for build-time generated source code
+include_directories(SYSTEM ${CMAKE_BINARY_DIR}/src)
 
 if(EXISTS ${CMAKE_SOURCE_DIR}/subtree)
   include_directories(SYSTEM subtree)

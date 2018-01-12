@@ -4,7 +4,6 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include "histogram.hpp"
-#include "vega_spec.hpp"
 
 #include <parallel/lambda_omp.hpp>
 

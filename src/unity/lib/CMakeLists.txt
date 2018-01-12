@@ -1,23 +1,6 @@
 project(unity)
 
-
-set(VISUALIZATION_SOURCES
-  visualization/boxes_and_whiskers.cpp
-  visualization/categorical_heatmap.cpp
-  visualization/io_buffer.cpp
-  visualization/process_wrapper.cpp
-  visualization/groupby.cpp
-  visualization/heatmap.cpp
-  visualization/histogram.cpp
-  visualization/hyperloglog.cpp
-  visualization/item_frequency.cpp
-  visualization/scatter.cpp
-  visualization/show.cpp
-  visualization/thread.cpp
-  visualization/transformation.cpp
-  visualization/vega_data.cpp
-  visualization/vega_spec.cpp
-)
+subdirs(visualization)
 
 make_library(unity_core
   SOURCES
@@ -60,12 +43,9 @@ make_library(unity_core
     startup_teardown
     pylambda_worker
     numerics
+    visualization
     EXTERNAL_VISIBILITY
 )
-
-     add_dependencies(unity_core
-      visualization_client
-    )
 
 make_shared_library_from_static(unity_core_shared
                                 REQUIRES

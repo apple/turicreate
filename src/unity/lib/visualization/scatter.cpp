@@ -39,9 +39,7 @@ void turi::visualization::show_scatter(const std::string& path_to_client,
     DASSERT_EQ(x.size(), y.size());
 
     process_wrapper ew(path_to_client);
-    vega_spec vs;
-    vs << scatter_spec(xlabel, ylabel, title);
-    ew << vs.get_spec();
+    ew << scatter_spec(xlabel, ylabel, title);
 
     vega_data vd;
 
