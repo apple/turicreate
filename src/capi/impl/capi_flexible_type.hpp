@@ -20,7 +20,7 @@ static inline tc_flexible_type* new_tc_flexible_type() {
 template <typename T>
 static inline tc_flexible_type* new_tc_flexible_type(T&& value) {
   tc_flexible_type* ret = new tc_flexible_type(); 
-  ret->value = value; 
+  ret->value = std::move(value);
   return ret; 
 }
 

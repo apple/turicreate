@@ -19,7 +19,7 @@ static inline tc_model* new_tc_model() {
 
 static inline tc_model* new_tc_model(std::shared_ptr<turi::toolkit_class_base> m) { 
   tc_model* model = new_tc_model(); 
-  model->value = m; 
+  model->value = std::move(m);
   return model; 
 }
 

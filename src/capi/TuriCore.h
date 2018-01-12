@@ -533,8 +533,8 @@ tc_model* tc_variant_model(const tc_variant*, tc_error**);
 // Primary methods.
 tc_parameters* tc_parameters_create_empty(tc_error**);
 void tc_parameters_add(tc_parameters*, const char* name, const tc_variant*, tc_error** error);
-int tc_parameters_entry_exists(tc_parameters*, const char* name);
-tc_variant* tc_parameters_retrieve(tc_parameters*, const char* name, tc_error** error);
+int tc_parameters_entry_exists(const tc_parameters*, const char* name, tc_error** error);
+tc_variant* tc_parameters_retrieve(const tc_parameters*, const char* name, tc_error** error);
 
 // Convenience methods -- these can be expressed as combinations of the above methods, 
 // but are provided here for convenience and to avoid the additional overhead of multiple function calls. 
@@ -553,28 +553,28 @@ void tc_parameters_add_sframe(tc_parameters*, const char* name, const tc_sframe*
 void tc_parameters_add_parameters(tc_parameters*, const char* name, const tc_parameters*, tc_error** error);
 void tc_parameters_add_model(tc_parameters*, const char* name, const tc_model*, tc_error** error);
 
-int tc_parameter_is_int64(const tc_parameters*, const char* name, tc_error** error);
-int tc_parameter_is_double(const tc_parameters*, const char* name, tc_error** error);
-int tc_parameter_is_cstring(const tc_parameters*, const char* name, tc_error** error);
-int tc_parameter_is_string(const tc_parameters*, const char* name, tc_error** error);
-int tc_parameter_is_double_array(const tc_parameters*, const char* name, tc_error** error);
-int tc_parameter_is_flex_list(const tc_parameters*, const char* name, tc_error** error);
-int tc_parameter_is_flex_dict(const tc_parameters*, const char* name, tc_error** error);
-int tc_parameter_is_datetime(const tc_parameters*, const char* name, tc_error** error);
-int tc_parameter_is_image(const tc_parameters*, const char* name, tc_error** error);
-int tc_parameter_is_flexible_type(const tc_parameters*, const char* name, tc_error** error);
-int tc_parameter_is_sarray(const tc_parameters*, const char* name, tc_error** error);
-int tc_parameter_is_sframe(const tc_parameters*, const char* name, tc_error** error);
-int tc_parameter_is_parameters(const tc_parameters*, const char* name, tc_error** error);
-int tc_parameter_is_model(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameters_is_int64(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameters_is_double(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameters_is_cstring(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameters_is_string(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameters_is_double_array(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameters_is_flex_list(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameters_is_flex_dict(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameters_is_datetime(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameters_is_image(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameters_is_flexible_type(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameters_is_sarray(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameters_is_sframe(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameters_is_parameters(const tc_parameters*, const char* name, tc_error** error);
+int tc_parameters_is_model(const tc_parameters*, const char* name, tc_error** error);
 
-int64_t tc_parameter_retrieve_int64(const tc_parameters* ft, tc_error** error); 
-double tc_parameters_retrieve_double(const tc_parameters* ft, tc_error** error); 
-tc_flexible_type* tc_parameters_retrieve_string(const tc_parameters* ft, const char* name, tc_error** error);
-tc_flexible_type* tc_parameters_retrieve_array(const tc_parameters* ft, const char* name, tc_error** error); 
+int64_t tc_parameters_retrieve_int64(const tc_parameters*, const char* name, tc_error** error); 
+double tc_parameters_retrieve_double(const tc_parameters*, const char* name, tc_error** error); 
+tc_flexible_type* tc_parameters_retrieve_string(const tc_parameters*, const char* name, tc_error** error);
+tc_flexible_type* tc_parameters_retrieve_array(const tc_parameters*, const char* name, tc_error** error); 
 tc_flex_list* tc_parameters_retrieve_flex_list(const tc_parameters*, const char* name, tc_error**);
 tc_flex_dict* tc_parameters_retrieve_flex_dict(const tc_parameters*, const char* name, tc_error**);
-tc_datetime* tc_parameters_retrieve_datetime(const tc_parameters* dt, const char* name, tc_error**);
+tc_datetime* tc_parameters_retrieve_datetime(const tc_parameters*, const char* name, tc_error**);
 tc_flex_image* tc_parameters_retrieve_image(const tc_parameters*, const char* name, tc_error**); 
 tc_flexible_type* tc_parameters_retrieve_flexible_type(const tc_parameters*, const char* name, tc_error**);
 tc_sarray* tc_parameters_retrieve_sarray(const tc_parameters*, const char* name, tc_error**); 
@@ -592,7 +592,7 @@ void tc_parameters_destroy(tc_parameters*);
 /*                                                                            */
 /******************************************************************************/
 
-tc_model* tc_model_create(const char* model_name, tc_error**);
+tc_model* tc_model_new(const char* model_name, tc_error**);
 
 const char* tc_model_name(const tc_model*, tc_error**);
 

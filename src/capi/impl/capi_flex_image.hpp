@@ -18,7 +18,7 @@ static inline tc_flex_image* new_tc_flex_image() {
 template <typename... T>
 static inline tc_flex_image* new_tc_flex_image(T&&... value) {
   tc_flex_image* ret = new_tc_flex_image(); 
-  ret->value = turi::flex_image(value...); 
+  ret->value = turi::flex_image(std::move(value)...); 
   return ret; 
 }
 
