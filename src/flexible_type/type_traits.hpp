@@ -231,6 +231,14 @@ struct conditional_test<true, Cond, Args...> {
 
 template<typename T> struct swallow_to_false : std::false_type {};
 
+////////////////////////////////////////////////////////////////////////////////
+// Remove all modifiers
+//
+template <typename T> struct base_type           { typedef T type; }; 
+template <typename T> struct base_type<T&>       { typedef T type; }; 
+template <typename T> struct base_type<const T&> { typedef T type; }; 
+template <typename T> struct base_type<T&&>      { typedef T type; }; 
 }
+
 
 #endif /* TURI_TYPE_TRAITS_H_ */

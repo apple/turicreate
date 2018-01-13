@@ -23,8 +23,8 @@ namespace turi {
  */
 template <typename T> struct is_flexible_type_convertible;
 template <typename T> static void convert_from_flexible_type(T& t, const flexible_type& f);
-template <typename T> static void convert_to_flexible_type(flexible_type& f, const T& t);
-template <typename T> static flexible_type convert_to_flexible_type(const T& t);
+template <typename T> static void convert_to_flexible_type(flexible_type& f, T&& t);
+template <typename T> static flexible_type convert_to_flexible_type(T&& t);
 
 namespace flexible_type_internals {
 
@@ -44,7 +44,7 @@ namespace flexible_type_internals {
  */
 
 // The obvious case of another flexible type.
-static constexpr int CVTR__FLEXIBLE_TYPE                  = 1;
+static constexpr int CVTR__FLEXIBLE_TYPE_EXACT            = 1;
 
 // Numeric types.
 static constexpr int CVTR__FLOATING_POINT                 = 2;
@@ -52,37 +52,30 @@ static constexpr int CVTR__INTEGER                        = 3;
 
 // Vectors -- sequences of numeric elements that can be exactly
 // converted into a flex_vec type.  Prioritized above lists.
-static constexpr int CVTR__FLEX_VEC_EXACT                 = 4;
-static constexpr int CVTR__FLEX_VEC_CONVERTIBLE_SEQUENCE  = 5;
-static constexpr int CVTR__FLEX_VEC_CONVERTIBLE_PAIR      = 6;
-static constexpr int CVTR__FLEX_VEC_CONVERTIBLE_TUPLE     = 7;
+static constexpr int CVTR__FLEX_VEC_CONVERTIBLE_SEQUENCE  = 4;
+static constexpr int CVTR__FLEX_VEC_CONVERTIBLE_PAIR      = 5;
+static constexpr int CVTR__FLEX_VEC_CONVERTIBLE_TUPLE     = 6;
 
 // Dictionaries -- sequences convertible to an exact match.
-static constexpr int CVTR__FLEX_DICT_EXACT                = 8;
-static constexpr int CVTR__FLEX_DICT_CONVERTIBLE_SEQUENCE = 9;
-static constexpr int CVTR__FLEX_DICT_CONVERTIBLE_MAPS     = 10;
+static constexpr int CVTR__FLEX_DICT_CONVERTIBLE_SEQUENCE = 7;
+static constexpr int CVTR__FLEX_DICT_CONVERTIBLE_MAPS     = 8;
 
 // Lists -- any other sequences that cannot be converted into a
 // dictionary or vector but can be converted into a list of flexible
 // type.
-static constexpr int CVTR__FLEX_LIST_EXACT                = 11;
-static constexpr int CVTR__FLEX_LIST_CONVERTIBLE_PAIR     = 12;
-static constexpr int CVTR__FLEX_LIST_CONVERTIBLE_TUPLE    = 13;
-static constexpr int CVTR__FLEX_LIST_CONVERTIBLE_SEQUENCE = 14;
+static constexpr int CVTR__FLEX_LIST_CONVERTIBLE_PAIR     = 9;
+static constexpr int CVTR__FLEX_LIST_CONVERTIBLE_TUPLE    = 10;
+static constexpr int CVTR__FLEX_LIST_CONVERTIBLE_SEQUENCE = 11;
 
 // Strings.
-static constexpr int CVTR__FLEX_STRING_EXACT              = 15;
-static constexpr int CVTR__FLEX_STRING_CONVERTIBLE        = 16;
-
-// Date time types.
-static constexpr int CVTR__FLEX_DATE_TIME_EXACT           = 17;
+static constexpr int CVTR__FLEX_STRING_CONVERTIBLE        = 12;
 
 // Enum types.
-static constexpr int CVTR__ENUM                           = 18;
+static constexpr int CVTR__ENUM                           = 13;
 
 // The last value -- this tells the resolver how many options there
 // are out there.
-static constexpr int NUM_CONVERTER_STRUCTS                = 19;
+static constexpr int NUM_CONVERTER_STRUCTS                = 14;
 
 /**
  * Type conversion priority is done according to the lowest numbered
@@ -114,18 +107,35 @@ template <int> struct ft_converter {
 
 /** straight flexible_type.  Always given priority.
  */
-template <> struct ft_converter<CVTR__FLEXIBLE_TYPE> {
+template <> struct ft_converter<CVTR__FLEXIBLE_TYPE_EXACT> {
 
   template <typename T> static constexpr bool matches() {
-    return std::is_same<T, flexible_type>::value;
+    return (std::is_same<T, flexible_type>::value
+        || std::is_same<T, flex_undefined>::value
+        || std::is_same<T, flex_int>::value
+        || std::is_same<T, flex_float>::value
+        || std::is_same<T, flex_string>::value
+        || std::is_same<T, flex_vec>::value
+        || std::is_same<T, flex_list>::value
+        || std::is_same<T, flex_dict>::value
+        || std::is_same<T, flex_image>::value
+        || std::is_same<T, flex_date_time>::value);
+
   }
 
   static void get(flexible_type& dest, const flexible_type& src) {
     dest = src;
   }
+  
+  template <typename T> 
+  static void get(T& dest, const flexible_type& src) {
+    dest = src.get<T>();
+  }
 
-  static void set(flexible_type& dest, const flexible_type& src) {
-    dest = src;
+  // This is the only case where setting from a move expression makes sense
+  template <typename T>
+  static void set(flexible_type& dest, T&& src) {
+    dest = std::forward<T>(src);
   }
 };
 
@@ -203,8 +213,11 @@ template <> struct ft_converter<CVTR__INTEGER> {
 template <> struct ft_converter<CVTR__FLEX_VEC_CONVERTIBLE_SEQUENCE> {
 
   template <typename V> static constexpr bool matches() {
+    typedef typename first_nested_type<V>::type  U;
+
     return (is_sequence_container<V>::value
-            && std::is_floating_point<typename first_nested_type<V>::type>::value);
+            && (std::is_floating_point<U>::value
+                || (std::is_integral<U>::value && (sizeof(U) <= 4))));
   }
 
   template <typename Vector>
@@ -226,31 +239,6 @@ template <> struct ft_converter<CVTR__FLEX_VEC_CONVERTIBLE_SEQUENCE> {
   }
 };
 
-////////////////////////////////////////////////////////////////////////////////
-
-/** flex_vec type, exact converter.  Prioritized above
- *  flex_vec_convertible, but defined afterwards so we can call the
- *  get method if the flexible_type isn't a flex_vec as well.
- */
-template <> struct ft_converter<CVTR__FLEX_VEC_EXACT> {
-
-  template <typename V> static constexpr bool matches() {
-    return std::is_same<V, flex_vec>::value;
-  }
-
-  static void get(flex_vec& dest, const flexible_type& src) {
-    if(src.get_type() == flex_type_enum::VECTOR) {
-      dest = src.get<flex_vec>();
-    } else {
-      // Punt to the general case
-      ft_converter<CVTR__FLEX_VEC_CONVERTIBLE_SEQUENCE>::get(dest, src);
-    }
-  }
-
-  static void set(flexible_type& dest, const flex_vec& src) {
-    dest = src;
-  }
-};
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -412,32 +400,6 @@ template <> struct ft_converter<CVTR__FLEX_DICT_CONVERTIBLE_SEQUENCE> {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-/** flex_dict exact type.  Prioritized above flex_dict convertible,
- *  but defined afterwards so we can call the get method if the
- *  flexible_type isn't a flex_dict as well.
- */
-template <> struct ft_converter<CVTR__FLEX_DICT_EXACT> {
-
-  template <typename V> static constexpr bool matches() {
-    return std::is_same<V, flex_dict>::value;
-  }
-
-  static void get(flex_dict& dest, const flexible_type& src) {
-    if(src.get_type() == flex_type_enum::DICT) {
-      dest = src.get<flex_dict>();
-    } else {
-      // Punt to the general case
-      ft_converter<CVTR__FLEX_DICT_CONVERTIBLE_SEQUENCE>::get(dest, src);
-    }
-  }
-
-  static void set(flexible_type& dest, const flex_dict& src) {
-    dest = src;
-  }
-};
-
-////////////////////////////////////////////////////////////////////////////////
-
 /** std::map<T, U>, std::unordered_map<T, U>, or boost::unordered_map,
  *  with T and U convertable to flexible_type.
  */
@@ -495,98 +457,6 @@ template <> struct ft_converter<CVTR__FLEX_DICT_CONVERTIBLE_MAPS> {
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-/** Any sequence container of values that are convertable to a
- *  flexible type, but for which the flex_dict and flex_vec converters
- *  do not apply.
- */
-template <> struct ft_converter<CVTR__FLEX_LIST_CONVERTIBLE_SEQUENCE> {
-
-  template <typename T> static constexpr bool matches() {
-    return (conditional_test<
-               is_sequence_container<T>::value,
-               is_flexible_type_convertible, typename first_nested_type<T>::type>::value);
-  }
-
-  template <typename FlexContainer>
-  static void get(FlexContainer& dest, const flexible_type& src) {
-    switch(src.get_type()) {
-      case flex_type_enum::LIST: {
-        const flex_list& fl = src.get<flex_list>();
-        dest.resize(fl.size());
-        auto it = dest.begin();
-        for(size_t i = 0; i < fl.size(); ++i, ++it) {
-          typename FlexContainer::value_type t;
-          convert_from_flexible_type(t, fl[i]);
-          *it = std::move(t);
-        }
-        break;
-      }
-      case flex_type_enum::VECTOR: {
-        const flex_vec& fv = src.get<flex_vec>();
-        dest.resize(fv.size());
-
-        auto it = dest.begin();
-        for(size_t i = 0; i < fv.size(); ++i, ++it) {
-          typename FlexContainer::value_type t;
-          // To prevent difficult compiler-time issues on this
-          // conversion path, convert these through a flexible_type
-          // double first to get proper dynamic type checking.  The
-          // fast path should be compiled in given the flattening
-          // here.
-          convert_from_flexible_type(t, flexible_type(fv[i]));
-          *it = std::move(t);
-        }
-        break;
-      }
-      default: {
-        throw_type_conversion_error(src, "flex_list");
-      }
-    }
-  }
-
-  template <typename FlexContainer>
-  static void set(flexible_type& dest, const FlexContainer& src) {
-    flex_list fl(src.size());
-
-    auto it = src.begin();
-    for(size_t i = 0; i < fl.size(); ++i, ++it) {
-      // This explicit clast here is to get around the vector<bool> reference class,
-      // when the type is actually bool.
-      typename first_nested_type<FlexContainer>::type v = *it;
-      fl[i] = convert_to_flexible_type(std::move(v));
-    }
-
-    dest = std::move(fl);
-  }
-};
-
-////////////////////////////////////////////////////////////////////////////////
-
-/** flex_list exact type.  Prioritized above flex_list_convertible,
- *  but defined afterwards so we can call the get method if the
- *  flexible_type isn't a flex_list as well.
- */
-template <> struct ft_converter<CVTR__FLEX_LIST_EXACT> {
-
-  template <typename V> static constexpr bool matches() {
-    return std::is_same<V, flex_list>::value;
-  }
-
-  static void get(flex_list& dest, const flexible_type& src) {
-    if(src.get_type() == flex_type_enum::LIST) {
-      dest = src.get<flex_list>();
-    } else {
-      // Punt to the general case
-      ft_converter<CVTR__FLEX_LIST_CONVERTIBLE_SEQUENCE>::get(dest, src);
-    }
-  }
-
-  static void set(flexible_type& dest, const flex_list& src) {
-    dest = src;
-  }
-};
-
-////////////////////////////////////////////////////////////////////////////////
 
 /** std::pair of flexible_type convertable stuff.  Note that a pair of
  *  numeric values is taken care of by the numeric case.
@@ -668,33 +538,80 @@ template <> struct ft_converter<CVTR__FLEX_LIST_CONVERTIBLE_TUPLE> {
   }
 };
 
+////////////////////////////////////////////////////////////////////////////////
+
+/** Any sequence container of values that are convertable to a
+ *  flexible type, but for which the flex_dict and flex_vec converters
+ *  do not apply.
+ */
+template <> struct ft_converter<CVTR__FLEX_LIST_CONVERTIBLE_SEQUENCE> {
+
+  template <typename T> static constexpr bool matches() {
+    return (conditional_test<
+               is_sequence_container<T>::value,
+               is_flexible_type_convertible, typename first_nested_type<T>::type>::value);
+  }
+
+  template <typename FlexContainer>
+  static void get(FlexContainer& dest, const flexible_type& src) {
+    switch(src.get_type()) {
+      case flex_type_enum::LIST: {
+        const flex_list& fl = src.get<flex_list>();
+        dest.resize(fl.size());
+        auto it = dest.begin();
+        for(size_t i = 0; i < fl.size(); ++i, ++it) {
+          typename FlexContainer::value_type t;
+          convert_from_flexible_type(t, fl[i]);
+          *it = std::move(t);
+        }
+        break;
+      }
+      case flex_type_enum::VECTOR: {
+        const flex_vec& fv = src.get<flex_vec>();
+        dest.resize(fv.size());
+
+        auto it = dest.begin();
+        for(size_t i = 0; i < fv.size(); ++i, ++it) {
+          typename FlexContainer::value_type t;
+          // To prevent difficult compiler-time issues on this
+          // conversion path, convert these through a flexible_type
+          // double first to get proper dynamic type checking.  The
+          // fast path should be compiled in given the flattening
+          // here.
+          convert_from_flexible_type(t, flexible_type(fv[i]));
+          *it = std::move(t);
+        }
+        break;
+      }
+      default: {
+        throw_type_conversion_error(src, "flex_list");
+      }
+    }
+  }
+
+  template <typename FlexContainer>
+  static void set(flexible_type& dest, const FlexContainer& src) {
+    flex_list fl(src.size());
+
+    auto it = src.begin();
+    for(size_t i = 0; i < fl.size(); ++i, ++it) {
+      // This explicit clast here is to get around the vector<bool> reference class,
+      // when the type is actually bool.
+      typename first_nested_type<FlexContainer>::type v = *it;
+      fl[i] = convert_to_flexible_type(std::move(v));
+    }
+
+    dest = std::move(fl);
+  }
+};
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 //  Strings
 //
 ////////////////////////////////////////////////////////////////////////////////
-
-/** flex_string type exact.
- */
-template <> struct ft_converter<CVTR__FLEX_STRING_EXACT> {
-
-  template <typename V> static constexpr bool matches() {
-    return std::is_same<V, flex_string>::value;
-  }
-
-  static void get(flex_string& dest, const flexible_type& src) {
-    if(src.get_type() == flex_type_enum::STRING) {
-      dest = src.get<flex_string>();
-    } else {
-      throw_type_conversion_error(src, "flex_string");
-    }
-  }
-
-  static void set(flexible_type& dest, const flex_string& src) {
-    dest = src;
-  }
-};
 
 /** Any string types not exactly flex_string.
  */
@@ -728,26 +645,7 @@ template <> struct ft_converter<CVTR__FLEX_STRING_CONVERTIBLE> {
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-/** flex_date_time
- */
-template <> struct ft_converter<CVTR__FLEX_DATE_TIME_EXACT> {
-
-  template <typename T> static constexpr bool matches() {
-    return std::is_same<T, flex_date_time>::value;
-  }
-
-  static void get(flex_date_time& dest, const flexible_type& src) {
-    if(src.get_type() == flex_type_enum::DATETIME) {
-      dest = src.get<flex_date_time>();
-    } else {
-      throw_type_conversion_error(src, "flex_date_time");
-    }
-  }
-
-  static void set(flexible_type& dest, const flex_date_time& src) {
-    dest = src;
-  }
-};
+// Handled by the exact case
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -793,13 +691,13 @@ template <int idx> struct ft_resolver {
 
   // This match is true
   template <typename T> static constexpr bool any_match(
-      typename std::enable_if<ft_converter<idx>::template matches<T>()>::type* = NULL) {
+      typename std::enable_if<ft_converter<idx>::template matches<typename base_type<T>::type>()>::type* = NULL) {
     return true;
   }
 
   // This match is false -- recurse
   template <typename T> static constexpr bool any_match(
-      typename std::enable_if<!ft_converter<idx>::template matches<T>()>::type* = NULL) {
+      typename std::enable_if<!ft_converter<idx>::template matches<typename base_type<T>::type>()>::type* = NULL) {
     return ft_resolver<idx - 1>::template any_match<T>();
   }
 
@@ -807,7 +705,7 @@ template <int idx> struct ft_resolver {
   // Does this idx, and none before this one, match?
 
   template <typename T> static constexpr bool matches() {
-      return (ft_converter<idx>::template matches<T>()
+      return (ft_converter<idx>::template matches<typename base_type<T>::type>()
               && !ft_resolver<idx - 1>::template any_match<T>());
   }
 
@@ -827,15 +725,15 @@ template <int idx> struct ft_resolver {
   }
 
   template <typename T>
-  static void set(flexible_type& t, const T& v,
+  static void set(flexible_type& t, T&& v,
                   typename std::enable_if<matches<T>()>::type* = NULL) {
-    ft_converter<idx>::set(t, v);
+    ft_converter<idx>::set(t, std::forward<T>(v));
   }
 
   template <typename T>
-  static void set(flexible_type& t, const T& v,
+  static void set(flexible_type& t, T&& v,
                   typename std::enable_if<!matches<T>()>::type* = NULL) {
-    ft_resolver<idx - 1>::set(t, v);
+    ft_resolver<idx - 1>::set(t, std::forward<T>(v));
   }
 };
 
@@ -856,7 +754,7 @@ template <> struct ft_resolver<0> {
 template <typename T>
 struct is_flexible_type_convertible {
   static constexpr bool value = flexible_type_internals::ft_resolver<
-    flexible_type_internals::NUM_CONVERTER_STRUCTS-1>::template any_match<T>();
+    flexible_type_internals::NUM_CONVERTER_STRUCTS-1>::template any_match<typename base_type<T>::type>();
 };
 
 template <typename T> GL_HOT_INLINE_FLATTEN
@@ -867,18 +765,18 @@ static void convert_from_flexible_type(T& t, const flexible_type& f) {
 };
 
 template <typename T> GL_HOT_INLINE_FLATTEN
-static void convert_to_flexible_type(flexible_type& f, const T& t) {
+static void convert_to_flexible_type(flexible_type& f, T&& t) {
   static_assert(is_flexible_type_convertible<T>::value, "Type not convertable to flexible_type.");
 
-  flexible_type_internals::ft_resolver<flexible_type_internals::NUM_CONVERTER_STRUCTS-1>::set(f, t);
+  flexible_type_internals::ft_resolver<flexible_type_internals::NUM_CONVERTER_STRUCTS-1>::set(f, std::forward<T>(t));
 };
 
 template <typename T> GL_HOT_INLINE_FLATTEN
-static flexible_type convert_to_flexible_type(const T& t) {
+static flexible_type convert_to_flexible_type(T&& t) {
   static_assert(is_flexible_type_convertible<T>::value, "Type not convertable to flexible_type.");
 
   flexible_type f;
-  flexible_type_internals::ft_resolver<flexible_type_internals::NUM_CONVERTER_STRUCTS-1>::set(f, t);
+  flexible_type_internals::ft_resolver<flexible_type_internals::NUM_CONVERTER_STRUCTS-1>::set(f, std::forward<T>(t));
   return f;
 };
 
@@ -890,6 +788,7 @@ struct flexible_type_converter {
   static constexpr bool value = is_flexible_type_convertible<T>::value;
 
   flexible_type set(const T& t) const { return convert_to_flexible_type(t); }
+  flexible_type set(T&& t) const { return convert_to_flexible_type(t); }
   T get(const flexible_type& f) const {
     T t;
     convert_from_flexible_type(t, f);
