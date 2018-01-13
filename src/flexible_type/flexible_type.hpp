@@ -1413,27 +1413,27 @@ inline FLEX_ALWAYS_INLINE const flex_date_time& flexible_type::get<flex_date_tim
 // INTEGER
 template <>
 inline FLEX_ALWAYS_INLINE flex_int& flexible_type::mutable_get<flex_int>() {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::INTEGER || get_type() == flex_type_enum::FLOAT);
+  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::INTEGER);
   return val.intval;
 }
 
 template <>
 inline FLEX_ALWAYS_INLINE const flex_int& flexible_type::get<flex_int>() const {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::INTEGER || get_type() == flex_type_enum::FLOAT);
+  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::INTEGER);
   return val.intval;
 }
 
 // flex_float
 template <>
 inline FLEX_ALWAYS_INLINE flex_float& flexible_type::mutable_get<flex_float>() {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::INTEGER || get_type() == flex_type_enum::FLOAT);
+  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::FLOAT);
   return val.dblval;
 }
 
 
 template <>
 inline FLEX_ALWAYS_INLINE const flex_float& flexible_type::get<flex_float>() const {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::INTEGER || get_type() == flex_type_enum::FLOAT);
+  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::FLOAT);
   return val.dblval;
 }
 
