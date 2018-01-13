@@ -134,7 +134,7 @@ void run_test(const std::vector<std::vector<std::pair<size_t, T> > >& data_1,
 
     size_t idx = ref_idx * m + query_idx;
 
-    TS_ASSERT(hit[idx] == false);
+    ASSERT_FALSE(hit[idx]);
 
     hit[idx] = true;
 
