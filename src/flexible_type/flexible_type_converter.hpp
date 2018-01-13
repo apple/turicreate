@@ -127,11 +127,12 @@ template <> struct ft_converter<CVTR__FLEXIBLE_TYPE_EXACT> {
   static void get(flexible_type& dest, const flexible_type& src) {
     dest = src;
   }
-  
-  template <typename T> 
+ 
+  template <typename T>  
   static void get(T& dest, const flexible_type& src) {
-    dest = src.get<T>();
+    dest = src.to<T>(); 
   }
+  
 
   // This is the only case where setting from a move expression makes sense
   template <typename T>
