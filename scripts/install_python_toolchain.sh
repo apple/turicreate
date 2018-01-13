@@ -89,5 +89,5 @@ for f in `ls ../../env/bin`; do
 done
 popd
 
-linux_patch_sigfpe_handler
+linux_patch_sigfpe_handler || echo "WARNING: Error patching pyfpe handler."
 
