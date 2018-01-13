@@ -89,5 +89,6 @@ for f in `ls ../../env/bin`; do
 done
 popd
 
-linux_patch_sigfpe_handler
+# This is not always present and so it may fail.
+linux_patch_sigfpe_handler || echo "WARNING: Error patching pyfpe.h file."
 
