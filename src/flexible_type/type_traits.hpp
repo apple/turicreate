@@ -227,6 +227,17 @@ struct conditional_test<true, Cond, Args...> {
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+// Int that fits in double
+
+template <typename T> struct fits_in_4bytes {
+  static constexpr bool value = (sizeof(T) <= 4);
+};
+
+template <typename T> struct is_integer_in_4bytes {
+  static constexpr bool value = conditional_test<std::is_integral<T>::value, fits_in_4bytes, T>::value;
+};
+
+////////////////////////////////////////////////////////////////////////////////
 // Swallow to false.  Conditional instantiation for static_assert statements.
 
 template<typename T> struct swallow_to_false : std::false_type {};
