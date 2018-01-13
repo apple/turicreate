@@ -50,25 +50,26 @@ static constexpr int CVTR__FLEXIBLE_TYPE_EXACT            = 1;
 static constexpr int CVTR__FLOATING_POINT                 = 2;
 static constexpr int CVTR__INTEGER                        = 3;
 
+// Strings.
+static constexpr int CVTR__FLEX_STRING_CONVERTIBLE        = 4;
+
+
 // Vectors -- sequences of numeric elements that can be exactly
 // converted into a flex_vec type.  Prioritized above lists.
-static constexpr int CVTR__FLEX_VEC_CONVERTIBLE_SEQUENCE  = 4;
-static constexpr int CVTR__FLEX_VEC_CONVERTIBLE_PAIR      = 5;
-static constexpr int CVTR__FLEX_VEC_CONVERTIBLE_TUPLE     = 6;
+static constexpr int CVTR__FLEX_VEC_CONVERTIBLE_SEQUENCE  = 5;
+static constexpr int CVTR__FLEX_VEC_CONVERTIBLE_PAIR      = 6;
+static constexpr int CVTR__FLEX_VEC_CONVERTIBLE_TUPLE     = 7;
 
 // Dictionaries -- sequences convertible to an exact match.
-static constexpr int CVTR__FLEX_DICT_CONVERTIBLE_SEQUENCE = 7;
-static constexpr int CVTR__FLEX_DICT_CONVERTIBLE_MAPS     = 8;
+static constexpr int CVTR__FLEX_DICT_CONVERTIBLE_SEQUENCE = 8;
+static constexpr int CVTR__FLEX_DICT_CONVERTIBLE_MAPS     = 9;
 
 // Lists -- any other sequences that cannot be converted into a
 // dictionary or vector but can be converted into a list of flexible
 // type.
-static constexpr int CVTR__FLEX_LIST_CONVERTIBLE_PAIR     = 9;
-static constexpr int CVTR__FLEX_LIST_CONVERTIBLE_TUPLE    = 10;
-static constexpr int CVTR__FLEX_LIST_CONVERTIBLE_SEQUENCE = 11;
-
-// Strings.
-static constexpr int CVTR__FLEX_STRING_CONVERTIBLE        = 12;
+static constexpr int CVTR__FLEX_LIST_CONVERTIBLE_PAIR     = 10;
+static constexpr int CVTR__FLEX_LIST_CONVERTIBLE_TUPLE    = 11;
+static constexpr int CVTR__FLEX_LIST_CONVERTIBLE_SEQUENCE = 12;
 
 // Enum types.
 static constexpr int CVTR__ENUM                           = 13;
@@ -203,6 +204,37 @@ template <> struct ft_converter<CVTR__INTEGER> {
 
 ////////////////////////////////////////////////////////////////////////////////
 //
+//  Strings
+//
+////////////////////////////////////////////////////////////////////////////////
+
+/** Any string types not exactly flex_string.
+ */
+template <> struct ft_converter<CVTR__FLEX_STRING_CONVERTIBLE> {
+
+  template <typename T> static constexpr bool matches() {
+    return is_string<T>::value;
+  }
+
+  template <typename String>
+  static void get(String& dest, const flexible_type& src) {
+    if(src.get_type() == flex_type_enum::STRING) {
+      const flex_string& s = src.get<flex_string>();
+      dest.assign(s.begin(), s.end());
+    } else {
+      flex_string s = src.to<flex_string>();
+      dest.assign(s.begin(), s.end());
+    }
+  }
+
+  template <typename String>
+  static void set(flexible_type& dest, const String& src) {
+    dest = flex_string(src.begin(), src.end());
+  }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+//
 //  Vectors
 //
 ////////////////////////////////////////////////////////////////////////////////
@@ -216,8 +248,7 @@ template <> struct ft_converter<CVTR__FLEX_VEC_CONVERTIBLE_SEQUENCE> {
     typedef typename first_nested_type<V>::type  U;
 
     return (is_sequence_container<V>::value
-            && (std::is_floating_point<U>::value
-                || (std::is_integral<U>::value && (sizeof(U) <= 4))));
+            && (std::is_floating_point<U>::value || is_integer_in_4bytes<U>::value));
   }
 
   template <typename Vector>
@@ -605,38 +636,6 @@ template <> struct ft_converter<CVTR__FLEX_LIST_CONVERTIBLE_SEQUENCE> {
   }
 };
 
-
-
-////////////////////////////////////////////////////////////////////////////////
-//
-//  Strings
-//
-////////////////////////////////////////////////////////////////////////////////
-
-/** Any string types not exactly flex_string.
- */
-template <> struct ft_converter<CVTR__FLEX_STRING_CONVERTIBLE> {
-
-  template <typename T> static constexpr bool matches() {
-    return is_string<T>::value;
-  }
-
-  template <typename String>
-  static void get(String& dest, const flexible_type& src) {
-    if(src.get_type() == flex_type_enum::STRING) {
-      const flex_string& s = src.get<flex_string>();
-      dest.assign(s.begin(), s.end());
-    } else {
-      flex_string s = src.to<flex_string>();
-      dest.assign(s.begin(), s.end());
-    }
-  }
-
-  template <typename String>
-  static void set(flexible_type& dest, const String& src) {
-    dest = flex_string(src.begin(), src.end());
-  }
-};
 
 
 ////////////////////////////////////////////////////////////////////////////////
