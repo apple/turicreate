@@ -142,7 +142,7 @@ For more information on the models in the graph analytics toolkit, plus extended
 examples, please see the model definitions and create methods in the API
 documentation, as well as the `graph analytics chapter of
 the User Guide
-<https://apple.github.io/turicreate/docs/userguide/graph_analytics/intro.html>`_.
+<https://apple.github.io/turicreate/docs/userguide/graph_analytics/README.html>`_.
 """
 from __future__ import print_function as _
 from __future__ import division as _
