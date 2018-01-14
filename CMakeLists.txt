@@ -16,6 +16,10 @@ cmake_policy(SET CMP0046 OLD)
 cmake_policy(SET CMP0042 NEW)
 endif()
 
+# Generate a compilation database for use with automated tools like IDE/editor
+# plugins. See http://clang.llvm.org/docs/JSONCompilationDatabase.html
+set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
+
 # Determine where additional Turi specific cmake modules are
 # defined
 set(DEPS_CMAKE ${CMAKE_SOURCE_DIR}/deps/cmake)
