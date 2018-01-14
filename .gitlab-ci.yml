@@ -1,0 +1,492 @@
+stages:
+  - build
+  - test
+
+build_wheel_debug_linux_python27:
+  image: docker.apple.com/turi/build-image-centos6-python2.7:1802
+  tags:
+    - dockerized
+  stage: build
+  script:
+    - date
+    - export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - mkdir /root/.npm-global
+    - export NPM_CONFIG_PREFIX=/root/.npm-global 
+    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=8 --debug --python2.7
+    - date
+    - cd debug/src
+    - find . -type f -name '*.so' -print0 | xargs -0 strip -s
+    - find . -type f -name '*.so' -print0 | xargs -0 tar cvf ../../shared_objects.tar
+  artifacts:
+    expire_in: 2 weeks
+    paths:
+      - shared_objects.tar
+      - target/
+
+build_wheel_linux_python27:
+  image: docker.apple.com/turi/build-image-centos6-python2.7:1802
+  tags:
+    - dockerized
+  stage: build
+  script:
+    - date
+    - export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - mkdir /root/.npm-global
+    - export NPM_CONFIG_PREFIX=/root/.npm-global 
+    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --python2.7
+    - date
+    - cd release/src
+    - find . -type f -name '*.so' -print0 | xargs -0 strip -s
+    - find . -type f -name '*.so' -print0 | xargs -0 tar cvf ../../shared_objects.tar
+  artifacts:
+    expire_in: 2 weeks
+    paths:
+      - shared_objects.tar
+      - target/
+
+build_wheel_linux_python35:
+  image: docker.apple.com/turi/build-image-centos6-python3.5:1802
+  tags:
+    - dockerized
+  stage: build
+  script:
+    - date
+    - export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - mkdir /root/.npm-global
+    - export NPM_CONFIG_PREFIX=/root/.npm-global 
+    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --python3.5
+    - date
+    - cd release/src
+    - find . -type f -name '*.so' -print0 | xargs -0 strip -s
+    - find . -type f -name '*.so' -print0 | xargs -0 tar cvf ../../shared_objects.tar
+  artifacts:
+    expire_in: 2 weeks
+    paths:
+      - shared_objects.tar
+      - target/
+
+build_wheel_linux_python36:
+  image: docker.apple.com/turi/build-image-centos6-python3.6:1802
+  tags:
+    - dockerized
+  stage: build
+  script:
+    - date
+    - export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - mkdir /root/.npm-global
+    - export NPM_CONFIG_PREFIX=/root/.npm-global 
+    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --python3.6
+    - date
+    - cd release/src
+    - find . -type f -name '*.so' -print0 | xargs -0 strip -s
+    - find . -type f -name '*.so' -print0 | xargs -0 tar cvf ../../shared_objects.tar
+  artifacts:
+    expire_in: 2 weeks
+    paths:
+      - shared_objects.tar
+      - target/
+
+build_wheel_mac_python27:
+  tags:
+    - macos10.12
+  stage: build
+  script:
+    - export VIRTUALENV=/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv
+    - source gitlab_scripts/use_ccache.sh
+    - date
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - export VERBOSE=1
+    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=1 --python2.7
+    - date
+    - cd release/src
+    - find . \( -type f -name '*.dylib' -o -name '*.so' \) -print0 | xargs -0 strip -x -
+    - find . \( -type f -name '*.dylib' -o -name '*.so' \) -print0 | xargs -0 tar cvf ../../shared_objects.tar
+    - date
+  artifacts:
+    expire_in: 2 weeks
+    paths:
+      - shared_objects.tar
+      - target/
+
+build_wheel_mac_python35:
+  tags:
+    - macos10.12
+  stage: build
+  script:
+    - export VIRTUALENV=/Library/Frameworks/Python.framework/Versions/3.5/bin/virtualenv
+    - source gitlab_scripts/use_ccache.sh
+    - date
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - export VERBOSE=1
+    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=1 --python3.5
+    - date
+    - cd release/src
+    - find . \( -type f -name '*.dylib' -o -name '*.so' \) -print0 | xargs -0 strip -x -
+    - find . \( -type f -name '*.dylib' -o -name '*.so' \) -print0 | xargs -0 tar cvf ../../shared_objects.tar
+    - date
+  artifacts:
+    expire_in: 2 weeks
+    paths:
+      - shared_objects.tar
+      - target/
+
+build_wheel_mac_python36:
+  tags:
+    - macos10.12
+  stage: build
+  script:
+    - export VIRTUALENV=/Library/Frameworks/Python.framework/Versions/3.6/bin/virtualenv
+    - source gitlab_scripts/use_ccache.sh
+    - date
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - export VERBOSE=1
+    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=1 --python3.6
+    - date
+    - cd release/src
+    - find . \( -type f -name '*.dylib' -o -name '*.so' \) -print0 | xargs -0 strip -x -
+    - find . \( -type f -name '*.dylib' -o -name '*.so' \) -print0 | xargs -0 tar cvf ../../shared_objects.tar
+    - date
+  artifacts:
+    expire_in: 2 weeks
+    paths:
+      - shared_objects.tar
+      - target/
+
+build_cpp_tests_linux:
+  image: docker.apple.com/turi/build-image-centos6-python2.7:1802
+  tags:
+    - dockerized
+  stage: build
+  script:
+    - date
+    - export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - (test -d debug && test -d release) || ./configure --python2.7
+    - date
+    - cd release/test
+    - date
+    - make -j4
+    - date
+    - find . \( -type f -executable -o -name '*.so' \) -print0 | xargs -0 strip -s
+    - find . \( -type f -executable -o -name '*.so' \) -print0 | xargs -0 tar cvf ../../cxxtest_binaries.tar
+    - date
+  artifacts:
+    expire_in: 2 weeks
+    paths:
+      - cxxtest_binaries.tar
+
+build_cpp_tests_mac:
+  tags:
+    - macos10.12
+  stage: build
+  script:
+    - export VIRTUALENV=/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - source gitlab_scripts/use_ccache.sh
+    - date
+    - (test -d debug && test -d release) || ./configure --python2.7
+    - date
+    - cd release/test
+    - date
+    - make -j4
+    - date
+    - find . -type f \( -perm +111 -o -name '*.dylib' -o -name '*.so' \) -print0 | xargs -0 strip -x -
+    - find . -type f \( -perm +111 -o -name '*.dylib' -o -name '*.so' \) -print0 | xargs -0 tar cvf ../../cxxtest_binaries.tar
+    - date
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - cxxtest_binaries.tar
+
+test_cpp_linux:
+  image: docker.apple.com/turi/build-image-centos6-python2.7:1802
+  tags:
+    - dockerized
+  stage: test
+  dependencies:
+    - build_wheel_linux_python27
+    - build_cpp_tests_linux
+  script:
+    - date
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - (test -d debug && test -d release) || ./configure --python2.7
+    - date
+    - source deps/env/bin/activate
+    - date
+    - export LD_LIBRARY_PATH=`pwd`/deps/local/lib:`pwd`/deps/local/lib64:$LD_LIBRARY_PATH
+    - export PATH=`pwd`/deps/local/bin:$PATH
+    - date
+    - cd release/src
+    - tar xvf ../../shared_objects.tar
+    - date
+    - cd ../test
+    - tar xvf ../../cxxtest_binaries.tar
+    - date
+    - export LD_LIBRARY_PATH=`pwd`/src/unity:`pwd`/src/unity/python/turicreate:$LD_LIBRARY_PATH
+    - date
+    - python ../../scripts/run_cpp_tests.py -j 1
+    - date
+
+test_cpp_mac:
+  tags:
+    - macos10.13
+  stage: test
+  dependencies:
+    - build_wheel_mac_python27
+    - build_cpp_tests_mac
+  script:
+    - export VIRTUALENV=/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - date
+    - (test -d debug && test -d release) || ./configure --python2.7
+    - date
+    - source deps/env/bin/activate
+    - date
+    - export LD_LIBRARY_PATH=`pwd`/deps/local/lib:`pwd`/deps/local/lib64:$LD_LIBRARY_PATH
+    - export PATH=`pwd`/deps/local/bin:$PATH
+    - date
+    - cd release/src
+    - tar xvf ../../shared_objects.tar
+    - date
+    - cd ../test
+    - tar xvf ../../cxxtest_binaries.tar
+    - export LD_LIBRARY_PATH=`pwd`/src/unity:`pwd`/src/unity/python/turicreate:$LD_LIBRARY_PATH
+    - date
+    - python ../../scripts/run_cpp_tests.py -j 1
+    - date
+
+test_python_linux_python27:
+  image: docker.apple.com/turi/build-image-centos7-python2.7:1802
+  tags:
+    - dockerized
+  stage: test
+  dependencies:
+    - build_wheel_linux_python27
+  script:
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - bash gitlab_scripts/test_python.sh release python2.7
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - pytest.*
+
+test_python_linux_python35:
+  image: docker.apple.com/turi/build-image-centos7-python3.5:1802
+  tags:
+    - dockerized
+  stage: test
+  dependencies:
+    - build_wheel_linux_python35
+  script:
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - bash gitlab_scripts/test_python.sh release python3.5
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - pytest.*
+
+test_python_linux_python36:
+  image: docker.apple.com/turi/build-image-centos7-python3.6:1802
+  tags:
+    - dockerized
+  stage: test
+  dependencies:
+    - build_wheel_linux_python36
+  script:
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - bash gitlab_scripts/test_python.sh release python3.6
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - pytest.*
+
+test_python_mac_python27_10_12:
+  tags:
+    - macos10.12
+  stage: test
+  dependencies:
+    - build_wheel_mac_python27
+  script:
+    - export VIRTUALENV=/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - bash gitlab_scripts/test_python.sh release python2.7
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - pytest.*
+
+test_python_mac_python35_10_12:
+  tags:
+    - macos10.12
+  stage: test
+  dependencies:
+    - build_wheel_mac_python35
+  script:
+    - export VIRTUALENV=/Library/Frameworks/Python.framework/Versions/3.5/bin/virtualenv
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - bash gitlab_scripts/test_python.sh release python3.5
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - pytest.*
+
+test_python_mac_python36_10_12:
+  tags:
+    - macos10.12
+  stage: test
+  dependencies:
+    - build_wheel_mac_python36
+  script:
+    - export VIRTUALENV=/Library/Frameworks/Python.framework/Versions/3.6/bin/virtualenv
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - bash gitlab_scripts/test_python.sh release python3.6
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - pytest.*
+
+test_python_mac_python27_10_13:
+  tags:
+    - macos10.13
+  stage: test
+  dependencies:
+    - build_wheel_mac_python27
+  script:
+    - export VIRTUALENV=/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - bash gitlab_scripts/test_python.sh release python2.7
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - pytest.*
+
+test_python_mac_python35_10_13:
+  tags:
+    - macos10.13
+  stage: test
+  dependencies:
+    - build_wheel_mac_python35
+  script:
+    - export VIRTUALENV=/Library/Frameworks/Python.framework/Versions/3.5/bin/virtualenv
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - bash gitlab_scripts/test_python.sh release python3.5
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - pytest.*
+
+test_python_mac_python36_10_13:
+  tags:
+    - macos10.13
+  stage: test
+  dependencies:
+    - build_wheel_mac_python36
+  script:
+    - export VIRTUALENV=/Library/Frameworks/Python.framework/Versions/3.6/bin/virtualenv
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - bash gitlab_scripts/test_python.sh release python3.6
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - pytest.*
+
+test_python_mac_system_python:
+  tags:
+    - macos10.13-system_python
+  stage: test
+  dependencies:
+    - build_wheel_mac_python27
+  script:
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - bash gitlab_scripts/test_python.sh release python2.7
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - pytest.*
+
+scenario_tests_linux_python27:
+  image: docker.apple.com/turi/build-image-centos7-python2.7:1802
+  tags:
+    - dockerized
+  stage: test
+  dependencies:
+    - build_wheel_linux_python27
+  script:
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - cd scenario-tests
+    - ./run_scenario_tests.sh ../target/turicreate-*.whl
+
+scenario_tests_linux_python35:
+  image: docker.apple.com/turi/build-image-centos7-python3.5:1802
+  tags:
+    - dockerized
+  stage: test
+  dependencies:
+    - build_wheel_linux_python35
+  script:
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - cd scenario-tests
+    - ./run_scenario_tests.sh ../target/turicreate-*.whl
+
+scenario_tests_linux_python36:
+  image: docker.apple.com/turi/build-image-centos7-python3.6:1802
+  tags:
+    - dockerized
+  stage: test
+  dependencies:
+    - build_wheel_linux_python36
+  script:
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - cd scenario-tests
+    - ./run_scenario_tests.sh ../target/turicreate-*.whl
+
+scenario_tests_mac_python27:
+  tags:
+    - macos10.13
+  stage: test
+  dependencies:
+    - build_wheel_mac_python27
+  script:
+    - export VIRTUALENV=/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - cd scenario-tests
+    - ./run_scenario_tests.sh ../target/turicreate-*.whl
+
+scenario_tests_mac_python35:
+  tags:
+    - macos10.13
+  stage: test
+  dependencies:
+    - build_wheel_mac_python35
+  script:
+    - export VIRTUALENV=/Library/Frameworks/Python.framework/Versions/3.5/bin/virtualenv
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - cd scenario-tests
+    - ./run_scenario_tests.sh ../target/turicreate-*.whl
+
+scenario_tests_mac_python36:
+  tags:
+    - macos10.13
+  stage: test
+  dependencies:
+    - build_wheel_mac_python36
+  script:
+    - export VIRTUALENV=/Library/Frameworks/Python.framework/Versions/3.6/bin/virtualenv
+    - export PIP_INDEX_URL=https://pypi.apple.com/simple
+    - cd scenario-tests
+    - ./run_scenario_tests.sh ../target/turicreate-*.whl
