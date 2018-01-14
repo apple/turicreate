@@ -5,6 +5,12 @@
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 # This software may be modified and distributed under the terms
 # of the BSD license. See the LICENSE file for details.
+
+# This file tests invertibility (serializing to/from) the "serializable" format
+# of variant_type (produced by extensions.json). This extension results in a
+# naively-JSON-serializable flexible_type that should retain all necessary
+# information to be rehydrated into the original variant_type.
+
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
