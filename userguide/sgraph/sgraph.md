@@ -312,6 +312,6 @@ print g.vertices.sort('degree', ascending=False)
 
 James Bond is quite the popular guy!
 
-To learn more, check out the [graph analytics toolkits](../graph_analytics/intro.md), the
+To learn more, check out the [graph analytics toolkits](../graph_analytics/README.md), the
 [API Reference](https://apple.github.io/turicreate/docs/api/generated/turicreate.SGraph.html)
 for SGraphs.

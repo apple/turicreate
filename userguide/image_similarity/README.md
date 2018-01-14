@@ -2,7 +2,7 @@
 
 Given an image, the goal of an image similarity model is to find
 "similar" images. Just like in [image
-classification](../image_classifier/introduction.md), deep learning
+classification](../image_classifier/README.md), deep learning
 methods have been shown to give incredible results on this challenging
 problem. However, unlike in image similarity, there isn't a need to
 generate labeled images for model creation. This model is completely
