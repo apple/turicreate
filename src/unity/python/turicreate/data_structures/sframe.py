@@ -291,10 +291,7 @@ class SFrame(object):
 
     Construct an SFrame from a csv file on Amazon S3. This requires the
     environment variables: *AWS_ACCESS_KEY_ID* and *AWS_SECRET_ACCESS_KEY* to be
-    set before the python session started. Alternatively, you can use
-    :py:func:`turicreate.aws.set_credentials()` to set the credentials after
-    python is started and :py:func:`turicreate.aws.get_credentials()` to verify
-    these environment variables.
+    set before the python session started.
 
     >>> sf = SFrame(data='s3://mybucket/foo.csv')
 
