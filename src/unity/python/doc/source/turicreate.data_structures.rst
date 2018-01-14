@@ -40,3 +40,5 @@ Utilities
   SFrameBuilder
   Sketch
   aggregate
+  load_sframe
+  load_sgraph
