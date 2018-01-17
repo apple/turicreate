@@ -411,13 +411,9 @@ public:
    */
   void load_version(turi::iarchive& iarc, size_t version);
 
-  /**
-   * Clone model.
-   */
-  ml_model_base* ml_model_base_clone();
-
   // TODO: convert interface above to use the extensions methods here
   BEGIN_CLASS_MEMBER_REGISTRATION("kmeans")
+  REGISTER_CLASS_MEMBER_FUNCTION(kmeans_model::list_fields)
   END_CLASS_MEMBER_REGISTRATION
 
 };  // kmeans_model class

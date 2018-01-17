@@ -28,11 +28,6 @@
 
 namespace turi { namespace recsys {
 
-recsys_model_base* recsys_itemcf::internal_clone() {
-  recsys_itemcf* m = new recsys_itemcf(*this);
-  return (recsys_model_base*) m;
-}
-
 void recsys_itemcf::set_extra_data(const std::map<std::string, variant_type>& extra_data) {
   
   // Only try to load nearest_items if it exists.

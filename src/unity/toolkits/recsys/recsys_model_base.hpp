@@ -173,8 +173,6 @@ public:
   virtual void set_extra_data(const std::map<std::string, variant_type>& other_data) {}
 
  protected:
-  virtual recsys_model_base* internal_clone() = 0;
-
   virtual size_t internal_get_version() const = 0;
 
   /** Implement serialization (save).  The model subclass should
@@ -237,11 +235,6 @@ public:
   flex_type_enum item_type() const {
     return metadata->column_type(ITEM_COLUMN_INDEX);
   }
-
- public:
-  /** Clones the model.
-   */
-  ml_model_base* ml_model_base_clone();
 
   ////////////////////////////////////////////////////////////////////////////////
   //

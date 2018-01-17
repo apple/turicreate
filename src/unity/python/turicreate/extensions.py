@@ -96,7 +96,7 @@ def _wrap_function_return(val):
     elif type(val) is _UnityModel:
         # we need to cast it up to the appropriate type
         try:
-            if '__uid__' in val.list_fields():
+            if '__uid__' in val.list_keys():
                 uid = val.get('__uid__')
                 if uid in class_uid_to_class:
                     return class_uid_to_class[uid](_proxy=val)

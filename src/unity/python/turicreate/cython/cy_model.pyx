@@ -17,7 +17,7 @@ cdef create_model_from_proxy(const model_base_ptr& proxy):
 
 
 cdef class UnityModel: 
-    cpdef list_fields(self):
+    cpdef list_keys(self):
         return from_vector_of_strings(self.thisptr.list_keys())
 
     cpdef get(self, key, opts=None):
