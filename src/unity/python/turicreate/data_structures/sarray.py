@@ -2898,11 +2898,11 @@ class SArray(object):
         (tcviz_dir, _) = os.path.split(os.path.dirname(__file__))
         path_to_client = os.path.join(tcviz_dir, 'Turi Create Visualization.app', 'Contents', 'MacOS', 'Turi Create Visualization')
 
-        if title is "":
+        if title == "":
             title = " "
-        if xlabel is "":
+        if xlabel == "":
             xlabel = " "
-        if ylabel is "":
+        if ylabel == "":
             ylabel = " "
 
         if title is None:
