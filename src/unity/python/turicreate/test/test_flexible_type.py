@@ -78,16 +78,14 @@ special_types.add(id(AnyValue))
 FloatSequence = (
     [[0.5, 1.5, 2.5], (0.5, 1.5, 2.5),
      {0.5, 1.5, 2.5}, frozenset([0.5, 1.5, 2.5])]
-    + [array.array(c, [0.5, 1.5, 2.5]) for c in 'fd']
-    + [np.array([0.5, 1.5, 2.5], dtype= _dt) for _dt in np.sctypes['float']])
+    + [array.array(c, [0.5, 1.5, 2.5]) for c in 'fd'])
 special_types.add(id(FloatSequence))
 
 # All the different types of float sequences we support
 FloatSequenceWithNAN = (
     [[0.5, 1.5, 2.5, nan], (0.5, 1.5, 2.5, nan),
      {0.5, 1.5, 2.5, nan}, frozenset([0.5, 1.5, 2.5, nan])]
-    + [array.array(c, [0.5, 1.5, 2.5, nan]) for c in 'fd']
-    + [np.array([0.5, 1.5, 2.5, nan], dtype= _dt) for _dt in np.sctypes['float']])
+    + [array.array(c, [0.5, 1.5, 2.5, nan]) for c in 'fd'])
 special_types.add(id(FloatSequenceWithNAN))
 
 # All the different types of float sequences we support
@@ -104,9 +102,7 @@ IntegerSequence = (
      , set(range(3))
      , frozenset(range(3))
     ]
-    + [array.array(c, range(3)) for c in 'bBhHiIlL']
-    + [np.array(range(3), dtype = _dt) for _dt in np.sctypes['int']]
-    + [np.array(range(3), dtype = _dt) for _dt in np.sctypes['uint']])
+    + [array.array(c, range(3)) for c in 'bBhHiIlL'])
 special_types.add(id(IntegerSequence))
 
 # All the different integer sequences we support, with a Nan
@@ -131,8 +127,7 @@ special_types.add(id(IntegerSequenceWithNone))
 
 # Empty but typed float arrays
 EmptyFloatArray = (
-    [array.array(c, []) for c in 'fd']
-    + [np.array([], dtype= _dt) for _dt in np.sctypes['float']])
+    [array.array(c, []) for c in 'fd'])
 special_types.add(id(EmptyFloatArray))
 
 # Empty but typed integer arrays
@@ -140,9 +135,7 @@ type_codes = 'bBhHiIlL'
 if sys.version_info.major == 2:
     type_codes += 'c'
 EmptyIntegerArray = (
-    [array.array(c, []) for c in type_codes]
-    + [np.array([], dtype= _dt) for _dt in np.sctypes['int']]
-    + [np.array([], dtype= _dt) for _dt in np.sctypes['uint']])
+    [array.array(c, []) for c in type_codes])
 special_types.add(id(EmptyIntegerArray))
 
 # All empty arrays
@@ -156,9 +149,7 @@ special_types.add(id(EmptySequence))
 BooleanSequence = (
     [ list( (i%2 == 0) for i in range(3))
       , tuple( (i%2 == 0) for i in range(3))
-      , set([True]), set([False]), set([True, False])]
-    + [np.array([i%2==0 for i in range(3)], dtype= _dt)
-       for _dt in [np.bool, np.bool_, bool]])
+      , set([True]), set([False]), set([True, False])])
 special_types.add(id(BooleanSequence))
 
 # String sequences
@@ -166,11 +157,7 @@ StringSequence = (
     [ list( str(i) for i in range(3))
       , tuple( str(i) for i in range(3))
     , set( str(i) for i in range(3))
-      , frozenset( str(i) for i in range(3))]
-    + [np.array([_dt('a'), _dt('b')], dtype = _dt)
-       for _dt in [np.unicode, np.unicode_, str, unicode, np.str, np.str_, np.string_]]
-    + [np.array([_dt('a'), _dt('b')], dtype = object)
-       for _dt in [np.unicode, np.unicode_, str, unicode, np.str, np.str_, np.string_]])
+      , frozenset( str(i) for i in range(3))])
 special_types.add(id(StringSequence))
 
 AnySequence = (EmptySequence + BooleanSequence + StringSequence
@@ -310,6 +297,24 @@ class FlexibleTypeInference(unittest.TestCase):
         for tv, res in tests:
             verify_inference(tv, res)
 
+    def test_nparray(self):
+        NPSequence = ([np.array(range(3),'d'), None],
+                      [np.array(range(3),'i'), None],
+                      [np.array(range(3),'f'), None],
+                      [np.array(range(3),'d'), array.array('d',[1,2,3])],
+                      [np.array(range(3),'i'), array.array('d',[1,2,3])],
+                      [np.array(range(3),'f'), array.array('d',[1,2,3])],
+                      [np.array(range(3),'d'), array.array('d',[1,2,3]), None],
+                      [np.array(range(3),'i'), array.array('d',[1,2,3]), None],
+                      [np.array(range(3),'f'), array.array('d',[1,2,3]), None])
+
+        # Run the tests
+        for seq in NPSequence:
+            inferred_type, result = _get_inferred_column_type(seq)
+            self.assertEqual(inferred_type, np.ndarray)
+            reconverted_result = _tr_flex_list(result, inferred_type)
+        
+
 class FlexibleTypeTest(unittest.TestCase):
 
     # On lambda return, if the return value is a non-empty of list of
@@ -381,12 +386,12 @@ class FlexibleTypeTest(unittest.TestCase):
 
         # numpy ndarray
         expected = np.asarray([1, 2, 3])
-        self.assertSequenceEqual(_flexible_type(expected), list(expected))
-        self.assertEqual(from_lambda(expected), array.array('d', expected))
+        self.assertSequenceEqual(list(_flexible_type(expected)), list(expected))
+        self.assertSequenceEqual(list(from_lambda(expected)), array.array('d', expected))
 
         expected = np.asarray([.1, .2, .3])
-        self.assertSequenceEqual(_flexible_type(expected), list(expected))
-        self.assertEqual(from_lambda(expected), array.array('d', expected))
+        self.assertSequenceEqual(list(_flexible_type(expected)), list(expected))
+        self.assertSequenceEqual(list(from_lambda(expected)), array.array('d', expected))
 
     def test_dict(self):
         d = dt.datetime(2010, 10, 10, 10, 10, 10)

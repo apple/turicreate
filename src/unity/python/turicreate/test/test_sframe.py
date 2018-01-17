@@ -1073,10 +1073,13 @@ class SFrameTest(unittest.TestCase):
             values = range(m)
             vector_values = [[random.randint(1,100) for num in range(10)] \
                                                           for y in range(m)]
+            nd_values = [np.array([float(random.randint(1,100)) for num in range(10)]).reshape(2,5) \
+                                                          for y in range(m)]
             sf = SFrame()
             sf['key'] = [1] * m
             sf['value'] = values
             sf['vector_values'] = vector_values
+            sf['nd_values'] = nd_values 
             sf.__materialize__()
             built_ins = [aggregate.COUNT(), aggregate.SUM('value'),
                     aggregate.AVG('value'), aggregate.MIN('value'),
@@ -1085,7 +1088,9 @@ class SFrameTest(unittest.TestCase):
                     aggregate.MEAN('vector_values'),
                     aggregate.COUNT_DISTINCT('value'),
                     aggregate.DISTINCT('value'),
-                    aggregate.FREQ_COUNT('value')]
+                    aggregate.FREQ_COUNT('value'),
+                    aggregate.SUM('nd_values'),
+                    aggregate.MEAN('nd_values')]
             sf2 = sf.groupby('key', built_ins)
             self.assertEqual(len(sf2), 1)
             self.assertEqual(sf2['Count'][0], m)
@@ -1099,6 +1104,10 @@ class SFrameTest(unittest.TestCase):
                     list(np.sum(vector_values, axis=0)))
             np.testing.assert_almost_equal(list(sf2['Vector Avg of vector_values'][0]),
                     list(np.mean(vector_values, axis=0)))
+            np.testing.assert_almost_equal(list(sf2['Vector Sum of nd_values'][0]),
+                    list(np.sum(nd_values, axis=0)))
+            np.testing.assert_almost_equal(list(sf2['Vector Avg of nd_values'][0]),
+                    list(np.mean(nd_values, axis=0)))
             self.assertEqual(sf2['Count Distinct of value'][0],
                     len(np.unique(values)))
             self.assertEqual(sorted(sf2['Distinct of value'][0]),

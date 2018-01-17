@@ -81,11 +81,12 @@ class vector_sum : public group_aggregate_value {
 
   /// The types supported by the sum
   bool support_type(flex_type_enum type) const {
-    return type == flex_type_enum::VECTOR;
+    return type == flex_type_enum::VECTOR || type == flex_type_enum::ND_VECTOR;
   }
 
   /// The input type to be summed
   flex_type_enum set_input_type(flex_type_enum type) {
+    value.reset(type);
     return type;
   }
 
@@ -697,11 +698,12 @@ class vector_average: public group_aggregate_value {
 
   /// The types supported by the count. (everything)
   bool support_type(flex_type_enum type) const {
-    return type == flex_type_enum::VECTOR;
+    return type == flex_type_enum::VECTOR || type == flex_type_enum::ND_VECTOR;
   }
 
   /// The input type
   flex_type_enum set_input_type(flex_type_enum type) {
+    value.reset(type);
     return type;
     
   }

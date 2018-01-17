@@ -21,6 +21,7 @@ import numpy as np
 import coremltools
 import sys
 import platform
+import array
 
 class CoreMLExportTest(unittest.TestCase):
 
@@ -32,7 +33,7 @@ class CoreMLExportTest(unittest.TestCase):
         n, d = 100, 10
         self.sf = tc.SFrame()
         for i in range(d):
-            self.sf.add_column(tc.SArray(rs.randn(n)), inplace=True)
+            self.sf.add_column(tc.SArray(array.array('d',rs.randn(n))), inplace=True)
 
         # Add a categorical column
         categories = np.array(['cat', 'dog', 'foosa'])
@@ -91,6 +92,8 @@ class CoreMLExportTest(unittest.TestCase):
             def array_to_numpy(row):
                 import array
                 import numpy
+                import copy
+                row = copy.copy(row)
                 for r in row:
                     if type(row[r]) == array.array:
                         row[r] = numpy.array(row[r])

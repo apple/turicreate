@@ -9,8 +9,10 @@ project(image)
 make_library(image_type
   SOURCES
     image_type.cpp
+    image_util_impl.cpp
   REQUIRES
     logger
+    image_io
     EXTERNAL_VISIBILITY
 )
 

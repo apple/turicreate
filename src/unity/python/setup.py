@@ -170,5 +170,6 @@ if __name__ == '__main__':
             "coremltools == 0.6.3",
             "pillow >= 3.3.0",
             "pandas >= 0.19.0",
+            "numpy"
         ],
     )
