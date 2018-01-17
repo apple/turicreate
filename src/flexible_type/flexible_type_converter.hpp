@@ -128,9 +128,54 @@ template <> struct ft_converter<CVTR__FLEXIBLE_TYPE_EXACT> {
     dest = src;
   }
  
+  static void get(flex_float& dest, const flexible_type& src) {
+    if(src.get_type() == flex_type_enum::FLOAT) { 
+      dest = src.get<flex_float>();
+    } else if(src.get_type() == flex_type_enum::INTEGER) { 
+      dest = src.to<flex_int>();
+    } else { 
+      throw_type_conversion_error(src, "numeric value");
+    }  
+  }
+  
+  static void get(flex_int& dest, const flexible_type& src) {
+    if(src.get_type() == flex_type_enum::INTEGER) { 
+      dest = src.get<flex_int>(); 
+    } else if(src.get_type() == flex_type_enum::FLOAT) { 
+      flex_float v = src.get<flex_float>();
+      dest = static_cast<flex_int>(v);
+      if(UNLIKELY(v != dest)) { 
+        throw_type_conversion_error(src, "integer value");
+      }
+    } else { 
+      throw_type_conversion_error(src, "numeric integer value");
+    }  
+  }
+  
+  static void get(flex_vec& dest, const flexible_type& src) {
+    if(src.get_type() == flex_type_enum::VECTOR) { 
+      dest = src.get<flex_vec>();
+    } else if(src.get_type() == flex_type_enum::LIST) { 
+      dest = src.to<flex_vec>(); 
+    } else { 
+      throw_type_conversion_error(src, "vector of floats");
+    }  
+  }
+  
+  static void get(flex_list& dest, const flexible_type& src) {
+    if(src.get_type() == flex_type_enum::LIST) { 
+      dest = src.get<flex_list>();
+    } else if(src.get_type() == flex_type_enum::VECTOR) { 
+      dest = src.to<flex_list>(); 
+    } else { 
+      throw_type_conversion_error(src, "vector of floats");
+    }  
+  }
+
+  // Finally, a generic, strict method that fails if type is not matched exactly. 
   template <typename T>  
   static void get(T& dest, const flexible_type& src) {
-    dest = src.to<T>(); 
+    dest = src.get<T>(); 
   }
   
 
