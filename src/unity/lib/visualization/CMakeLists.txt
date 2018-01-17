@@ -19,6 +19,7 @@ make_library(
     vega_data.cpp
     vega_spec.cpp
   REQUIRES
+    process
     EXTERNAL_VISIBILITY
 )
 
