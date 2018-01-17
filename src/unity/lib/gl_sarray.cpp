@@ -46,28 +46,28 @@ flex_type_enum infer_type_of_list(const std::vector<flexible_type>& vec) {
 
 /**
  * Utility function to throw an error if a vector is of unequal length.
- * \param[in] gl_sarray of type vector 
+ * \param[in] gl_sarray of type vector
  */
 void check_vector_equal_size(const gl_sarray& in) {
-  // Initialize. 
-  DASSERT_TRUE(in.dtype() == flex_type_enum::VECTOR); 
+  // Initialize.
+  DASSERT_TRUE(in.dtype() == flex_type_enum::VECTOR);
   size_t n_threads = thread::cpu_count();
   n_threads = std::max(n_threads, size_t(1));
   size_t m_size = in.size();
-          
-  // Throw the following error. 
+
+  // Throw the following error.
   auto throw_error = [] (size_t row_number, size_t expected, size_t current) {
     std::stringstream ss;
-    ss << "Vectors must be of the same size. Row " << row_number 
+    ss << "Vectors must be of the same size. Row " << row_number
        << " contains a vector of size " << current << ". Expected a vector of"
        << " size " << expected << "." << std::endl;
     log_and_throw(ss.str());
   };
-  
+
   // Within each block of the SArray, check that the vectors have the same size.
   std::vector<size_t> expected_sizes (n_threads, size_t(-1));
   in_parallel([&](size_t thread_idx, size_t n_threads) {
-    size_t start_row = thread_idx * m_size / n_threads; 
+    size_t start_row = thread_idx * m_size / n_threads;
     size_t end_row = (thread_idx + 1) * m_size / n_threads;
     size_t expected_size = size_t(-1);
     size_t row_number = start_row;
@@ -75,7 +75,7 @@ void check_vector_equal_size(const gl_sarray& in) {
       if (v != FLEX_UNDEFINED) {
         if (expected_size == size_t(-1)) {
           expected_size = v.size();
-          expected_sizes[thread_idx] = expected_size; 
+          expected_sizes[thread_idx] = expected_size;
         } else {
           DASSERT_TRUE(v.get_type() == flex_type_enum::VECTOR);
           if (expected_size != v.size()) {
@@ -87,19 +87,19 @@ void check_vector_equal_size(const gl_sarray& in) {
     }
   });
 
-  // Make sure sizes accross blocks are also the same. 
+  // Make sure sizes accross blocks are also the same.
   size_t vector_size = size_t(-1);
   for (size_t thread_idx = 0; thread_idx < n_threads; thread_idx++) {
     // If this block contains all None values, skip it.
     if (expected_sizes[thread_idx] != size_t(-1)) {
 
       if (vector_size == size_t(-1)) {
-          vector_size = expected_sizes[thread_idx]; 
+          vector_size = expected_sizes[thread_idx];
       } else {
          if (expected_sizes[thread_idx] != vector_size) {
-           throw_error(thread_idx * m_size / n_threads, 
+           throw_error(thread_idx * m_size / n_threads,
                               vector_size, expected_sizes[thread_idx]);
-         } 
+         }
       }
     }
   }
@@ -166,8 +166,8 @@ gl_sarray gl_sarray::from_const(const flexible_type& value, size_t size) {
 
 gl_sarray gl_sarray::from_sequence(size_t start, size_t end, bool reverse) {
   if (end < start) throw std::string("End must be greater than start");
-  return unity_sarray::create_sequential_sarray(end - start, 
-                                                start, 
+  return unity_sarray::create_sequential_sarray(end - start,
+                                                start,
                                                 reverse);
 }
 
@@ -225,7 +225,7 @@ std::shared_ptr<sarray<flexible_type> > gl_sarray::materialize_to_sarray() const
     gl_sarray gl_sarray::operator OP ## =(const flexible_type& other) { \
       (*this) = get_proxy()->left_scalar_operator(other, #OP); \
       return *this; \
-    } 
+    }
 
 DEFINE_OP(+)
 DEFINE_OP(-)
@@ -240,7 +240,7 @@ DEFINE_OP(/)
     } \
     gl_sarray gl_sarray::operator OP(const flexible_type& other) const { \
       return get_proxy()->left_scalar_operator(other, #OP); \
-    } 
+    }
 
 DEFINE_COMPARE_OP(<)
 DEFINE_COMPARE_OP(>)
@@ -251,11 +251,11 @@ DEFINE_COMPARE_OP(==)
 
 gl_sarray gl_sarray::operator&(const gl_sarray& other) const {
   return get_proxy()->vector_operator(other.get_proxy(), "&");
-} 
+}
 
 gl_sarray gl_sarray::operator|(const gl_sarray& other) const {
   return get_proxy()->vector_operator(other.get_proxy(), "|");
-} 
+}
 
 gl_sarray gl_sarray::operator&&(const gl_sarray& other) const {
   return get_proxy()->vector_operator(other.get_proxy(), "&");
@@ -321,7 +321,7 @@ gl_sarray_range gl_sarray::range_iterator(size_t start, size_t end) const {
     throw std::string("start must be less than end");
   }
   // basic range check. start must point to existing element, end can point
-  // to one past the end. 
+  // to one past the end.
   // but additionally, we need to permit the special case start == end == 0
   // so that you can iterate over empty frames.
   if (!((start < get_proxy()->size() && end <= get_proxy()->size()) ||
@@ -377,13 +377,13 @@ gl_sarray gl_sarray::tail(size_t n) const {
 gl_sarray gl_sarray::count_words(bool to_lower, turi::flex_list delimiters) const {
   return get_proxy()->count_bag_of_words({{"to_lower",to_lower}, {"delimiters",delimiters}});
 }
-gl_sarray gl_sarray::count_ngrams(size_t n, std::string method, 
+gl_sarray gl_sarray::count_ngrams(size_t n, std::string method,
                                   bool to_lower, bool ignore_space) const {
   if (method == "word") {
-    return get_proxy()->count_ngrams(n, {{"to_lower",to_lower}, 
+    return get_proxy()->count_ngrams(n, {{"to_lower",to_lower},
                                       {"ignore_space",ignore_space}});
   } else if (method == "character") {
-    return get_proxy()->count_character_ngrams(n, {{"to_lower",to_lower}, 
+    return get_proxy()->count_character_ngrams(n, {{"to_lower",to_lower},
                                                 {"ignore_space",ignore_space}});
   } else {
     throw std::string("Invalid 'method' input  value. Please input either 'word' or 'character' ");
@@ -469,7 +469,7 @@ gl_sarray gl_sarray::str_to_datetime(const std::string& str_format) const {
 gl_sarray gl_sarray::pixel_array_to_image(size_t width, size_t height, size_t channels,
                                           bool undefined_on_failure) const {
   return image_util:: vector_sarray_to_image_sarray(
-      std::dynamic_pointer_cast<unity_sarray>(get_proxy()), 
+      std::dynamic_pointer_cast<unity_sarray>(get_proxy()),
       width, height, channels, undefined_on_failure);
 }
 
@@ -541,9 +541,9 @@ gl_sframe gl_sarray::split_datetime(const std::string& column_name_prefix,
   return get_proxy()->expand(column_name_prefix, flex_limit, column_types);
 }
 
-gl_sframe gl_sarray::unpack(const std::string& column_name_prefix, 
+gl_sframe gl_sarray::unpack(const std::string& column_name_prefix,
                            const std::vector<flex_type_enum>& _column_types,
-                           const flexible_type& na_value, 
+                           const flexible_type& na_value,
                            const std::vector<flexible_type>& _limit) const {
   auto column_types = _column_types;
   auto limit = _limit;
@@ -556,8 +556,8 @@ gl_sframe gl_sarray::unpack(const std::string& column_name_prefix,
     for (const flexible_type& l : limit) limit_types.insert(l.get_type());
     if (limit_types.size() != 1) {
       throw std::string("\'limit\' contains values that are different types");
-    } 
-    if (dtype() != flex_type_enum::DICT && 
+    }
+    if (dtype() != flex_type_enum::DICT &&
         *(limit_types.begin()) != flex_type_enum::INTEGER) {
       throw std::string("\'limit\' must contain integer values.");
     }
@@ -591,7 +591,7 @@ gl_sframe gl_sarray::unpack(const std::string& column_name_prefix,
         limit.resize(length);
         for (size_t i = 0;i < length; ++i) limit[i] = i;
       } else {
-        length = limit.size();  
+        length = limit.size();
       }
 
       if (dtype() == flex_type_enum::VECTOR) {
@@ -621,7 +621,7 @@ gl_sframe gl_sarray::unpack(const std::string& column_name_prefix,
                             limit,
                             column_types,
                             na_value);
-  } 
+  }
 }
 
 
@@ -631,11 +631,11 @@ gl_sarray gl_sarray::sort(bool ascending) const {
   return sf.select_column("a");
 }
 
-gl_sarray gl_sarray::subslice(flexible_type start, 
-                              flexible_type stop, 
+gl_sarray gl_sarray::subslice(flexible_type start,
+                              flexible_type stop,
                               flexible_type step) {
   auto dt = dtype();
-  if (dt != flex_type_enum::STRING && 
+  if (dt != flex_type_enum::STRING &&
       dt != flex_type_enum::VECTOR &&
       dt != flex_type_enum::LIST) {
     log_and_throw("SArray must contain strings, arrays or lists");
@@ -659,8 +659,8 @@ void gl_sarray::show(const std::string& path_to_client,
 }
 
 gl_sarray gl_sarray::cumulative_aggregate(
-     std::shared_ptr<group_aggregate_value> aggregator) const { 
-  
+     std::shared_ptr<group_aggregate_value> aggregator) const {
+
   flex_type_enum input_type = this->dtype();
   flex_type_enum output_type = aggregator->set_input_types({input_type});
   if (! aggregator->support_type(input_type)) {
@@ -668,14 +668,14 @@ gl_sarray gl_sarray::cumulative_aggregate(
     ss << "Cannot perform this operation on an SArray of type "
        << flex_type_enum_to_name(input_type) << "." << std::endl;
     log_and_throw(ss.str());
-  } 
+  }
 
-  // Empty case.  
+  // Empty case.
   size_t m_size = this->size();
   if (m_size == 0) {
     return gl_sarray({}, output_type);
   }
-  
+
   // Make a copy of an newly initialize aggregate for each thread.
   size_t n_threads = thread::cpu_count();
   gl_sarray_writer writer(output_type, n_threads);
@@ -683,14 +683,14 @@ gl_sarray gl_sarray::cumulative_aggregate(
   for (size_t i = 0; i < n_threads; i++) {
       aggregators.push_back(
           std::shared_ptr<group_aggregate_value>(aggregator->new_instance()));
-  } 
+  }
 
   // Skip Phases 1,2 when single threaded or more threads than rows.
   if ((n_threads > 1) && (m_size > n_threads)) {
-    
+
     // Phase 1: Compute prefix-sums for each block.
     in_parallel([&](size_t thread_idx, size_t n_threads) {
-      size_t start_row = thread_idx * m_size / n_threads; 
+      size_t start_row = thread_idx * m_size / n_threads;
       size_t end_row = (thread_idx + 1) * m_size / n_threads;
       for (const auto& v: this->range_iterator(start_row, end_row)) {
         DASSERT_TRUE(thread_idx < aggregators.size());
@@ -709,16 +709,16 @@ gl_sarray gl_sarray::cumulative_aggregate(
       }
     }
   }
-  
-  // Phase 3: Reaggregate with an re-intialized prefix-sum from previous blocks. 
+
+  // Phase 3: Reaggregate with an re-intialized prefix-sum from previous blocks.
   auto reagg_fn = [&](size_t thread_idx, size_t n_threads) {
     flexible_type y = FLEX_UNDEFINED;
-    size_t start_row = thread_idx * m_size / n_threads; 
+    size_t start_row = thread_idx * m_size / n_threads;
     size_t end_row = (thread_idx + 1) * m_size / n_threads;
     std::shared_ptr<group_aggregate_value> re_aggregator (
                                               aggregator->new_instance());
-  
-    // Initialize with the merged value. 
+
+    // Initialize with the merged value.
     if (thread_idx >= 1) {
       DASSERT_TRUE(thread_idx - 1 < aggregators.size());
       y = aggregators[thread_idx - 1]->emit();
@@ -734,12 +734,12 @@ gl_sarray gl_sarray::cumulative_aggregate(
       writer.write(y, thread_idx);
     }
   };
-  
-  // Run single threaded if more threads than rows. 
+
+  // Run single threaded if more threads than rows.
   if (m_size > n_threads) {
     in_parallel(reagg_fn);
   } else {
-    reagg_fn(0, 1);   
+    reagg_fn(0, 1);
   }
   return writer.close();
 }
@@ -753,32 +753,32 @@ gl_sarray gl_sarray::builtin_cumulative_aggregate(const std::string& name) const
     switch(input_type) {
       case flex_type_enum::VECTOR: {
         check_vector_equal_size(*this);
-        aggregator = get_builtin_group_aggregator(std::string("__builtin__vector__sum__")); 
+        aggregator = get_builtin_group_aggregator(std::string("__builtin__vector__sum__"));
         break;
       }
       default:
-        aggregator = get_builtin_group_aggregator(std::string("__builtin__sum__")); 
+        aggregator = get_builtin_group_aggregator(std::string("__builtin__sum__"));
         break;
     }
   } else if (name == "__builtin__cum_avg__") {
     switch(input_type) {
       case flex_type_enum::VECTOR: {
         check_vector_equal_size(*this);
-        aggregator = get_builtin_group_aggregator(std::string("__builtin__vector__avg__")); 
+        aggregator = get_builtin_group_aggregator(std::string("__builtin__vector__avg__"));
         break;
       }
       default:
-        aggregator = get_builtin_group_aggregator(std::string("__builtin__avg__")); 
+        aggregator = get_builtin_group_aggregator(std::string("__builtin__avg__"));
         break;
     }
   } else if (name == "__builtin__cum_max__") {
-      aggregator = get_builtin_group_aggregator(std::string("__builtin__max__")); 
+      aggregator = get_builtin_group_aggregator(std::string("__builtin__max__"));
   } else if (name == "__builtin__cum_min__") {
-      aggregator = get_builtin_group_aggregator(std::string("__builtin__min__")); 
+      aggregator = get_builtin_group_aggregator(std::string("__builtin__min__"));
   } else if (name == "__builtin__cum_var__") {
-      aggregator = get_builtin_group_aggregator(std::string("__builtin__var__")); 
+      aggregator = get_builtin_group_aggregator(std::string("__builtin__var__"));
   } else if (name == "__builtin__cum_std__") {
-      aggregator = get_builtin_group_aggregator(std::string("__builtin__stdv__")); 
+      aggregator = get_builtin_group_aggregator(std::string("__builtin__stdv__"));
   } else {
     log_and_throw("Internal error. Unknown cumulative aggregator " + name);
   }
@@ -831,7 +831,7 @@ void gl_sarray::ensure_has_sarray_reader() const {
   if (!m_sarray_reader) {
     std::lock_guard<mutex> guard(reader_shared_ptr_lock);
     if (!m_sarray_reader) {
-      m_sarray_reader = 
+      m_sarray_reader =
           std::move(get_proxy()->get_underlying_sarray()->get_reader());
     }
   }
@@ -846,7 +846,7 @@ void gl_sarray::ensure_has_sarray_reader() const {
 gl_sarray_range::gl_sarray_range(
     std::shared_ptr<sarray_reader<flexible_type> > m_sarray_reader,
     size_t start, size_t end) {
-  m_sarray_reader_buffer = 
+  m_sarray_reader_buffer =
       std::make_shared<sarray_reader_buffer<flexible_type>>
           (m_sarray_reader, start, end);
   // load the first value if available
@@ -942,13 +942,13 @@ gl_sarray gl_sarray_writer_impl::close() {
 /*                                                                        */
 /**************************************************************************/
 
-gl_sarray_writer::gl_sarray_writer(flex_type_enum type, 
+gl_sarray_writer::gl_sarray_writer(flex_type_enum type,
                                    size_t num_segments) {
   // create the pimpl
   m_writer_impl.reset(new gl_sarray_writer_impl(type, num_segments));
 }
 
-void gl_sarray_writer::write(const flexible_type& f, 
+void gl_sarray_writer::write(const flexible_type& f,
                              size_t segmentid) {
   m_writer_impl->write(f, segmentid);
 }
@@ -963,4 +963,3 @@ gl_sarray gl_sarray_writer::close() {
 
 gl_sarray_writer::~gl_sarray_writer() { }
 } // namespace turi
-

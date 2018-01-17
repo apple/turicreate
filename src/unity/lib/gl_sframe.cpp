@@ -22,7 +22,7 @@ namespace turi {
 
 static turi::mutex reader_shared_ptr_lock;
 /**
- * Constructs a dataframe from data represented a collection of 
+ * Constructs a dataframe from data represented a collection of
  * columns of flexible_type.
  */
 void make_dataframe_from_data(
@@ -30,7 +30,7 @@ void make_dataframe_from_data(
     dataframe_t& df) {
 
   if (data.size() > 0) {
-    size_t nrows = data.begin()->second.size(); 
+    size_t nrows = data.begin()->second.size();
     for (const auto& keyval: data) {
       if (keyval.second.size() != nrows) {
         throw std::string("Columns must be of the same length");
@@ -109,7 +109,7 @@ groupby_descriptor_type QUANTILE(const std::string& col, double quantile) {
 groupby_descriptor_type QUANTILE(const std::string& col, const std::vector<double>& quantiles) {
   std::string query = "__builtin__quantile__[";
   for (size_t i = 0;i < quantiles.size(); ++i) {
-    query = query + std::to_string(quantiles[i]); 
+    query = query + std::to_string(quantiles[i]);
     if (i < quantiles.size() - 1) query = query + ",";
   }
   query = query + "]";
@@ -172,7 +172,7 @@ void gl_sframe::construct_from_csvs(std::string csv_file, csv_parsing_config_map
       column_type_hints[colname] = infer_type_of_list(column_values);
     }
   }
-  m_sframe->construct_from_csvs(csv_file, csv_config, column_type_hints); 
+  m_sframe->construct_from_csvs(csv_file, csv_config, column_type_hints);
 }
 
 gl_sframe::gl_sframe(const std::map<std::string, std::vector<flexible_type> >& data) {
@@ -205,7 +205,7 @@ gl_sframe::gl_sframe(const std::map<std::string, gl_sarray>& data) {
   std::list<std::shared_ptr<unity_sarray_base>> arraylist;
   std::vector<std::string> names;
   for (const auto& col: data) {
-    names.push_back(col.first); 
+    names.push_back(col.first);
     arraylist.push_back(col.second);
   }
   get_proxy()->add_columns(arraylist, names);
@@ -220,7 +220,7 @@ gl_sframe::gl_sframe(
   std::list<std::shared_ptr<unity_sarray_base>> arraylist;
   std::vector<std::string> names;
   for (const auto& col: data) {
-    names.push_back(col.first); 
+    names.push_back(col.first);
     arraylist.push_back(col.second);
   }
   get_proxy()->add_columns(arraylist, names);
@@ -362,7 +362,7 @@ gl_sframe_range gl_sframe::range_iterator(size_t start, size_t end) const {
     throw std::string("start must be less than end");
   }
   // basic range check. start must point to existing element, end can point
-  // to one past the end. 
+  // to one past the end.
   // but additionally, we need to permit the special case start == end == 0
   // so that you can iterate over empty arrays.
   if (!((start < get_proxy()->size() && end <= get_proxy()->size()) ||
@@ -415,7 +415,7 @@ void gl_sframe::save(const std::string& _path, const std::string& _format) const
   if (format == "csv" &&
       !(boost::algorithm::ends_with(format, ".csv") ||
         boost::algorithm::ends_with(format, ".csv.gz"))) {
-    path = path + ".csv";    
+    path = path + ".csv";
   } else if (format != "binary") {
     throw std::string("Invalid format. Supported formats are \'csv\' and \'binary\'");
   }
@@ -489,7 +489,7 @@ std::pair<gl_sframe, gl_sframe> gl_sframe::random_split(double fraction, size_t 
   return ret;
 }
 
-gl_sframe gl_sframe::topk(const std::string& column_name, 
+gl_sframe gl_sframe::topk(const std::string& column_name,
                           size_t k, bool reverse) const {
   return (*this)[(*this)[column_name].topk_index(k, reverse)].sort(column_name, reverse);
 }
@@ -527,18 +527,18 @@ void gl_sframe::replace_add_column(const gl_sarray& data, const std::string& nam
     // starting from empty sframe
     add_column(data, name);
     return;
-  } 
-  
+  }
+
   auto colnames = column_names();
   std::set<std::string> colnameset(colnames.begin(), colnames.end());
   // new column
   if (colnameset.count(name) == 0) {
     add_column(data, name);
     return;
-  } 
+  }
   // replacing a column
   if (num_columns() == 1) {
-    // special handling for single column. 
+    // special handling for single column.
     // we want to permit replacing the column even when the size changes.
     // so we remove it first, try to add it, then if there is a failure,
     // put it back.
@@ -557,14 +557,14 @@ void gl_sframe::replace_add_column(const gl_sarray& data, const std::string& nam
     remove_column(name);
     rename({{tempname, name}});
   }
-  
+
 }
 
 void gl_sframe::add_columns(const gl_sframe& data) {
   std::list<std::shared_ptr<unity_sarray_base>> arraylist;
   std::vector<std::string> names;
   for (const auto& col: data.column_names()) {
-    names.push_back(col); 
+    names.push_back(col);
     arraylist.push_back(data.select_column(col));
   }
   get_proxy()->add_columns(arraylist, names);
@@ -600,11 +600,11 @@ void gl_sframe::rename(const std::map<std::string, std::string>& old_to_new_name
 gl_sframe gl_sframe::append(const gl_sframe& other) const {
   if (num_columns() != other.num_columns()) {
     throw std::string("Two SFrames have to have the same number of columns");
-  }  
+  }
   return get_proxy()->append(other.select_columns(column_names()));
 }
 
-gl_sframe gl_sframe::groupby(const std::vector<std::string>& groupkeys, 
+gl_sframe gl_sframe::groupby(const std::vector<std::string>& groupkeys,
                              const std::map<std::string, aggregate::groupby_descriptor_type>& operators) const{
   std::vector<std::vector<std::string>> group_columns;
   std::vector<std::string> output_columns;
@@ -628,22 +628,22 @@ gl_sframe gl_sframe::groupby(const std::vector<std::string>& groupkeys,
                                         group_ops);
 }
 
-gl_sframe gl_sframe::join(const gl_sframe& right, 
-                          const std::vector<std::string>& joinkeys, 
+gl_sframe gl_sframe::join(const gl_sframe& right,
+                          const std::vector<std::string>& joinkeys,
                           const std::string& how) const {
   std::map<std::string, std::string> keys;
   for (const auto& i: joinkeys) keys[i] = i;
   return get_proxy()->join(right, how, keys);
 }
 
-gl_sframe gl_sframe::join(const gl_sframe& right, 
-                          const std::map<std::string, std::string>& joinkeys, 
+gl_sframe gl_sframe::join(const gl_sframe& right,
+                          const std::map<std::string, std::string>& joinkeys,
                           const std::string& how) const {
   return get_proxy()->join(right, how, joinkeys);
 }
 
-gl_sframe gl_sframe::filter_by(const gl_sarray& values, 
-                               const std::string& column_name, 
+gl_sframe gl_sframe::filter_by(const gl_sarray& values,
+                               const std::string& column_name,
                                bool exclude) const {
   auto colnames = column_names();
   std::set<std::string> colnameset(colnames.begin(), colnames.end());
@@ -651,7 +651,7 @@ gl_sframe gl_sframe::filter_by(const gl_sarray& values,
     throw std::string("Column ") + column_name + " not in SFrame";
   }
   if ((*this)[column_name].dtype() != values.dtype()) {
-    throw std::string("Type of given values does not match type of column ") + 
+    throw std::string("Type of given values does not match type of column ") +
         column_name + " in SFrame";
   }
   gl_sframe value_sf({{column_name, values}});
@@ -688,12 +688,12 @@ gl_sframe gl_sframe::pack_columns(const std::vector<std::string>& columns,
   }
 
   if (dtype != flex_type_enum::LIST &&
-      dtype != flex_type_enum::VECTOR && 
+      dtype != flex_type_enum::VECTOR &&
       dtype != flex_type_enum::DICT) {
     throw std::string("Resulting dtype has to be one of dict/vector/list type");
   }
 
-  if (dtype == flex_type_enum::VECTOR && 
+  if (dtype == flex_type_enum::VECTOR &&
       (fill_na.get_type() != flex_type_enum::UNDEFINED ||
        fill_na.get_type() != flex_type_enum::FLOAT ||
        fill_na.get_type() != flex_type_enum::INTEGER)) {
@@ -732,7 +732,7 @@ gl_sframe gl_sframe::pack_columns(const std::string& column_prefix,
 }
 
 gl_sframe gl_sframe::split_datetime(const std::string& expand_column,
-                            const std::string& _column_name_prefix, 
+                            const std::string& _column_name_prefix,
                             const std::vector<std::string>& limit,
                             bool tzone) const {
   std::string column_name_prefix = _column_name_prefix;
@@ -761,9 +761,9 @@ gl_sframe gl_sframe::split_datetime(const std::string& expand_column,
 }
 
 gl_sframe gl_sframe::unpack(const std::string& unpack_column,
-                            const std::string& _column_name_prefix, 
+                            const std::string& _column_name_prefix,
                             const std::vector<flex_type_enum>& column_types,
-                            const flexible_type& na_value, 
+                            const flexible_type& na_value,
                             const std::vector<flexible_type>& limit) const {
   std::string column_name_prefix = _column_name_prefix;
   auto colnames = column_names();
@@ -838,7 +838,7 @@ gl_sframe gl_sframe::stack(const std::string& column_name,
 
   auto colnames = column_names();
   for (auto newcolname : new_column_name) {
-    if (std::find(colnames.begin(), colnames.end(), newcolname) != colnames.end() && 
+    if (std::find(colnames.begin(), colnames.end(), newcolname) != colnames.end() &&
         newcolname != column_name) {
       throw std::string("Column name with ") + newcolname + " already exists";
     }
@@ -849,7 +849,7 @@ gl_sframe gl_sframe::stack(const std::string& column_name,
   if (h.dtype() == flex_type_enum::VECTOR) {
     new_column_type = {flex_type_enum::FLOAT};
   } else if (h.dtype() == flex_type_enum::LIST) {
-    // list. loop through the first 100 elements, and loop through 
+    // list. loop through the first 100 elements, and loop through
     // each element
     std::vector<flexible_type> values;
     auto range = h.range_iterator();
@@ -861,7 +861,7 @@ gl_sframe gl_sframe::stack(const std::string& column_name,
     }
     new_column_type = {infer_type_of_list(values)};
   } else if (h.dtype() == flex_type_enum::DICT) {
-    // dict. loop through the first 100 elements, and loop through 
+    // dict. loop through the first 100 elements, and loop through
     // each element
     std::vector<flexible_type> keys;
     std::vector<flexible_type> values;
@@ -875,7 +875,7 @@ gl_sframe gl_sframe::stack(const std::string& column_name,
     }
     new_column_type = {infer_type_of_list(keys), infer_type_of_list(values)};
   }
-  return get_proxy()->stack(column_name, new_column_name, 
+  return get_proxy()->stack(column_name, new_column_name,
                             new_column_type, drop_na);
 }
 
@@ -885,7 +885,7 @@ gl_sframe gl_sframe::unstack(const std::string& column,
   auto iter = std::find(key_columns.begin(), key_columns.end(), column);
   if (iter == key_columns.end()) {
     throw std::string("column name ") + column + " not found";
-  } 
+  }
   key_columns.erase(iter);
   if (new_column_name != "") {
     return groupby(key_columns, {{new_column_name, aggregate::CONCAT(column)}});
@@ -902,7 +902,7 @@ gl_sframe gl_sframe::unstack(const std::vector<std::string>& columns,
     auto iter = std::find(key_columns.begin(), key_columns.end(), column);
     if (iter == key_columns.end()) {
       throw std::string("column name ") + column + " not found";
-    } 
+    }
     key_columns.erase(iter);
   }
   if (new_column_name != "") {
@@ -913,7 +913,7 @@ gl_sframe gl_sframe::unstack(const std::vector<std::string>& columns,
 }
 
 gl_sframe gl_sframe::unique() const {
-  return groupby(column_names(), 
+  return groupby(column_names(),
                  std::map<std::string, aggregate::groupby_descriptor_type>());
 }
 
@@ -935,13 +935,13 @@ gl_sframe gl_sframe::sort(const std::vector<std::pair<std::string, bool>>& colum
   }
   return get_proxy()->sort(keys, order);
 }
-gl_sframe gl_sframe::dropna(const std::vector<std::string>& columns, 
+gl_sframe gl_sframe::dropna(const std::vector<std::string>& columns,
                             std::string how) const {
   auto ret = get_proxy()->drop_missing_values(columns, how == "all", false);
   ASSERT_EQ(ret.size(), 2);
   return *(ret.begin());
 }
-std::pair<gl_sframe, gl_sframe> gl_sframe::dropna_split(const std::vector<std::string>& columns, 
+std::pair<gl_sframe, gl_sframe> gl_sframe::dropna_split(const std::vector<std::string>& columns,
                                                         std::string how) const {
   auto ret = get_proxy()->drop_missing_values(columns, how == "all", false);
   ASSERT_EQ(ret.size(), 2);
@@ -1019,7 +1019,7 @@ std::ostream& operator<<(std::ostream& out, const gl_sframe& other) {
 gl_sframe_range::gl_sframe_range(
     std::shared_ptr<sframe_reader> m_sframe_reader,
     size_t start, size_t end) {
-  m_sframe_reader_buffer = 
+  m_sframe_reader_buffer =
       std::make_shared<sframe_reader_buffer>(m_sframe_reader, start, end);
   // load the first value if available
   if (m_sframe_reader_buffer->has_next()) {
@@ -1067,7 +1067,7 @@ const gl_sframe_range::type& gl_sframe_range::iterator::dereference() const {
 /**************************************************************************/
 
 gl_sarray_reference::gl_sarray_reference(gl_sframe& sf, std::string column_name)
-  : m_sf(sf), m_column_name(column_name) { } 
+  : m_sf(sf), m_column_name(column_name) { }
 
 gl_sarray_reference& gl_sarray_reference::operator=(const gl_sarray_reference& other) {
   m_sf.replace_add_column(gl_sarray(other), m_column_name);
@@ -1099,7 +1099,7 @@ std::shared_ptr<unity_sarray> gl_sarray_reference::get_proxy() const {
 /**************************************************************************/
 
 const_gl_sarray_reference::const_gl_sarray_reference(const gl_sframe& sf, std::string column_name)
-  : m_sf(sf), m_column_name(column_name) { } 
+  : m_sf(sf), m_column_name(column_name) { }
 
 std::shared_ptr<unity_sarray> const_gl_sarray_reference::get_proxy() const {
   return m_sf.select_column(m_column_name).get_proxy();
@@ -1117,7 +1117,7 @@ std::shared_ptr<unity_sarray> const_gl_sarray_reference::get_proxy() const {
 class gl_sframe_writer_impl {
  public:
   gl_sframe_writer_impl(const std::vector<std::string>& column_names,
-                        const std::vector<flex_type_enum>& column_types, 
+                        const std::vector<flex_type_enum>& column_types,
                         size_t num_segments);
   void write(const flexible_type& f, size_t segmentid);
   size_t num_segments() const;
@@ -1128,7 +1128,7 @@ class gl_sframe_writer_impl {
 };
 
 gl_sframe_writer_impl::gl_sframe_writer_impl(const std::vector<std::string>& column_names,
-                                             const std::vector<flex_type_enum>& column_types, 
+                                             const std::vector<flex_type_enum>& column_types,
                                              size_t num_segments) {
   // open the output frame
   if (num_segments == (size_t)(-1)) num_segments = SFRAME_DEFAULT_NUM_SEGMENTS;
@@ -1169,13 +1169,13 @@ void gl_sframe::show(const std::string& path_to_client) const {
 /**************************************************************************/
 
 gl_sframe_writer::gl_sframe_writer(const std::vector<std::string>& column_names,
-                                   const std::vector<flex_type_enum>& column_types, 
+                                   const std::vector<flex_type_enum>& column_types,
                                    size_t num_segments) {
   // create the pimpl
   m_writer_impl.reset(new gl_sframe_writer_impl(column_names, column_types, num_segments));
 }
 
-void gl_sframe_writer::write(const std::vector<flexible_type>& f, 
+void gl_sframe_writer::write(const std::vector<flexible_type>& f,
                              size_t segmentid) {
   m_writer_impl->write(f, segmentid);
 }
