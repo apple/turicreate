@@ -51,12 +51,12 @@ static std::string make_format_string(unsigned char *raw_format_str_ptr,
     raw_format_str_len);
 
   boost::replace_all(raw_format_str, "\n", "");
-  
+
   std::stringstream ss;
   ss << "{\"vega_spec\": " << raw_format_str << "}\n";
   return ss.str();
 }
-                                      
+
 
 EXPORT std::string histogram_spec(std::string title,
                                   std::string xlabel,
