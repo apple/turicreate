@@ -49,10 +49,10 @@ With Turi Create, you can tackle a number of common scenarios:
 You can also work with essential machine learning models, organized into algorithm-based toolkits:
 * [Classifiers](userguide/supervised-learning/classifier.md)
 * [Regression](userguide/supervised-learning/regression.md)
-* [Graph analytics](userguide/graph_analytics/intro.md)
-* [Clustering](userguide/clustering/intro.md)
+* [Graph analytics](userguide/graph_analytics/README.md)
+* [Clustering](userguide/clustering/README.md)
 * [Nearest Neighbors](userguide/nearest_neighbors/nearest_neighbors.md)
-* [Topic models](userguide/text/intro.md)
+* [Topic models](userguide/text/README.md)
 
 Supported Platforms
 -------------------
