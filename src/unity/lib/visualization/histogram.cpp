@@ -192,10 +192,13 @@ void histogram_result::add_element_simple(const flexible_type& value) {
     return;
   }
 
-  // ignore nan values
-  // ignore inf values
   if (value.get_type() == flex_type_enum::FLOAT &&
-      !std::isfinite(value.get<flex_float>())) {
+      std::isinf(value.get<flex_float>())) {
+    return;
+  }
+
+  if (value.get_type() == flex_type_enum::INTEGER &&
+      std::isinf(value.get<flex_int>())) {
     return;
   }
 
@@ -205,6 +208,13 @@ void histogram_result::add_element_simple(const flexible_type& value) {
 
   // resize bins if needed
   this->rescale(this->min, this->max);
+
+  // ignore nan values
+  if (value.get_type() == flex_type_enum::FLOAT &&
+      std::isnan(value.get<flex_float>())) {
+    return;
+  }
+
 
   // update count in bin
   size_t bin = get_bin_idx(value, this->scale_min, this->scale_max);
@@ -223,15 +233,15 @@ void histogram::init(const gl_sarray& source) {
   if (input_size >= 2 &&
       m_source[0].get_type() != flex_type_enum::UNDEFINED &&
       m_source[1].get_type() != flex_type_enum::UNDEFINED &&
-      std::isfinite(m_source[0].get<flex_float>()) &&
-      std::isfinite(m_source[1].get<flex_float>())) {
+      !std::isinf(m_source[0].get<flex_float>()) &&
+      !std::isinf(m_source[1].get<flex_float>())) {
     // start with a sane range for the bins (somewhere near the data)
     // (it can be exceptionally small, since the doubling used in resize()
     // will make it converge to the real range quickly)
     m_transformer->init(dtype, m_source[0], m_source[1]);
   } else if (input_size == 1 &&
              m_source[0].get_type() != flex_type_enum::UNDEFINED &&
-             std::isfinite(m_source[0].get<flex_float>())) {
+             !std::isinf(m_source[0].get<flex_float>())) {
     // one value, not so interesting
     m_transformer->init(dtype, m_source[0], m_source[0]);
   } else {
