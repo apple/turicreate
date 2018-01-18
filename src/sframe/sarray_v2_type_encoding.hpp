@@ -187,7 +187,7 @@ static void decode_double_stream_legacy(size_t num_elements,
       size_t intval = (buf[i] >> 1) | (buf[i] << 63);
       // make a double flexible_type
       flexible_type ret(0.0);
-      ret.mutable_get<flex_int>() = intval;
+      ret.reinterpret_mutable_get<flex_int>() = intval;
       callback(ret);
     }
     num_elements -= buflen;
@@ -302,7 +302,7 @@ static void decode_vector_stream(size_t num_elements,
     ++length_ctr;
     // fill in the value
     for(size_t j = 0; j < output_vec.size(); ++j) {
-      output_vec[j] = values[value_ctr].get<flex_float>();
+      output_vec[j] = values[value_ctr].reinterpret_get<flex_float>();
       ++value_ctr;
     }
     callback(ret);
