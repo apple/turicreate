@@ -8,6 +8,7 @@
 #include <boost/program_options.hpp>
 #include <regex>
 #include <boost/algorithm/string.hpp>
+#include <globals/globals.hpp>
 #include <fileio/fs_utils.hpp>
 #include <fileio/sanitize_url.hpp>
 #include <fileio/general_fstream.hpp>
@@ -181,7 +182,7 @@ int main(int argc, char** argv) {
     print_help(argv);
     return 0;
   }
-  
+  turi::globals::initialize_globals_from_environment(argv[0]);  
   std::string command = argv[1];
   if (command == "cp" && argc == 4) {
     std::string srcpath = argv[2];
