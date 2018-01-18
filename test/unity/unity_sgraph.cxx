@@ -236,7 +236,7 @@ struct unity_graph_test {
     TS_ASSERT_EQUALS(vf.size(), 3);
     TS_ASSERT_EQUALS(vf.count("__id"), 1);
     TS_ASSERT_EQUALS(vf.count("d"), 1);
-    TS_ASSERT_EQUALS(vf.count("e"), 1)
+    TS_ASSERT_EQUALS(vf.count("e"), 1);
 
     std::vector<std::string> efields = graph6->get_edge_fields(groupa, groupb);
     std::set<std::string> ef(efields.begin(), efields.end());
@@ -245,7 +245,7 @@ struct unity_graph_test {
     TS_ASSERT_EQUALS(ef.count("__dst_id"), 1);
     TS_ASSERT_EQUALS(ef.count("c"), 1);
     TS_ASSERT_EQUALS(ef.count("d"), 1);
-    TS_ASSERT_EQUALS(ef.count("e"), 1)
+    TS_ASSERT_EQUALS(ef.count("e"), 1);
 
     sgraph::options_map_t empty_constraint;
     dataframe_t vt = graph6->get_vertices({}, empty_constraint, group)->_head(size_t(-1));

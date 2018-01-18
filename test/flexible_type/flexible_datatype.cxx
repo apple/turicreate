@@ -409,13 +409,13 @@ struct flexible_datatype_test  {
     TS_ASSERT_THROWS_ANYTHING(dt.set_microsecond(-1));
     TS_ASSERT_THROWS_ANYTHING(dt.set_microsecond(1000001));
 
-    TS_ASSERT(flex_date_time(441964800) < flex_date_time(441964801)) 
-    TS_ASSERT(flex_date_time(441964801) > flex_date_time(441964800)) 
-    TS_ASSERT(flex_date_time(441964800) == flex_date_time(441964800)) 
-    TS_ASSERT(flex_date_time(441964800) < flex_date_time(441964800, 0, 1)) 
-    TS_ASSERT(flex_date_time(441964800, 0, 1) > flex_date_time(441964800)) 
-    TS_ASSERT(flex_date_time(441964800, 0, 1) == flex_date_time(441964800, 0, 1)) 
-    TS_ASSERT(flex_date_time(441964800, 0, 1) == flex_date_time(441964800, 10, 1)) 
+    TS_ASSERT(flex_date_time(441964800) < flex_date_time(441964801));
+    TS_ASSERT(flex_date_time(441964801) > flex_date_time(441964800));
+    TS_ASSERT(flex_date_time(441964800) == flex_date_time(441964800));
+    TS_ASSERT(flex_date_time(441964800) < flex_date_time(441964800, 0, 1));
+    TS_ASSERT(flex_date_time(441964800, 0, 1) > flex_date_time(441964800));
+    TS_ASSERT(flex_date_time(441964800, 0, 1) == flex_date_time(441964800, 0, 1));
+    TS_ASSERT(flex_date_time(441964800, 0, 1) == flex_date_time(441964800, 10, 1));
 
     dt.set_microsecond_res_timestamp(441964800.5);
     TS_ASSERT_DELTA(dt.microsecond_res_timestamp(), 441964800.5,
