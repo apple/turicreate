@@ -478,7 +478,7 @@ struct unity_sframe_test {
 
     std::cout << "done appending two sframes " << std::endl;
 
-    TS_ASSERT_EQUALS(sf3->size(), sf1->size() + sf2->size())
+    TS_ASSERT_EQUALS(sf3->size(), sf1->size() + sf2->size());
     for (size_t i = 0; i < num_items; i++) {
       TS_ASSERT_EQUALS(sf3_values[i], test_data1[i]);
       TS_ASSERT_EQUALS(sf3_values[i + num_items], test_data2[i]);

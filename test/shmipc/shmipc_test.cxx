@@ -20,7 +20,8 @@ struct shmipc_test {
 
 
   void server_process() {
-    TS_ASSERT(server.wait_for_connect(60));
+    auto ret = server.wait_for_connect(60);
+    TS_ASSERT(ret);
     // tis is just a pinging server
     while(1) {
       char *c = nullptr;
@@ -35,35 +36,40 @@ struct shmipc_test {
       if (receivelen >= 3) {
         if (strncmp(c, "end", 3) == 0) break;
       } 
-      TS_ASSERT(server.send(c, receivelen));
+      auto sendret = server.send(c, receivelen);
+      TS_ASSERT(sendret);
     }
     server.shutdown();
   }
 
   void client_process() {
-    TS_ASSERT(client.connect(server_address, 60));
+    auto ret = client.connect(server_address, 60);
+    TS_ASSERT(ret);
 
     std::vector<std::string> messages{"hello", "world"};
     for (auto message: messages) {
-      TS_ASSERT(client.send(message.c_str(), message.length()));
+      auto sendret = client.send(message.c_str(), message.length());
+      TS_ASSERT(sendret);
       char *c = nullptr;
       size_t len = 0;  
       size_t receivelen = 0;
-      TS_ASSERT(client.receive_direct(&c, &len, receivelen, 10));
+      auto recvret = client.receive_direct(&c, &len, receivelen, 10);
+      TS_ASSERT(recvret);
       std::string s(c, receivelen);
       TS_ASSERT_EQUALS(s, message);
     }
 
     // too large buffer
     std::string bigger_than_buffer(BUFFER_SIZE + 1, 'a');
-    TS_ASSERT_EQUALS(client.send(bigger_than_buffer.c_str(), BUFFER_SIZE + 1), 
-                     false);
+    auto sendret = client.send(bigger_than_buffer.c_str(), BUFFER_SIZE + 1);
+    TS_ASSERT_EQUALS(sendret, false);
     // send the termination call
     client.send("end", 3);
   }
 
   void test_connect() {
-    TS_ASSERT(server.bind("", BUFFER_SIZE));
+    auto ret = server.bind("", BUFFER_SIZE);
+    TS_ASSERT(ret);
     server_address = server.get_shared_memory_name();
     
     thread_group group;
@@ -73,7 +79,8 @@ struct shmipc_test {
   }
 
   void large_server_process() {
-    TS_ASSERT(large_server.wait_for_connect(60));
+    auto ret = large_server.wait_for_connect(60);
+    TS_ASSERT(ret);
     // tis is just a pinging server
     while(1) {
       char *c = nullptr;
@@ -88,14 +95,16 @@ struct shmipc_test {
       if (receivelen >= 3) {
         if (strncmp(c, "end", 3) == 0) break;
       } 
-      TS_ASSERT(large_send(large_server, c, receivelen));
+      auto sendret = large_send(large_server, c, receivelen);
+      TS_ASSERT(sendret);
       free(c);
     }
     large_server.shutdown();
   }
 
   void large_client_process() {
-    TS_ASSERT(large_client.connect(large_server_address, 60));
+    auto ret = large_client.connect(large_server_address, 60);
+    TS_ASSERT(ret);
 
     std::vector<std::string> messages{"hello", "world", "bighello", "bigworld"};
     // rather large messages cat against self afew times
@@ -106,11 +115,13 @@ struct shmipc_test {
     // this makes messages[3] not evenly divisible by 16
     messages[3] = messages[3] + "abc";
     for (auto message: messages) {
-      TS_ASSERT(large_send(large_client, message.c_str(),message.length()));
+      auto sendret = large_send(large_client, message.c_str(),message.length());
+      TS_ASSERT(sendret);
       char *c = nullptr;
       size_t len = 0;  
       size_t receivelen = 0;
-      TS_ASSERT(large_receive(large_client, &c, &len, receivelen, 10));
+      auto recvret = large_receive(large_client, &c, &len, receivelen, 10);
+      TS_ASSERT(recvret);
       std::string s(c, receivelen);
       TS_ASSERT_EQUALS(s, message);
       free(c);
@@ -121,7 +132,8 @@ struct shmipc_test {
 
 
   void test_large_comm() {
-    TS_ASSERT(large_server.bind("", BUFFER_SIZE));
+    auto ret = large_server.bind("", BUFFER_SIZE);
+    TS_ASSERT(ret);
     large_server_address = large_server.get_shared_memory_name();
     
     thread_group group;

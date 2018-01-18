@@ -60,7 +60,8 @@ void test_client(async_request_socket& sock, size_t id = 0) {
     set_value(req, i);
     int rc = sock.request_master(req, response);
     TS_ASSERT_EQUALS(rc, 0);
-    TS_ASSERT_EQUALS(get_value(response), i + 1);
+    auto get_value_ret = get_value(response);
+    TS_ASSERT_EQUALS(get_value_ret, i + 1);
   }
   std::cout << "Finished " << id << std::endl;
 }
