@@ -38,7 +38,7 @@ public:
   boost::shared_ptr<char[]> m_image_data;
   /// The height of the image 
   size_t m_height = 0;
-  /// The width of the image*
+  /// The width of the image
   size_t m_width = 0; 
   /// The number of channels in the image: Grayscale = 1, RGB = 3, RGBA = 4.
   size_t m_channels = 0;
