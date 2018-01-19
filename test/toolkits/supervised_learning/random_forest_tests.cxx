@@ -97,7 +97,6 @@ void run_random_forest_classifier_test(std::map<std::string, flexible_type> opts
 
   // Construct the ml_data
   ml_data data = model->construct_ml_data_using_current_metadata(X, y);
-  ml_data valid_data;
 
   // Check predictions
   // ----------------------------------------------------------------------

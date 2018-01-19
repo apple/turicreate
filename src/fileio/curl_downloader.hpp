@@ -12,7 +12,7 @@
 namespace turi {
 /**
  * \ingroup fileio
- * Downlaods a given URL into a given output file
+ * Downloads a given URL into a given output file
  * \code
  * retcode = download_url("http://google.com", "google.html");
  * \endcode
