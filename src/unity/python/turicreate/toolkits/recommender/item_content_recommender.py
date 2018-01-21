@@ -190,7 +190,7 @@ def create(item_data, item_id,
     method = 'item_content_recommender'
 
     opts = {'model_name': method}
-    response = _turicreate.toolkits._main.run("recsys_init", opts)
+    response = _turicreate.extensions._recsys.init(opts)
     model_proxy = response['model']
 
     # The user_id is implicit if none is given.
@@ -255,7 +255,11 @@ def create(item_data, item_id,
             'similarity_type' : "cosine",
             'max_item_neighborhood_size' : max_item_neighborhood_size}
 
-    response = _turicreate.toolkits._main.run('recsys_train', opts, verbose)
+    if not verbose:
+        _turicreate.connect.main.get_server().set_log_progress(False)
+    response = _turicreate.extensions._recsys.train(opts)
+    _turicreate.connect.main.get_server().set_log_progress(True)
+
     out_model = ItemContentRecommender(response['model'])
 
     return out_model

@@ -674,9 +674,9 @@ def random_split_by_user(dataset,
             'item_test_proportion': item_test_proportion,
             'random_seed': random_seed}
 
-    response = _turicreate.toolkits._main.run('recsys_train_test_split', opts)
-    train = _SFrame(None, _proxy=response['train'])
-    test = _SFrame(None, _proxy=response['test'])
+    response = _turicreate.extensions._recsys.train_test_split(opts)
+    train = response['train']
+    test = response['test']
     return train, test
 
 
@@ -724,7 +724,7 @@ class _Recommender(_Model):
         """
 
         opts = {'model': self.__proxy__}
-        response = _turicreate.toolkits._main.run('recsys_list_fields', opts)
+        response = _turicreate.extensions._recsys.list_fields(opts)
         return [s for s in response['value'] if not s.startswith("_")]
 
     def _get(self, field):
@@ -753,19 +753,9 @@ class _Recommender(_Model):
         >>> U2 = d['movie_id']
         """
         opts = {'model': self.__proxy__, 'field': field}
-        response = _turicreate.toolkits._main.run('recsys_get_value', opts)
+        response = _turicreate.extensions._recsys.get_value(opts)
 
-        def type_tr(v):
-            if type(v) is dict:
-                return dict( (k, type_tr(v)) for k, v in _six.iteritems(v))
-
-            elif isinstance(v, _turicreate.cython.cy_sframe.UnitySFrameProxy):
-                return _SFrame(None, _proxy=v)
-
-            else:
-                return v
-
-        return type_tr(response["value"])
+        return response["value"]
 
     def get_num_items_per_user(self):
         """
@@ -782,8 +772,8 @@ class _Recommender(_Model):
 
         """
         opts = {'model': self.__proxy__}
-        response = _turicreate.toolkits._main.run('recsys_get_num_items_per_user', opts)
-        return _SFrame(None, _proxy=response['data'])
+        response = _turicreate.extensions._recsys.get_num_items_per_user(opts)
+        return response['data']
 
     def get_num_users_per_item(self):
         """
@@ -800,8 +790,8 @@ class _Recommender(_Model):
 
         """
         opts = {'model': self.__proxy__}
-        response = _turicreate.toolkits._main.run('recsys_get_num_users_per_item', opts)
-        return _SFrame(None, _proxy=response['data'])
+        response = _turicreate.extensions._recsys.get_num_users_per_item(opts)
+        return response['data']
 
 
     def __str__(self):
@@ -989,7 +979,7 @@ class _Recommender(_Model):
 
     def _get_current_options(self):
         opts = {'model': self.__proxy__}
-        response = _turicreate.toolkits._main.run('recsys_get_current_options', opts)
+        response = _turicreate.extensions._recsys.get_current_options(opts)
         return response
 
     def _set_current_options(self, options):
@@ -1005,7 +995,7 @@ class _Recommender(_Model):
         opts = self._get_current_options()
         opts.update(options)
         opts['model'] = self.__proxy__
-        response = _turicreate.toolkits._main.run('recsys_set_current_options', opts)
+        response = _turicreate.extensions._recsys.set_current_options(opts)
         return response
 
     def __prepare_dataset_parameter(self, dataset):
@@ -1042,7 +1032,7 @@ class _Recommender(_Model):
         if not hasattr(self, "_data_schema"):
 
             opts = {'model': self.__proxy__}
-            response = _turicreate.toolkits._main.run('recsys_get_data_schema', opts)
+            response = _turicreate.extensions._recsys.get_data_schema(opts)
 
             self._data_schema = {k : _turicreate.cython.cy_flexible_type.pytype_from_type_name(v)
                                  for k, v in response["schema"].items()}
@@ -1122,8 +1112,8 @@ class _Recommender(_Model):
                 }
 
         # Call the C++ function for recommender_model
-        response = _turicreate.toolkits._main.run('recsys_predict', opts)
-        result = _SFrame(None, _proxy=response['data'])
+        response = _turicreate.extensions._recsys.predict(opts)
+        result = response['data']
         return result['prediction']
 
     def get_similar_items(self, items=None, k=10, verbose=False):
@@ -1193,9 +1183,8 @@ class _Recommender(_Model):
                'k': k,
                'verbose': verbose}
 
-        response = _turicreate.toolkits._main.run('recsys_get_similar_items', opt)
-
-        neighbors = _SFrame(None, _proxy=response['data'])
+        response = _turicreate.extensions._recsys.get_similar_items(opt)
+        neighbors = response['data']
 
         return neighbors
 
@@ -1261,9 +1250,8 @@ class _Recommender(_Model):
                'get_all_users' : get_all_users,
                'k': k}
 
-        response = _turicreate.toolkits._main.run('recsys_get_similar_users', opt)
-
-        neighbors = _SFrame(None, _proxy=response['data'])
+        response = _turicreate.extensions._recsys.get_similar_users(opt)
+        neighbors = response['data']
 
         return neighbors
 
@@ -1505,8 +1493,13 @@ class _Recommender(_Model):
                'diversity' : diversity,
                'random_seed' : random_seed
                }
-        response = _turicreate.toolkits._main.run('recsys_recommend', opt, verbose=verbose)
-        recs = _SFrame(None, _proxy=response['data'])
+
+        if not verbose:
+            _turicreate.connect.main.get_server().set_log_progress(False)
+        response = _turicreate.extensions._recsys.recommend(opt)
+        _turicreate.connect.main.get_server().set_log_progress(True)
+
+        recs = response['data']
 
         if cast_user_to_string_type:
             recs[user_id] = recs[user_id].astype(original_user_type)
@@ -1692,7 +1685,7 @@ class _Recommender(_Model):
         """
         _logging.warning("This method will be deprecated soon. Please use m.summary().")
         opts = {'model': self.__proxy__}
-        response = _turicreate.toolkits._main.run("recsys_get_train_stats", opts)
+        response = _turicreate.extensions._recsys.get_train_stats(opts)
         return response
 
     def evaluate_precision_recall(self, dataset, cutoffs=list(range(1,11,1))+list(range(11,50,5)),
@@ -1974,7 +1967,7 @@ class _Recommender(_Model):
         """
 
         opts = {'model': self.__proxy__}
-        response = _turicreate.toolkits._main.run('recsys_get_popularity_baseline', opts)
+        response = _turicreate.extensions._recsys.get_popularity_baseline(opts)
 
 
         from .popularity_recommender import PopularityRecommender
@@ -2019,5 +2012,5 @@ class _Recommender(_Model):
         opts = {'model': self.__proxy__,
                 'item_pairs' : item_pairs}
 
-        response = _turicreate.toolkits._main.run('recsys_get_item_intersection_info', opts)
-        return _SFrame(None, _proxy=response['item_intersections'])
+        response = _turicreate.extensions._recsys.get_item_intersection_info(opts)
+        return response['item_intersections']

@@ -194,7 +194,7 @@ class DecisionTree:
         tree = DecisionTree()
         nodes = {}
         tree_str = _tc.extensions._xgboost_get_tree(model.__proxy__, tree_id)
-        metadata_mapping = _tc.extensions._get_metadata_mapping(model.__proxy__)
+        metadata_mapping = _tc.extensions._supervised_learning._get_metadata_mapping(model.__proxy__)
         trees_json = _json.loads(tree_str)
 
         # Parse the tree from the JSON.

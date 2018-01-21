@@ -188,7 +188,7 @@ def create(observation_data,
     method = 'factorization_recommender'
 
     opts = {'model_name': method}
-    response = _turicreate.toolkits._main.run("recsys_init", opts)
+    response = _turicreate.extensions._recsys.init(opts)
     model_proxy = response['model']
 
     if user_data is None:
@@ -231,7 +231,10 @@ def create(observation_data,
 
         opts.update(kwargs)
 
-    response = _turicreate.toolkits._main.run('recsys_train', opts, verbose)
+    if not verbose:
+        _turicreate.connect.main.get_server().set_log_progress(False)
+    response = _turicreate.extensions._recsys.train(opts)
+    _turicreate.connect.main.get_server().set_log_progress(True)
 
     return FactorizationRecommender(response['model'])
 

@@ -15,7 +15,6 @@ import turicreate as _turicreate
 from turicreate.toolkits._model import Model
 from turicreate.toolkits._internal_utils import _toolkits_select_columns
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
-from turicreate.toolkits._internal_utils import _map_unity_proxy_to_object
 from turicreate.toolkits._internal_utils import _SGraphFromJsonTree
 from turicreate.toolkits._main import ToolkitError
 
@@ -103,11 +102,11 @@ class SupervisedLearningModel(Model):
 
         # Low latency path
         if isinstance(dataset, list):
-            return _turicreate.extensions._fast_predict(self.__proxy__, dataset,
-                    output_type, missing_value_action)
+            return _turicreate.extensions._supervised_learning._fast_predict(
+                self.__proxy__, dataset, output_type, missing_value_action)
         if isinstance(dataset, dict):
-            return _turicreate.extensions._fast_predict(self.__proxy__, [dataset],
-                    output_type, missing_value_action)
+            return _turicreate.extensions._supervised_learning._fast_predict(
+                self.__proxy__, [dataset], output_type, missing_value_action)
 
         # Batch predictions path
         else:
@@ -123,9 +122,9 @@ class SupervisedLearningModel(Model):
                             'output_type' : output_type
                             })
 
-            target = _turicreate.toolkits._main.run(
-                      'supervised_learning_predict', options)
-            return _map_unity_proxy_to_object(target['predicted'])
+            target = _turicreate.extensions._supervised_learning.predict(
+                options)
+            return target['predicted']
 
     def evaluate(self, dataset, metric="auto",
                  missing_value_action='auto', options={}, **kwargs):
@@ -175,9 +174,8 @@ class SupervisedLearningModel(Model):
                         'missing_value_action': missing_value_action,
                         'metric': metric
                         })
-        results = _turicreate.toolkits._main.run(
-                'supervised_learning_evaluate', options)
-        return _map_unity_proxy_to_object(results)
+        results = _turicreate.extensions._supervised_learning.evaluate(options)
+        return results
 
     def _training_stats(self):
         """
@@ -189,8 +187,9 @@ class SupervisedLearningModel(Model):
         -----
         """
         opts = {'model': self.__proxy__, 'model_name': self.__name__}
-        results = _turicreate.toolkits._main.run("supervised_learning_get_train_stats", opts)
-        return _map_unity_proxy_to_object(results)
+        results = _turicreate.extensions._supervised_learning.get_train_stats(
+            opts)
+        return results
 
     def _get(self, field):
         """
@@ -209,8 +208,8 @@ class SupervisedLearningModel(Model):
         opts = {'model': self.__proxy__,
                 'model_name': self.__name__,
                 'field': field}
-        response = _turicreate.toolkits._main.run('supervised_learning_get_value', opts)
-        return _map_unity_proxy_to_object(response['value'])
+        response = _turicreate.extensions._supervised_learning.get_value(opts)
+        return response['value']
 
     @classmethod
     def _get_queryable_methods(cls):
@@ -264,11 +263,11 @@ class Classifier(SupervisedLearningModel):
 
         # Low latency path
         if isinstance(dataset, list):
-            return _turicreate.extensions._fast_classify(self.__proxy__, dataset,
-                    missing_value_action)
+            return _turicreate.extensions._supervised_learning._fast_classify(
+                self.__proxy__, dataset, missing_value_action)
         if isinstance(dataset, dict):
-            return _turicreate.extensions._fast_classify(self.__proxy__, [dataset],
-                    missing_value_action)
+            return _turicreate.extensions._supervised_learning._fast_classify(
+                self.__proxy__, [dataset], missing_value_action)
 
         _raise_error_if_not_sframe(dataset, "dataset")
         options = {}
@@ -277,8 +276,8 @@ class Classifier(SupervisedLearningModel):
                         'dataset': dataset,
                         'missing_value_action': missing_value_action,
                         })
-        target = _turicreate.toolkits._main.run('supervised_learning_classify', options)
-        return _map_unity_proxy_to_object(target['classify'])
+        target = _turicreate.extensions._supervised_learning.classify(options)
+        return target['classify']
 
     @classmethod
     def _get_queryable_methods(cls):
@@ -394,8 +393,11 @@ def create(dataset, target, model_name, features=None,
             'target_validation' : _toolkits_select_columns(validation_set, [target])})
 
 
-    ret = _turicreate.toolkits._main.run("supervised_learning_train",
-                                       options, verbose)
+    if not verbose:
+        _turicreate.connect.main.get_server().set_log_progress(False)
+    ret = _turicreate.extensions._supervised_learning.train(options)
+    _turicreate.connect.main.get_server().set_log_progress(True)
+
     model = SupervisedLearningModel(ret['model'], model_name)
 
     return model

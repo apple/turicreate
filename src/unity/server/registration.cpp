@@ -49,7 +49,7 @@ void register_functions(toolkit_function_registry& registry) {
   registry.register_toolkit_function(visualization::get_toolkit_function_registration());
 
   // Register proprietary toolkits
-  registry.register_toolkit_function(turi::kmeans::get_toolkit_function_registration());
+  registry.register_toolkit_function(turi::kmeans::get_toolkit_function_registration(), "_kmeans");
 
   registry.register_toolkit_function(turi::pagerank::get_toolkit_function_registration());
   registry.register_toolkit_function(turi::kcore::get_toolkit_function_registration());
@@ -60,10 +60,10 @@ void register_functions(toolkit_function_registry& registry) {
   registry.register_toolkit_function(turi::degree_count::get_toolkit_function_registration());
   registry.register_toolkit_function(turi::label_propagation::get_toolkit_function_registration());
 
-  registry.register_toolkit_function(turi::text::get_toolkit_function_registration());
+  registry.register_toolkit_function(turi::text::get_toolkit_function_registration(), "_text");
   registry.register_toolkit_function(turi::evaluation::get_toolkit_function_registration());
-  registry.register_toolkit_function(turi::recsys::get_toolkit_function_registration());
-  registry.register_toolkit_function(turi::supervised::get_toolkit_function_registration());
+  registry.register_toolkit_function(turi::recsys::get_toolkit_function_registration(), "_recsys");
+  registry.register_toolkit_function(turi::supervised::get_toolkit_function_registration(), "_supervised_learning");
   registry.register_toolkit_function(turi::nearest_neighbors::get_toolkit_function_registration(), "_nearest_neighbors");
   registry.register_toolkit_function(turi::distances::get_toolkit_function_registration(), "_distances");
   registry.register_toolkit_function(turi::image_util::get_toolkit_function_registration());

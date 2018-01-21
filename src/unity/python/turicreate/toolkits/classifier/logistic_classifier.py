@@ -16,7 +16,6 @@ from turicreate.toolkits._internal_utils import _toolkit_repr_print, \
                                         _toolkit_get_topk_bottomk, \
                                         _raise_error_if_not_sframe, \
                                         _check_categorical_option_type, \
-                                        _map_unity_proxy_to_object, \
                                         _raise_error_evaluation_metric_is_valid, \
                                         _summarize_coefficients
 
@@ -749,11 +748,11 @@ class LogisticClassifier(_Classifier):
 
         # Low latency path
         if isinstance(dataset, list):
-            return _turicreate.extensions._fast_predict_topk(self.__proxy__, dataset,
-                    output_type, missing_value_action, k)
+            return _turicreate.extensions._supervised_learning._fast_predict_topk(
+                self.__proxy__, dataset, output_type, missing_value_action, k)
         if isinstance(dataset, dict):
-            return _turicreate.extensions._fast_predict_topk(self.__proxy__, [dataset],
-                    output_type, missing_value_action, k)
+            return _turicreate.extensions._supervised_learning._fast_predict_topk(
+                self.__proxy__, [dataset], output_type, missing_value_action, k)
         # Fast path
         _raise_error_if_not_sframe(dataset, "dataset")
         options = dict()
@@ -766,9 +765,9 @@ class LogisticClassifier(_Classifier):
                         'output_type': output_type,
                         'topk': k,
                         'missing_value_action': missing_value_action})
-        target = _turicreate.toolkits._main.run(
-                  'supervised_learning_predict_topk', options)
-        return _map_unity_proxy_to_object(target['predicted'])
+        target = _turicreate.extensions._supervised_learning.predict_topk(
+            options)
+        return target['predicted']
 
     
     def evaluate(self, dataset, metric='auto', missing_value_action='auto'):

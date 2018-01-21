@@ -8,8 +8,6 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import turicreate as tc
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
-import turicreate.toolkits._main as _toolkits_main
-from turicreate.toolkits._internal_utils import _map_unity_proxy_to_object
 from turicreate.toolkits._supervised_learning import select_default_missing_value_policy
 
 class TreeModelMixin(object):
@@ -126,9 +124,8 @@ class TreeModelMixin(object):
                         'model_name': self.__name__,
                         'missing_value_action': missing_value_action,
                         'dataset': dataset})
-        target = _toolkits_main.run('supervised_learning_feature_extraction',
-                                    options)
-        return _map_unity_proxy_to_object(target['extracted'])
+        target = tc.extensions._supervised_learning.extract_feature(options)
+        return target['extracted']
 
     def _extract_features_with_missing(self, dataset, tree_id = 0,
             missing_value_action = 'auto'):
