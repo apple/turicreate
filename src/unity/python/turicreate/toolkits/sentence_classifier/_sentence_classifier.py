@@ -27,7 +27,7 @@ def _BOW_FEATURE_EXTRACTOR(sf):
         out[f] = _tc.text_analytics.count_words(out[f])
     return out
 
-def create(dataset, target, features=None, method='auto', validation_set=None):
+def create(dataset, target, features=None, method='auto', validation_set='auto'):
     """
     Create a model that trains a classifier to classify sentences from a
     collection of documents. The model is a
@@ -54,6 +54,13 @@ def create(dataset, target, features=None, method='auto', validation_set=None):
 
     validation_set : SFrame, optional
       A dataset for monitoring the model's generalization performance.
+      For each row of the progress table, the chosen metrics are computed
+      for both the provided training dataset and the validation_set. The
+      format of this SFrame must be the same as the training set.
+      By default this argument is set to 'auto' and a validation set is
+      automatically sampled and used for progress printing. If
+      validation_set is set to None, then no additional metrics
+      are computed. The default value is 'auto'.
 
     Returns
     -------
@@ -92,16 +99,14 @@ def create(dataset, target, features=None, method='auto', validation_set=None):
     train = feature_extractor(train)
 
     # Check for a validation set.
-    kwargs = {}
-    if validation_set is not None:
+    if isinstance(validation_set, _tc.SFrame):
         validation_set = feature_extractor(validation_set)
-        kwargs['validation_set'] = validation_set
 
     m = _tc.logistic_classifier.create(train,
                                        target=target,
                                        features=features,
                                        l2_penalty=.2,
-                                       **kwargs)
+                                       validation_set=validation_set)
     num_examples = len(dataset)
     model = SentenceClassifier()
     model.__proxy__.update(
