@@ -22,7 +22,7 @@
 #include <unity/toolkits/ml_data_2/metadata.hpp>
 
 // Interfaces
-#include <unity/toolkits/ml_model/ml_model.hpp>
+#include <unity/lib/extensions/ml_model.hpp>
 
 // External
 #include <numerics/armadillo.hpp>

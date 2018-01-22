@@ -13,7 +13,7 @@
 #include <unity/lib/gl_sframe.hpp>
 
 // Interfaces
-#include <unity/toolkits/ml_model/ml_model.hpp>
+#include <unity/lib/extensions/ml_model.hpp>
 
 // ML-Data Utils
 #include <ml_data/ml_data.hpp>

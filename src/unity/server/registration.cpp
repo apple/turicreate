@@ -13,6 +13,8 @@
 #include <unity/lib/unity_sgraph.hpp>
 #include <unity/lib/unity_sketch.hpp>
 
+#include <unity/lib/extensions/ml_model.hpp>
+
 #include <unity/lib/visualization/show.hpp>
 
 #include <unity/toolkits/activity_classification/class_registrations.hpp>
@@ -23,9 +25,7 @@
 #include <unity/toolkits/graph_analytics/include.hpp>
 #include <unity/toolkits/image/image_fn_export.hpp>
 
-#include <unity/toolkits/ml_model/ml_model.hpp>
 #include <unity/toolkits/ml_model/python_model.hpp>
-#include <unity/toolkits/ml_model/sdk_model.hpp>
 
 #include <unity/toolkits/nearest_neighbors/distances.hpp>
 #include <unity/toolkits/nearest_neighbors/unity_nearest_neighbors.hpp>
@@ -68,7 +68,6 @@ void register_functions(toolkit_function_registry& registry) {
   registry.register_toolkit_function(turi::distances::get_toolkit_function_registration(), "_distances");
   registry.register_toolkit_function(turi::image_util::get_toolkit_function_registration());
   registry.register_toolkit_function(turi::ml_model_sdk::get_toolkit_function_registration());
-  registry.register_toolkit_function(turi::sdk_model::get_toolkit_function_registration());
   registry.register_toolkit_function(turi::pattern_mining::get_toolkit_function_registration());
   registry.register_toolkit_function(turi::sdk_model::activity_classification::get_toolkit_function_registration());
 }

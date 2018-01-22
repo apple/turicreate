@@ -19,7 +19,6 @@
 #include <ml_data/ml_data.hpp>
 
 // Toolkits
-#include <unity/toolkits/ml_model/ml_model.hpp>
 #include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
 #include <toolkits/supervised_learning/unity_supervised_learning.hpp>
 #include <toolkits/supervised_learning/supervised_learning.hpp>

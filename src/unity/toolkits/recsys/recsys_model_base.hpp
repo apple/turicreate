@@ -19,7 +19,7 @@
 #include <util/fast_top_k.hpp>
 
 // Interfaces
-#include <unity/toolkits/ml_model/ml_model.hpp>
+#include <unity/lib/extensions/ml_model.hpp>
 #include <export.hpp>
 
 namespace turi {

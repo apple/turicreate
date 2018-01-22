@@ -23,7 +23,7 @@
 #include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>
 
 // Interfaces
-#include <unity/toolkits/ml_model/ml_model.hpp>
+#include <unity/lib/extensions/ml_model.hpp>
 #include <unity/toolkits/options/option_manager.hpp>
 #include <unity/lib/variant_deep_serialize.hpp>
 #include <globals/globals.hpp>

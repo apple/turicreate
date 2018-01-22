@@ -234,6 +234,8 @@ std::vector<toolkit_function_specification> get_toolkit_function_registration();
 std::map<std::string, variant_type> _toolkits_get_default_options(
                        std::string model_name);
 
-}// ml_model_sdk
-} // supervised_learning
+}  // namespace ml_model_sdk
+
+}  // namespace turi
+
 #endif
