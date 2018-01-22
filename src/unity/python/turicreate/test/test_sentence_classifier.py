@@ -164,6 +164,10 @@ class SentenceClassifierCreateTests(unittest.TestCase):
         model = tc.sentence_classifier.create(train, target='rating', validation_set=None)
         self.assertTrue(isinstance(model, tc.sentence_classifier.SentenceClassifier))
 
+        # Test 'auto' validation set
+        model = tc.sentence_classifier.create(train, target='rating', validation_set='auto')
+        self.assertTrue(isinstance(model, tc.sentence_classifier.SentenceClassifier))
+
     def test_sentiment_classifier(self):
         m = self.model
         self.assertEqual(m.classifier.classes, [1, 2, 3, 5])
