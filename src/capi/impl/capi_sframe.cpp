@@ -3,6 +3,7 @@
 #include <capi/impl/capi_flexible_type.hpp>
 #include <capi/impl/capi_flex_dict.hpp>
 #include <capi/impl/capi_flex_list.hpp>
+#include <capi/impl/capi_flex_enum_list.hpp>
 #include <capi/impl/capi_sarray.hpp>
 #include <capi/impl/capi_sframe.hpp>
 
@@ -371,19 +372,31 @@ EXPORT tc_sframe* tc_sframe_filter_by(const tc_sframe* sf, const tc_sarray* valu
   ERROR_HANDLE_END(error, NULL);
 }
 
-/*
-EXPORT tc_sframe* tc_sframe_pack_columns_vector(const tc_sframe* sf, const tc_flex_list* columns, const char* column_name, tc_ft_type_enum type, tc_flexible_type* value, tc_error** error){
+
+EXPORT tc_sframe* tc_sframe_pack_columns_vector(
+    const tc_sframe* sf, const tc_flex_list* columns, const char* column_name, tc_ft_type_enum type, tc_flexible_type* value, tc_error** error){
   ERROR_HANDLE_START();
 
-  return new_tc_sframe(sf->value.pack_columns(columns->value, column_name, type, value->value));
+  std::vector<std::string> column_transform;
+
+  for (const turi::flexible_type& i : columns->value){
+    if(i.get_type() != turi::flex_type_enum::STRING){
+      set_error(error, "columns is not of type str");
+      return NULL;
+    }
+    column_transform.push_back(i.get<turi::flex_string>());
+  }
+
+  return new_tc_sframe(sf->value.pack_columns(column_transform, column_name, static_cast<turi::flex_type_enum>(type), value->value));
 
   ERROR_HANDLE_END(error, NULL);
 }
 
+
 EXPORT tc_sframe* tc_sframe_pack_columns_string(const tc_sframe* sf, const char* column_prefix, const char* column_name, tc_ft_type_enum type, tc_flexible_type* value, tc_error** error){
   ERROR_HANDLE_START();
 
-  return new_tc_sframe(sf->value.pack_columns(column_prefix, column_name, type, value->value));
+  return new_tc_sframe(sf->value.pack_columns(column_prefix, column_name, static_cast<turi::flex_type_enum>(type), value->value));
 
   ERROR_HANDLE_END(error, NULL);
 }
@@ -391,11 +404,22 @@ EXPORT tc_sframe* tc_sframe_pack_columns_string(const tc_sframe* sf, const char*
 EXPORT tc_sframe* tc_sframe_split_datetime(const tc_sframe* sf, const char* expand_column, const char* column_prefix, const tc_flex_list* limit, bool tzone, tc_error** error){
   ERROR_HANDLE_START();
 
-  return new_tc_sframe(sf->value.split_datetime(expand_column, column_prefix, limit->value, tzone));
+  std::vector<std::string> limit_transform;
+
+  for (const turi::flexible_type& i : limit->value){
+    if(i.get_type() != turi::flex_type_enum::STRING){
+      set_error(error, "limit is not of type str");
+      return NULL;
+    }
+
+    limit_transform.push_back(i.get<turi::flex_string>());
+  }
+
+  return new_tc_sframe(sf->value.split_datetime(expand_column, column_prefix, limit_transform, tzone));
 
   ERROR_HANDLE_END(error, NULL);
 }
-*/
+
 EXPORT tc_sframe* tc_sframe_unpack(const tc_sframe* sf, const char* unpack_column, tc_error** error){
   ERROR_HANDLE_START();
 
@@ -403,15 +427,21 @@ EXPORT tc_sframe* tc_sframe_unpack(const tc_sframe* sf, const char* unpack_colum
 
   ERROR_HANDLE_END(error, NULL);
 }
-/*
-EXPORT tc_sframe* tc_sframe_unpack_detailed(const tc_sframe* sf, const char* unpack_column, const char* column_prefix, const tc_flex_list* type, tc_flexible_type* value, const tc_flex_list* limit, tc_error** error){
+
+EXPORT tc_sframe* tc_sframe_unpack_detailed(const tc_sframe* sf, const char* unpack_column, const char* column_prefix, const tc_flex_enum_list* type, tc_flexible_type* value, const tc_flex_list* limit, tc_error** error){
   ERROR_HANDLE_START();
 
-  return new_tc_sframe(sf->value.unpack(unpack_column, column_prefix, type->value, value->value, limit->value));
+  std::vector<turi::flex_type_enum> type_transform;
+
+  for (const turi::flex_type_enum& i : type->value) {
+    type_transform.push_back(i);
+  }
+
+  return new_tc_sframe(sf->value.unpack(unpack_column, column_prefix, type_transform, value->value, limit->value));
 
   ERROR_HANDLE_END(error, NULL);
 }
-*/
+
 EXPORT tc_sframe* tc_sframe_stack(const tc_sframe* sf, const char* column_name, tc_error** error){
   ERROR_HANDLE_START();
 
@@ -435,15 +465,27 @@ EXPORT tc_sframe* tc_sframe_unstack(const tc_sframe* sf, const char* column, con
 
   ERROR_HANDLE_END(error, NULL);
 }
-/*
-EXPORT tc_sframe* tc_sframe_unstack_vector(const tc_sframe* sf, const tc_flex_list* columns, const char* new_column_name, tc_error** error){
+
+EXPORT tc_sframe* tc_sframe_unstack_vector(
+    const tc_sframe* sf, const tc_flex_list* columns, const char* new_column_name, tc_error** error){
   ERROR_HANDLE_START();
 
-  return new_tc_sframe(sf->value.unstack(columns->value, new_column_name));
+  std::vector<std::string> columns_transform;
+
+  for (const turi::flexible_type& i : columns->value){
+    if(i.get_type() != turi::flex_type_enum::STRING){
+      set_error(error, "Columns is not of type str");
+      return NULL;
+    }
+
+    columns_transform.push_back(i.get<turi::flex_string>());
+  }
+
+  return new_tc_sframe(sf->value.unstack(columns_transform, new_column_name));
 
   ERROR_HANDLE_END(error, NULL);
 }
-*/
+
 
 EXPORT tc_sframe* tc_sframe_unique(const tc_sframe* sf, tc_error** error){
   ERROR_HANDLE_START();
@@ -460,11 +502,22 @@ EXPORT tc_sframe* tc_sframe_sort_single_column(const tc_sframe* sf, const char* 
 
   ERROR_HANDLE_END(error, NULL);
 }
-/*
+
 EXPORT tc_sframe* tc_sframe_dropna(const tc_sframe* sf, const tc_flex_list* columns, const char* how, tc_error** error){
   ERROR_HANDLE_START();
 
-  return new_tc_sframe(sf->value.dropna(columns->value, how));
+  std::vector<std::string> columns_transform;
+
+  for (const turi::flexible_type& i : columns->value){
+    if(i.get_type() != turi::flex_type_enum::STRING){
+      set_error(error, "Columns is not of type str");
+      return NULL;
+    }
+
+    columns_transform.push_back(i.get<turi::flex_string>());
+  }
+
+  return new_tc_sframe(sf->value.dropna(columns_transform, how));
 
   ERROR_HANDLE_END(error, NULL);
 }
@@ -472,27 +525,38 @@ EXPORT tc_sframe* tc_sframe_dropna(const tc_sframe* sf, const tc_flex_list* colu
 EXPORT tc_sframe* tc_sframe_sort_multiple_columns(const tc_sframe* sf, const tc_flex_list* columns, bool ascending, tc_error** error){
   ERROR_HANDLE_START();
 
-  return new_tc_sframe(sf->value.sort(columns->value, ascending));
+  std::vector<std::string> columns_transform;
+
+  for (const turi::flexible_type& i : columns->value){
+    if(i.get_type() != turi::flex_type_enum::STRING){
+      set_error(error, "Columns is not of type str");
+      return NULL;
+    }
+
+    columns_transform.push_back(i.get<turi::flex_string>());
+  }
+
+  return new_tc_sframe(sf->value.sort(columns_transform, ascending));
 
   ERROR_HANDLE_END(error, NULL);
 }
 
-EXPORT tc_sframe* tc_sframe_slice(const tc_sframe* sf, uint64_t start, uint64_t end, tc_error** error){
+
+EXPORT tc_sframe* tc_sframe_slice(const tc_sframe* sf, const uint64_t start, const uint64_t end, tc_error** error){
   ERROR_HANDLE_START();
 
-  return new_tc_sframe(sf->value[start, end]);
+  return new_tc_sframe(sf->value[{static_cast<long long>(start), static_cast<long long>(end)}]);
 
   ERROR_HANDLE_END(error, NULL);
 }
 
-EXPORT tc_sframe* tc_sframe_slice_stride(const tc_sframe* sf, uint64_t start, uint64_t end, uint64_t stride, tc_error** error){
+EXPORT tc_sframe* tc_sframe_slice_stride(const tc_sframe* sf, const uint64_t start, const uint64_t end, const uint64_t stride, tc_error** error){
   ERROR_HANDLE_START();
 
-  return new_tc_sframe(sf->value[start, end, stride]);
+  return new_tc_sframe(sf->value[{static_cast<long long>(start), static_cast<long long>(end), static_cast<long long>(stride)}]);
 
   ERROR_HANDLE_END(error, NULL);
 }
-*/
 
 EXPORT tc_sframe* tc_sframe_fillna(const tc_sframe* data,const char* column,const tc_flexible_type* value, tc_error** error){
   ERROR_HANDLE_START();

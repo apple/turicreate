@@ -7,9 +7,9 @@
 #include <flexible_type/flexible_type.hpp>
 #include <export.hpp>
 
-extern "C" { 
+extern "C" {
 
-EXPORT tc_flexible_type* tc_ft_create_empty(tc_error** error) { 
+EXPORT tc_flexible_type* tc_ft_create_empty(tc_error** error) {
   ERROR_HANDLE_START();
 
   return new_tc_flexible_type();
@@ -21,7 +21,7 @@ EXPORT tc_flexible_type* tc_ft_create_copy(const tc_flexible_type* ft, tc_error*
   ERROR_HANDLE_START();
 
   return new_tc_flexible_type(ft->value);
-  
+
   ERROR_HANDLE_END(error, NULL);
 }
 
@@ -61,9 +61,9 @@ EXPORT tc_flexible_type* tc_ft_create_from_int64(int64_t v, tc_error** error) {
 EXPORT tc_flexible_type* tc_ft_create_from_flex_list(const tc_flex_list* fl, tc_error** error) {
   ERROR_HANDLE_START();
 
-  CHECK_NOT_NULL(error, fl, "Flex list", NULL); 
+  CHECK_NOT_NULL(error, fl, "Flex list", NULL);
 
-  return new_tc_flexible_type(fl->value); 
+  return new_tc_flexible_type(fl->value);
 
   ERROR_HANDLE_END(error, NULL);
 }
@@ -87,7 +87,7 @@ EXPORT tc_flexible_type* tc_ft_create_from_image(const tc_flex_image* image, tc_
 
 /****************************************************/
 
-EXPORT tc_ft_type_enum tc_ft_type(const tc_flexible_type* ft) { 
+EXPORT tc_ft_type_enum tc_ft_type(const tc_flexible_type* ft) {
   return static_cast<tc_ft_type_enum>(ft->value.get_type());
 }
 
@@ -112,17 +112,17 @@ EXPORT int tc_ft_is_image(const tc_flexible_type* ft) {
 EXPORT double tc_ft_double(const tc_flexible_type* ft, tc_error** error) {
   ERROR_HANDLE_START();
 
-  CHECK_NOT_NULL(error, ft, "Flexible type", NULL); 
+  CHECK_NOT_NULL(error, ft, "Flexible type", NULL);
 
   if(ft->value.get_type() != turi::flex_type_enum::FLOAT) {
     set_error(error, "Flexible type not a double.");
-    return 0; 
+    return 0;
   }
 
-  return ft->value.get<double>(); 
-  
+  return ft->value.get<double>();
+
   ERROR_HANDLE_END(error, NULL);
-} 
+}
 
 EXPORT int64_t tc_ft_int64(const tc_flexible_type* ft, tc_error** error) {
   ERROR_HANDLE_START();
@@ -131,11 +131,11 @@ EXPORT int64_t tc_ft_int64(const tc_flexible_type* ft, tc_error** error) {
 
   if(ft->value.get_type() != turi::flex_type_enum::INTEGER) {
     set_error(error, "Flexible type not an integer.");
-    return 0; 
+    return 0;
   }
 
   return ft->value.get<int64_t>();
-  
+
   ERROR_HANDLE_END(error, NULL);
 }
 
@@ -144,18 +144,18 @@ EXPORT uint64_t tc_ft_string_length(const tc_flexible_type* ft, tc_error** error
 
   if(ft == NULL) {
     set_error(error, "Flexible type is null");
-    return NULL; 
+    return NULL;
   }
 
   if(ft->value.get_type() != turi::flex_type_enum::STRING) {
     set_error(error, "Flexible type not a string.");
-    return 0; 
+    return 0;
   }
 
   return ft->value.get<turi::flex_string>().size();
-  
+
   ERROR_HANDLE_END(error, NULL);
-} 
+}
 
 EXPORT const char* tc_ft_string_data(const tc_flexible_type* ft, tc_error** error) {
   ERROR_HANDLE_START();
@@ -164,26 +164,26 @@ EXPORT const char* tc_ft_string_data(const tc_flexible_type* ft, tc_error** erro
 
   if(ft->value.get_type() != turi::flex_type_enum::STRING) {
     set_error(error, "Flexible type not a string.");
-    return NULL; 
+    return NULL;
   }
 
   return ft->value.get<turi::flex_string>().data();
-  
+
   ERROR_HANDLE_END(error, NULL);
 }
 
 EXPORT tc_flex_list* tc_ft_flex_list(const tc_flexible_type* ft, tc_error** error) {
   ERROR_HANDLE_START();
-  
+
   CHECK_NOT_NULL(error, ft, "Flexible type", NULL);
-  
+
   if(ft->value.get_type() != turi::flex_type_enum::LIST) {
     set_error(error, "Flexible type not a list.");
-    return NULL; 
+    return NULL;
   }
 
   return new_tc_flex_list(ft->value.get<turi::flex_list>());
-  
+
   ERROR_HANDLE_END(error, NULL);
 }
 
@@ -223,7 +223,7 @@ EXPORT tc_flexible_type* tc_ft_as_string(const tc_flexible_type* ft, tc_error** 
 
   CHECK_NOT_NULL(error, ft, "Flexible type", NULL);
 
-  return new_tc_flexible_type(ft->value.to<turi::flex_string>()); 
+  return new_tc_flexible_type(ft->value.to<turi::flex_string>());
 
   ERROR_HANDLE_END(error, NULL);
 }
@@ -237,5 +237,4 @@ EXPORT void tc_ft_destroy(tc_flexible_type* ft) {
 
 
 // close out the C++ condition.
-} 
-
+}

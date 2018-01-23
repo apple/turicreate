@@ -60,6 +60,11 @@ typedef struct tc_parameters_struct tc_parameters;
 struct tc_model_struct;
 typedef struct tc_model_struct tc_model;
 
+
+struct tc_flex_enum_list_struct;
+typedef struct tc_flex_enum_list_struct tc_flex_enum_list;
+
+
 /******************************************************************************/
 /*                                                                            */
 /*    INITIALIZATION                                                          */
@@ -520,7 +525,7 @@ tc_sframe* tc_sframe_pack_columns_vector(const tc_sframe* sf, const tc_flex_list
 tc_sframe* tc_sframe_pack_columns_string(const tc_sframe* sf, const char* column_prefix, const char* column_name, tc_ft_type_enum type, tc_flexible_type* value, tc_error**);
 tc_sframe* tc_sframe_split_datetime(const tc_sframe* sf, const char* expand_column, const char* column_prefix, const tc_flex_list* limit, bool tzone, tc_error**);
 tc_sframe* tc_sframe_unpack(const tc_sframe* sf, const char* unpack_column, tc_error**);
-tc_sframe* tc_sframe_unpack_detailed(const tc_sframe* sf, const char* unpack_column, const char* column_prefix, const tc_flex_list* type, tc_flexible_type* value, const tc_flex_list* limit, tc_error**);
+tc_sframe* tc_sframe_unpack_detailed(const tc_sframe* sf, const char* unpack_column, const char* column_prefix, const tc_flex_enum_list* type, tc_flexible_type* value, const tc_flex_list* limit, tc_error** error);
 tc_sframe* tc_sframe_stack(const tc_sframe* sf, const char* column_name, tc_error**);
 tc_sframe* tc_sframe_stack_and_rename(const tc_sframe* sf, const char* column_name, const char* new_column_name, bool drop_na, tc_error**);
 tc_sframe* tc_sframe_unstack(const tc_sframe* sf, const char* column, const char* new_column_name, tc_error**);
@@ -529,8 +534,8 @@ tc_sframe* tc_sframe_unique(const tc_sframe* sf, tc_error**);
 tc_sframe* tc_sframe_sort_single_column(const tc_sframe* sf, const char* column, bool ascending, tc_error**);
 tc_sframe* tc_sframe_sort_multiple_columns(const tc_sframe* sf, const tc_flex_list* columns, bool ascending, tc_error**);
 tc_sframe* tc_sframe_dropna(const tc_sframe* sf, const tc_flex_list* columns, const char* how, tc_error**);
-tc_sframe* tc_sframe_slice(const tc_sframe* sf, uint64_t start, uint64_t end, tc_error**);
-tc_sframe* tc_sframe_slice_stride(const tc_sframe* sf, uint64_t start, uint64_t end, uint64_t stride, tc_error**);
+tc_sframe* tc_sframe_slice(const tc_sframe* sf, const uint64_t start, const uint64_t end, tc_error**);
+tc_sframe* tc_sframe_slice_stride(const tc_sframe* sf, const uint64_t start, const uint64_t end, const uint64_t stride, tc_error**);
 
 // Whizbangery
 //

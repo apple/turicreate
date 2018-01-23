@@ -2,7 +2,6 @@
 #include <capi/impl/capi_error_handling.hpp>
 #include <capi/impl/capi_flexible_type.hpp>
 #include <capi/impl/capi_flex_list.hpp>
-#include <capi/impl/capi_flex_vec.hpp>
 #include <flexible_type/flexible_type.hpp>
 #include <capi/impl/capi_sarray.hpp>
 #include <export.hpp>
