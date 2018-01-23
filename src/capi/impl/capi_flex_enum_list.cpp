@@ -44,14 +44,10 @@ EXPORT uint64_t tc_flex_enum_list_add_element(tc_flex_enum_list* fl, const tc_ft
     return uint64_t(-1);
   }
 
-  if(ft == NULL) {
-    set_error(error, "tc_ft_type_enum instance null.");
-    return uint64_t(-1);
-  }
-
+  uint64_t pos = fl->value.size();
   fl->value.push_back(ft);
 
-  return uint64_t(0);
+  return uint64_t(pos);
 
   ERROR_HANDLE_END(error, uint64_t(-1));
 }
@@ -68,8 +64,6 @@ EXPORT tc_flexible_type* tc_flex_enum_list_extract_element(
     set_error(error, "tc_flex_enum_list instance null.");
     return NULL;
   }
-
-  if(*error) { return NULL; }
 
   if(index >= fl->value.size()) {
     set_error(error, "tc_flex_enum_list index out of bounds.");

@@ -248,6 +248,8 @@ EXPORT int tc_sframe_is_materialized(
     const tc_sframe* src, tc_error** error){
   ERROR_HANDLE_START();
 
+  CHECK_NOT_NULL(error, src, "sframe", NULL);
+
   return src->value.is_materialized();
 
   ERROR_HANDLE_END(error, NULL);
@@ -256,6 +258,8 @@ EXPORT int tc_sframe_is_materialized(
 EXPORT int tc_sframe_size_is_known(
     const tc_sframe* src, tc_error** error){
   ERROR_HANDLE_START();
+
+  CHECK_NOT_NULL(error, src, "sframe", NULL);
 
   return src->value.has_size();
 
@@ -266,6 +270,8 @@ EXPORT void tc_sframe_save_reference(
     const tc_sframe* src, const char* path, tc_error** error){
   ERROR_HANDLE_START();
 
+  CHECK_NOT_NULL(error, src, "sframe");
+
   src->value.save(path);
 
   ERROR_HANDLE_END(error);
@@ -273,6 +279,8 @@ EXPORT void tc_sframe_save_reference(
 
 EXPORT void tc_sframe_materialize(tc_sframe* src, tc_error** error){
   ERROR_HANDLE_START();
+
+  CHECK_NOT_NULL(error, src, "sframe");
 
   src->value.materialize();
 
@@ -282,6 +290,8 @@ EXPORT void tc_sframe_materialize(tc_sframe* src, tc_error** error){
 EXPORT bool tc_sframe_contains_column(
     const tc_sframe* src, const char* col_name, tc_error** error){
   ERROR_HANDLE_START();
+
+  CHECK_NOT_NULL(error, src, "sframe", NULL);
 
   return src->value.contains_column(col_name);
 
@@ -293,6 +303,8 @@ EXPORT tc_sframe* tc_sframe_sample(
     const tc_sframe* src, double fraction, uint64_t seed, tc_error** error){
   ERROR_HANDLE_START();
 
+  CHECK_NOT_NULL(error, src, "sframe", NULL);
+
   return new_tc_sframe(src->value.sample(fraction, seed));
 
   ERROR_HANDLE_END(error, NULL);
@@ -301,6 +313,9 @@ EXPORT tc_sframe* tc_sframe_sample(
 EXPORT void tc_sframe_replace_add_column(
     tc_sframe* sf, const char* name, const tc_sarray* new_column, tc_error** error){
   ERROR_HANDLE_START();
+
+  CHECK_NOT_NULL(error, sf, "sframe");
+  CHECK_NOT_NULL(error, new_column, "sarray");
 
   sf->value.replace_add_column(new_column->value, name);
 
@@ -311,6 +326,9 @@ EXPORT void tc_sframe_add_constant_column(
     tc_sframe* sf, const char* column_name, const tc_flexible_type* value, tc_error** error){
   ERROR_HANDLE_START();
 
+  CHECK_NOT_NULL(error, sf, "sframe");
+  CHECK_NOT_NULL(error, value, "tc_flexible_type");
+
   sf->value.add_column(value->value, column_name);
 
   ERROR_HANDLE_END(error);
@@ -319,6 +337,9 @@ EXPORT void tc_sframe_add_constant_column(
 EXPORT void tc_sframe_add_columns(
     tc_sframe* sf, const tc_sframe* other, tc_error** error){
   ERROR_HANDLE_START();
+
+  CHECK_NOT_NULL(error, sf, "sframe");
+  CHECK_NOT_NULL(error, other, "sframe");
 
   sf->value.add_columns(other->value);
 
@@ -329,6 +350,8 @@ EXPORT tc_sframe* tc_sframe_topk(
     const tc_sframe* src, const char* column_name, uint64_t k, bool reverse, tc_error** error){
   ERROR_HANDLE_START();
 
+  CHECK_NOT_NULL(error, src, "sframe", NULL);
+
   return new_tc_sframe(src->value.topk(column_name, k, reverse));
 
   ERROR_HANDLE_END(error, NULL);
@@ -336,6 +359,8 @@ EXPORT tc_sframe* tc_sframe_topk(
 
 EXPORT void tc_sframe_swap_columns(tc_sframe* sf, const char* column_1, const char* column_2, tc_error** error){
   ERROR_HANDLE_START();
+
+  CHECK_NOT_NULL(error, sf, "sframe");
 
   sf->value.swap_columns(column_1, column_2);
 
@@ -346,10 +371,9 @@ EXPORT void tc_sframe_rename_column(
     tc_sframe* sf, const char* old_name, const char* new_name, tc_error** error){
   ERROR_HANDLE_START();
 
-  std::map<std::string, std::string> m;
-  m.insert(std::pair<std::string, std::string>(old_name, new_name));
+  CHECK_NOT_NULL(error, sf, "sframe");
 
-  sf->value.rename(m);
+  sf->value.rename({ {std::string(old_name), std::string(new_name)} });
 
   ERROR_HANDLE_END(error);
 }
@@ -358,14 +382,34 @@ EXPORT void tc_sframe_rename_columns(
     tc_sframe* sf, const tc_flex_dict* name_mapping, tc_error** error){
   ERROR_HANDLE_START();
 
-  // TODO: write method to convert tc_flex_dict into map<str, str>
-  //sf->value.rename(name_mapping->value);
+  CHECK_NOT_NULL(error, sf, "sframe");
+  CHECK_NOT_NULL(error, name_mapping, "tc_flex_dict");
+
+  std::map<std::string, std::string> m;
+
+  for(auto p : name_mapping->value) {
+
+    if(p.first.get_type() != turi::flex_type_enum::STRING){
+      set_error(error, "entries are not of type str");
+    }
+
+    if(p.second.get_type() != turi::flex_type_enum::STRING){
+      set_error(error, "entries are not of type str");
+    }
+
+    m.insert(std::pair<std::string, std::string>(p.first.get<turi::flex_string>(), p.second.get<turi::flex_string>()));
+  }
+
+  sf->value.rename(m);
 
   ERROR_HANDLE_END(error);
 }
 
 EXPORT tc_sframe* tc_sframe_filter_by(const tc_sframe* sf, const tc_sarray* values, const char* column_name, bool exclude, tc_error** error){
   ERROR_HANDLE_START();
+
+  CHECK_NOT_NULL(error, sf, "sframe", NULL);
+  CHECK_NOT_NULL(error, values, "sarray", NULL);
 
   return new_tc_sframe(sf->value.filter_by(values->value, column_name, exclude));
 
@@ -376,6 +420,9 @@ EXPORT tc_sframe* tc_sframe_filter_by(const tc_sframe* sf, const tc_sarray* valu
 EXPORT tc_sframe* tc_sframe_pack_columns_vector(
     const tc_sframe* sf, const tc_flex_list* columns, const char* column_name, tc_ft_type_enum type, tc_flexible_type* value, tc_error** error){
   ERROR_HANDLE_START();
+
+  CHECK_NOT_NULL(error, sf, "sframe", NULL);
+  CHECK_NOT_NULL(error, columns, "flex_list", NULL);
 
   std::vector<std::string> column_transform;
 
@@ -396,6 +443,8 @@ EXPORT tc_sframe* tc_sframe_pack_columns_vector(
 EXPORT tc_sframe* tc_sframe_pack_columns_string(const tc_sframe* sf, const char* column_prefix, const char* column_name, tc_ft_type_enum type, tc_flexible_type* value, tc_error** error){
   ERROR_HANDLE_START();
 
+  CHECK_NOT_NULL(error, sf, "sframe", NULL);
+
   return new_tc_sframe(sf->value.pack_columns(column_prefix, column_name, static_cast<turi::flex_type_enum>(type), value->value));
 
   ERROR_HANDLE_END(error, NULL);
@@ -403,6 +452,8 @@ EXPORT tc_sframe* tc_sframe_pack_columns_string(const tc_sframe* sf, const char*
 
 EXPORT tc_sframe* tc_sframe_split_datetime(const tc_sframe* sf, const char* expand_column, const char* column_prefix, const tc_flex_list* limit, bool tzone, tc_error** error){
   ERROR_HANDLE_START();
+
+  CHECK_NOT_NULL(error, sf, "sframe", NULL);
 
   std::vector<std::string> limit_transform;
 
@@ -423,6 +474,8 @@ EXPORT tc_sframe* tc_sframe_split_datetime(const tc_sframe* sf, const char* expa
 EXPORT tc_sframe* tc_sframe_unpack(const tc_sframe* sf, const char* unpack_column, tc_error** error){
   ERROR_HANDLE_START();
 
+  CHECK_NOT_NULL(error, sf, "sframe", NULL);
+
   return new_tc_sframe(sf->value.unpack(unpack_column));
 
   ERROR_HANDLE_END(error, NULL);
@@ -430,6 +483,8 @@ EXPORT tc_sframe* tc_sframe_unpack(const tc_sframe* sf, const char* unpack_colum
 
 EXPORT tc_sframe* tc_sframe_unpack_detailed(const tc_sframe* sf, const char* unpack_column, const char* column_prefix, const tc_flex_enum_list* type, tc_flexible_type* value, const tc_flex_list* limit, tc_error** error){
   ERROR_HANDLE_START();
+
+  CHECK_NOT_NULL(error, sf, "sframe", NULL);
 
   std::vector<turi::flex_type_enum> type_transform;
 
@@ -445,6 +500,8 @@ EXPORT tc_sframe* tc_sframe_unpack_detailed(const tc_sframe* sf, const char* unp
 EXPORT tc_sframe* tc_sframe_stack(const tc_sframe* sf, const char* column_name, tc_error** error){
   ERROR_HANDLE_START();
 
+  CHECK_NOT_NULL(error, sf, "sframe", NULL);
+
   return new_tc_sframe(sf->value.stack(column_name, column_name));
 
   ERROR_HANDLE_END(error, NULL);
@@ -452,6 +509,8 @@ EXPORT tc_sframe* tc_sframe_stack(const tc_sframe* sf, const char* column_name, 
 
 EXPORT tc_sframe* tc_sframe_stack_and_rename(const tc_sframe* sf, const char* column_name, const char* new_column_name, bool drop_na, tc_error** error){
   ERROR_HANDLE_START();
+
+  CHECK_NOT_NULL(error, sf, "sframe", NULL);
 
   return new_tc_sframe(sf->value.stack(column_name, new_column_name, drop_na));
 
@@ -461,6 +520,8 @@ EXPORT tc_sframe* tc_sframe_stack_and_rename(const tc_sframe* sf, const char* co
 EXPORT tc_sframe* tc_sframe_unstack(const tc_sframe* sf, const char* column, const char* new_column_name, tc_error** error){
   ERROR_HANDLE_START();
 
+  CHECK_NOT_NULL(error, sf, "sframe", NULL);
+
   return new_tc_sframe(sf->value.unstack(column, new_column_name));
 
   ERROR_HANDLE_END(error, NULL);
@@ -469,6 +530,9 @@ EXPORT tc_sframe* tc_sframe_unstack(const tc_sframe* sf, const char* column, con
 EXPORT tc_sframe* tc_sframe_unstack_vector(
     const tc_sframe* sf, const tc_flex_list* columns, const char* new_column_name, tc_error** error){
   ERROR_HANDLE_START();
+
+  CHECK_NOT_NULL(error, sf, "sframe", NULL);
+  CHECK_NOT_NULL(error, columns, "flex_list", NULL);
 
   std::vector<std::string> columns_transform;
 
@@ -490,6 +554,8 @@ EXPORT tc_sframe* tc_sframe_unstack_vector(
 EXPORT tc_sframe* tc_sframe_unique(const tc_sframe* sf, tc_error** error){
   ERROR_HANDLE_START();
 
+  CHECK_NOT_NULL(error, sf, "sframe", NULL);
+
   return new_tc_sframe(sf->value.unique());
 
   ERROR_HANDLE_END(error, NULL);
@@ -498,6 +564,8 @@ EXPORT tc_sframe* tc_sframe_unique(const tc_sframe* sf, tc_error** error){
 EXPORT tc_sframe* tc_sframe_sort_single_column(const tc_sframe* sf, const char* column, bool ascending, tc_error** error){
   ERROR_HANDLE_START();
 
+  CHECK_NOT_NULL(error, sf, "sframe", NULL);
+
   return new_tc_sframe(sf->value.sort(column, ascending));
 
   ERROR_HANDLE_END(error, NULL);
@@ -505,6 +573,9 @@ EXPORT tc_sframe* tc_sframe_sort_single_column(const tc_sframe* sf, const char* 
 
 EXPORT tc_sframe* tc_sframe_dropna(const tc_sframe* sf, const tc_flex_list* columns, const char* how, tc_error** error){
   ERROR_HANDLE_START();
+
+  CHECK_NOT_NULL(error, sf, "sframe", NULL);
+  CHECK_NOT_NULL(error, columns, "flex_list", NULL);
 
   std::vector<std::string> columns_transform;
 
@@ -524,6 +595,9 @@ EXPORT tc_sframe* tc_sframe_dropna(const tc_sframe* sf, const tc_flex_list* colu
 
 EXPORT tc_sframe* tc_sframe_sort_multiple_columns(const tc_sframe* sf, const tc_flex_list* columns, bool ascending, tc_error** error){
   ERROR_HANDLE_START();
+
+  CHECK_NOT_NULL(error, sf, "sframe", NULL);
+  CHECK_NOT_NULL(error, columns, "flex_list", NULL);
 
   std::vector<std::string> columns_transform;
 
@@ -545,6 +619,8 @@ EXPORT tc_sframe* tc_sframe_sort_multiple_columns(const tc_sframe* sf, const tc_
 EXPORT tc_sframe* tc_sframe_slice(const tc_sframe* sf, const uint64_t start, const uint64_t end, tc_error** error){
   ERROR_HANDLE_START();
 
+  CHECK_NOT_NULL(error, sf, "sframe", NULL);
+
   return new_tc_sframe(sf->value[{static_cast<long long>(start), static_cast<long long>(end)}]);
 
   ERROR_HANDLE_END(error, NULL);
@@ -553,6 +629,8 @@ EXPORT tc_sframe* tc_sframe_slice(const tc_sframe* sf, const uint64_t start, con
 EXPORT tc_sframe* tc_sframe_slice_stride(const tc_sframe* sf, const uint64_t start, const uint64_t end, const uint64_t stride, tc_error** error){
   ERROR_HANDLE_START();
 
+  CHECK_NOT_NULL(error, sf, "sframe", NULL);
+
   return new_tc_sframe(sf->value[{static_cast<long long>(start), static_cast<long long>(end), static_cast<long long>(stride)}]);
 
   ERROR_HANDLE_END(error, NULL);
@@ -560,6 +638,9 @@ EXPORT tc_sframe* tc_sframe_slice_stride(const tc_sframe* sf, const uint64_t sta
 
 EXPORT tc_sframe* tc_sframe_fillna(const tc_sframe* data,const char* column,const tc_flexible_type* value, tc_error** error){
   ERROR_HANDLE_START();
+
+  CHECK_NOT_NULL(error, data, "sframe", NULL);
+  CHECK_NOT_NULL(error, value, "flexible_type", NULL);
 
   return new_tc_sframe(data->value.fillna(column, value->value));
 

@@ -14,11 +14,4 @@ static inline tc_flex_enum_list* new_tc_flex_enum_list() {
   return new tc_flex_enum_list();
 }
 
-template <typename T>
-static inline tc_flex_enum_list* new_tc_flex_enum_list(T&& value) {
-  tc_flex_enum_list* ret = new tc_flex_enum_list();
-  ret->value = std::move(value);
-  return ret;
-}
-
 #endif

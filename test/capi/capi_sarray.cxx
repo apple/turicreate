@@ -356,7 +356,6 @@ class capi_test_sarray {
     TS_ASSERT(error == NULL);
   };
 
-  //TODO
   void test_tc_op_sarray_ge_ft(){
     tc_error* error = NULL;
 
@@ -884,15 +883,45 @@ class capi_test_sarray {
 
   //TODO
   void test_tc_sarray_dict_trim_by_keys(){
+    tc_error* error = NULL;
+    std::vector<std::pair<std::string, std::string > > data
+      = { {"col1", "hello" },
+          {"col2", "cool" },
+          {"a",    "awesome" },
+          {"b",    "build" },
+          {"c",    "coolness" }
+         };
+
+    tc_flex_dict* test_flex_dict = tc_flex_dict_create();
+
+    for(auto p : data) {
+      tc_flexible_type* ft1 = tc_ft_create_from_cstring(p.first.c_str(), &error);
+      tc_flexible_type* ft2 = tc_ft_create_from_cstring(p.second.c_str(), &error);
+
+      tc_flex_dict_add_element(test_flex_dict, ft1, ft2, &error);
+
+      tc_ft_destroy(ft1);
+      tc_ft_destroy(ft2);
+    }
+
+    turi::flex_list lst1;
+
+    for (auto it = data.begin(); it!=data.end(); ++it) {
+        lst1.push_back(*it);
+    }
+
+    tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    turi::gl_sarray g1(lst1);
+
+    TS_ASSERT(g1 == )
 
   };
 
   //TODO
   void test_tc_sarray_dict_trim_by_value_range(){
-
+    tc_error* error = NULL;
   };
 
-  //TODO
   void test_tc_sarray_tc_sarray_max(){
     tc_error* error = NULL;
 
