@@ -1,0 +1,25 @@
+var classturi_1_1sframe__reader =
+[
+    [ "iterator", "classturi_1_1sframe__reader.html#aa6fb42f3f07190880ac210cd2b9067d2", null ],
+    [ "value_type", "classturi_1_1sframe__reader.html#a20cdffe54bc5bf2dd1a87fb83f300d3c", null ],
+    [ "sframe_reader", "classturi_1_1sframe__reader.html#a4a2a4078bf781e8a7382b133d0ab1bc1", null ],
+    [ "sframe_reader", "classturi_1_1sframe__reader.html#abfff57a51b6ae547b60497ec72ed98c1", null ],
+    [ "begin", "classturi_1_1sframe__reader.html#adc103218ae977ee3fa3b46d47700d613", null ],
+    [ "column_index", "classturi_1_1sframe__reader.html#ad1863cd130ecd8c2616cd7ab526dbdb9", null ],
+    [ "column_name", "classturi_1_1sframe__reader.html#ad5014f32c30795afcbae014c42317059", null ],
+    [ "column_type", "classturi_1_1sframe__reader.html#a2a2708aa470302051e94b406af59561f", null ],
+    [ "contains_column", "classturi_1_1sframe__reader.html#a2232d1a2a2c1e8165ffaf0f3a1a03912", null ],
+    [ "end", "classturi_1_1sframe__reader.html#a5f729f51083abcef27827d57851385a7", null ],
+    [ "init", "classturi_1_1sframe__reader.html#aba4de823399753f13e581d5ee2ef84a6", null ],
+    [ "init", "classturi_1_1sframe__reader.html#a0210d3a96886975b4edcc1239e0909a6", null ],
+    [ "num_columns", "classturi_1_1sframe__reader.html#ac5149bea2cd1ee32adda2f6ca30d4d55", null ],
+    [ "num_rows", "classturi_1_1sframe__reader.html#ad9070f1e52d89d062cf526039118b5c2", null ],
+    [ "num_segments", "classturi_1_1sframe__reader.html#a4e8a2430c192a9bb9f6d1f7c5bc3adf6", null ],
+    [ "operator=", "classturi_1_1sframe__reader.html#a00dad06e76d733d7b0ed703cebd85c59", null ],
+    [ "read_rows", "classturi_1_1sframe__reader.html#af5c699d2a0d709a457da479d4eedd62b", null ],
+    [ "read_rows", "classturi_1_1sframe__reader.html#a4feb7756ff08277218afd7eaafc7b818", null ],
+    [ "read_rows", "classturi_1_1sframe__reader.html#a23d2e36b85ee65f9921c882ebf3c3e2c", null ],
+    [ "reset_iterators", "classturi_1_1sframe__reader.html#ab8003689a903baa74c206c067d75bfd4", null ],
+    [ "segment_length", "classturi_1_1sframe__reader.html#ac8ae53fb4edba3f6d7d50ca245b6347b", null ],
+    [ "size", "classturi_1_1sframe__reader.html#a0dde8fe795539396653e1ba07cc49c2c", null ]
+];

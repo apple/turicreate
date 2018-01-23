@@ -1,0 +1,27 @@
+var dir_a31636a31dae8c942c4d5203009679db =
+[
+    [ "block_cache.hpp", "block__cache_8hpp_source.html", null ],
+    [ "buffered_writer.hpp", "buffered__writer_8hpp_source.html", null ],
+    [ "cache_stream.hpp", "cache__stream_8hpp_source.html", null ],
+    [ "cache_stream_sink.hpp", "cache__stream__sink_8hpp_source.html", null ],
+    [ "cache_stream_source.hpp", "cache__stream__source_8hpp_source.html", null ],
+    [ "curl_downloader.hpp", "curl__downloader_8hpp_source.html", null ],
+    [ "file_download_cache.hpp", "file__download__cache_8hpp_source.html", null ],
+    [ "file_handle_pool.hpp", "file__handle__pool_8hpp_source.html", null ],
+    [ "file_ownership_handle.hpp", "file__ownership__handle_8hpp_source.html", null ],
+    [ "fileio_constants.hpp", "fileio__constants_8hpp_source.html", null ],
+    [ "fixed_size_cache_manager.hpp", "fixed__size__cache__manager_8hpp_source.html", null ],
+    [ "fs_utils.hpp", "fs__utils_8hpp_source.html", null ],
+    [ "general_fstream.hpp", "general__fstream_8hpp_source.html", null ],
+    [ "general_fstream_sink.hpp", "general__fstream__sink_8hpp_source.html", null ],
+    [ "general_fstream_source.hpp", "general__fstream__source_8hpp_source.html", null ],
+    [ "get_s3_endpoint.hpp", "get__s3__endpoint_8hpp_source.html", null ],
+    [ "hdfs.hpp", "hdfs_8hpp_source.html", null ],
+    [ "read_caching_device.hpp", "read__caching__device_8hpp_source.html", null ],
+    [ "s3_api.hpp", "s3__api_8hpp_source.html", null ],
+    [ "s3_fstream.hpp", "s3__fstream_8hpp_source.html", null ],
+    [ "sanitize_url.hpp", "sanitize__url_8hpp_source.html", null ],
+    [ "set_curl_options.hpp", "set__curl__options_8hpp_source.html", null ],
+    [ "temp_files.hpp", "temp__files_8hpp_source.html", null ],
+    [ "union_fstream.hpp", "union__fstream_8hpp_source.html", null ]
+];

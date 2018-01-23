@@ -1,0 +1,25 @@
+var classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface =
+[
+    [ "linear_svm_scaled_logistic_opt_interface", "classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#a28e3ade85a211c2ca49ddbc9b58f31c2", null ],
+    [ "~linear_svm_scaled_logistic_opt_interface", "classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#acf0a52a52606f11310018eac1bbc177b", null ],
+    [ "compute_first_order_statistics", "classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#ab7c4948aa942cc111404808192d3daa2", null ],
+    [ "compute_function_value", "classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#a4331e42c96881812529200454aa23732", null ],
+    [ "compute_gradient", "classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#ae10f793f512345a1f0be8a0b31525176", null ],
+    [ "get_status", "classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#a6cabbf9cef155d94eb5c86e29f085673", null ],
+    [ "get_status_header", "classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#a9a83f4f2ce67e45959f0e18548a28048", null ],
+    [ "init_feature_rescaling", "classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#a1d8bfdc7776d4bf61393eae556e5cbe4", null ],
+    [ "num_classes", "classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#a81dfac215e0a87764883d323b81cfa36", null ],
+    [ "num_examples", "classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#aac85055b47d9e7677f238b63e3fa582e", null ],
+    [ "num_variables", "classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#aa11d246dec8f0011d806162bc97ef09e", null ],
+    [ "rescale_solution", "classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#a5b04a9ebe07fe1be3d545dabe002a841", null ],
+    [ "reset", "classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#af5aabe3bfc98f9c17652684e3c4c27b1", null ],
+    [ "set_class_weights", "classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#ad1ad7c28f80fc2f0cd5a12ca393c9570", null ],
+    [ "set_gamma", "classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#ac6c49fa8c18e5ab5969128328654e216", null ],
+    [ "set_threads", "classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#a6c942c7bbee7f7331b5a304e8f1188f5", null ],
+    [ "classes", "classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#a064301014e133a3101f03b21458e95d2", null ],
+    [ "examples", "classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#a9b52b846d338f52dbccc6e11fa4acebf", null ],
+    [ "feature_rescaling", "classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#a93955ff18e1eb6de5b0ee6a7b25d1b02", null ],
+    [ "features", "classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#afb23a8e249461b2e579dbed1176b7010", null ],
+    [ "gamma", "classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#a8b422c5fd46484ff7bbe29357c05b91a", null ],
+    [ "primal_variables", "classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#a1dbc26d4ad131a9075b6a0a302fc0204", null ]
+];

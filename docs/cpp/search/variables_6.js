@@ -1,0 +1,23 @@
+var searchData=
+[
+  ['feature_5findex',['feature_index',['../structturi_1_1ml__data__full__entry.html#a5b6914dccecf79dcd9d15d54fc97e838',1,'turi::ml_data_full_entry::feature_index()'],['../structturi_1_1v2_1_1ml__data__full__entry.html#af8eab4e176bce75cc97e8311a25d82d1',1,'turi::v2::ml_data_full_entry::feature_index()']]],
+  ['feature_5frescaling',['feature_rescaling',['../classturi_1_1supervised_1_1linear__regression__opt__interface.html#aff9afe48dd3996a72934ad0e4cc36cfb',1,'turi::supervised::linear_regression_opt_interface::feature_rescaling()'],['../classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#a93955ff18e1eb6de5b0ee6a7b25d1b02',1,'turi::supervised::linear_svm_scaled_logistic_opt_interface::feature_rescaling()'],['../classturi_1_1supervised_1_1logistic__regression__opt__interface.html#ab02ee1ebae3af30889d187437f3a4377',1,'turi::supervised::logistic_regression_opt_interface::feature_rescaling()']]],
+  ['features',['features',['../classturi_1_1supervised_1_1linear__regression__opt__interface.html#a86fa7ac6867b5088b0260cfd532beb01',1,'turi::supervised::linear_regression_opt_interface::features()'],['../classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#afb23a8e249461b2e579dbed1176b7010',1,'turi::supervised::linear_svm_scaled_logistic_opt_interface::features()']]],
+  ['field_5fids',['field_ids',['../structturi_1_1sgraph__compute_1_1vertex__partition__exchange.html#a41afeba8b12911916273ab63b4c45add',1,'turi::sgraph_compute::vertex_partition_exchange']]],
+  ['fileio_5finitial_5fcapacity_5fper_5ffile',['FILEIO_INITIAL_CAPACITY_PER_FILE',['../group__fileio.html#gafc09f445f1d03adfe77768722a423730',1,'turi::fileio']]],
+  ['fileio_5fmaximum_5fcache_5fcapacity',['FILEIO_MAXIMUM_CACHE_CAPACITY',['../group__fileio.html#ga72e2b97f180c904aca56ed113b5cee9a',1,'turi::fileio']]],
+  ['fileio_5fmaximum_5fcache_5fcapacity_5fper_5ffile',['FILEIO_MAXIMUM_CACHE_CAPACITY_PER_FILE',['../group__fileio.html#ga7788837045c8685fea964bfb62565d37',1,'turi::fileio']]],
+  ['fileio_5freader_5fbuffer_5fsize',['FILEIO_READER_BUFFER_SIZE',['../group__fileio.html#gaa0389579b7266afb2e8026ebec9d018e',1,'turi::fileio']]],
+  ['fileio_5fwriter_5fbuffer_5fsize',['FILEIO_WRITER_BUFFER_SIZE',['../group__fileio.html#ga7bb2701d37c920ce6c02cc1d186e4818',1,'turi::fileio']]],
+  ['fill_5fcallback',['fill_callback',['../structturi_1_1user__pagefault_1_1userpf__page__set.html#aaa07455c46258ea8d679a2598959e876',1,'turi::user_pagefault::userpf_page_set']]],
+  ['finite_5fdifference_5fepsilon',['FINITE_DIFFERENCE_EPSILON',['../group__optimization__config.html#gacb27f90ba4b479b8f6e5abedb8fcfb79',1,'turi::optimization']]],
+  ['flags',['flags',['../structturi_1_1v2__block__impl_1_1block__info.html#a51a80ee9f4b9895bb4413aba150783e4',1,'turi::v2_block_impl::block_info']]],
+  ['flex_5fundefined',['FLEX_UNDEFINED',['../namespaceturi.html#a239e289c661e697c9191abaaae05981d',1,'turi']]],
+  ['frame_5fof_5freference',['FRAME_OF_REFERENCE',['../namespaceturi_1_1integer__pack.html#a469aaaab343fcd36ed1a5edac0f1a73f',1,'turi::integer_pack']]],
+  ['frame_5fof_5freference_5fdelta',['FRAME_OF_REFERENCE_DELTA',['../namespaceturi_1_1integer__pack.html#ab6029a28883401085bf09362f8718fae',1,'turi::integer_pack']]],
+  ['frame_5fof_5freference_5fdelta_5fnegative',['FRAME_OF_REFERENCE_DELTA_NEGATIVE',['../namespaceturi_1_1integer__pack.html#a6fb52d9f877181f44e9b60b5dbe1fa5f',1,'turi::integer_pack']]],
+  ['frame_5fof_5freference_5fheader_5fmask',['FRAME_OF_REFERENCE_HEADER_MASK',['../namespaceturi_1_1integer__pack.html#aed56e383ca0976376362cf18ab72912e',1,'turi::integer_pack']]],
+  ['frame_5fof_5freference_5fheader_5fnum_5fbits',['FRAME_OF_REFERENCE_HEADER_NUM_BITS',['../namespaceturi_1_1integer__pack.html#a7452733259eb33a260aa8f102054dce1',1,'turi::integer_pack']]],
+  ['func_5fevals',['func_evals',['../structturi_1_1optimization_1_1__solver__return.html#a7be16b1fe707d988a8740648f89f0df7',1,'turi::optimization::_solver_return::func_evals()'],['../structturi_1_1optimization_1_1__ls__return.html#a62689862e41d648077654227f1e4c29e',1,'turi::optimization::_ls_return::func_evals()']]],
+  ['func_5fvalue',['func_value',['../structturi_1_1optimization_1_1__solver__return.html#a42be6076991b8526834277bad6d9c484',1,'turi::optimization::_solver_return']]]
+];

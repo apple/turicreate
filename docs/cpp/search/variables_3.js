@@ -1,0 +1,23 @@
+var searchData=
+[
+  ['classes',['classes',['../classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#a064301014e133a3101f03b21458e95d2',1,'turi::supervised::linear_svm_scaled_logistic_opt_interface::classes()'],['../structturi_1_1toolkit__function__invocation.html#aad7ab6fe8485616b6b2a80ded0ca2a8c',1,'turi::toolkit_function_invocation::classes()']]],
+  ['coefs',['coefs',['../classturi_1_1supervised_1_1linear__regression.html#ac92df1840540edd18bd0bd1c349983fb',1,'turi::supervised::linear_regression::coefs()'],['../classturi_1_1supervised_1_1linear__svm.html#acda8cd069f59ea73006a0aaa695d5246',1,'turi::supervised::linear_svm::coefs()'],['../classturi_1_1supervised_1_1logistic__regression.html#a555669ac208821231c3b7c114043e4c9',1,'turi::supervised::logistic_regression::coefs()']]],
+  ['column_5ffiles',['column_files',['../structturi_1_1sframe__index__file__information.html#a7198889333d7ee562bfd6fb774a1c98e',1,'turi::sframe_index_file_information']]],
+  ['column_5findex',['column_index',['../structturi_1_1ml__data__full__entry.html#a8bbb6363f76cd463d65817c4d1bfa56a',1,'turi::ml_data_full_entry::column_index()'],['../structturi_1_1ml__data__entry.html#afee0a3e37e9b96969fed9520944d1a91',1,'turi::ml_data_entry::column_index()'],['../structturi_1_1v2_1_1ml__data__full__entry.html#acb2f6083c0295300421c6b7dd707f51b',1,'turi::v2::ml_data_full_entry::column_index()'],['../structturi_1_1v2_1_1ml__data__entry.html#aceb41e07477baf2d436b4a11e57953fc',1,'turi::v2::ml_data_entry::column_index()']]],
+  ['column_5fname',['column_name',['../classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#a1cbee7049d3bd8bc7f033d520738a200',1,'turi::v2::ml_data_internal::column_indexer']]],
+  ['column_5fnames',['column_names',['../structturi_1_1sframe__index__file__information.html#a1f7ba9b0f34c39f62d6f5ecdd80e13ca',1,'turi::sframe_index_file_information']]],
+  ['column_5fnumbers',['column_numbers',['../structturi_1_1groupby__aggregate__impl_1_1group__descriptor.html#ac57529cc6d2e2bf9bee46c5cb48f04b9',1,'turi::groupby_aggregate_impl::group_descriptor']]],
+  ['column_5ftype_5fhints',['column_type_hints',['../structturi_1_1csv__file__handling__options.html#ad33a62ad07f3055d53a568320f31248d',1,'turi::csv_file_handling_options']]],
+  ['columns',['columns',['../structturi_1_1group__index__file__information.html#ab538b1e23db8d0f8f0f43598f30d7eaa',1,'turi::group_index_file_information']]],
+  ['comment_5fchar',['comment_char',['../structturi_1_1csv__line__tokenizer.html#a604e9d5d369f40c7b7b3858cbe2d6cbf',1,'turi::csv_line_tokenizer']]],
+  ['compression_5fdisable_5fthreshold',['COMPRESSION_DISABLE_THRESHOLD',['../group__sframe__main.html#ga24b7d344bc4cb3d49e53eb022da16599',1,'turi']]],
+  ['constant_5fdata_5fsize',['constant_data_size',['../structturi_1_1ml__data__internal_1_1row__metadata.html#aa06c89bd55192a2735d5f0a6b34e90d1',1,'turi::ml_data_internal::row_metadata::constant_data_size()'],['../structturi_1_1v2_1_1ml__data__internal_1_1row__metadata.html#a69e2e5e993c4fc9835766c5911c8b947',1,'turi::v2::ml_data_internal::row_metadata::constant_data_size()']]],
+  ['constructor',['constructor',['../structturi_1_1toolkit__class__specification.html#a83a8607b6a21643e713a77e903612e9b',1,'turi::toolkit_class_specification']]],
+  ['content_5ftype',['content_type',['../structturi_1_1index__file__information.html#a2930fe0ba4f1cbaaa43e7df393f4ced0',1,'turi::index_file_information::content_type()'],['../structturi_1_1v2__block__impl_1_1block__info.html#a97f7a87f2de482262c9215029a90325c',1,'turi::v2_block_impl::block_info::content_type()']]],
+  ['contents',['contents',['../classturi_1_1any_1_1holder.html#a63d1109ccbcaffdffaa7d69af7b306d6',1,'turi::any::holder']]],
+  ['continue_5fon_5ffailure',['continue_on_failure',['../structturi_1_1csv__file__handling__options.html#a5fc63f4383d4e9603c0990785d7a2854',1,'turi::csv_file_handling_options']]],
+  ['current_5fblock_5findex',['current_block_index',['../classturi_1_1v2_1_1ml__data__iterator__base.html#a02affeb043b7bde7f2d13dc1ff69a921',1,'turi::v2::ml_data_iterator_base']]],
+  ['current_5fin_5fblock_5findex',['current_in_block_index',['../classturi_1_1v2_1_1ml__data__iterator__base.html#a269c8c416a956120ab991727ca2febca',1,'turi::v2::ml_data_iterator_base']]],
+  ['current_5frow_5findex',['current_row_index',['../classturi_1_1v2_1_1ml__data__iterator__base.html#aee511d0f1b45c9cb644d28941b47815a',1,'turi::v2::ml_data_iterator_base']]],
+  ['currently_5fin_5ftrial_5fmode',['currently_in_trial_mode',['../classturi_1_1factorization_1_1factorization__sgd__interface.html#adaae959ce15c009b6af71b6edceca73a',1,'turi::factorization::factorization_sgd_interface']]]
+];
