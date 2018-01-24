@@ -22,6 +22,7 @@ set(VISUALIZATION_SOURCES
 make_library(unity_core
   SOURCES
     api/function_closure_info.cpp
+    extensions/model_base.cpp
     extensions/ml_model.cpp
     variant_converter.cpp
     variant.cpp
@@ -39,7 +40,6 @@ make_library(unity_core
     unity_sgraph.cpp
     unity_sketch.cpp
     gl_datatype_registration.cpp
-    toolkit_class_base.cpp
     gl_sgraph.cpp
     gl_gframe.cpp
     gl_sarray.cpp

@@ -305,14 +305,14 @@ variant_map_type evaluate(variant_map_type& params){
 /**
  * List keys
  */
-variant_map_type list_keys(variant_map_type& params){
+variant_map_type list_fields(variant_map_type& params){
   log_func_entry();
   variant_map_type ret;
 
   std::shared_ptr<supervised_learning_model_base> model
                           = get_supervised_learning_model(params, "model");
 
-  for (const auto& k: model->list_keys()) {
+  for (const auto& k: model->list_fields()) {
     ret[k] = "";
   }
   return ret;
@@ -432,7 +432,7 @@ REGISTER_FUNCTION(get_current_options, "params");
 REGISTER_FUNCTION(get_value, "params");
 REGISTER_FUNCTION(is_trained, "params");
 REGISTER_FUNCTION(add_or_update_state, "params");
-REGISTER_FUNCTION(list_keys, "params");
+REGISTER_FUNCTION(list_fields, "params");
 REGISTER_FUNCTION(get_option_value, "params");
 REGISTER_FUNCTION(extract_feature, "params");
 REGISTER_FUNCTION(_fast_predict, "model", "rows", "output_type", 

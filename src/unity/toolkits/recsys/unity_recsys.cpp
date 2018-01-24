@@ -5,7 +5,6 @@
  */
 #include <serialization/serialization_includes.hpp>
 #include <fileio/temp_files.hpp>
-#include <unity/lib/api/model_interface.hpp>
 #include <unity/lib/toolkit_function_specification.hpp>
 #include <unity/lib/toolkit_util.hpp>
 #include <unity/lib/unity_base_types.hpp>
@@ -287,7 +286,7 @@ variant_map_type list_fields(variant_map_type& params) {
 
   std::set<std::string> fields;
 
-  for(const std::string& s : model->list_keys())
+  for(const std::string& s : model->list_fields())
     fields.insert(s);
 
   variant_map_type ret;

@@ -137,7 +137,7 @@ variant_map_type get_value(variant_map_type& params) {
 /**
  * List all keys in the model.
   */
-variant_map_type list_keys(variant_map_type& params) {
+variant_map_type list_fields(variant_map_type& params) {
   log_func_entry();
   variant_map_type ret;
 
@@ -154,7 +154,7 @@ variant_map_type list_keys(variant_map_type& params) {
   }
 
   // loop through the parameters and record in the return object
-  for (const auto& k : model->list_keys()) {
+  for (const auto& k : model->list_fields()) {
     ret[k] = "";
   }
 
@@ -346,7 +346,7 @@ BEGIN_FUNCTION_REGISTRATION
 REGISTER_FUNCTION(get_current_options, "params")
 REGISTER_FUNCTION(training_stats, "params")
 REGISTER_FUNCTION(get_value, "params")
-REGISTER_FUNCTION(list_keys, "params")
+REGISTER_FUNCTION(list_fields, "params")
 REGISTER_FUNCTION(train, "params")
 REGISTER_FUNCTION(query, "params")
 REGISTER_FUNCTION(similarity_graph, "params")

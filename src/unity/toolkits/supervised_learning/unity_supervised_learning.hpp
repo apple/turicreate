@@ -163,7 +163,7 @@ variant_map_type evaluate(variant_map_type& params);
  * \property[in] model_name  Name of the model.
  *
  */
-variant_map_type list_keys(variant_map_type& params);
+variant_map_type list_fields(variant_map_type& params);
 
 /**
  * Is this model trained?

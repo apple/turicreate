@@ -71,7 +71,7 @@ variant_map_type get_value(variant_map_type& params);
  * \property[in] model_name  Name of the model.
  *
  */
-variant_map_type list_keys(variant_map_type& params);
+variant_map_type list_fields(variant_map_type& params);
 
 /**
  * Creation function for nearest neighbors reference objects. Checks for errors

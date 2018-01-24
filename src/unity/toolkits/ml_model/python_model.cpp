@@ -6,8 +6,8 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <unity/lib/toolkit_function_macros.hpp>
 #include <unity/lib/toolkit_class_macros.hpp>
+#include <unity/lib/extensions/model_base.hpp>
 #include <fileio/temp_files.hpp>
 
 
@@ -16,7 +16,7 @@ namespace python_model {
 
 const size_t PICKLER_READ_WRITE_BUFFER_SIZE = 65536;
 
-class python_model : public toolkit_class_base {
+class python_model : public model_base {
 
   static constexpr size_t PYTHON_MODEL_VERSION = 0;
 

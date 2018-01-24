@@ -39,11 +39,7 @@ EXPORT tc_model* tc_model_new(const char* model_name, tc_error** error) {
   std::shared_ptr<turi::model_base> model 
     = turi::get_unity_global_singleton()->create_toolkit_class(model_name); 
 
-  std::shared_ptr<turi::toolkit_class_base> t_model; 
-
-  t_model = std::dynamic_pointer_cast<turi::toolkit_class_base>(model);
-
-  return new_tc_model(t_model);  
+  return new_tc_model(std::move(model));
 
   ERROR_HANDLE_END(error, NULL);
 }

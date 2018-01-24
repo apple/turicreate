@@ -9,12 +9,10 @@
 #include <unity/lib/variant.hpp>
 #include <unity/lib/unity_base_types.hpp>
 #include <unity/lib/toolkit_util.hpp>
-#include <unity/lib/toolkit_class_base.hpp>
 #include <unity/lib/toolkit_function_specification.hpp>
 #include <unity/lib/toolkit_class_macros.hpp>
 
-#include <unity/lib/api/model_interface.hpp>
-#include <unity/lib/api/client_base_types.hpp>
+#include <unity/lib/extensions/model_base.hpp>
 #include <unity/toolkits/options/option_manager.hpp>
 #include <export.hpp>
 
@@ -62,7 +60,7 @@ namespace turi {
  *
  *
  */
-class EXPORT ml_model_base: public toolkit_class_base {
+class EXPORT ml_model_base: public model_base {
 
  public:
 
