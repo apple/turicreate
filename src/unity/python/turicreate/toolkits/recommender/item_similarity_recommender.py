@@ -13,6 +13,7 @@ from __future__ import absolute_import as _
 import turicreate as _turicreate
 from turicreate.toolkits.recommender.util import _Recommender
 from turicreate.toolkits._model import _get_default_options_wrapper
+from turicreate.cython.cy_server import QuietProgress
 
 def create(observation_data,
            user_id='user_id', item_id='item_id', target=None,
@@ -255,10 +256,8 @@ def create(observation_data,
 
     opts.update(kwargs)
 
-    if not verbose:
-        _turicreate.connect.main.get_server().set_log_progress(False)
-    response = _turicreate.extensions._recsys.train(opts)
-    _turicreate.connect.main.get_server().set_log_progress(True)
+    with QuietProgress(verbose):
+        response = _turicreate.extensions._recsys.train(opts)
 
     return ItemSimilarityRecommender(response['model'])
 

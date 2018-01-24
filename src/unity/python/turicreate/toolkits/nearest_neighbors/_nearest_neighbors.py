@@ -25,6 +25,7 @@ from turicreate.toolkits.distances._util import _convert_distance_names_to_funct
 from turicreate.toolkits.distances._util import _validate_composite_distance
 from turicreate.toolkits.distances._util import _scrub_composite_distance_features
 from turicreate.toolkits.distances._util import _get_composite_distance_features
+from turicreate.cython.cy_server import QuietProgress
 
 import array
 import copy as _copy
@@ -575,12 +576,8 @@ def create(dataset, label=None, features=None, distance=None, method='auto',
         'composite_params': distance})
 
     ## Construct the nearest neighbors model
-    if not verbose:
-        _turicreate.connect.main.get_server().set_log_progress(False)
-
-    result = _turicreate.extensions._nearest_neighbors.train(opts)
-
-    _turicreate.connect.main.get_server().set_log_progress(True)
+    with QuietProgress(verbose):
+        result = _turicreate.extensions._nearest_neighbors.train(opts)
 
     model_proxy = result['model']
     model = NearestNeighborsModel(model_proxy)
@@ -933,10 +930,9 @@ class NearestNeighborsModel(_Model):
                 'k': k,
                 'radius': radius}
 
-        if not verbose:
-            _turicreate.connect.main.get_server().set_log_progress(False)
-        result = _turicreate.extensions._nearest_neighbors.query(opts)
-        _turicreate.connect.main.get_server().set_log_progress(True)
+        with QuietProgress(verbose):
+            result = _turicreate.extensions._nearest_neighbors.query(opts)
+
         return result['neighbors']
 
     def similarity_graph(self, k=5, radius=None, include_self_edges=False,
@@ -1051,10 +1047,8 @@ class NearestNeighborsModel(_Model):
                 'radius': radius,
                 'include_self_edges': include_self_edges}
 
-        if not verbose:
-            _turicreate.connect.main.get_server().set_log_progress(False)
-        result = _turicreate.extensions._nearest_neighbors.similarity_graph(opts)
-        _turicreate.connect.main.get_server().set_log_progress(True)
+        with QuietProgress(verbose):
+            result = _turicreate.extensions._nearest_neighbors.similarity_graph(opts)
 
         knn = result['neighbors']
 

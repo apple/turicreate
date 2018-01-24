@@ -21,6 +21,7 @@ from turicreate.toolkits._private_utils import _robust_column_name
 from turicreate.toolkits._private_utils import _validate_row_label
 from turicreate.toolkits._private_utils import _summarize_accessible_fields
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
+from turicreate.cython.cy_server import QuietProgress
 
 def _validate_dataset(dataset):
     """
@@ -279,13 +280,10 @@ class KmeansModel(_Model):
                 'model_name': self.__name__,
                 'dataset': sf_features}
 
-        if not verbose:
-            _tc.connect.main.get_server().set_log_progress(False)
+        with QuietProgress(verbose):
+            result = _tc.extensions._kmeans.predict(opts)
 
-        result = _tc.extensions._kmeans.predict(opts)
         sf_result = result['predictions']
-
-        _tc.connect.main.get_server().set_log_progress(True)
 
         if output_type == 'distance':
             return sf_result['distance']
@@ -606,9 +604,7 @@ def create(dataset, num_clusters=None, features=None, label=None,
         opts['batch_size'] = batch_size
 
     ## Create and return the model
-    if not verbose:
-        _tc.connect.main.get_server().set_log_progress(False)
-    params = _tc.extensions._kmeans.train(opts)
-    _tc.connect.main.get_server().set_log_progress(True)
+    with QuietProgress(verbose):
+        params = _tc.extensions._kmeans.train(opts)
 
     return KmeansModel(params['model'])

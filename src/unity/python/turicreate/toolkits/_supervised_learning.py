@@ -17,6 +17,7 @@ from turicreate.toolkits._internal_utils import _toolkits_select_columns
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
 from turicreate.toolkits._internal_utils import _SGraphFromJsonTree
 from turicreate.toolkits._main import ToolkitError
+from turicreate.cython.cy_server import QuietProgress
 
 class SupervisedLearningModel(Model):
     """
@@ -393,10 +394,8 @@ def create(dataset, target, model_name, features=None,
             'target_validation' : _toolkits_select_columns(validation_set, [target])})
 
 
-    if not verbose:
-        _turicreate.connect.main.get_server().set_log_progress(False)
-    ret = _turicreate.extensions._supervised_learning.train(options)
-    _turicreate.connect.main.get_server().set_log_progress(True)
+    with QuietProgress(verbose):
+        ret = _turicreate.extensions._supervised_learning.train(options)
 
     model = SupervisedLearningModel(ret['model'], model_name)
 

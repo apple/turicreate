@@ -16,6 +16,7 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import Model as _Model
 from turicreate.toolkits._internal_utils import _toolkit_repr_print, \
                                         _precomputed_field
+from turicreate.cython.cy_server import QuietProgress
 import turicreate.aggregate as _Aggregate
 from turicreate.data_structures.sarray import SArray as _SArray
 from turicreate.data_structures.sframe import SFrame as _SFrame
@@ -1494,10 +1495,8 @@ class _Recommender(_Model):
                'random_seed' : random_seed
                }
 
-        if not verbose:
-            _turicreate.connect.main.get_server().set_log_progress(False)
-        response = _turicreate.extensions._recsys.recommend(opt)
-        _turicreate.connect.main.get_server().set_log_progress(True)
+        with QuietProgress(verbose):
+            response = _turicreate.extensions._recsys.recommend(opt)
 
         recs = response['data']
 
