@@ -34,6 +34,10 @@ EXPORT void start_server(const unity_server_options& server_options) {
 
   unity_server_initializer server_initializer;
 
+  if(SERVER) { 
+    stop_server(); 
+  }
+
   SERVER = new unity_server(server_options);
   SERVER->start(server_initializer);
 }
