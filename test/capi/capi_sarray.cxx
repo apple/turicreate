@@ -238,7 +238,6 @@ class capi_test_sarray {
     TS_ASSERT(error == NULL);
   };
 
-  //TODO
   void test_tc_op_sarray_eq_sarray(){
     tc_error* error = NULL;
 
@@ -819,16 +818,11 @@ class capi_test_sarray {
 
     TS_ASSERT(error == NULL);
 
-    TS_ASSERT((g1.count_words(1) == tc_sarray_count_words(sa1, 0, &error)->value).all());
+    TS_ASSERT((g1.count_words(0) == tc_sarray_count_words(sa1, 0, &error)->value).all());
 
     tc_flex_list_destroy(fl1);
     tc_sarray_destroy(sa1);
     TS_ASSERT(error == NULL);
-  };
-
-  //TODO
-  void test_tc_sarray_count_words_with_delimiters(){
-
   };
 
   void test_tc_sarray_count_word_ngrams(){
@@ -1388,19 +1382,37 @@ class capi_test_sarray {
     TS_ASSERT(error == NULL);
   };
 
-  //TODO
-  void test_tc_sarray_datetime_to_str_with_format(){
+  void test_tc_sarray_count_words_with_delimiters(){
+    tc_error* error = NULL;
 
-  };
+    std::vector<std::string> v1 = {"0\n2", "2\nr34\nr34", "4.5\nr34rr34\nr4", "9", "389", "23", "32\n43r4", "4", "3", "3", "4", "53", "53", "5", "3"};
 
-  //TODO
-  void test_tc_sarray_tc_sarray_datetime_to_str(){
+    tc_flex_list* fl1 = make_flex_list_string(v1);
+    tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
 
-  };
+    turi::flex_list lst1;
 
-  //TODO
-  void test_tc_sarray_str_to_datetime(){
+    for (auto it = v1.begin(); it!=v1.end(); ++it) {
+        lst1.push_back(*it);
+    }
 
+    turi::gl_sarray g1(lst1);
+
+    TS_ASSERT(error == NULL);
+
+    std::vector<std::string> delimiters = {"\n"};
+
+    tc_flex_list* fl2 = make_flex_list_string(delimiters);
+
+    turi::flex_list lst2;
+    lst2.push_back("\n");
+
+    TS_ASSERT((g1.count_words(0, lst2) == tc_sarray_count_words_with_delimiters(sa1, 0, fl2, &error)->value).all());
+    TS_ASSERT(error == NULL);
+
+    tc_flex_list_destroy(fl1);
+    tc_sarray_destroy(sa1);
+    TS_ASSERT(error == NULL);
   };
 
   void test_tc_sarray_clip(){
@@ -1459,7 +1471,6 @@ class capi_test_sarray {
     TS_ASSERT(error == NULL);
   };
 
-  //TODO
   void test_tc_sarray_replace_nan(){
     tc_error* error = NULL;
 
@@ -1488,7 +1499,6 @@ class capi_test_sarray {
     TS_ASSERT(error == NULL);
   };
 
-  //TODO
   void test_tc_sarray_topk_index(){
     tc_error* error = NULL;
 
@@ -1513,7 +1523,6 @@ class capi_test_sarray {
     TS_ASSERT(error == NULL);
   };
 
-  //TODO
   void test_tc_sarray_append(){
     tc_error* error = NULL;
 
@@ -1561,7 +1570,6 @@ class capi_test_sarray {
     TS_ASSERT(error == NULL);
   };
 
-  //TODO
   void test_tc_sarray_unique(){
     tc_error* error = NULL;
 

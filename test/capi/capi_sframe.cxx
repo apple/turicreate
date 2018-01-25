@@ -269,11 +269,6 @@ void test_sframe_size_is_known_test(){
   tc_sframe_destroy(sf);
 }
 
-// TODO
-void test_sframe_save_reference_test(){
-  TS_ASSERT(true);
-}
-
 void test_sframe_contains_column_test(){
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
@@ -1107,13 +1102,6 @@ void test_sframe_single_sort_column_test(){
 
   tc_sframe_destroy(sf);
   tc_sframe_destroy(pre_sampled_frame);
-  TS_ASSERT(true);
-}
-
-//TODO
-void test_sframe_split_datetime_test(){
-  // tc_sframe_split_datetime
-  // .split_datetime(expand_column, column_prefix, limit_transform, tzone)
   TS_ASSERT(true);
 }
 
