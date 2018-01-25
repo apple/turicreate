@@ -1777,15 +1777,6 @@ BOOST_AUTO_TEST_CASE(test_tc_sarray_dict_has_all_keys) {
 BOOST_AUTO_TEST_CASE(test_tc_sarray_sample) {
   capi_test_sarray::test_tc_sarray_sample();
 }
-BOOST_AUTO_TEST_CASE(test_tc_sarray_datetime_to_str_with_format) {
-  capi_test_sarray::test_tc_sarray_datetime_to_str_with_format();
-}
-BOOST_AUTO_TEST_CASE(test_tc_sarray_tc_sarray_datetime_to_str) {
-  capi_test_sarray::test_tc_sarray_tc_sarray_datetime_to_str();
-}
-BOOST_AUTO_TEST_CASE(test_tc_sarray_str_to_datetime) {
-  capi_test_sarray::test_tc_sarray_str_to_datetime();
-}
 BOOST_AUTO_TEST_CASE(test_tc_sarray_clip) {
   capi_test_sarray::test_tc_sarray_clip();
 }

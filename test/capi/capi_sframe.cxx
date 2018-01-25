@@ -1325,9 +1325,6 @@ BOOST_AUTO_TEST_CASE(test_sframe_materialize_test) {
 BOOST_AUTO_TEST_CASE(test_sframe_size_is_known_test) {
   capi_test_sframe::test_sframe_size_is_known_test();
 }
-BOOST_AUTO_TEST_CASE(test_sframe_save_reference_test) {
-  capi_test_sframe::test_sframe_save_reference_test();
-}
 BOOST_AUTO_TEST_CASE(test_sframe_contains_column_test) {
   capi_test_sframe::test_sframe_contains_column_test();
 }
@@ -1375,9 +1372,6 @@ BOOST_AUTO_TEST_CASE(test_sframe_unique_test) {
 }
 BOOST_AUTO_TEST_CASE(test_sframe_single_sort_column_test) {
   capi_test_sframe::test_sframe_single_sort_column_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_split_datetime_test) {
-  capi_test_sframe::test_sframe_split_datetime_test();
 }
 BOOST_AUTO_TEST_CASE(test_sframe_sort_multiple_columns_test) {
   capi_test_sframe::test_sframe_sort_multiple_columns_test();
