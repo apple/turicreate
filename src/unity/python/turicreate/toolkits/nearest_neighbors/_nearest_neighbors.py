@@ -684,7 +684,7 @@ class NearestNeighborsModel(_Model):
             List of fields queryable with the ``get`` method.
         """
         opts = {'model': self.__proxy__, 'model_name': self.__name__}
-        response = _turicreate.extensions._nearest_neighbors.list_keys(opts)
+        response = _turicreate.extensions._nearest_neighbors.list_fields(opts)
 
         return sorted(response.keys())
 

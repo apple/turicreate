@@ -152,7 +152,7 @@ class EXPORT topic_model : public ml_model_base{
    * \ref model_base for details.
    *
    */
-  std::vector<std::string> list_keys();
+  std::vector<std::string> list_fields();
 
   /**
    * Methods with meaningful default implementations.

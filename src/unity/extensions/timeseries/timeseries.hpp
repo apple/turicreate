@@ -15,10 +15,10 @@
 #include <logger/logger.hpp>
 #include <flexible_type/flexible_type.hpp>
 #include <sframe/group_aggregate_value.hpp>
-#include <unity/lib/toolkit_function_macros.hpp>
 #include <unity/lib/toolkit_class_macros.hpp>
 #include <unity/lib/gl_sarray.hpp>
 #include <unity/lib/gl_sframe.hpp>
+#include <unity/lib/extensions/model_base.hpp>
 #include <unity/extensions/timeseries/grouped_timeseries.hpp>
 #include <unity/extensions/timeseries/interpolate_value.hpp>
 
@@ -39,7 +39,7 @@ class grouped_timeseries;
  * timeseries data.  It is backed by a single gl_sframe and some meta-data.
  *
  ***/
-class EXPORT gl_timeseries : public turi::toolkit_class_base {
+class EXPORT gl_timeseries : public model_base {
   public:
       virtual ~gl_timeseries();
 

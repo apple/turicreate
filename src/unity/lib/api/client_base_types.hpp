@@ -13,7 +13,7 @@
 #include <flexible_type/flexible_type.hpp>
 #include <sframe/dataframe.hpp>
 #include <unity/lib/variant.hpp>
-#include <unity/lib/api/model_interface.hpp>
 #include <unity/lib/api/unity_graph_interface.hpp>
+#include <unity/lib/extensions/model_base.hpp>
 
 #endif // TURI_UNITY_CLIENT_BASE_TYPES

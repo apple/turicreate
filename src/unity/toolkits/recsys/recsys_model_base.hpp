@@ -12,7 +12,6 @@
 
 #include <unity/lib/toolkit_function_specification.hpp>
 #include <unity/lib/unity_base_types.hpp>
-#include <unity/lib/api/model_interface.hpp>
 #include <unity/toolkits/options/option_manager.hpp>
 #include <unity/toolkits/ml_data_2/ml_data.hpp>
 #include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>

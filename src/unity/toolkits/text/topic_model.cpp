@@ -34,7 +34,7 @@ namespace text {
 /**
  * List all the keys that are present in the state.
  */
-std::vector<std::string> topic_model::list_keys(){
+std::vector<std::string> topic_model::list_fields() {
   std::vector<std::string> ret;
   for (const auto& kvp: state){
     ret.push_back(kvp.first);

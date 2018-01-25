@@ -105,6 +105,18 @@ cdef inline list from_vector_of_strings(const vector[string]& sv):
         ret[i] = cpp_to_str(sv[i])
 
     return ret
+
+# This function accepts its argument by value because cython does not yet know
+# how to obtain a const_iterator from a const container.
+cdef inline dict from_map_of_strings_and_vectors_of_strings(map[string, vector[string]] m):
+    """
+    Translate a map whose keys are strings and whose values are vectors of
+    strings
+    """
+    ret = {}
+    for value in m:
+        ret[cpp_to_str(value.first)] = from_vector_of_strings(value.second)
+    return ret
     
 cdef inline vector[vector[string]] to_nested_vectors_of_strings(object v) except *:
     """
