@@ -72,14 +72,6 @@ class EXPORT ml_model_base: public toolkit_class_base {
   inline virtual ~ml_model_base() { }
 
   /**
-   * Clone objects to a model_base class
-   *
-   * \returns A new model with the same things in them!
-   * \ref model_base for details.
-   */
-  virtual ml_model_base* ml_model_base_clone() = 0;
-
-  /**
    * Returns the name of the model.
    *
    * \returns Name of the model.
@@ -131,24 +123,8 @@ class EXPORT ml_model_base: public toolkit_class_base {
    * ------------------------
    *
    * This is the function that the list_fields should call in python.
-   * For legacy reasons, it is called list_keys in the C++ side (\ref
-   * model_base)
-   *
    */
-  std::vector<std::string> list_keys();
-
-
-  /**
-   * Returns the value of a particular key from an arbitrary dictionary.
-   *
-   * \returns Value of a key
-   * \ref model_base for details.
-   *
-   * \note: This is legacy code in model_base. Ideally, we don't need this!
-   *        but this needs to be implemented for this to be a model_base
-   *        object.
-   */
-  variant_type get_value(std::string key, variant_map_type& arg);
+  std::vector<std::string> list_fields();
 
 
   /**
@@ -258,6 +234,8 @@ std::vector<toolkit_function_specification> get_toolkit_function_registration();
 std::map<std::string, variant_type> _toolkits_get_default_options(
                        std::string model_name);
 
-}// ml_model_sdk
-} // supervised_learning
+}  // namespace ml_model_sdk
+
+}  // namespace turi
+
 #endif

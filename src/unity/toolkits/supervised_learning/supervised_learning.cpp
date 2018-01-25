@@ -322,14 +322,6 @@ size_t supervised_learning_model_base::num_examples() const{
 }
 
 /**
- * Clone to a model_base object. No longer needed.
- */
-ml_model_base* supervised_learning_model_base::ml_model_base_clone() {
-  return this;
-}
-
-
-/**
  * Get training stats.
  */
 std::map<std::string, flexible_type>

@@ -576,14 +576,6 @@ void kmeans_model::load_version(turi::iarchive& iarc, size_t version) {
 }
 
 
-/**
- * Clone model
- */
-ml_model_base* kmeans_model::ml_model_base_clone() {
-  return this;
-}
-
-
 
 // ***************************************
 // *** Private kmeans training methods ***

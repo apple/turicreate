@@ -462,15 +462,6 @@ std::shared_ptr<sarray<flexible_type> > topic_model::predict_gibbs(
 }
 
 
-/**
- * Clone to ml_base
- */
-ml_model_base* topic_model::ml_model_base_clone() {
-  topic_model* m = topic_model_clone();
-  return m;
-}
-
-
 /// Returns the current normalized topics matrix as an SFrame
 std::shared_ptr<sarray<flexible_type>> topic_model::get_topics_matrix() {
 

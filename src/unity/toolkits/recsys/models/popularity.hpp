@@ -32,8 +32,6 @@ class EXPORT recsys_popularity : public recsys_model_base {
 
   bool use_target_column(bool target_is_present) const { return target_is_present; }
 
-  recsys_model_base* internal_clone();
-
   /** Creates and trains the model.  Training can be done either
    * through the ml_data version, or the sarray of item-target pairs.
    *
@@ -78,6 +76,7 @@ class EXPORT recsys_popularity : public recsys_model_base {
 
  public: 
   BEGIN_CLASS_MEMBER_REGISTRATION("popularity")
+  REGISTER_CLASS_MEMBER_FUNCTION(recsys_popularity::list_fields)
   END_CLASS_MEMBER_REGISTRATION
 
 

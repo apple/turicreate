@@ -13,7 +13,7 @@
 #include <unity/lib/gl_sframe.hpp>
 
 // Interfaces
-#include <unity/toolkits/ml_model/ml_model.hpp>
+#include <unity/lib/extensions/ml_model.hpp>
 
 // ML-Data Utils
 #include <ml_data/ml_data.hpp>
@@ -548,13 +548,6 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
     ml_missing_value_action mva = ml_missing_value_action::ERROR) const;
 
   /**
-   * Makes a copy of this model object.
-   *
-   * \ref model_base for details.
-   */
-  ml_model_base* ml_model_base_clone();
-
-  /**
    * Get the number of feature columns in the model
    *
    * \returns Number of features.
@@ -682,6 +675,8 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
 #define SUPERVISED_LEARNING_METHODS_REGISTRATION(name, class_name)             \
                                                                                \
   BEGIN_CLASS_MEMBER_REGISTRATION(name)                                        \
+                                                                               \
+  REGISTER_CLASS_MEMBER_FUNCTION(class_name::list_fields)                      \
                                                                                \
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("train", class_name::api_train, "data", \
                                        "target", "validation_data",            \

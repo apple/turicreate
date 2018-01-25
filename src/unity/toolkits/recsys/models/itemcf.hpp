@@ -101,8 +101,6 @@ class recsys_itemcf : public recsys_model_base {
   void init_options(const std::map<std::string, flexible_type>& options);
 
  private:
-  recsys_model_base* internal_clone();
-
   /** Handling extra data given by the
    *
    */
@@ -226,6 +224,7 @@ public:
  public: 
   // TODO: convert interface above to use the extensions methods here
   BEGIN_CLASS_MEMBER_REGISTRATION("item_similarity")
+  REGISTER_CLASS_MEMBER_FUNCTION(recsys_itemcf::list_fields)
   END_CLASS_MEMBER_REGISTRATION
 }; 
 

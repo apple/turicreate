@@ -127,3 +127,16 @@ class EmbeddedServer(GraphLabServer):
             set_log_progress_callback(print_status)
         else:
             set_log_progress(False)
+
+class QuietProgress(object):
+    """
+    Context manager facilitating the temporary suppression of progress logging.
+    """
+
+    def __init__(self, verbose):
+        self.verbose = verbose
+    def __enter__(self):
+        if not self.verbose:
+            _connect.main.get_server().set_log_progress(False)
+    def __exit__(self, type, value, traceback):
+        _connect.main.get_server().set_log_progress(False)

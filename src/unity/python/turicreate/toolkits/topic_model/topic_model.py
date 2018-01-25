@@ -17,7 +17,6 @@ from turicreate.data_structures.sarray import SArray as _SArray
 from turicreate.toolkits.text_analytics._util import _check_input
 from turicreate.toolkits.text_analytics._util import random_split as _random_split
 from turicreate.toolkits._internal_utils import _check_categorical_option_type, \
-                                            _map_unity_proxy_to_object, \
                                             _precomputed_field, \
                                             _toolkit_repr_print
 
@@ -236,7 +235,7 @@ def create(dataset,
             'associations': associations}
 
     # Initialize the model with basic parameters
-    response = _turicreate.toolkits._main.run("text_topicmodel_init", opts)
+    response = _turicreate.extensions._text.topicmodel_init(opts)
     m = TopicModel(response['model'])
 
     # If initial_topics provided, load it into the model
@@ -256,7 +255,7 @@ def create(dataset,
                 'topics': initial_topics['topic_probabilities'],
                 'vocabulary': initial_topics['vocabulary'],
                 'weight': weight}
-        response = _turicreate.toolkits._main.run("text_topicmodel_set_topics", opts)
+        response = _turicreate.extensions._text.topicmodel_set_topics(opts)
         m = TopicModel(response['model'])
 
     # Train the model on the given data set and retrieve predictions
@@ -266,7 +265,7 @@ def create(dataset,
             'validation_train': validation_train,
             'validation_test': validation_test}
 
-    response = _turicreate.toolkits._main.run("text_topicmodel_train", opts)
+    response = _turicreate.extensions._text.topicmodel_train(opts)
     m = TopicModel(response['model'])
 
     return m
@@ -391,11 +390,7 @@ class TopicModel(_Model):
         """
 
         opts = {'model': self.__proxy__, 'field': field}
-        response = _turicreate.toolkits._main.run("text_topicmodel_get_value", opts)
-        if field == 'vocabulary':
-            return _SArray(None, _proxy=response['value'])
-        elif field == 'topics':
-            return _SFrame(None, _proxy=response['value'])
+        response = _turicreate.extensions._text.topicmodel_get_value(opts)
         return response['value']
 
     def _training_stats(self):
@@ -557,9 +552,8 @@ class TopicModel(_Model):
                 'topic_ids': topic_ids,
                 'num_words': num_words,
                 'cdf_cutoff': cdf_cutoff}
-        response = _turicreate.toolkits._main.run('text_topicmodel_get_topic',
-                                               opts)
-        ret = _map_unity_proxy_to_object(response['top_words'])
+        response = _turicreate.extensions._text.topicmodel_get_topic(opts)
+        ret = response['top_words']
 
         def sort_wordlist_by_prob(z):
             words = sorted(z.items(), key=_operator.itemgetter(1), reverse=True)
@@ -655,8 +649,8 @@ class TopicModel(_Model):
         opts = {'model': self.__proxy__,
                 'data': dataset,
                 'num_burnin': num_burnin}
-        response = _turicreate.toolkits._main.run("text_topicmodel_predict", opts)
-        preds = _SArray(None, _proxy=response['predictions'])
+        response = _turicreate.extensions._text.topicmodel_predict(opts)
+        preds = response['predictions']
 
         # Get most likely topic if probabilities are not requested
         if output_type not in ['probability', 'probabilities', 'prob']:
@@ -828,6 +822,5 @@ def perplexity(test_data, predictions, topics, vocabulary):
             'predictions': predictions,
             'topics': topics,
             'vocabulary': vocabulary}
-    response = _turicreate.toolkits._main.run("text_topicmodel_get_perplexity",
-                                           opts)
+    response = _turicreate.extensions._text.topicmodel_get_perplexity(opts)
     return response['perplexity']

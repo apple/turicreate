@@ -22,6 +22,7 @@ set(VISUALIZATION_SOURCES
 make_library(unity_core
   SOURCES
     api/function_closure_info.cpp
+    extensions/ml_model.cpp
     variant_converter.cpp
     variant.cpp
     unity_global.cpp

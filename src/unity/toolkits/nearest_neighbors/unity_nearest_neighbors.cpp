@@ -28,20 +28,6 @@ namespace turi {
 namespace nearest_neighbors {
 
 
-/** 
- * Check if the data is empty! 
- */  
-void check_empty_data(const sframe& X) {  
-  if (X.num_rows() == 0) { 
-    log_and_throw("Input SFrame does not contain any rows.");     
-  } 
-    
-  if (X.num_columns() == 0) {  
-    log_and_throw("Input SFrame does not contain any columns."); 
-  } 
-} 
-        
-
 /**
 * Get the list of options that are relevant to each model.
 */ 
@@ -64,17 +50,17 @@ std::vector<std::string> get_model_option_keys(std::string model_name) {
 /**
  * Get the current set of options.
  */
-toolkit_function_response_type get_current_options(toolkit_function_invocation& invoke) {
+variant_map_type get_current_options(variant_map_type& params) {
   log_func_entry();
-  toolkit_function_response_type ret_status;
+  variant_map_type ret;
 
   // get the name of the model to query
   std::string model_name 
-    = (std::string)safe_varmap_get<flexible_type>(invoke.params, "model_name");
+    = (std::string)safe_varmap_get<flexible_type>(params, "model_name");
 
   // retrieve the correct model
   std::shared_ptr<nearest_neighbors_model> model
-      = safe_varmap_get<std::shared_ptr<nearest_neighbors_model>>(invoke.params, "model");
+      = safe_varmap_get<std::shared_ptr<nearest_neighbors_model>>(params, "model");
 
   if (model == nullptr) {
     log_and_throw(model_name + " is not a nearest neighbors model.");
@@ -82,29 +68,28 @@ toolkit_function_response_type get_current_options(toolkit_function_invocation& 
 
   // loop through the parameters and record in the return object
   for (const auto& opt : model->get_current_options()) {
-    ret_status.params[opt.first] = opt.second;
+    ret[opt.first] = opt.second;
   }
 
   // return stuff
-  ret_status.success = true;
-  return ret_status;
+  return ret;
 }
 
 
 /**
  * Get training stats.
  */
-toolkit_function_response_type training_stats(toolkit_function_invocation& invoke) {
+variant_map_type training_stats(variant_map_type& params) {
   log_func_entry();
-  toolkit_function_response_type ret_status;
+  variant_map_type ret;
 
   // get the name of the model to query
   std::string model_name 
-    = (std::string)safe_varmap_get<flexible_type>(invoke.params, "model_name");
+    = (std::string)safe_varmap_get<flexible_type>(params, "model_name");
 
   // retrieve the correct model
   std::shared_ptr<nearest_neighbors_model> model
-      = safe_varmap_get<std::shared_ptr<nearest_neighbors_model>>(invoke.params, "model");
+      = safe_varmap_get<std::shared_ptr<nearest_neighbors_model>>(params, "model");
 
   if (model == nullptr) {
     log_and_throw(model_name + " is not a nearest neighbors model.");
@@ -112,59 +97,57 @@ toolkit_function_response_type training_stats(toolkit_function_invocation& invok
 
   // loop through the parameters and record in the return object
   for (const auto& opt : model->get_training_stats()) {
-    ret_status.params[opt.first] = opt.second;
+    ret[opt.first] = opt.second;
   }
 
   // return stuff
-  ret_status.success = true;
-  return ret_status;
+  return ret;
 }
 
 
 /**
  * Get any value from the model.
  */
-toolkit_function_response_type get_value(toolkit_function_invocation& invoke) {
+variant_map_type get_value(variant_map_type& params) {
   log_func_entry();
-  toolkit_function_response_type ret_status;
+  variant_map_type ret;
 
   // get the name of the model to query
   std::string model_name 
-    = (std::string)safe_varmap_get<flexible_type>(invoke.params, "model_name");
+    = (std::string)safe_varmap_get<flexible_type>(params, "model_name");
 
   // retrieve the correct model
   std::shared_ptr<nearest_neighbors_model> model
-      = safe_varmap_get<std::shared_ptr<nearest_neighbors_model>>(invoke.params, "model");
+      = safe_varmap_get<std::shared_ptr<nearest_neighbors_model>>(params, "model");
 
   if (model == nullptr) {
     log_and_throw(model_name + " is not a nearest neighbors model.");
   }
 
-  flexible_type field = safe_varmap_get<flexible_type>(invoke.params, "field");
+  flexible_type field = safe_varmap_get<flexible_type>(params, "field");
 
   // query the specific field
-  ret_status.params["value"] = model->get_value_from_state(field);
+  ret["value"] = model->get_value_from_state(field);
 
   // return stuff
-  ret_status.success = true;
-  return ret_status;
+  return ret;
 }
 
 
 /**
  * List all keys in the model.
   */
-toolkit_function_response_type list_keys(toolkit_function_invocation& invoke) {
+variant_map_type list_keys(variant_map_type& params) {
   log_func_entry();
-  toolkit_function_response_type ret_status;
+  variant_map_type ret;
 
   // get the name of the model to query
   std::string model_name 
-    = (std::string)safe_varmap_get<flexible_type>(invoke.params, "model_name");
+    = (std::string)safe_varmap_get<flexible_type>(params, "model_name");
 
   // retrieve the correct model
   std::shared_ptr<nearest_neighbors_model> model
-      = safe_varmap_get<std::shared_ptr<nearest_neighbors_model>>(invoke.params, "model");
+      = safe_varmap_get<std::shared_ptr<nearest_neighbors_model>>(params, "model");
 
   if (model == nullptr) {
     log_and_throw(model_name + " is not a nearest neighbors model.");
@@ -172,12 +155,11 @@ toolkit_function_response_type list_keys(toolkit_function_invocation& invoke) {
 
   // loop through the parameters and record in the return object
   for (const auto& k : model->list_keys()) {
-    ret_status.params[k] = "";
+    ret[k] = "";
   }
 
   // return stuff
-  ret_status.success = true;
-  return ret_status;
+  return ret;
 }
 
 
@@ -242,32 +224,31 @@ variant_map_type train(variant_map_type& params) {
   /*** Initialize and train the model ***/
   model->train(X, ref_labels, composite_distance_params, opts);
 
-  auto ret_status = variant_map_type();
-  ret_status["model"] = to_variant(model);
-
-  return ret_status;
+  variant_map_type ret;
+  ret["model"] = to_variant(model);
+  return ret;
 }
 
 
 /** 
  * Query function for the nearest neighbors toolkit. 
  */
-toolkit_function_response_type query(toolkit_function_invocation& invoke) {
+variant_map_type query(variant_map_type& params) {
 
   log_func_entry();
-  toolkit_function_response_type ret_status;
+  variant_map_type ret;
   std::stringstream ss;
 
 
   // Make sure the model exists
   // ---------------------------------------------------------------------------
   std::string model_name 
-    = (std::string)safe_varmap_get<flexible_type>(invoke.params, "model_name");
+    = (std::string)safe_varmap_get<flexible_type>(params, "model_name");
  
 
   // retrieve the correct model
   std::shared_ptr<nearest_neighbors_model> model
-      = safe_varmap_get<std::shared_ptr<nearest_neighbors_model>>(invoke.params, "model");
+      = safe_varmap_get<std::shared_ptr<nearest_neighbors_model>>(params, "model");
 
   if (model == NULL) {
     log_and_throw(model_name + " is not a nearest neighbors model.");
@@ -278,17 +259,17 @@ toolkit_function_response_type query(toolkit_function_invocation& invoke) {
   // ---------------------------------------------------------------------------
   sframe Q
     = *((safe_varmap_get<std::shared_ptr<unity_sframe>>(
-        invoke.params, "features"))->get_underlying_sframe());
+        params, "features"))->get_underlying_sframe());
 
   std::shared_ptr<sarray<flexible_type>> sa_query_labels = 
     safe_varmap_get<std::shared_ptr<unity_sarray>>(
-    invoke.params, "query_labels")->get_underlying_sarray();
+    params, "query_labels")->get_underlying_sarray();
 
   std::vector<flexible_type> query_labels(Q.num_rows(), flexible_type(0));
   sa_query_labels->get_reader()->read_rows(0, Q.num_rows(), query_labels);
 
-  size_t k = (size_t)safe_varmap_get<flexible_type>(invoke.params, "k");
-  double radius = (double)safe_varmap_get<flexible_type>(invoke.params, "radius");
+  size_t k = (size_t)safe_varmap_get<flexible_type>(params, "k");
+  double radius = (double)safe_varmap_get<flexible_type>(params, "radius");
 
   // Run the query and return results
   // --------------------------------
@@ -304,10 +285,9 @@ toolkit_function_response_type query(toolkit_function_invocation& invoke) {
   */
 
   // return the pointer to the underlying SFrame resource
-  ret_status.params["model"] = to_variant(model);
-  ret_status.params["neighbors"] = to_variant(neighbors);
-  ret_status.success = true;
-  return ret_status;
+  ret["model"] = to_variant(model);
+  ret["neighbors"] = to_variant(neighbors);
+  return ret;
 }
 
 
@@ -315,20 +295,20 @@ toolkit_function_response_type query(toolkit_function_invocation& invoke) {
 /** 
  * Similarity graph function for the nearest neighbors toolkit. 
  */
-toolkit_function_response_type similarity_graph(toolkit_function_invocation& invoke) {
+variant_map_type similarity_graph(variant_map_type& params) {
 
   log_func_entry();
-  toolkit_function_response_type ret_status;
+  variant_map_type ret;
   std::stringstream ss;
 
 
   // Make sure the model exists and retrieve it
   // ------------------------------------------
   std::string model_name 
-    = (std::string)safe_varmap_get<flexible_type>(invoke.params, "model_name");
+    = (std::string)safe_varmap_get<flexible_type>(params, "model_name");
  
   std::shared_ptr<nearest_neighbors_model> model
-      = safe_varmap_get<std::shared_ptr<nearest_neighbors_model>>(invoke.params, "model");
+      = safe_varmap_get<std::shared_ptr<nearest_neighbors_model>>(params, "model");
 
   if (model == NULL) {
     log_and_throw(model_name + " is not a nearest neighbors model.");
@@ -337,9 +317,9 @@ toolkit_function_response_type similarity_graph(toolkit_function_invocation& inv
 
   // Get method inputs.
   // ------------------
-  size_t k = (size_t)safe_varmap_get<flexible_type>(invoke.params, "k");
-  double radius = (double)safe_varmap_get<flexible_type>(invoke.params, "radius");
-  bool include_self_edges = (bool)safe_varmap_get<flexible_type>(invoke.params, "include_self_edges");
+  size_t k = (size_t)safe_varmap_get<flexible_type>(params, "k");
+  double radius = (double)safe_varmap_get<flexible_type>(params, "radius");
+  bool include_self_edges = (bool)safe_varmap_get<flexible_type>(params, "include_self_edges");
   
 
   // Run the query and return results
@@ -351,10 +331,9 @@ toolkit_function_response_type similarity_graph(toolkit_function_invocation& inv
 
 
   // return the pointer to the underlying SFrame resource
-  ret_status.params["model"] = to_variant(model);
-  ret_status.params["neighbors"] = to_variant(neighbors);
-  ret_status.success = true;
-  return ret_status;
+  ret["model"] = to_variant(model);
+  ret["neighbors"] = to_variant(neighbors);
+  return ret;
 }
 
 
@@ -363,45 +342,15 @@ toolkit_function_response_type similarity_graph(toolkit_function_invocation& inv
 /**
  * Obtain registration for the nearest_neighbors toolkit.
  */
-EXPORT std::vector<toolkit_function_specification> get_toolkit_function_registration() {
-  log_func_entry();
-
-  toolkit_function_specification get_current_options_spec;
-  get_current_options_spec.name = "get_current_options";
-  get_current_options_spec.toolkit_execute_function = get_current_options;
-
-  toolkit_function_specification training_stats_spec;
-  training_stats_spec.name = "training_stats";
-  training_stats_spec.toolkit_execute_function = training_stats;
-
-  toolkit_function_specification get_value_spec;
-  get_value_spec.name = "get_value";
-  get_value_spec.toolkit_execute_function = get_value;
-
-  toolkit_function_specification list_keys_spec;
-  list_keys_spec.name = "list_keys";
-  list_keys_spec.toolkit_execute_function = list_keys;
-
-  toolkit_function_specification query_spec;
-  query_spec.name = "query";
-  query_spec.toolkit_execute_function = query;
-
-  toolkit_function_specification similarity_graph_spec;
-  similarity_graph_spec.name = "similarity_graph";
-  similarity_graph_spec.toolkit_execute_function = similarity_graph;
-
-  std::vector<toolkit_function_specification> specs{
-          get_current_options_spec,
-          training_stats_spec,
-          get_value_spec,
-          list_keys_spec,
-          query_spec,
-          similarity_graph_spec};
-
-  REGISTER_FUNCTION(train, "params")
-  return specs;
-}
-
+BEGIN_FUNCTION_REGISTRATION
+REGISTER_FUNCTION(get_current_options, "params")
+REGISTER_FUNCTION(training_stats, "params")
+REGISTER_FUNCTION(get_value, "params")
+REGISTER_FUNCTION(list_keys, "params")
+REGISTER_FUNCTION(train, "params")
+REGISTER_FUNCTION(query, "params")
+REGISTER_FUNCTION(similarity_graph, "params")
+END_FUNCTION_REGISTRATION
 
 } // namespace nearest_neighbors
 } // namespace turi

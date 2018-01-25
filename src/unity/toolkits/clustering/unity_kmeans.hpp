@@ -6,99 +6,65 @@
 #ifndef TURI_UNITY_KMEANS_H
 #define TURI_UNITY_KMEANS_H
 
+#include <vector>
+
 #include <unity/lib/toolkit_function_specification.hpp>
+#include <unity/lib/variant.hpp>
 
 namespace turi {
 namespace kmeans {
 
 /**
- * Check if the data is empty.
- *
- * \param[in] X SFrame.
- */
-void check_empty_data(const sframe& X);
-
-/**
-* Check that the features are valud
-*
-* \param[in] X SFrame Feature data
-*/
-void check_column_types(const sframe& X);
-
-/*
- * Get the list of options that are relevant to each model.
- *
- * \param[in] model_name Name of the model.
- * \returns List of keys of option names relevant to a model.
- */
-std::vector<std::string> get_model_option_keys(std::string model_name);
-
-/**
  * Get the current set of options.
  *
- * \param[in] invoke toolkit invocation object
+ * \param[in] params dictionary with function arguments
  * \returns Dictionary with current options.
  *
- * Invocation object properties
+ * Params dictionary keys
  * \property[in] model       KMeans model object.
  * \property[in] model_name  Name of the model.
  */
-toolkit_function_response_type get_current_options(toolkit_function_invocation& invoke);
+variant_map_type get_current_options(variant_map_type& params);
 
 /**
  * Get any value from the model.
  *
- * \param[in] invoke toolkit invocation object
+ * \param[in] params dictionary with function arguments
  * \returns Dictionary
  *
- * Invocation object properties
+ * Params dictionary keys
  * \property[in] model       KMeans model object.
  * \property[in] model_name  Name of the model.
  * \property[out] "value"    Value of the key.
  *
  */
-toolkit_function_response_type get_value(toolkit_function_invocation& invoke);
+variant_map_type get_value(variant_map_type& params);
 
 /**
  * Creation function for KMeans clustering model. Checks for errors
  * in inputs and makes sure all options provided by the user overwrite default
  * options.
  *
- * \param[in] invoke toolkit invocation object
+ * \param[in] params dictionary with function arguments
  * \returns Dictionary with new model.
  *
- * Invocation object properties
+ * Params dictionary keys
  * \property[in,out] model   KMeans model object.
  * \property[in] model_name  Name of the model.
  */
-toolkit_function_response_type train(toolkit_function_invocation& invoke);
+variant_map_type train(variant_map_type& params);
 
 /**
  * Predict function for the Kmeans model.
  *
- * \param invoke toolkit invocation object
+ * \param params dictionary with function arguments
  * \return toolkit function response
  *
- * Invocation object properties
+ * Params dictionary keys
  * \property[in] model   KMeans model object.
  * \property[in] model_name  Name of the model.
  */
-toolkit_function_response_type predict(toolkit_function_invocation& invoke);
-
-/**
- * Predict function for a KMeans model.
- *
- * \param[in] invoke tookit_invocation object
- * \returns SFrame with one row per input row, where each row in the output
- * corresponds to a row in the input, with columns indicating the closest
- * cluster (by its ID) and its distance from the input.
- *
- * Invocation object properties
- * \property[in, out] model      KMeans model object
- * \property[in] model_name      Name of the model
- *
- */
-//toolkit_function_response_type predict(toolkit_function_invocation& invoke);
+variant_map_type predict(variant_map_type& params);
 
 /**
  * Obtain registration for the KMeans model toolkit.

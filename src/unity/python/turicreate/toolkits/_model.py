@@ -16,6 +16,7 @@ import json
 import turicreate as _tc
 import turicreate.connect.main as glconnect
 from turicreate.data_structures.sframe import SFrame as _SFrame
+from turicreate.extensions import _wrap_function_return
 from turicreate.toolkits._internal_utils import _toolkit_serialize_summary_struct
 from turicreate.util import _make_internal_url
 from turicreate.toolkits._main import ToolkitError
@@ -69,6 +70,7 @@ def load_model(location):
 
     _internal_url = _make_internal_url(location)
     saved_state = glconnect.get_unity().load_model(_internal_url)
+    saved_state = _wrap_function_return(saved_state)
     # The archive version could be both bytes/unicode
     key = u'archive_version'
     archive_version = saved_state[key] if key in saved_state else saved_state[key.encode()]

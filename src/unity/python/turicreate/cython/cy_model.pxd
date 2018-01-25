@@ -20,7 +20,7 @@ cdef class UnityModel:
     cdef model_base* thisptr
     cdef model_base_ptr _base_ptr
 
-    cpdef list_fields(self)
+    cpdef list_keys(self)
 
     cpdef get(self, key, opts=*)
 
