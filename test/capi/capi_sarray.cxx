@@ -881,7 +881,6 @@ class capi_test_sarray {
     TS_ASSERT(error == NULL);
   };
 
-  //TODO
   void test_tc_sarray_dict_trim_by_keys(){
     tc_error* error = NULL;
     std::vector<std::pair<std::string, std::string > > data
@@ -892,34 +891,105 @@ class capi_test_sarray {
           {"c",    "coolness" }
          };
 
-    tc_flex_dict* test_flex_dict = tc_flex_dict_create();
+    std::vector<std::string> keys =
+      {"col1", "col2"};
+
+
+    tc_flex_dict* test_flex_dict = tc_flex_dict_create(&error);
+
+    turi::flex_list lst1;
+    turi::flex_dict flexible_dictionary;
 
     for(auto p : data) {
       tc_flexible_type* ft1 = tc_ft_create_from_cstring(p.first.c_str(), &error);
       tc_flexible_type* ft2 = tc_ft_create_from_cstring(p.second.c_str(), &error);
 
       tc_flex_dict_add_element(test_flex_dict, ft1, ft2, &error);
+      flexible_dictionary.push_back({p.first.c_str(), p.second.c_str()});
 
       tc_ft_destroy(ft1);
       tc_ft_destroy(ft2);
     }
 
-    turi::flex_list lst1;
+    std::vector<turi::flexible_type> key_flexible;
 
-    for (auto it = data.begin(); it!=data.end(); ++it) {
-        lst1.push_back(*it);
+    for(auto q : keys){
+      turi::flexible_type q_string(q.c_str());
+
+      key_flexible.push_back(q_string);
     }
 
-    tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    tc_flex_list* fl = tc_flex_list_create(&error);
+    tc_flexible_type* ft = tc_ft_create_from_flex_dict(test_flex_dict, &error);
+    tc_flex_list_add_element(fl, ft, &error);
+
+    lst1.push_back(flexible_dictionary);
+
+    tc_sarray* sa1 = tc_sarray_create_from_list(fl, &error);
     turi::gl_sarray g1(lst1);
 
-    TS_ASSERT(g1 == )
+    tc_flex_list* string_list = make_flex_list_string(keys);
 
+    tc_sarray* modified_dict = tc_sarray_dict_trim_by_keys(sa1, string_list, 1, &error);
+    turi::gl_sarray g1_modified = g1.dict_trim_by_keys(key_flexible, true);
+
+
+    TS_ASSERT((g1_modified == modified_dict->value).all());
+    TS_ASSERT((g1 == sa1->value).all());
+
+    tc_ft_destroy(ft);
   };
 
-  //TODO
   void test_tc_sarray_dict_trim_by_value_range(){
     tc_error* error = NULL;
+    std::vector<std::pair<std::string, int64_t > > data
+      = { {"col1",  1},
+          {"col2", 3 },
+          {"a",    5 },
+          {"b",    7 },
+          {"c",    9 }
+         };
+
+
+    tc_flex_dict* test_flex_dict = tc_flex_dict_create(&error);
+
+    turi::flex_list lst1;
+    turi::flex_dict flexible_dictionary;
+
+    for(auto p : data) {
+      tc_flexible_type* ft1 = tc_ft_create_from_cstring(p.first.c_str(), &error);
+      tc_flexible_type* ft2 = tc_ft_create_from_int64(p.second, &error);
+
+      tc_flex_dict_add_element(test_flex_dict, ft1, ft2, &error);
+      flexible_dictionary.push_back({p.first.c_str(), p.second});
+
+      tc_ft_destroy(ft1);
+      tc_ft_destroy(ft2);
+    }
+
+    turi::flexible_type lower(3);
+    turi::flexible_type upper(5);
+
+    tc_flexible_type* lower_flex = tc_ft_create_from_int64(3, &error);
+    tc_flexible_type* upper_flex = tc_ft_create_from_int64(5, &error);
+
+    tc_flex_list* fl = tc_flex_list_create(&error);
+    tc_flexible_type* ft = tc_ft_create_from_flex_dict(test_flex_dict, &error);
+    tc_flex_list_add_element(fl, ft, &error);
+
+    lst1.push_back(flexible_dictionary);
+
+    tc_sarray* sa1 = tc_sarray_create_from_list(fl, &error);
+    turi::gl_sarray g1(lst1);
+
+    tc_sarray* modified_dict = tc_sarray_dict_trim_by_value_range(sa1, lower_flex, upper_flex, &error);
+    turi::gl_sarray g1_modified = g1.dict_trim_by_values(lower, upper);
+
+
+    TS_ASSERT((g1_modified == modified_dict->value).all());
+    TS_ASSERT((g1 == sa1->value).all());
+
+    tc_ft_destroy(ft);
   };
 
   void test_tc_sarray_tc_sarray_max(){
@@ -1127,22 +1197,172 @@ class capi_test_sarray {
     TS_ASSERT(error == NULL);
   };
 
-  //TODO
   void test_tc_sarray_dict_keys(){
+    tc_error* error = NULL;
+    std::vector<std::pair<std::string, std::string > > data
+      = { {"col1", "hello" },
+          {"col2", "cool" },
+          {"a",    "awesome" },
+          {"b",    "build" },
+          {"c",    "coolness" }
+         };
 
+    std::vector<std::string> keys =
+      {"col1", "col2"};
+
+
+    tc_flex_dict* test_flex_dict = tc_flex_dict_create(&error);
+
+    turi::flex_list lst1;
+    turi::flex_dict flexible_dictionary;
+
+    for(auto p : data) {
+      tc_flexible_type* ft1 = tc_ft_create_from_cstring(p.first.c_str(), &error);
+      tc_flexible_type* ft2 = tc_ft_create_from_cstring(p.second.c_str(), &error);
+
+      tc_flex_dict_add_element(test_flex_dict, ft1, ft2, &error);
+      flexible_dictionary.push_back({p.first.c_str(), p.second.c_str()});
+
+      tc_ft_destroy(ft1);
+      tc_ft_destroy(ft2);
+    }
+
+    tc_flex_list* fl = tc_flex_list_create(&error);
+    tc_flexible_type* ft = tc_ft_create_from_flex_dict(test_flex_dict, &error);
+    tc_flex_list_add_element(fl, ft, &error);
+
+    lst1.push_back(flexible_dictionary);
+
+    tc_sarray* sa1 = tc_sarray_create_from_list(fl, &error);
+    turi::gl_sarray g1(lst1);
+
+    tc_sarray* modified_sa = tc_sarray_dict_keys(sa1, &error);
+    turi::gl_sarray modified_sa_gl = g1.dict_keys();
+
+    TS_ASSERT((modified_sa->value == modified_sa_gl).all());
+
+    tc_sarray_destroy(sa1);
+    TS_ASSERT(error == NULL);
   };
 
-  //TODO
   void test_tc_sarray_dict_has_any_keys(){
+    tc_error* error = NULL;
+    std::vector<std::pair<std::string, std::string > > data
+      = { {"col1", "hello" },
+          {"col2", "cool" },
+          {"a",    "awesome" },
+          {"b",    "build" },
+          {"c",    "coolness" }
+         };
 
+    std::vector<std::string> keys =
+      {"col1", "col2"};
+
+
+    tc_flex_dict* test_flex_dict = tc_flex_dict_create(&error);
+
+    turi::flex_list lst1;
+    turi::flex_dict flexible_dictionary;
+
+    for(auto p : data) {
+      tc_flexible_type* ft1 = tc_ft_create_from_cstring(p.first.c_str(), &error);
+      tc_flexible_type* ft2 = tc_ft_create_from_cstring(p.second.c_str(), &error);
+
+      tc_flex_dict_add_element(test_flex_dict, ft1, ft2, &error);
+      flexible_dictionary.push_back({p.first.c_str(), p.second.c_str()});
+
+      tc_ft_destroy(ft1);
+      tc_ft_destroy(ft2);
+    }
+
+    std::vector<turi::flexible_type> key_flexible;
+
+    for(auto q : keys){
+      turi::flexible_type q_string(q.c_str());
+
+      key_flexible.push_back(q_string);
+    }
+
+    tc_flex_list* fl = tc_flex_list_create(&error);
+    tc_flexible_type* ft = tc_ft_create_from_flex_dict(test_flex_dict, &error);
+    tc_flex_list_add_element(fl, ft, &error);
+
+    lst1.push_back(flexible_dictionary);
+
+    tc_sarray* sa1 = tc_sarray_create_from_list(fl, &error);
+    turi::gl_sarray g1(lst1);
+
+    tc_flex_list* string_list = make_flex_list_string(keys);
+
+    tc_sarray* modified_dict = tc_sarray_dict_has_any_keys(sa1, string_list, &error);
+    turi::gl_sarray g1_modified = g1.dict_has_any_keys(key_flexible);
+
+
+    TS_ASSERT((g1_modified == modified_dict->value).all());
+    TS_ASSERT((g1 == sa1->value).all());
+
+    tc_ft_destroy(ft);
   };
 
-  //TODO
   void test_tc_sarray_dict_has_all_keys(){
+    tc_error* error = NULL;
+    std::vector<std::pair<std::string, std::string > > data
+      = { {"col1", "hello" },
+          {"col2", "cool" },
+          {"a",    "awesome" },
+          {"b",    "build" },
+          {"c",    "coolness" }
+         };
 
+    std::vector<std::string> keys =
+      {"col1", "col2"};
+
+
+    tc_flex_dict* test_flex_dict = tc_flex_dict_create(&error);
+
+    turi::flex_list lst1;
+    turi::flex_dict flexible_dictionary;
+
+    for(auto p : data) {
+      tc_flexible_type* ft1 = tc_ft_create_from_cstring(p.first.c_str(), &error);
+      tc_flexible_type* ft2 = tc_ft_create_from_cstring(p.second.c_str(), &error);
+
+      tc_flex_dict_add_element(test_flex_dict, ft1, ft2, &error);
+      flexible_dictionary.push_back({p.first.c_str(), p.second.c_str()});
+
+      tc_ft_destroy(ft1);
+      tc_ft_destroy(ft2);
+    }
+
+    std::vector<turi::flexible_type> key_flexible;
+
+    for(auto q : keys){
+      turi::flexible_type q_string(q.c_str());
+
+      key_flexible.push_back(q_string);
+    }
+
+    tc_flex_list* fl = tc_flex_list_create(&error);
+    tc_flexible_type* ft = tc_ft_create_from_flex_dict(test_flex_dict, &error);
+    tc_flex_list_add_element(fl, ft, &error);
+
+    lst1.push_back(flexible_dictionary);
+
+    tc_sarray* sa1 = tc_sarray_create_from_list(fl, &error);
+    turi::gl_sarray g1(lst1);
+
+    tc_flex_list* string_list = make_flex_list_string(keys);
+
+    tc_sarray* modified_dict = tc_sarray_dict_has_all_keys(sa1, string_list, &error);
+    turi::gl_sarray g1_modified = g1.dict_has_all_keys(key_flexible);
+
+
+    TS_ASSERT((g1_modified == modified_dict->value).all());
+    TS_ASSERT((g1 == sa1->value).all());
+
+    tc_ft_destroy(ft);
   };
 
-  //TODO
   void test_tc_sarray_sample(){
     tc_error* error = NULL;
 
@@ -1214,7 +1434,6 @@ class capi_test_sarray {
     TS_ASSERT(error == NULL);
   };
 
-  //TODO
   void test_tc_sarray_drop_nan(){
     tc_error* error = NULL;
 
