@@ -9,63 +9,6 @@ namespace turi {
 
 model_base::~model_base() = default;
 
-std::vector<std::string> model_base::list_keys() {
-  return {"list_functions", 
-    "call_function", 
-    "list_get_properties",
-    "list_set_properties",
-    "set_property", 
-    "get_property",
-    "get_docstring",
-    "__name__",
-    "__uid__"};
-}
-
-variant_type model_base::get_value(std::string key, variant_map_type& arg) {
-  perform_registration();
-  if (key == "list_functions") {
-    return to_variant(list_functions());
-  } else if (key == "list_get_properties") {
-    return to_variant(list_get_properties());
-  } else if (key == "list_set_properties") {
-    return to_variant(list_set_properties());
-  } else if (key == "call_function") {
-    // dispatches to a user defined function
-    if (!arg.count("__function_name__")) {
-      throw("Invalid function call format");
-    }
-    std::string function_name = variant_get_value<std::string>(arg["__function_name__"]);
-    return to_variant(call_function(function_name, arg));
-  } else if (key == "set_property") {
-    // dispatches to a user defined set property
-    if (!arg.count("__property_name__")) {
-      throw("Invalid function call format");
-    }
-    std::string property_name = variant_get_value<std::string>(arg["__property_name__"]);
-    return to_variant(set_property(property_name, arg));
-  } else if (key == "get_property") {
-    // dispatches to a user defined get property
-    if (!arg.count("__property_name__")) {
-      throw("Invalid function call format");
-    }
-    std::string property_name = variant_get_value<std::string>(arg["__property_name__"]);
-    return to_variant(get_property(property_name, arg));
-  } else if (key == "get_docstring") {
-    // dispatches to a user defined get property
-    if (!arg.count("__symbol__")) {
-      throw("Invalid function call format");
-    }
-    std::string symbol = variant_get_value<std::string>(arg["__symbol__"]);
-    return to_variant(get_docstring(symbol));
-  } else if (key == "__name__") {
-    return name();
-  } else if (key == "__uid__") {
-    return uid();
-  } else {
-    return variant_type();
-  }
-}
-
 void model_base::save_impl(oarchive& oarc) const {}
 
 void model_base::load_version(iarchive& iarc, size_t version) {}
@@ -84,7 +27,6 @@ std::vector<std::string> model_base::list_get_properties() {
   std::vector<std::string> ret;
   for(const auto& i: m_get_property_list) ret.push_back(i.first);
   return ret;
-  return std::vector<std::string>();
 }
 
 std::vector<std::string> model_base::list_set_properties() {
@@ -110,11 +52,10 @@ variant_type model_base::call_function(std::string function,
   }
 }
 
-variant_type model_base::get_property(std::string property,
-				      variant_map_type argument) {
+variant_type model_base::get_property(std::string property) {
   perform_registration();
   if (m_get_property_list.count(property)) {
-    return m_get_property_list[property](this, argument);
+    return m_get_property_list[property](this, variant_map_type());
   } else {
     throw(std::string("No such property"));
   }
@@ -161,16 +102,14 @@ void model_base::register_defaults(std::string fnname,
 /**
  * Adds a property setter with the specified name.
  */
-void model_base::register_setter(std::string propname, 
-				 impl_fn setfn) {
+void model_base::register_setter(std::string propname, impl_fn setfn) {
   m_set_property_list[propname] = std::move(setfn);
 }
 
 /**
  * Adds a property getter with the specified name.
  */
-void model_base::register_getter(std::string propname, 
-				 impl_fn getfn) {
+void model_base::register_getter(std::string propname, impl_fn getfn) {
   m_get_property_list[propname] = std::move(getfn);
 }
 

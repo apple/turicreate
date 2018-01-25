@@ -79,7 +79,7 @@
          std::string(__TIME__); \
    } \
    virtual inline void perform_registration() { \
-    if (registered) return;
+     if (is_registered()) return;
 
 /**
  * Registers a single class member function.
@@ -392,7 +392,7 @@ namespace docstring_macro_impl {
  * See BEGIN_CLASS_MEMBER_REGISTRATION
  */
 #define END_CLASS_MEMBER_REGISTRATION \
-     registered = true; }
+     set_registered(); }
 
 
 /**

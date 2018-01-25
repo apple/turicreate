@@ -25,80 +25,67 @@ namespace turi {
 class model_proxy;
 
 /**
- * The base class for which all new toolkit classes inherit from.
+ * The base class from which all new toolkit classes must inherit.
  *
- * This class implements the class member registration and dispatcher for 
- * class member functions and properties.
+ * This class defines a generic object interface, listing properties and
+ * callable methods, so that instances can be naturally wrapped and exposed to
+ * other languages, such as Python.
  *
- * Basically, the class exposes to Python 6 keys:
- * "list_functions" --> returns a dictionary of 
- *                      function_name --> array of arg names containing
- *                      all the functions and input keyword arguments of each
- *                      member function.
+ * Subclasses should use the macros defined in toolkit_class_macros.hpp to
+ * declared the desired properties and methods, and to define their
+ * implementations. See that file for details and examples.
  *
- * "list_get_properties" --> returns an array of strings, where each string
- *                           is a property which can be read.
- *
- * "list_set_properties" --> returns an array of strings, where each string
- *                           is a property which can be written to.
- *
- * "call_function" --> the argument must contain the key "__function_name__"
- *                     which is the function to call. The remaining keys
- *                     must match the keyword arguments of the function as
- *                     set on registration by REGISTER_CLASS_MEMBER_FUNCTION
- *
- * "get_property" --> The argument must contain the key "__property_name__"
- *                    which is the property to retrieve.
- *
- * "set_property" --> The argument must contain the key "__property_name__"
- *                    which is the property to set. The key "value" must
- *                    contain the value to set to.
- *
- * "get_docstring" --> The argument must contain the key "__symbol__",
- *                     and this returns a docstring
- *
- * "__uid__" --> Returns a class specific string. This is used to bypass 
- *               type erasure to model_base.
+ * Subclasses that wish to support saving and loading should also override the
+ * save_impl, load_version, and get_version functions below.
  */
-
+// TODO: Clean up the relationship between the save/load interface defined here
+//       and re-declared in ml_model_base.
+// TODO: Remove the inheritance from ipc_object_base once the cppipc code has
+//       been disentangled and removed.
 class EXPORT model_base: public cppipc::ipc_object_base {
  public:
+  // TODO: Remove this type alias once this class stops inheriting from
+  // ipc_object_base.
   using proxy_object_type = model_proxy;
 
   virtual ~model_base();
-  /**
-   * The internal keys.
-   */
-  std::vector<std::string> list_keys();
+
+  // These public member functions define the communication between model_base
+  // instances and the unity runtime. Subclasses define the behavior of their
+  // instances using the protected interface below.
 
   /**
-   * The main dispatcher.
-   */
-  variant_type get_value(std::string key, variant_map_type& arg);
-
-  /**
-   * Returns the name of the toolkit class.
+   * Returns the name of the toolkit class, as exposed to client code. For
+   * example, the Python proxy for this instance will have a type with this
+   * name.
+   *
+   * Note: this function is typically overridden using the
+   * BEGIN_CLASS_MEMBER_REGISTRATION macro.
    */
   virtual std::string name() = 0;
 
   /**
    * Returns a unique identifier for the toolkit class. It can be *any* unique
-   * ID. The UID is only used at runtime and is never stored.
+   * ID. The UID is only used at runtime (to determine the concrete type of an
+   * arbitrary model_base instance) and is never stored.
+   *
+   * Note: this function is typically overridden using the
+   * BEGIN_CLASS_MEMBER_REGISTRATION macro.
    */
   virtual std::string uid() = 0; 
 
-  inline virtual void save(oarchive& oarc) const {
+  void save(oarchive& oarc) const {
     oarc << get_version();
     save_impl(oarc);
   }
 
   /**
-   * Serializes the toolkit class. Must save the class to the file format version
-   * matching that of get_version()
+   * Serializes the toolkit class. Must save the class to the file format
+   * version matching that of get_version().
    */
   virtual void save_impl(oarchive& oarc) const;
 
-  inline virtual void load(iarchive& iarc) {
+  void load(iarchive& iarc) {
     size_t version = 0;
     iarc >> version;
     load_version(iarc, version);
@@ -112,77 +99,69 @@ class EXPORT model_base: public cppipc::ipc_object_base {
 
 
   /**
-   * Returns the current toolkit class version
+   * Returns the current version of the toolkit class for this instance, for
+   * serialization purposes.
    */
   virtual size_t get_version() const;
 
   /**
    * Lists all the registered functions.
-   * Returns a map of function name to array of arguments of the function.
+   * Returns a map of function name to array of argument names for the function.
    */
-  virtual std::map<std::string, std::vector<std::string> > list_functions();
+  std::map<std::string, std::vector<std::string> > list_functions();
 
   /**
    * Lists all the get-table properties of the class.
    */
-  virtual std::vector<std::string> list_get_properties();
+  std::vector<std::string> list_get_properties();
 
   /**
    * Lists all the set-table properties of the class.
    */
-  virtual std::vector<std::string> list_set_properties();
+  std::vector<std::string> list_set_properties();
 
   /**
-   * Calls a user defined function
+   * Calls a user defined function.
    */
-  virtual variant_type call_function(std::string function, 
-                                     variant_map_type argument);
+  variant_type call_function(std::string function, variant_map_type argument);
 
   /**
-   * Reads a property
+   * Reads a property.
    */
-  virtual variant_type get_property(std::string property,
-                                    variant_map_type argument);
+  variant_type get_property(std::string property);
  
   /**
-   * Sets a property.
+   * Sets a property. The new value of the property should appear in the
+   * argument map under the key "value".
    */ 
-  virtual variant_type set_property(std::string property, 
-                                    variant_map_type argument);
+  variant_type set_property(std::string property, variant_map_type argument);
 
-  virtual std::string get_docstring(std::string symbol);
- 
   /**
-   * Function implemented by BEGIN_CLASS_MEMBER_REGISTRATION
-   */ 
-  virtual void perform_registration() = 0;
+   * Returns the toolkit documentation for a function or property.
+   */
+  std::string get_docstring(std::string symbol);
 
+  // TODO: Remove this vestigial macro invocation once the dependency on cppipc
+  // has been removed.
   REGISTRATION_BEGIN(model_base);
-  REGISTER(model_base::list_keys)
-  REGISTER(model_base::get_value)
-  REGISTER(model_base::name)
   REGISTRATION_END
 
  protected:
   using impl_fn = std::function<variant_type(model_base*, variant_map_type)>;
 
-  // whether perform registration has been called
-  bool registered = false;
-  // a description of all the function arguments. This is returned by 
-  // list_functions()
-  std::map<std::string, std::vector<std::string>> m_function_args;
+  // The macros defined in toolkit_class_macros.h use these functions to
+  // conveniently define this instance's collection of client-level methods and
+  // properties.
 
-  // default arguments if any
-  std::map<std::string, variant_map_type> m_function_default_args;
+  /**
+   * Function implemented by BEGIN_CLASS_MEMBER_REGISTRATION and invoked the
+   * first time a public member function executes.
+   */ 
+  virtual void perform_registration() = 0;
 
-  // The implementation of each function
-  std::map<std::string, impl_fn> m_function_list;
-  // The implementation of each setter function
-  std::map<std::string, impl_fn> m_set_property_list;
-  // The implementation of each getter function
-  std::map<std::string, impl_fn > m_get_property_list;
-  // The docstring for each symbol
-  std::map<std::string, std::string> m_docstring;
+  // Used to ensure that perform_registration is called once for each instance.
+  bool is_registered() const { return m_registered; }
+  void set_registered() { m_registered = true; }
 
   /**
    * Adds a function with the specified name, and argument list.
@@ -206,9 +185,31 @@ class EXPORT model_base: public cppipc::ipc_object_base {
    */
   void register_getter(std::string propname, impl_fn getfn);
 
+  /**
+   * Adds a docstring for the specified function or property name.
+   */
   void register_docstring(std::pair<std::string, std::string> fnname_docstring);
+
+ private:
+  // whether perform registration has been called
+  bool m_registered = false;
+  // a description of all the function arguments. This is returned by 
+  // list_functions()
+  std::map<std::string, std::vector<std::string>> m_function_args;
+  // default arguments if any
+  std::map<std::string, variant_map_type> m_function_default_args;
+  // The implementation of each function
+  std::map<std::string, impl_fn> m_function_list;
+  // The implementation of each setter function
+  std::map<std::string, impl_fn> m_set_property_list;
+  // The implementation of each getter function
+  std::map<std::string, impl_fn > m_get_property_list;
+  // The docstring for each symbol
+  std::map<std::string, std::string> m_docstring;
 };
 
+// TODO: Remove this proxy subclass once the dependency on cppipc has been
+// removed.
 #ifndef DISABLE_TURI_CPPIPC_PROXY_GENERATION
 /**
  * Explicitly implemented proxy object.
@@ -265,13 +266,10 @@ class model_proxy : public model_base {
 
   BOOST_PP_SEQ_FOR_EACH(__GENERATE_PROXY_CALLS__, model_base, 
                         __ADD_PARENS__(
-                            (std::vector<std::string>, list_keys, )
-                            (variant_type, get_value, (std::string)(variant_map_type&))
                             (std::string, name, )
                             ))
 };
 #endif
-
 } // namespace turi
-#endif // TURI_UNITY_MODEL_BASE_HPP
 
+#endif // TURI_UNITY_MODEL_BASE_HPP
