@@ -85,7 +85,10 @@ void test_sframe_append_test(){
         {"b",    {7.0, 2., 3., 1.5} } };
 
   tc_sframe* sf1 = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   tc_sframe* sf2 = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
 
   turi::gl_sframe sf_gl_1;
   turi::gl_sframe sf_gl_2;
@@ -94,7 +97,6 @@ void test_sframe_append_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf1, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -114,7 +116,6 @@ void test_sframe_append_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf2, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -132,11 +133,10 @@ void test_sframe_append_test(){
 
   turi::gl_sframe gl_combined_sframe = sf_gl_1.append(sf_gl_2);
   tc_sframe* tc_combined_sframe = tc_sframe_append(sf1, sf2, &error);
+  TS_ASSERT(error == NULL);
 
   TS_ASSERT(gl_combined_sframe.column_names() == tc_combined_sframe->value.column_names());
   TS_ASSERT(gl_combined_sframe.column_types() == tc_combined_sframe->value.column_types());
-
-  TS_ASSERT(error == NULL);
 
   tc_sframe_destroy(sf1);
   tc_sframe_destroy(sf2);
@@ -145,6 +145,8 @@ void test_sframe_append_test(){
 void test_sframe_is_materialized_test(){
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sf_gl;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -159,7 +161,6 @@ void test_sframe_is_materialized_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -176,17 +177,22 @@ void test_sframe_is_materialized_test(){
   }
 
   tc_sframe* sampled_frame = tc_sframe_sample(sf, 0.8, 23, &error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sampled_gl_sframe = sf_gl.sample(0.8, 23);
 
   TS_ASSERT(tc_sframe_is_materialized(sf, &error) == sf_gl.is_materialized());
-  TS_ASSERT(tc_sframe_is_materialized(sampled_frame, &error) == sampled_gl_sframe.is_materialized());
+  TS_ASSERT(error == NULL);
 
-  TS_ASSERT(true);
+  TS_ASSERT(tc_sframe_is_materialized(sampled_frame, &error) == sampled_gl_sframe.is_materialized());
+  TS_ASSERT(error == NULL);
 }
 
 void test_sframe_materialize_test(){
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sf_gl;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -201,7 +207,6 @@ void test_sframe_materialize_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -218,21 +223,30 @@ void test_sframe_materialize_test(){
   }
 
   tc_sframe* sampled_frame = tc_sframe_sample(sf, 0.8, 23, &error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sampled_gl_sframe = sf_gl.sample(0.8, 23);
 
   TS_ASSERT(tc_sframe_is_materialized(sf, &error) == sf_gl.is_materialized());
+  TS_ASSERT(error == NULL);
+
   TS_ASSERT(tc_sframe_is_materialized(sampled_frame, &error) == sampled_gl_sframe.is_materialized());
+  TS_ASSERT(error == NULL);
 
   tc_sframe_materialize(sampled_frame, &error);
+  TS_ASSERT(error == NULL);
+
   sampled_gl_sframe.materialize();
 
   TS_ASSERT(tc_sframe_is_materialized(sampled_frame, &error) == sampled_gl_sframe.is_materialized());
-  TS_ASSERT(true);
+  TS_ASSERT(error == NULL);
 }
 
 void test_sframe_size_is_known_test(){
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sf_gl;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -245,7 +259,6 @@ void test_sframe_size_is_known_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -262,9 +275,10 @@ void test_sframe_size_is_known_test(){
   }
 
   bool tc_boolean = tc_sframe_size_is_known(sf, &error);
+  TS_ASSERT(error == NULL);
+
   bool sf_gl_bool = sf_gl.has_size();
 
-  TS_ASSERT(error == NULL);
   TS_ASSERT(tc_boolean == sf_gl_bool);
   tc_sframe_destroy(sf);
 }
@@ -272,6 +286,8 @@ void test_sframe_size_is_known_test(){
 void test_sframe_contains_column_test(){
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sf_gl;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -284,7 +300,6 @@ void test_sframe_contains_column_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -302,9 +317,11 @@ void test_sframe_contains_column_test(){
 
   bool tc_boolean = sf_gl.contains_column("col1");
   bool sf_gl_bool = tc_sframe_contains_column(sf, "col1", &error);
+  TS_ASSERT(error == NULL);
 
   bool tc_boolean_2 = sf_gl.contains_column("bla");
   bool sf_gl_bool_2 = tc_sframe_contains_column(sf, "bla", &error);
+  TS_ASSERT(error == NULL);
 
   TS_ASSERT(error == NULL);
   TS_ASSERT(tc_boolean == sf_gl_bool);
@@ -315,6 +332,8 @@ void test_sframe_contains_column_test(){
 void test_sframe_sample_test(){
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sf_gl;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -329,7 +348,6 @@ void test_sframe_sample_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -346,6 +364,8 @@ void test_sframe_sample_test(){
   }
 
   tc_sframe* sampled_frame = tc_sframe_sample(sf, 0.8, 23, &error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sampled_gl_sframe = sf_gl.sample(0.8, 23);
 
   TS_ASSERT(sampled_gl_sframe.column_names() == sampled_frame->value.column_names());
@@ -358,6 +378,8 @@ void test_sframe_sample_test(){
 void test_sframe_topk_test(){
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sf_gl;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -372,7 +394,6 @@ void test_sframe_topk_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -389,6 +410,8 @@ void test_sframe_topk_test(){
   }
 
   tc_sframe* sampled_frame = tc_sframe_topk(sf, "col1", 10, false, &error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sampled_gl_sframe = sf_gl.topk("col1", 10, false);
 
   TS_ASSERT(sampled_gl_sframe.column_names() == sampled_frame->value.column_names());
@@ -401,6 +424,8 @@ void test_sframe_topk_test(){
 void test_sframe_replace_add_column_test(){
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sf_gl;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -418,7 +443,6 @@ void test_sframe_replace_add_column_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -445,6 +469,8 @@ void test_sframe_replace_add_column_test(){
   tc_sarray* sa_given = make_sarray_double(replacing.second);
 
   tc_sframe_replace_add_column(sf, replacing.first.c_str(), sa_given, &error);
+  TS_ASSERT(error == NULL);
+
   sf_gl.replace_add_column(repl, replacing.first.c_str());
 
   tc_sarray_destroy(sa_given);
@@ -458,6 +484,8 @@ void test_sframe_replace_add_column_test(){
 void test_sframe_add_constant_column_test(){
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sf_gl;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -472,7 +500,6 @@ void test_sframe_add_constant_column_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -508,6 +535,8 @@ void test_sframe_add_constant_column_test(){
 void test_sframe_add_column_test(){
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sf_gl;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -525,7 +554,6 @@ void test_sframe_add_column_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -552,6 +580,8 @@ void test_sframe_add_column_test(){
   tc_sarray* sa_given = make_sarray_double(replacing.second);
 
   tc_sframe_add_column(sf, "new_col", sa_given, &error);
+  TS_ASSERT(error == NULL);
+
   sf_gl.add_column(repl, "new_col");
 
   TS_ASSERT(sf_gl.column_names() == sf->value.column_names());
@@ -577,7 +607,10 @@ void test_sframe_add_columns_test(){
         {"more",    {7.0, 2., 3., 1.5} } };
 
   tc_sframe* sf1 = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   tc_sframe* sf2 = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
 
   turi::gl_sframe sf_gl_1;
   turi::gl_sframe sf_gl_2;
@@ -586,7 +619,6 @@ void test_sframe_add_columns_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf1, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -606,7 +638,6 @@ void test_sframe_add_columns_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf2, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -623,6 +654,8 @@ void test_sframe_add_columns_test(){
   }
 
   tc_sframe_add_columns(sf1, sf2, &error);
+  TS_ASSERT(error == NULL);
+
   sf_gl_1.add_columns(sf_gl_2);
 
   TS_ASSERT(sf_gl_1.column_names() == sf1->value.column_names());
@@ -635,6 +668,8 @@ void test_sframe_add_columns_test(){
 void test_sframe_swap_columns_test(){
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sf_gl;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -649,7 +684,6 @@ void test_sframe_swap_columns_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -666,6 +700,8 @@ void test_sframe_swap_columns_test(){
   }
 
   tc_sframe_swap_columns(sf, "col1", "a", &error);
+  TS_ASSERT(error == NULL);
+
   sf_gl.swap_columns("col1", "a");
 
   TS_ASSERT(sf_gl.column_names() == sf->value.column_names());
@@ -677,6 +713,8 @@ void test_sframe_swap_columns_test(){
 void test_sframe_rename_column_test(){
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sf_gl;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -691,7 +729,6 @@ void test_sframe_rename_column_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -711,6 +748,8 @@ void test_sframe_rename_column_test(){
   m.insert(std::pair<std::string, std::string>("col1", "a1"));
 
   tc_sframe_rename_column(sf, "col1", "a1", &error);
+  TS_ASSERT(error == NULL);
+
   sf_gl.rename(m);
 
   TS_ASSERT(sf_gl.column_names() == sf->value.column_names());
@@ -722,6 +761,8 @@ void test_sframe_rename_column_test(){
 void test_sframe_fillna_test(){
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sf_gl;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -736,7 +777,6 @@ void test_sframe_fillna_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -758,9 +798,9 @@ void test_sframe_fillna_test(){
   turi::flexible_type f_float(43.0);
 
   tc_sframe* sampled_frame = tc_sframe_fillna(sf, "col1", ft, &error);
-  turi::gl_sframe sampled_gl_sframe = sf_gl.fillna("col1", f_float);
-
   TS_ASSERT(error == NULL);
+
+  turi::gl_sframe sampled_gl_sframe = sf_gl.fillna("col1", f_float);
 
   TS_ASSERT(sampled_gl_sframe.column_names() == sampled_frame->value.column_names());
   TS_ASSERT(sampled_gl_sframe.column_types() == sampled_frame->value.column_types());
@@ -773,6 +813,8 @@ void test_sframe_fillna_test(){
 void test_sframe_filter_by_test(){
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sf_gl;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -790,7 +832,6 @@ void test_sframe_filter_by_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -817,6 +858,8 @@ void test_sframe_filter_by_test(){
   tc_sarray* filtering_sa = make_sarray_double(replacing.second);
 
   tc_sframe* sampled_frame = tc_sframe_filter_by(sf, filtering_sa, "col1", false, &error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sampled_gl_sframe = sf_gl.filter_by(rpling, "col1", false);
 
   TS_ASSERT(error == NULL);
@@ -832,6 +875,8 @@ void test_sframe_filter_by_test(){
 void test_sframe_pack_unpack_test(){
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sf_gl;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -846,7 +891,6 @@ void test_sframe_pack_unpack_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -863,6 +907,7 @@ void test_sframe_pack_unpack_test(){
   }
 
   tc_flexible_type* ft = tc_ft_create_from_double(43.0, &error);
+  TS_ASSERT(error == NULL);
 
   turi::flexible_type f_float(43.0);
 
@@ -874,6 +919,7 @@ void test_sframe_pack_unpack_test(){
 
   tc_sframe* unpack_frame = tc_sframe_unpack(sampled_frame, "col", &error);
   TS_ASSERT(error == NULL);
+
   turi::gl_sframe unpack_gl_sframe = sampled_gl_sframe.unpack("col");
 
   TS_ASSERT(unpack_gl_sframe.column_names() == unpack_frame->value.column_names());
@@ -888,6 +934,8 @@ void test_sframe_pack_unpack_test(){
 void test_sframe_stack_unstack_test(){
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sf_gl;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -902,7 +950,6 @@ void test_sframe_stack_unstack_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -919,6 +966,7 @@ void test_sframe_stack_unstack_test(){
   }
 
   tc_flexible_type* ft = tc_ft_create_from_double(43.0, &error);
+  TS_ASSERT(error == NULL);
 
   turi::flexible_type f_float(43.0);
 
@@ -954,6 +1002,8 @@ void test_sframe_stack_and_rename_test(){
 
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sf_gl;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -968,7 +1018,6 @@ void test_sframe_stack_and_rename_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -985,6 +1034,7 @@ void test_sframe_stack_and_rename_test(){
   }
 
   tc_flexible_type* ft = tc_ft_create_from_double(43.0, &error);
+  TS_ASSERT(error == NULL);
 
   turi::flexible_type f_float(43.0);
 
@@ -1020,6 +1070,8 @@ void test_sframe_stack_and_rename_test(){
 void test_sframe_unique_test(){
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sf_gl;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -1034,7 +1086,6 @@ void test_sframe_unique_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -1051,6 +1102,8 @@ void test_sframe_unique_test(){
   }
 
   tc_sframe* pre_sampled_frame = tc_sframe_unique(sf, &error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe pre_sampled_gl_sframe = sf_gl.unique();
 
   TS_ASSERT(pre_sampled_gl_sframe.column_names() == pre_sampled_frame->value.column_names());
@@ -1064,6 +1117,8 @@ void test_sframe_unique_test(){
 void test_sframe_single_sort_column_test(){
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sf_gl;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -1078,7 +1133,6 @@ void test_sframe_single_sort_column_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -1095,6 +1149,8 @@ void test_sframe_single_sort_column_test(){
   }
 
   tc_sframe* pre_sampled_frame = tc_sframe_sort_single_column(sf, "col1", true, &error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe pre_sampled_gl_sframe = sf_gl.sort("col1", true);
 
   TS_ASSERT(pre_sampled_gl_sframe.column_names() == pre_sampled_frame->value.column_names());
@@ -1108,6 +1164,8 @@ void test_sframe_single_sort_column_test(){
 void test_sframe_sort_multiple_columns_test(){
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sf_gl;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -1122,7 +1180,6 @@ void test_sframe_sort_multiple_columns_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -1141,10 +1198,16 @@ void test_sframe_sort_multiple_columns_test(){
   tc_flex_list* flex_lst = new_tc_flex_list();
 
   tc_flexible_type* ft = tc_ft_create_from_cstring("col1", &error);
+  TS_ASSERT(error == NULL);
+
   tc_flexible_type* ft2 = tc_ft_create_from_cstring("col2", &error);
+  TS_ASSERT(error == NULL);
 
   tc_flex_list_add_element(flex_lst, ft, &error);
+  TS_ASSERT(error == NULL);
+
   tc_flex_list_add_element(flex_lst, ft2, &error);
+  TS_ASSERT(error == NULL);
 
   std::vector<std::string> columns_transform;
 
@@ -1152,6 +1215,8 @@ void test_sframe_sort_multiple_columns_test(){
   columns_transform.push_back("col2");
 
   tc_sframe* pre_sampled_frame = tc_sframe_sort_multiple_columns(sf, flex_lst, true, &error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe pre_sampled_gl_sframe = sf_gl.sort(columns_transform, true);
 
   TS_ASSERT(pre_sampled_gl_sframe.column_names() == pre_sampled_frame->value.column_names());
@@ -1165,6 +1230,8 @@ void test_sframe_sort_multiple_columns_test(){
 void test_sframe_dropna_test(){
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sf_gl;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -1180,7 +1247,6 @@ void test_sframe_dropna_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -1198,12 +1264,17 @@ void test_sframe_dropna_test(){
 
   tc_flex_list* flex_lst = new_tc_flex_list();
   tc_flexible_type* ft = tc_ft_create_from_cstring("col1", &error);
+  TS_ASSERT(error == NULL);
+
   tc_flex_list_add_element(flex_lst, ft, &error);
+  TS_ASSERT(error == NULL);
 
   std::vector<std::string> columns_transform;
   columns_transform.push_back("col1");
 
   tc_sframe* pre_sampled_frame = tc_sframe_dropna(sf, flex_lst, "any", &error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe pre_sampled_gl_sframe = sf_gl.dropna(columns_transform, "any");
 
   TS_ASSERT(pre_sampled_gl_sframe.column_names() == pre_sampled_frame->value.column_names());
@@ -1217,6 +1288,8 @@ void test_sframe_dropna_test(){
 void test_sframe_slice_test(){
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sf_gl;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -1232,7 +1305,6 @@ void test_sframe_slice_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -1249,6 +1321,8 @@ void test_sframe_slice_test(){
   }
 
   tc_sframe* pre_sampled_frame = tc_sframe_slice(sf, 1, 3, &error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe pre_sampled_gl_sframe = sf_gl[{1,3}];
 
   TS_ASSERT(pre_sampled_gl_sframe.column_names() == pre_sampled_frame->value.column_names());
@@ -1262,6 +1336,8 @@ void test_sframe_slice_test(){
 void test_sframe_slice_stride_test(){
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe sf_gl;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -1277,7 +1353,6 @@ void test_sframe_slice_stride_test(){
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-
     TS_ASSERT(error == NULL);
 
     turi::flex_list lst;
@@ -1294,6 +1369,8 @@ void test_sframe_slice_stride_test(){
   }
 
   tc_sframe* pre_sampled_frame = tc_sframe_slice_stride(sf, 1, 5, 2, &error);
+  TS_ASSERT(error == NULL);
+
   turi::gl_sframe pre_sampled_gl_sframe = sf_gl[{1, 5, 2}];
 
   TS_ASSERT(pre_sampled_gl_sframe.column_names() == pre_sampled_frame->value.column_names());

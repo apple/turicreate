@@ -54,6 +54,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -63,10 +64,9 @@ class capi_test_sarray {
 
     turi::gl_sarray g1(lst1);
 
-    TS_ASSERT(error == NULL);
-
     tc_flex_list* fl2 = make_flex_list_double(v2);
     tc_sarray* sa2 = tc_sarray_create_from_list(fl2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst2;
 
@@ -76,9 +76,9 @@ class capi_test_sarray {
 
     turi::gl_sarray g2(lst2);
 
-    TS_ASSERT(error == NULL);
 
     tc_sarray* combined_output = tc_op_sarray_lt_sarray(sa1, sa2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::gl_sarray combined_gl_output = (g1 < g2);
 
@@ -102,6 +102,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -111,10 +112,10 @@ class capi_test_sarray {
 
     turi::gl_sarray g1(lst1);
 
-    TS_ASSERT(error == NULL);
 
     tc_flex_list* fl2 = make_flex_list_double(v2);
     tc_sarray* sa2 = tc_sarray_create_from_list(fl2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst2;
 
@@ -124,9 +125,8 @@ class capi_test_sarray {
 
     turi::gl_sarray g2(lst2);
 
-    TS_ASSERT(error == NULL);
-
     tc_sarray* combined_output = tc_op_sarray_gt_sarray(sa1, sa2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::gl_sarray combined_gl_output = (g1 > g2);
 
@@ -150,6 +150,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -159,10 +160,9 @@ class capi_test_sarray {
 
     turi::gl_sarray g1(lst1);
 
-    TS_ASSERT(error == NULL);
-
     tc_flex_list* fl2 = make_flex_list_double(v2);
     tc_sarray* sa2 = tc_sarray_create_from_list(fl2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst2;
 
@@ -172,9 +172,9 @@ class capi_test_sarray {
 
     turi::gl_sarray g2(lst2);
 
-    TS_ASSERT(error == NULL);
 
     tc_sarray* combined_output = tc_op_sarray_le_sarray(sa1, sa2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::gl_sarray combined_gl_output = (g1 <= g2);
 
@@ -198,6 +198,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -207,10 +208,10 @@ class capi_test_sarray {
 
     turi::gl_sarray g1(lst1);
 
-    TS_ASSERT(error == NULL);
 
     tc_flex_list* fl2 = make_flex_list_double(v2);
     tc_sarray* sa2 = tc_sarray_create_from_list(fl2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst2;
 
@@ -220,9 +221,8 @@ class capi_test_sarray {
 
     turi::gl_sarray g2(lst2);
 
-    TS_ASSERT(error == NULL);
-
     tc_sarray* combined_output = tc_op_sarray_ge_sarray(sa1, sa2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::gl_sarray combined_gl_output = (g1 >= g2);
 
@@ -246,6 +246,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -255,10 +256,9 @@ class capi_test_sarray {
 
     turi::gl_sarray g1(lst1);
 
-    TS_ASSERT(error == NULL);
-
     tc_flex_list* fl2 = make_flex_list_double(v2);
     tc_sarray* sa2 = tc_sarray_create_from_list(fl2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst2;
 
@@ -268,9 +268,8 @@ class capi_test_sarray {
 
     turi::gl_sarray g2(lst2);
 
-    TS_ASSERT(error == NULL);
-
     tc_sarray* combined_output = tc_op_sarray_eq_sarray(sa1, sa2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::gl_sarray combined_gl_output = (g1 == g2);
 
@@ -293,6 +292,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -303,11 +303,12 @@ class capi_test_sarray {
     turi::gl_sarray g1(lst1);
 
     tc_flexible_type* ft1 = tc_ft_create_from_double(3, &error);
-    turi::flexible_type f_float(3.0);
-
     TS_ASSERT(error == NULL);
 
+    turi::flexible_type f_float(3.0);
+
     tc_sarray* combined_output = tc_op_sarray_lt_ft(sa1, ft1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::gl_sarray combined_gl_output = (g1 < f_float);
 
@@ -328,6 +329,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -338,11 +340,12 @@ class capi_test_sarray {
     turi::gl_sarray g1(lst1);
 
     tc_flexible_type* ft1 = tc_ft_create_from_double(3, &error);
-    turi::flexible_type f_float(3.0);
-
     TS_ASSERT(error == NULL);
 
+    turi::flexible_type f_float(3.0);
+
     tc_sarray* combined_output = tc_op_sarray_gt_ft(sa1, ft1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::gl_sarray combined_gl_output = (g1 > f_float);
 
@@ -362,6 +365,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -372,11 +376,12 @@ class capi_test_sarray {
     turi::gl_sarray g1(lst1);
 
     tc_flexible_type* ft1 = tc_ft_create_from_double(3, &error);
-    turi::flexible_type f_float(3.0);
-
     TS_ASSERT(error == NULL);
 
+    turi::flexible_type f_float(3.0);
+
     tc_sarray* combined_output = tc_op_sarray_ge_ft(sa1, ft1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::gl_sarray combined_gl_output = (g1 >= f_float);
 
@@ -397,6 +402,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -407,11 +413,12 @@ class capi_test_sarray {
     turi::gl_sarray g1(lst1);
 
     tc_flexible_type* ft1 = tc_ft_create_from_double(3, &error);
-    turi::flexible_type f_float(3.0);
-
     TS_ASSERT(error == NULL);
 
+    turi::flexible_type f_float(3.0);
+
     tc_sarray* combined_output = tc_op_sarray_le_ft(sa1, ft1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::gl_sarray combined_gl_output = (g1 <= f_float);
 
@@ -432,6 +439,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -442,11 +450,12 @@ class capi_test_sarray {
     turi::gl_sarray g1(lst1);
 
     tc_flexible_type* ft1 = tc_ft_create_from_double(3, &error);
-    turi::flexible_type f_float(3.0);
-
     TS_ASSERT(error == NULL);
 
+    turi::flexible_type f_float(3.0);
+
     tc_sarray* combined_output = tc_op_sarray_eq_ft(sa1, ft1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::gl_sarray combined_gl_output = (g1 == f_float);
 
@@ -468,6 +477,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -477,10 +487,9 @@ class capi_test_sarray {
 
     turi::gl_sarray g1(lst1);
 
-    TS_ASSERT(error == NULL);
-
     tc_flex_list* fl2 = make_flex_list_double(v2);
     tc_sarray* sa2 = tc_sarray_create_from_list(fl2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst2;
 
@@ -493,6 +502,7 @@ class capi_test_sarray {
     TS_ASSERT(error == NULL);
 
     tc_sarray* combined_output = tc_op_sarray_logical_and_sarray(sa1, sa2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::gl_sarray combined_gl_output = (g1 && g2);
 
@@ -516,6 +526,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -529,6 +540,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl2 = make_flex_list_double(v2);
     tc_sarray* sa2 = tc_sarray_create_from_list(fl2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst2;
 
@@ -538,9 +550,8 @@ class capi_test_sarray {
 
     turi::gl_sarray g2(lst2);
 
-    TS_ASSERT(error == NULL);
-
     tc_sarray* combined_output = tc_op_sarray_bitwise_and_sarray(sa1, sa2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::gl_sarray combined_gl_output = (g1 & g2);
 
@@ -564,6 +575,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -577,6 +589,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl2 = make_flex_list_double(v2);
     tc_sarray* sa2 = tc_sarray_create_from_list(fl2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst2;
 
@@ -586,9 +599,8 @@ class capi_test_sarray {
 
     turi::gl_sarray g2(lst2);
 
-    TS_ASSERT(error == NULL);
-
     tc_sarray* combined_output = tc_op_sarray_logical_or_sarray(sa1, sa2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::gl_sarray combined_gl_output = (g1 || g2);
 
@@ -612,6 +624,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -625,6 +638,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl2 = make_flex_list_double(v2);
     tc_sarray* sa2 = tc_sarray_create_from_list(fl2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst2;
 
@@ -634,9 +648,8 @@ class capi_test_sarray {
 
     turi::gl_sarray g2(lst2);
 
-    TS_ASSERT(error == NULL);
-
     tc_sarray* combined_output = tc_op_sarray_bitwise_or_sarray(sa1, sa2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::gl_sarray combined_gl_output = (g1 | g2);
 
@@ -660,6 +673,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -669,10 +683,9 @@ class capi_test_sarray {
 
     turi::gl_sarray g1(lst1);
 
-    TS_ASSERT(error == NULL);
-
     tc_flex_list* fl2 = make_flex_list_double(v2);
     tc_sarray* sa2 = tc_sarray_create_from_list(fl2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst2;
 
@@ -682,9 +695,8 @@ class capi_test_sarray {
 
     turi::gl_sarray g2(lst2);
 
-    TS_ASSERT(error == NULL);
-
     tc_sarray* combined_output = tc_sarray_apply_mask(sa1, sa2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::gl_sarray combined_gl_output = (g1[g2]);
 
@@ -707,6 +719,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -716,9 +729,8 @@ class capi_test_sarray {
 
     turi::gl_sarray g1(lst1);
 
-    TS_ASSERT(error == NULL);
-
     TS_ASSERT(g1.all()== tc_sarray_all_nonzero(sa1, &error));
+    TS_ASSERT(error == NULL);
 
     tc_flex_list_destroy(fl1);
     tc_sarray_destroy(sa1);
@@ -732,6 +744,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -741,9 +754,9 @@ class capi_test_sarray {
 
     turi::gl_sarray g1(lst1);
 
-    TS_ASSERT(error == NULL);
 
     TS_ASSERT(g1.any() == tc_sarray_any_nonzero(sa1, &error));
+    TS_ASSERT(error == NULL);
 
     tc_flex_list_destroy(fl1);
     tc_sarray_destroy(sa1);
@@ -757,6 +770,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -766,9 +780,8 @@ class capi_test_sarray {
 
     turi::gl_sarray g1(lst1);
 
-    TS_ASSERT(error == NULL);
-
     TS_ASSERT((g1.head(4) == tc_sarray_head(sa1, 4, &error)->value).all());
+    TS_ASSERT(error == NULL);
 
     tc_flex_list_destroy(fl1);
     tc_sarray_destroy(sa1);
@@ -782,6 +795,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -791,9 +805,8 @@ class capi_test_sarray {
 
     turi::gl_sarray g1(lst1);
 
-    TS_ASSERT(error == NULL);
-
     TS_ASSERT((g1.tail(4) == tc_sarray_tail(sa1, 4, &error)->value).all());
+    TS_ASSERT(error == NULL);
 
     tc_flex_list_destroy(fl1);
     tc_sarray_destroy(sa1);
@@ -807,6 +820,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_string(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -816,9 +830,9 @@ class capi_test_sarray {
 
     turi::gl_sarray g1(lst1);
 
-    TS_ASSERT(error == NULL);
 
     TS_ASSERT((g1.count_words(0) == tc_sarray_count_words(sa1, 0, &error)->value).all());
+    TS_ASSERT(error == NULL);
 
     tc_flex_list_destroy(fl1);
     tc_sarray_destroy(sa1);
@@ -832,6 +846,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_string(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -841,9 +856,8 @@ class capi_test_sarray {
 
     turi::gl_sarray g1(lst1);
 
-    TS_ASSERT(error == NULL);
-
     TS_ASSERT((g1.count_ngrams(1, "word", false, true) == tc_sarray_count_word_ngrams(sa1, 1, false, &error)->value).all());
+    TS_ASSERT(error == NULL);
 
     tc_flex_list_destroy(fl1);
     tc_sarray_destroy(sa1);
@@ -857,6 +871,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_string(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -866,9 +881,8 @@ class capi_test_sarray {
 
     turi::gl_sarray g1(lst1);
 
-    TS_ASSERT(error == NULL);
-
     TS_ASSERT((g1.count_ngrams(1, "character", false, true) == tc_sarray_count_character_ngrams(sa1, 1, false, false, &error)->value).all());
+    TS_ASSERT(error == NULL);
 
     tc_flex_list_destroy(fl1);
     tc_sarray_destroy(sa1);
@@ -890,15 +904,21 @@ class capi_test_sarray {
 
 
     tc_flex_dict* test_flex_dict = tc_flex_dict_create(&error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
     turi::flex_dict flexible_dictionary;
 
     for(auto p : data) {
       tc_flexible_type* ft1 = tc_ft_create_from_cstring(p.first.c_str(), &error);
+      TS_ASSERT(error == NULL);
+
       tc_flexible_type* ft2 = tc_ft_create_from_cstring(p.second.c_str(), &error);
+      TS_ASSERT(error == NULL);
 
       tc_flex_dict_add_element(test_flex_dict, ft1, ft2, &error);
+      TS_ASSERT(error == NULL);
+
       flexible_dictionary.push_back({p.first.c_str(), p.second.c_str()});
 
       tc_ft_destroy(ft1);
@@ -914,17 +934,26 @@ class capi_test_sarray {
     }
 
     tc_flex_list* fl = tc_flex_list_create(&error);
+    TS_ASSERT(error == NULL);
+
     tc_flexible_type* ft = tc_ft_create_from_flex_dict(test_flex_dict, &error);
+    TS_ASSERT(error == NULL);
+
     tc_flex_list_add_element(fl, ft, &error);
+    TS_ASSERT(error == NULL);
 
     lst1.push_back(flexible_dictionary);
 
     tc_sarray* sa1 = tc_sarray_create_from_list(fl, &error);
+    TS_ASSERT(error == NULL);
+
     turi::gl_sarray g1(lst1);
 
     tc_flex_list* string_list = make_flex_list_string(keys);
 
     tc_sarray* modified_dict = tc_sarray_dict_trim_by_keys(sa1, string_list, 1, &error);
+    TS_ASSERT(error == NULL);
+
     turi::gl_sarray g1_modified = g1.dict_trim_by_keys(key_flexible, true);
 
 
@@ -946,15 +975,21 @@ class capi_test_sarray {
 
 
     tc_flex_dict* test_flex_dict = tc_flex_dict_create(&error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
     turi::flex_dict flexible_dictionary;
 
     for(auto p : data) {
       tc_flexible_type* ft1 = tc_ft_create_from_cstring(p.first.c_str(), &error);
+      TS_ASSERT(error == NULL);
+
       tc_flexible_type* ft2 = tc_ft_create_from_int64(p.second, &error);
+      TS_ASSERT(error == NULL);
 
       tc_flex_dict_add_element(test_flex_dict, ft1, ft2, &error);
+      TS_ASSERT(error == NULL);
+
       flexible_dictionary.push_back({p.first.c_str(), p.second});
 
       tc_ft_destroy(ft1);
@@ -965,18 +1000,30 @@ class capi_test_sarray {
     turi::flexible_type upper(5);
 
     tc_flexible_type* lower_flex = tc_ft_create_from_int64(3, &error);
+    TS_ASSERT(error == NULL);
+
     tc_flexible_type* upper_flex = tc_ft_create_from_int64(5, &error);
+    TS_ASSERT(error == NULL);
 
     tc_flex_list* fl = tc_flex_list_create(&error);
+    TS_ASSERT(error == NULL);
+
     tc_flexible_type* ft = tc_ft_create_from_flex_dict(test_flex_dict, &error);
+    TS_ASSERT(error == NULL);
+
     tc_flex_list_add_element(fl, ft, &error);
+    TS_ASSERT(error == NULL);
 
     lst1.push_back(flexible_dictionary);
 
     tc_sarray* sa1 = tc_sarray_create_from_list(fl, &error);
+    TS_ASSERT(error == NULL);
+
     turi::gl_sarray g1(lst1);
 
     tc_sarray* modified_dict = tc_sarray_dict_trim_by_value_range(sa1, lower_flex, upper_flex, &error);
+    TS_ASSERT(error == NULL);
+
     turi::gl_sarray g1_modified = g1.dict_trim_by_values(lower, upper);
 
 
@@ -993,6 +1040,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -1003,11 +1051,14 @@ class capi_test_sarray {
     turi::gl_sarray g1(lst1);
 
     tc_flexible_type* ft1 = tc_ft_create_from_double(3, &error);
+    TS_ASSERT(error == NULL);
+
     turi::flexible_type f_float(3.0);
 
     TS_ASSERT(error == NULL);
 
     TS_ASSERT((g1.max() == tc_sarray_max(sa1, &error)->value));
+    TS_ASSERT(error == NULL);
 
     tc_flex_list_destroy(fl1);
     tc_ft_destroy(ft1);
@@ -1023,6 +1074,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -1033,11 +1085,14 @@ class capi_test_sarray {
     turi::gl_sarray g1(lst1);
 
     tc_flexible_type* ft1 = tc_ft_create_from_double(3, &error);
+    TS_ASSERT(error == NULL);
+
     turi::flexible_type f_float(3.0);
 
     TS_ASSERT(error == NULL);
 
     TS_ASSERT((g1.min() == tc_sarray_min(sa1, &error)->value));
+    TS_ASSERT(error == NULL);
 
     tc_flex_list_destroy(fl1);
     tc_ft_destroy(ft1);
@@ -1053,6 +1108,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -1063,11 +1119,14 @@ class capi_test_sarray {
     turi::gl_sarray g1(lst1);
 
     tc_flexible_type* ft1 = tc_ft_create_from_double(3, &error);
+    TS_ASSERT(error == NULL);
+
     turi::flexible_type f_float(3.0);
 
     TS_ASSERT(error == NULL);
 
     TS_ASSERT((g1.sum() == tc_sarray_sum(sa1, &error)->value));
+    TS_ASSERT(error == NULL);
 
     tc_flex_list_destroy(fl1);
     tc_ft_destroy(ft1);
@@ -1083,6 +1142,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -1093,11 +1153,12 @@ class capi_test_sarray {
     turi::gl_sarray g1(lst1);
 
     tc_flexible_type* ft1 = tc_ft_create_from_double(3, &error);
-    turi::flexible_type f_float(3.0);
-
     TS_ASSERT(error == NULL);
 
+    turi::flexible_type f_float(3.0);
+
     TS_ASSERT((g1.mean() == tc_sarray_mean(sa1, &error)->value));
+    TS_ASSERT(error == NULL);
 
     tc_flex_list_destroy(fl1);
     tc_ft_destroy(ft1);
@@ -1113,6 +1174,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -1123,11 +1185,12 @@ class capi_test_sarray {
     turi::gl_sarray g1(lst1);
 
     tc_flexible_type* ft1 = tc_ft_create_from_double(3, &error);
-    turi::flexible_type f_float(3.0);
-
     TS_ASSERT(error == NULL);
 
+    turi::flexible_type f_float(3.0);
+
     TS_ASSERT((g1.std() == tc_sarray_std(sa1, &error)->value));
+    TS_ASSERT(error == NULL);
 
     tc_flex_list_destroy(fl1);
     tc_ft_destroy(ft1);
@@ -1143,6 +1206,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -1153,11 +1217,12 @@ class capi_test_sarray {
     turi::gl_sarray g1(lst1);
 
     tc_flexible_type* ft1 = tc_ft_create_from_double(3, &error);
-    turi::flexible_type f_float(3.0);
-
     TS_ASSERT(error == NULL);
 
+    turi::flexible_type f_float(3.0);
+
     TS_ASSERT((g1.nnz() == tc_sarray_nnz(sa1, &error)));
+    TS_ASSERT(error == NULL);
 
     tc_flex_list_destroy(fl1);
     tc_ft_destroy(ft1);
@@ -1173,6 +1238,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -1182,9 +1248,8 @@ class capi_test_sarray {
 
     turi::gl_sarray g1(lst1);
 
-    TS_ASSERT(error == NULL);
-
     TS_ASSERT((g1.num_missing() == tc_sarray_num_missing(sa1, &error)));
+    TS_ASSERT(error == NULL);
 
     tc_flex_list_destroy(fl1);
     tc_sarray_destroy(sa1);
@@ -1206,15 +1271,21 @@ class capi_test_sarray {
 
 
     tc_flex_dict* test_flex_dict = tc_flex_dict_create(&error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
     turi::flex_dict flexible_dictionary;
 
     for(auto p : data) {
       tc_flexible_type* ft1 = tc_ft_create_from_cstring(p.first.c_str(), &error);
+      TS_ASSERT(error == NULL);
+
       tc_flexible_type* ft2 = tc_ft_create_from_cstring(p.second.c_str(), &error);
+      TS_ASSERT(error == NULL);
 
       tc_flex_dict_add_element(test_flex_dict, ft1, ft2, &error);
+      TS_ASSERT(error == NULL);
+
       flexible_dictionary.push_back({p.first.c_str(), p.second.c_str()});
 
       tc_ft_destroy(ft1);
@@ -1222,15 +1293,24 @@ class capi_test_sarray {
     }
 
     tc_flex_list* fl = tc_flex_list_create(&error);
+    TS_ASSERT(error == NULL);
+
     tc_flexible_type* ft = tc_ft_create_from_flex_dict(test_flex_dict, &error);
+    TS_ASSERT(error == NULL);
+
     tc_flex_list_add_element(fl, ft, &error);
+    TS_ASSERT(error == NULL);
 
     lst1.push_back(flexible_dictionary);
 
     tc_sarray* sa1 = tc_sarray_create_from_list(fl, &error);
+    TS_ASSERT(error == NULL);
+
     turi::gl_sarray g1(lst1);
 
     tc_sarray* modified_sa = tc_sarray_dict_keys(sa1, &error);
+    TS_ASSERT(error == NULL);
+
     turi::gl_sarray modified_sa_gl = g1.dict_keys();
 
     TS_ASSERT((modified_sa->value == modified_sa_gl).all());
@@ -1254,15 +1334,21 @@ class capi_test_sarray {
 
 
     tc_flex_dict* test_flex_dict = tc_flex_dict_create(&error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
     turi::flex_dict flexible_dictionary;
 
     for(auto p : data) {
       tc_flexible_type* ft1 = tc_ft_create_from_cstring(p.first.c_str(), &error);
+      TS_ASSERT(error == NULL);
+
       tc_flexible_type* ft2 = tc_ft_create_from_cstring(p.second.c_str(), &error);
+      TS_ASSERT(error == NULL);
 
       tc_flex_dict_add_element(test_flex_dict, ft1, ft2, &error);
+      TS_ASSERT(error == NULL);
+
       flexible_dictionary.push_back({p.first.c_str(), p.second.c_str()});
 
       tc_ft_destroy(ft1);
@@ -1278,17 +1364,26 @@ class capi_test_sarray {
     }
 
     tc_flex_list* fl = tc_flex_list_create(&error);
+    TS_ASSERT(error == NULL);
+
     tc_flexible_type* ft = tc_ft_create_from_flex_dict(test_flex_dict, &error);
+    TS_ASSERT(error == NULL);
+
     tc_flex_list_add_element(fl, ft, &error);
+    TS_ASSERT(error == NULL);
 
     lst1.push_back(flexible_dictionary);
 
     tc_sarray* sa1 = tc_sarray_create_from_list(fl, &error);
+    TS_ASSERT(error == NULL);
+
     turi::gl_sarray g1(lst1);
 
     tc_flex_list* string_list = make_flex_list_string(keys);
 
     tc_sarray* modified_dict = tc_sarray_dict_has_any_keys(sa1, string_list, &error);
+    TS_ASSERT(error == NULL);
+
     turi::gl_sarray g1_modified = g1.dict_has_any_keys(key_flexible);
 
 
@@ -1313,15 +1408,21 @@ class capi_test_sarray {
 
 
     tc_flex_dict* test_flex_dict = tc_flex_dict_create(&error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
     turi::flex_dict flexible_dictionary;
 
     for(auto p : data) {
       tc_flexible_type* ft1 = tc_ft_create_from_cstring(p.first.c_str(), &error);
+      TS_ASSERT(error == NULL);
+
       tc_flexible_type* ft2 = tc_ft_create_from_cstring(p.second.c_str(), &error);
+      TS_ASSERT(error == NULL);
 
       tc_flex_dict_add_element(test_flex_dict, ft1, ft2, &error);
+      TS_ASSERT(error == NULL);
+
       flexible_dictionary.push_back({p.first.c_str(), p.second.c_str()});
 
       tc_ft_destroy(ft1);
@@ -1337,17 +1438,26 @@ class capi_test_sarray {
     }
 
     tc_flex_list* fl = tc_flex_list_create(&error);
+    TS_ASSERT(error == NULL);
+
     tc_flexible_type* ft = tc_ft_create_from_flex_dict(test_flex_dict, &error);
+    TS_ASSERT(error == NULL);
+
     tc_flex_list_add_element(fl, ft, &error);
+    TS_ASSERT(error == NULL);
 
     lst1.push_back(flexible_dictionary);
 
     tc_sarray* sa1 = tc_sarray_create_from_list(fl, &error);
+    TS_ASSERT(error == NULL);
+
     turi::gl_sarray g1(lst1);
 
     tc_flex_list* string_list = make_flex_list_string(keys);
 
     tc_sarray* modified_dict = tc_sarray_dict_has_all_keys(sa1, string_list, &error);
+    TS_ASSERT(error == NULL);
+
     turi::gl_sarray g1_modified = g1.dict_has_all_keys(key_flexible);
 
 
@@ -1364,6 +1474,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -1373,9 +1484,8 @@ class capi_test_sarray {
 
     turi::gl_sarray g1(lst1);
 
-    TS_ASSERT(error == NULL);
-
     TS_ASSERT((g1.sample(0.8, 2) == (tc_sarray_sample(sa1, 0.8, 2, &error)->value)).all());
+    TS_ASSERT(error == NULL);
 
     tc_flex_list_destroy(fl1);
     tc_sarray_destroy(sa1);
@@ -1389,6 +1499,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_string(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -1397,8 +1508,6 @@ class capi_test_sarray {
     }
 
     turi::gl_sarray g1(lst1);
-
-    TS_ASSERT(error == NULL);
 
     std::vector<std::string> delimiters = {"\n"};
 
@@ -1422,6 +1531,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -1432,14 +1542,16 @@ class capi_test_sarray {
     turi::gl_sarray g1(lst1);
 
     tc_flexible_type* ft1 = tc_ft_create_from_double(1, &error);
+    TS_ASSERT(error == NULL);
+
     tc_flexible_type* ft2 = tc_ft_create_from_double(3, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flexible_type f_float_1(1.0);
     turi::flexible_type f_float_2(3.0);
 
-    TS_ASSERT(error == NULL);
-
     TS_ASSERT((g1.clip(f_float_1, f_float_2) == tc_sarray_clip(sa1, ft1, ft2, &error)->value).all());
+    TS_ASSERT(error == NULL);
 
     tc_flex_list_destroy(fl1);
     tc_sarray_destroy(sa1);
@@ -1453,6 +1565,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -1465,6 +1578,7 @@ class capi_test_sarray {
     TS_ASSERT(error == NULL);
 
     TS_ASSERT((g1.dropna() == tc_sarray_drop_nan(sa1, &error)->value).all());
+    TS_ASSERT(error == NULL);
 
     tc_flex_list_destroy(fl1);
     tc_sarray_destroy(sa1);
@@ -1478,6 +1592,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -1490,9 +1605,12 @@ class capi_test_sarray {
     TS_ASSERT(error == NULL);
 
     tc_flexible_type* ft1 = tc_ft_create_from_double(1, &error);
+    TS_ASSERT(error == NULL);
+
     turi::flexible_type f_float_1(1.0);
 
     TS_ASSERT((g1.fillna(f_float_1) == tc_sarray_replace_nan(sa1, ft1, &error)->value).all());
+    TS_ASSERT(error == NULL);
 
     tc_flex_list_destroy(fl1);
     tc_sarray_destroy(sa1);
@@ -1506,6 +1624,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -1515,9 +1634,8 @@ class capi_test_sarray {
 
     turi::gl_sarray g1(lst1);
 
-    TS_ASSERT(error == NULL);
-
     TS_ASSERT((g1.topk_index(3, false) == tc_sarray_topk_index(sa1, 3, false, &error)->value).all());
+    TS_ASSERT(error == NULL);
 
     tc_sarray_destroy(sa1);
     TS_ASSERT(error == NULL);
@@ -1531,6 +1649,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -1540,10 +1659,9 @@ class capi_test_sarray {
 
     turi::gl_sarray g1(lst1);
 
-    TS_ASSERT(error == NULL);
-
     tc_flex_list* fl2 = make_flex_list_double(v2);
     tc_sarray* sa2 = tc_sarray_create_from_list(fl2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst2;
 
@@ -1553,9 +1671,9 @@ class capi_test_sarray {
 
     turi::gl_sarray g2(lst2);
 
-    TS_ASSERT(error == NULL);
 
     tc_sarray* combined_output = tc_sarray_append(sa1, sa2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::gl_sarray combined_gl_output = g1.append(g2);
 
@@ -1577,6 +1695,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -1589,6 +1708,7 @@ class capi_test_sarray {
     TS_ASSERT(error == NULL);
 
     TS_ASSERT((g1.unique() == tc_sarray_unique(sa1, &error)->value).all());
+    TS_ASSERT(error == NULL);
 
     tc_sarray_destroy(sa1);
     TS_ASSERT(error == NULL);
@@ -1601,6 +1721,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -1613,13 +1734,14 @@ class capi_test_sarray {
     TS_ASSERT(error == NULL);
 
     tc_sarray* combined_output = tc_sarray_sample(sa1, 0.8, 2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::gl_sarray combined_gl_output = g1.sample(0.8, 2);
 
     TS_ASSERT((combined_output->value == combined_gl_output).all());
 
     TS_ASSERT((tc_sarray_is_materialized(combined_output, &error) == combined_gl_output.is_materialized()));
-
+    TS_ASSERT(error == NULL);
 
     tc_flex_list_destroy(fl1);
     tc_sarray_destroy(sa1);
@@ -1633,6 +1755,7 @@ class capi_test_sarray {
 
     tc_flex_list* fl1 = make_flex_list_double(v1);
     tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    TS_ASSERT(error == NULL);
 
     turi::flex_list lst1;
 
@@ -1645,17 +1768,22 @@ class capi_test_sarray {
     TS_ASSERT(error == NULL);
 
     tc_sarray* combined_output = tc_sarray_sample(sa1, 0.8, 2, &error);
+    TS_ASSERT(error == NULL);
 
     turi::gl_sarray combined_gl_output = g1.sample(0.8, 2);
 
     TS_ASSERT((combined_output->value == combined_gl_output).all());
 
     TS_ASSERT((tc_sarray_is_materialized(combined_output, &error) == combined_gl_output.is_materialized()));
+    TS_ASSERT(error == NULL);
 
     tc_sarray_materialize(combined_output, &error);
+    TS_ASSERT(error == NULL);
+
     combined_gl_output.materialize();
 
     TS_ASSERT((tc_sarray_is_materialized(combined_output, &error) == combined_gl_output.is_materialized()));
+    TS_ASSERT(error == NULL);
 
     tc_flex_list_destroy(fl1);
     tc_sarray_destroy(sa1);
