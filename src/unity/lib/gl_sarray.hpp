@@ -43,7 +43,7 @@ class sarray_reader_buffer;
  * larger than the machine's main memory. Runtime typing of the gl_sarray is
  * managed through the \ref flexible_type, which is an efficient runtime typed
  * value. The types supported by the flexible_type are listed in \ref
- * flex_type_enum.
+ * flex_type_enum. 
  *
  *
  * ### Construction
@@ -59,13 +59,13 @@ class sarray_reader_buffer;
  *
  * \code
  * // creates an array of 5 integers
- * gl_sarray g({1,2,3,4,5});
+ * gl_sarray g({1,2,3,4,5}); 
  *
  * // creates an array of 5 doubles
- * gl_sarray g({1.0,2.0,3.0,4.0,5.0});
+ * gl_sarray g({1.0,2.0,3.0,4.0,5.0}); 
  *
  * // creates an array of 4 doubles with one missing value
- * gl_sarray g({1.0,2.0,3.0,FLEX_UNDEFINED,5.0});
+ * gl_sarray g({1.0,2.0,3.0,FLEX_UNDEFINED,5.0}); 
  * \endcode
  *
  * While the gl_sarray is conceptually immutable, all that really means is that
@@ -73,7 +73,7 @@ class sarray_reader_buffer;
  * are permitted.
  *
  * \code
- * gl_sarray g({1,2,3,4,5});
+ * gl_sarray g({1,2,3,4,5}); 
  * gl_sarray s = g + 1;
  * // s is {2,3,4,5,6}
  * \endcode
@@ -81,7 +81,7 @@ class sarray_reader_buffer;
  * ### Usage
  *
  * The gl_sarray API is designed to very closely mimic the Python SArray API
- * and supports much of the Python-like capabilities, but in C++.
+ * and supports much of the Python-like capabilities, but in C++. 
  *
  * For instance, vector and operations:
  * \code
@@ -94,31 +94,31 @@ class sarray_reader_buffer;
  * \code
  * gl_sarray s{1,2,3,4,5};
  * gl_sarray selector{0,0,1,1,1}
- * auto t = s[selector];
+ * auto t = s[selector]; 
  * // t is [3,4,5]
  *
  *
  * gl_sarray s{1,2,3,4,5};
- * auto t = s[s < 3];
+ * auto t = s[s < 3]; 
  * // t is [1,2]
  * \endcode
  *
  * Python Range slicing:
  * \code
  * gl_sarray s{1,2,3,4,5};
- * auto t = s[{0,3}];
- * auto u = s[{-3,-1}];
+ * auto t = s[{0,3}]; 
+ * auto u = s[{-3,-1}]; 
  *
  * // t is [1,2]
  * // u is [3,4]
  * \endcode
  *
- * And many others.
+ * And many others. 
  *
  * The gl_sarray can be read \b inefficiently using operator[]
  * \code
  * gl_sarray s{1,2,3,4,5};
- * int val = s[2];
+ * int val = s[2]; 
  * // val == 3
  * \endcode
  *
@@ -134,11 +134,11 @@ class sarray_reader_buffer;
  * \ref materialize_to_callback can be used to read the SFrame without
  * materialization.
  *
- * The gl_sarray can constructed in a variety of means:
+ * The gl_sarray can constructed in a variety of means: 
  *   - If the data to be written is already in memory, it can be created
- *     using the
+ *     using the 
  *     \ref gl_sarray::gl_sarray(const std::vector<flexible_type>& values, flex_type_enum dtype) "gl_sarray constructor"
- *   - Otherwise, the \ref gl_sarray_writer can be used which provides a simple
+ *   - Otherwise, the \ref gl_sarray_writer can be used which provides a simple 
  *     write interface.
  *
  * ### Python Binding
@@ -151,7 +151,7 @@ class sarray_reader_buffer;
  * \code
  * //
  * // Compiled as example.so
- * //
+ * // 
  * gl_sarray add_one_to_array(gl_sarray data) {
  *   return s + 1;
  * }
@@ -172,15 +172,15 @@ class sarray_reader_buffer;
  * ### Details
  *
  * The gl_sarray is internally a reference object. i.e. in the code below,
- * both a and b will point to the same underlying sarray. However since
+ * both a and b will point to the same underlying sarray. However since 
  * gl_sarray's are immutable, this does not introduce any interface quirks.
  * \code
  * gl_sarray a{1,2,3};
  * gl_sarray b = a;
  * \endcode
- *
- * The gl_sarray is also lazy evaluated behind the scenes to minimize disk
- * access. Thus regardless of the size of the SArray or the complexity of the
+ * 
+ * The gl_sarray is also lazy evaluated behind the scenes to minimize disk 
+ * access. Thus regardless of the size of the SArray or the complexity of the 
  * lambda operation, this operation will run quickly.
  * \code
  * b = (sa.apply(some_complicated_function) + 5) / 2;
@@ -203,7 +203,7 @@ class gl_sarray {
   /// Copy Constructor
   gl_sarray(const gl_sarray&);
 
-  /// Move Constructor
+  /// Move Constructor 
   gl_sarray(gl_sarray&&);
 
   /// Copy Assignment
@@ -213,7 +213,7 @@ class gl_sarray {
   gl_sarray& operator=(gl_sarray&&);
 
   /**
-   * Constructs a gl_sarray from a binary SArray saved previously with
+   * Constructs a gl_sarray from a binary SArray saved previously with 
    * \ref save().
    *
    * \see save()
@@ -228,13 +228,13 @@ class gl_sarray {
    * // auto infers data type
    * gl_sarray sa(values);
    *
-   * // resultant array is of floating point type.
+   * // resultant array is of floating point type. 
    * // Automatic type casting is performed internally.
-   * gl_sarray sa(values, flex_type_enum::FLOAT);
+   * gl_sarray sa(values, flex_type_enum::FLOAT); 
    * \endcode
    *
    */
-  gl_sarray(const std::vector<flexible_type>& values,
+  gl_sarray(const std::vector<flexible_type>& values, 
             flex_type_enum dtype = flex_type_enum::UNDEFINED);
 
   void construct_from_vector(const std::vector<flexible_type>& values,
@@ -246,16 +246,16 @@ class gl_sarray {
    * Type is automatically determined.
    * \code
    * // creates an array of 5 integers
-   * gl_sarray g({1,2,3,4,5});
+   * gl_sarray g({1,2,3,4,5}); 
    *
    * // creates an array of 5 doubles
-   * gl_sarray g({1.0,2.0,3.0,4.0,5.0});
+   * gl_sarray g({1.0,2.0,3.0,4.0,5.0}); 
    *
-   * // non-contiguous type. Most general type is selected.
+   * // non-contiguous type. Most general type is selected. 
    * // This will result in an array of strings.
-   * gl_sarray g({1,2.0,"3"});
+   * gl_sarray g({1,2.0,"3"}); 
    * \endcode
-   */
+   */  
   gl_sarray(const std::initializer_list<flexible_type>& values);
 
 /**************************************************************************/
@@ -302,12 +302,12 @@ class gl_sarray {
   /**
    * \internal
    * Implicit conversion from backend unity_sarray objects.
-   */
+   */ 
   gl_sarray(std::shared_ptr<unity_sarray> sarray);
   /**
    * \internal
    * Implicit conversion from backend unity_sarray_base objects.
-   */
+   */ 
   gl_sarray(std::shared_ptr<unity_sarray_base> sarray);
   /**
    * \internal
@@ -317,12 +317,12 @@ class gl_sarray {
   /**
    * \internal
    * Implicit conversion to backend sarray objects.
-   */
+   */ 
   operator std::shared_ptr<unity_sarray>() const;
   /**
    * \internal
    * Implicit conversion to backend sarray objects.
-   */
+   */ 
   operator std::shared_ptr<unity_sarray_base>() const;
 
   /**
@@ -332,7 +332,7 @@ class gl_sarray {
   std::shared_ptr<sarray<flexible_type> > materialize_to_sarray() const;
 
   /// \endcond
-
+ 
   /**************************************************************************/
   /*                                                                        */
   /*                           Operator Overloads                           */
@@ -343,7 +343,7 @@ class gl_sarray {
    * \name Numeric operator overloads.
    *
    * Most operators are overloaded and will perform element-wise operations
-   * on the entire array.
+   * on the entire array. 
    *
    * For instance:
    * \code
@@ -358,7 +358,7 @@ class gl_sarray {
    * Comparison operators will return a gl_sarray of binary integers.
    * \code
    * gl_sarray a{1,2,3,4,5};
-   * auto ret = a > 3;
+   * auto ret = a > 3; 
    * // ret will be an integer array containing [0,0,0,1,1]
    * \endcode
    *
@@ -367,7 +367,7 @@ class gl_sarray {
    *
    * \code
    * gl_sarray a{1,2,3,4,5};
-   * auto ret = a > 1 && a <= 4;
+   * auto ret = a > 1 && a <= 4; 
    * // ret will be an integer array containing [0,1,1,1,0]
    * \endcode
    *
@@ -375,11 +375,11 @@ class gl_sarray {
    * \code
    * gl_sarray a{1,2,3,4,5};
    * gl_sarray b = a.astype(flex_type_enum::STRING);
-   * auto ret = b[a > 1 && a <= 4];
+   * auto ret = b[a > 1 && a <= 4]; 
    * // ret will be an string array containing ["2","3","4"]
    * \endcode
    *
-   * The logical and bitwise operators can be used with non-integral arrays
+   * The logical and bitwise operators can be used with non-integral arrays 
    * in which case all empty values evaluate to False. i.e. for string,
    * list, and dictionary SArrays, empty values are interpreted as false.
    *
@@ -450,7 +450,7 @@ class gl_sarray {
    * evaluates to true.
    * \code
    * gl_sarray a{1,2,3,4,5};
-   * auto ret = a[a > 1 && a <= 4];
+   * auto ret = a[a > 1 && a <= 4]; 
    * // ret is now the array [2,3,4]
    * \endcode
    */
@@ -459,12 +459,12 @@ class gl_sarray {
   /**
    * Performs a slice Python style.
    *
-   * \param slice A list of 2 or 3 values. If 2 values, this is interpreted as
-   * {start, end} indices, with an implicit value of step = 1.
+   * \param slice A list of 2 or 3 values. If 2 values, this is interpreted as 
+   * {start, end} indices, with an implicit value of step = 1. 
    * If 3 values, this is interpreted as {start, step, end}.
    * Values at the positions [start, start+step, start+2*start, ...] are returned
-   * until end (exclusive) is reached. Negative start and end values are
-   * interpreted as offsets from the end of the array.
+   * until end (exclusive) is reached. Negative start and end values are 
+   * interpreted as offsets from the end of the array. 
    *
    * Given a gl_sarray
    * \code
@@ -528,7 +528,7 @@ class gl_sarray {
    * Each call to the callback passes:
    *  - a thread id,
    *  - a shared_ptr to an sframe_rows object
-   *
+   * 
    * The sframe_rows object looks like a vector<vector<flexible_type>>.
    * i.e. to look at all the rows, you need to write:
    *
@@ -538,7 +538,7 @@ class gl_sarray {
    *      // each row looks like an std::vector<flexible_type>
    *      // and can be casted to to a vector<flexible_type> if necessary
    *
-   *      // But this this is an sarray, the element you want is always in
+   *      // But this this is an sarray, the element you want is always in 
    *      // row[0]
    *   }
    * });
@@ -596,7 +596,7 @@ class gl_sarray {
   /**************************************************************************/
 
   /**
-   *
+   * 
    * Saves the gl_sarray to file.
    *
    * When format is "binary" (default), the saved SArray will be in a directory
@@ -682,13 +682,13 @@ class gl_sarray {
    * Count words in the gl_sarray.
    *
    * \param to_lower Optional. If True, all words are converted to lower case
-   * before counting.
+   * before counting.  
    *
    * Return an gl_sarray of dictionary type where each
    * element contains the word count for each word that appeared in the
    * corresponding input element. The words are split on all whitespace and
    * punctuation characters. Only works if this SArray is of string type.
-   * Parameters:
+   * Parameters:	
    *
    * \code
    * sa = turicreate.SArray(["The quick brown fox jumps.",
@@ -703,22 +703,22 @@ class gl_sarray {
   gl_sarray count_words(bool to_lower=true, turi::flex_list delimiters={"\r", "\v", "\n", "\f", "\t", " "}) const;
 
 
-  /**
+  /** 
    * Return an SArray of dict type where each element contains the count for
    * each of the n-grams that appear in the corresponding input element. The
    * n-grams can be specified to be either character n-grams or word n-grams. The
-   * input SArray must contain strings.  Parameters:
-   *
+   * input SArray must contain strings.  Parameters:	
+   * 
    * \param n Optional. The number of words in each n-gram. An n value of 1
    * returns word counts. Defaults to 2.
-   *
+   * 
    * \param method Optional. Either "word" or "character". If “word”, the
    * function performs a count of word n-grams. If “character”, does a character
    * n-gram count. Defaults to "word".
-   *
+   * 
    * \param to_lower Optional. If true, all words are converted to lower case
    * before counting. Defaults to true.
-   *
+   * 
    * \param ignore_space Optional. If method is “character”, indicates if
    * spaces between words are counted as part of the n-gram. For instance, with
    * the input SArray element of “fun games”, if this parameter is set to False
@@ -741,7 +741,7 @@ class gl_sarray {
    *
    mp* \see count_words
    */
-  gl_sarray count_ngrams(size_t n=2, std::string method="word",
+  gl_sarray count_ngrams(size_t n=2, std::string method="word", 
                          bool to_lower=true, bool ignore_space=true) const;
 
   /**
@@ -773,34 +773,34 @@ class gl_sarray {
    * Filter dictionary values to a given range (inclusive). Trimming is only
    * performed on values which can be compared to the bound values. Fails on
    * SArrays whose data type is not ``dict``.
-   *
+   * 
    * \param lower Optional. The lowest dictionary value that would be retained
    * in the result. If FLEX_UNDEFINED , lower bound is not applied. Defaults to
    * FLEX_UNDEFINED.
-   *
+   *     
    * \param upper Optional. The highest dictionary value that would be retained
    * in the result.  If FLEX_UNDEFINED, upper bound is not applied. Defaults to
    * FLEX_UNDEFINED.
-   *
-   * Example:
+   * 
+   * Example: 
    * \code
    * auto sa = gl_sarray({flex_dict{{"this",1},{"is",5},{"dog",7}},
    *                      flex_dict{{"this", 2},{"are",1},{"cat", 5}} });
    * std::cout << sa.dict_trim_by_values(2,5);
    * std::cout << sa.dict_trim_by_values(upper=5);
    * \endcode
-   *
-   * Produces output:
+   * 
+   * Produces output: 
    * \code{.txt}
    * dtype: dict
    * Rows: 2
    * [{'is': 5}, {'this': 2, 'cat': 5}]
-   *
+   * 
    * dtype: dict
    * Rows: 2
    * [{'this': 1, 'is': 5}, {'this': 2, 'are': 1, 'cat': 5}]
    * \endcode
-   *
+   * 
    * \see dict_trim_by_keys
    */
   gl_sarray dict_trim_by_values(const flexible_type& lower = FLEX_UNDEFINED,
@@ -808,22 +808,22 @@ class gl_sarray {
   /**
    * Create an gl_sarray that contains all the keys from each dictionary
    * element as a list. Fails on gl_sarray objects whose data type is not "dict".
-   *
-   *
-   * Example:
+   * 
+   * 
+   * Example: 
    * \code
    * auto sa = gl_sarray({flex_dict{{"this",1},{ "is",5},{ "dog",7}},
    *                      flex_dict{{"this", 2},{ "are", 1},{ "cat", 5}}});
    * std::cout << sa.dict_keys();
    * \endcode
-   *
-   * Produces output:
+   * 
+   * Produces output: 
    * \code{.txt}
    * dtype: list
    * Rows: 2
    * [['this', 'is', 'dog'], ['this', 'are', 'cat']]
    * \endcode
-   *
+   * 
    * \see dict_values
    */
   gl_sarray dict_keys() const;
@@ -832,22 +832,22 @@ class gl_sarray {
    * Create an \ref gl_sarray that contains all the values from each dictionary
    * element as a list. Fails on \ref gl_sarray objects whose data type is not
    * "dict".
-   *
-   *
-   * Example:
+   * 
+   * 
+   * Example: 
    * \code
-   * auto sa = gl_sarray({flex_dict{{"this",1},{"is",5},{"dog",7}},
+   * auto sa = gl_sarray({flex_dict{{"this",1},{"is",5},{"dog",7}}, 
    *                      flex_dict{{"this", 2},{"are", 1},{"cat", 5}}});
    * std::cout << sa.dict_values();
    * \endcode
-   *
-   * Produces output:
+   * 
+   * Produces output: 
    * \code{.txt}
    * dtype: list
    * Rows: 2
    * [[1, 5, 7], [2, 1, 5]]
    * \endcode
-   *
+   * 
    * \see dict_keys
    */
   gl_sarray dict_values() const;
@@ -857,24 +857,24 @@ class gl_sarray {
    * of dictionaries. An element of the output \ref gl_sarray is True if the
    * corresponding input element's dictionary has any of the given keys.  Fails
    * on \ref gl_sarray objects whose data type is not "dict".
-   *
+   * 
    * \param keys A list of key values to check each dictionary against.
-   *
-   * Example:
+   * 
+   * Example: 
    * \code
-   * auto sa = gl_sarray({flex_dict{{"this",1},{ "is",5},{ "dog",7}},
-   *                      flex_dict{{"animal",1}},
+   * auto sa = gl_sarray({flex_dict{{"this",1},{ "is",5},{ "dog",7}}, 
+   *                      flex_dict{{"animal",1}}, 
    *                      flex_dict{{"this", 2},{ "are", 1},{ "cat", 5}}});
    * std::cout << sa.dict_has_any_keys({"is", "this", "are"});
    * \endcode
-   *
-   * Produces output:
+   * 
+   * Produces output: 
    * \code{.txt}
    * dtype: int
    * Rows: 3
    * [1, 1, 0]
    * \endcode
-   *
+   * 
    * \see dict_has_all_keys
    */
   gl_sarray dict_has_any_keys(const std::vector<flexible_type>& keys) const;
@@ -884,23 +884,23 @@ class gl_sarray {
    * of dictionaries. An element of the output \ref gl_sarray is True if the
    * corresponding input element's dictionary has all of the given keys.  Fails
    * on \ref gl_sarray objects whose data type is not "dict".
-   *
+   * 
    * \param keys A list of key values to check each dictionary against.
-   *
-   * Example:
+   * 
+   * Example: 
    * \code
-   * auto sa = gl_sarray({flex_dict{{"this",1},{"is",5},{"dog",7}},
+   * auto sa = gl_sarray({flex_dict{{"this",1},{"is",5},{"dog",7}}, 
    *                      flex_dict{{"this", 2},{"are", 1},{"cat", 5}}});
    * std::cout << sa.dict_has_all_keys({"is", "this"});
    * \endcode
-   *
-   * Produces output:
+   * 
+   * Produces output: 
    * \code{.txt}
    * dtype: int
    * Rows: 2
    * [1, 0]
    * \endcode
-   *
+   * 
    * \see dict_has_any_keys
    */
   gl_sarray dict_has_all_keys(const std::vector<flexible_type>& keys) const;
@@ -910,30 +910,30 @@ class gl_sarray {
    * Transform each element of the \ref gl_sarray by a given function. The
    * result \ref gl_sarray is of type "dtype". "fn" should be a function that
    * returns exactly one value which can be cast into the type specified by
-   * "dtype".
-   *
+   * "dtype". 
+   *  
    * \param fn The function to transform each element. Must return exactly one
    *     value which can be cast into the type specified by "dtype".
-   *
-   * \param dtype The data type of the new \ref gl_sarray.
-   *
-   * \param skip_undefined Optional. If true, will not apply "fn" to
+   *     
+   * \param dtype The data type of the new \ref gl_sarray. 
+   *      
+   * \param skip_undefined Optional. If true, will not apply "fn" to 
    * any undefined values. Defaults to true.
-   *
-   * Example:
+   *     
+   * Example: 
    * \code
    * auto sa = gl_sarray({1,2,3});
-   * std::cout << sa.apply([](const flexible_type& x) { return x*1; },
+   * std::cout << sa.apply([](const flexible_type& x) { return x*1; }, 
    *                       flex_type_enum::INTEGER);
    * \endcode
-   *
-   * Produces output:
+   * 
+   * Produces output: 
    * \code{.txt}
    * dtype: int
    * Rows: 3
    * [2, 4, 6]
    * \endcode
-   *
+   * 
    * \see gl_sframe::apply
    */
   gl_sarray apply(std::function<flexible_type(const flexible_type&)> fn,
@@ -949,24 +949,24 @@ class gl_sarray {
    *
    * \param fn Function that filters the \ref gl_sarray. Must evaluate to bool
    * or int.
-   *
+   *     
    * \param skip_undefined Optional. If true, will not apply fn to any
    * undefined values.
-   *
-   * Example:
+   *     
+   * Example: 
    * \code
    * auto sa = gl_sarray({1,2,3});
    * std::cout <<  sa.filter([](flexible_type x){ return x < 3; });
    * \endcode
-   *
-   * Produces output:
+   * 
+   * Produces output: 
    * \code{.txt}
    * dtype: int
    * Rows: 2
    * [1, 2]
    * \endcode
    *
-   * This function is equivalent to the combination of a logical_filter and
+   * This function is equivalent to the combination of a logical_filter and 
    * an apply.
    * \code
    * res = sa[sa.apply(fn)];
@@ -976,18 +976,18 @@ class gl_sarray {
                   bool skip_undefined=true) const;
 
   /**
-   * Create an \ref gl_sarray which contains a subsample of the current
+   * Create an \ref gl_sarray which contains a subsample of the current 
    * \ref gl_sarray.
-   *
+   * 
    * \param fraction The fraction of the rows to fetch. Must be between 0 and 1.
-   *
-   * Example:
+   *     
+   * Example: 
    * \code
    * auto  sa = gl_sarray::from_sequence(0, 10);
    * std::cout <<  sa.sample(.3);
    * \endcode
-   *
-   * Produces output:
+   * 
+   * Produces output: 
    * \code{.txt}
    * dtype: int
    * Rows: 3
@@ -997,21 +997,21 @@ class gl_sarray {
   gl_sarray sample(double fraction) const;
 
   /**
-   * Create an \ref gl_sarray which contains a subsample of the current
+   * Create an \ref gl_sarray which contains a subsample of the current 
    * \ref gl_sarray.
-   *
+   * 
    * \param fraction The fraction of the rows to fetch. Must be between 0 and 1.
-   *
-   * \param seed The random seed for the random number generator.
+   *     
+   * \param seed The random seed for the random number generator. 
    * Deterministic output is obtained if this is set to a constant.
-   *
-   * Example:
+   * 
+   * Example: 
    * \code
    * auto  sa = gl_sarray::from_sequence(0, 10);
    * std::cout <<  sa.sample(.3, 12345);
    * \endcode
-   *
-   * Produces output:
+   * 
+   * Produces output: 
    * \code{.txt}
    * dtype: int
    * Rows: 3
@@ -1028,8 +1028,8 @@ class gl_sarray {
    * length strings, lists or dictionaries) or missing values ("None") evaluate
    * to false. All other values evaluate to true.  Returns true on an empty
    * \ref gl_sarray.
-   *
-   * Example:
+   * 
+   * Example: 
    * \code
    * std::cout <<  gl_sarray({1, FLEX_UNDEFINED}).all();
    * std::cout <<  gl_sarray({1, 0}).all();
@@ -1038,17 +1038,17 @@ class gl_sarray {
    * std::cout <<  gl_sarray({"hello", ""}).all();
    * std::cout <<  gl_sarray({}).all();
    * \endcode
-   *
-   * Produces output:
+   * 
+   * Produces output: 
    * \code{.txt}
-   * 0
+   * 0 
    * 0
    * 1
    * 1
    * 0
    * 1
    * \endcode
-   *
+   * 
    * \see any
    */
   bool all() const;
@@ -1059,8 +1059,8 @@ class gl_sarray {
    * string, list, and dictionary \ref gl_sarray objects, any element of
    * non-zero length evaluates to true.  Returns false on an empty \ref
    * gl_sarray.
-   *
-   * Example:
+   * 
+   * Example: 
    * \code
    * std::cout <<  gl_sarray({1, FLEX_UNDEFINED}).any();
    * std::cout <<  gl_sarray({1, 0}).any();
@@ -1070,8 +1070,8 @@ class gl_sarray {
    * std::cout <<  gl_sarray({"", ""}).any();
    * std::cout <<  gl_sarray({}).any();
    * \endcode
-   *
-   * Produces output:
+   * 
+   * Produces output: 
    * \code{.txt}
    * 1
    * 1
@@ -1081,7 +1081,7 @@ class gl_sarray {
    * 0
    * 0
    * \endcode
-   *
+   * 
    * \see all
    */
   bool any() const;
@@ -1090,17 +1090,17 @@ class gl_sarray {
    * Get maximum numeric value in \ref gl_sarray.  Returns FLEX_UNDEFINED on an
    * empty \ref gl_sarray. Raises an exception if called on an \ref gl_sarray
    * with non-numeric type.
-   *
-   * Example:
+   * 
+   * Example: 
    * \code
    * std::cout <<  gl_sarray({14, 62, 83, 72, 77, 96, 5, 25, 69, 66}).max();
    * \endcode
-   *
-   * Produces output:
+   * 
+   * Produces output: 
    * \code{.txt}
    * 96
    * \endcode
-   *
+   * 
    * \see min
    */
   flexible_type max() const;
@@ -1109,13 +1109,13 @@ class gl_sarray {
    * Get minimum numeric value in \ref gl_sarray.  Returns FLEX_UNDEFINED on an
    * empty \ref gl_sarray. Raises an exception if called on an \ref gl_sarray
    * with non-numeric type.
-   *
-   * Example:
+   * 
+   * Example: 
    * \code
    * std::cout <<  gl_sarray({14, 62, 83, 72, 77, 96, 5, 25, 69, 66}).min();
    * \endcode
-   *
-   *
+   * 
+   * 
    * \see max
    */
   flexible_type min() const;
@@ -1159,12 +1159,12 @@ class gl_sarray {
   /**
    * Create a new \ref gl_sarray with all the values cast to str. The string
    * format is specified by the 'str_format' parameter.
-   *
+   * 
    * \param str_format The format to output the string. Default format is
-   * "%Y-%m-%dT%H:%M:%S%ZP". See the strftime specification for details on
+   * "%Y-%m-%dT%H:%M:%S%ZP". See the strftime specification for details on 
    * the format string.
-   *
-   * Example:
+   * 
+   * Example: 
    * \code
    *
    *  boost::posix_time::ptime t(boost::gregorian::date(2011, 1, 1));
@@ -1174,14 +1174,14 @@ class gl_sarray {
    *  auto sa = gl_sarray({flex_date_time(x)});
    *  std::cout <<  sa.datetime_to_str("%e %b %Y");
    * \endcode
-   *
-   * Produces output:
+   * 
+   * Produces output: 
    * \code{.txt}
    * dtype: str
    * Rows: 1
    * [" 1 Jan 2011"]
    * \endcode
-   *
+   * 
    * \see str_to_datetime
    */
   gl_sarray datetime_to_str(const std::string& str_format="%Y-%m-%dT%H:%M:%S%ZP") const;
@@ -1189,25 +1189,25 @@ class gl_sarray {
   /**
    * Create a new \ref gl_sarray with all the values cast to datetime. The
    * string format is specified by the 'str_format' parameter.
-   *
+   * 
    * \param str_format The format to parse the string. Default format is
-   * "%Y-%m-%dT%H:%M:%S%ZP". See the strptime specification for details on
+   * "%Y-%m-%dT%H:%M:%S%ZP". See the strptime specification for details on 
    * the format string.
-   *
-   * Example:
+   * 
+   * Example: 
    *
    * \code
    * auto  sa = gl_sarray({"20-Oct-2011 09:30:10 GMT-05:30"});
    * std::cout <<  sa.str_to_datetime("%d-%b-%Y %H:%M:%S %ZP");
    * \endcode
-   *
-   * Produces output:
+   * 
+   * Produces output: 
    * \code{.txt}
    * dtype: datetime
    * Rows: 1
    * [20111020T093010]
    * \endcode
-   *
+   * 
    * \see datetime_to_str
    */
   gl_sarray str_to_datetime(const std::string& str_format="%Y-%m-%dT%H:%M:%S%ZP") const;
@@ -1216,17 +1216,17 @@ class gl_sarray {
   /**
    * Create a new \ref gl_sarray with all the values cast to
    * \ref turi::image_type of uniform size.
-   *
+   * 
    * \param width int The width of the new images.
-   *
+   *     
    * \param height int The height of the new images.
-   *
+   *     
    * \param channels int. Number of channels of the new images.
-   *
+   *     
    * \param undefined_on_failure optional. defaults to true. If true,
    * return FLEX_UNDEFINED type instead of Image type on failure.  If false,
    * raises error upon failure.
-   *
+   *     
    * \param allow_rounding optional. Default to false. If true, rounds
    * non-integer values when converting to Image type.  If false, raises error
    * upon rounding.
@@ -1237,40 +1237,40 @@ class gl_sarray {
   /**
    * Create a new \ref gl_sarray with all values cast to the given type. Throws
    * an exception if the types are not castable to the given type.
-   *
+   * 
    * \param dtype The type to cast the elements to in \ref gl_sarray
-   *
+   *     
    * \param undefined_on_failure: Optional. Defaults to True. If set to true,
    * runtime cast failures will be emitted as missing values rather than
    * failing.
-   *
-   * Example:
+   * 
+   * Example: 
    * \code
    * auto sa = gl_sarray({'1','2','3','4'});
    * std::cout <<  sa.astype(flex_type_enum::INTEGER);
    * \endcode
    *
-   * Produces output:
+   * Produces output: 
    * \code{.txt}
    * dtype: int
    * Rows: 4
    * [1, 2, 3, 4]
    * \endcode
-   *
+   * 
    * Given an SArray of strings that look like dicts, convert to a dictionary
    * type:
    * \code
    * auto sa = gl_sarray({'flex_dict{{1:2 3,4}}', 'flex_dict{{a:b c,d}}'});
    * std::cout <<  sa.astype(flex_type_enum::DICT);
    * \endcode
-   *
-   * Produces output:
+   * 
+   * Produces output: 
    * \code{.txt}
    * dtype: dict
    * Rows: 2
    * [{1: 2, 3: 4}, {'a': 'b', 'c': 'd'}]
    * \endcode
-   *
+   * 
    */
   gl_sarray astype(flex_type_enum dtype, bool undefined_on_failure=true) const;
 
@@ -1284,29 +1284,29 @@ class gl_sarray {
    * "upper" are set to "float('nan')" which indicates the respective bound
    * should be ignored. The method fails if invoked on an \ref gl_sarray of
    * non-numeric type.
-   * \param lower Optional. The lower bound used to clip.
+   * \param lower Optional. The lower bound used to clip. 
    *              Ignored if equal to FLEX_UNDEFINED (the default).
-   *
-   * \param upper Optional. The upper bound used to clip.
+   *     
+   * \param upper Optional. The upper bound used to clip. 
    *              Ignored if equal to FLEX_UNDEFINED (the default).
-   *
-   * Example:
+   * 
+   * Example: 
    * \code
    * auto sa = gl_sarray({1,2,3});
    * std::cout <<  sa.clip(2,2);
    * \endcode
-   *
-   * Produces output:
+   * 
+   * Produces output: 
    * \code{.txt}
    * dtype: int
    * Rows: 3
    * [2, 2, 2]
    * \endcode
-   *
+   * 
    * \see clip_lower
    * \see clip_upper
    */
-  gl_sarray clip(flexible_type lower=FLEX_UNDEFINED,
+  gl_sarray clip(flexible_type lower=FLEX_UNDEFINED, 
                  flexible_type upper=FLEX_UNDEFINED) const;
 
   /**
@@ -1315,22 +1315,22 @@ class gl_sarray {
    * arrays, in which case each individual element in each vector is clipped.
    * Throws an exception if the \ref gl_sarray is empty or the types are
    * non-numeric.
-   *
+   * 
    * \param threshold The lower bound used to clip values.
-   *
-   * Example:
+   * 
+   * Example: 
    * \code
    * auto sa = gl_sarray({1,2,3});
    * std::cout << sa.clip_lower(2);
    * \endcode
-   *
-   * Produces output:
+   * 
+   * Produces output: 
    * \code{.txt}
    * dtype: int
    * Rows: 3
    * [2, 2, 3]
    * \endcode
-   *
+   * 
    * \see clip
    * \see clip_upper
    */
@@ -1340,22 +1340,22 @@ class gl_sarray {
    * Create new \ref gl_sarray with all values clipped to the given upper
    * bound. This function can operate on numeric arrays, as well as vector
    * arrays, in which case each individual element in each vector is clipped.
-   *
+   * 
    * \param threshold The upper bound used to clip values.
-   *
-   * Example:
+   * 
+   * Example: 
    * \code
    * auto sa = gl_sarray({1,2,3});
    * std::cout << sa.clip_upper(2);
    * \endcode
-   *
-   * Produces output:
+   * 
+   * Produces output: 
    * \code{.txt}
    * dtype: int
    * Rows: 3
    * [1, 2, 2]
    * \endcode
-   *
+   * 
    * \see clip
    * \see clip_lower
    */
@@ -1388,33 +1388,33 @@ class gl_sarray {
    *
    * \param topk Optional. Defaults to 10. The number of elements to determine
    * if 'top'
-   *
+   *     
    * \param reverse Optional. Defaults to false. If true, return the topk
    * elements in ascending order
    */
   gl_sarray topk_index(size_t topk=10, bool reverse=false) const;
-
+  
   /**
-   * Append an \ref gl_sarray to the current \ref gl_sarray. Returns a new
-   * \ref gl_sarray with the rows from both \ref gl_sarray objects. Both
+   * Append an \ref gl_sarray to the current \ref gl_sarray. Returns a new 
+   * \ref gl_sarray with the rows from both \ref gl_sarray objects. Both 
    * \ref gl_sarray objects must be of the same type.
-   *
+   * 
    * \param other Another \ref gl_sarray whose rows are appended to current \ref gl_sarray.
-   *
-   * Example:
+   * 
+   * Example: 
    * \code
    * auto sa = gl_sarray({1, 2, 3});
    * auto sa2 = gl_sarray({4, 5, 6});
    * std::cout << sa.append(sa2);
    * \endcode
-   *
-   * Produces output:
+   * 
+   * Produces output: 
    * \code{.txt}
    * dtype: int
    * Rows: 6
    * [1, 2, 3, 4, 5, 6]
    * \endcode
-   *
+   * 
    * \see \ref gl_sframe.append
    */
   gl_sarray append(const gl_sarray& other) const;
@@ -1423,7 +1423,7 @@ class gl_sarray {
    * Get all unique values in the current \ref gl_sarray.  Raises an error
    * if the \ref gl_sarray is of dictionary type. Will not necessarily preserve
    * the order of the given \ref gl_sarray in the new \ref gl_sarray.
-   *
+   * 
    * \see gl_sframe::unique
    */
   gl_sarray unique() const;
@@ -1433,12 +1433,12 @@ class gl_sarray {
    * gl_sarray objects of dict, array, or list type. If a given element is a
    * missing value, then the output elements is also a missing value.  This
    * function is equivalent to the following:
-   *
+   * 
    * sa_item_len =  sa.apply([](const flexible_type& x) {
    *                  return flexible_type(x.get_type() == flex_type_enum::UNDEFINED ? 0 : x.size();)
    *                });
-   *
-   * Example:
+   * 
+   * Example: 
    * \code
    * auto sa = gl_sarray({flex_dict{{"is_restaurant", 1}, {"is_electronics", 0}},
    *                     flex_dict{{"is_restaurant", 1}, {"is_retail", 1}, {"is_electronics", 0}},
@@ -1448,14 +1448,14 @@ class gl_sarray {
    *                     FLEX_UNDEFINED});
    * std::cout << sa.item_length();
    * \endcode
-   *
-   * Produces output:
+   * 
+   * Produces output: 
    * \code{.txt}
    * dtype: int
    * Rows: 6
    * [2, 3, 3, 1, 2, None]
    * \endcode
-   *
+   * 
    */
   gl_sarray item_length() const;
 
@@ -1464,34 +1464,34 @@ class gl_sarray {
    * new \ref gl_sframe that contains expanded columns. A \ref gl_sarray of datetime will be
    * split by default into an \ref gl_sframe of 6 columns, one for each
    * year/month/day/hour/minute/second element.
-   *
+   * 
    * When splitting a \ref gl_sarray of datetime type, new columns are named:
    * prefix.year, prefix.month, etc. The prefix is set by the parameter
    * "column_name_prefix" and defaults to 'X'. If column_name_prefix is
    * FLEX_UNDEFINED or empty, then no prefix is used.
-   *
+   * 
    * If tzone parameter is true, then timezone information is represented
    * as one additional column which is a float shows the offset from
    * GMT(0.0) or from UTC.
    *
    * \param column_name_prefix Optional. If provided, expanded column names
    * would start with the given prefix.  Defaults to "X".
-   *
+   *     
    * \param limit: Optional. Limits the set of datetime elements to expand.
    *    Elements are 'year','month','day','hour','minute', and 'second'.
-   *
+   *     
    * \param tzone: Optional. A boolean parameter that determines whether to
    * show timezone column or not.  Defaults to false.
-   *
-   * Example:
+   * 
+   * Example: 
    * \code
    * auto sa = gl_sarray({"20-Oct-2011", "10-Jan-2012"});
    * auto date_sarray = sa.str_to_datetime("%d-%b-%Y");
    * auto split_sf = date_sarray.split_datetime("", {"day","year"});
    * std::cout << split_sf;
    * \endcode
-   *
-   * Produces output:
+   * 
+   * Produces output: 
    * \code{.txt}
    *  Columns:
    *      day	integer
@@ -1504,9 +1504,9 @@ class gl_sarray {
    *  +----------------+----------------+
    *  [2 rows x 2 columns]
    * \endcode
-   *
+   * 
    */
-  gl_sframe split_datetime(const std::string& column_name_prefix = "X",
+  gl_sframe split_datetime(const std::string& column_name_prefix = "X", 
                    const std::vector<std::string>& limit = {"year","month","day","hour","minute","second"},
                    bool tzone=false) const;
 
@@ -1521,44 +1521,44 @@ class gl_sarray {
    * gl_sarray of lists/arrays of varying size will be expand to a number of
    * columns equal to the longest list/array.  An \ref gl_sarray of
    * dictionaries will be expanded into as many columns as there are keys.
-   *
+   * 
    * When unpacking an \ref gl_sarray of list or vector type, new columns are
    * named: "column_name_prefix".0, "column_name_prefix".1, etc. If unpacking a
    * column of dict type, unpacked columns are named "column_name_prefix".key1,
    * "column_name_prefix".key2, etc.
-   *
+   * 
    * When unpacking an \ref gl_sarray of list or dictionary types, missing
    * values in the original element remain as missing values in the resultant
    * columns.  If the "na_value" parameter is specified, all values equal to
    * this given value are also replaced with missing values. In an \ref
    * gl_sarray of vector type, NaN is interpreted as a missing value.
-   *
+   * 
    * \ref gl_sframe::pack_columns() is the reverse effect of unpack.
    *
    * \param column_name_prefix Optional. If provided, unpacked column
    * names would start with the given prefix. Defaults to "X". If the empty
    * string is used, no prefix is used.
-   *
+   *     
    * \param column_types Optional. Column types for the unpacked columns. If
    * not provided, column types are automatically inferred from first 100 rows.
    * Defaults to FLEX_UNDEFINED.
-   *
+   *     
    * \param na_value Optional. Convert all values that are equal to "na_value"
    * to missing value if specified.
-   *
+   *     
    * \param limit  optional limits in the set of list/vector/dict keys to unpack.
    *     For list/vector gl_sarrays, "limit" must contain integer indices.
    *     For dict gl_sarrays, "limit" must contain dictionary keys.
-   *
-   * Example:
+   * 
+   * Example: 
    * \code
-   * auto sa = gl_sarray({flex_dict{{"word", "a"},{"count", 1}},
-   *                      flex_dict{{"word", "cat"},{"count", 2}},
-   *                      flex_dict{{"word", "is"},{"count", 3}},
+   * auto sa = gl_sarray({flex_dict{{"word", "a"},{"count", 1}}, 
+   *                      flex_dict{{"word", "cat"},{"count", 2}}, 
+   *                      flex_dict{{"word", "is"},{"count", 3}}, 
    *                      flex_dict{{"word", "coming"},{"count", 4}}});
    * std::cout <<  sa.unpack("");
    * \endcode
-   * Produces output:
+   * Produces output: 
    * \code{.txt}
    * Columns:
    *     count   int
@@ -1580,7 +1580,7 @@ class gl_sarray {
    * \code
    * std::cout <<  sa.unpack("X", {}, FLEX_UNDEFINED, {"word"});
    * \endcode
-   * Produces output:
+   * Produces output: 
    * \code{.txt}
    * Columns:
    *     X.word  str
@@ -1599,14 +1599,14 @@ class gl_sarray {
    *
    * Convert all zeros to missing values:
    * \code
-   * auto  sa2 = gl_sarray({flex_vec{1, 0, 1},
-   *                        flex_vec{1, 1, 1},
+   * auto  sa2 = gl_sarray({flex_vec{1, 0, 1}, 
+   *                        flex_vec{1, 1, 1}, 
    *                        flex_vec{0, 1}});
-   * std::cout <<  sa2.unpack("X", {flex_type_enum::INTEGER,
-   *                                flex_type_enum::INTEGER,
+   * std::cout <<  sa2.unpack("X", {flex_type_enum::INTEGER, 
+   *                                flex_type_enum::INTEGER, 
    *                                flex_type_enum::INTEGER}, 0);
    * \endcode
-   * Produces output:
+   * Produces output: 
    * \code{.txt}
    * Columns:
    *     X.0     int
@@ -1624,9 +1624,9 @@ class gl_sarray {
    * [3 rows x 3 columns]
    * \endcode
    */
-  gl_sframe unpack(const std::string& column_name_prefix = "X",
+  gl_sframe unpack(const std::string& column_name_prefix = "X", 
                    const std::vector<flex_type_enum>& column_types = std::vector<flex_type_enum>(),
-                   const flexible_type& na_value = FLEX_UNDEFINED,
+                   const flexible_type& na_value = FLEX_UNDEFINED, 
                    const std::vector<flexible_type>& limit = std::vector<flexible_type>()) const;
 
   /**
@@ -1636,20 +1636,20 @@ class gl_sarray {
    *
    * \param ascending Optional. Defaults to True. If true, the sarray values
    *     are sorted in ascending order, otherwise, descending order.
-   *
-   * Example:
+   * 
+   * Example: 
    * \code
    * auto sa = SArray({3,2,1});
    * std::cout <<  sa.sort();
    * \endcode
-   *
-   * Produces output:
+   * 
+   * Produces output: 
    * \code{.txt}
    * dtype: int
    * Rows: 3
    * [1, 2, 3]
    * \endcode
-   *
+   * 
    */
   gl_sarray sort(bool ascending=true) const;
 
@@ -1657,7 +1657,7 @@ class gl_sarray {
   /**
    *
    *  This returns an SArray with each element sliced accordingly to the
-   *  slice specified.
+   *  slice specified. 
    *
    *  \param start The start position of the slice
    *  \param stop The stop position of the slice
@@ -1685,7 +1685,7 @@ class gl_sarray {
    *  Rows: 2
    *  ["ab", "qw"]
    *  \endcode
-   *
+   * 
    *  Negative indeices:
    *  \code
    *  std::cout << g.subslice(3,-1);
@@ -1710,10 +1710,10 @@ class gl_sarray {
    *  [[1], [4]]
    *  \endcode
    */
-  gl_sarray subslice(flexible_type start = FLEX_UNDEFINED,
-                     flexible_type stop = FLEX_UNDEFINED,
+  gl_sarray subslice(flexible_type start = FLEX_UNDEFINED, 
+                     flexible_type stop = FLEX_UNDEFINED, 
                      flexible_type step = FLEX_UNDEFINED);
-
+  
 /**
  *
  *  An abstraction to perform cumulative aggregates.
@@ -1724,7 +1724,7 @@ class gl_sarray {
  *  where w[i] is some arbitary state.
  *
  * \param[in] Built in aggregate to use (e.g, sum, min, max etc.)
- * \return SArray
+ * \return SArray 
  *
  * \code
  *   sa = SArray([1, 2, 3, 4, 5])
@@ -1739,16 +1739,16 @@ class gl_sarray {
  *
  */
  gl_sarray cumulative_aggregate(
-     std::shared_ptr<group_aggregate_value> aggregator) const;
+     std::shared_ptr<group_aggregate_value> aggregator) const; 
  gl_sarray builtin_cumulative_aggregate(const std::string& name) const;
 
   /**
    *
    *  This returns an SArray where each element is a cumulative aggregate of
    *  all its previous elements. Only works in an SArray of numeric type or
-   *  numeric-array types.
+   *  numeric-array types. 
    *
-   * \return an SArray
+   * \return an SArray 
    *
    * \code
    *   sa = SArray([1, 2, 3, 4, 5])
@@ -1770,7 +1770,7 @@ class gl_sarray {
 
   /**
    * Apply an aggregate function over a moving window.
-   *
+   * 
    * \param input The input SArray (expects to be materialized)
    * \param fn_name string representation of the aggregation function to use.
    * The mapping is the same string mapping used by the groupby aggregate
@@ -1790,14 +1790,14 @@ class gl_sarray {
    *
    * Returns an SArray of the same length as the input, with a type that matches
    * the type output by the aggregation function.
-   *
+   * 
    * Throws an exception if:
    *  - window_end < window_start
    *  - The window size is excessively large (currently hardcoded to UINT_MAX).
    *  - The given function name corresponds to a function that will not operate
    *  on the data type of the input SArray.
    *  - The aggregation function returns more than one non-NULL types.
-   *
+   *  
    *  Example:
    *  \code
    *  gl_sarray a{0,1,2,3,4,5,6,7,8,9};
@@ -1805,7 +1805,7 @@ class gl_sarray {
    *  auto result = a.rolling_apply(std::string("__builtin__avg__"), -3, 0);
    *  \endcode
    *
-   *  Produces an SArray with these values:
+   *  Produces an SArray with these values: 
    *  \code
    *  {NULL,NULL,NULL,1.5,2.5,3.5,4.5,5.5,6.5,7.5}
    *  \endcode
@@ -1882,8 +1882,8 @@ class gl_sarray_range {
   gl_sarray_range& operator=(gl_sarray_range&&) = default;
 
   /// Iterator type
-  struct iterator:
-      public boost::iterator_facade<iterator,
+  struct iterator: 
+      public boost::iterator_facade<iterator, 
                 const flexible_type, boost::single_pass_traversal_tag> {
    public:
     iterator() = default;
@@ -1908,7 +1908,7 @@ class gl_sarray_range {
   /// const_iterator type
   typedef iterator const_iterator;
 
-  /**
+  /** 
    * Returns an iterator to the start of the range.
    * Once the iterator is advanced, later calls to begin() have undefined
    * behavior.
@@ -1925,7 +1925,7 @@ class gl_sarray_range {
    * destroyed.
    */
   iterator end();
- private:
+ private:  
   flexible_type m_current_value;
   std::shared_ptr<sarray_reader_buffer<flexible_type> > m_sarray_reader_buffer;
 };
@@ -1952,7 +1952,7 @@ class gl_sarray_writer_impl;
  * gl_sarray_writer writer(flex_type_enum:INTEGER, 4);
  *
  * // for each segment, write a bunch of 10 values.
- * // segment 0 has 10 0's,
+ * // segment 0 has 10 0's, 
  * // segment 1 has 10 1's,
  * // etc
  * for (size_t seg = 0;seg < 4; ++seg) {
@@ -1962,12 +1962,12 @@ class gl_sarray_writer_impl;
  * }
  *
  * gl_sarray sa = writer.close();
- * // sa is now an SArray of 40 elements comprising of
+ * // sa is now an SArray of 40 elements comprising of 
  * // the sequence 10 0's, 10 1's, 10 2's, 10 3's
  * \endcode
  *
- * Different segments can be written safely in parallel. It is not safe to
- * write to the same segment simultanously.
+ * Different segments can be written safely in parallel. It is not safe to 
+ * write to the same segment simultanously. 
  */
 class gl_sarray_writer {
  public:
@@ -1977,7 +1977,7 @@ class gl_sarray_writer {
    * \param type The content type of the SArray. Everything written to the
    * writer (via \ref write) must be of that type, is implicitly castable to
    * that type, or is a missing value denoted with a FLEX_UNDEFINED value.
-   *
+   * 
    * \param num_segments Optional. The number of segments of the SArray.
    * Adjusting this parameter has little performance impact on the resultant
    * gl_sarray. Modifying this value is only helpful for providing writer
@@ -1988,7 +1988,7 @@ class gl_sarray_writer {
   /**
    * Writes a single value to a given segment.
    *
-   * For instance,
+   * For instance, 
    * \code
    * gl_sarray_writer writer(flex_type_enum:FLOAT, 1);
    * writer.write(1.5, 0); // writes the value 1.5 to segment 0
@@ -2000,11 +2000,11 @@ class gl_sarray_writer {
    * gl_sarray_writer writer(flex_type_enum:STRING, 1);
    * writer.write("hello", 0); // writes the value "hello" to segment 0
    * writer.write(1.5, 0); // writes the value "1.5" to segment 0
-   * writer.write(1, 0); // writes the value "1" to segment 0
+   * writer.write(1, 0); // writes the value "1" to segment 0 
    * \endcode
    *
-   * Different segments can be written safely in parallel. It is not safe to
-   * write to the same segment simultanously.
+   * Different segments can be written safely in parallel. It is not safe to 
+   * write to the same segment simultanously. 
    *
    * \param f The value to write. This value should be of the requested type
    * (as set in the constructor), or is castable to the requested type, or is
@@ -2022,8 +2022,8 @@ class gl_sarray_writer {
    * while(start != end) write(*start++);
    * \endcode
    *
-   * Different segments can be written safely in parallel. It is not safe to
-   * write to the same segment simultanously.
+   * Different segments can be written safely in parallel. It is not safe to 
+   * write to the same segment simultanously. 
    *
    * \param start The start iterator of the range to write.
    *
