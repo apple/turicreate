@@ -93,7 +93,7 @@ extern void __print_back_trace();
  * \{
  */
 /**
- * \def CHECK(condition)
+ * \def __CHECK(condition)
  * CHECK dies with a fatal error if condition is not true.  It is *not*
  * controlled by NDEBUG, so the check will be executed regardless of
  * compilation mode.  
@@ -109,38 +109,38 @@ extern void __print_back_trace();
  * EXPECT_FALSE
  */
 /**
- * \def CHECK_EQ(val1, val2)
- * Expects val1 == val2, dies with a fatal error otherwise. Synonyms are 
- * ASSERT_EQ and EXPECT_EQ. 
+ * \def __CHECK_EQ(val1, val2)
+ * Expects val1 == val2, dies with a fatal error otherwise. Synonyms are
+ * ASSERT_EQ and EXPECT_EQ.
  */
 /**
- * \def CHECK_NE(val1, val2)
- * Expects val1 != val2, dies with a fatal error otherwise. Synonyms are 
+ * \def __CHECK_NE(val1, val2)
+ * Expects val1 != val2, dies with a fatal error otherwise. Synonyms are
  * ASSERT_NE and EXPECT_NE
  */
 /**
- * \def CHECK_LE(val1, val2)
- * Expects val1 <= val2, dies with a fatal error otherwise. Synonyms are 
+ * \def __CHECK_LE(val1, val2)
+ * Expects val1 <= val2, dies with a fatal error otherwise. Synonyms are
  * ASSERT_LE and EXPECT_LE
  */
 /**
- * \def CHECK_LT(val1, val2)
- * Expects val1 < val2, dies with a fatal error otherwise. Synonyms are 
+ * \def __CHECK_LT(val1, val2)
+ * Expects val1 < val2, dies with a fatal error otherwise. Synonyms are
  * ASSERT_LT and EXPECT_LT
  */
 /**
- * \def CHECK_GE(val1, val2)
- * Expects val1 >= val2, dies with a fatal error otherwise. Synonyms are 
+ * \def __CHECK_GE(val1, val2)
+ * Expects val1 >= val2, dies with a fatal error otherwise. Synonyms are
  * ASSERT_GE and EXPECT_GE
  */
 /**
- * \def CHECK_GT(val1, val2)
- * Expects val1 > val2, dies with a fatal error otherwise. Synonyms are 
+ * \def __CHECK_GT(val1, val2)
+ * Expects val1 > val2, dies with a fatal error otherwise. Synonyms are
  * ASSERT_GT and EXPECT_GT
  */
 /**
- * \def CHECK_DELTA(val1, val2, delta)
- * Expects |val1 - val2| <= delta difference, 
+ * \def __CHECK_DELTA(val1, val2, delta)
+ * Expects |val1 - val2| <= delta difference,
  * dies with a fatal error otherwise. Mainly meant for floating point values.
  * ASSERT_DELTA and EXPECT_DELTA
  */
@@ -153,38 +153,38 @@ extern void __print_back_trace();
  * Like \ref ASSERT_FALSE but is compiled away by NDEBUG.
  */
 /**
- * \def DCHECK_EQ(val1, val2)
- * Like \ref CHECK_EQ but is compiled away by NDEBUG. Synonyms are
+ * \def __DCHECK_EQ(val1, val2)
+ * Like \ref __CHECK_EQ but is compiled away by NDEBUG. Synonyms are
  * DASSERT_EQ.
  */
 /**
- * \def DCHECK_NE(val1, val2)
- * Like \ref CHECK_NE but is compiled away by NDEBUG. Synonyms are
+ * \def __DCHECK_NE(val1, val2)
+ * Like \ref __CHECK_NE but is compiled away by NDEBUG. Synonyms are
  * DASSERT_NE.
  */
 /**
- * \def DCHECK_LE(val1, val2)
- * Like \ref CHECK_LE but is compiled away by NDEBUG. Synonyms are
+ * \def __DCHECK_LE(val1, val2)
+ * Like \ref __CHECK_LE but is compiled away by NDEBUG. Synonyms are
  * DASSERT_LE.
  */
 /**
- * \def DCHECK_LT(val1, val2)
- * Like \ref CHECK_LT but is compiled away by NDEBUG. Synonyms are
+ * \def __DCHECK_LT(val1, val2)
+ * Like \ref __CHECK_LT but is compiled away by NDEBUG. Synonyms are
  * DASSERT_LT.
  */
 /**
- * \def DCHECK_GE(val1, val2)
- * Like \ref CHECK_GE but is compiled away by NDEBUG. Synonyms are
+ * \def __DCHECK_GE(val1, val2)
+ * Like \ref __CHECK_GE but is compiled away by NDEBUG. Synonyms are
  * DASSERT_GE.
  */
 /**
- * \def DCHECK_GT(val1, val2)
- * Like \ref CHECK_GT but is compiled away by NDEBUG. Synonyms are
+ * \def __DCHECK_GT(val1, val2)
+ * Like \ref __CHECK_GT but is compiled away by NDEBUG. Synonyms are
  * DASSERT_GT.
  */
 /**
- * \def DCHECK_DELTA(val1, val2, delta)
- * Like \ref CHECK_DELTA but is compiled away by NDEBUG. Synonyms are
+ * \def __DCHECK_DELTA(val1, val2, delta)
+ * Like \ref __CHECK_DELTA but is compiled away by NDEBUG. Synonyms are
  * DASSERT_DELTA.
  */
 /**
@@ -193,8 +193,8 @@ extern void __print_back_trace();
 // CHECK dies with a fatal error if condition is not true.  It is *not*
 // controlled by NDEBUG, so the check will be executed regardless of
 // compilation mode.  Therefore, it is safe to do things like:
-//    CHECK(fp->Write(x) == 4)
-#define CHECK(condition)                                                \
+//    __CHECK(fp->Write(x) == 4)
+#define __CHECK(condition)                                                \
   do {                                                                  \
     if (UNLIKELY(!(condition))) {                                       \
       auto throw_error = [&]() GL_GCC_ONLY(GL_COLD_NOINLINE_ERROR) {    \
@@ -212,7 +212,7 @@ extern void __print_back_trace();
 
 // This prints errno as well.  errno is the posix defined last error
 // number. See errno.h
-#define PCHECK(condition)                                               \
+#define __PCHECK(condition)                                               \
   do {                                                                  \
     if (UNLIKELY(!(condition))) {                                       \
       auto throw_error = [&]() GL_GCC_ONLY(GL_COLD_NOINLINE_ERROR) {    \
@@ -230,12 +230,12 @@ extern void __print_back_trace();
   } while(0)
 
 // Helper macro for binary operators; prints the two values on error
-// Don't use this macro directly in your code, use CHECK_EQ et al below
+// Don't use this macro directly in your code, use __CHECK_EQ et al below
 
 // WARNING: These don't compile correctly if one of the arguments is a pointer
 // and the other is NULL. To work around this, simply static_cast NULL to the
 // type of the desired pointer.
-#define CHECK_OP(op, val1, val2)                                        \
+#define __CHECK_OP(op, val1, val2)                                        \
   do {                                                                  \
     const auto _CHECK_OP_v1_ = val1;                                    \
     const auto _CHECK_OP_v2_ = val2;                                    \
@@ -257,7 +257,7 @@ extern void __print_back_trace();
   }                                                                   \
   } while(0)
 
-#define CHECK_DELTA(val1, val2, delta)                                  \
+#define __CHECK_DELTA(val1, val2, delta)                                  \
   do {                                                                  \
     const double _CHECK_OP_v1_ = val1;                                  \
     const double _CHECK_OP_v2_ = val2;                                  \
@@ -281,32 +281,32 @@ extern void __print_back_trace();
 
 
 
-#define CHECK_EQ(val1, val2) CHECK_OP(==, val1, val2)
-#define CHECK_NE(val1, val2) CHECK_OP(!=, val1, val2)
-#define CHECK_LE(val1, val2) CHECK_OP(<=, val1, val2)
-#define CHECK_LT(val1, val2) CHECK_OP(< , val1, val2)
-#define CHECK_GE(val1, val2) CHECK_OP(>=, val1, val2)
-#define CHECK_GT(val1, val2) CHECK_OP(> , val1, val2)
+#define __CHECK_EQ(val1, val2) __CHECK_OP(==, val1, val2)
+#define __CHECK_NE(val1, val2) __CHECK_OP(!=, val1, val2)
+#define __CHECK_LE(val1, val2) __CHECK_OP(<=, val1, val2)
+#define __CHECK_LT(val1, val2) __CHECK_OP(< , val1, val2)
+#define __CHECK_GE(val1, val2) __CHECK_OP(>=, val1, val2)
+#define __CHECK_GT(val1, val2) __CHECK_OP(> , val1, val2)
 
-// Synonyms for CHECK_* that are used in some unittests.
-#define EXPECT_EQ(val1, val2) CHECK_EQ(val1, val2)
-#define EXPECT_DELTA(val1, val2, delta) CHECK_DELTA(val1, val2, delta)
-#define EXPECT_NE(val1, val2) CHECK_NE(val1, val2)
-#define EXPECT_LE(val1, val2) CHECK_LE(val1, val2)
-#define EXPECT_LT(val1, val2) CHECK_LT(val1, val2)
-#define EXPECT_GE(val1, val2) CHECK_GE(val1, val2)
-#define EXPECT_GT(val1, val2) CHECK_GT(val1, val2)
+// Synonyms for __CHECK_* that are used in some unittests.
+#define EXPECT_EQ(val1, val2) __CHECK_EQ(val1, val2)
+#define EXPECT_DELTA(val1, val2, delta) __CHECK_DELTA(val1, val2, delta)
+#define EXPECT_NE(val1, val2) __CHECK_NE(val1, val2)
+#define EXPECT_LE(val1, val2) __CHECK_LE(val1, val2)
+#define EXPECT_LT(val1, val2) __CHECK_LT(val1, val2)
+#define EXPECT_GE(val1, val2) __CHECK_GE(val1, val2)
+#define EXPECT_GT(val1, val2) __CHECK_GT(val1, val2)
 #define ASSERT_EQ(val1, val2) EXPECT_EQ(val1, val2)
-#define ASSERT_DELTA(val1, val2, delta) CHECK_DELTA(val1, val2, delta)
+#define ASSERT_DELTA(val1, val2, delta) __CHECK_DELTA(val1, val2, delta)
 #define ASSERT_NE(val1, val2) EXPECT_NE(val1, val2)
 #define ASSERT_LE(val1, val2) EXPECT_LE(val1, val2)
 #define ASSERT_LT(val1, val2) EXPECT_LT(val1, val2)
 #define ASSERT_GE(val1, val2) EXPECT_GE(val1, val2)
 #define ASSERT_GT(val1, val2) EXPECT_GT(val1, val2)
 // As are these variants.
-#define EXPECT_TRUE(cond)     CHECK(cond)
-#define EXPECT_FALSE(cond)    CHECK(!(cond))
-#define EXPECT_STREQ(a, b)    CHECK(strcmp(a, b) == 0)
+#define EXPECT_TRUE(cond)     __CHECK(cond)
+#define EXPECT_FALSE(cond)    __CHECK(!(cond))
+#define EXPECT_STREQ(a, b)    __CHECK(strcmp(a, b) == 0)
 #define ASSERT_TRUE(cond)     EXPECT_TRUE(cond)
 #define ASSERT_FALSE(cond)    EXPECT_FALSE(cond)
 #define ASSERT_STREQ(a, b)    EXPECT_STREQ(a, b)
@@ -327,17 +327,17 @@ extern void __print_back_trace();
   } while(0)
 
 // Used for (libc) functions that return -1 and set errno
-#define CHECK_ERR(invocation)  PCHECK((invocation) != -1)
+#define __CHECK_ERR(invocation)  __PCHECK((invocation) != -1)
 
 // A few more checks that only happen in debug mode
 #ifdef NDEBUG
-#define DCHECK_EQ(val1, val2)
-#define DCHECK_DELTA(val1, val2, delta)
-#define DCHECK_NE(val1, val2)
-#define DCHECK_LE(val1, val2)
-#define DCHECK_LT(val1, val2)
-#define DCHECK_GE(val1, val2)
-#define DCHECK_GT(val1, val2)
+#define __DCHECK_EQ(val1, val2)
+#define __DCHECK_DELTA(val1, val2, delta)
+#define __DCHECK_NE(val1, val2)
+#define __DCHECK_LE(val1, val2)
+#define __DCHECK_LT(val1, val2)
+#define __DCHECK_GE(val1, val2)
+#define __DCHECK_GT(val1, val2)
 #define DASSERT_TRUE(cond)
 #define DASSERT_FALSE(cond)
 #define DASSERT_EQ(val1, val2)
@@ -351,13 +351,13 @@ extern void __print_back_trace();
 #define DASSERT_MSG(condition, fmt, ...)
 
 #else
-#define DCHECK_EQ(val1, val2)  CHECK_EQ(val1, val2)
-#define DCHECK_DELTA(val1, val2, delta) CHECK_DELTA(val1, val2, delta)
-#define DCHECK_NE(val1, val2)  CHECK_NE(val1, val2)
-#define DCHECK_LE(val1, val2)  CHECK_LE(val1, val2)
-#define DCHECK_LT(val1, val2)  CHECK_LT(val1, val2)
-#define DCHECK_GE(val1, val2)  CHECK_GE(val1, val2)
-#define DCHECK_GT(val1, val2)  CHECK_GT(val1, val2)
+#define __DCHECK_EQ(val1, val2)  __CHECK_EQ(val1, val2)
+#define __DCHECK_DELTA(val1, val2, delta) __CHECK_DELTA(val1, val2, delta)
+#define __DCHECK_NE(val1, val2)  __CHECK_NE(val1, val2)
+#define __DCHECK_LE(val1, val2)  __CHECK_LE(val1, val2)
+#define __DCHECK_LT(val1, val2)  __CHECK_LT(val1, val2)
+#define __DCHECK_GE(val1, val2)  __CHECK_GE(val1, val2)
+#define __DCHECK_GT(val1, val2)  __CHECK_GT(val1, val2)
 #define DASSERT_TRUE(cond)     ASSERT_TRUE(cond)
 #define DASSERT_FALSE(cond)    ASSERT_FALSE(cond)
 #define DASSERT_EQ(val1, val2) ASSERT_EQ(val1, val2)
