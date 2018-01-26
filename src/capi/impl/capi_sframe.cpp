@@ -424,15 +424,14 @@ EXPORT tc_sframe* tc_sframe_pack_columns_vector(
   CHECK_NOT_NULL(error, sf, "sframe", NULL);
   CHECK_NOT_NULL(error, columns, "flex_list", NULL);
 
-  std::vector<std::string> column_transform;
-
   for (const turi::flexible_type& i : columns->value){
     if(i.get_type() != turi::flex_type_enum::STRING){
-      set_error(error, "columns is not of type str");
+      set_error(error, "Contains a non-string column.");
       return NULL;
     }
-    column_transform.push_back(i.get<turi::flex_string>());
   }
+
+  std::vector<std::string> column_transform(columns->value.begin(), columns->value.end());
 
   return new_tc_sframe(sf->value.pack_columns(column_transform, column_name, static_cast<turi::flex_type_enum>(type), value->value));
 
@@ -455,16 +454,14 @@ EXPORT tc_sframe* tc_sframe_split_datetime(const tc_sframe* sf, const char* expa
 
   CHECK_NOT_NULL(error, sf, "sframe", NULL);
 
-  std::vector<std::string> limit_transform;
-
   for (const turi::flexible_type& i : limit->value){
     if(i.get_type() != turi::flex_type_enum::STRING){
-      set_error(error, "limit is not of type str");
+      set_error(error, "Element of limit is not of type str");
       return NULL;
     }
-
-    limit_transform.push_back(i.get<turi::flex_string>());
   }
+
+  std::vector<std::string> limit_transform(limit->value.begin(), limit->value.end());
 
   return new_tc_sframe(sf->value.split_datetime(expand_column, column_prefix, limit_transform, tzone));
 
@@ -534,16 +531,14 @@ EXPORT tc_sframe* tc_sframe_unstack_vector(
   CHECK_NOT_NULL(error, sf, "sframe", NULL);
   CHECK_NOT_NULL(error, columns, "flex_list", NULL);
 
-  std::vector<std::string> columns_transform;
-
   for (const turi::flexible_type& i : columns->value){
     if(i.get_type() != turi::flex_type_enum::STRING){
-      set_error(error, "Columns is not of type str");
+      set_error(error, "Contains a non-string column.");
       return NULL;
     }
-
-    columns_transform.push_back(i.get<turi::flex_string>());
   }
+
+  std::vector<std::string> columns_transform(columns->value.begin(), columns->value.end());
 
   return new_tc_sframe(sf->value.unstack(columns_transform, new_column_name));
 
@@ -581,7 +576,7 @@ EXPORT tc_sframe* tc_sframe_dropna(const tc_sframe* sf, const tc_flex_list* colu
 
   for (const turi::flexible_type& i : columns->value){
     if(i.get_type() != turi::flex_type_enum::STRING){
-      set_error(error, "Columns is not of type str");
+      set_error(error, "Contains a non-string column.");
       return NULL;
     }
 
@@ -603,7 +598,7 @@ EXPORT tc_sframe* tc_sframe_sort_multiple_columns(const tc_sframe* sf, const tc_
 
   for (const turi::flexible_type& i : columns->value){
     if(i.get_type() != turi::flex_type_enum::STRING){
-      set_error(error, "Columns is not of type str");
+      set_error(error, "Contains a non-string column.");
       return NULL;
     }
 

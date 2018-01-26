@@ -7,7 +7,7 @@ function print_help {
   echo "Usage: ./build.sh [build options] [configure options]"
   echo
   echo "  -f,--framework                   Build the C-API as an OSX framework."
-  echo 
+  echo
   echo "  --target-dir, -t                 The target directory to install artifacts to."
   echo "                                   default: `pwd`/targets."
   echo
@@ -47,7 +47,7 @@ fi
 target="capi"
 cleanup=0
 skip_configure=0
-jobs=4
+jobs=8
 configure_options=""
 cmake_options=""
 build_mode="release"
@@ -78,7 +78,7 @@ while [ $# -gt 0 ]
 
     -D)                     configure_options="${configure_options} -D $2"; shift ;;
 
-    *)                      configure_options="${configure_options} $1";; 
+    *)                      configure_options="${configure_options} $1";;
   esac
   shift
 done
@@ -149,4 +149,3 @@ case $target in
   capi-framework)         build_capi_framework;;
   *)                      echo "NOT IMPLEMENTED" && exit 1;;
 esac
-
