@@ -33,7 +33,7 @@ static void _to_serializable(flexible_type& data, schema_t& schema, flex_float i
   if (std::isnan(input)) {
     data = "NaN";
   } else {
-    CHECK(std::isinf(input));
+    ASSERT_TRUE(std::isinf(input));
     if (input > 0) {
       data = "Infinity";
     } else {
