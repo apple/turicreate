@@ -333,7 +333,8 @@ gl_sframe linear_svm::fast_classify(
     const std::string& missing_value_action) {
   // Class predictions
   gl_sframe sf_class;
-  sf_class.add_column(fast_predict(rows, "class", missing_value_action), "class");
+  sf_class.add_column(fast_predict(rows, missing_value_action, "class"),
+		      "class");
   return sf_class;
 }
 

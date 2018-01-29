@@ -1154,8 +1154,8 @@ std::shared_ptr< sarray<flexible_type> > xgboost_model::predict(
 
 gl_sarray xgboost_model::fast_predict(
     const std::vector<flexible_type>& test_data,
-    const std::string& output_type,
-    const std::string& missing_value_action) {
+    const std::string& missing_value_action,
+    const std::string& output_type) {
   auto na_enum = get_missing_value_enum_from_string(missing_value_action);
   DMatrixSimple dmat = make_simple_dmatrix(test_data, this->ml_mdata, na_enum);
   auto sa = predict_impl(dmat, output_type);
@@ -1166,8 +1166,8 @@ gl_sarray xgboost_model::fast_predict(
 
 gl_sframe xgboost_model::fast_predict_topk(
     const std::vector<flexible_type>& test_data,
-    const std::string& output_type,
     const std::string& missing_value_action,
+    const std::string& output_type,
     const size_t topk) {
   auto na_enum = get_missing_value_enum_from_string(missing_value_action);
   DMatrixSimple dmat = make_simple_dmatrix(test_data, this->ml_mdata, na_enum);

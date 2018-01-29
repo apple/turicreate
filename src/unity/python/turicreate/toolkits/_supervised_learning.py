@@ -104,10 +104,10 @@ class SupervisedLearningModel(Model):
         # Low latency path
         if isinstance(dataset, list):
             return self.__proxy__.fast_predict(
-                dataset, output_type, missing_value_action)
+                dataset, missing_value_action, output_type)
         if isinstance(dataset, dict):
             return self.__proxy__.fast_predict(
-                [dataset], output_type, missing_value_action)
+                [dataset], missing_value_action, output_type)
 
         # Batch predictions path
         else:

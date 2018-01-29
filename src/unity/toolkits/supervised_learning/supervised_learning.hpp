@@ -398,23 +398,26 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
    * Fast path predictions given a row of flexible_types.
    *
    * \param[in] rows List of rows (each row is a flex_dict)
+   * \param[in] missing_value_action Missing value action string
    * \param[in] output_type Output type. 
    */
   virtual gl_sarray fast_predict(
       const std::vector<flexible_type>& rows,
-      const std::string& output_type="",
-      const std::string& missing_value_action ="error");
+      const std::string& missing_value_action = "error",
+      const std::string& output_type = "");
   
   /**
    * Fast path predictions given a row of flexible_types.
    *
    * \param[in] rows List of rows (each row is a flex_dict)
+   * \param[in] missing_value_action Missing value action string
    * \param[in] output_type Output type. 
+   * \param[in] topk Number of classes to return
    */
   virtual gl_sframe fast_predict_topk(
       const std::vector<flexible_type>& rows,
-      const std::string& output_type="", 
       const std::string& missing_value_action ="error",
+      const std::string& output_type="", 
       const size_t topk = 5) {
     log_and_throw("Not implemented yet");
   }
@@ -722,12 +725,12 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
                                                                                \
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("fast_predict",                         \
                                        class_name::fast_predict,               \
-                                       "rows", "output_type",                  \
-                                       "missing_value_action");                \
+                                       "rows", "missing_value_action",         \
+                                       "output_type");                         \
                                                                                \
   register_defaults("fast_predict",                                            \
-                    {{"output_type", std::string("")},                         \
-                     {"missing_value_action", std::string("error")}});         \
+                    {{"missing_value_action", std::string("error")},           \
+                     {"output_type", std::string("")}});                       \
                                                                                \
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("predict_topk",                         \
                                        class_name::api_predict_topk,           \
@@ -740,12 +743,12 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
                                                                                \
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("fast_predict_topk",                    \
 				       class_name::fast_predict_topk,          \
-                                       "rows", "output_type",                  \
-                                       "missing_value_action", "topk");        \
+                                       "rows", "missing_value_action",         \
+                                       "output_type", "topk");                 \
                                                                                \
   register_defaults("fast_predict_topk",                                       \
-                    {{"output_type", std::string("")},                         \
-                     {"missing_value_action", std::string("error")}});         \
+                    {{"missing_value_action", std::string("error")},           \
+                     {"output_type", std::string("")}});                       \
                                                                                \
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("classify", class_name::api_classify,   \
                                        "data", "missing_value_action");        \
@@ -784,8 +787,8 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
 gl_sarray _fast_predict(
     std::shared_ptr<supervised_learning_model_base> model, 
     const std::vector<flexible_type>& rows, 
-    const std::string& output_type = "probability",
-    const std::string& missing_value_action = "error");
+    const std::string& missing_value_action = "error",
+    const std::string& output_type = "probability");
 
 /**
  * Fast path for in-memory predictions on a list of rows.
@@ -796,8 +799,8 @@ gl_sarray _fast_predict(
 gl_sframe _fast_predict_topk(
     std::shared_ptr<supervised_learning_model_base> model, 
     const std::vector<flexible_type>& rows,
-    const std::string& output_type = "probability",
     const std::string& missing_value_action = "error",
+    const std::string& output_type = "probability",
     const size_t topk = 5);
 
 /**

@@ -353,10 +353,10 @@ class BoostedTreesClassifier(_Classifier, _TreeModelMixin):
         # Low latency path
         if isinstance(dataset, list):
             return self.__proxy__.fast_predict_topk(
-                dataset, output_type, missing_value_action, k)
+                dataset, missing_value_action, output_type, k)
         if isinstance(dataset, dict):
             return self.__proxy__.fast_predict_topk(
-                [dataset], output_type, missing_value_action, k)
+                [dataset], missing_value_action, output_type, k)
         # Fast path
         _raise_error_if_not_sframe(dataset, "dataset")
         return self.__proxy__.predict_topk(

@@ -139,8 +139,8 @@ class EXPORT logistic_regression: public supervised_learning_model_base {
    */
   gl_sframe fast_predict_topk(
       const std::vector<flexible_type>& rows,
-      const std::string& output_type="",
       const std::string& missing_value_action ="error",
+      const std::string& output_type="",
       const size_t topk = 5) override;
   
   /**

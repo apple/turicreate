@@ -505,8 +505,8 @@ supervised_learning_model_base::predict(const ml_data& test_data,
 
 gl_sarray supervised_learning_model_base::fast_predict(
     const std::vector<flexible_type>& rows,
-    const std::string& output_type,
-    const std::string& missing_value_action) {
+    const std::string& missing_value_action,
+    const std::string& output_type) {
 
   // Initialize.
   size_t variables = 0;
@@ -570,13 +570,14 @@ gl_sframe supervised_learning_model_base::fast_classify(
 
   // Class predictions
   gl_sframe sf_class;
-  sf_class.add_column(fast_predict(rows, "class", missing_value_action), "class");
+  sf_class.add_column(fast_predict(rows, missing_value_action, "class"),
+		      "class");
 
   // Binary classification
   if (variant_get_value<size_t>(state.at("num_classes")) == 2){
 
     // Convert P[X=1] to P[X = predicted_class]
-    gl_sarray pred_prob = fast_predict(rows, "probability");
+    gl_sarray pred_prob = fast_predict(rows, "error", "probability");
     auto transform_fn = [](const flexible_type& f)->flexible_type{
       if (f <= 0.5){
         return 1 - f;
@@ -588,7 +589,9 @@ gl_sframe supervised_learning_model_base::fast_classify(
 
   // Multi-class classification
   } else {
-    sf_class.add_column(fast_predict(rows, "max_probability", missing_value_action), "probability");
+    sf_class.add_column(fast_predict(rows, missing_value_action,
+				     "max_probability"),
+			"probability");
   }
   return sf_class;
 }
@@ -1191,9 +1194,9 @@ std::vector<std::string> _classifier_available_models(size_t num_classes,
 gl_sarray _fast_predict(
     std::shared_ptr<supervised_learning_model_base> model,
     const std::vector<flexible_type>& rows,
-    const std::string& output_type,
-    const std::string& missing_value_action) {
-  return model->fast_predict(rows, output_type, missing_value_action);
+    const std::string& missing_value_action,
+    const std::string& output_type) {
+  return model->fast_predict(rows, missing_value_action, output_type);
 }
 
 /**
@@ -1202,10 +1205,11 @@ gl_sarray _fast_predict(
 gl_sframe _fast_predict_topk(
     std::shared_ptr<supervised_learning_model_base> model,
     const std::vector<flexible_type>& rows,
-    const std::string& output_type,
     const std::string& missing_value_action,
+    const std::string& output_type,
     const size_t topk) {
-  return model->fast_predict_topk(rows, output_type, missing_value_action, topk);
+  return model->fast_predict_topk(rows, missing_value_action, output_type,
+				  topk);
 }
 
 /**

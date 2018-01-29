@@ -573,8 +573,8 @@ flexible_type logistic_regression::predict_single_example(
  */
 gl_sframe logistic_regression::fast_predict_topk(
           const std::vector<flexible_type>& rows,
-          const std::string& output_type,
           const std::string& missing_value_action,
+          const std::string& output_type,
           const size_t topk){
 
   DASSERT_TRUE(name().find("classifier") != std::string::npos);
