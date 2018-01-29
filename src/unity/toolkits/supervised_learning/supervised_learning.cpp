@@ -1007,16 +1007,19 @@ void supervised_learning_model_base::api_train(
     check_feature_column_types_match(X, valid_X);
   }
 
-  this->init_options(options); 
   this->init(X, y, valid_X, valid_y, missing_value_action);
+
+  // Override any default options set by init above.
+  this->init_options(options);
+
   this->train();
 }
 
 /**
-*  API interface through the unity server.
-*
-*  Prediction stuff
-*/
+ * API interface through the unity server.
+ *
+ * Prediction stuff
+ */
 gl_sarray supervised_learning_model_base::api_predict(
     gl_sframe data, std::string missing_value_action_str,
     std::string output_type) {
@@ -1034,6 +1037,76 @@ gl_sarray supervised_learning_model_base::api_predict(
   return gl_sarray(this->predict(m_data, output_type));
 }
 
+/**
+ * API interface through the unity server.
+ *
+ * Multiclass prediction stuff
+ */
+gl_sframe supervised_learning_model_base::api_predict_topk(
+    gl_sframe data, std::string missing_value_action_str,
+    std::string output_type, size_t topk) {
+  if (topk == 0) log_and_throw("The parameter 'k' must be positive.");
+
+  ml_missing_value_action missing_value_action =
+      get_missing_value_enum_from_string(missing_value_action_str);
+
+  sframe X = setup_test_data_sframe(
+      data.materialize_to_sframe(),
+      std::dynamic_pointer_cast<supervised_learning_model_base>(
+          shared_from_this()),
+      missing_value_action);
+
+  ml_data m_data =
+      this->construct_ml_data_using_current_metadata(X, missing_value_action);
+
+  return gl_sframe(this->predict_topk(m_data, output_type, topk));
+}
+
+/**
+ * API interface through the unity server.
+ *
+ *  Classification stuff
+ */
+gl_sframe supervised_learning_model_base::api_classify(
+    gl_sframe data, std::string missing_value_action_str,
+    std::string output_type) {
+
+  ml_missing_value_action missing_value_action =
+      get_missing_value_enum_from_string(missing_value_action_str);
+
+  sframe X = setup_test_data_sframe(
+      data.materialize_to_sframe(),
+      std::dynamic_pointer_cast<supervised_learning_model_base>(
+          shared_from_this()),
+      missing_value_action);
+
+  ml_data m_data = this->construct_ml_data_using_current_metadata(
+      X, missing_value_action);
+
+  return gl_sframe(this->classify(m_data, output_type));
+}
+
+/**
+ *  API interface through the unity server.
+ *
+ *  Evaluate the model
+ */
+variant_map_type supervised_learning_model_base::api_evaluate(
+    gl_sframe data, std::string missing_value_action_str, std::string metric) {
+  auto model = std::dynamic_pointer_cast<supervised_learning_model_base>(
+      shared_from_this());
+  ml_missing_value_action missing_value_action =
+      get_missing_value_enum_from_string(missing_value_action_str);
+
+  sframe test_data = data.materialize_to_sframe();
+  sframe X = setup_test_data_sframe(test_data, model, missing_value_action);
+  sframe y = test_data.select_columns({get_target_name()});
+  ml_data m_data = setup_ml_data_for_evaluation(
+      X, y, model, missing_value_action);
+
+  variant_map_type results = evaluate(m_data, metric);
+  return results;
+}
 
 /**
  * Compute the width of the data.

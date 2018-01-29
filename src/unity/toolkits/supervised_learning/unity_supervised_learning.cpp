@@ -422,25 +422,12 @@ variant_map_type add_or_update_state(variant_map_type& params){
  * Defines get_toolkit_function_registration for the supervised_learning toolkit
  */
 BEGIN_FUNCTION_REGISTRATION
-REGISTER_FUNCTION(train, "params");
-REGISTER_FUNCTION(predict, "params");
-REGISTER_FUNCTION(classify, "params");
-REGISTER_FUNCTION(predict_topk, "params");
-REGISTER_FUNCTION(evaluate, "params");
-REGISTER_FUNCTION(get_train_stats, "params");
-REGISTER_FUNCTION(get_current_options, "params");
 REGISTER_FUNCTION(get_value, "params");
 REGISTER_FUNCTION(is_trained, "params");
 REGISTER_FUNCTION(add_or_update_state, "params");
 REGISTER_FUNCTION(list_fields, "params");
 REGISTER_FUNCTION(get_option_value, "params");
 REGISTER_FUNCTION(extract_feature, "params");
-REGISTER_FUNCTION(_fast_predict, "model", "rows", "output_type", 
-                      "missing_value_action");
-REGISTER_FUNCTION(_fast_predict_topk, "model", "rows", "output_type", 
-                      "missing_value_action", "topk");
-REGISTER_FUNCTION(_fast_classify, "model", "rows", 
-                      "missing_value_action");
 REGISTER_FUNCTION(_regression_model_selector, "_X");
 REGISTER_FUNCTION(_classifier_model_selector, "_X");
 REGISTER_FUNCTION(_classifier_available_models, "num_classes", "_X");
