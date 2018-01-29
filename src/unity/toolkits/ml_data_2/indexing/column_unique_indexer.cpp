@@ -11,8 +11,6 @@
 
 namespace turi { namespace v2 { namespace ml_data_internal {
 
-static constexpr size_t correct_check_number = 0x88551dfa473c2adfULL;
-
 column_unique_indexer::column_unique_indexer()
 {}
 

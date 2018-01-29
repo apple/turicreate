@@ -59,7 +59,6 @@ namespace label_propagation {
   void run(sgraph& g, size_t& num_iter, double& average_l2_delta) {
 
     /// Type defs
-    typedef std::vector<std::vector<int>> int_column_type;
     typedef std::vector<std::vector<flexible_type>> flex_column_type;
 
     /**
