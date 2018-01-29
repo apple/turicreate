@@ -13,12 +13,6 @@
 
 namespace turi {
 
-namespace distributed_sgraph_compute {
-  class distributed_graph_ingress;
-}
-
-
-
 /**
  * \ingroup sgraph_physical
  * \addtogroup sgraph_main Main SGraph Objects
@@ -767,9 +761,6 @@ class sgraph {
    * m_edge_groups({min(a,b),max(a,b)})
    */
   std::map<std::pair<size_t, size_t>, std::vector<sframe> > m_edge_groups;
-
- private:
-  friend class distributed_sgraph_compute::distributed_graph_ingress;
 
   /**************************************************************************/
   /*                                                                        */
