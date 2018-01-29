@@ -146,7 +146,7 @@ coefficients estimated during model creation. Smaller standard errors implies
 more confidence in the value of the coefficients returned by th model.
 
 Standard errors on coefficients are only available when `solver=newton` or
-when the default `auto` solver option choses the newton method and if the
+when the default `auto` solver option chooses the newton method and if the
 number of examples in the training data is more than the number of
 coefficients. If standard errors cannot be estimated, a column of `None` values
 are returned.

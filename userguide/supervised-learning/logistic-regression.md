@@ -86,7 +86,7 @@ Refer to the chapter on linear regression for the following features:
 * [Sparse features](linear-regression.md#linregr-sparse-features)
 * [List features](linear-regression.md#linregr-list-features)
 * [Feature rescaling](linear-regression.md#linregr-feature-rescaling)
-* [Chosing the solver](linear-regression.md#linregr-solver)
+* [Choosing the solver](linear-regression.md#linregr-solver)
 * [Regularizing models](linear-regression.md#linregr-regularizer)
 
 We will now discuss some advanced features that are **specific to logistic
