@@ -10,6 +10,7 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
+import turicreate as _tc
 from turicreate.toolkits._model import CustomModel
 from prettytable import PrettyTable as _PrettyTable
 from turicreate.cython.cy_graph import UnityGraphProxy
@@ -47,13 +48,7 @@ class GraphAnalyticsModel(CustomModel):
             The current value of the requested field.
         """
         if field in self._list_fields():
-            obj = self.__proxy__.get(field)
-            if type(obj) == UnityGraphProxy:
-                return SGraph(_proxy=obj)
-            elif type(obj) == UnitySFrameProxy:
-                return SFrame(_proxy=obj)
-            else:
-                return obj
+            return self.__proxy__.get(field)
         else:
             raise KeyError('Key \"%s\" not in model. Available fields are %s.' % (field, ', '.join(self._list_fields())))
 
@@ -64,18 +59,19 @@ class GraphAnalyticsModel(CustomModel):
         Fields should NOT be wrapped by _precomputed_field, if necessary
         """
         dispatch_table = {
-            'ShortestPathModel': 'sssp_model_fields',
-            'GraphColoringModel': 'graph_coloring_model_fields',
-            'PagerankModel': 'pagerank_model_fields',
-            'ConnectedComponentsModel': 'connected_components_model_fields',
-            'TriangleCountingModel': 'triangle_counting_model_fields',
-            'KcoreModel': 'kcore_model_fields',
-            'DegreeCountingModel': 'degree_count_model_fields',
-            'LabelPropagationModel': 'label_propagation_model_fields'
+            'ShortestPathModel': 'sssp',
+            'GraphColoringModel': 'graph_coloring',
+            'PagerankModel': 'pagerank',
+            'ConnectedComponentsModel': 'connected_components',
+            'TriangleCountingModel': 'triangle_counting',
+            'KcoreModel': 'kcore',
+            'DegreeCountingModel': 'degree_count',
+            'LabelPropagationModel': 'label_propagation'
         }
         try:
-            fields_description = _main.run(dispatch_table[cls.__name__], {})
-            return fields_description
+            toolkit_name = dispatch_table[cls.__name__]
+            toolkit = _tc.extensions._toolkits.graph.__dict__[toolkit_name]
+            return toolkit.get_model_fields({})
         except:
             raise RuntimeError('Model %s does not have fields description' % cls.__name__)
 

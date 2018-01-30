@@ -9,7 +9,7 @@
 
 namespace turi {
 
-std::vector<std::string> simple_model::list_keys() {
+std::vector<std::string> simple_model::list_fields() {
   std::vector<std::string> keys;
   for(auto &kv: params) {
     keys.push_back(kv.first);

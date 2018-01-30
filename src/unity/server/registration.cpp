@@ -51,14 +51,14 @@ void register_functions(toolkit_function_registry& registry) {
   // Register proprietary toolkits
   registry.register_toolkit_function(turi::kmeans::get_toolkit_function_registration(), "_kmeans");
 
-  registry.register_toolkit_function(turi::pagerank::get_toolkit_function_registration());
-  registry.register_toolkit_function(turi::kcore::get_toolkit_function_registration());
-  registry.register_toolkit_function(turi::connected_component::get_toolkit_function_registration());
-  registry.register_toolkit_function(turi::graph_coloring::get_toolkit_function_registration());
-  registry.register_toolkit_function(turi::triangle_counting::get_toolkit_function_registration());
-  registry.register_toolkit_function(turi::sssp::get_toolkit_function_registration());
-  registry.register_toolkit_function(turi::degree_count::get_toolkit_function_registration());
-  registry.register_toolkit_function(turi::label_propagation::get_toolkit_function_registration());
+  registry.register_toolkit_function(turi::pagerank::get_toolkit_function_registration(), "_toolkits.graph.pagerank");
+  registry.register_toolkit_function(turi::kcore::get_toolkit_function_registration(), "_toolkits.graph.kcore");
+  registry.register_toolkit_function(turi::connected_component::get_toolkit_function_registration(), "_toolkits.graph.connected_components");
+  registry.register_toolkit_function(turi::graph_coloring::get_toolkit_function_registration(), "_toolkits.graph.graph_coloring");
+  registry.register_toolkit_function(turi::triangle_counting::get_toolkit_function_registration(), "_toolkits.graph.triangle_counting");
+  registry.register_toolkit_function(turi::sssp::get_toolkit_function_registration(), "_toolkits.graph.sssp");
+  registry.register_toolkit_function(turi::degree_count::get_toolkit_function_registration(), "_toolkits.graph.degree_count");
+  registry.register_toolkit_function(turi::label_propagation::get_toolkit_function_registration(), "_toolkits.graph.label_propagation");
 
   registry.register_toolkit_function(turi::text::get_toolkit_function_registration(), "_text");
   registry.register_toolkit_function(turi::evaluation::get_toolkit_function_registration());
@@ -72,14 +72,15 @@ void register_functions(toolkit_function_registry& registry) {
   registry.register_toolkit_function(turi::sdk_model::activity_classification::get_toolkit_function_registration());
 }
 
-/// A helper function to automatically add an entry to the model
-/// lookup table with the proper information
-template <typename Model>
-static inline void register_model_helper(turi::toolkit_class_registry& g_toolkit_classes) {
-  Model m;
-  std::string name = (dynamic_cast<turi::model_base*>(&m))->name();
-  g_toolkit_classes.register_toolkit_class(name, [](){return new Model;});
-}
+namespace registration_internal {
+
+// Define get_toolkit_class_registration for simple_model so that some toolkits
+// can just wrap their outputs in a simple_model instance (without subclassing).
+BEGIN_CLASS_REGISTRATION
+REGISTER_CLASS(simple_model)
+END_CLASS_REGISTRATION
+
+}  // registration_internal namespace
 
 void register_models(toolkit_class_registry& registry) {
 
@@ -87,7 +88,9 @@ void register_models(toolkit_class_registry& registry) {
   // Python Model
   registry.register_toolkit_class(turi::python_model::get_toolkit_class_registration());
 
-  register_model_helper<simple_model>(registry);
+  // Toolkits using simple_model
+  registry.register_toolkit_class(
+      registration_internal::get_toolkit_class_registration());
 
   // Recsys Models
   registry.register_toolkit_class(turi::recsys::get_toolkit_class_registration());

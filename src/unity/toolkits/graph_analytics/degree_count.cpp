@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <unity/toolkits/graph_analytics/pagerank.hpp>
+#include <unity/lib/toolkit_function_macros.hpp>
 #include <unity/lib/toolkit_util.hpp>
 #include <unity/lib/simple_model.hpp>
 #include <unity/lib/unity_sgraph.hpp>
@@ -70,17 +71,11 @@ void compute_degree_count(sgraph& g) {
 /*                             Main Function                              */
 /*                                                                        */
 /**************************************************************************/
-toolkit_function_response_type get_default_options(toolkit_function_invocation& invoke) {
-  toolkit_function_response_type response;
-  response.success = true;
-  return response;
-}
-
-toolkit_function_response_type exec(toolkit_function_invocation& invoke) {
+variant_map_type exec(variant_map_type& params) {
   // no setup needed
   timer mytimer;
   std::shared_ptr<unity_sgraph> source_graph =
-      safe_varmap_get<std::shared_ptr<unity_sgraph>>(invoke.params, "graph");
+      safe_varmap_get<std::shared_ptr<unity_sgraph>>(params, "graph");
 
   ASSERT_TRUE(source_graph != NULL);
   sgraph& source_sgraph = source_graph->get_graph();
@@ -96,26 +91,25 @@ toolkit_function_response_type exec(toolkit_function_invocation& invoke) {
 
   std::shared_ptr<unity_sgraph> result_graph(new unity_sgraph(std::make_shared<sgraph>(g)));
 
-  variant_map_type params;
-  params["graph"] = to_variant(result_graph);
-  params["training_time"] = mytimer.current_time();
+  variant_map_type model_params;
+  model_params["graph"] = to_variant(result_graph);
+  model_params["training_time"] = mytimer.current_time();
 
-  toolkit_function_response_type response;
-  response.params["model"] = to_variant(std::make_shared<simple_model>(params));
-  response.success = true;
+  variant_map_type response;
+  response["model"] = to_variant(std::make_shared<simple_model>(model_params));
   return response;
 }
 
 static const variant_map_type MODEL_FIELDS{
-  {"graph", "A new SGraph with the color id as a vertex property"},
-  {"training_time", "Total training time of the model"}
 };
 
-toolkit_function_response_type get_model_fields(toolkit_function_invocation& invoke) {
-  toolkit_function_response_type response;
-  response.success = true;
-  response.params = MODEL_FIELDS;
-  return response;
+variant_map_type get_model_fields(variant_map_type& params) {
+  return {
+    {"graph", "A new SGraph with the color id as a vertex property"},
+    {"component_id", "An SFrame with each vertex's component id"},
+    {"component_size", "An SFrame with the size of each component"},
+    {"training_time", "Total training time of the model"}
+  };
 }
 /**************************************************************************/
 /*                                                                        */
@@ -124,25 +118,10 @@ toolkit_function_response_type get_model_fields(toolkit_function_invocation& inv
 /**************************************************************************/
 
 
-EXPORT std::vector<toolkit_function_specification> get_toolkit_function_registration() {
-  toolkit_function_specification main_spec;
-  main_spec.name = "degree_count";
-  main_spec.toolkit_execute_function = exec;
+BEGIN_FUNCTION_REGISTRATION
+REGISTER_NAMED_FUNCTION("create", exec, "params");
+REGISTER_FUNCTION(get_model_fields, "params");
+END_FUNCTION_REGISTRATION
 
-  toolkit_function_specification option_spec;
-  option_spec.name = "degree_count_default_options";
-  option_spec.toolkit_execute_function = get_default_options;
-
-  toolkit_function_specification model_spec;
-  model_spec.name = "degree_count_model_fields";
-  model_spec.toolkit_execute_function = get_model_fields;
-  return {main_spec, option_spec, model_spec};
-}
 } // end of namespace degree_count
-
-
-
-
-
-
 } // end of namespace turi

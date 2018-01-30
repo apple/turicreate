@@ -6,9 +6,12 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
+
+import turicreate as _tc
 from turicreate.data_structures.sgraph import SGraph as _SGraph
 import turicreate.toolkits._main as _main
 from turicreate.toolkits.graph_analytics._model_base import GraphAnalyticsModel as _ModelBase
+from turicreate.cython.cy_server import QuietProgress
 
 
 class KcoreModel(_ModelBase):
@@ -139,6 +142,8 @@ def create(graph, kmin=0, kmax=10, verbose=True):
         raise TypeError('graph input must be a SGraph object.')
 
     opts = {'graph': graph.__proxy__, 'kmin': kmin, 'kmax': kmax}
-    params = _main.run('kcore', opts, verbose)
+
+    with QuietProgress(verbose):
+        params = _tc.extensions._toolkits.graph.kcore.create(opts)
 
     return KcoreModel(params['model'])

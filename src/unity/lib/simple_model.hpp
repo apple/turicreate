@@ -33,7 +33,7 @@ class simple_model: public model_base {
 
 
   /// Lists all the keys stored in the variant map
-  std::vector<std::string> list_keys();
+  std::vector<std::string> list_fields();
 
   /** 
    * Gets the value of a key in the variant map. Throws an error if the key
@@ -65,6 +65,8 @@ class simple_model: public model_base {
   variant_map_type params;
 
   BEGIN_CLASS_MEMBER_REGISTRATION("simple_model")
+  REGISTER_CLASS_MEMBER_FUNCTION(simple_model::list_fields)
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get", simple_model::get_value, "key")
   END_CLASS_MEMBER_REGISTRATION
 };
 
