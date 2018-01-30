@@ -184,11 +184,7 @@ class SupervisedLearningModel(Model):
         out : [various]
             The current value of the requested field.
         """
-        opts = {'model': self.__proxy__,
-                'model_name': self.__name__,
-                'field': field}
-        response = _turicreate.extensions._supervised_learning.get_value(opts)
-        return response['value']
+        return self.__proxy__.get_value(field)
 
     @classmethod
     def _get_queryable_methods(cls):

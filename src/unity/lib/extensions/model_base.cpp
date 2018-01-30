@@ -46,7 +46,7 @@ variant_type model_base::call_function(std::string function,
         if (!argument.count(p.first)) argument[p.first] = p.second;
       }
     }
-    return m_function_list[function](this, argument);
+    return m_function_list[function](this, std::move(argument));
   } else {
     throw(std::string("No such property"));
   }

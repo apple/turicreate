@@ -336,7 +336,7 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
    * Extract features! 
    */
   virtual std::shared_ptr<sarray<flexible_type>> extract_features(
-      const sframe& X, const std::map<std::string, flexible_type>& options){
+      const sframe& X, ml_missing_value_action missing_value_action) {
     log_and_throw("Model does not support feature extraction");
   }
 
@@ -697,6 +697,15 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
   variant_map_type api_evaluate(
       gl_sframe data, std::string missing_value_action, std::string metric);
 
+  /**
+   *  API interface through the unity server.
+   *
+   *  Extract features!
+   */
+  // TODO: This function should be const
+  gl_sarray api_extract_features(
+      gl_sframe data, std::string missing_value_action);
+
   /** Export to CoreML. 
    */
   virtual void export_to_coreml(const std::string& filename) {} 
@@ -706,6 +715,9 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
   BEGIN_CLASS_MEMBER_REGISTRATION(name)                                        \
                                                                                \
   REGISTER_CLASS_MEMBER_FUNCTION(class_name::list_fields)                      \
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_value",                            \
+                                       class_name::get_value_from_state,       \
+                                       "field");                               \
                                                                                \
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("train", class_name::api_train, "data", \
                                        "target", "validation_data",            \
@@ -770,14 +782,27 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
   register_defaults("evaluate",                                                \
                     {{"missing_value_action", std::string("error")}});         \
                                                                                \
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("extract_features",                     \
+                                       class_name::api_extract_features,       \
+                                       "data", "missing_value_action");        \
+                                                                               \
+  register_defaults("extract_features",                                        \
+                    {{"missing_value_action", std::string("error")}});         \
+                                                                               \
+  REGISTER_CLASS_MEMBER_FUNCTION(class_name::is_trained);                      \
   REGISTER_CLASS_MEMBER_FUNCTION(class_name::get_train_stats);                 \
   REGISTER_CLASS_MEMBER_FUNCTION(class_name::get_feature_names);               \
+  REGISTER_CLASS_MEMBER_FUNCTION(class_name::get_option_value);                \
                                                                                \
   REGISTER_CLASS_MEMBER_FUNCTION(class_name::export_to_coreml, "filename");    \
                                                                                \
   END_CLASS_MEMBER_REGISTRATION
 };
 
+/**
+ * Obtains the function registration for the toolkit.
+ */
+std::vector<toolkit_function_specification> get_toolkit_function_registration();
 
 /**
  * Fast prediction path for in-memory predictions on a list of rows.

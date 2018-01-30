@@ -113,19 +113,12 @@ class TreeModelMixin(object):
         >>> # Classification Tree Models
         >>> data['classification_tree_features'] = model.extract_features(data)
         """
-        metric_name = '.'.join([self.__module__, 'extract_features'])
         _raise_error_if_not_sframe(dataset, "dataset")
         if missing_value_action == 'auto':
             missing_value_action = select_default_missing_value_policy(self,
                     'extract_features')
 
-        options = dict()
-        options.update({'model': self.__proxy__,
-                        'model_name': self.__name__,
-                        'missing_value_action': missing_value_action,
-                        'dataset': dataset})
-        target = tc.extensions._supervised_learning.extract_feature(options)
-        return target['extracted']
+        return self.__proxy__.extract_features(dataset, missing_value_action)
 
     def _extract_features_with_missing(self, dataset, tree_id = 0,
             missing_value_action = 'auto'):

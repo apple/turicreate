@@ -29,7 +29,6 @@
 
 #include <unity/toolkits/nearest_neighbors/distances.hpp>
 #include <unity/toolkits/nearest_neighbors/unity_nearest_neighbors.hpp>
-#include <unity/toolkits/supervised_learning/unity_supervised_learning.hpp>
 #include <unity/toolkits/text/unity_text.hpp>
 #include <unity/toolkits/recsys/unity_recsys.hpp>
 #include <unity/toolkits/clustering/unity_kmeans.hpp>
@@ -38,6 +37,7 @@
 #include <unity/toolkits/recsys/class_registrations.hpp>
 #include <unity/toolkits/text/class_registrations.hpp>
 #include <unity/toolkits/supervised_learning/class_registrations.hpp>
+#include <unity/toolkits/supervised_learning/supervised_learning.hpp>
 #include <unity/toolkits/feature_engineering/class_registrations.hpp>
 #include <unity/toolkits/pattern_mining/class_registrations.hpp>
 #include <unity/toolkits/clustering/class_registrations.hpp>

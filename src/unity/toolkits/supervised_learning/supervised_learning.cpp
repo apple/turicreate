@@ -1112,6 +1112,24 @@ variant_map_type supervised_learning_model_base::api_evaluate(
 }
 
 /**
+ *  API interface through the unity server.
+ *
+ *  Extract features!
+ */
+gl_sarray supervised_learning_model_base::api_extract_features(
+    gl_sframe data, std::string missing_value_action_str) {
+  auto model = std::dynamic_pointer_cast<supervised_learning_model_base>(
+      shared_from_this());
+  ml_missing_value_action missing_value_action =
+      get_missing_value_enum_from_string(missing_value_action_str);
+
+  sframe test_data = data.materialize_to_sframe();
+  sframe X = setup_test_data_sframe(test_data, model, missing_value_action);
+
+  return extract_features(X, missing_value_action);
+}
+
+/**
  * Compute the width of the data.
  *
  * \param[in] X  Input SFrame
@@ -1229,6 +1247,16 @@ std::vector<std::vector<flexible_type>> _get_metadata_mapping(
     std::shared_ptr<supervised_learning_model_base> model) {
   return model->get_metadata_mapping();
 }
+
+/**
+ * Defines get_toolkit_function_registration for the supervised_learning toolkit
+ */
+BEGIN_FUNCTION_REGISTRATION
+REGISTER_FUNCTION(_regression_model_selector, "_X");
+REGISTER_FUNCTION(_classifier_model_selector, "_X");
+REGISTER_FUNCTION(_classifier_available_models, "num_classes", "_X");
+REGISTER_FUNCTION(_get_metadata_mapping, "model");
+END_FUNCTION_REGISTRATION
 
 } // supervised_learning
 } // turicreate

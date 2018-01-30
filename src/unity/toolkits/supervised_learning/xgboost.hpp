@@ -192,7 +192,7 @@ class EXPORT xgboost_model : public supervised_learning_model_base {
    */
   std::shared_ptr<sarray<flexible_type>> extract_features(
       const sframe& test_data,
-      const std::map<std::string, flexible_type>& options) override;
+      ml_missing_value_action missing_value_action) override;
 
 
   /**
