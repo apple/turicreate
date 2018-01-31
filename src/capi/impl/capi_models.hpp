@@ -23,4 +23,10 @@ static inline tc_model* new_tc_model(std::shared_ptr<turi::toolkit_class_base> m
   return model; 
 }
 
+// TODO: Merge this function with the one above when merging toolkit_class_base
+// with model_base.
+static inline tc_model* new_tc_model(std::shared_ptr<turi::model_base> m) {
+  return new_tc_model(std::dynamic_pointer_cast<turi::toolkit_class_base>(m));
+}
+
 #endif:

@@ -696,6 +696,10 @@ void tc_parameters_destroy(tc_parameters*);
 
 tc_model* tc_model_new(const char* model_name, tc_error**);
 
+tc_model* tc_model_load(const char* url, tc_error** error);
+
+void tc_model_save(const tc_model* model, const char* url, tc_error** error);
+
 const char* tc_model_name(const tc_model*, tc_error**);
 
 tc_variant* tc_model_call_method(const tc_model* model, const char* method,

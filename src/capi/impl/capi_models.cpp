@@ -4,6 +4,7 @@
 #include <capi/impl/capi_error_handling.hpp>
 
 #include <unity/server/unity_server_control.hpp>
+#include <unity/lib/toolkit_util.hpp>
 #include <unity/lib/unity_global.hpp>
 
 
@@ -49,10 +50,40 @@ EXPORT tc_model* tc_model_new(const char* model_name, tc_error** error) {
   ERROR_HANDLE_END(error, NULL);
 }
 
-EXPORT tc_model* tc_model_load(const char* file_name, tc_error** error) {
-  
+EXPORT tc_model* tc_model_load(const char* url, tc_error** error) {
+  ERROR_HANDLE_START();
+  CHECK_NOT_NULL(error, url, "url", nullptr);
 
-  return NULL;
+  turi::variant_map_type result =
+      turi::get_unity_global_singleton()->load_model(url);
+  turi::flex_int version =
+      turi::safe_varmap_get<turi::flexible_type>(result, "archive_version");
+  switch (version) {
+  case 0:
+    return new_tc_model(
+        turi::safe_varmap_get<std::shared_ptr<turi::model_base>>(
+            result, "model_base"));
+  case 1:
+    return new_tc_model(
+        turi::safe_varmap_get<std::shared_ptr<turi::model_base>>(
+            result, "model"));
+  default:
+    set_error(error, "Unknown model archive version");
+    return nullptr;
+  }
+
+  ERROR_HANDLE_END(error, nullptr);
+}
+
+EXPORT void tc_model_save(
+    const tc_model* model, const char* url, tc_error** error) {
+  ERROR_HANDLE_START();
+  CHECK_NOT_NULL(error, model, "model");
+  CHECK_NOT_NULL(error, url, "url");
+
+  turi::get_unity_global_singleton()->save_model(model->value, {}, url);
+
+  ERROR_HANDLE_END(error);
 }
 
 EXPORT const char* tc_model_name(const tc_model* model, tc_error **error) { 
