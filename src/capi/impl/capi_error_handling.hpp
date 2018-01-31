@@ -1,20 +1,9 @@
 #ifndef TURI_CAPI_ERROR_HANDLING_INTERNAL
 #define TURI_CAPI_ERROR_HANDLING_INTERNAL
 
+#include <capi/impl/capi_wrapper_structs.hpp>
 #include <exception>
 #include <string>
-
-// This struct needs to be available for the c functions 
-extern "C" { 
-
-#include <capi/TuriCore.h>
-
-struct tc_error_struct {
-  std::string message; 
-};
-
-
-} // End extern "C"
 
 
 /**  Define the start of the exception handling block.

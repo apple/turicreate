@@ -152,7 +152,7 @@ tc_flexible_type* tc_ft_create_from_image(const tc_flex_image*, tc_error** error
 /** Type enum. */
 typedef enum {
   FT_TYPE_INTEGER = 0,
-  FT_TYPE_DOUBLE  = 1,
+  FT_TYPE_FLOAT   = 1,
   FT_TYPE_STRING  = 2,
   FT_TYPE_ARRAY   = 3,
   FT_TYPE_LIST    = 4,
@@ -323,14 +323,30 @@ void tc_flex_image_destroy(tc_flex_image*);
 
 /******************************************************************************/
 /*                                                                            */
+/*    flex_enum_list                                                          */
+/*                                                                            */
+/******************************************************************************/
+
+// This creates a list of enums with which to wrap functions requiring a list of
+// enums as arguments.
+
+tc_flex_enum_list* tc_flex_enum_list_create(tc_error**);
+tc_flex_enum_list* tc_flex_enum_list_create_with_capacity(uint64_t capacity, tc_error**);
+uint64_t tc_flex_enum_list_add_element(tc_flex_enum_list* fl, const tc_ft_type_enum ft, tc_error**);
+tc_ft_type_enum tc_flex_enum_list_extract_element(
+    const tc_flex_enum_list* fl, uint64_t index, tc_error **error);
+uint64_t tc_flex_enum_list_size(const tc_flex_enum_list* fl);
+void tc_flex_enum_list_destroy(tc_flex_enum_list* fl);
+
+
+/******************************************************************************/
+/*                                                                            */
 /*    SARRAY                                                                  */
 /*                                                                            */
 /******************************************************************************/
 
 
 tc_sarray* tc_sarray_create_empty(tc_error**);
-
-tc_sarray* tc_sarray_create_from_data(const tc_flex_list* data, tc_error**);
 
 tc_sarray* tc_sarray_create_from_sequence(
     uint64_t start, uint64_t end, tc_error** error);
@@ -340,6 +356,11 @@ tc_sarray* tc_sarray_create_from_const(
 
 tc_sarray* tc_sarray_create_from_list(
     const tc_flex_list* values, tc_error** error);
+
+// DEPRECATED : For temporary backwards compatibility.
+static tc_sarray* tc_sarray_create(const tc_flex_list* data, tc_error** error) {
+   return tc_sarray_create_from_list(data, error);
+}
 
 tc_sarray* tc_sarray_create_copy(const tc_sarray* src, tc_error** error);
 
@@ -525,7 +546,7 @@ tc_sframe* tc_sframe_pack_columns_vector(const tc_sframe* sf, const tc_flex_list
 tc_sframe* tc_sframe_pack_columns_string(const tc_sframe* sf, const char* column_prefix, const char* column_name, tc_ft_type_enum type, tc_flexible_type* value, tc_error**);
 tc_sframe* tc_sframe_split_datetime(const tc_sframe* sf, const char* expand_column, const char* column_prefix, const tc_flex_list* limit, bool tzone, tc_error**);
 tc_sframe* tc_sframe_unpack(const tc_sframe* sf, const char* unpack_column, tc_error**);
-tc_sframe* tc_sframe_unpack_detailed(const tc_sframe* sf, const char* unpack_column, const char* column_prefix, const tc_flex_enum_list* type, tc_flexible_type* value, const tc_flex_list* limit, tc_error** error);
+tc_sframe* tc_sframe_unpack_detailed(const tc_sframe* sf, const char* unpack_column, const char* column_prefix, const tc_flex_enum_list* types, tc_flexible_type* value, const tc_flex_list* limit, tc_error** error);
 tc_sframe* tc_sframe_stack(const tc_sframe* sf, const char* column_name, tc_error**);
 tc_sframe* tc_sframe_stack_and_rename(const tc_sframe* sf, const char* column_name, const char* new_column_name, bool drop_na, tc_error**);
 tc_sframe* tc_sframe_unstack(const tc_sframe* sf, const char* column, const char* new_column_name, tc_error**);
@@ -716,6 +737,7 @@ void tc_model_destroy(tc_model*);
 tc_variant* tc_function_call(
     const char* function_name, const tc_parameters* arguments,
     tc_error** error);
+
 
 /******************************************************************************/
 /*                                                                            */

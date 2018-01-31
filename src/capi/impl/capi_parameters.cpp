@@ -1,16 +1,7 @@
 #include <capi/TuriCore.h>
-#include <capi/impl/capi_datetime.hpp>
+#include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
-#include <capi/impl/capi_flexible_type.hpp>
-#include <capi/impl/capi_flex_dict.hpp>
-#include <capi/impl/capi_flex_image.hpp>
-#include <capi/impl/capi_flex_list.hpp>
-#include <capi/impl/capi_models.hpp>
-#include <capi/impl/capi_sframe.hpp>
-#include <capi/impl/capi_sarray.hpp>
-#include <capi/impl/capi_variant.hpp>
 #include <sframe/sframe.hpp>
-#include <capi/impl/capi_parameters.hpp>
 #include <flexible_type/flexible_type.hpp>
 #include <unity/lib/unity_sframe.hpp>
 #include <export.hpp> 
@@ -551,7 +542,7 @@ EXPORT tc_model* tc_parameters_retrieve_model(const tc_parameters* params, const
 
   const turi::variant_type& v = params->value.at(name);
   const std::shared_ptr<turi::model_base>& model = turi::variant_get_ref<std::shared_ptr<turi::model_base>>(v);
-  return new_tc_model(std::dynamic_pointer_cast<turi::toolkit_class_base>(model));
+  return new_tc_model(model);
 
   ERROR_HANDLE_END(error, NULL); 
 }

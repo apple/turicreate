@@ -17,7 +17,7 @@ EXPORT const char* tc_error_message(const tc_error* error) {
   if(error == NULL) { 
     return "No Error"; 
   } else { 
-    return error->message.c_str();
+    return error->value.c_str();
   }
 } 
 
@@ -65,7 +65,7 @@ void set_error(tc_error** error, const std::string& message) {
 
   *error = new tc_error;
 
-  (*error)->message = message;
+  (*error)->value = message;
 }
 
 

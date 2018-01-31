@@ -8,9 +8,7 @@
 
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/lib/gl_sarray.hpp>
-#include <capi/impl/capi_sarray.hpp>
-#include <capi/impl/capi_flexible_type.hpp>
-#include <capi/impl/capi_flex_list.hpp>
+#include <capi/impl/capi_wrapper_structs.hpp>
 #include <iostream>
 
 class capi_test_sarray {

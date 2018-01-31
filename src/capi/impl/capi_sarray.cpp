@@ -1,24 +1,11 @@
 #include <capi/TuriCore.h>
+#include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
-#include <capi/impl/capi_flexible_type.hpp>
-#include <capi/impl/capi_flex_list.hpp>
 #include <flexible_type/flexible_type.hpp>
-#include <capi/impl/capi_sarray.hpp>
 #include <export.hpp>
 #include <sstream>
 
 extern "C" {
-
-EXPORT tc_sarray* tc_sarray_create(const tc_flex_list* data, tc_error** error) {
-  ERROR_HANDLE_START();
-
-  tc_sarray* ret = new_tc_sarray();
-  ret->value = turi::gl_sarray(data->value);
-  return ret;
-
-  ERROR_HANDLE_END(error, NULL);
-}
-
 
 EXPORT tc_sarray* tc_sarray_create_from_sequence(
     uint64_t start, uint64_t end, tc_error** error) {
@@ -807,7 +794,8 @@ class apply_wrapper {
    }
 
    inline turi::flexible_type operator()(const turi::flexible_type& ft) const {
-     tc_flexible_type in{ft};
+     tc_flexible_type in;
+     in.value = ft;
      tc_flexible_type* out = callback(&in, userdata);
      turi::flexible_type ret = out->value;
      tc_ft_destroy(out);

@@ -1,7 +1,6 @@
 #include <capi/TuriCore.h>
+#include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
-#include <capi/impl/capi_flex_image.hpp>
-#include <capi/impl/capi_flexible_type.hpp>
 #include <flexible_type/flexible_type.hpp> 
 #include <unity/lib/image_util.hpp>
 #include <export.hpp>

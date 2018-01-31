@@ -1,7 +1,6 @@
 #include <capi/TuriCore.h>
+#include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
-#include <capi/impl/capi_flex_enum_list.hpp>
-#include <capi/impl/capi_flexible_type.hpp>
 #include <export.hpp>
 #include <flexible_type/flexible_type.hpp>
 
@@ -39,13 +38,16 @@ EXPORT uint64_t tc_flex_enum_list_add_element(tc_flex_enum_list* fl, const tc_ft
 
   ERROR_HANDLE_START();
 
+  CHECK_NOT_NULL(error, ft, "tc_ft_type_enum", NULL);
+
+
   if(fl == NULL) {
     set_error(error, "tc_flex_enum_list instance null.");
     return uint64_t(-1);
   }
 
   uint64_t pos = fl->value.size();
-  fl->value.push_back(ft);
+  fl->value.push_back(static_cast<turi::flex_type_enum>(ft));
 
   return uint64_t(pos);
 
@@ -55,26 +57,25 @@ EXPORT uint64_t tc_flex_enum_list_add_element(tc_flex_enum_list* fl, const tc_ft
 /** Extract an element at a specific index.
  *
  */
-EXPORT tc_flexible_type* tc_flex_enum_list_extract_element(
+EXPORT tc_ft_type_enum tc_flex_enum_list_extract_element(
     const tc_flex_enum_list* fl, uint64_t index, tc_error **error) {
 
   ERROR_HANDLE_START();
 
   if(fl == NULL) {
     set_error(error, "tc_flex_enum_list instance null.");
-    return NULL;
+    return FT_TYPE_UNDEFINED;
   }
 
   if(index >= fl->value.size()) {
     set_error(error, "tc_flex_enum_list index out of bounds.");
-    return NULL;
+    return FT_TYPE_UNDEFINED;
   }
 
-  return fl->value[index];
+  return static_cast<tc_ft_type_enum>(fl->value[index]);
 
-  ERROR_HANDLE_END(error, NULL);
+  ERROR_HANDLE_END(error, FT_TYPE_UNDEFINED);
 }
-
 
 EXPORT uint64_t tc_flex_enum_list_size(const tc_flex_enum_list* fl) {
   if(fl == NULL) { return 0; }

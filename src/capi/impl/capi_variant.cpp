@@ -1,16 +1,7 @@
 #include <capi/TuriCore.h>
 #include <unity/lib/toolkit_util.hpp>
-#include <capi/impl/capi_datetime.hpp>
-#include <capi/impl/capi_variant.hpp>
+#include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
-#include <capi/impl/capi_models.hpp>
-#include <capi/impl/capi_flex_list.hpp>
-#include <capi/impl/capi_flex_dict.hpp>
-#include <capi/impl/capi_flex_image.hpp>
-#include <capi/impl/capi_parameters.hpp>
-#include <capi/impl/capi_sarray.hpp>
-#include <capi/impl/capi_sframe.hpp>
-#include <capi/impl/capi_flexible_type.hpp>
 #include <flexible_type/flexible_type.hpp>
 #include <export.hpp>
 
@@ -129,7 +120,7 @@ EXPORT tc_variant* tc_variant_create_from_sarray(const tc_sarray* sa, tc_error**
 
   CHECK_NOT_NULL(error, sa, "SArray", NULL);
 
-  return new_tc_variant(sa->value.get_proxy());
+  return new_tc_variant(turi::to_variant(sa->value.get_proxy()));
 
   ERROR_HANDLE_END(error, NULL);
 }
@@ -139,7 +130,7 @@ EXPORT tc_variant* tc_variant_create_from_sframe(const tc_sframe* sf, tc_error**
 
   CHECK_NOT_NULL(error, sf, "SFrame", NULL);
 
-  return new_tc_variant(sf->value.get_proxy());
+  return new_tc_variant(turi::to_variant(sf->value.get_proxy()));
 
   ERROR_HANDLE_END(error, NULL);
 }

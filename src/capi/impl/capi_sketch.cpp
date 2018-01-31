@@ -1,8 +1,6 @@
 #include <capi/TuriCore.h>
+#include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
-#include <capi/impl/capi_flex_dict.hpp>
-#include <capi/impl/capi_flex_list.hpp>
-#include <capi/impl/capi_flexible_type.hpp>
 #include <capi/impl/capi_sketch.hpp>
 #include <export.hpp> 
 
