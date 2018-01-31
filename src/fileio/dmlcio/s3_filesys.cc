@@ -817,7 +817,8 @@ void ListObjects(const URI &path,
   ASSERT_TRUE(curl_easy_setopt(curl, CURLOPT_WRITEDATA, &result) == CURLE_OK);
   set_curl_options(curl);
   ASSERT_TRUE(curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1) == CURLE_OK);
-  ASSERT_TRUE(curl_easy_perform(curl) == CURLE_OK);
+  CURLcode performret = curl_easy_perform(curl);
+  ASSERT_EQ(performret, CURLE_OK);
   curl_slist_free_all(slist);
   curl_easy_cleanup(curl);
   // parse xml

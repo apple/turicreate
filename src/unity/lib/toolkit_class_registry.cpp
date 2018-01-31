@@ -4,7 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <unity/lib/toolkit_class_registry.hpp>
-#include <unity/lib/api/model_interface.hpp>
+#include <unity/lib/extensions/model_base.hpp>
 
 namespace turi {
 

@@ -21,11 +21,6 @@
 
 namespace turi { namespace recsys {
 
-recsys_model_base* recsys_popularity::internal_clone() {
-  recsys_popularity* m = new recsys_popularity(*this);
-  return (recsys_model_base*) m;
-}
-
 void recsys_popularity::init_options(const std::map<std::string,
                                  flexible_type>&_options) {
 

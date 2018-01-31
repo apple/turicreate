@@ -102,13 +102,10 @@ class recsys_factorization_model : public recsys_factorization_model_base {
  private:
   bool include_ranking_options() const { return false; }
 
-  recsys_model_base* internal_clone() {
-    return new recsys_factorization_model(*this);
-  }
- 
  public: 
    // TODO: convert interface above to use the extensions methods here
   BEGIN_CLASS_MEMBER_REGISTRATION("factorization_recommender")
+  REGISTER_CLASS_MEMBER_FUNCTION(recsys_factorization_model::list_fields)
   END_CLASS_MEMBER_REGISTRATION
 };
 
@@ -122,13 +119,10 @@ class recsys_ranking_factorization_model : public recsys_factorization_model_bas
  private:
   bool include_ranking_options() const { return true; }
 
-  recsys_model_base* internal_clone() {
-    return new recsys_ranking_factorization_model(*this);
-  }
-
  public: 
    // TODO: convert interface above to use the extensions methods here
   BEGIN_CLASS_MEMBER_REGISTRATION("ranking_factorization_recommender")
+  REGISTER_CLASS_MEMBER_FUNCTION(recsys_ranking_factorization_model::list_fields)
   END_CLASS_MEMBER_REGISTRATION
 
 };

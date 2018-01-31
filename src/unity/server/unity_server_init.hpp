@@ -8,7 +8,6 @@
 
 #include <unity/lib/toolkit_class_registry.hpp>
 #include <unity/lib/toolkit_function_registry.hpp>
-#include <unity/lib/api/model_interface.hpp>
 
 namespace turi {
 

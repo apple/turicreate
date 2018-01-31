@@ -34,7 +34,7 @@ namespace text {
 /**
  * List all the keys that are present in the state.
  */
-std::vector<std::string> topic_model::list_keys(){
+std::vector<std::string> topic_model::list_fields() {
   std::vector<std::string> ret;
   for (const auto& kvp: state){
     ret.push_back(kvp.first);
@@ -459,15 +459,6 @@ std::shared_ptr<sarray<flexible_type> > topic_model::predict_gibbs(
 
   predictions->close();
   return predictions;
-}
-
-
-/**
- * Clone to ml_base
- */
-ml_model_base* topic_model::ml_model_base_clone() {
-  topic_model* m = topic_model_clone();
-  return m;
 }
 
 

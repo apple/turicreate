@@ -38,6 +38,8 @@ for m in [
           'label_propagation',
           'linear_regression',
           'logistic_classifier',
+          'load_sframe',
+          'load_sgraph',
           'load_model',
           'nearest_neighbors',
           'nearest_neighbor_classifier',

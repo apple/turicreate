@@ -18,7 +18,7 @@ We provide methods for learning topic models, which can be useful for modeling
 large document collections. See
 :py:func:`~turicreate.topic_model.create` for more, as well as the
 `text analysis chapter of the User Guide
-<https://apple.github.io/turicreate/docs/userguide/text/intro.html>`_.
+<https://apple.github.io/turicreate/docs/userguide/text/README.html>`_.
 
 """
 from __future__ import print_function as _

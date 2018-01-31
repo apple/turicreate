@@ -25,8 +25,15 @@ void csv_writer::csv_print_internal(std::string& out, const flexible_type& val) 
       out += std::string(val);
       break;
     case flex_type_enum::DATETIME:
-    case flex_type_enum::VECTOR:
       out += std::string(val);
+      break;
+    case flex_type_enum::VECTOR:
+      out += '[';
+      for(size_t i = 0;i < val.get<flex_vec>().size(); ++i) {
+        csv_print_internal(out, val.get<flex_vec>()[i]);
+        if (i + 1 < val.get<flex_vec>().size()) out += ',';
+      }
+      out += ']';
       break;
     case flex_type_enum::STRING:
       // do not print double quotes

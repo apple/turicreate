@@ -103,6 +103,7 @@ class EXPORT cgs_topic_model : public topic_model {
 
   // TODO: convert interface above to use the extensions methods here
   BEGIN_CLASS_MEMBER_REGISTRATION("cgs_topic_model")
+  REGISTER_CLASS_MEMBER_FUNCTION(cgs_topic_model::list_fields)
   END_CLASS_MEMBER_REGISTRATION
 
 };  // kmeans_model class

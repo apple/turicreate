@@ -54,17 +54,21 @@ static double hexadecimal_to_float(std::string hex) {
         for(int i = 0; i < 4; ++i) {
         p[i] = val[2*i] + 16 * val[2+i + 1];
         }
-  */
+  */ 
+  { 
+    int a = 0, b = 0, c = 0, d = 0;
 
-  if (is_little_endian) {
-    sscanf(hex.c_str(), "%02X%02X%02X%02X", &(p[0]), &(p[1]), &(p[2]), &(p[3]));
+    if (is_little_endian) {
+      sscanf(hex.c_str(), "%02X%02X%02X%02X", &a, &b, &c, &d);
+    } else {
+      sscanf(hex.c_str(), "%02X%02X%02X%02X", &d, &c, &b, &a);
+    }
 
-    //std::istringstream(hex) >> std::hex >> p[3] >> p[2] >> p[1] >> p[0];
-  } else {
-    //std::istringstream(hex) >> std::hex >> p[0] >> p[1] >> p[2] >> p[3];
-    sscanf(hex.c_str(), "%02X%02X%02X%02X", &(p[3]), &(p[2]), &(p[1]), &(p[0]));
+    p[0] = static_cast<uint8_t>(a);  DASSERT_EQ(static_cast<int>(p[0]), a);
+    p[1] = static_cast<uint8_t>(b);  DASSERT_EQ(static_cast<int>(p[1]), b);
+    p[2] = static_cast<uint8_t>(c);  DASSERT_EQ(static_cast<int>(p[2]), c);
+    p[3] = static_cast<uint8_t>(d);  DASSERT_EQ(static_cast<int>(p[3]), d);
   }
-
   // DASSERT_EQ(out, hex.size());
 
 #ifndef NDEBUG

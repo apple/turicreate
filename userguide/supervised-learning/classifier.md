@@ -24,7 +24,7 @@ Currently, the following models are supported for classification:
 * [Boosted Decision Trees](boosted_trees_classifier.md)
 * [Random Forests](random_forest_classifier.md)
 * [Decision Tree](decision_tree_classifier.md)
-* [Image Classifier](../image_classifier/introduction.md)
+* [Image Classifier](../image_classifier/README.md)
 
 These algorithms differ in how they make predictions, but conform to the same
 API. With all models, call **create()** to create a model, **predict()** to make

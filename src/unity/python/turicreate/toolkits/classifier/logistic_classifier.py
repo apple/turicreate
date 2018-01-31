@@ -16,7 +16,6 @@ from turicreate.toolkits._internal_utils import _toolkit_repr_print, \
                                         _toolkit_get_topk_bottomk, \
                                         _raise_error_if_not_sframe, \
                                         _check_categorical_option_type, \
-                                        _map_unity_proxy_to_object, \
                                         _raise_error_evaluation_metric_is_valid, \
                                         _summarize_coefficients
 
@@ -749,26 +748,19 @@ class LogisticClassifier(_Classifier):
 
         # Low latency path
         if isinstance(dataset, list):
-            return _turicreate.extensions._fast_predict_topk(self.__proxy__, dataset,
-                    output_type, missing_value_action, k)
+            return self.__proxy__.fast_predict_topk(
+                dataset, missing_value_action, output_type, k)
         if isinstance(dataset, dict):
-            return _turicreate.extensions._fast_predict_topk(self.__proxy__, [dataset],
-                    output_type, missing_value_action, k)
+            return self.__proxy__.fast_predict_topk(
+                [dataset], missing_value_action, output_type, k)
         # Fast path
         _raise_error_if_not_sframe(dataset, "dataset")
         options = dict()
         if (missing_value_action == 'auto'):
             missing_value_action = _sl.select_default_missing_value_policy(
                                                               self, 'predict')
-        options.update({'model': self.__proxy__,
-                        'model_name': self.__name__,
-                        'dataset': dataset,
-                        'output_type': output_type,
-                        'topk': k,
-                        'missing_value_action': missing_value_action})
-        target = _turicreate.toolkits._main.run(
-                  'supervised_learning_predict_topk', options)
-        return _map_unity_proxy_to_object(target['predicted'])
+        return self.__proxy__.predict_topk(
+            dataset, missing_value_action, output_type, k)
 
     
     def evaluate(self, dataset, metric='auto', missing_value_action='auto'):

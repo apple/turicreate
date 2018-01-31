@@ -3,9 +3,10 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+#include <unity/lib/extensions/ml_model.hpp>
+
 #include <fileio/general_fstream.hpp>
 #include <unity/lib/variant_deep_serialize.hpp>
-#include <unity/toolkits/ml_model/ml_model.hpp>
 
 // Unity global
 #include <unity/lib/unity_global.hpp>
@@ -20,7 +21,7 @@ namespace turi {
 /**
  * List all the keys that are present in the state.
  */
-std::vector<std::string> ml_model_base::list_keys(){
+std::vector<std::string> ml_model_base::list_fields(){
   std::vector<std::string> ret;
   for (const auto& kvp: state){
     ret.push_back(kvp.first);
@@ -28,24 +29,6 @@ std::vector<std::string> ml_model_base::list_keys(){
   return ret;
 }
 
-
-
-/**
- * Get value in the given dictionary.
- */
-variant_type ml_model_base::get_value(std::string key, variant_map_type& arg){
-
-  // Field does not exist
-  if(arg.count(key) == 0){
-    std::stringstream ss;
-    ss << "Field '" << key << "' does not exist." << std::endl;
-    log_and_throw(ss.str());
-
-  // Field exists: Cast the object to the variant type and return!
-  } else {
-    return arg[key];
-  }
-}
 
 
 /**

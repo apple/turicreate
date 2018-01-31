@@ -1642,11 +1642,8 @@ void unity_sframe::show(const std::string& path_to_client) {
 
   ::turi::visualization::run_thread([path_to_client, column_transformers, column_names, self]() {
 
-    vega_spec vs;
     visualization::process_wrapper ew(path_to_client);
-
-    vs << summary_view_spec(column_transformers.size());
-    ew << vs.get_spec();
+    ew << summary_view_spec(column_transformers.size());
 
     const static size_t expected_batch_size = 5000000;
     double num_rows_processed = 0;

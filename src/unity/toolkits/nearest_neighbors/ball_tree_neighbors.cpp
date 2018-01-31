@@ -42,16 +42,6 @@ ball_tree_neighbors::~ball_tree_neighbors(){
 
 
 /**
- * Cast the object to a nearest_neighbors_model type
- */
-nearest_neighbors_model* ball_tree_neighbors::nearest_neighbors_clone() {
-
-  ball_tree_neighbors* nn = new ball_tree_neighbors(*this);
-  return (nearest_neighbors_model*) nn;
-}
-
-
-/**
 * Set options
 */ 
 void ball_tree_neighbors::init_options(

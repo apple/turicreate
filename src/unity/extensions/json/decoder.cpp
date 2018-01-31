@@ -50,7 +50,7 @@ static bool _is_type(const schema_t& schema, const std::string& type) {
 }
 
 static void _check_type(const schema_t& schema, const std::string& type) {
-  CHECK(_is_type(schema, type));
+  ASSERT_TRUE(_is_type(schema, type));
 }
 
 static variant_type _list_from_serializable(const flexible_type& data, const schema_t& schema) {

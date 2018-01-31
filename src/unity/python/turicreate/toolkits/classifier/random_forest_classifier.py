@@ -18,7 +18,6 @@ from turicreate.toolkits._internal_utils import _raise_error_evaluation_metric_i
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
 from turicreate.toolkits._internal_utils import _raise_error_if_column_exists
 from turicreate.toolkits._internal_utils import _check_categorical_option_type
-from turicreate.toolkits._internal_utils import _map_unity_proxy_to_object
 from turicreate.toolkits._tree_model_mixin import TreeModelMixin as _TreeModelMixin
 from turicreate.util import _make_internal_url
 import logging as _logging
@@ -351,21 +350,14 @@ class RandomForestClassifier(_Classifier, _TreeModelMixin):
 
         # Low latency path
         if isinstance(dataset, list):
-            return _turicreate.extensions._fast_predict_topk(self.__proxy__, dataset,
-                    output_type, missing_value_action, k)
+            return self.__proxy__.fast_predict_topk(
+                dataset, missing_value_action, output_type, k)
         if isinstance(dataset, dict):
-            return _turicreate.extensions._fast_predict_topk(self.__proxy__, [dataset],
-                    output_type, missing_value_action, k)
+            return self.__proxy__.fast_predict_topk(
+                [dataset], missing_value_action, output_type, k)
 
-        options = dict()
-        options.update({'model': self.__proxy__,
-                        'model_name': self.__name__,
-                        'dataset': dataset,
-                        'output_type': output_type,
-                        'topk': k,
-                        'missing_value_action': missing_value_action})
-        target = _turicreate.toolkits._main.run('supervised_learning_predict_topk', options)
-        return _map_unity_proxy_to_object(target['predicted'])
+        return self.__proxy__.predict_topk(
+            dataset, missing_value_action, output_type, k)
 
     def classify(self, dataset, missing_value_action='auto'):
         """

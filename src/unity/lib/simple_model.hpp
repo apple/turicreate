@@ -6,9 +6,8 @@
 #ifndef TURI_UNITY_SIMPLE_MODEL_HPP
 #define TURI_UNITY_SIMPLE_MODEL_HPP
 
-#include <unity/lib/api/model_interface.hpp>
-#include <unity/lib/api/client_base_types.hpp>
 #include <unity/lib/variant.hpp>
+#include <unity/lib/extensions/model_base.hpp>
 
 namespace turi {
 /**
@@ -26,8 +25,6 @@ class simple_model: public model_base {
   /// Default constructor
   simple_model() {}
 
-  std::string name() { return "simple_model"; };
-
   /**
    * Constructs a simple_model from a variant map. 
    * A copy of the map is taken and stored.
@@ -36,7 +33,7 @@ class simple_model: public model_base {
 
 
   /// Lists all the keys stored in the variant map
-  std::vector<std::string> list_keys();
+  std::vector<std::string> list_fields();
 
   /** 
    * Gets the value of a key in the variant map. Throws an error if the key
@@ -67,7 +64,12 @@ class simple_model: public model_base {
   /// Internal map
   variant_map_type params;
 
+  BEGIN_CLASS_MEMBER_REGISTRATION("simple_model")
+  REGISTER_CLASS_MEMBER_FUNCTION(simple_model::list_fields)
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get", simple_model::get_value, "key")
+  END_CLASS_MEMBER_REGISTRATION
 };
+
 }
 
 #endif // TURI_UNITY_SIMPLE_MODEL

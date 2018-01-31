@@ -6,30 +6,13 @@
 #ifndef TURI_UNITY_NEAREST_NEIGHBORS_H
 #define TURI_UNITY_NEAREST_NEIGHBORS_H
 
+#include <vector>
+
 #include <unity/lib/toolkit_function_specification.hpp>
+#include <unity/lib/variant.hpp>
 
 namespace turi {
 namespace nearest_neighbors {
-
-
-
-/** 
- * Check if the data is empty. 
- * 
- * \param[in] X SFrame. 
- */  
-void check_empty_data(const sframe& X);
-
-/** 
-* Check that the feature and label types are valid.
-*
-* \param[in] X SFrame Feature data
-* \param[in] y SFrame Labels
-* \param[in] model_name std::string name of the model
-* \param[in] distance std::string distance option
-*/  
-void check_column_types(const sframe& X, const sframe& y,
-                        std::string model_name, std::string distance);
 
 /*
  * Get the list of options that are relevant ot each model.
@@ -39,100 +22,98 @@ void check_column_types(const sframe& X, const sframe& y,
  */   
 std::vector<std::string> get_model_option_keys(std::string model_name);
 
-
 /**
  * Get the current set of options.
  *
- * \param[in] invoke toolkit invocation object
+ * \param[in] params dictionary with function arguments
  * \returns Dictionary with current options.
  *
- * Invocation object properties
+ * Params dictionary keys
  * \property[in] model       Regression model object.
  * \property[in] model_name  Name of the model.
  */
-toolkit_function_response_type get_current_options(toolkit_function_invocation& invoke);
+variant_map_type get_current_options(variant_map_type& params);
 
 /**
  * Get training stats.
  *
- * \param[in] invoke toolkit invocation object
+ * \param[in] params dictionary with function arguments
  * \returns Dictionary with train stats.
  *
- * Invocation object properties
+ * Params dictionary keys
  * \property[in] model       Regression model object.
  * \property[in] model_name  Name of the model.
  */
-toolkit_function_response_type training_stats(toolkit_function_invocation& invoke);
+variant_map_type training_stats(variant_map_type& params);
 
 /**
  * Get any value from the model.
  *
- * \param[in] invoke toolkit invocation object
+ * \param[in] params dictionary with function arguments
  * \returns Dictionary
  *
- * Invocation object properties
+ * Params dictionary keys
  * \property[in] model       Regression model object.
  * \property[in] model_name  Name of the model.
  * \property[out] "value"    Value of the key.
  *
  */
-toolkit_function_response_type get_value(toolkit_function_invocation& invoke);
+variant_map_type get_value(variant_map_type& params);
 
 /**
  * List all keys in the model.
  *
- * \param[in] invoke toolkit_function_invocation object
+ * \param[in] params dictionary with function arguments
  * \returns Dict with "model" keys but empty values.
  *
- * Invocation object properties
+ * Params dictionary keys
  * \property[in] model       Regression model object.
  * \property[in] model_name  Name of the model.
  *
  */
-toolkit_function_response_type list_keys(toolkit_function_invocation& invoke);
+variant_map_type list_fields(variant_map_type& params);
 
 /**
  * Creation function for nearest neighbors reference objects. Checks for errors
  * in inputs and makes sure all options provided by the user overwrite default
  * options.
  *
- * \param[in] invoke toolkit invocation object
+ * \param[in] params dictionary with function arguments
  * \returns Dictionary with new model.
  *
- * Invocation object properties
+ * Params dictionary keys
  * \property[in,out] model   Regression model object.
  * \property[in] model_name  Name of the model.
  */
-// toolkit_function_response_type train(toolkit_function_invocation& invoke);
-variant_map_type train(variant_map_type& invoke);
+variant_map_type train(variant_map_type& params);
 
 /** 
  * Query function for the nearest neighbors toolkit. 
  *
- * \param[in] invoke tookit_invocation object
+ * \param[in] params dictionary with function arguments
  * \returns SFrame with labels of queries, reference points in the nearest
  * neighbors model, distances between the queries and answers, and ranks of the
  * answers for each query.
  *
- * Invocation object properties
+ * Params dictionary keys
  * \property[in, out] model      NearestNeighborsModel object
  * \property[in] model_name      Name of the model
  */
-toolkit_function_response_type query(toolkit_function_invocation& invoke);
+variant_map_type query(variant_map_type& params);
 
 /** 
  * Similarity graph function for the nearest neighbors toolkit. 
  *
- * \param[in] invoke tookit_invocation object
+ * \param[in] params dictionary with function arguments
  * \returns SFrame with labels of queries, reference points in the nearest
  * neighbors model, distances between the queries and answers, and ranks of the
  * answers for each query.
  *
- * Invocation object properties
+ * Params dictionary keys
  * \property[in, out] model      NearestNeighborsModel object
  * \property[in] model_name      Name of the model
  */
-toolkit_function_response_type similarity_graph(toolkit_function_invocation& invoke);
+variant_map_type similarity_graph(variant_map_type& params);
 
 /**
  * Obtain registration for the nearest_neighbors toolkit.

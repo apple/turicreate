@@ -50,7 +50,7 @@ void decode_number(iarchive& iarc,
   for (size_t i = 0;i < ret.size(); ++i) {
     if (ret[i].get_type() != flex_type_enum::UNDEFINED) {
       if (bufstart < buflen) {
-        ret[i].mutable_get<flex_int>() = buf[bufstart];
+        ret[i].reinterpret_mutable_get<flex_int>() = buf[bufstart];
         ++bufstart;
         --num_values_to_read;
       } else {
@@ -63,7 +63,7 @@ void decode_number(iarchive& iarc,
 //         }
 //         logstream(LOG_INFO) << std::endl;
         bufstart = 0;
-        ret[i].mutable_get<flex_int>() = buf[bufstart];
+        ret[i].reinterpret_mutable_get<flex_int>() = buf[bufstart];
         ++bufstart;
         --num_values_to_read;
       }
@@ -90,7 +90,7 @@ void encode_double_legacy(block_info& info,
     // collect a block of 128 integers
     while(i < data.size() && encode_buflen < MAX_INTEGERS_PER_BLOCK) {
       if (data[i].get_type() != flex_type_enum::UNDEFINED) {
-        encode_buf[encode_buflen] = data[i].get<flex_int>();
+        encode_buf[encode_buflen] = data[i].reinterpret_get<flex_int>();
         ++encode_buflen;
       }
       ++i;
@@ -157,7 +157,7 @@ void decode_double_legacy(iarchive& iarc,
   for (size_t i = 0;i < ret.size(); ++i) {
     if (ret[i].get_type() != flex_type_enum::UNDEFINED) {
       if (bufstart < buflen) {
-        ret[i].mutable_get<flex_int>() = buf[bufstart];
+        ret[i].reinterpret_mutable_get<flex_int>() = buf[bufstart];
         ++bufstart;
         --num_values_to_read;
       } else {
@@ -169,7 +169,7 @@ void decode_double_legacy(iarchive& iarc,
           buf[j] = (buf[j] >> 1) | (buf[j] << 63);
         }
         bufstart = 0;
-        ret[i].mutable_get<flex_int>() = buf[bufstart];
+        ret[i].reinterpret_mutable_get<flex_int>() = buf[bufstart];
         ++bufstart;
         --num_values_to_read;
       }

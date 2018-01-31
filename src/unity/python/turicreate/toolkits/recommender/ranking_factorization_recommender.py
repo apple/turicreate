@@ -15,6 +15,7 @@ from __future__ import absolute_import as _
 import turicreate as _turicreate
 from turicreate.toolkits.recommender.util import _Recommender
 from turicreate.toolkits._model import _get_default_options_wrapper
+from turicreate.cython.cy_server import QuietProgress
 
 def create(observation_data,
            user_id='user_id', item_id='item_id', target=None,
@@ -220,7 +221,7 @@ def create(observation_data,
     method = 'ranking_factorization_recommender'
 
     opts = {'model_name': method}
-    response = _turicreate.toolkits._main.run("recsys_init", opts)
+    response = _turicreate.extensions._recsys.init(opts)
     model_proxy = response['model']
 
     if user_data is None:
@@ -269,7 +270,9 @@ def create(observation_data,
 
         opts.update(kwargs)
 
-    response = _turicreate.toolkits._main.run('recsys_train', opts, verbose)
+    with QuietProgress(verbose):
+        response = _turicreate.extensions._recsys.train(opts)
+
     return RankingFactorizationRecommender(response['model'])
 
 _get_default_options = _get_default_options_wrapper(
