@@ -112,8 +112,7 @@ void check_model(std::shared_ptr<sample_transformer> model,
   // Check the model
   // ----------------------------------------------------------------------
   TS_ASSERT(model->get_constant() == options["constant"]);
-  TS_ASSERT(data.num_columns() == variant_get_value<double>(
-                            model->get_value_from_state("num_features")));
+  TS_ASSERT_EQUALS(data.num_columns(), variant_get_value<double>(model->get_value_from_state("num_features")));
   TS_ASSERT(data.column_names() == variant_get_value<std::vector<std::string>>(
                             model->get_value_from_state("features")));
 

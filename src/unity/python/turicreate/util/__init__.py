@@ -64,10 +64,6 @@ def _get_aws_credentials():
         environment variable. The second string of the tuple is the value of the
         AWS_SECRET_ACCESS_KEY environment variable.
 
-    See Also
-    --------
-    set_credentials
-
     Examples
     --------
     >>> turicreate.aws.get_credentials()
@@ -75,9 +71,9 @@ def _get_aws_credentials():
     """
 
     if (not 'AWS_ACCESS_KEY_ID' in _os.environ):
-        raise KeyError('No access key found. Please set the environment variable AWS_ACCESS_KEY_ID, or using turicreate.aws.set_credentials()')
+        raise KeyError('No access key found. Please set the environment variable AWS_ACCESS_KEY_ID.')
     if (not 'AWS_SECRET_ACCESS_KEY' in _os.environ):
-        raise KeyError('No secret key found. Please set the environment variable AWS_SECRET_ACCESS_KEY, or using turicreate.aws.set_credentials()')
+        raise KeyError('No secret key found. Please set the environment variable AWS_SECRET_ACCESS_KEY.')
     return (_os.environ['AWS_ACCESS_KEY_ID'], _os.environ['AWS_SECRET_ACCESS_KEY'])
 
 

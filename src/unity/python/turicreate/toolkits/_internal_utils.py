@@ -545,7 +545,7 @@ def _model_version_check(file_version, code_version):
 def _mac_ver():
     """
     Returns Mac version as a tuple of integers, making it easy to do proper
-    version comparisons. On non-Macs, it returns None.
+    version comparisons. On non-Macs, it returns an empty tuple.
     """
     import platform
     import sys
@@ -553,4 +553,4 @@ def _mac_ver():
         ver_str = platform.mac_ver()[0]
         return tuple([int(v) for v in ver_str.split('.')])
     else:
-        return None
+        return ()

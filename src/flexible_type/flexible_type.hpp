@@ -3,6 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
 #ifndef TURI_FLEXIBLE_TYPE_HPP
 #define TURI_FLEXIBLE_TYPE_HPP
 #include <string>
@@ -281,7 +282,14 @@ class flexible_type {
    */
   flexible_type(flexible_type& other) noexcept;
 
+  template <size_t N>
+  flexible_type(const char v[N]):flexible_type() {
+    (*this) = flex_string(v, N);
+  }
 
+  flexible_type(const char* c):flexible_type() {
+    (*this) = flex_string(c);
+  }
   /**
    * Copy constructor. Assigns this from arbitrary type.
    * See \ref flexible_type::operator=
@@ -362,6 +370,16 @@ class flexible_type {
       flexible_type&>::type operator=(const T& other);
 
 
+  template <size_t N>
+  flexible_type& operator=(const char v[N]) {
+    (*this) = flex_string(v, N);
+    return (*this);
+  }
+
+  flexible_type& operator=(const char* c) {
+    (*this) = flex_string(c);
+    return (*this);
+  }
   /**
    * operator= for the undefined type
    * See \ref flexible_type::operator=
@@ -444,6 +462,33 @@ class flexible_type {
    */
   template <typename T>
   const T& get() const;
+
+
+  /**
+   * Gets a modifiable type unchecked modifiable reference to the value stored 
+   * inside the flexible_type.
+   *
+   * This is generally unsafe to use unless you *really* know what 
+   * you are doing. Use \ref get() instead.
+   * 
+   * Note that this is only defined for flex_int and flex_float type. It really
+   * does not make sense to use this anywhere else.
+   */
+  template <typename T>
+  T& reinterpret_mutable_get();
+
+  /**
+   * Gets a type unchecked modifiable reference to the value stored 
+   * inside the flexible_type.
+   *
+   * This is generally unsafe to use unless you *really* know what 
+   * you are doing. Use \ref get() instead.
+   *
+   * Note that this is only defined for flex_int and flex_float type. It really
+   * does not make sense to use this anywhere else.
+   */
+  template <typename T>
+  const T& reinterpret_get() const;
 
   /**
    * \{
@@ -1413,27 +1458,47 @@ inline FLEX_ALWAYS_INLINE const flex_date_time& flexible_type::get<flex_date_tim
 // INTEGER
 template <>
 inline FLEX_ALWAYS_INLINE flex_int& flexible_type::mutable_get<flex_int>() {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::INTEGER || get_type() == flex_type_enum::FLOAT);
+  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::INTEGER);
   return val.intval;
 }
 
 template <>
 inline FLEX_ALWAYS_INLINE const flex_int& flexible_type::get<flex_int>() const {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::INTEGER || get_type() == flex_type_enum::FLOAT);
+  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::INTEGER);
+  return val.intval;
+}
+
+template <>
+inline FLEX_ALWAYS_INLINE flex_int& flexible_type::reinterpret_mutable_get<flex_int>() {
+  return val.intval;
+}
+
+template <>
+inline FLEX_ALWAYS_INLINE const flex_int& flexible_type::reinterpret_get<flex_int>() const {
   return val.intval;
 }
 
 // flex_float
 template <>
 inline FLEX_ALWAYS_INLINE flex_float& flexible_type::mutable_get<flex_float>() {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::INTEGER || get_type() == flex_type_enum::FLOAT);
+  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::FLOAT);
   return val.dblval;
 }
 
 
 template <>
 inline FLEX_ALWAYS_INLINE const flex_float& flexible_type::get<flex_float>() const {
-  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::INTEGER || get_type() == flex_type_enum::FLOAT);
+  DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::FLOAT);
+  return val.dblval;
+}
+
+template <>
+inline FLEX_ALWAYS_INLINE flex_float& flexible_type::reinterpret_mutable_get<flex_float>() {
+  return val.dblval;
+}
+
+template <>
+inline FLEX_ALWAYS_INLINE const flex_float& flexible_type::reinterpret_get<flex_float>() const {
   return val.dblval;
 }
 
@@ -1452,6 +1517,7 @@ inline FLEX_ALWAYS_INLINE const flex_string& flexible_type::get<flex_string>() c
   return val.strval->second;
 }
 
+
 // VECTOR
 template <>
 inline FLEX_ALWAYS_INLINE flex_vec& flexible_type::mutable_get<flex_vec>() {
@@ -1466,6 +1532,7 @@ inline FLEX_ALWAYS_INLINE const flex_vec& flexible_type::get<flex_vec>() const {
   DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::VECTOR);
   return val.vecval->second;
 }
+
 
 // LIST
 template <>
@@ -1497,6 +1564,7 @@ inline FLEX_ALWAYS_INLINE const flex_dict& flexible_type::get<flex_dict>() const
   DFLEX_TYPE_ASSERT(get_type() == flex_type_enum::DICT);
   return val.dictval->second;
 }
+
 
 // IMAGE
 template <>
@@ -1707,6 +1775,19 @@ inline FLEX_ALWAYS_INLINE T& flexible_type::mutable_get() {
 
 template <typename T>
 inline FLEX_ALWAYS_INLINE const T& flexible_type::get() const {
+  typedef flexible_type_impl::invalid_type_instantiation_assert<true> unused;
+  __builtin_unreachable();
+}
+
+
+template <typename T>
+inline FLEX_ALWAYS_INLINE T& flexible_type::reinterpret_mutable_get() {
+  typedef flexible_type_impl::invalid_type_instantiation_assert<true> unused;
+  __builtin_unreachable();
+}
+
+template <typename T>
+inline FLEX_ALWAYS_INLINE const T& flexible_type::reinterpret_get() const {
   typedef flexible_type_impl::invalid_type_instantiation_assert<true> unused;
   __builtin_unreachable();
 }

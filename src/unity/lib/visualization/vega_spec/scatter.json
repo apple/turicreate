@@ -1,0 +1,169 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v3.0.json",
+  "autosize": "pad",
+  "padding": 5,
+  "width": 640,
+  "height": 400,
+  "style": "cell",
+  "title": {
+    "text": %1%,
+    "offset": 30
+  },
+  "data": [
+    {
+      "name": "source_2"
+    }
+  ],
+  "marks": [
+    {
+      "name": "marks",
+      "type": "symbol",
+      "style": [
+        "circle"
+      ],
+      "from": {
+        "data": "source_2"
+      },
+      "encode": {
+        "hover": {
+          "fill": {
+            "value": "#7EC2F3"
+          }
+        },
+        "update": {
+          "x": {
+            "scale": "x",
+            "field": "x"
+          },
+          "y": {
+            "scale": "y",
+            "field": "y",
+            "title": "Miles per Gallon"
+          },
+          "fill": {
+            "value": "#108EE9"
+          },
+          "shape": {
+            "value": "circle"
+          },
+          "opacity": {
+            "value": 0.7
+          }
+        }
+      }
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "type": "linear",
+      "domain": {
+        "data": "source_2",
+        "field": "x"
+      },
+      "range": [
+        0,
+        {
+          "signal": "width"
+        }
+      ],
+      "nice": true,
+      "zero": true
+    },
+    {
+      "name": "y",
+      "type": "linear",
+      "domain": {
+        "data": "source_2",
+        "field": "y"
+      },
+      "range": [
+        {
+          "signal": "height"
+        },
+        0
+      ],
+      "nice": true,
+      "zero": true
+    }
+  ],
+  "axes": [
+    {
+      "scale": "x",
+      "labelOverlap": true,
+      "orient": "bottom",
+      "tickCount": {
+        "signal": "ceil(width/40)"
+      },
+      "title": %2%,
+      "zindex": 1
+    },
+    {
+      "scale": "x",
+      "domain": false,
+      "grid": true,
+      "labels": false,
+      "maxExtent": 0,
+      "minExtent": 0,
+      "orient": "bottom",
+      "tickCount": {
+        "signal": "ceil(width/40)"
+      },
+      "ticks": false,
+      "zindex": 0,
+      "gridScale": "y"
+    },
+    {
+      "scale": "y",
+      "labelOverlap": true,
+      "orient": "left",
+      "tickCount": {
+        "signal": "ceil(height/40)"
+      },
+      "title": %3%,
+      "zindex": 1
+    },
+    {
+      "scale": "y",
+      "domain": false,
+      "grid": true,
+      "labels": false,
+      "maxExtent": 0,
+      "minExtent": 0,
+      "orient": "left",
+      "tickCount": {
+        "signal": "ceil(height/40)"
+      },
+      "ticks": false,
+      "zindex": 0,
+      "gridScale": "x"
+    }
+  ],
+  "config": {
+    "axis": {
+      "labelFont": "HelveticaNeue",
+      "labelFontSize": 12,
+      "labelPadding": 10,
+      "labelColor": "rgba(0,0,0,0.65)",
+      "titleFont": "HelveticaNeue-Medium",
+      "titleFontWeight": "normal",
+      "titlePadding": 30,
+      "titleFontSize": 15,
+      "titleColor": "rgba(0,0,0,0.65)"
+    },
+    "axisY": {
+      "minExtent": 30
+    },
+    "style": {
+      "rect": {
+        "stroke": "rgba(200, 200, 200, 0.5)"
+      },
+      "group-title": {
+        "fontSize": 29,
+        "font": "HelveticaNeue",
+        "fontWeight": "normal",
+        "fill": "rgba(0,0,0,0.65)"
+      }
+    }
+  }
+}

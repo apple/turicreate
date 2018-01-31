@@ -140,7 +140,7 @@ We will need to get a newer libstdc++ from a package in the Nux Dextop repo.
 
 ```shell
 wget ftp://ftp.pbone.net/mirror/li.nux.ro/download/nux/dextop/el6/x86_64/chrome-deps-stable-3.11-1.x86_64.rpm
-sudo rpm -i --badreloc --noscripts --relocate /opt/google/chrome=$HOME chrome-deps-stable-3.11-1.x86_64.rp
+sudo rpm -i --badreloc --noscripts --relocate /opt/google/chrome=$HOME chrome-deps-stable-3.11-1.x86_64.rpm
 ```
 
 This will install libstdc++.so into $HOME/lib. 

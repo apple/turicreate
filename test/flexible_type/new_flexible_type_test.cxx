@@ -2,15 +2,14 @@
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
 #include <vector>
-#include <map>
 #include <iostream>
 #include <typeinfo>       // operator typeid
 
-#include <util/stl_util.hpp>
+
 #include <flexible_type/flexible_type.hpp>
 #include <flexible_type/flexible_type_converter.hpp>
 #include <flexible_type/flexible_type_spirit_parser.hpp>
-#include <flexible_type/flexible_type_converter.hpp>
+
 
 using namespace turi;
 
@@ -92,10 +91,10 @@ struct new_flexible_type_test  {
       flexible_type f = 1;
       flexible_type f2 = 2;
       f += f2;
-      TS_ASSERT_EQUALS((int)f, 3);
+      TS_ASSERT_EQUALS(f, 3);
 
       f += 1;
-      TS_ASSERT_EQUALS((int)f, 4);
+      TS_ASSERT_EQUALS(f, 4);
 
       // convert to flex_float
       f = float(f);
@@ -281,33 +280,33 @@ struct new_flexible_type_test  {
       std::string s = "1"; const char* c = &s[0];
       auto ret = parser.general_flexible_type_parse(&c, s.length());
       TS_ASSERT(ret.second);
-      TS_ASSERT_EQUALS((int)ret.first.get_type(), (int)flex_type_enum::INTEGER);
-      TS_ASSERT_EQUALS((flex_int)ret.first, 1);
+      TS_ASSERT_EQUALS(ret.first.get_type(), flex_type_enum::INTEGER);
+      TS_ASSERT_EQUALS(ret.first, 1);
 
       s = "1.0"; c = &s[0];
       ret = parser.general_flexible_type_parse(&c, s.length());
       TS_ASSERT(ret.second);
-      TS_ASSERT_EQUALS((int)ret.first.get_type(), (int)flex_type_enum::FLOAT);
+      TS_ASSERT_EQUALS(ret.first.get_type(), flex_type_enum::FLOAT);
       TS_ASSERT_EQUALS((flex_float)ret.first, 1.0);
 
       s = "[1,2,3,4]"; c = &s[0];
       ret = parser.vector_parse(&c, s.length());
       TS_ASSERT(ret.second);
-      TS_ASSERT_EQUALS((int)ret.first.get_type(), (int)flex_type_enum::VECTOR);
+      TS_ASSERT_EQUALS(ret.first.get_type(), flex_type_enum::VECTOR);
       TS_ASSERT_EQUALS(ret.first.size(), 4);
       for (size_t i = 0;i < 4; ++i) TS_ASSERT_EQUALS(ret.first[i], i + 1);
 
       s = "[1, 2, 3 , 4]"; c = &s[0];
       ret = parser.vector_parse(&c, s.length());
       TS_ASSERT(ret.second);
-      TS_ASSERT_EQUALS((int)ret.first.get_type(), (int)flex_type_enum::VECTOR);
+      TS_ASSERT_EQUALS(ret.first.get_type(), flex_type_enum::VECTOR);
       TS_ASSERT_EQUALS(ret.first.size(), 4);
       for (size_t i = 0;i < 4; ++i) TS_ASSERT_EQUALS(ret.first[i], i + 1);
 
       s = "[1,2; 3   4]"; c= &s[0];
       ret = parser.vector_parse(&c, s.length());
       TS_ASSERT(ret.second);
-      TS_ASSERT_EQUALS((int)ret.first.get_type(), (int)flex_type_enum::VECTOR);
+      TS_ASSERT_EQUALS(ret.first.get_type(), flex_type_enum::VECTOR);
       TS_ASSERT_EQUALS(ret.first.size(), 4);
       for (size_t i = 0;i < 4; ++i) TS_ASSERT_EQUALS(ret.first[i], i + 1);
 
@@ -315,39 +314,39 @@ struct new_flexible_type_test  {
       s = "[]"; c= &s[0];
       ret = parser.vector_parse(&c, s.length());
       TS_ASSERT(ret.second);
-      TS_ASSERT_EQUALS((int)ret.first.get_type(), (int)flex_type_enum::VECTOR);
+      TS_ASSERT_EQUALS(ret.first.get_type(), flex_type_enum::VECTOR);
       TS_ASSERT_EQUALS(ret.first.size(), 0);
 
 
       s = "[[]]"; c= &s[0];
       ret = parser.general_flexible_type_parse(&c, s.length());
       TS_ASSERT(ret.second);
-      TS_ASSERT_EQUALS((int)ret.first.get_type(), (int)flex_type_enum::LIST);
+      TS_ASSERT_EQUALS(ret.first.get_type(), flex_type_enum::LIST);
       TS_ASSERT_EQUALS(ret.first.size(), 1);
-      TS_ASSERT_EQUALS((int)ret.first.array_at(0).get_type(), (int)flex_type_enum::LIST);
-      TS_ASSERT_EQUALS((int)ret.first.array_at(0).size(), 0);
+      TS_ASSERT_EQUALS(ret.first.array_at(0).get_type(), flex_type_enum::LIST);
+      TS_ASSERT_EQUALS(ret.first.array_at(0).size(), 0);
 
       
       s = "[{}]"; c= &s[0];
       ret = parser.general_flexible_type_parse(&c, s.length());
       TS_ASSERT(ret.second);
-      TS_ASSERT_EQUALS((int)ret.first.get_type(), (int)flex_type_enum::LIST);
+      TS_ASSERT_EQUALS(ret.first.get_type(), flex_type_enum::LIST);
       TS_ASSERT_EQUALS(ret.first.size(), 1);
-      TS_ASSERT_EQUALS((int)ret.first.array_at(0).get_type(), (int)flex_type_enum::DICT);
-      TS_ASSERT_EQUALS((int)ret.first.array_at(0).size(), 0);
+      TS_ASSERT_EQUALS(ret.first.array_at(0).get_type(), flex_type_enum::DICT);
+      TS_ASSERT_EQUALS(ret.first.array_at(0).size(), 0);
 
 
       s = "{a:b c:d , 1:2}"; c= &s[0];
       ret = parser.general_flexible_type_parse(&c, s.length());
       TS_ASSERT(ret.second);
-      TS_ASSERT_EQUALS((int)ret.first.get_type(), (int)flex_type_enum::DICT);
+      TS_ASSERT_EQUALS(ret.first.get_type(), flex_type_enum::DICT);
       TS_ASSERT_EQUALS(ret.first.size(), 3);
-      TS_ASSERT_EQUALS((int)ret.first.dict_at("a").get_type(), (int)flex_type_enum::STRING);
+      TS_ASSERT_EQUALS(ret.first.dict_at("a").get_type(), flex_type_enum::STRING);
       TS_ASSERT_EQUALS((flex_string)ret.first.dict_at("a"), "b");
-      TS_ASSERT_EQUALS((int)ret.first.dict_at("c").get_type(), (int)flex_type_enum::STRING);
+      TS_ASSERT_EQUALS(ret.first.dict_at("c").get_type(), flex_type_enum::STRING);
       TS_ASSERT_EQUALS((flex_string)ret.first.dict_at("c"), "d");
-      TS_ASSERT_EQUALS((int)ret.first.dict_at(1).get_type(), (int)flex_type_enum::INTEGER);
-      TS_ASSERT_EQUALS((int)ret.first.dict_at(1), 2);
+      TS_ASSERT_EQUALS(ret.first.dict_at(1).get_type(), flex_type_enum::INTEGER);
+      TS_ASSERT_EQUALS(ret.first.dict_at(1), 2);
 
       s = "[{a:b c:d , 1:2}]"; c= &s[0];
       ret = parser.general_flexible_type_parse(&c, s.length());
@@ -357,25 +356,25 @@ struct new_flexible_type_test  {
       s = "[abc,123,def]"; c= &s[0];
       ret = parser.general_flexible_type_parse(&c, s.length());
       TS_ASSERT(ret.second);
-      TS_ASSERT_EQUALS((int)ret.first.get_type(), (int)flex_type_enum::LIST);
+      TS_ASSERT_EQUALS(ret.first.get_type(), flex_type_enum::LIST);
       TS_ASSERT_EQUALS(ret.first.size(), 3);
       TS_ASSERT_EQUALS((flex_string)ret.first.array_at(0), "abc");
-      TS_ASSERT_EQUALS((flex_int)ret.first.array_at(1), 123);
+      TS_ASSERT_EQUALS(ret.first.array_at(1), 123);
       TS_ASSERT_EQUALS((flex_string)ret.first.array_at(2), "def");
 
       s = "[abc , 123 , def]"; c= &s[0];
       ret = parser.general_flexible_type_parse(&c, s.length());
       TS_ASSERT(ret.second);
-      TS_ASSERT_EQUALS((int)ret.first.get_type(), (int)flex_type_enum::LIST);
+      TS_ASSERT_EQUALS(ret.first.get_type(), flex_type_enum::LIST);
       TS_ASSERT_EQUALS(ret.first.size(), 3);
       TS_ASSERT_EQUALS((flex_string)ret.first.array_at(0), "abc");
-      TS_ASSERT_EQUALS((flex_int)ret.first.array_at(1), 123);
+      TS_ASSERT_EQUALS(ret.first.array_at(1), 123);
       TS_ASSERT_EQUALS((flex_string)ret.first.array_at(2), "def");
 
       s = "[abc,1abc , def]"; c= &s[0];
       ret = parser.general_flexible_type_parse(&c, s.length());
       TS_ASSERT(ret.second);
-      TS_ASSERT_EQUALS((int)ret.first.get_type(), (int)flex_type_enum::LIST);
+      TS_ASSERT_EQUALS(ret.first.get_type(), flex_type_enum::LIST);
       TS_ASSERT_EQUALS(ret.first.size(), 3);
       TS_ASSERT_EQUALS((flex_string)ret.first.array_at(0), "abc");
       TS_ASSERT_EQUALS((flex_string)ret.first.array_at(1), "1abc");
@@ -384,7 +383,7 @@ struct new_flexible_type_test  {
       s = "[abc,123 456, def]"; c= &s[0];
       ret = parser.general_flexible_type_parse(&c, s.length());
       TS_ASSERT(ret.second);
-      TS_ASSERT_EQUALS((int)ret.first.get_type(), (int)flex_type_enum::LIST);
+      TS_ASSERT_EQUALS(ret.first.get_type(), flex_type_enum::LIST);
       TS_ASSERT_EQUALS(ret.first.size(), 3);
       TS_ASSERT_EQUALS((flex_string)ret.first.array_at(0), "abc");
       TS_ASSERT_EQUALS((flex_string)ret.first.array_at(1), "123 456");
@@ -393,28 +392,28 @@ struct new_flexible_type_test  {
       s = "{abc:def 1abc:2def,2abc:3}"; c= &s[0];
       ret = parser.general_flexible_type_parse(&c, s.length());
       TS_ASSERT(ret.second);
-      TS_ASSERT_EQUALS((int)ret.first.get_type(), (int)flex_type_enum::DICT);
+      TS_ASSERT_EQUALS(ret.first.get_type(), flex_type_enum::DICT);
       TS_ASSERT_EQUALS(ret.first.size(), 3);
       TS_ASSERT_EQUALS((flex_string)ret.first.dict_at("abc"), "def");
       TS_ASSERT_EQUALS((flex_string)ret.first.dict_at("1abc"), "2def");
-      TS_ASSERT_EQUALS((flex_int)ret.first.dict_at("2abc"), 3);
+      TS_ASSERT_EQUALS(ret.first.dict_at("2abc"), 3);
 
 
       s = "{:}"; c= &s[0];
       ret = parser.general_flexible_type_parse(&c, s.length());
       TS_ASSERT(ret.second);
-      TS_ASSERT_EQUALS((int)ret.first.get_type(), (int)flex_type_enum::DICT);
+      TS_ASSERT_EQUALS(ret.first.get_type(), flex_type_enum::DICT);
       TS_ASSERT_EQUALS(ret.first.size(), 1);
-      TS_ASSERT_EQUALS((flex_int)ret.first.dict_at(FLEX_UNDEFINED).get_type(), (int)flex_type_enum::UNDEFINED);
+      TS_ASSERT_EQUALS(ret.first.dict_at(FLEX_UNDEFINED).get_type(), flex_type_enum::UNDEFINED);
 
 
       s = "[,]"; c= &s[0];
       ret = parser.general_flexible_type_parse(&c, s.length());
       TS_ASSERT(ret.second);
-      TS_ASSERT_EQUALS((int)ret.first.get_type(), (int)flex_type_enum::LIST);
+      TS_ASSERT_EQUALS(ret.first.get_type(), flex_type_enum::LIST);
       TS_ASSERT_EQUALS(ret.first.size(), 2);
-      TS_ASSERT_EQUALS((flex_int)ret.first.array_at(0).get_type(), (int)flex_type_enum::UNDEFINED);
-      TS_ASSERT_EQUALS((flex_int)ret.first.array_at(1).get_type(), (int)flex_type_enum::UNDEFINED);
+      TS_ASSERT_EQUALS(ret.first.array_at(0).get_type(), flex_type_enum::UNDEFINED);
+      TS_ASSERT_EQUALS(ret.first.array_at(1).get_type(), flex_type_enum::UNDEFINED);
     }
 
     // convert value to a flexible_type

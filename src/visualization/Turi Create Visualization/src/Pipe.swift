@@ -58,6 +58,8 @@ class Pipe {
                 continue
             }
             
+            debug_log("Processing input: ")
+            debug_log(data)
             process_data(data: data);
         }
     }

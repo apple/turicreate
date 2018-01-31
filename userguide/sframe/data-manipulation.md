@@ -195,7 +195,7 @@ almost picture the distribution of years, where the tallest part is squarely
 within the 2000s.  Fortunately, we don't have to just picture it in our heads.
 Turi Create provides visualizations of SFrames, as well as other data
 structures.  Turi Create visualization is covered in depth in the
-[Visualization](../vis/introduction.md) section. To view a histogram of the
+[Visualization](../vis/README.md) section. To view a histogram of the
 SArray, we run:
 
 ```

@@ -17,6 +17,8 @@
 #include <boost/fusion/include/std_pair.hpp>
 #include <flexible_type/flexible_type.hpp>
 #include <flexible_type/flexible_type_spirit_parser.hpp>
+#include <boost/spirit/include/support_utree.hpp>
+
 namespace turi {
 
 using namespace boost::spirit;

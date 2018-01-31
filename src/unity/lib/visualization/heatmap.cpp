@@ -44,9 +44,7 @@ void turi::visualization::show_heatmap(const std::string& path_to_client,
   ::turi::visualization::run_thread([path_to_client, x, y, xlabel, ylabel, title]() {
 
     process_wrapper ew(path_to_client);
-    vega_spec vs;
-    vs << heatmap_spec(xlabel, ylabel, title);
-    ew << vs.get_spec();
+    ew << heatmap_spec(xlabel, ylabel, title);
 
     heatmap hm;
     gl_sframe temp_sf;

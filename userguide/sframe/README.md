@@ -11,7 +11,7 @@ With Turi Create, you can work with:
 - [Tabular data](sframe-intro.md)
 - [Graphs](../sgraph/sgraph.md)
 - [Text data](../text/analysis.md)
-- [Visualization](../vis/introduction.md)
+- [Visualization](../vis/README.md)
 
 As always, reference the [API
 docs](https://apple.github.io/turicreate/docs/api/turicreate.data_structures.html)
