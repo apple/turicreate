@@ -17,7 +17,7 @@ static inline tc_flex_list* new_tc_flex_list() {
 template <typename T>
 static inline tc_flex_list* new_tc_flex_list(T&& value) {
   tc_flex_list* ret = new tc_flex_list(); 
-  ret->value = value; 
+  ret->value = std::move(value);
   return ret; 
 }
 

@@ -12,6 +12,7 @@ set(capi_sources
     impl/capi_parameters.cpp
     impl/capi_sframe.cpp
     impl/capi_models.cpp
+    impl/capi_variant.cpp
     )
 
 set(capi_dependencies unity numerics)
