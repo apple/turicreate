@@ -1154,8 +1154,8 @@ std::shared_ptr< sarray<flexible_type> > xgboost_model::predict(
 
 gl_sarray xgboost_model::fast_predict(
     const std::vector<flexible_type>& test_data,
-    const std::string& output_type,
-    const std::string& missing_value_action) {
+    const std::string& missing_value_action,
+    const std::string& output_type) {
   auto na_enum = get_missing_value_enum_from_string(missing_value_action);
   DMatrixSimple dmat = make_simple_dmatrix(test_data, this->ml_mdata, na_enum);
   auto sa = predict_impl(dmat, output_type);
@@ -1166,8 +1166,8 @@ gl_sarray xgboost_model::fast_predict(
 
 gl_sframe xgboost_model::fast_predict_topk(
     const std::vector<flexible_type>& test_data,
-    const std::string& output_type,
     const std::string& missing_value_action,
+    const std::string& output_type,
     const size_t topk) {
   auto na_enum = get_missing_value_enum_from_string(missing_value_action);
   DMatrixSimple dmat = make_simple_dmatrix(test_data, this->ml_mdata, na_enum);
@@ -1388,19 +1388,7 @@ std::map<std::string, variant_type> xgboost_model::evaluate_impl(
 
 std::shared_ptr<sarray<flexible_type>> xgboost_model::extract_features(
     const sframe& test_data,
-    const std::map<std::string, flexible_type>& _options) {
-
-  // For those that call this function from the C++ side, assume missing 
-  // value action is none.
-  std::string missing_value_action_str = "none";
-  auto it = _options.find("missing_value_action");
-  if (it != _options.end()) {
-    missing_value_action_str = (it->second).get<flex_string>();
-  }
-  ml_missing_value_action missing_value_action = 
-      get_missing_value_enum_from_string(missing_value_action_str);
-
-
+    ml_missing_value_action missing_value_action) {
   std::vector<float> out;
   ml_data data = construct_ml_data_using_current_metadata(
       test_data, missing_value_action);

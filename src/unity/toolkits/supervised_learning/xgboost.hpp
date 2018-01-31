@@ -114,13 +114,13 @@ class EXPORT xgboost_model : public supervised_learning_model_base {
    * Fast path predictions given a row of flexible_types.
    *
    * \param[in] rows List of rows (each row is a flex_dict)
-   * \param[in] output_type Output type.
    * \param[in] missing_value_action Missing value action string
+   * \param[in] output_type Output type.
    */
   gl_sarray fast_predict(
       const std::vector<flexible_type>& test_data,
-      const std::string& output_type="",
-      const std::string& missing_value_action = "error") override;
+      const std::string& missing_value_action = "error",
+      const std::string& output_type="") override;
 
   std::shared_ptr<sarray<flexible_type>> predict_impl(
       const ::xgboost::learner::DMatrix& dmat,
@@ -135,14 +135,14 @@ class EXPORT xgboost_model : public supervised_learning_model_base {
    * Fast path predictions given a row of flexible_types.
    *
    * \param[in] rows List of rows (each row is a flex_dict)
-   * \param[in] output_type Output type.
    * \param[in] missing_value_action Missing value action string
    * \param[in] output_type Output type.
+   * \param[in] topk Number of classes to return
    */
   gl_sframe fast_predict_topk(
       const std::vector<flexible_type>& rows,
-      const std::string& output_type="",
       const std::string& missing_value_action ="error",
+      const std::string& output_type="",
       const size_t topk = 5) override;
 
   sframe predict_topk_impl(
@@ -192,7 +192,7 @@ class EXPORT xgboost_model : public supervised_learning_model_base {
    */
   std::shared_ptr<sarray<flexible_type>> extract_features(
       const sframe& test_data,
-      const std::map<std::string, flexible_type>& options) override;
+      ml_missing_value_action missing_value_action) override;
 
 
   /**

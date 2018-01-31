@@ -1,6 +1,6 @@
 # Advanced Usage
 
-In this section, we will cover the input data format for the activity classifier, as well as the different output formats available. For these purposes we will use the HAPT dataset from the [previous chapter](introduction.md).
+In this section, we will cover the input data format for the activity classifier, as well as the different output formats available. For these purposes we will use the HAPT dataset from the [previous chapter](README.md).
 
 #### Input Data Format
 

@@ -528,7 +528,7 @@ class SArray(object):
     @classmethod
     def read_json(cls, filename):
         """
-        Construct an SArray from a json file or glob of json files. 
+        Construct an SArray from a json file or glob of json files.
         The json file must contain a list of dictionaries. The returned
         SArray type will be of dict type
 
@@ -555,13 +555,13 @@ class SArray(object):
     @classmethod
     def where(cls, condition, istrue, isfalse, dtype=None):
         """
-        Selects elements from either istrue or isfalse depending on the value 
+        Selects elements from either istrue or isfalse depending on the value
         of the condition SArray.
 
         Parameters
         ----------
         condition : SArray
-        An SArray of values such that for each value, if non-zero, yields a 
+        An SArray of values such that for each value, if non-zero, yields a
         value from istrue, otherwise from isfalse.
 
         istrue : SArray or constant
@@ -578,8 +578,8 @@ class SArray(object):
 
         Examples
         --------
-        
-        Returns an SArray with the same values as g with values above 10 
+
+        Returns an SArray with the same values as g with values above 10
         clipped to 10
 
         >>> g = SArray([6,7,8,9,10,11,12,13])
@@ -588,7 +588,7 @@ class SArray(object):
         Rows: 8
         [6, 7, 8, 9, 10, 10, 10, 10]
 
-        Returns an SArray with the same values as g with values below 10 
+        Returns an SArray with the same values as g with values below 10
         clipped to 10
 
         >>> SArray.where(g > 10, g, 10)
@@ -797,7 +797,7 @@ class SArray(object):
     def shape(self):
         """
         The shape of the SArray, in a tuple. The first entry is the number of
-        rows. 
+        rows.
 
         Examples
         --------
@@ -814,7 +814,7 @@ class SArray(object):
         Conceptually equivalent to:
 
         >>> sa.apply(lambda x: item in x)
-        
+
         If the current SArray contains strings and item is a string. Produces a 1
         for each row if 'item' is a substring of the row and 0 otherwise.
 
@@ -832,7 +832,7 @@ class SArray(object):
         Returns
         -------
         out : SArray
-            A binary SArray where a non-zero value denotes that the item 
+            A binary SArray where a non-zero value denotes that the item
             was found in the row. And 0 if it is not found.
 
         Examples
@@ -852,7 +852,7 @@ class SArray(object):
 
         See Also
         --------
-        is_in 
+        is_in
         """
         return SArray(_proxy = self.__proxy__.left_scalar_operator(item, 'in'))
 
@@ -864,7 +864,7 @@ class SArray(object):
         Conceptually equivalent to:
 
         >>> sa.apply(lambda x: x in other)
-        
+
         If the current SArray contains strings and other is a string. Produces a 1
         for each row if the row is a substring of 'other', and 0 otherwise.
 
@@ -1969,7 +1969,7 @@ class SArray(object):
         Parameters
         ----------
         seed : int
-            Defaults to 0. Can be changed to different values to get 
+            Defaults to 0. Can be changed to different values to get
             different hash results.
 
         Returns
@@ -2730,6 +2730,43 @@ class SArray(object):
 
         return Sketch(self, background, sub_sketch_keys = sub_sketch_keys)
 
+    def value_counts(self):
+        """
+        Return an SFrame containing counts of unique values. The resulting
+        SFrame will be sorted in descending frequency.
+
+        Returns
+        -------
+        out : SFrame
+            An SFrame containing 2 columns : 'value', and 'count'. The SFrame will
+            be sorted in descending order by the column 'count'.
+
+        See Also
+        --------
+        SFrame.summary
+
+        Examples
+        --------
+        >>> sa = turicreate.SArray([1,1,2,2,2,2,3,3,3,3,3,3,3])
+        >>> sa.value_counts()
+            Columns:
+                    value	int
+                    count	int
+            Rows: 3
+            Data:
+            +-------+-------+
+            | value | count |
+            +-------+-------+
+            |   3   |   7   |
+            |   2   |   4   |
+            |   1   |   2   |
+            +-------+-------+
+            [3 rows x 2 columns]
+        """
+        from .sframe import SFrame as _SFrame
+        return _SFrame({'value':self}).groupby('value', {'count':_aggregate.COUNT}).sort('count', ascending=False)
+
+
     def append(self, other):
         """
         Append an SArray to the current SArray. Creates a new SArray with the
@@ -2860,6 +2897,14 @@ class SArray(object):
         import os
         (tcviz_dir, _) = os.path.split(os.path.dirname(__file__))
         path_to_client = os.path.join(tcviz_dir, 'Turi Create Visualization.app', 'Contents', 'MacOS', 'Turi Create Visualization')
+
+        if title == "":
+            title = " "
+        if xlabel == "":
+            xlabel = " "
+        if ylabel == "":
+            ylabel = " "
+
         if title is None:
             title = "" # C++ otherwise gets "None" as std::string
         if xlabel is None:

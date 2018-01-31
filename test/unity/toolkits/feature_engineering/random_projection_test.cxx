@@ -318,7 +318,7 @@ struct random_projection_test  {
     sf_embed5 = sf_embed5.unpack("data_out");
 
     TS_ASSERT_DIFFERS(sf_embed_unpacked.select_column("X.0")[0],
-                      sf_embed5.select_column("X.0")[0])
+                      sf_embed5.select_column("X.0")[0]);
   }
 
 

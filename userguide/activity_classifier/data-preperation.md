@@ -53,13 +53,11 @@ data = tc.SFrame()
 files = zip(sorted(acc_files), sorted(gyro_files))
 for acc_file, gyro_file in files:
     exp_id = int(acc_file.split('_')[1][-2:])
-    user_id = int(acc_file.split('_')[2][4:6])
     
     # Load accel data
     sf = tc.SFrame.read_csv(acc_file, delimiter=' ', header=False, verbose=False)
     sf = sf.rename({'X1': 'acc_x', 'X2': 'acc_y', 'X3': 'acc_z'})
     sf['exp_id'] = exp_id
-    sf['user_id'] = user_id
     
     # Load gyro data
     gyro_sf = tc.SFrame.read_csv(gyro_file, delimiter=' ', header=False, verbose=False)

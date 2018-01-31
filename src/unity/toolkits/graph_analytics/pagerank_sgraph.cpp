@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <unity/toolkits/graph_analytics/pagerank.hpp>
+#include <unity/lib/toolkit_function_macros.hpp>
 #include <unity/lib/toolkit_util.hpp>
 #include <unity/lib/simple_model.hpp>
 #include <unity/lib/unity_sgraph.hpp>
@@ -24,17 +25,30 @@ namespace turi {
 
   bool single_precision = false;
 
+  const variant_map_type& get_default_options() {
+    static const variant_map_type DEFAULT_OPTIONS {
+      {"threshold", 1E-2}, {"reset_probability", 0.15}, {"max_iterations", 20}
+    };
+    return DEFAULT_OPTIONS;
+  }
+
   /**************************************************************************/
   /*                                                                        */
   /*                   Setup and Teardown functions                         */
   /*                                                                        */
   /**************************************************************************/
-  void setup(toolkit_function_invocation& invoke) {
-    threshold = safe_varmap_get<flexible_type>(invoke.params, "threshold");
-    reset_probability = safe_varmap_get<flexible_type>(invoke.params, "reset_probability");
-    max_iterations = safe_varmap_get<flexible_type>(invoke.params, "max_iterations");
-    if (invoke.params.count("single_precision")) {
-      single_precision = safe_varmap_get<flexible_type>(invoke.params, "single_precision");
+  void setup(variant_map_type& params) {
+    for (const auto& opt: get_default_options()) {
+      params.insert(opt);  // Doesn't overwrite keys already in params
+    }
+
+    threshold = safe_varmap_get<flexible_type>(params, "threshold");
+    reset_probability =
+        safe_varmap_get<flexible_type>(params, "reset_probability");
+    max_iterations = safe_varmap_get<flexible_type>(params, "max_iterations");
+    if (params.count("single_precision")) {
+      single_precision =
+	  safe_varmap_get<flexible_type>(params, "single_precision");
       if (single_precision) {
         logprogress_stream << "Running pagerank using single precision" << std::endl;
       }
@@ -176,13 +190,13 @@ void triple_apply_pagerank(sgraph& g, size_t& num_iter, double& total_pagerank, 
   /*                             Main Function                              */
   /*                                                                        */
   /**************************************************************************/
-  toolkit_function_response_type exec(toolkit_function_invocation& invoke) {
+  variant_map_type exec(variant_map_type& params) {
 
     timer mytimer;
-    setup(invoke);
+    setup(params);
 
     std::shared_ptr<unity_sgraph> source_graph =
-        safe_varmap_get<std::shared_ptr<unity_sgraph>>(invoke.params, "graph");
+        safe_varmap_get<std::shared_ptr<unity_sgraph>>(params, "graph");
     ASSERT_TRUE(source_graph != NULL);
     sgraph& source_sgraph = source_graph->get_graph();
     // Do not support vertex groups yet.
@@ -203,50 +217,34 @@ void triple_apply_pagerank(sgraph& g, size_t& num_iter, double& total_pagerank, 
     }
 
     std::shared_ptr<unity_sgraph> result_graph(new unity_sgraph(std::make_shared<sgraph>(g)));
-    variant_map_type params;
-    params["graph"] = to_variant(result_graph);
-    params["pagerank"] = to_variant(result_graph->get_vertices());
-    params["delta"] = delta;
-    params["training_time"] = mytimer.current_time();
-    params["num_iterations"] = num_iter;
-    params["reset_probability"] = reset_probability;
-    params["threshold"] = threshold;
-    params["max_iterations"] = max_iterations;
+    variant_map_type model_params;
+    model_params["graph"] = to_variant(result_graph);
+    model_params["pagerank"] = to_variant(result_graph->get_vertices());
+    model_params["delta"] = delta;
+    model_params["training_time"] = mytimer.current_time();
+    model_params["num_iterations"] = num_iter;
+    model_params["reset_probability"] = reset_probability;
+    model_params["threshold"] = threshold;
+    model_params["max_iterations"] = max_iterations;
 
-    toolkit_function_response_type response;
-    response.params["model"]= to_variant(std::make_shared<simple_model>(params));
-    response.success = true;
+    variant_map_type response;
+    response["model"]= to_variant(std::make_shared<simple_model>(model_params));
 
     return response;
   }
 
-  static const variant_map_type DEFAULT_OPTIONS {
-    {"threshold", 1E-2}, {"reset_probability", 0.15}, {"max_iterations", 20}
-  };
-
-  toolkit_function_response_type get_default_options(toolkit_function_invocation& invoke) {
-    toolkit_function_response_type response;
-    response.success = true;
-    response.params = DEFAULT_OPTIONS;
-    return response;
-  }
-
-  static const variant_map_type MODEL_FIELDS{
-    {"graph", "A new SGraph with the pagerank as a vertex property"},
-    {"pagerank", "An SFrame with each vertex's pagerank"},
-    {"delta", "Change in pagerank for the last iteration in L1 norm"},
-    {"training_time", "Total training time of the model"},
-    {"num_iterations", "Number of iterations"},
-    {"reset_probability", "The probablity of randomly jumps to any node in the graph"},
-    {"threshold", "The convergence threshold in L1 norm"},
-    {"max_iterations", "The maximun number of iterations to run"},
-  };
-
-  toolkit_function_response_type get_model_fields(toolkit_function_invocation& invoke) {
-    toolkit_function_response_type response;
-    response.success = true;
-    response.params = MODEL_FIELDS;
-    return response;
+  variant_map_type get_model_fields(variant_map_type& params) {
+    return {
+      {"graph", "A new SGraph with the pagerank as a vertex property"},
+      {"pagerank", "An SFrame with each vertex's pagerank"},
+      {"delta", "Change in pagerank for the last iteration in L1 norm"},
+      {"training_time", "Total training time of the model"},
+      {"num_iterations", "Number of iterations"},
+      {"reset_probability",
+       "The probablity of randomly jumps to any node in the graph"},
+      {"threshold", "The convergence threshold in L1 norm"},
+      {"max_iterations", "The maximun number of iterations to run"},
+    };
   }
 
   /**************************************************************************/
@@ -254,20 +252,10 @@ void triple_apply_pagerank(sgraph& g, size_t& num_iter, double& total_pagerank, 
   /*                          Toolkit Registration                          */
   /*                                                                        */
   /**************************************************************************/
-  EXPORT std::vector<toolkit_function_specification> get_toolkit_function_registration() {
-    toolkit_function_specification main_spec;
-    main_spec.name = "pagerank";
-    main_spec.toolkit_execute_function = exec;
-    main_spec.default_options = DEFAULT_OPTIONS;
+BEGIN_FUNCTION_REGISTRATION
+REGISTER_NAMED_FUNCTION("create", exec, "params");
+REGISTER_FUNCTION(get_model_fields, "params");
+END_FUNCTION_REGISTRATION
 
-    toolkit_function_specification option_spec;
-    option_spec.name = "pagerank_default_options";
-    option_spec.toolkit_execute_function = get_default_options;
-
-    toolkit_function_specification model_spec;
-    model_spec.name = "pagerank_model_fields";
-    model_spec.toolkit_execute_function = get_model_fields;
-    return {main_spec, option_spec, model_spec};
-  }
 } // end of namespace connected components
 } // end of namespace turi

@@ -39,20 +39,20 @@ It's easy to use the resulting model in an [iOS application](https://developer.a
 <p align="center"><img src="https://docs-assets.developer.apple.com/published/a2c37bce1f/689f61a6-1087-4112-99d9-bbfb326e3138.png" alt="Turi Create" width="600"></p>
 
 With Turi Create, you can tackle a number of common scenarios:
-* [Recommender systems](userguide/recommender/introduction.md)
-* [Image classification](userguide/image_classifier/introduction.md)
-* [Image similarity](userguide/image_similarity/introduction.md)
-* [Object detection](userguide/object_detection/introduction.md)
-* [Activity classifier](userguide/activity_classifier/introduction.md)
-* [Text classifier](userguide/text_classifier/introduction.md)
+* [Recommender systems](userguide/recommender/README.md)
+* [Image classification](userguide/image_classifier/README.md)
+* [Image similarity](userguide/image_similarity/README.md)
+* [Object detection](userguide/object_detection/README.md)
+* [Activity classifier](userguide/activity_classifier/README.md)
+* [Text classifier](userguide/text_classifier/README.md)
 
 You can also work with essential machine learning models, organized into algorithm-based toolkits:
 * [Classifiers](userguide/supervised-learning/classifier.md)
 * [Regression](userguide/supervised-learning/regression.md)
-* [Graph analytics](userguide/graph_analytics/intro.md)
-* [Clustering](userguide/clustering/intro.md)
+* [Graph analytics](userguide/graph_analytics/README.md)
+* [Clustering](userguide/clustering/README.md)
 * [Nearest Neighbors](userguide/nearest_neighbors/nearest_neighbors.md)
-* [Topic models](userguide/text/intro.md)
+* [Topic models](userguide/text/README.md)
 
 Supported Platforms
 -------------------

@@ -119,7 +119,7 @@ void compress(char* start, size_t length,
   for (size_t i = 0;i < numel; ++i) {
     // we store the raw value whether or not it is an integer.
     // without trying to interpret it
-    column_buffer[cur_column][cur_row].mutable_get<flex_int>() = input[i];
+    column_buffer[cur_column][cur_row].reinterpret_mutable_get<flex_int>() = input[i];
     ++cur_column;
     if (cur_column >= ncols) {
       cur_column = 0;
@@ -177,7 +177,7 @@ void decompress(char* start, size_t length, char* output) {
     // scatter
     size_t ctr = 0;
     for (size_t j = i; j < numel; j += ncols) {
-      output_values[j] = f[ctr].get<flex_int>();
+      output_values[j] = f[ctr].reinterpret_get<flex_int>();
       ++ctr;
     }
   }

@@ -1,0 +1,230 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v3.0.json",
+  "autosize": "pad",
+  "padding": 5,
+  "metadata": {
+    "bubbleOpts": {
+      "showAllFields": false,
+      "fields": [
+        {
+          "field": "count"
+        },
+        {
+          "field": "label"
+        }
+      ]
+    }
+  },
+  "width": %1%,
+  "height": %2%,
+  "title": {
+    "text": %3%,
+    "offset": 30
+  },
+  "style": "cell",
+  "data": [
+    {
+      "name": "pts_store_store"
+    },
+    {
+      "name": "source_2"
+    },
+    {
+      "name": "data_0",
+      "source": "source_2",
+      "transform": [
+        {
+          "type": "formula",
+          "expr": "toNumber(datum[\"count\"])",
+          "as": "count"
+        },
+        {
+          "type": "filter",
+          "expr": "datum[\"count\"] !== null && !isNaN(datum[\"count\"])"
+        }
+      ]
+    }
+  ],
+  "signals": [
+    {
+      "name": "unit",
+      "value": {},
+      "on": [
+        {
+          "events": "mousemove",
+          "update": "isTuple(group()) ? group() : unit"
+        }
+      ]
+    },
+    {
+      "name": "pts_store",
+      "update": "data(\"pts_store_store\").length && {count: data(\"pts_store_store\")[0].values[0]}"
+    },
+    {
+      "name": "pts_store_tuple",
+      "value": {},
+      "on": [
+        {
+          "events": [
+            {
+              "source": "scope",
+              "type": "click"
+            }
+          ],
+          "update": "datum && item().mark.marktype !== 'group' ? {unit: \"\", encodings: [\"x\"], fields: [\"count\"], values: [datum[\"count\"]]} : null",
+          "force": true
+        }
+      ]
+    },
+    {
+      "name": "pts_store_modify",
+      "on": [
+        {
+          "events": {
+            "signal": "pts_store_tuple"
+          },
+          "update": "modify(\"pts_store_store\", pts_store_tuple, true)"
+        }
+      ]
+    }
+  ],
+  "marks": [
+    {
+      "name": "marks",
+      "type": "rect",
+      "style": [
+        "bar"
+      ],
+      "from": {
+        "data": "data_0"
+      },
+      "encode": {
+        "hover": {
+          "fill": {
+            "value": "#7EC2F3"
+          }
+        },
+        "update": {
+          "x": {
+            "scale": "x",
+            "field": "count"
+          },
+          "x2": {
+            "scale": "x",
+            "value": 0
+          },
+          "y": {
+            "scale": "y",
+            "field": "label"
+          },
+          "height": {
+            "scale": "y",
+            "band": true
+          },
+          "fill": {
+            "value": "#108EE9"
+          }
+        }
+      }
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "type": "linear",
+      "domain": {
+        "data": "data_0",
+        "field": "count"
+      },
+      "range": [
+        0,
+        {
+          "signal": "width"
+        }
+      ],
+      "nice": true,
+      "zero": true
+    },
+    {
+      "name": "y",
+      "type": "band",
+      "domain": {
+        "data": "data_0",
+        "field": "label",
+        "sort": {
+          "op": "mean",
+          "field": "count"
+        }
+      },
+      "range": [
+        {
+          "signal": "height"
+        },
+        0
+      ],
+      "paddingInner": 0.1,
+      "paddingOuter": 0.05
+    }
+  ],
+  "axes": [
+    {
+      "orient": "top",
+      "scale": "x",
+      "labelOverlap": true,
+      "tickCount": {
+        "signal": "ceil(width/40)"
+      },
+      "title": %4%,
+      "zindex": 1
+    },
+    {
+      "orient": "top",
+      "scale": "x",
+      "domain": false,
+      "grid": true,
+      "labels": false,
+      "maxExtent": 0,
+      "minExtent": 0,
+      "tickCount": {
+        "signal": "ceil(width/40)"
+      },
+      "ticks": false,
+      "zindex": 0,
+      "gridScale": "y"
+    },
+    {
+      "scale": "y",
+      "labelOverlap": true,
+      "orient": "left",
+      "title": %5%,
+      "zindex": 1
+    }
+  ],
+  "config": {
+    "axis": {
+      "labelFont": "HelveticaNeue",
+      "labelFontSize": 12,
+      "labelPadding": 10,
+      "labelColor": "rgba(0,0,0,0.65)",
+      "titleFont": "HelveticaNeue-Medium",
+      "titleFontWeight": "normal",
+      "titlePadding": 30,
+      "titleFontSize": 15,
+      "titleColor": "rgba(0,0,0,0.65)"
+    },
+    "axisY": {
+      "minExtent": 30
+    },
+    "style": {
+      "rect": {
+        "stroke": "rgba(200, 200, 200, 0.5)"
+      },
+      "group-title": {
+        "fontSize": 29,
+        "font": "HelveticaNeue",
+        "fontWeight": "normal",
+        "fill": "rgba(0,0,0,0.65)"
+      }
+    }
+  }
+}

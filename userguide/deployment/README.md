@@ -4,9 +4,9 @@ With Core ML, you can integrate machine learning models into your macOS,
 iOS, watchOS, and tvOS app. Many models created  in Turi Create can be
 exported for use in Core ML. These include
 
-* [Image Classifier](../image_classifier/introduction.md)
-* [Activity Classifier](../activity_classifier/introduction.md)
-* [Object Detector](../object_detection/introduction.md)
+* [Image Classifier](../image_classifier/README.md)
+* [Activity Classifier](../activity_classifier/README.md)
+* [Object Detector](../object_detection/README.md)
 * Classifiers
   * [Logistic regression](../supervised-learning/logistic-regression.md)
   * [Support vector machines (SVM) ](../supervised-learning/svm.md)

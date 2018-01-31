@@ -25,7 +25,7 @@ please see individual model API documentation below.
 
 In addition to the API documentation, please see the `recommender systems chapter of the
 User Guide
-<https://apple.github.io/turicreate/docs/userguide/recommender/introduction.html>`_
+<https://apple.github.io/turicreate/docs/userguide/recommender/README.html>`_
 for more details and extended examples.
 
 .. sourcecode:: python

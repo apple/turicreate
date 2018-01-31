@@ -127,7 +127,6 @@ body {
     border-bottom: 1px solid #E9E9E9;
     font-family: HelveticaNeue;
     font-size: 12px;
-    color: rgba(0,0,0,0.65);
     line-height: 16.8px;
     vertical-align: middle;
 }
@@ -143,7 +142,6 @@ body {
     vertical-align: middle;
     font-family: HelveticaNeue;
     font-size: 12px;
-    color: rgba(0,0,0,0.65);
     line-height: 16.8px;
 }
 
@@ -152,7 +150,6 @@ body {
     background: #F7F7F7;
     font-family: HelveticaNeue-Medium;
     font-size: 14px;
-    color: rgba(0,0,0,0.65);
     line-height: 16.8px;
     padding-top: 16px;
     padding-bottom: 16px;
@@ -235,7 +232,6 @@ body {
     text-overflow:ellipsis;
     font-family: HelveticaNeue;
     font-size: 12px;
-    color: rgba(0,0,0,0.65);
     line-height: 16.8px;
 }
 
@@ -251,10 +247,8 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow:ellipsis;
-    color:#108EE9;
     font-family: HelveticaNeue;
     font-size: 12px;
-    color: rgba(0,0,0,0.65);
     line-height: 16.8px;
 }
 
@@ -373,9 +367,3 @@ body {
     border-top-color: #FFFFFF;
     z-index:999;
 }
-
-
-/*
- 
- .float_val
- */

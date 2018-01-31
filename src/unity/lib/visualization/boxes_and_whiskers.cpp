@@ -86,9 +86,7 @@ void ::turi::visualization::show_boxes_and_whiskers(const std::string& path_to_c
 
 
     process_wrapper ew(path_to_client);
-    vega_spec vs;
-    vs << boxes_and_whiskers_spec(xlabel, ylabel, title);
-    ew << vs.get_spec();
+    ew << boxes_and_whiskers_spec(xlabel, ylabel, title);
 
     boxes_and_whiskers bw;
 

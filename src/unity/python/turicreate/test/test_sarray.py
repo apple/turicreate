@@ -2978,3 +2978,13 @@ class SArrayTest(unittest.TestCase):
         assert sa is not sa_copy
 
         assert (sa == sa_copy).all()
+
+    def test_value_counts(self):
+        sa = SArray([1,1,2,2,2,2,3,3,3,3,3,3,3])
+        c = sa.value_counts()
+        self.assertEqual(c.column_names(), ['value','count'])
+        self.__test_equal(c['value'], [3,2,1], int)
+        self.__test_equal(c['count'], [7,4,2], int)
+        sa = SArray()
+        c = sa.value_counts()
+        self.assertEqual(len(c), 0)

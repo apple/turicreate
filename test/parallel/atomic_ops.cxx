@@ -53,9 +53,18 @@ public:
           T base_value = v;
           T new_v = base_value + thread_idx + 1;
           T old_v = atomic_set_max(v, new_v);
-
-          TS_ASSERT_LESS_THAN_EQUALS(base_value, old_v);
-          TS_ASSERT_LESS_THAN_EQUALS(new_v, v);
+          // we do a double check here rather than TS_ASSERT_LESS_THAN_EQUAL
+          // because both boost test and TS_ASSERT macros have
+          // a somewhat large overhead...
+          if (!(base_value <= old_v)) {
+            TS_ASSERT_LESS_THAN_EQUALS(base_value, old_v);
+          }
+          // we just ASSERT(false) here because v is accessed in parallel.
+          // If this comparison fails for whatever reason, a second compare
+          // may give a different result
+          if (!(new_v <= v)) {
+            TS_ASSERT(false);
+          }
         }
       });
   }
@@ -136,9 +145,15 @@ public:
           T base_value = v;
           T new_v = base_value - thread_idx - 1;
           T old_v = atomic_set_min(v, new_v);
-
-          TS_ASSERT_LESS_THAN_EQUALS(old_v, base_value);
-          TS_ASSERT_LESS_THAN_EQUALS(v, new_v);
+          if (! (old_v <= base_value)) {
+            TS_ASSERT_LESS_THAN_EQUALS(old_v, base_value);
+          }
+          // we just ASSERT(false) here because v is accessed in parallel.
+          // If this comparison fails for whatever reason, a second compare
+          // may give a different result
+          if (!(v <= new_v)) {
+            TS_ASSERT(false);
+          }
         }
       });
   }
@@ -209,7 +224,12 @@ public:
 
           int inc = hash64(thread_idx, i) % 16;
           T old_v = atomic_increment(v, inc);
-          TS_ASSERT_LESS_THAN_EQUALS(old_v, T(v));
+          // we just ASSERT(false) here because v is accessed in parallel.
+          // If this comparison fails for whatever reason, a second compare
+          // may give a different result
+          if (!(old_v <= T(v))) {
+            TS_ASSERT(false);
+          }
 
           true_v += inc;
         }

@@ -39,10 +39,10 @@ namespace label_propagation {
 /**
  * Setup the label propagation framework.
  *
- * \param invoke A dictionary of properties to pass  to the framework
+ * \param params A dictionary of properties to pass to the framework
  * (WILL be copied to global variables interanlly, _not_ thread safe)
  */
-void setup(toolkit_function_invocation& invoke);
+void setup(variant_map_type& params);
 
 /**
  * Runs the label propagation on a given graph
@@ -348,15 +348,15 @@ gl_sframe categorical_imputer::call_label_propagation(
   size_t nbCentroids = centroid_graph.vertices().size();
 
   // Prepare the label_propagation toolkit
-  toolkit_function_invocation invocation;
-  invocation.params["label_field"] = FIXED_LABEL;
-  invocation.params["weight_field"] = "weight";
-  invocation.params["threshold"] = nbCentroids < 1000 ? 0 : 1e-3;
-  invocation.params["self_weight"] = 1.0;
-  invocation.params["undirected"] = true;
-  invocation.params["max_iterations"] = 100;
+  variant_map_type params;
+  params["label_field"] = FIXED_LABEL;
+  params["weight_field"] = "weight";
+  params["threshold"] = nbCentroids < 1000 ? 0 : 1e-3;
+  params["self_weight"] = 1.0;
+  params["undirected"] = true;
+  params["max_iterations"] = 100;
 
-  turi::label_propagation::setup(invocation);
+  turi::label_propagation::setup(params);
 
   size_t num_iter;
   double average_l2_del;

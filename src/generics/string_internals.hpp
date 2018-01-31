@@ -10,7 +10,8 @@ namespace turi { namespace gl_string_internal {
 
 static constexpr size_t npos = size_t(-1); 
 
-GL_HOT_INLINE_FLATTEN static inline
+GL_HOT_INLINE_FLATTEN
+static inline
 int _compare(const char* __s1, const char* __s2, size_t __n) noexcept {
   for (; __n; --__n, ++__s1, ++__s2) {
     if (*__s1 < *__s2)
@@ -21,6 +22,8 @@ int _compare(const char* __s1, const char* __s2, size_t __n) noexcept {
   return 0;
 }
 
+GL_HOT_INLINE_FLATTEN
+static inline
 const char* _find(const char* __s, size_t __n, const char& __a) noexcept {
   for (; __n; --__n) {
     if (*__s == __a)

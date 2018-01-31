@@ -1,0 +1,225 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v3.0.json",
+  "autosize": "pad",
+  "padding": 5,
+  "width": 640,
+  "height": 480,
+  "style": "cell",
+  "title": {
+    "text": %1%,
+    "offset": 100
+  },
+  "data": [
+    {
+      "name": "source_2",
+      "values": [
+        {
+          "x_left": 0,
+          "x_right": 1000000000,
+          "y_left": 0,
+          "y_right": 10000,
+          "count": 0
+        }
+      ]
+    }
+  ],
+  "marks": [
+    {
+      "encode": {
+        "enter": {
+          "x": {
+            "value": 0
+          },
+          "y": {
+            "value": 0
+          },
+          "height": {
+            "value": 480
+          },
+          "clip": {
+            "value": 0
+          },
+          "fill": {
+            "value": "#ffffff"
+          },
+          "fillOpacity": {
+            "value": 0
+          }
+        }
+      },
+      "type": "group",
+      "marks": [
+        {
+          "name": "marks",
+          "type": "rect",
+          "style": [
+            "rect"
+          ],
+          "from": {
+            "data": "source_2"
+          },
+          "encode": {
+            "update": {
+              "x2": {
+                "scale": "x",
+                "field": "x_left"
+              },
+              "x": {
+                "scale": "x",
+                "field": "x_right"
+              },
+              "y2": {
+                "scale": "y",
+                "field": "y_left"
+              },
+              "y": {
+                "scale": "y",
+                "field": "y_right"
+              },
+              "fill": {
+                "scale": "color",
+                "field": "count"
+              }
+            }
+          }
+        }
+      ],
+      "scales": [
+        {
+          "name": "x",
+          "type": "linear",
+          "domain": {
+            "data": "source_2",
+            "fields": [
+              "x_left",
+              "x_right"
+            ],
+            "sort": true
+          },
+          "range": [
+            0,
+            {
+              "signal": "width"
+            }
+          ],
+          "zero": false
+        },
+        {
+          "name": "y",
+          "type": "linear",
+          "domain": {
+            "data": "source_2",
+            "fields": [
+              "y_left",
+              "y_right"
+            ],
+            "sort": true
+          },
+          "range": [
+            {
+              "signal": "height"
+            },
+            0
+          ],
+          "zero": false
+        },
+        {
+          "name": "color",
+          "type": "sequential",
+          "domain": {
+            "data": "source_2",
+            "field": "count"
+          },
+          "range": "heatmap",
+          "nice": false,
+          "zero": false
+        }
+      ],
+      "axes": [
+        {
+          "scale": "x",
+          "labelOverlap": true,
+          "orient": "bottom",
+          "tickCount": {
+            "signal": "min(ceil(width/40), 60)"
+          },
+          "title": %2%,
+          "zindex": 1,
+          "encode": {
+            "labels": {
+              "update": {
+                "angle": {
+                  "value": 270
+                },
+                "align": {
+                  "value": "right"
+                },
+                "baseline": {
+                  "value": "middle"
+                }
+              }
+            }
+          }
+        },
+        {
+          "scale": "y",
+          "labelOverlap": true,
+          "orient": "left",
+          "tickCount": {
+            "signal": "min(ceil(height/40), 40)"
+          },
+          "title": %3%,
+          "zindex": 1
+        }
+      ],
+      "legends": [
+        {
+          "orient": "top",
+          "fill": "color",
+          "title": "Number of Records",
+          "type": "gradient"
+        }
+      ]
+    }
+  ],
+  "config": {
+    "legend": {
+      "titleFont": "HelveticaNeue",
+      "titleColor": "rgba(0,0,0,0.65)",
+      "labelFont": "HelveticaNeue",
+      "labelColor": "rgba(0,0,0,0.65)",
+      "cornerRadius": 30,
+      "gradientWidth": 640
+    },
+    "axis": {
+      "labelFont": "HelveticaNeue",
+      "labelFontSize": 12,
+      "labelPadding": 10,
+      "labelColor": "rgba(0,0,0,0.65)",
+      "titleFont": "HelveticaNeue-Medium",
+      "titleFontWeight": "normal",
+      "titlePadding": 30,
+      "titleFontSize": 15,
+      "titleColor": "rgba(0,0,0,0.65)"
+    },
+    "axisY": {
+      "minExtent": 30
+    },
+    "style": {
+      "cell": {
+        "stroke": "transparent"
+      },
+      "group-title": {
+        "fontSize": 29,
+        "font": "HelveticaNeue",
+        "fontWeight": "normal",
+        "fill": "rgba(0,0,0,0.65)"
+      }
+    },
+    "range": {
+      "heatmap": {
+        "scheme": "greenblue"
+      }
+    }
+  }
+}

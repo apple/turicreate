@@ -77,3 +77,8 @@ make_library(protobuf
     wire_format_lite.cc
     wrappers.pb.cc
   )
+
+# Add this in so that the protobuf namespace is globally redefined to __tc_google.
+# This avoids symbol conflicts with other version of protobuf.  
+target_compile_definitions(protobuf PUBLIC google=__tc_google)
+

@@ -76,9 +76,7 @@ void ::turi::visualization::show_categorical_heatmap(const std::string& path_to_
     DASSERT_EQ(x.size(), y.size());
 
     process_wrapper ew(path_to_client);
-    vega_spec vs;
-    vs << categorical_heatmap_spec(xlabel, ylabel, title);
-    ew << vs.get_spec();
+    ew << categorical_heatmap_spec(xlabel, ylabel, title);
 
     categorical_heatmap hm;
 
