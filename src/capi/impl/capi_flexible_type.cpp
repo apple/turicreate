@@ -57,6 +57,15 @@ EXPORT tc_flexible_type* tc_ft_create_from_int64(int64_t v, tc_error** error) {
   ERROR_HANDLE_END(error, NULL);
 }
 
+EXPORT tc_flexible_type* tc_ft_create_from_double_array(
+    const double* data, uint64_t n, tc_error** error) {
+  ERROR_HANDLE_START();
+
+  return new_tc_flexible_type(turi::flex_vec(data, data + n));
+
+  ERROR_HANDLE_END(error, NULL);
+}
+
 // Conversion to flexible type from flex list.
 EXPORT tc_flexible_type* tc_ft_create_from_flex_list(const tc_flex_list* fl, tc_error** error) {
   ERROR_HANDLE_START();
