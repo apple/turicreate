@@ -9,7 +9,6 @@
 #include <logger/assertions.hpp>
 #include <random/random.hpp>
 
-//#include <valgrind/valgrind.h>
 namespace turi {
 
 bool fiber_control::tls_created = false;
