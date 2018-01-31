@@ -748,26 +748,19 @@ class LogisticClassifier(_Classifier):
 
         # Low latency path
         if isinstance(dataset, list):
-            return _turicreate.extensions._supervised_learning._fast_predict_topk(
-                self.__proxy__, dataset, output_type, missing_value_action, k)
+            return self.__proxy__.fast_predict_topk(
+                dataset, missing_value_action, output_type, k)
         if isinstance(dataset, dict):
-            return _turicreate.extensions._supervised_learning._fast_predict_topk(
-                self.__proxy__, [dataset], output_type, missing_value_action, k)
+            return self.__proxy__.fast_predict_topk(
+                [dataset], missing_value_action, output_type, k)
         # Fast path
         _raise_error_if_not_sframe(dataset, "dataset")
         options = dict()
         if (missing_value_action == 'auto'):
             missing_value_action = _sl.select_default_missing_value_policy(
                                                               self, 'predict')
-        options.update({'model': self.__proxy__,
-                        'model_name': self.__name__,
-                        'dataset': dataset,
-                        'output_type': output_type,
-                        'topk': k,
-                        'missing_value_action': missing_value_action})
-        target = _turicreate.extensions._supervised_learning.predict_topk(
-            options)
-        return target['predicted']
+        return self.__proxy__.predict_topk(
+            dataset, missing_value_action, output_type, k)
 
     
     def evaluate(self, dataset, metric='auto', missing_value_action='auto'):

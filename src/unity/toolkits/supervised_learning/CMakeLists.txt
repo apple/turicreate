@@ -3,7 +3,6 @@ project(unity_toolkits)
 make_library(supervised_learning
   SOURCES
     supervised_learning.cpp
-    unity_supervised_learning.cpp
     linear_regression.cpp
     linear_regression_opt_interface.cpp
     logistic_regression.cpp

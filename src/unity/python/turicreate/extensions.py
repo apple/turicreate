@@ -274,7 +274,11 @@ class _ToolkitClass:
                 raise TypeError("Got multiple values for keyword argument '" + k + "'")
             argument_dict[k] = kwargs[k]
         # unwrap it
-        ret = self._tkclass.call_function(fnname, argument_dict)
+        try:
+            ret = self._tkclass.call_function(fnname, argument_dict)
+        except RuntimeError as exc:
+            # Expose C++ exceptions using ToolkitError.
+            raise _ToolkitError(exc)
         ret = _wrap_function_return(ret)
         return ret
 
