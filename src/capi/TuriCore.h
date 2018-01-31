@@ -709,7 +709,7 @@ void tc_model_destroy(tc_model*);
 /*                                                                            */
 /******************************************************************************/
 
-tc_variant* tc_model_call_function(
+tc_variant* tc_function_call(
     const char* function_name, const tc_parameters* arguments,
     tc_error** error);
 
