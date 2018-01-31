@@ -621,6 +621,7 @@ tc_sframe* tc_variant_sframe(const tc_variant*, tc_error**);
 tc_parameters* tc_variant_parameters(const tc_variant*, tc_error** error);
 tc_model* tc_variant_model(const tc_variant*, tc_error**);
 
+void tc_variant_destroy(tc_variant*);
 
 /******************************************************************************/
 /*                                                                            */
@@ -708,12 +709,9 @@ void tc_model_destroy(tc_model*);
 /*                                                                            */
 /******************************************************************************/
 
-tc_parameters* tc_model_call_function(const char* function_name, const tc_parameters* arguments, tc_error**);
-
-
-
-
-
+tc_variant* tc_model_call_function(
+    const char* function_name, const tc_parameters* arguments,
+    tc_error** error);
 
 /******************************************************************************/
 /*                                                                            */

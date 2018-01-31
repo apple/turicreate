@@ -357,3 +357,7 @@ EXPORT tc_datetime* tc_variant_datetime(const tc_variant* ft, tc_error** error){
 
   ERROR_HANDLE_END(error, NULL);
 }
+
+EXPORT void tc_variant_destroy(tc_variant* v) {
+  delete v;
+}
