@@ -94,7 +94,6 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
     TS_ASSERT(error == NULL);
     tc_parameters_destroy(p_args);
 
-#ifdef TC_VARIANT_FUNCTIONS_DEFINED
     int is_sarray = tc_variant_is_sarray(ret);
     TS_ASSERT(is_sarray);
     
@@ -115,7 +114,6 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
       // setting
       TS_ASSERT_DELTA(v, target_values[i], 0.5);
     }
-#endif
 
     { 
       tc_parameters* export_args = tc_parameters_create_empty(&error); 
@@ -132,8 +130,26 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
 
       tc_variant* ret_2 = tc_model_call_method(model, "export_to_coreml", export_args, &error);
       TS_ASSERT(error == NULL);
+      TS_ASSERT(ret_2 != NULL);
       tc_parameters_destroy(export_args);
     }
+  }
+
+  // Test saving and loading the model.
+  {
+    constexpr char MODEL_PATH[] = "save_test_1_tmp";
+    tc_model_save(model, MODEL_PATH, &error);
+    TS_ASSERT(error == nullptr);
+
+    tc_model* loaded_model = tc_model_load(MODEL_PATH, &error);
+    TS_ASSERT(error == nullptr);
+    TS_ASSERT(loaded_model != nullptr);
+
+    std::string ret_name = tc_model_name(loaded_model, &error);
+    TS_ASSERT(error == nullptr);
+    TS_ASSERT(ret_name == "boosted_trees_regression");
+
+    tc_model_destroy(loaded_model);
   }
 }
 

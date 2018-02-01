@@ -357,3 +357,86 @@ EXPORT tc_datetime* tc_variant_datetime(const tc_variant* ft, tc_error** error){
 
   ERROR_HANDLE_END(error, NULL);
 }
+
+EXPORT tc_flexible_type* tc_variant_flexible_type(
+    const tc_variant* var, tc_error** error) {
+  ERROR_HANDLE_START();
+  CHECK_NOT_NULL(error, var, "Variant", nullptr);
+
+  if (!tc_variant_is_flexible_type(var)) {
+    set_error(error, "Variant does not contain a flexible type.");
+    return nullptr;
+  }
+
+  return new_tc_flexible_type(
+      turi::variant_get_ref<turi::flexible_type>(var->value));
+
+  ERROR_HANDLE_END(error, nullptr);
+}
+
+EXPORT tc_sarray* tc_variant_sarray(const tc_variant* var, tc_error** error) {
+  ERROR_HANDLE_START();
+  CHECK_NOT_NULL(error, var, "Variant", nullptr);
+
+  if (!tc_variant_is_sarray(var)) {
+    set_error(error, "Variant does not contain an SArray.");
+    return nullptr;
+  }
+
+  return new_tc_sarray(
+      turi::variant_get_ref<std::shared_ptr<turi::unity_sarray_base>>(
+          var->value));
+
+  ERROR_HANDLE_END(error, nullptr);
+}
+
+EXPORT tc_sframe* tc_variant_sframe(const tc_variant* var, tc_error** error) {
+  ERROR_HANDLE_START();
+  CHECK_NOT_NULL(error, var, "Variant", nullptr);
+
+  if (!tc_variant_is_sframe(var)) {
+    set_error(error, "Variant does not contain an SFrame.");
+    return nullptr;
+  }
+
+  return new_tc_sframe(
+      turi::variant_get_ref<std::shared_ptr<turi::unity_sframe_base>>(
+          var->value));
+
+  ERROR_HANDLE_END(error, nullptr);
+}
+
+EXPORT tc_parameters* tc_variant_parameters(
+    const tc_variant* var, tc_error** error) {
+  ERROR_HANDLE_START();
+  CHECK_NOT_NULL(error, var, "Variant", nullptr);
+
+  if (!tc_variant_is_parameters(var)) {
+    set_error(error, "Variant does not contain parameters.");
+    return nullptr;
+  }
+
+  return new_tc_parameters(
+      turi::variant_get_ref<turi::variant_map_type>(var->value));
+
+  ERROR_HANDLE_END(error, nullptr);
+}
+
+EXPORT tc_model* tc_variant_model(const tc_variant* var, tc_error** error) {
+  ERROR_HANDLE_START();
+  CHECK_NOT_NULL(error, var, "Variant", nullptr);
+
+  if (!tc_variant_is_model(var)) {
+    set_error(error, "Variant does not contain a model.");
+    return nullptr;
+  }
+
+  return new_tc_model(
+      turi::variant_get_ref<std::shared_ptr<turi::model_base>>(var->value));
+
+  ERROR_HANDLE_END(error, nullptr);
+}
+
+EXPORT void tc_variant_destroy(tc_variant* v) {
+  delete v;
+}
