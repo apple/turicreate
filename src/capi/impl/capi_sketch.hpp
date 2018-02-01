@@ -1,7 +1,7 @@
 #ifndef TURI_CAPI_SKETCH_H
 #define TURI_CAPI_SKETCH_H
 
-#include <capi/impl/capi_sarray.hpp>
+#include <capi/impl/capi_wrapper_structs.hpp>
 #include <unity/lib/unity_sketch.hpp>
 
 extern "C" { 

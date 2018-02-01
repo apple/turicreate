@@ -4,8 +4,7 @@
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/lib/gl_sarray.hpp>
 #include <capi/TuriCore.h>
-#include <capi/impl/capi_sframe.hpp>
-#include <capi/impl/capi_flex_list.hpp>
+#include <capi/impl/capi_wrapper_structs.hpp>
 #include <vector>
 #include <iostream>
 #include "capi_utils.hpp"

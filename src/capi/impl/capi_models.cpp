@@ -1,8 +1,5 @@
-#include <capi/impl/capi_models.hpp>
-#include <capi/impl/capi_parameters.hpp>
-#include <capi/impl/capi_variant.hpp>
+#include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
-
 #include <unity/server/unity_server_control.hpp>
 #include <unity/lib/toolkit_util.hpp>
 #include <unity/lib/unity_global.hpp>
