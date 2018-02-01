@@ -236,7 +236,7 @@ class parallel_csv_parser {
           // It really is simply.
           // current_output_segment = 
           //         (fin.get_bytes_read() + cumulative_file_read_sizes) 
-          //          * num_output_segments / total_input_file_sizes;		
+          //          * num_output_segments / total_input_file_sizes;
           // But a lot of sanity checking is required because 
           //  - fin.get_bytes_read() may fail.
           //  - files on disk may change after I last computed the file sizes, so
@@ -244,7 +244,7 @@ class parallel_csv_parser {
           //  - So, a lot of bounds checking is required.
           //  - Also, Once I advance to a next segment, I must not go back.
           size_t next_output_segment = current_output_segment;
-          size_t read_pos = fin.get_bytes_read();		
+          size_t read_pos = fin.get_bytes_read();
           if (read_pos == (size_t)(-1)) {
             // I don't know where I am in the file. Use what I last know
             read_pos = cumulative_file_read_sizes;
@@ -253,7 +253,7 @@ class parallel_csv_parser {
           }
           next_output_segment = read_pos * num_output_segments / total_input_file_sizes;
           // sanity boundary check 
-          if (next_output_segment >= num_output_segments) next_output_segment = num_output_segments - 1;		
+          if (next_output_segment >= num_output_segments) next_output_segment = num_output_segments - 1;
           // we never go back
           current_output_segment = std::max(current_output_segment, next_output_segment);
         }
@@ -985,10 +985,28 @@ std::map<std::string, std::shared_ptr<sarray<flexible_type>>> parse_csvs_to_sfra
   // otherwise, check that url is valid directory, and get its listing if no 
   // pattern present
   std::vector<std::string> files;
+  std::vector<std::string> empty_files;
   std::vector<std::pair<std::string, file_status>> file_and_status = fileio::get_glob_files(url);
   
   for (auto p : file_and_status) {
     if (p.second == file_status::REGULAR_FILE) {
+      // throw away empty files
+      try {
+        general_ifstream fin(p.first);
+        if (fin.file_size() == 0) {
+          logstream(LOG_INFO) << "Skipping file "
+                              << sanitize_url(p.first)
+                              << " because it appears to be empty"
+                              << std::endl;
+          empty_files.push_back(p.first);
+          continue;
+        }
+      } catch (...) {
+          logstream(LOG_INFO) << "Can't get size of file "
+                              << sanitize_url(p.first)
+                              << std::endl;
+      }
+
       logstream(LOG_INFO) << "Adding CSV file " 
                           << sanitize_url(p.first)
                           << " to list of files to parse"
@@ -1000,6 +1018,13 @@ std::map<std::string, std::shared_ptr<sarray<flexible_type>>> parse_csvs_to_sfra
   file_and_status.clear(); // don't need these anymore
   
   // ensure that we actually found some valid files
+  if (files.empty() && !empty_files.empty()) {
+    // If all we got is empty files, let's take them --
+    // we'll produce an empty SFrame.
+    // But if we have any non-empty files, we should omit the
+    // empty ones so the column schema doesn't conflict.
+    files = empty_files;
+  }
   if (files.empty()) {
     log_and_throw(std::string("No files corresponding to the specified path (") + 
                   sanitize_url(url) + std::string(")."));
