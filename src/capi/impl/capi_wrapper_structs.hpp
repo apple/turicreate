@@ -8,6 +8,7 @@
 #include <unity/lib/extensions/model_base.hpp>
 #include <unity/lib/gl_sarray.hpp>
 #include <unity/lib/gl_sframe.hpp>
+#include <utility>
 
 struct capi_struct_type_info {
   virtual const char* name() const = 0;
@@ -54,10 +55,10 @@ struct capi_struct_type_info {
     return ret;                                                                 \
   }                                                                             \
                                                                                 \
-  template <typename... T>                                                      \
-  static inline struct_name* new_##struct_name(T&&... args) {                   \
+  template <typename... Args>                                                      \
+  static inline struct_name* new_##struct_name(Args&&... args) {                   \
     struct_name* ret = new_##struct_name();                                     \
-    ret->value = wrapping_type(std::forward(args)...);                                        \
+    ret->value = wrapping_type(std::forward<Args>(args)...);                                        \
     return ret;                                                                 \
   }
 

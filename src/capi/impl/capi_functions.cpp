@@ -1,8 +1,7 @@
 #include <capi/TuriCore.h>
 
 #include <capi/impl/capi_error_handling.hpp>
-#include <capi/impl/capi_parameters.hpp>
-#include <capi/impl/capi_variant.hpp>
+#include <capi/impl/capi_wrapper_structs.hpp>
 #include <platform/export.hpp>
 #include <unity/lib/unity_global.hpp>
 #include <unity/lib/unity_global_singleton.hpp>
