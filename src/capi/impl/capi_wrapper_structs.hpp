@@ -17,7 +17,12 @@ struct capi_struct_type_info {
 };
 
 // Each C API wrapper struct is intended to match a c++ container type that
-// allows it to easily call the
+// allows it to interface to pure C easily.  As such, each wrapper struct has the
+// an instance of the wrapping type stored as the value field, and type_info to hold
+// some type information associated with it for error checking and, in the 
+// future, memory management.
+//
+// Creation of a wrapping struct should be done with new_* methods.
 
 #define DECLARE_CAPI_WRAPPER_STRUCT(struct_name, wrapping_type)                 \
   struct capi_struct_type_info_##struct_name;                                   \
@@ -52,7 +57,7 @@ struct capi_struct_type_info {
   template <typename... T>                                                      \
   static inline struct_name* new_##struct_name(T&&... args) {                   \
     struct_name* ret = new_##struct_name();                                     \
-    ret->value = wrapping_type(args...);                                        \
+    ret->value = wrapping_type(std::forward(args)...);                                        \
     return ret;                                                                 \
   }
 
