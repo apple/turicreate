@@ -157,6 +157,40 @@ struct make_pointer_to {
 };
 
 /**
+ * Reads a typed function parameter from a variant argument. In most cases, this
+ * just boils down to variant_get_value<T>.
+ */
+template <typename T>
+inline T read_arg(const variant_type& var) {
+  return variant_get_value<T>(var);
+}
+
+/**
+ * Specializes read_arg<variant_map_type>. The Python integration must convert
+ * Python dictionaries to either variant_map_type or flexible_type without any
+ * knowledge of the type required on the C++ end. Python prefers flexible_type
+ * when both are possible, so the C++ side must convert if necessary.
+ */
+template <>
+inline variant_map_type read_arg<variant_map_type>(const variant_type& var) {
+  if (var.which() == 0) {
+    const flexible_type& ft = variant_get_ref<flexible_type>(var);
+    if (ft.get_type() == flex_type_enum::DICT) {
+      // The argument is a flex_dict but we expected a variant_map_type. Attempt
+      // a conversion. Note that this will fail if any flex_dict keys are not
+      // strings, but we would have failed anyway in variant_get_value below.
+      variant_map_type ret;
+      for (const auto& kv : ft.get<flex_dict>()) {
+        ret[kv.first.get<flex_string>()] = to_variant(kv.second);
+      }
+      return ret;
+    }
+  }
+
+  return variant_get_value<variant_map_type>(var);
+}
+
+/**
  * Fills in a boost::fusion::vector<T ...> with parameters from the 
  * toolkit invocation object.
  *
@@ -188,8 +222,12 @@ struct fill_named_in_args {
     // the type of inargs[n] the use of std::decay removes all references
     typedef typename std::decay<decltype(boost::fusion::at_c<n>(*inargs))>::type element_type;
     if (n < inargnames.size()) {
-      boost::fusion::at_c<n>(*inargs) = 
-          turi::safe_varmap_get<element_type>(*params, inargnames[n]);
+      variant_map_type::const_iterator kv = params->find(inargnames[n]);
+      if (kv == params->end()) {
+        log_and_throw("Missing toolkit function parameter: " + inargnames[n]);
+      }
+
+      boost::fusion::at_c<n>(*inargs) = read_arg<element_type>(kv->second);
     }
   }
 };
