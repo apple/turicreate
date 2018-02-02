@@ -22,6 +22,26 @@ import coremltools
 import sys
 import platform
 
+def test_coreml_export_new_class():
+    import turicreate as tc
+    data = tc.SFrame({
+        'a': [{'x': 1}, {'y': 1}],
+        'b': [0, 1],
+    })
+    model = tc.logistic_classifier.create(data, target='b', features=['a'],
+            verbose=False)
+
+    # Test set with a new class for categorical variables
+    test = tc.SFrame({'a': [{'z': 1}]})
+    model.predict(test)
+    model.export_coreml('LogisticClassifier.mlmodel')
+
+    # Run a prediction with coreml
+    import coremltools as cml
+    mlmodel = cml.models.MLModel('LogisticClassifier.mlmodel')
+    mldata = {'a': {'z': 1}}
+    mlmodel.predict(mldata)
+
 class CoreMLExportTest(unittest.TestCase):
 
     @classmethod
