@@ -49,18 +49,6 @@ class EXPORT recsys_model_base : public ml_model_base {
 
   virtual ~recsys_model_base() {}
 
-  ////////////////////////////////////////////////////////////////////////////////
-  //
-  //  Internal functions that are implemented or can be overridden by
-  //  the subclassed model.
-  //
-  ////////////////////////////////////////////////////////////////////////////////
-
-  // A const overload of the non-const base class name() method, which cannot be
-  // const.
-  std::string name() const { return const_cast<recsys_model_base*>(this)->name(); }
-
-
  protected:
 
   /** Train the algorithm.
@@ -82,16 +70,6 @@ class EXPORT recsys_model_base : public ml_model_base {
  public:
   virtual bool use_target_column(bool target_is_present) const = 0;
   virtual bool include_columns_beyond_user_item() const { return false; }
-
-  virtual std::vector<std::string> list_fields() const {
-    return std::vector<std::string>();
-  }
-
-  virtual std::map<std::string, variant_type> get(const std::string& v) const {
-    ASSERT_TRUE(false);
-    return std::map<std::string, variant_type>();
-  }
-
 
  public:
   /** Run predictions on each element in the test data set.  Returns a

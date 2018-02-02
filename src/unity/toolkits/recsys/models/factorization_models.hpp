@@ -52,10 +52,6 @@ class EXPORT recsys_factorization_model_base : public recsys_model_base {
 
 
  public:
-
-  std::vector<std::string> list_fields() const;
-  std::map<std::string, variant_type> get(const std::string& v) const;
-  
   void score_all_items(
       std::vector<std::pair<size_t, double> >& scores,
       const std::vector<v2::ml_data_entry>& query_row,

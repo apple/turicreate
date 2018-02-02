@@ -1085,6 +1085,11 @@ void xgboost_model::train(void) {
   trim_boost_learner(booster_);
 }
 
+enum{
+    XGBOOST_WITH_STATS = 1, //output also gain and cover metrics per node
+    XGBOOST_JSON_FORMAT = 2 //use Json format for output
+};
+
 /**
  * Save the training state as model metadata
  */
@@ -1111,7 +1116,7 @@ void xgboost_model::_save_training_state(size_t iteration,
   // Store trees
   utils::FeatMap fmap;
   MakeFeatMap(fmap, this->ml_mdata);
-  std::vector<flexible_type> trees_json = convert_vec_string(booster_->DumpModel(fmap, 2 /** json **/));
+  std::vector<flexible_type> trees_json = convert_vec_string(booster_->DumpModel(fmap, XGBOOST_JSON_FORMAT | XGBOOST_WITH_STATS));
   info["trees_json"] = trees_json;
   info["num_trees"] = trees_json.size();
   add_or_update_state(flexmap_to_varmap(info));
