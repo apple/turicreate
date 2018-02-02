@@ -12,16 +12,16 @@ create a high quality image classifier model.
 
 #### Loading Data
 
-Suppose we have a dataset containing labeled cat and dog images.
+The [Kaggle Cats and Dogs Dataset](https://www.microsoft.com/en-us/download/details.aspx?id=54765) provides labeled cat and dog images.[<sup>1</sup>](../datasets.md) After downloading and decompressing the dataset, navigate to the main **kagglecatsanddogs** folder, which contains a **PetImages** subfolder.
 
 ```python
 import turicreate as tc
 
-# Load images
-data = tc.image_analysis.load_images('train', with_path=True)
+# Load images (Note: you can ignore 'Not a JPEG file' errors)
+data = tc.image_analysis.load_images('PetImages', with_path=True)
 
 # From the path-name, create a label column
-data['label'] = data['path'].apply(lambda path: 'dog' if 'dog' in path else 'cat')
+data['label'] = data['path'].apply(lambda path: 'dog' if '/Dog' in path else 'cat')
 
 # Save the data for future use
 data.save('cats-dogs.sframe')
@@ -44,7 +44,8 @@ data =  tc.SFrame('cats-dogs.sframe')
 # Make a train-test split
 train_data, test_data = data.random_split(0.8)
 
-# Automatically picks the right model based on your data.
+# Automatically pick the right model based on your data.
+# Note: Because the dataset is large, model creation may take hours.
 model = tc.image_classifier.create(train_data, target='label')
 
 # Save predictions to an SArray
