@@ -28,8 +28,9 @@ distance from point $$x$$ to center $$B$$ when assigning $$x$$ to a cluster.
 
 #### Basic Usage
 
-We illustrate usage of Turi Create K-means with a dataset used to classify 
-schizophrenic subjects based on MRI scans. The original data consists of
+We illustrate usage of Turi Create K-means with the dataset from the [June
+2014 Kaggle competition to classify schizophrenic subjects based on MRI
+scans](https://www.kaggle.com/c/mlsp-2014-mri). Download **Train.zip** from the data tab.[<sup>1</sup>](../datasets.md) The original data consists of
 two sets of features: functional network connectivity (FNC) features and
 source-based morphometry (SBM) features, which we incorporate into a single
 [`SFrame`](https://apple.github.io/turicreate/docs/api/generated/turicreate.SFrame.html)
