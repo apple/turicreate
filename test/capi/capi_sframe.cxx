@@ -22,6 +22,65 @@ struct capi_test_sframe {
     tc_sframe_destroy(sf);
   }
 
+ void test_sframe_save_load() {
+
+std::vector<std::pair<std::string, std::vector<double> > > data
+  = { {"col1", {1.0, 2., 5., 0.5} },
+      {"col2", {2.0, 2., 3., 0.5} },
+      {"a",    {5.0, 2., 1., 0.5} },
+      {"b",    {7.0, 2., 3., 1.5} } };
+
+for(const char* url : {"sf_tmp_1/"} ) {
+
+    tc_error* error = NULL;
+
+    tc_sframe* sf_src = tc_sframe_create_empty(&error);
+
+    TS_ASSERT(error == NULL);
+
+    for(auto p : data) {
+
+      tc_sarray* sa = make_sarray_double(p.second);
+
+      tc_sframe_add_column(sf_src, p.first.c_str(), sa, &error);
+
+      TS_ASSERT(error == NULL);
+
+      tc_sarray_destroy(sa);
+    }
+
+    tc_sframe_save(sf_src, url, &error); 
+
+    TS_ASSERT(error == NULL);
+
+    tc_sframe_destroy(sf_src); 
+
+    tc_sframe* sf = tc_sframe_load(url, &error); 
+
+    TS_ASSERT(error == NULL);
+
+    // Check everything
+    for(auto p : data) {
+      // Make sure it gets out what we want it to.
+      tc_sarray* sa = tc_sframe_extract_column_by_name(sf, p.first.c_str(), &error);
+
+      TS_ASSERT(error == NULL);
+
+      tc_sarray* ref_sa = make_sarray_double(p.second);
+
+      int is_equal = tc_sarray_equals(sa, ref_sa, &error);
+      TS_ASSERT(is_equal);
+
+      TS_ASSERT(error == NULL);
+
+      tc_sarray_destroy(sa);
+    }
+
+    tc_sframe_destroy(sf);
+  }
+}
+
+
 void test_sframe_double() {
 
 std::vector<std::pair<std::string, std::vector<double> > > data
@@ -1385,6 +1444,9 @@ void test_sframe_slice_stride_test(){
 BOOST_FIXTURE_TEST_SUITE(_capi_test_sframe, capi_test_sframe)
 BOOST_AUTO_TEST_CASE(test_sframe_allocation) {
  capi_test_sframe::test_sframe_allocation();
+}
+BOOST_AUTO_TEST_CASE(test_sframe_save_load) {
+  capi_test_sframe::test_sframe_save_load();
 }
 BOOST_AUTO_TEST_CASE(test_sframe_double) {
   capi_test_sframe::test_sframe_double();

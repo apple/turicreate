@@ -362,6 +362,12 @@ static tc_sarray* tc_sarray_create(const tc_flex_list* data, tc_error** error) {
    return tc_sarray_create_from_list(data, error);
 }
 
+tc_sarray* tc_sarray_load(const char* url, tc_error** error); 
+
+void tc_sarray_save(const tc_sarray* sa, const char* url, tc_error** error); 
+
+void tc_sarray_save_as_text(const tc_sarray* sa, const char* url, tc_error** error); 
+
 tc_sarray* tc_sarray_create_copy(const tc_sarray* src, tc_error** error);
 
 
@@ -479,6 +485,12 @@ void tc_sarray_destroy(tc_sarray* sa);
 tc_sframe* tc_sframe_create_empty(tc_error**);
 
 tc_sframe* tc_sframe_create_copy(tc_sframe*, tc_error**);
+
+tc_sframe* tc_sframe_load(const char* url, tc_error** error); 
+
+void tc_sframe_save(const tc_sframe* sf, const char* url, tc_error** error); 
+
+void tc_sframe_save_as_csv(const tc_sframe* sf, const char* url, tc_error** error); 
 
 // Adds the column to the sframe.
 void tc_sframe_add_column(tc_sframe* sf, const char* column_name,

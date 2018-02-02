@@ -338,15 +338,26 @@ gl_sarray_range gl_sarray::range_iterator(size_t start, size_t end) const {
 /*                                                                        */
 /**************************************************************************/
 
-void gl_sarray::save(const std::string& directory, const std::string& format) const {
+void gl_sarray::save(const std::string& path, const std::string& _format) const {
+  
+  std::string format = _format;
+
+  if (format == "") {
+    if (boost::algorithm::ends_with(path, ".csv") || boost::algorithm::ends_with(path, ".csv.gz")) {
+      format = "csv";
+    } else {
+      format = "binary";
+    }
+  }
+
   if (format == "binary") {
-    get_proxy()->save_array(directory);
+    get_proxy()->save_array(path);
   } else if (format == "text" || format == "csv") {
     gl_sframe sf;
     sf["X1"] = (*this);
-    sf.save(directory, "csv");
+    sf.save(path, "csv");
   } else {
-    throw std::string("Unknown format");
+    throw std::string("Invalid format. Supported formats are \'csv\', \'text\', and \'binary\'");
   }
 }
 
