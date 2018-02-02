@@ -13,7 +13,7 @@ from turicreate.toolkits._internal_utils import _toolkit_repr_print
 import logging as _logging
 
 
-def _BOW_FEATURE_EXTRACTOR(sf):
+def _BOW_FEATURE_EXTRACTOR(sf, target=None):
     """
     Return an SFrame containing a bag of words representation of each column.
     """
@@ -24,7 +24,8 @@ def _BOW_FEATURE_EXTRACTOR(sf):
     else:
         raise ValueError("Unrecognized input to feature extractor.")
     for f in _get_str_columns(out):
-        out[f] = _tc.text_analytics.count_words(out[f])
+        if target != f:
+            out[f] = _tc.text_analytics.count_words(out[f])
     return out
 
 def create(dataset, target, features=None, method='auto', validation_set='auto'):
@@ -96,11 +97,11 @@ def create(dataset, target, features=None, method='auto', validation_set='auto')
     # Process training set using the default feature extractor.
     train = dataset
     feature_extractor = _BOW_FEATURE_EXTRACTOR
-    train = feature_extractor(train)
+    train = feature_extractor(train, target)
 
     # Check for a validation set.
     if isinstance(validation_set, _tc.SFrame):
-        validation_set = feature_extractor(validation_set)
+        validation_set = feature_extractor(validation_set, target)
 
     m = _tc.logistic_classifier.create(train,
                                        target=target,
@@ -187,8 +188,9 @@ class SentenceClassifier(_CustomModel):
 
         """
         m = self.__proxy__['classifier']
+        target = self.__proxy__['target']
         f = _BOW_FEATURE_EXTRACTOR
-        return m.predict(f(dataset), output_type=output_type)
+        return m.predict(f(dataset, target), output_type=output_type)
 
     def classify(self, dataset):
         """
@@ -222,8 +224,9 @@ class SentenceClassifier(_CustomModel):
 
         """
         m = self.__proxy__['classifier']
+        target = self.__proxy__['target']
         f = _BOW_FEATURE_EXTRACTOR
-        return m.classify(f(dataset))
+        return m.classify(f(dataset, target))
 
     def __str__(self):
         """
@@ -292,8 +295,9 @@ class SentenceClassifier(_CustomModel):
 
         """
         m = self.__proxy__['classifier']
+        target = self.__proxy__['target']
         f = _BOW_FEATURE_EXTRACTOR
-        test = f(dataset)
+        test = f(dataset, target)
         return m.evaluate(test, metric, **kwargs)
 
     def summary(self):
