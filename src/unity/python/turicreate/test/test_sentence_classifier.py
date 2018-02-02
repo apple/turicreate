@@ -152,6 +152,12 @@ class SentenceClassifierCreateTests(unittest.TestCase):
         model = tc.sentence_classifier.create(self.data, target='rating')
         self.assertTrue(isinstance(model, tc.sentence_classifier.SentenceClassifier))
 
+    def test_sentiment_create_string_target(self):
+        data_str = self.data[:]
+        data_str['rating'] = data_str['rating'].astype(str)
+        model = tc.sentence_classifier.create(data_str, target='rating')
+        self.assertTrue(isinstance(model, tc.sentence_classifier.SentenceClassifier))
+
     def test_validation_set(self):
         train = self.data
         valid = self.data
