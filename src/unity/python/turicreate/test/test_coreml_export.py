@@ -68,8 +68,8 @@ class CoreMLExportTest(unittest.TestCase):
         # Arrange
         model = self.model
         test_data = self.sf[:]
-        #test_data['cat_column'] = 'new_cat'
-        #test_data['dict_column'] = [{'new_cat': 1} for i in range(len(test_data))]
+        test_data['cat_column'] = 'new_cat'
+        test_data['dict_column'] = [{'new_cat': 1} for i in range(len(test_data))]
 
         # Assert
         model.predict(test_data)
