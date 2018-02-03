@@ -985,7 +985,7 @@ std::map<std::string, std::shared_ptr<sarray<flexible_type>>> parse_csvs_to_sfra
   // otherwise, check that url is valid directory, and get its listing if no 
   // pattern present
   std::vector<std::string> files;
-  std::vector<std::string> empty_files;
+  bool found_zero_byte_files = false;
   std::vector<std::pair<std::string, file_status>> file_and_status = fileio::get_glob_files(url);
   
   for (auto p : file_and_status) {
@@ -998,7 +998,7 @@ std::map<std::string, std::shared_ptr<sarray<flexible_type>>> parse_csvs_to_sfra
                               << sanitize_url(p.first)
                               << " because it appears to be empty"
                               << std::endl;
-          empty_files.push_back(p.first);
+          found_zero_byte_files = true;
           continue;
         }
       } catch (...) {
@@ -1018,16 +1018,18 @@ std::map<std::string, std::shared_ptr<sarray<flexible_type>>> parse_csvs_to_sfra
   file_and_status.clear(); // don't need these anymore
   
   // ensure that we actually found some valid files
-  if (files.empty() && !empty_files.empty()) {
-    // If all we got is empty files, let's take them --
-    // we'll produce an empty SFrame.
-    // But if we have any non-empty files, we should omit the
-    // empty ones so the column schema doesn't conflict.
-    files = empty_files;
-  }
   if (files.empty()) {
-    log_and_throw(std::string("No files corresponding to the specified path (") + 
-                  sanitize_url(url) + std::string(")."));
+    if (found_zero_byte_files) {
+      // We only found zero-byte files - return an empty SFrame.
+      if (!frame.is_opened_for_write()) {
+        frame.open_for_write({},{},frame_sidx_file);
+      }
+      frame.close();
+      return {};
+    } else {
+      log_and_throw(std::string("No files corresponding to the specified path (") +
+                    sanitize_url(url) + std::string(")."));
+    }
   }
   // get CSV info from first file
   csv_info info;
