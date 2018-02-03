@@ -22,26 +22,6 @@ import coremltools
 import sys
 import platform
 
-def test_coreml_export_new_class():
-    import turicreate as tc
-    data = tc.SFrame({
-        'a': [{'x': 1}, {'y': 1}],
-        'b': [0, 1],
-    })
-    model = tc.logistic_classifier.create(data, target='b', features=['a'],
-            verbose=False)
-
-    # Test set with a new class for categorical variables
-    test = tc.SFrame({'a': [{'z': 1}]})
-    model.predict(test)
-    model.export_coreml('LogisticClassifier.mlmodel')
-
-    # Run a prediction with coreml
-    import coremltools as cml
-    mlmodel = cml.models.MLModel('LogisticClassifier.mlmodel')
-    mldata = {'a': {'z': 1}}
-    mlmodel.predict(mldata)
-
 class CoreMLExportTest(unittest.TestCase):
 
     @classmethod
@@ -80,6 +60,22 @@ class CoreMLExportTest(unittest.TestCase):
             target[1] = 1
             target[2] = 2
             self.sf[self.target] = target
+
+    def test_coreml_export_new_data(self):
+        if self.model is None:
+            return
+
+        # Arrange
+        model = self.model
+        test_data = self.sf[:]
+        #test_data['cat_column'] = 'new_cat'
+        #test_data['dict_column'] = [{'new_cat': 1} for i in range(len(test_data))]
+
+        # Assert
+        model.predict(test_data)
+        with tempfile.NamedTemporaryFile(mode='w', suffix = '.mlmodel') as mlmodel_file:
+            mlmodel_filename = mlmodel_file.name
+            model.export_coreml(mlmodel_filename)
 
     def test_coreml_export(self):
         if self.model is None:
