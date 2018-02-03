@@ -19,7 +19,6 @@ from __future__ import absolute_import as _
 import json
 import numpy as np
 import struct
-import sys
 import tempfile
 import unittest
 
@@ -34,7 +33,7 @@ class JSONExporterTest(unittest.TestCase):
         np.random.seed(42)
         sf = tc.SFrame()
         sf['idx'] = range(_TEST_CASE_SIZE)
-        sf['ints'] = np.random.randint(-sys.maxint - 1, sys.maxint, _TEST_CASE_SIZE)
+        sf['ints'] = np.random.randint(-100000, 100000, _TEST_CASE_SIZE)
         sf['strings'] = sf['ints'].astype(str)
         sf['floats'] = np.random.random(_TEST_CASE_SIZE)
 
