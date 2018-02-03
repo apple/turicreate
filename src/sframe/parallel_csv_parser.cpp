@@ -1036,6 +1036,9 @@ std::map<std::string, std::shared_ptr<sarray<flexible_type>>> parse_csvs_to_sfra
   read_csv_header(info, files[0], tokenizer, use_header, skip_rows);
   logstream(LOG_INFO) << "CSV num. columns: " << info.ncols << std::endl;
 
+  if (info.ncols <= 0)
+    log_and_throw(std::string("0 columns found"));
+
   // check output_columns
   std::vector<size_t> output_column_order;
   if (!output_columns.empty()) {
