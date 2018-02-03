@@ -173,7 +173,7 @@ void export_xgboost_model(const std::string& filename,
     } else if(metadata->target_column_type() == flex_type_enum::INTEGER) {
       std::vector<int64_t> classes(num_classes);
       for(size_t i = 0; i < num_classes; ++i) {
-        classes[i] = ti->map_index_to_value(i).get<flex_int>();
+        classes[i] = ti->map_index_to_value(i).to<flex_int>();
       }
       tc->setOutputClassList(classes);
       target_output_data_type = CoreML::FeatureType::Int64();
@@ -197,7 +197,7 @@ void export_xgboost_model(const std::string& filename,
       std::map<flex_string, flexible_type> node_dict(node_dict_raw.begin(), node_dict_raw.end());
       flex_int node_id = node_dict.at("id").get<flex_int>();
       flex_string type = node_dict.at("type").get<flex_string>();
-      flex_float value = node_dict.at("value").get<flex_float>();
+      flex_float value = node_dict.at("value").to<flex_float>();
 
       // Get the exact non-lossy double value and use that.  But it's stored as an
       flex_float exact_value = hexadecimal_to_float(node_dict.at("value_hexadecimal").get<flex_string>());
