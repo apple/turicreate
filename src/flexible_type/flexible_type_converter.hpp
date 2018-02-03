@@ -175,6 +175,12 @@ template <> struct ft_converter<CVTR__FLEXIBLE_TYPE_EXACT> {
   // Finally, a generic, strict method that fails if type is not matched exactly. 
   template <typename T>  
   static void get(T& dest, const flexible_type& src) {
+    if (type_to_enum<T>::value != src.get_type()) {
+      std::string errormsg = std::string("Expecting ")
+          + flex_type_enum_to_name(type_to_enum<T>::value)
+          + ". But we got a " + flex_type_enum_to_name(src.get_type());
+      throw(errormsg);
+    }
     dest = src.get<T>(); 
   }
   
