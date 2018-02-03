@@ -463,13 +463,15 @@ tc_flexible_type* tc_sarray_sum(const tc_sarray*, tc_error**);
 tc_flexible_type* tc_sarray_text_summary(const tc_sarray* sf, tc_error**);
 
 // SArray Apply. The flexible_type* returned is not automatically freed
-tc_sarray* tc_sarray_apply(const tc_sarray*,
-                           tc_flexible_type*(*callback)(tc_flexible_type*, void* userdata),
-                           void (*userdata_release_callback)(void* userdata),
-                           void* userdata,
-                           tc_ft_type_enum type,
-                           bool skip_undefined,
-                           tc_error**);
+tc_sarray* tc_sarray_apply(
+    const tc_sarray* sa,
+    tc_flexible_type* (*callback)(
+        tc_flexible_type* ft, void* context, tc_error** error),
+    void (*context_release_callback)(void* context),
+    void* context,
+    tc_ft_type_enum type,
+    bool skip_undefined,
+    tc_error** error);
 
 // Destructor
 void tc_sarray_destroy(tc_sarray* sa);

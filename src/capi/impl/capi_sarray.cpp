@@ -824,43 +824,60 @@ EXPORT tc_flexible_type* tc_sarray_text_summary(const tc_sarray* sa, tc_error** 
   ERROR_HANDLE_END(error, NULL);
 }
 
-class apply_wrapper {
- public:
-   tc_flexible_type*(*callback)(tc_flexible_type*, void* userdata);
-   void (*userdata_release_callback)(void* userdata);
-   void* userdata;
-
-   ~apply_wrapper() {
-     if (userdata != NULL && userdata_release_callback != NULL) {
-       userdata_release_callback(userdata);
-     }
-   }
-
-   inline turi::flexible_type operator()(const turi::flexible_type& ft) const {
-     tc_flexible_type in;
-     in.value = ft;
-     tc_flexible_type* out = callback(&in, userdata);
-     turi::flexible_type ret = out->value;
-     tc_ft_destroy(out);
-     return ret;
-   }
-};
-
-EXPORT tc_sarray* tc_sarray_apply(const tc_sarray* sa,
-                           tc_flexible_type*(*callback)(tc_flexible_type*, void* userdata),
-                           void (*userdata_release_callback)(void* userdata),
-                           void* userdata,
-                           tc_ft_type_enum type,
-                           bool skip_undefined,
-                           tc_error** error) {
+EXPORT tc_sarray* tc_sarray_apply(
+    const tc_sarray* sa,
+    tc_flexible_type* (*callback)(
+        tc_flexible_type* ft, void* context, tc_error** error),
+    void (*context_release_callback)(void* context),
+    void* context,
+    tc_ft_type_enum type,
+    bool skip_undefined,
+    tc_error** error) {
   ERROR_HANDLE_START();
 
   CHECK_NOT_NULL(error, sa, "SArray passed in is null.", NULL);
-
   CHECK_NOT_NULL(error, callback, "Callback function passed in is null.", NULL);
+  if (context != nullptr) {
+    CHECK_NOT_NULL(error, context_release_callback,
+                   "Context release function passed in is null.", nullptr);
+  }
 
-  apply_wrapper wrapper{callback, userdata_release_callback, userdata};
-  return new_tc_sarray(sa->value.apply(wrapper, turi::flex_type_enum(type), skip_undefined));
+  // Use unique_ptr to ensure that the user data is released exactly once. Use
+  // shared_ptr to allow a std::function (which must be copyable) to embed the
+  // user data.
+  using context_unique_ptr =
+      std::unique_ptr<void, decltype(context_release_callback)>;
+  auto shared_context = std::make_shared<context_unique_ptr>(
+      context, context_release_callback);
+  auto wrapper = [callback, shared_context](const turi::flexible_type& ft) {
+    tc_error* error = nullptr;
+
+    // Invoke the user callback.
+    tc_flexible_type in;
+    in.value = ft;
+    tc_flexible_type* out = callback(&in, shared_context.get()->get(), &error);
+
+    // Propagate errors from user code up to whatever C-API throw-catch block
+    // (hopefully) encloses the call that triggered this wrapper's invocation.
+    if (error != nullptr) {
+      std::string message = std::move(error->value);
+      tc_error_destroy(&error);
+      if (out != nullptr) tc_ft_destroy(out);
+      throw message;
+    }
+    if (out == nullptr) {
+      throw std::string("Callback provided to tc_sarray_apply returned null "
+                        "without setting error");
+    }
+
+    // Return the value that the callback produced.
+    turi::flexible_type ret = out->value;
+    tc_ft_destroy(out);
+    return ret;
+  };
+
+  return new_tc_sarray(sa->value.apply(
+      std::move(wrapper), turi::flex_type_enum(type), skip_undefined));
 
   ERROR_HANDLE_END(error, NULL);
 }

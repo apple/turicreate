@@ -1832,6 +1832,63 @@ class capi_test_sarray {
     TS_ASSERT(error == NULL);
   };
 
+  void test_tc_sarray_apply() {
+    // Construct an SArray of arbitary double values.
+    tc_error* error = nullptr;
+    std::vector<double> v = {1, 2, 4.5, 9, 389, 23};
+    tc_flex_list* fl = make_flex_list_double(v);
+    tc_sarray* sa = tc_sarray_create_from_list(fl, &error);
+    TS_ASSERT(error == nullptr);
+
+    // Create a simple lambda, which interprets each flexible type as a double
+    // and doubles it.
+    double multiplier = 2.0;
+    auto lambda = [multiplier](
+        tc_flexible_type* ft, tc_error** error) -> tc_flexible_type* {
+      double value = tc_ft_double(ft, error);
+      if (*error != nullptr) return nullptr;
+      return tc_ft_create_from_double(value * multiplier, error);
+    };
+    using lambda_type = decltype(lambda);
+
+    // Wrap the lambda as C function pointers and void* context.
+    void* userdata = static_cast<void*>(new lambda_type(lambda));
+    auto deleter = [](void* p) {
+      auto* ptr = static_cast<lambda_type*>(p);
+      delete ptr;
+    };
+    auto dispatcher = [](tc_flexible_type* ft, void* data, tc_error** error) {
+      auto* ptr = static_cast<lambda_type*>(data);
+      return (*ptr)(ft, error);
+    };
+
+    // Dispatch the wrapped lambda.
+    tc_sarray* ret = tc_sarray_apply(
+        sa, dispatcher, deleter, userdata, FT_TYPE_FLOAT, true, &error);
+    TS_ASSERT(error == nullptr);
+    TS_ASSERT(ret != nullptr);
+
+    // Verify the contents of the resulting SArray.
+    uint64_t length = tc_sarray_size(ret);
+    TS_ASSERT(length == v.size());
+    for (uint64_t i = 0; i < length; ++i) {
+      tc_flexible_type* ft = tc_sarray_extract_element(ret, i, &error);
+      TS_ASSERT(error == nullptr);
+      TS_ASSERT(tc_ft_is_double(ft));
+
+      double val = tc_ft_double(ft, &error);
+      TS_ASSERT(error == nullptr);
+      TS_ASSERT(val == v[i] * 2.0);
+
+      tc_ft_destroy(ft);
+    }
+
+    // Clean up.
+    tc_sarray_destroy(ret);
+    tc_sarray_destroy(sa);
+    tc_flex_list_destroy(fl);
+  }
+
 };
 
 
@@ -1974,4 +2031,8 @@ BOOST_AUTO_TEST_CASE(test_tc_sarray_is_materialized) {
 BOOST_AUTO_TEST_CASE(test_tc_sarray_materialize) {
   capi_test_sarray::test_tc_sarray_materialize();
 }
+BOOST_AUTO_TEST_CASE(test_sc_sarray_apply) {
+  capi_test_sarray::test_tc_sarray_apply();
+}
+
 BOOST_AUTO_TEST_SUITE_END()
