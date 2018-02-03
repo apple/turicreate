@@ -61,6 +61,22 @@ class CoreMLExportTest(unittest.TestCase):
             target[2] = 2
             self.sf[self.target] = target
 
+    def test_coreml_export_new_data(self):
+        if self.model is None:
+            return
+
+        # Arrange
+        model = self.model
+        test_data = self.sf[:]
+        test_data['cat_column'] = 'new_cat'
+        test_data['dict_column'] = [{'new_cat': 1} for i in range(len(test_data))]
+
+        # Assert
+        model.predict(test_data)
+        with tempfile.NamedTemporaryFile(mode='w', suffix = '.mlmodel') as mlmodel_file:
+            mlmodel_filename = mlmodel_file.name
+            model.export_coreml(mlmodel_filename)
+
     def test_coreml_export(self):
         if self.model is None:
             return
