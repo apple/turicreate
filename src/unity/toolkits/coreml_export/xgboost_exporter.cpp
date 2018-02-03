@@ -103,7 +103,7 @@ void export_xgboost_model(const std::string& filename,
   std::map<size_t, size_t> dict_indices;
   for (size_t c = 0; c < metadata->num_columns(); c++) {
     if (metadata->column_type(c) == flex_type_enum::DICT) {
-      for (size_t i = 0; i < metadata->column_size(c); i++) {
+      for (size_t i = 0; i < metadata->index_size(c); i++) {
           dict_indices[metadata->global_index_offset(c) + i] = 1;
       }
     }
