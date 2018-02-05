@@ -6,7 +6,7 @@ your detector to an iOS or macOS app using Core ML.
 #### Evaluation {#evaluation}
 
 If you hold out ground truth data before model creation, you can use it for
-quantiative model evaluation. You can do this by splitting your ground truth
+quantitative model evaluation. You can do this by splitting your ground truth
 data:
 
 ```python
