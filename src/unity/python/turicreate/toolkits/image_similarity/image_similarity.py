@@ -409,3 +409,92 @@ class ImageSimilarityModel(_CustomModel):
         +----------+----------+----------------+------+
         """
         return self.similarity_model.similarity_graph(k, radius, include_self_edges, output_type, verbose)
+
+    def export_coreml(self, filename, reference_data):
+        """
+        Save the model in Core ML format.
+
+        See Also
+        --------
+        save
+
+        Examples
+        --------
+        >>> model.export_coreml('myModel.mlmodel')
+        """
+        import numpy as _np
+        import coremltools as _cmt
+        from coremltools.models import datatypes as _datatypes, neural_network as _neural_network
+        from .._mxnet_to_coreml import _mxnet_converter
+        from turicreate.toolkits import _coreml_utils
+
+        input_name = self.feature_extractor.data_layer
+        output_name = 'distance'
+
+        output_size = reference_data.num_rows()
+
+        input_features = [(input_name, _datatypes.Array(*(self.input_image_shape)))]
+        output_features = [(output_name, _datatypes.Array(*(output_size, )))]
+
+        builder = _neural_network.NeuralNetworkBuilder(
+            input_features, output_features, mode='classifier')
+
+        # Convert the feature exctraction network
+        mx_feature_extractor = self.feature_extractor._get_mx_module(
+            self.feature_extractor.ptModel.mxmodel,
+            self.feature_extractor.data_layer,
+            self.feature_extractor.feature_layer,
+            self.feature_extractor.context,
+            self.input_image_shape
+        )
+
+        batch_input_shape = (1, ) + self.input_image_shape
+        _mxnet_converter.convert(mx_feature_extractor, mode=None,
+                                 input_shape={input_name: batch_input_shape},
+                                 builder=builder, verbose=False)
+
+        # Calculate the euclidean distance between the newly extracted query features
+        # and each extracted reference feature.
+        # Calculation of sqrt(v^2 - 2vu + u^2) ensues.
+        W = self.feature_extractor.extract_features(reference_data, self.feature).to_numpy()
+        b = (W * W).sum(axis=1)
+        embedding_size = W.shape[1]
+
+        feature_layer = self.feature_extractor.feature_layer
+        builder.add_inner_product('v^2-2vu', W=-2 * W, b=b, has_bias=True,
+                                  input_channels=embedding_size, output_channels=W.shape[0],
+                                  input_name=feature_layer, output_name='v^2-2vu')
+
+        builder.add_elementwise('element_wise-u2', mode='MULTIPLY',
+                                input_names=[feature_layer, feature_layer],
+                                output_name='element_wise-u2')
+
+        builder.add_inner_product('u2', W=_np.ones((embedding_size, output_size)),
+                                  b=None, has_bias=False,
+                                  input_channels=embedding_size, output_channels=output_size,
+                                  input_name='element_wise-u2', output_name='u2')
+
+        builder.add_elementwise('v^2-2vu+u^2', mode='ADD',
+                                input_names=['v^2-2vu', 'u2'],
+                                output_name='v^2-2vu+u^2')
+
+        # v^2-2vu+u^2=(v-u)^2 is non-negative but some computations on GPU may result in
+        # small negative values. Apply RELU so we don't take the square root of negative values.
+        builder.add_activation('relu', non_linearity='RELU',
+                               input_name='v^2-2vu+u^2', output_name='relu')
+        builder.add_unary('sqrt', mode='sqrt', input_name='relu', output_name=output_name)
+
+        # Finalize model
+        _mxnet_converter._set_input_output_layers(builder, [input_name], [output_name])
+        builder.set_input([input_name], [self.input_image_shape])
+        builder.set_output([output_name], [(output_size,)])
+        builder.set_pre_processing_parameters(image_input_names=input_name)
+
+        builder.set_class_labels(class_labels=reference_data[self.label],
+                                 predicted_feature_name='reference_label',
+                                 prediction_blob=output_name)
+
+        mlmodel = _cmt.models.MLModel(builder.spec)
+        model_type = 'image similarity'
+        mlmodel.short_description = _coreml_utils._mlmodel_short_description(model_type)
+        mlmodel.save(filename)
