@@ -403,8 +403,7 @@ void gl_sframe::save(const std::string& _path, const std::string& _format) const
   std::string format = _format;
   // fill format is not filled
   if (format == "") {
-    if (boost::algorithm::ends_with(format, ".csv") ||
-        boost::algorithm::ends_with(format, ".csv.gz")) {
+    if (boost::algorithm::ends_with(path, ".csv") || boost::algorithm::ends_with(path, ".csv.gz")) {
       format = "csv";
     } else {
       format = "binary";
@@ -412,10 +411,10 @@ void gl_sframe::save(const std::string& _path, const std::string& _format) const
   }
 
   // append .csv if is csv
-  if (format == "csv" &&
-      !(boost::algorithm::ends_with(format, ".csv") ||
-        boost::algorithm::ends_with(format, ".csv.gz"))) {
-    path = path + ".csv";    
+  if (format == "csv") {
+    if(!(boost::algorithm::ends_with(path, ".csv") || boost::algorithm::ends_with(path, ".csv.gz"))) {
+      path = path + ".csv";
+    }
   } else if (format != "binary") {
     throw std::string("Invalid format. Supported formats are \'csv\' and \'binary\'");
   }

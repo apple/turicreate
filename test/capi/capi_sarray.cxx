@@ -44,6 +44,50 @@ class capi_test_sarray {
     }
   }
 
+ void test_sarray_save_load() {
+
+   for(const char* out_name : {"sa_tmp_1/"}) {
+
+    std::vector<double> v = {1, 2, 4.5, 9, 10000000, -12433, 123123};
+
+    tc_error* error = NULL;
+
+    tc_flex_list* fl = make_flex_list_double(v);
+
+    tc_sarray* sa_sv = tc_sarray_create_from_list(fl, &error);
+
+    TS_ASSERT(error == NULL);
+
+    tc_sarray_save(sa_sv, out_name, &error); 
+    
+    TS_ASSERT(error == NULL);
+
+    tc_sarray_destroy(sa_sv); 
+
+    tc_sarray* sa = tc_sarray_load(out_name, &error);
+
+    TS_ASSERT(error == NULL);
+
+    {
+      // Make sure it gets out what we want it to.
+      for(size_t i = 0; i < v.size(); ++i) {
+        tc_flexible_type* ft = tc_sarray_extract_element(sa, i, &error);
+        TS_ASSERT(error == NULL);
+
+        TS_ASSERT(tc_ft_is_double(ft) != 0);
+
+        double val = tc_ft_double(ft, &error);
+        TS_ASSERT(error == NULL);
+
+        TS_ASSERT(v[i] == val);
+
+        tc_ft_destroy(ft);
+      }
+    }
+  }
+}
+
+
   void test_tc_op_sarray_lt_sarray(){
     tc_error* error = NULL;
 
@@ -1792,6 +1836,9 @@ class capi_test_sarray {
 
 
 BOOST_FIXTURE_TEST_SUITE(_capi_test_sarray, capi_test_sarray)
+BOOST_AUTO_TEST_CASE(test_sarray_save_load) {
+  capi_test_sarray::test_sarray_save_load();
+}
 BOOST_AUTO_TEST_CASE(test_sarray_double) {
   capi_test_sarray::test_sarray_double();
 }

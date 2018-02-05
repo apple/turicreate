@@ -7,6 +7,15 @@
 
 extern "C" {
 
+EXPORT tc_sarray* tc_sarray_create_empty(tc_error** error) {
+
+  ERROR_HANDLE_START();
+
+  return new_tc_sarray();
+
+  ERROR_HANDLE_END(error, NULL);
+}
+
 EXPORT tc_sarray* tc_sarray_create_from_sequence(
     uint64_t start, uint64_t end, tc_error** error) {
 
@@ -59,6 +68,40 @@ EXPORT tc_sarray* tc_sarray_create_from_list(
 
   ERROR_HANDLE_END(error, NULL);
 }
+
+
+EXPORT tc_sarray* tc_sarray_load(const char* url, tc_error** error) { 
+  
+  ERROR_HANDLE_START();
+
+  return new_tc_sarray(turi::gl_sarray(url));
+
+  ERROR_HANDLE_END(error, NULL);
+}
+
+
+EXPORT void tc_sarray_save(const tc_sarray* sa, const char* url, tc_error** error) {
+
+  ERROR_HANDLE_START();
+  
+  CHECK_NOT_NULL(error, sa, "sarray");
+
+  sa->value.save(url, "binary"); 
+
+  ERROR_HANDLE_END(error);
+} 
+
+EXPORT void tc_sarray_save_as_text(const tc_sarray* sa, const char* url, tc_error** error) {
+
+  ERROR_HANDLE_START();
+  
+  CHECK_NOT_NULL(error, sa, "sarray");
+
+  sa->value.save(url, "text"); 
+
+  ERROR_HANDLE_END(error);
+} 
+
 
 EXPORT tc_flexible_type* tc_sarray_extract_element(
     const tc_sarray* sa, uint64_t index, tc_error** error) {

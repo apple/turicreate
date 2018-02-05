@@ -31,6 +31,33 @@ EXPORT tc_sframe* tc_sframe_create_copy(tc_sframe* sf, tc_error** error) {
   ERROR_HANDLE_END(error, NULL);
 }
 
+EXPORT tc_sframe* tc_sframe_load(const char* url, tc_error** error) {
+  ERROR_HANDLE_START();
+
+  return new_tc_sframe(url); 
+
+  ERROR_HANDLE_END(error, NULL);
+}
+
+EXPORT void tc_sframe_save_as_csv(const tc_sframe* sf, const char* url, tc_error** error) {
+  ERROR_HANDLE_START();
+  
+  CHECK_NOT_NULL(error, sf, "tc_sframe");
+ 
+  sf->value.save(url, "csv");
+  
+  ERROR_HANDLE_END(error);
+}
+
+EXPORT void tc_sframe_save(const tc_sframe* sf, const char* url, tc_error** error) {
+  ERROR_HANDLE_START();
+  
+  CHECK_NOT_NULL(error, sf, "tc_sframe");
+ 
+  sf->value.save(url, "binary");
+  
+  ERROR_HANDLE_END(error);
+}
 
 // Adds the column to the sframe
 EXPORT void tc_sframe_add_column(
