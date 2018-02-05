@@ -1,7 +1,7 @@
 ## Sample Use Cases for Visualization
 
 In this chapter, we will use the `show` and `explore` methods to get insight
-about a dataset to use it for a modelling problem.
+about a dataset to use it for a modeling problem.
 
 #### Use case: automated code formatting
 
@@ -12,7 +12,7 @@ code formatting tool is
 yet have a set of configuration options for the repository, we'll need to make
 one.  We don't exactly know the right set of options up front, but we have
 representative example data available in the form of the existing source code.
-We can use machine learning to help solve this problem. The modelling problem
+We can use machine learning to help solve this problem. The modeling problem
 this chapter focuses on is to find the best fitting configuration of
 `clang-format`, given the existing source code of Turi Create.
 
@@ -228,7 +228,7 @@ values. We also only used a small fraction of the possible configuration
 variables here, as more would require an even larger sample size.
 
 We can see from this exercise that visualization provides a powerful way to
-help us visually inspect our data, clean it up, prepare it for modelling, and
+help us visually inspect our data, clean it up, prepare it for modeling, and
 evaluate the quality of a model. With immediate and visual feedback on the
 result of data transformation, manipulation, and prediction, you can create
 better models, faster.

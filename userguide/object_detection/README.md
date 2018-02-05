@@ -160,7 +160,7 @@ model = tc.object_detector.create(data, feature='image', annotations='annotation
 ```
 
 Model creation may take time. If you do not have access to a GPU, it can take
-as much as a day to train a good model. Progress will be continously printed to
+as much as a day to train a good model. Progress will be continuously printed to
 give you a sense of the time it will take. The number of training iterations is
 determined automatically based on the size of your dataset. If you want to
 lower this value to make model creation faster, you can change it by manually
