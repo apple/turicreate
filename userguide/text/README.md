@@ -77,7 +77,7 @@ per topic.
 ```python
 print(model.get_topics())
 ```
-```no-higlight
+```no-highlight
 +-------+--------+------------------+
 | topic |  word  |      score       |
 +-------+--------+------------------+
@@ -102,7 +102,7 @@ rearrange the above SFrame to do that.
 print(model.get_topics(output_type='topic_words'))
 ```
 
-```no-higlight
+```no-highlight
 +-------------------------------+
 |             words             |
 +-------------------------------+

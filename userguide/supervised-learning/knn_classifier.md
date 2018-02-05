@@ -167,7 +167,7 @@ print evals['accuracy']
 ```
 
 46% accuracy seems low, but remember that we are in a multi-class
-classiciation setting. The most common class (4 stars) only occurs in
+classification setting. The most common class (4 stars) only occurs in
 34.8% of the test data, so our model has indeed learned something. The
 confusion matrix produced by the `evaluate` method can help us to better
 understand the model performance. In this case we see that 83.9% of our

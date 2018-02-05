@@ -352,7 +352,7 @@ parameters or completely different types of model.
 
 The Turi Create recommender toolkit provides several ways of
 working with rating data while ensuring good precision-recall.  To
-acurately evaluate the precision-recall of a model trained on explicit
+accurately evaluate the precision-recall of a model trained on explicit
 rating data, it's important to only include highly rated items in your
 test set as these are the items a user would likely choose.  Creating
 such a test set can be done with a handful of SFrame operations and

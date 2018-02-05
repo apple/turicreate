@@ -11,7 +11,7 @@ Dragging the saved model to Xcode will automatically generate relevant code for 
 
 ![Model imported to Xcode](images/Model_In_Xcode.png)
 
-For more information about the generated progammatic API please refer to [Core ML documentation](https://developer.apple.com/documentation/coreml/integrating_a_core_ml_model_into_your_app).
+For more information about the generated programmatic API please refer to [Core ML documentation](https://developer.apple.com/documentation/coreml/integrating_a_core_ml_model_into_your_app).
 
 ##### Model Inputs
 

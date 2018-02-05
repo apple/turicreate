@@ -128,7 +128,7 @@ vectors from the layer prior to the output layer on each image of your
 task.
 
 * **Stage 3**: Create a [nearest
-  neighbours](../nearest_neighbors/nearest_neighbors.md) model with those
+  neighbors](../nearest_neighbors/nearest_neighbors.md) model with those
 features as input for your own task.
 
 #### References
