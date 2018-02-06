@@ -458,7 +458,7 @@ class ImageSimilarityModel(_CustomModel):
         >>> image = PIL.Image.fromarray(image.pixel_data)
 
         # Calculate distances using the Core ML model
-        >>> ml_model.predict(data={'data': image})
+        >>> ml_model.predict(data={'image': image})
         {'distance': array([ 0.      , 28.453125, 24.96875 ])}
         """
         import numpy as _np
@@ -531,10 +531,13 @@ class ImageSimilarityModel(_CustomModel):
         _mxnet_converter._set_input_output_layers(builder, [input_name], [output_name])
         builder.set_input([input_name], [self.input_image_shape])
         builder.set_output([output_name], [(num_examples,)])
-        builder.set_pre_processing_parameters(image_input_names=input_name)
+        _cmt.models.utils.rename_feature(builder.spec, input_name, self.feature)
+        builder.set_pre_processing_parameters(image_input_names=self.feature)
 
         # Add metadata
         mlmodel = _cmt.models.MLModel(builder.spec)
         model_type = 'image similarity'
         mlmodel.short_description = _coreml_utils._mlmodel_short_description(model_type)
+        mlmodel.input_description[self.feature] = u'Input image'
+        mlmodel.output_description[output_name] = u'Distances between the input and reference images'
         mlmodel.save(filename)

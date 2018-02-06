@@ -186,7 +186,7 @@ class ImageSimilarityTest(unittest.TestCase):
 
             ref_img = self.sf[0]['awesome_image'].pixel_data
             pil_img = _PIL_Image.fromarray(ref_img)
-            coreml_ret = coreml_model.predict({'data': pil_img}, useCPUOnly=True)
+            coreml_ret = coreml_model.predict({'awesome_image': pil_img}, useCPUOnly=True)
 
             # Compare distances
             coreml_distances = np.array(sorted(coreml_ret['distance']))
