@@ -8,7 +8,7 @@ The activity classifier in Turi Create creates a deep learning model capable of 
 
 #### Introductory Example
 
-In this example we create a model to classify physical activities done by users of a handheld phone, using both accelerometer and gyroscope data. We will use data from the [HAPT experiment](http://archive.ics.uci.edu/ml/datasets/Smartphone-Based+Recognition+of+Human+Activities+and+Postural+Transitions) which contains recording sessions of multiple users, each performing certain physical activities. The performed activities are walking, climbing up stairs, climbing down stairs, sitting, standing, and laying.
+In this example we create a model to classify physical activities done by users of a handheld phone, using both accelerometer and gyroscope data. We will use data from the [HAPT experiment](http://archive.ics.uci.edu/ml/datasets/Smartphone-Based+Recognition+of+Human+Activities+and+Postural+Transitions) which contains recording sessions of multiple users, each performing certain physical activities.[<sup>1</sup>](../datasets.md) The performed activities are walking, climbing up stairs, climbing down stairs, sitting, standing, and laying.
 
 Sensor data can be collected at varying frequencies. In the HAPT dataset, the sensors were sampled at 50Hz each - meaning 50 times per second. However, most applications would want to show outputs to the user at larger intervals. We control the output prediction rate via the ```prediction_window``` parameter. For example, if we want to produce a prediction every 5 seconds, and the sensors are sampled at 50Hz - we would set the ```prediction_window``` to 250 (5 sec * 50 samples per second).
 
