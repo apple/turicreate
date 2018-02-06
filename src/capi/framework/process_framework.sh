@@ -6,7 +6,8 @@ echo "PostProcessing framework"
 name=""
 src_header_dir=""
 fmwrk_dir=""
-install_location="@rpath"
+install_tbd_file=0
+install_location=""
 
 function print_options {
   echo "Required options: --name --src-headers --dest"
@@ -21,20 +22,26 @@ function print_options {
 #
 while [ $# -gt 0 ]
   do case $1 in
-    --name)                 name=$2;;
-    --src-headers)          src_header_dir=$2;;
-    --framework)            fmwrk_dir=$2;;
-    --install-location)     install_location=$2;;
+    --name)                 name=$2; shift;;
+    --src-headers)          src_header_dir=$2; shift;;
+    --framework)            fmwrk_dir=$2; shift;;
+    --install-location)     install_location=$2; shift;;
+    --create-tbd-file)          install_tbd_file=1;;
     *) echo "unknown option: $1." && print_options ;;
   esac
   shift
-  shift
 done
 
-if [[ ! ${name} -eq "" ]] ; then 
+if [[ -z ${name} ]] ; then
  echo "Name empty."
  exit 1
 fi 
+
+if [[ -z ${install_location} ]] ; then
+ echo "--install-location not given."
+ exit 1
+fi
+
 
 src_library_file=${fmwrk_dir}/${name}
 
@@ -121,8 +128,10 @@ cd ${fmwrk_dir} && ln -sF Versions/Current/Resources
 cp ${src_header_dir}/*.h "${fmwrk_dir}/Versions/Current/Headers/"
 
 # Create the tbd file
-generate_tbd_file "${fmwrk_dir}/Versions/Current/${name}.tbd"
-cd ${fmwrk_dir} && ln -sF Versions/Current/${name}.tbd
+if [[ $install_tbd_file == 1 ]] ; then
+  generate_tbd_file "${fmwrk_dir}/Versions/Current/${name}.tbd"
+  cd ${fmwrk_dir} && ln -sF Versions/Current/${name}.tbd
+fi
 
 # Create the module map 
 write_module_map ${fmwrk_dir}/Versions/Current/Modules/module.modulemap

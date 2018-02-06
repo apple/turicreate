@@ -27,12 +27,12 @@ static unity_server* SERVER = nullptr;
  * \param server_address the inproc address of the server, could be anything like "inproc://test_server"
  * \param log_file local file for logging
  */
-EXPORT void start_server(const unity_server_options& server_options) {
+EXPORT void start_server(const unity_server_options& server_options,
+                         const unity_server_initializer& server_initializer) {
+
   namespace fs = boost::filesystem;
   global_logger().set_log_level(LOG_PROGRESS);
   global_logger().set_log_to_console(false);
-
-  unity_server_initializer server_initializer;
 
   if(SERVER) { 
     stop_server(); 

@@ -64,19 +64,54 @@ make_library(TuriCore
   DEAD_STRIP
 )
 
-  set_target_properties(TuriCore PROPERTIES
-    FRAMEWORK TRUE
-    FRAMEWORK_VERSION A
-    MACOSX_FRAMEWORK_IDENTIFIER com.apple.TuriCore
-    MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/framework/Info.plist"
-    PUBLIC_HEADER TuriCore.h)
+  set(_cmake_framework_flags "")
 
-  if(${TC_CAPI_AS_SYSTEM_FRAMEWORK})
-    set(_install_location "/System/Library/PrivateFrameworks")
+  if(TC_CAPI_FRAMEWORK_PATH)
+    message("Building framework with path ${TC_CAPI_FRAMEWORK_PATH}.")
+    set(_install_location "${TC_CAPI_FRAMEWORK_PATH}")
+    set(_cmake_framework_flags "${_cmake_framework_flags} INSTALL_NAME_DIR \"${_install_location}\" BUILD_WITH_INSTALL_RPATH 0 MACOSX_RPATH" )
+
+    set(CMAKE_INSTALL_NAME_DIR ${TC_CAPI_FRAMEWORK_PATH})
+
+    set(CMAKE_SKIP_RPATH TRUE)
+
+    set_target_properties(TuriCore PROPERTIES
+      FRAMEWORK TRUE
+      FRAMEWORK_VERSION A
+      MACOSX_FRAMEWORK_IDENTIFIER com.apple.TuriCore
+      MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/framework/Info.plist"
+      INSTALL_NAME_DIR "${_install_location}"
+      BUILD_WITH_INSTALL_NAME_DIR TRUE
+      MACOSX_RPATH 0
+      BUILD_WITH_INSTALL_RPATH 0
+      PUBLIC_HEADER TuriCore.h
+    )
+
+  # Note: The install_name_tool has to fix the install_name_dir after this;
+  # apparently the set(CMAKE_SKIP_RPATH TRUE) command above -- which is required to
+  # remove the rpath in the framework -- doesn't really let the INSTALL_NAME_DIR
+  # get set correctly.
+
   else()
     set(_install_location "@rpath")
+
+    set_target_properties(TuriCore PROPERTIES
+      FRAMEWORK TRUE
+      FRAMEWORK_VERSION A
+      MACOSX_FRAMEWORK_IDENTIFIER com.apple.TuriCore
+      MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/framework/Info.plist"
+      PUBLIC_HEADER TuriCore.h
+      MACOSX_RPATH TRUE
+    )
   endif()
 
+  if(TC_CAPI_FRAMEWORK_DISABLE_TBD_FILE)
+    message("Skipping in-build creation of TuriCore.tbd.")
+    set(_tbd_options "")
+  else()
+    message("Creating in-build version of TuriCore.tbd.")
+    set(_tbd_options "--create-tbd-file")
+  endif()
 
   add_custom_command(TARGET TuriCore
     POST_BUILD
@@ -84,7 +119,21 @@ make_library(TuriCore
     --name TuriCore 
     --src-headers "${CMAKE_CURRENT_SOURCE_DIR}"
     --framework "${CMAKE_CURRENT_BINARY_DIR}/TuriCore.framework"
-    --install-location "${_install_location}")
+    --install-location "${_install_location}"
+    ${_tbd_options}
+    BYPRODUCTS
+    "${CMAKE_CURRENT_BINARY_DIR}/TuriCore.framework/Versions/Current/Header/TuriCore.h"
+    "${CMAKE_CURRENT_BINARY_DIR}/TuriCore.framework/Versions/Current/TuriCore.tbd"
+    )
+
+  if(TC_CAPI_FRAMEWORK_PATH)
+    # After the previous command is run, run this one to fix the framework path in the library.
+    add_custom_command(
+      TARGET TuriCore
+      POST_BUILD
+      COMMAND install_name_tool $<TARGET_FILE:TuriCore> -id ${TC_CAPI_FRAMEWORK_PATH}/TuriCore.framework/Versions/A/TuriCore
+    )
+  endif()
 
   add_dependencies(TuriCore "${CMAKE_CURRENT_SOURCE_DIR}/framework/process_framework.sh")
 

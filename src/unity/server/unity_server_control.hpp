@@ -10,7 +10,8 @@
 #include <unity/server/unity_server_options.hpp>
 
 namespace turi {
-  void start_server(const unity_server_options& server_options);
+  void start_server(const unity_server_options& server_options,
+      const unity_server_initializer& server_initializer = unity_server_initializer());
   void stop_server();
   void set_log_progress_callback( void (*callback)(const std::string&) );
   void set_log_progress(bool enable);
