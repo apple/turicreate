@@ -410,7 +410,7 @@ class ImageSimilarityModel(_CustomModel):
         """
         return self.similarity_model.similarity_graph(k, radius, include_self_edges, output_type, verbose)
 
-    def export_coreml(self, filename, reference_data):
+    def export_coreml(self, filename):
         """
         Save the model in Core ML format.
 
@@ -428,14 +428,20 @@ class ImageSimilarityModel(_CustomModel):
         from .._mxnet_to_coreml import _mxnet_converter
         from turicreate.toolkits import _coreml_utils
 
+
+        # Get the reference data from the model
+        proxy = self.similarity_model.__proxy__
+        reference_data = _np.array(_tc.extensions._nearest_neighbors._nn_get_reference_data(proxy))
+        embedding_size, num_examples = reference_data.shape
+
+
+        # Get the input and output names
         input_name = self.feature_extractor.data_layer
         output_name = 'distance'
-
-        output_size = reference_data.num_rows()
-
         input_features = [(input_name, _datatypes.Array(*(self.input_image_shape)))]
-        output_features = [(output_name, _datatypes.Array(*(output_size, )))]
+        output_features = [(output_name, _datatypes.Array(*(num_examples, )))]
 
+        # Create a neural network
         builder = _neural_network.NeuralNetworkBuilder(
             input_features, output_features, mode='classifier')
 
@@ -447,7 +453,6 @@ class ImageSimilarityModel(_CustomModel):
             self.feature_extractor.context,
             self.input_image_shape
         )
-
         batch_input_shape = (1, ) + self.input_image_shape
         _mxnet_converter.convert(mx_feature_extractor, mode=None,
                                  input_shape={input_name: batch_input_shape},
@@ -456,22 +461,22 @@ class ImageSimilarityModel(_CustomModel):
         # Calculate the euclidean distance between the newly extracted query features
         # and each extracted reference feature.
         # Calculation of sqrt(v^2 - 2vu + u^2) ensues.
-        W = self.feature_extractor.extract_features(reference_data, self.feature).to_numpy()
-        b = (W * W).sum(axis=1)
-        embedding_size = W.shape[1]
+        W = reference_data
+        b = (W.T * W.T).sum(axis=1)
 
+        # Add the nearest neigbhour model
         feature_layer = self.feature_extractor.feature_layer
         builder.add_inner_product('v^2-2vu', W=-2 * W, b=b, has_bias=True,
-                                  input_channels=embedding_size, output_channels=W.shape[0],
+                                  input_channels=embedding_size, output_channels=num_examples,
                                   input_name=feature_layer, output_name='v^2-2vu')
 
         builder.add_elementwise('element_wise-u2', mode='MULTIPLY',
                                 input_names=[feature_layer, feature_layer],
                                 output_name='element_wise-u2')
 
-        builder.add_inner_product('u2', W=_np.ones((embedding_size, output_size)),
+        builder.add_inner_product('u2', W=_np.ones((embedding_size, num_examples)),
                                   b=None, has_bias=False,
-                                  input_channels=embedding_size, output_channels=output_size,
+                                  input_channels=embedding_size, output_channels=num_examples,
                                   input_name='element_wise-u2', output_name='u2')
 
         builder.add_elementwise('v^2-2vu+u^2', mode='ADD',
@@ -487,13 +492,14 @@ class ImageSimilarityModel(_CustomModel):
         # Finalize model
         _mxnet_converter._set_input_output_layers(builder, [input_name], [output_name])
         builder.set_input([input_name], [self.input_image_shape])
-        builder.set_output([output_name], [(output_size,)])
+        builder.set_output([output_name], [(num_examples,)])
         builder.set_pre_processing_parameters(image_input_names=input_name)
 
-        builder.set_class_labels(class_labels=reference_data[self.label],
+        builder.set_class_labels(class_labels=range(num_examples),
                                  predicted_feature_name='reference_label',
                                  prediction_blob=output_name)
 
+        # Add metadata
         mlmodel = _cmt.models.MLModel(builder.spec)
         model_type = 'image similarity'
         mlmodel.short_description = _coreml_utils._mlmodel_short_description(model_type)
