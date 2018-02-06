@@ -9,6 +9,7 @@
 EXPORT tc_variant* tc_function_call(
     const char* function_name, const tc_parameters* arguments,
     tc_error** error) {
+
   ERROR_HANDLE_START();
 
   turi::variant_map_type params = arguments->value;

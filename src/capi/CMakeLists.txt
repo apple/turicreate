@@ -13,6 +13,7 @@ set(capi_sources
     impl/capi_parameters.cpp
     impl/capi_sframe.cpp
     impl/capi_models.cpp
+    impl/capi_functions.cpp
     impl/capi_variant.cpp
     impl/capi_flex_enum_list.cpp
     impl/capi_wrapper_structs.cpp
