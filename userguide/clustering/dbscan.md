@@ -50,7 +50,7 @@ advantages:
 
 To illustrate the basic usage of DBSCAN and how the results can differ from
 K-means, we simulate non-spherical, low-dimensional data using the scikit-learn
-datasets module.
+datasets module.[<sup>1</sup>](../datasets.md)
 
 ```python
 import turicreate as tc
