@@ -1,6 +1,8 @@
 #!/bin/bash
 
 set -e
+set -x
+
 function print_help {
   echo "Executes all scenario tests using a given egg location"
 
@@ -66,8 +68,11 @@ fi
 set -x
 
 # Set up virtual environment
+if [[ "$VIRTUALENV" == "" ]]; then
+  VIRTUALENV=virtualenv
+fi
 if [[ ! -e venv ]]; then
-    virtualenv venv
+    $VIRTUALENV venv
 fi
 source venv/bin/activate
 pip install -r ../scripts/requirements.txt

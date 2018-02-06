@@ -53,19 +53,19 @@ for test in os.listdir(test_path):
         # if file does not exist, stat will raise an exception. which is kind of
         # annoying. one might expect S_ISDIR to just return False. But no.....
         continue
-    print "============================================================================"
-    print test
-    print "============================================================================"
+    print("============================================================================")
+    print(test)
+    print("============================================================================")
     cmd = 'python single_test_driver.py "{}" "{}"'.format(test, test)
-    print cmd
+    print(cmd)
     # trigger test in subdirectory
     subprocess_exit_code = os.system(cmd)
 
     # error handling -- fail parent process if a test subprocess fails
     if subprocess_exit_code != 0:
-        print "****************************************************************************"
-        print "Non-zero process return: %s" % test
-        print "****************************************************************************"
+        print("****************************************************************************")
+        print("Non-zero process return: %s" % test)
+        print("****************************************************************************")
 
         exit_code = 1
 

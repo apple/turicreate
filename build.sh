@@ -143,7 +143,7 @@ function build_python_egg {
   rm -rf ${target_dir}/python
   mkdir -p ${target_dir}/python
 
-  bash scripts/make_egg.sh --skip_test --skip_cpp_test --build_number="$build_number" --num_procs=${jobs} --${build_mode} --target-dir="${install_dir}"
+  bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number="$build_number" --num_procs=${jobs} --${build_mode} --target-dir="${install_dir}"
   pushd ${build_mode}/src
 
   if [[ $apple -eq 1 ]]; then
