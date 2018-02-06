@@ -464,8 +464,8 @@ class UtilitiesTest(unittest.TestCase):
 
     def setUp(self):
 
-        docs = turicreate.SArray([{'a': 3, 'b': 5},
-                                {'b': 5, 'c': 7},
+        docs = turicreate.SArray([{'b': 5, 'a': 3},
+                                {'c': 7, 'b': 5},
                                 {'a': 2, 'd': 3}])
 
         doc_topics = turicreate.SArray([[.9, .1],
