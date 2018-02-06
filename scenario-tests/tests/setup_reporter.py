@@ -38,7 +38,7 @@ def try_execfile(test_path, filename):
         if os.path.exists(report_filename):
             os.remove(report_filename)
         try:
-            execfile(test_file, globals())
+            exec(compile(open(test_file).read(), test_file, 'exec'), globals())
         except:
             with open(report_filename, 'w') as f:
                 report_failure(f, test_path, filename, sys.exc_info())

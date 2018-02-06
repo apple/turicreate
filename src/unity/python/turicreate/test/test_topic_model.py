@@ -504,4 +504,4 @@ class UtilitiesTest(unittest.TestCase):
                                    self.word_topics,
                                    self.vocabulary)
 
-        self.assertTrue(abs(perp - observed_perp) < .0001)
+        self.assertAlmostEqual(perp, observed_perp, delta=0.0001)

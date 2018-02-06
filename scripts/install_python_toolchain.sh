@@ -3,7 +3,19 @@
 set -x
 set -e
 
-virtualenv ${PWD}/deps/env
+if [[ -z $VIRTUALENV ]]; then
+  VIRTUALENV=virtualenv
+fi
+
+PIP=pip3
+# TODO - not sure why 'm' is necessary here (and not in 2.7)
+PYTHON_FULL_NAME=${PYTHON_VERSION}m
+if [[ "${PYTHON_VERSION}" == "python2.7" ]]; then
+  PIP=pip
+  PYTHON_FULL_NAME=${PYTHON_VERSION}
+fi
+
+$VIRTUALENV ${PWD}/deps/env
 source ${PWD}/deps/env/bin/activate
 
 python_scripts=deps/env/bin
@@ -38,46 +50,14 @@ function download_file {
   fi
 } # end of download file
 
-haspython=0
-if [ -e deps/env/bin/python ]; then
-        haspython=1
-fi
-
-if [[ $haspython == 0 ]]; then
-        if [[ $OSTYPE == darwin* ]]; then
-                if [[ ${PYTHON_VERSION} == "python3.4m" ]]; then
-                        echo "Not supported yet"
-                        exit 1
-                elif [[ ${PYTHON_VERSION} == "python3.5m" ]]; then
-                        echo "Not supported yet"
-                        exit 1
-                else
-                        virtualenv deps/env
-                        source deps/env/bin/activate
-                        echo "skip conda"
-                fi
-        else
-                if [[ ${PYTHON_VERSION} == "python3.4m" ]]; then
-                        echo "Not supported yet"
-                        exit 1
-                elif [[ ${PYTHON_VERSION} == "python3.5m" ]]; then
-                        echo "Not supported yet"
-                        exit 1
-                else
-                        virtualenv deps/env
-                        source deps/env/bin/activate
-                        echo "skip conda"
-                fi
-        fi
-fi
-$python_scripts/pip install --upgrade "pip>=8.1"
-$python_scripts/pip install -r scripts/requirements.txt
+$python_scripts/$PIP install --upgrade "pip>=8.1"
+$python_scripts/$PIP install -r scripts/requirements.txt
 
 mkdir -p deps/local/lib
 mkdir -p deps/local/include
 
 pushd deps/local/include
-for f in `ls ../../env/include/python2.7/*`; do  
+for f in `ls ../../env/include/$PYTHON_FULL_NAME/*`; do  
   ln -Ffs $f
 done
 popd

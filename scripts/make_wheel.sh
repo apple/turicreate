@@ -12,6 +12,10 @@ if [[ $OSTYPE == msys ]]; then
   PYTHON_SCRIPTS=deps/conda/bin/Scripts
 fi
 
+if [[ -z $PY_MAJOR_VERSION ]]; then
+  PY_MAJOR_VERSION=`python -V 2>&1 | perl -ne 'print m/^Python (\d\.\d)/'`
+fi
+
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 WORKSPACE=${SCRIPT_DIR}/..
 ABS_WORKSPACE=`dirname $SCRIPT_DIR`
@@ -20,11 +24,11 @@ export TURICREATE_USERNAME=''
 #export LD_LIBRARY_PATH=${ROOT_DIR}/deps/local/lib:${ROOT_DIR}/deps/local/lib64:$LD_LIBRARY_PATH
 
 print_help() {
-  echo "Builds the release branch and produce an egg to the targets directory "
+  echo "Builds the release branch and produce a wheel to the targets directory "
   echo
-  echo "Usage: ./make_egg.sh --version=[version] [remaining options]"
+  echo "Usage: ./make_wheel.sh --version=[version] [remaining options]"
   echo
-  echo "  --build_number=[version] The build number of the egg, e.g. 123. Or 123.gpu"
+  echo "  --build_number=[version] The build number of the wheel, e.g. 123. Or 123.gpu"
   echo
   echo "  --skip_test              Skip unit test and doc generation."
   echo
@@ -38,10 +42,10 @@ print_help() {
   echo
   echo "  --num_procs=n            Specify the number of proceses to run in parallel"
   echo
-  echo "  --target-dir=[dir]       The directory where the egg and associated files are put."
+  echo "  --target-dir=[dir]       The directory where the wheel and associated files are put."
   echo
-  echo "Produce an local egg and skip test and doc generation"
-  echo "Example: ./make_egg.sh --skip_test"
+  echo "Produce a local wheel and skip test and doc generation"
+  echo "Example: ./make_wheel.sh --skip_test"
   exit 1
 } # end of print help
 
@@ -83,12 +87,11 @@ fi
 mkdir -p ${TARGET_DIR}
 
 # Windows specific
-archive_file_ext="tar.gz"
+archive_file_ext="whl"
 if [[ $OSTYPE == msys ]]; then
   # C++ tests are default skipped on windows due to annoying issues around
   # unable to find libstdc++.dll which are not so easily fixable
   SKIP_CPP_TEST=1
-  archive_file_ext="zip"
 fi
 
 push_ld_library_path() {
@@ -111,13 +114,12 @@ build_source() {
 
   # ./configure --cleanup --yes
 
-  PY_MAJOR_VERSION=`python -V 2>&1 | perl -ne 'print m/^Python (\d\.\d)/'`
-  if [[ $PY_MAJOR_VERSION == 3.4 ]]; then
-      ./configure --python3
-  elif [[ $PY_MAJOR_VERSION == 3.5 ]]; then
+  if [[ "$PY_MAJOR_VERSION" == "3.5" ]]; then
       ./configure --python3.5
+  elif [[ "$PY_MAJOR_VERSION" == "3.6" ]]; then
+      ./configure --python3.6
   else
-      ./configure
+      ./configure --python2.7
   fi
 
   push_ld_library_path
@@ -209,15 +211,14 @@ mac_patch_rpath() {
 }
 
 
-### Package the release folder into an egg tarball, and strip the binaries ###
-package_egg() {
+### Package the release folder into a wheel, and strip the binaries ###
+package_wheel() {
   if [[ $OSTYPE == darwin* ]]; then
     mac_patch_rpath
   fi
-  echo -e "\n\n\n================= Packaging Egg  ================\n\n\n"
+  echo -e "\n\n\n================= Packaging Wheel  ================\n\n\n"
   cd ${WORKSPACE}/${build_type}/src/unity/python
   # cleanup old builds
-  rm -rf *.egg-info
   rm -rf dist
 
   # strip binaries
@@ -237,65 +238,48 @@ package_egg() {
 
   cd ${WORKSPACE}/${build_type}/src/unity/python
   rm -rf build
-  dist_type="sdist"
-  if [[ $OSTYPE == darwin* ]] || [[ $OSTYPE == msys ]]; then
-    dist_type="bdist_wheel"
-  fi
+  dist_type="bdist_wheel"
 
-  VERSION_NUMBER=`python -c "import turicreate; print(turicreate.version_info.version)"`
-  ${PYTHON_EXECUTABLE} setup.py ${dist_type} # This produced an egg/wheel starting with turicreate-${VERSION_NUMBER} under dist/
+  VERSION_NUMBER=`${PYTHON_EXECUTABLE} -c "import turicreate; print(turicreate.version_info.version)"`
+  ${PYTHON_EXECUTABLE} setup.py ${dist_type} # This produced an wheel starting with turicreate-${VERSION_NUMBER} under dist/
 
   rm -f turicreate/util/turicreate_env.py
 
   cd ${WORKSPACE}
 
-  EGG_PATH=${WORKSPACE}/${build_type}/src/unity/python/dist/turicreate-${VERSION_NUMBER}.${archive_file_ext}
+  WHEEL_PATH=`ls ${WORKSPACE}/${build_type}/src/unity/python/dist/turicreate-${VERSION_NUMBER}*.whl`
   if [[ $OSTYPE == darwin* ]]; then
     # Change the platform tag embedded in the file name
-    EGG_PATH=`ls ${WORKSPACE}/${build_type}/src/unity/python/dist/turicreate-${VERSION_NUMBER}*.whl`
-    temp=`echo $EGG_PATH | perl -ne 'print m/(^.*-).*$/'`
+    temp=`echo $WHEEL_PATH | perl -ne 'print m/(^.*-).*$/'`
     temp=${temp/-cpdarwin-/-cp35m-}
     platform_tag="macosx_10_5_x86_64.macosx_10_6_intel.macosx_10_9_intel.macosx_10_9_x86_64.macosx_10_10_intel.macosx_10_10_x86_64.macosx_10_11_intel.macosx_10_11_x86_64"
-    NEW_EGG_PATH=${temp}${platform_tag}".whl"
-    mv ${EGG_PATH} ${NEW_EGG_PATH}
-    EGG_PATH=${NEW_EGG_PATH}
-  elif [[ $OSTYPE == msys ]]; then
-    EGG_PATH=`ls ${WORKSPACE}/${build_type}/src/unity/python/dist/turicreate-${VERSION_NUMBER}-*-none-*.whl`
-
-    NEW_EGG_PATH=${EGG_PATH/-any./-win_amd64.}
-    if [[ ! ${EGG_PATH} == ${NEW_EGG_PATH} ]]; then
-        mv ${EGG_PATH} ${NEW_EGG_PATH}
-        EGG_PATH=${NEW_EGG_PATH}
-    fi
-  elif [[ $OSTYPE == linux-* ]]; then
-    PYTHON_VERSION=`$PYTHON_EXECUTABLE -V 2>&1 | perl -ne 'print m/^Python (\d\.\d)/'`
-    NEW_EGG_PATH=${WORKSPACE}/${build_type}/src/unity/python/dist/turicreate-${VERSION_NUMBER}-py${PYTHON_VERSION}.${archive_file_ext}
-    mv ${EGG_PATH} ${NEW_EGG_PATH}
-    EGG_PATH=${NEW_EGG_PATH}
+    NEW_WHEEL_PATH=${temp}${platform_tag}".whl"
+    mv ${WHEEL_PATH} ${NEW_WHEEL_PATH}
+    WHEEL_PATH=${NEW_WHEEL_PATH}
   fi
 
   # Set Python Language Version Number
-  NEW_EGG_PATH=${EGG_PATH}
-  if [[ $PY_MAJOR_VERSION == 3.4 ]]; then
-      NEW_EGG_PATH=${EGG_PATH/-py3-/-cp34-}
-  elif [[ $PY_MAJOR_VERSION == 3.5 ]]; then
-      NEW_EGG_PATH=${EGG_PATH/-py3-/-cp35-}
-  elif [[ $PY_MAJOR_VERSION == 2.7 ]]; then
-      NEW_EGG_PATH=${EGG_PATH/-py2-/-cp27-}
+  NEW_WHEEL_PATH=${WHEEL_PATH}
+  if [[ "$PY_MAJOR_VERSION" == "3.5" ]]; then
+      NEW_WHEEL_PATH=${WHEEL_PATH/-py3-/-cp35-}
+  elif [[ "$PY_MAJOR_VERSION" == "3.6" ]]; then
+      NEW_WHEEL_PATH=${WHEEL_PATH/-py3-/-cp36-}
+  elif [[ "$PY_MAJOR_VERSION" == "2.7" ]]; then
+      NEW_WHEEL_PATH=${WHEEL_PATH/-py2-/-cp27-}
   fi
-  if [[ ! ${EGG_PATH} == ${NEW_EGG_PATH} ]]; then
-      mv ${EGG_PATH} ${NEW_EGG_PATH}
-      EGG_PATH=${NEW_EGG_PATH}
+  if [[ ! ${WHEEL_PATH} == ${NEW_WHEEL_PATH} ]]; then
+      mv ${WHEEL_PATH} ${NEW_WHEEL_PATH}
+      WHEEL_PATH=${NEW_WHEEL_PATH}
   fi
 
-  # Install the egg and do a sanity check
-  $PIP_EXECUTABLE install --force-reinstall --ignore-installed ${EGG_PATH}
+  # Install the wheel and do a sanity check
+  $PIP_EXECUTABLE install --force-reinstall --ignore-installed ${WHEEL_PATH}
   unset PYTHONPATH
   $PYTHON_EXECUTABLE -c "import turicreate; turicreate.SArray(range(100)).apply(lambda x: x)"
 
   # Done copy to the target directory
-  cp $EGG_PATH ${TARGET_DIR}/
-  echo -e "\n\n================= Done Packaging Egg  ================\n\n"
+  cp $WHEEL_PATH ${TARGET_DIR}/
+  echo -e "\n\n================= Done Packaging Wheel  ================\n\n"
 }
 
 
@@ -314,7 +298,7 @@ generate_docs() {
   cp -R ${WORKSPACE}/src/unity/python/doc/* .
   make clean SPHINXBUILD=${SPHINXBUILD}
   make html SPHINXBUILD=${SPHINXBUILD} || true
-  tar -czf ${TARGET_DIR}/turicreate_python_sphinx_docs.${archive_file_ext} *
+  tar -czf ${TARGET_DIR}/turicreate_python_sphinx_docs.tar.gz *
 }
 
 set_build_number() {
@@ -352,7 +336,7 @@ set_git_SHA
 
 source ${WORKSPACE}/scripts/python_env.sh $build_type
 
-package_egg
+package_wheel
 
 if [[ -z $SKIP_DOC ]]; then
   generate_docs

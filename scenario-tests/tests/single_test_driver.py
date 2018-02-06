@@ -7,7 +7,7 @@ import sys
 from setup_reporter import try_execfile
 
 def print_help():
-    print("""\
+    print(("""\
 %s [sub_directory] [Optional output xunit xml path prefix]
 
 This test runs the scenario test located in the sub directory.
@@ -20,7 +20,7 @@ tests.
 
 For instance, if the PATH variable is changed in setup.py a different python
 environment may be used to run pytest
-""" % sys.argv[0])
+""" % sys.argv[0]))
 
 # set PYTHONPATH to include `common` so that test files can include shared code.
 common_dir = os.path.join(os.getcwd(), '..', 'common')

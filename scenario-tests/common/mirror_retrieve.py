@@ -1,7 +1,7 @@
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 def _raw_urlretrieve(url, target_file, context=None):
-    handle = urllib.urlopen(url)#, context=context)
+    handle = urllib.request.urlopen(url)#, context=context)
     if handle.getcode() >= 300:
         raise IOError("HTTP Error " + str(handle.getcode()))
     with open(target_file, 'wb') as output:
@@ -14,5 +14,5 @@ def _raw_urlretrieve(url, target_file, context=None):
 
 
 def urlretrieve(url, target_file):
-    print "Downloading " + url + " to " + target_file
+    print("Downloading " + url + " to " + target_file)
     _raw_urlretrieve(url, target_file)
