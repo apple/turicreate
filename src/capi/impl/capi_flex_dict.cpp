@@ -18,6 +18,12 @@ EXPORT void tc_flex_dict_destroy(tc_flex_dict* fd) {
   }
 }
 
+// Returns the size of the dictionary
+EXPORT uint64_t tc_flex_dict_size(const tc_flex_dict* fd) {
+  if(fd == NULL) { return 0; }
+  return fd->value.size();
+}
+
 // Adds a key to the dictionary, returning the entry index..
 EXPORT uint64_t tc_flex_dict_add_element(tc_flex_dict* ft,
                                          const tc_flexible_type* first,

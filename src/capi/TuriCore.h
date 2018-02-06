@@ -240,6 +240,9 @@ void tc_flex_list_destroy(tc_flex_list*);
 // Creates an empty flex_dict object.
 tc_flex_dict* tc_flex_dict_create(tc_error**);
 
+// Returns the size of the dictionary.
+uint64_t tc_flex_dict_size(const tc_flex_dict* fd);
+
 // Adds a key to the dictionary, returning the entry index..
 uint64_t tc_flex_dict_add_element(tc_flex_dict* ft, const tc_flexible_type* first, const tc_flexible_type* second, tc_error**);
 
