@@ -6,8 +6,6 @@ function print_help {
   echo
   echo "Usage: ./build.sh [build options] [configure options]"
   echo
-  echo "  -f,--framework                   Build the C-API as an OSX framework."
-  echo 
   echo "  --target-dir, -t                 The target directory to install artifacts to."
   echo "                                   default: `pwd`/targets."
   echo
@@ -19,6 +17,9 @@ function print_help {
   echo "  --cleanup,-c                     Clean up everything before building."
   echo
   echo "  --skip-configure,-s              Skip running ./configure."
+  echo
+  echo "  -f,--framework                   Build the C-API as an OSX framework."
+  echo "  --framework-path                 The location coded into the capi framework (default @rpath)."
   echo
   echo "  All additional options passed through to ./configure."
   exit 1
@@ -52,6 +53,7 @@ configure_options=""
 cmake_options=""
 build_mode="release"
 target_dir=`pwd`/targets
+framework_path='@rpath'
 
 ###############################################################################
 #
@@ -73,6 +75,8 @@ while [ $# -gt 0 ]
 
     --jobs=*)               jobs=${1##--jobs=} ;;
     --jobs|-j)              jobs=$2; shift ;;
+
+    --framework-path)       framework_path="$2"; shift ;;
 
     --help)                 print_help; exit 0;;
 
@@ -131,7 +135,7 @@ function build_capi_framework {
   echo "Building C-API as OSX Framework"
   echo
 
-  run_configure --with-capi-framework --no-python --no-visualization || exit 1
+  run_configure --with-capi-framework --no-python --no-visualization -D TC_CAPI_FRAMEWORK_PATH=\"${framework_path}\" || exit 1
   mkdir -p ${target_dir}
   cd ${build_dir}/src/capi || exit 1
   make -j ${jobs} || exit 1

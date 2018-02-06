@@ -1,8 +1,25 @@
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
+
 #include <unity/server/unity_server_control.hpp>
-#include <unity/lib/toolkit_util.hpp>
 #include <unity/lib/unity_global.hpp>
+
+
+// Allows the exact registration to be overridden in the build process.
+#ifdef TC_CAPI_SERVER_INITIALIZER_CREATION_FUNCTION
+
+  extern const turi::unity_server_initializer& TC_CAPI_SERVER_INITIALIZER_CREATION_FUNCTION();
+
+#else
+
+static const turi::unity_server_initializer& default_server_init() {
+  static turi::unity_server_initializer default_init;
+   return default_init;
+}
+
+#define TC_CAPI_SERVER_INITIALIZER_CREATION_FUNCTION default_server_init
+#endif
+
 
 
 /******************************************************************************/
@@ -27,7 +44,10 @@ EXPORT void tc_initialize(const char* log_file, tc_error** error) {
   s_opts.log_rotation_interval = 0;
   s_opts.log_rotation_truncate = 0;
 
-  turi::start_server(s_opts);
+  turi::unity_server_initializer server_initializer
+    = TC_CAPI_SERVER_INITIALIZER_CREATION_FUNCTION();
+
+  turi::start_server(s_opts, server_initializer);
 
   ERROR_HANDLE_END(error);
 }
@@ -86,8 +106,9 @@ EXPORT const char* tc_model_name(const tc_model* model, tc_error **error) {
   ERROR_HANDLE_END(error, "");
 }
 
-EXPORT tc_variant* tc_model_call_method(const tc_model* model, const char* method, 
-                                           const tc_parameters* arguments, tc_error** error) {
+// Will be changed to
+EXPORT tc_variant* tc_model_call_method(const tc_model* model, const char* method,
+                                        const tc_parameters* arguments, tc_error** error) {
   
   ERROR_HANDLE_START();
 
@@ -97,7 +118,6 @@ EXPORT tc_variant* tc_model_call_method(const tc_model* model, const char* metho
   
   ERROR_HANDLE_END(error, NULL);
 }
-
 
 EXPORT void tc_model_destroy(tc_model* model) {
   delete model; 
