@@ -476,7 +476,7 @@ class ImageSimilarityModel(_CustomModel):
         input_name = self.feature_extractor.data_layer
         output_name = 'distance'
         input_features = [(input_name, _datatypes.Array(*(self.input_image_shape)))]
-        output_features = [(output_name, _datatypes.Array(*(num_examples, )))]
+        output_features = [(output_name, _datatypes.Array(num_examples))]
 
         # Create a neural network
         builder = _neural_network.NeuralNetworkBuilder(
@@ -507,9 +507,8 @@ class ImageSimilarityModel(_CustomModel):
                                   input_channels=embedding_size, output_channels=num_examples,
                                   input_name=feature_layer, output_name='v^2-2vu')
 
-        builder.add_elementwise('element_wise-u^2', mode='MULTIPLY',
-                                input_names=[feature_layer, feature_layer],
-                                output_name='element_wise-u^2')
+        builder.add_unary('element_wise-u^2', mode='power', alpha=2,
+                          input_name=feature_layer, output_name='element_wise-u^2')
 
         # Produce a vector of length num_examples with all values equal to u^2
         builder.add_inner_product('u^2', W=_np.ones((embedding_size, num_examples)),
