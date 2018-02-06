@@ -3824,6 +3824,18 @@ class SFrame(object):
         --------
         aggregate
 
+        Notes
+        -----
+        * Numeric aggregators (such as sum, mean, stdev etc.) follow the skip
+        None policy i.e they will omit all missing values from the aggregation.
+        As an example, `sum([None, 5, 10]) = 15` because the `None` value is
+        skipped.
+        * Aggregators have a default value when no values (after skipping all
+        `None` values) are present. Default values are `None` for ['ARGMAX',
+        'ARGMIN', 'AVG', 'STD', 'MEAN', 'MIN', 'MAX'],  `0` for ['COUNT'
+        'COUNT_DISTINCT', 'DISTINCT'] `[]` for 'CONCAT', 'QUANTILE',
+        'DISTINCT', and `{}` for 'FREQ_COUNT'.
+
         Examples
         --------
         Suppose we have an SFrame with movie ratings by many users.
