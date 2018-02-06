@@ -413,6 +413,9 @@ class ImageSimilarityModel(_CustomModel):
     def export_coreml(self, filename):
         """
         Save the model in Core ML format.
+        The exported model calculates the distance between a query image and
+        each row of the model's stored data. It does not sort and retrieve
+        the k nearest neighbors of the query image.
 
         See Also
         --------
@@ -420,7 +423,43 @@ class ImageSimilarityModel(_CustomModel):
 
         Examples
         --------
+        # Train an image similarity model
+        >>> model = turicreate.image_similarity.create(data)
+
+        # Query the model for similar images
+        >>> similar_images = model.query(data)
+        +-------------+-----------------+---------------+------+
+        | query_label | reference_label |    distance   | rank |
+        +-------------+-----------------+---------------+------+
+        |      0      |        0        |      0.0      |  1   |
+        |      0      |        2        | 24.9664942809 |  2   |
+        |      0      |        1        | 28.4416069428 |  3   |
+        |      1      |        1        |      0.0      |  1   |
+        |      1      |        2        | 21.8715131191 |  2   |
+        |      1      |        0        | 28.4416069428 |  3   |
+        |      2      |        2        |      0.0      |  1   |
+        |      2      |        1        | 21.8715131191 |  2   |
+        |      2      |        0        | 24.9664942809 |  3   |
+        +-------------+-----------------+---------------+------+
+        [9 rows x 4 columns]
+
+        # Export the model to Core ML format
         >>> model.export_coreml('myModel.mlmodel')
+
+        # Load the Core ML model
+        >>> import coremltools
+        >>> ml_model = coremltools.models.MLModel('myModel.mlmodel')
+
+        # Prepare the first image of reference data for consumption
+        # by the Core ML model
+        >>> import PIL
+        >>> image = tc.image_analysis.resize(
+                data['image'][0], *reversed(model.input_image_shape))
+        >>> image = PIL.Image.fromarray(image.pixel_data)
+
+        # Calculate distances using the Core ML model
+        >>> ml_model.predict(data={'data': image})
+        {'distance': array([ 0.      , 28.453125, 24.96875 ])}
         """
         import numpy as _np
         import coremltools as _cmt
@@ -428,12 +467,10 @@ class ImageSimilarityModel(_CustomModel):
         from .._mxnet_to_coreml import _mxnet_converter
         from turicreate.toolkits import _coreml_utils
 
-
         # Get the reference data from the model
         proxy = self.similarity_model.__proxy__
         reference_data = _np.array(_tc.extensions._nearest_neighbors._nn_get_reference_data(proxy))
-        embedding_size, num_examples = reference_data.shape
-
+        num_examples, embedding_size = reference_data.shape
 
         # Get the input and output names
         input_name = self.feature_extractor.data_layer
@@ -443,9 +480,9 @@ class ImageSimilarityModel(_CustomModel):
 
         # Create a neural network
         builder = _neural_network.NeuralNetworkBuilder(
-            input_features, output_features, mode='classifier')
+            input_features, output_features, mode=None)
 
-        # Convert the feature exctraction network
+        # Convert the feature extraction network
         mx_feature_extractor = self.feature_extractor._get_mx_module(
             self.feature_extractor.ptModel.mxmodel,
             self.feature_extractor.data_layer,
@@ -458,29 +495,30 @@ class ImageSimilarityModel(_CustomModel):
                                  input_shape={input_name: batch_input_shape},
                                  builder=builder, verbose=False)
 
-        # Calculate the euclidean distance between the newly extracted query features
-        # and each extracted reference feature.
-        # Calculation of sqrt(v^2 - 2vu + u^2) ensues.
-        W = reference_data
-        b = (W.T * W.T).sum(axis=1)
+        # To add the nearest neighbors model we add calculation of the euclidean 
+        # distance between the newly extracted query features (denoted by the vector u)
+        # and each extracted reference feature (denoted by the rows of matrix V).
+        # Calculation of sqrt((v_i-u)^2) = sqrt(v_i^2 - 2v_i*u + u^2) ensues.
+        V = reference_data
+        v_squared = (V * V).sum(axis=1)
 
-        # Add the nearest neigbhour model
         feature_layer = self.feature_extractor.feature_layer
-        builder.add_inner_product('v^2-2vu', W=-2 * W, b=b, has_bias=True,
+        builder.add_inner_product('v^2-2vu', W=-2 * V, b=v_squared, has_bias=True,
                                   input_channels=embedding_size, output_channels=num_examples,
                                   input_name=feature_layer, output_name='v^2-2vu')
 
-        builder.add_elementwise('element_wise-u2', mode='MULTIPLY',
+        builder.add_elementwise('element_wise-u^2', mode='MULTIPLY',
                                 input_names=[feature_layer, feature_layer],
-                                output_name='element_wise-u2')
+                                output_name='element_wise-u^2')
 
-        builder.add_inner_product('u2', W=_np.ones((embedding_size, num_examples)),
+        # Produce a vector of length num_examples with all values equal to u^2
+        builder.add_inner_product('u^2', W=_np.ones((embedding_size, num_examples)),
                                   b=None, has_bias=False,
                                   input_channels=embedding_size, output_channels=num_examples,
-                                  input_name='element_wise-u2', output_name='u2')
+                                  input_name='element_wise-u^2', output_name='u^2')
 
         builder.add_elementwise('v^2-2vu+u^2', mode='ADD',
-                                input_names=['v^2-2vu', 'u2'],
+                                input_names=['v^2-2vu', 'u^2'],
                                 output_name='v^2-2vu+u^2')
 
         # v^2-2vu+u^2=(v-u)^2 is non-negative but some computations on GPU may result in
@@ -494,10 +532,6 @@ class ImageSimilarityModel(_CustomModel):
         builder.set_input([input_name], [self.input_image_shape])
         builder.set_output([output_name], [(num_examples,)])
         builder.set_pre_processing_parameters(image_input_names=input_name)
-
-        builder.set_class_labels(class_labels=range(num_examples),
-                                 predicted_feature_name='reference_label',
-                                 prediction_blob=output_name)
 
         # Add metadata
         mlmodel = _cmt.models.MLModel(builder.spec)

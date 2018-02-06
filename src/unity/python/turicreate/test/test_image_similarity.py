@@ -6,17 +6,17 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-import sys
 import unittest
 import pytest
 import turicreate as tc
 from turicreate.toolkits import _image_feature_extractor
+from turicreate.toolkits._internal_utils import _mac_ver
 import tempfile
 from . import util as test_util
 import coremltools
-import numpy
-import platform
+import numpy as np
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
+
 
 def _get_data():
     from PIL import Image as _PIL_Image
@@ -166,6 +166,33 @@ class ImageSimilarityTest(unittest.TestCase):
         self.assertEqual(type(str(model)), str)
         self.assertEqual(type(model.__repr__()), str)
 
+    def test_export_coreml(self):
+        """
+        Check the export_coreml() function.
+        """
+
+        # Save the model as a CoreML model file
+        filename = tempfile.mkstemp('ImageSimilarity.mlmodel')[1]
+        self.model.export_coreml(filename)
+
+        # Load the model back from the CoreML model file
+        coreml_model = coremltools.models.MLModel(filename)
+
+        # Get model distances for comparison
+        tc_ret = self.model.query(self.sf[:1], k=self.sf.num_rows())
+
+        if _mac_ver() >= (10, 13):
+            from PIL import Image as _PIL_Image
+
+            ref_img = self.sf[0]['awesome_image'].pixel_data
+            pil_img = _PIL_Image.fromarray(ref_img)
+            coreml_ret = coreml_model.predict({'data': pil_img}, useCPUOnly=True)
+
+            # Compare distances
+            coreml_distances = np.array(sorted(coreml_ret['distance']))
+            tc_distances = tc_ret['distance'].to_numpy()
+            np.testing.assert_array_almost_equal(tc_distances, coreml_distances, decimal=2)
+
     def test_save_and_load(self):
         with test_util.TempDirectory() as filename:
 
@@ -182,6 +209,8 @@ class ImageSimilarityTest(unittest.TestCase):
             print("Summary passed")
             self.test__list_fields()
             print("List fields passed")
+            self.test_export_coreml()
+            print("Export coreml passed")
 
 
 @unittest.skipIf(tc.util._num_available_gpus() == 0, 'Requires GPU')
