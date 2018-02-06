@@ -78,7 +78,7 @@ EXPORT tc_flexible_type* tc_ft_create_from_flex_list(const tc_flex_list* fl, tc_
 EXPORT tc_flexible_type* tc_ft_create_from_datetime(const tc_datetime* dt, tc_error** error) {
   ERROR_HANDLE_START();
   
-  CHECK_NOT_NULL(error, fl, "tc_datetime", NULL);
+  CHECK_NOT_NULL(error, dt, "tc_datetime", NULL);
 
   return new_tc_flexible_type(dt->value);
 
@@ -88,6 +88,8 @@ EXPORT tc_flexible_type* tc_ft_create_from_datetime(const tc_datetime* dt, tc_er
 EXPORT tc_flexible_type* tc_ft_create_from_flex_dict(const tc_flex_dict* fd, tc_error** error) {
   ERROR_HANDLE_START();
 
+  CHECK_NOT_NULL(error, fd, "tc_flex_dict", NULL);
+
   return new_tc_flexible_type(fd->value);
 
   ERROR_HANDLE_END(error, NULL);
@@ -96,6 +98,8 @@ EXPORT tc_flexible_type* tc_ft_create_from_flex_dict(const tc_flex_dict* fd, tc_
 // Create a flexible type from an image
 EXPORT tc_flexible_type* tc_ft_create_from_image(const tc_flex_image* image, tc_error** error) {
   ERROR_HANDLE_START();
+
+  CHECK_NOT_NULL(error, image, "tc_flex_image", NULL);
 
   return new_tc_flexible_type(image->value);
 
