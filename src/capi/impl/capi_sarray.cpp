@@ -842,20 +842,16 @@ EXPORT tc_sarray* tc_sarray_apply(
                    "Context release function passed in is null.", nullptr);
   }
 
-  // Use unique_ptr to ensure that the user data is released exactly once. Use
-  // shared_ptr to allow a std::function (which must be copyable) to embed the
-  // user data.
-  using context_unique_ptr =
-      std::unique_ptr<void, decltype(context_release_callback)>;
-  auto shared_context = std::make_shared<context_unique_ptr>(
-      context, context_release_callback);
+  // Use shared_ptr to ensure that the user data is released exactly once, after
+  // all copies of the lambda below have been destroyed.
+  std::shared_ptr<void> shared_context(context, context_release_callback);
   auto wrapper = [callback, shared_context](const turi::flexible_type& ft) {
     tc_error* error = nullptr;
 
     // Invoke the user callback.
     tc_flexible_type in;
     in.value = ft;
-    tc_flexible_type* out = callback(&in, shared_context.get()->get(), &error);
+    tc_flexible_type* out = callback(&in, shared_context.get(), &error);
 
     // Propagate errors from user code up to whatever C-API throw-catch block
     // (hopefully) encloses the call that triggered this wrapper's invocation.
