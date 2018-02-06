@@ -8,7 +8,7 @@ forests.
 
 ##### Introductory Example
 
-In this example, we will use the [Mushrooms dataset](https://archive.ics.uci.edu/ml/datasets/mushroom).
+In this example, we will use the [Mushrooms dataset](https://archive.ics.uci.edu/ml/datasets/mushroom).decision_tree_regression.md
 ```python
 import turicreate as tc
 
