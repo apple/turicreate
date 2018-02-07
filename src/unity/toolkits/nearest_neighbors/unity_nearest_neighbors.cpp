@@ -399,6 +399,7 @@ EXPORT std::vector<toolkit_function_specification> get_toolkit_function_registra
           similarity_graph_spec};
 
   REGISTER_FUNCTION(train, "params")
+  REGISTER_FUNCTION(_nn_get_reference_data, "model")
   return specs;
 }
 
