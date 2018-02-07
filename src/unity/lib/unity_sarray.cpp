@@ -1098,40 +1098,18 @@ std::shared_ptr<unity_sarray_base> unity_sarray::str_to_datetime(std::string for
   if (current_type != flex_type_enum::STRING) {
     log_and_throw("input SArray must be string type.");
   }
-  if (format == "ISO") {
-    format = "%Y%m%dT%H%M%S%F%q";
-  }
 
+  using flexible_type_impl::date_time_string_reader;
   const size_t max_n_threads = thread::cpu_count();
-  std::vector<std::shared_ptr<std::istringstream> > streams(max_n_threads);
+  auto readers = std::make_shared<std::vector<date_time_string_reader>>();
+  readers->reserve(max_n_threads);
   for (size_t index = 0; index < max_n_threads;index++) {
-    std::shared_ptr<std::istringstream> ss(new std::istringstream);
-    ss->exceptions(std::ios_base::failbit);
-    ss->imbue(std::locale(ss->getloc(),new boost::local_time::local_time_input_facet(format)));
-    streams[index] = ss;
+    readers->emplace_back(format);
   }
-  auto transform_fn = [streams, format](const flexible_type& f)->flexible_type {
+  auto transform_fn = [readers](const flexible_type& f) -> flexible_type {
     size_t thread_idx = thread::thread_id();
-    const auto& stream = streams[thread_idx];
-    try {
-      boost::local_time::local_date_time ldt(boost::posix_time::not_a_date_time);
-      stream->str(f.get<flex_string>());
-      (*stream) >> ldt; // do the parse
-
-      boost::posix_time::ptime p = ldt.utc_time();
-      std::time_t _time = flexible_type_impl::ptime_to_time_t(p);
-      int32_t microseconds = flexible_type_impl::ptime_to_fractional_microseconds(p);
-      int32_t timezone_offset = flex_date_time::EMPTY_TIMEZONE;
-      if(ldt.zone()) {
-        timezone_offset =
-            (int32_t)ldt.zone()->base_utc_offset().total_seconds() /
-            flex_date_time::TIMEZONE_RESOLUTION_IN_SECONDS;
-      }
-      return flexible_type(flex_date_time(_time,timezone_offset, microseconds));
-    } catch(std::exception& ex) {
-      log_and_throw("Unable to interpret " + f.get<flex_string>() +
-                    " as string with " + format + " format");
-    }
+    date_time_string_reader& reader = readers->at(thread_idx);
+    return flexible_type(reader.read(f.get<flex_string>()));
   };
   auto ret = transform_lambda(transform_fn,
                               flex_type_enum::DATETIME,

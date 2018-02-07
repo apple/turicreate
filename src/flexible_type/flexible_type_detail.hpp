@@ -40,6 +40,29 @@ flex_int ptime_to_time_t(const boost::posix_time::ptime & time);
 flex_int ptime_to_fractional_microseconds(const boost::posix_time::ptime & time);
 
 /**
+ * Helper for reading flex_date_time values from strings.
+ */
+class date_time_string_reader {
+public:
+  /**
+   * Initializes this instance to read strings with the given format. If the
+   * format string is "ISO", then format "%Y%m%dT%H%M%S%F%q" is used.
+   */
+  explicit date_time_string_reader(std::string format);
+
+  /**
+   * Returns the flex_date_time value parsed from `input`, or throws an
+   * exception if `input` could not be parsed using the format provided to the
+   * constructor.
+   */
+  flex_date_time read(const flex_string& input);
+
+private:
+  std::string format_;
+  std::istringstream stream_;
+};
+
+/**
  * \ingroup group_gl_flexible_type
  * \internal
  * Used to issue a static_assert only if instantiated.
@@ -464,6 +487,7 @@ struct get_datetime_visitor {
     ret.set_microsecond_res_timestamp(i);
     return ret;
   }
+  flex_date_time operator()(const flex_string& s) const;
 };
 
 
