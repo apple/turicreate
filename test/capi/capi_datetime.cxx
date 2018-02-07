@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_CASE(test_tc_datetime_create_from_string) {
   const turi::flexible_type expected = turi::flex_date_time(TIMESTAMP);
 
   tc_datetime* dt = tc_datetime_create_from_string(
-      expected.to<turi::flex_string>().c_str(), "ISO", &error);
+      expected.to<turi::flex_string>().c_str(), nullptr, &error);
   TS_ASSERT_EQUALS(error, nullptr);
   TS_ASSERT_DIFFERS(dt, nullptr);
 

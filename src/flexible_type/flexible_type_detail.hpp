@@ -46,7 +46,7 @@ class date_time_string_reader {
 public:
   /**
    * Initializes this instance to read strings with the given format. If the
-   * format string is "ISO", then format "%Y%m%dT%H%M%S%F%q" is used.
+   * format string is empty, then format "%Y%m%dT%H%M%S%F%q" is used.
    */
   explicit date_time_string_reader(std::string format);
 

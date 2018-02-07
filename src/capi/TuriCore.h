@@ -266,8 +266,8 @@ tc_datetime* tc_datetime_create_from_posix_timestamp(int64_t posix_timestamp, tc
 tc_datetime* tc_datetime_create_from_posix_highres_timestamp(double posix_timestamp, tc_error**);
 
 // Set the datetime value from a string timestamp of the date and/or time,
-// parsed using the provided format. If the format string is "ISO", then format
-// "%Y%m%dT%H%M%S%F%q" is used.
+// parsed using the provided format. If the format string is NULL, then the ISO
+// format is used: "%Y%m%dT%H%M%S%F%q".
 tc_datetime* tc_datetime_create_from_string(const char* datetime_str, const char* format, tc_error**);
 
 // Set and get the time zone.  The time zone has 15 min resolution.

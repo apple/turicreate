@@ -19,7 +19,7 @@ EXPORT tc_datetime* tc_datetime_create_empty(tc_error** error) {
 
   return new_tc_datetime();
 
-  ERROR_HANDLE_END(error, nullptr);  
+  ERROR_HANDLE_END(error, nullptr);
 }
 
 // Create and set a datetime object from a posix timestamp value --
@@ -29,9 +29,9 @@ EXPORT tc_datetime* tc_datetime_create_from_posix_timestamp(
   ERROR_HANDLE_START();
 
   return new_tc_datetime(posix_timestamp);
-  
+
   ERROR_HANDLE_END(error, nullptr);
-}    
+}
 
 // Create and set a datetime object from a high res posix timestamp value --
 // the number of seconds since January 1, 1970, UTC, in double precision.
@@ -48,13 +48,16 @@ EXPORT tc_datetime* tc_datetime_create_from_posix_highres_timestamp(
 
 // Set the datetime value from a string timestamp of the date and/or time.
 EXPORT tc_datetime* tc_datetime_create_from_string(
-      const char* datetime_str, const char* format, tc_error** error) {
+      const char* datetime_str, const char* format_str, tc_error** error) {
   ERROR_HANDLE_START();
 
   CHECK_NOT_NULL(error, datetime_str, "Datetime string", nullptr);
-  CHECK_NOT_NULL(error, format, "Format string", nullptr);
 
-  turi::flexible_type_impl::date_time_string_reader reader(format);
+  std::string format;
+  if (format_str != nullptr) {
+    format = format_str;
+  }
+  turi::flexible_type_impl::date_time_string_reader reader(std::move(format));
 
   return new_tc_datetime(reader.read(datetime_str));
 
@@ -70,7 +73,7 @@ EXPORT void tc_datetime_set_time_zone_offset(
   CHECK_NOT_NULL(error, dt, "Datetime");
 
   dt->value.set_time_zone_offset(4* n_tz_hour_offset + n_tz_15min_offsets);
-  
+
   ERROR_HANDLE_END(error);
 }
 EXPORT int64_t tc_datetime_get_time_zone_offset_minutes(

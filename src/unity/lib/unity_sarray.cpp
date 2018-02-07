@@ -1100,6 +1100,9 @@ std::shared_ptr<unity_sarray_base> unity_sarray::str_to_datetime(std::string for
   }
 
   using flexible_type_impl::date_time_string_reader;
+  if (format == "ISO") {
+    format.clear();  // date_time_string_reader interprets "" as ISO
+  }
   const size_t max_n_threads = thread::cpu_count();
   auto readers = std::make_shared<std::vector<date_time_string_reader>>();
   readers->reserve(max_n_threads);

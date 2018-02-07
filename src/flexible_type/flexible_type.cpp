@@ -74,7 +74,7 @@ std::string date_time_to_string(const flex_date_time& i) {
 
 date_time_string_reader::date_time_string_reader(std::string format)
     : format_(std::move(format)) {
-  if (format_ == "ISO") {
+  if (format_.empty()) {
     format_ = "%Y%m%dT%H%M%S%F%q";
   }
 
