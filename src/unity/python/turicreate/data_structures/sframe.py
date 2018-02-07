@@ -751,6 +751,8 @@ class SFrame(object):
         else:
             self.__proxy__ = UnitySFrameProxy()
             _format = None
+            if six.PY2 and isinstance(data, unicode):
+                data = data.encode('utf-8')
             if (format == 'auto'):
                 if (HAS_PANDAS and isinstance(data, pandas.DataFrame)):
                     _format = 'dataframe'
@@ -3080,16 +3082,11 @@ class SFrame(object):
         """
         if not _is_non_string_iterable(column_names):
             raise TypeError("column_names must be an iterable")
-        if not (all([isinstance(x, str) or isinstance(x, type) or isinstance(x, bytes)
+        if not (all([isinstance(x, six.string_types) or isinstance(x, type) or isinstance(x, bytes)
                      for x in column_names])):
-            raise TypeError("Invalid key type: must be str, bytes or type")
+            raise TypeError("Invalid key type: must be str, unicode, bytes or type")
 
-        column_names_set = set(self.column_names())
-        # quick validation to make sure all selected string columns exist
-        requested_str_columns = [s for s in column_names if isinstance(s, str)]
-        for i in requested_str_columns:
-            if i not in column_names_set:
-                raise RuntimeError("Column name " +  i + " does not exist")
+        requested_str_columns = [s for s in column_names if isinstance(s, six.string_types)]
 
         # Make sure there are no duplicates keys
         from collections import Counter
@@ -3520,7 +3517,9 @@ class SFrame(object):
         """
         if type(key) is SArray:
             return self._row_selector(key)
-        elif type(key) is str:
+        elif isinstance(key, six.string_types):
+            if six.PY2 and type(key) == unicode:
+                key = key.encode('utf-8')
             return self.select_column(key)
         elif type(key) is type:
             return self.select_columns([key])

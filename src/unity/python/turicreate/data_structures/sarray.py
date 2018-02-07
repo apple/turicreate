@@ -32,6 +32,7 @@ import collections
 import datetime
 import warnings
 import numbers
+import six
 
 __all__ = ['SArray']
 
@@ -3089,6 +3090,8 @@ class SArray(object):
 
         if column_name_prefix is None:
             column_name_prefix = ""
+        if six.PY2 and type(column_name_prefix) == unicode:
+            column_name_prefix = column_name_prefix.encode('utf-8')
         if type(column_name_prefix) != str:
             raise TypeError("'column_name_prefix' must be a string")
 
@@ -3332,7 +3335,7 @@ class SArray(object):
 
         if column_name_prefix is None:
             column_name_prefix = ""
-        if type(column_name_prefix) != str:
+        if not(isinstance(column_name_prefix, six.string_types)):
             raise TypeError("'column_name_prefix' must be a string")
 
         # validate 'limit'
@@ -3394,9 +3397,9 @@ class SArray(object):
         with cython_context():
             if (self.dtype == dict and column_types is None):
                 limit = limit if limit is not None else []
-                return _SFrame(_proxy=self.__proxy__.unpack_dict(column_name_prefix.encode(), limit, na_value))
+                return _SFrame(_proxy=self.__proxy__.unpack_dict(column_name_prefix.encode('utf-8'), limit, na_value))
             else:
-                return _SFrame(_proxy=self.__proxy__.unpack(column_name_prefix.encode(), limit, column_types, na_value))
+                return _SFrame(_proxy=self.__proxy__.unpack(column_name_prefix.encode('utf-8'), limit, column_types, na_value))
 
     def sort(self, ascending=True):
         """
