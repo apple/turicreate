@@ -42,6 +42,11 @@ EXPORT uint64_t tc_flex_dict_add_element(tc_flex_dict* ft,
   ERROR_HANDLE_END(error, uint64_t(-1));
 }
 
+EXPORT uint64_t tc_flex_dict_size(const tc_flex_dict* fd) {
+  if(fd == NULL) { return 0; }
+  return fd->value.size();
+}
+
 // Extract the (key, value) pair corresponding to the entry at entry_index.
 EXPORT void tc_flex_dict_extract_entry(const tc_flex_dict* ft,
                                        uint64_t entry_index,

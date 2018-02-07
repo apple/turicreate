@@ -292,6 +292,21 @@ EXPORT tc_flex_image* tc_ft_flex_image(const tc_flexible_type* ft, tc_error **er
   ERROR_HANDLE_END(error, NULL);
 }
 
+EXPORT tc_datetime* tc_ft_datetime(const tc_flexible_type* ft, tc_error **error) {
+  ERROR_HANDLE_START();
+
+  CHECK_NOT_NULL(error, ft, "Flexible type", NULL);
+
+  if (ft->value.get_type() != turi::flex_type_enum::DATETIME) {
+    set_error(error, "Flexible type not a datetime object.");
+    return NULL;
+  }
+
+  return new_tc_datetime(ft->value.get<turi::flex_date_time>());
+
+  ERROR_HANDLE_END(error, NULL);
+}
+
 
 EXPORT tc_flexible_type* tc_ft_as_string(const tc_flexible_type* ft, tc_error** error) {
   ERROR_HANDLE_START();
