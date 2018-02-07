@@ -268,8 +268,10 @@ tc_datetime* tc_datetime_create_from_posix_timestamp(int64_t posix_timestamp, tc
 // the number of seconds since January 1, 1970, UTC, in double precision.
 tc_datetime* tc_datetime_create_from_posix_highres_timestamp(double posix_timestamp, tc_error**);
 
-// Set the datetime value from a string timestamp of the date and/or time.
-tc_datetime* tc_datetime_create_from_string(const char* datetime_str, tc_error**);
+// Set the datetime value from a string timestamp of the date and/or time,
+// parsed using the provided format. If the format string is NULL, then the ISO
+// format is used: "%Y%m%dT%H%M%S%F%q".
+tc_datetime* tc_datetime_create_from_string(const char* datetime_str, const char* format, tc_error**);
 
 // Set and get the time zone.  The time zone has 15 min resolution.
 void tc_datetime_set_time_zone_offset(tc_datetime* dt, int64_t n_tz_hour_offset, int64_t n_tz_15min_offsets, tc_error**);
@@ -287,11 +289,11 @@ int64_t tc_datetime_get_timestamp(tc_datetime* dt, tc_error**);
 void tc_datetime_set_highres_timestamp(tc_datetime* dt, double d, tc_error**);
 double tc_datetime_get_highres_timestamp(tc_datetime* dt, tc_error**);
 
-// Returns true if the time dt1 is before the time dt2
-bool tc_datetime_less_than(const tc_datetime* dt1, const tc_datetime* dt2, tc_error**);
+// Returns nonzero if the time dt1 is before the time dt2
+int tc_datetime_less_than(const tc_datetime* dt1, const tc_datetime* dt2, tc_error**);
 
-// Returns true if the time dt1 is equal to the time dt2
-bool tc_datetime_equal(const tc_datetime* dt1, const tc_datetime* dt2, tc_error**);
+// Returns nonzero if the time dt1 is equal to the time dt2
+int tc_datetime_equal(const tc_datetime* dt1, const tc_datetime* dt2, tc_error**);
 
 // Destructor
 void tc_datetime_destroy(tc_datetime*);

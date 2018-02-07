@@ -4,6 +4,7 @@ project(turi_capi)
 set(capi_sources 
     impl/capi_error_handling.cpp
     impl/capi_flexible_type.cpp
+    impl/capi_datetime.cpp
     impl/capi_flex_dict.cpp
     impl/capi_flex_list.cpp
     impl/capi_flex_image.cpp
