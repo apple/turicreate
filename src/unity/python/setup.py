@@ -10,12 +10,12 @@ import os
 import sys
 import glob
 import subprocess
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, Extension
 from setuptools.dist import Distribution
 from setuptools.command.install import install
 
 PACKAGE_NAME="turicreate"
-VERSION='4.0'#{{VERSION_STRING}}
+VERSION='4.1'#{{VERSION_STRING}}
 
 # Prevent distutils from thinking we are a pure python package
 class BinaryDistribution(Distribution):
@@ -101,6 +101,8 @@ if __name__ == '__main__':
         "License :: OSI Approved :: BSD License",
         "Natural Language :: English",
         "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Scientific/Engineering",
         "Topic :: Scientific/Engineering :: Information Analysis",
@@ -124,6 +126,12 @@ if __name__ == '__main__':
     setup(
         name="turicreate",
         version=VERSION,
+
+        # This distribution contains platform-specific C++ libraries, but they are not
+        # built with distutils. So we must create a dummy Extension object so when we
+        # create a binary file it knows to make it platform-specific.
+        ext_modules=[Extension('turicreate.__dummy', sources = ['dummy.c'])],
+
         author='Apple Inc.',
         author_email='turi-create@group.apple.com',
         cmdclass=dict(install=InstallEngine),
@@ -167,7 +175,7 @@ if __name__ == '__main__':
             "prettytable == 0.7.2",
             "requests >= 2.9.1",
             "mxnet >= 0.11, < 1.0.0",
-            "coremltools == 0.6.3",
+            "coremltools == 0.8",
             "pillow >= 3.3.0",
             "pandas >= 0.19.0",
         ],

@@ -74,7 +74,7 @@ new_cats_dogs['predictions'] = model.predict(new_cats_dogs)
 
 Refer to the following chapters for:
 * [Advanced](advanced-usage.md) usage options including the use of GPUs and deployment to device.
-* [Techincal details](how-it-works.md) on how the image classifier works
+* [Technical details](how-it-works.md) on how the image classifier works
 
 In addition, the following chapters contain more information on how to use classifiers:
 

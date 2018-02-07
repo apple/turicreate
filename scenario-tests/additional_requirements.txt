@@ -5,6 +5,5 @@ nltk==3.2
 pyscreenshot==0.4
 python-swiftclient
 python-keystoneclient
-spacy==0.100.7
 testfixtures==4.10.0
 h5py==2.7.1

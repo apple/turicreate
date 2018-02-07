@@ -16,7 +16,7 @@ seamless transformation to and from SFrames.
 
 There are several ways to create an SGraph. The simplest is to start
 with an empty graph, then add vertices and edges in the form of lists of
-turicreate.Vertex and turicreate.Edge objects. SGraphs are structually
+turicreate.Vertex and turicreate.Edge objects. SGraphs are structurally
 immutable; in the following snippet, `add_vertices` and `add_edges` both
 return a new graph.
 
@@ -158,7 +158,7 @@ subgraph = g.get_neighborhood(ids=targets, radius=1, full_subgraph=True)
 
 #### Modifying SGraphs
 
-SGraphs are *structually immutable*, but the data stored on vertices and edges
+SGraphs are *structurally immutable*, but the data stored on vertices and edges
 can be mutated using two special SGraph properties. `SGraph.vertices` and
 `SGraph.edges` are SFrames containing the vertex and edge data, respectively.
 The following examples show the difference between the special graph-related
@@ -183,7 +183,7 @@ g.get_edges().print_rows(5)
 ```
 
 The difference is that the return value of `g.get_edges()` is a normal SFrame
-indepedent from `g`, whereas `g.edges` is bound to `g`. We can modify the edge
+independent from `g`, whereas `g.edges` is bound to `g`. We can modify the edge
 data using this special edge SFrame. The next snippet mutates the relation
 attribute on the edges of `g`. In particular, it extracts the first letter and
 converts it to upper case.
@@ -240,7 +240,7 @@ e['is_friend'] = e['relation'].apply(lambda x: x[0] == 'F')
 
 Another important difference of these two special SFrames is that the `__id`,
 `__src_id`, and `__dst_id` fields are not mutable because changing them would
-change the structure of the graph and SGraph is *structually immutable*.
+change the structure of the graph and SGraph is *structurally immutable*.
 
 Otherwise, `g.vertices` and `g.edges` act like normal SFrames, which makes
 modifying graph data very easy. For example, adding (removing) an edge

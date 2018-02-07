@@ -77,18 +77,18 @@ Metric:
 | num_iterations | 10       |
 | training_time  | 7.223114 |
 +----------------+----------+
-Queriable Fields
+Queryable Fields
 +-------------------+-----------------------------------------------------------+
 | Field             | Description                                               |
 +-------------------+-----------------------------------------------------------+
 | training_time     | Total training time of the model                          |
 | graph             | A new SGraph with the pagerank as a vertex property       |
 | delta             | Change in pagerank for the last iteration in L1 norm      |
-| reset_probability | The probablity of randomly jumps to any node in the graph |
+| reset_probability | The probability of randomly jumps to any node in the graph|
 | pagerank          | An SFrame with each vertex's pagerank                     |
 | num_iterations    | Number of iterations                                      |
 | threshold         | The convergence threshold in L1 norm                      |
-| max_iterations    | The maximun number of iterations to run                   |
+| max_iterations    | The maximum number of iterations to run                   |
 +-------------------+-----------------------------------------------------------+
 ```
 
