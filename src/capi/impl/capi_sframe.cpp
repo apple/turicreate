@@ -653,6 +653,16 @@ EXPORT tc_sframe* tc_sframe_slice_stride(const tc_sframe* sf, const uint64_t sta
   ERROR_HANDLE_END(error, NULL);
 }
 
+EXPORT tc_flex_list* tc_sframe_extract_row(const tc_sframe* sf, const uint64_t row, tc_error** error){
+  ERROR_HANDLE_START();
+
+  CHECK_NOT_NULL(error, sf, "sframe", NULL);
+
+  return new_tc_flex_list(sf->value[row]);
+
+  ERROR_HANDLE_END(error, NULL);
+}
+
 EXPORT tc_sframe* tc_sframe_fillna(const tc_sframe* data,const char* column,const tc_flexible_type* value, tc_error** error){
   ERROR_HANDLE_START();
 

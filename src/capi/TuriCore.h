@@ -575,6 +575,9 @@ tc_sframe* tc_sframe_dropna(const tc_sframe* sf, const tc_flex_list* columns, co
 tc_sframe* tc_sframe_slice(const tc_sframe* sf, const uint64_t start, const uint64_t end, tc_error**);
 tc_sframe* tc_sframe_slice_stride(const tc_sframe* sf, const uint64_t start, const uint64_t end, const uint64_t stride, tc_error**);
 
+tc_flex_list* tc_sframe_extract_row(const tc_sframe* sf, uint64_t row_index, tc_error**);  
+
+
 // Whizbangery
 //
 // Join two sframes.

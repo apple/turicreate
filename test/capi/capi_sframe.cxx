@@ -1391,6 +1391,52 @@ void test_sframe_slice_test(){
   TS_ASSERT(true);
 }
 
+void test_sframe_row_test(){
+  tc_error* error = NULL;
+  tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
+  turi::gl_sframe sf_gl;
+
+  std::vector<std::pair<std::string, std::vector<double> > > data
+    = { {"col1", {1.0, 2., 5., 0.5, 1.0, 2., 5., NULL, 1.0, 2., 5., 0.5, 1.0, 2., 5., 0.5} },
+        {"col2", {2.0, 2., 3., 0.5, 1.0, 2., 5., 0.5, 1.0, 2., 5., 0.5, 1.0, 2., 5., 0.5} },
+        {"a",    {5.0, 2., 1., 0.5, 1.0, 2., 5., 0.5, 1.0, 2., 5., 0.5, 1.0, 2., 5., 0.5} },
+        {"b",    {7.0, 2., 3., 1.5, 1.0, 2., 5., 0.5, 1.0, 2., 5., 0.5, 1.0, 2., 5., 0.5} },
+        {"c",    {7.0, 2., 3., 1.5, 1.0, 2., 5., 0.5, 1.0, 2., 5., 0.5, 1.0, 2., 5., 0.5} }
+       };
+
+
+  for(auto p : data) {
+    tc_sarray* sa = make_sarray_double(p.second);
+
+    tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
+    TS_ASSERT(error == NULL);
+
+    turi::flex_list lst;
+
+    for (auto it = p.second.begin(); it!=p.second.end(); ++it) {
+        lst.push_back(*it);
+    }
+
+    turi::gl_sarray g(lst);
+
+    sf_gl.add_column(g, p.first.c_str());
+
+    tc_sarray_destroy(sa);
+  }
+
+  tc_flex_list* fl = tc_sframe_extract_row(sf, 1, &error);
+  TS_ASSERT(error == NULL);
+  
+  TS_ASSERT(fl->value == sf->value[1]); 
+
+  tc_sframe_destroy(sf);
+  tc_flex_list_destroy(fl);
+
+}
+
+
 void test_sframe_slice_stride_test(){
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
