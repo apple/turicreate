@@ -17,7 +17,7 @@ Turi Create supports:
 System Requirements
 -------------------
 
--  Python 2.7 (Python 3.5+ support coming soon)
+-  Python 2.7, 3.5, or 3.6
 -  x86_64 architecture
 
 Installation
