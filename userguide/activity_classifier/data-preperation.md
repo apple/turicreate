@@ -1,6 +1,6 @@
 # HAPT Data Preparation
 
-In this section we will see how to get the [HAPT experiment](http://archive.ics.uci.edu/ml/datasets/Smartphone-Based+Recognition+of+Human+Activities+and+Postural+Transitions) data into the SFrame format expected by the activity classifier.
+In this section we will see how to get the [HAPT experiment](http://archive.ics.uci.edu/ml/datasets/Smartphone-Based+Recognition+of+Human+Activities+and+Postural+Transitions) data into the SFrame format expected by the activity classifier.[<sup>1</sup>](../datasets.md)
 
 First we need to download the data from [here](http://archive.ics.uci.edu/ml/machine-learning-databases/00341/HAPT%20Data%20Set.zip) in zip format. The code below assumes the data was unzipped into a directory named `HAPT Data Set`. This folder contains 3 types of files - a file containing the performed activities for each experiment, files containing the collected accelerometer samples, and files containing the collected gyroscope samples.
 
