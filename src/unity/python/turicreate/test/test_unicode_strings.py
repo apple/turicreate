@@ -17,12 +17,10 @@ import turicreate as tc
 class UnicodeStringTest(unittest.TestCase):
 
     def test_unicode_column_accessor(self):
-        import turicreate as tc
         sf = tc.SFrame({'a': range(100)})
         self.assertEqual(sf[u'a'][0], sf['a'][0])
 
     def test_unicode_unpack_prefix(self):
-        import turicreate as tc
         sf = tc.SFrame({'a':[{'x':1}, {'x':2}, {'x':3}]})
         sf = sf.unpack('a', u'\u00aa')
         for col in sf.column_names():
