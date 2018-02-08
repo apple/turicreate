@@ -123,6 +123,9 @@ if __name__ == '__main__':
         sys.stderr.write(msg)
         sys.exit(1)
 
+    with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as f:
+        long_description = f.read()
+
     setup(
         name="turicreate",
         version=VERSION,
@@ -169,6 +172,7 @@ if __name__ == '__main__':
         url='https://github.com/apple/turicreate',
         license='LICENSE.txt',
         description='Turi Create enables developers and data scientists to apply machine learning to build state of the art data products.',
+        long_description=long_description,
         classifiers=classifiers,
         install_requires=[
             "decorator >= 4.0.9",
