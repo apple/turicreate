@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.stack &mdash; Turi Create API 4.0 documentation</title>
+  <title>turicreate.SFrame.stack &mdash; Turi Create API 4.1 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.1 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -133,8 +133,8 @@ The rest of the columns are repeated for each key/value pair.</p>
 <p>If the column is array or list type, one new column is created as a
 result of stacking. With each row holds one element of the array or list
 value, and the rest columns from the same original row repeated.</p>
-<p>The new SFrame includes the newly created column and all columns other
-than the one that is stacked.</p>
+<p>The returned SFrame includes the newly created column(s) and all
+columns other than the one that is stacked.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -216,7 +216,7 @@ column:</p>
 </pre></div>
 </div>
 <p>Observe that since topic 4 had no words, an empty row is inserted.
-To drop that row, set dropna=True in the parameters to stack.</p>
+To drop that row, set drop_na=True in the parameters to stack.</p>
 <p>Suppose &#8216;sf&#8217; is an SFrame that contains a user and his/her friends,
 where &#8216;friends&#8217; columns is an array type. Stack on &#8216;friends&#8217; column
 would create a user/friend list for each user/friend pair:</p>
@@ -265,7 +265,7 @@ would create a user/friend list for each user/friend pair:</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Dec 07, 2017.
+      Last updated on Feb 08, 2018.
     </p>
   </div>
 </footer>
@@ -283,7 +283,7 @@ would create a user/friend list for each user/friend pair:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.0',
+            VERSION:'4.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

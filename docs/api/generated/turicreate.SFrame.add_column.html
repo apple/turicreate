@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.add_column &mdash; Turi Create API 4.0 documentation</title>
+  <title>turicreate.SFrame.add_column &mdash; Turi Create API 4.1 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.1 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -165,7 +165,7 @@ chosen.</p>
 <p class="rubric">Examples</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;val&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;fossa&#39;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># This line is equivalant to `sf[&#39;species&#39;] = sa`</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># This line is equivalent to `sf[&#39;species&#39;] = sa`</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="n">sa</span><span class="p">,</span> <span class="s1">&#39;species&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">res</span>
 <span class="go">+----+-----+---------+</span>
@@ -191,7 +191,7 @@ chosen.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Dec 07, 2017.
+      Last updated on Feb 08, 2018.
     </p>
   </div>
 </footer>
@@ -209,7 +209,7 @@ chosen.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.0',
+            VERSION:'4.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

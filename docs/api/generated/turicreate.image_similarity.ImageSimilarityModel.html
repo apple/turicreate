@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.image_similarity.ImageSimilarityModel &mdash; Turi Create API 4.0 documentation</title>
+  <title>turicreate.image_similarity.ImageSimilarityModel &mdash; Turi Create API 4.1 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.1 documentation" href="../index.html"/>
         <link rel="up" title="image_similarity" href="../turicreate.toolkits.image_similarity.html"/>
         <link rel="next" title="object_detector" href="../turicreate.toolkits.object_detector.html"/>
         <link rel="prev" title="turicreate.image_similarity.create" href="turicreate.image_similarity.create.html"/> 
@@ -142,19 +142,22 @@ be constructed directly.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.image_similarity.ImageSimilarityModel.name.html#turicreate.image_similarity.ImageSimilarityModel.name" title="turicreate.image_similarity.ImageSimilarityModel.name"><code class="xref py py-obj docutils literal"><span class="pre">ImageSimilarityModel.name</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.image_similarity.ImageSimilarityModel.export_coreml.html#turicreate.image_similarity.ImageSimilarityModel.export_coreml" title="turicreate.image_similarity.ImageSimilarityModel.export_coreml"><code class="xref py py-obj docutils literal"><span class="pre">ImageSimilarityModel.export_coreml</span></code></a>(filename)</td>
+<td>Save the model in Core ML format.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.image_similarity.ImageSimilarityModel.name.html#turicreate.image_similarity.ImageSimilarityModel.name" title="turicreate.image_similarity.ImageSimilarityModel.name"><code class="xref py py-obj docutils literal"><span class="pre">ImageSimilarityModel.name</span></code></a>()</td>
 <td>Returns the name of the model.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.image_similarity.ImageSimilarityModel.query.html#turicreate.image_similarity.ImageSimilarityModel.query" title="turicreate.image_similarity.ImageSimilarityModel.query"><code class="xref py py-obj docutils literal"><span class="pre">ImageSimilarityModel.query</span></code></a>(dataset[,&nbsp;label,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.image_similarity.ImageSimilarityModel.query.html#turicreate.image_similarity.ImageSimilarityModel.query" title="turicreate.image_similarity.ImageSimilarityModel.query"><code class="xref py py-obj docutils literal"><span class="pre">ImageSimilarityModel.query</span></code></a>(dataset[,&nbsp;label,&nbsp;...])</td>
 <td>For each row of the input &#8216;dataset&#8217;, retrieve the nearest neighbors from the model&#8217;s stored data.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.image_similarity.ImageSimilarityModel.save.html#turicreate.image_similarity.ImageSimilarityModel.save" title="turicreate.image_similarity.ImageSimilarityModel.save"><code class="xref py py-obj docutils literal"><span class="pre">ImageSimilarityModel.save</span></code></a>(location)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.image_similarity.ImageSimilarityModel.save.html#turicreate.image_similarity.ImageSimilarityModel.save" title="turicreate.image_similarity.ImageSimilarityModel.save"><code class="xref py py-obj docutils literal"><span class="pre">ImageSimilarityModel.save</span></code></a>(location)</td>
 <td>Save the model.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.image_similarity.ImageSimilarityModel.similarity_graph.html#turicreate.image_similarity.ImageSimilarityModel.similarity_graph" title="turicreate.image_similarity.ImageSimilarityModel.similarity_graph"><code class="xref py py-obj docutils literal"><span class="pre">ImageSimilarityModel.similarity_graph</span></code></a>([k,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.image_similarity.ImageSimilarityModel.similarity_graph.html#turicreate.image_similarity.ImageSimilarityModel.similarity_graph" title="turicreate.image_similarity.ImageSimilarityModel.similarity_graph"><code class="xref py py-obj docutils literal"><span class="pre">ImageSimilarityModel.similarity_graph</span></code></a>([k,&nbsp;...])</td>
 <td>Construct the similarity graph on the reference dataset, which is already stored in the model to find the top <cite>k</cite> similar images for each image in your input dataset.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.image_similarity.ImageSimilarityModel.summary.html#turicreate.image_similarity.ImageSimilarityModel.summary" title="turicreate.image_similarity.ImageSimilarityModel.summary"><code class="xref py py-obj docutils literal"><span class="pre">ImageSimilarityModel.summary</span></code></a>([output])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.image_similarity.ImageSimilarityModel.summary.html#turicreate.image_similarity.ImageSimilarityModel.summary" title="turicreate.image_similarity.ImageSimilarityModel.summary"><code class="xref py py-obj docutils literal"><span class="pre">ImageSimilarityModel.summary</span></code></a>([output])</td>
 <td>Print a summary of the model.</td>
 </tr>
 </tbody>
@@ -179,7 +182,7 @@ be constructed directly.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Dec 07, 2017.
+      Last updated on Feb 08, 2018.
     </p>
   </div>
 </footer>
@@ -197,7 +200,7 @@ be constructed directly.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.0',
+            VERSION:'4.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

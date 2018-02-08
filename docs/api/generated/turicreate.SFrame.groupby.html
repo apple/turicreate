@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.groupby &mdash; Turi Create API 4.0 documentation</title>
+  <title>turicreate.SFrame.groupby &mdash; Turi Create API 4.1 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.1 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -168,6 +168,18 @@ aggregation operation.</p>
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="turicreate.aggregate.html#module-turicreate.aggregate" title="turicreate.aggregate"><code class="xref py py-obj docutils literal"><span class="pre">aggregate</span></code></a></p>
 </div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>Numeric aggregators (such as sum, mean, stdev etc.) follow the skip</li>
+</ul>
+<p>None policy i.e they will omit all missing values from the aggregation.
+As an example, <cite>sum([None, 5, 10]) = 15</cite> because the <cite>None</cite> value is
+skipped.
+* Aggregators have a default value when no values (after skipping all
+<cite>None</cite> values) are present. Default values are <cite>None</cite> for [&#8216;ARGMAX&#8217;,
+&#8216;ARGMIN&#8217;, &#8216;AVG&#8217;, &#8216;STD&#8217;, &#8216;MEAN&#8217;, &#8216;MIN&#8217;, &#8216;MAX&#8217;],  <cite>0</cite> for [&#8216;COUNT&#8217;
+&#8216;COUNT_DISTINCT&#8217;, &#8216;DISTINCT&#8217;] <cite>[]</cite> for &#8216;CONCAT&#8217;, &#8216;QUANTILE&#8217;,
+&#8216;DISTINCT&#8217;, and <cite>{}</cite> for &#8216;FREQ_COUNT&#8217;.</p>
 <p class="rubric">Examples</p>
 <p>Suppose we have an SFrame with movie ratings by many users.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">turicreate.aggregate</span> <span class="kn">as</span> <span class="nn">agg</span>
@@ -405,7 +417,7 @@ value:</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Dec 07, 2017.
+      Last updated on Feb 08, 2018.
     </p>
   </div>
 </footer>
@@ -423,7 +435,7 @@ value:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.0',
+            VERSION:'4.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

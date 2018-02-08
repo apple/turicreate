@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.recommender.item_similarity_recommender.create &mdash; Turi Create API 4.0 documentation</title>
+  <title>turicreate.recommender.item_similarity_recommender.create &mdash; Turi Create API 4.1 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.1 documentation" href="../index.html"/>
         <link rel="up" title="recommender" href="../turicreate.toolkits.recommender.html"/>
         <link rel="next" title="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender" href="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.html"/>
         <link rel="prev" title="turicreate.recommender.create" href="turicreate.recommender.create.html"/> 
@@ -213,7 +213,7 @@ training time.  Default is 8GB = 8589934592.</p>
 <p><strong>seed_item_set_size</strong> : int, optional</p>
 <blockquote>
 <div><p>For users that have not yet rated any items, or have only
-rated uniquely occuring items with no similar item info,
+rated uniquely occurring items with no similar item info,
 the model seeds the user&#8217;s item set with the average
 ratings of the seed_item_set_size most popular items when
 making predictions and recommendations.  If set to 0, then
@@ -290,7 +290,7 @@ score between them. If provided, these item similarity scores are used for
 recommendations. The SFrame must contain (at least) three columns:</p>
 <ul class="simple">
 <li>&#8216;item_id&#8217;: a column with the same name as that provided to the <cite>item_id</cite>
-arugment (which defaults to the string &#8220;item_id&#8221;).</li>
+argument (which defaults to the string &#8220;item_id&#8221;).</li>
 <li>&#8216;similar&#8217;: a column containing the nearest items for the given item id.
 This should have the same type as the <cite>item_id</cite> column.</li>
 <li>&#8216;score&#8217;: a numeric score measuring how similar these two items are.</li>
@@ -351,7 +351,7 @@ predictions or recommendations.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Dec 07, 2017.
+      Last updated on Feb 08, 2018.
     </p>
   </div>
 </footer>
@@ -369,7 +369,7 @@ predictions or recommendations.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.0',
+            VERSION:'4.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

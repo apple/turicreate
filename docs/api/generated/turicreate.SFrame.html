@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame &mdash; Turi Create API 4.0 documentation</title>
+  <title>turicreate.SFrame &mdash; Turi Create API 4.1 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.1 documentation" href="../index.html"/>
         <link rel="up" title="Data" href="../turicreate.data_structures.html"/>
         <link rel="next" title="turicreate.SGraph" href="turicreate.SGraph.html"/>
         <link rel="prev" title="turicreate.SArray" href="turicreate.SArray.html"/> 
@@ -232,10 +232,7 @@ across the network.</p>
 </div>
 <p>Construct an SFrame from a csv file on Amazon S3. This requires the
 environment variables: <em>AWS_ACCESS_KEY_ID</em> and <em>AWS_SECRET_ACCESS_KEY</em> to be
-set before the python session started. Alternatively, you can use
-<code class="xref py py-func docutils literal"><span class="pre">turicreate.aws.set_credentials()</span></code> to set the credentials after
-python is started and <code class="xref py py-func docutils literal"><span class="pre">turicreate.aws.get_credentials()</span></code> to verify
-these environment variables.</p>
+set before the python session started.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">SFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="s1">&#39;s3://mybucket/foo.csv&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -437,7 +434,7 @@ Data:
 <div class="highlight-python"><div class="highlight"><pre><span></span>&gt;&gt;&gt; !cat interesting_dicts.csv
 dict
 {&quot;classic&quot;:1,&quot;dict&quot;:1}
-{space:1 seperated:1}
+{space:1 separated:1}
 {emptyvalue:}
 {}
 {:}
@@ -452,7 +449,7 @@ Data:
 |             dict             |
 +------------------------------+
 |  {&#39;dict&#39;: 1, &#39;classic&#39;: 1}   |
-| {&#39;seperated&#39;: 1, &#39;space&#39;: 1} |
+| {&#39;separated&#39;: 1, &#39;space&#39;: 1} |
 |     {&#39;emptyvalue&#39;: None}     |
 |              {}              |
 |         {None: None}         |
@@ -866,7 +863,7 @@ is otherwise not expressible with simple boolean functions. For instance:</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Dec 07, 2017.
+      Last updated on Feb 08, 2018.
     </p>
   </div>
 </footer>
@@ -884,7 +881,7 @@ is otherwise not expressible with simple boolean functions. For instance:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.0',
+            VERSION:'4.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

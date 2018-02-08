@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.sentence_classifier.SentenceClassifier.predict &mdash; Turi Create API 4.0 documentation</title>
+  <title>turicreate.sentence_classifier.SentenceClassifier.predict &mdash; Turi Create API 4.1 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.1 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +123,7 @@
 <h1>turicreate.sentence_classifier.SentenceClassifier.predict<a class="headerlink" href="#turicreate-sentence-classifier-sentenceclassifier-predict" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.sentence_classifier.SentenceClassifier.predict">
-<code class="descclassname">SentenceClassifier.</code><code class="descname">predict</code><span class="sig-paren">(</span><em>dataset</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.sentence_classifier.SentenceClassifier.predict" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SentenceClassifier.</code><code class="descname">predict</code><span class="sig-paren">(</span><em>dataset</em>, <em>output_type='class'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.sentence_classifier.SentenceClassifier.predict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return predictions for <code class="docutils literal"><span class="pre">dataset</span></code>, using the trained model.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -134,6 +134,18 @@
 <div><p>dataset of new observations. Must include columns with the same
 names as the features used for model training, but does not require
 a target column. Additional columns are ignored.</p>
+</div></blockquote>
+<p><strong>output_type</strong> : {&#8216;class&#8217;, &#8216;probability_vector&#8217;}, optional</p>
+<blockquote>
+<div><p>Form of the predictions which are one of:</p>
+<ul class="simple">
+<li>&#8216;probability_vector&#8217;: Prediction probability associated with each
+class as a vector. The probability of the first class (sorted
+alphanumerically by name of the class in the training set) is in
+position 0 of the vector, the second in position 1 and so on.</li>
+<li>&#8216;class&#8217;: Class prediction. For multi-class classification, this
+returns the class with maximum probability.</li>
+</ul>
 </div></blockquote>
 </td>
 </tr>
@@ -169,7 +181,7 @@ a target column. Additional columns are ignored.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Dec 07, 2017.
+      Last updated on Feb 08, 2018.
     </p>
   </div>
 </footer>
@@ -187,7 +199,7 @@ a target column. Additional columns are ignored.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.0',
+            VERSION:'4.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SArray.where &mdash; Turi Create API 4.0 documentation</title>
+  <title>turicreate.SArray.where &mdash; Turi Create API 4.1 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.1 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -124,7 +124,7 @@
 <dl class="classmethod">
 <dt id="turicreate.SArray.where">
 <em class="property">classmethod </em><code class="descclassname">SArray.</code><code class="descname">where</code><span class="sig-paren">(</span><em>condition</em>, <em>istrue</em>, <em>isfalse</em>, <em>dtype=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SArray.where" title="Permalink to this definition">¶</a></dt>
-<dd><p>Selects elements from either istrue or isfalse depending on the value 
+<dd><p>Selects elements from either istrue or isfalse depending on the value
 of the condition SArray.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -147,7 +147,7 @@ of the condition SArray.</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<p>Returns an SArray with the same values as g with values above 10 
+<p>Returns an SArray with the same values as g with values above 10
 clipped to 10</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">SArray</span><span class="p">([</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">SArray</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">g</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
@@ -156,7 +156,7 @@ clipped to 10</p>
 <span class="go">[6, 7, 8, 9, 10, 10, 10, 10]</span>
 </pre></div>
 </div>
-<p>Returns an SArray with the same values as g with values below 10 
+<p>Returns an SArray with the same values as g with values below 10
 clipped to 10</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SArray</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">g</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 <span class="go">dtype: int</span>
@@ -196,7 +196,7 @@ replaced by its corresponding element in replace_none</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Dec 07, 2017.
+      Last updated on Feb 08, 2018.
     </p>
   </div>
 </footer>
@@ -214,7 +214,7 @@ replaced by its corresponding element in replace_none</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.0',
+            VERSION:'4.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

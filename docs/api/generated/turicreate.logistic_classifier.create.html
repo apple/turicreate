@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.logistic_classifier.create &mdash; Turi Create API 4.0 documentation</title>
+  <title>turicreate.logistic_classifier.create &mdash; Turi Create API 4.1 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.0 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.1 documentation" href="../index.html"/>
         <link rel="up" title="classifier" href="../turicreate.toolkits.classifier.html"/>
         <link rel="next" title="turicreate.logistic_classifier.LogisticClassifier" href="turicreate.logistic_classifier.LogisticClassifier.html"/>
         <link rel="prev" title="turicreate.boosted_trees_classifier.BoostedTreesClassifier" href="turicreate.boosted_trees_classifier.BoostedTreesClassifier.html"/> 
@@ -130,7 +130,7 @@
 <h1>turicreate.logistic_classifier.create<a class="headerlink" href="#turicreate-logistic-classifier-create" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="turicreate.logistic_classifier.create">
-<code class="descclassname">turicreate.logistic_classifier.</code><code class="descname">create</code><span class="sig-paren">(</span><em>dataset</em>, <em>target</em>, <em>features=None</em>, <em>l2_penalty=0.01</em>, <em>l1_penalty=0.0</em>, <em>solver='auto'</em>, <em>feature_rescaling=True</em>, <em>convergence_threshold=0.01</em>, <em>step_size=1.0</em>, <em>lbfgs_memory_level=11</em>, <em>max_iterations=10</em>, <em>class_weights=None</em>, <em>validation_set='auto'</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.logistic_classifier.create" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">turicreate.logistic_classifier.</code><code class="descname">create</code><span class="sig-paren">(</span><em>dataset</em>, <em>target</em>, <em>features=None</em>, <em>l2_penalty=0.01</em>, <em>l1_penalty=0.0</em>, <em>solver='auto'</em>, <em>feature_rescaling=True</em>, <em>convergence_threshold=0.01</em>, <em>step_size=1.0</em>, <em>lbfgs_memory_level=11</em>, <em>max_iterations=10</em>, <em>class_weights=None</em>, <em>validation_set='auto'</em>, <em>verbose=True</em>, <em>seed=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.logistic_classifier.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a <a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.html#turicreate.logistic_classifier.LogisticClassifier" title="turicreate.logistic_classifier.LogisticClassifier"><code class="xref py py-class docutils literal"><span class="pre">LogisticClassifier</span></code></a> (using
 logistic regression as a classifier) to predict the class of a discrete
 target variable (binary or multiclass) based on a model of class probability
@@ -286,6 +286,11 @@ are computed. The default value is &#8216;auto&#8217;.</p>
 <blockquote>
 <div><p>If True, print progress updates.</p>
 </div></blockquote>
+<p><strong>seed</strong> : int, optional</p>
+<blockquote>
+<div><p>Seed for random number generation. Set this value to ensure that the
+same model is created every time.</p>
+</div></blockquote>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : LogisticClassifier</p>
@@ -328,7 +333,7 @@ for Nonorthogonal Problems</a>.
 Technometrics 12(1) pp.55-67</li>
 <li>Tibshirani, R. (1996) <a class="reference external" href="http://www.jstor.org/discover/10.2307/2346178?uid=3739256&amp;uid=2&amp;uid=4&amp;sid=21104169934983">Regression Shrinkage and Selection via the Lasso</a>. Journal of the Royal Statistical Society. Series B
 (Methodological) 58(1) pp.267-288.</li>
-<li>Zhu, C., et al. (1997) <a class="reference external" href="http://dl.acm.org/citation.cfm?id=279236">Algorithm 778: L-BFGS-B: Fortran subroutines for
+<li>Zhu, C., et al. (1997) <a class="reference external" href="https://dl.acm.org/citation.cfm?id=279236">Algorithm 778: L-BFGS-B: Fortran subroutines for
 large-scale bound-constrained optimization</a>. ACM Transactions on
 Mathematical Software 23(4) pp.550-560.</li>
 <li>Beck, A. and Teboulle, M. (2009) <a class="reference external" href="http://epubs.siam.org/doi/abs/10.1137/080716542">A Fast Iterative Shrinkage-Thresholding
@@ -383,7 +388,7 @@ specific feature columns can be specified manually.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Dec 07, 2017.
+      Last updated on Feb 08, 2018.
     </p>
   </div>
 </footer>
@@ -401,7 +406,7 @@ specific feature columns can be specified manually.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.0',
+            VERSION:'4.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false
