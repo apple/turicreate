@@ -13,7 +13,7 @@ unsupervised.
 In this example, we use the [Caltech-101
 dataset](http://www.vision.caltech.edu/Image_Datasets/Caltech101/)
 which contains images objects belonging to 101 categories with about 40
-to 800 images per category.
+to 800 images per category.[<sup>1</sup>](../datasets.md)
 
 ```python
 import turicreate as tc
@@ -190,7 +190,7 @@ vectors from the layer prior to the output layer on each image of your
 task.
 
 * **Stage 3**: Create a [nearest
-  neighbours](../nearest_neighbors/nearest_neighbors.md) model with those
+  neighbors](../nearest_neighbors/nearest_neighbors.md) model with those
 features as input for your own task.
 
 #### References
