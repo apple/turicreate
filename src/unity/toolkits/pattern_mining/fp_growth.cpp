@@ -45,7 +45,7 @@ EXPORT std::shared_ptr<fp_growth> _pattern_mining_create(
     {"min_length", min_length}
   };
 
-  // Data preperation & main algorithm handling.
+  // Data preparation & main algorithm handling.
   model->validate(data, item, features);
   model->init_options(opts);
   model->set_features(features);

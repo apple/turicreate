@@ -20,7 +20,7 @@ In contrast, here is a 3-seconds example of 'sitting' data:
 
 <img src="images/sitting.png"></img>
 
-The goal of an activity classifier is to distinguish between such samples. Let's see how we can do that with Turi Create. Below is a complete example of loading the HAPT dataset, and creating an activity classifier to distinguish between these examples. The code for getting the data into an SFrame can be found [here](data-preperation.md).
+The goal of an activity classifier is to distinguish between such samples. Let's see how we can do that with Turi Create. Below is a complete example of loading the HAPT dataset, and creating an activity classifier to distinguish between these examples. The code for getting the data into an SFrame can be found [here](data-preparation.md).
 
 ```python
 import turicreate as tc
