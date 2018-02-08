@@ -52,3 +52,4 @@ This is the User Guide for Turi Create
     * [Classification metrics](evaluation/classification.md)
 * [Deployment](deployment/README.md)
 * [Additional Resources](conclusion.md)
+    * [Dataset Disclaimer](datasets.md)
