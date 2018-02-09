@@ -221,7 +221,7 @@ window.getData = function getData() {
 }
 
 window.getRows = function getRows(start_index, end_index){
-  if(window.navigator == 'MacIntel'){
+  if(window.navigator.platform == 'MacIntel'){
     window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'getRows', start: start_index, end: end_index});
   }else{
     window.linux_two_coms('{"method":"get_rows", "start":' + start_index + ', "end": ' + end_index + '}');
@@ -379,7 +379,7 @@ window.setSpec = function setSpec(value) {
         vlSpec = null;
 
         // Let the containing process know we're ready for data updates
-        if(window.navigator == 'MacIntel'){
+        if(window.navigator.platform == 'MacIntel'){
           window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'ready'});
         }
 
@@ -416,7 +416,7 @@ window.setSpec = function setSpec(value) {
                                                   vegaView = viewInstance.view;
                                                   window.vegaResult = viewInstance.spec;
                                                   vegaLoading = false;
-                                                  if(window.navigator == 'MacIntel'){
+                                                  if(window.navigator.platform == 'MacIntel'){
                                                     window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'ready'});
                                                   }
 

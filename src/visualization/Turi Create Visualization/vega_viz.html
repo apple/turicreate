@@ -221,7 +221,7 @@
             </div>
         </div>
         <script>
-            if(window.navigator == 'MacIntel'){
+            if(window.navigator.platform == 'MacIntel'){
               window.vegaResult = null;
               // Override console methods to get errors redirected to client app
               function log(level) {
@@ -247,7 +247,7 @@
         <script src="index.js" defer>
         </script>
         <script>
-          if(window.navigator == 'MacIntel'){
+          if(window.navigator.platform == 'MacIntel'){
             if (document.readyState == 'complete') {
                 window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'loaded'});
             } else {
