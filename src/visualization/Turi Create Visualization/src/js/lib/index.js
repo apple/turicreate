@@ -10,12 +10,12 @@ document.onkeydown = function(e) {
     if (key_code == 91 || key_code == 93){
         command_down += 1;
     }
-    
+
     if(key_code == 187 && command_down > 0){
         body_zoom += 10;
         document.body.style.zoom = body_zoom+"%"
     }
-    
+
     if(key_code == 189 && command_down > 0){
         if(body_zoom > 10){
             body_zoom -= 10;
@@ -26,7 +26,7 @@ document.onkeydown = function(e) {
 
 document.onkeyup = function(e) {
     var key_code = e.keyCode || e.charCode;
-    
+
     if (key_code == 91 || key_code == 93){
         command_down -= 1;
     }
@@ -53,25 +53,25 @@ var scrollVal = -1;
 window.image_dictionary = {};
 
 function useEmbeddedVega(data) {
-    
+
     if (vegaLoading) {
         // should never get here
         debugger;
     }
-    
+
     if (!data || !data.values) {
         // should never get here
         debugger;
     }
-    
+
     var newData = data.values.slice();
     var changeSet = vega.changeset();
-    
+
     if(data.progress != null){
         var progress = parseFloat(data.progress);
         if(parseInt(progress*100) >= 100){
             document.getElementById('progress_bar').style.width = parseInt(progress*100)+"%";
-            
+
             setTimeout(function(){
                        document.getElementById('progress_bar').style.opacity = "0.0";
                        }, 1000);
@@ -79,9 +79,9 @@ function useEmbeddedVega(data) {
             document.getElementById('progress_bar').style.width = parseInt(progress*100)+"%";
         }
     }
-    
+
     var prevData = vegaView.data("source_2");
-    
+
     for(var y = 0; y < newData.length; y++ ){
         if(newData[y]["a"] != null){ // hack to determine whether SFrame summary view
             for(var x = 0; x < prevData.length; x++ ){
@@ -96,12 +96,12 @@ function useEmbeddedVega(data) {
             }
         }
     }
-    
+
     changeSet = changeSet.insert(newData);
     vegaView.change("source_2", changeSet).runAfter(function(viewInstance) {
                                                     document.getElementById('vega_vis').style.opacity = '1';
                                                     });
-    
+
     vegaView.toCanvas().then(function(result){
                              document.getElementById("hidden_cont").innerHTML = '';
                              document.getElementById("hidden_cont").appendChild(result);
@@ -123,25 +123,25 @@ window.updateData = function updateData(data) {
         if (!data) {
             return;
         }
-        
+
         document.getElementById("loading_container").style.display = "none";
-        
+
         var window_height = window.innerHeight-44;
         max_sframe = tableSpec["size"];
         var table_title = tableSpec["title"];
         ReactDOM.render(<Tctable spec={tableSpec} data={data} size={max_sframe} enterHandler={jumpToRowCallback} tableTitle={table_title} starting_height={window_height}/>, document.getElementById('table_vis'), function() {
-                        
+
                         if(scrollVal != -1){
                         scrollToValue(scrollVal);
                         }
-                        
+
                         setScroll = true;
-                        
+
                         });
-        
+
     } else if (vlSpec) {
         document.getElementById("loading_container").style.display = "none";
-        
+
         useEmbeddedVega(data);
     }
 }
@@ -180,13 +180,13 @@ function windowResized(){
  **/
 window.getSpec = function getSpec() {
     var previousData = vegaView.data("source_2");
-    
+
     for(var x = 0; x < window.vegaResult.data.length; x++){
         if(window.vegaResult.data[x]["name"] == "source_2"){
             window.vegaResult.data[x]["values"] = previousData;
         }
     }
-    
+
     return JSON.stringify(window.vegaResult);
 }
 
@@ -201,18 +201,18 @@ window.getSpec = function getSpec() {
 window.ConvertToCSV = function ConvertToCSV(objArray) {
     var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
     var str = '';
-    
+
     for (var i = 0; i < array.length; i++) {
         var line = '';
         for (var index in array[i]) {
             if (line != '') line += ','
-                
+
                 line += array[i][index];
         }
-        
+
         str += line + '\r\n';
     }
-    
+
     return str;
 }
 
@@ -221,7 +221,11 @@ window.getData = function getData() {
 }
 
 window.getRows = function getRows(start_index, end_index){
+  if(window.navigator == 'MacIntel'){
     window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'getRows', start: start_index, end: end_index});
+  }else{
+    window.linux_two_coms('{"method":"get_rows", "start":' + start_index + ', "end": ' + end_index + '}');
+  }
 }
 
 window.scrollToValue = function scrollToValue(value){
@@ -232,7 +236,7 @@ window.scrollToValue = function scrollToValue(value){
             break;
         }
     }
-    
+
     scrollVal = -1;
 }
 
@@ -242,11 +246,11 @@ window.jump_to = function jump_to(value){
     var upper_value = 0;
     var lower_bound;
     var upper_bound;
-    
+
     if(value > max_sframe || value < 0){
         return "err: out of bounds";
     }
-    
+
     if(value%window.step_size  != 0){
         lower_bound = Math.floor(value/window.step_size);
         upper_bound = Math.ceil(value/window.step_size);
@@ -254,67 +258,67 @@ window.jump_to = function jump_to(value){
         lower_bound = Math.floor(value/window.step_size);
         upper_bound = lower_bound + 1;
     }
-    
+
     window.set_lower = (lower_bound-1 >= 0)?(lower_bound-1):0;
     window.set_higher = upper_bound
-    
+
     lower_value = (lower_bound-1 >= 0)?((lower_bound-1)*window.step_size):0;
     upper_value = (upper_bound*window.step_size > max_sframe)?max_sframe:(upper_bound*window.step_size);
-    
-    getRows(lower_value, upper_value);
+
+    window.getRows(lower_value, upper_value);
     scrollVal = value;
-    
+
 }
 
 window.updateScrollUp = function updateScrollUp(){
     var lower_value;
     var upper_value;
-    
+
     if(window.set_lower*window.step_size <= 0){
         return "Min value reached";
     }
-    
+
     if(setScroll){
         setScroll = false;
-        
+
         window.set_lower -= 1;
         window.set_higher -= 1;
-        
+
         lower_value = (window.set_lower >= 0)?(window.set_lower*window.step_size):0;
         upper_value = (window.set_higher*window.step_size > max_sframe)?max_sframe:(window.set_higher*window.step_size);
-        
+
         var element = document.getElementsByClassName("header_element");
         if(element.length > 0){
             scrollVal = element[0].innerText;
         }
-        
-        getRows(lower_value, upper_value);
+
+        window.getRows(lower_value, upper_value);
     }
 }
 
 window.updateScrollDown = function updateScrollDown(){
     var lower_value;
     var upper_value;
-    
+
     if(window.set_higher*window.step_size >= max_sframe){
         return "Max value reached";
     }
-    
+
     if(setScroll){
         setScroll = false;
-        
+
         window.set_lower += 1;
         window.set_higher += 1;
-        
+
         lower_value = (window.set_lower >= 0)?(window.set_lower*window.step_size):0;
         upper_value = (window.set_higher*window.step_size > max_sframe)?max_sframe:(window.set_higher*window.step_size);
-        
+
         var element = document.getElementsByClassName("header_element");
         if(element.length > 0){
             scrollVal = element[element.length - 1].innerText - 8;
         }
-        
-        getRows(lower_value, upper_value);
+
+        window.getRows(lower_value, upper_value);
     }
 }
 
@@ -325,7 +329,7 @@ setInterval(function(){
             if(((element.scrollTop+element.offsetHeight)/element.scrollHeight) == 1){
             updateScrollDown();
             }
-            
+
             if(((element.scrollTop)/element.scrollHeight) == 0){
             updateScrollUp();
             }
@@ -373,55 +377,54 @@ window.setSpec = function setSpec(value) {
         document.getElementById('table_vis').style.display = 'block';
         tableSpec = value.data;
         vlSpec = null;
-        
+
         // Let the containing process know we're ready for data updates
-        window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'ready'});
-        
+        if(window.navigator == 'MacIntel'){
+          window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'ready'});
+        }
+
     } else if (value.type == "vega") {
         document.getElementById('table_vis').style.display = 'none';
         document.getElementById('vega_vis').style.display = 'block';
         document.getElementById('vega_vis').style.opacity = '0';
         vlSpec = value.data;
         tableSpec = null;
-        
+
         vegaLoading = true;
-        
+
         var opt = {
         mode: ('$schema' in vlSpec && vlSpec['$schema'].indexOf('vega-lite') == -1) ? "vega": "vega-lite",
         renderer: "svg"
         };
-        
+
         var bubbleOpts = {
         showAllFields: true
         };
-        
+
         if(vlSpec["metadata"] != null){
             if(vlSpec["metadata"]["bubbleOpts"] != null){
                 bubbleOpts = vlSpec["metadata"]["bubbleOpts"];
             }
         }
-        
-        
-        
+
+
+
         vlSpec.autosize = {"type": "pad", "resize": true, "contains": "padding"};
-        
+
         vega.embed("#vega_vis", vlSpec, opt).then(function(viewInstance) {
                                                   vegaTooltip.vegaLite(viewInstance.view, vlSpec, bubbleOpts);
                                                   vegaView = viewInstance.view;
                                                   window.vegaResult = viewInstance.spec;
                                                   vegaLoading = false;
-                                                  
-                                                  window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'ready'});
-                                                  
+                                                  if(window.navigator == 'MacIntel'){
+                                                    window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'ready'});
+                                                  }
+
                                                   }).catch(function(error) {
                                                            console.error(error);
                                                            });
     }
-    
-}
 
-function getRows(start_index, end_index){
-    window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'getRows', start: start_index, end: end_index});
 }
 
 /**

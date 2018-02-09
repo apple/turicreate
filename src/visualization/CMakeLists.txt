@@ -1,5 +1,10 @@
 project(Turi)
 
+
+if(UNIX AND NOT APPLE)
+  set(LINUX TRUE)
+endif()
+
 if(APPLE)
   if(${TC_BUILD_VISUALIZATION_CLIENT})
 
@@ -12,6 +17,154 @@ if(APPLE)
       COMMAND xcodebuild -project "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization.xcodeproj/" -configuration ${CMAKE_BUILD_TYPE} SYMROOT=${CMAKE_CURRENT_BINARY_DIR}
       COMMENT "Building visualization client via xcodebuild"
   )
+  else()
+    make_empty_library(visualization_client)
+  endif()
+elseif(LINUX)
+  if(${TC_BUILD_VISUALIZATION_CLIENT})
+
+    find_program(NPM npm)
+    if(NOT NPM)
+      message(FATAL_ERROR "npm not found. Node.js 6.x or later with npm is required to build Turi Create.")
+    endif()
+
+
+
+    include(ExternalProject)
+
+    ExternalProject_Add(
+        cef
+        PREFIX "cef"
+        URL http://opensource.spotify.com/cefbuilds/cef_binary_3.3282.1731.gfc9a4fa_linux64_minimal.tar.bz2
+        URL_HASH SHA1=4eeeabee642bfe68f561566e0f249f86afaf6634
+        DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}/deps
+        SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef
+        BUILD_IN_SOURCE 1
+        CONFIGURE_COMMAND ${CMAKE_COMMAND} .
+        BUILD_COMMAND "make"
+        INSTALL_COMMAND ""
+    )
+
+
+    set(CEF_LIB_SO ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/libcef.so)
+    set(CEF_RESOURCES ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Resources/*)
+
+    set(TC_VIZ_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/TcViz)
+    set(TC_VIZ_HTML_DIRECTORY ${TC_VIZ_DIRECTORY}/html)
+
+    set(CEF_RESOURCES_LOCALE ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Resources/locales/*)
+    set(TC_VIZ_LOCALES_DIRECTORY ${TC_VIZ_DIRECTORY}/locales)
+
+    set(TCVIZ_SRCS
+      src/layer.cpp
+      src/layer.h
+      src/handler.cpp
+      src/handler.h
+      src/javascript_caller.cpp
+      src/javascript_caller.h
+      src/pipe.cpp
+      src/pipe.h
+      src/json.hpp
+      src/window_delegate.h
+      src/main.cpp
+      src/handler_linux.cpp
+    )
+
+    set(LIB_CEF_DLL_WRAPPER "${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/libcef_dll_wrapper/libcef_dll_wrapper.a")
+    set(LIB_CEF "${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/libcef.so")
+    set(V8_CONTEXT_SNAPSHOT "${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/v8_context_snapshot.bin")
+    set(SNAPSHOT_BLOB "${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/snapshot_blob.bin")
+    set(NATIVES_BLOB "${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/natives_blob.bin")
+
+    set(TC_NPM_BUILD "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/js/build/*")
+    set(TC_VEGA_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/vega_viz.html")
+    set(TC_CSS "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/table_view.css")
+    set(TC_VEGA_DEPS "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/deps/*")
+
+    include_directories(
+      ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef
+    )
+
+    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TC_VIZ_DIRECTORY})
+
+    add_executable(visualization_client ${TCVIZ_SRCS})
+
+    target_link_libraries(visualization_client
+      ${LIB_CEF_DLL_WRAPPER}
+      ${LIB_CEF}
+      X11
+      pthread
+    )
+
+    add_dependencies(visualization_client cef)
+
+    add_custom_command(
+            TARGET visualization_client PRE_LINK
+
+            COMMAND cd "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization" && cd src/js && npm install && npm run build
+    )
+
+    add_custom_command(
+            TARGET visualization_client POST_BUILD
+
+            COMMAND ${CMAKE_COMMAND} -E make_directory
+                    ${TC_VIZ_DIRECTORY}
+
+            COMMAND ${CMAKE_COMMAND} -E make_directory
+                    ${TC_VIZ_HTML_DIRECTORY}
+
+            COMMAND ${CMAKE_COMMAND} -E copy
+                    ${TC_NPM_BUILD}
+                    ${TC_VIZ_HTML_DIRECTORY}
+
+            COMMAND ${CMAKE_COMMAND} -E copy
+                    ${TC_VEGA_SOURCE}
+                    ${TC_VIZ_HTML_DIRECTORY}
+
+            COMMAND ${CMAKE_COMMAND} -E copy
+                    ${TC_CSS}
+                    ${TC_VIZ_HTML_DIRECTORY}
+
+            COMMAND ${CMAKE_COMMAND} -E copy
+                    ${TC_VEGA_DEPS}
+                    ${TC_VIZ_HTML_DIRECTORY}
+
+            COMMAND ${CMAKE_COMMAND} -E make_directory
+                    ${TC_VIZ_LOCALES_DIRECTORY}
+
+            COMMAND ${CMAKE_COMMAND} -E copy
+                    ${CEF_LIB_SO}
+                    ${TC_VIZ_DIRECTORY}
+
+            COMMAND ${CMAKE_COMMAND} -E copy
+                    ${CEF_RESOURCES}
+                    ${TC_VIZ_DIRECTORY}
+
+            COMMAND ${CMAKE_COMMAND} -E copy
+                    ${CEF_RESOURCES_LOCALE}
+                    ${TC_VIZ_LOCALES_DIRECTORY}
+
+            COMMAND ${CMAKE_COMMAND} -E copy
+                    ${LIB_CEF}
+                    ${TC_VIZ_DIRECTORY}
+
+            COMMAND ${CMAKE_COMMAND} -E copy
+                    ${V8_CONTEXT_SNAPSHOT}
+                    ${TC_VIZ_DIRECTORY}
+
+            COMMAND ${CMAKE_COMMAND} -E copy
+                    ${V8_CONTEXT_SNAPSHOT}
+                    ${TC_VIZ_DIRECTORY}
+
+            COMMAND ${CMAKE_COMMAND} -E copy
+                    ${SNAPSHOT_BLOB}
+                    ${TC_VIZ_DIRECTORY}
+
+            COMMAND ${CMAKE_COMMAND} -E copy
+                    ${NATIVES_BLOB}
+                    ${TC_VIZ_DIRECTORY}
+    )
+
   else()
     make_empty_library(visualization_client)
   endif()

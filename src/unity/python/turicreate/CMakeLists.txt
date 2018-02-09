@@ -8,6 +8,10 @@ project(unity)
 #
 # These can be amended locally to set up alternative behavior
 
+if(UNIX AND NOT APPLE)
+  set(LINUX TRUE)
+endif()
+
 set(INSTALLATION_BINARY_TARGETS
   unity
   minipsutil
@@ -51,5 +55,10 @@ if (APPLE)
     DEPENDS visualization_client
     COMMAND cp -a "${CMAKE_BINARY_DIR}/src/visualization/${CMAKE_BUILD_TYPE}/Turi Create Visualization.app" ${CMAKE_CURRENT_BINARY_DIR}
   )
+elseif(LINUX)
+  add_custom_target(
+    visualization_client_app ALL
+    DEPENDS visualization_client
+    COMMAND cp -a "${CMAKE_BINARY_DIR}/src/visualization/TcViz" ${CMAKE_CURRENT_BINARY_DIR}
+  )
 endif()
-
