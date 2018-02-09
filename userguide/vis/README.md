@@ -73,7 +73,7 @@ numeric data (`int` or `float`), this shows a numeric
 [histogram](https://en.wikipedia.org/wiki/Histogram) of the data.
 For categorical data (`str`), this shows a
 [bar chart](https://en.wikipedia.org/wiki/Bar_chart)
-representing the counts of frequently occuring items, sorted by count. The
+representing the counts of frequently occurring items, sorted by count. The
 `show` method on SFrame produces a summary of each column of the SFrame, using
 the plot types described for `SArray.show`.
 
