@@ -37,7 +37,7 @@ EXPORT void tc_parameters_add(tc_parameters* params, const char* name, const tc_
 }
 
 // Returns true if an entry exists, false otherwise   
-EXPORT int tc_parameters_entry_exists(const tc_parameters* params, const char* name, tc_error** error) {
+EXPORT bool tc_parameters_entry_exists(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
@@ -213,7 +213,7 @@ EXPORT void tc_parameters_add_model(tc_parameters* params, const char* name, con
   ERROR_HANDLE_END(error); 
 }
 
-EXPORT int tc_parameters_is_int64(const tc_parameters* params, const char* name, tc_error** error) {
+EXPORT bool tc_parameters_is_int64(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
@@ -226,7 +226,7 @@ EXPORT int tc_parameters_is_int64(const tc_parameters* params, const char* name,
 }
 
 
-EXPORT int tc_parameters_is_double(const tc_parameters* params, const char* name, tc_error** error) {
+EXPORT bool tc_parameters_is_double(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
@@ -239,7 +239,7 @@ EXPORT int tc_parameters_is_double(const tc_parameters* params, const char* name
 }
 
 
-EXPORT int tc_parameters_is_cstring(const tc_parameters* params, const char* name, tc_error** error) {
+EXPORT bool tc_parameters_is_cstring(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
@@ -252,7 +252,7 @@ EXPORT int tc_parameters_is_cstring(const tc_parameters* params, const char* nam
 }
 
 
-EXPORT int tc_parameters_is_string(const tc_parameters* params, const char* name, tc_error** error) {
+EXPORT bool tc_parameters_is_string(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
@@ -265,7 +265,7 @@ EXPORT int tc_parameters_is_string(const tc_parameters* params, const char* name
 }
 
 
-EXPORT int tc_parameters_is_double_array(const tc_parameters* params, const char* name, tc_error** error) {
+EXPORT bool tc_parameters_is_double_array(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
@@ -278,7 +278,7 @@ EXPORT int tc_parameters_is_double_array(const tc_parameters* params, const char
 }
 
 
-EXPORT int tc_parameters_is_flex_list(const tc_parameters* params, const char* name, tc_error** error) {
+EXPORT bool tc_parameters_is_flex_list(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
@@ -291,7 +291,7 @@ EXPORT int tc_parameters_is_flex_list(const tc_parameters* params, const char* n
 }
 
 
-EXPORT int tc_parameters_is_flex_dict(const tc_parameters* params, const char* name, tc_error** error) {
+EXPORT bool tc_parameters_is_flex_dict(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
@@ -304,7 +304,7 @@ EXPORT int tc_parameters_is_flex_dict(const tc_parameters* params, const char* n
 }
 
 
-EXPORT int tc_parameters_is_datetime(const tc_parameters* params, const char* name, tc_error** error) {
+EXPORT bool tc_parameters_is_datetime(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
@@ -317,7 +317,7 @@ EXPORT int tc_parameters_is_datetime(const tc_parameters* params, const char* na
 }
 
 
-EXPORT int tc_parameters_is_image(const tc_parameters* params, const char* name, tc_error** error) {
+EXPORT bool tc_parameters_is_image(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
@@ -331,7 +331,7 @@ EXPORT int tc_parameters_is_image(const tc_parameters* params, const char* name,
 
 
 // Query the type of the parameter 
-EXPORT int tc_parameters_is_flexible_type(const tc_parameters* params, 
+EXPORT bool tc_parameters_is_flexible_type(const tc_parameters* params,
     const char* name, tc_error** error) {  
   ERROR_HANDLE_START();
 
@@ -344,7 +344,7 @@ EXPORT int tc_parameters_is_flexible_type(const tc_parameters* params,
 } 
 
 // Query the type of the parameter 
-EXPORT int tc_parameters_is_sarray(const tc_parameters* params, 
+EXPORT bool tc_parameters_is_sarray(const tc_parameters* params,
       const char* name, tc_error** error) {
   ERROR_HANDLE_START();
 
@@ -358,7 +358,7 @@ EXPORT int tc_parameters_is_sarray(const tc_parameters* params,
 
 
 // Query the type of the parameter
-EXPORT int tc_parameters_is_sframe(const tc_parameters* params, const char* name, tc_error** error) { 
+EXPORT bool tc_parameters_is_sframe(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
@@ -370,7 +370,7 @@ EXPORT int tc_parameters_is_sframe(const tc_parameters* params, const char* name
 } 
 
 
-EXPORT int tc_parameters_is_parameters(const tc_parameters* params, const char* name, tc_error** error) {
+EXPORT bool tc_parameters_is_parameters(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
@@ -382,7 +382,7 @@ EXPORT int tc_parameters_is_parameters(const tc_parameters* params, const char* 
 }
 
 
-EXPORT int tc_parameters_is_model(const tc_parameters* params, const char* name, tc_error** error) {
+EXPORT bool tc_parameters_is_model(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);

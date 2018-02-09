@@ -35,7 +35,8 @@ EXPORT void start_server(const unity_server_options& server_options,
   global_logger().set_log_to_console(false);
 
   if(SERVER) { 
-    stop_server(); 
+    logstream(LOG_ERROR) << "Unity server initialized twice." << std::endl;
+    return;
   }
 
   SERVER = new unity_server(server_options);
