@@ -128,9 +128,9 @@ The base class defines 3 functions,
   This function will return the current counter value.
 
 A few observations. 
-- Each "function definition" is not seperated by commas, but is just 
+- Each "function definition" is not separated by commas, but is just 
 consecutive parenthesis blocks.
-- Each input argument type of the function is in its own parantheses block.
+- Each input argument type of the function is in its own parentheses block.
 - Even if a function takes no arguments, a final "comma" is necessary in the
 function definition
 - There must be no variable names in the arguments.
@@ -222,7 +222,7 @@ int main(int argc, char** argv) {
 The "ipc:///tmp/cppipc_server_test" is a ZeroMQ endpoint address and is the
 address the server will listen and wait on for connections. \c ipc:// is an
 "interprocess socket" endpoint and should point to a filename (preferably
-non-existant, and unused). It can also be \c tcp://[ip address]:[portnumber]
+non-existent, and unused). It can also be \c tcp://[ip address]:[portnumber]
 to have the server wait on a TCP/IP connection. Note that it must be an IP
 address in this case. ZeroMQ does not do hostname resolution.
 
@@ -321,13 +321,13 @@ Now, to use this function on the client side,
   // prints the new counter value
   std::cout << "New Counter Value: " << new_counter->get_val() << "\n";
 
-  // its a pointer, so we must explicitly deliete it
+  // its a pointer, so we must explicitly delete it
   // On deletion, it will delete the matching counter object on the server side
   delete new_counter;
 \endcode
 
 To take remote objects as arguments is similar. Here, we add a new "add_counter"
-funtion which adds the value of another counter to the current counter. 
+function which adds the value of another counter to the current counter. 
 Once again, it must take a pointer to base as the argument.
 
 \code
@@ -380,7 +380,7 @@ a reply.  Multiple requests can be sent simultaneously).
 
 Libfault's wrappers were originally designed to watch for state changes on
 Zookeeper and react accordingly. For instance, a collection of servers could
-have running processes whch implement a service name called "echo" (which echos
+have running processes which implement a service name called "echo" (which echos
 messages).  The service is implemented using the async_reply_socket which
 registers a key called "echo" on Zookeeper, which keep tracks of the
 TCP/IP address of each server process.  A client (with an async_reply_socket)
@@ -463,7 +463,7 @@ situations such as message failures, malformed messages, timeouts, etc.
  
 The DEALER is a generalized REQUEST socket, and the ROUTER is a generalized
 REPLY socket. The key difference is that the DEALER and ROUTER sockets can
-send and receive arbitrarily without restricions. DEALER can also connect and
+send and receive arbitrarily without restrictions. DEALER can also connect and
 load balance requests to multiple servers, though we are not using that
 capability. 
 
@@ -493,7 +493,7 @@ internal architecture, but in the opposite direction.
 (\ref libfault::async_reply_socket::wrapped_callback) which drop the message
 into a queue protected by a mutex/condition variable pair.)
 - A collection of handler threads waiting on the queue will wake up to wake
-handle the messsage and produce replies.
+handle the message and produce replies.
 - The replies from the handler threads are dropped into an inproc PULL/PUSH pair 
 to collect messages into a single thread.
 - A callback waiting on the PULL socket 
