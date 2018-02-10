@@ -1,4 +1,5 @@
 include *.txt
+include README.rst
 recursive-include turicreate *.so *.so.1 *.dylib *.pyd *.dll pylambda_worker  *.exe
 recursive-include *.pyd *.so
 recursive-include turicreate/canvas *.html *.css *.js *.ico *.otf *.eot *.svg *.ttf *.woff *LICENSE* *.png
