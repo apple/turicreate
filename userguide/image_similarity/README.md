@@ -113,8 +113,7 @@ similar_images = similarity_graph.edges
 
 ##### Deploying to Core ML
 
-With the Core ML framework, you can use the model to
-retrieve the distances between a query image and all images in the reference data. Exporting this model in Core ML format can be
+Using the Core ML Framework, you can retrieve the distance between a query image and all images in the reference data. Exporting this model in Core ML format can be
 performed using the `export_coreml` function.
 
 ```python
@@ -129,48 +128,41 @@ The following Swift code is needed to consume the model in
 an iOS app.
 
 ```swift
-lazy var classificationRequest: VNCoreMLRequest = {
-	do {
-		let model = try VNCoreMLModel(for: MyImageSimilarityModel().model)
-		
-		let request = VNCoreMLRequest(model: model, completionHandler: { [weak self] request, error in
-		    self?.processQuery(for: request, error: error)
-		})
-		request.imageCropAndScaleOption = .centerCrop
-		return request
-	} catch {
-            fatalError("Failed to load Vision ML model: \(error)")
-   }
-}()
+let model = try VNCoreMLModel(for: MyImageSimilarityModel().model)
+
+let request = VNCoreMLRequest(model: model, completionHandler: { [weak self] request, error in
+    self?.processQuery(for: request, error: error)
+})
+request.imageCropAndScaleOption = .centerCrop
+return request
 ```
 
-Notice that the image similarity model in Swift returns the distances between the query image and all images in the reference dataset. In order to retrieve the ids of the most similar images in the reference dataset, we must perform an argsort operation on the returned distances. We can do this by modifying the [Core ML sample application
+Notice that the image similarity model in Core ML returns the distances between the query image and all images in the reference dataset. In order to retrieve the most similar images in the reference dataset, we must sort them by distance. We can do this by modifying the [Core ML sample application
 ](https://developer.apple.com/documentation/vision/classifying_images_with_vision_and_core_ml) as such:
 
 ```swift
-func processQuery(for request: VNRequest, error: Error?) {
-        DispatchQueue.main.async {
-            guard let results = request.results else {
-                self.referenceRanking.text = "Unable to rank image.\n\(error!.localizedDescription)"
-                return
-            }
-
-            let queryResults = results as! [VNCoreMLFeatureValueObservation]
-            let distances = queryResults.first!.featureValue.multiArrayValue!
-            
-            // Create an array of distances to sort
-            let numReferenceImages = distances.shape[0].intValue
-            var distanceArray = [Int]()
-            for r in 0..<numReferenceImages {
-                distanceArray.append(Int(distances[r]))
-            }
-            
-            let sorted = distanceArray.enumerated().sorted(by: {$0.element < $1.element})
-            let sortedIndices = sorted.map{$0.element}
-
-            self.referenceRanking.text = String(describing: sortedIndices)
+func processQuery(for request: VNRequest, error: Error?, k: Int = 5) {
+    DispatchQueue.main.async {
+        guard let results = request.results else {
+            self.referenceRanking.text = "Unable to rank image.\n\(error!.localizedDescription)"
+            return
         }
+
+        let queryResults = results as! [VNCoreMLFeatureValueObservation]
+        let distances = queryResults.first!.featureValue.multiArrayValue!
+        
+        // Create an array of distances to sort
+        let numReferenceImages = distances.shape[0].intValue
+        var distanceArray = [Double]()
+        for r in 0..<min(k, numReferenceImages) {
+            distanceArray.append(Double(distances[r]))
+        }
+        
+        let sorted = distanceArray.enumerated().sorted(by: {$0.element < $1.element})
+
+        self.referenceRanking.text = String(describing: sorted)
     }
+}
 ```
 
 #### How it works
