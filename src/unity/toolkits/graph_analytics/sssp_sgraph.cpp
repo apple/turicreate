@@ -107,9 +107,6 @@ void check_and_init_graph(sgraph& g) {
  */
 
 void triple_apply_sssp(sgraph& g) {
-  typedef sgraph_compute::sgraph_engine<flexible_type>::graph_data_type graph_data_type;
-  typedef sgraph::edge_direction edge_direction;
-
   std::atomic<int64_t> num_changed;
   sgraph_compute::sgraph_engine<flexible_type> ga;
   const size_t dist_idx = g.get_vertex_field_id(DISTANCE_COLUMN);
@@ -391,8 +388,6 @@ std::vector<flexible_type> _all_shortest_paths(std::shared_ptr<unity_sgraph> sou
   id_idx = g.get_vertex_field_id(sgraph::VID_COLUMN_NAME);
 
   // compute bidirectional sssp
-  typedef sgraph_compute::sgraph_engine<flexible_type>::graph_data_type graph_data_type;
-  typedef sgraph::edge_direction edge_direction;
 
   std::atomic<int64_t> num_changed;
   // this maps cost --> path. This is periodically pruned to always contain

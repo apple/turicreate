@@ -80,5 +80,5 @@ namespace teardown_impl {
 extern EXPORT global_teardown teardown_instance;
 }
 
-} // turicreate
+} // turi
 #endif

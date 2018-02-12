@@ -13,17 +13,6 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-# ---------------------------------------------------------------------------
-# THIS IS AN OSS OVERRIDE FILE
-#
-# What this means is that there is a corresponding file in the OSS directory,
-# and this file overrides that. Be careful when making changes.
-    # Specifically, do log the differences here.
-#
-# - OSS does not have all the toolkits and canvas
-# - OSS does not have aws
-# - OSS does not have gl_numpy
-# ---------------------------------------------------------------------------
 __version__ = '{{VERSION_STRING}}'
 from turicreate.version_info import __version__
 

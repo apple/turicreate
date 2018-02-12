@@ -197,8 +197,6 @@ void csv_writer::csv_print(std::ostream& out,
 
 void csv_writer::write(std::ostream& out,
                        const std::vector<flexible_type>& row) {
-  // if row size is 1, we cannot allow empty output
-  bool allow_empty_output = row.size() > 1;
   for (size_t i = 0;i < row.size(); ++i) {
     csv_print(out, row[i], row.size() > 1);
     // put a delimiter after every element except for the last element.

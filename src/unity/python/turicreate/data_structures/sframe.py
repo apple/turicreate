@@ -211,7 +211,6 @@ class SFrame(object):
     * a Python dictionary
     * pandas.DataFrame
     * JSON
-    * Apache Avro
 
     and from the following sources:
 

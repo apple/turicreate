@@ -36,9 +36,6 @@
 #include <serialization/serialization_includes.hpp>
 
 
-
-constexpr size_t LOGISTIC_REGRESSION_BATCH_SIZE = 1000;
-
 namespace turi {
 namespace supervised {
 
