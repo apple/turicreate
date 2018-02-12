@@ -154,13 +154,14 @@ func processQuery(for request: VNRequest, error: Error?, k: Int = 5) {
         // Create an array of distances to sort
         let numReferenceImages = distances.shape[0].intValue
         var distanceArray = [Double]()
-        for r in 0..<min(k, numReferenceImages) {
+        for r in 0..<numReferenceImages {
             distanceArray.append(Double(distances[r]))
         }
-        
-        let sorted = distanceArray.enumerated().sorted(by: {$0.element < $1.element})
 
-        self.referenceRanking.text = String(describing: sorted)
+        let sorted = distanceArray.enumerated().sorted(by: {$0.element < $1.element})
+		 let knn = sorted[..<min(k, numReferenceImages)]
+
+        self.referenceRanking.text = String(describing: knn)
     }
 }
 ```
