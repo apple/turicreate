@@ -1749,14 +1749,14 @@ class SideDataTests(unittest.TestCase):
         self.user_side = tc.SFrame({'userID': ["0", "1", "20"],
                                     'blahID': ["a", "b", "b"],
                                     'blahREAL': [0.1, 12, 22],
-                                    'blahVECTOR': [np.array([0,1]), np.array([0,2]), np.array([2,3])],
+                                    'blahVECTOR': [array.array('d',[0,1]), array.array('d',[0,2]), array.array('d',[2,3])],
                                     'blahDICT': [{'a' : 23}, {'a' : 13}, {'a' : 23, 'b' : 32}],
                                     })
 
         self.item_side = tc.SFrame({'placeID': ["a", "b", "f"],
                                     'blahID2': ["e", "e", "3"],
                                     'blahREAL2': [0.4, 12, 22],
-                                    'blahVECTOR2': [np.array([0,1,2]), np.array([0,2,3]), np.array([2,3,3])],
+                                    'blahVECTOR2': [array.array('d', [0,1,2]), array.array('d',[0,2,3]), array.array('d', [2,3,3])],
                                     'blahDICT2': [{'a' : 23}, {'b' : 13}, {'a' : 23, 'c' : 32}]})
 
         self.user_id = 'userID'
@@ -1892,14 +1892,14 @@ class FactorizationTests(unittest.TestCase):
         self.user_side = tc.SFrame({'userID': ["0", "1", "2"],
                                     'blahID': ["a", "b", "b"],
                                     'blahREAL': [0.1, 12, 22],
-                                    'blahVECTOR': [np.array([0,1]), np.array([0,2]), np.array([2,3])],
+                                    'blahVECTOR': [array.array('d',[0,1]), array.array('d',[0,2]), array.array('d',[2,3])],
                                     'blahDICT': [{'a' : 23}, {'a' : 13}, {'a' : 23, 'b' : 32}],
                                     })
 
         self.item_side = tc.SFrame({'placeID': ["a", "b", "d"],
                                     'blahID2': ["e", "e", "3"],
                                     'blahREAL2': [0.4, 12, 22],
-                                    'blahVECTOR2': [np.array([0,1,2]), np.array([0,2,3]), np.array([2,3,3])],
+                                    'blahVECTOR2': [array.array('d',[0,1,2]), array.array('d',[0,2,3]), array.array('d',[2,3,3])],
                                     'blahDICT2': [{'a' : 23}, {'b' : 13}, {'a' : 23, 'c' : 32, None : 12}]})
 
         self.user_id = 'userID'

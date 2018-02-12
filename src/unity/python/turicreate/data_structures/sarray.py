@@ -1221,6 +1221,8 @@ class SArray(object):
 
             # Not in cache, need to grab it
             block_size = 1024 * (32 if self.dtype in [int, long, float] else 4)
+            if self.dtype in [numpy.ndarray, _Image, dict, list]:
+                block_size = 16
 
             block_num = int(other // block_size)
 

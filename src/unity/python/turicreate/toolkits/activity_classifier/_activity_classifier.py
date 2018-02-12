@@ -581,7 +581,7 @@ class ActivityClassifier(_CustomModel):
             # remove predictions for padded data
             unpadded_len = chunked_data['chunk_len'].apply(
                 lambda l: _ceil_dev(l, prediction_window)).to_numpy()
-            preds = [p[:unpadded_len[i]] for i, p in enumerate(preds)]
+            preds = [list(p[:unpadded_len[i]]) for i, p in enumerate(preds)]
 
             out = _SFrame({
                 self.session_id: chunked_data['session_id'],

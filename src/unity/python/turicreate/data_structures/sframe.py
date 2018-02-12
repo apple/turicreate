@@ -23,7 +23,7 @@ from ..util import get_module_from_object, pytype_to_printf
 from .sarray import SArray, _create_sequential_sarray
 from .. import aggregate
 from .image import Image as _Image
-from ..deps import pandas, HAS_PANDAS, HAS_NUMPY
+from ..deps import pandas, numpy, HAS_PANDAS, HAS_NUMPY
 from .grouped_sframe import GroupedSFrame
 
 import array
@@ -2014,6 +2014,8 @@ class SFrame(object):
         def _value_to_str(value):
             if (type(value) is array.array):
                 return str(list(value))
+            elif (type(value) is numpy.ndarray):
+                return str(value).replace('\n',' ')
             elif (type(value) is list):
                 return '[' + ", ".join(_value_to_str(x) for x in value) + ']'
             else:
@@ -4095,10 +4097,10 @@ class SFrame(object):
                   val = operation[key]
                   if type(val) is tuple:
                     (op, column) = val
-                    if (op == '__builtin__avg__' and self[column[0]].dtype is array.array):
+                    if (op == '__builtin__avg__' and self[column[0]].dtype in [array.array, numpy.ndarray]):
                         op = '__builtin__vector__avg__'
 
-                    if (op == '__builtin__sum__' and self[column[0]].dtype is array.array):
+                    if (op == '__builtin__sum__' and self[column[0]].dtype in [array.array, numpy.ndarray]):
                         op = '__builtin__vector__sum__'
 
                     if (op == '__builtin__argmax__' or op == '__builtin__argmin__') and ((type(column[0]) is tuple) != (type(key) is tuple)):
@@ -4133,10 +4135,10 @@ class SFrame(object):
               for val in operation:
                   if type(val) is tuple:
                     (op, column) = val
-                    if (op == '__builtin__avg__' and self[column[0]].dtype is array.array):
+                    if (op == '__builtin__avg__' and self[column[0]].dtype in [array.array, numpy.ndarray]):
                         op = '__builtin__vector__avg__'
 
-                    if (op == '__builtin__sum__' and self[column[0]].dtype is array.array):
+                    if (op == '__builtin__sum__' and self[column[0]].dtype in [array.array, numpy.ndarray]):
                         op = '__builtin__vector__sum__'
 
                     if (op == '__builtin__argmax__' or op == '__builtin__argmin__') and type(column[0]) is tuple:

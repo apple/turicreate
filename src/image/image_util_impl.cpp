@@ -3,9 +3,6 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#ifndef IMAGE_UTIL_DETAIL_HPP
-#define IMAGE_UTIL_DETAIL_HPP
-
 #include <image/io.hpp>
 #ifndef png_infopp_NULL
 #define png_infopp_NULL (png_infopp)NULL
@@ -139,5 +136,15 @@ void encode_image_impl(image_type& image) {
 }
 
 } // end of image_util_detail
+
+
+void decode_image_inplace(image_type& image) {
+  image_util_detail::decode_image_impl(image); 
+}
+
+void encode_image_inplace(image_type& image) {
+  image_util_detail::encode_image_impl(image); 
+}
+
+
 } // end of turicreate
-#endif

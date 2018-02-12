@@ -874,7 +874,7 @@ flexible_type unity_sarray::sum() {
                                           reductionfn, start_val);
 
     return sum_val;
-  } else if (cur_type == flex_type_enum::VECTOR) {
+  } else if (cur_type == flex_type_enum::VECTOR || cur_type == flex_type_enum::ND_VECTOR) {
 
     bool failure = false;
     auto reductionfn =
@@ -884,6 +884,10 @@ flexible_type unity_sarray::sum() {
               // initial val
               sum.first = true;
               sum.second = f;
+            } else if (sum.second.get_type() == flex_type_enum::ND_VECTOR && 
+                       !sum.second.get<flex_nd_vec>().same_shape(f.get<flex_nd_vec>())){
+              failure = true;
+             return false; 
             } else if (sum.second.size() == f.size()) {
               // accumulation
               sum.second += f;
@@ -904,6 +908,10 @@ flexible_type unity_sarray::sum() {
           } else if (f.first == false) {
             // there is no f to add.
             return true;
+          } else if (sum.second.get_type() == flex_type_enum::ND_VECTOR && 
+                     !sum.second.get<flex_nd_vec>().same_shape(f.second.get<flex_nd_vec>())){
+            failure = true;
+            return false; 
           } else if (sum.second.size() == f.second.size()) {
             // accumulation
             sum.second += f.second;
@@ -915,7 +923,8 @@ flexible_type unity_sarray::sum() {
           return true;
         };
 
-    std::pair<bool, flexible_type> start_val{false, flex_vec()};
+    std::pair<bool, flexible_type> start_val{false, flexible_type()};
+    start_val.second.reset(cur_type);
     std::pair<bool, flexible_type> sum_val =
         query_eval::reduce<std::pair<bool, flexible_type> >(m_planner_node, reductionfn,
                                                             combinefn , start_val);
@@ -923,7 +932,11 @@ flexible_type unity_sarray::sum() {
     // failure indicates there is a missing value, or there is vector length
     // mismatch
     if (failure) {
-      log_and_throw("Cannot perform sum over vectors of variable length.");
+      if (cur_type == flex_type_enum::ND_VECTOR) {
+        log_and_throw("Cannot perform sum over ndarrays of different shapes.");
+      } else {
+        log_and_throw("Cannot perform sum over vectors of variable length.");
+      }
     }
 
     return sum_val.second;
@@ -972,12 +985,13 @@ flexible_type unity_sarray::mean() {
     else return mean_val.first;
 
 
-  } else if(cur_type == flex_type_enum::VECTOR) {
+  } else if(cur_type == flex_type_enum::VECTOR || cur_type == flex_type_enum::ND_VECTOR) {
 
     std::pair<flexible_type, size_t> start_val{flexible_type(), 0}; // mean, and size
     auto reductionfn =
         [](const flexible_type& f,
            std::pair<flexible_type, size_t>& mean)->void {
+          if (f.get_type() == flex_type_enum::UNDEFINED) return;
           // In the first operation in case of vector, initialzed vector will be size 0
           // so we cannot simply add. Copy instead.
           if (mean.second == 0){
@@ -986,6 +1000,9 @@ flexible_type unity_sarray::mean() {
           } else {
             if (f.get_type() == flex_type_enum::VECTOR && f.size() != mean.first.size()){
               log_and_throw("Cannot perform mean on SArray with vectors of different lengths.");
+            } else if (mean.first.get_type() == flex_type_enum::ND_VECTOR && 
+                       !mean.first.get<flex_nd_vec>().same_shape(f.get<flex_nd_vec>())){
+              log_and_throw("Cannot perform mean on ndarrays of different shapes.");
             }
             // Divide done each time to keep from overflowing
             ++mean.second;
@@ -1000,6 +1017,9 @@ flexible_type unity_sarray::mean() {
       if (mean.second > 0 &&  f.second > 0) {
         if (mean.first.get_type() == flex_type_enum::VECTOR && f.first.size() != mean.first.size()){
           log_and_throw("Cannot perform mean on SArray with vectors of different lengths.");
+        } else if (mean.first.get_type() == flex_type_enum::ND_VECTOR && 
+            !mean.first.get<flex_nd_vec>().same_shape(f.first.get<flex_nd_vec>())){
+          log_and_throw("Cannot perform mean on ndarrays of different shapes.");
         }
         mean.first =
             mean.first * ((double)mean.second / (double)(mean.second + f.second)) +
@@ -1324,37 +1344,15 @@ std::shared_ptr<unity_sarray_base> unity_sarray::lazy_astype(flex_type_enum dtyp
                                 0 /*random seed*/);
     return ret;
 
-  } else if (current_type == flex_type_enum::LIST && dtype == flex_type_enum::VECTOR) {
-    // a lambda that converts list to vector, one element at a time
-    auto transform_fn = [undefined_on_failure](const flexible_type& f)->flexible_type {
-      if (f.get_type() == flex_type_enum::UNDEFINED) return f;
-      // input
-      const flex_list& src = f.get<flex_list>();
-      // output
-      flex_vec ret;
-      ret.resize(src.size());
-
-      for (size_t i = 0;i < src.size(); ++i) {
-        auto src_type = src[i].get_type();
-        if (src_type == flex_type_enum::INTEGER || src_type == flex_type_enum::FLOAT) {
-          ret[i] = (flex_float)(src[i]);
-        } else {
-          // not convertible.
-          if (undefined_on_failure) return FLEX_UNDEFINED;
-          else log_and_throw("Unable to interpret " + flex_string(f) + " as a numeric array");
-        }
-      }
-      return ret;
-    };
-    auto ret = transform_lambda(transform_fn,
-                                dtype,
-                                true /*skip undefined*/,
-                                0 /*random seed*/);
-    return ret;
   } else {
-    auto ret = transform_lambda([dtype](const flexible_type& f)->flexible_type {
+    auto ret = transform_lambda([dtype, undefined_on_failure](const flexible_type& f)->flexible_type {
                                   flexible_type ret(dtype);
-                                  ret.soft_assign(f);
+                                  try {
+                                    ret.soft_assign(f);
+                                  } catch (...) {
+                                    if (undefined_on_failure) return FLEX_UNDEFINED;
+                                    else throw;
+                                  }
                                   return ret;
                                 },
                                 dtype,

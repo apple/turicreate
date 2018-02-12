@@ -25,7 +25,7 @@ void unity_sketch::construct_from_sarray(
     std::shared_ptr<unity_sarray_base> uarray, bool background, const std::vector<flexible_type>& keys) {
   auto array = std::static_pointer_cast<unity_sarray>(uarray)->get_underlying_sarray();
   std::shared_ptr<sarray<flexible_type>::reader_type>
-      reader(std::move(array->get_reader()));
+      reader(array->get_reader());
 
   std::unordered_set<flexible_type> key_set = std::unordered_set<flexible_type>(keys.begin(), keys.end());
   init(NULL, array->get_type(), key_set, reader);

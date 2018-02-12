@@ -7,6 +7,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <flexible_type/flexible_type.hpp>
 #include <logger/assertions.hpp>
+#include <image/image_util_impl.hpp>
 
 // contains some of the bigger functions I do not want to inline
 namespace turi {
@@ -80,6 +81,12 @@ flex_string get_string_visitor::operator()(const flex_vec& vec) const {
   return strm.str();
 }
 
+flex_string get_string_visitor::operator()(const flex_nd_vec& vec) const {
+  std::stringstream strm;
+  strm << vec;
+  return strm.str();
+}
+
 flex_string get_string_visitor::operator()(const flex_date_time& i) const {
   return date_time_to_string(i);
 }
@@ -120,22 +127,239 @@ flex_string get_string_visitor::operator()(const flex_dict& vec) const {
   return strm.str();
 }
 
- flex_string get_string_visitor::operator() (const flex_image& img) const {
+flex_string get_string_visitor::operator() (const flex_image& img) const {
   std::stringstream strm;
   strm << "Height: " << img.m_height;
   strm << " Width: " << img.m_width;
 
   return strm.str();
- }
+}
 
- flex_vec get_vec_visitor::operator() (const flex_image& img) const {
+flex_vec get_vec_visitor::operator() (const flex_image& img) const {
   flex_vec vec;
-  ASSERT_MSG(img.m_format == Format::RAW_ARRAY, "Cannot convert encoded image to array");
-  for (size_t i = 0 ; i < img.m_image_data_size; ++i){
-    vec.push_back(static_cast<double>(static_cast<unsigned char>(img.m_image_data[i])));
+  if(img.m_format == Format::RAW_ARRAY) {
+    for (size_t i = 0 ; i < img.m_image_data_size; ++i){
+      vec.push_back(static_cast<double>(static_cast<unsigned char>(img.m_image_data[i])));
+    }
+  } else {
+    // pay the price to decode
+    flex_image newimg = img;
+    decode_image_inplace(newimg);
+    ASSERT_TRUE(newimg.m_format == Format::RAW_ARRAY);
+    for (size_t i = 0 ; i < newimg.m_image_data_size; ++i){
+      vec.push_back(static_cast<double>(static_cast<unsigned char>(newimg.m_image_data[i])));
+    }
   }
   return vec;
- }
+}
+
+/**
+ * Flatten a potentially recursive flexible_type to nd_vec.
+ *
+ * Recursively breaks down the flexible_type flattening it into the ret array
+ * with the canonical ordering.
+ *
+ * Returns true on success, false on any shape error.
+ *
+ * \param f The flexible_type (and a few overloads of it) to flatten
+ * \param shape The target output shape.
+ * \param shape_index The current shape index of the recursive decomposition.
+ */
+static bool flexible_type_flatten_to_nd_vec(const flexible_type& f, 
+                                            const std::vector<size_t>& shape,
+                                            size_t shape_index,
+                                            std::vector<double>& ret);
+static bool flexible_type_flatten_to_nd_vec(const flex_vec& f, 
+                                            const std::vector<size_t>& shape,
+                                            size_t shape_index,
+                                            std::vector<double>& ret);
+static bool flexible_type_flatten_to_nd_vec(const flex_list& f, 
+                                            const std::vector<size_t>& shape,
+                                            size_t shape_index,
+                                            std::vector<double>& ret);
+static bool flexible_type_flatten_to_nd_vec(const flex_nd_vec& f, 
+                                            const std::vector<size_t>& shape,
+                                            size_t shape_index,
+                                            std::vector<double>& ret);
+
+static bool flexible_type_flatten_to_nd_vec(const flexible_type& f, 
+                                            const std::vector<size_t>& shape,
+                                            size_t shape_index,
+                                            std::vector<double>& ret) {
+  if (f.get_type() == flex_type_enum::VECTOR) {
+    return flexible_type_flatten_to_nd_vec(f.get<flex_vec>(), shape, shape_index, ret);
+  } else if (f.get_type() == flex_type_enum::ND_VECTOR) {
+    return flexible_type_flatten_to_nd_vec(f.get<flex_nd_vec>(), shape, shape_index, ret);
+  } else if (f.get_type() == flex_type_enum::LIST) {
+    return flexible_type_flatten_to_nd_vec(f.get<flex_list>(), shape, shape_index, ret);
+  } else {
+    return false;
+  }
+}
+
+static bool flexible_type_flatten_to_nd_vec(const flex_vec& f, 
+                                            const std::vector<size_t>& shape,
+                                            size_t shape_index,
+                                            std::vector<double>& ret) {
+  // check shape.
+  if (shape_index == shape.size() - 1 && f.size() == shape[shape_index]) {
+    // shape is good
+    std::copy(f.begin(), f.end(), std::inserter(ret, ret.end()));
+    return true;
+  }
+  return false;
+}
+
+static bool flexible_type_flatten_to_nd_vec(const flex_list& f, 
+                                            const std::vector<size_t>& shape,
+                                            size_t shape_index,
+                                            std::vector<double>& ret) {
+  // check shape
+  if (shape_index < shape.size() && f.size() == shape[shape_index]) {
+    // shape is good
+    if (shape_index == shape.size() - 1) {
+      // fast path for last entry is numeric
+      for (size_t i = 0;i < f.size(); ++i) {
+        if (flex_type_is_convertible(f[i].get_type(), flex_type_enum::FLOAT)) {
+          ret.push_back(f[i].to<double>());
+        } else {
+          return false;
+        }
+      }
+    } else {
+      for (size_t i = 0;i < f.size(); ++i) {
+        if (!flexible_type_flatten_to_nd_vec(f[i], shape, shape_index+1, ret)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  } 
+  return false;
+}
+
+
+static bool flexible_type_flatten_to_nd_vec(const flex_nd_vec& f, 
+                                            const std::vector<size_t>& shape,
+                                            size_t shape_index,
+                                            std::vector<double>& ret) {
+  // check shape
+  if (shape.size() - shape_index == f.shape().size()) {
+    bool shape_good = true;
+    for (size_t i = shape_index; i < shape.size(); ++i) {
+      shape_good &= (shape[i] == f.shape()[i-shape_index]);
+    }
+    if (shape_good == false) return false;
+    // shape is good
+
+    if (f.num_elem() == 0) return true;
+    std::vector<size_t> idx(f.shape().size(), 0);
+    do {
+      ret.push_back(f[f.fast_index(idx)]);
+    } while(f.increment_index(idx));
+    return true;
+  }
+  return false;
+}
+
+
+flex_nd_vec get_ndvec_visitor::operator()(flex_list u) const {
+  // find dimensionality.
+  std::vector<size_t> shape;
+
+  // we try to derive from u[0]. But it could be recursive hierarchies of stuff.
+  const flex_list* l = &u;
+  while(1) {
+    shape.push_back(l->size());
+    if (l->size() == 0) {
+      break;
+    }
+    const flexible_type& f = (*l)[0];
+    if (f.get_type() == flex_type_enum::VECTOR) {
+      // list contains a vector.
+      // this is the last shape dimension.
+      shape.push_back(f.size());
+      break;
+    } else if (f.get_type() == flex_type_enum::ND_VECTOR) {
+      // list contains a nd vector.
+      // this is the last shape dimension.
+      const flex_nd_vec& v = f.get<flex_nd_vec>();
+      for (size_t j = 0; j < v.shape().size(); ++j) shape.push_back(v.shape()[j]);
+      break;
+    } else if (f.get_type() == flex_type_enum::LIST) {
+      // we have another list to break down
+      l  = &(f.get<flex_list>());
+      continue;
+    } else if (flex_type_is_convertible(f.get_type(), flex_type_enum::FLOAT)) {
+      // list contains a scalar, we are now at the deepest recursive level
+      break;
+    } else {
+      log_and_throw("list contains non-numeric type. Cannot convert to ndarray");
+    }
+  }
+
+  // we have a shape
+  // empty shape
+  if (shape.size() == 0) {
+    return flex_nd_vec();
+  }
+  // 0 element shape
+  size_t numel = 1;
+  for (size_t i = 0; i < shape.size(); ++i) numel *= shape[i];
+  if (numel == 0) {
+    return flex_nd_vec(flex_nd_vec::container_type(), shape);
+  }
+
+  // n element shape
+  auto elems = std::make_shared<flex_nd_vec::container_type>() ;
+  elems->reserve(numel);
+  if (flexible_type_flatten_to_nd_vec(u, shape, 0, *elems) == false) {
+    log_and_throw("list shape invalid");
+  } 
+  return flex_nd_vec(elems, shape);
+}
+
+flex_nd_vec get_ndvec_visitor::operator()(const flex_image& img) const {
+  flex_vec flattened = get_vec_visitor()(img);
+  auto elem = std::make_shared<flex_nd_vec::container_type>();
+  (*elem) = std::move(flattened);
+  if (img.m_channels == 1) {
+    return flex_nd_vec(elem, {img.m_height, img.m_width});
+  } else {
+    return flex_nd_vec(elem, {img.m_height, img.m_width, img.m_channels});
+  }
+}
+
+flex_image get_img_visitor::operator()(const flex_nd_vec& v) const {
+  ASSERT_MSG(v.shape().size() == 2 || v.shape().size() == 3, "Cannot convert nd array to image");
+  size_t channels = 1, height = 0, width = 0;
+  if (v.shape().size() == 2) {
+    height = v.shape()[0];
+    width = v.shape()[1];
+  } else if (v.shape().size() == 3) {
+    height = v.shape()[0];
+    width = v.shape()[1];
+    channels = v.shape()[2];
+  }
+  ASSERT_MSG(channels == 1 || channels == 3 || channels == 4, "Channels must be 1,3 or 4");
+
+  size_t npixels = channels * height * width;
+  if (npixels == 0) {
+    return flex_image(nullptr, height, width, channels, 0,
+                      IMAGE_TYPE_CURRENT_VERSION, int(Format::RAW_ARRAY));
+  }
+  std::vector<unsigned char> pixels(npixels, 0);
+
+  // loop through v converting it to pixels
+  std::vector<size_t> idx(v.shape().size(), 0);
+  size_t ctr = 0;
+  do {
+    pixels[ctr] = v[v.fast_index(idx)];
+    ++ctr;
+  } while(v.increment_index(idx));
+  return flex_image((const char*)(pixels.data()), height, width, channels, pixels.size(),
+                    IMAGE_TYPE_CURRENT_VERSION, int(Format::RAW_ARRAY));
+}
 
 void soft_assignment_visitor::operator()(flex_vec& t, const flex_list& u) const {
   t.resize(u.size());
@@ -146,6 +370,7 @@ void soft_assignment_visitor::operator()(flex_vec& t, const flex_list& u) const 
     t[i] = ft.get<flex_float>();
   }
 }
+
 
 bool approx_equality_operator::operator()(const flex_dict& t, const flex_dict& u) const {
     if (t.size() != u.size()) return false;
