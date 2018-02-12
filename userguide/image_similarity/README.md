@@ -159,7 +159,7 @@ func processQuery(for request: VNRequest, error: Error?, k: Int = 5) {
         }
 
         let sorted = distanceArray.enumerated().sorted(by: {$0.element < $1.element})
-		 let knn = sorted[..<min(k, numReferenceImages)]
+        let knn = sorted[..<min(k, numReferenceImages)]
 
         self.referenceRanking.text = String(describing: knn)
     }
