@@ -49,7 +49,7 @@ std::string boxes_and_whiskers_result::vega_column_data(bool sframe) const {
     }
 
     ss << "{\"" << x_name << "\": ";
-    ss << escape_string(xValue);
+    ss << extra_label_escape(xValue);
 
     ss << ",\"min\": ";
     ss << yValues[0];
