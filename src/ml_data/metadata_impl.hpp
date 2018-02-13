@@ -260,8 +260,7 @@ inline flex_type_enum ml_metadata::column_type(const std::string& column_name) c
 }
 
 
-/**  Returns the mode of the target column.  See
- *  ml_data_column_modes.hpp for details on the column modes.
+/**  Returns the type of the target column.
  */
 inline flex_type_enum ml_metadata::target_column_type() const {
   DASSERT_TRUE(has_target());

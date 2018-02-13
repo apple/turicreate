@@ -3,7 +3,6 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
-from .cy_flexible_type cimport flexible_type 
 from .cy_flexible_type cimport flex_list
 from .cy_flexible_type cimport gl_options_map
 from .cy_flexible_type cimport flex_type_enum 
@@ -14,7 +13,6 @@ from .cy_sframe cimport  UnitySFrameProxy
 
 from libcpp.vector cimport vector
 from libcpp.string cimport string
-from libcpp.map cimport map
 from .cy_unity cimport function_closure_info
 from .cy_unity cimport make_function_closure_info
 

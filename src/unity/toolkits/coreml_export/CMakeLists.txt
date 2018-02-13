@@ -55,3 +55,4 @@ make_library(unity_coreml_model_export
     numerics
     protobuf
   )
+target_compile_definitions(protobuf PUBLIC CoreML=__tc_CoreML)
