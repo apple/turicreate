@@ -17,16 +17,8 @@ _TMP_COL_RANDOM_ORDER = '_random_order'
 
 
 def _convert_image_to_raw(image):
-    FORMAT_RAW = 2
-    if image._format_enum == FORMAT_RAW:
-        return image
-    else:
-        return _tc.Image(_image_data=image.pixel_data.tobytes(),
-                         _width=image.width,
-                         _height=image.height,
-                         _channels=image.channels,
-                         _format_enum=FORMAT_RAW,
-                         _image_data_size=image.width * image.height * image.channels)
+    # Decode image and make sure it has 3 channels
+    return _tc.image_analysis.resize(image, image.width, image.height, 3, decode=True)
 
 
 class SFrameDetectionIter(_mx.io.DataIter):
