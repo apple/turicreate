@@ -20,13 +20,12 @@ from .cy_flexible_type cimport pyobject_from_flexible_type
 from .cy_flexible_type cimport pylist_from_flex_list
 from .cy_flexible_type cimport pydict_from_gl_options_map
 
-from .cy_cpp_utils cimport str_to_cpp, cpp_to_str
+from .cy_cpp_utils cimport str_to_cpp
+
+from .cy_unity cimport make_function_closure_info
 
 ### sframe ###
 from .cy_sframe cimport create_proxy_wrapper_from_existing_proxy as sframe_proxy
-
-import inspect
-import array
 
 cdef create_proxy_wrapper_from_existing_proxy(const unity_sarray_base_ptr& proxy):
     if proxy.get() == NULL:

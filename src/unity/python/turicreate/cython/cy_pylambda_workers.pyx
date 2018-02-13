@@ -12,13 +12,9 @@ from cy_flexible_type cimport pyobject_from_flexible_type
 from cy_callback cimport register_exception
 from .._gl_pickle import GLUnpickler
 
-from copy import deepcopy
 from libcpp.string cimport string
 from libcpp.vector cimport vector
-import ctypes
 import os
-import traceback
-import sys
 cimport cython
 
 from random import seed as set_random_seed
