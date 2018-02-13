@@ -118,6 +118,13 @@ class logistic_regression_opt_interface: public
   size_t num_examples() const;
 
   /**
+  * Get the number of validation-set examples for the model
+  *
+  * \returns Number of examples
+  */
+  size_t num_validation_examples() const;
+
+  /**
   * Get the number of variables in the model
   *
   * \returns Number of variables

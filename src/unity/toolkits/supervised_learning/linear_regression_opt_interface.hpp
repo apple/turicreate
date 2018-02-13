@@ -104,9 +104,16 @@ class linear_regression_opt_interface: public
   /**
    * Get the number of variables in the model
    *
-   * \returns Number of examples
+   * \returns Number of variables
    */
   size_t num_variables() const;
+
+  /**
+   * Get the number of validation-set examples in the model
+   *
+   * \returns Number of examples
+   */
+  size_t num_validation_examples() const;
 
   /**
    * Get strings needed to print the header for the progress table.
