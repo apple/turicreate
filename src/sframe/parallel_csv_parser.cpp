@@ -29,6 +29,20 @@ namespace turi {
 using fileio::file_status;
 
 /**
+ * Escape BOMs
+ */
+void skip_BOM(general_ifstream& fin) {
+   char fChar, sChar, tChar;
+   fChar = fin.get();
+   sChar = fin.get();
+   tChar = fin.get();
+   bool isBOM = ((fChar == (char)0xEF) && (sChar == (char)0xBB) && (tChar == (char)0xBF));
+   if (!isBOM) {
+       fin.seekg(0);
+   }
+}
+
+/**
  * Code from 
  * http://stackoverflow.com/questions/6089231/getting-std-ifstream-to-handle-lf-cr-and-crlf
  *
@@ -783,6 +797,7 @@ void read_csv_header(csv_info& info,
   if (!probe_fin.good()) {
     log_and_throw("Fail reading " + sanitize_url(path));
   }
+  skip_BOM(probe_fin);
 
   // skip skip_rows lines
   std::string skip_string;
@@ -874,15 +889,6 @@ void get_column_types(csv_info& info,
 
 } // anonymous namespace
 
-void skip_BOM(general_ifstream fin) {
-   char fChar, sChar, tChar;
-   fChar = fin.get();
-   sChar = fin.get();
-   tChar = fin.get();
-   if (!((fChar == 0xEF) && (sChar == 0xBB) && (tChar == 0xBF))) {
-       fin.seekg(0);
-   }
-}
 
 /**
  * Parsed a CSV file to an SFrame.
