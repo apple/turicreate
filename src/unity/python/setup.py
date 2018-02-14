@@ -123,8 +123,8 @@ if __name__ == '__main__':
         sys.stderr.write(msg)
         sys.exit(1)
 
-    with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as f:
-        long_description = f.read()
+    with open(os.path.join(os.path.dirname(__file__), 'README.rst'), 'rb') as f:
+        long_description = f.read().decode('utf-8')
 
     setup(
         name="turicreate",
