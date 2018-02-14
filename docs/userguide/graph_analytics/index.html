@@ -2,7 +2,7 @@
 <!DOCTYPE HTML>
 <html lang="" >
     <head>
-        <title>Deployment to CoreML · GitBook</title>
+        <title>Graph analytics · GitBook</title>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
@@ -61,10 +61,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="how-it-works.html" />
+    <link rel="next" href="../nearest_neighbors/nearest_neighbors.html" />
     
     
-    <link rel="prev" href="advanced-usage.html" />
+    <link rel="prev" href="../clustering/dbscan.html" />
     
 
     </head>
@@ -416,9 +416,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.5" data-path="./">
+        <li class="chapter " data-level="1.3.5" data-path="../activity_classifier/">
             
-                <a href="./">
+                <a href="../activity_classifier/">
             
                     
                     Activity classification
@@ -430,9 +430,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.3.5.1" data-path="data-preparation.html">
+        <li class="chapter " data-level="1.3.5.1" data-path="../activity_classifier/data-preparation.html">
             
-                <a href="data-preparation.html">
+                <a href="../activity_classifier/data-preparation.html">
             
                     
                     Data Preparation
@@ -443,9 +443,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.5.2" data-path="advanced-usage.html">
+        <li class="chapter " data-level="1.3.5.2" data-path="../activity_classifier/advanced-usage.html">
             
-                <a href="advanced-usage.html">
+                <a href="../activity_classifier/advanced-usage.html">
             
                     
                     Advanced Usage
@@ -456,9 +456,9 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.3.5.3" data-path="export_coreml.html">
+        <li class="chapter " data-level="1.3.5.3" data-path="../activity_classifier/export_coreml.html">
             
-                <a href="export_coreml.html">
+                <a href="../activity_classifier/export_coreml.html">
             
                     
                     Deployment to CoreML
@@ -469,9 +469,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.5.4" data-path="how-it-works.html">
+        <li class="chapter " data-level="1.3.5.4" data-path="../activity_classifier/how-it-works.html">
             
-                <a href="how-it-works.html">
+                <a href="../activity_classifier/how-it-works.html">
             
                     
                     How it works
@@ -661,9 +661,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.4.3" data-path="../graph_analytics/">
+        <li class="chapter active" data-level="1.4.3" data-path="./">
             
-                <a href="../graph_analytics/">
+                <a href="./">
             
                     
                     Graph analytics
@@ -896,7 +896,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Deployment to CoreML</a>
+        <a href=".." >Graph analytics</a>
     </h1>
 </div>
 
@@ -911,87 +911,170 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="deploying-to-core-ml"><a name="deploying-to-core-ml" class="plugin-anchor" href="#deploying-to-core-ml"><i class="fa fa-link" aria-hidden="true"></i></a>Deploying to Core ML</h1><p>In this section, we describe how to export the model created by the <code>activity_classifier</code> toolkit to Core ML, and use it in Xcode to get real time predictions in a swift app.</p><p>Exporting an activity classifier model in Core ML format can be performed using the <code>export_coreml</code> function.</p><pre><code class="lang-python">model.export_coreml(<span class="hljs-string">&apos;ActivityClassification.mlmodel&apos;</span>)</code></pre>
-<p>Dragging the saved model to Xcode will automatically generate relevant code for calling the model in your app:</p><p><img alt="Model imported to Xcode" src="images/Model_In_Xcode.png"></p><p>For more information about the generated programmatic API please refer to <a href="https://developer.apple.com/documentation/coreml/integrating_a_core_ml_model_into_your_app" target="_blank">Core ML documentation</a>.</p><h5 id="model-inputs"><a name="model-inputs" class="plugin-anchor" href="#model-inputs"><i class="fa fa-link" aria-hidden="true"></i></a>Model Inputs</h5><ul><li><strong>features</strong> - an array in the length of <code>prediction_window</code> and width equal to the number of features. The array should contain the sensors&apos; readings, that have been aggregated for the past <code>prediction_window</code> samples.
+                                <h1 id="introduction-to-graph-analytics"><a name="introduction-to-graph-analytics" class="plugin-anchor" href="#introduction-to-graph-analytics"><i class="fa fa-link" aria-hidden="true"></i></a>Introduction to Graph Analytics</h1><p>Going from inspiration to production with graph models requires knowledge of several of the graph&apos;s attributes:
+influential and outlier nodes, clusters and communities, hidden
+connections between nodes, and the ability to compare different graphs based on
+these attributes. The
+<a href="https://apple.github.io/turicreate/docs/api/turicreate.toolkits.graph_analytics.html" target="_blank">Graph Analytics toolkit</a>
+enables this depth of understanding by providing several methods:</p><ul><li><a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.connected_components.create.html" target="_blank">Connected components</a>
 </li>
-<li><strong>hiddenIn</strong> - state input for the model&apos;s LSTM recurrent layer. Initialize to zero when starting a new session, otherwise should be fed with the last <code>hiddenOut</code> output of the previous prediction.
+<li><a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.graph_coloring.create.html" target="_blank">Graph coloring</a>
 </li>
-<li><strong>cellIn</strong> - cell state input for the model&apos;s LSTM recurrent layer. Initialize to zero when starting a new session, otherwise should be fed with the last <code>cellOut</code> output of the previous prediction.
+<li><a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.kcore.create.html" target="_blank">K-Core decomposition</a>
+</li>
+<li><a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.pagerank.create.html" target="_blank">PageRank</a>
+</li>
+<li><a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.shortest_path.create.html" target="_blank">Single-source shortest path</a>
+</li>
+<li><a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.triangle_counting.create.html#turicreate.triangle_counting.create" target="_blank">Triangle count</a>
 </li></ul>
-<h5 id="model-outputs"><a name="model-outputs" class="plugin-anchor" href="#model-outputs"><i class="fa fa-link" aria-hidden="true"></i></a>Model Outputs</h5><ul><li><strong>activity_idProbability</strong> - a dictionary, where the keys are each possible label (predicted activity) and the values are the activity&apos;s predicted probability - a double in the range [0.0, 1.0].
-</li>
-<li><strong>activity_id</strong> - a string representing the predicted activity. This is the activity with the highest probability value in <code>activity_idProbability</code>.
-</li>
-<li><strong>hiddenOut</strong> - state output of the model&apos;s LSTM recurrent layer. This output should be saved and fed to the model&apos;s <code>hiddenIn</code> input at the next prediction call.
-</li>
-<li><strong>cellOut</strong> - cell state output of the model&apos;s LSTM recurrent layer. This output should be saved and fed to the model&apos;s <code>cellIn</code> input at the next prediction call.
-</li></ul>
-<p>For more information on the model architecture, please see the <a href="how-it-works.html">how does it work?</a> section.</p><h2 id="applying-the-core-ml-model-in-an-app"><a name="applying-the-core-ml-model-in-an-app" class="plugin-anchor" href="#applying-the-core-ml-model-in-an-app"><i class="fa fa-link" aria-hidden="true"></i></a>Applying the Core ML model in an app</h2><p>Deploying an activity classification model in an iOS/watchOS app involves 3 basic steps:</p><ol><li>Enabling the relevant sensors, and setting them to provide readings at the desired frequency.
-</li>
-<li>Aggregating the readings from the sensors into a <code>prediction_window</code> long array.
-</li>
-<li>When the array gets full - calling the model&apos;s <code>prediction()</code> method to get a predicted activity.
-</li></ol>
-<h4 id="creating-arrays-for-aggregating-inputs"><a name="creating-arrays-for-aggregating-inputs" class="plugin-anchor" href="#creating-arrays-for-aggregating-inputs"><i class="fa fa-link" aria-hidden="true"></i></a>Creating arrays for aggregating inputs</h4><p>The ActivityClassifier model expects to receive an array containing <code>prediction_window</code> readings of the sensors&apos; values.</p><p>The app will need to aggregate the sensors&apos; readings into a <code>MLMultiArray</code> with dimensions 1 x prediction_window x  number_of_features.</p><p>In addition - the app needs to save the last <code>hiddenOut</code> and <code>cellOut</code> outputs, to be fed to the model in the next prediction.</p><pre><code class="lang-swift"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">ModelConstants</span> </span>{
-    <span class="hljs-keyword">static</span> <span class="hljs-keyword">let</span> numOfFeatures = <span class="hljs-number">6</span>
-    <span class="hljs-keyword">static</span> <span class="hljs-keyword">let</span> predictionWindowSize = <span class="hljs-number">50</span>
-    <span class="hljs-keyword">static</span> <span class="hljs-keyword">let</span> sensorsUpdateInterval = <span class="hljs-number">1.0</span> / <span class="hljs-number">50.0</span>
-    <span class="hljs-keyword">static</span> <span class="hljs-keyword">let</span> hiddenInLength = <span class="hljs-number">200</span>
-    <span class="hljs-keyword">static</span> <span class="hljs-keyword">let</span> hiddenCellInLength = <span class="hljs-number">200</span>
-}
+<p>Each method takes an input graph and returns a model object, which contains the
+run time, an SFrame with the desired output for each vertex, and a new graph
+whose vertices contain the output as an attribute.</p><h1 id="examples"><a name="examples" class="plugin-anchor" href="#examples"><i class="fa fa-link" aria-hidden="true"></i></a>Examples</h1><p>To illustrate some of these methods, we&apos;ll use a previously created SGraph where
+vertices represent Wikipedia articles for  US businesses and edges represent
+hyperlinks between articles.</p><pre><code class="lang-python"><span class="hljs-keyword">import</span> turicreate
+sg = turicreate.load_sgraph(<span class="hljs-string">&apos;US_business_links&apos;</span>)
 
-<span class="hljs-keyword">let</span> activityClassificationModel = <span class="hljs-type">ActivityClassification</span>()
-
-<span class="hljs-keyword">var</span> currentIndexInPredictionWindow = <span class="hljs-number">0</span>
-<span class="hljs-keyword">let</span> predictionWindowDataArray = <span class="hljs-keyword">try</span>? <span class="hljs-type">MLMultiArray</span>(shape: [<span class="hljs-number">1</span> , <span class="hljs-type">ModelConstants</span>.predictionWindowSize , <span class="hljs-type">ModelConstants</span>.numOfFeatures] <span class="hljs-keyword">as</span> [<span class="hljs-type">NSNumber</span>], dataType: <span class="hljs-type">MLMultiArrayDataType</span>.double)
-<span class="hljs-keyword">var</span> lastHiddenOutput = <span class="hljs-keyword">try</span>? <span class="hljs-type">MLMultiArray</span>(shape:[<span class="hljs-type">ModelConstants</span>.hiddenInLength <span class="hljs-keyword">as</span> <span class="hljs-type">NSNumber</span>], dataType: <span class="hljs-type">MLMultiArrayDataType</span>.double)
-<span class="hljs-keyword">var</span> lastHiddenCellOutput = <span class="hljs-keyword">try</span>? <span class="hljs-type">MLMultiArray</span>(shape:[<span class="hljs-type">ModelConstants</span>.hiddenCellInLength <span class="hljs-keyword">as</span> <span class="hljs-type">NSNumber</span>], dataType: <span class="hljs-type">MLMultiArrayDataType</span>.double)</code></pre>
-<h4 id="enabling-coremotion-sensors"><a name="enabling-coremotion-sensors" class="plugin-anchor" href="#enabling-coremotion-sensors"><i class="fa fa-link" aria-hidden="true"></i></a>Enabling CoreMotion sensors</h4><p>We need to enable the accelerometer and gyroscope sensors, set them to the required update interval and set our handler block.</p><p>For more info on using CoreMotion sensors please see <a href="https://developer.apple.com/documentation/coremotion" target="_blank">CoreMotion documentation</a></p><pre><code class="lang-swift"><span class="hljs-keyword">guard</span> <span class="hljs-keyword">let</span> motionManager = motionManager, motionManager.isAccelerometerAvailable &amp;&amp; motionManager.isGyroAvailable <span class="hljs-keyword">else</span> { <span class="hljs-keyword">return</span> }
-
-motionManager.accelerometerUpdateInterval = <span class="hljs-type">TimeInterval</span>(<span class="hljs-type">ModelConstants</span>.sensorsUpdateInterval)
-motionManager.gyroUpdateInterval = <span class="hljs-type">TimeInterval</span>(<span class="hljs-type">ModelConstants</span>.sensorsUpdateInterval)
-
-motionManager.startAccelerometerUpdates(to: .main) { accelerometerData, error <span class="hljs-keyword">in</span>
-    <span class="hljs-keyword">guard</span> <span class="hljs-keyword">let</span> accelerometerData = accelerometerData <span class="hljs-keyword">else</span> { <span class="hljs-keyword">return</span> }    
-
-    <span class="hljs-comment">// Add the current data sample to the data array</span>
-    <span class="hljs-keyword">self</span>.addAccelSampleToDataArray(accelSample: accelerometerData)                       
-}</code></pre>
-<p>For simplicity  - we only show here setting the accelerometer&#x2019;s block handler.</p><h4 id="aggregating-sensor-readings"><a name="aggregating-sensor-readings" class="plugin-anchor" href="#aggregating-sensor-readings"><i class="fa fa-link" aria-hidden="true"></i></a>Aggregating sensor readings</h4><p>Whenever a new reading has been received from the sensor - we will add it to our <code>prediction_window</code> long data array.</p><p>When the array is full - the application is ready to call the model and get a new activity prediction.</p><pre><code class="lang-swift"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">addAccelSampleToDataArray</span> <span class="hljs-params">(accelSample: CMAccelerometerData)</span></span> {  
-    <span class="hljs-comment">// Add the current accelerometer reading to the data array</span>
-    <span class="hljs-keyword">guard</span> <span class="hljs-keyword">let</span> dataArray = predictionWindowDataArray <span class="hljs-keyword">else</span> { <span class="hljs-keyword">return</span> }
-    dataArray[[<span class="hljs-number">0</span> , currentIndexInPredictionWindow ,<span class="hljs-number">0</span>] <span class="hljs-keyword">as</span> [<span class="hljs-type">NSNumber</span>]] = accelSample.acceleration.x <span class="hljs-keyword">as</span> <span class="hljs-type">NSNumber</span>
-    dataArray[[<span class="hljs-number">0</span> , currentIndexInPredictionWindow ,<span class="hljs-number">1</span>] <span class="hljs-keyword">as</span> [<span class="hljs-type">NSNumber</span>]] = accelSample.acceleration.y <span class="hljs-keyword">as</span> <span class="hljs-type">NSNumber</span>
-    dataArray[[<span class="hljs-number">0</span> , currentIndexInPredictionWindow ,<span class="hljs-number">2</span>] <span class="hljs-keyword">as</span> [<span class="hljs-type">NSNumber</span>]] = accelSample.acceleration.z <span class="hljs-keyword">as</span> <span class="hljs-type">NSNumber</span>
-
-    <span class="hljs-comment">// Update the index in the prediction window data array</span>
-    currentIndexInPredictionWindow += <span class="hljs-number">1</span>
-
-    <span class="hljs-comment">// If the data array is full, call the prediction method to get a new model prediction.</span>
-    <span class="hljs-comment">// We assume here for simplicity that the Gyro data was added to the data array as well.</span>
-    <span class="hljs-keyword">if</span> (currentIndexInPredictionWindow == <span class="hljs-type">ModelConstants</span>.predictionWindowSize) {
-        <span class="hljs-keyword">let</span> predictedActivity = performModelPrediction() ?? <span class="hljs-string">&quot;N/A&quot;</span>
-
-        <span class="hljs-comment">// Use the predicted activity here</span>
-        <span class="hljs-comment">// ...</span>
-
-        <span class="hljs-comment">// Start a new prediction window</span>
-        currentIndexInPredictionWindow = <span class="hljs-number">0</span>  
-    }      
-}</code></pre>
-<h4 id="making-predictions"><a name="making-predictions" class="plugin-anchor" href="#making-predictions"><i class="fa fa-link" aria-hidden="true"></i></a>Making predictions</h4><p>After <code>prediction_window</code> readings were aggregated, we call the model to get a prediction of the current user&apos;s activity.</p><pre><code class="lang-swift"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">performModelPrediction</span> <span class="hljs-params">()</span></span> -&gt; <span class="hljs-type">String</span>? {
-    <span class="hljs-keyword">guard</span> <span class="hljs-keyword">let</span> dataArray = predictionWindowDataArray <span class="hljs-keyword">else</span> { <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Error!&quot;</span>}
-
-    <span class="hljs-comment">// Perform model prediction</span>
-    <span class="hljs-keyword">let</span> modelPrediction = <span class="hljs-keyword">try</span>? activityClassificationModel.prediction(features: dataArray, hiddenIn: lastHiddenOutput, cellIn: lastHiddenCellOutput)
-
-    <span class="hljs-comment">// Update the state vectors</span>
-    lastHiddenOutput = modelPrediction?.hiddenOut
-    lastHiddenCellOutput = modelPrediction?.cellOut
-
-    <span class="hljs-comment">// Return the predicted activity - the activity with the highest probability  </span>
-    <span class="hljs-keyword">return</span> modelPrediction?.activity_id
-}</code></pre>
+print(sg.summary())</code></pre>
+<pre><code class="lang-no-highlight">{&apos;num_edges&apos;: 517127, &apos;num_vertices&apos;: 233121}</code></pre>
+<h5 id="pagerank"><a name="pagerank" class="plugin-anchor" href="#pagerank"><i class="fa fa-link" aria-hidden="true"></i></a>PageRank</h5><p>PageRank is an iterative algorithm to compute the most influential nodes in a
+network. In each iteration, a vertex&apos;s influence is measured as the sum of
+influence of the nodes that point at the vertex. Each node&apos;s score is updated
+until the scores converge, or until the user-specified maximum number of
+iterations is reached.</p><p>As with other Turi Create methods, the model object is constructed with
+the <code>create</code> function. The <code>summary()</code> method provides a snapshot of the
+result, and the <code>list_fields()</code> method gives the attributes of the model
+that can be queried.</p><pre><code class="lang-python">pr = turicreate.pagerank.create(sg, max_iterations=<span class="hljs-number">10</span>)
+print(pr.summary())</code></pre>
+<pre><code class="lang-no-highlight">PagerankModel
+Graph:
++--------------+--------+
+| num_edges    | 517127 |
+| num_vertices | 233121 |
++--------------+--------+
+Result:
++----------+-------------------------------------------------------+
+| graph    | SGraph. See m[&apos;graph&apos;]                                |
+| pagerank | SFrame with each vertex&apos;s pagerank. See m[&apos;pagerank&apos;] |
+| delta    | 3824.08346598                                         |
++----------+-------------------------------------------------------+
+Setting:
++-------------------+------+
+| threshold         | 0.01 |
+| reset_probability | 0.15 |
+| max_iterations    | 10   |
++-------------------+------+
+Metric:
++----------------+----------+
+| num_iterations | 10       |
+| training_time  | 7.223114 |
++----------------+----------+
+Queryable Fields
++-------------------+-----------------------------------------------------------+
+| Field             | Description                                               |
++-------------------+-----------------------------------------------------------+
+| training_time     | Total training time of the model                          |
+| graph             | A new SGraph with the pagerank as a vertex property       |
+| delta             | Change in pagerank for the last iteration in L1 norm      |
+| reset_probability | The probability of randomly jumps to any node in the graph|
+| pagerank          | An SFrame with each vertex&apos;s pagerank                     |
+| num_iterations    | Number of iterations                                      |
+| threshold         | The convergence threshold in L1 norm                      |
+| max_iterations    | The maximum number of iterations to run                   |
++-------------------+-----------------------------------------------------------+</code></pre>
+<p>The model fields are retrieved either with the <code>get</code> method or by
+treating the model as a dictionary, as in the following snippet, which
+shows the model creation run time of about 7 seconds.</p><pre><code class="lang-python">print(pr[<span class="hljs-string">&apos;training_time&apos;</span>])</code></pre>
+<pre><code class="lang-no-highlight">7.234136</code></pre>
+<p>The <code>pagerank</code> field contains an SFrame with the per-node pagerank score. For
+this example of Wikipedia articles and hyperlinks, ABC takes the top spot by a
+large margin.</p><pre><code class="lang-python">pr_out = pr[<span class="hljs-string">&apos;pagerank&apos;</span>]
+print(pr_out.topk(<span class="hljs-string">&apos;pagerank&apos;</span>, k=<span class="hljs-number">10</span>))</code></pre>
+<pre><code class="lang-no-highlight">+-------------------------------+---------------+---------------+
+|              __id             |    pagerank   |     delta     |
++-------------------------------+---------------+---------------+
+| American Broadcasting Company | 3050.12285481 | 171.095519607 |
+|           Microsoft           | 1640.93294801 | 79.4193105615 |
+|           DC Comics           | 1623.76580168 |  231.05676926 |
+|       Paramount Pictures      | 1341.29716993 | 74.7486642804 |
+|            Facebook           | 1218.69295972 | 23.8510621222 |
+|             Google            | 1180.48509934 |  41.271924661 |
+|       Ford Motor Company      | 1156.31695182 | 84.5552251247 |
+|            Twitter            | 1074.30512161 | 16.3932159159 |
+|       Columbia Pictures       | 921.042912728 | 55.2951992749 |
+|    The Walt Disney Company    | 878.301063411 | 74.9881435438 |
++-------------------------------+---------------+---------------+
+[10 rows x 3 columns]</code></pre>
+<h5 id="triangle-counting"><a name="triangle-counting" class="plugin-anchor" href="#triangle-counting"><i class="fa fa-link" aria-hidden="true"></i></a>Triangle counting</h5><p>The number of triangles in a vertex&apos;s immediate neighborhood is a measure of the
+&quot;density&quot; of the vertex&apos;s neighborhood. In both of the figures below, vertex A
+has three immediate neighbors, ignoring edge directions. In the top figure, none
+of node A&apos;s neighbors is connected to any other neighbor, indicating a very
+loosely connected network. In contrast, all of the three neighbors are connected
+to each other in the bottom figure, indicating a tightly connected network.</p><p><img alt="triangle_count" src="images/triangle_count.png"></p><pre><code class="lang-python">tri = turicreate.triangle_counting.create(sg)
+print(tri.summary())</code></pre>
+<pre><code class="lang-no-highlight">TriangleCountingModel
+Graph:
++--------------+--------+
+| num_edges    | 517127 |
+| num_vertices | 233121 |
++--------------+--------+
+Result:
++----------------+-------------------------------------------------------------------+
+| graph          | SGraph. See m[&apos;graph&apos;]                                            |
+| num_triangles  | 171968                                                            |
+| triangle_count | SFrame with each vertex&apos;s triangle count. See m[&apos;triangle_count&apos;] |
++----------------+-------------------------------------------------------------------+
+Metric:
++---------------+-----------+
+| training_time | 29.043092 |
++---------------+-----------+
+Queriable Fields
++----------------+------------------------------------------------------------+
+| Field          | Description                                                |
++----------------+------------------------------------------------------------+
+| graph          | A new SGraph with the triangle count as a vertex property. |
+| num_triangles  | Total number of triangles in the graph.                    |
+| triangle_count | An SFrame with the triangle count for each vertex.         |
+| training_time  | Total training time of the model                           |
++----------------+------------------------------------------------------------+</code></pre>
+<p>In this dataset, there is a lot of overlap between the companies with large
+influence in the Wikipedia article network (as measured by PageRank) and the
+companies with the largest and most dense neighborhoods, as measured by the
+triangle count method, but there are notable differences. ABC has only the sixth
+most triangles despite having the highest pagerank, while Microsoft ranks very
+high by both statistics, suggesting the Microsoft article is slightly more
+central in the network.</p><pre><code class="lang-python">tri_out = tri[<span class="hljs-string">&apos;triangle_count&apos;</span>]
+print(tri_out.topk(<span class="hljs-string">&apos;triangle_count&apos;</span>, k=<span class="hljs-number">10</span>))</code></pre>
+<pre><code class="lang-no-highlight">+-------------------------------+----------------+
+|              __id             | triangle_count |
++-------------------------------+----------------+
+|           Microsoft           |     21447      |
+|             Google            |     15491      |
+|            Facebook           |     14200      |
+|              IBM              |     11716      |
+|       Paramount Pictures      |     10547      |
+| American Broadcasting Company |     10514      |
+|            Twitter            |      9219      |
+|       Target Corporation      |      8474      |
+|        Delta Air Lines        |      8195      |
+|             Intel             |      7952      |
++-------------------------------+----------------+
+[10 rows x 2 columns]</code></pre>
+<h5 id="single-source-shortest-path"><a name="single-source-shortest-path" class="plugin-anchor" href="#single-source-shortest-path"><i class="fa fa-link" aria-hidden="true"></i></a>Single-source shortest path</h5><p>Paths in a graph are a sequence of vertices, where each consecutive pair is
+connected by an edge in the graph. The single-source shortest path problem is to
+find the shortest path from all vertices in the graph to a user-specified target
+node. The source vertex with the smallest distribution of shortest paths can be
+considered the most central node in the graph.</p><p>Because Turi Create SGraphs use directed edges, the shortest path toolkit
+also finds the shortest directed paths to a source vertex. In this example we
+find all shortest paths to the node for the Microsoft article, then visualize
+the shortest path from the Microsoft article to the Weyerhauser article.
+We find the quickest way to get from Microsoft to Weyerhauser is via the
+articles on Google.</p><pre><code class="lang-python">sssp = turicreate.shortest_path.create(sg, source_vid=<span class="hljs-string">&apos;Microsoft&apos;</span>)
+sssp.get_path(vid=<span class="hljs-string">&apos;Weyerhaeuser&apos;</span>,
+              highlight=[<span class="hljs-string">&apos;Microsoft&apos;</span>, <span class="hljs-string">&apos;Weyerhaeuser&apos;</span>], arrows=<span class="hljs-keyword">True</span>, ewidth=<span class="hljs-number">1.5</span>)</code></pre>
+<pre><code class="lang-no-highlight">[(&apos;Microsoft&apos;, 0.0),
+ (&apos;Google&apos;, 1.0),
+ (&apos;Weyerhaeuser&apos;, 3.0)]</code></pre>
 
                                 
                                 </section>
@@ -1019,12 +1102,12 @@ motionManager.startAccelerometerUpdates(to: .main) { accelerometerData, error <s
 
             
                 
-                <a href="advanced-usage.html" class="navigation navigation-prev " aria-label="Previous page: Advanced Usage">
+                <a href="../clustering/dbscan.html" class="navigation navigation-prev " aria-label="Previous page: DBSCAN">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="how-it-works.html" class="navigation navigation-next " aria-label="Next page: How it works">
+                <a href="../nearest_neighbors/nearest_neighbors.html" class="navigation navigation-next " aria-label="Next page: Nearest neighbors">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -1035,7 +1118,7 @@ motionManager.startAccelerometerUpdates(to: .main) { accelerometerData, error <s
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Deployment to CoreML","level":"1.3.5.3","depth":3,"next":{"title":"How it works","level":"1.3.5.4","depth":3,"path":"activity_classifier/how-it-works.md","ref":"activity_classifier/how-it-works.md","articles":[]},"previous":{"title":"Advanced Usage","level":"1.3.5.2","depth":3,"path":"activity_classifier/advanced-usage.md","ref":"activity_classifier/advanced-usage.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"activity_classifier/export_coreml.md","mtime":"2018-02-08T19:46:50.292Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-02-14T19:11:45.807Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Graph analytics","level":"1.4.3","depth":2,"next":{"title":"Nearest neighbors","level":"1.4.4","depth":2,"path":"nearest_neighbors/nearest_neighbors.md","ref":"nearest_neighbors/nearest_neighbors.md","articles":[]},"previous":{"title":"DBSCAN","level":"1.4.2.2","depth":3,"path":"clustering/dbscan.md","ref":"clustering/dbscan.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"graph_analytics/README.md","mtime":"2018-02-08T19:46:50.301Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-02-14T19:11:45.807Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
