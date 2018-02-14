@@ -425,7 +425,7 @@ class ImageClassifier(_CustomModel):
         extracted_features = self._extract_features(dataset)
         return self.classifier.predict_topk(extracted_features, output_type = output_type, k = k)
 
-    def evaluate(self, dataset, metric='auto'):
+    def evaluate(self, dataset, metric='auto', verbose=True):
         """
         Evaluate the model by making predictions of target values and comparing
         these to actual values.
@@ -453,6 +453,9 @@ class ImageClassifier(_CustomModel):
             For more flexibility in calculating evaluation metrics, use the
             :class:`~turicreate.evaluation` module.
 
+        verbose : bool, optional
+            If True, prints progress updates and model details.
+
         Returns
         -------
         out : dict
@@ -471,13 +474,13 @@ class ImageClassifier(_CustomModel):
           >>> results = model.evaluate(data)
           >>> print results['accuracy']
         """
-        extracted_features = self._extract_features(dataset)
+        extracted_features = self._extract_features(dataset, verbose=verbose)
         extracted_features[self.target] = dataset[self.target]
         return self.classifier.evaluate(extracted_features, metric = metric)
 
-    def _extract_features(self, dataset):
+    def _extract_features(self, dataset, verbose=False):
         return _tc.SFrame({
-            '__image_features__': self.feature_extractor.extract_features(dataset, self.feature)
+            '__image_features__': self.feature_extractor.extract_features(dataset, self.feature, verbose=verbose)
             })
 
     def export_coreml(self, filename):
