@@ -28,7 +28,7 @@ class Pipe : public CefBaseRefCounted {
 
   private:
     void read();
-    void pipe_loop(CefRefPtr<Layer> &app, std::queue<std::string> &q1, std::mutex &mtx1);
+    void pipe_loop(CefRefPtr<Layer> &app);
 
     IMPLEMENT_REFCOUNTING(Pipe);
 };

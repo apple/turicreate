@@ -16,6 +16,7 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
     add_custom_target(visualization_client
       COMMAND xcodebuild -project "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization.xcodeproj/" -configuration ${CMAKE_BUILD_TYPE} SYMROOT=${CMAKE_CURRENT_BINARY_DIR}
       COMMENT "Building visualization client via xcodebuild"
+    )
   elseif(LINUX)
     include(ExternalProject)
 
@@ -84,13 +85,7 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
     add_custom_command(
             TARGET visualization_client PRE_LINK
 
-            COMMAND cd "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization"
-
-            COMMAND cd src/js
-
-            COMMAND npm install
-
-            COMMAND npm run build
+            COMMAND cd "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/js/" && npm install && npm run build
     )
 
     add_custom_command(

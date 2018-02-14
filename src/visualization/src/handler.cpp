@@ -44,7 +44,11 @@ void Handler::OnTitleChange(CefRefPtr<CefBrowser> browser, const CefString& titl
 
 bool Handler::OnConsoleMessage(CefRefPtr<CefBrowser> browser, cef_log_severity_t level, const CefString& message, const CefString& source, int line) {
   CEF_REQUIRE_UI_THREAD();
-  std::cerr << message.ToString() << std::endl;
+
+  if(level != 3){
+    std::cerr << "LOG LEVEL: " << level << ", message: " << message.ToString() << std::endl;
+  }
+
   return true;
 }
 
