@@ -103,17 +103,17 @@ class ImageClassifierTest(unittest.TestCase):
         for a, b in zip(list1, list2):
              self.assertAlmostEqual(a, b, delta = tol)
 
-    @pytest.mark.xfail(rases = _ToolkitError)
     def test_create_with_missing_feature(self):
-        tc.image_classifier.create(self.sf, feature='wrong_feature', target=self.target)
+        with self.assertRaises(_ToolkitError):
+            tc.image_classifier.create(self.sf, feature='wrong_feature', target=self.target)
 
-    @pytest.mark.xfail(rases = RuntimeError)
     def test_create_with_missing_label(self):
-        tc.image_classifier.create(self.sf, feature=self.feature, target='wrong_annotations')
+        with self.assertRaises(RuntimeError):
+            tc.image_classifier.create(self.sf, feature=self.feature, target='wrong_annotations')
 
-    @pytest.mark.xfail(rases = _ToolkitError)
     def test_create_with_empty_dataset(self):
-        tc.image_classifier.create(self.sf[:0], target = self.target)
+        with self.assertRaises(_ToolkitError):
+            tc.image_classifier.create(self.sf[:0], target = self.target)
 
     def test_invalid_num_gpus(self):
         num_gpus = tc.config.get_num_gpus()
@@ -127,6 +127,35 @@ class ImageClassifierTest(unittest.TestCase):
         for output_type in ['score', 'probability', 'class']:
             preds = model.predict(self.sf.head())
             self.assertEqual(len(preds), len(self.sf.head()))
+
+    def test_single_image(self):
+        model = self.model
+        single_image = self.sf[0][self.feature]
+        predictions = model.predict(single_image)
+        self.assertIsNotNone(predictions)
+        predictions = model.predict_topk(single_image)
+        self.assertIsNotNone(predictions)
+        predictions = model.classify(single_image)
+        self.assertIsNotNone(predictions)
+
+    def test_sarray(self):
+        model = self.model
+        data = self.sf[self.feature]
+        predictions = model.predict(data)
+        self.assertIsNotNone(predictions)
+        predictions = model.predict_topk(data)
+        self.assertIsNotNone(predictions)
+        predictions = model.classify(data)
+        self.assertIsNotNone(predictions)
+
+    def test_junk_input(self):
+        model = self.model
+        with self.assertRaises(TypeError):
+            predictions = model.predict("junk value")
+        with self.assertRaises(TypeError):
+            predictions = model.predict_topk(12)
+        with self.assertRaises(TypeError):
+            predictions = model.classify("more junk")
 
     def test_export_coreml(self):
         filename = tempfile.mkstemp('bingo.mlmodel')[1]

@@ -262,16 +262,17 @@ class ImageSimilarityModel(_CustomModel):
 
     def query(self, dataset, label=None, k=5, radius=None, verbose=True):
         """
-        For each row of the input 'dataset', retrieve the nearest neighbors
-        from the model's stored data. In general, the query dataset does not
-        need to be the same as the reference data stored in the model.
+        For each image, retrieve the nearest neighbors from the model's stored
+        data. In general, the query dataset does not need to be the same as
+        the reference data stored in the model.
 
         Parameters
         ----------
-        dataset : SFrame
-            Query data. Must contain columns with the same names and types as
-            the features used to train the model. Additional columns are
-            allowed, but ignored.
+        dataset : SFrame | SArray | turicreate.Image
+            Query data.
+            If dataset is an SFrame, it must contain columns with the same
+            names and types as the features used to train the model.
+            Additional columns are ignored.
 
         label : str, optional
             Name of the query SFrame column with row labels. If 'label' is not
@@ -328,6 +329,14 @@ class ImageSimilarityModel(_CustomModel):
         |      2      |        1        | 0.464004310325 |  2   |
         +-------------+-----------------+----------------+------+
         """
+        if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image)):
+            raise TypeError('dataset must be either an SFrame, SArray or turicreate.Image')
+
+        if isinstance(dataset, _tc.SArray):
+            dataset = _tc.SFrame({self.feature: dataset})
+        elif isinstance(dataset, _tc.Image):
+            dataset = _tc.SFrame({self.feature: [dataset]})
+
         extracted_features = self._extract_features(dataset)
         if label is not None:
             extracted_features[label] = dataset[label]

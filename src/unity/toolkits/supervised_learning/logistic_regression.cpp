@@ -207,8 +207,8 @@ void logistic_regression::train() {
   DenseVector init_point(this->num_coefficients);
   init_point.zeros();
   display_classifier_training_summary("Logistic regression");
-  logprogress_stream << "Number of coefficients    : " << this->num_coefficients
-                                                       << std::endl;
+  logprogress_stream << "Number of coefficients      : " << this->num_coefficients
+                     << std::endl;
 
 
   // Deal with regularizers
