@@ -874,6 +874,16 @@ void get_column_types(csv_info& info,
 
 } // anonymous namespace
 
+void skip_BOM(general_ifstream fin) {
+   char fChar, sChar, tChar;
+   fChar = fin.get();
+   sChar = fin.get();
+   tChar = fin.get();
+   if (!((fChar == 0xEF) && (sChar == 0xBB) && (tChar == 0xBF))) {
+       fin.seekg(0);
+   }
+}
+
 /**
  * Parsed a CSV file to an SFrame.
  *
@@ -907,6 +917,7 @@ void parse_csv_to_sframe(
   {
     general_ifstream fin(path);
     if (!fin.good()) log_and_throw("Cannot open " + sanitize_url(path));
+    skip_BOM(fin);
 
     // skip skip_rows lines
     std::string skip_string;
