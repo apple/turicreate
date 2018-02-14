@@ -113,6 +113,13 @@ size_t linear_regression_opt_interface::num_examples() const{
   return examples;
 }
 
+/**
+ * Get the number of validation-set examples in the model
+ */
+size_t linear_regression_opt_interface::num_validation_examples() const{
+  return valid_data.num_rows();
+}
+
 
 /**
  * Get strings needed to print the header for the progress table.
