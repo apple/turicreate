@@ -37,6 +37,25 @@ std::string escape_string(const std::string& str) {
   return ret;
 }
 
+std::string replace_all(std::string str, const std::string& from, const std::string& to) {
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+    }
+    return str;
+}
+
+std::string extra_label_escape(const std::string& str){
+  std::string escaped_string = escape_string(str);
+  escaped_string = replace_all(escaped_string, std::string("\\n"), std::string("\\\\n"));
+  escaped_string = replace_all(escaped_string, std::string("\\t"), std::string("\\\\t"));
+  escaped_string = replace_all(escaped_string, std::string("\\b"), std::string("\\\\b"));
+  escaped_string = replace_all(escaped_string, std::string("\\r"), std::string("\\\\r"));
+
+  return escaped_string;
+}
+
 /*
  * Prepares a raw JSON format string (from one of the vega_spec/*.json files)
  * by doing the following:
@@ -62,9 +81,9 @@ EXPORT std::string histogram_spec(std::string title,
                                   std::string xlabel,
                                   std::string ylabel,
                                   double sizeMultiplier) {
-  title = escape_string(title);
-  xlabel = escape_string(xlabel);
-  ylabel = escape_string(ylabel);
+  title = extra_label_escape(title);
+  xlabel = extra_label_escape(xlabel);
+  ylabel = extra_label_escape(ylabel);
 
   size_t width = static_cast<size_t>(600.0 * sizeMultiplier);
   size_t height = static_cast<size_t>(400.0 * sizeMultiplier);
@@ -85,9 +104,9 @@ EXPORT std::string categorical_spec(size_t length_list,
                                     std::string ylabel,
                                     double sizeMultiplier) {
 
-  title = escape_string(title);
-  xlabel = escape_string(xlabel);
-  ylabel = escape_string(ylabel);
+  title = extra_label_escape(title);
+  xlabel = extra_label_escape(xlabel);
+  ylabel = extra_label_escape(ylabel);
 
   size_t width = static_cast<size_t>(600.0 * sizeMultiplier);
   size_t height = static_cast<size_t>(std::max(static_cast<double>(length_list) * 16.0, static_cast<double>(length_list) * 25.0 * sizeMultiplier));
@@ -123,9 +142,9 @@ std::string scatter_spec(std::string xlabel, std::string ylabel, std::string tit
     title = xlabel + " vs " + ylabel;
   }
 
-  xlabel = escape_string(xlabel);
-  ylabel = escape_string(ylabel);
-  title = escape_string(title);
+  xlabel = extra_label_escape(xlabel);
+  ylabel = extra_label_escape(ylabel);
+  title = extra_label_escape(title);
 
   auto format_string = make_format_string(vega_spec_scatter_json, vega_spec_scatter_json_len);
   auto formatted = boost::format(format_string) %
@@ -145,9 +164,9 @@ std::string heatmap_spec(std::string xlabel, std::string ylabel, std::string tit
   if (title.empty()) {
     title = xlabel + " vs " + ylabel;
   }
-  xlabel = escape_string(xlabel);
-  ylabel = escape_string(ylabel);
-  title = escape_string(title);
+  xlabel = extra_label_escape(xlabel);
+  ylabel = extra_label_escape(ylabel);
+  title = extra_label_escape(title);
 
   auto format_string = make_format_string(vega_spec_heatmap_json, vega_spec_heatmap_json_len);
   auto formatted = boost::format(format_string) %
@@ -167,9 +186,9 @@ std::string categorical_heatmap_spec(std::string xlabel, std::string ylabel, std
   if (title.empty()) {
     title = xlabel + " vs " + ylabel;
   }
-  xlabel = escape_string(xlabel);
-  ylabel = escape_string(ylabel);
-  title = escape_string(title);
+  xlabel = extra_label_escape(xlabel);
+  ylabel = extra_label_escape(ylabel);
+  title = extra_label_escape(title);
 
   auto format_string = make_format_string(vega_spec_categorical_heatmap_json, vega_spec_categorical_heatmap_json_len);
   auto formatted = boost::format(format_string) %
@@ -189,9 +208,9 @@ std::string boxes_and_whiskers_spec(std::string xlabel, std::string ylabel, std:
   if (title.empty()) {
     title = xlabel + " vs " + ylabel;
   }
-  xlabel = escape_string(xlabel);
-  ylabel = escape_string(ylabel);
-  title = escape_string(title);
+  xlabel = extra_label_escape(xlabel);
+  ylabel = extra_label_escape(ylabel);
+  title = extra_label_escape(title);
 
   auto format_string = make_format_string(vega_spec_boxes_and_whiskers_json, vega_spec_boxes_and_whiskers_json_len);
   auto formatted = boost::format(format_string) %

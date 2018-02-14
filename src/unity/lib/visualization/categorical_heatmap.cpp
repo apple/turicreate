@@ -48,9 +48,9 @@ std::string categorical_heatmap_result::vega_column_data(bool sframe) const {
     flex_int count = pair.second.get<flex_int>();
 
     ss << "{\"x\": ";
-    ss << escape_string(xValue);
+    ss << extra_label_escape(xValue);
     ss << ", \"y\": ";
-    ss << escape_string(yValue);
+    ss << extra_label_escape(yValue);
     ss << ", \"count\": ";
     ss << count;
     ss << "}";

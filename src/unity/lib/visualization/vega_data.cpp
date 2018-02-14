@@ -29,7 +29,7 @@ std::string vega_data::create_sframe_spec(
 ) {
   std::stringstream ss;
   ss << "{\"a\": " << std::to_string(i) << ",";
-  std::string title = escape_string(element_title);
+  std::string title = extra_label_escape(element_title);
   ss << "\"title\": " << title << ",";
   ss << "\"num_row\": " << num_rows << ",";
 
