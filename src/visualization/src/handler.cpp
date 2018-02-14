@@ -44,6 +44,7 @@ void Handler::OnTitleChange(CefRefPtr<CefBrowser> browser, const CefString& titl
 
 bool Handler::OnConsoleMessage(CefRefPtr<CefBrowser> browser, cef_log_severity_t level, const CefString& message, const CefString& source, int line) {
   CEF_REQUIRE_UI_THREAD();
+  std::cerr << message.ToString() << std::endl;
   return true;
 }
 
@@ -83,7 +84,7 @@ void Handler::OnLoadError(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> fra
   }
 
   std::stringstream ss;
-  ss << "<html><body>404</body></html>";
+  ss << "<html><body><span style='color:red'>FATAL:</span>Cannot Find Turi Create Visualization: Source Files</body></html>";
   frame->LoadString(ss.str(), failedUrl);
 }
 

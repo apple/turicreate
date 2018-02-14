@@ -55,9 +55,9 @@ void Layer::OnContextCreated(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> 
 
     CefRefPtr<CefV8Value> object = context->GetGlobal();
     CefRefPtr<CefV8Handler> handler = new V8Handler();
-    CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction("linux_two_coms", handler);
+    CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction("postMessageToNativeClient", handler);
 
-    object->SetValue("linux_two_coms", func, V8_PROPERTY_ATTRIBUTE_NONE);
+    object->SetValue("postMessageToNativeClient", func, V8_PROPERTY_ATTRIBUTE_NONE);
 
     Javascript_Caller_Reference->initialize(browser, frame, context);
     Javascript_Caller_Reference->start();
@@ -75,7 +75,7 @@ void Layer::OnContextCreated(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> 
 
   std::string message_name_parsed = message_name.ToString();
 
-  if(message_name_parsed.compare("tc_message") == 0){
+  if(message_name_parsed.compare("cef_ipc_message") == 0){
     std::string parsed_message = message_body.ToString();
     Javascript_Caller_Reference->sendSpec(parsed_message);
   }

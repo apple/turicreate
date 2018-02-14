@@ -9,7 +9,7 @@
 #include "include/cef_browser.h"
 
 void Handler::PlatformTitleChange(CefRefPtr<CefBrowser> browser, const CefString& title) {
-  std::string titleStr("Turi Create Viz");
+  std::string titleStr("Turi Create Visualization");
 
   ::Display* display = cef_get_xdisplay();
   DCHECK(display);

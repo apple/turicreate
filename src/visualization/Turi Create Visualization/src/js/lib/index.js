@@ -224,7 +224,7 @@ window.getRows = function getRows(start_index, end_index){
   if(window.navigator.platform == 'MacIntel'){
     window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'getRows', start: start_index, end: end_index});
   }else{
-    window.linux_two_coms('{"method":"get_rows", "start":' + start_index + ', "end": ' + end_index + '}');
+    window.postMessageToNativeClient('{"method":"get_rows", "start":' + start_index + ', "end": ' + end_index + '}');
   }
 }
 

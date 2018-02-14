@@ -5,31 +5,18 @@ if(UNIX AND NOT APPLE)
   set(LINUX TRUE)
 endif()
 
-if(APPLE)
-  if(${TC_BUILD_VISUALIZATION_CLIENT})
+if(${TC_BUILD_VISUALIZATION_CLIENT})
 
-    find_program(NPM npm)
-    if(NOT NPM)
-      message(FATAL_ERROR "npm not found. Node.js 6.x or later with npm is required to build Turi Create.")
-    endif()
+  find_program(NPM npm)
+  if(NOT NPM)
+    message(FATAL_ERROR "npm not found. Node.js 6.x or later with npm is required to build Turi Create.")
+  endif()
 
+  if(APPLE)
     add_custom_target(visualization_client
       COMMAND xcodebuild -project "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization.xcodeproj/" -configuration ${CMAKE_BUILD_TYPE} SYMROOT=${CMAKE_CURRENT_BINARY_DIR}
       COMMENT "Building visualization client via xcodebuild"
-  )
-  else()
-    make_empty_library(visualization_client)
-  endif()
-elseif(LINUX)
-  if(${TC_BUILD_VISUALIZATION_CLIENT})
-
-    find_program(NPM npm)
-    if(NOT NPM)
-      message(FATAL_ERROR "npm not found. Node.js 6.x or later with npm is required to build Turi Create.")
-    endif()
-
-
-
+  elseif(LINUX)
     include(ExternalProject)
 
     ExternalProject_Add(
@@ -49,21 +36,17 @@ elseif(LINUX)
     set(CEF_LIB_SO ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/libcef.so)
     set(CEF_RESOURCES ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Resources/*)
 
-    set(TC_VIZ_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/TcViz)
-    set(TC_VIZ_HTML_DIRECTORY ${TC_VIZ_DIRECTORY}/html)
+    set(TC_VIZ_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/TcViz")
+    set(TC_VIZ_HTML_DIRECTORY "${TC_VIZ_DIRECTORY}/html")
 
-    set(CEF_RESOURCES_LOCALE ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Resources/locales/*)
-    set(TC_VIZ_LOCALES_DIRECTORY ${TC_VIZ_DIRECTORY}/locales)
+    set(CEF_RESOURCES_LOCALE "${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Resources/locales/*")
+    set(TC_VIZ_LOCALES_DIRECTORY "${TC_VIZ_DIRECTORY}/locales")
 
     set(TCVIZ_SRCS
       src/layer.cpp
-      src/layer.h
       src/handler.cpp
-      src/handler.h
       src/javascript_caller.cpp
-      src/javascript_caller.h
       src/pipe.cpp
-      src/pipe.h
       src/json.hpp
       src/window_delegate.h
       src/main.cpp
@@ -85,9 +68,9 @@ elseif(LINUX)
       ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef
     )
 
-    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TC_VIZ_DIRECTORY})
+    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "${TC_VIZ_DIRECTORY}")
 
-    add_executable(visualization_client ${TCVIZ_SRCS})
+    add_executable(visualization_client "${TCVIZ_SRCS}")
 
     target_link_libraries(visualization_client
       ${LIB_CEF_DLL_WRAPPER}
@@ -101,7 +84,13 @@ elseif(LINUX)
     add_custom_command(
             TARGET visualization_client PRE_LINK
 
-            COMMAND cd "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization" && cd src/js && npm install && npm run build
+            COMMAND cd "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization"
+
+            COMMAND cd src/js
+
+            COMMAND npm install
+
+            COMMAND npm run build
     )
 
     add_custom_command(
@@ -164,7 +153,6 @@ elseif(LINUX)
                     ${NATIVES_BLOB}
                     ${TC_VIZ_DIRECTORY}
     )
-
   else()
     make_empty_library(visualization_client)
   endif()
