@@ -14,7 +14,7 @@
   */
 
 #include <aws/core/utils/UUID.h>
-#include <uuid/uuid.h>
+#include <uuid_p/uuid.h>
 
 namespace Aws
 {
