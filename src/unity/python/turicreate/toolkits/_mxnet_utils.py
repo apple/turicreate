@@ -80,8 +80,9 @@ def get_num_gpus_in_use(max_devices=None):
     return len(gpu_ctx)
 
 def assert_valid_num_gpus():
+    from turicreate.util import _CUDA_GPU_IDS
     num_gpus = _tc_config.get_num_gpus()
-    if _sys.platform == 'darwin' and num_gpus > 0:
+    if not _CUDA_GPU_IDS and _sys.platform == 'darwin' and num_gpus > 0:
         raise _ToolkitError('Using GPUs is currently not supported on Mac')
     _numeric_param_check_range('num_gpus', num_gpus, -1, _six.MAXSIZE)
 
