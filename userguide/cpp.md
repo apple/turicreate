@@ -1,37 +1,43 @@
-# Using the C++ API
+# Using the C++ API (Experimental)
 
 Turi Create provides a C++ API to enable embedding into other applications or services, as a way to deploy models for inference, or to enable training in embedded scenarios where there is no Python interpreter. This consists of a set of headers; when those headers are consumed, the resulting library or application can be linked against the `libunity` provided by the `turicreate` package.
 
 The [API documentation for the C++ API](https://apple.github.io/turicreate/docs/cpp/) provides a more complete reference of available functions, classes, and methods. Note that this API is not stable and may change at any time; plan to pin a particular version of Turi Create to your application or service to make use of this API.
 
+##### Caveats
+
+* This technique is experimental and depends on internal APIs within Turi Create that may change over time. The C++ API is not API-stable.
+* In order to link properly, some build flags must be shared between Turi Create and your project.
+* Not all functionality in the Turi Create Python package is available in the C++ API.
+
 ##### Setup
 
-Using the C++ API requires building Turi Create from source, starting with a clone of the [repository](git@github.com:apple/turicreate.git). You should consider checking out a particular version tag (for instance `v4.1`) in order to keep API stability as you proceed (the API may change in master). Before proceeding to use the C++ API, run `./configure` to set up the build system for the project, and run `make -j8` from within `release/src/unity` to build the library artifacts that your application will depend on.
+Using the C++ API requires building Turi Create from source, starting with a clone of the [repository](git@github.com:apple/turicreate.git). You should consider checking out a particular [release](https://github.com/apple/turicreate/releases) in order to keep API stability as you proceed (the API may change in master). Before proceeding to use the C++ API, run `./configure` to set up the build system for the project, and run `make -j8` from within `release/src/unity` to build the library artifacts that your application will depend on.
 
 Currently, the C++ API is not packaged for easy consumption outside of the Turi Create Python package. As a result, some care is needed when compiling and linking against Turi Create. This may cause compatibility issues since those compilation and linking flags may not be compatible with flags used elsewhere. Required compilation flags for your project include:
 
 * `-std=c++11` - some headers exposed by Turi Create require the use of C++11 or later.
 * `-stdlib=libc++` - may be needed on macOS (probably not on Linux).
-* Assuming PATH_TO_TC refers to the location where you cloned the Turi Create repository, the following directories must be added to the include paths with `-I`, and to the link paths with `-L`:
-  * `-IPATH_TO_TC/turicreate/src`
-  * `-IPATH_TO_TC/turicreate/deps/local/include`
-  * `-IPATH_TO_TC/turicreate/src/external/armadillo/include`
-  * `-LPATH_TO_TC/turicreate/release/src/unity`
-* Depending on your compiler toolchain, the following defines may be needed (note: these are autodetected for Turi Create itself with `./configure`, but the values must be passed on to your own build process:
+* Assuming <PATH_TO_TC> refers to the location where you cloned the Turi Create repository, the following directories must be added to the include paths with `-I`, and to the link paths with `-L`:
+  * `-I<PATH_TO_TC>/turicreate/src`
+  * `-I<PATH_TO_TC>/turicreate/deps/local/include`
+  * `-I<PATH_TO_TC>/turicreate/src/external/armadillo/include`
+  * `-L<PATH_TO_TC>/turicreate/release/src/unity`
+* Depending on your compiler toolchain, the following defines may be needed (note: these are autodetected for Turi Create itself with `./configure`, but the values must be passed on to your own build process):
 * `-DHASH_FOR_UINT128_DEFINED` - set this if your compiler toolchain supports `unsigned __int128`.
 * `-DHASH_FOR_INT128_DEFINED` - set this if your compiler toolchain supports `__int128`.
 * `-lunity_shared` to link against `libunity_shared.so`.
-* `PATH_TO_TC/turicreate/release/src/unity/libunity.a` to statically link libunity.a into your project. Note that this is needed in addition to the dynamic library listed above.
+* `<PATH_TO_TC>/turicreate/release/src/unity/libunity.a` to statically link libunity.a into your project. Note that this is needed in addition to the dynamic library listed above.
 
 ##### Example: make predictions in C++ from a model trained in Python
 
-Let's assume we're starting with the model that results from the introductory example in the [boosted trees classifier](https://github.com/apple/turicreate/blob/3490286b27ff5d79cb90d09fe026d5671ce990c7/userguide/supervised-learning/boosted_trees_classifier.md#gradient-boosted-regression-trees) section of the user guide. The model is available as [mushroom.tcmodel.zip](https://github.com/apple/turicreate/files/1654991/mushroom.tcmodel.zip) as well.
+Let's assume we're starting with the model from the introductory example in the [boosted trees classifier](https://github.com/apple/turicreate/blob/3490286b27ff5d79cb90d09fe026d5671ce990c7/userguide/supervised-learning/boosted_trees_classifier.md#gradient-boosted-regression-trees) section of the user guide. The model is available as [mushroom.tcmodel.zip](https://github.com/apple/turicreate/files/1654991/mushroom.tcmodel.zip).
 
 To make predictions from this model in Python, you could run:
 ```python
 import turicreate as tc
 data =  tc.SFrame.read_csv('turicreate/lfs/datasets/xgboost/mushroom.csv')
-model = tc.load_model('temp4/mushroom.tcmodel')
+model = tc.load_model('mushroom.tcmodel')
 data[0]
 ```
 ```
@@ -82,20 +88,6 @@ Data:
 
 In C++, the equivalent code would be (minus the CSV parsing):
 ```cpp
-// Assuming this is in a sibling directory of turicreate,
-// named "predict.cpp", run the following:
-//
-// In turicreate:
-//
-// ./configure
-// cd release/src/unity
-// make -j8
-//
-// In this directory:
-//
-// c++ -std=c++11 -stdlib=libc++ -I../turicreate/src -I../turicreate/src/platform -I../turicreate/deps/local/include -I../turicreate/src/external/armadillo/include -DHASH_FOR_UINT128_DEFINED -DHASH_FOR_INT128_DEFINED -L../turicreate/release/src/unity -lunity_shared predict.cpp ../turicreate/release/src/unity/libunity.a
-// LD_LIBRARY_PATH=../turicreate/release/src/unity ./a.out
-
 // standard C++ includes
 #include <iostream>
 
@@ -154,7 +146,6 @@ int main(int argc, char **argv) {
   rows.push_back(row);
 
   // make prediction
-  // (returns a gl_sframe)
   turi::gl_sframe result = model->fast_predict_topk(
       // input data - 1 row per prediction
       rows,
@@ -191,6 +182,19 @@ Data:
 | 0              | 0              | 0.424416       |
 +----------------+----------------+----------------+
 [2 rows x 3 columns]
+```
+
+To build this C++ program, you'll need to borrow the compilation flags from Turi Create as shown above.
+
+```shell
+# run the following in the turicreate repostitory root:
+./configure
+cd release/src/unity
+make -j8
+
+# And assuming predict.cpp is in a sibling directory of turicreate, run:
+c++ -std=c++11 -stdlib=libc++ -I../turicreate/src -I../turicreate/src/platform -I../turicreate/deps/local/include -I../turicreate/src/external/armadillo/include -DHASH_FOR_UINT128_DEFINED -DHASH_FOR_INT128_DEFINED -L../turicreate/release/src/unity -lunity_shared predict.cpp ../turicreate/release/src/unity/libunity.a
+LD_LIBRARY_PATH=../turicreate/release/src/unity ./a.out
 ```
 
 ##### Additional Resources
