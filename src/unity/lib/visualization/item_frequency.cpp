@@ -108,7 +108,7 @@ std::string item_frequency_result::vega_column_data(bool sframe) const {
     ss << "{\"label\": ";
 
     if(value.length() >= 200){
-      ss << escape_string(value).substr(0, 199) << i << "\"";
+      ss << escape_string(value.substr(0,199) + std::to_string(i)) ;
     }else{
       ss << escape_string(value);
     }
