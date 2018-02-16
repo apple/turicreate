@@ -5,6 +5,7 @@
  */
 #include "item_frequency.hpp"
 #include "vega_spec.hpp"
+#include <string>
 
 using namespace turi::visualization;
 
@@ -105,7 +106,13 @@ std::string item_frequency_result::vega_column_data(bool sframe) const {
     size_t count = pair.second.get<flex_int>();
 
     ss << "{\"label\": ";
-    ss << extra_label_escape(value);
+
+    if(value.length() >= 200){
+      ss << escape_string(value.substr(0,199) + std::to_string(i));
+    }else{
+      ss << escape_string(value);
+    }
+
     ss << ",\"label_idx\": ";
     ss << i;
     ss << ",\"count\": ";
