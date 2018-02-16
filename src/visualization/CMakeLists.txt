@@ -35,12 +35,12 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
 
 
     set(CEF_LIB_SO ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/libcef.so)
-    set(CEF_RESOURCES ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Resources/*)
+    set(CEF_RESOURCES ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Resources)
 
     set(TC_VIZ_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/TcViz")
     set(TC_VIZ_HTML_DIRECTORY "${TC_VIZ_DIRECTORY}/html")
 
-    set(CEF_RESOURCES_LOCALE "${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Resources/locales/*")
+    set(CEF_RESOURCES_LOCALE "${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Resources/locales")
     set(TC_VIZ_LOCALES_DIRECTORY "${TC_VIZ_DIRECTORY}/locales")
 
     set(TCVIZ_SRCS
@@ -48,7 +48,6 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
       src/handler.cpp
       src/javascript_caller.cpp
       src/pipe.cpp
-      src/json.hpp
       src/window_delegate.h
       src/main.cpp
       src/handler_linux.cpp
@@ -60,10 +59,10 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
     set(SNAPSHOT_BLOB "${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/snapshot_blob.bin")
     set(NATIVES_BLOB "${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/natives_blob.bin")
 
-    set(TC_NPM_BUILD "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/js/build/*")
+    set(TC_NPM_BUILD "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/js/build/index.js")
     set(TC_VEGA_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/vega_viz.html")
     set(TC_CSS "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/table_view.css")
-    set(TC_VEGA_DEPS "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/deps/*")
+    set(TC_VEGA_DEPS "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/deps")
 
     include_directories(
       ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef
@@ -85,7 +84,15 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
     add_custom_command(
             TARGET visualization_client PRE_LINK
 
-            COMMAND cd "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/js/" && npm install && npm run build
+            COMMAND npm install
+
+            COMMAND npm run build
+
+            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/js/"
+
+            COMMENT "Building NPM Package for Turi Create Visualization"
+
+            VERBATIM
     )
 
     add_custom_command(
@@ -109,7 +116,7 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
                     ${TC_CSS}
                     ${TC_VIZ_HTML_DIRECTORY}
 
-            COMMAND ${CMAKE_COMMAND} -E copy
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
                     ${TC_VEGA_DEPS}
                     ${TC_VIZ_HTML_DIRECTORY}
 
@@ -120,11 +127,11 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
                     ${CEF_LIB_SO}
                     ${TC_VIZ_DIRECTORY}
 
-            COMMAND ${CMAKE_COMMAND} -E copy
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
                     ${CEF_RESOURCES}
                     ${TC_VIZ_DIRECTORY}
 
-            COMMAND ${CMAKE_COMMAND} -E copy
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
                     ${CEF_RESOURCES_LOCALE}
                     ${TC_VIZ_LOCALES_DIRECTORY}
 
@@ -147,6 +154,8 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
             COMMAND ${CMAKE_COMMAND} -E copy
                     ${NATIVES_BLOB}
                     ${TC_VIZ_DIRECTORY}
+
+            VERBATIM
     )
   else()
     make_empty_library(visualization_client)

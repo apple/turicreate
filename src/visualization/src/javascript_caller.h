@@ -13,7 +13,7 @@ class JavascriptCaller : public CefBaseRefCounted {
 
     void initialize(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefV8Context> context);
 
-    void start();
+    void loaded();
 
     void sendSpec(std::string &line);
   private:

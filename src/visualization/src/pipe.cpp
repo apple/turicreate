@@ -42,12 +42,13 @@ void Pipe::pipe_loop(CefRefPtr<Layer> &app){
             CefRefPtr<CefListValue> argument = msg->GetArgumentList();
             argument->SetString(0, value.c_str());
             app->Browser->SendProcessMessage(PID_RENDERER, msg);
+
             continue;
           }
         }
       }
     }
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
   }
 }
 

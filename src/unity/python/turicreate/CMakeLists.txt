@@ -59,6 +59,7 @@ elseif(LINUX)
   add_custom_target(
     visualization_client_app ALL
     DEPENDS visualization_client
-    COMMAND cp -a "${CMAKE_BINARY_DIR}/src/visualization/TcViz" ${CMAKE_CURRENT_BINARY_DIR}
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/Turi Create Visualization"
+    COMMAND cp -a "${CMAKE_BINARY_DIR}/src/visualization/TcViz/*" "${CMAKE_CURRENT_BINARY_DIR}/Turi Create Visualization"
   )
 endif()

@@ -7,7 +7,7 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-def get_client_app_path():
+def _get_client_app_path():
     import sys
     import os
     (tcviz_dir, _) = os.path.split(os.path.dirname(__file__))
@@ -16,7 +16,7 @@ def get_client_app_path():
         return os.path.join(tcviz_dir, 'Turi Create Visualization.app', 'Contents', 'MacOS', 'Turi Create Visualization')
 
     if sys.platform == 'linux2':
-        return os.path.join(tcviz_dir, 'TcViz', 'visualization_client')
+        return os.path.join(tcviz_dir, 'Turi Create Visualization', 'visualization_client')
 
 def show(x, y, xlabel="X", ylabel="Y", title=None):
     """

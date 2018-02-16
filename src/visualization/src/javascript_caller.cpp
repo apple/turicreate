@@ -7,7 +7,6 @@
 #include <sstream>
 #include <unistd.h>
 #include <thread>
-#include "json.hpp"
 
 
 void JavascriptCaller::initialize(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefV8Context> context){
@@ -16,7 +15,7 @@ void JavascriptCaller::initialize(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFr
   Context = context;
 }
 
-void JavascriptCaller::start(){
+void JavascriptCaller::loaded(){
   std::string vega_spec = "{}";
 
   CefRefPtr<CefV8Value> object = Context->GetGlobal();
@@ -26,66 +25,14 @@ void JavascriptCaller::start(){
 }
 
 void JavascriptCaller::sendSpec(std::string &line){
-  using json = nlohmann::json;
   Context->Enter();
 
-  json j3;
-  j3 = json::parse(line);
+  std::stringstream javascript_function;
+  javascript_function << "window.inputJSONHandler(";
+  javascript_function << line.c_str();
+  javascript_function << ");";
 
-
-  if(!j3["table_spec"].is_null()){
-    json input_value;
-
-    input_value["data"] = j3["table_spec"];
-    input_value["type"] = "table";
-
-    std::stringstream javascript_function;
-
-    javascript_function << "window.setSpec(";
-    javascript_function << input_value.dump();
-    javascript_function << ");";
-
-    Frame->ExecuteJavaScript(javascript_function.str(), Frame->GetURL(), 0);
-  }
-
-  if(!j3["vega_spec"].is_null()){
-    json input_value;
-
-    input_value["data"] = j3["vega_spec"];
-    input_value["type"] = "vega";
-
-    std::stringstream javascript_function;
-
-    javascript_function << "window.setSpec(";
-    javascript_function << input_value.dump();
-    javascript_function << ");";
-
-    Frame->ExecuteJavaScript(javascript_function.str(), Frame->GetURL(), 0);
-  }
-
-  if(!j3["data_spec"].is_null()){
-    std::stringstream javascript_function;
-
-    javascript_function << "window.updateData(";
-    javascript_function << j3["data_spec"].dump();
-    javascript_function << ");";
-
-    Frame->ExecuteJavaScript(javascript_function.str(), Frame->GetURL(), 0);
-  }
-
-  if(!j3["image_spec"].is_null()){
-    json input_value;
-
-    std::stringstream javascript_function;
-
-    input_value["data"] = j3["image_spec"];
-
-    javascript_function << "window.setImageData(";
-    javascript_function << input_value.dump();
-    javascript_function << ");";
-
-    Frame->ExecuteJavaScript(javascript_function.str(), Frame->GetURL(), 0);
-  }
+  Frame->ExecuteJavaScript(javascript_function.str(), Frame->GetURL(), 0);
 
   Context->Exit();
 }

@@ -55,12 +55,12 @@ void Layer::OnContextCreated(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> 
 
     CefRefPtr<CefV8Value> object = context->GetGlobal();
     CefRefPtr<CefV8Handler> handler = new V8Handler();
-    CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction("postMessageToNativeClient", handler);
+    CefRefPtr<CefV8Value> post_message_func = CefV8Value::CreateFunction("postMessageToNativeClient", handler);
 
-    object->SetValue("postMessageToNativeClient", func, V8_PROPERTY_ATTRIBUTE_NONE);
+    object->SetValue("postMessageToNativeClient", post_message_func, V8_PROPERTY_ATTRIBUTE_NONE);
 
     Javascript_Caller_Reference->initialize(browser, frame, context);
-    Javascript_Caller_Reference->start();
+    Javascript_Caller_Reference->loaded();
   }
 }
 
