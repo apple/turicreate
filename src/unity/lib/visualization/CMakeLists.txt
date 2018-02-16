@@ -18,6 +18,8 @@ make_library(
     transformation.cpp
     vega_data.cpp
     vega_spec.cpp
+
+    plot/plot.cpp
   REQUIRES
     process
     EXTERNAL_VISIBILITY
@@ -53,7 +55,7 @@ foreach(SOURCE_FILE ${GENERATED_VEGA_JSON_HEADERS})
     COMMENT "Generating ${GENERATED_FILE}"
     VERBATIM
   )
-  
+
   string(
     MAKE_C_IDENTIFIER
     ${SOURCE_FILE}
