@@ -146,7 +146,7 @@ window.updateData = function updateData(data) {
     }
 }
 
-window.inputJSONHandler = function(data){
+window.handleInput = function(data){
   var json_obj = data;
 
   if(json_obj["table_spec"] != null) {

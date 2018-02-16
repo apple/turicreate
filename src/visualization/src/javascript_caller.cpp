@@ -28,7 +28,7 @@ void JavascriptCaller::sendSpec(std::string &line){
   Context->Enter();
 
   std::stringstream javascript_function;
-  javascript_function << "window.inputJSONHandler(";
+  javascript_function << "window.handleInput(";
   javascript_function << line.c_str();
   javascript_function << ");";
 

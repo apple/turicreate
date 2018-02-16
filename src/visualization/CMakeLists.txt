@@ -48,7 +48,6 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
       src/handler.cpp
       src/javascript_caller.cpp
       src/pipe.cpp
-      src/window_delegate.h
       src/main.cpp
       src/handler_linux.cpp
     )

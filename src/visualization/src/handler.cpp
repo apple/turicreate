@@ -45,7 +45,9 @@ void Handler::OnTitleChange(CefRefPtr<CefBrowser> browser, const CefString& titl
 bool Handler::OnConsoleMessage(CefRefPtr<CefBrowser> browser, cef_log_severity_t level, const CefString& message, const CefString& source, int line) {
   CEF_REQUIRE_UI_THREAD();
 
-  if(level != 3){
+  std::size_t found = message.ToString().find("[Tooltip]");
+
+  if(!(level == 3 && found != std::string::npos)){
     std::cerr << "LOG LEVEL: " << level << ", message: " << message.ToString() << std::endl;
   }
 
