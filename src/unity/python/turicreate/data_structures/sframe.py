@@ -20,6 +20,7 @@ from ..cython.cy_sframe import UnitySFrameProxy
 from ..util import _is_non_string_iterable, _make_internal_url
 from ..util import infer_dbapi2_types
 from ..util import get_module_from_object, pytype_to_printf
+from ..visualization import _get_client_app_path
 from .sarray import SArray, _create_sequential_sarray
 from .. import aggregate
 from .image import Image as _Image
@@ -4443,13 +4444,15 @@ class SFrame(object):
 
         >>> sf.explore(title="My Plot Title")
         """
-        import sys
-        if sys.platform != 'darwin':
-            raise NotImplementedError('Visualization is currently supported only on macOS.')
 
+        import sys
         import os
-        (tcviz_dir, _) = os.path.split(os.path.dirname(__file__))
-        path_to_client = os.path.join(tcviz_dir, 'Turi Create Visualization.app', 'Contents', 'MacOS', 'Turi Create Visualization')
+
+        if sys.platform != 'darwin' and sys.platform != 'linux2':
+            raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
+
+        path_to_client = _get_client_app_path()
+
         if title is None:
             title = ""
         self.__proxy__.explore(path_to_client, title)
@@ -4469,12 +4472,13 @@ class SFrame(object):
         >>> sf.show()
         """
         import sys
-        if sys.platform != 'darwin':
-            raise NotImplementedError('Visualization is currently supported only on macOS.')
-
         import os
-        (tcviz_dir, _) = os.path.split(os.path.dirname(__file__))
-        path_to_client = os.path.join(tcviz_dir, 'Turi Create Visualization.app', 'Contents', 'MacOS', 'Turi Create Visualization')
+
+        if sys.platform != 'darwin' and sys.platform != 'linux2':
+            raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
+
+        path_to_client = _get_client_app_path()
+
         self.__proxy__.show(path_to_client)
 
     def pack_columns(self, column_names=None, column_name_prefix=None, dtype=list,

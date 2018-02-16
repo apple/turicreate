@@ -3,14 +3,14 @@
     <head>
     <title>Vega Lite Embed</title>
     <meta charset="utf-8">
-        
+
         <!-- vega plot dependencies -->
         <script src="d3.v4.min.js"></script>
         <script src="vega.min.js"></script>
         <script src="vega-lite.min.js"></script>
         <script src="vega-embed.min.js"></script>
         <script src="vega-tooltip.min.js"></script>
-        
+
         <link rel="stylesheet" type="text/css" href="vega-tooltip.min.css">
         <link rel="stylesheet" type="text/css" href="table_view.css">
 
@@ -20,7 +20,7 @@
                 margin: 0px;
                 font-family: HelveticaNeue;
             }
-        
+
             #hidden_cont{
                 position: absolute;
                 left: -9999px;
@@ -28,7 +28,7 @@
                 opacity: 1.0;
                 z-index: 0;
             }
-        
+
             .vega-actions a {
                 display: none;
             }
@@ -61,7 +61,7 @@
               overflow: scroll;
               display: none;
             }
-        
+
             #table_vis{
                 position:absolute;
                 top: 0;
@@ -150,7 +150,7 @@
                 -webkit-transition:  opacity 0.7s, width 0.7s;
                 transition: opacity 0.7s, width 0.7s;
             }
-        
+
             #loading_screen{
                 font-family: AvenirNext-Regular;
                 position: absolute;
@@ -162,11 +162,11 @@
                 letter-spacing: 0;
                 text-align:center;
             }
-        
+
             .loading_buttons{
                 font-size:50px;
             }
-        
+
             .loader {
                 border: 7px solid #f8f8f8;
                 border-radius: 50%;
@@ -176,23 +176,23 @@
                 -webkit-animation: spin 1.4s linear infinite;
                 animation: spin 1.4s linear infinite;
             }
-        
+
             @-webkit-keyframes spin {
                 0% { -webkit-transform: rotate(0deg); }
                 100% { -webkit-transform: rotate(360deg); }
             }
-        
+
             @keyframes spin {
                 0% { transform: rotate(0deg); }
                 100% { transform: rotate(360deg); }
             }
-        
+
             #loading_container{
                 width:100%;
                 height:100%;
                 opacity:0.5
             }
-        
+
             .preprocessing_data_key{
                 position:absolute;
                 top:45px;
@@ -221,30 +221,33 @@
             </div>
         </div>
         <script>
-            window.vegaResult = null;
-            // Override console methods to get errors redirected to client app
-            function log(level) {
-                return function() {
-                    var args = Array.prototype.slice.call(arguments);
-                    var msgText = args.map(JSON.stringify).join(' ');
-                    var message = {
-                        status: 'log',
-                        level: level,
-                        message: msgText
-                    };
-                    window.webkit.messageHandlers["scriptHandler"].postMessage(message);
-                }
+            if(window.navigator.platform == 'MacIntel'){
+              window.vegaResult = null;
+              // Override console methods to get errors redirected to client app
+              function log(level) {
+                  return function() {
+                      var args = Array.prototype.slice.call(arguments);
+                      var msgText = args.map(JSON.stringify).join(' ');
+                      var message = {
+                          status: 'log',
+                          level: level,
+                          message: msgText
+                      };
+                      window.webkit.messageHandlers["scriptHandler"].postMessage(message);
+                  }
+              }
+              console = {};
+              console.log = log("log");
+              console.debug = log("debug");
+              console.info = log("info");
+              console.warn = log("warn");
+              console.error = log("error");
             }
-            console = {};
-            console.log = log("log");
-            console.debug = log("debug");
-            console.info = log("info");
-            console.warn = log("warn");
-            console.error = log("error");
         </script>
         <script src="index.js" defer>
         </script>
         <script>
+          if(window.navigator.platform == 'MacIntel'){
             if (document.readyState == 'complete') {
                 window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'loaded'});
             } else {
@@ -252,6 +255,7 @@
                                         window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'loaded'});
                                         });
             }
+          }
         </script>
     </body>
 </html>
