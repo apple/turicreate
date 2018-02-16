@@ -1,8 +1,12 @@
 #include <iostream>
+
+#include <sys/types.h>
+#include <unistd.h>
+
+#include "include/wrapper/cef_helpers.h"
+
 #include "layer.h"
 #include "handler.h"
-#include "window_delegate.h"
-#include "V8Accessor.h"
 #include "V8Handler.h"
 
 std::string getExecutableBasePath() {
