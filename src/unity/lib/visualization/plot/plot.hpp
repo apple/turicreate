@@ -15,14 +15,17 @@ namespace turi {
 
         Plot(){};
 
-        Plot(const std::string& vega_spec,std::shared_ptr<transformation_base> transformer):
-                                              vega_spec(vega_spec), transformer(transformer){}
+        Plot(const std::string& path_to_client, const std::string& vega_spec, std::shared_ptr<transformation_base> transformer, double size_array):
+                                              vega_spec(vega_spec),
+                                              path_to_client(path_to_client),
+                                              size_array(size_array),
+                                              transformer(transformer){}
 
         void show();
         void materialize();
         std::string get_spec();
 
-        BEGIN_CLASS_MEMBER_REGISTRATION("Plot")
+        BEGIN_CLASS_MEMBER_REGISTRATION("_Plot")
         REGISTER_CLASS_MEMBER_FUNCTION(Plot::show)
         REGISTER_CLASS_MEMBER_FUNCTION(Plot::materialize)
         REGISTER_CLASS_MEMBER_FUNCTION(Plot::get_spec)
@@ -30,6 +33,8 @@ namespace turi {
 
       private:
         std::string vega_spec;
+        std::string path_to_client;
+        double size_array;
         std::shared_ptr<transformation_base> transformer;
     };
   }
