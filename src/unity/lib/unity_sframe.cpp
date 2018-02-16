@@ -1702,7 +1702,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
     log_and_throw("Nothing to explore; SFrame is empty.");
   }
 
-  std::string titleString = turi::visualization::escape_string(title);
+  std::string titleString = turi::visualization::extra_label_escape(title);
   // This materializes if not already
   auto underlying_sframe = get_underlying_sframe();
 
@@ -1746,7 +1746,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
       ss << "{\"table_spec\":{\"column_names\": [";
       for (size_t i=0; i<self->num_columns(); i++) {
         const auto& name = column_names[i];
-        ss << visualization::escape_string(name);
+        ss << visualization::extra_label_escape(name);
         if (i != self->num_columns() - 1) {
           ss << ",";
         }
@@ -1795,7 +1795,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
           for (size_t j=0; j<row.size(); j++) {
             const auto& columnName = column_names[j];
             const auto& value = row[j];
-            ss << visualization::escape_string(columnName) << ": ";
+            ss << visualization::extra_label_escape(columnName) << ": ";
 
             std::string default_string;
 
@@ -1840,7 +1840,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
                   visualization::vega_data::Image image_temp;
 
                   image_temp.idx = count;
-                  image_temp.column = visualization::escape_string(columnName);
+                  image_temp.column = visualization::extra_label_escape(columnName);
                   image_temp.img = img_temporary;
 
                   image_queue.push(image_temp);
@@ -1849,7 +1849,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
                   ss << "{\"width\": " << img.m_width << ", ";
                   ss << "\"height\": " << img.m_height << ", ";
                   ss << "\"idx\": " << count << ", ";
-                  ss << "\"column\": " << visualization::escape_string(columnName) << ", ";
+                  ss << "\"column\": " << visualization::extra_label_escape(columnName) << ", ";
                   ss << "\"data\": \"";
 
                   std::copy(
@@ -1930,7 +1930,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
                   if(default_string.length() > resize_table_view){
                     default_string.resize(resize_table_view);
                   }
-                  ss << turi::visualization::escape_string(default_string);
+                  ss << turi::visualization::extra_label_escape(default_string);
                 }
                 break;
               case flex_type_enum::LIST:
@@ -1941,7 +1941,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
                 if(default_string.length() > resize_table_view){
                   default_string.resize(resize_table_view);
                 }
-                ss << turi::visualization::escape_string(default_string);
+                ss << turi::visualization::extra_label_escape(default_string);
                 break;
             }
             if (j != row.size() - 1) {

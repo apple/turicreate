@@ -108,17 +108,17 @@ class ImageSimilarityTest(unittest.TestCase):
         for a, b in zip(list1, list2):
              self.assertAlmostEqual(a, b, delta = tol)
 
-    @pytest.mark.xfail(rases = _ToolkitError)
     def test_create_with_missing_feature(self):
-        tc.image_similarity.create(self.sf, feature='wrong_feature', label=self.label)
+        with self.assertRaises(_ToolkitError):
+            tc.image_similarity.create(self.sf, feature='wrong_feature', label=self.label)
 
-    @pytest.mark.xfail(rases = _ToolkitError)
     def test_create_with_missing_label(self):
-        tc.image_similarity.create(self.sf, feature=self.feature, label='wrong_label')
+        with self.assertRaises(_ToolkitError):
+            tc.image_similarity.create(self.sf, feature=self.feature, label='wrong_label')
 
-    @pytest.mark.xfail(rases = _ToolkitError)
     def test_create_with_empty_dataset(self):
-        tc.image_similarity.create(self.sf[:0])
+        with self.assertRaises(_ToolkitError):
+            tc.image_similarity.create(self.sf[:0])
 
     def test_invalid_num_gpus(self):
         num_gpus = tc.config.get_num_gpus()
@@ -155,6 +155,20 @@ class ImageSimilarityTest(unittest.TestCase):
             ans = model._get(field)
             self.assertTrue(self.get_ans[field](ans),
                     '''Get failed in field {}. Output was {}.'''.format(field, ans))
+
+    def test_query_input(self):
+        model = self.model
+
+        single_image = self.sf[self.feature][0]
+        sims = model.query(single_image)
+        self.assertIsNotNone(sims)
+
+        sarray = self.sf[self.feature]
+        sims = model.query(sarray)
+        self.assertIsNotNone(sims)
+
+        with self.assertRaises(TypeError):
+            model.query("this is a junk value")
 
     def test_summary(self):
         model = self.model

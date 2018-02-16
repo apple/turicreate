@@ -708,7 +708,7 @@ class ndarray {
 
 // pointer to ndarray is constrained to pointer size
 // to enforce that it will always fit in a flexible_type.
-static_assert(sizeof(ndarray<int>*) == sizeof(size_t));
+static_assert(sizeof(ndarray<int>*) == sizeof(size_t), "Pointer to ndarray must be the same size as size_t");
 
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const ndarray<T>& n) {

@@ -20,6 +20,7 @@ from ..cython.cy_flexible_type import infer_type_of_list, infer_type_of_sequence
 from ..cython.cy_sarray import UnitySArrayProxy
 from ..cython.context import debug_trace as cython_context
 from ..util import _is_non_string_iterable, _make_internal_url
+from ..visualization import _get_client_app_path
 from .image import Image as _Image
 from .. import aggregate as _aggregate
 from ..deps import numpy, HAS_NUMPY
@@ -2894,12 +2895,11 @@ class SArray(object):
         >>> sa.show(title="My Plot Title", xlabel="My X Axis", ylabel="My Y Axis")
         """
         import sys
-        if sys.platform != 'darwin':
-            raise NotImplementedError('Visualization is currently supported only on macOS.')
-
         import os
-        (tcviz_dir, _) = os.path.split(os.path.dirname(__file__))
-        path_to_client = os.path.join(tcviz_dir, 'Turi Create Visualization.app', 'Contents', 'MacOS', 'Turi Create Visualization')
+        if sys.platform != 'darwin' and sys.platform != 'linux2':
+             raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
+
+        path_to_client = _get_client_app_path()
 
         if title == "":
             title = " "

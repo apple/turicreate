@@ -274,10 +274,11 @@ class ImageClassifier(_CustomModel):
 
         Parameters
         ----------
-        dataset : SFrame
-            Dataset of new observations. Must include columns with the same
-            names as the features used for model training, but does not require
-            a target column. Additional columns are ignored.
+        dataset : SFrame | SArray | turicreate.Image
+            The images to be classified.
+            If dataset is an SFrame, it must have a columns with the same names as
+            the features used for model training, but does not require a target
+            column. Additional columns are ignored.
 
         output_type : {'probability', 'margin', 'class', 'probability_vector'}, optional
             Form of the predictions which are one of:
@@ -307,6 +308,14 @@ class ImageClassifier(_CustomModel):
         >>> class_predictions = model.predict(data, output_type='class')
 
         """
+        if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image)):
+            raise TypeError('dataset must be either an SFrame, SArray or turicreate.Image')
+
+        if isinstance(dataset, _tc.SArray):
+            dataset = _tc.SFrame({self.feature: dataset})
+        elif isinstance(dataset, _tc.Image):
+            dataset = _tc.SFrame({self.feature: [dataset]})
+
         extracted_features = self._extract_features(dataset)
         return self.classifier.predict(extracted_features, output_type=output_type)
 
@@ -319,8 +328,9 @@ class ImageClassifier(_CustomModel):
 
         Parameters
         ----------
-        dataset : SFrame
-            Dataset of new observations. Must include columns with the same
+        dataset : SFrame | SArray | turicreate.Image
+            Images to be classified.
+            If dataset is an SFrame, it must include columns with the same
             names as the features used for model training, but does not require
             a target column. Additional columns are ignored.
 
@@ -338,6 +348,14 @@ class ImageClassifier(_CustomModel):
         >>> classes = model.classify(data)
 
         """
+        if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image)):
+            raise TypeError('dataset must be either an SFrame, SArray or turicreate.Image')
+
+        if isinstance(dataset, _tc.SArray):
+            dataset = _tc.SFrame({self.feature: dataset})
+        elif isinstance(dataset, _tc.Image):
+            dataset = _tc.SFrame({self.feature: [dataset]})
+
         extracted_features = self._extract_features(dataset)
         return self.classifier.classify(extracted_features)
 
@@ -350,10 +368,11 @@ class ImageClassifier(_CustomModel):
 
         Parameters
         ----------
-        dataset : SFrame
-            A dataset that has the same columns that were used during training.
-            If the target column exists in ``dataset`` it will be ignored
-            while making predictions.
+        dataset : SFrame | SArray | turicreate.Image
+            Images to be classified.
+            If dataset is an SFrame, it must include columns with the same
+            names as the features used for model training, but does not require
+            a target column. Additional columns are ignored.
 
         output_type : {'probability', 'rank', 'margin'}, optional
             Choose the return type of the prediction:
@@ -395,10 +414,18 @@ class ImageClassifier(_CustomModel):
         +--------+-------+-------------------+
         [35688 rows x 3 columns]
         """
+        if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image)):
+            raise TypeError('dataset must be either an SFrame, SArray or turicreate.Image')
+
+        if isinstance(dataset, _tc.SArray):
+            dataset = _tc.SFrame({self.feature: dataset})
+        elif isinstance(dataset, _tc.Image):
+            dataset = _tc.SFrame({self.feature: [dataset]})
+
         extracted_features = self._extract_features(dataset)
         return self.classifier.predict_topk(extracted_features, output_type = output_type, k = k)
 
-    def evaluate(self, dataset, metric='auto'):
+    def evaluate(self, dataset, metric='auto', verbose=True):
         """
         Evaluate the model by making predictions of target values and comparing
         these to actual values.
@@ -426,6 +453,9 @@ class ImageClassifier(_CustomModel):
             For more flexibility in calculating evaluation metrics, use the
             :class:`~turicreate.evaluation` module.
 
+        verbose : bool, optional
+            If True, prints progress updates and model details.
+
         Returns
         -------
         out : dict
@@ -444,13 +474,13 @@ class ImageClassifier(_CustomModel):
           >>> results = model.evaluate(data)
           >>> print results['accuracy']
         """
-        extracted_features = self._extract_features(dataset)
+        extracted_features = self._extract_features(dataset, verbose=verbose)
         extracted_features[self.target] = dataset[self.target]
         return self.classifier.evaluate(extracted_features, metric = metric)
 
-    def _extract_features(self, dataset):
+    def _extract_features(self, dataset, verbose=False):
         return _tc.SFrame({
-            '__image_features__': self.feature_extractor.extract_features(dataset, self.feature)
+            '__image_features__': self.feature_extractor.extract_features(dataset, self.feature, verbose=verbose)
             })
 
     def export_coreml(self, filename):

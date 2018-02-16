@@ -161,6 +161,14 @@ size_t logistic_regression_opt_interface::num_examples() const{
 
 
 /**
+* Get the number of validation-set examples for the model
+*/
+size_t logistic_regression_opt_interface::num_validation_examples() const{
+  return valid_data.num_rows();
+}
+
+
+/**
 * Get the number of variables for the model
 */
 size_t logistic_regression_opt_interface::num_variables() const{

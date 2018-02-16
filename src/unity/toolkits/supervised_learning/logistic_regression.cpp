@@ -207,8 +207,8 @@ void logistic_regression::train() {
   DenseVector init_point(this->num_coefficients);
   init_point.zeros();
   display_classifier_training_summary("Logistic regression");
-  logprogress_stream << "Number of coefficients    : " << this->num_coefficients
-                                                       << std::endl;
+  logprogress_stream << "Number of coefficients      : " << this->num_coefficients
+                     << std::endl;
 
 
   // Deal with regularizers
@@ -342,6 +342,15 @@ void logistic_regression::train() {
   std::shared_ptr<unity_sframe> unity_progress = std::make_shared<unity_sframe>();
   unity_progress->construct_from_sframe(stats.progress_table);
   state["progress"] = to_variant(unity_progress);
+
+  // Compute validation-set stats.
+  if (lr_interface->num_validation_examples() > 0) {
+    // Recycle lvalues from stats to use as out parameters here, now that we're
+    // otherwise done reading from stats.
+    lr_interface->compute_second_order_statistics(
+        stats.solution, stats.hessian, stats.gradient, stats.func_value);
+    state["validation_loss"] =  stats.func_value;
+  }
 
   reg.reset();
   smooth_reg.reset();

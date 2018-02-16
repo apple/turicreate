@@ -15,6 +15,7 @@
 #include <string>
 
 #include <errno.h>
+#include <unistd.h>
 
 using namespace turi::visualization;
 
@@ -78,6 +79,8 @@ process_wrapper::process_wrapper(const std::string& path_to_client) : m_alive(tr
 
   // workaround to pop-under GUI app window from popen:
   // https://stackoverflow.com/a/13553471
+
+  #ifdef __APPLE__
   ::turi::process osascript;
   osascript.popen("/usr/bin/osascript",
       std::vector<std::string>({
@@ -87,6 +90,7 @@ process_wrapper::process_wrapper(const std::string& path_to_client) : m_alive(tr
         "tell application \"Turi Create Visualization\" to activate"
       }),
       0, false);
+  #endif
 }
 
 process_wrapper::~process_wrapper() {

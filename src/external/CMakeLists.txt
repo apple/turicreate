@@ -8,6 +8,6 @@ subdirs(
   protobuf
   lz4
   aws-sdk-cpp
-  uuid
+  uuid_p
   xgboost
   )
