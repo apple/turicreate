@@ -5,7 +5,6 @@ set -e
 # Force LD_LIBRARY_PATH to look up from deps
 # Otherwise, binaries run during compilation will prefer system libraries,
 # which might not use the correct glibc version.
-# This seems to repro on Ubuntu 11.10 (Oneiric).
 
 PYTHON_SCRIPTS=deps/env/bin
 if [[ $OSTYPE == msys ]]; then
@@ -18,9 +17,7 @@ fi
 
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 WORKSPACE=${SCRIPT_DIR}/..
-ABS_WORKSPACE=`dirname $SCRIPT_DIR`
 build_type="release"
-export TURICREATE_USERNAME=''
 #export LD_LIBRARY_PATH=${ROOT_DIR}/deps/local/lib:${ROOT_DIR}/deps/local/lib64:$LD_LIBRARY_PATH
 
 print_help() {

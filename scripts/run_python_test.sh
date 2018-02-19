@@ -22,11 +22,8 @@ cd $WORKSPACE
 scripts/install_python_toolchain.sh
 source scripts/python_env.sh $BUILD_TYPE
 
-# Make nosetest prints unity server log on exception
+# Make python unit tests print unity server log on exception
 export TURI_VERBOSE=1
-
-# Disable metrics reporting in unit tests
-export TURI_METRICS_URL=''
 
 push_ld_library_path() {
   OLD_LIBRARY_PATH=$LD_LIBRARY_PATH
