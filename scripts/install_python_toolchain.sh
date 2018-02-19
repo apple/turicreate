@@ -1,4 +1,4 @@
-#bin/bash
+#!/bin/bash
 # has to be run from root of the repo
 set -x
 set -e

@@ -790,7 +790,6 @@ include(MergeStaticLibraries)
 
 include_directories(SYSTEM src)
 include_directories(SYSTEM src/external)
-include_directories(SYSTEM src/old)
 include_directories(SYSTEM src/platform)
 
 # for build-time generated source code
@@ -803,15 +802,3 @@ endif()
 
 add_subdirectory(src)
 add_subdirectory(test)
-
-
-#/**************************************************************************/
-#/*                                                                        */
-#/*                         Python UnitTest Target                         */
-#/*                                                                        */
-#/**************************************************************************/
-ADD_CUSTOM_TARGET(nosetest
-  DEPENDS binaries python_source cython_targets
-  COMMAND "./run_python_test.sh" ${CMAKE_BUILD_TYPE}
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/scripts
-  )

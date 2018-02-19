@@ -45,7 +45,6 @@ function print_help {
   echo "Cleanup all build directories"
   echo "Example: ./configure --cleanup"
   echo
-  echo "All remaining options will be forwarded to cmake."
   exit 1
 } # end of print help
 
