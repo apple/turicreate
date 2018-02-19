@@ -331,9 +331,9 @@ void logistic_regression_opt_interface::compute_first_order_statistics(const
 /**
  * Compute the second order statistics
 */
-void logistic_regression_opt_interface::compute_second_order_statistics( const
-    DenseVector& point, DenseMatrix& hessian, DenseVector& gradient, double&
-    function_value) {
+void logistic_regression_opt_interface::compute_second_order_statistics(
+    const ml_data& data, const DenseVector& point, DenseMatrix& hessian,
+    DenseVector& gradient, double& function_value) {
     
   timer t;
   double start_time = t.current_time();
@@ -482,6 +482,21 @@ void logistic_regression_opt_interface::compute_second_order_statistics( const
                       << (t.current_time() - start_time) << "s" << std::endl; 
 #endif
 
+}
+
+void logistic_regression_opt_interface::compute_second_order_statistics(
+    const DenseVector& point, DenseMatrix& hessian, DenseVector& gradient,
+    double& function_value) {
+  compute_second_order_statistics(
+      data, point, hessian, gradient, function_value);
+}
+
+void
+logistic_regression_opt_interface::compute_validation_second_order_statistics(
+    const DenseVector& point, DenseMatrix& hessian, DenseVector& gradient,
+    double& function_value) {
+  compute_second_order_statistics(
+      valid_data, point, hessian, gradient, function_value);
 }
 
 

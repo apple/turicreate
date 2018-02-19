@@ -236,10 +236,10 @@ void linear_regression_opt_interface::compute_first_order_statistics(const
 /**
  * Compute the second order statistics
 */
-void linear_regression_opt_interface::compute_second_order_statistics(const
-    DenseVector& point, DenseMatrix& hessian, DenseVector& gradient, double&
-    function_value) {
-  
+void linear_regression_opt_interface::compute_second_order_statistics(
+    const ml_data& data, const DenseVector& point, DenseMatrix& hessian,
+    DenseVector& gradient, double& function_value) {
+
   std::vector<DenseMatrix> H(n_threads, 
                         arma::zeros(variables,variables));
   std::vector<DenseVector> G(n_threads, 
@@ -330,6 +330,20 @@ void linear_regression_opt_interface::compute_second_order_statistics(const
 
 }
 
+void linear_regression_opt_interface::compute_second_order_statistics(
+    const DenseVector& point, DenseMatrix& hessian, DenseVector& gradient,
+    double& function_value) {
+  compute_second_order_statistics(
+      data, point, hessian, gradient, function_value);
+}
+
+void
+linear_regression_opt_interface::compute_validation_second_order_statistics(
+    const DenseVector& point, DenseMatrix& hessian, DenseVector& gradient,
+    double& function_value) {
+  compute_second_order_statistics(
+      valid_data, point, hessian, gradient, function_value);
+}
 
 } // supervised
 } // turicreate
