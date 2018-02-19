@@ -25,7 +25,7 @@ from turicreate.data_structures.image import Image
 from .data_structures.sarray_builder import SArrayBuilder
 from .data_structures.sframe_builder import SFrameBuilder
 
-from turicreate.data_structures.sgraph import load_sgraph, load_graph
+from turicreate.data_structures.sgraph import load_sgraph
 
 import turicreate.aggregate
 import turicreate.toolkits
