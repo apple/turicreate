@@ -14,6 +14,7 @@ make_library(
     process_wrapper.cpp
     scatter.cpp
     show.cpp
+    summary_view.cpp
     thread.cpp
     transformation.cpp
     vega_data.cpp

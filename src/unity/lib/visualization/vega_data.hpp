@@ -26,7 +26,6 @@ namespace turi {
           flex_image img;
         };
 
-        virtual std::string create_sframe_spec(size_t i, size_t num_rows,flex_type_enum type, std::string element_title, const std::shared_ptr<transformation_output>& result);
         virtual vega_data& operator<<(const std::string&);
         virtual std::string get_data_spec(double progress);
     };

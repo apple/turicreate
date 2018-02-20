@@ -44,6 +44,7 @@
 #include <unity/lib/visualization/histogram.hpp>
 #include <unity/lib/visualization/item_frequency.hpp>
 #include <unity/lib/visualization/thread.hpp>
+#include <unity/lib/visualization/plot/plot.hpp>
 #include <unity/lib/visualization/vega_data.hpp>
 #include <unity/lib/visualization/vega_spec.hpp>
 #include <unity/lib/unity_sketch.hpp>
@@ -884,10 +885,10 @@ flexible_type unity_sarray::sum() {
               // initial val
               sum.first = true;
               sum.second = f;
-            } else if (sum.second.get_type() == flex_type_enum::ND_VECTOR && 
+            } else if (sum.second.get_type() == flex_type_enum::ND_VECTOR &&
                        !sum.second.get<flex_nd_vec>().same_shape(f.get<flex_nd_vec>())){
               failure = true;
-             return false; 
+             return false;
             } else if (sum.second.size() == f.size()) {
               // accumulation
               sum.second += f;
@@ -908,10 +909,10 @@ flexible_type unity_sarray::sum() {
           } else if (f.first == false) {
             // there is no f to add.
             return true;
-          } else if (sum.second.get_type() == flex_type_enum::ND_VECTOR && 
+          } else if (sum.second.get_type() == flex_type_enum::ND_VECTOR &&
                      !sum.second.get<flex_nd_vec>().same_shape(f.second.get<flex_nd_vec>())){
             failure = true;
-            return false; 
+            return false;
           } else if (sum.second.size() == f.second.size()) {
             // accumulation
             sum.second += f.second;
@@ -1000,7 +1001,7 @@ flexible_type unity_sarray::mean() {
           } else {
             if (f.get_type() == flex_type_enum::VECTOR && f.size() != mean.first.size()){
               log_and_throw("Cannot perform mean on SArray with vectors of different lengths.");
-            } else if (mean.first.get_type() == flex_type_enum::ND_VECTOR && 
+            } else if (mean.first.get_type() == flex_type_enum::ND_VECTOR &&
                        !mean.first.get<flex_nd_vec>().same_shape(f.get<flex_nd_vec>())){
               log_and_throw("Cannot perform mean on ndarrays of different shapes.");
             }
@@ -1017,7 +1018,7 @@ flexible_type unity_sarray::mean() {
       if (mean.second > 0 &&  f.second > 0) {
         if (mean.first.get_type() == flex_type_enum::VECTOR && f.first.size() != mean.first.size()){
           log_and_throw("Cannot perform mean on SArray with vectors of different lengths.");
-        } else if (mean.first.get_type() == flex_type_enum::ND_VECTOR && 
+        } else if (mean.first.get_type() == flex_type_enum::ND_VECTOR &&
             !mean.first.get<flex_nd_vec>().same_shape(f.first.get<flex_nd_vec>())){
           log_and_throw("Cannot perform mean on ndarrays of different shapes.");
         }
@@ -2822,10 +2823,9 @@ void unity_sarray::show(const std::string& path_to_client,
   switch (self->dtype()) {
     case flex_type_enum::INTEGER:
     case flex_type_enum::FLOAT:
-      ::turi::visualization::run_thread([path_to_client, _title, _xlabel, _ylabel, self]() {
-        process_wrapper ew(path_to_client);
-
+      {
         histogram hist;
+
         std::string title = _title;
         std::string xlabel = _xlabel;
         std::string ylabel = _ylabel;
@@ -2844,32 +2844,21 @@ void unity_sarray::show(const std::string& path_to_client,
           ylabel = "Count";
         }
 
-        ew << histogram_spec(title, xlabel, ylabel);
+        std::stringstream ss;
+        ss << histogram_spec(title, xlabel, ylabel);
+        std::string histogram_spec = ss.str();
+        double size_array = static_cast<double>(self->size());
 
         hist.init(self);
-        while (ew.good()) {
-          vega_data vd;
-          auto result = hist.get();
-          vd << result->vega_column_data();
 
-          double num_rows_processed =  static_cast<double>(hist.get_rows_processed());
-          double size_array = static_cast<double>(self->size());
-          double percent_complete = num_rows_processed/size_array;
+        std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<histogram>(hist);
+        Plot plt(path_to_client, histogram_spec, shared_unity_transformer, size_array);
+        plt.show();
 
-
-          ew << vd.get_data_spec(percent_complete);
-
-          if (hist.eof()) {
-            break;
-          }
-        }
-
-      });
-      break;
+        break;
+      }
     case flex_type_enum::STRING:
-      ::turi::visualization::run_thread([path_to_client, _title, _xlabel, _ylabel, self]() {
-        process_wrapper ew(path_to_client);
-
+      {
         item_frequency item_freq;
         item_freq.init(self);
 
@@ -2893,25 +2882,18 @@ void unity_sarray::show(const std::string& path_to_client,
           ylabel = "Values";
         }
 
-        ew << categorical_spec(length_list, title, xlabel, ylabel);
+        std::stringstream ss;
+        ss << categorical_spec(length_list, title, xlabel, ylabel);
+        std::string category_spec = ss.str();
 
-        while (ew.good()) {
-          vega_data vd;
-          vd << item_freq.get()->vega_column_data();
+        double size_array = static_cast<double>(self->size());
 
-          double num_rows_processed =  static_cast<double>(item_freq.get_rows_processed());
-          double size_array = static_cast<double>(self->size());
-          double percent_complete = num_rows_processed/size_array;
+        std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<item_frequency>(item_freq);
+        Plot plt(path_to_client, category_spec, shared_unity_transformer, size_array);
+        plt.show();
 
-          ew << vd.get_data_spec(percent_complete);
-
-          if (item_freq.eof()) {
-            break;
-          }
-        }
-
-      });
-      break;
+        break;
+      }
     default:
       log_and_throw(std::string("SArray.show is currently not available for SArrays of type ") + flex_type_enum_to_name(self->dtype()));
       break;

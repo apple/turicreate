@@ -14,6 +14,9 @@ class Plot(object):
         with open(filepath, 'w') as fp:
             json.dump(file_contents, fp)
 
+    def get_data(self, filepath, include_data=True):
+        return self.plot_object.get_data()
+
     def get_vega(self, include_data=True):
         return self.plot_object.get_vega(include_data)
 

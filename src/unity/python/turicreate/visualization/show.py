@@ -77,7 +77,7 @@ def show(x, y, xlabel="X", ylabel="Y", title=None):
 
     import turicreate as tc
 
-    path_to_client = get_client_app_path()
+    path_to_client = _get_client_app_path()
 
     if title == "":
         title = " "
