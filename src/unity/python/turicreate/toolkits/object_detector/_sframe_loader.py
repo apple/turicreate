@@ -149,6 +149,10 @@ class SFrameDetectionIter(_mx.io.DataIter):
             oshape = orig_image.shape
             if self.load_labels:
                 label = row[self.annotations_column]
+                if label == None:
+                    label = []
+                if type(label) == dict:
+                    label = [label]
 
                 def is_valid(ann):
                     is_rect = ('type' not in ann or ann['type'] == 'rectangle')
@@ -166,6 +170,9 @@ class SFrameDetectionIter(_mx.io.DataIter):
                     return ok_optional
 
                 # Unchanged boxes, for evaluation
+                if not hasattr(label, '__iter__'):
+                    import pdb; pdb.set_trace()
+
                 raw_bbox = _np.array([[
                         ann['coordinates']['x'],
                         ann['coordinates']['y'],

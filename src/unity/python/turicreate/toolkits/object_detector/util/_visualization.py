@@ -120,6 +120,10 @@ def draw_bounding_boxes(images, annotations, confidence_threshold=0):
     def draw_single_image(row):
         image = row['image']
         anns = row['annotations']
+        if anns == None:
+            anns = []
+        if type(anns) == dict:
+            anns = [anns]
         pil_img = Image.fromarray(image.pixel_data)
         _annotate_image(pil_img, anns, confidence_threshold=confidence_threshold)
         image = _np.array(pil_img)

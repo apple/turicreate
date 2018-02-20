@@ -62,8 +62,8 @@ def _raise_error_if_not_detection_sframe(dataset, feature, annotations, require_
     if require_annotations:
         if annotations not in dataset.column_names():
             raise _ToolkitError("Annotations column '%s' does not exist" % annotations)
-        if dataset[annotations].dtype != list:
-            raise _ToolkitError("Annotations column must contain lists")
+        if dataset[annotations].dtype not in [list, dict]:
+            raise _ToolkitError("Annotations column must be of type dict or list")
 
 
 def create(dataset, annotations=None, feature=None, model='darknet-yolo',
@@ -78,10 +78,11 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         parameters will be extracted for training the detector.
 
     annotations : string
-        Name of the column containing the object detection annotations.
-        This column should be a list of dictionaries, with each dictionary
-        representing a bounding box of an object instance. Here is an example
-        of the annotations for a single image with two object instances::
+        Name of the column containing the object detection annotations.  This
+        column should be a list of dictionaries (or a single dictionary), with
+        each dictionary representing a bounding box of an object instance. Here
+        is an example of the annotations for a single image with two object
+        instances::
 
             [{'label': 'dog',
               'type': 'rectangle',
@@ -160,7 +161,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
             print("Using '%s' as feature column" % feature)
     if annotations is None:
         annotations = _tkutl._find_only_column_of_type(dataset,
-                                                       target_type=list,
+                                                       target_type=[list, dict],
                                                        type_name='list',
                                                        col_name='annotations')
         if verbose:
@@ -168,6 +169,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
 
     _raise_error_if_not_detection_sframe(dataset, feature, annotations,
                                          require_annotations=True)
+    is_annotations_list = dataset[annotations].dtype == list
 
     _tkutl._check_categorical_option_type('model', model,
             supported_detectors)
@@ -237,12 +239,18 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                          grid_shape[1] * ref_model.spatial_reduction)
 
     try:
-        instances = (dataset.stack(annotations, new_column_name='_bbox', drop_na=True)
+        if is_annotations_list:
+            instances = (dataset.stack(annotations, new_column_name='_bbox', drop_na=True)
                             .unpack('_bbox', limit=['label']))
+        else:
+            instances = dataset.rename({annotations: '_bbox'}).dropna('_bbox')
+            instances = instances.unpack('_bbox', limit=['label'])
+
     except (TypeError, RuntimeError):
         # If this fails, the annotation format isinvalid at the coarsest level
         raise _ToolkitError("Annotations format is invalid. Must be a list of "
-                            "dictionaries containing 'label' and 'coordinates'.")
+           "dictionaries or single dictionary containing 'label' and 'coordinates'.")
+
     num_images = len(dataset)
     num_instances = len(instances)
     if classes is None:
