@@ -114,7 +114,7 @@ print sub_verts
 ```
 ```no-highlight
 +------------+--------+-----------------+---------+
-|    __id    | gender | license_to_kill | villian |
+|    __id    | gender | license_to_kill | villain |
 +------------+--------+-----------------+---------+
 | James Bond |   M    |        1        |    0    |
 +------------+--------+-----------------+---------+
@@ -294,7 +294,7 @@ print g.vertices.sort('degree', ascending=False)
 ```
 ```no-highlight
 +----------------+--------+--------+-----------------+---------+
-|      __id      | degree | gender | license_to_kill | villian |
+|      __id      | degree | gender | license_to_kill | villain |
 +----------------+--------+--------+-----------------+---------+
 |   James Bond   |   8    |   M    |        1        |    0    |
 | Elliot Carver  |   7    |   M    |        0        |    1    |
