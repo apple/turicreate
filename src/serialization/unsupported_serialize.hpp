@@ -45,11 +45,11 @@ that certain types are never serialized.
 */
 #define TURI_UNSERIALIZABLE(tname) \
   BEGIN_OUT_OF_PLACE_LOAD(arc, tname, tval) \
-    ASSERT_MSG(false,"trying to deserialize an unserializable object"); \
+    ASSERT_MSG(false, "trying to deserialize an unserializable object"); \
   END_OUT_OF_PLACE_LOAD()                                           \
   \
   BEGIN_OUT_OF_PLACE_SAVE(arc, tname, tval) \
-    ASSERT_MSG(false,"trying to serialize an unserializable object"); \
+    ASSERT_MSG(false, "trying to serialize an unserializable object"); \
   END_OUT_OF_PLACE_SAVE()                                           \
 
 

@@ -10,7 +10,7 @@
 namespace turi { namespace v2 {
 
 /** Constructor -- provide ml_metadata class and a subset of column
- *  indices to use in this particular row.  the columns_to_pick must
+ *  indices to use in this particular row.  The _columns_to_pick must
  *  be in sorted order.
  *
  *  If the chosen columns are from untranslated columns, then they
