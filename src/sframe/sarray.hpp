@@ -403,7 +403,7 @@ class sarray : public swriter_base<swriter_impl::output_iterator<T> > {
    */
   std::unique_ptr<reader_type> get_reader(size_t num_segments) const {
     ASSERT_MSG(inited, "Invalid SArray");
-    ASSERT_MSG(!writing, "Cannot open an SArraying which is still writing.");
+    ASSERT_MSG(!writing, "Cannot open an SArray which is still writing.");
     std::unique_ptr<reader_type> sarray_reader(new reader_type());
     sarray_reader->init(*this, num_segments);
     return sarray_reader;
@@ -415,7 +415,7 @@ class sarray : public swriter_base<swriter_impl::output_iterator<T> > {
    */
   std::unique_ptr<reader_type> get_reader(const std::vector<size_t>& segment_lengths) const {
     ASSERT_MSG(inited, "Invalid SArray");
-    ASSERT_MSG(!writing, "Cannot open an SArraying which is still writing.");
+    ASSERT_MSG(!writing, "Cannot open an SArray which is still writing.");
     std::unique_ptr<reader_type> sarray_reader(new reader_type());
     sarray_reader->init(*this, segment_lengths);
     return sarray_reader;
