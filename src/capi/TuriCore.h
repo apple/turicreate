@@ -561,6 +561,9 @@ tc_sframe* tc_sframe_read_csv(const char *url, const tc_parameters *params, tc_e
 tc_sframe* tc_sframe_read_json(const char *url, tc_error**);
 tc_sframe* tc_sframe_read_json_lines(const char *url, tc_error **error);
 
+// Read json
+tc_sframe* tc_sframe_read_json(const char *url, tc_error**);
+
 // Write csv
 void tc_sframe_write_csv(const tc_sframe* sf, const char *url, tc_error **error);
 

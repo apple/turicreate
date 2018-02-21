@@ -1777,6 +1777,9 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_quantiles) {
   tc_sframe_destroy(sf1);
   tc_sframe_destroy(sampled_frame1);
 }
+BOOST_AUTO_TEST_CASE(test_sframe_read_json) {
+  capi_test_sframe::test_sframe_read_json();
+}
 
 BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_argminmax) {
   tc_error* error = NULL;
