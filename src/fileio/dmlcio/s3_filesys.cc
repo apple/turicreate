@@ -716,7 +716,9 @@ void WriteStream::Run(const std::string &method,
                 << curl_easy_strerror(ret) << " Progress " 
                 << etags_.size() << " uploaded " << " retry=" << num_retry << std::endl;
       num_retry += 1;
-      ASSERT_MSG(num_retry < max_error_retry_, " maximum retry time reached");
+      if(num_retry >= max_error_retry_) {
+        log_and_throw_io_failure("Maximum retry time reached");
+      }
       curl_easy_cleanup(ecurl_);
       ecurl_ = curl_easy_init();      
     } else {
@@ -791,7 +793,9 @@ void ListObjects(const URI &path,
                  const std::string aws_id,
                  const std::string aws_key,
                  std::vector<FileInfo> *out_list) {
-  ASSERT_MSG(path.host.length() != 0, "bucket name not specified in s3");
+  if(path.host.length() == 0) {
+    log_and_throw_io_failure("bucket name not specified in S3 URI");
+  }
   out_list->clear();
   std::vector<std::string> amz;
   std::string date = GetDateString();
