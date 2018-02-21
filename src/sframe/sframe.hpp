@@ -380,7 +380,7 @@ class sframe : public swriter_base<sframe_output_iterator> {
           (atoi(group_writer->get_index_info().columns[i].metadata["__type__"].c_str()));
     } else {
       if(i >= columns.size()) {
-        log_and_throw("Index out of range!");
+        log_and_throw("Column index out of range!");
       }
       return columns[i]->get_type();
     }
