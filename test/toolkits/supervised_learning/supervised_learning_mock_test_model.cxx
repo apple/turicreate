@@ -64,7 +64,14 @@ class predict_constant : public supervised_learning_model_base {
    * -------------------------------------------------------------------------
    */
 
-  SUPERVISED_LEARNING_METHODS_REGISTRATION("predict_constant", predict_constant)
+
+  /**
+   * Returns the name of the model.
+   */
+  std::string name(){
+    return "predict_constant";
+  }
+
 
   /**
    * Train a supervised_learning model.
@@ -299,7 +306,7 @@ void run_predict_constant_test(std::map<std::string, flexible_type> opts) {
   TS_ASSERT(_get == 0);
 
   // Check list_fields
-  _list_fields = model->list_fields();
+  _list_fields = model->list_keys();
   for(const auto& f: _list_fields_ans){
     TS_ASSERT(std::find(_list_fields.begin(), _list_fields.end(), f)
                                                     != _list_fields.end());
@@ -375,7 +382,7 @@ void run_predict_constant_test(std::map<std::string, flexible_type> opts) {
   TS_ASSERT(_get == 0);
 
   // Check list_fields
-  _list_fields = loaded_model->list_fields();
+  _list_fields = loaded_model->list_keys();
   for(const auto& f: _list_fields_ans){
     TS_ASSERT(std::find(_list_fields.begin(), _list_fields.end(), f)
                             != _list_fields.end());

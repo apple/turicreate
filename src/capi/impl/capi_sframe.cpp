@@ -182,6 +182,21 @@ EXPORT tc_sframe* tc_sframe_read_csv(const char *url, tc_error **error) {
   ERROR_HANDLE_END(error, NULL);
 }
 
+EXPORT tc_sframe* tc_sframe_read_json(const char *url, tc_error **error) {
+  ERROR_HANDLE_START();
+
+  turi::gl_sframe sf;
+  sf["X1"] = turi::gl_sarray::read_json(url); 
+
+  DASSERT_EQ(sf.num_columns(), 1);
+
+  sf = sf.unpack("X1", "");
+
+  return new_tc_sframe(sf);
+
+  ERROR_HANDLE_END(error, NULL);
+}
+
 EXPORT void tc_sframe_write(const tc_sframe* sf, const char *url,
                             const char *format, tc_error **error) {
   ERROR_HANDLE_START();

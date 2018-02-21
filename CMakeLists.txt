@@ -34,7 +34,7 @@ if(${TC_BUILD_PYTHON})
   if(NOT EXISTS ${CMAKE_SOURCE_DIR}/deps/env/)
     message(FATAL, "Internal error: Python toolchain expected; not present.")
   endif()
-  
+
   if (PYTHON_VERSION)
         set(PYTHON_VERSION ${PYTHON_VERSION} CACHE STRING "Target Python Version")
   else()
@@ -536,17 +536,17 @@ macro(make_library NAME)
   endif()
 
   if(APPLE)
-  if(make_library_EXPORT_OSX_MAP_FILE) 
+  if(make_library_EXPORT_OSX_MAP_FILE)
     set_property(TARGET ${NAME} APPEND PROPERTY LINK_DEPENDS "${make_library_EXPORT_OSX_MAP_FILE}")
     set_property(TARGET ${NAME} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,-exported_symbols_list,${make_library_EXPORT_OSX_MAP_FILE} ")
   endif()
 
   if(make_library_DEAD_STRIP)
     set_property(TARGET ${NAME} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,-dead_strip")
-  endif() 
+  endif()
 
 else()
-  if(make_library_EXPORT_LINUX_MAP_FILE) 
+  if(make_library_EXPORT_LINUX_MAP_FILE)
     set_property(TARGET ${NAME} APPEND PROPERTY LINK_DEPENDS "${make_library_EXPORT_LINUX_MAP_FILE}")
     set_property(TARGET ${NAME} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,--version-script=${make_library_EXPORT_LINUX_MAP_FILE} ")
   endif()
@@ -792,6 +792,11 @@ include_directories(SYSTEM src)
 include_directories(SYSTEM src/external)
 include_directories(SYSTEM src/old)
 include_directories(SYSTEM src/platform)
+
+if(EXISTS ${CMAKE_SOURCE_DIR}/extensions)
+  include_directories(SYSTEM extensions)
+  add_subdirectory(extensions)
+endif()
 
 # for build-time generated source code
 include_directories(SYSTEM ${CMAKE_BINARY_DIR}/src)

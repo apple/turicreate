@@ -530,6 +530,9 @@ tc_flex_list* tc_sframe_column_names(const tc_sframe* sf, tc_error**);
 // Read csv
 tc_sframe* tc_sframe_read_csv(const char *url, tc_error**);
 
+// Read json
+tc_sframe* tc_sframe_read_json(const char *url, tc_error**);
+
 // Write csv
 void tc_sframe_write_csv(const tc_sframe* sf, const char *url, tc_error **error);
 

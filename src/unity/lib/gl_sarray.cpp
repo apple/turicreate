@@ -164,6 +164,12 @@ gl_sarray gl_sarray::from_const(const flexible_type& value, size_t size) {
   return ret;
 }
 
+gl_sarray gl_sarray::read_json(const std::string& url) {
+  gl_sarray ret;
+  ret.get_proxy()->construct_from_json_record_files(url);
+  return ret;
+}
+
 gl_sarray gl_sarray::from_sequence(size_t start, size_t end, bool reverse) {
   if (end < start) throw std::string("End must be greater than start");
   return unity_sarray::create_sequential_sarray(end - start, 

@@ -44,7 +44,7 @@ EXPORT void tc_initialize(const char* log_file, tc_error** error) {
   s_opts.log_rotation_interval = 0;
   s_opts.log_rotation_truncate = 0;
 
-  turi::unity_server_initializer server_initializer
+  const turi::unity_server_initializer& server_initializer
     = TC_CAPI_SERVER_INITIALIZER_CREATION_FUNCTION();
 
   turi::start_server(s_opts, server_initializer);

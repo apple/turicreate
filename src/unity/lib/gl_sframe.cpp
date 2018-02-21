@@ -770,9 +770,6 @@ gl_sframe gl_sframe::unpack(const std::string& unpack_column,
   if (colnames_set.count(unpack_column) == 0) {
     throw std::string("column \'" + unpack_column + "\' does not exist in current SFrame");
   }
-  if (column_name_prefix == "") {
-    column_name_prefix = unpack_column;
-  }
 
   gl_sframe new_sf = select_column(unpack_column).
       unpack(column_name_prefix, column_types, na_value, limit);

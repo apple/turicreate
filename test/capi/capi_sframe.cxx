@@ -1485,7 +1485,28 @@ void test_sframe_slice_stride_test(){
   TS_ASSERT(true);
 }
 
+void test_sframe_read_json() {
+  tc_error* error = NULL;
+  tc_sframe* sf = tc_sframe_read_json("./json_test.json", &error);
+
+  TS_ASSERT(error == NULL);
+
+  size_t nc = tc_sframe_num_columns(sf, &error);
+  TS_ASSERT(error == NULL);
+
+  TS_ASSERT(nc == 2);
+  
+  size_t nr = tc_sframe_num_rows(sf, &error);
+  TS_ASSERT(error == NULL);
+
+  TS_ASSERT(nr == 3);
+
+  tc_sframe_destroy(sf);
+}
 };
+
+
+
 
 BOOST_FIXTURE_TEST_SUITE(_capi_test_sframe, capi_test_sframe)
 BOOST_AUTO_TEST_CASE(test_sframe_allocation) {
@@ -1568,6 +1589,9 @@ BOOST_AUTO_TEST_CASE(test_sframe_slice_test) {
 }
 BOOST_AUTO_TEST_CASE(test_sframe_slice_stride_test) {
   capi_test_sframe::test_sframe_slice_stride_test();
+}
+BOOST_AUTO_TEST_CASE(test_sframe_read_json) {
+  capi_test_sframe::test_sframe_read_json();
 }
 
 BOOST_AUTO_TEST_SUITE_END()
