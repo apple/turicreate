@@ -9,7 +9,7 @@ from __future__ import absolute_import as _
 from ...data_structures.image import Image as _Image
 
 
-def load_images(url, format='auto', with_path=True, recursive=True, ignore_failure=True, random_order=True):
+def load_images(url, format='auto', with_path=True, recursive=True, ignore_failure=True, random_order=False):
     """
     Loads images from a directory. JPEG and PNG images are supported.
 
@@ -37,8 +37,7 @@ def load_images(url, format='auto', with_path=True, recursive=True, ignore_failu
         the images.
 
     random_order : bool, optional
-        Load images in random order, useful for Stochastic Gradient Decent like
-        algorithm.
+        Load images in random order.
 
     Returns
     -------
