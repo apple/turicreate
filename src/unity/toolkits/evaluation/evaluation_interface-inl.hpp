@@ -10,13 +10,6 @@
 #include <unity/lib/variant.hpp>
 #include <unordered_map>
 
-// Distributed
-#ifdef HAS_DISTRIBUTED
-#include <distributed/distributed_context.hpp>
-#include <rpc/dc_global.hpp>
-#include <rpc/dc.hpp>
-#endif
-
 const double EVAL_ZERO = 1.0e-9;
 
 namespace turi {
@@ -371,12 +364,6 @@ class rmse: public supervised_evaluation_interface {
     }
     DASSERT_TRUE(total_examples > 0);
     DASSERT_TRUE(rmse >= 0);
-#ifdef HAS_DISTRIBUTED
-    auto dc = distributed_control_global::get_instance();
-    DASSERT_TRUE(dc != NULL);
-    dc->all_reduce(rmse, true);
-    dc->all_reduce(total_examples, true);
-#endif
     return to_variant(sqrt(rmse/total_examples));
   }
 
@@ -433,25 +420,11 @@ class max_error: public supervised_evaluation_interface {
    * Return the final metric.
    */
   variant_type get_metric() {
-#ifdef HAS_DISTRIBUTED
-    // A distributed call.
-    auto dc = distributed_control_global::get_instance();
-    DASSERT_TRUE(dc != NULL);
-    std::vector<double> max_max_error (dc->numprocs(), 0);
-    size_t procid = dc->procid();
-    max_max_error[procid] = *std::max_element(std::begin(max_error),
-                                       std::end(max_error));
-    dc->all_gather(max_max_error);
-    return to_variant(*std::max_element(std::begin(max_max_error),
-                                       std::end(max_max_error)));
-#else
-  double max_max_error = 0;
-  for(size_t i = 0; i < n_threads; i++){
-    max_max_error = std::max(max_max_error, max_error[i]);
-  }
-  return to_variant(max_max_error);
-#endif
-
+    double max_max_error = 0;
+    for(size_t i = 0; i < n_threads; i++){
+      max_max_error = std::max(max_max_error, max_error[i]);
+    }
+    return to_variant(max_max_error);
   }
 
 };
@@ -591,12 +564,6 @@ class multiclass_logloss: public supervised_evaluation_interface {
       total_examples += num_examples[i];
     }
     DASSERT_TRUE(total_examples > 0);
-#ifdef HAS_DISTRIBUTED
-    auto dc = distributed_control_global::get_instance();
-    DASSERT_TRUE(dc != NULL);
-    dc->all_reduce(total_logloss, true);
-    dc->all_reduce(total_examples, true);
-#endif
 
     total_examples = std::max<size_t>(1, total_examples);
     return to_variant(-total_logloss / total_examples);
@@ -714,12 +681,6 @@ class binary_logloss: public supervised_evaluation_interface {
       total_examples += num_examples[i];
     }
     DASSERT_TRUE(total_examples > 0);
-#ifdef HAS_DISTRIBUTED
-    auto dc = distributed_control_global::get_instance();
-    DASSERT_TRUE(dc != NULL);
-    dc->all_reduce(total_logloss, true);
-    dc->all_reduce(total_examples, true);
-#endif
     total_examples = std::max<size_t>(1, total_examples);
     return to_variant(-total_logloss/total_examples);
   }
@@ -814,12 +775,6 @@ class classifier_accuracy: public supervised_evaluation_interface {
     }
     DASSERT_TRUE(total_examples > 0);
     DASSERT_TRUE(total_accuracy >= 0);
-#ifdef HAS_DISTRIBUTED
-    auto dc = distributed_control_global::get_instance();
-    DASSERT_TRUE(dc != NULL);
-    dc->all_reduce(total_accuracy, true);
-    dc->all_reduce(total_examples, true);
-#endif
     return to_variant(total_accuracy * 1.0 / total_examples);
   }
 
@@ -925,36 +880,7 @@ class confusion_matrix: public supervised_evaluation_interface {
         }
       }
     }
-
-    // Merge by machine.
-#ifdef HAS_DISTRIBUTED
-    auto dc = distributed_control_global::get_instance();
-
-    // Gather.
-    std::vector<std::vector<
-                std::pair<std::pair<flexible_type, flexible_type>,
-                          size_t>>> final_counts_machine;
-
-    final_counts_machine.resize(dc->numprocs());
-    size_t procid = dc->procid();
-    for(const auto& kvp: final_counts_thread) {
-      final_counts_machine[procid].push_back(kvp);
-    }
-    dc->all_gather(final_counts_machine);
-
-    // Merge.
-    for(size_t i = 0; i < final_counts_machine.size(); i++){
-      for (const auto& kvp: final_counts_machine[i]){
-        if(final_counts.count(kvp.first) > 0){
-          final_counts[kvp.first] += kvp.second;
-        } else {
-          final_counts[kvp.first] = kvp.second;
-        }
-      }
-    }
-#else
     final_counts = final_counts_thread;
-#endif
 
     // Gather labels.
     DASSERT_TRUE(final_counts_thread.size() >= 0);
