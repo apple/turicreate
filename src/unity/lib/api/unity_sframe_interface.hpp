@@ -74,6 +74,7 @@ GENERATE_INTERFACE_AND_PROXY(unity_sframe_base, unity_sframe_proxy,
       (void, delete_on_close, )
       (void, explore, (const std::string&)(const std::string&))
       (void, show, (const std::string&))
+      (std::shared_ptr<plot_base>, plot, (const std::string&))
     )
 } // namespace turi
 #endif // TURI_UNITY_SFRAME_INTERFACE_HPP

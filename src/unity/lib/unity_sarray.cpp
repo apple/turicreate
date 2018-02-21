@@ -44,7 +44,7 @@
 #include <unity/lib/visualization/histogram.hpp>
 #include <unity/lib/visualization/item_frequency.hpp>
 #include <unity/lib/visualization/thread.hpp>
-#include <unity/lib/visualization/plot/plot.hpp>
+#include <unity/lib/visualization/plot.hpp>
 #include <unity/lib/visualization/vega_data.hpp>
 #include <unity/lib/visualization/vega_spec.hpp>
 #include <unity/lib/unity_sketch.hpp>
@@ -2809,6 +2809,21 @@ void unity_sarray::show(const std::string& path_to_client,
   using namespace turi;
   using namespace turi::visualization;
 
+  std::shared_ptr<Plot> plt = std::dynamic_pointer_cast<Plot>(this->plot(path_to_client, _title, _xlabel, _ylabel));
+
+  if(plt != nullptr){
+    plt->show();
+  }
+}
+
+std::shared_ptr<plot_base> unity_sarray::plot(const std::string& path_to_client,
+                        const std::string& _title,
+                        const std::string& _xlabel,
+                        const std::string& _ylabel) {
+
+  using namespace turi;
+  using namespace turi::visualization;
+
   logprogress_stream << "Materializing SArray..." << std::endl;
   this->materialize();
   logprogress_stream << "Done." << std::endl;
@@ -2853,9 +2868,9 @@ void unity_sarray::show(const std::string& path_to_client,
 
         std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<histogram>(hist);
         Plot plt(path_to_client, histogram_spec, shared_unity_transformer, size_array);
-        plt.show();
 
-        break;
+        std::shared_ptr<plot_base> shared_plot_pointer = std::make_shared<Plot>(plt);
+        return shared_plot_pointer;
       }
     case flex_type_enum::STRING:
       {
@@ -2890,13 +2905,13 @@ void unity_sarray::show(const std::string& path_to_client,
 
         std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<item_frequency>(item_freq);
         Plot plt(path_to_client, category_spec, shared_unity_transformer, size_array);
-        plt.show();
 
-        break;
+        std::shared_ptr<plot_base> shared_plot_pointer = std::make_shared<Plot>(plt);
+        return shared_plot_pointer;
       }
     default:
       log_and_throw(std::string("SArray.show is currently not available for SArrays of type ") + flex_type_enum_to_name(self->dtype()));
-      break;
+      return nullptr;
   }
 }
 

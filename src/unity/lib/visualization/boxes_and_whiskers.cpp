@@ -11,7 +11,7 @@
 #include "vega_spec.hpp"
 
 #include <parallel/lambda_omp.hpp>
-#include <unity/lib/visualization/plot/plot.hpp>
+#include <unity/lib/visualization/plot.hpp>
 #include <unity/lib/visualization/transformation.hpp>
 
 #include <cmath>

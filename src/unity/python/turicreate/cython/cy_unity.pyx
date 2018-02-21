@@ -20,6 +20,7 @@ from .cy_flexible_type cimport pydict_from_gl_options_map
 from . cimport cy_graph
 from . cimport cy_sarray
 from . cimport cy_sframe
+from . cimport cy_plot
 
 from .cy_sarray cimport UnitySArrayProxy
 from .cy_model cimport UnityModel, create_model_from_proxy
@@ -95,7 +96,7 @@ cdef class UnityGlobalProxy:
                 variant_map_to_dict(response.params))
 
     cpdef save_model(self, model, _url, sidedata={}):
-        cdef string url = str_to_cpp(_url) 
+        cdef string url = str_to_cpp(_url)
         proxy = model.__proxy__
         cdef model_base_ptr m = ((<UnityModel?>(proxy))._base_ptr)
         cdef variant_map_type varmap_sidedata = variant_map_from_dict(sidedata)
@@ -103,14 +104,14 @@ cdef class UnityGlobalProxy:
             self.thisptr.save_model(m, varmap_sidedata, url)
 
     cpdef save_model2(self, _modelname, _url, sidedata={}):
-        cdef string modelname = str_to_cpp(_modelname) 
-        cdef string url = str_to_cpp(_url) 
+        cdef string modelname = str_to_cpp(_modelname)
+        cdef string url = str_to_cpp(_url)
         cdef variant_map_type varmap_sidedata = variant_map_from_dict(sidedata)
         with nogil:
             self.thisptr.save_model2(modelname, varmap_sidedata, url)
 
     cpdef load_model(self, _url):
-        cdef string url = str_to_cpp(_url) 
+        cdef string url = str_to_cpp(_url)
         cdef variant_map_type response
         with nogil:
             response = self.thisptr.load_model(url)

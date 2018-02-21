@@ -32,7 +32,7 @@
 #include <sframe_query_engine/algorithm/ec_sort.hpp>
 #include <sframe_query_engine/algorithm/groupby_aggregate.hpp>
 #include <sframe_query_engine/operators/operator_properties.hpp>
-#include <unity/lib/visualization/plot/plot.hpp>
+#include <unity/lib/visualization/plot.hpp>
 #include <lambda/pylambda_function.hpp>
 #include <exceptions/error_types.hpp>
 #include <unity/lib/visualization/process_wrapper.hpp>
@@ -1564,6 +1564,17 @@ std::string unity_sframe::generate_next_column_name() {
 }
 
 void unity_sframe::show(const std::string& path_to_client) {
+  using namespace turi;
+  using namespace turi::visualization;
+
+  std::shared_ptr<Plot> plt = std::dynamic_pointer_cast<Plot>(this->plot(path_to_client));
+
+  if(plt != nullptr){
+    plt->show();
+  }
+}
+
+std::shared_ptr<plot_base> unity_sframe::plot(const std::string& path_to_client){
 
   using namespace turi;
   using namespace turi::visualization;
@@ -1657,7 +1668,9 @@ void unity_sframe::show(const std::string& path_to_client) {
   std::shared_ptr<transformation_base> shared_unity_transformer = std::static_pointer_cast<transformation_base>(summary_view_transformers);
 
   Plot plt(path_to_client, summary_view_vega_spec, shared_unity_transformer, (self->size() * column_transformers.size()));
-  plt.show();
+
+  std::shared_ptr<plot_base> shared_plot_pointer = std::make_shared<Plot>(plt);
+  return shared_plot_pointer;
 }
 
 void unity_sframe::explore(const std::string& path_to_client, const std::string& title) {

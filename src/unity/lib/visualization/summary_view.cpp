@@ -76,7 +76,7 @@ bool summary_view_transformation::eof() const {
   // all have the same batch size and same number of rows processed.
   // we also guaranteed in the constructor that there is at least 1 transformer.
   // we need only ask the 1 we know of whether it's eof.
-  return m_transformers[(m_transformers.size()-1)]->eof();
+  return m_transformers[(m_transformers.size()-1)]->eof() && (index == 0);
 }
 
 flex_int summary_view_transformation::get_rows_processed() const {

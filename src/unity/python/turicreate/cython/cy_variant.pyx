@@ -20,6 +20,7 @@ from .cy_model cimport create_model_from_proxy
 from .cy_model cimport UnityModel
 from .cy_sframe cimport UnitySFrameProxy
 from .cy_sarray cimport UnitySArrayProxy
+from .cy_plot cimport PlotProxy
 
 from .cy_flexible_type cimport flexible_type, flex_list, flex_dict, flex_int
 from .cy_flexible_type cimport flexible_type_from_pyobject
@@ -74,9 +75,11 @@ DEF VAR_TR_SARRAY_PROXY                = 14
 DEF VAR_TR_GRAPH_PROXY                 = 15
 DEF VAR_TR_FUNCTION                    = 16
 DEF VAR_TR_CLOSURE                     = 17
+DEF VAR_TR_PLOT_PROXY                  = 18
+DEF VAR_TR_PLOT                        = 19
 
 # The last resort -- attempt to convert it to a general flexible type
-DEF VAR_TR_ATTEMPT_OTHER_FLEXIBLE_TYPE = 18  #
+DEF VAR_TR_ATTEMPT_OTHER_FLEXIBLE_TYPE = 20  #
 
 # Codes for translating variant type back to python types.
 DEF VAR_TYPE_FLEXIBLE_TYPE       = 0
@@ -185,6 +188,8 @@ cdef int _get_tr_code_by_type_string(object v) except -1:
         ret =  VAR_TR_GRAPH_PROXY
     elif is_function_closure_info(v):
         ret =  VAR_TR_CLOSURE
+    elif type(v) is PlotProxy:
+        ret = VAR_TR_PLOT_PROXY
     else:
         ret =  VAR_TR_ATTEMPT_OTHER_FLEXIBLE_TYPE
 
@@ -366,7 +371,7 @@ cdef bint _var_set_listlike_internal(variant_vector_type& ret_as_vv,
         elif tr_code == VAR_TR_ATTEMPT_OTHER_FLEXIBLE_TYPE:
             ret_as_fl[i] = _translate_to_flexible_type(x)
             element_stored_in_flex_list = True
-            
+
         else:
             if writing_to_flexible_types:
                 __move_flex_list_to_variant_vector(ret_as_vv, ret_as_fl, i)
@@ -411,7 +416,7 @@ cdef inline bint _var_set_dict_internal(variant_map_type& ret_as_vm, flex_dict& 
     for k in d.iterkeys():
         if type(k) is not str:
             output_can_be_varmap = False
-            break        
+            break
 
     if require_varmap and not output_can_be_varmap:
         raise TypeError("Dictionary cannot be translated into a variant type map (keys not strings)")
@@ -430,7 +435,7 @@ cdef inline bint _var_set_dict_internal(variant_map_type& ret_as_vm, flex_dict& 
             ret_as_fd.resize(len(d))
 
             writing_to_flex_dict = True
-            
+
             pos = 0
             for k, v in d.iteritems():
 
@@ -465,9 +470,9 @@ cdef inline bint _var_set_dict_internal(variant_map_type& ret_as_vm, flex_dict& 
                             check_list_to_vector_translation(ret_as_fd[pos].second)
 
                             if not writing_to_flex_dict:
-                                variant_set_flexible_type(ret_as_vm[ret_as_fd[pos].first.get_string()], 
+                                variant_set_flexible_type(ret_as_vm[ret_as_fd[pos].first.get_string()],
                                                           ret_as_fd[pos].second)
-                        else:                                                            
+                        else:
                             if writing_to_flex_dict:
                                 ret_as_vm.clear()
                                 for i in range(pos):
@@ -476,7 +481,7 @@ cdef inline bint _var_set_dict_internal(variant_map_type& ret_as_vm, flex_dict& 
 
                                 writing_to_flex_dict = False
 
-                                
+
                             variant_set_variant_vector(ret_as_vm[ret_as_fd[pos].first.get_string()], sub_vv)
 
                     elif tr_code == VAR_TR_DICT:
@@ -486,7 +491,7 @@ cdef inline bint _var_set_dict_internal(variant_map_type& ret_as_vm, flex_dict& 
 
                         if sub_is_flex_type:
                             if not writing_to_flex_dict:
-                                variant_set_flexible_type(ret_as_vm[ret_as_fd[pos].first.get_string()], 
+                                variant_set_flexible_type(ret_as_vm[ret_as_fd[pos].first.get_string()],
                                                           ret_as_fd[pos].second)
                         else:
                             if writing_to_flex_dict:
@@ -498,8 +503,8 @@ cdef inline bint _var_set_dict_internal(variant_map_type& ret_as_vm, flex_dict& 
                                 writing_to_flex_dict = False
 
                             variant_set_variant_map(ret_as_vm[ret_as_fd[pos].first.get_string()], sub_vm)
-                        
-                    else:                    
+
+                    else:
 
                         # Move things out of the flex_dict container
                         ret_as_vm.clear()
@@ -512,7 +517,7 @@ cdef inline bint _var_set_dict_internal(variant_map_type& ret_as_vm, flex_dict& 
 
                         # Make the rest of them write to the variant type map
                         writing_to_flex_dict = False
-                        
+
                     pos += 1
                 else:
                     tr_code = get_var_tr_code(v)
@@ -525,7 +530,7 @@ cdef inline bint _var_set_dict_internal(variant_map_type& ret_as_vm, flex_dict& 
                 ret_as_fd.clear()
                 return False
 
-        else: # require_varmap is true, so we're going to do that. 
+        else: # require_varmap is true, so we're going to do that.
             ret_as_vm.clear()
             for k, v in d.iteritems():
                 tr_code = get_var_tr_code(v)
@@ -645,6 +650,8 @@ cdef _convert_to_variant_type(variant_type& ret, object v, int tr_code):
         variant_set_sarray(ret, (<UnitySArrayProxy?>(v.__proxy__))._base_ptr)
     elif tr_code == VAR_TR_GRAPH:
         variant_set_graph(ret, (<UnityGraphProxy?>(v.__proxy__))._base_ptr)
+    elif tr_code == VAR_TR_PLOT:
+        variant_set_plot(ret, (<PlotProxy?>(v.__proxy__))._base_ptr)
 
     # Unity models
     elif tr_code == VAR_TR_UNITY_MODEL:
@@ -659,6 +666,8 @@ cdef _convert_to_variant_type(variant_type& ret, object v, int tr_code):
         variant_set_sarray(ret, (<UnitySArrayProxy>(v))._base_ptr)
     elif tr_code == VAR_TR_GRAPH_PROXY:
         variant_set_graph(ret, (<UnityGraphProxy>v)._base_ptr)
+    elif tr_code == VAR_TR_PLOT_PROXY:
+        variant_set_plot(ret, (<PlotProxy>(v))._base_ptr)
 
     # Functions and closures
     elif tr_code == VAR_TR_FUNCTION:
@@ -676,7 +685,7 @@ cdef _convert_to_variant_type(variant_type& ret, object v, int tr_code):
             raise_translation_error(v)
 
     else:
-        assert False    
+        assert False
 
 ################################################################################
 # The main translation function
@@ -751,12 +760,12 @@ cdef to_value(variant_type& v):
         raise TypeError("Unsupported variant type.")
 
 ################################################################################
-# Routines to assist with debugging. 
-    
+# Routines to assist with debugging.
+
 def _debug_is_flexible_type_encoded(object obj):
     """
     Checks to make sure that if an object can be encoded as a flexible
     type, then it is.
     """
     cdef variant_type vt = from_value(obj)
-    return (vt.which() == VAR_TYPE_FLEXIBLE_TYPE)            
+    return (vt.which() == VAR_TYPE_FLEXIBLE_TYPE)

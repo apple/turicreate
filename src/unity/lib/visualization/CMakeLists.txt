@@ -11,6 +11,7 @@ make_library(
     hyperloglog.cpp
     io_buffer.cpp
     item_frequency.cpp
+    plot.cpp
     process_wrapper.cpp
     scatter.cpp
     show.cpp
@@ -19,8 +20,6 @@ make_library(
     transformation.cpp
     vega_data.cpp
     vega_spec.cpp
-
-    plot/plot.cpp
   REQUIRES
     process
     EXTERNAL_VISIBILITY

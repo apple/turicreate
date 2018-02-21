@@ -67,6 +67,7 @@ cdef extern from "<unity/lib/unity_sframe.hpp>" namespace "turi":
         void delete_on_close() except +
         void explore(const string&, const string&) except +
         void show(const string&) except +
+        plot_base_ptr plot(const string&) except +
 
 cdef create_proxy_wrapper_from_existing_proxy(const unity_sframe_base_ptr& proxy)
 
@@ -159,3 +160,5 @@ cdef class UnitySFrameProxy:
     cpdef explore(self, path_to_client, title)
 
     cpdef show(self, path_to_client)
+
+    cpdef plot(self, path_to_client)

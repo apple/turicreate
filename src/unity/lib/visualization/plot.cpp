@@ -9,6 +9,7 @@
 #include <unity/lib/visualization/histogram.hpp>
 #include <unity/lib/visualization/item_frequency.hpp>
 #include <unity/lib/visualization/summary_view.hpp>
+#include <sstream>
 
 namespace turi{
   namespace visualization{
@@ -45,14 +46,24 @@ namespace turi{
       } while(!transformer->eof());
     }
 
+    std::string Plot::get_data() {
+      this->materialize();
+      vega_data vd;
+
+      while(true) {
+        vd << transformer.get()->get()->vega_column_data();
+        if (transformer->eof()) {
+          break;
+        }
+      }
+
+      std::stringstream ss;
+      ss << vd.get_data_spec(100);
+      return ss.str();
+    }
+
     std::string Plot::get_spec() {
       return vega_spec;
     }
   }
 }
-
-using namespace turi;
-
-BEGIN_CLASS_REGISTRATION
-REGISTER_CLASS(turi::visualization::Plot)
-END_CLASS_REGISTRATION

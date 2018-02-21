@@ -1,29 +1,62 @@
-import time
+from __future__ import print_function as _
+from __future__ import division as _
+from __future__ import absolute_import as _
+
+from ..cython.cy_plot import PlotProxy
+
+from ..cython.context import debug_trace as cython_context
+from ..util import _is_non_string_iterable, _make_internal_url
+from .. import aggregate as _aggregate
+
+import logging as _logging
+
 import json
 
+__all__ = ['Plot']
+
 class Plot(object):
-    def __init__(self):
-        self.plot_object = tc.extensions._Plot()
+
+    __slots__ = ["__proxy__", "_getitem_cache"]
+
+    def __init__(self, _proxy=None):
+        if (_proxy):
+            self.__proxy__ = _proxy
+        else:
+            self.__proxy__ = PlotProxy()
 
     def show(self):
-        self.plot_object.show()
+        import sys
+        import os
+        if sys.platform != 'darwin' and sys.platform != 'linux2':
+             raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
+
+        self.__proxy__.show()
 
     def save_vega(self, filepath, include_data=True):
-        file_contents = self.plot_object.get_vega(include_data)
+        file_contents = self.__proxy__.get_spec()
 
         with open(filepath, 'w') as fp:
             json.dump(file_contents, fp)
 
-    def get_data(self, filepath, include_data=True):
-        return self.plot_object.get_data()
+    def get_data(self):
+        return json.loads(self.__proxy__.get_data())
 
     def get_vega(self, include_data=True):
-        return self.plot_object.get_vega(include_data)
+        if(include_data):
+            spec = json.loads(self.__proxy__.get_spec())
+            data = json.loads(self.__proxy__.get_data())["data_spec"]
+            for x in range(0, len(spec["vega_spec"]["data"])):
+                if(spec["vega_spec"]["data"][x]["name"] == "source_2"):
+                    spec["vega_spec"]["data"][x] = data
+                    break;
+            return spec
+        else:
+            return json.loads(self.__proxy__.get_spec())
 
     def _repr_javascript_(self):
-        from IPython.core.display import display, HTML, clear_output, update_display
+        from IPython.core.display import display, HTML
 
-        vega_spec = self.get_vega()["vega_spec"]
+        vega_spec = self.get_vega(True)["vega_spec"]
 
         vega_html = '<html lang="en"><head><script src="https://cdnjs.cloudflare.com/ajax/libs/vega/3.0.8/vega.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/vega-embed/3.0.0-rc7/vega-embed.js"></script></head><body><div id="vis"></div><script>var vega_json = '+json.dumps(json.dumps(vega_spec)).replace("'", "&apos;")+'; var vega_json_parsed = JSON.parse(vega_json); vegaEmbed("#vis", vega_json_parsed);</script></body></html>'
-        display(HTML('<html><body><iframe style="border:0;margin:0" width="'+str(width)+'" height="'+str(height)+'" srcdoc='+"'"+vega_html+"'"+' src="demo_iframe_srcdoc.htm"><p>Your browser does not support iframes.</p></iframe></body></html>'));
+        display(HTML('<html><body><iframe style="border:0;margin:0" width="'+str(vega_spec["width"]+200)+'" height="'+str(vega_spec["height"]+200)+'" srcdoc='+"'"+vega_html+"'"+' src="demo_iframe_srcdoc.htm"><p>Your browser does not support iframes.</p></iframe></body></html>'));
