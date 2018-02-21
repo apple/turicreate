@@ -14,26 +14,24 @@
 namespace turi{
   namespace visualization{
     void Plot::show() {
-      using namespace turi;
-      using namespace turi::visualization;
 
       std::shared_ptr<Plot> self = std::make_shared<Plot>(*this);
 
       ::turi::visualization::run_thread([self]() {
-        process_wrapper ew(self->path_to_client);
-        ew << self->vega_spec;
+        process_wrapper ew(self->m_path_to_client);
+        ew << self->m_vega_spec;
 
         while(ew.good()) {
           vega_data vd;
 
-          vd << self->transformer.get()->get()->vega_column_data();
+          vd << self->m_transformer->get()->vega_column_data();
 
-          double num_rows_processed =  static_cast<double>(self->transformer->get_rows_processed());
-          double percent_complete = num_rows_processed/self->size_array;
+          double num_rows_processed =  static_cast<double>(self->m_transformer->get_rows_processed());
+          double percent_complete = num_rows_processed/self->m_size_array;
 
           ew << vd.get_data_spec(percent_complete);
 
-          if (self->transformer->eof()) {
+          if (self->m_transformer->eof()) {
              break;
           }
         }
@@ -42,8 +40,8 @@ namespace turi{
 
     void Plot::materialize() {
       do {
-        transformer.get()->get()->vega_column_data();
-      } while(!transformer->eof());
+        m_transformer->get()->vega_column_data();
+      } while(!m_transformer->eof());
     }
 
     std::string Plot::get_data() {
@@ -51,8 +49,8 @@ namespace turi{
       vega_data vd;
 
       while(true) {
-        vd << transformer.get()->get()->vega_column_data();
-        if (transformer->eof()) {
+        vd << m_transformer->get()->vega_column_data();
+        if (m_transformer->eof()) {
           break;
         }
       }
@@ -63,7 +61,7 @@ namespace turi{
     }
 
     std::string Plot::get_spec() {
-      return vega_spec;
+      return m_vega_spec;
     }
   }
 }

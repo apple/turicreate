@@ -11,8 +11,8 @@ using namespace turi::visualization;
 
 std::shared_ptr<summary_view_transformation> transformation_collection::fuse(std::vector<std::string> column_names, std::vector<flex_type_enum> column_types, size_t size) {
   auto fused_output = std::make_shared<summary_view_transformation>(*this);
-  fused_output->column_names = column_names;
-  fused_output->column_types = column_types;
-  fused_output->size = size;
+  fused_output->m_column_names = column_names;
+  fused_output->m_column_types = column_types;
+  fused_output->m_size = size;
   return fused_output;
 }
