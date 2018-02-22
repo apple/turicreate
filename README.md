@@ -66,7 +66,7 @@ Turi Create supports:
 System Requirements
 -------------------
 
-* Python 2.7 (Python 3.5+ support coming soon)
+* Python 2.7, 3.5, 3.6
 * x86\_64 architecture
 
 Installation
@@ -133,11 +133,11 @@ CUDA-enabled `mxnet-cu80` package:
 
 ```
 (venv) pip uninstall -y mxnet
-(venv) pip install mxnet-cu80==0.11.0
+(venv) pip install mxnet-cu80==0.12.1
 ```
 
-Make sure you install the same version of MXNet as the one `turicreate` depends
-on (currently `0.11.0`). If you have trouble setting up the GPU, the [MXNet
+Make sure you install the same version of MXNet as the one `turicreate` recommends
+(currently `0.12.1`). If you have trouble setting up the GPU, the [MXNet
 installation instructions](https://mxnet.incubator.apache.org/get_started/install.html) may
 offer additional help.
 

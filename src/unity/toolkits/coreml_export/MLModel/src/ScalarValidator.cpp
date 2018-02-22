@@ -14,9 +14,8 @@ namespace CoreML {
     Result validate<MLModelType_scaler>(const Specification::Model& format) {
         const auto& description = format.description();
         
-            // Convenience typedefs
+        // Convenience typedefs
         typedef Specification::FeatureType FT;
-        typedef Specification::Imputer::ReplaceValueCase RVC;
         
         Result result;
 
@@ -59,7 +58,7 @@ namespace CoreML {
                           "Type of input feature does not match the output type feature.");
         }
         
-            // If it's an array, we need to test sizes.
+        // If it's an array, we need to test sizes.
         if(input.type().Type_case() == FT::kMultiArrayType) {
             if(input.type().multiarraytype().shape_size() != 1) {
                 return Result(ResultType::INVALID_MODEL_PARAMETERS,
@@ -82,7 +81,7 @@ namespace CoreML {
                               "For input type array, specified shift values must be empty, a scalar, or a vector of the matching length.");
             }
             
-                // Now, make sure that the repeated values make sense.
+            // Now, make sure that the repeated values make sense.
             size_t scale_size = format.scaler().scalevalue_size();
             
             if(!(scale_size == 0 || scale_size == 1
@@ -92,7 +91,7 @@ namespace CoreML {
                               "For input type array, specified scale values must be empty, a scalar, or a vector of the matching length.");
             }
         } else {
-                // Now, make sure that the repeated values make sense.
+            // Now, make sure that the repeated values make sense.
             size_t shift_size = format.scaler().shiftvalue_size();
             
             if(!(shift_size == 0 || shift_size == 1)) {
@@ -101,7 +100,7 @@ namespace CoreML {
                               "For a scalar imput type, specified shift value must be empty or a scalar.");
             }
             
-                // Now, make sure that the repeated values make sense.
+            // Now, make sure that the repeated values make sense.
             size_t scale_size = format.scaler().scalevalue_size();
             
             if(!(scale_size == 0 || scale_size == 1)) {

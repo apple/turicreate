@@ -213,6 +213,9 @@ struct equality_operator {
   inline FLEX_ALWAYS_INLINE_FLATTEN bool operator()(flex_undefined t, flex_undefined u) const {
     return true;
   };
+  inline FLEX_ALWAYS_INLINE_FLATTEN bool operator()(const flex_nd_vec& t, const flex_nd_vec& u) const {
+    return t == u;
+  }
 };
 
 
@@ -247,6 +250,9 @@ struct approx_equality_operator {
     for (size_t i = 0;i < t.size(); ++i) if (t[i] != u[i]) return false;
     return true;
   }
+  inline FLEX_ALWAYS_INLINE_FLATTEN bool operator()(const flex_nd_vec& t, const flex_nd_vec& u) const {
+    return t == u;
+  }
   // Implemented in flexible_type.cpp
   bool operator()(const flex_dict& t, const flex_dict& u) const;
   bool operator()(const flex_list& t, const flex_list& u) const;
@@ -267,6 +273,9 @@ struct negation_operator{
   inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_float& t) const { t = -t; }
   inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_vec& t) const {
     for (size_t i = 0;i < t.size(); ++i) t[i] = -t[i];
+  }
+  inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_nd_vec& t) const {
+    t.negate();
   }
 };
 
@@ -340,6 +349,15 @@ struct plus_equal_operator{
   inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_vec& t, const flex_float u) const {
     for (size_t i = 0;i < t.size(); ++i) t[i] += u;
   }
+  inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_nd_vec& t, const flex_int u) const {
+    t += flex_float(u);
+  }
+  inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_nd_vec& t, const flex_float u) const {
+    t += u;
+  }
+  inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_nd_vec& t, const flex_nd_vec& u) const {
+    t += u;
+  }
 };
 
 
@@ -379,6 +397,15 @@ struct minus_equal_operator{
   inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_vec& t, const flex_float u) const {
     for (size_t i = 0;i < t.size(); ++i) t[i] -= u;
   }
+  inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_nd_vec& t, const flex_int u) const {
+    t -= flex_float(u);
+  }
+  inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_nd_vec& t, const flex_float u) const {
+    t -= u;
+  }
+  inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_nd_vec& t, const flex_nd_vec& u) const {
+    t -= u;
+  }
 };
 
 
@@ -407,6 +434,15 @@ struct divide_equal_operator{
   inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_vec& t, const flex_float u) const {
     for (size_t i = 0;i < t.size(); ++i) t[i] /= u;
   }
+  inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_nd_vec& t, const flex_int u) const {
+    t /= flex_float(u);
+  }
+  inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_nd_vec& t, const flex_float u) const {
+    t /= u;
+  }
+  inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_nd_vec& t, const flex_nd_vec& u) const {
+    t /= u;
+  }
 };
 
 
@@ -432,9 +468,18 @@ struct mod_equal_operator{
   inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_vec& t, const flex_int u) const {
     for (size_t i = 0;i < t.size(); ++i) t[i] = fmod(t[i], u);
   }
-
   inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_vec& t, const flex_float u) const {
     for (size_t i = 0;i < t.size(); ++i) t[i] = fmod(t[i], u);
+  }
+  inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_nd_vec& t, const flex_nd_vec& u) const {
+    t %= u;
+  }
+
+  inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_nd_vec& t, const flex_int u) const {
+    t %= u;
+  }
+  inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_nd_vec& t, const flex_float u) const {
+    t %= u;
   }
 };
 
@@ -463,6 +508,15 @@ struct multiply_equal_operator{
 
   inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_vec& t, const flex_float u) const {
     for (size_t i = 0;i < t.size(); ++i) t[i] *= u;
+  }
+  inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_nd_vec& t, const flex_int u) const {
+    t *= flex_float(u);
+  }
+  inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_nd_vec& t, const flex_float u) const {
+    t *= u;
+  }
+  inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_nd_vec& t, const flex_nd_vec& u) const {
+    t *= u;
   }
 };
 
@@ -543,6 +597,7 @@ struct get_string_visitor {
   flex_string operator()(const flex_list& vec) const;
   flex_string operator()(const flex_dict& vec) const;
   flex_string operator()(const flex_image& vec) const;
+  flex_string operator()(const flex_nd_vec& vec) const;
 };
 
 
@@ -559,8 +614,35 @@ struct get_vec_visitor {
   inline FLEX_ALWAYS_INLINE_FLATTEN flex_vec operator()(flex_float i) const {return flex_vec{i}; }
   inline FLEX_ALWAYS_INLINE_FLATTEN flex_vec operator()(const flex_vec& i) const {return i; }
   inline FLEX_ALWAYS_INLINE_FLATTEN flex_vec operator()(flex_date_time i) const {return flex_vec{get_float_visitor()(i)}; }
+  inline FLEX_ALWAYS_INLINE_FLATTEN flex_vec operator()(const flex_nd_vec& i) const {
+    if (i.is_full()) {
+      return i.elements();
+    } else {
+      flex_nd_vec tmp = i.compact();
+      return tmp.elements();
+    }
+  }
 
   flex_vec operator()(const flex_image& img) const;
+};
+
+
+/**
+ * \ingroup group_gl_flexible_type
+ * \internal
+ * Converts the stored value to a flex_nd_vec
+ */
+struct get_ndvec_visitor {
+  template <typename T>
+  inline FLEX_ALWAYS_INLINE_FLATTEN flex_nd_vec operator()(T t) const { FLEX_TYPE_ASSERT(false); return flex_vec(); }
+  inline FLEX_ALWAYS_INLINE_FLATTEN flex_nd_vec operator()(flex_undefined t) const { return flex_vec(); }
+  inline FLEX_ALWAYS_INLINE_FLATTEN flex_nd_vec operator()(flex_int i) const {return flex_nd_vec({(double)i}); }
+  inline FLEX_ALWAYS_INLINE_FLATTEN flex_nd_vec operator()(flex_float i) const {return flex_nd_vec({i}); }
+  inline FLEX_ALWAYS_INLINE_FLATTEN flex_nd_vec operator()(const flex_vec& i) const {return flex_nd_vec(i); }
+  inline FLEX_ALWAYS_INLINE_FLATTEN flex_nd_vec operator()(flex_date_time i) const {return flex_nd_vec({get_float_visitor()(i)}); }
+  inline FLEX_ALWAYS_INLINE_FLATTEN flex_nd_vec operator()(const flex_nd_vec& i) const { return i; }
+  flex_nd_vec operator()(flex_list i) const;
+  flex_nd_vec operator()(const flex_image& img) const;
 };
 
 /**
@@ -613,6 +695,7 @@ struct get_img_visitor {
   inline FLEX_ALWAYS_INLINE_FLATTEN flex_image operator()(T t) const { FLEX_TYPE_ASSERT(false); return flex_image(); }
   inline FLEX_ALWAYS_INLINE_FLATTEN flex_image operator()(flex_undefined t) const { return flex_image(); }
   inline FLEX_ALWAYS_INLINE_FLATTEN flex_image operator()(const flex_image& v) const { return v; }
+  flex_image operator()(const flex_nd_vec& v) const;
 
 };
 
@@ -652,6 +735,19 @@ struct soft_assignment_visitor {
   inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_undefined& t, const flex_undefined& u) const { t = u; }
   inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_float& t, const flex_undefined& u) const { t = NAN; }
   inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_vec& t, const flex_image& u) const { t = get_vec_visitor()(u); }
+  inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_nd_vec& t, const flex_nd_vec& u) const { t = u; }
+  inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_nd_vec& t, const flex_vec& u) const { t = get_ndvec_visitor()(u); }
+  FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_nd_vec& t, const flex_list& u) const { t= get_ndvec_visitor()(u); }
+  FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_nd_vec& t, const flex_image& u) const { t= get_ndvec_visitor()(u); }
+  FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_image& t, const flex_nd_vec& u) const { t= get_img_visitor()(u); }
+  inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_vec& t, const flex_nd_vec& u) const { 
+    if (u.is_full()) {
+      t = u.elements();
+    } else {
+      flex_nd_vec tmp = u.compact();
+      t = tmp.elements();
+    }
+  }
 
   // In flexible_type.cpp
   void operator()(flex_vec& t, const flex_list& u) const;
@@ -753,6 +849,10 @@ struct city_hash_visitor {
     return turi::hash64(reinterpret_cast<const char*>(t.data()),
                             t.size() * sizeof(flex_vec::value_type));
   }
+  inline FLEX_ALWAYS_INLINE_FLATTEN size_t operator()(const flex_nd_vec& t) const {
+    return turi::hash64(reinterpret_cast<const char*>(t.raw_elements().data()),
+                            t.raw_elements().size() * sizeof(flex_nd_vec::value_type));
+  }
   // Implemented in flexible_type.cpp
   size_t operator()(const flex_list& t) const;
   size_t operator()(const flex_dict& t) const;
@@ -787,6 +887,10 @@ struct city_hash128_visitor {
   inline FLEX_ALWAYS_INLINE_FLATTEN uint128_t operator()(const flex_vec& t) const {
     return turi::hash128(reinterpret_cast<const char*>(t.data()),
                t.size() * sizeof(flex_vec::value_type));
+  }
+  inline FLEX_ALWAYS_INLINE_FLATTEN uint128_t operator()(const flex_nd_vec& t) const {
+    return turi::hash128(reinterpret_cast<const char*>(t.raw_elements().data()),
+               t.raw_elements().size() * sizeof(flex_nd_vec::value_type));
   }
 
   // Implemented in flexible_type.cpp

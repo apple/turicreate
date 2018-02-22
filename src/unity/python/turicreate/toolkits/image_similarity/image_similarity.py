@@ -262,16 +262,17 @@ class ImageSimilarityModel(_CustomModel):
 
     def query(self, dataset, label=None, k=5, radius=None, verbose=True):
         """
-        For each row of the input 'dataset', retrieve the nearest neighbors
-        from the model's stored data. In general, the query dataset does not
-        need to be the same as the reference data stored in the model.
+        For each image, retrieve the nearest neighbors from the model's stored
+        data. In general, the query dataset does not need to be the same as
+        the reference data stored in the model.
 
         Parameters
         ----------
-        dataset : SFrame
-            Query data. Must contain columns with the same names and types as
-            the features used to train the model. Additional columns are
-            allowed, but ignored.
+        dataset : SFrame | SArray | turicreate.Image
+            Query data.
+            If dataset is an SFrame, it must contain columns with the same
+            names and types as the features used to train the model.
+            Additional columns are ignored.
 
         label : str, optional
             Name of the query SFrame column with row labels. If 'label' is not
@@ -328,6 +329,14 @@ class ImageSimilarityModel(_CustomModel):
         |      2      |        1        | 0.464004310325 |  2   |
         +-------------+-----------------+----------------+------+
         """
+        if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image)):
+            raise TypeError('dataset must be either an SFrame, SArray or turicreate.Image')
+
+        if isinstance(dataset, _tc.SArray):
+            dataset = _tc.SFrame({self.feature: dataset})
+        elif isinstance(dataset, _tc.Image):
+            dataset = _tc.SFrame({self.feature: [dataset]})
+
         extracted_features = self._extract_features(dataset)
         if label is not None:
             extracted_features[label] = dataset[label]
@@ -409,3 +418,134 @@ class ImageSimilarityModel(_CustomModel):
         +----------+----------+----------------+------+
         """
         return self.similarity_model.similarity_graph(k, radius, include_self_edges, output_type, verbose)
+
+    def export_coreml(self, filename):
+        """
+        Save the model in Core ML format.
+        The exported model calculates the distance between a query image and
+        each row of the model's stored data. It does not sort and retrieve
+        the k nearest neighbors of the query image.
+
+        See Also
+        --------
+        save
+
+        Examples
+        --------
+        # Train an image similarity model
+        >>> model = turicreate.image_similarity.create(data)
+
+        # Query the model for similar images
+        >>> similar_images = model.query(data)
+        +-------------+-----------------+---------------+------+
+        | query_label | reference_label |    distance   | rank |
+        +-------------+-----------------+---------------+------+
+        |      0      |        0        |      0.0      |  1   |
+        |      0      |        2        | 24.9664942809 |  2   |
+        |      0      |        1        | 28.4416069428 |  3   |
+        |      1      |        1        |      0.0      |  1   |
+        |      1      |        2        | 21.8715131191 |  2   |
+        |      1      |        0        | 28.4416069428 |  3   |
+        |      2      |        2        |      0.0      |  1   |
+        |      2      |        1        | 21.8715131191 |  2   |
+        |      2      |        0        | 24.9664942809 |  3   |
+        +-------------+-----------------+---------------+------+
+        [9 rows x 4 columns]
+
+        # Export the model to Core ML format
+        >>> model.export_coreml('myModel.mlmodel')
+
+        # Load the Core ML model
+        >>> import coremltools
+        >>> ml_model = coremltools.models.MLModel('myModel.mlmodel')
+
+        # Prepare the first image of reference data for consumption
+        # by the Core ML model
+        >>> import PIL
+        >>> image = tc.image_analysis.resize(
+                data['image'][0], *reversed(model.input_image_shape))
+        >>> image = PIL.Image.fromarray(image.pixel_data)
+
+        # Calculate distances using the Core ML model
+        >>> ml_model.predict(data={'image': image})
+        {'distance': array([ 0.      , 28.453125, 24.96875 ])}
+        """
+        import numpy as _np
+        import coremltools as _cmt
+        from coremltools.models import datatypes as _datatypes, neural_network as _neural_network
+        from .._mxnet_to_coreml import _mxnet_converter
+        from turicreate.toolkits import _coreml_utils
+
+        # Get the reference data from the model
+        proxy = self.similarity_model.__proxy__
+        reference_data = _np.array(_tc.extensions._nearest_neighbors._nn_get_reference_data(proxy))
+        num_examples, embedding_size = reference_data.shape
+
+        # Get the input and output names
+        input_name = self.feature_extractor.data_layer
+        output_name = 'distance'
+        input_features = [(input_name, _datatypes.Array(*(self.input_image_shape)))]
+        output_features = [(output_name, _datatypes.Array(num_examples))]
+
+        # Create a neural network
+        builder = _neural_network.NeuralNetworkBuilder(
+            input_features, output_features, mode=None)
+
+        # Convert the feature extraction network
+        mx_feature_extractor = self.feature_extractor._get_mx_module(
+            self.feature_extractor.ptModel.mxmodel,
+            self.feature_extractor.data_layer,
+            self.feature_extractor.feature_layer,
+            self.feature_extractor.context,
+            self.input_image_shape
+        )
+        batch_input_shape = (1, ) + self.input_image_shape
+        _mxnet_converter.convert(mx_feature_extractor, mode=None,
+                                 input_shape={input_name: batch_input_shape},
+                                 builder=builder, verbose=False)
+
+        # To add the nearest neighbors model we add calculation of the euclidean 
+        # distance between the newly extracted query features (denoted by the vector u)
+        # and each extracted reference feature (denoted by the rows of matrix V).
+        # Calculation of sqrt((v_i-u)^2) = sqrt(v_i^2 - 2v_i*u + u^2) ensues.
+        V = reference_data
+        v_squared = (V * V).sum(axis=1)
+
+        feature_layer = self.feature_extractor.feature_layer
+        builder.add_inner_product('v^2-2vu', W=-2 * V, b=v_squared, has_bias=True,
+                                  input_channels=embedding_size, output_channels=num_examples,
+                                  input_name=feature_layer, output_name='v^2-2vu')
+
+        builder.add_unary('element_wise-u^2', mode='power', alpha=2,
+                          input_name=feature_layer, output_name='element_wise-u^2')
+
+        # Produce a vector of length num_examples with all values equal to u^2
+        builder.add_inner_product('u^2', W=_np.ones((embedding_size, num_examples)),
+                                  b=None, has_bias=False,
+                                  input_channels=embedding_size, output_channels=num_examples,
+                                  input_name='element_wise-u^2', output_name='u^2')
+
+        builder.add_elementwise('v^2-2vu+u^2', mode='ADD',
+                                input_names=['v^2-2vu', 'u^2'],
+                                output_name='v^2-2vu+u^2')
+
+        # v^2-2vu+u^2=(v-u)^2 is non-negative but some computations on GPU may result in
+        # small negative values. Apply RELU so we don't take the square root of negative values.
+        builder.add_activation('relu', non_linearity='RELU',
+                               input_name='v^2-2vu+u^2', output_name='relu')
+        builder.add_unary('sqrt', mode='sqrt', input_name='relu', output_name=output_name)
+
+        # Finalize model
+        _mxnet_converter._set_input_output_layers(builder, [input_name], [output_name])
+        builder.set_input([input_name], [self.input_image_shape])
+        builder.set_output([output_name], [(num_examples,)])
+        _cmt.models.utils.rename_feature(builder.spec, input_name, self.feature)
+        builder.set_pre_processing_parameters(image_input_names=self.feature)
+
+        # Add metadata
+        mlmodel = _cmt.models.MLModel(builder.spec)
+        model_type = 'image similarity'
+        mlmodel.short_description = _coreml_utils._mlmodel_short_description(model_type)
+        mlmodel.input_description[self.feature] = u'Input image'
+        mlmodel.output_description[output_name] = u'Distances between the input and reference images'
+        mlmodel.save(filename)

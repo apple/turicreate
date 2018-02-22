@@ -9,7 +9,7 @@ interaction data and use that model to make recommendations.
 Creating a recommender model typically requires a data set to use for
 training the model, with columns that contain the user IDs, the item
 IDs, and (optionally) the ratings. For this example, we use the [MovieLens
- dataset](https://grouplens.org/datasets/movielens/).
+20M dataset](https://grouplens.org/datasets/movielens/20m/).[<sup>1</sup>](../datasets.md)
 
 ```python
 import turicreate as tc

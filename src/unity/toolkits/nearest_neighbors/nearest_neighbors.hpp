@@ -36,8 +36,8 @@ namespace nearest_neighbors {
 
 typedef std::tuple<std::vector<std::string>, function_closure_info, double> dist_component_type;
 
-} 
-} 
+}
+}
 
 BEGIN_OUT_OF_PLACE_SAVE(arc, turi::nearest_neighbors::dist_component_type, d) {
   std::map<std::string, turi::variant_type> data;
@@ -57,7 +57,7 @@ BEGIN_OUT_OF_PLACE_LOAD(arc, turi::nearest_neighbors::dist_component_type, d) {
   __EXTRACT(column_names);
   __EXTRACT(weight);
 #undef __EXTRACT
-  arc >> distance_info;  
+  arc >> distance_info;
   d = std::make_tuple(column_names, distance_info, weight);
 
 } END_OUT_OF_PLACE_LOAD()
@@ -539,9 +539,14 @@ class EXPORT nearest_neighbors_model : public ml_model_base {
                                    const sframe& X,
                                    const function_closure_info distance_name,
                                    const double weight);
+
+  /**
+   * Get reference data as a vector of vectors
+   * \returns Reference data as a vector of vectors (in ml-data form)
+   */
+  flexible_type get_reference_data() const;
+
 };
-
-
 
 // -----------------------------------------------------------------------------
 // CANDIDATE NEIGHBORS CLASS
@@ -655,6 +660,12 @@ class neighbor_candidates {
   double get_max_dist() const;
 };
 
+/**
+ * Function to get the reference data from the NN model
+ *
+ * \param[in] model Nearest neighbour model.
+ */
+flexible_type _nn_get_reference_data(std::shared_ptr<nearest_neighbors_model> model);
 
 }  // namespace nearest_neighbors
 }  // namespace turi

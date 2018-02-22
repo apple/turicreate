@@ -352,5 +352,47 @@ REGISTER_FUNCTION(query, "params")
 REGISTER_FUNCTION(similarity_graph, "params")
 END_FUNCTION_REGISTRATION
 
+EXPORT std::vector<toolkit_function_specification> get_toolkit_function_registration() {
+  log_func_entry();
+
+  toolkit_function_specification get_current_options_spec;
+  get_current_options_spec.name = "get_current_options";
+  get_current_options_spec.toolkit_execute_function = get_current_options;
+
+  toolkit_function_specification training_stats_spec;
+  training_stats_spec.name = "training_stats";
+  training_stats_spec.toolkit_execute_function = training_stats;
+
+  toolkit_function_specification get_value_spec;
+  get_value_spec.name = "get_value";
+  get_value_spec.toolkit_execute_function = get_value;
+
+  toolkit_function_specification list_keys_spec;
+  list_keys_spec.name = "list_keys";
+  list_keys_spec.toolkit_execute_function = list_keys;
+
+  toolkit_function_specification query_spec;
+  query_spec.name = "query";
+  query_spec.toolkit_execute_function = query;
+
+  toolkit_function_specification similarity_graph_spec;
+  similarity_graph_spec.name = "similarity_graph";
+  similarity_graph_spec.toolkit_execute_function = similarity_graph;
+
+  std::vector<toolkit_function_specification> specs{
+          get_current_options_spec,
+          training_stats_spec,
+          get_value_spec,
+          list_keys_spec,
+          query_spec,
+          similarity_graph_spec};
+
+  REGISTER_FUNCTION(train, "params")
+  REGISTER_FUNCTION(_nn_get_reference_data, "model")
+  return specs;
+}
+
+>>>>>>> origin/master
+
 } // namespace nearest_neighbors
 } // namespace turi

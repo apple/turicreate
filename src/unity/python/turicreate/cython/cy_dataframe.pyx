@@ -3,13 +3,9 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
-from .cy_flexible_type cimport flexible_type
-from .cy_flexible_type cimport flex_type_enum, INTEGER, FLOAT, UNDEFINED
 from .cy_flexible_type cimport common_typed_flex_list_from_iterable
 from .cy_flexible_type cimport pylist_from_flex_list
-from .cy_flexible_type cimport flex_type_from_dtype
 from .cy_flexible_type cimport pytype_from_flex_type_enum
-from math import isnan
 
 HAS_PANDAS = False
 
@@ -32,9 +28,9 @@ cdef gl_dataframe gl_dataframe_from_dict_of_arrays(dict df) except *:
     cdef flex_list fl
 
     for key, value in sorted(df.iteritems()):
-        ret.names.push_back(key.encode())
-        ret.values[key.encode()] = common_typed_flex_list_from_iterable(value, &ftype)
-        ret.types[key.encode()] = ftype
+        ret.names.push_back(key.encode('utf-8'))
+        ret.values[key.encode('utf-8')] = common_typed_flex_list_from_iterable(value, &ftype)
+        ret.types[key.encode('utf-8')] = ftype
 
     return ret
 

@@ -309,6 +309,75 @@ static void decode_vector_stream(size_t num_elements,
   }
 }
 
+/**
+ * Decodes num_elements of nd_vectors, calling the callback for each string.
+ */
+template <typename Fn> // Fn is a function like void(flexible_type)
+static void decode_nd_vector_stream(size_t num_elements,
+                                    iarchive& iarc,
+                                    Fn callback,
+                                    bool new_format) {
+  // new_format is ignored. it should always be true.
+  // one character is reserved so we can add new encoders as needed in the future
+  char reserved = 0;
+  iarc.read(&(reserved), sizeof(reserved));
+
+  std::vector<flexible_type> shape_lengths(num_elements);
+  std::vector<flexible_type> numel(num_elements);
+  std::vector<flexible_type> shapes;
+  std::vector<flexible_type> strides;
+  std::vector<flexible_type> values;
+
+  // decode shape lengths and numel
+  decode_number(iarc, shape_lengths, 0);
+  decode_number(iarc, numel, 0);
+
+  // compute the length of shapes and strides
+  size_t sum_shape_len = 0;
+  for (auto i : shape_lengths) sum_shape_len += i.get<flex_int>();
+  // decode shape and strides
+  shapes.resize(sum_shape_len);
+  strides.resize(sum_shape_len);
+  decode_number(iarc, shapes, 0);
+  decode_number(iarc, strides, 0);
+
+  // compute the length of values
+  size_t sum_values_len = 0;
+  for (auto i : numel) sum_values_len += i.get<flex_int>();
+  values.resize(sum_values_len);
+  decode_double(iarc, values, 0);
+
+  // emit
+  size_t shape_stride_ctr = 0;
+  size_t value_ctr = 0;
+
+  std::vector<size_t> ret_shape;
+  std::vector<size_t> ret_stride;
+
+  for (size_t i = 0 ;i < num_elements; ++i) {
+    // construct the shape and stride
+    ret_shape.resize(shape_lengths[i]);
+    ret_stride.resize(shape_lengths[i]);
+    for (size_t j = 0;j < shape_lengths[i]; ++j) {
+      ret_shape[j] = shapes[shape_stride_ctr].get<flex_int>();
+      ret_stride[j] = strides[shape_stride_ctr].get<flex_int>();
+      ++shape_stride_ctr;
+    }
+
+    // construct the values
+    size_t ret_numel = numel[i].get<flex_int>();
+    auto ret_values = std::make_shared<flex_nd_vec::container_type>(ret_numel);
+    for (size_t i = 0;i < ret_numel; ++i) {
+      (*ret_values)[i] = values[i + value_ctr].reinterpret_get<flex_float>();
+    }
+    value_ctr += ret_numel;
+    flexible_type ret(flex_nd_vec(ret_values, ret_shape, ret_stride));
+    callback(ret);
+  }
+}
+
+
+
 
 
 /**
@@ -407,6 +476,9 @@ static bool typed_decode_stream_callback(const block_info& info,
       decode_string_stream(elements_to_decode, iarc, stream_callback); 
     } else if (column_type == flex_type_enum::VECTOR) {
       decode_vector_stream(elements_to_decode, iarc, stream_callback, 
+                           info.flags & BLOCK_ENCODING_EXTENSION); 
+    } else if (column_type == flex_type_enum::ND_VECTOR) {
+      decode_nd_vector_stream(elements_to_decode, iarc, stream_callback, 
                            info.flags & BLOCK_ENCODING_EXTENSION); 
     } else {
       flexible_type_impl::deserializer s{iarc};

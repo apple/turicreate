@@ -26,7 +26,13 @@ void check_operation_feasibility(flex_type_enum left,
                              || left == flex_type_enum::VECTOR)
                              && (right == flex_type_enum::FLOAT
                                  || right == flex_type_enum::INTEGER
-                                 || right == flex_type_enum::VECTOR));
+                                 || right == flex_type_enum::VECTOR)) ||
+                            ((left == flex_type_enum::FLOAT
+                             || left == flex_type_enum::INTEGER
+                             || left == flex_type_enum::ND_VECTOR)
+                             && (right == flex_type_enum::FLOAT
+                                 || right == flex_type_enum::INTEGER
+                                 || right == flex_type_enum::ND_VECTOR));
     }
   } else if (op == "%") {
     operation_is_feasible = left == flex_type_enum::INTEGER &&
@@ -84,6 +90,9 @@ flex_type_enum get_output_type(flex_type_enum left,
       return flex_type_enum::FLOAT;
     } else if (left == flex_type_enum::DATETIME && right == flex_type_enum::DATETIME && op == "-") {
       return flex_type_enum::FLOAT;
+    } else if (left == flex_type_enum::ND_VECTOR || right == flex_type_enum::ND_VECTOR) {
+      // vector operations always return vector
+      return flex_type_enum::ND_VECTOR;
     } else if (left == flex_type_enum::VECTOR || right == flex_type_enum::VECTOR) {
       // vector operations always return vector
       return flex_type_enum::VECTOR;
@@ -108,9 +117,15 @@ flex_type_enum get_output_type(flex_type_enum left,
       return flex_type_enum::INTEGER;
     }
   } else if (op == "%") {
+    if (left == flex_type_enum::VECTOR || left == flex_type_enum::ND_VECTOR) {
+      return left;
+    }
     return flex_type_enum::INTEGER;
   } else if (op == "/") {
-    if (left == flex_type_enum::VECTOR || right == flex_type_enum::VECTOR) {
+    if (left == flex_type_enum::ND_VECTOR || right == flex_type_enum::ND_VECTOR) {
+      // vector operations always return vector
+      return flex_type_enum::ND_VECTOR;
+    } else if (left == flex_type_enum::VECTOR || right == flex_type_enum::VECTOR) {
       // vector operations always return vector
       return flex_type_enum::VECTOR;
     } else {
@@ -151,9 +166,9 @@ get_binary_operator(flex_type_enum left, flex_type_enum right, std::string op) {
        if (l.size() != r.size()) return FLEX_UNDEFINED;
        return l + r;
      };
-    } else if (left == flex_type_enum::VECTOR) {
+    } else if (left == flex_type_enum::VECTOR || left == flex_type_enum::ND_VECTOR) {
      return [](const flexible_type& l, const flexible_type& r)->flexible_type{ return l + r; };
-    } else if (right == flex_type_enum::VECTOR) {
+    } else if (right == flex_type_enum::VECTOR || right == flex_type_enum::ND_VECTOR) {
      return [](const flexible_type& l, const flexible_type& r)->flexible_type{ return r + l; };
     } else {
       // everything else, left hand side is good
@@ -184,9 +199,9 @@ get_binary_operator(flex_type_enum left, flex_type_enum right, std::string op) {
        if (l.size() != r.size()) return FLEX_UNDEFINED;
        return l - r;
      };
-    } else if (left == flex_type_enum::VECTOR) {
+    } else if (left == flex_type_enum::VECTOR || left == flex_type_enum::ND_VECTOR) {
      return [](const flexible_type& l, const flexible_type& r)->flexible_type{ return l - r; };
-    } else if (right == flex_type_enum::VECTOR) {
+    } else if (right == flex_type_enum::VECTOR || right == flex_type_enum::ND_VECTOR) {
      return [](const flexible_type& l, const flexible_type& r)->flexible_type{ return -r + l; };
     } else {
       // everything else, left hand side is good
@@ -211,9 +226,15 @@ get_binary_operator(flex_type_enum left, flex_type_enum right, std::string op) {
        if (l.size() != r.size()) return FLEX_UNDEFINED;
        return l * r;
      };
+    } else if (left == flex_type_enum::ND_VECTOR && right == flex_type_enum::ND_VECTOR) {
+     return [](const flexible_type& l, const flexible_type& r)->flexible_type{ return l * r; };
     } else if (left == flex_type_enum::VECTOR) {
      return [](const flexible_type& l, const flexible_type& r)->flexible_type{ return l * r; };
     } else if (right == flex_type_enum::VECTOR) {
+     return [](const flexible_type& l, const flexible_type& r)->flexible_type{ return r * l; };
+    } else if (left == flex_type_enum::ND_VECTOR) {
+     return [](const flexible_type& l, const flexible_type& r)->flexible_type{ return l * r; };
+    } else if (right == flex_type_enum::ND_VECTOR) {
      return [](const flexible_type& l, const flexible_type& r)->flexible_type{ return r * l; };
     } else {
       // everything else, left hand side is good
@@ -240,6 +261,19 @@ get_binary_operator(flex_type_enum left, flex_type_enum right, std::string op) {
      return [](const flexible_type& l, const flexible_type& r)->flexible_type{
        flexible_type ret = r;
        for (size_t i = 0;i < ret.size(); ++i) ret[i] = l / ret[i];
+       return ret;
+     };
+    } else if (left == flex_type_enum::ND_VECTOR) {
+     return [](const flexible_type& l, const flexible_type& r)->flexible_type{ return l / r; };
+    } else if (right == flex_type_enum::ND_VECTOR) {
+     return [](const flexible_type& l, const flexible_type& r)->flexible_type{ 
+       flexible_type ret = r;
+       flex_nd_vec& v = ret.mutable_get<flex_nd_vec>();
+       v.ensure_unique();
+       double dl = l.to<double>();
+       for (auto & i: v.elements()) {
+         i = dl / i;
+       }
        return ret;
      };
     } else {

@@ -830,9 +830,7 @@ EXCLUDE_SYMLINKS       = NO
 # Note that the wildcards are matched against the file with absolute path, so to
 # exclude all test directories for example use the pattern */test/*
 
-EXCLUDE_PATTERNS       = */cuckoohash_util.hh \
-                         */cuckoohash_config.hh \
-                         */remove_member_pointer.hpp \
+EXCLUDE_PATTERNS       = */remove_member_pointer.hpp \
                          toolkits/*cpp \
                          toolkits/*hpp
 

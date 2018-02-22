@@ -65,7 +65,6 @@ namespace turi {
 
 template<typename FLOAT_TYPE>
 void triple_apply_pagerank(sgraph& g, size_t& num_iter, double& total_pagerank, double& total_delta) {
-  typedef sgraph::edge_direction edge_direction;
 
   logprogress_stream << "Counting out degree" << std::endl;
   // Degree count

@@ -4,7 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <unity/lib/image_util.hpp>
-#include <unity/lib/image_util_impl.hpp>
+#include <image/image_util_impl.hpp>
 #include <sframe/sframe_iterators.hpp>
 #include <sframe/sframe.hpp>
 #include <unity/lib/unity_sframe.hpp>
@@ -292,11 +292,6 @@ std::shared_ptr<unity_sframe> load_images(std::string url, std::string format, b
     return image_unity_sframe;
 }
 
-
-void decode_image_inplace(image_type& image) {
-  image_util_detail::decode_image_impl(image); 
-}
-
 /**
  * Decode the image into raw pixels
  */
@@ -306,7 +301,7 @@ flexible_type decode_image(const flexible_type& image) {
   }
   flexible_type ret = image;
   flex_image& img = ret.mutable_get<flex_image>();
-  image_util_detail::decode_image_impl(img);
+  turi::decode_image_inplace(img);
   return ret;
 };
 
@@ -319,7 +314,7 @@ flexible_type encode_image(const flexible_type& image) {
   }
   flexible_type ret = image;
   flex_image& img = ret.mutable_get<flex_image>();
-  image_util_detail::encode_image_impl(img);
+  turi::encode_image_inplace(img);
   return ret;
 };
 

@@ -36,8 +36,7 @@ namespace supervised {
  */
 class linear_regression_opt_interface: public
                                        optimization::second_order_opt_interface
-  {
-
+{
   protected:
 
   ml_data data;
@@ -104,9 +103,16 @@ class linear_regression_opt_interface: public
   /**
    * Get the number of variables in the model
    *
-   * \returns Number of examples
+   * \returns Number of variables
    */
   size_t num_variables() const;
+
+  /**
+   * Get the number of validation-set examples in the model
+   *
+   * \returns Number of examples
+   */
+  size_t num_validation_examples() const;
 
   /**
    * Get strings needed to print the header for the progress table.
@@ -138,6 +144,7 @@ class linear_regression_opt_interface: public
   void compute_first_order_statistics(const DenseVector &point, DenseVector&
       gradient, double & function_value, const size_t mbStart = 0, const size_t
       mbSize = -1);
+
   /**
    * Compute second order statistics at the given point. (Gradient & Function value)
    *
@@ -150,7 +157,25 @@ class linear_regression_opt_interface: public
   void compute_second_order_statistics(const DenseVector &point, DenseMatrix&
       hessian, DenseVector& gradient, double & function_value);
 
+  /**
+   * Compute second order statistics at the given point with respect to the
+   * validation data. (Gradient & Function value)
+   *
+   * \param[in]  point           Point at which we are computing the stats.
+   * \param[out] hessian         Hessian (Dense)
+   * \param[out] gradient        Dense gradient
+   * \param[out] function_value  Function value
+   *
+   */
+  void compute_validation_second_order_statistics(
+      const DenseVector& point, DenseMatrix& hessian, DenseVector& gradient,
+      double &function_value);
 
+  private:
+
+  void compute_second_order_statistics(
+      const ml_data& data, const DenseVector &point, DenseMatrix& hessian,
+      DenseVector& gradient, double & function_value);
 };
 
 

@@ -11,8 +11,6 @@
 
 namespace turi { namespace ml_data_internal {
 
-static constexpr size_t correct_check_number = 0x88551dfa473c2adfULL;
-
 /**
  *  Default constructor; does nothing;
  *  Initialize from a serialization stream

@@ -24,6 +24,7 @@ This is the User Guide for Turi Create
         * [Advanced Usage](object_detection/advanced-usage.md)
         * [How it works](object_detection/how-it-works.md)
     * [Activity classification](activity_classifier/README.md)
+        * [Data Preparation](activity_classifier/data-preparation.md)
         * [Advanced Usage](activity_classifier/advanced-usage.md)
         * [Deployment to CoreML](activity_classifier/export_coreml.md)
         * [How it works](activity_classifier/how-it-works.md)
@@ -52,3 +53,5 @@ This is the User Guide for Turi Create
     * [Classification metrics](evaluation/classification.md)
 * [Deployment](deployment/README.md)
 * [Additional Resources](conclusion.md)
+    * [C++ API](cpp.md)
+    * [Dataset Disclaimer](datasets.md)

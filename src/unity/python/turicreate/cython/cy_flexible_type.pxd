@@ -49,6 +49,7 @@ cdef extern from "<flexible_type/flexible_type.hpp>" namespace "turi":
         DATETIME        "turi::flex_type_enum::DATETIME" = 6
         UNDEFINED       "turi::flex_type_enum::UNDEFINED"= 7
         IMAGE           "turi::flex_type_enum::IMAGE"    = 8
+        ND_VECTOR       "turi::flex_type_enum::ND_VECTOR"   = 9
 
     cdef cppclass flexible_type:
         flexible_type()
@@ -66,6 +67,8 @@ cdef extern from "<flexible_type/flexible_type.hpp>" namespace "turi":
         const flex_string& get_string "get<turi::flex_string>"()
         const flex_vec& get_vec "get<turi::flex_vec>"()
         flex_vec& get_vec_m "mutable_get<turi::flex_vec>"()
+        const flex_nd_vec& get_nd_vec "get<turi::flex_nd_vec>"()
+        flex_nd_vec& get_nd_vec_m "mutable_get<turi::flex_nd_vec>"()
         const flex_list& get_list "get<turi::flex_list>"()
         flex_list& get_list_m "mutable_get<turi::flex_list>"()
         const flex_dict& get_dict "get<turi::flex_dict>"()
@@ -81,6 +84,7 @@ cdef extern from "<flexible_type/flexible_type.hpp>" namespace "turi":
         flexible_type& set_double "operator=<double>"(const flex_float& other)
         flexible_type& set_string "operator=<std::string>"(const flex_string& other)
         flexible_type& set_vec "operator=<std::vector<double> >"(const flex_vec& other)
+        flexible_type& set_nd_vec "operator=<turi::flex_nd_vec>"(const flex_nd_vec& other)
         flexible_type& set_list "operator=<turi::flex_list>"(const flex_list& other)
         flexible_type& set_dict "operator=<turi::flex_dict>"(const flex_dict& other)
         flexible_type& set_img "operator=<turi::flex_image>"(const flex_image& other)
@@ -95,6 +99,21 @@ cdef extern from "<flexible_type/flexible_type.hpp>" namespace "turi":
     cdef int EMPTY_TIMEZONE "turi::flex_date_time::EMPTY_TIMEZONE"
     cdef string flex_type_enum_to_name(flex_type_enum)
     cdef bint flex_type_is_convertible(flex_type_enum, flex_type_enum)
+
+    cdef cppclass flex_nd_vec:
+        flex_nd_vec()
+        flex_nd_vec(vector[double])
+        flex_nd_vec(vector[double], vector[size_t])
+        flex_nd_vec(vector[double], vector[size_t], vector[size_t])
+        const vector[double]& elements()
+        const vector[size_t]& shape()
+        const vector[size_t]& stride()
+        const size_t start()
+        const size_t num_elem()
+        bint is_full()
+        bint is_valid()
+
+
 
 ### Other unity types ###
 ctypedef map[string, flexible_type] gl_options_map

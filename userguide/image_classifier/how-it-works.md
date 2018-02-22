@@ -85,7 +85,7 @@ in the field evolves:
 Detects the dominant objects present in an image from a set of 1000
 categories such as trees, animals, food, vehicles, people, and more.
 The top-5 error from the original publication is 7.8%. The model is
-roughly 102.6 MBin size.
+roughly 102.6 MB in size.
 
 * Source Link: <https://github.com/fchollet/deep-learning-models>
 * Project Page: https://github.com/KaimingHe/deep-residual-networks>

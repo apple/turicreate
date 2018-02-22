@@ -300,6 +300,16 @@ void linear_regression::train(){
   unity_progress->construct_from_sframe(stats.progress_table);
   state["progress"] = to_variant(unity_progress);
 
+  // Compute validation-set stats.
+  if (lr_interface->num_validation_examples() > 0) {
+    // Recycle lvalues from stats to use as out parameters here, now that we're
+    // otherwise done reading from stats.
+    lr_interface->compute_validation_second_order_statistics(
+        stats.solution, stats.hessian, stats.gradient, stats.func_value);
+    state["validation_loss"] =  stats.func_value;
+    state["validation_rmse"] =  sqrt((stats.func_value)/examples);
+  }
+
   reg.reset();
   smooth_reg.reset();
 

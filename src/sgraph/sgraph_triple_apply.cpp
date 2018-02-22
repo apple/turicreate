@@ -570,7 +570,7 @@ namespace {
         vertex_block<sframe>& target_vertex_block,
         const std::vector<field_info>& mutated_vertex_fields,
         const std::vector<field_info>& mutated_edge_fields,
-        size_t _src_partition, size_t _dst_partition) {
+        size_t _src_partition, size_t _dst_partition) override {
       source_vertex_data = &source_vertex_block;
       target_vertex_data = &target_vertex_block;
       edge_data_ptr = &(g.edge_partition(_src_partition, _dst_partition));
@@ -606,7 +606,7 @@ namespace {
      * The rest of the edges will be stored in a local buffer and postpone to 
      * be processed in the next visit_edges call.
      */
-    void visit_edges(std::vector<edge_data>& edgedata) {
+    void visit_edges(std::vector<edge_data>& edgedata) override {
       add_edge_data(edgedata);
       // try lock as many edges as we can.
       try_optimistic_lock();
@@ -624,7 +624,7 @@ namespace {
       unlock_and_release();
     }
 
-    virtual void finalize() {
+    virtual void finalize() override {
       DASSERT_LE(m_all_edge_data.size(), 1);
       // finish processing the rest of the edges in the buffer.
       while (!m_all_edge_data.empty() && !m_all_edge_data[0].empty()) {
@@ -828,7 +828,7 @@ namespace {
         vertex_block<sframe>& target_vertex_block,
         const std::vector<field_info>& mutated_vertex_fields,
         const std::vector<field_info>& mutated_edge_fields,
-        size_t _src_partition, size_t _dst_partition) {
+        size_t _src_partition, size_t _dst_partition) override {
 
       // call parent function to initialize the internal data structrues.
       batch_edge_triple_apply_visitor::load_partition(
@@ -876,7 +876,7 @@ namespace {
       set_apply_fn(boost::bind(&lambda_triple_apply_visitor::apply_lambda, this, _1));
     }
 
-    void finalize() {
+    void finalize() override {
       batch_edge_triple_apply_visitor::finalize();
       m_evaluator->proxy->clear();
       m_evaluator_guard.reset();

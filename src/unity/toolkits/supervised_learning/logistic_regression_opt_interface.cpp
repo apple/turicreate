@@ -36,9 +36,6 @@
 #include <serialization/serialization_includes.hpp>
 
 
-
-constexpr size_t LOGISTIC_REGRESSION_BATCH_SIZE = 1000;
-
 namespace turi {
 namespace supervised {
 
@@ -160,6 +157,14 @@ void logistic_regression_opt_interface::rescale_solution(DenseVector& coefs) {
 */
 size_t logistic_regression_opt_interface::num_examples() const{
   return examples;
+}
+
+
+/**
+* Get the number of validation-set examples for the model
+*/
+size_t logistic_regression_opt_interface::num_validation_examples() const{
+  return valid_data.num_rows();
 }
 
 
@@ -326,9 +331,9 @@ void logistic_regression_opt_interface::compute_first_order_statistics(const
 /**
  * Compute the second order statistics
 */
-void logistic_regression_opt_interface::compute_second_order_statistics( const
-    DenseVector& point, DenseMatrix& hessian, DenseVector& gradient, double&
-    function_value) {
+void logistic_regression_opt_interface::compute_second_order_statistics(
+    const ml_data& data, const DenseVector& point, DenseMatrix& hessian,
+    DenseVector& gradient, double& function_value) {
     
   timer t;
   double start_time = t.current_time();
@@ -477,6 +482,21 @@ void logistic_regression_opt_interface::compute_second_order_statistics( const
                       << (t.current_time() - start_time) << "s" << std::endl; 
 #endif
 
+}
+
+void logistic_regression_opt_interface::compute_second_order_statistics(
+    const DenseVector& point, DenseMatrix& hessian, DenseVector& gradient,
+    double& function_value) {
+  compute_second_order_statistics(
+      data, point, hessian, gradient, function_value);
+}
+
+void
+logistic_regression_opt_interface::compute_validation_second_order_statistics(
+    const DenseVector& point, DenseMatrix& hessian, DenseVector& gradient,
+    double& function_value) {
+  compute_second_order_statistics(
+      valid_data, point, hessian, gradient, function_value);
 }
 
 

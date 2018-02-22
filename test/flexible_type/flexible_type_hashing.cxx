@@ -177,6 +177,12 @@ struct flexible_type_hash_test  {
     stress_test_flex_type<uint128_t>([](flexible_type f) {return f.hash128(); });
   }
 
+  void test_nd_vec_hashability() {
+    flex_nd_vec vec({0,5,1,6,2,7,3,8,4,9},
+                    {2,5},
+                    {1,2});
+    uint64_t h1 = flexible_type(vec).hash();
+  }
 };
 
 BOOST_FIXTURE_TEST_SUITE(_flexible_type_hash_test, flexible_type_hash_test)

@@ -281,7 +281,6 @@ sframe recsys_itemcf::predict(const v2::ml_data& test_data) const {
   std::shared_ptr<sarray<flexible_type> > ret(new sarray<flexible_type>);
 
   size_t n_threads = thread::cpu_count(); 
-  size_t num_segments = n_threads; 
   
   ret->open_for_write(1);
   ret->set_type(flex_type_enum::FLOAT);

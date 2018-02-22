@@ -109,7 +109,7 @@ class MXFeatureExtractor(ImageFeatureExtractor):
                 raise RuntimeError("Expected image of size %s. Got %s instead." % (
                                                self.image_shape, dataIter.data_shape[1:]))
             model.forward(next(dataIter))
-            mx_out = model.get_outputs()[0].asnumpy()
+            mx_out = [array.array('d',m) for m in model.get_outputs()[0].asnumpy()]
             if dataIter.getpad() != 0:
                 # If batch size is not evenly divisible by the length, it will loop back around.
                 # We don't want that.

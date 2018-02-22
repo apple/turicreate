@@ -66,7 +66,7 @@ class LambdaTests(unittest.TestCase):
     @unittest.skip("Disabling crash recovery test")
     def test_crash_recovery(self):
         import time, sys
-        ls = range(1000)
+        ls = list(range(1000))
 
         def good_fun(x):
             return x

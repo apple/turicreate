@@ -53,10 +53,6 @@ flexible_type load_image(const std::string& url, const std::string format);
 /*                                                                        */
 /**************************************************************************/
 
-/**
- * Decode the image data inplace
- */
-void decode_image_inplace(image_type& data);
 
 /**
  * Decode the image into raw pixels

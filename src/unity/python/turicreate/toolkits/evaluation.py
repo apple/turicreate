@@ -27,6 +27,7 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 import turicreate as _turicreate
+from ..deps import numpy
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray,\
                                               _check_categorical_option_type
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
@@ -37,7 +38,7 @@ def _check_prob_and_prob_vector(predictions):
     """
     ptype = predictions.dtype
     import array
-    if ptype not in [float, array.array, int]:
+    if ptype not in [float, numpy.ndarray, array.array, int]:
         err_msg  = "Input `predictions` must be of numeric type (for binary "
         err_msg += "classification) or array (of probability vectors) for "
         err_msg += "multiclass classification."

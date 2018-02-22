@@ -6,17 +6,17 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-import sys
 import unittest
 import pytest
 import turicreate as tc
 from turicreate.toolkits import _image_feature_extractor
+from turicreate.toolkits._internal_utils import _mac_ver
 import tempfile
 from . import util as test_util
 import coremltools
-import numpy
-import platform
+import numpy as np
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
+
 
 def _get_data():
     from PIL import Image as _PIL_Image
@@ -108,17 +108,17 @@ class ImageSimilarityTest(unittest.TestCase):
         for a, b in zip(list1, list2):
              self.assertAlmostEqual(a, b, delta = tol)
 
-    @pytest.mark.xfail(rases = _ToolkitError)
     def test_create_with_missing_feature(self):
-        tc.image_similarity.create(self.sf, feature='wrong_feature', label=self.label)
+        with self.assertRaises(_ToolkitError):
+            tc.image_similarity.create(self.sf, feature='wrong_feature', label=self.label)
 
-    @pytest.mark.xfail(rases = _ToolkitError)
     def test_create_with_missing_label(self):
-        tc.image_similarity.create(self.sf, feature=self.feature, label='wrong_label')
+        with self.assertRaises(_ToolkitError):
+            tc.image_similarity.create(self.sf, feature=self.feature, label='wrong_label')
 
-    @pytest.mark.xfail(rases = _ToolkitError)
     def test_create_with_empty_dataset(self):
-        tc.image_similarity.create(self.sf[:0])
+        with self.assertRaises(_ToolkitError):
+            tc.image_similarity.create(self.sf[:0])
 
     def test_invalid_num_gpus(self):
         num_gpus = tc.config.get_num_gpus()
@@ -156,6 +156,20 @@ class ImageSimilarityTest(unittest.TestCase):
             self.assertTrue(self.get_ans[field](ans),
                     '''Get failed in field {}. Output was {}.'''.format(field, ans))
 
+    def test_query_input(self):
+        model = self.model
+
+        single_image = self.sf[self.feature][0]
+        sims = model.query(single_image)
+        self.assertIsNotNone(sims)
+
+        sarray = self.sf[self.feature]
+        sims = model.query(sarray)
+        self.assertIsNotNone(sims)
+
+        with self.assertRaises(TypeError):
+            model.query("this is a junk value")
+
     def test_summary(self):
         model = self.model
         model.summary()
@@ -165,6 +179,33 @@ class ImageSimilarityTest(unittest.TestCase):
         model = self.model
         self.assertEqual(type(str(model)), str)
         self.assertEqual(type(model.__repr__()), str)
+
+    def test_export_coreml(self):
+        """
+        Check the export_coreml() function.
+        """
+
+        # Save the model as a CoreML model file
+        filename = tempfile.mkstemp('ImageSimilarity.mlmodel')[1]
+        self.model.export_coreml(filename)
+
+        # Load the model back from the CoreML model file
+        coreml_model = coremltools.models.MLModel(filename)
+
+        # Get model distances for comparison
+        tc_ret = self.model.query(self.sf[:1], k=self.sf.num_rows())
+
+        if _mac_ver() >= (10, 13):
+            from PIL import Image as _PIL_Image
+
+            ref_img = self.sf[0]['awesome_image'].pixel_data
+            pil_img = _PIL_Image.fromarray(ref_img)
+            coreml_ret = coreml_model.predict({'awesome_image': pil_img}, useCPUOnly=True)
+
+            # Compare distances
+            coreml_distances = np.array(sorted(coreml_ret['distance']))
+            tc_distances = tc_ret['distance'].to_numpy()
+            np.testing.assert_array_almost_equal(tc_distances, coreml_distances, decimal=2)
 
     def test_save_and_load(self):
         with test_util.TempDirectory() as filename:
@@ -182,6 +223,8 @@ class ImageSimilarityTest(unittest.TestCase):
             print("Summary passed")
             self.test__list_fields()
             print("List fields passed")
+            self.test_export_coreml()
+            print("Export coreml passed")
 
 
 @unittest.skipIf(tc.util._num_available_gpus() == 0, 'Requires GPU')

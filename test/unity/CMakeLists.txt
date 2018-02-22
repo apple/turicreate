@@ -16,5 +16,4 @@ make_boost_test(gl_gframe.cxx REQUIRES unity_core)
 make_boost_test(image_util.cxx REQUIRES unity_core)
 subdirs(
   toolkits
-  #  dml
   )

@@ -20,10 +20,11 @@ from ..cython.cy_sframe import UnitySFrameProxy
 from ..util import _is_non_string_iterable, _make_internal_url
 from ..util import infer_dbapi2_types
 from ..util import get_module_from_object, pytype_to_printf
+from ..visualization import _get_client_app_path
 from .sarray import SArray, _create_sequential_sarray
 from .. import aggregate
 from .image import Image as _Image
-from ..deps import pandas, HAS_PANDAS, HAS_NUMPY
+from ..deps import pandas, numpy, HAS_PANDAS, HAS_NUMPY
 from .grouped_sframe import GroupedSFrame
 
 import array
@@ -211,7 +212,6 @@ class SFrame(object):
     * a Python dictionary
     * pandas.DataFrame
     * JSON
-    * Apache Avro
 
     and from the following sources:
 
@@ -751,6 +751,8 @@ class SFrame(object):
         else:
             self.__proxy__ = UnitySFrameProxy()
             _format = None
+            if six.PY2 and isinstance(data, unicode):
+                data = data.encode('utf-8')
             if (format == 'auto'):
                 if (HAS_PANDAS and isinstance(data, pandas.DataFrame)):
                     _format = 'dataframe'
@@ -2012,6 +2014,8 @@ class SFrame(object):
         def _value_to_str(value):
             if (type(value) is array.array):
                 return str(list(value))
+            elif (type(value) is numpy.ndarray):
+                return str(value).replace('\n',' ')
             elif (type(value) is list):
                 return '[' + ", ".join(_value_to_str(x) for x in value) + ']'
             else:
@@ -3080,16 +3084,11 @@ class SFrame(object):
         """
         if not _is_non_string_iterable(column_names):
             raise TypeError("column_names must be an iterable")
-        if not (all([isinstance(x, str) or isinstance(x, type) or isinstance(x, bytes)
+        if not (all([isinstance(x, six.string_types) or isinstance(x, type) or isinstance(x, bytes)
                      for x in column_names])):
-            raise TypeError("Invalid key type: must be str, bytes or type")
+            raise TypeError("Invalid key type: must be str, unicode, bytes or type")
 
-        column_names_set = set(self.column_names())
-        # quick validation to make sure all selected string columns exist
-        requested_str_columns = [s for s in column_names if isinstance(s, str)]
-        for i in requested_str_columns:
-            if i not in column_names_set:
-                raise RuntimeError("Column name " +  i + " does not exist")
+        requested_str_columns = [s for s in column_names if isinstance(s, six.string_types)]
 
         # Make sure there are no duplicates keys
         from collections import Counter
@@ -3520,7 +3519,9 @@ class SFrame(object):
         """
         if type(key) is SArray:
             return self._row_selector(key)
-        elif type(key) is str:
+        elif isinstance(key, six.string_types):
+            if six.PY2 and type(key) == unicode:
+                key = key.encode('utf-8')
             return self.select_column(key)
         elif type(key) is type:
             return self.select_columns([key])
@@ -3824,6 +3825,18 @@ class SFrame(object):
         --------
         aggregate
 
+        Notes
+        -----
+        * Numeric aggregators (such as sum, mean, stdev etc.) follow the skip
+        None policy i.e they will omit all missing values from the aggregation.
+        As an example, `sum([None, 5, 10]) = 15` because the `None` value is
+        skipped.
+        * Aggregators have a default value when no values (after skipping all
+        `None` values) are present. Default values are `None` for ['ARGMAX',
+        'ARGMIN', 'AVG', 'STD', 'MEAN', 'MIN', 'MAX'],  `0` for ['COUNT'
+        'COUNT_DISTINCT', 'DISTINCT'] `[]` for 'CONCAT', 'QUANTILE',
+        'DISTINCT', and `{}` for 'FREQ_COUNT'.
+
         Examples
         --------
         Suppose we have an SFrame with movie ratings by many users.
@@ -4084,10 +4097,10 @@ class SFrame(object):
                   val = operation[key]
                   if type(val) is tuple:
                     (op, column) = val
-                    if (op == '__builtin__avg__' and self[column[0]].dtype is array.array):
+                    if (op == '__builtin__avg__' and self[column[0]].dtype in [array.array, numpy.ndarray]):
                         op = '__builtin__vector__avg__'
 
-                    if (op == '__builtin__sum__' and self[column[0]].dtype is array.array):
+                    if (op == '__builtin__sum__' and self[column[0]].dtype in [array.array, numpy.ndarray]):
                         op = '__builtin__vector__sum__'
 
                     if (op == '__builtin__argmax__' or op == '__builtin__argmin__') and ((type(column[0]) is tuple) != (type(key) is tuple)):
@@ -4122,10 +4135,10 @@ class SFrame(object):
               for val in operation:
                   if type(val) is tuple:
                     (op, column) = val
-                    if (op == '__builtin__avg__' and self[column[0]].dtype is array.array):
+                    if (op == '__builtin__avg__' and self[column[0]].dtype in [array.array, numpy.ndarray]):
                         op = '__builtin__vector__avg__'
 
-                    if (op == '__builtin__sum__' and self[column[0]].dtype is array.array):
+                    if (op == '__builtin__sum__' and self[column[0]].dtype in [array.array, numpy.ndarray]):
                         op = '__builtin__vector__sum__'
 
                     if (op == '__builtin__argmax__' or op == '__builtin__argmin__') and type(column[0]) is tuple:
@@ -4431,13 +4444,15 @@ class SFrame(object):
 
         >>> sf.explore(title="My Plot Title")
         """
-        import sys
-        if sys.platform != 'darwin':
-            raise NotImplementedError('Visualization is currently supported only on macOS.')
 
+        import sys
         import os
-        (tcviz_dir, _) = os.path.split(os.path.dirname(__file__))
-        path_to_client = os.path.join(tcviz_dir, 'Turi Create Visualization.app', 'Contents', 'MacOS', 'Turi Create Visualization')
+
+        if sys.platform != 'darwin' and sys.platform != 'linux2':
+            raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
+
+        path_to_client = _get_client_app_path()
+
         if title is None:
             title = ""
         self.__proxy__.explore(path_to_client, title)
@@ -4457,12 +4472,13 @@ class SFrame(object):
         >>> sf.show()
         """
         import sys
-        if sys.platform != 'darwin':
-            raise NotImplementedError('Visualization is currently supported only on macOS.')
-
         import os
-        (tcviz_dir, _) = os.path.split(os.path.dirname(__file__))
-        path_to_client = os.path.join(tcviz_dir, 'Turi Create Visualization.app', 'Contents', 'MacOS', 'Turi Create Visualization')
+
+        if sys.platform != 'darwin' and sys.platform != 'linux2':
+            raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
+
+        path_to_client = _get_client_app_path()
+
         self.__proxy__.show(path_to_client)
 
     def pack_columns(self, column_names=None, column_name_prefix=None, dtype=list,

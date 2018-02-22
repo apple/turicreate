@@ -923,6 +923,22 @@ double neighbor_candidates::get_max_dist() const {
 }
 
 
+flexible_type nearest_neighbors_model::get_reference_data() const {
+    DASSERT_EQ(num_examples, mld_ref.size());
+
+    DenseVector ref_data(metadata->num_dimensions());
+    flex_list ret(num_examples);
+    for (auto it = mld_ref.get_iterator(0, 1); !it.done(); ++it) {
+      it.fill_row_expr(ref_data);
+      ret[it.row_index()] = arma::conv_to<std::vector<double>>::from(ref_data);
+    }
+
+    return ret;
+}
+
+flexible_type _nn_get_reference_data(std::shared_ptr<nearest_neighbors_model> model) {
+  return model->get_reference_data();
+}
 
 }  // namespace nearest_neighbors
 }  // namespace turi

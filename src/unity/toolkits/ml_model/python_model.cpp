@@ -61,7 +61,7 @@ class python_model : public model_base {
    */
   virtual void load_version(iarchive& iarc, size_t version) {
     std::string language;
-    unsigned int bytes = 0, file_size = 0;
+    unsigned int file_size = 0;
 
     // Read out the language and file-size.
     iarc >> language >> file_size;

@@ -89,7 +89,7 @@ process, but we do not expect this to happen too frequently (You should
 \b really use the extension interface).  
 
 On a high level, you first implement an object exposed via the CPPIPC
-interface.  Then you need to pursuade Cython to pick up the proxy object, and
+interface.  Then you need to persuade Cython to pick up the proxy object, and
 then further wrapping the proxy object in a Python class if necessary.
 
 Lets walk through a simple example.

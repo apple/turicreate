@@ -10,12 +10,12 @@ import os
 import sys
 import glob
 import subprocess
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, Extension
 from setuptools.dist import Distribution
 from setuptools.command.install import install
 
 PACKAGE_NAME="turicreate"
-VERSION='4.0'#{{VERSION_STRING}}
+VERSION='4.1'#{{VERSION_STRING}}
 
 # Prevent distutils from thinking we are a pure python package
 class BinaryDistribution(Distribution):
@@ -101,6 +101,8 @@ if __name__ == '__main__':
         "License :: OSI Approved :: BSD License",
         "Natural Language :: English",
         "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Scientific/Engineering",
         "Topic :: Scientific/Engineering :: Information Analysis",
@@ -121,9 +123,18 @@ if __name__ == '__main__':
         sys.stderr.write(msg)
         sys.exit(1)
 
+    with open(os.path.join(os.path.dirname(__file__), 'README.rst'), 'rb') as f:
+        long_description = f.read().decode('utf-8')
+
     setup(
         name="turicreate",
         version=VERSION,
+
+        # This distribution contains platform-specific C++ libraries, but they are not
+        # built with distutils. So we must create a dummy Extension object so when we
+        # create a binary file it knows to make it platform-specific.
+        ext_modules=[Extension('turicreate.__dummy', sources = ['dummy.c'])],
+
         author='Apple Inc.',
         author_email='turi-create@group.apple.com',
         cmdclass=dict(install=InstallEngine),
@@ -160,15 +171,17 @@ if __name__ == '__main__':
                      "*.demo", "*.demo.*", "demo.*", "demo", "*.demo", "*.demo.*", "demo.*", "demo"]),
         url='https://github.com/apple/turicreate',
         license='LICENSE.txt',
-        description='Turi Create enables developers and data scientists to apply machine learning to build state of the art data products.',
+        description='Turi Create simplifies the development of custom machine learning models.',
+        long_description=long_description,
         classifiers=classifiers,
         install_requires=[
             "decorator >= 4.0.9",
             "prettytable == 0.7.2",
             "requests >= 2.9.1",
             "mxnet >= 0.11, < 1.0.0",
-            "coremltools == 0.6.3",
+            "coremltools == 0.8",
             "pillow >= 3.3.0",
             "pandas >= 0.19.0",
+            "numpy"
         ],
     )

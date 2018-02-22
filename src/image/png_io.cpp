@@ -167,15 +167,17 @@ void setup_png_writer(png_structp* outpng_ptr, png_infop* out_info_ptr, size_t w
  * Helper function: return number of channels from PNG color type.
  */
 int png_num_channels(int color_type) {
-  if (color_type == PNG_COLOR_TYPE_GRAY) { // grayscale
+  switch (color_type) {
+  case PNG_COLOR_TYPE_GRAY:  // grayscale
     return 1;
-  } else if (color_type == PNG_COLOR_TYPE_RGB) { // rgb
+  case PNG_COLOR_TYPE_RGB:  // rgb
+  case PNG_COLOR_TYPE_PALETTE:  // indexed; will be translated to rgb
     return 3;
-  } else if (color_type == PNG_COLOR_TYPE_RGBA) { // rgb + alpha
+  case PNG_COLOR_TYPE_RGBA:  // rgb + alpha
     return 4;
-  } else if (color_type == PNG_COLOR_TYPE_GRAY_ALPHA){
+  case PNG_COLOR_TYPE_GRAY_ALPHA:
     return 2;
-  } else {
+  default:
     return -1;
   }
 }
@@ -312,6 +314,11 @@ void decode_png(const char* data, size_t length, char** out_data, size_t& out_le
   png_uint_32 width, height;
   int bit_depth, color_type, interlace_type;
   png_get_IHDR(png_ptr, info_ptr, &width, &height,&bit_depth,&color_type,&interlace_type, NULL, NULL);
+
+  // Handle 256-color indexed images (type P) by converting to RGB
+  if (color_type == PNG_COLOR_TYPE_PALETTE) {
+      png_set_palette_to_rgb(png_ptr);
+  }
 
   int channels = png_num_channels(color_type);
   size_t row_stride = width * channels;

@@ -23,7 +23,8 @@ namespace turi {
 
     // Utility for escaping JSON string literals. Not concerned with Vega implications of the contents of those strings.
     std::string escape_string(const std::string& str);
-
+    std::string replace_all(std::string str, const std::string& from, const std::string& to);
+    std::string extra_label_escape(const std::string& str);
   }
 }
 

@@ -20,6 +20,7 @@ from ..cython.cy_flexible_type import infer_type_of_list, infer_type_of_sequence
 from ..cython.cy_sarray import UnitySArrayProxy
 from ..cython.context import debug_trace as cython_context
 from ..util import _is_non_string_iterable, _make_internal_url
+from ..visualization import _get_client_app_path
 from .image import Image as _Image
 from .. import aggregate as _aggregate
 from ..deps import numpy, HAS_NUMPY
@@ -32,6 +33,7 @@ import collections
 import datetime
 import warnings
 import numbers
+import six
 
 __all__ = ['SArray']
 
@@ -1220,6 +1222,8 @@ class SArray(object):
 
             # Not in cache, need to grab it
             block_size = 1024 * (32 if self.dtype in [int, long, float] else 4)
+            if self.dtype in [numpy.ndarray, _Image, dict, list]:
+                block_size = 16
 
             block_num = int(other // block_size)
 
@@ -2891,12 +2895,11 @@ class SArray(object):
         >>> sa.show(title="My Plot Title", xlabel="My X Axis", ylabel="My Y Axis")
         """
         import sys
-        if sys.platform != 'darwin':
-            raise NotImplementedError('Visualization is currently supported only on macOS.')
-
         import os
-        (tcviz_dir, _) = os.path.split(os.path.dirname(__file__))
-        path_to_client = os.path.join(tcviz_dir, 'Turi Create Visualization.app', 'Contents', 'MacOS', 'Turi Create Visualization')
+        if sys.platform != 'darwin' and sys.platform != 'linux2':
+             raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
+
+        path_to_client = _get_client_app_path()
 
         if title == "":
             title = " "
@@ -3089,6 +3092,8 @@ class SArray(object):
 
         if column_name_prefix is None:
             column_name_prefix = ""
+        if six.PY2 and type(column_name_prefix) == unicode:
+            column_name_prefix = column_name_prefix.encode('utf-8')
         if type(column_name_prefix) != str:
             raise TypeError("'column_name_prefix' must be a string")
 
@@ -3332,7 +3337,7 @@ class SArray(object):
 
         if column_name_prefix is None:
             column_name_prefix = ""
-        if type(column_name_prefix) != str:
+        if not(isinstance(column_name_prefix, six.string_types)):
             raise TypeError("'column_name_prefix' must be a string")
 
         # validate 'limit'
@@ -3394,9 +3399,9 @@ class SArray(object):
         with cython_context():
             if (self.dtype == dict and column_types is None):
                 limit = limit if limit is not None else []
-                return _SFrame(_proxy=self.__proxy__.unpack_dict(column_name_prefix.encode(), limit, na_value))
+                return _SFrame(_proxy=self.__proxy__.unpack_dict(column_name_prefix.encode('utf-8'), limit, na_value))
             else:
-                return _SFrame(_proxy=self.__proxy__.unpack(column_name_prefix.encode(), limit, column_types, na_value))
+                return _SFrame(_proxy=self.__proxy__.unpack(column_name_prefix.encode('utf-8'), limit, column_types, na_value))
 
     def sort(self, ascending=True):
         """

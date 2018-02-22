@@ -353,6 +353,80 @@ static void decode_vector(iarchive& iarc,
                        }, new_format);
 }
 
+
+/**
+ * Encodes a collection of ndvectors in data, skipping all UNDEFINED values.
+ *
+ *  - encode a list of integers with all the shape lengths (or equivalently stride lengths)
+ *  - encode a list of integers with the number of elements in each ndarray
+ *  - encode a flattened list of integers with all the shapes
+ *  - encode a flattened list of integers with all the strides
+ *  - encode a flattened list of all the doubles
+ *
+ * \note The coding does not store the number of values stored. The decoder
+ * \ref decode_vector() requires the number of values to decode correctly.
+ */
+static void encode_nd_vector(block_info& info, 
+                          oarchive& oarc, 
+                          const std::vector<flexible_type>& data) {
+  char reserved = VECTOR_RESERVED_FLAGS::NEW_ENCODING;
+  // length of each vector
+  std::vector<flexible_type> shape_lengths;
+  std::vector<flexible_type> numel;
+  std::vector<flexible_type> shapes;
+  std::vector<flexible_type> strides;
+  std::vector<flexible_type> values;
+  
+  // a temporary value to hold compacted ndarrays if necessary.
+  flex_nd_vec tempval;
+
+  for (size_t i = 0;i < data.size(); ++i) {
+    if (data[i].get_type() != flex_type_enum::UNDEFINED) {
+      const flex_nd_vec* val = &(data[i].get<flex_nd_vec>());
+      ASSERT_TRUE(val->is_valid());
+      // if it is not full, compact it.
+      // and move the val pointer to point to the tempval
+      if (!val->is_full()) {
+        tempval = val->compact();
+        val = &tempval;
+      }
+
+      shape_lengths.push_back(val->shape().size());
+      numel.push_back(val->elements().size());
+      for (auto d: val->shape()) shapes.push_back(d);
+      for (auto d: val->stride()) strides.push_back(d);
+      for (auto d: val->elements()) values.push_back(d);
+    }
+  }
+  oarc.write(&(reserved), sizeof(reserved));
+  encode_number(info, oarc, shape_lengths);
+  encode_number(info, oarc, numel);
+  encode_number(info, oarc, shapes);
+  encode_number(info, oarc, strides);
+  encode_double(info, oarc, values);
+}
+
+/**
+ * Decodes a collection of ndvectors in data, skipping all UNDEFINED values.
+ * Wrapper around decode_number_stream
+ */
+static void decode_nd_vector(iarchive& iarc, 
+                          std::vector<flexible_type>& ret,
+                          size_t num_undefined, 
+                          bool new_format) {
+  unsigned int last_id = 0;
+  decode_nd_vector_stream(ret.size() - num_undefined, iarc, 
+                       [&](flexible_type val) {
+                         while(last_id < ret.size() && 
+                               ret[last_id].get_type() == flex_type_enum::UNDEFINED) {
+                           ++last_id;
+                         }
+                         ret[last_id] = val;
+                         DASSERT_LT(last_id, ret.size());
+                         ++last_id;
+                       }, new_format);
+}
+
 void typed_encode(const std::vector<flexible_type>& data, 
                   block_info& block,
                   oarchive& oarc) {
@@ -414,6 +488,9 @@ void typed_encode(const std::vector<flexible_type>& data,
     } else if (types_appeared.get((char)flex_type_enum::VECTOR)) {
       block.flags |=  BLOCK_ENCODING_EXTENSION;
       encode_vector(block, oarc, data);
+    } else if (types_appeared.get((char)flex_type_enum::ND_VECTOR)) {
+      block.flags |=  BLOCK_ENCODING_EXTENSION;
+      encode_nd_vector(block, oarc, data);
     } else {
       flexible_type_impl::serializer s{oarc};
       for (size_t i = 0;i < data.size(); ++i) {
@@ -491,6 +568,9 @@ bool typed_decode(const block_info& info,
       decode_string(iarc, ret, num_undefined);
     } else if (column_type == flex_type_enum::VECTOR) {
       decode_vector(iarc, ret, num_undefined, 
+                    info.flags & BLOCK_ENCODING_EXTENSION);
+    } else if (column_type == flex_type_enum::ND_VECTOR) {
+      decode_nd_vector(iarc, ret, num_undefined, 
                     info.flags & BLOCK_ENCODING_EXTENSION);
     } else {
       flexible_type_impl::deserializer s{iarc};

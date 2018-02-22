@@ -4,9 +4,6 @@
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 
-### cython utils ###
-from cython.operator cimport dereference as deref
-
 from .cy_unity_base_types cimport *
 from .cy_flexible_type cimport flex_list
 
