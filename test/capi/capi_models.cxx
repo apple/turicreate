@@ -155,7 +155,7 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
 
       std::string ret_name = tc_model_name(loaded_model, &error);
       TS_ASSERT(error == nullptr);
-      TS_ASSERT(ret_name == "boosted_trees_regression");
+      TS_ASSERT(ret_name == model_name);
 
       tc_model_destroy(loaded_model);
     }
