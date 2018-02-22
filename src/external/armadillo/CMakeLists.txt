@@ -119,7 +119,7 @@ else()
   option(BUILD_SHARED_LIBS "build shared library" ON)
 endif()
 
-option(DETECT_HDF5 "Detect HDF5 and include HDF5 support, if found" ON)
+option(DETECT_HDF5 "Detect HDF5 and include HDF5 support, if found" OFF)
 
 
 if(WIN32)
