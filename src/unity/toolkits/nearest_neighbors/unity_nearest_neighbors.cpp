@@ -392,7 +392,6 @@ EXPORT std::vector<toolkit_function_specification> get_toolkit_function_registra
   return specs;
 }
 
->>>>>>> origin/master
 
 } // namespace nearest_neighbors
 } // namespace turi
