@@ -65,7 +65,7 @@ EXPORT tc_variant* tc_variant_create_from_double_array(const double* data, uint6
 EXPORT tc_variant* tc_variant_create_from_flex_list(const tc_flex_list* fl, tc_error** error){
   ERROR_HANDLE_START();
 
-  CHECK_NOT_NULL(error, fl, "Flex List", NULL);
+  CHECK_INPUT_STRUCT(1, fl, tc_flex_list, error, NULL);
 
   return new_tc_variant(fl->value);
 

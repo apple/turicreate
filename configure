@@ -6,7 +6,6 @@ DEBUG_DIR=debug
 TURI_HOME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 DEPS_PREFIX=$PWD/deps/local
 
-
 function print_help {
   echo "Configures the build with the specified toolchain. "
   echo

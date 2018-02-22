@@ -25,43 +25,48 @@ struct capi_struct_type_info {
 //
 // Creation of a wrapping struct should be done with new_* methods.
 
-#define DECLARE_CAPI_WRAPPER_STRUCT(struct_name, wrapping_type)                 \
-  struct capi_struct_type_info_##struct_name;                                   \
-                                                                                \
-  /* The typeinfo executor needs to have a singleton instance. */               \
-  extern capi_struct_type_info_##struct_name capi_struct_type_info_##struct_name##_inst; \
-                                                                                \
-  extern "C" {                                                                  \
-    struct struct_name##_struct {                                               \
-      capi_struct_type_info* type_info = nullptr;                               \
-      wrapping_type value;                                                      \
-    };                                                                          \
-                                                                                \
-    typedef struct struct_name##_struct struct_name;                            \
-  }                                                                             \
-                                                                                \
-  struct capi_struct_type_info_##struct_name : public capi_struct_type_info {   \
-    const char* name() const { return #struct_name; }                           \
-    void free(const void* v) {                                                  \
-      const struct_name* vv = static_cast<const struct_name*>(v);               \
-      ASSERT_TRUE(vv->type_info == this);                                       \
-      delete vv;                                                                \
-    }                                                                           \
-  };                                                                            \
-                                                                                \
-  static inline struct_name* new_##struct_name() {                              \
-    struct_name* ret = new struct_name##_struct();                              \
-    ret->type_info = &(capi_struct_type_info_##struct_name##_inst);             \
-    return ret;                                                                 \
-  }                                                                             \
-                                                                                \
-  template <typename... Args>                                                      \
-  static inline struct_name* new_##struct_name(Args&&... args) {                   \
-    struct_name* ret = new_##struct_name();                                     \
-    ret->value = wrapping_type(std::forward<Args>(args)...);                                        \
-    return ret;                                                                 \
+#define DECLARE_CAPI_WRAPPER_STRUCT(struct_name, wrapping_type)               \
+  struct capi_struct_type_info_##struct_name;                                 \
+                                                                              \
+  /* The typeinfo executor needs to have a singleton instance. */             \
+  extern capi_struct_type_info_##struct_name                                  \
+      capi_struct_type_info_##struct_name##_inst;                             \
+                                                                              \
+  extern "C" {                                                                \
+                                                                              \
+  struct struct_name##_struct {                                               \
+    capi_struct_type_info* type_info = nullptr;                               \
+    wrapping_type value;                                                      \
+  };                                                                          \
+                                                                              \
+  typedef struct struct_name##_struct struct_name;                            \
+  }                                                                           \
+                                                                              \
+  struct capi_struct_type_info_##struct_name : public capi_struct_type_info { \
+    const char* name() const { return #struct_name; }                         \
+    void free(const void* v) {                                                \
+      if (UNLIKELY(v == nullptr)) {                                           \
+        return;                                                               \
+      }                                                                       \
+      const struct_name* vv = static_cast<const struct_name*>(v);             \
+      ASSERT_TRUE(vv->type_info == this);                                     \
+      ASSERT_TRUE(this == &(capi_struct_type_info_##struct_name##_inst));     \
+      delete vv;                                                              \
+    }                                                                         \
+  };                                                                          \
+                                                                              \
+  static inline struct_name* new_##struct_name() {                            \
+    struct_name* ret = new struct_name##_struct();                            \
+    ret->type_info = &(capi_struct_type_info_##struct_name##_inst);           \
+    return ret;                                                               \
+  }                                                                           \
+                                                                              \
+  template <typename... Args>                                                 \
+  static inline struct_name* new_##struct_name(Args&&... args) {              \
+    struct_name* ret = new_##struct_name();                                   \
+    ret->value = wrapping_type(std::forward<Args>(args)...);                  \
+    return ret;                                                               \
   }
-
 
 // TODO: make this more full featured than just a string error message.
 DECLARE_CAPI_WRAPPER_STRUCT(tc_error, std::string);
