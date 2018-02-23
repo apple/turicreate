@@ -45,10 +45,10 @@ On older versions, we need to get a newer installation of libstdc++. This should
 
 ```shell
 sudo apt-get -y install libblas3 liblapack3 python-setuptools
-wget http://security.ubuntu.com/ubuntu/pool/main/g/gcc-5/gcc-5-base_5.4.0-6ubuntu1~16.04.4_amd64.deb
-wget http://security.ubuntu.com/ubuntu/pool/main/g/gcc-5/libstdc++6_5.4.0-6ubuntu1~16.04.4_amd64.deb
-sudo dpkg -i gcc-5-base_5.4.0-6ubuntu1~16.04.4_amd64.deb
-sudo dpkg -i libstdc++6_5.4.0-6ubuntu1~16.04.4_amd64.deb
+wget http://security.ubuntu.com/ubuntu/pool/main/g/gcc-5/gcc-5-base_5.4.0-6ubuntu1~16.04.9_amd64.deb
+wget http://security.ubuntu.com/ubuntu/pool/main/g/gcc-5/libstdc++6_5.4.0-6ubuntu1~16.04.9_amd64.deb
+sudo dpkg -i gcc-5-base_5.4.0-6ubuntu1~16.04.9_amd64.deb
+sudo dpkg -i libstdc++6_5.4.0-6ubuntu1~16.04.9_amd64.deb
 sudo easy_install pip
 sudo pip install virtualenv
 ```
