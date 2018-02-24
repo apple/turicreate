@@ -14,7 +14,6 @@
 #include <sframe/group_aggregate_value.hpp>
 #include <sframe/sframe_rows.hpp>
 #include <unity/lib/visualization/plot.hpp>
-#include <unity/lib/api/plot_interface.hpp>
 
 namespace turi {
 
@@ -555,7 +554,7 @@ class unity_sframe : public unity_sframe_base {
 
   void explore(const std::string& path_to_client, const std::string& title);
   void show(const std::string& path_to_client);
-  std::shared_ptr<plot_base> plot(const std::string& path_to_client);
+  std::shared_ptr<model_base> plot(const std::string& path_to_client);
 
  private:
   /**

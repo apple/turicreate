@@ -27,7 +27,7 @@ from .cy_dataframe cimport is_pandas_dataframe
 from .cy_sarray cimport create_proxy_wrapper_from_existing_proxy as sarray_proxy
 from .cy_sarray cimport UnitySArrayProxy
 
-from .cy_plot cimport create_proxy_wrapper_from_existing_proxy_plot
+from .cy_model cimport create_model_from_proxy
 
 from .cy_cpp_utils cimport str_to_cpp, cpp_to_str
 from .cy_cpp_utils cimport to_vector_of_strings, from_vector_of_strings
@@ -140,10 +140,10 @@ cdef class UnitySFrameProxy:
 
     cpdef plot(self, _path_to_client):
         cdef string path_to_client = str_to_cpp(_path_to_client)
-        cdef plot_base_ptr proxy
+        cdef model_base_ptr proxy
         with nogil:
             proxy = self.thisptr.plot(path_to_client)
-        return create_proxy_wrapper_from_existing_proxy_plot(proxy)
+        return create_model_from_proxy(proxy)
 
     cpdef explore(self, _path_to_client, _title):
         cdef string path_to_client = str_to_cpp(_path_to_client)

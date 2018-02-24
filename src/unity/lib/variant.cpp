@@ -10,7 +10,6 @@
 #include <unity/lib/api/unity_sarray_interface.hpp>
 #include <unity/lib/api/unity_graph_interface.hpp>
 #include <unity/lib/api/function_closure_info.hpp>
-#include <unity/lib/api/plot_interface.hpp>
 
 namespace turi {
 namespace archive_detail {
@@ -45,9 +44,6 @@ exec(oarchive& oarc, const variant_type& v) {
      break;
    case 8:
      oarc << boost::get<function_closure_info>(v);
-     break;
-   case 9:
-     oarc << boost::get<std::shared_ptr<plot_base>>(v);
      break;
    default:
      break;
@@ -96,10 +92,6 @@ exec(iarchive& iarc, variant_type& v) {
    case 8:
      v = function_closure_info();
      iarc >> boost::get<function_closure_info>(v);
-     break;
-   case 9:
-     v = std::shared_ptr<plot_base>();
-     iarc >> boost::get<std::shared_ptr<plot_base>>(v);
      break;
    default:
      break;

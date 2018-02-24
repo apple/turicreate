@@ -2816,7 +2816,7 @@ void unity_sarray::show(const std::string& path_to_client,
   }
 }
 
-std::shared_ptr<plot_base> unity_sarray::plot(const std::string& path_to_client,
+std::shared_ptr<model_base> unity_sarray::plot(const std::string& path_to_client,
                         const std::string& _title,
                         const std::string& _xlabel,
                         const std::string& _ylabel) {
@@ -2867,10 +2867,7 @@ std::shared_ptr<plot_base> unity_sarray::plot(const std::string& path_to_client,
         hist.init(self);
 
         std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<histogram>(hist);
-        Plot plt(path_to_client, histogram_spec, shared_unity_transformer, size_array);
-
-        std::shared_ptr<plot_base> shared_plot_pointer = std::make_shared<Plot>(plt);
-        return shared_plot_pointer;
+        return std::make_shared<Plot>(path_to_client, histogram_spec, shared_unity_transformer, size_array);
       }
     case flex_type_enum::STRING:
       {
@@ -2904,10 +2901,7 @@ std::shared_ptr<plot_base> unity_sarray::plot(const std::string& path_to_client,
         double size_array = static_cast<double>(self->size());
 
         std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<item_frequency>(item_freq);
-        Plot plt(path_to_client, category_spec, shared_unity_transformer, size_array);
-
-        std::shared_ptr<plot_base> shared_plot_pointer = std::make_shared<Plot>(plt);
-        return shared_plot_pointer;
+        return std::make_shared<Plot>(path_to_client, category_spec, shared_unity_transformer, size_array);
       }
     default:
       log_and_throw(std::string("SArray.show is currently not available for SArrays of type ") + flex_type_enum_to_name(self->dtype()));

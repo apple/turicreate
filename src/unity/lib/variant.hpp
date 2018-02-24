@@ -19,7 +19,6 @@ struct function_closure_info;
 class unity_sframe_base;
 class unity_sgraph_base;
 class unity_sarray_base;
-class plot_base;
 
 /**
  * A variant object that can be communicated between Python and C++ which
@@ -46,7 +45,6 @@ typedef typename boost::make_recursive_variant<
             std::shared_ptr<model_base>,
             std::shared_ptr<unity_sframe_base>,
             std::shared_ptr<unity_sarray_base>,
-            std::shared_ptr<plot_base>,
             std::map<std::string, boost::recursive_variant_>,
             std::vector<boost::recursive_variant_>,
             boost::recursive_wrapper<function_closure_info> >::type variant_type;
@@ -85,8 +83,6 @@ inline std::string get_variant_which_name(int i) {
      return "List";
    case 8:
      return "Function";
-   case 9:
-     return "Plot";
    default:
      return "";
   }

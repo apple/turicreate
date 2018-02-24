@@ -20,7 +20,7 @@ from .cy_flexible_type cimport pyobject_from_flexible_type
 from .cy_flexible_type cimport pylist_from_flex_list
 from .cy_flexible_type cimport pydict_from_gl_options_map
 
-from .cy_plot cimport create_proxy_wrapper_from_existing_proxy_plot
+from .cy_model cimport create_model_from_proxy
 
 from .cy_cpp_utils cimport str_to_cpp
 
@@ -478,12 +478,10 @@ cdef class UnitySArrayProxy:
         cdef string title = str_to_cpp(_title)
         cdef string xlabel = str_to_cpp(_xlabel)
         cdef string ylabel = str_to_cpp(_ylabel)
-        cdef plot_base_ptr proxy
-
+        cdef model_base_ptr proxy
         with nogil:
             proxy = self.thisptr.plot(path_to_client, title, xlabel, ylabel)
-
-        return create_proxy_wrapper_from_existing_proxy_plot(proxy)
+        return create_model_from_proxy(proxy)
 
     cpdef builtin_cumulative_aggregate(self, _fn_name):
         cdef unity_sarray_base_ptr proxy

@@ -20,7 +20,6 @@ from .cy_model cimport create_model_from_proxy
 from .cy_model cimport UnityModel
 from .cy_sframe cimport UnitySFrameProxy
 from .cy_sarray cimport UnitySArrayProxy
-from .cy_plot cimport PlotProxy
 
 from .cy_flexible_type cimport flexible_type, flex_list, flex_dict, flex_int
 from .cy_flexible_type cimport flexible_type_from_pyobject
@@ -75,8 +74,6 @@ DEF VAR_TR_SARRAY_PROXY                = 14
 DEF VAR_TR_GRAPH_PROXY                 = 15
 DEF VAR_TR_FUNCTION                    = 16
 DEF VAR_TR_CLOSURE                     = 17
-DEF VAR_TR_PLOT_PROXY                  = 18
-DEF VAR_TR_PLOT                        = 19
 
 # The last resort -- attempt to convert it to a general flexible type
 DEF VAR_TR_ATTEMPT_OTHER_FLEXIBLE_TYPE = 20  #
@@ -188,8 +185,6 @@ cdef int _get_tr_code_by_type_string(object v) except -1:
         ret =  VAR_TR_GRAPH_PROXY
     elif is_function_closure_info(v):
         ret =  VAR_TR_CLOSURE
-    elif type(v) is PlotProxy:
-        ret = VAR_TR_PLOT_PROXY
     else:
         ret =  VAR_TR_ATTEMPT_OTHER_FLEXIBLE_TYPE
 
@@ -650,8 +645,6 @@ cdef _convert_to_variant_type(variant_type& ret, object v, int tr_code):
         variant_set_sarray(ret, (<UnitySArrayProxy?>(v.__proxy__))._base_ptr)
     elif tr_code == VAR_TR_GRAPH:
         variant_set_graph(ret, (<UnityGraphProxy?>(v.__proxy__))._base_ptr)
-    elif tr_code == VAR_TR_PLOT:
-        variant_set_plot(ret, (<PlotProxy?>(v.__proxy__))._base_ptr)
 
     # Unity models
     elif tr_code == VAR_TR_UNITY_MODEL:
@@ -666,8 +659,6 @@ cdef _convert_to_variant_type(variant_type& ret, object v, int tr_code):
         variant_set_sarray(ret, (<UnitySArrayProxy>(v))._base_ptr)
     elif tr_code == VAR_TR_GRAPH_PROXY:
         variant_set_graph(ret, (<UnityGraphProxy>v)._base_ptr)
-    elif tr_code == VAR_TR_PLOT_PROXY:
-        variant_set_plot(ret, (<PlotProxy>(v))._base_ptr)
 
     # Functions and closures
     elif tr_code == VAR_TR_FUNCTION:

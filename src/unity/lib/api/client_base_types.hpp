@@ -15,6 +15,5 @@
 #include <unity/lib/variant.hpp>
 #include <unity/lib/api/model_interface.hpp>
 #include <unity/lib/api/unity_graph_interface.hpp>
-#include <unity/lib/api/plot_interface.hpp>
 
 #endif // TURI_UNITY_CLIENT_BASE_TYPES
