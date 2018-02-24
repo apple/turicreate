@@ -226,13 +226,22 @@ package_wheel() {
     cd ${WORKSPACE}/${build_type}/src/unity/python/turicreate
     BINARY_LIST=`find . -type f -exec file {} \; | grep x86 | cut -d: -f 1`
     echo "Stripping binaries: $BINARY_LIST"
+
+    # make newline the separator for items in for loop - default is whitespace
+    OLD_IFS=${IFS}
+    IFS=$'\n'
+
     for f in $BINARY_LIST; do
       if [ $OSTYPE == "msys" ] && [ $f == "./pylambda_worker.exe" ]; then
         echo "Skipping pylambda_worker"
       else
+        echo "Stripping $f"
         strip -s $f;
       fi
     done
+
+    # set IFS back to default
+    IFS=${OLD_IFS}
     cd ..
   fi
 
