@@ -184,19 +184,19 @@
   ],
   "config": {
     "legend": {
-      "titleFont": "HelveticaNeue",
+      "titleFont": "HelveticaNeue, Arial",
       "titleColor": "rgba(0,0,0,0.65)",
-      "labelFont": "HelveticaNeue",
+      "labelFont": "HelveticaNeue, Arial",
       "labelColor": "rgba(0,0,0,0.65)",
       "cornerRadius": 30,
       "gradientWidth": 640
     },
     "axis": {
-      "labelFont": "HelveticaNeue",
+      "labelFont": "HelveticaNeue, Arial",
       "labelFontSize": 12,
       "labelPadding": 10,
       "labelColor": "rgba(0,0,0,0.65)",
-      "titleFont": "HelveticaNeue-Medium",
+      "titleFont": "HelveticaNeue-Medium, Arial",
       "titleFontWeight": "normal",
       "titlePadding": 30,
       "titleFontSize": 15,
@@ -211,7 +211,7 @@
       },
       "group-title": {
         "fontSize": 29,
-        "font": "HelveticaNeue",
+        "font": "HelveticaNeue, Arial",
         "fontWeight": "normal",
         "fill": "rgba(0,0,0,0.65)"
       }

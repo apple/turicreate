@@ -2560,11 +2560,11 @@
   ],
   "config":{
     "axis":{
-      "labelFont":"HelveticaNeue-Light",
+      "labelFont":"HelveticaNeue-Light, Arial",
       "labelFontSize":7,
       "labelPadding":10,
       "labelColor":"#595959",
-      "titleFont":"HelveticaNeue-Light",
+      "titleFont":"HelveticaNeue-Light, Arial",
       "titleFontWeight":"normal",
       "titlePadding":9,
       "titleFontSize":12,
@@ -2579,7 +2579,7 @@
       },
       "group-title":{
         "fontSize":20,
-        "font":"HelveticaNeue-Light",
+        "font":"HelveticaNeue-Light, Arial",
         "fontWeight":"normal",
         "fill":"#595959"
       }
