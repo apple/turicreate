@@ -1662,7 +1662,7 @@ std::shared_ptr<model_base> unity_sframe::plot(const std::string& path_to_client
     column_types.push_back(sarr->dtype());
   }
 
-  std::shared_ptr<summary_view_transformation> summary_view_transformers = std::make_shared<summary_view_transformation>(summary_view_transformation(column_transformers, column_names, column_types, self->size()));
+  std::shared_ptr<summary_view_transformation> summary_view_transformers = std::make_shared<summary_view_transformation>(column_transformers, column_names, column_types, self->size());
   std::string summary_view_vega_spec  = summary_view_spec(column_transformers.size());
 
   std::shared_ptr<transformation_base> shared_unity_transformer = std::static_pointer_cast<transformation_base>(summary_view_transformers);
