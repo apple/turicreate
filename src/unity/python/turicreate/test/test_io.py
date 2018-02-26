@@ -23,7 +23,7 @@ import pandas
 from ..connect import main as glconnect
 from .. import _sys_util
 from .. import util
-from .. import SGraph, Model, SFrame, load_graph, load_model, load_sframe
+from .. import SGraph, Model, SFrame, load_sgraph, load_model, load_sframe
 from pandas.util.testing import assert_frame_equal
 
 restricted_place = '/root'
@@ -57,7 +57,7 @@ def _test_save_load_object_helper(testcase, obj, path):
                 
     if isinstance(obj, SGraph):
         obj.save(path + ".graph")
-        newobj = load_graph(path + ".graph")
+        newobj = load_sgraph(path + ".graph")
         assert_same_elements(obj.get_fields(), newobj.get_fields())
         testcase.assertDictEqual(obj.summary(), newobj.summary())
     elif isinstance(obj, Model):
@@ -188,7 +188,7 @@ class HDFSConnectorTests(unittest.TestCase):
             self.assertRaises(IOError, lambda: glconnect.get_unity().__write__(bad_url + "/tmp", "somerandomcontent"))
             self.assertRaises(IOError, lambda: self.graph.save(bad_url + "x.graph"))
             self.assertRaises(IOError, lambda: self.sframe.save(bad_url + "x.frame_idx"))
-            self.assertRaises(IOError, lambda: load_graph(bad_url + "mygraph"))
+            self.assertRaises(IOError, lambda: load_sgraph(bad_url + "mygraph"))
             self.assertRaises(IOError, lambda: load_sframe(bad_url + "x.frame_idx"))
             self.assertRaises(IOError, lambda: load_model(bad_url + "x.model"))
         else:
@@ -261,7 +261,7 @@ class S3ConnectorTests(unittest.TestCase):
             self.assertRaises(IOError, lambda: glconnect.get_unity().__write__("s3://" + self.standard_bucket + "I'amABadUrl/", "somerandomcontent"))
             self.assertRaises(IOError, lambda: self.graph.save(prefix + "/x.graph"))
             self.assertRaises(IOError, lambda: self.sframe.save(prefix + "/x.frame_idx"))
-            self.assertRaises(IOError, lambda: load_graph(prefix + "/x.graph"))
+            self.assertRaises(IOError, lambda: load_sgraph(prefix + "/x.graph"))
             self.assertRaises(IOError, lambda: load_sframe(prefix + "/x.frame_idx"))
             self.assertRaises(IOError, lambda: load_model(prefix + "/x.model"))
         else:

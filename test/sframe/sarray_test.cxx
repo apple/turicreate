@@ -576,7 +576,6 @@ struct sarray_test {
         auto block_contents = bm.read_block(addr);
         v2_block_impl::encoded_block eblock(binfo, std::move(*block_contents));
         auto range = eblock.get_range();
-        size_t ctr_begin = ctr;
         std::vector<flexible_type> values;
         values.resize(eblock.size());
         range.decode_to(&values[0], values.size());

@@ -39,7 +39,7 @@ make -j4
 pop_ld_library_path
 
 find . -name "*.xml" -delete
-if ! type "parallel" > /dev/null; then
+if ! type "parallel" 2> /dev/null; then
         cmd=""
         if [[ $OSTYPE != msys ]]; then
           cmd=${PYTHON_EXECUTABLE}

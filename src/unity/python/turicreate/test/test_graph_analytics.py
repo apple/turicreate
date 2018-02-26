@@ -28,7 +28,7 @@ class GraphAnalyticsTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         url = dataset_server + "p2p-Gnutella04.txt.gz"
-        cls.graph = tc.load_graph(url, format='snap')
+        cls.graph = tc.load_sgraph(url, format='snap')
 
     def __test_model_save_load_helper__(self, model):
         with util.TempDirectory() as f:

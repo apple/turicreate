@@ -64,9 +64,6 @@ if [[ $GLC_EGG_UNDER_TEST == "" ]]; then
         print_help
 fi
 
-# set -x down here, so the help prints sanely
-set -x
-
 # Set up virtual environment
 if [[ "$VIRTUALENV" == "" ]]; then
   VIRTUALENV=virtualenv

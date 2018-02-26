@@ -7,7 +7,7 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 from . import util as _util, toolkits as _toolkits, SFrame as _SFrame, SArray as _SArray, \
-    SGraph as _SGraph, load_graph as _load_graph
+    SGraph as _SGraph, load_sgraph as _load_graph
 
 from .util import _get_aws_credentials as _util_get_aws_credentials, \
     cloudpickle as _cloudpickle
