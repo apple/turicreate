@@ -2,27 +2,17 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-from ..cython.cy_plot import PlotProxy
-
-from ..cython.context import debug_trace as cython_context
-from ..util import _is_non_string_iterable, _make_internal_url
-from .. import aggregate as _aggregate
-
 import logging as _logging
 
 import json as _json
 
-__all__ = ['Plot']
-
 class Plot(object):
-
-    __slots__ = ["__proxy__", "_getitem_cache"]
 
     def __init__(self, _proxy=None):
         if (_proxy):
             self.__proxy__ = _proxy
         else:
-            self.__proxy__ = PlotProxy()
+            self.__proxy__ = None
 
     def show(self):
         import sys
@@ -30,28 +20,28 @@ class Plot(object):
         if sys.platform != 'darwin' and sys.platform != 'linux2':
              raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
 
-        self.__proxy__.show()
+        self.__proxy__.get('call_function', {'__function_name__': 'show'})
 
     def save_vega(self, filepath, include_data=True):
-        file_contents = self.__proxy__.get_spec()
+        file_contents = self.__proxy__.get('call_function', {'__function_name__': 'get_spec'})
 
         with open(filepath, 'w') as fp:
             _json.dump(file_contents, fp)
 
     def get_data(self):
-        return _json.loads(self.__proxy__.get_data())
+        return _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_data'}))
 
     def get_vega(self, include_data=True):
         if(include_data):
-            spec = _json.loads(self.__proxy__.get_spec())
-            data = _json.loads(self.__proxy__.get_data())["data_spec"]
+            spec = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_spec'}))
+            data = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_data'}))["data_spec"]
             for x in range(0, len(spec["vega_spec"]["data"])):
                 if(spec["vega_spec"]["data"][x]["name"] == "source_2"):
                     spec["vega_spec"]["data"][x] = data
                     break;
             return spec
         else:
-            return _json.loads(self.__proxy__.get_spec())
+            return _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_spec'}))
 
     def _repr_javascript_(self):
         from IPython.core.display import display, HTML

@@ -11,7 +11,6 @@
 #include <flexible_type/flexible_type.hpp>
 #include <unity/lib/api/unity_sarray_interface.hpp>
 #include <unity/lib/visualization/plot.hpp>
-#include <unity/lib/api/plot_interface.hpp>
 
 namespace turi {
 
@@ -776,7 +775,7 @@ class unity_sarray: public unity_sarray_base {
             const std::string& xlabel,
             const std::string& ylabel);
 
-  std::shared_ptr<plot_base> plot(const std::string& path_to_client,
+  std::shared_ptr<model_base> plot(const std::string& path_to_client,
                           const std::string& _title,
                           const std::string& _xlabel,
                           const std::string& _ylabel);

@@ -85,7 +85,7 @@ cdef extern from "<unity/lib/unity_sarray.hpp>" namespace "turi":
         unity_sarray_base_ptr ternary_operator(unity_sarray_base_ptr, unity_sarray_base_ptr) except +
         unity_sarray_base_ptr to_const(const flexible_type&, flex_type_enum) except +
         void show(const string&, const string&, const string&, const string&) except +
-        plot_base_ptr plot(const string&, const string&, const string&, const string&) except +
+        model_base_ptr plot(const string&, const string&, const string&, const string&) except +
 
 cdef create_proxy_wrapper_from_existing_proxy(const unity_sarray_base_ptr& proxy)
 

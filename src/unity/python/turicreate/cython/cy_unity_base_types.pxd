@@ -23,10 +23,6 @@ cdef extern from "<unity/lib/api/unity_sarray_interface.hpp>" namespace "turi":
     cdef cppclass unity_sarray_base:
         pass
 
-cdef extern from "<unity/lib/api/plot_interface.hpp>" namespace "turi":
-    cdef cppclass plot_base:
-        pass
-
 cdef extern from "<unity/lib/api/unity_graph_interface.hpp>" namespace "turi":
     cdef cppclass unity_sgraph_base:
         pass
@@ -51,7 +47,6 @@ cdef extern from "<unity/lib/api/unity_sframe_builder_interface.hpp>" namespace 
     cdef cppclass unity_sframe_builder_base:
         pass
 
-ctypedef shared_ptr[plot_base] plot_base_ptr
 ctypedef shared_ptr[unity_sarray_base] unity_sarray_base_ptr
 ctypedef shared_ptr[unity_sframe_base] unity_sframe_base_ptr
 ctypedef shared_ptr[unity_sgraph_base] unity_sgraph_base_ptr

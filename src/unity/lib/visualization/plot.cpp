@@ -64,4 +64,9 @@ namespace turi{
       return m_vega_spec;
     }
   }
+
+  BEGIN_CLASS_REGISTRATION
+  REGISTER_CLASS(visualization::Plot)
+  END_CLASS_REGISTRATION
 }
+
