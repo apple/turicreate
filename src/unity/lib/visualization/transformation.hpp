@@ -12,6 +12,8 @@
 namespace turi {
 namespace visualization {
 
+class summary_view_transformation;
+
 class transformation_output {
   public:
     virtual std::string vega_column_data(bool sframe = false) const = 0;
@@ -22,15 +24,6 @@ class sframe_transformation_output : public transformation_output {
     virtual std::string vega_summary_data() const = 0;
 };
 
-class fused_transformation_output : public transformation_output {
-  private:
-    std::vector<std::shared_ptr<transformation_output>> m_outputs;
-
-  public:
-    fused_transformation_output(const std::vector<std::shared_ptr<transformation_output>> outputs);
-    virtual std::string vega_column_data(bool sframe = false) const override;
-};
-
 class transformation_base {
   public:
     virtual std::shared_ptr<transformation_output> get() = 0;
@@ -39,23 +32,10 @@ class transformation_base {
     virtual size_t get_batch_size() const = 0;
 };
 
-class fused_transformation : public transformation_base {
-  private:
-    std::vector<std::shared_ptr<transformation_base>> m_transformers;
-
-  public:
-    fused_transformation(const std::vector<std::shared_ptr<transformation_base>> transformers);
-    virtual std::shared_ptr<transformation_output> get() override;
-    virtual bool eof() const override;
-    virtual flex_int get_rows_processed() const override;
-    virtual size_t get_batch_size() const override;
-};
-
 class transformation_collection : public std::vector<std::shared_ptr<transformation_base>> {
   public:
     // combines all of the transformations in the collection
     // into a single transformer interface to simplify consumption
-    std::shared_ptr<fused_transformation> fuse();
 };
 
 template<typename InputIterable,

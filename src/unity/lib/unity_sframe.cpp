@@ -32,12 +32,15 @@
 #include <sframe_query_engine/algorithm/ec_sort.hpp>
 #include <sframe_query_engine/algorithm/groupby_aggregate.hpp>
 #include <sframe_query_engine/operators/operator_properties.hpp>
+#include <unity/lib/visualization/plot.hpp>
 #include <lambda/pylambda_function.hpp>
 #include <exceptions/error_types.hpp>
 #include <unity/lib/visualization/process_wrapper.hpp>
 #include <unity/lib/visualization/histogram.hpp>
 #include <unity/lib/visualization/item_frequency.hpp>
+#include <unity/lib/visualization/transformation.hpp>
 #include <unity/lib/visualization/thread.hpp>
+#include <unity/lib/visualization/summary_view.hpp>
 #include <unity/lib/visualization/vega_data.hpp>
 #include <unity/lib/visualization/vega_spec.hpp>
 #include <unity/lib/image_util.hpp>
@@ -1561,6 +1564,17 @@ std::string unity_sframe::generate_next_column_name() {
 }
 
 void unity_sframe::show(const std::string& path_to_client) {
+  using namespace turi;
+  using namespace turi::visualization;
+
+  std::shared_ptr<Plot> plt = std::dynamic_pointer_cast<Plot>(this->plot(path_to_client));
+
+  if(plt != nullptr){
+    plt->show();
+  }
+}
+
+std::shared_ptr<model_base> unity_sframe::plot(const std::string& path_to_client){
 
   using namespace turi;
   using namespace turi::visualization;
@@ -1576,6 +1590,7 @@ void unity_sframe::show(const std::string& path_to_client) {
 
   std::shared_ptr<unity_sframe_base> self = this->select_columns(this->column_names());
   transformation_collection column_transformers;
+
   std::vector<std::string> column_names;
 
   size_t i = 0;
@@ -1640,52 +1655,19 @@ void unity_sframe::show(const std::string& path_to_client) {
     log_and_throw("Nothing to show, because there are no columns of type [int, float, str]");
   }
 
-  ::turi::visualization::run_thread([path_to_client, column_transformers, column_names, self]() {
+  std::vector<flex_type_enum> column_types;
 
-    visualization::process_wrapper ew(path_to_client);
-    ew << summary_view_spec(column_transformers.size());
+  for(size_t i = 0; i < column_names.size(); i++){
+    std::shared_ptr<unity_sarray_base> sarr = self->select_column(column_names[i]);
+    column_types.push_back(sarr->dtype());
+  }
 
-    const static size_t expected_batch_size = 5000000;
-    double num_rows_processed = 0;
-    double num_rows_total = self->size() * column_transformers.size();
-    double percent_complete = 0.0;
+  std::shared_ptr<summary_view_transformation> summary_view_transformers = std::make_shared<summary_view_transformation>(column_transformers, column_names, column_types, self->size());
+  std::string summary_view_vega_spec  = summary_view_spec(column_transformers.size());
 
-    while (ew.good()) {
-      bool remainingItems = false;
+  std::shared_ptr<transformation_base> shared_unity_transformer = std::static_pointer_cast<transformation_base>(summary_view_transformers);
 
-      for (size_t i=0; i<column_transformers.size() && ew.good(); i++) {
-        const auto& transformation = column_transformers[i];
-        const auto& name = column_names[i];
-
-        vega_data vd;
-
-        std::shared_ptr<unity_sarray_base> sarr = self->select_column(name);
-        auto result = transformation->get();
-
-        vd << vd.create_sframe_spec(i, self->size(), sarr->dtype(), name, result);
-
-        double batch_size = static_cast<double>(transformation->get_batch_size());
-        DASSERT_EQ(batch_size, expected_batch_size);
-        num_rows_processed += static_cast<double>(transformation->get_rows_processed());
-        percent_complete = num_rows_processed / num_rows_total;
-
-        DASSERT_GE(percent_complete, 0.0);
-        DASSERT_LE(percent_complete, 1.0);
-
-        ew << vd.get_data_spec(percent_complete);
-
-        if (!transformation->eof()) {
-          remainingItems = true;
-        }
-      }
-
-      if (!remainingItems) {
-        DASSERT_EQ(percent_complete, 1.0);
-        break;
-      }
-    }
-
-  });
+  return std::make_shared<Plot>(path_to_client, summary_view_vega_spec, shared_unity_transformer, (self->size() * column_transformers.size()));
 }
 
 void unity_sframe::explore(const std::string& path_to_client, const std::string& title) {

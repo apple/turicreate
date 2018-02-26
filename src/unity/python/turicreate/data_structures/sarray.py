@@ -21,6 +21,7 @@ from ..cython.cy_sarray import UnitySArrayProxy
 from ..cython.context import debug_trace as cython_context
 from ..util import _is_non_string_iterable, _make_internal_url
 from ..visualization import _get_client_app_path
+from ..visualization import Plot
 from .image import Image as _Image
 from .. import aggregate as _aggregate
 from ..deps import numpy, HAS_NUMPY
@@ -2894,10 +2895,12 @@ class SArray(object):
 
         >>> sa.show(title="My Plot Title", xlabel="My X Axis", ylabel="My Y Axis")
         """
-        import sys
-        import os
-        if sys.platform != 'darwin' and sys.platform != 'linux2':
-             raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
+
+        returned_plot = self.plot(title, xlabel, ylabel)
+
+        returned_plot.show()
+
+    def plot(self, title=None, xlabel=None, ylabel=None):
 
         path_to_client = _get_client_app_path()
 
@@ -2914,7 +2917,8 @@ class SArray(object):
             xlabel = ""
         if ylabel is None:
             ylabel = ""
-        self.__proxy__.show(path_to_client, title, xlabel, ylabel)
+
+        return Plot(self.__proxy__.plot(path_to_client, title, xlabel, ylabel))
 
     def item_length(self):
         """

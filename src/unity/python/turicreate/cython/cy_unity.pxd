@@ -85,9 +85,9 @@ cdef extern from "<unity/lib/unity_global.hpp>" namespace "turi":
         string get_turicreate_object_type(const string& url) except +
 
 cdef extern from "<unity/lib/unity_global_singleton.hpp>" namespace "turi":
-        shared_ptr[unity_global] get_unity_global_singleton() 
+        shared_ptr[unity_global] get_unity_global_singleton()
 
-ctypedef shared_ptr[unity_global] unity_global_ptr 
+ctypedef shared_ptr[unity_global] unity_global_ptr
 
 cdef class UnityGlobalProxy:
     cdef unity_global* thisptr
@@ -162,4 +162,3 @@ cdef function_closure_info make_function_closure_info(object) except *
 
 cdef extern from "<unity/lib/api/client_base_types.hpp>" namespace "turi":
     void variant_set_closure "turi::variant_set_value<turi::function_closure_info>" (variant_type& v, const function_closure_info& f)
-

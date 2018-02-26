@@ -26,6 +26,7 @@ from .. import aggregate
 from .image import Image as _Image
 from ..deps import pandas, numpy, HAS_PANDAS, HAS_NUMPY
 from .grouped_sframe import GroupedSFrame
+from ..visualization import Plot
 
 import array
 from prettytable import PrettyTable
@@ -4471,15 +4472,15 @@ class SFrame(object):
 
         >>> sf.show()
         """
-        import sys
-        import os
 
-        if sys.platform != 'darwin' and sys.platform != 'linux2':
-            raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
+        returned_plot = self.plot()
 
+        returned_plot.show()
+
+    def plot(self):
         path_to_client = _get_client_app_path()
 
-        self.__proxy__.show(path_to_client)
+        return Plot(self.__proxy__.plot(path_to_client))
 
     def pack_columns(self, column_names=None, column_name_prefix=None, dtype=list,
                      fill_na=None, remove_prefix=True, new_column_name=None):
