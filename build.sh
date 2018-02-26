@@ -149,7 +149,7 @@ function build_python_egg {
   if [[ $apple -eq 1 ]]; then
     find . -type f -name '*.dylib' -o -name '*.so' | xargs strip -x -
   else
-    find . -type f -name '*.so' | xargs strip -s
+    find . -type f -name '*.so' -print0 | xargs -0 strip -s
   fi
 
   find . -type f -name '*.dylib' -o -name '*.so' | xargs tar cvzf ${install_dir}/shared_objects.tar.gz
