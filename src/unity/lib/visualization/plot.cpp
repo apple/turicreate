@@ -69,4 +69,3 @@ namespace turi{
   REGISTER_CLASS(visualization::Plot)
   END_CLASS_REGISTRATION
 }
-

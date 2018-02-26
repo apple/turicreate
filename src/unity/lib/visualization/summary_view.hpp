@@ -18,7 +18,7 @@ class summary_view_transformation_output : public transformation_output {
     size_t m_size;
     size_t m_index;
 
-    summary_view_transformation_output(const std::vector<std::shared_ptr<transformation_output>> outputs);
+    summary_view_transformation_output(const std::vector<std::shared_ptr<transformation_output>> outputs, std::vector<std::string> column_names, std::vector<flex_type_enum> column_types, size_t size, size_t index);
     virtual std::string vega_column_data(bool sframe = false) const override;
 };
 
@@ -32,7 +32,7 @@ class summary_view_transformation : public transformation_base {
     std::vector<flex_type_enum> m_column_types;
     size_t m_size;
 
-    summary_view_transformation(const std::vector<std::shared_ptr<transformation_base>> transformers);
+    summary_view_transformation(const std::vector<std::shared_ptr<transformation_base>> transformers, std::vector<std::string> column_names, std::vector<flex_type_enum> column_types, size_t size);
 
     virtual std::shared_ptr<transformation_output> get() override;
     virtual bool eof() const override;

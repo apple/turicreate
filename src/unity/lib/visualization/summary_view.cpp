@@ -7,8 +7,8 @@
 using namespace turi;
 using namespace turi::visualization;
 
-summary_view_transformation_output::summary_view_transformation_output(const std::vector<std::shared_ptr<transformation_output>> outputs)
-  : m_outputs(outputs) {
+summary_view_transformation_output::summary_view_transformation_output(const std::vector<std::shared_ptr<transformation_output>> outputs, std::vector<std::string> column_names, std::vector<flex_type_enum> column_types, size_t size, size_t index)
+  : m_outputs(outputs), m_column_names(column_names), m_column_types(column_types), m_size(size), m_index(index) {
 }
 
 std::string summary_view_transformation_output::vega_column_data(bool sframe) const {
@@ -34,8 +34,8 @@ std::string summary_view_transformation_output::vega_column_data(bool sframe) co
   return ss.str();
 }
 
-summary_view_transformation::summary_view_transformation(const std::vector<std::shared_ptr<transformation_base>> transformers)
-  : m_transformers(transformers) {
+summary_view_transformation::summary_view_transformation(const std::vector<std::shared_ptr<transformation_base>> transformers, std::vector<std::string> column_names, std::vector<flex_type_enum> column_types, size_t size)
+  : m_transformers(transformers),  m_column_names(column_names), m_column_types(column_types), m_size(size) {
     // 1. Must have 1 or more transformers
     if (transformers.size() < 1) {
       throw std::runtime_error("Expected 1 or more transformers when fusing transformers.");
@@ -54,12 +54,7 @@ std::shared_ptr<transformation_output> summary_view_transformation::get() {
   std::shared_ptr<transformation_output> output =  m_transformers[m_index] -> get();
   ret.push_back(output);
 
-  auto fused_out = std::make_shared<summary_view_transformation_output>(ret);
-
-  fused_out->m_column_names = m_column_names;
-  fused_out->m_column_types = m_column_types;
-  fused_out->m_size = m_size;
-  fused_out->m_index = m_index;
+  auto fused_out = std::make_shared<summary_view_transformation_output>(summary_view_transformation_output(ret, m_column_names, m_column_types, m_size, m_index));
 
   m_index = m_index + 1;
 

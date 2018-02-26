@@ -17,7 +17,6 @@ make_library(
     show.cpp
     summary_view.cpp
     thread.cpp
-    transformation.cpp
     vega_data.cpp
     vega_spec.cpp
   REQUIRES

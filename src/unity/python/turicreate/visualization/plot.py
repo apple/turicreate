@@ -23,10 +23,18 @@ class Plot(object):
         self.__proxy__.get('call_function', {'__function_name__': 'show'})
 
     def save_vega(self, filepath, include_data=True):
-        file_contents = self.__proxy__.get('call_function', {'__function_name__': 'get_spec'})
+        spec = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_spec'}))
+
+        if(include_data):
+            data = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_data'}))["data_spec"]
+
+            for x in range(0, len(spec["vega_spec"]["data"])):
+                if(spec["vega_spec"]["data"][x]["name"] == "source_2"):
+                    spec["vega_spec"]["data"][x] = data
+                    break;
 
         with open(filepath, 'w') as fp:
-            _json.dump(file_contents, fp)
+            _json.dump(spec, fp)
 
     def get_data(self):
         return _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_data'}))

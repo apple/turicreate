@@ -36,7 +36,6 @@ class transformation_collection : public std::vector<std::shared_ptr<transformat
   public:
     // combines all of the transformations in the collection
     // into a single transformer interface to simplify consumption
-    std::shared_ptr<summary_view_transformation> fuse(std::vector<std::string> column_names, std::vector<flex_type_enum> column_types, size_t size);
 };
 
 template<typename InputIterable,
