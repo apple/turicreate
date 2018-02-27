@@ -89,7 +89,7 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
 
       TS_ASSERT(error == NULL);
 
-      model = tc_variant_model(var_m, &error); 
+      model = tc_variant_model(var_m, &error);
       TS_ASSERT(error == NULL);
 
       tc_variant_destroy(var_m);
@@ -199,3 +199,87 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
   }
 }
 
+
+BOOST_AUTO_TEST_CASE(test_auto_classification) {
+    tc_error* error = NULL;
+
+    tc_initialize("/tmp/", &error);
+    TS_ASSERT(error == NULL);
+
+    std::vector<std::pair<std::string, std::vector<double> > > features = {
+        {"col1", {1., 1., 10., 10.}},
+        {"col2", {2., 2., 20., 20.}}};
+    tc_sframe* data = make_sframe_double(features);
+
+    tc_flex_list* target_value = make_flex_list_string({"A", "A", "B", "B"});
+    tc_sarray* target_sarray = tc_sarray_create_from_list(target_value, &error);
+    TS_ASSERT(error == NULL);
+
+    tc_sframe_add_column(data, "target", target_sarray, &error);
+    TS_ASSERT(error == NULL);
+
+    tc_parameters* args = tc_parameters_create_empty(&error);
+    TS_ASSERT(error == NULL);
+
+    { // Populate args
+      tc_parameters_add_sframe(args, "data", data, &error);
+      TS_ASSERT(error == NULL);
+
+      // Set the target column
+      tc_flexible_type* ft_name = tc_ft_create_from_cstring("target", &error);
+      TS_ASSERT(error == NULL);
+      tc_parameters_add_flexible_type(args, "target", ft_name, &error);
+      TS_ASSERT(error == NULL);
+      tc_ft_destroy(ft_name);
+
+      // Set the validation data to something empty
+      tc_sframe* ft_empty_sframe = tc_sframe_create_empty(&error);
+      TS_ASSERT(error == NULL);
+
+      tc_parameters_add_sframe(args, "validation_data", ft_empty_sframe, &error);
+      TS_ASSERT(error == NULL);
+
+      tc_sframe_destroy(ft_empty_sframe);
+
+      // Set the options
+      tc_flex_dict* fd = tc_flex_dict_create(&error);
+      TS_ASSERT(error == NULL);
+
+      tc_parameters_add_flex_dict(args, "options", fd, &error);
+      TS_ASSERT(error == NULL);
+
+      tc_flex_dict_destroy(fd);
+    }
+
+    { // Model selection without validation data
+      tc_variant* var_m =
+        tc_function_call("_supervised_learning.create_automatic_classifier_model", args, &error);
+      TS_ASSERT(error == NULL);
+
+      tc_model* model = tc_variant_model(var_m, &error);
+      TS_ASSERT(error == NULL);
+      TS_ASSERT(model != NULL);
+
+      tc_model_destroy(model);
+      tc_variant_destroy(var_m);
+    }
+
+    { // Model selection with validation data
+      tc_parameters_add_sframe(args, "validation_data", data, &error);
+      TS_ASSERT(error == NULL);
+
+      tc_variant* var_m =
+        tc_function_call("_supervised_learning.create_automatic_classifier_model", args, &error);
+      TS_ASSERT(error == NULL);
+
+      tc_model* model = tc_variant_model(var_m, &error);
+      TS_ASSERT(error == NULL);
+      TS_ASSERT(model != NULL);
+
+      tc_model_destroy(model);
+      tc_variant_destroy(var_m);
+    }
+
+    tc_sframe_destroy(data);
+    tc_parameters_destroy(args);
+}
