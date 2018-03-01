@@ -60,14 +60,11 @@ class Plot(object):
             if(get_ipython().__class__.__name__ == "ZMQInteractiveShell"):
                 self._repr_javascript_()
                 display = True
-            else:
-                pass
         except NameError:
             pass
         finally:
             if not display:
                 import sys
-                import os
                 if sys.platform != 'darwin' and sys.platform != 'linux2':
                      raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
 
