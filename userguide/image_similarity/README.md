@@ -111,6 +111,16 @@ similar_images = similarity_graph.edges
 [91440 rows x 4 columns]
 ```
 
+##### Saving the model
+
+Once you have created a model, you can save it and load it back later for use.
+
+```
+model.save('myModel.model')
+loaded_model = turicreate.load_model('myModel.model')
+```
+
+
 ##### Deploying to Core ML
 
 Using the Core ML Framework, you can retrieve the distance between a query image and all images in the reference data. Exporting this model in Core ML format can be
