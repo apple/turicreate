@@ -71,6 +71,9 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
 
     add_executable(visualization_client "${TCVIZ_SRCS}")
 
+    set_target_properties(visualization_client
+      PROPERTIES LINK_FLAGS "-Wl,--unresolved-symbols=ignore-in-shared-libs")
+
     target_link_libraries(visualization_client
       ${LIB_CEF_DLL_WRAPPER}
       ${LIB_CEF}
