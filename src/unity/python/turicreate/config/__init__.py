@@ -156,6 +156,17 @@ def get_environment_config():
     unity = _glconnect.get_unity()
     return unity.list_globals(False)
 
+def set_log_level(level):
+    """
+    Sets the log level.
+    Lower log levels log more.
+    if level is 8, nothing is logged. If level is 0, everything is logged.
+    """
+    from ..connect import main as _glconnect
+    unity = _glconnect.get_unity()
+    return unity.set_log_level(level)
+
+
 def get_runtime_config():
     """
     Returns all the Turi Create configuration variables that can be set
