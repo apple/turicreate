@@ -231,6 +231,11 @@ class unity_global: public unity_global_base {
    */
   size_t __get_allocated_size__();
 
+  /**
+   * \internal
+   * Sets the logging level
+   */
+  void set_log_level(size_t);
 
   /**
    * \internal

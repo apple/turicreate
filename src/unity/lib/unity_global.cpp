@@ -507,6 +507,10 @@ namespace turi {
     return memory_info::allocated_bytes();
   }
 
+  void unity_global::set_log_level(size_t level) {
+    if (level <= 8) global_logger().set_log_level(level);
+  }
+
   std::map<std::string, flexible_type> unity_global::list_globals(bool runtime_modifiable) {
     auto ret = globals::list_globals(runtime_modifiable);
     return std::map<std::string, flexible_type>(ret.begin(), ret.end());

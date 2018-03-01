@@ -68,6 +68,8 @@ cdef extern from "<unity/lib/unity_global.hpp>" namespace "turi":
 
         size_t __get_allocated_size__() except +
 
+        void set_log_level(size_t) except +
+
         gl_options_map list_globals(bint) except +
 
         string set_global(string, flexible_type) except +
@@ -134,6 +136,8 @@ cdef class UnityGlobalProxy:
     cpdef __get_heap_size__(self)
 
     cpdef __get_allocated_size__(self)
+
+    cpdef set_log_level(self, size_t level)
 
     cpdef list_globals(self, bint runtime_modifiable)
 

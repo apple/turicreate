@@ -172,6 +172,9 @@ cdef class UnityGlobalProxy:
     cpdef __get_allocated_size__(self):
         return self.thisptr.__get_allocated_size__()
 
+    cpdef set_log_level(self, size_t level):
+        return self.thisptr.set_log_level(level)
+
     cpdef list_globals(self, bint runtime_modifiable):
         return pydict_from_gl_options_map(self.thisptr.list_globals(runtime_modifiable))
 
