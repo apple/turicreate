@@ -4473,11 +4473,11 @@ class SFrame(object):
         >>> sf.show()
         """
 
-        returned_plot = self.plot()
+        returned_plot = self.__plot()
 
         returned_plot.show()
 
-    def plot(self):
+    def __plot(self):
         path_to_client = _get_client_app_path()
 
         return Plot(self.__proxy__.plot(path_to_client))
