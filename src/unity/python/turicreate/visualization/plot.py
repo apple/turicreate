@@ -8,11 +8,11 @@ import json as _json
 
 class Plot(object):
     """
-    An immutable, object representative of a visualization.
+    An immutable object representation of a visualization.
 
     Notes
     -----
-    - A plot object is returned through a proxy via the SFrame's or SArray's .plot() method
+    - A plot object is returned via the SFrame's or SArray's .plot() method
 
     Examples
     --------
@@ -44,7 +44,7 @@ class Plot(object):
         Notes
         -----
         - In a Jupyter Notebook the .show() method displays an inline plot
-        - In any other environment, the .show() method displays a native GUI
+        - In any other environment, the .show() method launches a native GUI and displays the plot there
 
         Examples
         --------
@@ -62,7 +62,7 @@ class Plot(object):
                 display = True
             else:
                 pass
-        except:
+        except NameError:
             pass
         finally:
             if not display:
