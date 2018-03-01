@@ -147,12 +147,12 @@ function build_python_egg {
   pushd ${build_mode}/src
 
   if [[ $apple -eq 1 ]]; then
-    find . -type f -name '*.dylib' -o -name '*.so' | xargs strip -x -
+    find . \(-type f -name '*.dylib' -o -name '*.so'\) -print0 | xargs -0 strip -x -
   else
     find . -type f -name '*.so' -print0 | xargs -0 strip -s
   fi
 
-  find . -type f -name '*.dylib' -o -name '*.so' | xargs tar cvzf ${install_dir}/shared_objects.tar.gz
+  find . \(-type f -name '*.dylib' -o -name '*.so'\) -print0 | xargs -0 tar cvzf ${install_dir}/shared_objects.tar.gz
 }
 
 
