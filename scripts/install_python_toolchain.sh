@@ -1,4 +1,4 @@
-#bin/bash
+#!/bin/bash
 # has to be run from root of the repo
 set -x
 set -e
@@ -9,10 +9,10 @@ fi
 
 PIP=pip3
 # TODO - not sure why 'm' is necessary here (and not in 2.7)
-PYTHON_FULL_NAME=${PYTHON_VERSION}m
-if [[ "${PYTHON_VERSION}" == "python2.7" ]]; then
+PYTHON_FULL_NAME=python${PYTHON_VERSION}m
+if [[ "${PY_MAJOR_VERSION}" == "2.7" ]]; then
   PIP=pip
-  PYTHON_FULL_NAME=${PYTHON_VERSION}
+  PYTHON_FULL_NAME=python2.7
 fi
 
 $VIRTUALENV ${PWD}/deps/env

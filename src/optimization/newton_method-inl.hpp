@@ -16,10 +16,6 @@
 #include <optimization/line_search-inl.hpp>
 #include <table_printer/table_printer.hpp>
 
-#ifdef HAS_DISTRIBUTED
-#include <distributed/utils.hpp>
-#endif
-
 // TODO: List of todo's for this file
 //------------------------------------------------------------------------------
 // 1. Sparse hessian newton method?
@@ -181,11 +177,6 @@ inline solver_return newton_method(second_order_opt_interface& model,
                         std::to_string(t.current_time())};
       auto row = model.get_status(point, stat_info);
       printer.print_progress_row_strs(iters, row);
-
-#ifdef HAS_DISTRIBUTED
-      bool gradient_all_equals = distributed_check_equals(arma::norm(gradient, 2));
-      ASSERT_MSG(gradient_all_equals, "detect inconsistent gradients");
-#endif
     }
     printer.print_footer();
 
@@ -217,7 +208,6 @@ inline solver_return newton_method(second_order_opt_interface& model,
 
 } // optimizaiton
 
-/// \}
 } // turicreate
 
 #endif 

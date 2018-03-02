@@ -9,8 +9,6 @@ fi
 
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 WORKSPACE=${SCRIPT_DIR}/..
-ABS_WORKSPACE=`dirname $SCRIPT_DIR`
-build_type="release"
 
 
 print_help() {

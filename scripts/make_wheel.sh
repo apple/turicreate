@@ -5,7 +5,6 @@ set -e
 # Force LD_LIBRARY_PATH to look up from deps
 # Otherwise, binaries run during compilation will prefer system libraries,
 # which might not use the correct glibc version.
-# This seems to repro on Ubuntu 11.10 (Oneiric).
 
 PYTHON_SCRIPTS=deps/env/bin
 if [[ $OSTYPE == msys ]]; then
@@ -13,14 +12,12 @@ if [[ $OSTYPE == msys ]]; then
 fi
 
 if [[ -z $PY_MAJOR_VERSION ]]; then
-  PY_MAJOR_VERSION=`python -V 2>&1 | perl -ne 'print m/^Python (\d\.\d)/'`
+  export PY_MAJOR_VERSION=`python -V 2>&1 | perl -ne 'print m/^Python (\d\.\d)/'`
 fi
 
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 WORKSPACE=${SCRIPT_DIR}/..
-ABS_WORKSPACE=`dirname $SCRIPT_DIR`
 build_type="release"
-export TURICREATE_USERNAME=''
 #export LD_LIBRARY_PATH=${ROOT_DIR}/deps/local/lib:${ROOT_DIR}/deps/local/lib64:$LD_LIBRARY_PATH
 
 print_help() {
@@ -30,17 +27,17 @@ print_help() {
   echo
   echo "  --build_number=[version] The build number of the wheel, e.g. 123. Or 123.gpu"
   echo
-  echo "  --skip_test              Skip unit test and doc generation."
+  echo "  --skip_test              Skip unit tests (Python & C++)."
   echo
   echo "  --skip_cpp_test          Skip C++ unit tests. C++ tests are default skipped on Windows."
   echo
-  echo "  --skip_build             Skip the build process"
+  echo "  --skip_build             Skip the build process."
   echo
-  echo "  --skip_doc               Skip the doc generation"
+  echo "  --skip_doc               Skip the generation of documentation."
   echo
-  echo "  --debug                  Use debug build instead of release"
+  echo "  --debug                  Use debug build instead of release."
   echo
-  echo "  --num_procs=n            Specify the number of proceses to run in parallel"
+  echo "  --num_procs=n            Specify the number of proceses to run in parallel."
   echo
   echo "  --target-dir=[dir]       The directory where the wheel and associated files are put."
   echo
@@ -146,20 +143,21 @@ build_source() {
 
 # Run all unit test
 cpp_test() {
-  echo -e "\n\n\n================= Running Unit Test ================\n\n\n"
-  cd ${WORKSPACE}/${build_type}
+  echo -e "\n\n\n================= Running C++ Unit Tests ================\n\n\n"
+  cd ${WORKSPACE}/${build_type}/test
   push_ld_library_path
-  ${WORKSPACE}/scripts/run_cpp_tests.py -j 1
+  ${WORKSPACE}/scripts/run_cpp_tests.py -j${NUM_PROCS}
   pop_ld_library_path
+  echo -e "\n\n\n================= Done C++ Unit Tests ================\n\n\n"
 }
 
 # Run all unit test
 unit_test() {
-  echo -e "\n\n\n================= Running Unit Test ================\n\n\n"
+  echo -e "\n\n\n================= Running Python Unit Tests ================\n\n\n"
 
   cd ${WORKSPACE}
   scripts/run_python_test.sh ${build_type}
-  echo -e "\n\n================= Done Unit Test ================\n\n"
+  echo -e "\n\n================= Done Python Unit Tests ================\n\n"
 }
 
 mac_patch_rpath() {

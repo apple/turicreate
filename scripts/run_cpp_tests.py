@@ -66,17 +66,14 @@ if __name__ == '__main__':
   runtests = [test.split('/')[-1].replace('cxxtest','cxx') for test in tests]
 
   # Make the command to run
-  cmd = 'export LD_LIBRARY_PATH=$WORKAROUND_LD_LIBRARY_PATH && ctest --output-on-failure -j {0} --schedule-random -R "({1})"'.format(args.j, '|'.join(runtests))
+  cmd = 'ctest --output-on-failure -j {0} --schedule-random -R "({1})"'.format(args.j, '|'.join(runtests))
   if args.dry_run:
     print('Dry run requested! Proposed ctest command:', cmd)
     exit()
 
   exit_code = 0
-  env = os.environ.copy()
-  env['WORKAROUND_LD_LIBRARY_PATH'] = os.getenv('LD_LIBRARY_PATH')
-
   try: 
-      ctest_output = subprocess.check_output(cmd, shell=True, env=env)
+      ctest_output = subprocess.check_output(cmd, shell=True)
   except subprocess.CalledProcessError as e:
       ctest_output = e.output
       exit_code = e.returncode

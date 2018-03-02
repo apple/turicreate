@@ -31,13 +31,6 @@
 #include <cmath>
 #include <serialization/serialization_includes.hpp>
 
-// Distributed
-#ifdef HAS_DISTRIBUTED
-#include <distributed/distributed_context.hpp>
-#include <rpc/dc_global.hpp>
-#include <rpc/dc.hpp>
-#endif
-
 #define LOGISTIC_REGRESSION_NEWTON_VARIABLES_HARD_LIMIT 10000
 #define LOGISTIC_REGRESSION_NEWTON_VARIABLES_SOFT_LIMIT 500
 

@@ -1,3 +1,4 @@
+coremltools==0.8
 scipy==0.19.1
 numpy==1.11.1
 cython==0.24

@@ -23,13 +23,6 @@
 #include <numerics/armadillo.hpp>
 #include <serialization/serialization_includes.hpp>
 
-// Distributed
-#ifdef HAS_DISTRIBUTED
-#include <distributed/distributed_context.hpp>
-#include <rpc/dc_global.hpp>
-#include <rpc/dc.hpp>
-#endif
-
 constexpr size_t LINEAR_REGRESSION_BATCH_SIZE = 1000;
 
 // TODO: List of todo's for this file
@@ -57,10 +50,6 @@ linear_regression_opt_interface::linear_regression_opt_interface(
 
   // Initialize reader and other data
   examples = data.num_rows();
-#ifdef HAS_DISTRIBUTED 
-  auto dc = distributed_control_global::get_instance();
-  dc->all_reduce(examples);
-#endif
   features = data.num_columns();
   n_threads = turi::thread_pool::get_instance().size();
 
@@ -224,13 +213,6 @@ void linear_regression_opt_interface::compute_first_order_statistics(const
     gradient += G[i];
     function_value += f[i];
   }
-
-#ifdef HAS_DISTRIBUTED
-  auto dc = distributed_control_global::get_instance();
-  DASSERT_TRUE(dc != NULL);
-  dc->all_reduce(gradient, true);
-  dc->all_reduce(function_value, true);
-#endif
 }
 
 /**
@@ -319,15 +301,6 @@ void linear_regression_opt_interface::compute_second_order_statistics(
     gradient += G[i];
     function_value += f[i];
   }
- 
-#ifdef HAS_DISTRIBUTED
-  auto dc = distributed_control_global::get_instance();
-  DASSERT_TRUE(dc != NULL);
-  dc->all_reduce(hessian, true);
-  dc->all_reduce(gradient, true);
-  dc->all_reduce(function_value, true);
-#endif
-
 }
 
 void linear_regression_opt_interface::compute_second_order_statistics(
