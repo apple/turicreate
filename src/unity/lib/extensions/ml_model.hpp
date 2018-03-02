@@ -122,7 +122,7 @@ class EXPORT ml_model_base: public model_base {
    *
    * This is the function that the list_fields should call in python.
    */
-  std::vector<std::string> list_fields() const;
+  std::vector<std::string> list_fields();
 
 
   /**

@@ -21,7 +21,7 @@ namespace turi {
 /**
  * List all the keys that are present in the state.
  */
-std::vector<std::string> ml_model_base::list_fields() const{
+std::vector<std::string> ml_model_base::list_fields() {
   std::vector<std::string> ret;
   for (const auto& kvp: state){
     ret.push_back(kvp.first);

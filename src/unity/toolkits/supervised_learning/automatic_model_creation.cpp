@@ -39,7 +39,7 @@ double get_classifier_accuracy(std::shared_ptr<supervised_learning_model_base> m
 
   // Get the model's progress SFrame.
   variant_type progress = model->get_value_from_state("progress");
-  assert(get_variant_which_name(progress.which()) == "SFrame");
+  ASSERT_TRUE(get_variant_which_name(progress.which()) == "SFrame");
   auto progress_sframe = variant_get_ref< std::shared_ptr<turi::unity_sframe_base> >(progress);
 
   // Get the last validation from the progress SFrame
@@ -57,8 +57,8 @@ double get_classifier_accuracy(std::shared_ptr<supervised_learning_model_base> m
     log_and_throw("Model does not have metrics that can be used for model selection.");
   }
   double result = accuracy.to<double>();
-  assert(result >= 0);
-  assert(result <= 1);
+  ASSERT_TRUE(result >= 0);
+  ASSERT_TRUE(result <= 1);
 
   return result;
 }
