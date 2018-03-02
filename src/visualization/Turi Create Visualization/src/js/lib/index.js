@@ -441,7 +441,7 @@ window.setSpec = function setSpec(value) {
 
         vlSpec.autosize = {"type": "pad", "resize": true, "contains": "padding"};
 
-        vega.embed("#vega_vis", vlSpec, opt).then(function(viewInstance) {
+        vegaEmbed("#vega_vis", vlSpec, opt).then(function(viewInstance) {
                                                   vegaTooltip.vegaLite(viewInstance.view, vlSpec, bubbleOpts);
                                                   vegaView = viewInstance.view;
                                                   window.vegaResult = viewInstance.spec;
