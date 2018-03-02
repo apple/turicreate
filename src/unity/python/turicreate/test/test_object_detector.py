@@ -185,7 +185,6 @@ class ObjectDetectorTest(unittest.TestCase):
         annotated_img = tc.object_detector.util.draw_bounding_boxes(sf_copy[self.feature],
                 sf_copy[self.annotations])
 
-
     def test_invalid_num_gpus(self):
         num_gpus = tc.config.get_num_gpus()
         tc.config.set_num_gpus(-2)

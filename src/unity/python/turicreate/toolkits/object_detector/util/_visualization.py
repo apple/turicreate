@@ -122,7 +122,7 @@ def draw_bounding_boxes(images, annotations, confidence_threshold=0):
         anns = row['annotations']
         if anns == None:
             anns = []
-        if type(anns) == dict:
+        elif type(anns) == dict:
             anns = [anns]
         pil_img = Image.fromarray(image.pixel_data)
         _annotate_image(pil_img, anns, confidence_threshold=confidence_threshold)
