@@ -344,8 +344,9 @@ size_t unity_sframe::column_index(const std::string &name) {
   Dlog_func_entry();
 
   auto it = std::find(m_column_names.begin(), m_column_names.end(), name);
-  ASSERT_MSG(it != m_column_names.end(),
-             (std::string("Column '") + name + "' not found.").c_str());
+  if(it == m_column_names.end()) {
+    log_and_throw((std::string("Column '") + name + "' not found.").c_str());
+  }
   return std::distance(m_column_names.begin(), it);
 }
 
@@ -498,7 +499,9 @@ void unity_sframe::add_columns(
 void unity_sframe::set_column_name(size_t i, std::string name) {
   Dlog_func_entry();
   logstream(LOG_DEBUG) << "Args: " << i << "," << name << std::endl;
-  ASSERT_MSG(i < num_columns(), "Column index out of bound.");
+  if (i >= num_columns()) {
+    log_and_throw("Column index out of bound.");
+  }
   std::vector<std::string> colnames = column_names();
   for (size_t j = 0; j < num_columns(); ++j) {
     if (j != i && colnames[j] == name) {
@@ -511,7 +514,9 @@ void unity_sframe::set_column_name(size_t i, std::string name) {
 void unity_sframe::remove_column(size_t i) {
   Dlog_func_entry();
   logstream(LOG_INFO) << "Args: " << i << std::endl;
-  ASSERT_MSG(i < num_columns(), "Column index out of bound.");
+  if(i >= num_columns()) {
+    log_and_throw("Column index out of bound.");
+  }
 
   std::vector<size_t> project_column_indices;
   for (size_t j = 0; j < num_columns(); ++j) {
@@ -541,8 +546,12 @@ void unity_sframe::remove_column(size_t i) {
 void unity_sframe::swap_columns(size_t i, size_t j) {
   Dlog_func_entry();
   logstream(LOG_DEBUG) << "Args: " << i << ", " << j << std::endl;
-  ASSERT_MSG(i < num_columns(), "Column index 1 out of bound.");
-  ASSERT_MSG(j < num_columns(), "Column index 2 out of bound.");
+  if(i >= num_columns()) {
+    log_and_throw("Column index value of " << i << " is out of bound.");
+  }
+  if(j >= num_columns()) {
+    log_and_throw("Column index value of " << j << " is out of bound.");
+  }
 
   std::vector<std::string> new_column_names = column_names();
   std::vector<size_t> new_column_indices(num_columns());
