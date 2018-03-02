@@ -196,6 +196,25 @@ class SFrameTest(unittest.TestCase):
         sf = SFrame(data=original_p)
         self.__test_equal(sf, original_p)
 
+    def test_auto_parse_csv_with_bom(self):
+        with tempfile.NamedTemporaryFile(mode='w', delete=False) as csvfile:
+            df = pd.DataFrame({'float_data': self.float_data,
+                               'int_data': self.int_data,
+                               'string_data': self.a_to_z[:len(self.int_data)]})
+            df.to_csv(csvfile, index=False)
+            csvfile.close()
+
+            import codecs
+            with open(csvfile.name) as f:
+                content = f.read()
+            with open(csvfile.name, 'w') as f:
+                f.write(codecs.BOM_UTF8)
+                f.write(content)
+
+            sf = SFrame.read_csv(csvfile.name, header=True)
+            self.assertEqual(sf.dtype, [float, int, str])
+            self.__test_equal(sf, df)
+
     def test_auto_parse_csv(self):
         with tempfile.NamedTemporaryFile(mode='w', delete=False) as csvfile:
             df = pd.DataFrame({'float_data': self.float_data,
@@ -208,7 +227,6 @@ class SFrameTest(unittest.TestCase):
 
             self.assertEqual(sf.dtype, [float, int, str])
             self.__test_equal(sf, df)
-
 
     def test_parse_csv(self):
         with tempfile.NamedTemporaryFile(mode='w', delete=False) as csvfile:
