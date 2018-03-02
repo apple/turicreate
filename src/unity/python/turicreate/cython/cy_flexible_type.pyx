@@ -1510,7 +1510,7 @@ cdef inline translate_ndarray(flexible_type& ret, object v, flex_type_enum* comm
     if _tr_buffer_to_flex_nd_vec(ft_nd_vec, v):
         ret.set_nd_vec(ft_nd_vec)
         return
-    raise TypeError("Could not convert python object with type " + str(type(v)) + " to flexible_type.")
+    raise TypeError("Could not convert python object with type " + type(v).__name__  + "('" + str(v.dtype) + "')" + " to flexible_type.")
 
 
 
