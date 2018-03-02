@@ -547,10 +547,10 @@ void unity_sframe::swap_columns(size_t i, size_t j) {
   Dlog_func_entry();
   logstream(LOG_DEBUG) << "Args: " << i << ", " << j << std::endl;
   if(i >= num_columns()) {
-    log_and_throw("Column index value of " << i << " is out of bound.");
+    log_and_throw("Column index value of " + std::to_string(i) + " is out of bound.");
   }
   if(j >= num_columns()) {
-    log_and_throw("Column index value of " << j << " is out of bound.");
+    log_and_throw("Column index value of " + std::to_string(j) + " is out of bound.");
   }
 
   std::vector<std::string> new_column_names = column_names();
