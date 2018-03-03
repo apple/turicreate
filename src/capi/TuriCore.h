@@ -32,6 +32,7 @@ typedef struct tc_flex_list_struct tc_flex_list;
 struct tc_flex_dict_struct;
 typedef struct tc_flex_dict_struct tc_flex_dict;
 
+
 // datetime
 struct tc_datetime_struct;
 typedef struct tc_datetime_struct tc_datetime;
@@ -39,6 +40,10 @@ typedef struct tc_datetime_struct tc_datetime;
 // Image
 struct tc_flex_image_struct;
 typedef struct tc_flex_image_struct tc_flex_image;
+
+// NDArray
+struct tc_ndarray_struct;
+typedef struct tc_ndarray_struct tc_ndarray;
 
 // SArray
 struct tc_sarray_struct;
@@ -143,7 +148,7 @@ tc_flexible_type* tc_ft_create_from_flex_list(const tc_flex_list*, tc_error** er
 tc_flexible_type* tc_ft_create_from_flex_dict(const tc_flex_dict*, tc_error** error);
 tc_flexible_type* tc_ft_create_from_datetime(const tc_datetime* dt, tc_error**);
 tc_flexible_type* tc_ft_create_from_image(const tc_flex_image*, tc_error** error);
-
+tc_flexible_type* tc_ft_create_from_ndarray(const tc_ndarray*, tc_error** error);
 
 /*****************************************************/
 /* Testing types in flexible type                    */
@@ -159,7 +164,8 @@ typedef enum {
   FT_TYPE_DICT    = 5,
   FT_TYPE_DATETIME = 6,
   FT_TYPE_UNDEFINED = 7,
-  FT_TYPE_IMAGE   = 8
+  FT_TYPE_IMAGE   = 8,
+  FT_TYPE_NDARRAY = 9
 } tc_ft_type_enum;
 
 tc_ft_type_enum tc_ft_type(const tc_flexible_type*);
@@ -174,6 +180,7 @@ int tc_ft_is_datetime(const tc_flexible_type*);
 int tc_ft_is_undefined(const tc_flexible_type*);
 int tc_ft_is_image(const tc_flexible_type*);
 int tc_ft_is_datetime(const tc_flexible_type*);
+int tc_ft_is_ndarray(const tc_flexible_type*);
 
 /*****************************************************/
 /* Extracting values from flexible type              */
@@ -193,6 +200,7 @@ tc_flex_list* tc_ft_flex_list(const tc_flexible_type*, tc_error**);
 tc_flex_dict* tc_ft_flex_dict(const tc_flexible_type*, tc_error**);
 tc_datetime* tc_ft_datetime(const tc_flexible_type* dt, tc_error**);
 tc_flex_image* tc_ft_flex_image(const tc_flexible_type*, tc_error**);
+tc_ndarray* tc_ft_ndarray(const tc_flexible_type*, tc_error**);
 
 /*****************************************************/
 /*    Casting flexible types                         */
@@ -325,6 +333,24 @@ const char* tc_flex_image_format(const tc_flex_image*, tc_error**);
 // Destructor
 void tc_flex_image_destroy(tc_flex_image*);
 
+/******************************************************************************/
+/*                                                                            */
+/*    flex_nd_array                                                           */
+/*                                                                            */
+/******************************************************************************/
+
+tc_ndarray* tc_ndarray_create_empty(tc_error**);
+
+tc_ndarray* tc_ndarray_create_from_data(uint64_t n_dim, const uint64_t* shape,
+    const int64_t* strides, const double* data, tc_error**);
+
+uint64_t tc_ndarray_num_dimensions(const tc_ndarray*, tc_error**);
+
+const uint64_t* tc_ndarray_shape(const tc_ndarray*, tc_error**);
+const int64_t* tc_ndarray_strides(const tc_ndarray*, tc_error**);
+const double* tc_ndarray_data(const tc_ndarray*, tc_error**);
+
+void tc_ndarray_destroy(tc_ndarray*);
 
 /******************************************************************************/
 /*                                                                            */

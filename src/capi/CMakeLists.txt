@@ -8,6 +8,7 @@ set(capi_sources
     impl/capi_flex_dict.cpp
     impl/capi_flex_list.cpp
     impl/capi_flex_image.cpp
+    impl/capi_ndarray.cpp
     impl/capi_functions.cpp
     impl/capi_sarray.cpp
     impl/capi_sketch.cpp

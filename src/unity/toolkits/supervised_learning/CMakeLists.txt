@@ -15,6 +15,7 @@ make_library(supervised_learning
     random_forest.cpp
     decision_tree.cpp
     xgboost_error.cpp
+    automatic_model_creation.cpp
     class_registrations.cpp
   REQUIRES
     unity_core

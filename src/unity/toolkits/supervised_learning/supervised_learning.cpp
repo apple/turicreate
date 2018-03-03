@@ -1248,15 +1248,6 @@ std::vector<std::vector<flexible_type>> _get_metadata_mapping(
   return model->get_metadata_mapping();
 }
 
-/**
- * Defines get_toolkit_function_registration for the supervised_learning toolkit
- */
-BEGIN_FUNCTION_REGISTRATION
-REGISTER_FUNCTION(_regression_model_selector, "_X");
-REGISTER_FUNCTION(_classifier_model_selector, "_X");
-REGISTER_FUNCTION(_classifier_available_models, "num_classes", "_X");
-REGISTER_FUNCTION(_get_metadata_mapping, "model");
-END_FUNCTION_REGISTRATION
 
 } // supervised_learning
 } // turicreate

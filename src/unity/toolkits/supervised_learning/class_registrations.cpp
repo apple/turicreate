@@ -6,6 +6,8 @@
 #include <unity/toolkits/supervised_learning/linear_regression.hpp>
 #include <unity/toolkits/supervised_learning/linear_svm.hpp>
 #include <unity/toolkits/supervised_learning/logistic_regression.hpp>
+#include <unity/toolkits/supervised_learning/automatic_model_creation.hpp>
+#include <unity/lib/toolkit_function_macros.hpp>
 
 namespace turi { namespace supervised { 
 
@@ -23,6 +25,23 @@ REGISTER_CLASS(linear_svm)
 REGISTER_CLASS(logistic_regression)
 END_CLASS_REGISTRATION
 
+
+/**
+ * Defines get_toolkit_function_registration for the supervised_learning toolkit
+ */
+BEGIN_FUNCTION_REGISTRATION
+REGISTER_FUNCTION(_regression_model_selector, "_X");
+REGISTER_FUNCTION(_classifier_model_selector, "_X");
+REGISTER_FUNCTION(_classifier_available_models, "num_classes", "_X");
+REGISTER_FUNCTION(_get_metadata_mapping, "model");
+
+/*  Register the methods for automatic model creation. 
+ *
+ *
+ */
+REGISTER_FUNCTION(create_automatic_classifier_model, "data", "target", "validation_data", "options");
+REGISTER_FUNCTION(create_automatic_regression_model, "data", "target", "validation_data", "options");
+END_FUNCTION_REGISTRATION
 
 }  // namespace supervised
 }  // namespace turi
