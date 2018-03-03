@@ -100,6 +100,5 @@ std::shared_ptr<Plot> turi::visualization::plot_boxes_and_whiskers(const std::st
   bw.init(temp_sf);
 
   std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<boxes_and_whiskers>(bw);
-  Plot plt(path_to_client, boxes_and_whiskers_specification, shared_unity_transformer, size_array);
-  return std::make_shared<Plot>(plt);
+  return std::make_shared<Plot>(path_to_client, boxes_and_whiskers_specification, shared_unity_transformer, size_array);
 }

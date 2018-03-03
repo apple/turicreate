@@ -109,8 +109,6 @@ std::shared_ptr<Plot> turi::visualization::plot_scatter(const std::string& path_
   sct.init(temp_sf);
 
   std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<scatter>(sct);
-  Plot plt(path_to_client, scatter_specification, shared_unity_transformer, size_array);
-
-  return std::make_shared<Plot>(plt);
+  return std::make_shared<Plot>(path_to_client, scatter_specification, shared_unity_transformer, size_array);
 
 }

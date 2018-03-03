@@ -92,7 +92,5 @@ std::shared_ptr<Plot> turi::visualization::plot_categorical_heatmap(const std::s
     hm.init(temp_sf);
 
     std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<categorical_heatmap>(hm);
-    Plot plt(path_to_client, categorical_heatmap_specification, shared_unity_transformer, size_array);
-
-    return std::make_shared<Plot>(plt);
+    return std::make_shared<Plot>(path_to_client, categorical_heatmap_specification, shared_unity_transformer, size_array);
 }

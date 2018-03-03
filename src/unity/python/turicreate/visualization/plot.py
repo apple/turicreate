@@ -6,12 +6,6 @@ import logging as _logging
 
 import json as _json
 
-"""
-json.decoder._CONSTANTS['undefined'] = None
-json.scanner.pattern('(-?Infinity|NaN|true|false|null|undefined)')(json.decoder.JSONConstant)
-json.decoder.JSONScanner = json.decoder.Scanner(json.decoder.ANYTHING)
-"""
-
 class Plot(object):
     """
     An immutable object representation of a visualization.
@@ -68,9 +62,6 @@ class Plot(object):
                 display = True
         except NameError:
             pass
-        except ValueError:
-            display = True
-            raise ValueError("Something went Seriously wrong")
         finally:
             if not display:
                 import sys
@@ -124,7 +115,7 @@ class Plot(object):
 
     def _get_vega(self, include_data=True):
         if(include_data):
-            spec = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_spec'}));
+            spec = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_spec'}))
             data = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_data'}))["data_spec"]
             for x in range(0, len(spec["vega_spec"]["data"])):
                 if(spec["vega_spec"]["data"][x]["name"] == "source_2"):

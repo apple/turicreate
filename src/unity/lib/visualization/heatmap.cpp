@@ -57,9 +57,7 @@ std::shared_ptr<Plot> turi::visualization::plot_heatmap(const std::string& path_
   hm.init(temp_sf);
 
   std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<heatmap>(hm);
-  Plot plt(path_to_client, heatmap_specification, shared_unity_transformer, size_array);
-
-  return std::make_shared<Plot>(plt);
+  return std::make_shared<Plot>(path_to_client, heatmap_specification, shared_unity_transformer, size_array);
 }
 
 heatmap_result::heatmap_result() : bins(NUM_BINS, std::vector<flex_int>(NUM_BINS, 0)) {}
