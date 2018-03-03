@@ -31,6 +31,7 @@ void categorical_heatmap::merge_results(std::vector<categorical_heatmap_result>&
 
 std::string categorical_heatmap_result::vega_column_data(bool sframe) const {
   std::stringstream ss;
+  size_t x = 0;
 
   auto items_list = emit().get<flex_dict>();
   size_t size_list = items_list.size();
@@ -49,6 +50,10 @@ std::string categorical_heatmap_result::vega_column_data(bool sframe) const {
     const flex_string& yValue = values[1].get<flex_string>();
     flex_int count = pair.second.get<flex_int>();
 
+    if(x !=  0){
+      ss << ",";
+    }
+
     ss << "{\"x\": ";
     ss << extra_label_escape(xValue);
     ss << ", \"y\": ";
@@ -57,16 +62,14 @@ std::string categorical_heatmap_result::vega_column_data(bool sframe) const {
     ss << count;
     ss << "}";
 
-    if(i != (size_list - 1)){
-      ss << ",";
-    }
+    x++;
   }
 
   return ss.str();
 }
 
 
-void ::turi::visualization::show_categorical_heatmap(const std::string& path_to_client,
+std::shared_ptr<Plot> turi::visualization::plot_categorical_heatmap(const std::string& path_to_client,
                                                       const gl_sarray& x,
                                                       const gl_sarray& y,
                                                       const std::string& xlabel,
@@ -89,6 +92,5 @@ void ::turi::visualization::show_categorical_heatmap(const std::string& path_to_
     hm.init(temp_sf);
 
     std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<categorical_heatmap>(hm);
-    Plot plt(path_to_client, categorical_heatmap_specification, shared_unity_transformer, size_array);
-    plt.show();
+    return std::make_shared<Plot>(path_to_client, categorical_heatmap_specification, shared_unity_transformer, size_array);
 }

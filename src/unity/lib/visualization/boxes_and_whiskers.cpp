@@ -28,6 +28,7 @@ std::string boxes_and_whiskers_result::vega_column_data(bool sframe) const {
   std::unordered_map<flexible_type, flexible_type> grouped = get_grouped();
 
   size_t i = 0;
+
   size_t size_list = grouped.size();
   for (const auto& pair : grouped) {
     // if x is missing, nothing to plot -- skip for now
@@ -50,6 +51,10 @@ std::string boxes_and_whiskers_result::vega_column_data(bool sframe) const {
       continue;
     }
 
+    if (i != 0) {
+      ss << ",";
+    }
+
     ss << "{\"" << x_name << "\": ";
     ss << extra_label_escape(xValue);
 
@@ -66,16 +71,13 @@ std::string boxes_and_whiskers_result::vega_column_data(bool sframe) const {
 
     ss << "}";
 
-    if (i != (size_list - 1)) {
-      ss << ",";
-    }
     i++;
   }
 
   return ss.str();
 }
 
-void ::turi::visualization::show_boxes_and_whiskers(const std::string& path_to_client,
+std::shared_ptr<Plot> turi::visualization::plot_boxes_and_whiskers(const std::string& path_to_client,
                                                     const gl_sarray& x,
                                                     const gl_sarray& y,
                                                     const std::string& xlabel,
@@ -98,6 +100,5 @@ void ::turi::visualization::show_boxes_and_whiskers(const std::string& path_to_c
   bw.init(temp_sf);
 
   std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<boxes_and_whiskers>(bw);
-  Plot plt(path_to_client, boxes_and_whiskers_specification, shared_unity_transformer, size_array);
-  plt.show();
+  return std::make_shared<Plot>(path_to_client, boxes_and_whiskers_specification, shared_unity_transformer, size_array);
 }

@@ -11,7 +11,6 @@
 #include "vega_spec.hpp"
 
 #include <parallel/lambda_omp.hpp>
-#include <unity/lib/visualization/plot.hpp>
 #include <unity/lib/visualization/transformation.hpp>
 
 #include <cmath>
@@ -33,7 +32,7 @@ static inline gl_sarray validate_dtype(const gl_sarray& input) {
   return input;
 }
 
-void turi::visualization::show_heatmap(const std::string& path_to_client,
+std::shared_ptr<Plot> turi::visualization::plot_heatmap(const std::string& path_to_client,
                                        const gl_sarray& x,
                                        const gl_sarray& y,
                                        const std::string& xlabel,
@@ -58,8 +57,7 @@ void turi::visualization::show_heatmap(const std::string& path_to_client,
   hm.init(temp_sf);
 
   std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<heatmap>(hm);
-  Plot plt(path_to_client, heatmap_specification, shared_unity_transformer, size_array);
-  plt.show();
+  return std::make_shared<Plot>(path_to_client, heatmap_specification, shared_unity_transformer, size_array);
 }
 
 heatmap_result::heatmap_result() : bins(NUM_BINS, std::vector<flex_int>(NUM_BINS, 0)) {}

@@ -7,6 +7,7 @@
 
 #include "extrema.hpp"
 #include "groupby.hpp"
+#include <unity/lib/visualization/plot.hpp>
 
 namespace turi {
 namespace visualization {
@@ -56,7 +57,7 @@ namespace visualization {
       virtual std::vector<heatmap_result> split_input(size_t num_threads) override;
   };
 
-  void show_heatmap(const std::string& path_to_client,
+  std::shared_ptr<Plot> plot_heatmap(const std::string& path_to_client,
                     const gl_sarray& x,
                     const gl_sarray& y,
                     const std::string& xlabel,

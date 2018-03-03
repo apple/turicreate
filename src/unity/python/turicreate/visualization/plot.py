@@ -151,6 +151,7 @@ class Plot(object):
                             } \
                             .vega-actions{ \
                                 margin-top:20px; \
+                                text-align:center \
                             }\
                             .vega-actions > a{ \
                                 background:#999999;\
@@ -180,7 +181,7 @@ class Plot(object):
 
         display(HTML('<html> \
                 <body> \
-                    <iframe style="border:0;margin:0" width="'+str(vega_spec["width"]+200)+'" height="'+str(vega_spec["height"]+220)+'" srcdoc='+"'"+vega_html+"'"+' src="demo_iframe_srcdoc.htm"> \
+                    <iframe style="border:0;margin:0" width="'+str((vega_spec["width"] if "width" in vega_spec else 600)+200)+'" height="'+str(vega_spec["height"]+220)+'" srcdoc='+"'"+vega_html+"'"+' src="demo_iframe_srcdoc.htm"> \
                         <p>Your browser does not support iframes.</p> \
                     </iframe> \
                 </body> \
