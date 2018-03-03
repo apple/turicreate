@@ -8,7 +8,7 @@
 
 #include <unity/lib/gl_sframe.hpp>
 #include <sframe/groupby_aggregate_operators.hpp>
-
+#include <unity/lib/visualization/plot.hpp>
 #include "transformation.hpp"
 
 namespace turi {
@@ -31,7 +31,7 @@ class categorical_heatmap : public categorical_heatmap_parent {
     virtual void merge_results(std::vector<categorical_heatmap_result>& transformers) override;
 };
 
-void show_categorical_heatmap(const std::string& path_to_client,
+std::shared_ptr<Plot> plot_categorical_heatmap(const std::string& path_to_client,
                               const gl_sarray& x,
                               const gl_sarray& y,
                               const std::string& xlabel,

@@ -100,6 +100,10 @@ std::string item_frequency_result::vega_column_data(bool sframe) const {
       continue;
     }
 
+    if(x != 0){
+      ss << ",";
+    }
+
     DASSERT_TRUE(flex_value.get_type() == flex_type_enum::STRING);
     const auto& value = flex_value.get<flex_string>();
 
@@ -118,10 +122,6 @@ std::string item_frequency_result::vega_column_data(bool sframe) const {
     ss << ",\"count\": ";
     ss << count;
     ss << "}";
-
-    if(x != (size_list - 1)){
-      ss << ",";
-    }
 
     x++;
   }

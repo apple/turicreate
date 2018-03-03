@@ -2896,11 +2896,11 @@ class SArray(object):
         >>> sa.show(title="My Plot Title", xlabel="My X Axis", ylabel="My Y Axis")
         """
 
-        returned_plot = self.__plot(title, xlabel, ylabel)
+        returned_plot = self.plot(title, xlabel, ylabel)
 
         returned_plot.show()
 
-    def __plot(self, title=None, xlabel=None, ylabel=None):
+    def plot(self, title=None, xlabel=None, ylabel=None):
 
         path_to_client = _get_client_app_path()
 

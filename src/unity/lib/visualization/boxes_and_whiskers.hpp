@@ -8,7 +8,7 @@
 
 #include <unity/lib/gl_sframe.hpp>
 #include <sframe/groupby_aggregate_operators.hpp>
-
+#include <unity/lib/visualization/plot.hpp>
 #include "groupby.hpp"
 #include "transformation.hpp"
 
@@ -28,7 +28,7 @@ class boxes_and_whiskers : public groupby<boxes_and_whiskers_result> {
 };
 
 // expects x to be str, y to be int/float
-void show_boxes_and_whiskers(const std::string& path_to_client,
+std::shared_ptr<Plot> plot_boxes_and_whiskers(const std::string& path_to_client,
                               const gl_sarray& x,
                               const gl_sarray& y,
                               const std::string& xlabel,

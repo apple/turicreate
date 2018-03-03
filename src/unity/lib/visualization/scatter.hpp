@@ -5,10 +5,35 @@
  */
 #include <unity/lib/gl_sarray.hpp>
 
+#include "groupby.hpp"
+#include "transformation.hpp"
+#include "plot.hpp"
+
 namespace turi {
 namespace visualization {
 
-  void show_scatter(const std::string& path_to_client,
+  class scatter_result: public transformation_output {
+    private:
+      gl_sframe m_sf;
+
+    public:
+      scatter_result(gl_sframe sf);
+      virtual std::string vega_column_data(bool) const override;
+  };
+
+  class scatter: public transformation_base {
+    private:
+      gl_sframe m_sf;
+
+    public:
+      void init(gl_sframe sf);
+      virtual std::shared_ptr<transformation_output> get() override;
+      virtual bool eof() const override;
+      virtual flex_int get_rows_processed() const override;
+      virtual size_t get_batch_size() const override;
+  };
+
+  std::shared_ptr<Plot> plot_scatter(const std::string& path_to_client,
                     const gl_sarray& x,
                     const gl_sarray& y,
                     const std::string& xlabel,

@@ -6,6 +6,7 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
+from .plot import Plot
 
 def _get_client_app_path():
     import sys
@@ -72,7 +73,7 @@ def show(x, y, xlabel="X", ylabel="Y", title=None):
 
     """
     import sys
-    if sys.platform != 'darwin':
+    if sys.platform != 'darwin' and sys.platform != 'linux2':
         raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
 
     import turicreate as tc
@@ -85,4 +86,6 @@ def show(x, y, xlabel="X", ylabel="Y", title=None):
     if title == None:
         title = ""
 
-    return tc.extensions.show(path_to_client, x, y, xlabel, ylabel, title)
+    plt_ref = tc.extensions.plot(path_to_client, x, y, xlabel, ylabel, title)
+
+    Plot(plt_ref).show()
