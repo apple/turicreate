@@ -35,7 +35,12 @@ const WebpackConfig = {
     },
     externals: {
         'd3': 'd3'
-    }
+    },
+    plugins: [
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify('production')
+        })
+    ]
 }
 
 module.exports = WebpackConfig;

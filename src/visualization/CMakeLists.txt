@@ -34,7 +34,6 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
     )
 
 
-    set(CEF_LIB_SO ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/libcef.so)
     set(CEF_RESOURCES ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Resources)
 
     set(TC_VIZ_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/TcViz")
@@ -54,6 +53,12 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
 
     set(LIB_CEF_DLL_WRAPPER "${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/libcef_dll_wrapper/libcef_dll_wrapper.a")
     set(LIB_CEF "${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/libcef.so")
+    set(LIB_CEF_SO_DEPS
+      ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/libEGL.so
+      ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/libGLESv2.so)
+    set(LIB_CEF_SWIFTSHADER_SO_DEPS
+      ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/swiftshader/libEGL.so
+      ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/swiftshader/libGLESv2.so)
     set(V8_CONTEXT_SNAPSHOT "${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/v8_context_snapshot.bin")
     set(SNAPSHOT_BLOB "${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/snapshot_blob.bin")
     set(NATIVES_BLOB "${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/natives_blob.bin")
@@ -125,10 +130,6 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
             COMMAND ${CMAKE_COMMAND} -E make_directory
                     ${TC_VIZ_LOCALES_DIRECTORY}
 
-            COMMAND ${CMAKE_COMMAND} -E copy
-                    ${CEF_LIB_SO}
-                    ${TC_VIZ_DIRECTORY}
-
             COMMAND ${CMAKE_COMMAND} -E copy_directory
                     ${CEF_RESOURCES}
                     ${TC_VIZ_DIRECTORY}
@@ -156,6 +157,17 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
             COMMAND ${CMAKE_COMMAND} -E copy
                     ${NATIVES_BLOB}
                     ${TC_VIZ_DIRECTORY}
+
+            COMMAND ${CMAKE_COMMAND} -E make_directory
+                    ${TC_VIZ_DIRECTORY}/swiftshader
+
+            COMMAND ${CMAKE_COMMAND} -E copy
+                    ${LIB_CEF_SO_DEPS}
+                    ${TC_VIZ_DIRECTORY}
+
+            COMMAND ${CMAKE_COMMAND} -E copy
+                    ${LIB_CEF_SWIFTSHADER_SO_DEPS}
+                    ${TC_VIZ_DIRECTORY}/swiftshader
 
             VERBATIM
     )
