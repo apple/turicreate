@@ -205,9 +205,9 @@ class SFrameTest(unittest.TestCase):
             csvfile.close()
 
             import codecs
-            with open(csvfile.name) as f:
+            with open(csvfile.name, 'rb') as f:
                 content = f.read()
-            with open(csvfile.name, 'w') as f:
+            with open(csvfile.name, 'wb') as f:
                 f.write(codecs.BOM_UTF8)
                 f.write(content)
 
