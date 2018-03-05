@@ -106,6 +106,17 @@ EXPORT tc_flexible_type* tc_ft_create_from_image(const tc_flex_image* image, tc_
   ERROR_HANDLE_END(error, NULL);
 }
 
+// Create a flexible type from an ndarray
+EXPORT tc_flexible_type* tc_ft_create_from_ndarray(const tc_ndarray* nda, tc_error** error) {
+  ERROR_HANDLE_START();
+
+  CHECK_NOT_NULL(error, nda, "tc_ndarray", NULL);
+
+  return new_tc_flexible_type(nda->value);
+
+  ERROR_HANDLE_END(error, NULL);
+}
+
 /****************************************************/
 
 EXPORT tc_ft_type_enum tc_ft_type(const tc_flexible_type* ft) {
@@ -146,6 +157,10 @@ EXPORT int tc_ft_is_list(const tc_flexible_type* ft) {
 
 EXPORT int tc_ft_is_undefined(const tc_flexible_type* ft) {
   return (ft != NULL) && (ft->value.get_type() == turi::flex_type_enum::UNDEFINED);
+}
+
+EXPORT int tc_ft_is_ndarray(const tc_flexible_type* ft) {
+  return (ft != NULL) && (ft->value.get_type() == turi::flex_type_enum::ND_VECTOR);
 }
 
 /****************************************************/
@@ -306,6 +321,22 @@ EXPORT tc_datetime* tc_ft_datetime(const tc_flexible_type* ft, tc_error **error)
 
   ERROR_HANDLE_END(error, NULL);
 }
+
+EXPORT tc_ndarray* tc_ft_ndarray(const tc_flexible_type* ft, tc_error **error) {
+  ERROR_HANDLE_START();
+
+  CHECK_NOT_NULL(error, ft, "Flexible type", NULL);
+
+  if (ft->value.get_type() != turi::flex_type_enum::ND_VECTOR) {
+    set_error(error, "Flexible type not an ndarray object.");
+    return NULL;
+  }
+
+  return new_tc_ndarray(ft->value.get<turi::flex_nd_vec>());
+
+  ERROR_HANDLE_END(error, NULL);
+}
+
 
 
 EXPORT tc_flexible_type* tc_ft_as_string(const tc_flexible_type* ft, tc_error** error) {
