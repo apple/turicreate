@@ -34,7 +34,7 @@ def _define_model(features, target_map, pred_win, seq_len, context):
                        seq_len=seq_len, dropout=0.2)
 
     # Dense
-    dense = _mx.sym.Reshape(data=lstm, shape=(-1, _net_params['lstm_h']))  # NTC to NxTC
+    dense = _mx.sym.Reshape(data=lstm, shape=(-1, _net_params['lstm_h']))  # NTC to NTxC
     dense = _mx.sym.FullyConnected(data=dense, name='dense0',
                                    num_hidden=_net_params['dense_h'])
 
@@ -45,7 +45,7 @@ def _define_model(features, target_map, pred_win, seq_len, context):
     # Output
     out = _mx.sym.FullyConnected(data=dense, num_hidden=n_classes, name='dense1')
     out = _mx.sym.Reshape(data=out,
-                          shape=(-1, seq_len, n_classes))  # NxTC to NTC
+                          shape=(-1, seq_len, n_classes))  # NTxC to NTC
 
     probs = _mx.sym.softmax(data=out, axis=-1, name='softmax')
 
@@ -56,7 +56,7 @@ def _define_model(features, target_map, pred_win, seq_len, context):
     # Loss
     softmax_ce = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
     loss_per_seq = softmax_ce(out, target, weights)
-    loss = _mx.sym.sum(loss_per_seq) / (binary_seq_sum_weights + 1e-5)
+    loss = seq_len * _mx.sym.sum(loss_per_seq) / (binary_seq_sum_weights + 1e-5)
     loss = _mx.sym.make_loss(loss)
 
     # Accuracy
