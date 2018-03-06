@@ -32,30 +32,52 @@ using fileio::file_status;
  * Escape BOMs
  */
 void skip_BOM(general_ifstream& fin) {
-  const size_t BOM_SIZE = 3;
-  char bom[BOM_SIZE];
+  char fChar, sChar, tChar;
+  size_t count = 0;
+  fChar = fin.get();
+  count = fin.gcount();
   if (!fin.good()) {
-    return;
-  }
-  // use readsome to avoid setting failbit on eof
-  // (.get sets failbit!)
-  auto size = fin.readsome(bom, sizeof(bom));
-  if (size != BOM_SIZE) {
-    DASSERT_LT(size, BOM_SIZE);
-    if (size == 2) {
-      fin.putback(bom[1]);
-    }
-    if (size >= 1) {
-      fin.putback(bom[0]);
+    if (count == 1) {
+      fin.putback(fChar);
+      fin.clear(std::ios_base::goodbit);
+    } else {
+      DASSERT_EQ(count, 0);
     }
     return;
   }
-
-  bool isBOM = ((bom[0] == (char)0xEF) && (bom[1] == (char)0xBB) && (bom[2] == (char)0xBF));
+  DASSERT_EQ(count, 1);
+  sChar = fin.get();
+  count = fin.gcount();
+  if (!fin.good()) {
+    fin.clear(std::ios_base::goodbit);
+    if (count == 1) {
+      fin.putback(sChar);
+    } else {
+      DASSERT_EQ(count, 0);
+    }
+    fin.putback(fChar);
+    return;
+  }
+  DASSERT_EQ(count, 1);
+  tChar = fin.get();
+  count = fin.gcount();
+  if (fin.bad() || count == 0) {
+    fin.clear(std::ios_base::goodbit);
+    if (count == 1) {
+      fin.putback(tChar);
+    } else {
+      DASSERT_EQ(count, 0);
+    }
+    fin.putback(sChar);
+    fin.putback(fChar);
+    return;
+  }
+  DASSERT_EQ(count, 1);
+  bool isBOM = ((fChar == (char)0xEF) && (sChar == (char)0xBB) && (tChar == (char)0xBF));
   if (!isBOM) {
-    fin.putback(bom[2]);
-    fin.putback(bom[1]);
-    fin.putback(bom[0]);
+    fin.putback(tChar);
+    fin.putback(sChar);
+    fin.putback(fChar);
   }
 }
 
