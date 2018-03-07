@@ -1636,7 +1636,12 @@ std::shared_ptr<unity_sarray_base> unity_sarray::tail(size_t nrows) {
 
 std::shared_ptr<unity_sarray_base> unity_sarray::make_uniform_boolean_array(size_t size,
                                                                             float percent,
-                                                                            int random_seed) {
+                                                                            int random_seed,
+                                                                            bool exact) {
+  if (exact) {
+    if (percent < 0.0) percent = 0.0;
+    return make_exact_uniform_boolean_array(size, percent*size, random_seed);
+  }
   // create a sequential sarray
   auto seq = std::static_pointer_cast<unity_sarray>(
     unity_sarray::create_sequential_sarray(size, 0, false));
@@ -1650,10 +1655,62 @@ std::shared_ptr<unity_sarray_base> unity_sarray::make_uniform_boolean_array(size
   return seq->transform_lambda(filter_fn, flex_type_enum::INTEGER, false, 0);
 }
 
+std::shared_ptr<unity_sarray_base> unity_sarray::make_exact_uniform_boolean_array(size_t size,
+                                                                          size_t num_trues,
+                                                                          int random_seed) {
+  // all false and all true case.
+  if (num_trues == 0) {
+    auto ret = std::make_shared<unity_sarray>();
+    ret->construct_from_const(0, size, flex_type_enum::INTEGER);
+    return ret;
+  } else if (num_trues >= size) {
+    auto ret = std::make_shared<unity_sarray>();
+    ret->construct_from_const(1, size, flex_type_enum::INTEGER);
+    return ret;
+  }
+  // # construct a random sequence
+  // s = sequential_sarray of 0 ... size-1
+  // shash = s.hash()
+  //
+  // # sort it
+  // # really, this is a partial sort problem, and can be done more efficiently
+  // # than a full sort. (O(n) vs O(n log n). But we don't quite have a partial
+  // # sort implementation available.
+  //
+  // sf = sframe({'shash':shash})
+  // sorted_hash = sf.sort('shash')['shash']
+  //
+  // # slice it at the num_trues index
+  // index = sorted_hash[num_trues]
+  // return shash < index
+
+  // # constuct a random sequence
+  auto seq = unity_sarray::create_sequential_sarray(size, 0, false);
+  auto seqhash = std::static_pointer_cast<unity_sarray>(seq->hash(random_seed));
+
+  // # sort it
+  std::shared_ptr<unity_sframe> seqsort(new unity_sframe());
+  seqsort->add_column(seqhash, "shash");
+  // yes we can use initializer list here. Like
+  // seqsort->sort({"shash"},{1}) 
+  // but we want to avoid single element initializer lists.
+  // that has some ambiguity for some compiler versions.
+  auto sorted_hash = gl_sarray(
+      seqsort->sort(std::vector<std::string>(1, "shash"), 
+                    std::vector<int>(1, 1))->select_column("shash"));
+  flex_int index = sorted_hash[num_trues].get<flex_int>();
+
+  auto filter_fn = [index](const flexible_type& val)->flexible_type {
+        return val.get<flex_int>() < index;
+      };
+  return seqhash->transform_lambda(filter_fn, flex_type_enum::INTEGER, false, 0);
+}
+
 std::shared_ptr<unity_sarray_base> unity_sarray::sample(float percent,
-                                                        int random_seed) {
+                                                        int random_seed,
+                                                        bool exact) {
   // create a sequential sarray
-  auto seq = make_uniform_boolean_array(size(), percent, random_seed);
+  auto seq = make_uniform_boolean_array(size(), percent, random_seed, exact);
   return logical_filter(seq);
 }
 

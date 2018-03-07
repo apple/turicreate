@@ -473,15 +473,15 @@ gl_sarray gl_sframe::apply(std::function<flexible_type(const sframe_rows::row&)>
 gl_sframe gl_sframe::sample(double fraction) const {
   return get_proxy()->sample(fraction, time(NULL));
 }
-gl_sframe gl_sframe::sample(double fraction, size_t seed) const {
-  return get_proxy()->sample(fraction, seed);
+gl_sframe gl_sframe::sample(double fraction, size_t seed, bool exact) const {
+  return get_proxy()->sample(fraction, seed, exact);
 }
 std::pair<gl_sframe, gl_sframe> gl_sframe::random_split(double fraction) const {
   return random_split(fraction, time(NULL));
 }
 
-std::pair<gl_sframe, gl_sframe> gl_sframe::random_split(double fraction, size_t seed) const {
-  auto list = get_proxy()->random_split(fraction, seed);
+std::pair<gl_sframe, gl_sframe> gl_sframe::random_split(double fraction, size_t seed, bool exact) const {
+  auto list = get_proxy()->random_split(fraction, seed, exact);
   std::pair<gl_sframe, gl_sframe> ret;
   ASSERT_EQ(list.size(), 2);
   auto iter = list.begin(); ret.first = (*iter);

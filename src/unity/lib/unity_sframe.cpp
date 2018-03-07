@@ -1017,10 +1017,11 @@ void unity_sframe::save_as_csv(const std::string& url,
 }
 
 std::shared_ptr<unity_sframe_base> unity_sframe::sample(float percent,
-                                                        int random_seed) {
+                                                        int random_seed,
+                                                        bool exact) {
   logstream(LOG_INFO) << "Args: " << percent << ", " << random_seed << std::endl;
   auto logical_filter_array = std::static_pointer_cast<unity_sarray>(
-    unity_sarray::make_uniform_boolean_array(size(), percent, random_seed));
+    unity_sarray::make_uniform_boolean_array(size(), percent, random_seed, exact));
   return logical_filter(logical_filter_array);
 }
 
@@ -1050,12 +1051,12 @@ std::string unity_sframe::query_plan_string() {
 }
 
 std::list<std::shared_ptr<unity_sframe_base>>
-unity_sframe::random_split(float percent, int random_seed) {
+unity_sframe::random_split(float percent, int random_seed, bool exact) {
   log_func_entry();
   logstream(LOG_INFO) << "Args: " << percent << ", " << random_seed << std::endl;
 
   auto logical_filter_array = std::static_pointer_cast<unity_sarray>(
-    unity_sarray::make_uniform_boolean_array(size(), percent, random_seed));
+    unity_sarray::make_uniform_boolean_array(size(), percent, random_seed, exact));
   return logical_filter_split(logical_filter_array);
 }
 

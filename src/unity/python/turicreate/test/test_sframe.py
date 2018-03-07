@@ -885,6 +885,8 @@ class SFrameTest(unittest.TestCase):
         sample_sf2 = sf.sample(.12, 9)
         self.assertEqual(len(sample_sf), len(sample_sf2))
         assert_frame_equal(sample_sf.head().to_dataframe(), sample_sf2.head().to_dataframe())
+        self.assertEqual(len(sf.sample(0.5,1,exact=True)), 50)
+        self.assertEqual(len(sf.sample(0.5,2,exact=True)), 50)
 
         for i in sample_sf:
             self.assertTrue(str(i) in entry_list)
@@ -910,6 +912,9 @@ class SFrameTest(unittest.TestCase):
 
         self.assertEqual(len(SFrame().random_split(.4)[0]), 0)
         self.assertEqual(len(SFrame().random_split(.4)[1]), 0)
+
+        self.assertEqual(len(sf.random_split(0.5,1,exact=True)[0]), 50)
+        self.assertEqual(len(sf.random_split(0.5,2,exact=True)[0]), 50)
 
     # tests add_column, rename
     def test_edit_column_ops(self):
