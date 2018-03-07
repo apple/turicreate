@@ -156,6 +156,7 @@ var group__fileio =
     [ "get_filename", "group__fileio.html#ga08e80ce4936ba924ae5893d278ef8160", null ],
     [ "get_glob_files", "group__fileio.html#ga20a81f87a433cf558ae08b02914327fa", null ],
     [ "get_io_parallelism_id", "group__fileio.html#gace35fc0e0221b6c2b2c3bc20556a9579", null ],
+    [ "get_region_name_from_endpoint", "group__fileio.html#ga0ea68b924ea1ef006293970e563861c0", null ],
     [ "get_s3_endpoints", "group__fileio.html#gafa81576e130480bf0ef09e20896a1ab7", null ],
     [ "get_s3_error_code", "group__fileio.html#gabade0bf49f31a40150a079328ebc507b", null ],
     [ "get_s3_file_last_modified", "group__fileio.html#ga5ff7eac62175d5e5bac69a32ba1fee75", null ],

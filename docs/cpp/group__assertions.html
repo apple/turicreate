@@ -92,48 +92,519 @@ $(document).ready(function(){initNavTree('group__assertions.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:ga3e1cfef60e774a81f30eaddf26a3a274"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#ga3e1cfef60e774a81f30eaddf26a3a274">CHECK</a>(condition)</td></tr>
-<tr class="separator:ga3e1cfef60e774a81f30eaddf26a3a274"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga131140a8d6de313eef77fb305ff9e35d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#ga131140a8d6de313eef77fb305ff9e35d">__CHECK</a>(condition)</td></tr>
+<tr class="separator:ga131140a8d6de313eef77fb305ff9e35d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga1656b25134a180161dcd61a11184cd12"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#ga1656b25134a180161dcd61a11184cd12">ASSERT_TRUE</a>(cond)&#160;&#160;&#160;EXPECT_TRUE(cond)</td></tr>
 <tr class="separator:ga1656b25134a180161dcd61a11184cd12"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9efe2f02b4d8f1efc4b509bcc009df90"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#ga9efe2f02b4d8f1efc4b509bcc009df90">ASSERT_FALSE</a>(cond)&#160;&#160;&#160;EXPECT_FALSE(cond)</td></tr>
 <tr class="separator:ga9efe2f02b4d8f1efc4b509bcc009df90"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga7c0ce053b28d53aa4eaf3eb7fb71663b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#ga7c0ce053b28d53aa4eaf3eb7fb71663b">CHECK_EQ</a>(val1,  val2)&#160;&#160;&#160;CHECK_OP(==, val1, val2)</td></tr>
-<tr class="separator:ga7c0ce053b28d53aa4eaf3eb7fb71663b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab25e01a2942b821d66371fc68d53f2eb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#gab25e01a2942b821d66371fc68d53f2eb">CHECK_NE</a>(val1,  val2)&#160;&#160;&#160;CHECK_OP(!=, val1, val2)</td></tr>
-<tr class="separator:gab25e01a2942b821d66371fc68d53f2eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae4db23f10f5d4aad6d735f5a74cd6f8c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#gae4db23f10f5d4aad6d735f5a74cd6f8c">CHECK_LE</a>(val1,  val2)&#160;&#160;&#160;CHECK_OP(&lt;=, val1, val2)</td></tr>
-<tr class="separator:gae4db23f10f5d4aad6d735f5a74cd6f8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4bd2e815ca2f702a4b6aa744b1ff3b82"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#ga4bd2e815ca2f702a4b6aa744b1ff3b82">CHECK_LT</a>(val1,  val2)&#160;&#160;&#160;CHECK_OP(&lt; , val1, val2)</td></tr>
-<tr class="separator:ga4bd2e815ca2f702a4b6aa744b1ff3b82"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga7cc25402ecd7591b4c39934dd656b1f9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#ga7cc25402ecd7591b4c39934dd656b1f9">CHECK_GE</a>(val1,  val2)&#160;&#160;&#160;CHECK_OP(&gt;=, val1, val2)</td></tr>
-<tr class="separator:ga7cc25402ecd7591b4c39934dd656b1f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga7e03ec13560fa94a8fea569960d7efc6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#ga7e03ec13560fa94a8fea569960d7efc6">CHECK_GT</a>(val1,  val2)&#160;&#160;&#160;CHECK_OP(&gt; , val1, val2)</td></tr>
-<tr class="separator:ga7e03ec13560fa94a8fea569960d7efc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga32722ee8437bef07cc921df1788b657f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#ga32722ee8437bef07cc921df1788b657f">CHECK_DELTA</a>(val1,  val2,  delta)</td></tr>
-<tr class="separator:ga32722ee8437bef07cc921df1788b657f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3133377da54051b5e7f011a96ac9ce43"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#ga3133377da54051b5e7f011a96ac9ce43">__CHECK_EQ</a>(val1,  val2)&#160;&#160;&#160;__CHECK_OP(==, val1, val2)</td></tr>
+<tr class="separator:ga3133377da54051b5e7f011a96ac9ce43"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga754fcc0c48925cbed4c6ffbe685041d2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#ga754fcc0c48925cbed4c6ffbe685041d2">__CHECK_NE</a>(val1,  val2)&#160;&#160;&#160;__CHECK_OP(!=, val1, val2)</td></tr>
+<tr class="separator:ga754fcc0c48925cbed4c6ffbe685041d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa234f2f2584dd82cccb01ccee6b653c5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#gaa234f2f2584dd82cccb01ccee6b653c5">__CHECK_LE</a>(val1,  val2)&#160;&#160;&#160;__CHECK_OP(&lt;=, val1, val2)</td></tr>
+<tr class="separator:gaa234f2f2584dd82cccb01ccee6b653c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1b6222a9bc0ba92b6ecd59ebfc477f68"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#ga1b6222a9bc0ba92b6ecd59ebfc477f68">__CHECK_LT</a>(val1,  val2)&#160;&#160;&#160;__CHECK_OP(&lt; , val1, val2)</td></tr>
+<tr class="separator:ga1b6222a9bc0ba92b6ecd59ebfc477f68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1e2ab9ffbfa702a5ccd2bcf1cf1f3516"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#ga1e2ab9ffbfa702a5ccd2bcf1cf1f3516">__CHECK_GE</a>(val1,  val2)&#160;&#160;&#160;__CHECK_OP(&gt;=, val1, val2)</td></tr>
+<tr class="separator:ga1e2ab9ffbfa702a5ccd2bcf1cf1f3516"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3a25fc7c72059e82aef35f91ba6cf266"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#ga3a25fc7c72059e82aef35f91ba6cf266">__CHECK_GT</a>(val1,  val2)&#160;&#160;&#160;__CHECK_OP(&gt; , val1, val2)</td></tr>
+<tr class="separator:ga3a25fc7c72059e82aef35f91ba6cf266"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga293e0605baad97fb97fc0639e8f0a7b9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#ga293e0605baad97fb97fc0639e8f0a7b9">__CHECK_DELTA</a>(val1,  val2,  delta)</td></tr>
+<tr class="separator:ga293e0605baad97fb97fc0639e8f0a7b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga44ce763fb14e5316a39a533bba4bf62a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#ga44ce763fb14e5316a39a533bba4bf62a">DASSERT_TRUE</a>(cond)&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga1656b25134a180161dcd61a11184cd12">ASSERT_TRUE</a>(cond)</td></tr>
 <tr class="separator:ga44ce763fb14e5316a39a533bba4bf62a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaff5d24ebe6695176a5ef5dd64948ee40"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#gaff5d24ebe6695176a5ef5dd64948ee40">DASSERT_FALSE</a>(cond)&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga9efe2f02b4d8f1efc4b509bcc009df90">ASSERT_FALSE</a>(cond)</td></tr>
 <tr class="separator:gaff5d24ebe6695176a5ef5dd64948ee40"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae89df3243bbb8341130c7b3f44145ea0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#gae89df3243bbb8341130c7b3f44145ea0">DCHECK_EQ</a>(val1,  val2)&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga7c0ce053b28d53aa4eaf3eb7fb71663b">CHECK_EQ</a>(val1, val2)</td></tr>
-<tr class="separator:gae89df3243bbb8341130c7b3f44145ea0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga46e69120fbd3b36e6960e096d23b66f0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#ga46e69120fbd3b36e6960e096d23b66f0">DCHECK_NE</a>(val1,  val2)&#160;&#160;&#160;<a class="el" href="group__assertions.html#gab25e01a2942b821d66371fc68d53f2eb">CHECK_NE</a>(val1, val2)</td></tr>
-<tr class="separator:ga46e69120fbd3b36e6960e096d23b66f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4395e95bab44e222cb2e77251017a0e2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#ga4395e95bab44e222cb2e77251017a0e2">DCHECK_LE</a>(val1,  val2)&#160;&#160;&#160;<a class="el" href="group__assertions.html#gae4db23f10f5d4aad6d735f5a74cd6f8c">CHECK_LE</a>(val1, val2)</td></tr>
-<tr class="separator:ga4395e95bab44e222cb2e77251017a0e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab62f5ed8f2d48e29802be0cbbcd1359a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#gab62f5ed8f2d48e29802be0cbbcd1359a">DCHECK_LT</a>(val1,  val2)&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga4bd2e815ca2f702a4b6aa744b1ff3b82">CHECK_LT</a>(val1, val2)</td></tr>
-<tr class="separator:gab62f5ed8f2d48e29802be0cbbcd1359a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaae2dc65d9ea248d54bf39daa986dd295"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#gaae2dc65d9ea248d54bf39daa986dd295">DCHECK_GE</a>(val1,  val2)&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga7cc25402ecd7591b4c39934dd656b1f9">CHECK_GE</a>(val1, val2)</td></tr>
-<tr class="separator:gaae2dc65d9ea248d54bf39daa986dd295"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab4f56aa24c4c9cddc47a6abd2d747f9a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#gab4f56aa24c4c9cddc47a6abd2d747f9a">DCHECK_GT</a>(val1,  val2)&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga7e03ec13560fa94a8fea569960d7efc6">CHECK_GT</a>(val1, val2)</td></tr>
-<tr class="separator:gab4f56aa24c4c9cddc47a6abd2d747f9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga703c00af0128acf4aeb85731cc054f3d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#ga703c00af0128acf4aeb85731cc054f3d">DCHECK_DELTA</a>(val1,  val2,  delta)&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga32722ee8437bef07cc921df1788b657f">CHECK_DELTA</a>(val1, val2, delta)</td></tr>
-<tr class="separator:ga703c00af0128acf4aeb85731cc054f3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga15a94b7ff21c07e5111118d98d19de3f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#ga15a94b7ff21c07e5111118d98d19de3f">__DCHECK_EQ</a>(val1,  val2)&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga3133377da54051b5e7f011a96ac9ce43">__CHECK_EQ</a>(val1, val2)</td></tr>
+<tr class="separator:ga15a94b7ff21c07e5111118d98d19de3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab4d042514612948cd31b0a21648866f3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#gab4d042514612948cd31b0a21648866f3">__DCHECK_NE</a>(val1,  val2)&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga754fcc0c48925cbed4c6ffbe685041d2">__CHECK_NE</a>(val1, val2)</td></tr>
+<tr class="separator:gab4d042514612948cd31b0a21648866f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga65ca02fa01cb8f672c51c320a33c5460"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#ga65ca02fa01cb8f672c51c320a33c5460">__DCHECK_LE</a>(val1,  val2)&#160;&#160;&#160;<a class="el" href="group__assertions.html#gaa234f2f2584dd82cccb01ccee6b653c5">__CHECK_LE</a>(val1, val2)</td></tr>
+<tr class="separator:ga65ca02fa01cb8f672c51c320a33c5460"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga61adbd8b8f272ebb5d458a7224eb4c81"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#ga61adbd8b8f272ebb5d458a7224eb4c81">__DCHECK_LT</a>(val1,  val2)&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga1b6222a9bc0ba92b6ecd59ebfc477f68">__CHECK_LT</a>(val1, val2)</td></tr>
+<tr class="separator:ga61adbd8b8f272ebb5d458a7224eb4c81"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabcf75ee30a19a2f2653aef5e67f9ae31"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#gabcf75ee30a19a2f2653aef5e67f9ae31">__DCHECK_GE</a>(val1,  val2)&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga1e2ab9ffbfa702a5ccd2bcf1cf1f3516">__CHECK_GE</a>(val1, val2)</td></tr>
+<tr class="separator:gabcf75ee30a19a2f2653aef5e67f9ae31"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf5f3769fe52f7815042922067b698a0f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#gaf5f3769fe52f7815042922067b698a0f">__DCHECK_GT</a>(val1,  val2)&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga3a25fc7c72059e82aef35f91ba6cf266">__CHECK_GT</a>(val1, val2)</td></tr>
+<tr class="separator:gaf5f3769fe52f7815042922067b698a0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad53884968fc48299606580f6656096b7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__assertions.html#gad53884968fc48299606580f6656096b7">__DCHECK_DELTA</a>(val1,  val2,  delta)&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga293e0605baad97fb97fc0639e8f0a7b9">__CHECK_DELTA</a>(val1, val2, delta)</td></tr>
+<tr class="separator:gad53884968fc48299606580f6656096b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Assertions. </p>
 <h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="ga131140a8d6de313eef77fb305ff9e35d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga131140a8d6de313eef77fb305ff9e35d">&#9670;&nbsp;</a></span>__CHECK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define __CHECK</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">condition</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {                                                                  \</div><div class="line">    if (UNLIKELY(!(condition))) {                                       \</div><div class="line">      auto throw_error = [&amp;]() GL_GCC_ONLY(<a class="code" href="group__util.html#gae731468612d543efd1b13bca3a047139">GL_COLD_NOINLINE_ERROR</a>) {    \</div><div class="line">      std::ostringstream ss;                                            \</div><div class="line">      ss &lt;&lt; <span class="stringliteral">&quot;Check failed (&quot;</span> &lt;&lt; __FILE__ &lt;&lt; <span class="stringliteral">&quot;:&quot;</span> &lt;&lt; __LINE__ &lt;&lt; <span class="stringliteral">&quot;): &quot;</span>    \</div><div class="line">      &lt;&lt; #condition  &lt;&lt; std::endl;                                      \</div><div class="line">      logstream(<a class="code" href="group__levels.html#gaced66975c154ea0e2a8ec3bc818b4e08">LOG_ERROR</a>) &lt;&lt; ss.str();                                 \</div><div class="line">      __print_back_trace();                                             \</div><div class="line">      LOGGED_TURI_LOGGER_FAIL_METHOD(ss.str());                     \</div><div class="line">    };                                                                  \</div><div class="line">    throw_error();                                                      \</div><div class="line">  }                                                                     \</div><div class="line">  } <span class="keywordflow">while</span>(0)</div><div class="ttc" id="group__levels_html_gaced66975c154ea0e2a8ec3bc818b4e08"><div class="ttname"><a href="group__levels.html#gaced66975c154ea0e2a8ec3bc818b4e08">LOG_ERROR</a></div><div class="ttdeci">#define LOG_ERROR</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00095">logger.hpp:95</a></div></div>
+<div class="ttc" id="group__util_html_gae731468612d543efd1b13bca3a047139"><div class="ttname"><a href="group__util.html#gae731468612d543efd1b13bca3a047139">GL_COLD_NOINLINE_ERROR</a></div><div class="ttdeci">#define GL_COLD_NOINLINE_ERROR</div><div class="ttdef"><b>Definition:</b> <a href="code__optimization_8hpp_source.html#l00090">code_optimization.hpp:90</a></div></div>
+</div><!-- fragment --><p>CHECK dies with a fatal error if condition is not true. It is <em>not</em> controlled by NDEBUG, so the check will be executed regardless of compilation mode. </p>
+
+<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00197">197</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ga293e0605baad97fb97fc0639e8f0a7b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga293e0605baad97fb97fc0639e8f0a7b9">&#9670;&nbsp;</a></span>__CHECK_DELTA</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define __CHECK_DELTA</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val1, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val2, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">delta&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {                                                                  \</div><div class="line">    const <span class="keywordtype">double</span> _CHECK_OP_v1_ = val1;                                  \</div><div class="line">    const <span class="keywordtype">double</span> _CHECK_OP_v2_ = val2;                                  \</div><div class="line">    const <span class="keywordtype">double</span> _CHECK_OP_delta_ = delta;                              \</div><div class="line">    if (__builtin_expect(!( abs( (_CHECK_OP_v1_) - (_CHECK_OP_v2_)) &lt;= _CHECK_OP_delta_), 0)) { \</div><div class="line">      auto throw_error = [&amp;]() GL_GCC_ONLY(<a class="code" href="group__util.html#gae731468612d543efd1b13bca3a047139">GL_COLD_NOINLINE_ERROR</a>) {    \</div><div class="line">      std::ostringstream ss;                                            \</div><div class="line">      ss &lt;&lt; <span class="stringliteral">&quot;Assertion failed: (&quot;</span> &lt;&lt; __FILE__ &lt;&lt; <span class="stringliteral">&quot;:&quot;</span> &lt;&lt; __LINE__ &lt;&lt; <span class="stringliteral">&quot;): &quot;</span> \</div><div class="line">         &lt;&lt; <span class="stringliteral">&quot;abs(&quot;</span> &lt;&lt; #val1 &lt;&lt; <span class="stringliteral">&quot; - &quot;</span> &lt;&lt; #val2                           \</div><div class="line">         &lt;&lt; <span class="stringliteral">&quot;) &lt;= &quot;</span> &lt;&lt; #delta &lt;&lt; <span class="stringliteral">&quot;. [&quot;</span>                                  \</div><div class="line">         &lt;&lt; <span class="stringliteral">&quot;abs(&quot;</span> &lt;&lt; _CHECK_OP_v2_ &lt;&lt; <span class="stringliteral">&quot; - &quot;</span> &lt;&lt; _CHECK_OP_v1_           \</div><div class="line">         &lt;&lt; <span class="stringliteral">&quot;) &gt; &quot;</span> &lt;&lt; _CHECK_OP_delta_ &lt;&lt; <span class="stringliteral">&quot;]&quot;</span> &lt;&lt; std::endl;             \</div><div class="line">      logstream(<a class="code" href="group__levels.html#gaced66975c154ea0e2a8ec3bc818b4e08">LOG_ERROR</a>) &lt;&lt; ss.str();                                 \</div><div class="line">      __print_back_trace();                                             \</div><div class="line">      LOGGED_TURI_LOGGER_FAIL_METHOD(ss.str());                     \</div><div class="line">    };                                                                  \</div><div class="line">    throw_error();                                                      \</div><div class="line">    }                                                                   \</div><div class="line">  } <span class="keywordflow">while</span>(0)</div><div class="ttc" id="group__levels_html_gaced66975c154ea0e2a8ec3bc818b4e08"><div class="ttname"><a href="group__levels.html#gaced66975c154ea0e2a8ec3bc818b4e08">LOG_ERROR</a></div><div class="ttdeci">#define LOG_ERROR</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00095">logger.hpp:95</a></div></div>
+<div class="ttc" id="group__util_html_gae731468612d543efd1b13bca3a047139"><div class="ttname"><a href="group__util.html#gae731468612d543efd1b13bca3a047139">GL_COLD_NOINLINE_ERROR</a></div><div class="ttdeci">#define GL_COLD_NOINLINE_ERROR</div><div class="ttdef"><b>Definition:</b> <a href="code__optimization_8hpp_source.html#l00090">code_optimization.hpp:90</a></div></div>
+</div><!-- fragment --><p>Expects |val1 - val2| &lt;= delta difference, dies with a fatal error otherwise. Mainly meant for floating point values. ASSERT_DELTA and EXPECT_DELTA </p>
+
+<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00260">260</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ga3133377da54051b5e7f011a96ac9ce43"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga3133377da54051b5e7f011a96ac9ce43">&#9670;&nbsp;</a></span>__CHECK_EQ</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define __CHECK_EQ</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val1, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val2&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;__CHECK_OP(==, val1, val2)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Expects val1 == val2, dies with a fatal error otherwise. Synonyms are ASSERT_EQ and EXPECT_EQ. </p>
+
+<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00284">284</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ga1e2ab9ffbfa702a5ccd2bcf1cf1f3516"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga1e2ab9ffbfa702a5ccd2bcf1cf1f3516">&#9670;&nbsp;</a></span>__CHECK_GE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define __CHECK_GE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val1, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val2&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;__CHECK_OP(&gt;=, val1, val2)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Expects val1 &gt;= val2, dies with a fatal error otherwise. Synonyms are ASSERT_GE and EXPECT_GE </p>
+
+<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00288">288</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ga3a25fc7c72059e82aef35f91ba6cf266"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga3a25fc7c72059e82aef35f91ba6cf266">&#9670;&nbsp;</a></span>__CHECK_GT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define __CHECK_GT</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val1, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val2&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;__CHECK_OP(&gt; , val1, val2)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Expects val1 &gt; val2, dies with a fatal error otherwise. Synonyms are ASSERT_GT and EXPECT_GT </p>
+
+<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00289">289</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+
+</div>
+</div>
+<a id="gaa234f2f2584dd82cccb01ccee6b653c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaa234f2f2584dd82cccb01ccee6b653c5">&#9670;&nbsp;</a></span>__CHECK_LE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define __CHECK_LE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val1, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val2&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;__CHECK_OP(&lt;=, val1, val2)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Expects val1 &lt;= val2, dies with a fatal error otherwise. Synonyms are ASSERT_LE and EXPECT_LE </p>
+
+<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00286">286</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ga1b6222a9bc0ba92b6ecd59ebfc477f68"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga1b6222a9bc0ba92b6ecd59ebfc477f68">&#9670;&nbsp;</a></span>__CHECK_LT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define __CHECK_LT</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val1, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val2&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;__CHECK_OP(&lt; , val1, val2)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Expects val1 &lt; val2, dies with a fatal error otherwise. Synonyms are ASSERT_LT and EXPECT_LT </p>
+
+<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00287">287</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ga754fcc0c48925cbed4c6ffbe685041d2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga754fcc0c48925cbed4c6ffbe685041d2">&#9670;&nbsp;</a></span>__CHECK_NE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define __CHECK_NE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val1, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val2&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;__CHECK_OP(!=, val1, val2)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Expects val1 != val2, dies with a fatal error otherwise. Synonyms are ASSERT_NE and EXPECT_NE </p>
+
+<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00285">285</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+
+</div>
+</div>
+<a id="gad53884968fc48299606580f6656096b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gad53884968fc48299606580f6656096b7">&#9670;&nbsp;</a></span>__DCHECK_DELTA</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define __DCHECK_DELTA</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val1, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val2, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">delta&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga293e0605baad97fb97fc0639e8f0a7b9">__CHECK_DELTA</a>(val1, val2, delta)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Like <a class="el" href="group__assertions.html#ga293e0605baad97fb97fc0639e8f0a7b9">__CHECK_DELTA</a> but is compiled away by NDEBUG. Synonyms are DASSERT_DELTA. </p>
+
+<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00355">355</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ga15a94b7ff21c07e5111118d98d19de3f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga15a94b7ff21c07e5111118d98d19de3f">&#9670;&nbsp;</a></span>__DCHECK_EQ</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define __DCHECK_EQ</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val1, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val2&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga3133377da54051b5e7f011a96ac9ce43">__CHECK_EQ</a>(val1, val2)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Like <a class="el" href="group__assertions.html#ga3133377da54051b5e7f011a96ac9ce43">__CHECK_EQ</a> but is compiled away by NDEBUG. Synonyms are DASSERT_EQ. </p>
+
+<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00354">354</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+
+</div>
+</div>
+<a id="gabcf75ee30a19a2f2653aef5e67f9ae31"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gabcf75ee30a19a2f2653aef5e67f9ae31">&#9670;&nbsp;</a></span>__DCHECK_GE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define __DCHECK_GE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val1, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val2&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga1e2ab9ffbfa702a5ccd2bcf1cf1f3516">__CHECK_GE</a>(val1, val2)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Like <a class="el" href="group__assertions.html#ga1e2ab9ffbfa702a5ccd2bcf1cf1f3516">__CHECK_GE</a> but is compiled away by NDEBUG. Synonyms are DASSERT_GE. </p>
+
+<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00359">359</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+
+</div>
+</div>
+<a id="gaf5f3769fe52f7815042922067b698a0f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaf5f3769fe52f7815042922067b698a0f">&#9670;&nbsp;</a></span>__DCHECK_GT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define __DCHECK_GT</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val1, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val2&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga3a25fc7c72059e82aef35f91ba6cf266">__CHECK_GT</a>(val1, val2)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Like <a class="el" href="group__assertions.html#ga3a25fc7c72059e82aef35f91ba6cf266">__CHECK_GT</a> but is compiled away by NDEBUG. Synonyms are DASSERT_GT. </p>
+
+<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00360">360</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ga65ca02fa01cb8f672c51c320a33c5460"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga65ca02fa01cb8f672c51c320a33c5460">&#9670;&nbsp;</a></span>__DCHECK_LE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define __DCHECK_LE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val1, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val2&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;<a class="el" href="group__assertions.html#gaa234f2f2584dd82cccb01ccee6b653c5">__CHECK_LE</a>(val1, val2)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Like <a class="el" href="group__assertions.html#gaa234f2f2584dd82cccb01ccee6b653c5">__CHECK_LE</a> but is compiled away by NDEBUG. Synonyms are DASSERT_LE. </p>
+
+<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00357">357</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ga61adbd8b8f272ebb5d458a7224eb4c81"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga61adbd8b8f272ebb5d458a7224eb4c81">&#9670;&nbsp;</a></span>__DCHECK_LT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define __DCHECK_LT</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val1, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val2&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga1b6222a9bc0ba92b6ecd59ebfc477f68">__CHECK_LT</a>(val1, val2)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Like <a class="el" href="group__assertions.html#ga1b6222a9bc0ba92b6ecd59ebfc477f68">__CHECK_LT</a> but is compiled away by NDEBUG. Synonyms are DASSERT_LT. </p>
+
+<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00358">358</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+
+</div>
+</div>
+<a id="gab4d042514612948cd31b0a21648866f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab4d042514612948cd31b0a21648866f3">&#9670;&nbsp;</a></span>__DCHECK_NE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define __DCHECK_NE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val1, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">val2&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga754fcc0c48925cbed4c6ffbe685041d2">__CHECK_NE</a>(val1, val2)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Like <a class="el" href="group__assertions.html#ga754fcc0c48925cbed4c6ffbe685041d2">__CHECK_NE</a> but is compiled away by NDEBUG. Synonyms are DASSERT_NE. </p>
+
+<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00356">356</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+
+</div>
+</div>
 <a id="ga9efe2f02b4d8f1efc4b509bcc009df90"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga9efe2f02b4d8f1efc4b509bcc009df90">&#9670;&nbsp;</a></span>ASSERT_FALSE</h2>
 
@@ -176,254 +647,6 @@ Macros</h2></td></tr>
 
 </div>
 </div>
-<a id="ga3e1cfef60e774a81f30eaddf26a3a274"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga3e1cfef60e774a81f30eaddf26a3a274">&#9670;&nbsp;</a></span>CHECK</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define CHECK</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">condition</td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {                                                                  \</div><div class="line">    if (UNLIKELY(!(condition))) {                                       \</div><div class="line">      auto throw_error = [&amp;]() GL_GCC_ONLY(<a class="code" href="group__util.html#gae731468612d543efd1b13bca3a047139">GL_COLD_NOINLINE_ERROR</a>) {    \</div><div class="line">      std::ostringstream ss;                                            \</div><div class="line">      ss &lt;&lt; <span class="stringliteral">&quot;Check failed (&quot;</span> &lt;&lt; __FILE__ &lt;&lt; <span class="stringliteral">&quot;:&quot;</span> &lt;&lt; __LINE__ &lt;&lt; <span class="stringliteral">&quot;): &quot;</span>    \</div><div class="line">      &lt;&lt; #condition  &lt;&lt; std::endl;                                      \</div><div class="line">      logstream(<a class="code" href="group__levels.html#gaced66975c154ea0e2a8ec3bc818b4e08">LOG_ERROR</a>) &lt;&lt; ss.str();                                 \</div><div class="line">      __print_back_trace();                                             \</div><div class="line">      LOGGED_TURI_LOGGER_FAIL_METHOD(ss.str());                     \</div><div class="line">    };                                                                  \</div><div class="line">    throw_error();                                                      \</div><div class="line">  }                                                                     \</div><div class="line">  } <span class="keywordflow">while</span>(0)</div><div class="ttc" id="group__levels_html_gaced66975c154ea0e2a8ec3bc818b4e08"><div class="ttname"><a href="group__levels.html#gaced66975c154ea0e2a8ec3bc818b4e08">LOG_ERROR</a></div><div class="ttdeci">#define LOG_ERROR</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00095">logger.hpp:95</a></div></div>
-<div class="ttc" id="group__util_html_gae731468612d543efd1b13bca3a047139"><div class="ttname"><a href="group__util.html#gae731468612d543efd1b13bca3a047139">GL_COLD_NOINLINE_ERROR</a></div><div class="ttdeci">#define GL_COLD_NOINLINE_ERROR</div><div class="ttdef"><b>Definition:</b> <a href="code__optimization_8hpp_source.html#l00090">code_optimization.hpp:90</a></div></div>
-</div><!-- fragment --><p>CHECK dies with a fatal error if condition is not true. It is <em>not</em> controlled by NDEBUG, so the check will be executed regardless of compilation mode. </p>
-
-<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00197">197</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
-
-</div>
-</div>
-<a id="ga32722ee8437bef07cc921df1788b657f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga32722ee8437bef07cc921df1788b657f">&#9670;&nbsp;</a></span>CHECK_DELTA</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define CHECK_DELTA</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val1, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val2, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">delta&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {                                                                  \</div><div class="line">    const <span class="keywordtype">double</span> _CHECK_OP_v1_ = val1;                                  \</div><div class="line">    const <span class="keywordtype">double</span> _CHECK_OP_v2_ = val2;                                  \</div><div class="line">    const <span class="keywordtype">double</span> _CHECK_OP_delta_ = delta;                              \</div><div class="line">    if (__builtin_expect(!( abs( (_CHECK_OP_v1_) - (_CHECK_OP_v2_)) &lt;= _CHECK_OP_delta_), 0)) { \</div><div class="line">      auto throw_error = [&amp;]() GL_GCC_ONLY(<a class="code" href="group__util.html#gae731468612d543efd1b13bca3a047139">GL_COLD_NOINLINE_ERROR</a>) {    \</div><div class="line">      std::ostringstream ss;                                            \</div><div class="line">      ss &lt;&lt; <span class="stringliteral">&quot;Assertion failed: (&quot;</span> &lt;&lt; __FILE__ &lt;&lt; <span class="stringliteral">&quot;:&quot;</span> &lt;&lt; __LINE__ &lt;&lt; <span class="stringliteral">&quot;): &quot;</span> \</div><div class="line">         &lt;&lt; <span class="stringliteral">&quot;abs(&quot;</span> &lt;&lt; #val1 &lt;&lt; <span class="stringliteral">&quot; - &quot;</span> &lt;&lt; #val2                           \</div><div class="line">         &lt;&lt; <span class="stringliteral">&quot;) &lt;= &quot;</span> &lt;&lt; #delta &lt;&lt; <span class="stringliteral">&quot;. [&quot;</span>                                  \</div><div class="line">         &lt;&lt; <span class="stringliteral">&quot;abs(&quot;</span> &lt;&lt; _CHECK_OP_v2_ &lt;&lt; <span class="stringliteral">&quot; - &quot;</span> &lt;&lt; _CHECK_OP_v1_           \</div><div class="line">         &lt;&lt; <span class="stringliteral">&quot;) &gt; &quot;</span> &lt;&lt; _CHECK_OP_delta_ &lt;&lt; <span class="stringliteral">&quot;]&quot;</span> &lt;&lt; std::endl;             \</div><div class="line">      logstream(<a class="code" href="group__levels.html#gaced66975c154ea0e2a8ec3bc818b4e08">LOG_ERROR</a>) &lt;&lt; ss.str();                                 \</div><div class="line">      __print_back_trace();                                             \</div><div class="line">      LOGGED_TURI_LOGGER_FAIL_METHOD(ss.str());                     \</div><div class="line">    };                                                                  \</div><div class="line">    throw_error();                                                      \</div><div class="line">    }                                                                   \</div><div class="line">  } <span class="keywordflow">while</span>(0)</div><div class="ttc" id="group__levels_html_gaced66975c154ea0e2a8ec3bc818b4e08"><div class="ttname"><a href="group__levels.html#gaced66975c154ea0e2a8ec3bc818b4e08">LOG_ERROR</a></div><div class="ttdeci">#define LOG_ERROR</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00095">logger.hpp:95</a></div></div>
-<div class="ttc" id="group__util_html_gae731468612d543efd1b13bca3a047139"><div class="ttname"><a href="group__util.html#gae731468612d543efd1b13bca3a047139">GL_COLD_NOINLINE_ERROR</a></div><div class="ttdeci">#define GL_COLD_NOINLINE_ERROR</div><div class="ttdef"><b>Definition:</b> <a href="code__optimization_8hpp_source.html#l00090">code_optimization.hpp:90</a></div></div>
-</div><!-- fragment --><p>Expects |val1 - val2| &lt;= delta difference, dies with a fatal error otherwise. Mainly meant for floating point values. ASSERT_DELTA and EXPECT_DELTA </p>
-
-<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00260">260</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
-
-</div>
-</div>
-<a id="ga7c0ce053b28d53aa4eaf3eb7fb71663b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga7c0ce053b28d53aa4eaf3eb7fb71663b">&#9670;&nbsp;</a></span>CHECK_EQ</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define CHECK_EQ</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val1, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val2&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;CHECK_OP(==, val1, val2)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Expects val1 == val2, dies with a fatal error otherwise. Synonyms are ASSERT_EQ and EXPECT_EQ. </p>
-
-<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00284">284</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
-
-</div>
-</div>
-<a id="ga7cc25402ecd7591b4c39934dd656b1f9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga7cc25402ecd7591b4c39934dd656b1f9">&#9670;&nbsp;</a></span>CHECK_GE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define CHECK_GE</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val1, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val2&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;CHECK_OP(&gt;=, val1, val2)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Expects val1 &gt;= val2, dies with a fatal error otherwise. Synonyms are ASSERT_GE and EXPECT_GE </p>
-
-<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00288">288</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
-
-</div>
-</div>
-<a id="ga7e03ec13560fa94a8fea569960d7efc6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga7e03ec13560fa94a8fea569960d7efc6">&#9670;&nbsp;</a></span>CHECK_GT</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define CHECK_GT</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val1, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val2&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;CHECK_OP(&gt; , val1, val2)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Expects val1 &gt; val2, dies with a fatal error otherwise. Synonyms are ASSERT_GT and EXPECT_GT </p>
-
-<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00289">289</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
-
-</div>
-</div>
-<a id="gae4db23f10f5d4aad6d735f5a74cd6f8c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gae4db23f10f5d4aad6d735f5a74cd6f8c">&#9670;&nbsp;</a></span>CHECK_LE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define CHECK_LE</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val1, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val2&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;CHECK_OP(&lt;=, val1, val2)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Expects val1 &lt;= val2, dies with a fatal error otherwise. Synonyms are ASSERT_LE and EXPECT_LE </p>
-
-<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00286">286</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
-
-</div>
-</div>
-<a id="ga4bd2e815ca2f702a4b6aa744b1ff3b82"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga4bd2e815ca2f702a4b6aa744b1ff3b82">&#9670;&nbsp;</a></span>CHECK_LT</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define CHECK_LT</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val1, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val2&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;CHECK_OP(&lt; , val1, val2)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Expects val1 &lt; val2, dies with a fatal error otherwise. Synonyms are ASSERT_LT and EXPECT_LT </p>
-
-<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00287">287</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
-
-</div>
-</div>
-<a id="gab25e01a2942b821d66371fc68d53f2eb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gab25e01a2942b821d66371fc68d53f2eb">&#9670;&nbsp;</a></span>CHECK_NE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define CHECK_NE</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val1, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val2&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;CHECK_OP(!=, val1, val2)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Expects val1 != val2, dies with a fatal error otherwise. Synonyms are ASSERT_NE and EXPECT_NE </p>
-
-<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00285">285</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
-
-</div>
-</div>
 <a id="gaff5d24ebe6695176a5ef5dd64948ee40"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gaff5d24ebe6695176a5ef5dd64948ee40">&#9670;&nbsp;</a></span>DASSERT_FALSE</h2>
 
@@ -463,229 +686,6 @@ Macros</h2></td></tr>
 <p>Like <a class="el" href="group__assertions.html#ga1656b25134a180161dcd61a11184cd12">ASSERT_TRUE</a> but is compiled away by NDEBUG. </p>
 
 <p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00361">361</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
-
-</div>
-</div>
-<a id="ga703c00af0128acf4aeb85731cc054f3d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga703c00af0128acf4aeb85731cc054f3d">&#9670;&nbsp;</a></span>DCHECK_DELTA</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DCHECK_DELTA</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val1, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val2, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">delta&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga32722ee8437bef07cc921df1788b657f">CHECK_DELTA</a>(val1, val2, delta)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Like <a class="el" href="group__assertions.html#ga32722ee8437bef07cc921df1788b657f">CHECK_DELTA</a> but is compiled away by NDEBUG. Synonyms are DASSERT_DELTA. </p>
-
-<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00355">355</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
-
-</div>
-</div>
-<a id="gae89df3243bbb8341130c7b3f44145ea0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gae89df3243bbb8341130c7b3f44145ea0">&#9670;&nbsp;</a></span>DCHECK_EQ</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DCHECK_EQ</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val1, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val2&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga7c0ce053b28d53aa4eaf3eb7fb71663b">CHECK_EQ</a>(val1, val2)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Like <a class="el" href="group__assertions.html#ga7c0ce053b28d53aa4eaf3eb7fb71663b">CHECK_EQ</a> but is compiled away by NDEBUG. Synonyms are DASSERT_EQ. </p>
-
-<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00354">354</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
-
-</div>
-</div>
-<a id="gaae2dc65d9ea248d54bf39daa986dd295"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaae2dc65d9ea248d54bf39daa986dd295">&#9670;&nbsp;</a></span>DCHECK_GE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DCHECK_GE</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val1, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val2&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga7cc25402ecd7591b4c39934dd656b1f9">CHECK_GE</a>(val1, val2)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Like <a class="el" href="group__assertions.html#ga7cc25402ecd7591b4c39934dd656b1f9">CHECK_GE</a> but is compiled away by NDEBUG. Synonyms are DASSERT_GE. </p>
-
-<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00359">359</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
-
-</div>
-</div>
-<a id="gab4f56aa24c4c9cddc47a6abd2d747f9a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gab4f56aa24c4c9cddc47a6abd2d747f9a">&#9670;&nbsp;</a></span>DCHECK_GT</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DCHECK_GT</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val1, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val2&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga7e03ec13560fa94a8fea569960d7efc6">CHECK_GT</a>(val1, val2)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Like <a class="el" href="group__assertions.html#ga7e03ec13560fa94a8fea569960d7efc6">CHECK_GT</a> but is compiled away by NDEBUG. Synonyms are DASSERT_GT. </p>
-
-<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00360">360</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
-
-</div>
-</div>
-<a id="ga4395e95bab44e222cb2e77251017a0e2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga4395e95bab44e222cb2e77251017a0e2">&#9670;&nbsp;</a></span>DCHECK_LE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DCHECK_LE</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val1, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val2&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;<a class="el" href="group__assertions.html#gae4db23f10f5d4aad6d735f5a74cd6f8c">CHECK_LE</a>(val1, val2)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Like <a class="el" href="group__assertions.html#gae4db23f10f5d4aad6d735f5a74cd6f8c">CHECK_LE</a> but is compiled away by NDEBUG. Synonyms are DASSERT_LE. </p>
-
-<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00357">357</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
-
-</div>
-</div>
-<a id="gab62f5ed8f2d48e29802be0cbbcd1359a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gab62f5ed8f2d48e29802be0cbbcd1359a">&#9670;&nbsp;</a></span>DCHECK_LT</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DCHECK_LT</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val1, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val2&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;<a class="el" href="group__assertions.html#ga4bd2e815ca2f702a4b6aa744b1ff3b82">CHECK_LT</a>(val1, val2)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Like <a class="el" href="group__assertions.html#ga4bd2e815ca2f702a4b6aa744b1ff3b82">CHECK_LT</a> but is compiled away by NDEBUG. Synonyms are DASSERT_LT. </p>
-
-<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00358">358</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
-
-</div>
-</div>
-<a id="ga46e69120fbd3b36e6960e096d23b66f0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga46e69120fbd3b36e6960e096d23b66f0">&#9670;&nbsp;</a></span>DCHECK_NE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DCHECK_NE</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val1, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">val2&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;<a class="el" href="group__assertions.html#gab25e01a2942b821d66371fc68d53f2eb">CHECK_NE</a>(val1, val2)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Like <a class="el" href="group__assertions.html#gab25e01a2942b821d66371fc68d53f2eb">CHECK_NE</a> but is compiled away by NDEBUG. Synonyms are DASSERT_NE. </p>
-
-<p class="definition">Definition at line <a class="el" href="assertions_8hpp_source.html#l00356">356</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
 
 </div>
 </div>

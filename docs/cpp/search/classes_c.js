@@ -2,7 +2,7 @@ var searchData=
 [
   ['l1_5fnorm',['l1_norm',['../classturi_1_1optimization_1_1l1__norm.html',1,'turi::optimization']]],
   ['l2_5fnorm',['l2_norm',['../classturi_1_1optimization_1_1l2__norm.html',1,'turi::optimization']]],
-  ['l2_5frescaling',['l2_rescaling',['../classturi_1_1supervised_1_1l2__rescaling.html',1,'turi::supervised::l2_rescaling'],['../classturi_1_1l2__rescaling.html',1,'turi::l2_rescaling']]],
+  ['l2_5frescaling',['l2_rescaling',['../classturi_1_1l2__rescaling.html',1,'turi::l2_rescaling'],['../classturi_1_1supervised_1_1l2__rescaling.html',1,'turi::supervised::l2_rescaling']]],
   ['lambda_5fcall_5fby_5fdict_5fdata',['lambda_call_by_dict_data',['../structturi_1_1lambda_1_1lambda__call__by__dict__data.html',1,'turi::lambda']]],
   ['lambda_5fcall_5fby_5fsframe_5frows_5fdata',['lambda_call_by_sframe_rows_data',['../structturi_1_1lambda_1_1lambda__call__by__sframe__rows__data.html',1,'turi::lambda']]],
   ['lambda_5fcall_5fdata',['lambda_call_data',['../structturi_1_1lambda_1_1lambda__call__data.html',1,'turi::lambda']]],

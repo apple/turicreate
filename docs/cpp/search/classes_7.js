@@ -12,6 +12,7 @@ var searchData=
   ['get_5ffloat_5fvisitor',['get_float_visitor',['../structturi_1_1flexible__type__impl_1_1get__float__visitor.html',1,'turi::flexible_type_impl']]],
   ['get_5fimg_5fvisitor',['get_img_visitor',['../structturi_1_1flexible__type__impl_1_1get__img__visitor.html',1,'turi::flexible_type_impl']]],
   ['get_5fint_5fvisitor',['get_int_visitor',['../structturi_1_1flexible__type__impl_1_1get__int__visitor.html',1,'turi::flexible_type_impl']]],
+  ['get_5fndvec_5fvisitor',['get_ndvec_visitor',['../structturi_1_1flexible__type__impl_1_1get__ndvec__visitor.html',1,'turi::flexible_type_impl']]],
   ['get_5frecursive_5fvisitor',['get_recursive_visitor',['../structturi_1_1flexible__type__impl_1_1get__recursive__visitor.html',1,'turi::flexible_type_impl']]],
   ['get_5fstring_5fvisitor',['get_string_visitor',['../structturi_1_1flexible__type__impl_1_1get__string__visitor.html',1,'turi::flexible_type_impl']]],
   ['get_5ftype_5findex',['get_type_index',['../structturi_1_1flexible__type__impl_1_1get__type__index.html',1,'turi::flexible_type_impl']]],

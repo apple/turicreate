@@ -2,7 +2,6 @@ var searchData=
 [
   ['alias_5fsampler',['alias_sampler',['../classturi_1_1random_1_1alias__sampler.html',1,'turi::random']]],
   ['alias_5ftopic_5fmodel',['alias_topic_model',['../classturi_1_1text_1_1alias__topic__model.html',1,'turi::text']]],
-  ['all_5farithmetic',['all_arithmetic',['../structturi_1_1all__arithmetic.html',1,'turi']]],
   ['all_5fflexible_5ftype_5fconvertible',['all_flexible_type_convertible',['../structturi_1_1all__flexible__type__convertible.html',1,'turi']]],
   ['all_5fvariant_5fconvertible',['all_variant_convertible',['../structturi_1_1all__variant__convertible.html',1,'turi']]],
   ['any',['any',['../classturi_1_1any.html',1,'turi']]],

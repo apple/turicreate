@@ -119,7 +119,7 @@ Unity Types</h1>
 <h1><a class="anchor" id="unity_architecture_exposing_new_types"></a>
 Exposing New Types to Python</h1>
 <p>While The Extension interface (turicreate_extension_interface) should be sufficient for most purposes, on occasion it might be necessary to expose a new fundamental type to Python. This is unfortunately, a slightly involving process, but we do not expect this to happen too frequently (You should <b>really</b> use the extension interface).</p>
-<p>On a high level, you first implement an object exposed via the CPPIPC interface. Then you need to pursuade Cython to pick up the proxy object, and then further wrapping the proxy object in a Python class if necessary.</p>
+<p>On a high level, you first implement an object exposed via the CPPIPC interface. Then you need to persuade Cython to pick up the proxy object, and then further wrapping the proxy object in a Python class if necessary.</p>
 <p>Lets walk through a simple example. Say we are going to expose a new type called "counter" which implements a simple integer counter with two functions, increment(int), and int get(). The tasks involved are essentially:</p>
 <ul>
 <li><a class="el" href="unity_writing_toolkit.html#unity_architecture_exposing_new_types_base">Creating Base and Proxy</a> </li>

@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['has_5fcanonical_5fstride',['has_canonical_stride',['../classturi_1_1flexible__type__impl_1_1ndarray.html#a52d6c98e2883bfab8c038aa64a1495b2',1,'turi::flexible_type_impl::ndarray']]],
   ['has_5fid',['has_id',['../classturi_1_1pattern__mining_1_1fp__tree__header.html#a2c89e77488371c46a958bfd92a01d43d',1,'turi::pattern_mining::fp_tree_header']]],
   ['has_5fkey',['has_key',['../classturi_1_1flex__dict__view.html#a16b3d5c68944100cbc9ab2cbdbe08057',1,'turi::flex_dict_view']]],
   ['has_5fmin_5fobservations',['has_min_observations',['../group__groupby__aggregate.html#ga2d6df0f3e1a0af92200c2d4ceb59dfc5',1,'turi::rolling_aggregate']]],
@@ -18,9 +19,8 @@ var searchData=
   ['hash64_5fupdate',['hash64_update',['../group__Hashing.html#gaab923908a4686417dcf08ec92189b389',1,'turi']]],
   ['hash_5fbucket',['hash_bucket',['../classturi_1_1hash__bucket.html#ac8a0b9aca8c1e643df423efa5701a1a5',1,'turi::hash_bucket']]],
   ['hash_5fbucket_5fcontainer',['hash_bucket_container',['../classturi_1_1hash__bucket__container.html#a99def0f090b47cf4c845682f3cee3216',1,'turi::hash_bucket_container']]],
-  ['hash_5ffunction',['hash_function',['../classturi_1_1hopscotch__table.html#ac925f6dad9c172958e866fb87cd0ee37',1,'turi::hopscotch_table::hash_function()'],['../classcuckoohash__map.html#ac7ab26e6b6dffe554f1f517fed7b1288',1,'cuckoohash_map::hash_function()']]],
+  ['hash_5ffunction',['hash_function',['../classturi_1_1hopscotch__table.html#ac925f6dad9c172958e866fb87cd0ee37',1,'turi::hopscotch_table']]],
   ['hash_5fvalue',['hash_value',['../classturi_1_1hash__value.html#a07706ff3ef923ab29b9f15e637795f46',1,'turi::hash_value::hash_value()'],['../classturi_1_1hash__value.html#a50991f66e5ec0550c297b8ffebcb1748',1,'turi::hash_value::hash_value(Args... args)'],['../classturi_1_1hash__value.html#af0efb00f256aa3bbcfc708c22e8fcf1f',1,'turi::hash_value::hash_value(const hash_value &amp;t)'],['../classturi_1_1hash__value.html#aa8b9d8ad0c5f6f1c61f26463715cf55b',1,'turi::hash_value::hash_value(uint128_t h)']]],
-  ['hashpower',['hashpower',['../classcuckoohash__map.html#a2c293a1e9ca0ee0c41149b0d18dd9327',1,'cuckoohash_map']]],
   ['head',['head',['../classturi_1_1gl__sarray.html#ae114caf2ca48f956219bc6269133b41f',1,'turi::gl_sarray::head()'],['../classturi_1_1gl__sframe.html#adca009b8e710bc44c58bcc9f4c6f7036',1,'turi::gl_sframe::head()'],['../classturi_1_1unity__sarray.html#a2911746011f5021eb2cfecd1e9f8cfe9',1,'turi::unity_sarray::head()'],['../classturi_1_1unity__sframe.html#a19ecf0228cf3302a21523be2fc727637',1,'turi::unity_sframe::head()']]],
   ['heap_5fbytes',['heap_bytes',['../namespaceturi_1_1memory__info.html#a75de38c62b95bde7f11c8d0e61b9cb79',1,'turi::memory_info']]],
   ['heapify',['heapify',['../classturi_1_1mutable__queue.html#a325f935aca3f0328f1b475371644e034',1,'turi::mutable_queue']]],

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Turi Create: turi::flexible_type_converter&lt; T, Enable &gt; Struct Template Reference</title>
+<title>Turi Create: turi::flexible_type_converter&lt; T &gt; Struct Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -83,46 +83,18 @@ $(document).ready(function(){initNavTree('structturi_1_1flexible__type__converte
   <div class="summary">
 <a href="structturi_1_1flexible__type__converter-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">turi::flexible_type_converter&lt; T, Enable &gt; Struct Template Reference</div>  </div>
+<div class="title">turi::flexible_type_converter&lt; T &gt; Struct Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="flexible__type__converter_8hpp_source.html">flexible_type/flexible_type_converter.hpp</a>&gt;</code></p>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;typename T, class Enable = void&gt;<br />
-struct turi::flexible_type_converter&lt; T, Enable &gt;</h3>
+<div class="textblock"><h3>template&lt;typename T&gt;<br />
+struct turi::flexible_type_converter&lt; T &gt;</h3>
 
-<p>The flexible_type_converter&lt;T&gt; is a class which exposes two member functions. </p><div class="fragment"><div class="line">T flexible_type_converter&lt;T&gt;::get(<span class="keyword">const</span> flexible_type&amp;)</div><div class="line">flexible_type flexible_type&lt;T&gt;::set(<span class="keyword">const</span> T&amp;)</div></div><!-- fragment --><p>Essentially flexible_type_converter::get converts from a <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> to an arbitrary type T, and flexible_type_converter::set converts from an arbitrary type T to a <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>.</p>
-<p>The key is to support as interesting types for T as possible. The following are currently supported:</p><ul>
-<li><a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> itself</li>
-<li><a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> castable cases:<ul>
-<li>Any direct member of <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>:<ul>
-<li>flex_int (int64_t)</li>
-<li>flex_float (double)</li>
-<li>flex_string (std::string)</li>
-<li>flex_vec (std::vector&lt;double&gt;)</li>
-<li>flex_list (std::vector&lt;flexible_type&gt;)</li>
-<li>flex_dict (std::vector&lt;std::pair&lt;flexible_type, flexible_type&gt; &gt;)</li>
-<li><a class="el" href="structturi_1_1flex__date__time.html">flex_date_time</a> (boost::ptime)</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Any scalar type (any boolean, integer, or floating point type)</li>
-<li>Recursive cases<ul>
-<li>std::vector&lt;T&gt; where T is of any type in this list including the recursive cases.</li>
-<li>std::map&lt;S, T&gt; where S and T are of any type in this list including the recursive cases. (though note that complicated S types may not be representable in Python.)</li>
-<li>std::unordered_map&lt;S, T&gt; where S and T are of any type in this list including the recursive cases. (though note that complicated S types may not be representable in Python.)</li>
-<li>std::pair&lt;S, T&gt; where S, T are of any type in this list including the recursive cases.</li>
-<li>std::tuple&lt;T...&gt; where T... are of any type in this list including the recursive cases.</li>
-</ul>
-</li>
-</ul>
-<h2>flexible_type_converter_implementation Details </h2>
-<p>The key difficulty is to make sure that every T matches <em>exactly</em> one case. Each case below is numbered, and we document here how each situation maps to each case.</p>
-<p>Base case. All failed templatizations will come here where compilation will fail. </p>
+<p>A class that wraps the above functions in a convenient way for testing. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type__converter_8hpp_source.html#l00119">119</a> of file <a class="el" href="flexible__type__converter_8hpp_source.html">flexible_type_converter.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type__converter_8hpp_source.html#l00837">837</a> of file <a class="el" href="flexible__type__converter_8hpp_source.html">flexible_type_converter.hpp</a>.</p>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li>flexible_type/<a class="el" href="flexible__type__converter_8hpp_source.html">flexible_type_converter.hpp</a></li>
 </ul>

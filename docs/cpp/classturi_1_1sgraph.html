@@ -229,7 +229,7 @@ Public Member Functions</h2></td></tr>
 <p>Vertex grouping is implemented by having multiple of the vertex blocks, one for each group. Thus m_vertex_groups[0] contains a vector of SFrames for vertex group 0 and so on.</p>
 <p>Edges are not grouped and they may span any collection of vertices. However, to be able to efficiently slice vertices and edges across groups, there are g*g edges groups, where m_edge_groups[{a,b}] contain all the edges between group a and group b. </p>
 
-<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00080">80</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00074">74</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="ae0ac3ce4596aa4022a2e4c7a5a366d42"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae0ac3ce4596aa4022a2e4c7a5a366d42">&#9670;&nbsp;</a></span>add_edge_field()</h2>
@@ -603,7 +603,7 @@ Public Member Functions</h2></td></tr>
 <p>Returns the collection of SFrames containing all the edges between vertex group groupa and vertex group groupb.</p>
 <p>This function can be used as the left hand side of an assignment. i.e. </p><div class="fragment"><div class="line"><a class="code" href="classturi_1_1sgraph.html#a2d13402af20d6cb8bddcca7b42b108f4">edge_group</a>(<a class="code" href="group__groupby__aggregate.html#ga77f524221cf7cf02af960b90b93f120a">group</a>) = blah</div></div><!-- fragment --><p> The caller must guarantee that blah is of the right size. (i.e. blah.size() == <a class="el" href="classturi_1_1sgraph.html#a1daa26407e6da8299dcbdf8715f55b5b">get_num_partitions()</a> * <a class="el" href="classturi_1_1sgraph.html#a1daa26407e6da8299dcbdf8715f55b5b">get_num_partitions()</a> ) </p>
 
-<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00307">307</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00301">301</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
 
 </div>
 </div>
@@ -642,7 +642,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the collection of SFrames containing all the edges between vertex group groupa and vertex group groupb. </p>
 
-<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00318">318</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00312">312</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
 
 </div>
 </div>
@@ -693,7 +693,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the SFrame containing all edges in the partition (partition1, partition2) between vertex group groupa and vertex group groupb.</p>
 <p>This function can be used as the left hand side of an assignment. i.e. </p><div class="fragment"><div class="line"><a class="code" href="classturi_1_1sgraph.html#aabfd19c29221ac8ab3dfb6f760f35cc3">edge_partition</a>(part1, part2) = sframe</div></div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00387">387</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00381">381</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
 
 </div>
 </div>
@@ -744,7 +744,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the SFrame containing all edges in the partition (partition1, partition2) between vertex group groupa and vertex group groupb. </p>
 
-<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00401">401</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00395">395</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
 
 </div>
 </div>
@@ -773,7 +773,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the SFrame containing all edges in the partition (partition1, partition2) between vertex group groupa and vertex group groupb.</p>
 <p>This function can be used as the left hand side of an assignment. i.e. </p><div class="fragment"><div class="line"><a class="code" href="classturi_1_1sgraph.html#aabfd19c29221ac8ab3dfb6f760f35cc3">edge_partition</a>(part1, part2) = sframe</div></div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00421">421</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00415">415</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
 
 </div>
 </div>
@@ -802,7 +802,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the SFrame containing all edges in the partition (partition1, partition2) between vertex group groupa and vertex group groupb. </p>
 
-<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00431">431</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00425">425</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
 
 </div>
 </div>
@@ -830,7 +830,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns true if the graph is empty. </p>
 
-<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00493">493</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00487">487</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
 
 </div>
 </div>
@@ -1092,7 +1092,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the number of vertex groups </p>
 
-<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00505">505</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00499">499</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
 
 </div>
 </div>
@@ -1120,7 +1120,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the number of vertex partitions </p>
 
-<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00498">498</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00492">492</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
 
 </div>
 </div>
@@ -1216,7 +1216,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the id of the vertex group given the group name. Returns (size_t)(-1) on failure. </p>
 
-<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00450">450</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00444">444</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
 
 </div>
 </div>
@@ -1245,7 +1245,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the name of the vertex group given the group id. Assertion failure if the group does not exist. </p>
 
-<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00441">441</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00435">435</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
 
 </div>
 </div>
@@ -1414,7 +1414,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns number of edges from groupa to groupb. </p>
 
-<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00459">459</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00453">453</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
 
 </div>
 </div>
@@ -1442,7 +1442,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the total number of edges. </p>
 
-<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00471">471</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00465">465</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
 
 </div>
 </div>
@@ -1471,7 +1471,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the number of vertices in the group. </p>
 
-<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00476">476</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00470">470</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
 
 </div>
 </div>
@@ -1499,7 +1499,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the total number of vertices. </p>
 
-<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00488">488</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00482">482</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
 
 </div>
 </div>
@@ -1772,7 +1772,7 @@ Public Member Functions</h2></td></tr>
 <p>Returns the collection of SFrames containing all the vertices in group groupid.</p>
 <p>This function can be used as the left hand side of an assignment. i.e. </p><div class="fragment"><div class="line"><a class="code" href="classturi_1_1sgraph.html#ac7b871ba8d578cafef1d6f66e8fb0e8d">vertex_group</a>(<a class="code" href="group__groupby__aggregate.html#ga77f524221cf7cf02af960b90b93f120a">group</a>) = blah</div></div><!-- fragment --><p> The caller must guarantee that blah is of the right size. (i.e. blah.size() == <a class="el" href="classturi_1_1sgraph.html#a1daa26407e6da8299dcbdf8715f55b5b">get_num_partitions()</a> ) </p>
 
-<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00280">280</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00274">274</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
 
 </div>
 </div>
@@ -1801,7 +1801,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the collection of SFrames containing all the vertices in group groupid </p>
 
-<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00289">289</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00283">283</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
 
 </div>
 </div>
@@ -1840,7 +1840,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the SFrame containing all the vertices in a given partition of a group groupid</p>
 <p>This function can be used as the left hand side of an assignment. i.e. </p><div class="fragment"><div class="line"><a class="code" href="classturi_1_1sgraph.html#a5cee7ba58d7e1fba5388126603cbae3d">vertex_partition</a>(part, <a class="code" href="group__groupby__aggregate.html#ga77f524221cf7cf02af960b90b93f120a">group</a>) = sframe</div></div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00336">336</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00330">330</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
 
 </div>
 </div>
@@ -1879,7 +1879,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the SFrame containing all the vertices in a given partition of a group groupid </p>
 
-<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00347">347</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00341">341</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
 
 </div>
 </div>
@@ -1908,7 +1908,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the SFrame containing all the vertices in a given partition of a group groupid</p>
 <p>This function can be used as the left hand side of an assignment. i.e. </p><div class="fragment"><div class="line"><a class="code" href="classturi_1_1sgraph.html#a5cee7ba58d7e1fba5388126603cbae3d">vertex_partition</a>(part, <a class="code" href="group__groupby__aggregate.html#ga77f524221cf7cf02af960b90b93f120a">group</a>) = sframe</div></div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00364">364</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00358">358</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
 
 </div>
 </div>
@@ -1937,7 +1937,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the SFrame containing all the vertices in a given partition of a group groupid </p>
 
-<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00373">373</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sgraph_8hpp_source.html#l00367">367</a> of file <a class="el" href="sgraph_8hpp_source.html">sgraph.hpp</a>.</p>
 
 </div>
 </div>

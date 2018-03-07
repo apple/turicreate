@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['pnode_5fptr',['pnode_ptr',['../group__operators.html#gae14c095239ca2097fbed7781e7ba8a33',1,'turi::query_eval']]],
-  ['pointer',['pointer',['../classturi_1_1hopscotch__table.html#a3e7fa19b8ae5b85cc02334ef5ff80aeb',1,'turi::hopscotch_table']]]
+  ['toolkit_5fclass_5fdescription_5ftype',['toolkit_class_description_type',['../classturi_1_1toolkit__class__registry.html#afafa1a4a8ef2cd47fd31449a18e70988',1,'turi::toolkit_class_registry']]],
+  ['type',['type',['../classturi_1_1gl__sarray__range.html#a5c12f92a078a5bf18b9e0ff6997e63e3',1,'turi::gl_sarray_range']]]
 ];

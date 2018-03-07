@@ -57,7 +57,6 @@ var annotated_dup =
     [ "turi", "namespaceturi.html", "namespaceturi" ],
     [ "_MLModelSpecification", "struct__MLModelSpecification.html", null ],
     [ "barrier", "classbarrier.html", null ],
-    [ "cuckoohash_map", "classcuckoohash__map.html", "classcuckoohash__map" ],
     [ "file_logger", "classfile__logger.html", "classfile__logger" ],
     [ "log_dispatch", "structlog__dispatch.html", null ],
     [ "log_level_setter", "classlog__level__setter.html", "classlog__level__setter" ],

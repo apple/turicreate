@@ -118,7 +118,8 @@ var group__unity =
       [ "run_toolkit", "classturi_1_1unity__global.html#ac013e24f7c66e468fe7912ea00f2ce21", null ],
       [ "save_model", "classturi_1_1unity__global.html#a6f1d1507e0d94d039ec7ef4f62a538e2", null ],
       [ "save_model2", "classturi_1_1unity__global.html#a1c6d2d47bfae8a5f91da3d40b5295082", null ],
-      [ "set_global", "classturi_1_1unity__global.html#adc7e900637ccc68d24c4033f8fcc3e32", null ]
+      [ "set_global", "classturi_1_1unity__global.html#adc7e900637ccc68d24c4033f8fcc3e32", null ],
+      [ "set_log_level", "classturi_1_1unity__global.html#a7ca8b650564cc59a672741efb11f9ddc", null ]
     ] ],
     [ "unity_sgraph", "classturi_1_1unity__sgraph.html", [
       [ "unity_sgraph", "classturi_1_1unity__sgraph.html#a88695be82f24a2ad52ae125eb04e4ea8", null ],

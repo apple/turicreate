@@ -1,5 +1,8 @@
 var searchData=
 [
-  ['hasher',['hasher',['../classturi_1_1hopscotch__table.html#a93f901ac9880ba30607a2f4b5f3363dc',1,'turi::hopscotch_table::hasher()'],['../classcuckoohash__map.html#a2f1df8e5fab6b04e470530f16b0a8c1f',1,'cuckoohash_map::hasher()']]],
-  ['heap_5felement',['heap_element',['../classturi_1_1mutable__queue.html#a7fe3a7faa1c23e73556075869b65c14e',1,'turi::mutable_queue']]]
+  ['icache_5fstream',['icache_stream',['../group__fileio.html#gae07098a1b91a5cf1f1d4bf72a410f96a',1,'turi::fileio']]],
+  ['index_5fmap_5ftype',['index_map_type',['../classturi_1_1mutable__queue.html#acfd35d7b54bb913b52120764604a507e',1,'turi::mutable_queue']]],
+  ['is_5fmodel_5fdescendent',['is_model_descendent',['../namespaceturi.html#a62b96181769442a107940d85d2f5e59b',1,'turi']]],
+  ['is_5fvariant_5fmember',['is_variant_member',['../namespaceturi.html#adc8f5592bc6ffb76005399e580c12519',1,'turi']]],
+  ['iterator',['iterator',['../classturi_1_1sarray.html#a21e9ded658a76c3268e9673caf725458',1,'turi::sarray::iterator()'],['../classturi_1_1sarray__reader.html#a1e1d4d099b1713c932183c464d1b8f3a',1,'turi::sarray_reader::iterator()'],['../classturi_1_1sframe.html#a0f76b08340fc62df9333bb7c64ff07e0',1,'turi::sframe::iterator()'],['../classturi_1_1sframe__reader.html#aa6fb42f3f07190880ac210cd2b9067d2',1,'turi::sframe_reader::iterator()']]]
 ];

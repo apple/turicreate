@@ -107,6 +107,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a73add230d52ea0e42423ac0ce2f14901"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac9c327c260e53a0cbfa092e2b4593073"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1supervised_1_1logistic__regression__opt__interface.html#ac9c327c260e53a0cbfa092e2b4593073">num_examples</a> () const</td></tr>
 <tr class="separator:ac9c327c260e53a0cbfa092e2b4593073"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3969b12b0e1c7006bebfcfc88e7f7ba1"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1supervised_1_1logistic__regression__opt__interface.html#a3969b12b0e1c7006bebfcfc88e7f7ba1">num_validation_examples</a> () const</td></tr>
+<tr class="separator:a3969b12b0e1c7006bebfcfc88e7f7ba1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0245c93987ab9b44e7eacd69b85feba8"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1supervised_1_1logistic__regression__opt__interface.html#a0245c93987ab9b44e7eacd69b85feba8">num_variables</a> () const</td></tr>
 <tr class="separator:a0245c93987ab9b44e7eacd69b85feba8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af31077cc3ae02a5cabfd0e6713e87597"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1supervised_1_1logistic__regression__opt__interface.html#af31077cc3ae02a5cabfd0e6713e87597">num_classes</a> () const</td></tr>
@@ -119,6 +121,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a5c110f97b52656318a03c7da50836927"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad6a723c218e324aabb96685b128c39c6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1supervised_1_1logistic__regression__opt__interface.html#ad6a723c218e324aabb96685b128c39c6">compute_second_order_statistics</a> (const DenseVector &amp;point, DenseMatrix &amp;hessian, DenseVector &amp;gradient, double &amp;function_value)</td></tr>
 <tr class="separator:ad6a723c218e324aabb96685b128c39c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e6d81f818d06780938c9afa6763198f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1supervised_1_1logistic__regression__opt__interface.html#a7e6d81f818d06780938c9afa6763198f">compute_validation_second_order_statistics</a> (const DenseVector &amp;point, DenseMatrix &amp;hessian, DenseVector &amp;gradient, double &amp;function_value)</td></tr>
+<tr class="separator:a7e6d81f818d06780938c9afa6763198f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab1feb4f5adfcef5b5e038220b59acd8d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1optimization_1_1second__order__opt__interface.html#ab1feb4f5adfcef5b5e038220b59acd8d">compute_hessian</a> (const DenseVector &amp;point, DenseMatrix &amp;hessian)</td></tr>
 <tr class="separator:ab1feb4f5adfcef5b5e038220b59acd8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4331e42c96881812529200454aa23732"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1optimization_1_1first__order__opt__interface.html#a4331e42c96881812529200454aa23732">compute_function_value</a> (const DenseVector &amp;point, const size_t mbStart=0, const size_t mbSize=-1)</td></tr>
@@ -488,6 +492,56 @@ DO NOT USE this if your model is truly sparse. </dd></dl>
 
 </div>
 </div>
+<a id="a7e6d81f818d06780938c9afa6763198f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e6d81f818d06780938c9afa6763198f">&#9670;&nbsp;</a></span>compute_validation_second_order_statistics()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::supervised::logistic_regression_opt_interface::compute_validation_second_order_statistics </td>
+          <td>(</td>
+          <td class="paramtype">const DenseVector &amp;&#160;</td>
+          <td class="paramname"><em>point</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">DenseMatrix &amp;&#160;</td>
+          <td class="paramname"><em>hessian</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">DenseVector &amp;&#160;</td>
+          <td class="paramname"><em>gradient</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double &amp;&#160;</td>
+          <td class="paramname"><em>function_value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Compute second order statistics at the given point with respect to the validation data. (Gradient &amp; Function value)</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">point</td><td>Point at which we are computing the stats. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">hessian</td><td>Hessian (Dense) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">gradient</td><td>Dense gradient </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">function_value</td><td>Function value </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a47b1644771dbd19c0b49545a180f25e7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a47b1644771dbd19c0b49545a180f25e7">&#9670;&nbsp;</a></span>get_status()</h2>
 
@@ -632,6 +686,25 @@ DO NOT USE this if your model is truly sparse. </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>Number of examples </dd></dl>
 
 <p>Implements <a class="el" href="classturi_1_1optimization_1_1first__order__opt__interface.html#aebb656e5fa35da3b316c7621dd2c16eb">turi::optimization::first_order_opt_interface</a>.</p>
+
+</div>
+</div>
+<a id="a3969b12b0e1c7006bebfcfc88e7f7ba1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3969b12b0e1c7006bebfcfc88e7f7ba1">&#9670;&nbsp;</a></span>num_validation_examples()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t turi::supervised::logistic_regression_opt_interface::num_validation_examples </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Get the number of validation-set examples for the model</p>
+<dl class="section return"><dt>Returns</dt><dd>Number of examples </dd></dl>
 
 </div>
 </div>

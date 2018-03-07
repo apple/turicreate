@@ -149,6 +149,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a0d299012bdbcf2bd5ba6a55a3da34ddb"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a0d299012bdbcf2bd5ba6a55a3da34ddb"><td class="memTemplItemLeft" align="right" valign="top">const T &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classturi_1_1flexible__type.html#a0d299012bdbcf2bd5ba6a55a3da34ddb">get</a> () const</td></tr>
 <tr class="separator:a0d299012bdbcf2bd5ba6a55a3da34ddb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1fba3522c10c5c6f73f260c78866771b"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a1fba3522c10c5c6f73f260c78866771b"><td class="memTemplItemLeft" align="right" valign="top">T &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classturi_1_1flexible__type.html#a1fba3522c10c5c6f73f260c78866771b">reinterpret_mutable_get</a> ()</td></tr>
+<tr class="separator:a1fba3522c10c5c6f73f260c78866771b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af43e325c1cfa699a414eac59ead2ba9b"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:af43e325c1cfa699a414eac59ead2ba9b"><td class="memTemplItemLeft" align="right" valign="top">const T &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classturi_1_1flexible__type.html#af43e325c1cfa699a414eac59ead2ba9b">reinterpret_get</a> () const</td></tr>
+<tr class="separator:af43e325c1cfa699a414eac59ead2ba9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a451d7924053df9f8c529e127cd3138f6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1flexible__type.html#a451d7924053df9f8c529e127cd3138f6">get_type</a> () const</td></tr>
 <tr class="separator:a451d7924053df9f8c529e127cd3138f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0c6272a3dffead3dc1d68a99ba25df51"><td class="memItemLeft" align="right" valign="top">std::type_index&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1flexible__type.html#a0c6272a3dffead3dc1d68a99ba25df51">type</a> () const</td></tr>
@@ -189,6 +195,8 @@ template&lt;class T , typename std::enable_if&lt; std::is_floating_point&lt; T &
 <tr class="separator:a75bad22995586a3bbc605f9a64ec5c7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a623a0ae16c1f612b536df73739b6f4c3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1flexible__type.html#a623a0ae16c1f612b536df73739b6f4c3">operator flex_vec</a> () const</td></tr>
 <tr class="separator:a623a0ae16c1f612b536df73739b6f4c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78c00e9c51a421b5f647c7f9150f4566"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1flexible__type.html#a78c00e9c51a421b5f647c7f9150f4566">operator flex_nd_vec</a> () const</td></tr>
+<tr class="separator:a78c00e9c51a421b5f647c7f9150f4566"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa905e53e5d1bdd5faf436f4073432464"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1flexible__type.html#aa905e53e5d1bdd5faf436f4073432464">operator flex_list</a> () const</td></tr>
 <tr class="separator:aa905e53e5d1bdd5faf436f4073432464"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4dd8f997482a9bac2286291a0a178311"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1flexible__type.html#a4dd8f997482a9bac2286291a0a178311">operator flex_dict</a> () const</td></tr>
@@ -344,7 +352,7 @@ template&lt;typename Visitor &gt; </td></tr>
 <li><a class="el" href="group__group__flexible__type__types.html#ga7936350fa49b122a09c32b26922fd658">flex_int</a></li>
 <li><a class="el" href="group__group__flexible__type__types.html#gadcf31f61cc0e0b82bdc9d886fa163e86">flex_float</a></li>
 <li><a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a></li>
-<li><a class="el" href="group__group__flexible__type__types.html#gae3209fbbd62e8deaeff5fdb24965f2ac">flex_vec</a></li>
+<li><a class="el" href="group__group__flexible__type__types.html#gac2900ffa5e2fef35d706e307db74d859">flex_nd_vec</a></li>
 <li><a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a></li>
 <li><a class="el" href="group__group__flexible__type__types.html#ga408eb4413a2a629b462fb3a5d4f42c24">flex_dict</a></li>
 <li><a class="el" href="group__group__flexible__type__types.html#ga40bb1656bebeb5ab0e3cd138c09e5995">flex_image</a></li>
@@ -395,7 +403,7 @@ template&lt;typename Visitor &gt; </td></tr>
 <p>Performance of the <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> is generally extremely good. With modern compilers (sometimes with inlining limit bumped up) can sometimes produce code which is equivalent to, or runs as fast as the version using native types especially if certain type constraints are set-up before hand. For instance:</p>
 <div class="fragment"><div class="line"><span class="keywordflow">if</span> (x.get_type() == <a class="code" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76a5d5cd46919fa987731fb2edefe0f2a0c">flex_type_enum::INTEGER</a>) {</div><div class="line">  ... <span class="keywordflow">do</span> a whole bunch of stuff on x ...</div><div class="line">}</div></div><!-- fragment --><p>Integers and Floating point values are stored in-place inside the <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>. All other types are somewhat more complex (strings, vectors etc) and are optimized by copy on write. i.e. </p><div class="fragment"><div class="line"><a class="code" href="classturi_1_1flexible__type.html#ab7ced47636ee238dd993324b39ad6610">flexible_type</a> a = <span class="stringliteral">&quot;hello world&quot;</span>;</div><div class="line"><a class="code" href="classturi_1_1flexible__type.html#ab7ced47636ee238dd993324b39ad6610">flexible_type</a> b = a;</div></div><!-- fragment --><p> Both b and a will reference the same "hello world" until either one of them gets mutated. As such, all inplace operations (<a class="el" href="classturi_1_1flexible__type.html#a0d299012bdbcf2bd5ba6a55a3da34ddb">get()</a>, apply_visitor(Visitor)) require const, but also have a mutating version (mutating_get(), <a class="el" href="classturi_1_1flexible__type.html#a7e0c0492299b1836669fbc82df082cbd">apply_mutating_visitor(Visitor)</a>). </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l00245">245</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l00246">246</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ab7ced47636ee238dd993324b39ad6610"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab7ced47636ee238dd993324b39ad6610">&#9670;&nbsp;</a></span>flexible_type() <span class="overload">[1/8]</span></h2>
@@ -421,7 +429,7 @@ template&lt;typename Visitor &gt; </td></tr>
 </div><div class="memdoc">
 <p>Default Constructor. By default constructs an integer of value 0. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01517">1517</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01626">1626</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -470,7 +478,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Destructor. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01529">1529</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01638">1638</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -499,7 +507,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Copy constructor. Assigns this to a copy of other. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01537">1537</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01646">1646</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -528,7 +536,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Copy constructor. Assigns this to a copy of other. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01542">1542</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01651">1651</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -588,7 +596,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Move constructor. Just assigns myself to the other, destroying the other. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01553">1553</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01662">1662</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -617,7 +625,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Move constructor. (Const overload. Required since the T&amp;&amp; universal reference has a tendency to capture everything) </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01559">1559</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01668">1668</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -788,7 +796,7 @@ template&lt;typename Visitor &gt; </div>
 </div><div class="memdoc">
 <p>This is an overloaded member function, provided for convenience. It differs from the above function only in what argument(s) it accepts. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01774">1774</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01902">1902</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -817,7 +825,7 @@ template&lt;typename Visitor &gt; </div>
 </div><div class="memdoc">
 <p>Compares if two flexible types are equivalent in value. i.e. permitting comparisons between integer and floating point types. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02041">2041</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02186">2186</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -849,7 +857,7 @@ template&lt;typename Visitor &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02148">2148</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02297">2297</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -881,7 +889,7 @@ template&lt;typename Visitor &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02154">2154</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02303">2303</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -913,7 +921,7 @@ template&lt;typename Visitor &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02258">2258</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02409">2409</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -945,7 +953,7 @@ template&lt;typename Visitor &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02159">2159</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02308">2308</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -977,7 +985,7 @@ template&lt;typename Visitor &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02174">2174</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02323">2323</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1048,7 +1056,7 @@ template&lt;typename T &gt; </div>
 <p>Where the current <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> contains a datetime type, returns the datetime as a pair of posix timestamp value and its timezone offset.</p>
 <p>The timezone offset is integral in <b>fifteen-minute</b> increments. i.e. a offset of 8 means timezone +2 </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01371">1371</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01441">1441</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1076,7 +1084,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Gets the date_time microsecond value </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01378">1378</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01448">1448</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1104,7 +1112,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Returns the type of the underlying storage </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01715">1715</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01841">1841</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1132,7 +1140,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Returns a 64 bit hash of the underlying value, switched on type. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01728">1728</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01854">1854</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1160,7 +1168,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Returns a 128 bit hash of the underlying value, switched on type. This hash is appropriate for unique identification. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01732">1732</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01858">1858</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1189,7 +1197,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Like operator== but requires also types to be equivalent. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02045">2045</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02190">2190</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1254,7 +1262,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Deserializer. Loads the <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> from an archive object. Note that the type of the <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> may change. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02311">2311</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02463">2463</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1302,7 +1310,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Implicit cast to <a class="el" href="structturi_1_1flex__date__time.html">flex_date_time</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01950">1950</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02095">2095</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1330,7 +1338,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Implicit cast to vector&lt;pair&lt;flexible_type, flexible_type&gt;&gt; </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01946">1946</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02091">2091</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1358,7 +1366,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Implicit cast to flex_image </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01954">1954</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02099">2099</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1386,7 +1394,35 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Implicit cast to vector&lt;flexible_type&gt; </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01942">1942</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02087">2087</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a78c00e9c51a421b5f647c7f9150f4566"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a78c00e9c51a421b5f647c7f9150f4566">&#9670;&nbsp;</a></span>operator flex_nd_vec()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">FLEX_ALWAYS_INLINE_FLATTEN turi::flexible_type::operator <a class="el" href="group__group__flexible__type__types.html#gac2900ffa5e2fef35d706e307db74d859">flex_nd_vec</a> </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Implicit cast to ndarray&lt;double&gt; </p>
+
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02083">2083</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1414,7 +1450,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Implicit cast to string </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01934">1934</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02075">2075</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1442,7 +1478,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Implicit cast to vector&lt;double&gt; </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01938">1938</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02079">2079</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1471,7 +1507,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Compares if two flexible types are not equivalent in value. i.e. permitting comparisons between integer and floating point types. Same as <a class="el" href="classturi_1_1flexible__type.html#af7bf644ebc38488169492df18aa0afdd">flexible_type::approx_equal</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02037">2037</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02182">2182</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1521,7 +1557,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Modulus operator. Equivalent to </p><div class="fragment"><div class="line">a = (*this);</div><div class="line">a %= otrer;</div><div class="line"><span class="keywordflow">return</span> a;</div></div><!-- fragment --><p>Note that unlike regular C++ typing rules, the resultant type is always the type of the left hand side. i.e. int + float = int, and float + int = float. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02024">2024</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02169">2169</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1575,7 +1611,7 @@ template&lt;typename T &gt; </div>
 <li>All other conditions will result in an assertion failure. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01985">1985</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02130">2130</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1607,7 +1643,7 @@ template&lt;typename T &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02186">2186</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02335">2335</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1639,7 +1675,7 @@ template&lt;typename T &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02198">2198</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02347">2347</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1671,7 +1707,7 @@ template&lt;typename T &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02208">2208</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02357">2357</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1703,7 +1739,7 @@ template&lt;typename T &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02220">2220</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02369">2369</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1732,7 +1768,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Multiplication operator. Equivalent to </p><div class="fragment"><div class="line">a = (*this);</div><div class="line">a *= other;</div><div class="line"><span class="keywordflow">return</span> a;</div></div><!-- fragment --><p>Note that unlike regular C++ typing rules, the resultant type is always the type of the left hand side. i.e. int + float = int, and float + int = float. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02009">2009</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02154">2154</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1786,7 +1822,7 @@ template&lt;typename T &gt; </div>
 <li>All other conditions will result in an assertion failure. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01990">1990</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02135">2135</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1815,7 +1851,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Plus operator. </p><div class="fragment"><div class="line">a = (*this);</div><div class="line">a += other;</div><div class="line"><span class="keywordflow">return</span> a;</div></div><!-- fragment --><p>Note that unlike regular C++ typing rules, the resultant type is always the type of the left hand side. i.e. int + float = int, and float + int = float. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01996">1996</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02141">2141</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1871,7 +1907,7 @@ template&lt;typename T &gt; </div>
 <li>All other conditions will result in an assertion failure. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01965">1965</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02110">2110</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1904,7 +1940,7 @@ template&lt;typename T &gt; </div>
 <li>All other conditions will result in an assertion failure. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01958">1958</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02103">2103</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1933,7 +1969,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Subtract operator. Equivalent to </p><div class="fragment"><div class="line">a = (*this);</div><div class="line">a += other;</div><div class="line"><span class="keywordflow">return</span> a;</div></div><!-- fragment --><p>Note that unlike regular C++ typing rules, the resultant type is always the type of the left hand side. i.e. int + float = int, and float + int = float. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02002">2002</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02147">2147</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -1988,7 +2024,7 @@ template&lt;typename T &gt; </div>
 <li>All other conditions will result in an assertion failure. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01971">1971</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02116">2116</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2017,7 +2053,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Division operator. Equivalent to </p><div class="fragment"><div class="line">a = (*this);</div><div class="line">a /= other;</div><div class="line"><span class="keywordflow">return</span> a;</div></div><!-- fragment --><p>Note that unlike regular C++ typing rules, the resultant type is always the type of the left hand side. i.e. int + float = int, and float + int = float. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02017">2017</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02162">2162</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2071,7 +2107,7 @@ template&lt;typename T &gt; </div>
 <li>All other conditions will result in an assertion failure. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01978">1978</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02123">2123</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2103,7 +2139,7 @@ template&lt;typename T &gt; </div>
 <li>All other cases will result in an assertion failure </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02049">2049</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02194">2194</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2156,7 +2192,7 @@ template&lt;typename T &gt; </div>
 <li>All other cases will result in an assertion failure </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02057">2057</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02202">2202</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2206,7 +2242,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Assignment operator. Copies the other to myself. See <a class="el" href="classturi_1_1flexible__type.html#af53b3520c60da7f16acf3c589362cd1c">flexible_type::operator=</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01578">1578</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01687">1687</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2235,7 +2271,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Assignment operator. Copies the other to myself. See <a class="el" href="classturi_1_1flexible__type.html#af53b3520c60da7f16acf3c589362cd1c">flexible_type::operator=</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01587">1587</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01696">1696</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2264,7 +2300,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Move assignment. Assigns myself from the other, destroying the other. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01606">1606</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01715">1715</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2293,7 +2329,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Move assignment. (Const overload. Required since the T&amp;&amp; universal reference has a tendency to capture everything). </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01596">1596</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01705">1705</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2348,7 +2384,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>operator= for the undefined type See <a class="el" href="classturi_1_1flexible__type.html#af53b3520c60da7f16acf3c589362cd1c">flexible_type::operator=</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01629">1629</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01738">1738</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2403,7 +2439,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Compares if two flexible types are equivalent in value. i.e. permitting comparisons between integer and floating point types. Same as <a class="el" href="classturi_1_1flexible__type.html#af7bf644ebc38488169492df18aa0afdd">flexible_type::approx_equal</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02032">2032</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02177">2177</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2456,7 +2492,7 @@ template&lt;typename T &gt; </div>
 <li>All other cases will result in an assertion failure </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02053">2053</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02198">2198</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2509,7 +2545,7 @@ template&lt;typename T &gt; </div>
 <li>All other cases will result in an assertion failure </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02061">2061</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02206">2206</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2563,7 +2599,7 @@ template&lt;typename T &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02122">2122</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02267">2267</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2596,7 +2632,7 @@ template&lt;typename T &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02135">2135</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02282">2282</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2629,7 +2665,7 @@ template&lt;typename T &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02270">2270</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02422">2422</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2662,7 +2698,51 @@ template&lt;typename T &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02285">2285</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02437">2437</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+
+</div>
+</div>
+<a id="af43e325c1cfa699a414eac59ead2ba9b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af43e325c1cfa699a414eac59ead2ba9b">&#9670;&nbsp;</a></span>reinterpret_get()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">const T&amp; turi::flexible_type::reinterpret_get </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets a type unchecked modifiable reference to the value stored inside the <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>.</p>
+<p>This is generally unsafe to use unless you <em>really</em> know what you are doing. Use <a class="el" href="classturi_1_1flexible__type.html#a0d299012bdbcf2bd5ba6a55a3da34ddb">get()</a> instead.</p>
+<p>Note that this is only defined for flex_int and flex_float type. It really does not make sense to use this anywhere else. </p>
+
+</div>
+</div>
+<a id="a1fba3522c10c5c6f73f260c78866771b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1fba3522c10c5c6f73f260c78866771b">&#9670;&nbsp;</a></span>reinterpret_mutable_get()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">T&amp; turi::flexible_type::reinterpret_mutable_get </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets a modifiable type unchecked modifiable reference to the value stored inside the <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>.</p>
+<p>This is generally unsafe to use unless you <em>really</em> know what you are doing. Use <a class="el" href="classturi_1_1flexible__type.html#a0d299012bdbcf2bd5ba6a55a3da34ddb">get()</a> instead.</p>
+<p>Note that this is only defined for flex_int and flex_float type. It really does not make sense to use this anywhere else. </p>
 
 </div>
 </div>
@@ -2692,7 +2772,7 @@ template&lt;typename T &gt; </div>
 <p>Deletes the contents of this class, resetting to a different type.</p>
 <p>Note: Also ensures that that the reference count becomes 1. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01650">1650</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01759">1759</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2720,7 +2800,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Deletes the contents of this class, resetting to an integer </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01690">1690</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01803">1803</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2752,7 +2832,7 @@ template&lt;typename T &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02244">2244</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02395">2395</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2781,7 +2861,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Serializer. Saves the <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> in an archive object. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02301">2301</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02453">2453</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2820,7 +2900,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Converts the current flexible type to a datetime type containing posix_timestamp value and timezone offset. The timezone offset is integral in <b>fifteen-minute</b> increments. i.e. a offset of 8 means timezone +2 </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01383">1383</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01453">1453</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2852,7 +2932,7 @@ template&lt;typename T &gt; </div>
 <li>All other types will result in an assertion failure. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02231">2231</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l02380">2380</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2886,7 +2966,7 @@ template&lt;typename T &gt; </div>
 <li>All other cases will result in an assertion failure. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01571">1571</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01680">1680</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -2915,7 +2995,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Swaps contents with another <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01698">1698</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01811">1811</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -3003,7 +3083,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Returns the type index of the underlying storage. For compatibility with variant. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01720">1720</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01846">1846</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>
@@ -3031,7 +3111,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Returns an integer ID identifying the type of the underlying storage. Equivalent to (size_t)(<a class="el" href="classturi_1_1flexible__type.html#a451d7924053df9f8c529e127cd3138f6">get_type()</a>). For compatibility with variant. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01724">1724</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01850">1850</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>

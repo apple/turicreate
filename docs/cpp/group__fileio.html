@@ -205,6 +205,8 @@ Functions</h2></td></tr>
 <tr class="separator:gad57c9c33c024ee5b4a5c4a4626db4138"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gafa81576e130480bf0ef09e20896a1ab7"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#gafa81576e130480bf0ef09e20896a1ab7">turi::fileio::get_s3_endpoints</a> ()</td></tr>
 <tr class="separator:gafa81576e130480bf0ef09e20896a1ab7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0ea68b924ea1ef006293970e563861c0"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga0ea68b924ea1ef006293970e563861c0">turi::fileio::get_region_name_from_endpoint</a> (std::string endpoint)</td></tr>
+<tr class="separator:ga0ea68b924ea1ef006293970e563861c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3ec38e6c51a583c14f6f1a3fa93afda9"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga3ec38e6c51a583c14f6f1a3fa93afda9">turi::fileio::get_bucket_path</a> (const std::string &amp;bucket)</td></tr>
 <tr class="separator:ga3ec38e6c51a583c14f6f1a3fa93afda9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5ff7eac62175d5e5bac69a32ba1fee75"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga5ff7eac62175d5e5bac69a32ba1fee75">turi::get_s3_file_last_modified</a> (const std::string &amp;url)</td></tr>
@@ -645,7 +647,7 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Downlaods a given URL into a given output file </p><div class="fragment"><div class="line">retcode = <a class="code" href="group__fileio.html#ga50858708e6b493a8725bbb40d992bff4">download_url</a>(<span class="stringliteral">&quot;http://google.com&quot;</span>, <span class="stringliteral">&quot;google.html&quot;</span>);</div></div><!-- fragment --><p> Returns 0 on success, non-zero (a curl error code) on failure. </p>
+<p>Downloads a given URL into a given output file </p><div class="fragment"><div class="line">retcode = <a class="code" href="group__fileio.html#ga50858708e6b493a8725bbb40d992bff4">download_url</a>(<span class="stringliteral">&quot;http://google.com&quot;</span>, <span class="stringliteral">&quot;google.html&quot;</span>);</div></div><!-- fragment --><p> Returns 0 on success, non-zero (a curl error code) on failure. </p>
 
 </div>
 </div>
@@ -893,6 +895,25 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Given a URL, returns an ID value where URLs which return different ID values are ok to be read in parallel, and URLs which return the same ID value are probably sub-optimal if read in parallel; An ID of (size_t)(-1) indicates that it can be read in parallel with everything. </p>
+
+</div>
+</div>
+<a id="ga0ea68b924ea1ef006293970e563861c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0ea68b924ea1ef006293970e563861c0">&#9670;&nbsp;</a></span>get_region_name_from_endpoint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string turi::fileio::get_region_name_from_endpoint </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>endpoint</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Get an region name from the endpoint url. </p>
 
 </div>
 </div>

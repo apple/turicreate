@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['decoded_5fcolumn_5ftype',['decoded_column_type',['../classturi_1_1sframe__rows.html#a84a72a9a125f2559e12a4d471957c44f',1,'turi::sframe_rows']]],
-  ['deserialize_5ffunction_5ftype',['deserialize_function_type',['../classturi_1_1any.html#a4c7258578acfd0b93ce83aac40494678',1,'turi::any']]]
+  ['equality_5ffunction',['equality_function',['../classturi_1_1hopscotch__table.html#aaf7619e9a71ad1f0a3d1442b1ff35998',1,'turi::hopscotch_table']]]
 ];

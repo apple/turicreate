@@ -107,6 +107,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a7b3dcef244ea035619cbb61788556d18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a739cd4298fbc19ac0100c53afd7a6c20"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1supervised_1_1linear__regression__opt__interface.html#a739cd4298fbc19ac0100c53afd7a6c20">num_variables</a> () const</td></tr>
 <tr class="separator:a739cd4298fbc19ac0100c53afd7a6c20"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98191a82cfc1b84dfe087339f066096c"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1supervised_1_1linear__regression__opt__interface.html#a98191a82cfc1b84dfe087339f066096c">num_validation_examples</a> () const</td></tr>
+<tr class="separator:a98191a82cfc1b84dfe087339f066096c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afea32a74618359a99eb112a1c5e049fb"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair&lt; std::string, size_t &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1supervised_1_1linear__regression__opt__interface.html#afea32a74618359a99eb112a1c5e049fb">get_status_header</a> (const std::vector&lt; std::string &gt; &amp;stat_names)</td></tr>
 <tr class="separator:afea32a74618359a99eb112a1c5e049fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f2354ea20faf0aeb672a83e1c5944f7"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1supervised_1_1linear__regression__opt__interface.html#a0f2354ea20faf0aeb672a83e1c5944f7">get_status</a> (const DenseVector &amp;coefs, const std::vector&lt; std::string &gt; &amp;stats)</td></tr>
@@ -115,6 +117,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a74798e2f15ad26bf9f3fed1907bdaeb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae9901442961d44da259ab5ed7f78eecb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1supervised_1_1linear__regression__opt__interface.html#ae9901442961d44da259ab5ed7f78eecb">compute_second_order_statistics</a> (const DenseVector &amp;point, DenseMatrix &amp;hessian, DenseVector &amp;gradient, double &amp;function_value)</td></tr>
 <tr class="separator:ae9901442961d44da259ab5ed7f78eecb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab49553bb7566917b80e13b1f90671f9e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1supervised_1_1linear__regression__opt__interface.html#ab49553bb7566917b80e13b1f90671f9e">compute_validation_second_order_statistics</a> (const DenseVector &amp;point, DenseMatrix &amp;hessian, DenseVector &amp;gradient, double &amp;function_value)</td></tr>
+<tr class="separator:ab49553bb7566917b80e13b1f90671f9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab1feb4f5adfcef5b5e038220b59acd8d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1optimization_1_1second__order__opt__interface.html#ab1feb4f5adfcef5b5e038220b59acd8d">compute_hessian</a> (const DenseVector &amp;point, DenseMatrix &amp;hessian)</td></tr>
 <tr class="separator:ab1feb4f5adfcef5b5e038220b59acd8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4331e42c96881812529200454aa23732"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1optimization_1_1first__order__opt__interface.html#a4331e42c96881812529200454aa23732">compute_function_value</a> (const DenseVector &amp;point, const size_t mbStart=0, const size_t mbSize=-1)</td></tr>
@@ -497,6 +501,56 @@ DO NOT USE this if your model is truly sparse. </dd></dl>
 
 </div>
 </div>
+<a id="ab49553bb7566917b80e13b1f90671f9e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab49553bb7566917b80e13b1f90671f9e">&#9670;&nbsp;</a></span>compute_validation_second_order_statistics()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::supervised::linear_regression_opt_interface::compute_validation_second_order_statistics </td>
+          <td>(</td>
+          <td class="paramtype">const DenseVector &amp;&#160;</td>
+          <td class="paramname"><em>point</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">DenseMatrix &amp;&#160;</td>
+          <td class="paramname"><em>hessian</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">DenseVector &amp;&#160;</td>
+          <td class="paramname"><em>gradient</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double &amp;&#160;</td>
+          <td class="paramname"><em>function_value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Compute second order statistics at the given point with respect to the validation data. (Gradient &amp; Function value)</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">point</td><td>Point at which we are computing the stats. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">hessian</td><td>Hessian (Dense) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">gradient</td><td>Dense gradient </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">function_value</td><td>Function value </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a0f2354ea20faf0aeb672a83e1c5944f7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0f2354ea20faf0aeb672a83e1c5944f7">&#9670;&nbsp;</a></span>get_status()</h2>
 
@@ -625,6 +679,25 @@ DO NOT USE this if your model is truly sparse. </dd></dl>
 
 </div>
 </div>
+<a id="a98191a82cfc1b84dfe087339f066096c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98191a82cfc1b84dfe087339f066096c">&#9670;&nbsp;</a></span>num_validation_examples()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t turi::supervised::linear_regression_opt_interface::num_validation_examples </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Get the number of validation-set examples in the model</p>
+<dl class="section return"><dt>Returns</dt><dd>Number of examples </dd></dl>
+
+</div>
+</div>
 <a id="a739cd4298fbc19ac0100c53afd7a6c20"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a739cd4298fbc19ac0100c53afd7a6c20">&#9670;&nbsp;</a></span>num_variables()</h2>
 
@@ -648,7 +721,7 @@ DO NOT USE this if your model is truly sparse. </dd></dl>
 </table>
 </div><div class="memdoc">
 <p>Get the number of variables in the model</p>
-<dl class="section return"><dt>Returns</dt><dd>Number of examples </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of variables </dd></dl>
 
 <p>Implements <a class="el" href="classturi_1_1optimization_1_1first__order__opt__interface.html#ad7be6e45792c26966adf372eca1062e4">turi::optimization::first_order_opt_interface</a>.</p>
 
@@ -759,7 +832,7 @@ DO NOT USE this if your model is truly sparse. </dd></dl>
 </div><div class="memdoc">
 <p>Number of examples </p>
 
-<p class="definition">Definition at line <a class="el" href="linear__regression__opt__interface_8hpp_source.html#l00047">47</a> of file <a class="el" href="linear__regression__opt__interface_8hpp_source.html">linear_regression_opt_interface.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="linear__regression__opt__interface_8hpp_source.html#l00046">46</a> of file <a class="el" href="linear__regression__opt__interface_8hpp_source.html">linear_regression_opt_interface.hpp</a>.</p>
 
 </div>
 </div>
@@ -784,7 +857,7 @@ DO NOT USE this if your model is truly sparse. </dd></dl>
 </div><div class="memdoc">
 <p>&lt;Scale features </p>
 
-<p class="definition">Definition at line <a class="el" href="linear__regression__opt__interface_8hpp_source.html#l00053">53</a> of file <a class="el" href="linear__regression__opt__interface_8hpp_source.html">linear_regression_opt_interface.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="linear__regression__opt__interface_8hpp_source.html#l00052">52</a> of file <a class="el" href="linear__regression__opt__interface_8hpp_source.html">linear_regression_opt_interface.hpp</a>.</p>
 
 </div>
 </div>
@@ -809,7 +882,7 @@ DO NOT USE this if your model is truly sparse. </dd></dl>
 </div><div class="memdoc">
 <p>Number of features </p>
 
-<p class="definition">Definition at line <a class="el" href="linear__regression__opt__interface_8hpp_source.html#l00048">48</a> of file <a class="el" href="linear__regression__opt__interface_8hpp_source.html">linear_regression_opt_interface.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="linear__regression__opt__interface_8hpp_source.html#l00047">47</a> of file <a class="el" href="linear__regression__opt__interface_8hpp_source.html">linear_regression_opt_interface.hpp</a>.</p>
 
 </div>
 </div>
@@ -834,7 +907,7 @@ DO NOT USE this if your model is truly sparse. </dd></dl>
 </div><div class="memdoc">
 <p>Feature rescaling </p>
 
-<p class="definition">Definition at line <a class="el" href="linear__regression__opt__interface_8hpp_source.html#l00054">54</a> of file <a class="el" href="linear__regression__opt__interface_8hpp_source.html">linear_regression_opt_interface.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="linear__regression__opt__interface_8hpp_source.html#l00053">53</a> of file <a class="el" href="linear__regression__opt__interface_8hpp_source.html">linear_regression_opt_interface.hpp</a>.</p>
 
 </div>
 </div>
@@ -859,7 +932,7 @@ DO NOT USE this if your model is truly sparse. </dd></dl>
 </div><div class="memdoc">
 <p>&lt; Num threads </p>
 
-<p class="definition">Definition at line <a class="el" href="linear__regression__opt__interface_8hpp_source.html#l00052">52</a> of file <a class="el" href="linear__regression__opt__interface_8hpp_source.html">linear_regression_opt_interface.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="linear__regression__opt__interface_8hpp_source.html#l00051">51</a> of file <a class="el" href="linear__regression__opt__interface_8hpp_source.html">linear_regression_opt_interface.hpp</a>.</p>
 
 </div>
 </div>
@@ -884,7 +957,7 @@ DO NOT USE this if your model is truly sparse. </dd></dl>
 </div><div class="memdoc">
 <p>Number of variables </p>
 
-<p class="definition">Definition at line <a class="el" href="linear__regression__opt__interface_8hpp_source.html#l00049">49</a> of file <a class="el" href="linear__regression__opt__interface_8hpp_source.html">linear_regression_opt_interface.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="linear__regression__opt__interface_8hpp_source.html#l00048">48</a> of file <a class="el" href="linear__regression__opt__interface_8hpp_source.html">linear_regression_opt_interface.hpp</a>.</p>
 
 </div>
 </div>

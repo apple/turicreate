@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['nn_5fmsg_5ft',['nn_msg_t',['../group__nanosockets.html#ga7f3e98c123826b0027e4b0511ab3249b',1,'turi::nanosockets']]]
+  ['reader_5ftype',['reader_type',['../classturi_1_1sarray.html#a28aa66c2795ebc65e6ec068f38ca2cf2',1,'turi::sarray::reader_type()'],['../classturi_1_1sframe.html#a16aa215d59181b6dada3f9107b329674',1,'turi::sframe::reader_type()']]],
+  ['reference',['reference',['../classturi_1_1hopscotch__table.html#a70403c688a1ebe8319f9f7fd38eac3c0',1,'turi::hopscotch_table']]]
 ];

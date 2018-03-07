@@ -10,6 +10,8 @@ var searchData=
   ['decode_5fdouble_5flegacy',['decode_double_legacy',['../namespaceturi_1_1v2__block__impl.html#a35ef3d8def56d7291b0467a7cf68d2f0',1,'turi::v2_block_impl']]],
   ['decode_5fdouble_5fstream',['decode_double_stream',['../namespaceturi_1_1v2__block__impl.html#a86afebba7b232f32ff2e80e2ac79b2ae',1,'turi::v2_block_impl']]],
   ['decode_5fdouble_5fstream_5flegacy',['decode_double_stream_legacy',['../namespaceturi_1_1v2__block__impl.html#a43114584e8886b10a08acc46d42d869c',1,'turi::v2_block_impl']]],
+  ['decode_5fimage_5finplace',['decode_image_inplace',['../namespaceturi.html#abdf4d2fbf53fba839b18a35d368924c6',1,'turi']]],
+  ['decode_5fnd_5fvector_5fstream',['decode_nd_vector_stream',['../namespaceturi_1_1v2__block__impl.html#a4c88704135a9b345ad36d08c0eaaa417',1,'turi::v2_block_impl']]],
   ['decode_5fnumber',['decode_number',['../namespaceturi_1_1v2__block__impl.html#a8b98e003fcf6a8d43f205d88d6f85584',1,'turi::v2_block_impl']]],
   ['decode_5fnumber_5fstream',['decode_number_stream',['../namespaceturi_1_1v2__block__impl.html#a5f172d2560efc52096449ecf3a5d5048',1,'turi::v2_block_impl']]],
   ['decode_5fstring_5fstream',['decode_string_stream',['../namespaceturi_1_1v2__block__impl.html#aefbe5e860d6ac8aecc80a522275e5d32',1,'turi::v2_block_impl']]],

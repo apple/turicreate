@@ -6,7 +6,6 @@ var files =
     [ "fileio", "dir_a31636a31dae8c942c4d5203009679db.html", "dir_a31636a31dae8c942c4d5203009679db" ],
     [ "flexible_type", "dir_17dffb59bbbc1f0b6440bd8c547e391b.html", "dir_17dffb59bbbc1f0b6440bd8c547e391b" ],
     [ "generics", "dir_feb057ed0aec91b61750453065c003eb.html", "dir_feb057ed0aec91b61750453065c003eb" ],
-    [ "gl_numpy", "dir_0874b20859606138849433c94615602c.html", "dir_0874b20859606138849433c94615602c" ],
     [ "globals", "dir_6cae25715198b8e785d094ed2704a374.html", "dir_6cae25715198b8e785d094ed2704a374" ],
     [ "image", "dir_6de1940466803d61d2f9d1259cb01031.html", "dir_6de1940466803d61d2f9d1259cb01031" ],
     [ "json", "dir_324bfb8aa525ab5f73bcc4531b7e0708.html", "dir_324bfb8aa525ab5f73bcc4531b7e0708" ],

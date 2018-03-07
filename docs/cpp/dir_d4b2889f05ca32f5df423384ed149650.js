@@ -9,7 +9,6 @@ var dir_d4b2889f05ca32f5df423384ed149650 =
     [ "gl_sframe.hpp", "gl__sframe_8hpp_source.html", null ],
     [ "gl_sgraph.hpp", "gl__sgraph_8hpp_source.html", null ],
     [ "image_util.hpp", "image__util_8hpp_source.html", null ],
-    [ "image_util_impl.hpp", "image__util__impl_8hpp_source.html", null ],
     [ "options_map.hpp", "options__map_8hpp_source.html", null ],
     [ "sdk_registration_function_types.hpp", "sdk__registration__function__types_8hpp_source.html", null ],
     [ "sgraph_triple_apply_typedefs.hpp", "sgraph__triple__apply__typedefs_8hpp_source.html", null ],

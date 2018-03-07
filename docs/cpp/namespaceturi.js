@@ -4,9 +4,6 @@ var namespaceturi =
     [ "dir_archive_impl", null, [
       [ "archive_index_information", "structturi_1_1dir__archive__impl_1_1archive__index__information.html", null ]
     ] ],
-    [ "distributed_sgraph_compute", null, [
-      [ "combiner", "classturi_1_1distributed__sgraph__compute_1_1combiner.html", null ]
-    ] ],
     [ "evaluation", null, [
       [ "classifier_accuracy", "classturi_1_1evaluation_1_1classifier__accuracy.html", "classturi_1_1evaluation_1_1classifier__accuracy" ],
       [ "confusion_matrix", "classturi_1_1evaluation_1_1confusion__matrix.html", "classturi_1_1evaluation_1_1confusion__matrix" ],
@@ -45,12 +42,6 @@ var namespaceturi =
       [ "general_fstream_sink", "classturi_1_1fileio__impl_1_1general__fstream__sink.html", "classturi_1_1fileio__impl_1_1general__fstream__sink" ],
       [ "general_fstream_source", "classturi_1_1fileio__impl_1_1general__fstream__source.html", "classturi_1_1fileio__impl_1_1general__fstream__source" ]
     ] ],
-    [ "flexible_type_converter_impl", null, [
-      [ "fill_flex_list_from_tuple", "structturi_1_1flexible__type__converter__impl_1_1fill__flex__list__from__tuple.html", null ],
-      [ "fill_flex_vec_from_tuple", "structturi_1_1flexible__type__converter__impl_1_1fill__flex__vec__from__tuple.html", null ],
-      [ "fill_tuple_from_flex_list", "structturi_1_1flexible__type__converter__impl_1_1fill__tuple__from__flex__list.html", null ],
-      [ "fill_tuple_from_flex_vec", "structturi_1_1flexible__type__converter__impl_1_1fill__tuple__from__flex__vec.html", null ]
-    ] ],
     [ "flexible_type_impl", null, [
       [ "approx_equality_operator", "structturi_1_1flexible__type__impl_1_1approx__equality__operator.html", null ],
       [ "city_hash128_visitor", "structturi_1_1flexible__type__impl_1_1city__hash128__visitor.html", null ],
@@ -65,6 +56,7 @@ var namespaceturi =
       [ "get_float_visitor", "structturi_1_1flexible__type__impl_1_1get__float__visitor.html", null ],
       [ "get_img_visitor", "structturi_1_1flexible__type__impl_1_1get__img__visitor.html", null ],
       [ "get_int_visitor", "structturi_1_1flexible__type__impl_1_1get__int__visitor.html", null ],
+      [ "get_ndvec_visitor", "structturi_1_1flexible__type__impl_1_1get__ndvec__visitor.html", null ],
       [ "get_recursive_visitor", "structturi_1_1flexible__type__impl_1_1get__recursive__visitor.html", null ],
       [ "get_string_visitor", "structturi_1_1flexible__type__impl_1_1get__string__visitor.html", null ],
       [ "get_type_index", "structturi_1_1flexible__type__impl_1_1get__type__index.html", null ],
@@ -76,13 +68,27 @@ var namespaceturi =
       [ "minus_equal_operator", "structturi_1_1flexible__type__impl_1_1minus__equal__operator.html", null ],
       [ "mod_equal_operator", "structturi_1_1flexible__type__impl_1_1mod__equal__operator.html", null ],
       [ "multiply_equal_operator", "structturi_1_1flexible__type__impl_1_1multiply__equal__operator.html", null ],
+      [ "ndarray", "classturi_1_1flexible__type__impl_1_1ndarray.html", "classturi_1_1flexible__type__impl_1_1ndarray" ],
       [ "negation_operator", "structturi_1_1flexible__type__impl_1_1negation__operator.html", null ],
       [ "plus_equal_operator", "structturi_1_1flexible__type__impl_1_1plus__equal__operator.html", null ],
       [ "serializer", "structturi_1_1flexible__type__impl_1_1serializer.html", null ],
       [ "soft_assignment_visitor", "structturi_1_1flexible__type__impl_1_1soft__assignment__visitor.html", null ]
     ] ],
-    [ "gl_numpy", null, [
-      [ "memory_mapped_sframe", "classturi_1_1gl__numpy_1_1memory__mapped__sframe.html", "classturi_1_1gl__numpy_1_1memory__mapped__sframe" ]
+    [ "flexible_type_internals", null, [
+      [ "ft_converter", "structturi_1_1flexible__type__internals_1_1ft__converter.html", null ],
+      [ "ft_converter< CVTR__ENUM >", "structturi_1_1flexible__type__internals_1_1ft__converter_3_01CVTR____ENUM_01_4.html", null ],
+      [ "ft_converter< CVTR__FLEX_DICT_CONVERTIBLE_MAPS >", "structturi_1_1flexible__type__internals_1_1ft__converter_3_01CVTR____FLEX__DICT__CONVERTIBLE__MAPS_01_4.html", null ],
+      [ "ft_converter< CVTR__FLEX_DICT_CONVERTIBLE_SEQUENCE >", "structturi_1_1flexible__type__internals_1_1ft__converter_3_01CVTR____FLEX__DICT__CONVERTIBLE__SEQUENCE_01_4.html", null ],
+      [ "ft_converter< CVTR__FLEX_LIST_CONVERTIBLE_PAIR >", "structturi_1_1flexible__type__internals_1_1ft__converter_3_01CVTR____FLEX__LIST__CONVERTIBLE__PAIR_01_4.html", null ],
+      [ "ft_converter< CVTR__FLEX_LIST_CONVERTIBLE_SEQUENCE >", "structturi_1_1flexible__type__internals_1_1ft__converter_3_01CVTR____FLEX__LIST__CONVERTIBLE__SEQUENCE_01_4.html", null ],
+      [ "ft_converter< CVTR__FLEX_LIST_CONVERTIBLE_TUPLE >", "structturi_1_1flexible__type__internals_1_1ft__converter_3_01CVTR____FLEX__LIST__CONVERTIBLE__TUPLE_01_4.html", null ],
+      [ "ft_converter< CVTR__FLEX_STRING_CONVERTIBLE >", "structturi_1_1flexible__type__internals_1_1ft__converter_3_01CVTR____FLEX__STRING__CONVERTIBLE_01_4.html", null ],
+      [ "ft_converter< CVTR__FLEX_VEC_CONVERTIBLE_PAIR >", "structturi_1_1flexible__type__internals_1_1ft__converter_3_01CVTR____FLEX__VEC__CONVERTIBLE__PAIR_01_4.html", null ],
+      [ "ft_converter< CVTR__FLEX_VEC_CONVERTIBLE_SEQUENCE >", "structturi_1_1flexible__type__internals_1_1ft__converter_3_01CVTR____FLEX__VEC__CONVERTIBLE__SEQUENCE_01_4.html", null ],
+      [ "ft_converter< CVTR__FLEX_VEC_CONVERTIBLE_TUPLE >", "structturi_1_1flexible__type__internals_1_1ft__converter_3_01CVTR____FLEX__VEC__CONVERTIBLE__TUPLE_01_4.html", null ],
+      [ "ft_converter< CVTR__FLEXIBLE_TYPE_EXACT >", "structturi_1_1flexible__type__internals_1_1ft__converter_3_01CVTR____FLEXIBLE__TYPE__EXACT_01_4.html", null ],
+      [ "ft_converter< CVTR__FLOATING_POINT >", "structturi_1_1flexible__type__internals_1_1ft__converter_3_01CVTR____FLOATING__POINT_01_4.html", null ],
+      [ "ft_converter< CVTR__INTEGER >", "structturi_1_1flexible__type__internals_1_1ft__converter_3_01CVTR____INTEGER_01_4.html", null ]
     ] ],
     [ "globals", null, [
       [ "register_global< double >", "structturi_1_1globals_1_1register__global_3_01double_01_4.html", null ],
@@ -308,7 +314,6 @@ var namespaceturi =
     [ "zookeeper_util", null, [
       [ "key_value", "classturi_1_1zookeeper__util_1_1key__value.html", "classturi_1_1zookeeper__util_1_1key__value" ]
     ] ],
-    [ "all_arithmetic", "structturi_1_1all__arithmetic.html", null ],
     [ "all_flexible_type_convertible", "structturi_1_1all__flexible__type__convertible.html", null ],
     [ "all_variant_convertible", "structturi_1_1all__variant__convertible.html", null ],
     [ "any", "classturi_1_1any.html", "classturi_1_1any" ],
@@ -323,6 +328,7 @@ var namespaceturi =
     [ "buffered_writer", "classturi_1_1buffered__writer.html", "classturi_1_1buffered__writer" ],
     [ "cancellable_barrier", "classturi_1_1cancellable__barrier.html", "classturi_1_1cancellable__barrier" ],
     [ "conditional", "classturi_1_1conditional.html", "classturi_1_1conditional" ],
+    [ "conditional_test", "structturi_1_1conditional__test.html", null ],
     [ "const_gl_sarray_reference", "classturi_1_1const__gl__sarray__reference.html", "classturi_1_1const__gl__sarray__reference" ],
     [ "csv_file_handling_options", "structturi_1_1csv__file__handling__options.html", "structturi_1_1csv__file__handling__options" ],
     [ "csv_line_tokenizer", "structturi_1_1csv__line__tokenizer.html", "structturi_1_1csv__line__tokenizer" ],
@@ -345,25 +351,13 @@ var namespaceturi =
     [ "fiber_group", "classturi_1_1fiber__group.html", "classturi_1_1fiber__group" ],
     [ "file_download_cache", "classturi_1_1file__download__cache.html", "classturi_1_1file__download__cache" ],
     [ "file_line_count_estimator", "classturi_1_1file__line__count__estimator.html", "classturi_1_1file__line__count__estimator" ],
+    [ "first_nested_type", "structturi_1_1first__nested__type.html", null ],
     [ "fixed_dense_bitset", "classturi_1_1fixed__dense__bitset.html", "classturi_1_1fixed__dense__bitset" ],
     [ "flex_date_time", "structturi_1_1flex__date__time.html", "structturi_1_1flex__date__time" ],
     [ "flex_dict_view", "classturi_1_1flex__dict__view.html", "classturi_1_1flex__dict__view" ],
     [ "flex_undefined", "structturi_1_1flex__undefined.html", null ],
     [ "flexible_type", "classturi_1_1flexible__type.html", "classturi_1_1flexible__type" ],
     [ "flexible_type_converter", "structturi_1_1flexible__type__converter.html", null ],
-    [ "flexible_type_converter< flex_list, void >", "structturi_1_1flexible__type__converter_3_01flex__list_00_01void_01_4.html", null ],
-    [ "flexible_type_converter< flexible_type, void >", "structturi_1_1flexible__type__converter_3_01flexible__type_00_01void_01_4.html", null ],
-    [ "flexible_type_converter< std::map< S, T >, typename std::enable_if<(is_flexible_type_convertible< S >::value &&is_flexible_type_convertible< T >::value)>::type >", "structturi_1_1flexible__type__converter_3_01std_1_1map_3_01S_00_01T_01_4_00_01typename_01std_1_18aaf0c6c88446e516820bc427e466db8.html", null ],
-    [ "flexible_type_converter< std::pair< S, T >, typename std::enable_if< is_flexible_type_convertible< S >::value &&is_flexible_type_convertible< T >::value &&!(std::is_arithmetic< S >::value &&std::is_arithmetic< T >::value)>::type >", "structturi_1_1flexible__type__converter_3_01std_1_1pair_3_01S_00_01T_01_4_00_01typename_01std_1_9ea516a3df3f98f8cc913f13cc594b17.html", null ],
-    [ "flexible_type_converter< std::pair< S, T >, typename std::enable_if< std::is_arithmetic< S >::value &&std::is_arithmetic< T >::value >::type >", "structturi_1_1flexible__type__converter_3_01std_1_1pair_3_01S_00_01T_01_4_00_01typename_01std_1_39430610683d135e6195bc2ac99ae6ef.html", null ],
-    [ "flexible_type_converter< std::tuple< Args... >, typename std::enable_if< all_arithmetic< Args... >::value >::type >", "structturi_1_1flexible__type__converter_3_01std_1_1tuple_3_01Args_8_8_8_01_4_00_01typename_01std7fc42f94152047c90afb97a50a60c894.html", null ],
-    [ "flexible_type_converter< std::tuple< Args... >, typename std::enable_if< all_flexible_type_convertible< Args... >::value &&!all_arithmetic< Args... >::value >::type >", "structturi_1_1flexible__type__converter_3_01std_1_1tuple_3_01Args_8_8_8_01_4_00_01typename_01std75dbdd45ba2d769307a748544098453e.html", null ],
-    [ "flexible_type_converter< std::unordered_map< S, T >, typename std::enable_if<(is_flexible_type_convertible< S >::value &&is_flexible_type_convertible< T >::value)>::type >", "structturi_1_1flexible__type__converter_3_01std_1_1unordered__map_3_01S_00_01T_01_4_00_01typenamc6551bce5aac4adf1ab59e3bdb038bcb.html", null ],
-    [ "flexible_type_converter< std::vector< T >, typename std::enable_if< is_flexible_type_convertible< T >::value &&!is_flexible_type_member< std::vector< T > >::value &&!std::is_arithmetic< T >::value >::type >", "structturi_1_1flexible__type__converter_3_01std_1_1vector_3_01T_01_4_00_01typename_01std_1_1enabe0523167bc164e9ae1740d814d587253.html", null ],
-    [ "flexible_type_converter< std::vector< T >, typename std::enable_if< std::is_arithmetic< T >::value &&!is_flexible_type_member< std::vector< T > >::value >::type >", "structturi_1_1flexible__type__converter_3_01std_1_1vector_3_01T_01_4_00_01typename_01std_1_1enab598ee9983328aaef7254213d8002bfa9.html", null ],
-    [ "flexible_type_converter< T, typename std::enable_if< is_flexible_type_member< T >::value &&!std::is_arithmetic< T >::value &&!std::is_same< T, flex_list >::value >::type >", "structturi_1_1flexible__type__converter_3_01T_00_01typename_01std_1_1enable__if_3_01is__flexibleeb80ddf6fcee421506f01944daca2c3c.html", null ],
-    [ "flexible_type_converter< T, typename std::enable_if< std::is_arithmetic< T >::value >::type >", "structturi_1_1flexible__type__converter_3_01T_00_01typename_01std_1_1enable__if_3_01std_1_1is__a6ebdbd09161aa79e97a8b81f027e6bce.html", null ],
-    [ "flexible_type_converter< T, typename std::enable_if< std::is_enum< T >::value >::type >", "structturi_1_1flexible__type__converter_3_01T_00_01typename_01std_1_1enable__if_3_01std_1_1is__e8e8587df8bc6e90093f8e6062948632e.html", null ],
     [ "flexible_type_parser", "classturi_1_1flexible__type__parser.html", "classturi_1_1flexible__type__parser" ],
     [ "flexible_type_parser_impl", "structturi_1_1flexible__type__parser__impl.html", null ],
     [ "function_closure_info", "structturi_1_1function__closure__info.html", null ],
@@ -452,6 +446,7 @@ var namespaceturi =
     [ "sarray_reader_buffer", "classturi_1_1sarray__reader__buffer.html", "classturi_1_1sarray__reader__buffer" ],
     [ "sarray_sorted_buffer", "classturi_1_1sarray__sorted__buffer.html", "classturi_1_1sarray__sorted__buffer" ],
     [ "scoped_finally", "classturi_1_1scoped__finally.html", null ],
+    [ "second_nested_type", "structturi_1_1second__nested__type.html", null ],
     [ "semaphore", "classturi_1_1semaphore.html", "classturi_1_1semaphore" ],
     [ "Serializable", "classturi_1_1Serializable.html", null ],
     [ "sframe", "classturi_1_1sframe.html", "classturi_1_1sframe" ],

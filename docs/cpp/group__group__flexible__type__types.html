@@ -111,6 +111,8 @@ Typedefs</h2></td></tr>
 <tr class="separator:ga408eb4413a2a629b462fb3a5d4f42c24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga40bb1656bebeb5ab0e3cd138c09e5995"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classturi_1_1image__type.html">image_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__flexible__type__types.html#ga40bb1656bebeb5ab0e3cd138c09e5995">turi::flex_image</a></td></tr>
 <tr class="separator:ga40bb1656bebeb5ab0e3cd138c09e5995"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac2900ffa5e2fef35d706e307db74d859"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classturi_1_1flexible__type__impl_1_1ndarray.html">flexible_type_impl::ndarray</a>&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__flexible__type__types.html#gac2900ffa5e2fef35d706e307db74d859">turi::flex_nd_vec</a></td></tr>
+<tr class="separator:gac2900ffa5e2fef35d706e307db74d859"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <h2 class="groupheader">Typedef Documentation</h2>
@@ -127,7 +129,7 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <p>An recursive associate dictionary object vector&lt;std::pair&lt;flexible_type, flexible_type&gt; &gt; Corresponds to the type enum <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76ad7f73f951e7f6c4ed5e17c4204f4032e">flex_type_enum::DICT</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00053">53</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00056">56</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
 
 </div>
 </div>
@@ -144,7 +146,7 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <p>A 64 bit double type that can be stored in a <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>. Corresponds to the type enum <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76ae738c26bf4ce1037fa81b039a915cbf6">flex_type_enum::FLOAT</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00033">33</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00035">35</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
 
 </div>
 </div>
@@ -161,7 +163,7 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <p>An <a class="el" href="classturi_1_1image__type.html">image type</a> that can be stored in a <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>. Corresponds to the type enum <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76a23a12f67f614b5518c7f1c2465bf95e3">flex_type_enum::IMAGE</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00058">58</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00061">61</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
 
 </div>
 </div>
@@ -178,7 +180,7 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <p>A 64 bit integer type that can be stored in a <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>. Corresponds to the type enum <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76a5d5cd46919fa987731fb2edefe0f2a0c">flex_type_enum::INTEGER</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00028">28</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00030">30</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
 
 </div>
 </div>
@@ -195,7 +197,24 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <p>A recursive object vector&lt;flexible_type&gt; that can be stored in a <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>. Corresponds to the type enum <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76a298cb25408234de02baf2085803a464a">flex_type_enum::LIST</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00048">48</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00051">51</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
+
+</div>
+</div>
+<a id="gac2900ffa5e2fef35d706e307db74d859"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac2900ffa5e2fef35d706e307db74d859">&#9670;&nbsp;</a></span>flex_nd_vec</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="classturi_1_1flexible__type__impl_1_1ndarray.html">flexible_type_impl::ndarray</a>&lt;double&gt; <a class="el" href="group__group__flexible__type__types.html#gac2900ffa5e2fef35d706e307db74d859">turi::flex_nd_vec</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>A ND-array double type that can be stored in a <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>. This is the successor to flex_vec. </p>
+
+<p class="definition">Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00066">66</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
 
 </div>
 </div>
@@ -212,7 +231,7 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <p>A string that can be stored in a <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>. Corresponds to the type enum <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76a63b588d5559f64f89a416e656880b949">flex_type_enum::STRING</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00038">38</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00040">40</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
 
 </div>
 </div>
@@ -227,9 +246,9 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>A vector&lt;double&gt; that can be stored in a <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>. Corresponds to the type enum <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76a87752381b583740610f1dfeb07fdad7e">flex_type_enum::VECTOR</a>. </p>
+<p>A vector&lt;double&gt; that can be stored in a <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>. Corresponds to the type enum <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76a87752381b583740610f1dfeb07fdad7e">flex_type_enum::VECTOR</a>.  </p>
 
-<p class="definition">Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00043">43</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00046">46</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
 
 </div>
 </div>

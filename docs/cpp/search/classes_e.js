@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['ndarray',['ndarray',['../classturi_1_1flexible__type__impl_1_1ndarray.html',1,'turi::flexible_type_impl']]],
   ['nearest_5fneighbor_5fsampler',['nearest_neighbor_sampler',['../structboost_1_1gil_1_1nearest__neighbor__sampler.html',1,'boost::gil']]],
   ['neg_5fsample_5fproc_5fbuffer',['neg_sample_proc_buffer',['../structturi_1_1factorization_1_1ranking__sgd__solver__base_1_1neg__sample__proc__buffer.html',1,'turi::factorization::ranking_sgd_solver_base']]],
   ['negation_5foperator',['negation_operator',['../structturi_1_1flexible__type__impl_1_1negation__operator.html',1,'turi::flexible_type_impl']]],
