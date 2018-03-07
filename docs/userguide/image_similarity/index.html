@@ -848,7 +848,20 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.7.1" data-path="../datasets.html">
+        <li class="chapter " data-level="1.7.1" data-path="../cpp.html">
+            
+                <a href="../cpp.html">
+            
+                    
+                    C++ API
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2" data-path="../datasets.html">
             
                 <a href="../datasets.html">
             
@@ -976,6 +989,42 @@ similar_images = similarity_graph.edges</code></pre>
 |   1182   |   7717   |  16.889624839 |  6   |
 +----------+----------+---------------+------+
 [91440 rows x 4 columns]</code></pre>
+<h5 id="saving-the-model"><a name="saving-the-model" class="plugin-anchor" href="#saving-the-model"><i class="fa fa-link" aria-hidden="true"></i></a>Saving the model</h5><p>Once you have created a model, you can save it and load it back later for use.</p><pre><code>model.save(&apos;myModel.model&apos;)
+loaded_model = turicreate.load_model(&apos;myModel.model&apos;)</code></pre>
+<h5 id="deploying-to-core-ml"><a name="deploying-to-core-ml" class="plugin-anchor" href="#deploying-to-core-ml"><i class="fa fa-link" aria-hidden="true"></i></a>Deploying to Core ML</h5><p>Using the Core ML Framework, you can retrieve the distance between a query image and all images in the reference data. Exporting this model in Core ML format can be
+performed using the <code>export_coreml</code> function.</p><pre><code class="lang-python">model.export_coreml(<span class="hljs-string">&apos;MyImageSimilarityModel.mlmodel&apos;</span>)</code></pre>
+<p>When you open the model in Xcode, it looks like the following:</p><p><img alt="Image similarity model in Xcode" src="images/image_similarity_model.png"></p><p>The following Swift code is needed to consume the model in
+an iOS app.</p><pre><code class="lang-swift"><span class="hljs-keyword">let</span> model = <span class="hljs-keyword">try</span> <span class="hljs-type">VNCoreMLModel</span>(<span class="hljs-keyword">for</span>: <span class="hljs-type">MyImageSimilarityModel</span>().model)
+
+<span class="hljs-keyword">let</span> request = <span class="hljs-type">VNCoreMLRequest</span>(model: model, completionHandler: { [<span class="hljs-keyword">weak</span> <span class="hljs-keyword">self</span>] request, error <span class="hljs-keyword">in</span>
+    <span class="hljs-keyword">self</span>?.processQuery(<span class="hljs-keyword">for</span>: request, error: error)
+})
+request.imageCropAndScaleOption = .centerCrop
+<span class="hljs-keyword">return</span> request</code></pre>
+<p>Notice that the image similarity model in Core ML returns the distances between the query image and all images in the reference dataset. In order to retrieve the most similar images in the reference dataset, we must sort them by distance. We can do this by modifying the <a href="https://developer.apple.com/documentation/vision/classifying_images_with_vision_and_core_ml" target="_blank">Core ML sample application
+</a> as such:</p><pre><code class="lang-swift"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">processQuery</span><span class="hljs-params">(<span class="hljs-keyword">for</span> request: VNRequest, error: Error?, k: Int = <span class="hljs-number">5</span>)</span></span> {
+    <span class="hljs-type">DispatchQueue</span>.main.async {
+        <span class="hljs-keyword">guard</span> <span class="hljs-keyword">let</span> results = request.results <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">self</span>.referenceRanking.text = <span class="hljs-string">&quot;Unable to rank image.\n<span class="hljs-subst">\(error!.localizedDescription)</span>&quot;</span>
+            <span class="hljs-keyword">return</span>
+        }
+
+        <span class="hljs-keyword">let</span> queryResults = results <span class="hljs-keyword">as</span>! [<span class="hljs-type">VNCoreMLFeatureValueObservation</span>]
+        <span class="hljs-keyword">let</span> distances = queryResults.first!.featureValue.multiArrayValue!
+
+        <span class="hljs-comment">// Create an array of distances to sort</span>
+        <span class="hljs-keyword">let</span> numReferenceImages = distances.shape[<span class="hljs-number">0</span>].intValue
+        <span class="hljs-keyword">var</span> distanceArray = [<span class="hljs-type">Double</span>]()
+        <span class="hljs-keyword">for</span> r <span class="hljs-keyword">in</span> <span class="hljs-number">0</span>..&lt;numReferenceImages {
+            distanceArray.append(<span class="hljs-type">Double</span>(distances[r]))
+        }
+
+        <span class="hljs-keyword">let</span> sorted = distanceArray.enumerated().sorted(by: {$<span class="hljs-number">0</span>.element &lt; $<span class="hljs-number">1</span>.element})
+        <span class="hljs-keyword">let</span> knn = sorted[..&lt;<span class="hljs-built_in">min</span>(k, numReferenceImages)]
+
+        <span class="hljs-keyword">self</span>.referenceRanking.text = <span class="hljs-type">String</span>(describing: knn)
+    }
+}</code></pre>
 <h4 id="how-it-works"><a name="how-it-works" class="plugin-anchor" href="#how-it-works"><i class="fa fa-link" aria-hidden="true"></i></a>How it works</h4><p>The key ideas in the image similarity model are similar to those in
 <a href="../image_classifier/how-it-works.html">image classifier</a>. When you run
 the Turi Create image classifier, it breaks things down into something
@@ -1035,7 +1084,7 @@ categories. IEEE Trans. Pattern Recognition and Machine Intelligence.
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Image similarity","level":"1.3.3","depth":2,"next":{"title":"Object detection","level":"1.3.4","depth":2,"path":"object_detection/README.md","ref":"object_detection/README.md","articles":[{"title":"Advanced Usage","level":"1.3.4.1","depth":3,"path":"object_detection/advanced-usage.md","ref":"object_detection/advanced-usage.md","articles":[]},{"title":"How it works","level":"1.3.4.2","depth":3,"path":"object_detection/how-it-works.md","ref":"object_detection/how-it-works.md","articles":[]}]},"previous":{"title":"How it works","level":"1.3.2.2","depth":3,"path":"image_classifier/how-it-works.md","ref":"image_classifier/how-it-works.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"image_similarity/README.md","mtime":"2018-02-14T01:34:26.682Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-02-14T19:11:45.807Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Image similarity","level":"1.3.3","depth":2,"next":{"title":"Object detection","level":"1.3.4","depth":2,"path":"object_detection/README.md","ref":"object_detection/README.md","articles":[{"title":"Advanced Usage","level":"1.3.4.1","depth":3,"path":"object_detection/advanced-usage.md","ref":"object_detection/advanced-usage.md","articles":[]},{"title":"How it works","level":"1.3.4.2","depth":3,"path":"object_detection/how-it-works.md","ref":"object_detection/how-it-works.md","articles":[]}]},"previous":{"title":"How it works","level":"1.3.2.2","depth":3,"path":"image_classifier/how-it-works.md","ref":"image_classifier/how-it-works.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"image_similarity/README.md","mtime":"2018-03-05T19:10:58.425Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-03-07T05:42:10.712Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

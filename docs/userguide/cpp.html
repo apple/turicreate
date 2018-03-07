@@ -2,7 +2,7 @@
 <!DOCTYPE HTML>
 <html lang="" >
     <head>
-        <title>Overview · GitBook</title>
+        <title>C++ API · GitBook</title>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
@@ -61,8 +61,10 @@
     <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="sframe/" />
+    <link rel="next" href="datasets.html" />
     
+    
+    <link rel="prev" href="conclusion.html" />
     
 
     </head>
@@ -91,7 +93,7 @@
         
         
     
-        <li class="chapter active" data-level="1.1" data-path="./">
+        <li class="chapter " data-level="1.1" data-path="./">
             
                 <a href="./">
             
@@ -846,7 +848,7 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.7.1" data-path="cpp.html">
+        <li class="chapter active" data-level="1.7.1" data-path="cpp.html">
             
                 <a href="cpp.html">
             
@@ -907,7 +909,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href="." >Overview</a>
+        <a href="." >C++ API</a>
     </h1>
 </div>
 
@@ -922,74 +924,177 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="user-guide-overview"><a name="user-guide-overview" class="plugin-anchor" href="#user-guide-overview"><i class="fa fa-link" aria-hidden="true"></i></a>User Guide Overview</h1><p>Turi Create simplifies the development of custom machine learning models. You
-don&apos;t have to be a machine learning expert to add recommendations, object
-detection, image classification, image similarity or activity classification to
-your app.</p><ul><li><strong>Easy-to-use:</strong> Focus on tasks instead of algorithms
+                                <h1 id="using-the-c-api-experimental"><a name="using-the-c-api-experimental" class="plugin-anchor" href="#using-the-c-api-experimental"><i class="fa fa-link" aria-hidden="true"></i></a>Using the C++ API (Experimental)</h1><p>Turi Create provides a C++ API to enable embedding into other applications or services, as a way to deploy models for inference, or to enable training in embedded scenarios where there is no Python interpreter. This consists of a set of headers; when those headers are consumed, the resulting library or application can be linked against the <code>libunity</code> provided by the <code>turicreate</code> package.</p><p>The <a href="https://apple.github.io/turicreate/docs/cpp/" target="_blank">API documentation for the C++ API</a> provides a more complete reference of available functions, classes, and methods. Note that this API is not stable and may change at any time; plan to pin a particular version of Turi Create to your application or service to make use of this API.</p><h5 id="caveats"><a name="caveats" class="plugin-anchor" href="#caveats"><i class="fa fa-link" aria-hidden="true"></i></a>Caveats</h5><ul><li>This technique is experimental and depends on internal APIs within Turi Create that may change over time. The C++ API is not API-stable.
 </li>
-<li><strong>Visual:</strong> Built-in, streaming visualizations to explore your data
+<li>In order to link properly, some build flags must be shared between Turi Create and your project.
 </li>
-<li><strong>Flexible:</strong> Supports text, images, audio, video and sensor data
-</li>
-<li><strong>Fast and Scalable:</strong> Work with large datasets on a single machine
-</li>
-<li><strong>Ready To Deploy:</strong> Export models to Core ML for use in iOS, macOS, watchOS, and tvOS apps
+<li>Not all functionality in the Turi Create Python package is available in the C++ API.
 </li></ul>
-<p>As you use Turi Create in your work, reference this guide to understand:</p><ul><li>Data ingestion and cleaning with <strong>SFrames</strong> (and their data-type-specific equivalents)
+<h5 id="setup"><a name="setup" class="plugin-anchor" href="#setup"><i class="fa fa-link" aria-hidden="true"></i></a>Setup</h5><p>Using the C++ API requires building Turi Create from source, starting with a clone of the <a href="git@github.com:apple/turicreate.git">repository</a>. You should consider checking out a particular <a href="https://github.com/apple/turicreate/releases" target="_blank">release</a> in order to keep API stability as you proceed (the API may change in master). Before proceeding to use the C++ API, run <code>./configure</code> to set up the build system for the project, and run <code>make -j8</code> from within <code>release/src/unity</code> to build the library artifacts that your application will depend on.</p><p>Currently, the C++ API is not packaged for easy consumption outside of the Turi Create Python package. As a result, some care is needed when compiling and linking against Turi Create. This may cause compatibility issues since those compilation and linking flags may not be compatible with flags used elsewhere. Required compilation flags for your project include:</p><ul><li><code>-std=c++11</code> - some headers exposed by Turi Create require the use of C++11 or later.
 </li>
-<li>Basics of predictive model development: algorithm- and application-based toolkits
+<li><code>-stdlib=libc++</code> - may be needed on macOS (probably not on Linux).
 </li>
-<li>How to evaluate, visualize, and improve upon your model
+<li><p>Assuming <path_to_tc> refers to the location where you cloned the Turi Create repository, the following directories must be added to the include paths with <code>-I</code>, and to the link paths with <code>-L</code>:</path_to_tc></p><ul><li><code>-I&lt;PATH_TO_TC&gt;/turicreate/src</code>
+</li>
+<li><code>-I&lt;PATH_TO_TC&gt;/turicreate/deps/local/include</code>
+</li>
+<li><code>-I&lt;PATH_TO_TC&gt;/turicreate/src/external/armadillo/include</code>
+</li>
+<li><code>-L&lt;PATH_TO_TC&gt;/turicreate/release/src/unity</code>
 </li></ul>
-<p>If you haven&#x2019;t already installed Turi Create, you can find instructions
-<a href="https://github.com/apple/turicreate" target="_blank">here</a>.</p><h2 id="sframe"><a name="sframe" class="plugin-anchor" href="#sframe"><i class="fa fa-link" aria-hidden="true"></i></a>SFrame</h2><p>SFrame is a scalable, tabular, column-mutable dataframe object. The data
-in SFrame is stored column-wise on the Turi Server side, and is stored
-on persistent storage (e.g. disk) to avoid being constrained by memory
-size. Each column in an SFrame is a size-immutable SArray, but SFrames
-are mutable in that columns can be added and subtracted with ease. An
-SFrame essentially acts as an ordered dict of SArrays.</p><p>Currently, we support constructing an SFrame from the following data
-formats: .csv (comma separated value) file, SFrame directory archive (A
-directory where an Sframe was saved previously), general text file (with
-csv parsing options; see read_csv()), Python dictionary,
-pandas.DataFrame and JSON.</p><p>An SFrame can be constructed with data from your local file system, the
-Turi server&#x2019;s file system, HDFS, Amazon S3, or HTTP(S).</p><p>See <a href="sframe/">Working with data</a> for more guidance on
-data structures and the <a href="https://apple.github.io/turicreate/docs/api/turicreate.data_structures.html" target="_blank">API
-docs</a>
-for a more complete reference.</p><h2 id="models"><a name="models" class="plugin-anchor" href="#models"><i class="fa fa-link" aria-hidden="true"></i></a>Models</h2><p>Turi Create offers a broad set of packaged application based toolkits as
-well as algorithms for model creation.</p><h3 id="start-with-the-task-you-want-to-accomplish"><a name="start-with-the-task-you-want-to-accomplish" class="plugin-anchor" href="#start-with-the-task-you-want-to-accomplish"><i class="fa fa-link" aria-hidden="true"></i></a>Start with the task you want to accomplish</h3><p>Application-oriented toolkits in Turi Create offer default parameters, building
-blocks and baseline models that help you get started quickly with their
-dataset without sacrificing the ability to go back and customize models
-later. Each incorporates automatic feature engineering and model
-selection.</p><p>Using these toolkits, you can tackle a number of common scenarios:</p><ul><li><a href="recommender/">Recommender systems</a>
 </li>
-<li><a href="image_classifier/">Image classification</a>
+<li><p>Depending on your compiler toolchain, the following defines may be needed (note: these are autodetected for Turi Create itself with <code>./configure</code>, but the values must be passed on to your own build process):</p></li>
+<li><code>-DHASH_FOR_UINT128_DEFINED</code> - set this if your compiler toolchain supports <code>unsigned __int128</code>.
 </li>
-<li><a href="image_similarity/">Image similarity</a>
+<li><code>-DHASH_FOR_INT128_DEFINED</code> - set this if your compiler toolchain supports <code>__int128</code>.
 </li>
-<li><a href="object_detection/">Object detection</a>
+<li><code>-lunity_shared</code> to link against <code>libunity_shared.so</code>.
 </li>
-<li><a href="activity_classifier/">Activity classifier</a>
-</li>
-<li><a href="text_classifier/">Text classifier</a>
+<li><code>&lt;PATH_TO_TC&gt;/turicreate/release/src/unity/libunity.a</code> to statically link libunity.a into your project. Note that this is needed in addition to the dynamic library listed above.
 </li></ul>
-<h3 id="machine-learning-essentials"><a name="machine-learning-essentials" class="plugin-anchor" href="#machine-learning-essentials"><i class="fa fa-link" aria-hidden="true"></i></a>Machine learning essentials</h3><p>Essential machine learning models, organized into algorithm-based
-toolkits:</p><ul><li><a href="supervised-learning/classifier.html">Classifiers</a>
-</li>
-<li><a href="supervised-learning/regression.html">Regression</a>
-</li>
-<li><a href="graph_analytics/">Graph analytics</a>
-</li>
-<li><a href="clustering/">Clustering</a>
-</li>
-<li><a href="nearest_neighbors/nearest_neighbors.html">Nearest Neighbors</a>
-</li>
-<li><a href="text/">Topic models</a>
-</li></ul>
-<p>Refer to the <a href="https://apple.github.io/turicreate/docs/api/turicreate.toolkits.html" target="_blank">Machine Learning API
-documentation</a>
-for complete algorithms and toolkits.</p><h3 id="deployment-to-core-ml"><a name="deployment-to-core-ml" class="plugin-anchor" href="#deployment-to-core-ml"><i class="fa fa-link" aria-hidden="true"></i></a>Deployment to Core ML</h3><p>With Core ML, you can integrate machine learning models into your macOS,
-iOS, watchOS, and tvOS app. Many models created  in Turi Create can be
-exported for use in Core ML.</p>
+<h5 id="example-make-predictions-in-c-from-a-model-trained-in-python"><a name="example-make-predictions-in-c-from-a-model-trained-in-python" class="plugin-anchor" href="#example-make-predictions-in-c-from-a-model-trained-in-python"><i class="fa fa-link" aria-hidden="true"></i></a>Example: make predictions in C++ from a model trained in Python</h5><p>Let&apos;s assume we&apos;re starting with the model from the introductory example in the <a href="https://github.com/apple/turicreate/blob/3490286b27ff5d79cb90d09fe026d5671ce990c7/userguide/supervised-learning/boosted_trees_classifier.md#gradient-boosted-regression-trees" target="_blank">boosted trees classifier</a> section of the user guide. The model is available as <a href="https://github.com/apple/turicreate/files/1654991/mushroom.tcmodel.zip" target="_blank">mushroom.tcmodel.zip</a>.</p><p>To make predictions from this model in Python, you could run:</p><pre><code class="lang-python"><span class="hljs-keyword">import</span> turicreate <span class="hljs-keyword">as</span> tc
+data =  tc.SFrame.read_csv(<span class="hljs-string">&apos;turicreate/lfs/datasets/xgboost/mushroom.csv&apos;</span>)
+model = tc.load_model(<span class="hljs-string">&apos;mushroom.tcmodel&apos;</span>)
+data[<span class="hljs-number">0</span>]</code></pre>
+<pre><code>{&apos;bruises?&apos;: &apos;t&apos;,
+ &apos;cap-color&apos;: &apos;n&apos;,
+ &apos;cap-shape&apos;: &apos;x&apos;,
+ &apos;cap-surface&apos;: &apos;s&apos;,
+ &apos;gill-attachment&apos;: &apos;f&apos;,
+ &apos;gill-color&apos;: &apos;k&apos;,
+ &apos;gill-size&apos;: &apos;n&apos;,
+ &apos;gill-spacing&apos;: &apos;c&apos;,
+ &apos;habitat&apos;: &apos;u&apos;,
+ &apos;label&apos;: &apos;c&apos;,
+ &apos;odor&apos;: &apos;p&apos;,
+ &apos;population&apos;: &apos;s&apos;,
+ &apos;ring-number&apos;: &apos;o&apos;,
+ &apos;ring-type&apos;: &apos;p&apos;,
+ &apos;spore-print-color&apos;: &apos;k&apos;,
+ &apos;stalk-color-above-ring&apos;: &apos;w&apos;,
+ &apos;stalk-color-below-ring&apos;: &apos;w&apos;,
+ &apos;stalk-root&apos;: &apos;e&apos;,
+ &apos;stalk-shape&apos;: &apos;e&apos;,
+ &apos;stalk-surface-above-ring&apos;: &apos;s&apos;,
+ &apos;stalk-surface-below-ring&apos;: &apos;s&apos;,
+ &apos;veil-color&apos;: &apos;w&apos;,
+ &apos;veil-type&apos;: &apos;p&apos;}</code></pre>
+<pre><code class="lang-python">model.predict_topk(data[<span class="hljs-number">0</span>], k=<span class="hljs-number">2</span>, output_type=<span class="hljs-string">&apos;probability&apos;</span>)</code></pre>
+<pre><code>Columns:
+    id    int
+    class    int
+    probability    float
+
+Rows: 2
+
+Data:
++----+-------+---------------+
+| id | class |  probability  |
++----+-------+---------------+
+| 0  |   1   | 0.57558375597 |
+| 0  |   0   | 0.42441624403 |
++----+-------+---------------+
+[2 rows x 3 columns]</code></pre>
+<p>In C++, the equivalent code would be (minus the CSV parsing):</p><pre><code class="lang-cpp"><span class="hljs-comment">// standard C++ includes</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;iostream&gt;</span></span>
+
+<span class="hljs-comment">// Turi Create includes</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;logger/assertions.hpp&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;logger/logger.hpp&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;unity/lib/unity_global.hpp&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;unity/server/registration.hpp&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;unity/toolkits/supervised_learning/boosted_trees.hpp&gt;</span></span>
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">int</span> argc, <span class="hljs-keyword">char</span> **argv)</span> </span>{
+  <span class="hljs-comment">// set up registry of named functions and models</span>
+  <span class="hljs-comment">// used for rehydrating saved models</span>
+  <span class="hljs-keyword">auto</span> fn_reg = turi::toolkit_function_registry();
+  turi::register_functions(fn_reg);
+  <span class="hljs-keyword">auto</span> class_reg = turi::toolkit_class_registry();
+  turi::register_models(class_reg);
+
+  <span class="hljs-comment">// create a global context</span>
+  <span class="hljs-keyword">auto</span> global = turi::unity_global(&amp;fn_reg, &amp;class_reg);
+
+  <span class="hljs-comment">// load the model from disk</span>
+  <span class="hljs-keyword">auto</span> loaded_model = global.load_model(<span class="hljs-string">&quot;mushroom.tcmodel&quot;</span>);
+  <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span> name = turi::variant_get_value&lt;turi::flexible_type&gt;(loaded_model[<span class="hljs-string">&quot;model_name&quot;</span>]);
+  <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">&quot;Loaded model: &quot;</span> &lt;&lt; name &lt;&lt; <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>;
+  <span class="hljs-keyword">auto</span> model = <span class="hljs-built_in">std</span>::dynamic_pointer_cast&lt;turi::supervised::xgboost::boosted_trees_classifier&gt;(
+    turi::variant_get_value&lt;<span class="hljs-built_in">std</span>::<span class="hljs-built_in">shared_ptr</span>&lt;turi::model_base&gt;&gt;(loaded_model[<span class="hljs-string">&quot;model&quot;</span>])
+  );
+
+  <span class="hljs-comment">// set up input</span>
+  <span class="hljs-comment">// (note: can do batch prediction by adding more than one row to rows)</span>
+  <span class="hljs-built_in">std</span>::<span class="hljs-built_in">vector</span>&lt;turi::flexible_type&gt; rows;
+  turi::flex_dict row;
+  row.push_back(<span class="hljs-built_in">std</span>::make_pair(<span class="hljs-string">&quot;bruises?&quot;</span>, <span class="hljs-string">&quot;t&quot;</span>));
+  row.push_back(<span class="hljs-built_in">std</span>::make_pair(<span class="hljs-string">&quot;cap-color&quot;</span>, <span class="hljs-string">&quot;n&quot;</span>));
+  row.push_back(<span class="hljs-built_in">std</span>::make_pair(<span class="hljs-string">&quot;cap-shape&quot;</span>, <span class="hljs-string">&quot;x&quot;</span>));
+  row.push_back(<span class="hljs-built_in">std</span>::make_pair(<span class="hljs-string">&quot;cap-surface&quot;</span>, <span class="hljs-string">&quot;s&quot;</span>));
+  row.push_back(<span class="hljs-built_in">std</span>::make_pair(<span class="hljs-string">&quot;gill-attachment&quot;</span>, <span class="hljs-string">&quot;f&quot;</span>));
+  row.push_back(<span class="hljs-built_in">std</span>::make_pair(<span class="hljs-string">&quot;gill-color&quot;</span>, <span class="hljs-string">&quot;k&quot;</span>));
+  row.push_back(<span class="hljs-built_in">std</span>::make_pair(<span class="hljs-string">&quot;gill-size&quot;</span>, <span class="hljs-string">&quot;n&quot;</span>));
+  row.push_back(<span class="hljs-built_in">std</span>::make_pair(<span class="hljs-string">&quot;gill-spacing&quot;</span>, <span class="hljs-string">&quot;c&quot;</span>));
+  row.push_back(<span class="hljs-built_in">std</span>::make_pair(<span class="hljs-string">&quot;habitat&quot;</span>, <span class="hljs-string">&quot;u&quot;</span>));
+  row.push_back(<span class="hljs-built_in">std</span>::make_pair(<span class="hljs-string">&quot;odor&quot;</span>, <span class="hljs-string">&quot;p&quot;</span>));
+  row.push_back(<span class="hljs-built_in">std</span>::make_pair(<span class="hljs-string">&quot;population&quot;</span>, <span class="hljs-string">&quot;s&quot;</span>));
+  row.push_back(<span class="hljs-built_in">std</span>::make_pair(<span class="hljs-string">&quot;ring-number&quot;</span>, <span class="hljs-string">&quot;o&quot;</span>));
+  row.push_back(<span class="hljs-built_in">std</span>::make_pair(<span class="hljs-string">&quot;ring-type&quot;</span>, <span class="hljs-string">&quot;p&quot;</span>));
+  row.push_back(<span class="hljs-built_in">std</span>::make_pair(<span class="hljs-string">&quot;spore-print-color&quot;</span>, <span class="hljs-string">&quot;k&quot;</span>));
+  row.push_back(<span class="hljs-built_in">std</span>::make_pair(<span class="hljs-string">&quot;stalk-color-above-ring&quot;</span>, <span class="hljs-string">&quot;w&quot;</span>));
+  row.push_back(<span class="hljs-built_in">std</span>::make_pair(<span class="hljs-string">&quot;stalk-color-below-ring&quot;</span>, <span class="hljs-string">&quot;w&quot;</span>));
+  row.push_back(<span class="hljs-built_in">std</span>::make_pair(<span class="hljs-string">&quot;stalk-root&quot;</span>, <span class="hljs-string">&quot;e&quot;</span>));
+  row.push_back(<span class="hljs-built_in">std</span>::make_pair(<span class="hljs-string">&quot;stalk-shape&quot;</span>, <span class="hljs-string">&quot;e&quot;</span>));
+  row.push_back(<span class="hljs-built_in">std</span>::make_pair(<span class="hljs-string">&quot;stalk-surface-above-ring&quot;</span>, <span class="hljs-string">&quot;s&quot;</span>));
+  row.push_back(<span class="hljs-built_in">std</span>::make_pair(<span class="hljs-string">&quot;stalk-surface-below-ring&quot;</span>, <span class="hljs-string">&quot;s&quot;</span>));
+  row.push_back(<span class="hljs-built_in">std</span>::make_pair(<span class="hljs-string">&quot;veil-color&quot;</span>, <span class="hljs-string">&quot;w&quot;</span>));
+  row.push_back(<span class="hljs-built_in">std</span>::make_pair(<span class="hljs-string">&quot;veil-type&quot;</span>, <span class="hljs-string">&quot;p&quot;</span>));
+  rows.push_back(row);
+
+  <span class="hljs-comment">// make prediction</span>
+  turi::gl_sframe result = model-&gt;fast_predict_topk(
+      <span class="hljs-comment">// input data - 1 row per prediction</span>
+      rows,
+
+      <span class="hljs-comment">// output type - see https://github.com/apple/turicreate/blob/3490286b27ff5d79cb90d09fe026d5671ce990c7/src/unity/toolkits/supervised_learning/supervised_learning.hpp#L47</span>
+      <span class="hljs-string">&quot;probability&quot;</span>,
+
+      <span class="hljs-comment">// missing value action - see https://github.com/apple/turicreate/blob/3490286b27ff5d79cb90d09fe026d5671ce990c7/src/ml_data/ml_data_column_modes.hpp#L27</span>
+      <span class="hljs-string">&quot;error&quot;</span>,
+
+      <span class="hljs-comment">// k (returns top k predictions) -- must be &lt;= the number of classes</span>
+      <span class="hljs-number">2</span>
+  );
+  <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span> row_str = rows[<span class="hljs-number">0</span>].to&lt;<span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>&gt;(); <span class="hljs-comment">// turn first row of input into a string</span>
+  <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">&quot;Input to model: &quot;</span> &lt;&lt; row_str &lt;&lt; <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>;
+  <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">&quot;Predicted: &quot;</span> &lt;&lt; result &lt;&lt; <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>;
+}</code></pre>
+<p>And the output from C++ looks like:</p><pre><code>Loaded model: boosted_trees_classifier
+Input to model: {&quot;bruises?&quot;:&quot;t&quot;, &quot;cap-color&quot;:&quot;n&quot;, &quot;cap-shape&quot;:&quot;x&quot;, &quot;cap-surface&quot;:&quot;s&quot;, &quot;gill-attachment&quot;:&quot;f&quot;, &quot;gill-color&quot;:&quot;k&quot;, &quot;gill-size&quot;:&quot;n&quot;, &quot;gill-spacing&quot;:&quot;c&quot;, &quot;habitat&quot;:&quot;u&quot;, &quot;odor&quot;:&quot;p&quot;, &quot;population&quot;:&quot;s&quot;, &quot;ring-number&quot;:&quot;o&quot;, &quot;ring-type&quot;:&quot;p&quot;, &quot;spore-print-color&quot;:&quot;k&quot;, &quot;stalk-color-above-ring&quot;:&quot;w&quot;, &quot;stalk-color-below-ring&quot;:&quot;w&quot;, &quot;stalk-root&quot;:&quot;e&quot;, &quot;stalk-shape&quot;:&quot;e&quot;, &quot;stalk-surface-above-ring&quot;:&quot;s&quot;, &quot;stalk-surface-below-ring&quot;:&quot;s&quot;, &quot;veil-color&quot;:&quot;w&quot;, &quot;veil-type&quot;:&quot;p&quot;}
+Predicted: 
+Columns:
+    id    integer
+    class    integer
+    probability    float
+Rows: 2
+Data:
++----------------+----------------+----------------+
+| id             | class          | probability    |
++----------------+----------------+----------------+
+| 0              | 1              | 0.575584       |
+| 0              | 0              | 0.424416       |
++----------------+----------------+----------------+
+[2 rows x 3 columns]</code></pre>
+<p>To build this C++ program, you&apos;ll need to borrow the compilation flags from Turi Create as shown above.</p><pre><code class="lang-shell"># run the following in the turicreate repostitory root:
+./configure
+cd release/src/unity
+make -j8
+
+# And assuming predict.cpp is in a sibling directory of turicreate, run:
+c++ -std=c++11 -stdlib=libc++ -I../turicreate/src -I../turicreate/src/platform -I../turicreate/deps/local/include -I../turicreate/src/external/armadillo/include -DHASH_FOR_UINT128_DEFINED -DHASH_FOR_INT128_DEFINED -L../turicreate/release/src/unity -lunity_shared predict.cpp ../turicreate/release/src/unity/libunity.a
+LD_LIBRARY_PATH=../turicreate/release/src/unity ./a.out</code></pre>
+<h5 id="additional-resources"><a name="additional-resources" class="plugin-anchor" href="#additional-resources"><i class="fa fa-link" aria-hidden="true"></i></a>Additional Resources</h5><p>Please refer to the <a href="https://apple.github.io/turicreate/docs/cpp/" target="_blank">API documentation for the C++ API</a> for a more complete reference of available functions, classes, and methods.</p>
                                 
                                 </section>
                             
@@ -1016,8 +1121,12 @@ exported for use in Core ML.</p>
 
             
                 
+                <a href="conclusion.html" class="navigation navigation-prev " aria-label="Previous page: Additional Resources">
+                    <i class="fa fa-angle-left"></i>
+                </a>
                 
-                <a href="sframe/" class="navigation navigation-next navigation-unique" aria-label="Next page: Working with data">
+                
+                <a href="datasets.html" class="navigation navigation-next " aria-label="Next page: Dataset Disclaimer">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -1028,7 +1137,7 @@ exported for use in Core ML.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Overview","level":"1.1","depth":1,"next":{"title":"Working with data","level":"1.2","depth":1,"path":"sframe/README.md","ref":"sframe/README.md","articles":[{"title":"Tabular data","level":"1.2.1","depth":2,"path":"sframe/tabular-data.md","ref":"sframe/tabular-data.md","articles":[{"title":"Loading and Saving","level":"1.2.1.1","depth":3,"path":"sframe/sframe-intro.md","ref":"sframe/sframe-intro.md","articles":[]},{"title":"Data Manipulation","level":"1.2.1.2","depth":3,"path":"sframe/data-manipulation.md","ref":"sframe/data-manipulation.md","articles":[]},{"title":"SQL Databases","level":"1.2.1.3","depth":3,"path":"data_formats_and_sources/sql_integration.md","ref":"data_formats_and_sources/sql_integration.md","articles":[]}]},{"title":"Graph data","level":"1.2.2","depth":2,"path":"sgraph/sgraph.md","ref":"sgraph/sgraph.md","articles":[]},{"title":"Text data","level":"1.2.3","depth":2,"path":"text/analysis.md","ref":"text/analysis.md","articles":[]},{"title":"Visualization","level":"1.2.4","depth":2,"path":"vis/README.md","ref":"vis/README.md","articles":[{"title":"Example Gallery","level":"1.2.4.1","depth":3,"path":"vis/gallery.md","ref":"vis/gallery.md","articles":[]},{"title":"Sample Use Cases","level":"1.2.4.2","depth":3,"path":"vis/use_cases.md","ref":"vis/use_cases.md","articles":[]}]}]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"README.md","mtime":"2018-02-14T19:35:07.105Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-03-07T05:42:10.712Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"C++ API","level":"1.7.1","depth":2,"next":{"title":"Dataset Disclaimer","level":"1.7.2","depth":2,"path":"datasets.md","ref":"datasets.md","articles":[]},"previous":{"title":"Additional Resources","level":"1.7","depth":1,"path":"conclusion.md","ref":"conclusion.md","articles":[{"title":"C++ API","level":"1.7.1","depth":2,"path":"cpp.md","ref":"cpp.md","articles":[]},{"title":"Dataset Disclaimer","level":"1.7.2","depth":2,"path":"datasets.md","ref":"datasets.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"cpp.md","mtime":"2018-02-24T02:00:13.910Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-03-07T05:42:10.712Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
