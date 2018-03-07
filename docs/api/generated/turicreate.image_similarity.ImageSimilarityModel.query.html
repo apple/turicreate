@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.image_similarity.ImageSimilarityModel.query &mdash; Turi Create API 4.1.1 documentation</title>
+  <title>turicreate.image_similarity.ImageSimilarityModel.query &mdash; Turi Create API 4.2 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.1.1 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -124,18 +124,19 @@
 <dl class="method">
 <dt id="turicreate.image_similarity.ImageSimilarityModel.query">
 <code class="descclassname">ImageSimilarityModel.</code><code class="descname">query</code><span class="sig-paren">(</span><em>dataset</em>, <em>label=None</em>, <em>k=5</em>, <em>radius=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.image_similarity.ImageSimilarityModel.query" title="Permalink to this definition">¶</a></dt>
-<dd><p>For each row of the input &#8216;dataset&#8217;, retrieve the nearest neighbors
-from the model&#8217;s stored data. In general, the query dataset does not
-need to be the same as the reference data stored in the model.</p>
+<dd><p>For each image, retrieve the nearest neighbors from the model&#8217;s stored
+data. In general, the query dataset does not need to be the same as
+the reference data stored in the model.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame | SArray | turicreate.Image</p>
 <blockquote>
-<div><p>Query data. Must contain columns with the same names and types as
-the features used to train the model. Additional columns are
-allowed, but ignored.</p>
+<div><p>Query data.
+If dataset is an SFrame, it must contain columns with the same
+names and types as the features used to train the model.
+Additional columns are ignored.</p>
 </div></blockquote>
 <p><strong>label</strong> : str, optional</p>
 <blockquote>
@@ -214,7 +215,7 @@ is an SFrame with <span class="math">\(nm\)</span> rows.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Feb 14, 2018.
+      Last updated on Mar 05, 2018.
     </p>
   </div>
 </footer>
@@ -232,7 +233,7 @@ is an SFrame with <span class="math">\(nm\)</span> rows.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.1.1',
+            VERSION:'4.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

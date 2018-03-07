@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.image_analysis.load_images &mdash; Turi Create API 4.1.1 documentation</title>
+  <title>turicreate.image_analysis.load_images &mdash; Turi Create API 4.2 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.1.1 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
         <link rel="up" title="image_analysis" href="../turicreate.toolkits.image_analysis.html"/>
         <link rel="next" title="turicreate.image_analysis.resize" href="turicreate.image_analysis.resize.html"/>
         <link rel="prev" title="turicreate.image_analysis.resize" href="turicreate.image_analysis.resize.html"/> 
@@ -130,7 +130,7 @@
 <h1>turicreate.image_analysis.load_images<a class="headerlink" href="#turicreate-image-analysis-load-images" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="turicreate.image_analysis.load_images">
-<code class="descclassname">turicreate.image_analysis.</code><code class="descname">load_images</code><span class="sig-paren">(</span><em>url</em>, <em>format='auto'</em>, <em>with_path=True</em>, <em>recursive=True</em>, <em>ignore_failure=True</em>, <em>random_order=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.image_analysis.load_images" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">turicreate.image_analysis.</code><code class="descname">load_images</code><span class="sig-paren">(</span><em>url</em>, <em>format='auto'</em>, <em>with_path=True</em>, <em>recursive=True</em>, <em>ignore_failure=True</em>, <em>random_order=False</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.image_analysis.load_images" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads images from a directory. JPEG and PNG images are supported.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -164,8 +164,7 @@ the images.</p>
 </div></blockquote>
 <p><strong>random_order</strong> : bool, optional</p>
 <blockquote>
-<div><p>Load images in random order, useful for Stochastic Gradient Decent like
-algorithm.</p>
+<div><p>Load images in random order.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -208,7 +207,7 @@ path for each of each corresponding Image object.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Feb 14, 2018.
+      Last updated on Mar 05, 2018.
     </p>
   </div>
 </footer>
@@ -226,7 +225,7 @@ path for each of each corresponding Image object.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.1.1',
+            VERSION:'4.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false
