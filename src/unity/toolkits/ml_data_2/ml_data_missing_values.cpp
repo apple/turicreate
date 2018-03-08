@@ -27,7 +27,7 @@ missing_value_action get_missing_value_action(
     ASSERT_MSG(false, "Missing value action must be either 'error' or 'impute'.");
   }
 
-  // Cant impute with changing means
+  // Can't impute with changing means
   ASSERT_MSG(!((none_action == missing_value_action::IMPUTE) &&
                (training_mode == true)),
              "missing_value_action 'impute' and training mode are not compatible.");

@@ -12,7 +12,6 @@ namespace turi {
 
 void sframe_reader::init(const sframe& frame, size_t num_segments) { 
   Dlog_func_entry();
-  typedef sarray_reader<flexible_type> array_reader_type;
   ASSERT_MSG(!inited, "SFrame reader already inited");
   index_info = frame.get_index_info();
   // no columns. Just stop.
@@ -38,8 +37,8 @@ void sframe_reader::init(const sframe& frame, size_t num_segments) {
 
 void sframe_reader::init(const sframe& frame, const std::vector<size_t>& segment_lengths) { 
   Dlog_func_entry();
-  typedef sarray_reader<flexible_type> array_reader_type;
   ASSERT_MSG(!inited, "SFrame reader already inited");
+
   // Verify that lengths match up 
   index_info = frame.get_index_info();
   size_t sum = 0;
