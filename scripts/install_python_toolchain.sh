@@ -11,7 +11,7 @@ PIP=pip3
 # TODO - not sure why 'm' is necessary here (and not in 2.7)
 # note that PYTHON_VERSION includes the word "python", like "python2.7" or "python3.6"
 PYTHON_FULL_NAME=${PYTHON_VERSION}m
-if [[ "${PY_MAJOR_VERSION}" == "2.7" ]]; then
+if [[ "${PYTHON_VERSION}" == "python2.7" ]]; then
   PIP=pip
   PYTHON_FULL_NAME=python2.7
 fi
