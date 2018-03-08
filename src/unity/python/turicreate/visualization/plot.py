@@ -4,7 +4,7 @@ from __future__ import absolute_import as _
 import logging as _logging
 import json as _json
 
-__target = 'auto'
+_target = 'auto'
 
 def set_target(target='auto'):
     """
@@ -26,9 +26,10 @@ def set_target(target='auto'):
           otherwise launch a native GUI window.
         * 'gui': always launch a native GUI window.
     """
+    global _target
     if target not in ['auto', 'gui']:
         raise ValueError("Expected target to be one of: 'auto', 'gui'.")
-    __target = target
+    _target = target
 
 
 class Plot(object):
@@ -81,10 +82,10 @@ class Plot(object):
         >>> plt.show()
 
         """
-        global __target
+        global _target
         display = False
         try:
-            if __target == 'auto' and \
+            if _target == 'auto' and \
                get_ipython().__class__.__name__ == "ZMQInteractiveShell":
                 self._repr_javascript_()
                 display = True
