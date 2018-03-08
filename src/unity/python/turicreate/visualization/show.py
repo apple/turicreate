@@ -8,6 +8,7 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 from .plot import Plot
 
+
 def _get_client_app_path():
     import sys
     import os
@@ -18,6 +19,7 @@ def _get_client_app_path():
 
     if sys.platform == 'linux2':
         return os.path.join(tcviz_dir, 'Turi Create Visualization', 'visualization_client')
+
 
 def show(x, y, xlabel="X", ylabel="Y", title=None):
     """
@@ -35,6 +37,12 @@ def show(x, y, xlabel="X", ylabel="Y", title=None):
     * If `x` and `y` are both SArrays of string, show a categorical heat map.
 
     This show method supports SArrays of dtypes: int, float, str.
+
+    Notes
+    -----
+    - The plot will render either inline in a Jupyter Notebook, or in a
+      native GUI window, depending on the value provided in
+      `turicreate.visualization.set_target` (defaults to 'auto').
 
     Parameters
     ----------
