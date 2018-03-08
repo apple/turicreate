@@ -58,18 +58,34 @@ static void test_array_path(const ndarray<double>& a) {
 
   nd_assert_equal(a, X->value);
 
- 
- size_t n_dim = tc_ndarray_num_dimensions(X, &error);  
- const uint64_t* shape = tc_ndarray_shape(X, &error);  
- const int64_t* strides = tc_ndarray_strides(X, &error);  
- const double* data = tc_ndarray_data(X, &error);  
+  size_t n_dim = tc_ndarray_num_dimensions(X, &error);
+  const uint64_t* shape = tc_ndarray_shape(X, &error);
+  const int64_t* strides = tc_ndarray_strides(X, &error);
+  const double* data = tc_ndarray_data(X, &error);
 
-
- // Construct another tc_ndarray object with these.
- tc_ndarray* X2 = tc_ndarray_create_from_data(n_dim, shape, strides, data, &error); 
- BOOST_TEST(error == nullptr); 
+  // Construct another tc_ndarray object with these.
+  tc_ndarray* X2 =
+      tc_ndarray_create_from_data(n_dim, shape, strides, data, &error);
+  BOOST_TEST(error == nullptr);
 
   nd_assert_equal(a, X2->value);
+
+
+  // Test going through flexible type.
+  tc_flexible_type* ft = tc_ft_create_from_ndarray(X2, &error); 
+  BOOST_TEST(error == nullptr);
+
+  BOOST_TEST(tc_ft_is_ndarray(ft));
+
+  tc_ndarray* X3 = tc_ft_ndarray(ft); 
+
+  // No copying, so same addresses
+  BOOST_TEST(X3->value.ptr() == X2->value.ptr());
+
+  tc_ndarray_destroy(X2);
+  tc_ndarray_destroy(X3);
+
+  tc_ft_destroy(ft);
 }
 
 
