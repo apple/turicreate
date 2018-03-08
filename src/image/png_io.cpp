@@ -100,6 +100,9 @@ void setup_png_reader(const char* data, size_t length, png_structp* outpng_ptr, 
     throw(std::string("Unexpected libpng error"));
   }
 
+  png_set_option(png_ptr, PNG_MAXIMUM_INFLATE_WINDOW,
+                 PNG_OPTION_ON);
+
   // png info struct
   png_infop info_ptr = NULL;
   info_ptr = png_create_info_struct(png_ptr);
