@@ -14,14 +14,14 @@ EXPORT tc_ndarray* tc_ndarray_create_empty(tc_error** error) {
   ERROR_HANDLE_END(error, NULL);
 }
 
-tc_ndarray* tc_ndarray_create_from_data(uint64_t n_dim, const uint64_t* shape,
+EXPORT tc_ndarray* tc_ndarray_create_from_data(uint64_t n_dim, const uint64_t* shape,
                                         const int64_t* strides,
                                         const double* in_data, tc_error** error) {
   ERROR_HANDLE_START();
 
-  if(shape == nullptr) { 
+  if(shape == nullptr) {
     return new_tc_ndarray();
-  }  
+  }
 
   // Get the shape information
   typename turi::flex_nd_vec::index_range_type _shape(shape, shape + n_dim);
@@ -79,10 +79,10 @@ tc_ndarray* tc_ndarray_create_from_data(uint64_t n_dim, const uint64_t* shape,
   ERROR_HANDLE_END(error, NULL);
 }
 
-uint64_t tc_ndarray_num_dimensions(const tc_ndarray* ndv, tc_error** error) {
-  
+EXPORT uint64_t tc_ndarray_num_dimensions(const tc_ndarray* ndv, tc_error** error) {
+
   ERROR_HANDLE_START();
-  
+
   CHECK_NOT_NULL(error, ndv, "tc_ndarray", NULL);
 
   return ndv->value.shape().size();
@@ -90,10 +90,10 @@ uint64_t tc_ndarray_num_dimensions(const tc_ndarray* ndv, tc_error** error) {
   ERROR_HANDLE_END(error, NULL);
 }
 
-const uint64_t* tc_ndarray_shape(const tc_ndarray* ndv, tc_error** error) {
-  
+EXPORT const uint64_t* tc_ndarray_shape(const tc_ndarray* ndv, tc_error** error) {
+
   ERROR_HANDLE_START();
-  
+
   CHECK_NOT_NULL(error, ndv, "tc_ndarray", NULL);
 
   static_assert(sizeof(size_t) == sizeof(uint64_t));
@@ -103,10 +103,10 @@ const uint64_t* tc_ndarray_shape(const tc_ndarray* ndv, tc_error** error) {
   ERROR_HANDLE_END(error, NULL);
 }
 
-const int64_t* tc_ndarray_strides(const tc_ndarray* ndv, tc_error** error) {
-  
+EXPORT const int64_t* tc_ndarray_strides(const tc_ndarray* ndv, tc_error** error) {
+
   ERROR_HANDLE_START();
-  
+
   CHECK_NOT_NULL(error, ndv, "tc_ndarray", NULL);
 
   return reinterpret_cast<const int64_t*>(ndv->value.stride().data());
@@ -114,14 +114,14 @@ const int64_t* tc_ndarray_strides(const tc_ndarray* ndv, tc_error** error) {
   ERROR_HANDLE_END(error, NULL);
 }
 
-const double* tc_ndarray_data(const tc_ndarray* ndv, tc_error** error) {
-  
+EXPORT const double* tc_ndarray_data(const tc_ndarray* ndv, tc_error** error) {
+
   ERROR_HANDLE_START();
-  
+
   CHECK_NOT_NULL(error, ndv, "tc_ndarray", NULL);
 
-  if(ndv->value.empty()) { 
-    return nullptr; 
+  if(ndv->value.empty()) {
+    return nullptr;
   } else {
     return &(ndv->value.at(0));
   }
@@ -129,8 +129,8 @@ const double* tc_ndarray_data(const tc_ndarray* ndv, tc_error** error) {
   ERROR_HANDLE_END(error, NULL);
 }
 
-void tc_ndarray_destroy(tc_ndarray* ndv) {
-  delete ndv; 
+EXPORT void tc_ndarray_destroy(tc_ndarray* ndv) {
+  delete ndv;
 }
 
 } // End Extern "C"
