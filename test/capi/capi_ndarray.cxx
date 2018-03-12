@@ -77,11 +77,11 @@ static void test_array_path(const ndarray<double>& a) {
 
   BOOST_TEST(tc_ft_is_ndarray(ft));
 
-  tc_ndarray* X3 = tc_ft_ndarray(ft); 
-
-  // No copying, so same addresses
-  BOOST_TEST(X3->value.ptr() == X2->value.ptr());
-
+  tc_ndarray* X3 = tc_ft_ndarray(ft, &error);
+  BOOST_TEST(error == nullptr);
+  
+  nd_assert_equal(X2->value, X3->value);
+  
   tc_ndarray_destroy(X2);
   tc_ndarray_destroy(X3);
 
