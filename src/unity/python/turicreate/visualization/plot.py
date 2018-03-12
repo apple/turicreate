@@ -1,10 +1,36 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-
 import logging as _logging
-
 import json as _json
+
+_target = 'auto'
+
+def set_target(target='auto'):
+    """
+    Sets the target for visualizations launched with the `show` method. If
+    unset, or if target is not provided, defaults to 'auto'.
+
+    Notes
+    -----
+    - When in 'auto' target, `show` will display plot output inline when in
+      Jupyter Notebook, and otherwise will open a native GUI window on macOS
+      and Linux.
+
+    Parameters
+    ----------
+    target : str
+        The target for rendering visualizations launched with `show` methods.
+        Possible values are:
+        * 'auto': display plot output inline when in Jupyter Notebook, and
+          otherwise launch a native GUI window.
+        * 'gui': always launch a native GUI window.
+    """
+    global _target
+    if target not in ['auto', 'gui']:
+        raise ValueError("Expected target to be one of: 'auto', 'gui'.")
+    _target = target
+
 
 class Plot(object):
     """
@@ -43,8 +69,9 @@ class Plot(object):
 
         Notes
         -----
-        - In a Jupyter Notebook the .show() method displays an inline plot
-        - In any other environment, the .show() method launches a native GUI and displays the plot there
+        - The plot will render either inline in a Jupyter Notebook, or in a
+          native GUI window, depending on the value provided in
+          `turicreate.visualization.set_target` (defaults to 'auto').
 
         Examples
         --------
@@ -55,9 +82,11 @@ class Plot(object):
         >>> plt.show()
 
         """
+        global _target
         display = False
         try:
-            if(get_ipython().__class__.__name__ == "ZMQInteractiveShell"):
+            if _target == 'auto' and \
+               get_ipython().__class__.__name__ == "ZMQInteractiveShell":
                 self._repr_javascript_()
                 display = True
         except NameError:

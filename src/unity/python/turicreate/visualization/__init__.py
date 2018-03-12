@@ -7,5 +7,5 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 from .show import show
-from .plot import Plot
+from .plot import Plot, set_target
 from .show import _get_client_app_path
