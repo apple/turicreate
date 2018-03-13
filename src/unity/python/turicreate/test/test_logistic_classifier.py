@@ -8,8 +8,6 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import unittest
 import turicreate as tc
-import sys
-import operator as op
 import scipy.stats as ss
 import uuid
 import numpy as np
@@ -24,9 +22,6 @@ import os
 import copy
 import pandas as pd
 
-
-import os as _os
-_lfs = _os.environ['LFS_ROOT']
 
 #
 # Various test cases for the _LogisticRegressionClassifierModelTest
