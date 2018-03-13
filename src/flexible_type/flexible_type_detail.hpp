@@ -535,7 +535,16 @@ struct get_int_visitor {
     return dt.posix_timestamp();
   }
   inline FLEX_ALWAYS_INLINE_FLATTEN flex_int operator()(flex_float i) const {return i; }
-  inline FLEX_ALWAYS_INLINE_FLATTEN flex_int operator()(const flex_string& t) const { return std::atoll(t.c_str()); }
+  inline FLEX_ALWAYS_INLINE_FLATTEN flex_int operator()(const flex_string& t) const { 
+    char *end;
+    long long int converted = std::strtoll(t.c_str(), &end, 10); 
+    if (**end != '\0') {
+      // was not at end of element so throw error
+      throw std::runtime_error("Invalid conversion: String contains more characters than just float");
+    } else {
+      return converted; 
+    }
+  }
 };
 
 /**
@@ -552,7 +561,16 @@ struct get_float_visitor {
   }
   inline FLEX_ALWAYS_INLINE_FLATTEN flex_float operator()(flex_int i) const {return i; }
   inline FLEX_ALWAYS_INLINE_FLATTEN flex_float operator()(flex_float i) const {return i; }
-  inline FLEX_ALWAYS_INLINE_FLATTEN flex_float operator()(const flex_string& t) const { return std::atof(t.c_str()); }
+  inline FLEX_ALWAYS_INLINE_FLATTEN flex_float operator()(const flex_string& t) const { 
+    char *end;
+    double converted = std::strtod(t.c_str(), &end); 
+    if (**end != '\0') {
+      // was not at end of element so throw error
+      throw std::runtime_error("Invalid conversion: String contains more characters than just float");
+    } else {
+      return (float)converted; 
+    }
+  }
 };
 
 
