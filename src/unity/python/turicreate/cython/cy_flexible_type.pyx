@@ -1619,7 +1619,7 @@ cdef flexible_type _ft_translate(object v, int tr_code) except *:
         if HAS_NUMPY and isinstance(v, np.datetime64):
           tr_datetime64_to_ft(ret, v)
         elif HAS_PANDAS and isinstance(v, pd.Timestamp):
-          tr_datetime_to_ft(ret, v.to_datetime())
+          tr_datetime_to_ft(ret, v.to_pydatetime())
         elif isinstance(v, datetime.datetime):
           tr_datetime_to_ft(ret, v)
         else:

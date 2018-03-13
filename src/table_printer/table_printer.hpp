@@ -385,7 +385,7 @@ class table_printer {
     size_t ticks_so_far = ++num_ticks_so_far;
     
     if(register_tick(tick, ticks_so_far)) {
-      std::lock_guard<mutex> pl_gaurd(print_lock);
+      std::lock_guard<mutex> pl_guard(print_lock);
       print_row(cols);
     }
     

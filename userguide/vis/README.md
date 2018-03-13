@@ -40,9 +40,11 @@ There are three primary visualization methods in Turi Create:
 
 #### Show
 
-The `show` method opens a visualization window and streams a plot of the
-requested data structure or pair of data structures to the user, with an
-automatically selected plot type.
+The `show` method displays a plot of the requested data structure or pair of
+data structures to the user, with an automatically selected plot type. When in
+Jupyter Notebook, it outputs to the notebook by default, and otherwise opens a
+native window. This behavior can be controlled with
+[`turicreate.visualization.set_target`](https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.set_target.html).
 
 ##### Streaming Capability
 
