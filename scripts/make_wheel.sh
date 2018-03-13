@@ -11,10 +11,6 @@ if [[ $OSTYPE == msys ]]; then
   PYTHON_SCRIPTS=deps/conda/bin/Scripts
 fi
 
-if [[ -z $PY_MAJOR_VERSION ]]; then
-  export PY_MAJOR_VERSION=`python -V 2>&1 | perl -ne 'print m/^Python (\d\.\d)/'`
-fi
-
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 WORKSPACE=${SCRIPT_DIR}/..
 build_type="release"
@@ -41,10 +37,20 @@ print_help() {
   echo
   echo "  --target-dir=[dir]       The directory where the wheel and associated files are put."
   echo
+  echo "  --python2.7              Use Python 2.7 (default)."
+  echo
+  echo "  --python3.5              Use Python 3.5, default is Python 2.7."
+  echo
+  echo "  --python3.6              Use Python 3.6, default is Python 2.7."
+  echo
   echo "Produce a local wheel and skip test and doc generation"
   echo "Example: ./make_wheel.sh --skip_test"
   exit 1
 } # end of print help
+
+python27=0
+python35=0
+python36=0
 
 # command flag options
 # Parse command line configure flags ------------------------------------------
@@ -58,6 +64,9 @@ while [ $# -gt 0 ]
     --skip_cpp_test)        SKIP_CPP_TEST=1;;
     --skip_build)           SKIP_BUILD=1;;
     --skip_doc)             SKIP_DOC=1;;
+    --python2.7)            python27=1;;
+    --python3.5)            python35=1;;
+    --python3.6)            python36=1;;
     --release)              build_type="release";;
     --debug)                build_type="debug";;
     --help)                 print_help ;;
@@ -109,11 +118,14 @@ build_source() {
   # Configure
   cd ${WORKSPACE}
 
-  # ./configure --cleanup --yes
+  if [[ $(($python27 + $python35 + $python36)) -gt 1 ]]; then
+    echo "Two or more versions of Python specified. Pick one."
+    exit 1
+  fi
 
-  if [[ "$PY_MAJOR_VERSION" == "3.5" ]]; then
+  if [[ "$python35" == "1" ]]; then
       ./configure --python3.5
-  elif [[ "$PY_MAJOR_VERSION" == "3.6" ]]; then
+  elif [[ "$python36" == "1" ]]; then
       ./configure --python3.6
   else
       ./configure --python2.7
@@ -267,11 +279,11 @@ package_wheel() {
 
   # Set Python Language Version Number
   NEW_WHEEL_PATH=${WHEEL_PATH}
-  if [[ "$PY_MAJOR_VERSION" == "3.5" ]]; then
+  if [[ "$python35" == "1" ]]; then
       NEW_WHEEL_PATH=${WHEEL_PATH/-py3-/-cp35-}
-  elif [[ "$PY_MAJOR_VERSION" == "3.6" ]]; then
+  elif [[ "$python36" == "1" ]]; then
       NEW_WHEEL_PATH=${WHEEL_PATH/-py3-/-cp36-}
-  elif [[ "$PY_MAJOR_VERSION" == "2.7" ]]; then
+  else
       NEW_WHEEL_PATH=${WHEEL_PATH/-py2-/-cp27-}
   fi
   if [[ ! ${WHEEL_PATH} == ${NEW_WHEEL_PATH} ]]; then
