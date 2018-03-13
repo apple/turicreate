@@ -540,7 +540,7 @@ struct get_int_visitor {
     long long int converted = std::strtoll(t.c_str(), &end, 10); 
     if (*end != '\0') {
       // was not at end of element so throw error
-      throw std::runtime_error("Invalid conversion: String contains more characters than just float");
+      throw std::runtime_error("Invalid conversion: String contains more characters than just integer");
     } else {
       return converted; 
     }
