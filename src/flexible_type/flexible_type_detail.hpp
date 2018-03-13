@@ -538,7 +538,7 @@ struct get_int_visitor {
   inline FLEX_ALWAYS_INLINE_FLATTEN flex_int operator()(const flex_string& t) const { 
     char *end;
     long long int converted = std::strtoll(t.c_str(), &end, 10); 
-    if (**end != '\0') {
+    if (*end != '\0') {
       // was not at end of element so throw error
       throw std::runtime_error("Invalid conversion: String contains more characters than just float");
     } else {
@@ -564,7 +564,7 @@ struct get_float_visitor {
   inline FLEX_ALWAYS_INLINE_FLATTEN flex_float operator()(const flex_string& t) const { 
     char *end;
     double converted = std::strtod(t.c_str(), &end); 
-    if (**end != '\0') {
+    if (*end != '\0') {
       // was not at end of element so throw error
       throw std::runtime_error("Invalid conversion: String contains more characters than just float");
     } else {
