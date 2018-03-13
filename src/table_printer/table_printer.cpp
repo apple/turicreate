@@ -133,7 +133,7 @@ double table_printer::elapsed_time() const {
  */
 sframe table_printer::get_tracked_table() {
 
-  std::lock_guard<decltype(track_register_lock)> register_lock_gourd(track_register_lock);
+  std::lock_guard<decltype(track_register_lock)> register_lock_guard(track_register_lock);
 
   if(!tracker_is_initialized) {
 
