@@ -11,7 +11,7 @@
 #include <sframe/sarray.hpp>
 #include <sframe/sframe.hpp>
 
-// ML-Data Utils/
+// ML-Data Utils
 #include <ml_data/ml_data.hpp>
 #include <ml_data/metadata.hpp>
 #include <util/testing_utils.hpp>
@@ -461,13 +461,13 @@ inline std::vector<std::pair<std::string, size_t>> make_progress_header(
 }
 
 inline std::vector<std::string> make_progress_row_string(
-    supervised_learning_model_base& smodel, 
-    const ml_data& data, 
+    supervised_learning_model_base& smodel,
+    const ml_data& data,
     const ml_data& valid_data,
     const std::vector<std::string>& stats) {
 
   auto train_eval = std::vector<std::string>();
-  for (auto& kv : smodel.evaluate(data, "train")) { 
+  for (auto& kv : smodel.evaluate(data, "train")) {
     train_eval.push_back(std::to_string(variant_get_value<double>(kv.second)));
   }
 
@@ -483,9 +483,6 @@ inline std::vector<std::string> make_progress_row_string(
   for (const auto& s : stats)
     ret.push_back(s);
 
-  // TODO: Right now the model evaluator decides whether or not to add padding
-  // for missing validation statistics.
-  // bool padding = (valid_data.num_rows() > 0); 
   for (size_t i = 0 ; i < train_eval.size(); ++i) {
     ret.push_back(train_eval[i]);
     if (!valid_eval.empty()) {

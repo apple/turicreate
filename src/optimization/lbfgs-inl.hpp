@@ -16,7 +16,6 @@
 #include <optimization/regularizer_interface.hpp>
 #include <optimization/line_search-inl.hpp>
 #include <table_printer/table_printer.hpp>
-#include <table_printer/table_printer.hpp>
 #include <numerics/armadillo.hpp>
 
 
