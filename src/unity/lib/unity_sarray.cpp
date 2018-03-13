@@ -1135,20 +1135,24 @@ std::shared_ptr<unity_sarray_base> unity_sarray::str_to_datetime(std::string for
     size_t thread_idx = thread::thread_id();
     const auto& stream = streams[thread_idx];
     try {
-      boost::local_time::local_date_time ldt(boost::posix_time::not_a_date_time);
-      stream->str(f.get<flex_string>());
-      (*stream) >> ldt; // do the parse
+      if(f.get<flex_string>() != ""){
+        boost::local_time::local_date_time ldt(boost::posix_time::not_a_date_time);
+        stream->str(f.get<flex_string>());
+        (*stream) >> ldt;
 
-      boost::posix_time::ptime p = ldt.utc_time();
-      std::time_t _time = flexible_type_impl::ptime_to_time_t(p);
-      int32_t microseconds = flexible_type_impl::ptime_to_fractional_microseconds(p);
-      int32_t timezone_offset = flex_date_time::EMPTY_TIMEZONE;
-      if(ldt.zone()) {
-        timezone_offset =
-            (int32_t)ldt.zone()->base_utc_offset().total_seconds() /
-            flex_date_time::TIMEZONE_RESOLUTION_IN_SECONDS;
+        boost::posix_time::ptime p = ldt.utc_time();
+        std::time_t _time = flexible_type_impl::ptime_to_time_t(p);
+        int32_t microseconds = flexible_type_impl::ptime_to_fractional_microseconds(p);
+        int32_t timezone_offset = flex_date_time::EMPTY_TIMEZONE;
+        if(ldt.zone()) {
+          timezone_offset =
+              (int32_t)ldt.zone()->base_utc_offset().total_seconds() /
+              flex_date_time::TIMEZONE_RESOLUTION_IN_SECONDS;
+        }
+        return flexible_type(flex_date_time(_time,timezone_offset, microseconds));
+      }else{
+        return flexible_type(flex_undefined());
       }
-      return flexible_type(flex_date_time(_time,timezone_offset, microseconds));
     } catch(std::exception& ex) {
       log_and_throw("Unable to interpret " + f.get<flex_string>() +
                     " as string with " + format + " format");
