@@ -300,6 +300,20 @@ class ImageClassifier(_CustomModel):
         section_titles = ['Schema', 'Training summary']
         return([model_fields, training_fields], section_titles)
 
+    def _canonize_input(self, dataset):
+        """
+        Takes input and returns tuple of the input in canonical form (SFrame)
+        along with an unpack callback function that can be applied to
+        prediction results to "undo" the canonization.
+        """
+        unpack = lambda x: x
+        if isinstance(dataset, _tc.SArray):
+            dataset = _tc.SFrame({self.feature: dataset})
+        elif isinstance(dataset, _tc.Image):
+            dataset = _tc.SFrame({self.feature: [dataset]})
+            unpack = lambda x: x[0]
+        return dataset, unpack
+
     def predict(self, dataset, output_type='class', batch_size=64):
         """
         Return predictions for ``dataset``, using the trained logistic
@@ -362,13 +376,10 @@ class ImageClassifier(_CustomModel):
         if(batch_size < 1):
             raise ValueError("'batch_size' must be greater than or equal to 1")
 
-        if isinstance(dataset, _tc.SArray):
-            dataset = _tc.SFrame({self.feature: dataset})
-        elif isinstance(dataset, _tc.Image):
-            dataset = _tc.SFrame({self.feature: [dataset]})
+        dataset, unpack = self._canonize_input(dataset)
 
         extracted_features = self._extract_features(dataset, batch_size=batch_size)
-        return self.classifier.predict(extracted_features, output_type=output_type)
+        return unpack(self.classifier.predict(extracted_features, output_type=output_type))
 
     def classify(self, dataset, batch_size=64):
         """
@@ -408,13 +419,10 @@ class ImageClassifier(_CustomModel):
         if(batch_size < 1):
             raise ValueError("'batch_size' must be greater than or equal to 1")
 
-        if isinstance(dataset, _tc.SArray):
-            dataset = _tc.SFrame({self.feature: dataset})
-        elif isinstance(dataset, _tc.Image):
-            dataset = _tc.SFrame({self.feature: [dataset]})
+        dataset, unpack = self._canonize_input(dataset)
 
         extracted_features = self._extract_features(dataset, batch_size=batch_size)
-        return self.classifier.classify(extracted_features)
+        return unpack(self.classifier.classify(extracted_features))
 
     def predict_topk(self, dataset, output_type="probability", k=3, batch_size=64):
         """
@@ -476,10 +484,7 @@ class ImageClassifier(_CustomModel):
         if(batch_size < 1):
             raise ValueError("'batch_size' must be greater than or equal to 1")
 
-        if isinstance(dataset, _tc.SArray):
-            dataset = _tc.SFrame({self.feature: dataset})
-        elif isinstance(dataset, _tc.Image):
-            dataset = _tc.SFrame({self.feature: [dataset]})
+        dataset, _ = self._canonize_input(dataset)
 
         extracted_features = self._extract_features(dataset)
         return self.classifier.predict_topk(extracted_features, output_type = output_type, k = k)
