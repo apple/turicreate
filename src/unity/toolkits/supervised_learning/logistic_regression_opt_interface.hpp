@@ -156,6 +156,9 @@ class logistic_regression_opt_interface: public
   std::vector<std::string> get_status(const DenseVector& coefs, 
                                       const std::vector<std::string>& stats);
 
+  variant_type get_validation_accuracy();
+  variant_type get_training_accuracy();
+
   /**
    * Compute first order statistics at the given point. (Gradient & Function value)
    *

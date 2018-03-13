@@ -219,6 +219,12 @@ void linear_svm::train() {
     log_and_throw(msg.str());
   }
 
+  // Save final accuracies
+  if(scaled_logistic_svm_interface->num_validation_examples() > 0) {
+    state["validation_accuracy"] = scaled_logistic_svm_interface->get_validation_accuracy();
+  }
+  state["training_accuracy"] = scaled_logistic_svm_interface->get_training_accuracy();
+
   // Store the coefficients in the model
   // ---------------------------------------------------------------------------
   coefs = stats.solution;

@@ -199,7 +199,6 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
   }
 }
 
-
 BOOST_AUTO_TEST_CASE(test_auto_classification) {
     tc_error* error = NULL;
 
