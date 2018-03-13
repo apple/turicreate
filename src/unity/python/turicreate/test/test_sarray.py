@@ -12,7 +12,6 @@ from ..data_structures.sarray import SArray
 from ..util.timezone import GMT
 from . import util
 
-import binascii
 import pandas as pd
 import numpy as np
 import unittest
@@ -24,7 +23,6 @@ import math
 import shutil
 import array
 import time
-import itertools
 import warnings
 import functools
 import tempfile
@@ -2866,7 +2864,7 @@ class SArrayTest(unittest.TestCase):
         sa = SArray(iso_str_list)
         self.__test_equal(sa,self.datetime_data,dt.datetime)
 
-        iso_str_list[2] = pd.tslib.NaT
+        iso_str_list[2] = pd.NaT
         sa = SArray(iso_str_list)
         self.__test_equal(sa,self.datetime_data,dt.datetime)
 
