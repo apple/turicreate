@@ -9,7 +9,6 @@ SOURCES
   testing_utils.cpp 
   fs_util.cpp
   safe_circular_char_buffer.cpp
-  fs_util.cpp
   web_util.cpp
 REQUIRES 
   logger 

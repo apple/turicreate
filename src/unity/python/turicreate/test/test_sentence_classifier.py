@@ -6,10 +6,12 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
+
 import unittest
 import tempfile
 import coremltools
 import turicreate as tc
+from turicreate.toolkits._main import ToolkitError
 from turicreate.toolkits._internal_utils import _mac_ver
 from . import util as test_util
 
@@ -202,6 +204,17 @@ class SentenceClassifierCreateTests(unittest.TestCase):
         preds = m.classify(self.data)
         self.assertTrue(isinstance(preds, tc.SFrame))
         self.assertEqual(preds.column_names(), ["class", "probability"])
+
+    def test_not_sframe_create_error(self):
+        dataset = {'rating': [1,5], 'text': ['this is bad', 'this is good']}
+        try:
+            # dataset is NOT an SFrame
+            tc.sentence_classifier.create(dataset, 'rating', features=['text'])
+        except ToolkitError as t:
+            exception_msg = t.args[0]
+            self.assertTrue(exception_msg.startswith('Input dataset is not an SFrame. '))
+        else:
+            self.fail("This should have thrown an exception")
 
 
 class SentenceClassifierCreateBadValues(unittest.TestCase):

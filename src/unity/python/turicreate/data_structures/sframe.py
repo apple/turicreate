@@ -4462,6 +4462,12 @@ class SFrame(object):
         """
         Visualize a summary of each column in an SFrame. Opens a new app window.
 
+        Notes
+        -----
+        - The plot will render either inline in a Jupyter Notebook, or in a
+          native GUI window, depending on the value provided in
+          `turicreate.visualization.set_target` (defaults to 'auto').
+
         Returns
         -------
         None

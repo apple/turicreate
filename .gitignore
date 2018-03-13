@@ -1,6 +1,7 @@
 ###########  Deployment stuff ##################
 artifacts/*
 target/*
+targets/*
 
 ###########  C stuff ##################
 # use glob syntax

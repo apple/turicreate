@@ -995,7 +995,6 @@ void xgboost_model::train(void) {
     std::vector<float> metrics = fast_evaluate(preds, ptrain->info, tracker.get_evaluators());
     tracker.track_training(iter, metrics);
     if (has_validation_data) {
-      auto& validation_labels = pvalid->info.labels;
       std::vector<float> valid_preds;
       this->xgboost_predict(*pvalid, output_margin, valid_preds, rf_running_rescale_constant);
       metrics = fast_evaluate(valid_preds, pvalid->info, tracker.get_evaluators());
