@@ -38,7 +38,6 @@ class InstallEngine(install):
         sys.exit(1)
 
 if __name__ == '__main__':
-    from distutils.util import get_platform
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
