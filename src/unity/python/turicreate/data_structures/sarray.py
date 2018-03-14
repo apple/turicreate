@@ -2484,7 +2484,6 @@ class SArray(object):
         [{1: 2, 3: 4}, {'a': 'b', 'c': 'd'}]
         """
 
-
         if (dtype == _Image) and (self.dtype == array.array):
             raise TypeError("Cannot cast from image type to array with sarray.astype(). Please use sarray.pixel_array_to_img() instead.")
 
