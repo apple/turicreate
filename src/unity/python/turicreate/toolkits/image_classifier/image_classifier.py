@@ -335,7 +335,7 @@ class ImageClassifier(_CustomModel):
         ----------
         dataset : SFrame | SArray | turicreate.Image
             The images to be classified.
-            If dataset is an SFrame, it must have a columns with the same names as
+            If dataset is an SFrame, it must have columns with the same names as
             the features used for model training, but does not require a target
             column. Additional columns are ignored.
 
@@ -358,7 +358,8 @@ class ImageClassifier(_CustomModel):
         Returns
         -------
         out : SArray
-            An SArray with model predictions.
+            An SArray with model predictions. If `dataset` is a single image, the
+            return value will be a single prediction.
 
         See Also
         ----------
@@ -403,7 +404,9 @@ class ImageClassifier(_CustomModel):
         Returns
         -------
         out : SFrame
-            An SFrame with model predictions i.e class labels and probabilities.
+            An SFrame with model predictions i.e class labels and
+            probabilities. If `dataset` is a single image, the return will be a
+            single row (dict).
 
         See Also
         ----------

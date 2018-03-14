@@ -925,10 +925,11 @@ class ObjectDetector(_CustomModel):
 
         Parameters
         ----------
-        dataset : SFrame
-            A dataset that has the same columns that were used during training.
-            If the annotations column exists in ``dataset`` it will be ignored
-            while making predictions.
+        dataset : SFrame | SArray | turicreate.Image
+            The images on which to perform object detection.
+            If dataset is an SFrame, it must have a column with the same name
+            as the feature column during training. Additional columns are
+            ignored.
 
         confidence_threshold : float
             Only return predictions above this level of confidence. The
@@ -942,7 +943,9 @@ class ObjectDetector(_CustomModel):
         out : SArray
             An SArray with model predictions. Each element corresponds to
             an image and contains a list of dictionaries. Each dictionary
-            describes an object instances that was found in the image.
+            describes an object instances that was found in the image. If
+            `dataset` is a single image, the return value will be a single
+            prediction.
 
         See Also
         --------
