@@ -540,7 +540,7 @@ struct get_int_visitor {
     long long int converted = std::strtoll(t.c_str(), &end, 10); 
     if (*end != '\0') {
       // was not at end of element so throw error
-      throw std::runtime_error("Invalid conversion: " + t + "cannot be interpreted as an integer");
+      throw std::runtime_error("Invalid conversion: " + t + " cannot be interpreted as an integer");
     } else {
       return converted; 
     }
@@ -566,7 +566,7 @@ struct get_float_visitor {
     double converted = std::strtod(t.c_str(), &end); 
     if (*end != '\0') {
       // was not at end of element so throw error
-      throw std::runtime_error("Invalid conversion: " + t + "cannot be interpreted as a float");
+      throw std::runtime_error("Invalid conversion: " + t + " cannot be interpreted as a float");
     } else {
       return (float)converted; 
     }
