@@ -1300,9 +1300,9 @@ std::shared_ptr<unity_sarray_base> unity_sarray::lazy_astype(flex_type_enum dtyp
       flexible_type ret;
       try {
         if (dtype == flex_type_enum::INTEGER) {
-          f.to<flex_int>();
+          ret = f.to<flex_int>();
         } else if (dtype == flex_type_enum::FLOAT) {
-          f.to<flex_float>();
+          ret = f.to<flex_float>();
         } else if (dtype == flex_type_enum::VECTOR) {
           bool success;
           const std::string& val = f.get<flex_string>();
