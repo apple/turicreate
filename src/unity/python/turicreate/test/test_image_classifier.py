@@ -133,12 +133,12 @@ class ImageClassifierTest(unittest.TestCase):
     def test_single_image(self):
         model = self.model
         single_image = self.sf[0][self.feature]
-        predictions = model.predict(single_image)
-        self.assertIsNotNone(predictions)
-        predictions = model.predict_topk(single_image)
-        self.assertIsNotNone(predictions)
-        predictions = model.classify(single_image)
-        self.assertIsNotNone(predictions)
+        prediction = model.predict(single_image)
+        self.assertTrue(isinstance(prediction, int))
+        prediction = model.predict_topk(single_image)
+        self.assertIsNotNone(prediction)
+        prediction = model.classify(single_image)
+        self.assertTrue(isinstance(prediction, dict) and 'class' in prediction and 'probability' in prediction)
 
     def test_sarray(self):
         model = self.model
