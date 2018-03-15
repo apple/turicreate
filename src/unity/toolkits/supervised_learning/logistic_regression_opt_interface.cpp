@@ -194,17 +194,31 @@ logistic_regression_opt_interface::get_status_header(const std::vector<std::stri
   return header;
 }
 
-variant_type logistic_regression_opt_interface::get_validation_accuracy() {
+double logistic_regression_opt_interface::get_validation_accuracy() {
   DASSERT_TRUE(valid_data.num_rows() > 0);
+
   auto eval_results = smodel.evaluate(valid_data, "train");
   auto results = eval_results.find("accuracy");
-  return results->second;
+  if(results == eval_results.end()) {
+    log_and_throw("No Validation Accuracy.");
+  }
+
+  variant_type variant_accuracy = results->second;
+  double accuracy = variant_get_value<flexible_type>(variant_accuracy).to<double>();
+  return accuracy;
 }
 
-variant_type logistic_regression_opt_interface::get_training_accuracy() {
+double logistic_regression_opt_interface::get_training_accuracy() {
   auto eval_results = smodel.evaluate(data, "train");
   auto results = eval_results.find("accuracy");
-  return results->second;
+
+  if(results == eval_results.end()) {
+    log_and_throw("No Validation Accuracy.");
+  }
+  variant_type variant_accuracy = results->second;
+  double accuracy = variant_get_value<flexible_type>(variant_accuracy).to<double>();
+
+  return accuracy;
 }
 
 /**

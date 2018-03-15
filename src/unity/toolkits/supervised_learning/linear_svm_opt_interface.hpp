@@ -164,8 +164,8 @@ class linear_svm_scaled_logistic_opt_interface: public
   */
   size_t num_classes() const;
 
-  variant_type get_validation_accuracy();
-  variant_type get_training_accuracy();
+  double get_validation_accuracy();
+  double get_training_accuracy();
   
   /**
    * Compute first order statistics at the given point. (Gradient & Function value)
