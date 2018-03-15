@@ -536,14 +536,14 @@ struct get_int_visitor {
   }
   inline FLEX_ALWAYS_INLINE_FLATTEN flex_int operator()(flex_float i) const {return i; }
   inline FLEX_ALWAYS_INLINE_FLATTEN flex_int operator()(const flex_string& t) const { 
-    char *end;
-    long long int converted = std::strtoll(t.c_str(), &end, 10); 
-    if ((size_t)t + t.length() != (size_t)end) {
+    size_t end_index;
+    long long int converted = std::stoll(t.data(), &end_index);
+    if (end_index != t.length()) {
       // was not at end of element so throw error
       throw std::runtime_error("Invalid conversion: " + t + " cannot be interpreted as an integer");
     } else {
       return converted; 
-    }  
+    }
   }
 };
 
@@ -562,9 +562,9 @@ struct get_float_visitor {
   inline FLEX_ALWAYS_INLINE_FLATTEN flex_float operator()(flex_int i) const {return i; }
   inline FLEX_ALWAYS_INLINE_FLATTEN flex_float operator()(flex_float i) const {return i; }
   inline FLEX_ALWAYS_INLINE_FLATTEN flex_float operator()(const flex_string& t) const { 
-    char *end;
-    double converted = std::strtod(t.c_str(), &end); 
-    if ((size_t)t + t.length() != (size_t)end) {
+    size_t end_index;
+    double converted = std::stod(t.data(), &end_index);
+    if (end_index != t.length()) {
       // was not at end of element so throw error
       throw std::runtime_error("Invalid conversion: " + t + " cannot be interpreted as a float");
     } else {
