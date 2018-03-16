@@ -124,6 +124,12 @@ size_t linear_svm_scaled_logistic_opt_interface::num_examples() const{
   return examples;
 }
 
+/**
+* Get the number of validation-set examples for the model
+*/
+size_t linear_svm_scaled_logistic_opt_interface::num_validation_examples() const{
+  return valid_data.num_rows();
+}
 
 /**
 * Get the number of variables for the model
@@ -181,6 +187,34 @@ void linear_svm_scaled_logistic_opt_interface::rescale_solution(DenseVector& coe
     scaler->transform(coefs);
   }
 }
+
+double linear_svm_scaled_logistic_opt_interface::get_validation_accuracy() {
+  DASSERT_TRUE(valid_data.num_rows() > 0);
+
+  auto eval_results = smodel.evaluate(valid_data, "train");
+  auto results = eval_results.find("accuracy");
+  if(results == eval_results.end()) {
+    log_and_throw("No Validation Accuracy.");
+  }
+
+  variant_type variant_accuracy = results->second;
+  double accuracy = variant_get_value<flexible_type>(variant_accuracy).to<double>();
+  return accuracy;
+}
+
+double linear_svm_scaled_logistic_opt_interface::get_training_accuracy() {
+  auto eval_results = smodel.evaluate(data, "train");
+  auto results = eval_results.find("accuracy");
+
+  if(results == eval_results.end()) {
+    log_and_throw("No Validation Accuracy.");
+  }
+  variant_type variant_accuracy = results->second;
+  double accuracy = variant_get_value<flexible_type>(variant_accuracy).to<double>();
+
+  return accuracy;
+}
+
 
 /**
  * Compute the first order statistics

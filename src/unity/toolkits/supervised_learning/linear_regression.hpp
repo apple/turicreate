@@ -17,8 +17,6 @@
 #include <optimization/optimization_interface.hpp>
 
 #include <export.hpp>
-// TODO: List of todo's for this file
-//------------------------------------------------------------------------------
 
 namespace turi {
 namespace supervised {

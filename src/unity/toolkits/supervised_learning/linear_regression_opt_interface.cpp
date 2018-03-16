@@ -66,7 +66,7 @@ linear_regression_opt_interface::linear_regression_opt_interface(
 
   // Initialize the number of variables to 1 (bias term)
   variables = get_number_of_coefficients(smodel.get_ml_metadata());
-  is_dense = (variables <= 3 * features) ? true : false;
+  is_dense = (variables <= 3 * features);
 }
 
 /**

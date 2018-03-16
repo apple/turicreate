@@ -35,28 +35,19 @@ std::shared_ptr<supervised_learning_model_base> create_classifier(const std::str
 
 // Return the validation accuracy if it exists, otherwise return training accuracy.
 double get_classifier_accuracy(std::shared_ptr<supervised_learning_model_base> model) {
-  flexible_type accuracy = FLEX_UNDEFINED;
-
-  // Get the model's progress SFrame.
-  variant_type progress = model->get_value_from_state("progress");
-  ASSERT_TRUE(get_variant_which_name(progress.which()) == "SFrame");
-  auto progress_sframe = variant_get_ref< std::shared_ptr<turi::unity_sframe_base> >(progress);
-
-  // Get the last validation from the progress SFrame
-  std::vector<std::string> column_names = progress_sframe->column_names();
-  std::shared_ptr<unity_sarray_base> accuracy_column = NULL;
-  if(std::find(column_names.begin(), column_names.end(), "Validation-accuracy") != column_names.end()) {
-    accuracy_column = progress_sframe->select_column("Validation-accuracy");
+  variant_type accuracy = NULL;
+  std::vector<std::string> model_fields = model->list_fields();
+  if(std::find(model_fields.begin(), model_fields.end(), "validation_accuracy") != model_fields.end()) {
+    accuracy = model->get_value_from_state("validation_accuracy");
   } else {
-    accuracy_column = progress_sframe->select_column("Training-accuracy");
+    try {
+      accuracy = model->get_value_from_state("training_accuracy");
+    } catch(...) {
+      log_and_throw("Model does not have metrics that can be used for model selection.");
+    }
   }
-  accuracy = accuracy_column->_tail(1)[0];
 
-  // Sanity check accuracy
-  if(accuracy == FLEX_UNDEFINED) {
-    log_and_throw("Model does not have metrics that can be used for model selection.");
-  }
-  double result = accuracy.to<double>();
+  double result = variant_get_value<flexible_type>(accuracy).to<double>();
   ASSERT_TRUE(result >= 0);
   ASSERT_TRUE(result <= 1);
 
@@ -84,7 +75,7 @@ std::shared_ptr<supervised_learning_model_base> create_automatic_classifier_mode
   for(size_t i = 0; i < possible_models.size(); i++) {
     std::shared_ptr<supervised_learning_model_base> cur_model = create_classifier(possible_models[i]);
     cur_model->api_train(data, target, validation_data, options);
- 
+
     accuracies[i] = get_classifier_accuracy(cur_model);
     models[i] = cur_model;
   }
@@ -121,7 +112,6 @@ std::shared_ptr<supervised_learning_model_base> create_automatic_regression_mode
     DASSERT_TRUE(model_name == "regression_linear_regression");
     m = std::make_shared<linear_regression>();
   }
-  //m->init_options(options);
   m->api_train(train_sframe, target, validation_data, options);
 
   return m; 

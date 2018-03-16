@@ -194,6 +194,33 @@ logistic_regression_opt_interface::get_status_header(const std::vector<std::stri
   return header;
 }
 
+double logistic_regression_opt_interface::get_validation_accuracy() {
+  DASSERT_TRUE(valid_data.num_rows() > 0);
+
+  auto eval_results = smodel.evaluate(valid_data, "train");
+  auto results = eval_results.find("accuracy");
+  if(results == eval_results.end()) {
+    log_and_throw("No Validation Accuracy.");
+  }
+
+  variant_type variant_accuracy = results->second;
+  double accuracy = variant_get_value<flexible_type>(variant_accuracy).to<double>();
+  return accuracy;
+}
+
+double logistic_regression_opt_interface::get_training_accuracy() {
+  auto eval_results = smodel.evaluate(data, "train");
+  auto results = eval_results.find("accuracy");
+
+  if(results == eval_results.end()) {
+    log_and_throw("No Validation Accuracy.");
+  }
+  variant_type variant_accuracy = results->second;
+  double accuracy = variant_get_value<flexible_type>(variant_accuracy).to<double>();
+
+  return accuracy;
+}
+
 /**
  * Get strings needed to print a row of the progress table.
  */
@@ -206,7 +233,7 @@ std::vector<std::string> logistic_regression_opt_interface::get_status(
   smodel.set_coefs(coefs_tmp); 
 
   auto ret = make_progress_row_string(smodel, data, valid_data, stats);
-  return ret; 
+  return ret;
 }
 
 /**

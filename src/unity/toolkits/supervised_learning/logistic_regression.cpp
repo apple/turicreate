@@ -305,6 +305,11 @@ void logistic_regression::train() {
     log_and_throw(msg.str());
   }
 
+  // Save final accuracies
+  if(lr_interface->num_validation_examples() > 0) {
+    state["validation_accuracy"] = lr_interface->get_validation_accuracy();
+  }
+  state["training_accuracy"] = lr_interface->get_training_accuracy();
 
   // Store the coefficients in the model
   // ---------------------------------------------------------------------------
