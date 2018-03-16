@@ -629,7 +629,25 @@ tc_sframe* tc_sframe_append(tc_sframe* top, tc_sframe* bottom, tc_error **error)
 
 
 // groupby stuff!
-void tc_sframe_groupby_aggregate_add_count(tc_groupby_aggregator* gb, const char* dest_column, tc_error**);
+void tc_sframe_groupby_aggregate_add_count(const tc_groupby_aggregator* gb, const char* dest_column, tc_error**);
+void tc_sframe_groupby_aggregator_add_sum(const tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
+void tc_sframe_groupby_aggregator_add_max(const tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
+void tc_sframe_groupby_aggregator_add_min(const tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
+void tc_sframe_groupby_aggregator_add_mean(const tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
+void tc_sframe_groupby_aggregator_add_avg(const tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
+void tc_sframe_groupby_aggregator_add_var(const tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
+void tc_sframe_groupby_aggregator_add_variance(const tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
+void tc_sframe_groupby_aggregator_add_std(const tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
+void tc_sframe_groupby_aggregator_add_stdv(const tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
+void tc_sframe_groupby_aggregator_add_select_one(const tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
+void tc_sframe_groupby_aggregator_add_count_distinct(const tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
+void tc_sframe_groupby_aggregator_add_concat_one_column(const tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
+void tc_sframe_groupby_aggregator_add_concat_two_columns(const tc_groupby_aggregator* gb, const char* dest_column, const char* key, const char* val, tc_error**);
+void tc_sframe_groupby_aggregator_add_quantile(const tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, const double quantile, tc_error**);
+void tc_sframe_groupby_aggregator_add_quantiles(const tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, const flex_list* quantiles, tc_error**);
+void tc_sframe_groupby_aggregator_add_argmax(const tc_groupby_aggregator* gb, const char* dest_column, const char* agg, const char* out, tc_error**);
+void tc_sframe_groupby_aggregator_add_argmin(const tc_groupby_aggregator* gb, const char* dest_column, const char* agg, const char* out, tc_error**);
+
 tc_sframe* tc_sframe_group_by(const tc_sframe *sf, const tc_flex_list* column_list, tc_groupby_aggregator* gb, tc_error **);
 
 // Destructor
