@@ -16,6 +16,7 @@ import sys
 from libcpp.string cimport string
 from cy_cpp_utils cimport str_to_cpp, cpp_to_str
 from .python_printer_callback import print_callback
+from .. import connect as _connect
 
 cdef extern from "<unity/server/unity_server_control.hpp>" namespace "turi":
     cdef cppclass unity_server_options:
