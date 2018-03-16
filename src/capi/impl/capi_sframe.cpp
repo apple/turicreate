@@ -689,6 +689,31 @@ EXPORT tc_sframe* tc_sframe_fillna(const tc_sframe* data,const char* column,cons
   ERROR_HANDLE_END(error, NULL);
 }
 
+EXPORT void tc_sframe_groupby_aggregate_add_count(const tc_groupby_aggregator* gb, const char* dest_column, tc_error** error){
+  ERROR_HANDLE_START();
+
+  CHECK_NOT_NULL(error, gb, "groupby_aggregator", NULL);
+
+  gb->value.insert(std::pair<std::string, turi::aggregate::groupby_descriptor_type>(dest_column, turi::aggregate::COUNT()))
+
+  ERROR_HANDLE_END(error, NULL);
+
+}
+
+EXPORT tc_sframe* tc_sframe_group_by(const tc_sframe *sf, const tc_flex_list* column_list,
+  tc_groupby_aggregator* gb, tc_error** error) {
+  ERROR_HANDLE_START();
+
+  CHECK_NOT_NULL(error, sf, "sframe", NULL);
+  CHECK_NOT_NULL(error, column_list, "flex_list", NULL);
+  CHECK_NOT_NULL(error, gb, "groupby_aggregator", NULL);
+
+  return new_tc_sframe(sf->value.groupby(column_list, gb));
+
+  ERROR_HANDLE_END(error, NULL);
+
+}
+
 EXPORT void tc_sframe_destroy(tc_sframe* sf) {
   delete sf;
 }

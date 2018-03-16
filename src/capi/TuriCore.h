@@ -32,6 +32,9 @@ typedef struct tc_flex_list_struct tc_flex_list;
 struct tc_flex_dict_struct;
 typedef struct tc_flex_dict_struct tc_flex_dict;
 
+// groupby_aggregator_struct -- map(string, groupby_descriptor_type)
+struct tc_groupby_aggregator_struct;
+typedef struct tc_groupby_aggregator_struct tc_groupby_aggregator_struct;
 
 // datetime
 struct tc_datetime_struct;
@@ -624,6 +627,10 @@ tc_sframe* tc_sframe_join_on_single_column(
 // Append one sframe onto another.
 tc_sframe* tc_sframe_append(tc_sframe* top, tc_sframe* bottom, tc_error **error);
 
+
+// groupby stuff!
+void tc_sframe_groupby_aggregate_add_count(tc_groupby_aggregator* gb, const char* dest_column, tc_error**);
+tc_sframe* tc_sframe_group_by(const tc_sframe *sf, const tc_flex_list* column_list, tc_groupby_aggregator* gb, tc_error **);
 
 // Destructor
 void tc_sframe_destroy(tc_sframe* sa);

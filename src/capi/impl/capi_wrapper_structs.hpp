@@ -70,7 +70,6 @@ struct capi_struct_type_info {
 
 // TODO: make this more full featured than just a string error message.
 DECLARE_CAPI_WRAPPER_STRUCT(tc_error, std::string);
-
 DECLARE_CAPI_WRAPPER_STRUCT(tc_datetime, turi::flex_date_time);
 DECLARE_CAPI_WRAPPER_STRUCT(tc_flex_dict, turi::flex_dict);
 DECLARE_CAPI_WRAPPER_STRUCT(tc_flex_list, turi::flex_list);
@@ -83,5 +82,6 @@ DECLARE_CAPI_WRAPPER_STRUCT(tc_sframe, turi::gl_sframe);
 DECLARE_CAPI_WRAPPER_STRUCT(tc_variant, turi::variant_type);
 DECLARE_CAPI_WRAPPER_STRUCT(tc_parameters, turi::variant_map_type);
 DECLARE_CAPI_WRAPPER_STRUCT(tc_model, std::shared_ptr<turi::model_base>);
+DECLARE_CAPI_WRAPPER_STRUCT(tc_groupby_aggregator, std::map<std::string, turi::aggregate::groupby_descriptor_type>);
 
 #endif
