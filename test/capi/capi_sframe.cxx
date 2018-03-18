@@ -1503,6 +1503,94 @@ void test_sframe_read_json() {
 
   tc_sframe_destroy(sf);
 }
+
+void test_sframe_groupby() {
+  tc_error* error = NULL;
+  tc_groupby_aggregator* gb = new_tc_groupby_aggregator();
+  tc_flex_list *column_list = new_tc_flex_list();
+  tc_sframe* sf = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+
+  turi::gl_sframe sf_gl;
+
+  // Test 1
+  //  * +---------+----------+--------+
+  //  * | user_id | movie_id | rating |
+  //  * +---------+----------+--------+
+  //  * |  25904  |   1663   |   3    |
+  //  * |  25907  |   1663   |   3    |
+  //  * |  25923  |   1663   |   3    |
+  //  * |  25924  |   1663   |   3    |
+  //  * |  25928  |   1663   |   2    |
+  //  * |  25933  |   1663   |   4    |
+  //  * |  25934  |   1663   |   4    |
+  //  * |  25935  |   1663   |   4    |
+  //  * |  25936  |   1663   |   5    |
+  //  * |  25937  |   1663   |   2    |
+  //  * +---------+----------+--------+
+
+  std::vector<std::pair<std::string, std::vector<double> > > data
+    = { {"user_id",  {25904, 25907, 25923, 25924, 25928, 25933, 25934, 25935, 25936, 25937} },
+        {"movie_id", {1663, 1663, 1663, 1663, 1663, 1663, 1663, 1663, 1663, 1663} },
+        {"rating",   {3, 3, 3, 3, 2, 4, 4, 4, 5, 2} }
+      };
+
+  // begin: make the two sframes
+  for (auto p : data) {
+    tc_sarray* sa = make_sarray_double(p.second);
+
+    tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
+    TS_ASSERT(error == NULL);
+
+    turi::flex_list lst;
+
+    for (auto it = p.second.begin(); it!=p.second.end(); ++it) {
+        lst.push_back(*it);
+    }
+
+    turi::gl_sarray g(lst);
+
+    sf_gl.add_column(g, p.first.c_str());
+
+    tc_sarray_destroy(sa);
+  }
+  // end: make the two sframes
+
+  // begin: construct a group_by_aggregator and all the things
+  //        needed to make a call to tc_sframe_group_by
+
+  tc_flexible_type* user_id_ft = tc_ft_create_from_cstring("user_id", &error);
+  TS_ASSERT(error == NULL);
+
+  tc_flex_list_add_element(column_list, user_id_ft, &error);
+  TS_ASSERT(error == NULL);
+
+  tc_sframe_groupby_aggregator_add_count(gb, "count", &error);
+  TS_ASSERT(error == NULL);
+
+  tc_sframe* sampled_frame = tc_sframe_group_by(sf, column_list, gb, &error);
+  TS_ASSERT(error == NULL);
+
+  // end: construct a group_by_aggregator and all the things
+  //        needed to make a call to tc_sframe_group_by
+
+  // begin: make groupkeys and operators, call C++ groupby
+  std::vector<std::string> group_keys;
+  group_keys.push_back("user_id");
+  std::map<std::string, turi::aggregate::groupby_descriptor_type> operators;
+  operators.insert({"count", turi::aggregate::COUNT()});
+
+  turi::gl_sframe sampled_gl_sframe = sf_gl.groupby(group_keys, operators);
+  // end: make groupkeys and operators, call C++ groupby
+
+  TS_ASSERT(sampled_gl_sframe.column_names() == sampled_frame->value.column_names());
+  TS_ASSERT(sampled_gl_sframe.column_types() == sampled_frame->value.column_types());
+
+  tc_sframe_destroy(sf);
+  tc_sframe_destroy(sampled_frame);
+}
+
+
 };
 
 
@@ -1592,6 +1680,9 @@ BOOST_AUTO_TEST_CASE(test_sframe_slice_stride_test) {
 }
 BOOST_AUTO_TEST_CASE(test_sframe_read_json) {
   capi_test_sframe::test_sframe_read_json();
+}
+BOOST_AUTO_TEST_CASE(test_sframe_groupby) {
+  capi_test_sframe::test_sframe_groupby();
 }
 
 BOOST_AUTO_TEST_SUITE_END()

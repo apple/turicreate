@@ -152,6 +152,8 @@ static tc_sframe* make_sframe_double(const std::vector<std::pair<std::string, st
     return sf;
   }
 
-
+// static bool check_equality_sarray(const tc_sarray *sa, const turi::gl_sarray *ref_sa) {
+//   return (sa->value == ref_sa);
+// }
 
 #endif
