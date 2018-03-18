@@ -71,12 +71,6 @@ typedef struct tc_model_struct tc_model;
 struct tc_flex_enum_list_struct;
 typedef struct tc_flex_enum_list_struct tc_flex_enum_list;
 
-struct tc_string_list_struct;
-typedef struct tc_string_list_struct tc_string_list;
-
-struct tc_double_list_struct;
-typedef struct tc_double_list_struct tc_double_list;
-
 /******************************************************************************/
 /*                                                                            */
 /*    INITIALIZATION                                                          */
