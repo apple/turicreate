@@ -1583,8 +1583,7 @@ void test_sframe_groupby() {
   turi::gl_sframe sampled_gl_sframe = sf_gl.groupby(group_keys, operators);
   // end: make groupkeys and operators, call C++ groupby
 
-  TS_ASSERT(sampled_gl_sframe.column_names() == sampled_frame->value.column_names());
-  TS_ASSERT(sampled_gl_sframe.column_types() == sampled_frame->value.column_types());
+  TS_ASSERT(check_equality_gl_sframe(sampled_frame->value, sampled_gl_sframe));
 
   tc_sframe_destroy(sf);
   tc_sframe_destroy(sampled_frame);

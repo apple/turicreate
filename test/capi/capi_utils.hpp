@@ -2,6 +2,9 @@
 #define CAPI_TEST_UTILS
 
 #include <capi/TuriCore.h>
+#include <unity/lib/gl_sframe.hpp>
+#include <unity/lib/gl_sarray.hpp>
+#include <capi/impl/capi_wrapper_structs.hpp>
 #include <vector>
 
 static tc_flex_list* make_flex_list_double(const std::vector<double>& v) {
@@ -152,8 +155,22 @@ static tc_sframe* make_sframe_double(const std::vector<std::pair<std::string, st
     return sf;
   }
 
-// static bool check_equality_sarray(const tc_sarray *sa, const turi::gl_sarray *ref_sa) {
-//   return (sa->value == ref_sa);
-// }
+static bool check_equality_gl_sframe(
+  const turi::gl_sframe sf_gl, const turi::gl_sframe ref_gl) {
+
+  size_t num_columns_sf = sf_gl.num_columns();
+  size_t num_columns_ref = ref_gl.num_columns();
+
+  if (num_columns_sf == num_columns_ref) {
+    for (size_t column_index=0; column_index < num_columns_sf; column_index++) {
+
+      if (!(sf_gl[column_index] == ref_gl[column_index])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  return false;
+}
 
 #endif
