@@ -929,8 +929,8 @@ EXPORT tc_sframe* tc_sframe_group_by(const tc_sframe *sf,
 
   std::vector<std::string> column_list_transform;
 
-  for (const turi::flexible_type& elem : column_list->value){
-    if(elem.get_type() != turi::flex_type_enum::STRING){
+  for (const turi::flexible_type& elem : column_list->value) {
+    if (elem.get_type() != turi::flex_type_enum::STRING) {
       set_error(error, "Contains a non-string column.");
       return NULL;
     }

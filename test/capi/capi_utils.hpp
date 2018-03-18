@@ -163,8 +163,10 @@ static bool check_equality_gl_sframe(
 
   if (num_columns_sf == num_columns_ref) {
     for (size_t column_index=0; column_index < num_columns_sf; column_index++) {
+      // go through all columns and check for sarray equality one by one
 
       if (!(sf_gl[column_index] == ref_gl[column_index])) {
+        // delegates control to the sarray == operator
         return false;
       }
     }
