@@ -4,6 +4,7 @@
 
 #include <sstream>
 #include <string>
+#include <map>
 
 #include <flexible_type/flexible_type.hpp>
 #include <export.hpp>
@@ -690,221 +691,231 @@ EXPORT tc_sframe* tc_sframe_fillna(const tc_sframe* data,const char* column,cons
 }
 
 EXPORT void tc_sframe_groupby_aggregator_add_count(
-  const tc_groupby_aggregator* gb, const char* dest_column, tc_error** error) {
+  tc_groupby_aggregator* gb, const char* dest_column, tc_error** error) {
   ERROR_HANDLE_START();
 
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator", NULL);
+  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
 
-  gb->value.insert({dest_column, turi::aggregate::COUNT()});
+  gb->value.emplace(dest_column, turi::aggregate::COUNT());
 
-  ERROR_HANDLE_END(error, NULL);
+  ERROR_HANDLE_END(error);
 }
 
 EXPORT void tc_sframe_groupby_aggregator_add_sum(
-  const tc_groupby_aggregator* gb, const char* dest_column,
+  tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
 
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator", NULL);
+  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
 
   gb->value.insert({dest_column, turi::aggregate::SUM(src_column)});
 
-  ERROR_HANDLE_END(error, NULL);
+  ERROR_HANDLE_END(error);
 }
 
 EXPORT void tc_sframe_groupby_aggregator_add_max(
-  const tc_groupby_aggregator* gb, const char* dest_column,
+  tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
 
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator", NULL);
+  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
 
   gb->value.insert({dest_column, turi::aggregate::MAX(src_column)});
 
-  ERROR_HANDLE_END(error, NULL);
+  ERROR_HANDLE_END(error);
 }
 
 EXPORT void tc_sframe_groupby_aggregator_add_min(
-  const tc_groupby_aggregator* gb, const char* dest_column,
+  tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
 
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator", NULL);
+  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
 
   gb->value.insert({dest_column, turi::aggregate::MIN(src_column)});
 
-  ERROR_HANDLE_END(error, NULL);
+  ERROR_HANDLE_END(error);
 }
 
 EXPORT void tc_sframe_groupby_aggregator_add_mean(
-  const tc_groupby_aggregator* gb, const char* dest_column,
+  tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
 
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator", NULL);
+  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
 
   gb->value.insert({dest_column, turi::aggregate::AVG(src_column)});
 
-  ERROR_HANDLE_END(error, NULL);
+  ERROR_HANDLE_END(error);
 }
 
 EXPORT void tc_sframe_groupby_aggregator_add_avg(
-  const tc_groupby_aggregator* gb, const char* dest_column,
+  tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
 
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator", NULL);
+  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
 
   gb->value.insert({dest_column, turi::aggregate::AVG(src_column)});
 
-  ERROR_HANDLE_END(error, NULL);
+  ERROR_HANDLE_END(error);
 }
 
 EXPORT void tc_sframe_groupby_aggregator_add_var(
-  const tc_groupby_aggregator* gb, const char* dest_column,
+  tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
 
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator", NULL);
+  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
 
   gb->value.insert({dest_column, turi::aggregate::VAR(src_column)});
 
-  ERROR_HANDLE_END(error, NULL);
+  ERROR_HANDLE_END(error);
 }
 
 EXPORT void tc_sframe_groupby_aggregator_add_variance(
-  const tc_groupby_aggregator* gb, const char* dest_column,
+  tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
 
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator", NULL);
+  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
 
   gb->value.insert({dest_column, turi::aggregate::VARIANCE(src_column)});
 
-  ERROR_HANDLE_END(error, NULL);
+  ERROR_HANDLE_END(error);
 }
 
 EXPORT void tc_sframe_groupby_aggregator_add_std(
-  const tc_groupby_aggregator* gb, const char* dest_column,
+  tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
 
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator", NULL);
+  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
 
   gb->value.insert({dest_column, turi::aggregate::STD(src_column)});
 
-  ERROR_HANDLE_END(error, NULL);
+  ERROR_HANDLE_END(error);
 }
 
 EXPORT void tc_sframe_groupby_aggregator_add_stdv(
-  const tc_groupby_aggregator* gb, const char* dest_column,
+  tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
 
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator", NULL);
+  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
 
   gb->value.insert({dest_column, turi::aggregate::STDV(src_column)});
 
-  ERROR_HANDLE_END(error, NULL);
+  ERROR_HANDLE_END(error);
 }
 
 EXPORT void tc_sframe_groupby_aggregator_add_select_one(
-  const tc_groupby_aggregator* gb, const char* dest_column,
+  tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
 
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator", NULL);
+  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
 
   gb->value.insert({dest_column, turi::aggregate::SELECT_ONE(src_column)});
 
-  ERROR_HANDLE_END(error, NULL);
+  ERROR_HANDLE_END(error);
 }
 
 EXPORT void tc_sframe_groupby_aggregator_add_count_distinct(
-  const tc_groupby_aggregator* gb, const char* dest_column,
+  tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
 
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator", NULL);
+  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
 
   gb->value.insert({dest_column, turi::aggregate::COUNT_DISTINCT(src_column)});
 
-  ERROR_HANDLE_END(error, NULL);
+  ERROR_HANDLE_END(error);
 }
 
 EXPORT void tc_sframe_groupby_aggregator_add_concat_one_column(
-  const tc_groupby_aggregator* gb, const char* dest_column,
+  tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
 
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator", NULL);
+  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
 
   gb->value.insert({dest_column, turi::aggregate::CONCAT(src_column)});
 
-  ERROR_HANDLE_END(error, NULL);
+  ERROR_HANDLE_END(error);
 }
 
 EXPORT void tc_sframe_groupby_aggregator_add_concat_two_columns(
-  const tc_groupby_aggregator* gb, const char* dest_column, const char* key,
+  tc_groupby_aggregator* gb, const char* dest_column, const char* key,
   const char* val, tc_error** error) {
   ERROR_HANDLE_START();
 
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator", NULL);
+  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
 
   gb->value.insert({dest_column, turi::aggregate::CONCAT(key, val)});
 
-  ERROR_HANDLE_END(error, NULL);
+  ERROR_HANDLE_END(error);
 }
 
 EXPORT void tc_sframe_groupby_aggregator_add_quantile(
-  const tc_groupby_aggregator* gb, const char* dest_column,
+  tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, const double quantile, tc_error** error) {
   ERROR_HANDLE_START();
 
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator", NULL);
+  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
 
   gb->value.insert({dest_column,
     turi::aggregate::QUANTILE(src_column, quantile)});
 
-  ERROR_HANDLE_END(error, NULL);
+  ERROR_HANDLE_END(error);
 }
 
 EXPORT void tc_sframe_groupby_aggregator_add_quantiles(
-  const tc_groupby_aggregator* gb, const char* dest_column,
-  const char* src_column, const flex_list* quantiles, tc_error** error) {
+  tc_groupby_aggregator* gb, const char* dest_column,
+  const char* src_column, const tc_flex_list* quantiles, tc_error** error) {
   ERROR_HANDLE_START();
 
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator", NULL);
-  CHECK_NOT_NULL(error, quantiles, "flex_list", NULL);
+  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
+  CHECK_NOT_NULL(error, quantiles, "flex_list");
+
+  std::vector<double> quantiles_transform;
+
+  for (const turi::flexible_type& elem : quantiles->value) {
+    if (elem.get_type() != turi::flex_type_enum::FLOAT) {
+      set_error(error, "Contains a non-float quantile.");
+      return;
+    }
+    quantiles_transform.push_back(elem.get<turi::flex_float>());
+  }
 
   gb->value.insert({dest_column,
-    turi::aggregate::QUANTILE(src_column, quantiles->value)});
+    turi::aggregate::QUANTILE(src_column, quantiles_transform)});
 
-  ERROR_HANDLE_END(error, NULL);
+  ERROR_HANDLE_END(error);
 }
 
 EXPORT void tc_sframe_groupby_aggregator_add_argmax(
-  const tc_groupby_aggregator* gb, const char* dest_column, const char* agg,
+  tc_groupby_aggregator* gb, const char* dest_column, const char* agg,
   const char* out, tc_error** error) {
   ERROR_HANDLE_START();
 
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator", NULL);
+  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
 
   gb->value.insert({dest_column, turi::aggregate::ARGMAX(agg, out)});
 
-  ERROR_HANDLE_END(error, NULL);
+  ERROR_HANDLE_END(error);
 }
 
 EXPORT void tc_sframe_groupby_aggregator_add_argmin(
-  const tc_groupby_aggregator* gb, const char* dest_column, const char* agg,
+  tc_groupby_aggregator* gb, const char* dest_column, const char* agg,
   const char* out, tc_error** error) {
   ERROR_HANDLE_START();
 
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator", NULL);
+  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
 
   gb->value.insert({dest_column, turi::aggregate::ARGMIN(agg, out)});
 
-  ERROR_HANDLE_END(error, NULL);
+  ERROR_HANDLE_END(error);
 }
 
 EXPORT tc_sframe* tc_sframe_group_by(const tc_sframe *sf,
@@ -913,10 +924,20 @@ EXPORT tc_sframe* tc_sframe_group_by(const tc_sframe *sf,
   ERROR_HANDLE_START();
 
   CHECK_NOT_NULL(error, sf, "sframe", NULL);
-  CHECK_NOT_NULL(error, column_list, "flex_list", NULL);
+  CHECK_NOT_NULL(error, column_list, "string_list", NULL);
   CHECK_NOT_NULL(error, gb, "groupby_aggregator", NULL);
 
-  return new_tc_sframe(sf->value.groupby(column_list->value, gb->value));
+  std::vector<std::string> column_list_transform;
+
+  for (const turi::flexible_type& elem : column_list->value){
+    if(elem.get_type() != turi::flex_type_enum::STRING){
+      set_error(error, "Contains a non-string column.");
+      return NULL;
+    }
+    column_list_transform.push_back(elem.get<turi::flex_string>());
+  }
+
+  return new_tc_sframe((sf->value).groupby(column_list_transform, gb->value));
 
   ERROR_HANDLE_END(error, NULL);
 }

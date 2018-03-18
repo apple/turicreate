@@ -68,6 +68,7 @@ struct capi_struct_type_info {
     return ret;                                                               \
   }
 
+typedef std::map<std::string, turi::aggregate::groupby_descriptor_type> GROUPBY_AGGREGATOR_MAP;
 // TODO: make this more full featured than just a string error message.
 DECLARE_CAPI_WRAPPER_STRUCT(tc_error, std::string);
 DECLARE_CAPI_WRAPPER_STRUCT(tc_datetime, turi::flex_date_time);
@@ -77,11 +78,13 @@ DECLARE_CAPI_WRAPPER_STRUCT(tc_flex_image, turi::flex_image);
 DECLARE_CAPI_WRAPPER_STRUCT(tc_ndarray, turi::flex_nd_vec);
 DECLARE_CAPI_WRAPPER_STRUCT(tc_flexible_type, turi::flexible_type);
 DECLARE_CAPI_WRAPPER_STRUCT(tc_flex_enum_list, std::vector<turi::flex_type_enum>);
+DECLARE_CAPI_WRAPPER_STRUCT(tc_string_list, std::vector<std::string>);
+DECLARE_CAPI_WRAPPER_STRUCT(tc_double_list, std::vector<double>);
 DECLARE_CAPI_WRAPPER_STRUCT(tc_sarray, turi::gl_sarray);
 DECLARE_CAPI_WRAPPER_STRUCT(tc_sframe, turi::gl_sframe);
 DECLARE_CAPI_WRAPPER_STRUCT(tc_variant, turi::variant_type);
 DECLARE_CAPI_WRAPPER_STRUCT(tc_parameters, turi::variant_map_type);
 DECLARE_CAPI_WRAPPER_STRUCT(tc_model, std::shared_ptr<turi::model_base>);
-DECLARE_CAPI_WRAPPER_STRUCT(tc_groupby_aggregator, std::map<std::string, turi::aggregate::groupby_descriptor_type>);
+DECLARE_CAPI_WRAPPER_STRUCT(tc_groupby_aggregator, GROUPBY_AGGREGATOR_MAP);
 
 #endif
