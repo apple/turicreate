@@ -9,10 +9,7 @@
 #include <iostream>
 #include "capi_utils.hpp"
 
-struct capi_test_sframe {
- public:
-
- void test_sframe_allocation() {
+BOOST_AUTO_TEST_CASE(test_sframe_allocation) {
     tc_error* error = NULL;
 
     tc_sframe* sf = tc_sframe_create_empty(&error);
@@ -22,7 +19,7 @@ struct capi_test_sframe {
     tc_sframe_destroy(sf);
   }
 
- void test_sframe_save_load() {
+BOOST_AUTO_TEST_CASE(test_sframe_save_load) {
 
 std::vector<std::pair<std::string, std::vector<double> > > data
   = { {"col1", {1.0, 2., 5., 0.5} },
@@ -81,7 +78,7 @@ for(const char* url : {"sf_tmp_1/"} ) {
 }
 
 
-void test_sframe_double() {
+BOOST_AUTO_TEST_CASE(test_sframe_double) {
 
 std::vector<std::pair<std::string, std::vector<double> > > data
   = { {"col1", {1.0, 2., 5., 0.5} },
@@ -126,7 +123,7 @@ std::vector<std::pair<std::string, std::vector<double> > > data
     tc_sframe_destroy(sf);
   }
 
-void test_sframe_append_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_append_test) {
   tc_error* error = NULL;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -200,7 +197,7 @@ void test_sframe_append_test(){
   tc_sframe_destroy(sf2);
 }
 
-void test_sframe_is_materialized_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_is_materialized_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
@@ -246,7 +243,7 @@ void test_sframe_is_materialized_test(){
   TS_ASSERT(error == NULL);
 }
 
-void test_sframe_materialize_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_materialize_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
@@ -300,7 +297,7 @@ void test_sframe_materialize_test(){
   TS_ASSERT(error == NULL);
 }
 
-void test_sframe_size_is_known_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_size_is_known_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
@@ -341,7 +338,7 @@ void test_sframe_size_is_known_test(){
   tc_sframe_destroy(sf);
 }
 
-void test_sframe_contains_column_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_contains_column_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
@@ -387,7 +384,7 @@ void test_sframe_contains_column_test(){
   tc_sframe_destroy(sf);
 }
 
-void test_sframe_sample_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_sample_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
@@ -433,7 +430,7 @@ void test_sframe_sample_test(){
   tc_sframe_destroy(sampled_frame);
 }
 
-void test_sframe_topk_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_topk_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
@@ -479,7 +476,7 @@ void test_sframe_topk_test(){
   tc_sframe_destroy(sampled_frame);
 }
 
-void test_sframe_replace_add_column_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_replace_add_column_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
@@ -539,7 +536,7 @@ void test_sframe_replace_add_column_test(){
   tc_sframe_destroy(sf);
 }
 
-void test_sframe_add_constant_column_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_add_constant_column_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
@@ -590,7 +587,7 @@ void test_sframe_add_constant_column_test(){
   tc_sframe_destroy(sf);
 }
 
-void test_sframe_add_column_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_add_column_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
@@ -648,7 +645,7 @@ void test_sframe_add_column_test(){
   tc_sframe_destroy(sf);
 }
 
-void test_sframe_add_columns_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_add_columns_test) {
   tc_error* error = NULL;
 
   std::vector<std::pair<std::string, std::vector<double> > > data
@@ -723,7 +720,7 @@ void test_sframe_add_columns_test(){
   tc_sframe_destroy(sf2);
 }
 
-void test_sframe_swap_columns_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_swap_columns_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
@@ -768,7 +765,7 @@ void test_sframe_swap_columns_test(){
   tc_sframe_destroy(sf);
 }
 
-void test_sframe_rename_column_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_rename_column_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
@@ -816,7 +813,7 @@ void test_sframe_rename_column_test(){
   tc_sframe_destroy(sf);
 }
 
-void test_sframe_fillna_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_fillna_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
@@ -868,7 +865,7 @@ void test_sframe_fillna_test(){
   tc_sframe_destroy(sampled_frame);
 }
 
-void test_sframe_filter_by_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_filter_by_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
@@ -930,7 +927,7 @@ void test_sframe_filter_by_test(){
   tc_sframe_destroy(sampled_frame);
 }
 
-void test_sframe_pack_unpack_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_pack_unpack_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
@@ -989,7 +986,7 @@ void test_sframe_pack_unpack_test(){
   tc_sframe_destroy(unpack_frame);
 }
 
-void test_sframe_stack_unstack_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_stack_unstack_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
@@ -1056,7 +1053,7 @@ void test_sframe_stack_unstack_test(){
   tc_sframe_destroy(pre_sampled_frame);
 }
 
-void test_sframe_stack_and_rename_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_stack_and_rename_test) {
 
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
@@ -1125,7 +1122,7 @@ void test_sframe_stack_and_rename_test(){
   TS_ASSERT(true);
 }
 
-void test_sframe_unique_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_unique_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
@@ -1172,7 +1169,7 @@ void test_sframe_unique_test(){
   TS_ASSERT(true);
 }
 
-void test_sframe_single_sort_column_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_single_sort_column_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
@@ -1219,7 +1216,7 @@ void test_sframe_single_sort_column_test(){
   TS_ASSERT(true);
 }
 
-void test_sframe_sort_multiple_columns_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_sort_multiple_columns_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
@@ -1285,7 +1282,7 @@ void test_sframe_sort_multiple_columns_test(){
   TS_ASSERT(true);
 }
 
-void test_sframe_dropna_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_dropna_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
@@ -1343,7 +1340,7 @@ void test_sframe_dropna_test(){
   TS_ASSERT(true);
 }
 
-void test_sframe_slice_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_slice_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
@@ -1391,7 +1388,7 @@ void test_sframe_slice_test(){
   TS_ASSERT(true);
 }
 
-void test_sframe_row_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_row_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
@@ -1437,7 +1434,7 @@ void test_sframe_row_test(){
 }
 
 
-void test_sframe_slice_stride_test(){
+BOOST_AUTO_TEST_CASE(test_sframe_slice_stride_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
@@ -1485,7 +1482,7 @@ void test_sframe_slice_stride_test(){
   TS_ASSERT(true);
 }
 
-void test_sframe_read_json() {
+BOOST_AUTO_TEST_CASE(test_sframe_read_json) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_read_json("./json_test.json", &error);
 
@@ -1504,7 +1501,7 @@ void test_sframe_read_json() {
   tc_sframe_destroy(sf);
 }
 
-void test_sframe_groupby() {
+BOOST_AUTO_TEST_CASE(test_sframe_groupby) {
   tc_error* error = NULL;
   tc_groupby_aggregator* gb = new_tc_groupby_aggregator();
   tc_flex_list *column_list = new_tc_flex_list();
@@ -1588,100 +1585,3 @@ void test_sframe_groupby() {
   tc_sframe_destroy(sf);
   tc_sframe_destroy(sampled_frame);
 }
-
-
-};
-
-
-
-
-BOOST_FIXTURE_TEST_SUITE(_capi_test_sframe, capi_test_sframe)
-BOOST_AUTO_TEST_CASE(test_sframe_allocation) {
- capi_test_sframe::test_sframe_allocation();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_save_load) {
-  capi_test_sframe::test_sframe_save_load();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_double) {
-  capi_test_sframe::test_sframe_double();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_append_test) {
-  capi_test_sframe::test_sframe_append_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_is_materialized_test) {
-  capi_test_sframe::test_sframe_is_materialized_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_materialize_test) {
-  capi_test_sframe::test_sframe_materialize_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_size_is_known_test) {
-  capi_test_sframe::test_sframe_size_is_known_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_contains_column_test) {
-  capi_test_sframe::test_sframe_contains_column_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_sample_test) {
-  capi_test_sframe::test_sframe_sample_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_topk_test) {
-  capi_test_sframe::test_sframe_topk_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_replace_add_column_test) {
-  capi_test_sframe::test_sframe_replace_add_column_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_add_constant_column_test) {
-  capi_test_sframe::test_sframe_add_constant_column_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_add_column_test) {
-  capi_test_sframe::test_sframe_add_column_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_add_columns_test) {
-  capi_test_sframe::test_sframe_add_columns_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_swap_columns_test) {
-  capi_test_sframe::test_sframe_swap_columns_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_rename_column_test) {
-  capi_test_sframe::test_sframe_rename_column_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_fillna_test) {
-  capi_test_sframe::test_sframe_fillna_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_filter_by_test) {
-  capi_test_sframe::test_sframe_filter_by_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_pack_unpack_test) {
-  capi_test_sframe::test_sframe_pack_unpack_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_stack_unstack_test) {
-  capi_test_sframe::test_sframe_stack_unstack_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_stack_and_rename_test) {
-  capi_test_sframe::test_sframe_stack_and_rename_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_unique_test) {
-  capi_test_sframe::test_sframe_unique_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_single_sort_column_test) {
-  capi_test_sframe::test_sframe_single_sort_column_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_sort_multiple_columns_test) {
-  capi_test_sframe::test_sframe_sort_multiple_columns_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_dropna_test) {
-  capi_test_sframe::test_sframe_dropna_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_slice_test) {
-  capi_test_sframe::test_sframe_slice_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_slice_stride_test) {
-  capi_test_sframe::test_sframe_slice_stride_test();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_read_json) {
-  capi_test_sframe::test_sframe_read_json();
-}
-BOOST_AUTO_TEST_CASE(test_sframe_groupby) {
-  capi_test_sframe::test_sframe_groupby();
-}
-
-BOOST_AUTO_TEST_SUITE_END()
