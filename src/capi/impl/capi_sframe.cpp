@@ -690,7 +690,7 @@ EXPORT tc_sframe* tc_sframe_fillna(const tc_sframe* data,const char* column,cons
   ERROR_HANDLE_END(error, NULL);
 }
 
-EXPORT void tc_sframe_groupby_aggregator_add_count(
+EXPORT void tc_groupby_aggregator_add_count(
   tc_groupby_aggregator* gb, const char* dest_column, tc_error** error) {
   ERROR_HANDLE_START();
 
@@ -701,7 +701,7 @@ EXPORT void tc_sframe_groupby_aggregator_add_count(
   ERROR_HANDLE_END(error);
 }
 
-EXPORT void tc_sframe_groupby_aggregator_add_sum(
+EXPORT void tc_groupby_aggregator_add_sum(
   tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
@@ -713,7 +713,7 @@ EXPORT void tc_sframe_groupby_aggregator_add_sum(
   ERROR_HANDLE_END(error);
 }
 
-EXPORT void tc_sframe_groupby_aggregator_add_max(
+EXPORT void tc_groupby_aggregator_add_max(
   tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
@@ -725,7 +725,7 @@ EXPORT void tc_sframe_groupby_aggregator_add_max(
   ERROR_HANDLE_END(error);
 }
 
-EXPORT void tc_sframe_groupby_aggregator_add_min(
+EXPORT void tc_groupby_aggregator_add_min(
   tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
@@ -737,7 +737,7 @@ EXPORT void tc_sframe_groupby_aggregator_add_min(
   ERROR_HANDLE_END(error);
 }
 
-EXPORT void tc_sframe_groupby_aggregator_add_mean(
+EXPORT void tc_groupby_aggregator_add_mean(
   tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
@@ -749,7 +749,7 @@ EXPORT void tc_sframe_groupby_aggregator_add_mean(
   ERROR_HANDLE_END(error);
 }
 
-EXPORT void tc_sframe_groupby_aggregator_add_avg(
+EXPORT void tc_groupby_aggregator_add_avg(
   tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
@@ -761,7 +761,7 @@ EXPORT void tc_sframe_groupby_aggregator_add_avg(
   ERROR_HANDLE_END(error);
 }
 
-EXPORT void tc_sframe_groupby_aggregator_add_var(
+EXPORT void tc_groupby_aggregator_add_var(
   tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
@@ -773,7 +773,7 @@ EXPORT void tc_sframe_groupby_aggregator_add_var(
   ERROR_HANDLE_END(error);
 }
 
-EXPORT void tc_sframe_groupby_aggregator_add_variance(
+EXPORT void tc_groupby_aggregator_add_variance(
   tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
@@ -785,7 +785,7 @@ EXPORT void tc_sframe_groupby_aggregator_add_variance(
   ERROR_HANDLE_END(error);
 }
 
-EXPORT void tc_sframe_groupby_aggregator_add_std(
+EXPORT void tc_groupby_aggregator_add_std(
   tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
@@ -797,7 +797,7 @@ EXPORT void tc_sframe_groupby_aggregator_add_std(
   ERROR_HANDLE_END(error);
 }
 
-EXPORT void tc_sframe_groupby_aggregator_add_stdv(
+EXPORT void tc_groupby_aggregator_add_stdv(
   tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
@@ -809,7 +809,7 @@ EXPORT void tc_sframe_groupby_aggregator_add_stdv(
   ERROR_HANDLE_END(error);
 }
 
-EXPORT void tc_sframe_groupby_aggregator_add_select_one(
+EXPORT void tc_groupby_aggregator_add_select_one(
   tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
@@ -821,7 +821,7 @@ EXPORT void tc_sframe_groupby_aggregator_add_select_one(
   ERROR_HANDLE_END(error);
 }
 
-EXPORT void tc_sframe_groupby_aggregator_add_count_distinct(
+EXPORT void tc_groupby_aggregator_add_count_distinct(
   tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
@@ -833,7 +833,7 @@ EXPORT void tc_sframe_groupby_aggregator_add_count_distinct(
   ERROR_HANDLE_END(error);
 }
 
-EXPORT void tc_sframe_groupby_aggregator_add_concat_one_column(
+EXPORT void tc_groupby_aggregator_add_concat_one_column(
   tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
@@ -845,7 +845,7 @@ EXPORT void tc_sframe_groupby_aggregator_add_concat_one_column(
   ERROR_HANDLE_END(error);
 }
 
-EXPORT void tc_sframe_groupby_aggregator_add_concat_two_columns(
+EXPORT void tc_groupby_aggregator_add_concat_two_columns(
   tc_groupby_aggregator* gb, const char* dest_column, const char* key,
   const char* val, tc_error** error) {
   ERROR_HANDLE_START();
@@ -857,7 +857,7 @@ EXPORT void tc_sframe_groupby_aggregator_add_concat_two_columns(
   ERROR_HANDLE_END(error);
 }
 
-EXPORT void tc_sframe_groupby_aggregator_add_quantile(
+EXPORT void tc_groupby_aggregator_add_quantile(
   tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, const double quantile, tc_error** error) {
   ERROR_HANDLE_START();
@@ -870,7 +870,7 @@ EXPORT void tc_sframe_groupby_aggregator_add_quantile(
   ERROR_HANDLE_END(error);
 }
 
-EXPORT void tc_sframe_groupby_aggregator_add_quantiles(
+EXPORT void tc_groupby_aggregator_add_quantiles(
   tc_groupby_aggregator* gb, const char* dest_column,
   const char* src_column, const tc_flex_list* quantiles, tc_error** error) {
   ERROR_HANDLE_START();
@@ -894,7 +894,7 @@ EXPORT void tc_sframe_groupby_aggregator_add_quantiles(
   ERROR_HANDLE_END(error);
 }
 
-EXPORT void tc_sframe_groupby_aggregator_add_argmax(
+EXPORT void tc_groupby_aggregator_add_argmax(
   tc_groupby_aggregator* gb, const char* dest_column, const char* agg,
   const char* out, tc_error** error) {
   ERROR_HANDLE_START();
@@ -906,7 +906,7 @@ EXPORT void tc_sframe_groupby_aggregator_add_argmax(
   ERROR_HANDLE_END(error);
 }
 
-EXPORT void tc_sframe_groupby_aggregator_add_argmin(
+EXPORT void tc_groupby_aggregator_add_argmin(
   tc_groupby_aggregator* gb, const char* dest_column, const char* agg,
   const char* out, tc_error** error) {
   ERROR_HANDLE_START();
@@ -916,6 +916,10 @@ EXPORT void tc_sframe_groupby_aggregator_add_argmin(
   gb->value.insert({dest_column, turi::aggregate::ARGMIN(agg, out)});
 
   ERROR_HANDLE_END(error);
+}
+
+EXPORT void tc_groupby_aggregator_destroy(tc_groupby_aggregator *gb) {
+  delete gb;
 }
 
 EXPORT tc_sframe* tc_sframe_group_by(const tc_sframe *sf,
