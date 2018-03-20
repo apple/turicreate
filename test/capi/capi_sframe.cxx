@@ -7,6 +7,7 @@
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <vector>
 #include <iostream>
+#include <time>
 #include "capi_utils.hpp"
 
 BOOST_AUTO_TEST_CASE(test_sframe_allocation) {
@@ -1502,15 +1503,21 @@ BOOST_AUTO_TEST_CASE(test_sframe_read_json) {
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_groupby) {
+
   tc_error* error = NULL;
-  tc_groupby_aggregator* gb = new_tc_groupby_aggregator();
+
+  /****************************************************************************/
+  /*                                                                          */
+  /*   TEST 0 : Manual Test (not generating a random sframe)                  */
+  /*                                                                          */
+  /****************************************************************************/
+
+  tc_groupby_aggregator* gb_manual = new_tc_groupby_aggregator();
   tc_flex_list *column_list = new_tc_flex_list();
   tc_sframe* sf = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
-
   turi::gl_sframe sf_gl;
 
-  // Test 1
   //  * +---------+----------+--------+
   //  * | user_id | movie_id | rating |
   //  * +---------+----------+--------+
@@ -1562,10 +1569,10 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby) {
   tc_flex_list_add_element(column_list, user_id_ft, &error);
   TS_ASSERT(error == NULL);
 
-  tc_sframe_groupby_aggregator_add_count(gb, "count", &error);
+  tc_groupby_aggregator_add_count(gb_manual, "count", &error);
   TS_ASSERT(error == NULL);
 
-  tc_sframe* sampled_frame = tc_sframe_group_by(sf, column_list, gb, &error);
+  tc_sframe* sampled_frame = tc_sframe_group_by(sf, column_list, gb_manual, &error);
   TS_ASSERT(error == NULL);
 
   // end: construct a group_by_aggregator and all the things
@@ -1582,6 +1589,47 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby) {
 
   TS_ASSERT(check_equality_gl_sframe(sampled_frame->value, sampled_gl_sframe));
 
+  // gl_sframe _generate_random_sframe(size_t n_rows, std::string column_types,
+  //                                 size_t _random_seed, bool generate_target, double noise_level)
+
+  tc_groupby_aggregator_destroy(gb_manual);
+  tc_flex_list_destroy(column_list);
   tc_sframe_destroy(sf);
   tc_sframe_destroy(sampled_frame);
+
+  // Useful for all further tests
+  std::string all_types = "RZSVLD";
+
+  /****************************************************************************/
+  /*                                                                          */
+  /*   TEST 1                                                                 */
+  /*                                                                          */
+  /****************************************************************************/
+
+  tc_groupby_aggregator* gb1 = new_tc_groupby_aggregator();
+  tc_flex_list *column_list1 = new_tc_flex_list();
+  tc_sframe* sf1 = tc_sframe_create_empty(&error);
+  TS_ASSERT(error == NULL);
+  size_t n_rows1 = 10000;
+  size_t n_columns1 = 100;
+  std::string column_types1;
+  for (int index = 0; index < n_columns1; index++) {
+    column_types1 += all_types[rand() % 6];
+    srand(time(NULL));
+  }
+  size_t seed = rand();
+  turi::gl_sframe sf_gl1 = _generate_random_sframe(n_rows1, column_types1, seed,
+    true, true);
+  // not sure about the last two booleans
+  tc_sframe* sf1 = tc_sframe_create_empty();
+  // get columns of gl::sframe and then tc_sframe_add_column one by one.
+
+
+
+
+
+
+
+
+
 }
