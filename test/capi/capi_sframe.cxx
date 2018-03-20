@@ -2,12 +2,12 @@
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
 #include <unity/lib/gl_sframe.hpp>
-#include <unity/lib/gl_sarray.hpp>
 #include <capi/TuriCore.h>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <vector>
 #include <iostream>
-#include <time>
+#include <ctime>
+#include <unity/extensions/random_sframe_generation.hpp>
 #include "capi_utils.hpp"
 
 BOOST_AUTO_TEST_CASE(test_sframe_allocation) {
@@ -1502,7 +1502,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_read_json) {
   tc_sframe_destroy(sf);
 }
 
-BOOST_AUTO_TEST_CASE(test_sframe_groupby) {
+BOOST_AUTO_TEST_CASE(test_sframe_groupby_count) {
 
   tc_error* error = NULL;
 
@@ -1596,9 +1596,15 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby) {
   tc_flex_list_destroy(column_list);
   tc_sframe_destroy(sf);
   tc_sframe_destroy(sampled_frame);
+}
 
-  // Useful for all further tests
+
+BOOST_AUTO_TEST_CASE(test_sframe_groupby_random) {
+
+  tc_error* error = NULL;
   std::string all_types = "RZSVLD";
+  tc_groupby_aggregator* gb1 = new_tc_groupby_aggregator();
+  tc_flex_list *column_list1 = new_tc_flex_list();
 
   /****************************************************************************/
   /*                                                                          */
@@ -1606,30 +1612,58 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby) {
   /*                                                                          */
   /****************************************************************************/
 
-  tc_groupby_aggregator* gb1 = new_tc_groupby_aggregator();
-  tc_flex_list *column_list1 = new_tc_flex_list();
   tc_sframe* sf1 = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
   size_t n_rows1 = 10000;
   size_t n_columns1 = 100;
-  std::string column_types1;
-  for (int index = 0; index < n_columns1; index++) {
+  std::string column_types1 = "R";
+  for (int index = 1; index < n_columns1; index++) {
     column_types1 += all_types[rand() % 6];
     srand(time(NULL));
   }
   size_t seed = rand();
   turi::gl_sframe sf_gl1 = _generate_random_sframe(n_rows1, column_types1, seed,
-    true, true);
-  // not sure about the last two booleans
-  tc_sframe* sf1 = tc_sframe_create_empty();
+    false, 0.0);
+  turi::gl_sarray column;
+  std::string column_name, zeroth_column, last_column;
   // get columns of gl::sframe and then tc_sframe_add_column one by one.
+  for (size_t column_index=0; column_index < n_columns1; column_index++) {
+    column = sf_gl1[column_index];
+    column_name = sf_gl1.column_name(column_index);
+    if (column_index == 0) zeroth_column = column_name;
+    if (column_index == n_columns1-1) last_column = column_name;
+    tc_sframe_add_column(sf1, column_name.c_str(), new_tc_sarray(column), &error);
+  }
 
+  // C stuff
+  tc_groupby_aggregator_add_sum(gb1, "a_sum", zeroth_column.c_str(), &error);
+  TS_ASSERT(error == NULL);
+  tc_groupby_aggregator_add_count(gb1, "a_count", &error);
+  TS_ASSERT(error == NULL);
 
+  tc_flexible_type* last_ft = tc_ft_create_from_cstring(last_column.c_str(), &error);
+  TS_ASSERT(error == NULL);
+  tc_flex_list_add_element(column_list1, last_ft, &error);
+  TS_ASSERT(error == NULL);
 
+  tc_sframe* sampled_frame1 = tc_sframe_group_by(sf1, column_list1, gb1, &error);
+  TS_ASSERT(error == NULL);
 
+  // C++ stuff
+  std::vector<std::string> group_keys;
+  group_keys.push_back(last_column);
+  std::map<std::string, turi::aggregate::groupby_descriptor_type> operators;
+  operators.insert({"a_sum", turi::aggregate::SUM(zeroth_column)});
+  operators.insert({"a_count", turi::aggregate::COUNT()});
 
+  turi::gl_sframe sampled_gl_sframe = sf_gl1.groupby(group_keys, operators);
 
+  // Check for equality
+  TS_ASSERT(check_equality_gl_sframe(sampled_frame1->value, sampled_gl_sframe));
 
-
+  tc_groupby_aggregator_destroy(gb1);
+  tc_flex_list_destroy(column_list1);
+  tc_sframe_destroy(sf1);
+  tc_sframe_destroy(sampled_frame1);
 
 }
