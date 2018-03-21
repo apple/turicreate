@@ -570,7 +570,7 @@ class ActivityClassifier(_CustomModel):
             # chunk_size is DIFFERENT between chunks - since padding was removed.
             out = _np.concatenate(preds)
             out = out.reshape((-1, len(self._target_id_map)))
-            out = _SArray(out)
+            out = _SArray(out.tolist())
 
             if output_type == 'class':
                 id_target_map = self._id_target_map
@@ -581,7 +581,7 @@ class ActivityClassifier(_CustomModel):
             # remove predictions for padded data
             unpadded_len = chunked_data['chunk_len'].apply(
                 lambda l: _ceil_dev(l, prediction_window)).to_numpy()
-            preds = [list(p[:unpadded_len[i]]) for i, p in enumerate(preds)]
+            preds = [list(p[:unpadded_len[i]].tolist()) for i, p in enumerate(preds)]
 
             out = _SFrame({
                 self.session_id: chunked_data['session_id'],
