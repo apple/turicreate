@@ -1502,15 +1502,9 @@ BOOST_AUTO_TEST_CASE(test_sframe_read_json) {
   tc_sframe_destroy(sf);
 }
 
-BOOST_AUTO_TEST_CASE(test_sframe_groupby_count) {
+BOOST_AUTO_TEST_CASE(test_sframe_groupby_manual_sframe) {
 
   tc_error* error = NULL;
-
-  /****************************************************************************/
-  /*                                                                          */
-  /*   TEST 0 : Manual Test (not generating a random sframe)                  */
-  /*                                                                          */
-  /****************************************************************************/
 
   tc_groupby_aggregator* gb_manual = new_tc_groupby_aggregator();
   tc_flex_list *column_list = new_tc_flex_list();
@@ -1518,20 +1512,21 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_count) {
   TS_ASSERT(error == NULL);
   turi::gl_sframe sf_gl;
 
-  //  * +---------+----------+--------+
-  //  * | user_id | movie_id | rating |
-  //  * +---------+----------+--------+
-  //  * |  25904  |   1663   |   3    |
-  //  * |  25907  |   1663   |   3    |
-  //  * |  25923  |   1663   |   3    |
-  //  * |  25924  |   1663   |   3    |
-  //  * |  25928  |   1663   |   2    |
-  //  * |  25933  |   1663   |   4    |
-  //  * |  25934  |   1663   |   4    |
-  //  * |  25935  |   1663   |   4    |
-  //  * |  25936  |   1663   |   5    |
-  //  * |  25937  |   1663   |   2    |
-  //  * +---------+----------+--------+
+  /* * +---------+----------+--------+
+     * | user_id | movie_id | rating |
+     * +---------+----------+--------+
+     * |  25904  |   1663   |   3    |
+     * |  25907  |   1663   |   3    |
+     * |  25923  |   1663   |   3    |
+     * |  25924  |   1663   |   3    |
+     * |  25928  |   1663   |   2    |
+     * |  25933  |   1663   |   4    |
+     * |  25934  |   1663   |   4    |
+     * |  25935  |   1663   |   4    |
+     * |  25936  |   1663   |   5    |
+     * |  25937  |   1663   |   2    |
+     * +---------+----------+--------+
+   */
 
   std::vector<std::pair<std::string, std::vector<double> > > data
     = { {"user_id",  {25904, 25907, 25923, 25924, 25928, 25933, 25934, 25935, 25936, 25937} },
@@ -1539,7 +1534,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_count) {
         {"rating",   {3, 3, 3, 3, 2, 4, 4, 4, 5, 2} }
       };
 
-  // begin: make the two sframes
+  // make the two sframes
   for (auto p : data) {
     tc_sarray* sa = make_sarray_double(p.second);
 
@@ -1558,10 +1553,9 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_count) {
 
     tc_sarray_destroy(sa);
   }
-  // end: make the two sframes
 
-  // begin: construct a group_by_aggregator and all the things
-  //        needed to make a call to tc_sframe_group_by
+  // construct a group_by_aggregator and all the things needed to make a call
+  // to tc_sframe_group_by
 
   tc_flexible_type* user_id_ft = tc_ft_create_from_cstring("user_id", &error);
   TS_ASSERT(error == NULL);
@@ -1575,22 +1569,15 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_count) {
   tc_sframe* sampled_frame = tc_sframe_group_by(sf, column_list, gb_manual, &error);
   TS_ASSERT(error == NULL);
 
-  // end: construct a group_by_aggregator and all the things
-  //        needed to make a call to tc_sframe_group_by
-
-  // begin: make groupkeys and operators, call C++ groupby
+  // make groupkeys and operators, call C++ groupby
   std::vector<std::string> group_keys;
   group_keys.push_back("user_id");
   std::map<std::string, turi::aggregate::groupby_descriptor_type> operators;
   operators.insert({"count", turi::aggregate::COUNT()});
 
   turi::gl_sframe sampled_gl_sframe = sf_gl.groupby(group_keys, operators);
-  // end: make groupkeys and operators, call C++ groupby
 
   TS_ASSERT(check_equality_gl_sframe(sampled_frame->value, sampled_gl_sframe));
-
-  // gl_sframe _generate_random_sframe(size_t n_rows, std::string column_types,
-  //                                 size_t _random_seed, bool generate_target, double noise_level)
 
   tc_groupby_aggregator_destroy(gb_manual);
   tc_flex_list_destroy(column_list);
@@ -1599,20 +1586,14 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_count) {
 }
 
 
-BOOST_AUTO_TEST_CASE(test_sframe_groupby_random) {
+BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe) {
 
   tc_error* error = NULL;
   std::string all_types = "RZSVLD";
+  // R: real, Z: integer, S: string, V: vector, L: list, D: double
   tc_groupby_aggregator* gb1 = new_tc_groupby_aggregator();
   tc_flex_list *column_list1 = new_tc_flex_list();
 
-  /****************************************************************************/
-  /*                                                                          */
-  /*   TEST 1                                                                 */
-  /*                                                                          */
-  /****************************************************************************/
-
-  tc_sframe* sf1 = tc_sframe_create_empty(&error);
   TS_ASSERT(error == NULL);
   size_t n_rows1 = 10000;
   size_t n_columns1 = 100;
@@ -1624,32 +1605,33 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random) {
   size_t seed = rand();
   turi::gl_sframe sf_gl1 = _generate_random_sframe(n_rows1, column_types1, seed,
     false, 0.0);
+  tc_sframe *sf1 = new_tc_sframe(sf_gl1);
   turi::gl_sarray column;
   std::string column_name, zeroth_column, last_column;
-  // get columns of gl::sframe and then tc_sframe_add_column one by one.
-  for (size_t column_index=0; column_index < n_columns1; column_index++) {
-    column = sf_gl1[column_index];
-    column_name = sf_gl1.column_name(column_index);
-    if (column_index == 0) zeroth_column = column_name;
-    if (column_index == n_columns1-1) last_column = column_name;
-    tc_sframe_add_column(sf1, column_name.c_str(), new_tc_sarray(column), &error);
-  }
+  zeroth_column = sf_gl1.column_name(0);
+  last_column = sf_gl1.column_name(n_columns1-1);
 
-  // C stuff
+  TS_ASSERT(sf1->value.num_columns() == sf_gl1.num_columns());
+  TS_ASSERT(sf1->value.column_names() == sf_gl1.column_names());
+  TS_ASSERT(sf1->value.column_types() == sf_gl1.column_types());
+  TS_ASSERT(check_equality_gl_sframe(sf1->value, sf_gl1));
+
+  // C interface
   tc_groupby_aggregator_add_sum(gb1, "a_sum", zeroth_column.c_str(), &error);
   TS_ASSERT(error == NULL);
   tc_groupby_aggregator_add_count(gb1, "a_count", &error);
   TS_ASSERT(error == NULL);
 
-  tc_flexible_type* last_ft = tc_ft_create_from_cstring(last_column.c_str(), &error);
+  tc_flexible_type* last_ft = tc_ft_create_from_cstring(last_column.c_str(),
+    &error);
   TS_ASSERT(error == NULL);
   tc_flex_list_add_element(column_list1, last_ft, &error);
   TS_ASSERT(error == NULL);
 
-  tc_sframe* sampled_frame1 = tc_sframe_group_by(sf1, column_list1, gb1, &error);
+  tc_sframe* sampled_frame1 = tc_sframe_group_by(sf1,column_list1,gb1,&error);
   TS_ASSERT(error == NULL);
 
-  // C++ stuff
+  // C++ interface
   std::vector<std::string> group_keys;
   group_keys.push_back(last_column);
   std::map<std::string, turi::aggregate::groupby_descriptor_type> operators;
