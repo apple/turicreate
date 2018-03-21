@@ -1585,8 +1585,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_manual_sframe) {
   tc_sframe_destroy(sampled_frame);
 }
 
-
-BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe) {
+BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_most_aggregates) {
 
   tc_error* error = NULL;
   std::string all_types = "RZSVLD";
@@ -1619,6 +1618,36 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe) {
   // C interface
   tc_groupby_aggregator_add_sum(gb1, "a_sum", zeroth_column.c_str(), &error);
   TS_ASSERT(error == NULL);
+  tc_groupby_aggregator_add_max(gb1, "a_max", zeroth_column.c_str(), &error);
+  TS_ASSERT(error == NULL);
+  tc_groupby_aggregator_add_min(gb1, "a_min", zeroth_column.c_str(), &error);
+  TS_ASSERT(error == NULL);
+  tc_groupby_aggregator_add_mean(gb1, "a_mean", zeroth_column.c_str(), &error);
+  TS_ASSERT(error == NULL);
+  tc_groupby_aggregator_add_avg(gb1, "a_avg", zeroth_column.c_str(), &error);
+  TS_ASSERT(error == NULL);
+  tc_groupby_aggregator_add_var(gb1, "a_var", zeroth_column.c_str(), &error);
+  TS_ASSERT(error == NULL);
+  tc_groupby_aggregator_add_variance(gb1, "a_variance", zeroth_column.c_str(),
+    &error);
+  TS_ASSERT(error == NULL);
+  tc_groupby_aggregator_add_std(gb1, "a_std", zeroth_column.c_str(), &error);
+  TS_ASSERT(error == NULL);
+  tc_groupby_aggregator_add_stdv(gb1, "a_stdv", zeroth_column.c_str(), &error);
+  TS_ASSERT(error == NULL);
+  tc_groupby_aggregator_add_select_one(gb1, "a_select_one",
+    sf_gl1.column_name(50).c_str(), &error);
+  TS_ASSERT(error == NULL);
+  tc_groupby_aggregator_add_count_distinct(gb1, "a_count_distinct",
+    sf_gl1.column_name(75).c_str(), &error);
+  TS_ASSERT(error == NULL);
+  tc_groupby_aggregator_add_concat_one_column(gb1, "a_concat_one_column",
+    sf_gl1.column_name(25).c_str(), &error);
+  TS_ASSERT(error == NULL);
+  tc_groupby_aggregator_add_concat_two_columns(gb1, "a_concat_two_columns",
+    sf_gl1.column_name(20).c_str(), sf_gl1.column_name(80).c_str(), &error);
+  TS_ASSERT(error == NULL);
+
   tc_groupby_aggregator_add_count(gb1, "a_count", &error);
   TS_ASSERT(error == NULL);
 
@@ -1636,6 +1665,22 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe) {
   group_keys.push_back(last_column);
   std::map<std::string, turi::aggregate::groupby_descriptor_type> operators;
   operators.insert({"a_sum", turi::aggregate::SUM(zeroth_column)});
+  operators.insert({"a_max", turi::aggregate::MAX(zeroth_column)});
+  operators.insert({"a_min", turi::aggregate::MIN(zeroth_column)});
+  operators.insert({"a_mean", turi::aggregate::MEAN(zeroth_column)});
+  operators.insert({"a_avg", turi::aggregate::AVG(zeroth_column)});
+  operators.insert({"a_var", turi::aggregate::VAR(zeroth_column)});
+  operators.insert({"a_variance", turi::aggregate::VARIANCE(zeroth_column)});
+  operators.insert({"a_std", turi::aggregate::STD(zeroth_column)});
+  operators.insert({"a_stdv", turi::aggregate::STDV(zeroth_column)});
+  operators.insert({"a_select_one",
+    turi::aggregate::SELECT_ONE(sf_gl1.column_name(50))});
+  operators.insert({"a_count_distinct",
+    turi::aggregate::COUNT_DISTINCT(sf_gl1.column_name(75))});
+  operators.insert({"a_concat_one_column",
+    turi::aggregate::CONCAT(sf_gl1.column_name(25))});
+  operators.insert({"a_concat_two_columns",
+    turi::aggregate::CONCAT(sf_gl1.column_name(20), sf_gl1.column_name(80))});
   operators.insert({"a_count", turi::aggregate::COUNT()});
 
   turi::gl_sframe sampled_gl_sframe = sf_gl1.groupby(group_keys, operators);
@@ -1647,5 +1692,151 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe) {
   tc_flex_list_destroy(column_list1);
   tc_sframe_destroy(sf1);
   tc_sframe_destroy(sampled_frame1);
+}
 
+BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_quantiles) {
+  tc_error* error = NULL;
+  std::string all_types = "RZSVLD";
+  // R: real, Z: integer, S: string, V: vector, L: list, D: double
+  tc_groupby_aggregator* gb1 = new_tc_groupby_aggregator();
+  tc_flex_list *column_list1 = new_tc_flex_list();
+
+  TS_ASSERT(error == NULL);
+  size_t n_rows1 = 10000;
+  size_t n_columns1 = 100;
+  std::string column_types1 = "RZ";
+  for (int index = 2; index < n_columns1; index++) {
+    column_types1 += all_types[rand() % 6];
+    srand(time(NULL));
+  }
+  size_t seed = rand();
+  turi::gl_sframe sf_gl1 = _generate_random_sframe(n_rows1, column_types1, seed,
+    false, 0.0);
+  tc_sframe *sf1 = new_tc_sframe(sf_gl1);
+  turi::gl_sarray column;
+  std::string column_name, zeroth_column, first_column, last_column;
+  zeroth_column = sf_gl1.column_name(0);
+  first_column = sf_gl1.column_name(1);
+  last_column = sf_gl1.column_name(n_columns1-1);
+
+  TS_ASSERT(sf1->value.num_columns() == sf_gl1.num_columns());
+  TS_ASSERT(sf1->value.column_names() == sf_gl1.column_names());
+  TS_ASSERT(sf1->value.column_types() == sf_gl1.column_types());
+  TS_ASSERT(check_equality_gl_sframe(sf1->value, sf_gl1));
+
+  tc_flex_list *quantiles = new_tc_flex_list();
+  tc_flexible_type *ft_25 = tc_ft_create_from_double(0.25, &error);
+  TS_ASSERT(error == NULL);
+  tc_flex_list_add_element(quantiles, ft_25, &error);
+  TS_ASSERT(error == NULL);
+  tc_flexible_type *ft_50 = tc_ft_create_from_double(0.5, &error);
+  TS_ASSERT(error == NULL);
+  tc_flex_list_add_element(quantiles, ft_50, &error);
+  TS_ASSERT(error == NULL);
+
+  // C interface
+  tc_groupby_aggregator_add_quantile(gb1, "a_quantile",
+    zeroth_column.c_str(), 0.75, &error);
+  TS_ASSERT(error == NULL);
+  tc_groupby_aggregator_add_quantiles(gb1, "a_quantiles",
+    zeroth_column.c_str(), quantiles, &error);
+  TS_ASSERT(error == NULL);
+
+  tc_flexible_type* last_ft = tc_ft_create_from_cstring(last_column.c_str(),
+    &error);
+  TS_ASSERT(error == NULL);
+  tc_flex_list_add_element(column_list1, last_ft, &error);
+  TS_ASSERT(error == NULL);
+
+  tc_sframe* sampled_frame1 = tc_sframe_group_by(sf1,column_list1,gb1,&error);
+  TS_ASSERT(error == NULL);
+
+  // C++ interface
+  std::vector<std::string> group_keys;
+  std::vector<double> quantiles_transform;
+  quantiles_transform.push_back(0.25);
+  quantiles_transform.push_back(0.5);
+  group_keys.push_back(last_column);
+  std::map<std::string, turi::aggregate::groupby_descriptor_type> operators;
+  operators.insert({"a_quantile",
+    turi::aggregate::QUANTILE(zeroth_column, 0.75)});
+  operators.insert({"a_quantiles",
+    turi::aggregate::QUANTILE(zeroth_column, quantiles_transform)});
+
+  turi::gl_sframe sampled_gl_sframe = sf_gl1.groupby(group_keys, operators);
+
+  // Check for equality
+  TS_ASSERT(check_equality_gl_sframe(sampled_frame1->value, sampled_gl_sframe));
+
+  tc_groupby_aggregator_destroy(gb1);
+  tc_flex_list_destroy(column_list1);
+  tc_sframe_destroy(sf1);
+  tc_sframe_destroy(sampled_frame1);
+}
+
+BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_argminmax) {
+  tc_error* error = NULL;
+  std::string all_types = "RZSVLD";
+  // R: real, Z: integer, S: string, V: vector, L: list, D: double
+  tc_groupby_aggregator* gb1 = new_tc_groupby_aggregator();
+  tc_flex_list *column_list1 = new_tc_flex_list();
+
+  TS_ASSERT(error == NULL);
+  size_t n_rows1 = 10000;
+  size_t n_columns1 = 100;
+  std::string column_types1 = "RZ";
+  for (int index = 2; index < n_columns1; index++) {
+    column_types1 += all_types[rand() % 6];
+    srand(time(NULL));
+  }
+  size_t seed = rand();
+  turi::gl_sframe sf_gl1 = _generate_random_sframe(n_rows1, column_types1, seed,
+    false, 0.0);
+  tc_sframe *sf1 = new_tc_sframe(sf_gl1);
+  turi::gl_sarray column;
+  std::string column_name, zeroth_column, first_column, last_column;
+  zeroth_column = sf_gl1.column_name(0);
+  first_column = sf_gl1.column_name(1);
+  last_column = sf_gl1.column_name(n_columns1-1);
+
+  TS_ASSERT(sf1->value.num_columns() == sf_gl1.num_columns());
+  TS_ASSERT(sf1->value.column_names() == sf_gl1.column_names());
+  TS_ASSERT(sf1->value.column_types() == sf_gl1.column_types());
+  TS_ASSERT(check_equality_gl_sframe(sf1->value, sf_gl1));
+
+  // C interface
+  tc_groupby_aggregator_add_argmax(gb1, "a_argmax",
+    zeroth_column.c_str(), first_column.c_str(), &error);
+  TS_ASSERT(error == NULL);
+  tc_groupby_aggregator_add_argmin(gb1, "a_argmin",
+    zeroth_column.c_str(), first_column.c_str(), &error);
+  TS_ASSERT(error == NULL);
+
+  tc_flexible_type* last_ft = tc_ft_create_from_cstring(last_column.c_str(),
+    &error);
+  TS_ASSERT(error == NULL);
+  tc_flex_list_add_element(column_list1, last_ft, &error);
+  TS_ASSERT(error == NULL);
+
+  tc_sframe* sampled_frame1 = tc_sframe_group_by(sf1,column_list1,gb1,&error);
+  TS_ASSERT(error == NULL);
+
+  // C++ interface
+  std::vector<std::string> group_keys;
+  group_keys.push_back(last_column);
+  std::map<std::string, turi::aggregate::groupby_descriptor_type> operators;
+  operators.insert({"a_argmax",
+    turi::aggregate::ARGMAX(zeroth_column, first_column)});
+  operators.insert({"a_argmin",
+    turi::aggregate::ARGMIN(zeroth_column, first_column)});
+
+  turi::gl_sframe sampled_gl_sframe = sf_gl1.groupby(group_keys, operators);
+
+  // Check for equality
+  TS_ASSERT(check_equality_gl_sframe(sampled_frame1->value, sampled_gl_sframe));
+
+  tc_groupby_aggregator_destroy(gb1);
+  tc_flex_list_destroy(column_list1);
+  tc_sframe_destroy(sf1);
+  tc_sframe_destroy(sampled_frame1);
 }
