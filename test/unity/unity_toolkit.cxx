@@ -10,7 +10,8 @@
 #include <unity/lib/variant_converter.hpp>
 #include <unity/lib/simple_model.hpp>
 #include <unity/lib/unity_sarray.hpp>
-#include <unity/lib/api/model_interface.hpp>
+// #include <unity/lib/api/model_interface.hpp>
+// The above gave a fatal error when I tried to make
 #include <unity/lib/unity_sframe.hpp>
 #include <unity/lib/unity_sgraph.hpp>
 #include <unity/lib/gl_sarray.hpp>
