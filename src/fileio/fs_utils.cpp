@@ -384,7 +384,14 @@ bool is_web_protocol(std::string protocol) {
 EXPORT std::string get_protocol(std::string path) {
   size_t proto = path.find("://");
   if (proto != std::string::npos) {
-    return boost::algorithm::to_lower_copy(path.substr(0, proto));
+    std::string ret = boost::algorithm::to_lower_copy(path.substr(0, proto));
+    // Strip out file as a specific protocol
+    if(ret == "file") {
+      return "";
+    } else {
+      return ret;
+    }
+
   } else {
     return "";
   }

@@ -40,6 +40,13 @@ struct general_fstream_test {
       TS_ASSERT_EQUALS(helper_test_seek(fname), 0);
     }
 
+    void test_local_url_with_prefix() {
+      std::string fname = "file://" + std::string(tmpname);
+      logstream(LOG_INFO) << "Test on url: " << fname  << std::endl;
+      TS_ASSERT_EQUALS(helper_test_basic_read_write(fname), 0);
+      TS_ASSERT_EQUALS(helper_test_seek(fname), 0);
+    }
+
     void test_caching_url() {
       std::string fname = "cache://" + std::string(tmpname);
       logstream(LOG_INFO) << "Test on url: " << fname  << std::endl;
@@ -59,6 +66,7 @@ struct general_fstream_test {
       TS_ASSERT_EQUALS(get_filename("/hello"), "hello");
       TS_ASSERT_EQUALS(get_filename("/hello/world.bin"), "world.bin");
       TS_ASSERT_EQUALS(get_filename("s3://world/pika.bin"), "pika.bin");
+      TS_ASSERT_EQUALS(get_filename("file:///pika.bin"), "pika.bin");
       TS_ASSERT_EQUALS(get_filename("hdfs:///pika.bin"), "pika.bin");
       TS_ASSERT_EQUALS(get_filename("hdfs:///chu/pika.bin"), "pika.bin");
       TS_ASSERT_EQUALS(get_dirname("/hello"), "");
@@ -70,6 +78,7 @@ struct general_fstream_test {
       TS_ASSERT_EQUALS(make_absolute_path("/", "hello"), "/hello");
       TS_ASSERT_EQUALS(make_absolute_path("/pika", "hello"), "/pika/hello");
       TS_ASSERT_EQUALS(make_absolute_path("/pika/", "hello"), "/pika/hello");
+      TS_ASSERT_EQUALS(make_absolute_path("file:///pika/", "hello"), "file:///pika/hello");
       TS_ASSERT_EQUALS(make_absolute_path("s3://pika/", "hello"), "s3://pika/hello");
       TS_ASSERT_EQUALS(make_absolute_path("hdfs:///pika/", "hello"), "hdfs:///pika/hello");
       TS_ASSERT_EQUALS(make_absolute_path("hdfs:///", "hello"), "hdfs:///hello");
@@ -103,9 +112,12 @@ struct general_fstream_test {
       TS_ASSERT_EQUALS(get_protocol("hdfs://"), "hdfs");
       TS_ASSERT_EQUALS(get_protocol("s3://pikachu"), "s3");
       TS_ASSERT_EQUALS(get_protocol("/pikachu"), "");
+      TS_ASSERT_EQUALS(get_protocol("file:///pikachu"), "");
       TS_ASSERT_EQUALS(get_protocol("http://pikachu"), "http");
 
       TS_ASSERT_EQUALS(remove_protocol("hdfs://"), "");
+      TS_ASSERT_EQUALS(remove_protocol("file://"), "");
+      TS_ASSERT_EQUALS(remove_protocol("file://peekaboo"), "peekaboo");
       TS_ASSERT_EQUALS(remove_protocol("s3://pikachu"), "pikachu");
       TS_ASSERT_EQUALS(remove_protocol("/pikachu"), "/pikachu");
       TS_ASSERT_EQUALS(remove_protocol("http://pikachu://pikachu"), "pikachu://pikachu");
