@@ -172,6 +172,8 @@ class Image(object):
         from .. import extensions as _extensions
         data = _np.zeros((self.height, self.width, self.channels), dtype=_np.uint8)
         _extensions.image_load_to_numpy(self, data.ctypes.data, data.strides)
+        if self.channels == 1:
+            data = data.squeeze(2)
         return data
 
     def __eq__(self, other):
