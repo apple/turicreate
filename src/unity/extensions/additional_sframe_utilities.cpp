@@ -42,6 +42,8 @@ void copy_image_to_memory(const image_type& img, T *outptr,
       decode_jpeg((const char*)img.get_image_data(), img.m_image_data_size, &buf, length);
     } else if (img.m_format == Format::PNG) {
       decode_png((const char*)img.get_image_data(), img.m_image_data_size, &buf, length);
+    } else {
+      ASSERT_MSG(false, "Unsupported image format");
     }
     size_t cnt = 0;
     for (size_t i = 0; i < img.m_height; ++i) {
@@ -166,7 +168,7 @@ void sframe_load_to_numpy(turi::gl_sframe input, size_t outptr_addr,
 
 // Loads image into row-major array with shape HWC (height, width, channel)
 void image_load_to_numpy(const image_type& img, size_t outptr_addr,
-                          const std::vector<size_t>& outstrides) {
+                         const std::vector<size_t>& outstrides) {
   unsigned char *outptr = reinterpret_cast<unsigned char *>(outptr_addr);
   copy_image_to_memory(img, outptr, outstrides, true);
 }
