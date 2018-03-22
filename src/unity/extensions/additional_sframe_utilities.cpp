@@ -16,6 +16,57 @@
 using namespace turi;
 
 
+template <typename T>
+void copy_image_to_memory(const image_type& img, T *outptr,
+                          const std::vector<size_t>& outstrides,
+                          bool channel_last) {
+  ASSERT_EQ(outstrides.size(), 3);
+  size_t index_h, index_w, index_c;
+  if (channel_last) {
+    // Format: HWC
+    index_h = 0;
+    index_w = 1;
+    index_c = 2;
+  } else {
+    // Format: CHW
+    index_c = 0;
+    index_h = 1;
+    index_w = 2;
+  }
+
+  // Decode if needed
+  if (!img.is_decoded()) {
+    char* buf = NULL;
+    size_t length = 0;
+    if (img.m_format == Format::JPG) {
+      decode_jpeg((const char*)img.get_image_data(), img.m_image_data_size, &buf, length);
+    } else if (img.m_format == Format::PNG) {
+      decode_png((const char*)img.get_image_data(), img.m_image_data_size, &buf, length);
+    } else {
+      ASSERT_MSG(false, "Unsupported image format");
+    }
+    size_t cnt = 0;
+    for (size_t i = 0; i < img.m_height; ++i) {
+      for (size_t j = 0; j < img.m_width; ++j) {
+        for (size_t k = 0; k < img.m_channels; ++k) {
+          outptr[i * outstrides[index_h] + j * outstrides[index_w] + k * outstrides[index_c]] = static_cast<unsigned char>(buf[cnt++]);
+        }
+      }
+    }
+    delete[] buf;
+  } else {
+    size_t cnt = 0;
+    const unsigned char* raw_data = img.get_image_data();
+    for (size_t i = 0; i < img.m_height; ++i) {
+      for (size_t j = 0; j < img.m_width; ++j) {
+        for (size_t k = 0; k < img.m_channels; ++k) {
+          outptr[i * outstrides[index_h] + j * outstrides[index_w] + k * outstrides[index_c]] = static_cast<unsigned char>(raw_data[cnt++]);
+        }
+      }
+    }
+  }
+}
+
 void copy_to_memory(const sframe_rows::row& data,
                     float* outptr, 
                     const std::vector<size_t>& outstrides,
@@ -31,37 +82,7 @@ void copy_to_memory(const sframe_rows::row& data,
   if (type == flex_type_enum::IMAGE) {
     ASSERT_MSG(data.size() == 1, "Image data only support one input field");
     const image_type& img = data[0].get<flex_image>();
-    ASSERT_EQ(outstrides.size(), 3);
-
-    // Decode if needed
-    if (!img.is_decoded()) {
-      char* buf = NULL;
-      size_t length = 0;
-      if (img.m_format == Format::JPG) {
-        decode_jpeg((const char*)img.get_image_data(), img.m_image_data_size, &buf, length);
-      } else if (img.m_format == Format::PNG) {
-        decode_png((const char*)img.get_image_data(), img.m_image_data_size, &buf, length);
-      }
-      size_t cnt = 0;
-      for (size_t i = 0; i < img.m_height; ++i) {
-        for (size_t j = 0; j < img.m_width; ++j) {
-          for (size_t k = 0; k < img.m_channels; ++k) {
-            outptr[k * outstrides[0] + i * outstrides[1] + j * outstrides[2]] = static_cast<unsigned char>(buf[cnt++]);
-          }
-        }
-      }
-      delete[] buf;
-    } else {
-      size_t cnt = 0;
-      const unsigned char* raw_data = img.get_image_data();
-      for (size_t i = 0; i < img.m_height; ++i) {
-        for (size_t j = 0; j < img.m_width; ++j) {
-          for (size_t k = 0; k < img.m_channels; ++k) {
-            outptr[k * outstrides[0] + i * outstrides[1] + j * outstrides[2]] = static_cast<unsigned char>(raw_data[cnt++]);
-          }
-        }
-      }
-    }
+    copy_image_to_memory<float>(img, outptr, outstrides, false);
     return;
   } else if (data.size() == 1 && (type == flex_type_enum::FLOAT || type == flex_type_enum::INTEGER)) {
     // Case 2: Single value type (should really get rid of this special case) 
@@ -145,6 +166,15 @@ void sframe_load_to_numpy(turi::gl_sframe input, size_t outptr_addr,
   }
 }
 
+// Loads image into row-major array with shape HWC (height, width, channel)
+void image_load_to_numpy(const image_type& img, size_t outptr_addr,
+                         const std::vector<size_t>& outstrides) {
+  unsigned char *outptr = reinterpret_cast<unsigned char *>(outptr_addr);
+  copy_image_to_memory(img, outptr, outstrides, true);
+}
+
+
 BEGIN_FUNCTION_REGISTRATION
 REGISTER_FUNCTION(sframe_load_to_numpy, "input", "outptr_addr", "outstrides", "field_length", "begin", "end");
+REGISTER_FUNCTION(image_load_to_numpy, "img", "outptr_addr", "outstrides");
 END_FUNCTION_REGISTRATION

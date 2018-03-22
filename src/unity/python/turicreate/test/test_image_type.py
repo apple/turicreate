@@ -242,3 +242,9 @@ class ImageClassTest(unittest.TestCase):
             self.assertEqual(pixel_data[p], 50)
 
 
+        # Load images and make sure shape is right
+        img_color = image.Image(os.path.join(current_file_dir, 'images', 'sample.png'))
+        self.assertEqual(img_color.pixel_data.shape, (444, 800, 3))
+
+        img_gray = image.Image(os.path.join(current_file_dir, 'images', 'nested', 'sample_grey.png'))
+        self.assertEqual(img_gray.pixel_data.shape, (444, 800))
