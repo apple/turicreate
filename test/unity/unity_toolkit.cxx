@@ -11,7 +11,10 @@
 #include <unity/lib/simple_model.hpp>
 #include <unity/lib/unity_sarray.hpp>
 // #include <unity/lib/api/model_interface.hpp>
-// The above gave a fatal error when I tried to make
+/* The above include gave a fatal error when I tried to make
+ * because the file path, unity/lib/api/model_interface.hpp does not exist. Not
+ * sure if the file path was mistyped so commented it out instead of deleting it
+ */
 #include <unity/lib/unity_sframe.hpp>
 #include <unity/lib/unity_sgraph.hpp>
 #include <unity/lib/gl_sarray.hpp>

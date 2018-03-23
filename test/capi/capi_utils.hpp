@@ -158,7 +158,7 @@ static tc_sframe* make_sframe_double(const std::vector<std::pair<std::string, st
   }
 
 static bool check_equality_gl_sframe(
-  const turi::gl_sframe sf_gl, const turi::gl_sframe ref_gl) {
+  const turi::gl_sframe& sf_gl, const turi::gl_sframe& ref_gl) {
 
   size_t num_columns_sf = sf_gl.num_columns();
   size_t num_columns_ref = ref_gl.num_columns();
@@ -166,6 +166,7 @@ static bool check_equality_gl_sframe(
   if (num_columns_sf == num_columns_ref) {
     std::vector<std::string> column_names_sf = sf_gl.column_names();
     std::vector<std::string> column_names_ref = ref_gl.column_names();
+    TS_ASSERT(column_names_sf == column_names_ref);
     for (size_t column_index=0; column_index < num_columns_sf; column_index++) {
       // go through all columns and check for sarray equality one by one
 
@@ -173,10 +174,8 @@ static bool check_equality_gl_sframe(
         column_names_sf[column_index]);
       turi::gl_sarray column_ref = ref_gl.select_column(
         column_names_ref[column_index]);
-      bool is_float_flag;
 
       if (column_sf.dtype() != column_ref.dtype()) return false;
-      if (column_sf.dtype() == turi::flex_type_enum::FLOAT) is_float_flag = true;
 
       for (size_t i = 0; i < column_sf.size(); i++) {
         if (column_sf[i].get_type() == turi::flex_type_enum::UNDEFINED
@@ -184,20 +183,19 @@ static bool check_equality_gl_sframe(
           if (column_sf[i] != column_ref[i]) return false;
           else continue;
         }
-        if (is_float_flag) {
+        if (column_sf.dtype() == turi::flex_type_enum::FLOAT) {
           if ((std::isnan(column_sf[i].get<turi::flex_float>()))
             && (std::isnan(column_ref[i].get<turi::flex_float>()))) {
             continue;
-          } else {
-            if ((std::isinf(column_sf[i].get<turi::flex_float>()))
-              && (std::isinf(column_ref[i].get<turi::flex_float>()))) {
-              // check for both positive or both negative
-              if ((column_sf[i] > 0 && column_ref[i] < 0)
-                || (column_sf[i] < 0 && column_ref[i] > 0)) {
-                // their signs are different so not equal
-                return false;
-              } else continue;
-            }
+          }
+          if ((std::isinf(column_sf[i].get<turi::flex_float>()))
+            && (std::isinf(column_ref[i].get<turi::flex_float>()))) {
+            // check for both positive or both negative
+            if ((column_sf[i] > 0 && column_ref[i] < 0)
+              || (column_sf[i] < 0 && column_ref[i] > 0)) {
+              // their signs are different so not equal
+              return false;
+            } else continue;
           }
         }
         if (column_sf[i] != column_ref[i]) return false;
