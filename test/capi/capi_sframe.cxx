@@ -1766,10 +1766,14 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_quantiles) {
   turi::gl_sframe sampled_gl_sframe = sf_gl1.groupby(group_keys, operators);
 
   // Check for equality
+  TS_ASSERT(sampled_frame1->value.num_columns() == sampled_gl_sframe.num_columns());
+  TS_ASSERT(sampled_frame1->value.column_names() == sampled_gl_sframe.column_names());
+  TS_ASSERT(sampled_frame1->value.column_types() == sampled_gl_sframe.column_types());
   TS_ASSERT(check_equality_gl_sframe(sampled_frame1->value, sampled_gl_sframe));
 
   tc_groupby_aggregator_destroy(gb1);
   tc_flex_list_destroy(column_list1);
+  tc_flex_list_destroy(quantiles);
   tc_sframe_destroy(sf1);
   tc_sframe_destroy(sampled_frame1);
 }
@@ -1833,6 +1837,9 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_argminmax) {
   turi::gl_sframe sampled_gl_sframe = sf_gl1.groupby(group_keys, operators);
 
   // Check for equality
+  TS_ASSERT(sampled_frame1->value.num_columns() == sampled_gl_sframe.num_columns());
+  TS_ASSERT(sampled_frame1->value.column_names() == sampled_gl_sframe.column_names());
+  TS_ASSERT(sampled_frame1->value.column_types() == sampled_gl_sframe.column_types());
   TS_ASSERT(check_equality_gl_sframe(sampled_frame1->value, sampled_gl_sframe));
 
   tc_groupby_aggregator_destroy(gb1);

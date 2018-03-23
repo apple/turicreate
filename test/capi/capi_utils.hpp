@@ -5,6 +5,8 @@
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/lib/gl_sarray.hpp>
 #include <capi/impl/capi_wrapper_structs.hpp>
+#include <flexible_type/flexible_type.hpp>
+#include <cmath>
 #include <vector>
 
 static tc_flex_list* make_flex_list_double(const std::vector<double>& v) {
@@ -162,17 +164,47 @@ static bool check_equality_gl_sframe(
   size_t num_columns_ref = ref_gl.num_columns();
 
   if (num_columns_sf == num_columns_ref) {
+    std::vector<std::string> column_names_sf = sf_gl.column_names();
+    std::vector<std::string> column_names_ref = ref_gl.column_names();
     for (size_t column_index=0; column_index < num_columns_sf; column_index++) {
       // go through all columns and check for sarray equality one by one
 
-      if (!(sf_gl[column_index] == ref_gl[column_index])) {
-        // delegates control to the sarray == operator
-        return false;
+      turi::gl_sarray column_sf = sf_gl.select_column(
+        column_names_sf[column_index]);
+      turi::gl_sarray column_ref = ref_gl.select_column(
+        column_names_ref[column_index]);
+      bool is_float_flag;
+
+      if (column_sf.dtype() != column_ref.dtype()) return false;
+      if (column_sf.dtype() == turi::flex_type_enum::FLOAT) is_float_flag = true;
+
+      for (size_t i = 0; i < column_sf.size(); i++) {
+        if (column_sf[i].get_type() == turi::flex_type_enum::UNDEFINED
+          || column_ref[i].get_type() == turi::flex_type_enum::UNDEFINED) {
+          if (column_sf[i] != column_ref[i]) return false;
+          else continue;
+        }
+        if (is_float_flag) {
+          if ((std::isnan(column_sf[i].get<turi::flex_float>()))
+            && (std::isnan(column_ref[i].get<turi::flex_float>()))) {
+            continue;
+          } else {
+            if ((std::isinf(column_sf[i].get<turi::flex_float>()))
+              && (std::isinf(column_ref[i].get<turi::flex_float>()))) {
+              // check for both positive or both negative
+              if ((column_sf[i] > 0 && column_ref[i] < 0)
+                || (column_sf[i] < 0 && column_ref[i] > 0)) {
+                // their signs are different so not equal
+                return false;
+              } else continue;
+            }
+          }
+        }
+        if (column_sf[i] != column_ref[i]) return false;
       }
+      return true;
     }
-    return true;
   }
-  return false;
 }
 
 #endif
