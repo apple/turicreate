@@ -92,7 +92,6 @@ xcuserdata/
 deps/env
 deps/local
 deps/build
-doc/
 
 /dummy.cpp
 
