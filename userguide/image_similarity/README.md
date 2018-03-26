@@ -39,10 +39,15 @@ model = tc.image_similarity.create(reference_data)
 
 #### Querying the model
 
-Once created, we can query the model to retrieve the five closest images
-in the original reference data. The result of the query method is an
-SFrame with four columns: query label, reference label, distance, and
-rank of the reference point among the query point's nearest neighbors.
+Once created, we can query the model to retrieve the ten closest images
+in the original reference data (by setting the `k` parameter to `10`).
+The result of the query method is an SFrame with four columns: query
+label, reference label, distance, and rank of the reference point 
+among the query point's nearest neighbors.
+
+Note: You can pass in an image, or an SArray of images into the `model.query`
+method. This image or array of images does **not** need to be a part of the 
+original dataset.
 
 ```python
 similar_images = model.query(reference_data[0:10], k=10)
