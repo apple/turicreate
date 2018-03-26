@@ -45,9 +45,9 @@ The result of the query method is an SFrame with four columns: query
 label, reference label, distance, and rank of the reference point 
 among the query point's nearest neighbors.
 
-Note: You can pass in an image, or an SArray of images into the `model.query`
-method. This image or array of images does **not** need to be a part of the 
-original dataset.
+_Note: You can pass in an image, or an SArray of images into the `model.query`_
+_method. This image or array of images does **not** need to be a part of the_
+_original dataset._
 
 ```python
 similar_images = model.query(reference_data[0:10], k=10)
