@@ -17,7 +17,7 @@ def _get_client_app_path():
     if sys.platform == 'darwin':
         return os.path.join(tcviz_dir, 'Turi Create Visualization.app', 'Contents', 'MacOS', 'Turi Create Visualization')
 
-    if sys.platform == 'linux2':
+    if sys.platform == 'linux2' or sys.platform == 'linux':
         return os.path.join(tcviz_dir, 'Turi Create Visualization', 'visualization_client')
 
 
@@ -81,7 +81,7 @@ def show(x, y, xlabel="X", ylabel="Y", title=None):
 
     """
     import sys
-    if sys.platform != 'darwin' and sys.platform != 'linux2':
+    if sys.platform != 'darwin' and sys.platform != 'linux2' and sys.platform != 'linux' :
         raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
 
     import turicreate as tc
