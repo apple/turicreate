@@ -4449,7 +4449,7 @@ class SFrame(object):
         import sys
         import os
 
-        if sys.platform != 'darwin' and sys.platform != 'linux2':
+        if sys.platform != 'darwin' and sys.platform != 'linux2' and sys.platform != 'linux':
             raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
 
         path_to_client = _get_client_app_path()

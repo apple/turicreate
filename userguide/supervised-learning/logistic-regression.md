@@ -1,4 +1,4 @@
-#Logistic Regression
+# Logistic Regression
 
 Logistic regression is a regression model that is popularly used for
 classification tasks. In logistic regression, the probability that a  **binary

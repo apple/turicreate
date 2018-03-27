@@ -1,4 +1,4 @@
-#Nearest Neighbor Classifier
+# Nearest Neighbor Classifier
 The [nearest neighbor classifier](https://apple.github.io/turicreate/docs/api/generated/turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.html)
 is one of the simplest classification models, but it often performs nearly as
 well as more sophisticated methods.
