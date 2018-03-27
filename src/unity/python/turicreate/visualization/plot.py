@@ -94,7 +94,7 @@ class Plot(object):
         finally:
             if not display:
                 import sys
-                if sys.platform != 'darwin' and sys.platform != 'linux2':
+                if sys.platform != 'darwin' and sys.platform != 'linux2' and sys.platform != 'linux':
                      raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
 
                 self.__proxy__.get('call_function', {'__function_name__': 'show'})
