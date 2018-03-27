@@ -171,14 +171,167 @@ EXPORT tc_sframe* tc_sframe_join_on_single_column(
 }
 
 
-EXPORT tc_sframe* tc_sframe_read_csv(const char *url, tc_error **error) {
+EXPORT tc_sframe* tc_sframe_read_csv(const char *url,
+  const tc_parameters *params, tc_error **error) {
   ERROR_HANDLE_START();
 
   tc_sframe* ret = new_tc_sframe();
   turi::csv_parsing_config_map config;
   turi::str_flex_type_map column_type_hints;
+
+  // header: int
+  auto it = params->value.find("header");
+  if (it != params->value.end()) {
+    int64_t header = turi::variant_get_ref<turi::flexible_type>(it->second).to<turi::flex_int>();
+    config.insert({"header", header});
+  }
+
+  // delimiter: string
+  it = params->value.find("delimiter");
+  if (it != params->value.end()) {
+    std::string delimiter = turi::variant_get_ref<turi::flexible_type>(it->second).to<turi::flex_string>();
+    config.insert({"delimiter", delimiter});
+  }
+
+  // comment_char: string
+  it = params->value.find("comment_char");
+  if (it != params->value.end()) {
+    std::string comment_char = turi::variant_get_ref<turi::flexible_type>(it->second).to<turi::flex_string>();
+    config.insert({"comment_char", comment_char});
+  }
+
+  // escape_char: string
+  it = params->value.find("escape_char");
+  if (it != params->value.end()) {
+    std::string escape_char = turi::variant_get_ref<turi::flexible_type>(it->second).to<turi::flex_string>();
+    config.insert({"escape_char", escape_char});
+  }
+
+  // quote_char: string
+  it = params->value.find("quote_char");
+  if (it != params->value.end()) {
+    std::string quote_char = turi::variant_get_ref<turi::flexible_type>(it->second).to<turi::flex_string>();
+    config.insert({"quote_char", quote_char});
+  }
+
+  // error_bad_lines: int
+  it = params->value.find("error_bad_lines");
+  if (it != params->value.end()) {
+    int64_t error_bad_lines = turi::variant_get_ref<turi::flexible_type>(it->second).to<turi::flex_int>();
+    config.insert({"error_bad_lines", error_bad_lines});
+  }
+
+  // double_quote: int
+  it = params->value.find("double_quote");
+  if (it != params->value.end()) {
+    int64_t double_quote = turi::variant_get_ref<turi::flexible_type>(it->second).to<turi::flex_int>();
+    config.insert({"double_quote", double_quote});
+  }
+
+  // skip_initial_space: int
+  it = params->value.find("skip_initial_space");
+  if (it != params->value.end()) {
+    int64_t skip_initial_space = turi::variant_get_ref<turi::flexible_type>(it->second).to<turi::flex_int>();
+    config.insert({"skip_initial_space", skip_initial_space});
+  }
+
+  // column_type_hints: flex_dict<string, flexible_type>
+  it = params->value.find("column_type_hints");
+  if (it != params->value.end()) {
+    std::vector<std::pair<turi::flexible_type, turi::flexible_type> > ft_column_type_hints = turi::variant_get_ref<turi::flexible_type>(it->second).to<turi::flex_dict>();
+    for (auto iter = ft_column_type_hints.begin();
+      iter != ft_column_type_hints.end(); ++iter) {
+      std::pair<turi::flexible_type, turi::flexible_type> entry = *iter;
+      if ((entry.first).get_type() != turi::flex_type_enum::STRING
+        || (entry.second).get_type() != turi::flex_type_enum::STRING) {
+        throw std::string("Invalid input to column_type_hints optional parameter: requires a flex_dict of strings");
+        return NULL;
+      }
+    }
+    config.insert({"column_type_hints", ft_column_type_hints});
+  }
+
+  // na_values: flex_list<flexible_type>
+  it = params->value.find("na_values");
+  if (it != params->value.end()) {
+    std::vector<turi::flexible_type> ft_na_values = turi::variant_get_ref<turi::flexible_type>(it->second).to<turi::flex_list>();
+    for (auto iter = ft_na_values.begin();
+      iter != ft_na_values.end(); ++iter) {
+      if ((*iter).get_type() != turi::flex_type_enum::STRING) {
+        throw std::string("Invalid input to na_values optional parameter: requires a flex_list of strings");
+        return NULL;
+      }
+    }
+    config.insert({"na_values", ft_na_values});
+  }
+
+  // line_terminator: string
+  it = params->value.find("line_terminator");
+  if (it != params->value.end()) {
+    std::string line_terminator = turi::variant_get_ref<turi::flexible_type>(it->second).to<turi::flex_string>();
+    config.insert({"line_terminator", line_terminator});
+  }
+
+  // usecols: flex_list<string>
+  it = params->value.find("usecols");
+  if (it != params->value.end()) {
+    std::vector<turi::flexible_type> ft_usecols = turi::variant_get_ref<turi::flexible_type>(it->second).to<turi::flex_list>();
+    for (auto iter = ft_usecols.begin() ; iter != ft_usecols.end(); ++iter) {
+      if ((*iter).get_type() != turi::flex_type_enum::STRING) {
+        throw std::string("Invalid input to usecols optional parameter: requires a flex_list of strings");
+        return NULL;
+      }
+    }
+    config.insert({"usecols", ft_usecols});
+  }
+
+  // nrows: int
+  it = params->value.find("nrows");
+  if (it != params->value.end()) {
+    int64_t nrows = turi::variant_get_ref<turi::flexible_type>(it->second).to<turi::flex_int>();
+    config.insert({"nrows", nrows});
+  }
+
+  // skiprows: int
+  it = params->value.find("skiprows");
+  if (it != params->value.end()) {
+    int64_t skiprows = turi::variant_get_ref<turi::flexible_type>(it->second).to<turi::flex_int>();
+    config.insert({"skiprows", skiprows});
+  }
+
+  // verbose: int
+  it = params->value.find("verbose");
+  if (it != params->value.end()) {
+    int64_t verbose = turi::variant_get_ref<turi::flexible_type>(it->second).to<turi::flex_int>();
+    config.insert({"verbose", verbose});
+  }
+
   ret->value.construct_from_csvs(url, config, column_type_hints);
+
   return ret;
+
+  ERROR_HANDLE_END(error, NULL);
+}
+
+EXPORT tc_sframe* tc_sframe_read_json_lines(const char *url, tc_error **error) {
+  ERROR_HANDLE_START();
+
+  tc_sframe* ret = new_tc_sframe();
+  turi::csv_parsing_config_map config;
+  turi::str_flex_type_map column_type_hints;
+
+  config.insert({"header", 0});
+
+  ret->value.construct_from_csvs(url, config, column_type_hints);
+  if (ret->value.num_columns() != 1) {
+    throw std::string("Input JSON not of expected format");
+    return NULL;
+  }
+  if (ret->value["X1"].dtype() == turi::flex_type_enum::DICT) {
+    return (new_tc_sframe(ret->value.unpack("X1","")));
+  } else {
+    return ret;
+  }
 
   ERROR_HANDLE_END(error, NULL);
 }
