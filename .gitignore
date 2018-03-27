@@ -58,9 +58,6 @@ pip-log.txt
 .tox
 pytest.xml
 
-# Translations
-*.mo
-
 # Mr Developer
 .mr.developer.cfg
 .project
