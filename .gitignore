@@ -28,7 +28,6 @@ demoapps/pagerank/matlab_tools/*.tsv
 
 description.json
 
-tags
 *swp
 \.mchg\.mchg
 .ycm_extra_conf*
