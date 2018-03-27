@@ -42,7 +42,6 @@ dist
 /build
 eggs
 parts
-bin
 var
 sdist
 develop-eggs
@@ -78,7 +77,6 @@ __MACOSX
 
 .DS_Store
 .Rproj.user
-*.Rd
 **/*.dSYM/
 *.dylib
 xcuserdata/
