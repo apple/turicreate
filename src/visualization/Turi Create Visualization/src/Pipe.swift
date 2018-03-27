@@ -46,6 +46,9 @@ class Pipe {
 
         #endif
         
+        process_data(data: Debugging.BoxesAndWhiskers.spec)
+        process_data(data: Debugging.BoxesAndWhiskers.data)
+        
         while (true) {
             guard let data = readLine() else {
                 // nil readLine result means EOF
