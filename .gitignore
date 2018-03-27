@@ -72,9 +72,6 @@ pydocs/*
 # Mr Old School Data Scientist
 .Rhistory
 
-# log files
-*.log
-
 
 __MACOSX
 .ipynb_checkpoints
