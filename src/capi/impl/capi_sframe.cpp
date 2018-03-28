@@ -258,7 +258,7 @@ EXPORT tc_sframe* tc_sframe_read_csv(const char *url,
     for (auto iter = ft_na_values.begin();
       iter != ft_na_values.end(); ++iter) {
       if ((*iter).get_type() != turi::flex_type_enum::STRING) {
-        throw std::string("Invalid input to na_values optional parameter: requires a flex_list of strings");
+        log_and_throw("Invalid input to na_values optional parameter: requires a flex_list of strings");
         return NULL;
       }
     }
@@ -278,7 +278,7 @@ EXPORT tc_sframe* tc_sframe_read_csv(const char *url,
     std::vector<turi::flexible_type> ft_usecols = turi::variant_get_ref<turi::flexible_type>(it->second).to<turi::flex_list>();
     for (auto iter = ft_usecols.begin() ; iter != ft_usecols.end(); ++iter) {
       if ((*iter).get_type() != turi::flex_type_enum::STRING) {
-        throw std::string("Invalid input to usecols optional parameter: requires a flex_list of strings");
+        log_and_throw("Invalid input to usecols optional parameter: requires a flex_list of strings");
         return NULL;
       }
     }
