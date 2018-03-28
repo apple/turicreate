@@ -324,7 +324,7 @@ EXPORT tc_sframe* tc_sframe_read_json_lines(const char *url, tc_error **error) {
 
   ret->value.construct_from_csvs(url, config, column_type_hints);
   if (ret->value.num_columns() != 1) {
-    throw std::string("Input JSON not of expected format");
+    log_and_throw("Input JSON not of expected format");
     return NULL;
   }
   if (ret->value["X1"].dtype() == turi::flex_type_enum::DICT) {
