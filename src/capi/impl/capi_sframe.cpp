@@ -244,7 +244,7 @@ EXPORT tc_sframe* tc_sframe_read_csv(const char *url,
       std::pair<turi::flexible_type, turi::flexible_type> entry = *iter;
       if ((entry.first).get_type() != turi::flex_type_enum::STRING
         || (entry.second).get_type() != turi::flex_type_enum::STRING) {
-        throw std::string("Invalid input to column_type_hints optional parameter: requires a flex_dict of strings");
+        log_and_throw("Invalid input to column_type_hints optional parameter: requires a flex_dict of strings");
         return NULL;
       }
     }
