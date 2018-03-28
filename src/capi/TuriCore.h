@@ -555,11 +555,10 @@ tc_ft_type_enum tc_sframe_column_type(const tc_sframe* sf, const char* column_na
 tc_flex_list* tc_sframe_column_names(const tc_sframe* sf, tc_error**);
 
 // Read csv
-tc_sframe* tc_sframe_read_csv(const char *url, const tc_parameters *params, tc_error**);
+tc_sframe* tc_sframe_read_csv(const char *url, tc_error**);
 
 // Read json
 tc_sframe* tc_sframe_read_json(const char *url, tc_error**);
-tc_sframe* tc_sframe_read_json_lines(const char *url, tc_error **error);
 
 // Write csv
 void tc_sframe_write_csv(const tc_sframe* sf, const char *url, tc_error **error);
