@@ -624,6 +624,7 @@ def subprocess_exe(exe, args, setup=None, teardown=None,
     """
     import logging
     import os
+    from . import file_util
     ret = {'success': True,
            'return_code': None,
            'stdout': None,

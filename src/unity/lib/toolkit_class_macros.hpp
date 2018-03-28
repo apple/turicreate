@@ -439,6 +439,4 @@ namespace docstring_macro_impl {
   }
 
 /// \}
-#endif // TURI_UNITY_TOOLKIT_MAGIC_MAC ROS_HPP
-
-
+#endif // TURI_UNITY_TOOLKIT_MAGIC_MACROS_HPP

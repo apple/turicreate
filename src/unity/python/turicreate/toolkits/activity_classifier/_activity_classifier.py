@@ -283,7 +283,6 @@ class ActivityClassifier(_CustomModel):
         ]
 
         from ._model_architecture import _define_model
-        import mxnet as _mx
         context = _mxnet_utils.get_mxnet_context(max_devices=state['num_sessions'])
         _, _pred_model = _define_model(state['features'], state['_target_id_map'], 
                                        state['prediction_window'],
