@@ -14,7 +14,7 @@ import logging as _logging
 import re as _re
 
 # Return the root package name
-_root_package_name = __import__(__name__.split('.')[0]).__name__
+_root_package_name = 'turicreate'
 _client_log_file = _os.path.join(_tempfile.gettempdir(),
                                 _root_package_name +
                                 '_client_%d_%d.log' % (_time.time(), _os.getpid()))
@@ -34,10 +34,9 @@ def _i_am_a_lambda_worker():
 
 def init_logger():
     """
-    Initialize the logging configuration for the turicreate/sframe package.
+    Initialize the logging configuration for the turicreate package.
 
-    This does not affect the logging config of root or other modules outside of
-    turicreate/sframe.
+    This does not affect the root logging config.
     """
     # Package level logger
     _logging.config.dictConfig({

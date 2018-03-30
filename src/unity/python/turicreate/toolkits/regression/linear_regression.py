@@ -341,7 +341,6 @@ class LinearRegression(_SupervisedLearningModel):
 
     """
     def __init__(self, model_proxy):
-        '''__init__(self)'''
         self.__proxy__ = model_proxy
         self.__name__ = self.__class__._native_name()
 
@@ -560,7 +559,7 @@ class LinearRegression(_SupervisedLearningModel):
 
         return super(LinearRegression, self).predict(dataset, missing_value_action=missing_value_action)
 
-    
+
     def evaluate(self, dataset, metric='auto', missing_value_action='auto'):
         r"""Evaluate the model by making target value predictions and comparing
         to actual values.

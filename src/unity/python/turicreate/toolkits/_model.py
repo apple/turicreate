@@ -63,7 +63,6 @@ def load_model(location):
         else:
             import posixpath
             dir_archive_exists = file_util.exists(posixpath.join(model_path, 'dir_archive.ini'))
-    model = None
     if not dir_archive_exists:
         raise IOError("Directory %s does not exist" % location)
 

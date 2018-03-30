@@ -845,13 +845,6 @@ class _Recommender(_Model):
                           self.target])
         num_obs_fields = len(observation_columns.difference(not_needed))
 
-        num_user_features = 0
-        if 'user_side_data_column_names' in stats:
-            num_user_features = len(self.user_side_data_column_names)
-        num_item_features = 0
-        if 'item_side_data_column_names' in stats:
-            num_item_features = len(self.item_side_data_column_names)
-
         user_features = self.user_side_data_column_names
         item_features = self.item_side_data_column_names
 

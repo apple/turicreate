@@ -47,7 +47,6 @@ class MXFeatureExtractor(ImageFeatureExtractor):
         ptModel: ImageClassifierPreTrainedModel
             An instance of a pre-trained model.
         """
-        import mxnet as _mx
         self.ptModel = ptModel
         self.data_layer = ptModel.data_layer
         self.feature_layer = ptModel.feature_layer

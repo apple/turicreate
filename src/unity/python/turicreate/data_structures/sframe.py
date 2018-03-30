@@ -35,7 +35,6 @@ import datetime
 import time
 import itertools
 import logging as _logging
-import os
 import subprocess
 import uuid
 import platform
@@ -47,33 +46,11 @@ import csv
 __all__ = ['SFrame']
 __LOGGER__ = _logging.getLogger(__name__)
 
-SFRAME_GARBAGE_COLLECTOR = []
-SFRAME_TURIUTIL_REF = None
-
 FOOTER_STRS = ['Note: Only the head of the SFrame is printed.',
                'You can use print_rows(num_rows=m, num_columns=n) to print more rows and columns.']
 
 LAZY_FOOTER_STRS = ['Note: Only the head of the SFrame is printed. This SFrame is lazily evaluated.',
                     'You can use sf.materialize() to force materialization.']
-root_package_name = __import__(__name__.split('.')[0]).__name__
-SFRAME_ROOTS = [# Binary/lib location in production egg
-                os.path.abspath(os.path.join(os.path.dirname(
-                    os.path.realpath(__file__)), '..')),
-                # Build tree location of SFrame binaries
-                os.path.abspath(os.path.join(os.path.dirname(
-                    os.path.realpath(__file__)),
-                        '..', '..',  '..', '..','..','src','sframe')),
-                # Location of python sources
-                os.path.abspath(os.path.join(os.path.dirname(
-                    os.path.realpath(__file__)),
-                        '..', '..',  '..', '..', 'unity', 'python', root_package_name)),
-                # Build tree dependency location
-                os.path.abspath(os.path.join(os.path.dirname(
-                    os.path.realpath(__file__)),
-                        '..', '..',  '..', '..', '..', '..', 'deps', 'local', 'lib'))
-                ]
-
-HDFS_LIB = "libhdfs.so"
 
 if sys.version_info.major > 2:
     long = int
@@ -759,10 +736,6 @@ class SFrame(object):
                     _format = 'dataframe'
                 elif (isinstance(data, str) or
                       (sys.version_info.major < 3 and isinstance(data, unicode))):
-                    if data.find('://') == -1:
-                        suffix = 'local'
-                    else:
-                        suffix = data.split('://')[0]
 
                     if data.endswith(('.csv', '.csv.gz')):
                         _format = 'csv'
@@ -839,10 +812,6 @@ class SFrame(object):
                     pass
                 else:
                     raise ValueError('Unknown input type: ' + format)
-
-        sframe_size = -1
-        if self.__has_size__():
-          sframe_size = self.num_rows()
 
     @staticmethod
     def _infer_column_types_from_lines(first_rows):
@@ -1053,14 +1022,6 @@ class SFrame(object):
             type_hints = column_type_hints
         else:
             raise TypeError("Invalid type for column_type_hints. Must be a dictionary, list or a single type.")
-
-
-
-        suffix=''
-        if url.find('://') == -1:
-            suffix = 'local'
-        else:
-            suffix = url.split('://')[0]
 
         try:
             if (not verbose):
