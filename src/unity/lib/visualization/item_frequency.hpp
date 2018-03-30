@@ -8,6 +8,13 @@
 
 #include <unity/lib/gl_sarray.hpp>
 #include <sframe/groupby_aggregate_operators.hpp>
+#include <unity/lib/visualization/process_wrapper.hpp>
+#include <unity/lib/visualization/histogram.hpp>
+#include <unity/lib/visualization/item_frequency.hpp>
+#include <unity/lib/visualization/thread.hpp>
+#include <unity/lib/visualization/plot.hpp>
+#include <unity/lib/visualization/vega_data.hpp>
+#include <unity/lib/visualization/vega_spec.hpp>
 
 #include "transformation.hpp"
 
@@ -35,6 +42,10 @@ class item_frequency : public item_frequency_parent {
     virtual std::vector<item_frequency_result> split_input(size_t num_threads) override;
     virtual void merge_results(std::vector<item_frequency_result>& transformers) override;
 };
+
+// std::shared_ptr<turi::model_base> plot_item_frequency(const std::string& path_to_client, 
+//   const gl_sarray& sa, const std::string& xlabel, const std::string& ylabel, 
+//   const std::string& title);
 
 }} // turi::visualization
 

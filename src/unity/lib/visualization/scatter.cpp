@@ -112,3 +112,4 @@ std::shared_ptr<Plot> turi::visualization::plot_scatter(const std::string& path_
   return std::make_shared<Plot>(path_to_client, scatter_specification, shared_unity_transformer, size_array);
 
 }
+
