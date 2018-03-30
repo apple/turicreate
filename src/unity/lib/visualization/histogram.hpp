@@ -120,8 +120,8 @@ class histogram : public histogram_parent {
 };
 
 std::shared_ptr<Plot> plot_histogram(const std::string& path_to_client, 
-  gl_sarray& sa, std::string& xlabel, std::string& ylabel, 
-  std::string& title);
+  gl_sarray& sa, std::string xlabel, std::string ylabel, 
+  std::string title);
 
 }}
 

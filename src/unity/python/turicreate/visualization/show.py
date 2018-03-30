@@ -135,3 +135,10 @@ def histogram(sa, xlabel="Values", ylabel="Count", title=None):
     plt_ref = tc.extensions.plot_histogram(path_to_client, sa, 
       xlabel, ylabel, title)
     return Plot(plt_ref)
+
+def item_frequency(sa, xlabel="Values", ylabel="Count", title=None):
+    path_to_client = _get_client_app_path()
+    title = _get_title(title)
+    plt_ref = tc.extensions.plot_item_frequency(path_to_client, sa, 
+      xlabel, ylabel, title)
+    return Plot(plt_ref)

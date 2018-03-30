@@ -20,7 +20,7 @@
 namespace turi {
     namespace visualization {
       std::shared_ptr<Plot> plot_column_summary(
-        const std::string& path_to_client, const gl_sframe& sf);
+        const std::string& path_to_client, const unity_sframe& sf);
     }
 }
 

@@ -15,6 +15,7 @@ namespace turi {
     REGISTER_FUNCTION(plot_boxes_and_whiskers, "path_to_client", "x", "y", "xlabel", "ylabel", "title"); 
     REGISTER_FUNCTION(plot_column_summary, "path_to_client", "sf"); 
     REGISTER_FUNCTION(plot_histogram, "path_to_client", "sa", "xlabel", "ylabel", "title"); 
+    REGISTER_FUNCTION(plot_item_frequency, "path_to_client", "sa", "xlabel", "ylabel", "title"); 
     END_FUNCTION_REGISTRATION
   }
 }

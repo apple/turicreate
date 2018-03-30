@@ -2836,79 +2836,17 @@ std::shared_ptr<model_base> unity_sarray::plot(const std::string& path_to_client
     log_and_throw("Nothing to show; SArray is empty.");
   }
 
-  std::shared_ptr<unity_sarray> self = \
-             std::make_shared<unity_sarray>(*this);
+  std::shared_ptr<unity_sarray> self = std::make_shared<unity_sarray>(*this);
+  gl_sarray sa = gl_sarray(self);
 
   switch (self->dtype()) {
     case flex_type_enum::INTEGER:
     case flex_type_enum::FLOAT:
-      {
-        histogram hist;
-
-        std::string title = _title;
-        std::string xlabel = _xlabel;
-        std::string ylabel = _ylabel;
-
-        if (title.empty()) {
-          title = std::string("Distribution of Values [");
-          title.append(flex_type_enum_to_name(self->dtype()));
-          title.append("]");
-        }
-
-        if (xlabel.empty()) {
-          xlabel = "Values";
-        }
-
-        if (ylabel.empty()) {
-          ylabel = "Count";
-        }
-
-        std::stringstream ss;
-        ss << histogram_spec(title, xlabel, ylabel);
-        std::string histogram_spec = ss.str();
-        double size_array = static_cast<double>(self->size());
-
-        hist.init(self);
-
-        std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<histogram>(hist);
-        return std::make_shared<Plot>(path_to_client, histogram_spec, shared_unity_transformer, size_array);
-      }
+      return plot_histogram(path_to_client, sa, _xlabel, _ylabel, _title);
     case flex_type_enum::STRING:
-      {
-        item_frequency item_freq;
-        item_freq.init(self);
-
-        auto transformer = std::dynamic_pointer_cast<item_frequency_result>(item_freq.get());
-        auto result = transformer->emit().get<flex_dict>();
-        size_t length_list = std::min(200UL, result.size());
-        std::string title = _title;
-        std::string xlabel = _xlabel;
-        std::string ylabel = _ylabel;
-
-        if (title.empty()) {
-          title = std::string("Distribution of Values [");
-          title.append(flex_type_enum_to_name(self->dtype()));
-          title.append("]");
-        }
-
-        if (xlabel.empty()) {
-          xlabel = "Count";
-        }
-        if (ylabel.empty()) {
-          ylabel = "Values";
-        }
-
-        std::stringstream ss;
-        ss << categorical_spec(length_list, title, xlabel, ylabel);
-        std::string category_spec = ss.str();
-
-        double size_array = static_cast<double>(self->size());
-
-        std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<item_frequency>(item_freq);
-        return std::make_shared<Plot>(path_to_client, category_spec, shared_unity_transformer, size_array);
-      }
+      return plot_item_frequency(path_to_client, sa, _xlabel, _ylabel, _title);
     default:
-      log_and_throw(std::string("SArray.show is currently not available for SArrays of type ") + flex_type_enum_to_name(self->dtype()));
+      log_and_throw(std::string("SArray.plot is currently not available for SArrays of type ") + flex_type_enum_to_name(self->dtype()));
       return nullptr;
   }
 }
