@@ -123,10 +123,9 @@ def box_plot(x, y, xlabel="X", ylabel="Y", title=None):
       xlabel, ylabel, title)
     return Plot(plt_ref)
 
-def column_summary(sf):
+def columnwise_summary(sf):
     path_to_client = _get_client_app_path()
-    title = _get_title(title)
-    plt_ref = tc.extensions.plot_column_summary(path_to_client, sf)
+    plt_ref = tc.extensions.plot_columnwise_summary(path_to_client, sf)
     return Plot(plt_ref)
 
 def histogram(sa, xlabel="Values", ylabel="Count", title=None):

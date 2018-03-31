@@ -37,7 +37,7 @@
 #include <exceptions/error_types.hpp>
 #include <unity/lib/visualization/process_wrapper.hpp>
 #include <unity/lib/visualization/histogram.hpp>
-#include <unity/lib/visualization/column_summary.hpp>
+#include <unity/lib/visualization/columnwise_summary.hpp>
 #include <unity/lib/visualization/item_frequency.hpp>
 #include <unity/lib/visualization/transformation.hpp>
 #include <unity/lib/visualization/thread.hpp>
@@ -1585,8 +1585,12 @@ void unity_sframe::show(const std::string& path_to_client) {
 }
 
 std::shared_ptr<model_base> unity_sframe::plot(const std::string& path_to_client){
+  using namespace turi;
+  using namespace turi::visualization;
 
-  return visualization::plot_column_summary(path_to_client, *this);
+  std::shared_ptr<unity_sframe_base> self = this->select_columns(this->column_names());
+
+  return plot_columnwise_summary(path_to_client, self);
 }
 
 void unity_sframe::explore(const std::string& path_to_client, const std::string& title) {
