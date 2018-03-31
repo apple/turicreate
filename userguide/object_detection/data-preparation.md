@@ -40,8 +40,6 @@ Here is a snippet to turn this into an SFrame:
 
 ```python
 import turicreate as tc
-import numpy as np
-import glob
 import os
 
 # Change if applicable
@@ -55,7 +53,7 @@ raw_sf = tc.image_analysis.load_images(ig02_path, recursive=True,
 # E.g. bike_005.mask.0.png -> ['bike_005', 'mask']
 info = raw_sf['path'].apply(lambda path: os.path.basename(path).split('.')[:2])
 
-# Rename as 'name', 'type', 'mask_index'
+# Rename columns to 'name' and 'type'
 info = info.unpack().rename({'X.0': 'name', 'X.1': 'type'})
 
 # Add to our main SFrame
@@ -76,6 +74,7 @@ def mask_to_bbox_coordinates(img):
     Takes a tc.Image of a mask and returns a dictionary representing bounding
     box coordinates: e.g. {'x': 100, 'y': 120, 'width': 80, 'height': 120}
     """
+    import numpy as np
     mask = img.pixel_data
     if mask.max() == 0:
         return None
@@ -89,7 +88,7 @@ def mask_to_bbox_coordinates(img):
 # Convert masks to bounding boxes (drop masks that did not contain bounding box)
 sf_masks['coordinates'] = sf_masks['image'].apply(mask_to_bbox_coordinates)
 
-# There can be empty masks (which returns None), so let's sort them out
+# There can be empty masks (which returns None), so let's get rid of those
 sf_masks = sf_masks.dropna('coordinates')
 
 # Combine label and coordinates into a bounding box dictionary
