@@ -261,11 +261,11 @@ class ImageClassTest(unittest.TestCase):
             (path('color_8bit.png'),  [0, 0, 0], [0, 1, 2], [ 73, 219, 182], [146, 182, 109]),
             (path('color_16bit.png'), [0, 0, 0], [0, 1, 2], [ 73, 219, 182], [146, 182, 109]),
 
-            (path('gray_1bit.png'),  [0], [0], [  0], [255]),
-            (path('gray_2bit.png'),  [0], [0], [ 85], [170]),
-            (path('gray_4bit.png'),  [0], [0], [ 68], [153]),
-            (path('gray_8bit.png'),  [0], [0], [ 73], [146]),
-            (path('gray_16bit.png'), [0], [0], [ 73], [146]),
+            (path('gray_1bit.png'),  0, 0,   0, 255),
+            (path('gray_2bit.png'),  0, 0,  85, 170),
+            (path('gray_4bit.png'),  0, 0,  68, 153),
+            (path('gray_8bit.png'),  0, 0,  73, 146),
+            (path('gray_16bit.png'), 0, 0,  73, 146),
 
             (path('palette_1bit.png'), [127,   0, 255], [127,   0, 255], [127,   0, 255], [255,   0,   0]),
             (path('palette_2bit.png'), [127,   0, 255], [127,   0, 255], [ 42, 220, 220], [212, 220, 127]),
@@ -276,7 +276,8 @@ class ImageClassTest(unittest.TestCase):
         for path, color_0_0, color_0_1, color_0_200, color_40_400 in images_info:
             img = image.Image(path)
             data = img.pixel_data
-            self.assertEqual(list(data[0, 0]), color_0_0)
-            self.assertEqual(list(data[0, 1]), color_0_1)
-            self.assertEqual(list(data[0, 200]), color_0_200)
-            self.assertEqual(list(data[40, 400]), color_40_400)
+            ref_type = type(color_0_0)
+            self.assertEqual(ref_type(data[0, 0]), color_0_0)
+            self.assertEqual(ref_type(data[0, 1]), color_0_1)
+            self.assertEqual(ref_type(data[0, 200]), color_0_200)
+            self.assertEqual(ref_type(data[40, 400]), color_40_400)
