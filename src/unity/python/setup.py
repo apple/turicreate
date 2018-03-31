@@ -199,7 +199,7 @@ if __name__ == '__main__':
             "decorator >= 4.0.9",
             "prettytable == 0.7.2",
             "requests >= 2.9.1",
-            "mxnet >= 0.11, < 1.0.0",
+            "mxnet >= 0.11, < 1.2.0",
             "coremltools == 0.8",
             "pillow >= 3.3.0",
             "pandas >= 0.19.0",
