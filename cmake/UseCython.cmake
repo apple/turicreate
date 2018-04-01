@@ -270,8 +270,6 @@ function( cython_add_module _name )
   endif()
   if( APPLE )
     set_target_properties( ${_name} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup" )
-  else()
-    target_link_libraries( ${_name} ${PYTHON_LIBRARIES} )
   endif()
 endfunction()
 
