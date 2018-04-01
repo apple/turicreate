@@ -42,9 +42,6 @@ if [[ $OSTYPE == msys ]]; then
   PYTHON_SCRIPTS=deps/conda/bin/Scripts
 fi
 
-# LFS location
-export LFS_ROOT=$ROOT_DIR/lfs
-
 # python executable
 export PYTHON_EXECUTABLE=$ROOT_DIR/deps/env/bin/python
 export PYTEST_EXECUTABLE=$ROOT_DIR/$PYTHON_SCRIPTS/pytest

@@ -20,7 +20,6 @@ if sys.version_info.major == 3:
     unittest.TestCase.assertItemsEqual = unittest.TestCase.assertCountEqual
 
 import os as _os
-_lfs = _os.environ['LFS_ROOT']
 
 class CreateTest(unittest.TestCase):
     """
