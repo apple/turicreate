@@ -126,33 +126,38 @@ class Plot(object):
         >>> plt.save('vega_spec.json', False)
 
         """
-        spec = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_spec'}))
+        # spec = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_spec'}))
+        spec = self._get_vega(include_data = include_data)
 
-        if(include_data):
-            data = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_data'}))["data_spec"]
+        # if(include_data):
+            # data = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_data'}))["data_spec"]
 
-            for x in range(0, len(spec["vega_spec"]["data"])):
-                if(spec["vega_spec"]["data"][x]["name"] == "source_2"):
-                    spec["vega_spec"]["data"][x] = data
-                    break;
+            # for x in range(0, len(spec["vega_spec"]["data"])):
+            #     if(spec["vega_spec"]["data"][x]["name"] == "source_2"):
+            #         spec["vega_spec"]["data"][x] = data
+            #         break;
 
         with open(filepath, 'w') as fp:
             _json.dump(spec, fp)
+
+        # node node_modules/vega/bin/vg2png scatter.vg.json scatter.vg.png
+
+
 
     def _get_data(self):
         return _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_data'}))
 
     def _get_vega(self, include_data=True):
         if(include_data):
-            spec = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_spec'}))
+            spec = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_spec'}))["vega_spec"]
             data = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_data'}))["data_spec"]
-            for x in range(0, len(spec["vega_spec"]["data"])):
-                if(spec["vega_spec"]["data"][x]["name"] == "source_2"):
-                    spec["vega_spec"]["data"][x] = data
+            for x in range(0, len(spec["data"])):
+                if(spec["data"][x]["name"] == "source_2"):
+                    spec["data"][x] = data
                     break;
             return spec
         else:
-            return _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_spec'}))
+            return _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_spec'}))["vega_spec"]
 
     def _repr_javascript_(self):
         from IPython.core.display import display, HTML
