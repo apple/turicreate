@@ -65,6 +65,8 @@ class MXFeatureExtractor(ImageFeatureExtractor):
         if (label_layer is not None) and (label_layer not in arg_params):
             arg_params[label_layer] = _mx.nd.array([0])
 
+        # Make sure we do not use a number of contexts that could leave empty workloads
+        context = context[:batch_size]
         model = _mx.mod.Module(symbol=feature_layer_sym, label_names=None, context=context)
         model.bind(for_training=False, data_shapes=[(data_layer, (batch_size, ) + image_shape)])
         model.set_params(arg_params, aux_params)
