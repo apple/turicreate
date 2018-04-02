@@ -3,6 +3,7 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import logging as _logging
 import json as _json
+import os
 
 _target = 'auto'
 
@@ -126,22 +127,24 @@ class Plot(object):
         >>> plt.save('vega_spec.json', False)
 
         """
-        # spec = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_spec'}))
-        spec = self._get_vega(include_data = include_data)
+        if type(filepath) != str:
+            raise ValueError("File path provided is not a string")
 
-        # if(include_data):
-            # data = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_data'}))["data_spec"]
-
-            # for x in range(0, len(spec["vega_spec"]["data"])):
-            #     if(spec["vega_spec"]["data"][x]["name"] == "source_2"):
-            #         spec["vega_spec"]["data"][x] = data
-            #         break;
-
-        with open(filepath, 'w') as fp:
-            _json.dump(spec, fp)
-
-        # node node_modules/vega/bin/vg2png scatter.vg.json scatter.vg.png
-
+        if filepath.endswith(".json"):
+            # save as vega json
+            spec = self._get_vega(include_data = include_data)
+            with open(filepath, 'w') as fp:
+                _json.dump(spec, fp)
+        elif filepath.endswith(".png"):
+            # save as png, but json first
+            spec = self._get_vega(include_data = True)
+            with open("temp_file.vg.json", 'w') as fp:
+                _json.dump(spec, fp)
+            os.system("node node_modules/vega/bin/vg2png temp_file.vg.json " + filepath)
+            # delete temp file that user didn't ask for
+            os.system("rm temp_file.vg.json") 
+        else:
+            raise NotImplementedError("Plot save() is only supported for json and png")
 
 
     def _get_data(self):
