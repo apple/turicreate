@@ -427,7 +427,7 @@ def _get_temp_file_location():
     Returns user specified temporary file location.
     The temporary location is specified through:
 
-    >>> turicreate.set_runtime_config('TURI_CACHE_FILE_LOCATIONS', ...)
+    >>> turicreate.config.set_runtime_config('TURI_CACHE_FILE_LOCATIONS', ...)
 
     '''
     from ..connect import main as _glconnect
