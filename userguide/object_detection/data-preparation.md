@@ -8,7 +8,7 @@ toolkit, we will rely on many useful SFrame functions.
 *Note: Please make sure that you have Turi Create 4.3 or above for these steps*
 
 The dataset that we will use is [INRIA Annotations for Graz-02
-(IG02)](https://lear.inrialpes.fr/people/marszalek/data/ig02/). Our goal is to
+(IG02)](https://lear.inrialpes.fr/people/marszalek/data/ig02/)[^1][^2]. Our goal is to
 make a detector that can spot bikes and cars. Go ahead and click this link and
 download `ig02-v1.0-bikes.zip` and `ig02-v1.0-cars.zip`. In this tutorial, we
 will assume that you have unzipped these files into `~/Downloads/ig02`. That
@@ -127,7 +127,7 @@ guide](README.md).
 The [IG02](lear.inrialpes.fr/people/marszalek/data/ig02/) dataset is described
 further in:
 
-> Marcin Marszałek and Cordelia Schmid. [Accurate Object Localization with Shape Masks.](http://lear.inrialpes.fr/pubs/2007/MS07a/) IEEE Conference on Computer Vision & Pattern Recognition, 2007.
+[^1]: Marcin Marszałek and Cordelia Schmid. [Accurate Object Localization with Shape Masks.](http://lear.inrialpes.fr/pubs/2007/MS07a/) IEEE Conference on Computer Vision & Pattern Recognition, 2007.
 
-> A. Opelt, A. Pinz, M. Fussenegger, P. Auer. [Generic Object Recognition with Boosting.](http://www.emt.tugraz.at/~opelt/download_data/Generic_object_recognition_with_boosting.pdf) IEEE Transactions on Pattern Recognition and Machine Intelligence (PAMI), Vol.28, No. 3, March 2006.
+[^2]: A. Opelt, A. Pinz, M. Fussenegger, P. Auer. [Generic Object Recognition with Boosting.](http://www.emt.tugraz.at/~opelt/download_data/Generic_object_recognition_with_boosting.pdf) IEEE Transactions on Pattern Recognition and Machine Intelligence (PAMI), Vol.28, No. 3, March 2006.
 
