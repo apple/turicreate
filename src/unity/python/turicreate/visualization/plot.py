@@ -135,16 +135,17 @@ class Plot(object):
             spec = self._get_vega(include_data = include_data)
             with open(filepath, 'w') as fp:
                 _json.dump(spec, fp)
-        elif filepath.endswith(".png"):
+        elif filepath.endswith(".png") or filepath.endswith(".svg"):
             # save as png, but json first
             spec = self._get_vega(include_data = True)
+            extension = filepath[-3:]
             with open("temp_file.vg.json", 'w') as fp:
                 _json.dump(spec, fp)
-            os.system("node node_modules/vega/bin/vg2png temp_file.vg.json " + filepath)
+            os.system("node node_modules/vega/bin/vg2" + extension + " temp_file.vg.json " + filepath)
             # delete temp file that user didn't ask for
             os.system("rm temp_file.vg.json") 
         else:
-            raise NotImplementedError("Plot save() is only supported for json and png")
+            raise NotImplementedError("Plot save() is only supported for json, png, and svg")
 
 
     def _get_data(self):
