@@ -7,19 +7,29 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 from .plot import Plot
-
+import sys
+import os
+import turicreate as tc
 
 def _get_client_app_path():
-    import sys
-    import os
     (tcviz_dir, _) = os.path.split(os.path.dirname(__file__))
 
+    if sys.platform != 'darwin' and sys.platform != 'linux2' and sys.platform != 'linux' :
+        raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
+    
     if sys.platform == 'darwin':
         return os.path.join(tcviz_dir, 'Turi Create Visualization.app', 'Contents', 'MacOS', 'Turi Create Visualization')
 
     if sys.platform == 'linux2' or sys.platform == 'linux':
         return os.path.join(tcviz_dir, 'Turi Create Visualization', 'visualization_client')
 
+def _get_title(title):
+    if title == "":
+        title = " "
+    if title == None:
+        title = ""
+
+    return title
 
 def show(x, y, xlabel="X", ylabel="Y", title=None):
     """
@@ -80,20 +90,54 @@ def show(x, y, xlabel="X", ylabel="Y", title=None):
     ...                 title="Custom title")
 
     """
-    import sys
-    if sys.platform != 'darwin' and sys.platform != 'linux2' and sys.platform != 'linux' :
-        raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
-
-    import turicreate as tc
-
     path_to_client = _get_client_app_path()
-
-    if title == "":
-        title = " "
-
-    if title == None:
-        title = ""
-
+    title = _get_title(title)
     plt_ref = tc.extensions.plot(path_to_client, x, y, xlabel, ylabel, title)
-
     Plot(plt_ref).show()
+
+def scatter(x, y, xlabel="X", ylabel="Y", title=None):
+    path_to_client = _get_client_app_path()
+    title = _get_title(title)
+    plt_ref = tc.extensions.plot_scatter(path_to_client, x, y, 
+      xlabel, ylabel,title)
+    return Plot(plt_ref)
+
+def categorical_heatmap(x, y, xlabel="X", ylabel="Y", title=None):
+    path_to_client = _get_client_app_path()
+    title = _get_title(title)
+    plt_ref = tc.extensions.plot_categorical_heatmap(path_to_client, x, y, 
+      xlabel, ylabel, title)
+    return Plot(plt_ref)
+
+def heatmap(x, y, xlabel="X", ylabel="Y", title=None):
+    path_to_client = _get_client_app_path()
+    title = _get_title(title)
+    plt_ref = tc.extensions.plot_heatmap(path_to_client, x, y, 
+      xlabel, ylabel, title)
+    return Plot(plt_ref)
+
+def box_plot(x, y, xlabel="X", ylabel="Y", title=None):
+    path_to_client = _get_client_app_path()
+    title = _get_title(title)
+    plt_ref = tc.extensions.plot_boxes_and_whiskers(path_to_client, x, y, 
+      xlabel, ylabel, title)
+    return Plot(plt_ref)
+
+def columnwise_summary(sf):
+    path_to_client = _get_client_app_path()
+    plt_ref = tc.extensions.plot_columnwise_summary(path_to_client, sf)
+    return Plot(plt_ref)
+
+def histogram(sa, xlabel="Values", ylabel="Count", title=None):
+    path_to_client = _get_client_app_path()
+    title = _get_title(title)
+    plt_ref = tc.extensions.plot_histogram(path_to_client, sa, 
+      xlabel, ylabel, title)
+    return Plot(plt_ref)
+
+def item_frequency(sa, xlabel="Values", ylabel="Count", title=None):
+    path_to_client = _get_client_app_path()
+    title = _get_title(title)
+    plt_ref = tc.extensions.plot_item_frequency(path_to_client, sa, 
+      xlabel, ylabel, title)
+    return Plot(plt_ref)

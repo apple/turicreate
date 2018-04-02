@@ -5,6 +5,7 @@ make_library(
   SOURCES
     boxes_and_whiskers.cpp
     categorical_heatmap.cpp
+    columnwise_summary.cpp
     groupby.cpp
     heatmap.cpp
     histogram.cpp
@@ -13,6 +14,7 @@ make_library(
     item_frequency.cpp
     plot.cpp
     process_wrapper.cpp
+    registration.cpp
     scatter.cpp
     show.cpp
     summary_view.cpp
