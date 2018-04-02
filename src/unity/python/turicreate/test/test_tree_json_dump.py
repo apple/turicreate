@@ -13,7 +13,6 @@ import random
 import numpy
 
 import os as _os
-_lfs = _os.environ['LFS_ROOT']
 
 class Config:
     is_debug = False  # always set this to False in production
@@ -301,16 +300,3 @@ class TreeJsonDumpTest(unittest.TestCase):
         m = tc.boosted_trees_regression.create(sf, target='target', validation_set=None, random_seed=0,
                                                max_depth=10, max_iterations=3)
         self._check_json_model_predict_consistency(m, sf)
-
-    @unittest.skip("for manual test only")
-    def test_real_data(self):
-        """
-        This test is excluded from regular build process. Only used for manual verification.
-        """
-        train_path = _os.path.join(_lfs, 'gl-internal', 'internal-testdata', 'traindata3916.sframe')
-        test_path = _os.path.join(_lfs, 'gl-internal', 'internal-testdata', 'testdata3916.sframe')
-        train_data = tc.load_sframe(train_path)
-        test_data = tc.load_sframe(test_path)
-        m = tc.boosted_trees_regression.create(train_data, target='is_cv', max_iterations=1,
-                                               validation_set=None, max_depth=9)
-        self._check_json_model_predict_consistency(m, test_data)
