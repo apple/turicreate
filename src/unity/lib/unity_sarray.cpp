@@ -2837,7 +2837,7 @@ std::shared_ptr<model_base> unity_sarray::plot(const std::string& path_to_client
   }
 
   std::shared_ptr<unity_sarray> self = std::make_shared<unity_sarray>(*this);
-  gl_sarray sa = gl_sarray(self);
+  gl_sarray sa(self);
 
   switch (self->dtype()) {
     case flex_type_enum::INTEGER:
