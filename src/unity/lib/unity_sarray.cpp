@@ -1333,12 +1333,12 @@ std::shared_ptr<unity_sarray_base> unity_sarray::lazy_astype(flex_type_enum dtyp
         }
       } catch(const std::string& s) {
         if (undefined_on_failure) ret = FLEX_UNDEFINED;
-        else log_and_throw("Unable to interpret " +
-                           f.get<flex_string>() + " as the target type.");
+        else log_and_throw("Unable to interpret value of \"" + f.get<flex_string>()
+                           + "\" as a " + flex_type_enum_to_name(dtype) + ".");
       } catch(const std::exception& s) {
         if (undefined_on_failure) ret = FLEX_UNDEFINED;
-        else log_and_throw("Unable to interpret " +
-                           f.get<flex_string>() + " as the target type.");
+        else log_and_throw("Unable to interpret value of \"" + f.get<flex_string>()
+                           + "\" as a " + flex_type_enum_to_name(dtype) + ".");
       }
       return ret;
     };
