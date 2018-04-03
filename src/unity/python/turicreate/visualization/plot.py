@@ -136,12 +136,15 @@ class Plot(object):
             with open(filepath, 'w') as fp:
                 _json.dump(spec, fp)
         elif filepath.endswith(".png") or filepath.endswith(".svg"):
-            # save as png, but json first
+            # save as png/svg, but json first
             spec = self._get_vega(include_data = True)
             extension = filepath[-3:]
             with open("temp_file.vg.json", 'w') as fp:
                 _json.dump(spec, fp)
-            os.system("node node_modules/vega/bin/vg2" + extension + " temp_file.vg.json " + filepath)
+            dirname = os.path.dirname(__file__)
+            relative_path_to_vg2png_vg2svg = "../../../../../../node_modules/vega/bin/vg2" + extension
+            absolute_path_to_vg2png_vg2svg = os.path.join(dirname, relative_path_to_vg2png_vg2svg)
+            os.system("node " + absolute_path_to_vg2png_vg2svg + " temp_file.vg.json " + filepath)
             # delete temp file that user didn't ask for
             os.system("rm temp_file.vg.json") 
         else:
