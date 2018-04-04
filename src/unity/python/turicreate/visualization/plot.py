@@ -3,7 +3,8 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import logging as _logging
 import json as _json
-import os
+import os as _os
+from tempfile import mkstemp as _mkstemp
 
 _target = 'auto'
 
@@ -128,7 +129,7 @@ class Plot(object):
 
         """
         if type(filepath) != str:
-            raise ValueError("File path provided is not a string")
+            raise ValueError("filepath provided is not a string")
 
         if filepath.endswith(".json"):
             # save as vega json
@@ -139,16 +140,19 @@ class Plot(object):
             # save as png/svg, but json first
             spec = self._get_vega(include_data = True)
             extension = filepath[-3:]
-            with open("temp_file.vg.json", 'w') as fp:
+            temp_file_tuple = _mkstemp()
+            temp_file_path = temp_file_tuple[1]
+            with open(temp_file_path, 'w') as fp:
                 _json.dump(spec, fp)
-            dirname = os.path.dirname(__file__)
-            relative_path_to_vg2png_vg2svg = "../../../../../../node_modules/vega/bin/vg2" + extension
-            absolute_path_to_vg2png_vg2svg = os.path.join(dirname, relative_path_to_vg2png_vg2svg)
-            os.system("node " + absolute_path_to_vg2png_vg2svg + " temp_file.vg.json " + filepath)
+            dirname = _os.path.dirname(__file__)
+            relative_path_to_vg2png_vg2svg = "../vega/bin/vg2" + extension
+            absolute_path_to_vg2png_vg2svg = _os.path.join(
+                dirname, relative_path_to_vg2png_vg2svg)
+            _os.system("node " + absolute_path_to_vg2png_vg2svg + " " + temp_file_path + " " + filepath)
             # delete temp file that user didn't ask for
-            os.system("rm temp_file.vg.json") 
+            _os.system("rm " + temp_file_path) 
         else:
-            raise NotImplementedError("Plot save() is only supported for json, png, and svg")
+            raise NotImplementedError("filename must end in .json, .svg, or .png")
 
 
     def _get_data(self):
@@ -158,7 +162,7 @@ class Plot(object):
         if(include_data):
             spec = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_spec'}))["vega_spec"]
             data = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_data'}))["data_spec"]
-            for x in range(0, len(spec["data"])):
+            for x in range(len(spec["data"])):
                 if(spec["data"][x]["name"] == "source_2"):
                     spec["data"][x] = data
                     break;
