@@ -201,15 +201,25 @@ static fs::path get_current_process_temp_directory(size_t idx) {
  * idx can be any value in which case the indices will loop around.
  */
 static void create_current_process_temp_directory(std::string path) {
+  bool success = true;
+
   try {
     if (fileio::get_file_status(path) != fileio::file_status::DIRECTORY) {
-      bool success = fileio::create_directory(path);
-      ASSERT_TRUE(success);
-      get_temp_info().process_temp_directories.insert(path);
+      success = fileio::create_directory(path);
+      if(success)
+        get_temp_info().process_temp_directories.insert(path);
     }
   } catch (...) {
-    logstream(LOG_FATAL) << "Unable to create temporary directories at "
-                         << path << std::endl;
+    success = false;
+  }
+
+  if(! success) {
+    std::stringstream error_message;
+    error_message << "Unable to a create temporary directory at \""
+                  << path << "\". This location can be changed by calling:\n"
+                  << "turicreate.config.set_runtime_config('TURI_CACHE_FILE_LOCATIONS', <writable path>)\n"
+                  << std::endl;
+    log_and_throw(error_message.str());
   }
 }
 
