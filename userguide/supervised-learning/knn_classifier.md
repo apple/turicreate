@@ -100,7 +100,7 @@ Finally, we create the model and generate predictions.
 m = tc.nearest_neighbor_classifier.create(train_data, target='stars',
                                           features=numeric_features)
 predictions = m.classify(test_data, max_neighbors=20, radius=None)
-print predictions
+print(predictions)
 ```
 ```no-highlight
 +-------+-------------+
@@ -132,7 +132,7 @@ neighbors belonging to every target class.
 
 ```python
 topk = m.predict_topk(test_data[:5], max_neighbors=20, k=3)
-print topk
+print(topk)
 ```
 ```no-highlight
 ## -- End pasted text --
@@ -160,7 +160,7 @@ method.
 
 ```python
 evals = m.evaluate(test_data[:3000])
-print evals['accuracy']
+print(evals['accuracy'])
 ```
 ```no-highlight
 0.46
@@ -178,7 +178,7 @@ conf_matrix = evals['confusion_matrix']
 conf_matrix['within_one'] = conf_matrix.apply(
     lambda x: abs(x['target_label'] - x['predicted_label']) <= 1)
 num_within_one = conf_matrix[conf_matrix['within_one']]['count'].sum()
-print float(num_within_one) / len(test_data)
+print(float(num_within_one) / len(test_data))
 ```
 ```no-highlight
 0.8386693230783487
@@ -230,7 +230,7 @@ my_dist = [
 m2 = tc.nearest_neighbor_classifier.create(train_data, target='stars',
                                           distance=my_dist)
 accuracy = m2.evaluate(test_data[:3000], metric='accuracy')
-print accuracy
+print(accuracy)
 ```
 ```no-highlight
 {'accuracy': 0.482}
