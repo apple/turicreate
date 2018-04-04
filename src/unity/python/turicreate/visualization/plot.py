@@ -145,7 +145,7 @@ class Plot(object):
             with open(temp_file_path, 'w') as fp:
                 _json.dump(spec, fp)
             dirname = _os.path.dirname(__file__)
-            relative_path_to_vg2png_vg2svg = "../vega/bin/vg2" + extension
+            relative_path_to_vg2png_vg2svg = "../node_modules/vega/bin/vg2" + extension
             absolute_path_to_vg2png_vg2svg = _os.path.join(
                 dirname, relative_path_to_vg2png_vg2svg)
             _os.system("node " + absolute_path_to_vg2png_vg2svg + " " + temp_file_path + " " + filepath)
