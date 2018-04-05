@@ -108,6 +108,40 @@ window.export_png = function export_png(){
     }
 }
 
- window.addEventListener('contextmenu', event => event.preventDefault());
+window.handleInput = function(data){
+  var json_obj = data;
 
-ReactDOM.render(<TcPlot />, document.getElementById('root'));
+  if(json_obj["table_spec"] != null) {
+    var input_data = {};
+    input_data["data"] = json_obj["table_spec"];
+    input_data["type"] = "table";
+
+    window.setSpec(input_data);
+  }
+
+  if(json_obj["vega_spec"] != null) {
+    var input_data = {};
+    input_data["data"] = json_obj["vega_spec"];json_obj["data_spec"]
+    input_data["type"] = "vega";
+
+    window.setSpec(input_data);
+  }
+
+  if(json_obj["data_spec"] != null) {
+    window.updateData(json_obj["data_spec"]);
+  }
+
+  if(json_obj["image_spec"] != null) {
+    var input_data = {};
+    input_data["data"] = json_obj["image_spec"];
+    window.setImageData(input_data);
+  }
+
+  if(json_obj["modal_spec"] != null) {
+    var input_data = {};
+    input_data["data"] = json_obj["modal_spec"];
+    window.setAccordionData(input_data);
+  }
+}
+
+window.addEventListener('contextmenu', event => event.preventDefault());
