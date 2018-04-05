@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 
 import vegaEmbed from 'vega-embed';
-import {vega as vegaTooltip} from'vega-tooltip';
 
 import './index.css';
 
 var vega = require('vega');
+var vegaTooltip = require('vega-tooltip');
 
 window.vega_type = vega;
 
@@ -98,21 +98,17 @@ class TcPlot extends Component {
         }
 
         this.vegaLoading = true;
-
-        var $this = this;
-
-        vegaEmbed(this.vega_container, this.vega_json, this.opt).then(function(viewInstance) {
-          $this.vegaView = viewInstance.view;
-          // https://github.com/vega/vega-tooltip/issues/162
-          vegaTooltip($this.vegaView, $this.vega_json, $this.bubbleOpts);
-          $this.vegaResult = viewInstance.spec;
-          $this.vegaLoading = false;
-          if(window.navigator.platform === 'MacIntel'){
+        this.vegaView = new vega.View(vega.parse(this.vega_json))
+                                .initialize(this.vega_container)
+                                .hover()
+                                .run();
+        this.setState({ initializedVega: true });
+        this.vegaLoading = false;
+        vegaTooltip.vega(this.vegaView);
+        
+        if(window.navigator.platform === 'MacIntel'){
             window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'ready'});
-          }
-        }).catch(function(error) {
-          console.error(error);
-        });
+        }
     }
 
     getSpec(){
