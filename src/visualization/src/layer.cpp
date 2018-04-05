@@ -44,7 +44,7 @@ void Layer::OnContextInitialized() {
   CefBrowserSettings browser_settings;
 
   std::string path = getExecutableBasePath();
-  path = std::string("file://") + path + std::string("/html/vega_viz.html");
+  path = std::string("file://") + path + std::string("/html/index.html");
 
   CefWindowInfo window_info;
   CefRefPtr<CefBrowser> current_browser = CefBrowserHost::CreateBrowserSync(window_info, handler, path, browser_settings, NULL);
