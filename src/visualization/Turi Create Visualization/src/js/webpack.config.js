@@ -13,7 +13,7 @@ const WebpackConfig = {
         filename: 'index.js'
     },
     resolve: {
-      extensions: ['.js', '.jsx', '.json']
+      extensions: ['.js', '.jsx', '.json', '.css']
     },
     module: {
         rules: [
@@ -24,6 +24,10 @@ const WebpackConfig = {
                 options: {
                     presets: [ 'es2015', 'react' ]
                 }
+            },
+            {
+                test: /\.css$/,
+                use:['style-loader','css-loader']
             }
         ],
         loaders: [

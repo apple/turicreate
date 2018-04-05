@@ -1,0 +1,19 @@
+.vega_container{
+    
+}
+
+.hidden_cont{
+    position: absolute;
+    left: -99999px;
+    top:0px;
+    opacity: 1.0;
+    z-index: 0;
+}
+
+.uninitialized{
+    display: none;
+}
+
+.vega-actions a {
+    display: none;
+}
