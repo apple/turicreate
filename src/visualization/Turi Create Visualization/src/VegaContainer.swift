@@ -148,12 +148,12 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
         
         case "getAccordion":
             guard let column_name = messageBody["column"] as? String else {
-                assert(false, "Expected start in getRows")
+                assert(false, "column in getAccordion")
                 return
             }
             
             guard let index_num = messageBody["index"] as? String else {
-                assert(false, "Expected end in getRows")
+                assert(false, "index in getAccordion")
                 return
             }
             

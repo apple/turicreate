@@ -7,8 +7,6 @@ import './index.css';
 var vega = require('vega');
 var vegaTooltip = require('vega-tooltip');
 
-window.vega_type = vega;
-
 class TcPlot extends Component {
 
     componentDidMount(){

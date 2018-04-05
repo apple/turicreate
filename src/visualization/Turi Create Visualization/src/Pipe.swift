@@ -70,7 +70,7 @@ class Pipe {
     }
     
     public func writeAccordion(method: String, column_name: String, index_val: String){
-        print("{'method':'get_accordian','column': '" + column_name + "', 'index': " + index_val + "}");
+        print("{'method':'get_accordion','column': '" + column_name + "', 'index': " + index_val + "}");
         fflush(__stdoutp)
     }
     
@@ -95,7 +95,7 @@ class Pipe {
                 self.graph_data.add_images(image_spec: image_spec)
             }
             
-            if let accordion_spec = json["modal_spec"] as? [String: Any] {
+            if let accordion_spec = json["accordion_spec"] as? [String: Any] {
                 self.graph_data.add_accordion(accordion_spec: accordion_spec)
             }
 

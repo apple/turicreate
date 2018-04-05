@@ -11,7 +11,6 @@ class StickyTable extends PureComponent {
   static propTypes = {
     stickyHeaderCount: PropTypes.number,
     stickyColumnCount: PropTypes.number,
-
     onScroll: PropTypes.func
   };
 
@@ -30,6 +29,7 @@ class StickyTable extends PureComponent {
     this.xScrollSize = 0;
     this.yScrollSize = 0;
     this.stickyHeaderCount = props.stickyHeaderCount === 0 ? 0 : (this.stickyHeaderCount || 1);
+    this.container_ref = React.createRef();
 
     this.isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
   }
@@ -130,7 +130,6 @@ class StickyTable extends PureComponent {
     if (!this.suppressScrollY) {
       this.scrollData.scrollTop = this.yWrapper.scrollTop = this.yScrollbar.scrollTop;
       this.suppressScrollY = true;
-      this.props.resetAccordion();
     } else {
       this.handleScroll();
       this.suppressScrollY = false;
@@ -307,42 +306,38 @@ class StickyTable extends PureComponent {
     var r, c, cellToCopy, height;
 
     var row_value = (this.props.y != undefined)?this.props.y:-1;
-
+    var column_offset_top = 0;
+      
     if (this.props.stickyColumnCount) {
-      for (r = this.rowCount-1; r > 0; r--) {
-        if(row_value != r){
-          cellToCopy = this.realTable.childNodes[r].firstChild;
-          if (cellToCopy) {
-            this.realTable.childNodes[r].childNodes[1].style.height = this.getModeHeights() + "px";
-            this.stickyColumn.firstChild.childNodes[r].style.height = this.getModeHeights() + "px";
-            height = this.getSize(cellToCopy).height;
-            this.stickyColumn.firstChild.childNodes[r].firstChild.style.height = height + 'px';
-            if (r == 0 && this.stickyCorner.firstChild.childNodes[r]) {
-              this.stickyCorner.firstChild.firstChild.firstChild.style.height = height + 'px';
-            }
+      for (r = 1; r < this.rowCount-1; r++) {
+        cellToCopy = this.realTable.childNodes[r].firstChild;
+        if (cellToCopy) {
+          this.realTable.childNodes[r].childNodes[1].style.height = this.getModeHeights() + "px";
+          this.stickyColumn.firstChild.childNodes[r].style.height = this.getModeHeights() + "px";
+          height = this.getSize(cellToCopy).height;
+          this.stickyColumn.firstChild.childNodes[r].firstChild.style.height = height + 'px';
+        
+          if (r == 0 && this.stickyCorner.firstChild.childNodes[r]) {
+            this.stickyCorner.firstChild.firstChild.firstChild.style.height = height + 'px';
           }
-        }else{
-          this.stickyColumn.firstChild.childNodes[r+1].style.height = this.getModeHeights() + 'px';
-          this.realTable.childNodes[r+1].childNodes[1].style.height = this.getModeHeights() + 'px';
-          this.realTable.childNodes[r+1].childNodes[0].style.height = this.getModeHeights() + 'px';
-
-          this.stickyColumn.firstChild.childNodes[r+1].classList.add("accordion_height");
-          this.realTable.childNodes[r+1].childNodes[1].classList.add("accordion_height");
-          this.realTable.childNodes[r+1].childNodes[0].classList.add("accordion_height");
-
-          this.stickyColumn.firstChild.childNodes[r+1].childNodes[0].style.height =  this.getModeHeights()*3 - 30 + "px";
-          this.stickyColumn.firstChild.childNodes[r+1].childNodes[0].style.width = (this.xScrollbar.clientWidth - 30) + "px";
-          this.stickyColumn.firstChild.childNodes[r+1].childNodes[0].style.left = 15 + "px";
-          this.stickyColumn.firstChild.childNodes[r+1].childNodes[0].style.top = this.stickyColumn.firstChild.childNodes[r].offsetTop + this.getModeHeights() + 15 + "px";
+        }
+        
+        if(row_value == r){
+            column_offset_top  = this.stickyColumn.firstChild.childNodes[r].offsetTop;
         }
       }
-
       this.stickyCorner.firstChild.firstChild.firstChild.style.height = this.stickyHeader.offsetHeight + 'px';
       this.stickyColumn.firstChild.childNodes[0].firstChild.style.height = this.stickyHeader.offsetHeight+'px';
+    
+      
+        if(document.getElementById("data_container")){
+            document.getElementById("data_container").style.height =  this.getModeHeights()*3 - 30 + "px"
+            document.getElementById("data_container").style.width = (this.xScrollbar.clientWidth - 30) + "px";
+            document.getElementById("data_container").style.left = 15 + "px";
+            document.getElementById("data_container").style.top = column_offset_top + this.getModeHeights() + 15 + "px";
+        }
     }
   }
-
-  columnContaineOverflow
 
   setColumnWidths() {
     var c, cellToCopy, cellStyle, width, cell, stickyWidth;
@@ -384,8 +379,9 @@ class StickyTable extends PureComponent {
     const columnsCount = this.props.stickyColumnCount;
     var cells;
     var stickyRows = [];
-    var row_value = (this.props.y != undefined)?this.props.y:-1;
-
+    var row_value = (this.props.y != undefined)?parseInt(this.props.y, 10):-1;
+      
+      
     if(this.props.scrollVal != -1){
       this.scroll = false;
     }
@@ -411,8 +407,8 @@ class StickyTable extends PureComponent {
             }
 
             stickyRows.push(
-              <Row {...row.props} style={{"height": "90px"}}>
-                <div style={{"position": "absolute", "overflow": "scroll", "width": 100, "left": 3, "zIndex": -99, "textAlign": "left", "background": "#F7F7F7"}}>
+              <Row {...row.props}>
+                  <div id="data_container" style={{"position": "absolute", "overflow": "scroll", "width": 100, "left": 3, "zIndex": 99, "textAlign": "left", "background": "#F7F7F7"}}>
                   <div style={{"padding": 10}}>
                     {data_entries}
                   </div>
@@ -421,8 +417,8 @@ class StickyTable extends PureComponent {
             );
           }else{
             stickyRows.push(
-              <Row {...row.props} style={{"height": "90px"}}>
-                <div style={{"position": "absolute", "overflow": "scroll", "width": 100, "left": 3, "zIndex": -99, "textAlign": "left", "background": "#F7F7F7"}}>
+              <Row {...row.props}>
+                <div id="data_container" style={{"position": "absolute", "overflow": "scroll", "width": 100, "left": 3, "zIndex": 99, "textAlign": "left", "background": "#F7F7F7"}}>
                   <div style={{"padding": 10}}>
                     Loading...
                   </div>
@@ -432,8 +428,8 @@ class StickyTable extends PureComponent {
           }
         }else{
           stickyRows.push(
-            <Row {...row.props} style={{"height": "90px"}}>
-              <div style={{"position": "absolute", "overflow": "scroll", "width": 100, "left": 3, "zIndex": -99, "textAlign": "left", "background": "#F7F7F7"}}>
+            <Row {...row.props}>
+              <div id="data_container" style={{"position": "absolute", "overflow": "scroll", "width": 100, "left": 3, "zIndex": 99, "textAlign": "left", "background": "#F7F7F7"}}>
                 <div style={{"padding": 10}}>
                   Loading...
                 </div>
@@ -506,7 +502,7 @@ class StickyTable extends PureComponent {
 
     this.rowCount = rows.length;
     this.columnCount = (rows[0] && React.Children.toArray(rows[0].props.children).length) || 0;
-
+      
     if (rows.length) {
       if (this.props.stickyColumnCount > 0 && this.stickyHeaderCount > 0) {
         stickyCorner = this.getStickyCorner(rows);
@@ -518,7 +514,7 @@ class StickyTable extends PureComponent {
         stickyHeader = this.getStickyHeader(rows);
       }
     }
-
+      
     return (
       <div className={'sticky-table ' + (this.props.className || '')} id={'sticky-table-' + this.id}>
         <div id='x-scrollbar'><div></div></div>

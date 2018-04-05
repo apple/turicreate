@@ -137,9 +137,9 @@ window.handleInput = function(data){
     window.setImageData(input_data);
   }
 
-  if(json_obj["modal_spec"] != null) {
+  if(json_obj["accordion_spec"] != null) {
     var input_data = {};
-    input_data["data"] = json_obj["modal_spec"];
+    input_data["data"] = json_obj["accordion_spec"];
     window.setAccordionData(input_data);
   }
 }

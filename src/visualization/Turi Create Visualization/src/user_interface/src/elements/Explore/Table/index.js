@@ -101,7 +101,6 @@ class TcTable extends Component {
   constructor(props){
     super(props);
     this.image_array = [];
-    this.table = [];
     this.image_dictionary = {};
     this.data = undefined;
     this.step_size = (this.props.step_size)?this.props.step_size:50;
@@ -109,7 +108,8 @@ class TcTable extends Component {
     this.scrollVal = -1;
     this.state = {
       windowHeight: window.innerHeight,
-      windowWidth: window.innerWidth
+      windowWidth: window.innerWidth,
+      table: []
     };
     this.loading_image_timer = undefined;
     this.y = -1;
@@ -255,14 +255,6 @@ class TcTable extends Component {
 
   setAccordionData(data){
     this.data_sent = data["data"];
-    this.drawTable();
-  }
-
-  resetAccordion(e){
-    this.data_sent = undefined;
-    this.column_name = undefined;
-    this.y = -1;
-
     this.drawTable();
   }
 
@@ -456,7 +448,7 @@ class TcTable extends Component {
       case "array":
       case "list":
         var active_element_loop = e.target.parentElement.parentElement.getElementsByClassName("active_element");
-
+            
         for(var ele = 0; ele < active_element_loop.length; ele++){
           if(active_element_loop[ele] != e.target){
             active_element_loop[ele].children[0].children[1].children[0].style.display = "block";
@@ -465,34 +457,34 @@ class TcTable extends Component {
             active_element_loop[ele].classList.remove("active_element");
           }
         }
+        
 
         if(e.target.children[0].children[0].getBoundingClientRect().width < e.target.children[0].children[0].children[0].getBoundingClientRect().width){
+            
           if(e.target.children[0].children[1].children[0].style.display == "none"){
             e.target.children[0].children[1].children[0].style.display = "block";
             e.target.children[0].children[1].children[1].style.display = "none";
             e.target.classList.remove("active_element");
             e.target.children[0].children[1].classList.remove("active_arrow");
-            this.y = -1;
+            this.data_sent = undefined;
             this.column_name = undefined;
+            this.y = -1;
             this.drawTable();
           }else{
             e.target.children[0].children[1].children[0].style.display = "none";
             e.target.children[0].children[1].children[1].style.display = "block";
             e.target.classList.add("active_element");
             e.target.children[0].children[1].classList.add("active_arrow");
-            this.y = row_number;
-            this.column_name = column_name;
-            this.drawTable();
-
-            var column_name_str = this.column_name.replace('"', "\\\"");
-
-            if(window.navigator.platform == 'MacIntel'){
-              window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'getAccordion', column: column_name_str, index: this.y});
-            }else{
-              window.postMessageToNativeClient('{"method":"get_accordian", "column": "' + column_name_str + '", "end": ' + this.y + '}');
-            }
+            this.data_sent = undefined;
+            this.column_name = undefined;
+            this.y = -1;
+              
+            var column_name_str = column_name.replace('"', "\\\"");
+              
+            this.drawTable(true, row_number, column_name, column_name_str);
           }
         }
+            
         break;
       case "image":
         break;
@@ -501,7 +493,8 @@ class TcTable extends Component {
     }
   }
 
-  drawTable(){
+  drawTable(callback_accordion = false, y = -1, column_name = undefined, column_name_str = undefined){
+
     var rows = [];
     var row_ids = [];
 
@@ -531,9 +524,10 @@ class TcTable extends Component {
 
       if(this.y == r){
         var empty_cells = [];
-
-        for(var x = 0; x < cells.length;x++){
-          empty_cells.push(<Cell key={x+"_"+r+"modal"}><div></div></Cell>);
+        empty_cells.push(<Cell className={"header_element accordion_helper"} key={"0_"+r+"modal"}>&nbsp;</Cell>);
+        
+        for(var x = 1; x < cells.length;x++){
+          empty_cells.push(<Cell className={"elements accordion_helper"} key={x+"_"+r+"modal"}>&nbsp;</Cell>);
         }
 
         rows.push(<Row key={"modal"} accordion={true}>
@@ -541,9 +535,10 @@ class TcTable extends Component {
                   </Row>);
 
         var empty_cells_1 = [];
-
-        for(var x = 0; x < cells.length;x++){
-          empty_cells_1.push(<Cell key={x+"_"+r+"spacer1"}><div></div></Cell>);
+        empty_cells_1.push(<Cell className={"header_element accordion_helper"} key={"0_"+r+"spacer1"}>&nbsp;</Cell>);
+       
+        for(var x = 1; x < cells.length;x++){
+          empty_cells_1.push(<Cell className={"elements accordion_helper"} key={x+"_"+r+"spacer1"}>&nbsp;</Cell>);
         }
 
         rows.push(<Row key={"spacer1"} spacers={true}>
@@ -551,9 +546,10 @@ class TcTable extends Component {
                   </Row>);
 
         var empty_cells_2 = [];
+        empty_cells_2.push(<Cell className={"header_element accordion_helper"} key={"0_"+r+"spacer2"}>&nbsp;</Cell>);
 
-        for(var x = 0; x < cells.length;x++){
-          empty_cells_2.push(<Cell key={x+"_"+r+"spacer2"}><div></div></Cell>);
+        for(var x = 1; x < cells.length;x++){
+          empty_cells_2.push(<Cell className={"elements accordion_helper"} key={x+"_"+r+"spacer2"}>&nbsp;</Cell>);
         }
 
         rows.push(<Row key={"spacer2"} spacers={true}>
@@ -561,6 +557,7 @@ class TcTable extends Component {
                   </Row>);
       }
     }
+
 
     this.set_higher = ((Math.max(...row_ids)+1)/this.step_size);
     this.set_lower = (Math.min(...row_ids)/this.step_size);
@@ -576,7 +573,7 @@ class TcTable extends Component {
 
     var tableBody = (
                       <div className="resize_container" key="tableBody" style={{ "height": this.state.windowHeight-44, "width": this.state.windowWidth}}>
-                        <StickyTable resetAccordion={this.resetAccordion} scrollVal={this.scrollVal} size={this.size} step_size={this.step_size} set_lower={this.set_lower} set_higher={this.set_higher}  y={this.y} data={this.data_sent} column_name={this.column_name} style={{ "height": this.state.windowHeight-44, "width": this.state.windowWidth}}>
+                        <StickyTable scrollVal={this.scrollVal} size={this.size} step_size={this.step_size} set_lower={this.set_lower} set_higher={this.set_higher}  y={this.y} data={this.data_sent} column_name={this.column_name} style={{ "height": this.state.windowHeight-44, "width": this.state.windowWidth}}>
                           {rows}
                         </StickyTable>
                       </div>
@@ -618,13 +615,29 @@ class TcTable extends Component {
       this.table_array.push(tableFooter);
       this.table_array.push(imageContainer);
 
-      this.table = this.table_array[0];
+      var temp_table = this.table_array[0];
 
       for(var x = 1; x < this.table_array.length; x++){
-        this.table = [this.table, this.table_array[x]];
+        temp_table = [temp_table, this.table_array[x]];
       }
-
-      this.forceUpdate();
+      
+      var $this = this;
+      
+      this.setState({table: temp_table}, function() {
+        if(callback_accordion){
+            $this.y = y;
+            $this.column_name = column_name;
+            $this.drawTable()
+                    
+            var element_index = String(parseInt(y, 10) - 1);
+                    
+            if(window.navigator.platform == 'MacIntel'){
+                window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'getAccordion', column: column_name_str, index: element_index});
+            }else{
+                window.postMessageToNativeClient('{"method":"get_accordion", "column": "' + column_name_str + '", "end": ' + element_index + '}');
+            }
+        }
+      });
   }
 
   updateData(data){
@@ -675,7 +688,7 @@ class TcTable extends Component {
   render() {
     return (
       <div>
-        {this.table}
+        {this.state.table}
       </div>
     );
   }

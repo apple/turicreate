@@ -1950,15 +1950,14 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
       }
     };
 
-    auto getAccordian = [self, &reader, &ew, &column_names, &empty_tz](std::string column_name, size_t index) {
-        index = index - 1;
+    auto getAccordion = [self, &reader, &ew, &column_names, &empty_tz](std::string column_name, size_t index) {
 
         ASSERT_TRUE(std::find(column_names.begin(), column_names.end(), column_name) != column_names.end());
         DASSERT_LT(index, self->size());
         DASSERT_GE(index, 0);
 
-        auto modal_sa = self->select_column(column_name);
-        auto gl_sa = gl_sarray(modal_sa);
+        auto accordion_sa = self->select_column(column_name);
+        auto gl_sa = gl_sarray(accordion_sa);
 
         flexible_type value = gl_sa[index];
 
@@ -1968,7 +1967,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
           case flex_type_enum::FLOAT:
             {
               std::stringstream ss;
-              ss << "{\"modal_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
               ss << ", \"type\": " << value.get_type();
               ss << ", \"data\": " << value.get<flex_float>();
               ss << "}}" << std::endl;
@@ -1978,7 +1977,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
           case flex_type_enum::INTEGER:
             {
               std::stringstream ss;
-              ss << "{\"modal_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
               ss << ", \"type\": " << value.get_type();
               ss << ", \"data\": " << value.get<flex_int>();
               ss << "}}" << std::endl;
@@ -1994,7 +1993,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
               const unsigned char * image_data = img.get_image_data();
               size_t image_data_size = img.m_image_data_size;
 
-              ss << "{\"modal_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
               ss << ", \"type\": " << value.get_type();
               ss << ", \"data\": ";
               ss << "{\"width\": " << img.m_width << ", ";
@@ -2032,7 +2031,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
           case flex_type_enum::DATETIME:
             {
               std::stringstream ss;
-              ss << "{\"modal_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
               ss << ", \"type\": " << value.get_type();
               ss << ", \"data\": ";
               ss << "\"";
@@ -2070,7 +2069,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
           case flex_type_enum::VECTOR:
             {
               std::stringstream ss;
-              ss << "{\"modal_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
               ss << ", \"type\": " << value.get_type();
               ss << ", \"data\": ";
               std::stringstream strm;
@@ -2092,7 +2091,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
           case flex_type_enum::LIST:
             {
               std::stringstream ss;
-              ss << "{\"modal_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
               ss << ", \"type\": " << value.get_type();
               ss << ", \"data\": " << turi::visualization::extra_label_escape(value.to<std::string>());
               ss << "}}" << std::endl;
@@ -2102,7 +2101,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
           case flex_type_enum::DICT:
             {
               std::stringstream ss;
-              ss << "{\"modal_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
               ss << ", \"type\": " << value.get_type();
               ss << ", \"data\": " << turi::visualization::extra_label_escape(value.to<std::string>());
               ss << "}}" << std::endl;
@@ -2112,7 +2111,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
           case flex_type_enum::STRING:
             {
               std::stringstream ss;
-              ss << "{\"modal_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
               ss << ", \"type\": " << value.get_type();
               ss << ", \"data\": " << turi::visualization::extra_label_escape(value.to<std::string>());
               ss << "}}" << std::endl;
@@ -2122,7 +2121,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
           default:
             {
               std::stringstream ss;
-              ss << "{\"modal_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
               ss << ", \"type\": " << value.get_type();
               ss << ", \"data\": " << turi::visualization::extra_label_escape(value.to<std::string>());
               ss << "}}" << std::endl;
@@ -2201,7 +2200,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
       flex_int start = -1, end = -1, index = -1;
       std::string column_name;
 
-      enum MethodType {GetRows = 0, GetModal = 1};
+      enum MethodType {GetRows = 0, GetAccordion = 1};
       MethodType response;
 
       auto sa = gl_sarray(std::vector<flexible_type>(1, input)).astype(flex_type_enum::DICT);
@@ -2212,8 +2211,8 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
         if (key == "method") {
           if(value.get<flex_string>() == "get_rows"){
             response = GetRows;
-          }else if(value.get<flex_string>() == "get_accordian"){
-            response = GetModal;
+          }else if(value.get<flex_string>() == "get_accordion"){
+            response = GetAccordion;
           }
         } else if (key == "start") {
           start = value.get<flex_int>();
@@ -2228,8 +2227,8 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
 
       if(response == GetRows){
         getRows(start, end);
-      }else if(response == GetModal){
-        getAccordian(column_name, index);
+      }else if(response == GetAccordion){
+        getAccordion(column_name, index);
       }
     }
   });

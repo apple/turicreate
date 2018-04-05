@@ -37,6 +37,11 @@
     line-height: 16.8px;
 }
 
+.accordion_helper{
+    border-right: 1px solid #FFFFFF;
+    border-bottom: 1px solid #FFFFFF;
+}
+
 .header{
     background: #F7F7F7;
     font-family: HelveticaNeue-Medium;
