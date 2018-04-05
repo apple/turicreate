@@ -52,7 +52,10 @@ set_property(DIRECTORY PROPERTY INSTALLATION_BINARY_FILES "${INSTALLATION_BINARY
 add_custom_target(
   visualization_vega ALL
   DEPENDS visualization_client
-  COMMAND cp -a "${CMAKE_SOURCE_DIR}/src/visualization/Turi Create Visualization/src/js/node_modules" ${CMAKE_CURRENT_BINARY_DIR}
+  COMMAND npm install canvas-prebuilt
+  COMMAND cp "${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vega_3.2.1.js" "${CMAKE_CURRENT_BINARY_DIR}"
+  COMMAND cp "${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vg2png" "${CMAKE_CURRENT_BINARY_DIR}"
+  COMMAND cp "${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vg2svg" "${CMAKE_CURRENT_BINARY_DIR}"
 )
 
 if (APPLE)
