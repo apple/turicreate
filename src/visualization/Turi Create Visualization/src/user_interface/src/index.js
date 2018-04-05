@@ -1,17 +1,19 @@
-import Tctable from "./elements/Explore/Table";
-import TcPlot from "./elements/Plot/Plot";
-import TcSummary from "./elements/Plot/Summary";
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import TcPlot from './elements/Plot/Chart/index.js';
+import TcSummary from './elements/Plot/Summary/index.js';
+import TcTable from './elements/Explore/Table/index.js';
+
 var SpecType = Object.freeze({"table":1, "vega":2, "summary":3, "annotate": 4})
+window.flex_type_enum = Object.freeze({"integer":0, "float":1, "string":2, "vector": 3, "list": 4, "dict": 5, "datetime": 6, "undefined": 7, "image": 8, "nd_vector": 9});
 
 var component_rendered = null;
 var spec_type = null;
 
+
 function resetDisplay(){
-    document.getElementById("loading_container").style.display = "block";
+    document.getElementById('loading_container').style.display = "block";
     document.getElementById('table_vis').style.display = 'none';
     document.getElementById('vega_vis').style.display = 'none';
     component_rendered = null;
@@ -28,6 +30,7 @@ window.setSpec = function setSpec(value) {
             break;
         case "table":
             document.getElementById('table_vis').style.display = 'block';
+            component_rendered = ReactDOM.render(<TcTable table_spec={value.data} />, document.getElementById('table_vis'));
             spec_type = SpecType.table;
             break;
         case "summary":
@@ -44,8 +47,6 @@ window.setSpec = function setSpec(value) {
 window.updateData = function updateData(data) {
     switch(spec_type){
         case SpecType.table:
-            console.log("table");
-            break;
         case SpecType.summary:
         case SpecType.vega:
             document.getElementById("loading_container").style.display = "none";
@@ -56,16 +57,6 @@ window.updateData = function updateData(data) {
             break;
         default:
             console.log("default");
-    }
-}
-
-window.setImageData = function setImageData(){
-    switch(spec_type){
-        case SpecType.table:
-            // TODO: set image data
-            break;
-        default:
-            break;
     }
 }
 
@@ -89,6 +80,24 @@ window.getData = function getData(){
     }
 }
 
+window.setImageData = function setImageData(value){
+    switch(spec_type){
+        case SpecType.table:
+            return component_rendered.setImageData(value);
+        default:
+            return "";
+    }
+}
+
+window.setAccordionData = function setAccordionData(value){
+    switch(spec_type){
+        case SpecType.table:
+            return component_rendered.setAccordionData(value);
+        default:
+            return "";
+    }
+}
+
 window.export_png = function export_png(){
     switch(spec_type){
         case SpecType.summary:
@@ -99,4 +108,6 @@ window.export_png = function export_png(){
     }
 }
 
-window.addEventListener('contextmenu', event => event.preventDefault());
+ window.addEventListener('contextmenu', event => event.preventDefault());
+
+ReactDOM.render(<TcPlot />, document.getElementById('root'));

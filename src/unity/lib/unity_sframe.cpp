@@ -1951,6 +1951,8 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
     };
 
     auto getAccordian = [self, &reader, &ew, &column_names, &empty_tz](std::string column_name, size_t index) {
+        index = index - 1;
+
         ASSERT_TRUE(std::find(column_names.begin(), column_names.end(), column_name) != column_names.end());
         DASSERT_LT(index, self->size());
         DASSERT_GE(index, 0);

@@ -1,14 +1,3 @@
-
-
-body {
-    margin: 0;
-    padding: 0;
-    font-family: HelveticaNeue;
-    font-size: 12px;
-    color: rgba(0,0,0,0.65);
-    line-height: 16.8px;
-}
-
 .tableTitle{
     padding-top: 17px;
     padding-left: 17px;
@@ -48,7 +37,6 @@ body {
     line-height: 16.8px;
 }
 
-
 .header{
     background: #F7F7F7;
     font-family: HelveticaNeue-Medium;
@@ -60,7 +48,6 @@ body {
     padding-right: 38px;
     border-top: 1px solid #E9E9E9;
     border-bottom: 1px solid #E9E9E9;
-    max-width: 230px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow:ellipsis;
@@ -133,16 +120,19 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow:ellipsis;
+    color: #108EE9;
     font-family: HelveticaNeue;
     font-size: 12px;
     line-height: 16.8px;
 }
 
 .string_val{
+  position:relative;
     max-width: 190px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow:ellipsis;
+    color: #108EE9;
 }
 
 .array_value{
@@ -150,16 +140,14 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow:ellipsis;
+    color: #108EE9;
     font-family: HelveticaNeue;
     font-size: 12px;
     line-height: 16.8px;
 }
 
-
-.resize_container{
-    width: 100%,
-    height: 470px,
-    margin-top: 30px;
+.default_span_color{
+  color: #000000
 }
 
 #imageHoverContainer{
@@ -269,4 +257,45 @@ body {
     border: 9px solid transparent;
     border-top-color: #FFFFFF;
     z-index:999;
+}
+
+.hoverable_element{
+  background: auto;
+  cursor: pointer;
+}
+
+.hoverable_element:hover{
+  background: #ECF6FD;
+}
+
+.arrow_right{
+  position: absolute;
+  top:0px;
+  right:-20px;
+  display: none;
+  color:#108EE9;
+}
+
+.active_element{
+  background: #ECF6FD;
+}
+
+.active_arrow{
+  display: block;
+}
+
+.hoverable_element:hover .arrow_right {
+  display: block;
+}
+
+.accordion_window{
+  background: #F7F7F7;
+  height: 0px;
+  border-bottom: 1px solid #E9E9E9;
+}
+
+.loading_element{
+  position: absolute;
+  top:0;
+  right: 0px;
 }
