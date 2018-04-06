@@ -448,7 +448,7 @@ class TcTable extends Component {
       case "array":
       case "list":
         var active_element_loop = e.target.parentElement.parentElement.getElementsByClassName("active_element");
-            
+
         for(var ele = 0; ele < active_element_loop.length; ele++){
           if(active_element_loop[ele] != e.target){
             active_element_loop[ele].children[0].children[1].children[0].style.display = "block";
@@ -457,10 +457,10 @@ class TcTable extends Component {
             active_element_loop[ele].classList.remove("active_element");
           }
         }
-        
+
 
         if(e.target.children[0].children[0].getBoundingClientRect().width < e.target.children[0].children[0].children[0].getBoundingClientRect().width){
-            
+
           if(e.target.children[0].children[1].children[0].style.display == "none"){
             e.target.children[0].children[1].children[0].style.display = "block";
             e.target.children[0].children[1].children[1].style.display = "none";
@@ -478,13 +478,13 @@ class TcTable extends Component {
             this.data_sent = undefined;
             this.column_name = undefined;
             this.y = -1;
-              
+
             var column_name_str = column_name.replace('"', "\\\"");
-              
+
             this.drawTable(true, row_number, column_name, column_name_str);
           }
         }
-            
+
         break;
       case "image":
         break;
@@ -525,7 +525,7 @@ class TcTable extends Component {
       if(this.y == r){
         var empty_cells = [];
         empty_cells.push(<Cell className={"header_element accordion_helper"} key={"0_"+r+"modal"}>&nbsp;</Cell>);
-        
+
         for(var x = 1; x < cells.length;x++){
           empty_cells.push(<Cell className={"elements accordion_helper"} key={x+"_"+r+"modal"}>&nbsp;</Cell>);
         }
@@ -536,7 +536,7 @@ class TcTable extends Component {
 
         var empty_cells_1 = [];
         empty_cells_1.push(<Cell className={"header_element accordion_helper"} key={"0_"+r+"spacer1"}>&nbsp;</Cell>);
-       
+
         for(var x = 1; x < cells.length;x++){
           empty_cells_1.push(<Cell className={"elements accordion_helper"} key={x+"_"+r+"spacer1"}>&nbsp;</Cell>);
         }
@@ -620,21 +620,21 @@ class TcTable extends Component {
       for(var x = 1; x < this.table_array.length; x++){
         temp_table = [temp_table, this.table_array[x]];
       }
-      
+
       var $this = this;
-      
+
       this.setState({table: temp_table}, function() {
         if(callback_accordion){
             $this.y = y;
             $this.column_name = column_name;
             $this.drawTable()
-                    
+
             var element_index = String(parseInt(y, 10) - 1);
-                    
+
             if(window.navigator.platform == 'MacIntel'){
                 window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'getAccordion', column: column_name_str, index: element_index});
             }else{
-                window.postMessageToNativeClient('{"method":"get_accordion", "column": "' + column_name_str + '", "end": ' + element_index + '}');
+                window.postMessageToNativeClient('{"method":"get_accordion", "column": "' + column_name_str + '", "index": ' + element_index + '}');
             }
         }
       });
