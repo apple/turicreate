@@ -3,6 +3,8 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import logging as _logging
 import json as _json
+import os as _os
+from tempfile import mkstemp as _mkstemp
 
 _target = 'auto'
 
@@ -126,33 +128,47 @@ class Plot(object):
         >>> plt.save('vega_spec.json', False)
 
         """
-        spec = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_spec'}))
+        if type(filepath) != str:
+            raise ValueError("filepath provided is not a string")
 
-        if(include_data):
-            data = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_data'}))["data_spec"]
+        if filepath.endswith(".json"):
+            # save as vega json
+            spec = self._get_vega(include_data = include_data)
+            with open(filepath, 'w') as fp:
+                _json.dump(spec, fp)
+        elif filepath.endswith(".png") or filepath.endswith(".svg"):
+            # save as png/svg, but json first
+            spec = self._get_vega(include_data = True)
+            extension = filepath[-3:]
+            temp_file_tuple = _mkstemp()
+            temp_file_path = temp_file_tuple[1]
+            with open(temp_file_path, 'w') as fp:
+                _json.dump(spec, fp)
+            dirname = _os.path.dirname(__file__)
+            relative_path_to_vg2png_vg2svg = "../vg2" + extension
+            absolute_path_to_vg2png_vg2svg = _os.path.join(
+                dirname, relative_path_to_vg2png_vg2svg)
+            _os.system("node " + absolute_path_to_vg2png_vg2svg + " " + temp_file_path + " " + filepath)
+            # delete temp file that user didn't ask for
+            _os.system("rm " + temp_file_path) 
+        else:
+            raise NotImplementedError("filename must end in .json, .svg, or .png")
 
-            for x in range(0, len(spec["vega_spec"]["data"])):
-                if(spec["vega_spec"]["data"][x]["name"] == "source_2"):
-                    spec["vega_spec"]["data"][x] = data
-                    break;
-
-        with open(filepath, 'w') as fp:
-            _json.dump(spec, fp)
 
     def _get_data(self):
         return _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_data'}))
 
     def _get_vega(self, include_data=True):
         if(include_data):
-            spec = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_spec'}))
+            spec = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_spec'}))["vega_spec"]
             data = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_data'}))["data_spec"]
-            for x in range(0, len(spec["vega_spec"]["data"])):
-                if(spec["vega_spec"]["data"][x]["name"] == "source_2"):
-                    spec["vega_spec"]["data"][x] = data
+            for x in range(len(spec["data"])):
+                if(spec["data"][x]["name"] == "source_2"):
+                    spec["data"][x] = data
                     break;
             return spec
         else:
-            return _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_spec'}))
+            return _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_spec'}))["vega_spec"]
 
     def _repr_javascript_(self):
         from IPython.core.display import display, HTML
