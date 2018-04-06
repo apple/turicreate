@@ -50,8 +50,8 @@ cdef extern from "<unity/lib/unity_sframe.hpp>" namespace "turi":
         void begin_iterator() except +
         vector[vector[flexible_type]] iterator_get_next(size_t) except +
         void save_as_csv(const string&, gl_options_map) except +
-        unity_sframe_base_ptr sample(float, int) except +
-        cpplist[unity_sframe_base_ptr] random_split(float, int) except +
+        unity_sframe_base_ptr sample(float, int, bint) except +
+        cpplist[unity_sframe_base_ptr] random_split(float, int, bint) except +
         unity_sframe_base_ptr groupby_aggregate(const vector[string]&, const vector[vector[string]]&, const vector[string]&, const vector[string]&) except +
         unity_sframe_base_ptr append(unity_sframe_base_ptr) except +
         void materialize() except +
@@ -125,9 +125,9 @@ cdef class UnitySFrameProxy:
 
     cpdef save_as_csv(self, url, object csv_config)
 
-    cpdef sample(self, float percent, int random_seed)
+    cpdef sample(self, float percent, int random_seed, bint exact=*)
 
-    cpdef random_split(self, float percent, int random_seed)
+    cpdef random_split(self, float percent, int random_seed, bint exact=*)
 
     cpdef groupby_aggregate(self, key_columns, group_columns, group_output_columns, column_ops)
 

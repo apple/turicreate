@@ -59,7 +59,7 @@ cdef extern from "<unity/lib/unity_sarray.hpp>" namespace "turi":
         unity_sarray_base_ptr vector_operator(unity_sarray_base_ptr, string) except +
         unity_sarray_base_ptr drop_missing_values() except +
         unity_sarray_base_ptr fill_missing_values(flexible_type) except +
-        unity_sarray_base_ptr sample(float, int) except +
+        unity_sarray_base_ptr sample(float, int, bint) except +
         unity_sarray_base_ptr hash(int) except +
         void materialize() except +
         bint is_materialized() except +
@@ -172,7 +172,7 @@ cdef class UnitySArrayProxy:
 
     cpdef fill_missing_values(self, default_value)
 
-    cpdef sample(self, float percent, int seed)
+    cpdef sample(self, float percent, int seed, bint exact=*)
 
     cpdef hash(self, int seed)
 

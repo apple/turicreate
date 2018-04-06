@@ -2555,19 +2555,23 @@ class SFrame(object):
         with cython_context():
             return SFrame(_proxy=self.__proxy__.flat_map(fn, column_names, column_types, seed))
 
-    def sample(self, fraction, seed=None):
+    def sample(self, fraction, seed=None, exact=False):
         """
         Sample a fraction of the current SFrame's rows.
 
         Parameters
         ----------
         fraction : float
-            Approximate fraction of the rows to fetch. Must be between 0 and 1.
-            The number of rows returned is approximately the fraction times the
-            number of rows.
+            Fraction of the rows to fetch. Must be between 0 and 1.
+            if exact is False (default), the number of rows returned is
+            approximately the fraction times the number of rows.
 
         seed : int, optional
             Seed for the random number generator used to sample.
+
+        exact: bool, optional
+            Defaults to False. If exact=True, an exact fraction is returned, 
+            but at a performance penalty.
 
         Returns
         -------
@@ -2598,24 +2602,32 @@ class SFrame(object):
             return self
         else:
             with cython_context():
-                return SFrame(_proxy=self.__proxy__.sample(fraction, seed))
+                return SFrame(_proxy=self.__proxy__.sample(fraction, seed, exact))
 
-    def random_split(self, fraction, seed=None):
+    def random_split(self, fraction, seed=None, exact=False):
         """
         Randomly split the rows of an SFrame into two SFrames. The first SFrame
         contains *M* rows, sampled uniformly (without replacement) from the
         original SFrame. *M* is approximately the fraction times the original
         number of rows. The second SFrame contains the remaining rows of the
-        original SFrame.
+        original SFrame. 
+        
+        An exact fraction partition can be optionally obtained by setting 
+        exact=True.
 
         Parameters
         ----------
         fraction : float
-            Approximate fraction of the rows to fetch for the first returned
-            SFrame. Must be between 0 and 1.
+            Fraction of the rows to fetch. Must be between 0 and 1.
+            if exact is False (default), the number of rows returned is
+            approximately the fraction times the number of rows.
 
         seed : int, optional
             Seed for the random number generator used to split.
+
+        exact: bool, optional
+            Defaults to False. If exact=True, an exact fraction is returned, 
+            but at a performance penalty.
 
         Returns
         -------
@@ -2649,7 +2661,7 @@ class SFrame(object):
 
 
         with cython_context():
-            proxy_pair = self.__proxy__.random_split(fraction, seed)
+            proxy_pair = self.__proxy__.random_split(fraction, seed, exact)
             return (SFrame(data=[], _proxy=proxy_pair[0]), SFrame(data=[], _proxy=proxy_pair[1]))
 
     def topk(self, column_name, k=10, reverse=False):

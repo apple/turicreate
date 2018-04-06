@@ -312,10 +312,10 @@ cdef class UnitySArrayProxy:
             proxy = (self.thisptr.fill_missing_values(val))
         return create_proxy_wrapper_from_existing_proxy(proxy)
 
-    cpdef sample(self, float percent, int seed):
+    cpdef sample(self, float percent, int seed, bint exact=False):
         cdef unity_sarray_base_ptr proxy
         with nogil:
-            proxy = (self.thisptr.sample(percent, seed))
+            proxy = (self.thisptr.sample(percent, seed, exact))
         return create_proxy_wrapper_from_existing_proxy(proxy)
 
     cpdef hash(self, int seed):
