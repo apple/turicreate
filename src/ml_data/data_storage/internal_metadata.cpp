@@ -44,8 +44,8 @@ void column_metadata::setup(
 
       case ml_column_mode::NUMERIC_VECTOR: {
 
-        // This is the only one that needs some care.  We need to go
-        // through and read it until we hit one that is not a missing
+        // We need to go through and read it until
+        // we hit one that is not a missing
         // value.
         size_t num_rows = column->size();
         auto reader = column->get_reader();
@@ -60,11 +60,19 @@ void column_metadata::setup(
           if(buffer[0].get_type() == flex_type_enum::VECTOR) {
             column_data_size_if_fixed = buffer[0].get<flex_vec>().size();
             break;
+          } else if(buffer[0].get_type() == flex_type_enum::ND_VECTOR) {
+            const auto& ndv = buffer[0].get<flex_nd_vec>();
+            if(ndv.shape().size() != 1) {
+              log_and_throw("ND Vector with number of dimensions greater than 1 encountered "
+                            "in 1d vector column.");
+            }
+            column_data_size_if_fixed = ndv.shape()[0];
+            break;
           } else if(buffer[0].get_type() == flex_type_enum::UNDEFINED) {
             ++row;
             continue;
           } else {
-            ASSERT_MSG(false, "Non-vector type encountered in column of vectors.");
+            log_and_throw("Non-vector type encountered in column of vectors.");
           }
         }
 
@@ -72,6 +80,53 @@ void column_metadata::setup(
           DASSERT_EQ(row, num_rows);
           logstream(LOG_WARNING) << "Column with only missing values encountered." << std::endl;
           column_data_size_if_fixed = 0;
+        }
+
+        break;
+      }
+
+      case ml_column_mode::NUMERIC_ND_VECTOR: {
+
+        // We need to go through and read it until
+        // we hit one that is not a missing
+        // value.
+        size_t num_rows = column->size();
+        auto reader = column->get_reader();
+
+        std::vector<flexible_type> buffer;
+        nd_array_size.clear();
+        bool shape_set = false;
+
+        size_t row = 0;
+        while(row < num_rows) {
+          reader->read_rows(row, row + 1, buffer);
+
+          if(buffer[0].get_type() == flex_type_enum::VECTOR) {
+            nd_array_size = {buffer[0].get<flex_vec>().size()};
+            shape_set = true;
+            break;
+          } else if(buffer[0].get_type() == flex_type_enum::ND_VECTOR) {
+            nd_array_size = buffer[0].get<flex_nd_vec>().shape();
+            shape_set = true;
+            break;
+          } else if(buffer[0].get_type() == flex_type_enum::UNDEFINED) {
+            ++row;
+            continue;
+          } else {
+            log_and_throw("Non-vector type encountered in column of vectors.");
+          }
+        }
+
+        if(!shape_set) {
+          DASSERT_EQ(row, num_rows);
+          logstream(LOG_WARNING) << "Column with only missing values encountered." << std::endl;
+          nd_array_size.clear();
+          column_data_size_if_fixed = 0;
+        } else {
+          column_data_size_if_fixed = 1;
+          for(const auto& s : nd_array_size) {
+            column_data_size_if_fixed *= s;
+          }
         }
 
         break;
@@ -128,7 +183,7 @@ void column_metadata::_debug_is_equal(const column_metadata& other) const {
  */
 void column_metadata::save(turi::oarchive& oarc) const {
 
-  size_t version = 2;
+  size_t version = 3;
 
   std::map<std::string, variant_type> data = {
     {"version",                   to_variant(version)},
@@ -137,6 +192,7 @@ void column_metadata::save(turi::oarchive& oarc) const {
     {"index_size_at_train_time",  to_variant(index_size_at_train_time)},
     {"original_column_type",      to_variant(original_column_type)},
     {"column_data_size_if_fixed", to_variant(column_data_size_if_fixed)},
+    {"nd_array_size",             to_variant(nd_array_size)},
     {"global_index_offset_at_train_time", to_variant(global_index_offset_at_train_time)}};
 
   variant_deep_save(data, oarc);
@@ -176,6 +232,13 @@ void column_metadata::load(turi::iarchive& iarc) {
     // to do some gymnastics here for backward compatability of
     // models.
     global_index_offset_at_train_time = size_t(-1);
+  }
+
+  // Handle the added version 3
+  if(version >= 3) {
+    __EXTRACT(nd_array_size);
+  } else {
+    nd_array_size.clear();
   }
 
 #undef __EXTRACT

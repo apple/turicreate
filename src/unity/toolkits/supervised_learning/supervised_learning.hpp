@@ -707,7 +707,7 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
 
   BEGIN_BASE_CLASS_MEMBER_REGISTRATION()
   
-    IMPORT_BASE_CLASS_REGISTRATION(ml_model_base);
+  IMPORT_BASE_CLASS_REGISTRATION(ml_model_base);
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
       "train", supervised_learning_model_base::api_train, "data", "target",

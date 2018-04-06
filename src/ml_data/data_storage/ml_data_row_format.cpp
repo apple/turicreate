@@ -1,49 +1,51 @@
 /* Copyright © 2017 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ * be found in the LICENSE.txt file or at
+ * https://opensource.org/licenses/BSD-3-Clause
  */
-#include <ml_data/data_storage/ml_data_row_format.hpp>
-#include <ml_data/ml_data.hpp>
-#include <ml_data/metadata.hpp>
-#include <globals/globals.hpp>
-#include <util/basic_types.hpp>
 #include <cstdint>
+#include <globals/globals.hpp>
+#include <ml_data/data_storage/ml_data_row_format.hpp>
+#include <ml_data/metadata.hpp>
+#include <ml_data/ml_data.hpp>
+#include <util/basic_types.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace turi { namespace ml_data_internal {
+namespace turi {
+namespace ml_data_internal {
 
 static const size_t ROW_READ_CHECKSUM = 0x259e2e6d7a32c5c0ULL;
-static constexpr size_t N_INTEGERS_PER_REFERENCE_BLOCK = 128; 
+static constexpr size_t N_INTEGERS_PER_REFERENCE_BLOCK = 128;
 
 void row_data_block::load(turi::iarchive& iarc) {
-
   size_t version;
   iarc >> version;
 
   ASSERT_EQ(version, 1);
 
-  bool all_integers; 
+  bool all_integers;
   iarc >> all_integers;
 
   size_t entry_data_size = 0;
   iarc >> entry_data_size;
   entry_data.resize(entry_data_size);
-    
-  if(all_integers) {
-      
+
+  if (all_integers) {
     // All integers.  Just do it directly,
-    for(size_t i = 0; i < entry_data_size; i += N_INTEGERS_PER_REFERENCE_BLOCK) {
-      size_t limit = std::min<size_t>(entry_data_size - i, N_INTEGERS_PER_REFERENCE_BLOCK);
-      integer_pack::frame_of_reference_decode_128(iarc, limit, reinterpret_cast<uint64_t*>(entry_data.data() + i) );
+    for (size_t i = 0; i < entry_data_size;
+         i += N_INTEGERS_PER_REFERENCE_BLOCK) {
+      size_t limit =
+          std::min<size_t>(entry_data_size - i, N_INTEGERS_PER_REFERENCE_BLOCK);
+      integer_pack::frame_of_reference_decode_128(
+          iarc, limit, reinterpret_cast<uint64_t*>(entry_data.data() + i));
     }
   } else {
-        
     // A mix.  The most complicated one.
     size_t n_integers = 0;
     iarc >> n_integers;
-        
+
     size_t n_doubles = 0;
     iarc >> n_doubles;
 
@@ -54,63 +56,74 @@ void row_data_block::load(turi::iarchive& iarc) {
 
     // First, unpack the bitset.  This specifies whether things
     // are doubles or integers.
-      
+
     dense_bitset bs, bs_dbl;
     iarc >> bs >> bs_dbl;
-      
+
     std::vector<uint64_t> other_doubles;
-      
+
     typedef const uint64_t* __restrict__ read_ptr_type;
     typedef uint64_t* __restrict__ write_ptr_type;
-      
+
     read_ptr_type double_read_ptr;
     read_ptr_type double_as_int_read_ptr;
-      
+
     {
       double* double_write_ptr;
       uint64_t* double_as_int_write_ptr;
-      
-      if(n_doubles < n_doubles_as_ints) {
+
+      if (n_doubles < n_doubles_as_ints) {
         other_doubles.resize(n_doubles);
         double_write_ptr = reinterpret_cast<double*>(other_doubles.data());
-        double_as_int_write_ptr = reinterpret_cast<uint64_t*>(entry_data.data() + (entry_data_size - n_doubles_as_ints));
+        double_as_int_write_ptr = reinterpret_cast<uint64_t*>(
+            entry_data.data() + (entry_data_size - n_doubles_as_ints));
       } else {
         other_doubles.resize(n_doubles_as_ints);
-        double_as_int_write_ptr = reinterpret_cast<uint64_t*>(other_doubles.data());
-        double_write_ptr = reinterpret_cast<double*>(entry_data.data() + (entry_data_size - n_doubles));
+        double_as_int_write_ptr =
+            reinterpret_cast<uint64_t*>(other_doubles.data());
+        double_write_ptr = reinterpret_cast<double*>(
+            entry_data.data() + (entry_data_size - n_doubles));
       }
 
       double_read_ptr = reinterpret_cast<read_ptr_type>(double_write_ptr);
-      double_as_int_read_ptr = reinterpret_cast<read_ptr_type>(double_as_int_write_ptr);
-        
+      double_as_int_read_ptr =
+          reinterpret_cast<read_ptr_type>(double_as_int_write_ptr);
+
       // Unpack the doubles
-      turi::deserialize(iarc, double_write_ptr, n_doubles*sizeof(double));
+      turi::deserialize(iarc, double_write_ptr, n_doubles * sizeof(double));
 
       // Unpack the doubles as integers.
-      for(size_t i = 0; i < n_doubles_as_ints; i += N_INTEGERS_PER_REFERENCE_BLOCK) {
-        size_t read_count = std::min<size_t>(n_doubles_as_ints - i, N_INTEGERS_PER_REFERENCE_BLOCK);
-        integer_pack::frame_of_reference_decode_128(iarc, read_count, double_as_int_write_ptr + i);
+      for (size_t i = 0; i < n_doubles_as_ints;
+           i += N_INTEGERS_PER_REFERENCE_BLOCK) {
+        size_t read_count = std::min<size_t>(n_doubles_as_ints - i,
+                                             N_INTEGERS_PER_REFERENCE_BLOCK);
+        integer_pack::frame_of_reference_decode_128(
+            iarc, read_count, double_as_int_write_ptr + i);
       }
     }
-      
+
     // Now, go through and pull all the integers out.
     std::vector<uint64_t> integer_buffer;
     integer_buffer.resize(n_integers);
-      
+
     // All integers.  Just do it directly,
-    for(size_t i = 0; i < n_integers; i += N_INTEGERS_PER_REFERENCE_BLOCK) {
-      size_t limit = std::min<size_t>(n_integers - i, N_INTEGERS_PER_REFERENCE_BLOCK);
-      integer_pack::frame_of_reference_decode_128(iarc, limit, integer_buffer.data() + i);
+    for (size_t i = 0; i < n_integers; i += N_INTEGERS_PER_REFERENCE_BLOCK) {
+      size_t limit =
+          std::min<size_t>(n_integers - i, N_INTEGERS_PER_REFERENCE_BLOCK);
+      integer_pack::frame_of_reference_decode_128(iarc, limit,
+                                                  integer_buffer.data() + i);
     }
 
-    read_ptr_type integer_read_ptr = reinterpret_cast<read_ptr_type>(integer_buffer.data());
-    write_ptr_type write_ptr = reinterpret_cast<write_ptr_type>(entry_data.data());
+    read_ptr_type integer_read_ptr =
+        reinterpret_cast<read_ptr_type>(integer_buffer.data());
+    write_ptr_type write_ptr =
+        reinterpret_cast<write_ptr_type>(entry_data.data());
 
-    for(size_t i = 0, dbl_i = 0; i < entry_data_size; ++i, ++write_ptr) {
-      if(bs.get(i)) {
+    for (size_t i = 0, dbl_i = 0; i < entry_data_size; ++i, ++write_ptr) {
+      if (bs.get(i)) {
         *write_ptr = *(integer_read_ptr++);
       } else {
-        if(bs_dbl.get(dbl_i++)) {
+        if (bs_dbl.get(dbl_i++)) {
           // It's a double masquerading as an int!
           double v = double(*(double_as_int_read_ptr++));
           memcpy(write_ptr, &v, sizeof(double));
@@ -120,17 +133,16 @@ void row_data_block::load(turi::iarchive& iarc) {
       }
     }
   }
-  
+
   iarc >> additional_data;
 
-  uint64_t read_check = 0; 
+  uint64_t read_check = 0;
   iarc >> read_check;
   ASSERT_EQ(read_check, ROW_READ_CHECKSUM);
 }
 
 void row_data_block::save(turi::oarchive& oarc) const {
-  
-  // Save the version. 
+  // Save the version.
   size_t version = 1;
   oarc << version;
 
@@ -143,9 +155,9 @@ void row_data_block::save(turi::oarchive& oarc) const {
   integers.reserve(entry_data.size());
   doubles.reserve(entry_data.size());
 
-  dense_bitset bs(entry_data.size()); 
+  dense_bitset bs(entry_data.size());
   bs.clear();
-    
+
   for (size_t i = 0; i < entry_data.size(); ++i) {
     if (entry_data[i].index_value <= std::numeric_limits<uint32_t>::max()) {
       integers.push_back(entry_data[i].index_value);
@@ -154,16 +166,16 @@ void row_data_block::save(turi::oarchive& oarc) const {
       doubles.push_back(entry_data[i].double_value);
     }
   }
-  
+
   // Now, split off the doubles that can be encoded as integers.
   std::vector<uint64_t> doubles_as_ints;
   doubles_as_ints.reserve(doubles.size());
   dense_bitset bs_dbl(doubles.size());
   bs_dbl.clear();
 
-  size_t dbl_write_pos = 0; 
-  for(size_t i = 0; i < doubles.size(); ++i) {
-    if(double(uint64_t(doubles[i])) == doubles[i]) {
+  size_t dbl_write_pos = 0;
+  for (size_t i = 0; i < doubles.size(); ++i) {
+    if (double(uint64_t(doubles[i])) == doubles[i]) {
       doubles_as_ints.push_back(doubles[i]);
       bs_dbl.set_bit_unsync(i);
     } else {
@@ -173,32 +185,35 @@ void row_data_block::save(turi::oarchive& oarc) const {
   doubles.resize(dbl_write_pos);
 
   // Now, based on the distribution of the integers, choose one
-  // mode.  Almost all doubles? just do all doubles.  
+  // mode.  Almost all doubles? just do all doubles.
 
   bool all_integers = (doubles.size() == 0 && doubles_as_ints.size() == 0);
-  
+
   oarc << all_integers;
 
   ////////////////////////////////////////////////////////////////////////////////
-  // Now, we need to actually go through and save all the data in one of several ways.
-    
+  // Now, we need to actually go through and save all the data in one of several
+  // ways.
+
   size_t entry_data_size = entry_data.size();
   oarc << entry_data_size;
 
-  if(all_integers) { 
-        
+  if (all_integers) {
     // All integers.  Just do it directly,
-    for(size_t i = 0; i < entry_data_size; i += N_INTEGERS_PER_REFERENCE_BLOCK) {
-      size_t limit = std::min<size_t>(entry_data_size - i, N_INTEGERS_PER_REFERENCE_BLOCK);
-      integer_pack::frame_of_reference_encode_128(reinterpret_cast<const uint64_t*>(entry_data.data() + i), limit, oarc);
+    for (size_t i = 0; i < entry_data_size;
+         i += N_INTEGERS_PER_REFERENCE_BLOCK) {
+      size_t limit =
+          std::min<size_t>(entry_data_size - i, N_INTEGERS_PER_REFERENCE_BLOCK);
+      integer_pack::frame_of_reference_encode_128(
+          reinterpret_cast<const uint64_t*>(entry_data.data() + i), limit,
+          oarc);
     }
   } else {
-
     // Store all the quantities first in case we want to specialize
     // the decoding based on what is present.
     size_t n_integers = integers.size();
     oarc << n_integers;
-      
+
     size_t n_doubles = doubles.size();
     oarc << n_doubles;
 
@@ -206,30 +221,35 @@ void row_data_block::save(turi::oarchive& oarc) const {
     oarc << n_doubles_as_ints;
 
     // Store the bitmasks.
-    oarc << bs << bs_dbl;        
-      
+    oarc << bs << bs_dbl;
+
     // Store the doubles.
-    turi::serialize(oarc, doubles.data(), n_doubles*sizeof(double));
-      
+    turi::serialize(oarc, doubles.data(), n_doubles * sizeof(double));
+
     // Store the doubles_as_ints.
-    for(size_t i = 0; i < n_doubles_as_ints; i += N_INTEGERS_PER_REFERENCE_BLOCK) {
-      size_t limit = std::min<size_t>(n_doubles_as_ints - i, N_INTEGERS_PER_REFERENCE_BLOCK);
-      integer_pack::frame_of_reference_encode_128(doubles_as_ints.data() + i, limit, oarc);
+    for (size_t i = 0; i < n_doubles_as_ints;
+         i += N_INTEGERS_PER_REFERENCE_BLOCK) {
+      size_t limit = std::min<size_t>(n_doubles_as_ints - i,
+                                      N_INTEGERS_PER_REFERENCE_BLOCK);
+      integer_pack::frame_of_reference_encode_128(doubles_as_ints.data() + i,
+                                                  limit, oarc);
     }
 
     // Store the integers.
-    for(size_t i = 0; i < n_integers; i += N_INTEGERS_PER_REFERENCE_BLOCK) {
-      size_t limit = std::min<size_t>(n_integers - i, N_INTEGERS_PER_REFERENCE_BLOCK);
-      integer_pack::frame_of_reference_encode_128(integers.data() + i, limit, oarc);
+    for (size_t i = 0; i < n_integers; i += N_INTEGERS_PER_REFERENCE_BLOCK) {
+      size_t limit =
+          std::min<size_t>(n_integers - i, N_INTEGERS_PER_REFERENCE_BLOCK);
+      integer_pack::frame_of_reference_encode_128(integers.data() + i, limit,
+                                                  oarc);
     }
   }
-  
+
   oarc << additional_data;
 
-  oarc << size_t(ROW_READ_CHECKSUM); 
+  oarc << size_t(ROW_READ_CHECKSUM);
 }
 
-size_t ML_DATA_TARGET_ROW_BYTE_MINIMUM = 256*1024;
+size_t ML_DATA_TARGET_ROW_BYTE_MINIMUM = 256 * 1024;
 
 REGISTER_GLOBAL(int64_t, ML_DATA_TARGET_ROW_BYTE_MINIMUM, true);
 
@@ -335,6 +355,10 @@ REGISTER_GLOBAL(int64_t, ML_DATA_TARGET_ROW_BYTE_MINIMUM, true);
  *
  *   example: {0 : 2.1, 1 : 8.5} would be ... | 2 0 2.1 1 8.5 | ...
  *
+ * NUMERIC_ND_VECTOR:
+ *
+ *   ... | flattend_value1 flattened_value2 ... | ...
+ *
  *
  * Since the number of columns, and the mode of each column is constant
  * across rows, the values are all laid out sequentially; for example, a
@@ -359,36 +383,31 @@ REGISTER_GLOBAL(int64_t, ML_DATA_TARGET_ROW_BYTE_MINIMUM, true);
  * iterating through rows is extremely fast.
  */
 size_t fill_row_buffer_from_column_buffer(
-    std::vector<size_t>& row2data_idx_map,
-    row_data_block& block_output,
+    std::vector<size_t>& row2data_idx_map, row_data_block& block_output,
     const row_metadata& rm,
     const std::vector<std::vector<flexible_type> >& column_buffers,
-    size_t thread_idx,
-    bool track_statistics,
-    bool immutable_metadata,
+    size_t thread_idx, bool track_statistics, bool immutable_metadata,
     ml_missing_value_action none_action) {
-
-  if(track_statistics) {
+  if (track_statistics) {
     DASSERT_MSG(!immutable_metadata,
                 "Dynamic metadata must be allowed if statistics are tracked.");
   }
-
 
 #ifndef NDEBUG
   DASSERT_EQ(rm.total_num_columns, column_buffers.size());
   {
     size_t check_column_buffer_size = 0;
 
-    for(size_t c_idx = 0; c_idx < rm.total_num_columns; ++c_idx) {
-      if(!rm.metadata_vect[c_idx]->is_untranslated_column()) {
+    for (size_t c_idx = 0; c_idx < rm.total_num_columns; ++c_idx) {
+      if (!rm.metadata_vect[c_idx]->is_untranslated_column()) {
         check_column_buffer_size = column_buffers[c_idx].size();
         break;
       }
     }
 
-    for(size_t c_idx = 0; c_idx < rm.total_num_columns; ++c_idx) {
-      const auto& c  = column_buffers[c_idx];
-      if(rm.metadata_vect[c_idx]->is_untranslated_column())
+    for (size_t c_idx = 0; c_idx < rm.total_num_columns; ++c_idx) {
+      const auto& c = column_buffers[c_idx];
+      if (rm.metadata_vect[c_idx]->is_untranslated_column())
         DASSERT_EQ(c.size(), 0);
       else
         DASSERT_EQ(c.size(), check_column_buffer_size);
@@ -396,19 +415,17 @@ size_t fill_row_buffer_from_column_buffer(
   }
 #endif
 
-
   // How many rows in the block?
   size_t block_size = size_t(-1);
-  for(size_t c_idx = 0; c_idx < column_buffers.size(); ++c_idx) {
-    if(!rm.metadata_vect[c_idx]->is_untranslated_column()) {
+  for (size_t c_idx = 0; c_idx < column_buffers.size(); ++c_idx) {
+    if (!rm.metadata_vect[c_idx]->is_untranslated_column()) {
       block_size = column_buffers[c_idx].size();
       break;
     }
   }
 
   /** If they are all untranslated columns, then we're done here... */
-  if(block_size == size_t(-1))
-    return 0;
+  if (block_size == size_t(-1)) return 0;
 
   DASSERT_TRUE(block_size != 0);
 
@@ -420,16 +437,16 @@ size_t fill_row_buffer_from_column_buffer(
   std::vector<double> value_vect;
   std::vector<std::pair<size_t, double> > idx_value_vect;
   std::vector<size_t> exclusion_indices;
-  
+
   size_t max_row_size = 0;
 
   block_output.entry_data.clear();
 
-  if(rm.data_size_is_constant)
+  if (rm.data_size_is_constant)
     block_output.entry_data.reserve(rm.constant_data_size * block_size);
 
-  for(size_t row_buffer_index = 0; row_buffer_index < block_size; ++row_buffer_index) {
-
+  for (size_t row_buffer_index = 0; row_buffer_index < block_size;
+       ++row_buffer_index) {
     ////////////////////////////////////////////////////////////////////////////////
     // Get ready to fill this by defining the row size
 
@@ -442,7 +459,7 @@ size_t fill_row_buffer_from_column_buffer(
     // record the index of the start of this row.
     row2data_idx_map[row_buffer_index] = block_output.entry_data.size();
 
-    if(!rm.data_size_is_constant) {
+    if (!rm.data_size_is_constant) {
       n_row_elements_write_index = block_output.entry_data.size();
       entry_value ev;
       block_output.entry_data.push_back(ev);
@@ -450,12 +467,11 @@ size_t fill_row_buffer_from_column_buffer(
 
     // Okay, now go through the columns and unpack the values.  Make
     // sure they are written correctly.
-    for(size_t c_idx = 0; c_idx < rm.total_num_columns; ++c_idx) {
-
+    for (size_t c_idx = 0; c_idx < rm.total_num_columns; ++c_idx) {
       const flexible_type& v = column_buffers[c_idx][row_buffer_index];
 
-      const column_metadata_ptr& m                      = rm.metadata_vect[c_idx];
-      const std::shared_ptr<column_indexer>& m_idx      = m->indexer;
+      const column_metadata_ptr& m = rm.metadata_vect[c_idx];
+      const std::shared_ptr<column_indexer>& m_idx = m->indexer;
       const std::shared_ptr<column_statistics>& m_stats = m->statistics;
 
       /** Call this to write out an index.
@@ -476,7 +492,6 @@ size_t fill_row_buffer_from_column_buffer(
         block_output.entry_data.push_back(ev);
       };
 
-
       /** Call this to write out a size.
        */
       auto write_size = [&](size_t size) GL_GCC_ONLY(GL_HOT_INLINE_FLATTEN) {
@@ -485,44 +500,43 @@ size_t fill_row_buffer_from_column_buffer(
         block_output.entry_data.push_back(ev);
       };
 
-
       /** Call this to write out an index/double pair.
        */
-      auto write_index_value_pair = [&](std::pair<size_t, double> p) GL_GCC_ONLY(GL_HOT_INLINE_FLATTEN) {
-        ++row_size;
-        entry_value ev;
-        ev.index_value = p.first;
-        block_output.entry_data.push_back(ev);
-        ev.double_value = p.second;
-        block_output.entry_data.push_back(ev);
-      };
-
+      auto write_index_value_pair = [&](std::pair<size_t, double> p)
+                                        GL_GCC_ONLY(GL_HOT_INLINE_FLATTEN) {
+                                          ++row_size;
+                                          entry_value ev;
+                                          ev.index_value = p.first;
+                                          block_output.entry_data.push_back(ev);
+                                          ev.double_value = p.second;
+                                          block_output.entry_data.push_back(ev);
+                                        };
 
       /** Call this to throw a NA error.
        */
       auto bad_missing_value_encountered = [&]() GL_GCC_ONLY(GL_COLD_NOINLINE) {
 
-        log_and_throw(
-            std::string("Missing value (None) encountered in ")
-            + "column '" + m->name + "'. "
-            + "Use the SFrame's dropna function to drop rows with 'None' values in them.");
+        log_and_throw(std::string("Missing value (None) encountered in ") +
+                      "column '" + m->name + "'. " +
+                      "Use the SFrame's dropna function to drop rows with "
+                      "'None' values in them.");
       };
-
 
       /** Use this to retrieve a missing numeric value.
        */
-      auto get_missing_numeric_value = [&](size_t feature_index) -> double GL_GCC_ONLY(GL_HOT_NOINLINE) {
-        switch(none_action){
+      auto get_missing_numeric_value =
+          [&](size_t feature_index) -> double GL_GCC_ONLY(GL_HOT_NOINLINE) {
+        switch (none_action) {
           case ml_missing_value_action::ERROR:
-          bad_missing_value_encountered();
-          return 0;
+            bad_missing_value_encountered();
+            return 0;
           case ml_missing_value_action::IMPUTE:
-          return m_stats->mean(feature_index);
+            return m_stats->mean(feature_index);
           case ml_missing_value_action::USE_NAN:
-          return NAN;
+            return NAN;
           default:
-          ASSERT_TRUE(false);
-          return 0;
+            ASSERT_TRUE(false);
+            return 0;
         }
       };
 
@@ -530,264 +544,272 @@ size_t fill_row_buffer_from_column_buffer(
        *  categorical_vectors are handled correctly.
        */
       auto verify_missing_categoricals_okay = [&]() GL_GCC_ONLY(GL_HOT_INLINE) {
-        switch(none_action){
+        switch (none_action) {
           case ml_missing_value_action::ERROR:
-          bad_missing_value_encountered();
+            bad_missing_value_encountered();
           default:
-          return;
+            return;
         }
       };
 
       ////////////////////////////////////////////////////////////////////////////////
       // Step 3: Go through and write out the data using the above functions
 
-      switch(rm.metadata_vect[c_idx]->mode) {
-        case ml_column_mode::NUMERIC:
-          {
-            double v_d;
+      switch (rm.metadata_vect[c_idx]->mode) {
+        case ml_column_mode::NUMERIC: {
+          double v_d;
 
-            // Missing value entries for numeric columns.
-            if(UNLIKELY(v.get_type() == flex_type_enum::UNDEFINED)) {
-              v_d = get_missing_numeric_value(0);
-            } else {
-              v_d = v;
-              
-              /**  Update Statistics  **/
-              if(track_statistics) {
-                value_vect = {v_d};
-                m_stats->update_numeric_statistics(thread_idx, value_vect);
-              }
-            }
-
-            /**  Write out the data in the proper format. **/
-            write_value(v_d);
-            
-            break;
-          }
-
-        case ml_column_mode::NUMERIC_VECTOR:
-          {
-
-            if (UNLIKELY(v.get_type() == flex_type_enum::UNDEFINED) ) {
-
-              // Top level None: An entire entry is missing.
-              size_t n_values = m->fixed_column_size();
-
-              for(size_t k = 0; k < n_values; ++k)
-                write_value(get_missing_numeric_value(k));
-
-            } else {
-
-              const std::vector<double>& feature_vect = v.get<flex_vec>();
-
-              /**  Write out the data in the proper format. **/
-              size_t n_values = feature_vect.size();
-
-              for(size_t k = 0; k < n_values; ++k)
-                write_value(feature_vect[k]);
-
-              /**  Update Statistics  **/
-              m->check_fixed_column_size(v);
-
-              if(track_statistics)
-                m_stats->update_numeric_statistics(thread_idx, feature_vect);
-            }
-
-            break;
-          }
-
-        case ml_column_mode::CATEGORICAL:
-          {
-            /**  Map out the value.  **/
-
-            // Missing values are always treated as their own category.
-            size_t index;
-
-            if(!immutable_metadata) {
-              index = m_idx->map_value_to_index(thread_idx, v);
-            } else {
-              index = m_idx->immutable_map_value_to_index(v);
-            }
-
-            /**  Write out the data in the proper format. **/
-            write_index(index);
+          // Missing value entries for numeric columns.
+          if (UNLIKELY(v.get_type() == flex_type_enum::UNDEFINED)) {
+            v_d = get_missing_numeric_value(0);
+          } else {
+            v_d = v;
 
             /**  Update Statistics  **/
-            if(track_statistics) {
-              index_vect = {index};
+            if (track_statistics) {
+              value_vect = {v_d};
+              m_stats->update_numeric_statistics(thread_idx, value_vect);
+            }
+          }
+
+          /**  Write out the data in the proper format. **/
+          write_value(v_d);
+
+          break;
+        }
+
+        case ml_column_mode::NUMERIC_VECTOR:
+        case ml_column_mode::NUMERIC_ND_VECTOR: {
+          if (UNLIKELY(v.get_type() == flex_type_enum::UNDEFINED)) {
+            // Top level None: An entire entry is missing.
+            size_t n_values = m->fixed_column_size();
+
+            for (size_t k = 0; k < n_values; ++k) {
+              write_value(get_missing_numeric_value(k));
+            }
+          } else if (v.get_type() == flex_type_enum::VECTOR) {
+            const std::vector<double>& feature_vect = v.get<flex_vec>();
+
+            m->check_fixed_column_size(v);
+
+            /**  Write out the data in the proper format. **/
+            size_t n_values = feature_vect.size();
+
+            for (size_t k = 0; k < n_values; ++k) {
+              write_value(feature_vect[k]);
+            }
+
+            /**  Update Statistics  **/
+            if (track_statistics) {
+              m_stats->update_numeric_statistics(thread_idx, feature_vect);
+            }
+          } else if (v.get_type() == flex_type_enum::ND_VECTOR) {
+            const flex_nd_vec& _a = v.get<flex_nd_vec>();
+            flex_nd_vec _a_canonical;  // Temporary to make sure the
+                                       // references stay valid
+            const flex_nd_vec& a =
+                _a.is_canonical() ? _a : (_a_canonical = _a.canonicalize());
+
+            size_t n_values = a.num_elem();
+
+            for (size_t i = 0; i < n_values; ++i) {
+              write_value(a[i]);
+            }
+
+            /**  Update Statistics  **/
+            m->check_fixed_column_size(v);
+
+            if (track_statistics) {
+              m_stats->update_numeric_statistics(thread_idx, a.raw_elements());
+            }
+          } else {
+            ASSERT_TRUE(false);
+          }
+
+          break;
+        }
+
+        case ml_column_mode::CATEGORICAL: {
+          /**  Map out the value.  **/
+
+          // Missing values are always treated as their own category.
+          size_t index;
+
+          if (!immutable_metadata) {
+            index = m_idx->map_value_to_index(thread_idx, v);
+          } else {
+            index = m_idx->immutable_map_value_to_index(v);
+          }
+
+          /**  Write out the data in the proper format. **/
+          write_index(index);
+
+          /**  Update Statistics  **/
+          if (track_statistics) {
+            index_vect = {index};
+            m_stats->update_categorical_statistics(thread_idx, index_vect);
+          }
+
+          break;
+        }
+
+        case ml_column_mode::CATEGORICAL_VECTOR: {
+          // Top level categorical vector is missing.
+          if (UNLIKELY(v.get_type() == flex_type_enum::UNDEFINED)) {
+            verify_missing_categoricals_okay();
+            write_size(0);
+
+          } else {
+            const flex_list& vv = v.get<flex_list>();
+            size_t n_values = vv.size();
+
+            index_vect.resize(n_values);
+
+            for (size_t k = 0; k < n_values; ++k) {
+              if (!immutable_metadata) {
+                index_vect[k] = m_idx->map_value_to_index(thread_idx, vv[k]);
+              } else {
+                index_vect[k] = m_idx->immutable_map_value_to_index(vv[k]);
+              }
+            }
+
+            // Now, we want to sort the dictionaries by index; this
+            // permits easy filling of an Eigen sparse vector when
+            // the data is loaded, as we can insert it by index
+            // order.
+            std::sort(index_vect.begin(), index_vect.end());
+
+            /**  Write out the data in the proper format. **/
+            write_size(n_values);
+            for (size_t k = 0; k < n_values; ++k) write_index(index_vect[k]);
+
+            /**  Update Statistics  **/
+            if (track_statistics)
               m_stats->update_categorical_statistics(thread_idx, index_vect);
-            }
-
-            break;
           }
 
-        case ml_column_mode::CATEGORICAL_VECTOR:
-          {
+          break;
+        }
 
-            // Top level categorical vector is missing.
-            if(UNLIKELY(v.get_type() == flex_type_enum::UNDEFINED)) {
+        case ml_column_mode::DICTIONARY: {
+          DASSERT_TRUE(exclusion_indices.empty());
 
-              verify_missing_categoricals_okay();
-              write_size(0);
+          // Top level dictionary is missing
+          if (v.get_type() == flex_type_enum::UNDEFINED) {
+            verify_missing_categoricals_okay();
+            write_size(0);
 
-            } else {
+          } else {
+            const flex_dict& dv = v.get<flex_dict>();
+            size_t n_values = dv.size();
 
-              const flex_list& vv = v.get<flex_list>();
-              size_t n_values = vv.size();
+            idx_value_vect.resize(n_values);
 
-              index_vect.resize(n_values);
+            for (size_t k = 0; k < n_values; ++k) {
+              const std::pair<flexible_type, flexible_type>& kvp = dv[k];
 
-              for(size_t k = 0; k < n_values; ++k) {
-                if(!immutable_metadata) {
-                  index_vect[k] = m_idx->map_value_to_index(thread_idx, vv[k]);
-                } else {
-                  index_vect[k] = m_idx->immutable_map_value_to_index(vv[k]);
-                }
+              size_t index;
+              if (!immutable_metadata) {
+                index = m_idx->map_value_to_index(thread_idx, kvp.first);
+              } else {
+                index = m_idx->immutable_map_value_to_index(kvp.first);
               }
 
-              // Now, we want to sort the dictionaries by index; this
-              // permits easy filling of an Eigen sparse vector when
-              // the data is loaded, as we can insert it by index
-              // order.
-              std::sort(index_vect.begin(), index_vect.end());
+              double value;
 
-              /**  Write out the data in the proper format. **/
-              write_size(n_values);
-              for(size_t k = 0; k < n_values; ++k)
-                write_index(index_vect[k]);
+              if (kvp.second.get_type() == flex_type_enum::INTEGER ||
+                  kvp.second.get_type() == flex_type_enum::FLOAT) {
+                value = kvp.second;
 
-              /**  Update Statistics  **/
-              if(track_statistics)
-                m_stats->update_categorical_statistics(thread_idx, index_vect);
+              } else if (kvp.second.get_type() == flex_type_enum::UNDEFINED) {
+                value = get_missing_numeric_value(index);
+                exclusion_indices.push_back(index);
+
+              } else {
+                auto throw_error = [&]() GL_GCC_ONLY(GL_COLD_NOINLINE) {
+                  log_and_throw(std::string("Dictionary value for key '") +
+                                std::string(kvp.first) + "' in column '" +
+                                m->name + "' is not numeric.");
+                };
+
+                throw_error();
+              }
+
+              idx_value_vect[k] = {index, value};
             }
 
-            break;
-          }
+            // Now, we want to sort the dictionaries by index; this
+            // permits easy filling of an Eigen sparse vector when
+            // the data is loaded, as we can insert it by index
+            // order.
+            std::sort(idx_value_vect.begin(), idx_value_vect.end());
 
-        case ml_column_mode::DICTIONARY:
-          {
-            DASSERT_TRUE(exclusion_indices.empty());
-            
-            // Top level dictionary is missing
-            if (v.get_type() == flex_type_enum::UNDEFINED) {
+            /**  Write out the data in the proper format. **/
+            write_size(n_values);
+            for (size_t k = 0; k < n_values; ++k)
+              write_index_value_pair(idx_value_vect[k]);
 
-              verify_missing_categoricals_okay();
-              write_size(0);
+            /**  Update Statistics  **/
+            if (track_statistics) {
+              if (!exclusion_indices.empty()) {
+                // Efficiently remove the values recorded above as missing.
+                auto rm_missing_values = [&]() GL_GCC_ONLY(
+                                             GL_HOT_NOINLINE_FLATTEN) {
 
-            } else {
+                  // Fast track the common single-occurance case.
+                  if (exclusion_indices.size() == 1) {
+                    size_t rm_index = exclusion_indices[0];
+                    auto it = std::remove_if(
+                        idx_value_vect.begin(), idx_value_vect.end(),
+                        [&](const std::pair<size_t, double>& p) {
+                          return p.first == rm_index;
+                        });
+                    idx_value_vect.resize(it - idx_value_vect.begin());
+                  } else {
+                    std::sort(exclusion_indices.begin(),
+                              exclusion_indices.end());
+                    auto it = std::remove_if(
+                        idx_value_vect.begin(), idx_value_vect.end(),
+                        [&](const std::pair<size_t, double>& p) {
 
-              const flex_dict& dv = v.get<flex_dict>();
-              size_t n_values = dv.size();
+                          // Is it in the exclusion_indices?
+                          auto fit = std::lower_bound(exclusion_indices.begin(),
+                                                      exclusion_indices.end(),
+                                                      p.first);
 
-              idx_value_vect.resize(n_values);
+                          return (fit != exclusion_indices.end() &&
+                                  *fit == p.first);
+                        });
+                    idx_value_vect.resize(it - idx_value_vect.begin());
+                  }
 
-              for(size_t k = 0; k < n_values; ++k) {
-                const std::pair<flexible_type, flexible_type>& kvp = dv[k];
-
-                size_t index;
-                if(!immutable_metadata) {
-                  index = m_idx->map_value_to_index(thread_idx, kvp.first);
-                } else {
-                  index = m_idx->immutable_map_value_to_index(kvp.first);
-                }
-
-                double value;
-
-                if(kvp.second.get_type() == flex_type_enum::INTEGER
-                   || kvp.second.get_type() == flex_type_enum::FLOAT){
-
-                  value = kvp.second;
-
-                } else if  (kvp.second.get_type() == flex_type_enum::UNDEFINED){
-
-                  value = get_missing_numeric_value(index);
-                  exclusion_indices.push_back(index);
-
-                } else {
-
-                  auto throw_error = [&]() GL_GCC_ONLY(GL_COLD_NOINLINE) {
-                    log_and_throw(std::string("Dictionary value for key '")
-                                  + std::string(kvp.first)
-                                  + "' in column '"
-                                  + m->name
-                                  + "' is not numeric.");
-                  };
-
-                  throw_error();
-                }
-
-                idx_value_vect[k] = {index, value};
+                  exclusion_indices.clear();
+                };
+                rm_missing_values();
               }
 
-              // Now, we want to sort the dictionaries by index; this
-              // permits easy filling of an Eigen sparse vector when
-              // the data is loaded, as we can insert it by index
-              // order.
-              std::sort(idx_value_vect.begin(), idx_value_vect.end());
-
-              /**  Write out the data in the proper format. **/
-              write_size(n_values);
-              for(size_t k = 0; k < n_values; ++k)
-                write_index_value_pair(idx_value_vect[k]);
-
-              /**  Update Statistics  **/
-              if(track_statistics) {
-                if(!exclusion_indices.empty()) {
-
-                  // Efficiently remove the values recorded above as missing.
-                  auto rm_missing_values = [&]() GL_GCC_ONLY(GL_HOT_NOINLINE_FLATTEN) {
-
-                    // Fast track the common single-occurance case.
-                    if(exclusion_indices.size() == 1) {
-                      size_t rm_index = exclusion_indices[0];
-                      auto it = std::remove_if(idx_value_vect.begin(), idx_value_vect.end(),
-                                               [&](const std::pair<size_t, double>& p) {
-                                                 return p.first == rm_index;
-                                               });
-                      idx_value_vect.resize(it - idx_value_vect.begin());
-                    } else {
-                      std::sort(exclusion_indices.begin(), exclusion_indices.end());
-                      auto it = std::remove_if(
-                          idx_value_vect.begin(), idx_value_vect.end(),
-                          [&](const std::pair<size_t, double>& p) {
-
-                            // Is it in the exclusion_indices? 
-                            auto fit = std::lower_bound(
-                                exclusion_indices.begin(), exclusion_indices.end(), p.first);
-                            
-                            return (fit != exclusion_indices.end() && *fit == p.first);
-                          });
-                      idx_value_vect.resize(it - idx_value_vect.begin());
-                    }
-                    
-                    exclusion_indices.clear();
-                  };
-                  rm_missing_values();
-                }
-                
-                m_stats->update_dict_statistics(thread_idx, idx_value_vect);
-              }
-              
-              break;
+              m_stats->update_dict_statistics(thread_idx, idx_value_vect);
             }
-
-            case ml_column_mode::CATEGORICAL_SORTED:
-            case ml_column_mode::UNTRANSLATED:
-              break;
           }
-      } // end switch over column mode
-    } // End loop over columns
+          break;
+        }
+        case ml_column_mode::CATEGORICAL_SORTED:
+        case ml_column_mode::UNTRANSLATED:
+          break;
 
-    if(!rm.data_size_is_constant) {
+      }  // end switch over column mode
+    }    // End loop over columns
+
+    if (!rm.data_size_is_constant) {
       DASSERT_TRUE(n_row_elements_write_index != size_t(-1));
-      block_output.entry_data[n_row_elements_write_index].index_value
-          = block_output.entry_data.size() - n_row_elements_write_index;
+      block_output.entry_data[n_row_elements_write_index].index_value =
+          block_output.entry_data.size() - n_row_elements_write_index;
     }
 
     // Check the maximimum row size.
     max_row_size = std::max(max_row_size, row_size);
 
-  } // End loop over rows in buffer
+  }  // End loop over rows in buffer
 
   return max_row_size;
 }
@@ -795,59 +817,51 @@ size_t fill_row_buffer_from_column_buffer(
 /** Truncates a row_data_block in place to n_rows.
  *
  */
-void truncate_row_data_block(
-    const row_metadata& rm,
-    row_data_block& row_block,
-    size_t n_rows) {
-
+void truncate_row_data_block(const row_metadata& rm, row_data_block& row_block,
+                             size_t n_rows) {
   entry_value_iterator v_ptr = row_block.entry_data.data();
 
-  if(rm.data_size_is_constant) {
+  if (rm.data_size_is_constant) {
     v_ptr += n_rows * (rm.constant_data_size + 1);
   } else {
-
-    for(size_t i = 0; i < n_rows; ++i) {
+    for (size_t i = 0; i < n_rows; ++i) {
       size_t row_size = get_row_data_size(rm, v_ptr);
       v_ptr += row_size;
-      DASSERT_TRUE(v_ptr < row_block.entry_data.data() + row_block.entry_data.size());
+      DASSERT_TRUE(v_ptr <
+                   row_block.entry_data.data() + row_block.entry_data.size());
     }
   }
 
   // Clip this last row to the data covered by v_ptr.
-  row_block.entry_data.resize(std::distance(entry_value_iterator(row_block.entry_data.data()), v_ptr));
+  row_block.entry_data.resize(
+      std::distance(entry_value_iterator(row_block.entry_data.data()), v_ptr));
 }
 
 /** Takes a row from position entry_value_iterator, appending it to
  *  output_block.
  */
-void append_row_to_row_data_block(
-    const row_metadata& rm,
-    row_data_block& output_block,
-    entry_value_iterator src_location) {
-
+void append_row_to_row_data_block(const row_metadata& rm,
+                                  row_data_block& output_block,
+                                  entry_value_iterator src_location) {
   size_t row_size = get_row_data_size(rm, src_location);
 
-  output_block.entry_data.insert(output_block.entry_data.end(),
-                                 src_location, src_location + row_size);
+  output_block.entry_data.insert(output_block.entry_data.end(), src_location,
+                                 src_location + row_size);
 }
 
 /** Remap all the indices in a block, rewriting things back.
  */
 void reindex_block(const row_metadata& rm, row_data_block& block,
                    const std::vector<std::vector<size_t> >& reindex_map) {
-
   const size_t num_columns = rm.total_num_columns;
 
-  for(auto row_block_ptr = block.entry_data.begin();
-      row_block_ptr != block.entry_data.end();) {
-
+  for (auto row_block_ptr = block.entry_data.begin();
+       row_block_ptr != block.entry_data.end();) {
     /** Skip the first entry if the row size is not constant, as this
      * contains the row data size. */
-    if(!rm.data_size_is_constant)
-      ++row_block_ptr;
+    if (!rm.data_size_is_constant) ++row_block_ptr;
 
-    for(size_t c_idx = 0; c_idx < num_columns; ++c_idx) {
-
+    for (size_t c_idx = 0; c_idx < num_columns; ++c_idx) {
       DASSERT_LT(c_idx, rm.metadata_vect.size());
 
       /** Call this to read out a size.
@@ -867,8 +881,7 @@ void reindex_block(const row_metadata& rm, row_data_block& block,
       // means that this branch / lookup is optimized out at compile
       // time.
 
-      switch(rm.metadata_vect[c_idx]->mode) {
-
+      switch (rm.metadata_vect[c_idx]->mode) {
         case ml_column_mode::NUMERIC: {
           ++row_block_ptr;
           break;
@@ -877,7 +890,8 @@ void reindex_block(const row_metadata& rm, row_data_block& block,
         case ml_column_mode::CATEGORICAL: {
           DASSERT_LT(c_idx, reindex_map.size());
           DASSERT_LT(row_block_ptr->index_value, reindex_map[c_idx].size());
-          row_block_ptr->index_value = reindex_map[c_idx][row_block_ptr->index_value];
+          row_block_ptr->index_value =
+              reindex_map[c_idx][row_block_ptr->index_value];
           ++row_block_ptr;
           break;
         }
@@ -889,45 +903,48 @@ void reindex_block(const row_metadata& rm, row_data_block& block,
         }
 
         case ml_column_mode::CATEGORICAL_VECTOR: {
-
           size_t nv = read_size();
           DASSERT_LT(c_idx, reindex_map.size());
 
-          for(size_t k = 0; k < nv; ++k) {
+          for (size_t k = 0; k < nv; ++k) {
             DASSERT_LT(row_block_ptr->index_value, reindex_map[c_idx].size());
-            row_block_ptr->index_value = reindex_map[c_idx][row_block_ptr->index_value];
+            row_block_ptr->index_value =
+                reindex_map[c_idx][row_block_ptr->index_value];
             ++row_block_ptr;
           }
           break;
         }
 
         case ml_column_mode::DICTIONARY: {
-
           size_t nv = read_size();
 
           DASSERT_LT(c_idx, reindex_map.size());
-          for(size_t k = 0; k < nv; ++k) {
+          for (size_t k = 0; k < nv; ++k) {
             DASSERT_LT(row_block_ptr->index_value, reindex_map[c_idx].size());
-            row_block_ptr->index_value = reindex_map[c_idx][row_block_ptr->index_value];
+            row_block_ptr->index_value =
+                reindex_map[c_idx][row_block_ptr->index_value];
             ++row_block_ptr;
             ++row_block_ptr;
           }
           break;
         }
 
-        case ml_column_mode::UNTRANSLATED: {
+        case ml_column_mode::NUMERIC_ND_VECTOR: {
+          size_t nv = rm.metadata_vect[c_idx]->fixed_column_size();
+          row_block_ptr += nv;
+          break;
+        }
 
+        case ml_column_mode::UNTRANSLATED: {
           // Do nothing in this case.
           break;
         }
         default:
           DASSERT_TRUE(false);
-      } // End switch
+      }  // End switch
     }
   }
 }
-
-
 
 /** Determines the number of ml_data_entry objects needed to fit a
  *  mapped buffer of flexible_type columns into.
@@ -944,11 +961,9 @@ void reindex_block(const row_metadata& rm, row_data_block& block,
  *
  *  \return The block size in number of ml_data_entry objects required.
  */
-size_t estimate_num_data_entries(
-    const column_metadata_ptr& m, const flexible_type& v) {
-
-  switch(m->mode) {
-
+size_t estimate_num_data_entries(const column_metadata_ptr& m,
+                                 const flexible_type& v) {
+  switch (m->mode) {
     case ml_column_mode::NUMERIC:
       return 1;
 
@@ -959,16 +974,19 @@ size_t estimate_num_data_entries(
       return 1;
 
     case ml_column_mode::CATEGORICAL_VECTOR:
-      if(LIKELY(v.get_type() == flex_type_enum::LIST))
+      if (LIKELY(v.get_type() == flex_type_enum::LIST))
         return 1 + v.get<flex_list>().size();
       else
         return 0;
 
     case ml_column_mode::DICTIONARY:
-      if(LIKELY(v.get_type() == flex_type_enum::DICT))
+      if (LIKELY(v.get_type() == flex_type_enum::DICT))
         return 1 + 2 * v.get<flex_dict>().size();
       else
         return 0;
+
+    case ml_column_mode::NUMERIC_ND_VECTOR:
+      return m->fixed_column_size();
 
     case ml_column_mode::UNTRANSLATED:
       return 0;
@@ -978,5 +996,5 @@ size_t estimate_num_data_entries(
       return 0;
   }
 }
-
-}}
+}  // namespace ml_data_internal
+}  // namespace turi
