@@ -69,6 +69,11 @@ class Pipe {
         fflush(__stdoutp)
     }
     
+    public func writeAccordion(method: String, column_name: String, index_val: String){
+        print("{'method':'get_accordion','column': '" + column_name + "', 'index': " + index_val + "}");
+        fflush(__stdoutp)
+    }
+    
     private func process_data(data: String) {
         do {
             // expect "data" to contain JSON of the form [String: Any]
@@ -88,6 +93,10 @@ class Pipe {
             
             if let image_spec = json["image_spec"] as? [String: Any] {
                 self.graph_data.add_images(image_spec: image_spec)
+            }
+            
+            if let accordion_spec = json["accordion_spec"] as? [String: Any] {
+                self.graph_data.add_accordion(accordion_spec: accordion_spec)
             }
 
         } catch let error as NSError {

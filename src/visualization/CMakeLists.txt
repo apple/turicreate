@@ -62,11 +62,7 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
     set(V8_CONTEXT_SNAPSHOT "${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/v8_context_snapshot.bin")
     set(SNAPSHOT_BLOB "${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/snapshot_blob.bin")
     set(NATIVES_BLOB "${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/natives_blob.bin")
-
-    set(TC_NPM_BUILD "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/js/build/index.js")
-    set(TC_VEGA_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/vega_viz.html")
-    set(TC_CSS "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/table_view.css")
-    set(TC_VEGA_DEPS "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/deps")
+    set(TC_NPM_BUILD "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface/build")
 
     include_directories(
       ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef
@@ -95,7 +91,7 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
 
             COMMAND npm run build
 
-            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/js/"
+            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface"
 
             COMMENT "Building NPM Package for Turi Create Visualization"
 
@@ -111,20 +107,8 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
             COMMAND ${CMAKE_COMMAND} -E make_directory
                     ${TC_VIZ_HTML_DIRECTORY}
 
-            COMMAND ${CMAKE_COMMAND} -E copy
-                    ${TC_NPM_BUILD}
-                    ${TC_VIZ_HTML_DIRECTORY}
-
-            COMMAND ${CMAKE_COMMAND} -E copy
-                    ${TC_VEGA_SOURCE}
-                    ${TC_VIZ_HTML_DIRECTORY}
-
-            COMMAND ${CMAKE_COMMAND} -E copy
-                    ${TC_CSS}
-                    ${TC_VIZ_HTML_DIRECTORY}
-
             COMMAND ${CMAKE_COMMAND} -E copy_directory
-                    ${TC_VEGA_DEPS}
+                    ${TC_NPM_BUILD}
                     ${TC_VIZ_HTML_DIRECTORY}
 
             COMMAND ${CMAKE_COMMAND} -E make_directory
