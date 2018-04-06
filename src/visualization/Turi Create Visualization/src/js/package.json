@@ -15,11 +15,9 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
-    "vega": "^3.2.1",
     "webpack": "^3.8.1",
     "webpack-dev-server": "^2.9.4"
   },
-  "postinstall": "cd node_modules/canvas && node-gyp rebuild",
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "babel-runtime": "^6.26.0",
