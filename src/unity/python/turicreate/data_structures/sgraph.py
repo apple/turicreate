@@ -13,7 +13,6 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-from .. import connect as _mt
 from ..connect import main as glconnect
 from .sframe import SFrame
 from .sarray import SArray

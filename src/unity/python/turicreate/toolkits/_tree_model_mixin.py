@@ -62,7 +62,6 @@ class TreeModelMixin(object):
             +-----------------------------+-------+-------+
             [31 rows x 3 columns]
         """
-        metric_name = '.'.join([self.__module__, 'get_feature_importance'])
         return tc.extensions._xgboost_feature_importance(self.__proxy__)
 
     def extract_features(self, dataset, missing_value_action='auto'):
@@ -115,7 +114,6 @@ class TreeModelMixin(object):
         >>> # Classification Tree Models
         >>> data['classification_tree_features'] = model.extract_features(data)
         """
-        metric_name = '.'.join([self.__module__, 'extract_features'])
         _raise_error_if_not_sframe(dataset, "dataset")
         if missing_value_action == 'auto':
             missing_value_action = select_default_missing_value_policy(self,

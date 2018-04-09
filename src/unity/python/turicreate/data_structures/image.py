@@ -6,10 +6,6 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-try:
-    from io import BytesIO as _StringIO
-except ImportError:
-    from StringIO import StringIO as _StringIO
 
 from ..deps import numpy as _np
 import array as _array
