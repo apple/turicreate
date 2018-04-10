@@ -11,11 +11,6 @@ import turicreate.toolkits._main as _main
 from turicreate.toolkits.graph_analytics._model_base import GraphAnalyticsModel as _ModelBase
 import copy as _copy
 
-_HAS_IPYTHON = True
-try:
-    import IPython.core.display as _IPython
-except:
-    _HAS_IPYTHON = False
 
 class ShortestPathModel(_ModelBase):
     """

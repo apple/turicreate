@@ -1,12 +1,22 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-import logging as _logging
 import json as _json
 import os as _os
 from tempfile import mkstemp as _mkstemp
+from subprocess import Popen as _Popen 
+from subprocess import PIPE as _PIPE
 
 _target = 'auto'
+
+_NODE_NOT_FOUND_ERROR_CODE = 127
+
+def _run_cmdline(command):
+    # runs a shell command
+    p = _Popen(args=command, stdout=_PIPE, stderr=_PIPE, shell=True)
+    stdout_feed, stderr_feed = p.communicate() # wait for completion
+    exit_code = p.poll()
+    return (exit_code, stdout_feed, stderr_feed)
 
 def set_target(target='auto'):
     """
@@ -101,20 +111,17 @@ class Plot(object):
 
                 self.__proxy__.get('call_function', {'__function_name__': 'show'})
 
-    def save(self, filepath, include_data=True):
+    def save(self, filepath):
         """
         A method for saving the Plot object in a vega representation
 
         Parameters
         ----------
-        include_data : bool, optional
-            If True, save's the Plot in a vega spec with the data spec
-            included.
-
-        Notes
-        -----
-        - The save method saves the Plot object in a vega json format
-
+        filepath: string
+            The destination filepath where the plot object must be saved as.
+            The extension of this filepath determines what format the plot will
+            be saved as. Currently supported formats are JSON, PNG, and SVG.
+        
         Examples
         --------
         Suppose 'plt' is an Plot Object
@@ -127,33 +134,52 @@ class Plot(object):
 
         >>> plt.save('vega_spec.json', False)
 
+        We can save the plot as a PNG/SVG using:
+
+        >>> plt.save('test.png')
+        >>> plt.save('test.svg')
+
         """
         if type(filepath) != str:
             raise ValueError("filepath provided is not a string")
 
         if filepath.endswith(".json"):
             # save as vega json
-            spec = self._get_vega(include_data = include_data)
+            spec = self._get_vega(include_data = True)
             with open(filepath, 'w') as fp:
                 _json.dump(spec, fp)
         elif filepath.endswith(".png") or filepath.endswith(".svg"):
             # save as png/svg, but json first
             spec = self._get_vega(include_data = True)
-            extension = filepath[-3:]
+            EXTENSION_START_INDEX = -3
+            extension = filepath[EXTENSION_START_INDEX:]
             temp_file_tuple = _mkstemp()
             temp_file_path = temp_file_tuple[1]
             with open(temp_file_path, 'w') as fp:
                 _json.dump(spec, fp)
             dirname = _os.path.dirname(__file__)
             relative_path_to_vg2png_vg2svg = "../vg2" + extension
-            absolute_path_to_vg2png_vg2svg = _os.path.join(
-                dirname, relative_path_to_vg2png_vg2svg)
-            _os.system("node " + absolute_path_to_vg2png_vg2svg + " " + temp_file_path + " " + filepath)
+            absolute_path_to_vg2png_vg2svg = _os.path.join(dirname, 
+                relative_path_to_vg2png_vg2svg)
+            (exitcode, stdout, stderr) = _run_cmdline("node " + 
+                absolute_path_to_vg2png_vg2svg + " " 
+                + temp_file_path + " " + filepath)
+            if exitcode == _NODE_NOT_FOUND_ERROR_CODE:
+                # user doesn't have node installed
+                raise RuntimeError("Node.js not found. Saving as PNG and SVG" +
+                    " requires Node.js, please download and install Node.js " +
+                    "from here and try again: https://nodejs.org/en/download/")
+            elif exitcode == 0:
+                # success
+                pass
+            else:
+                # something else
+                raise RuntimeError(stderr)
             # delete temp file that user didn't ask for
-            _os.system("rm " + temp_file_path) 
+            _run_cmdline("rm " + temp_file_path) 
         else:
-            raise NotImplementedError("filename must end in .json, .svg, or .png")
-
+            raise NotImplementedError("filename must end in" +
+                " .json, .svg, or .png")
 
     def _get_data(self):
         return _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_data'}))
@@ -165,7 +191,7 @@ class Plot(object):
             for x in range(len(spec["data"])):
                 if(spec["data"][x]["name"] == "source_2"):
                     spec["data"][x] = data
-                    break;
+                    break
             return spec
         else:
             return _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_spec'}))["vega_spec"]
