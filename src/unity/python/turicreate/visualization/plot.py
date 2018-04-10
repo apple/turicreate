@@ -107,13 +107,18 @@ class Plot(object):
 
         Parameters
         ----------
+        filepath: string
+            The destination filepath where the plot object must be saved as.
+            The extension of this filepath determines what format the plot will
+            be saved as. Currently supported formats are JSON, PNG, and SVG.
         include_data : bool, optional
             If True, save's the Plot in a vega spec with the data spec
-            included.
+            included. This parameter is not important when saving as a PNG/SVG
 
         Notes
         -----
-        - The save method saves the Plot object in a vega json format
+        - The save method saves the Plot object in a vega json format, or a 
+          PNG format or a SVG format, depending on the user's input filepath
 
         Examples
         --------
@@ -126,6 +131,11 @@ class Plot(object):
         We can also save the vega representation of the plot without data:
 
         >>> plt.save('vega_spec.json', False)
+
+        We can save the plot as a PNG/SVG using:
+
+        >>> plt.save('test.png')
+        >>> plt.save('test.svg')
 
         """
         if type(filepath) != str:
