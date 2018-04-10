@@ -12,7 +12,6 @@ from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits._internal_utils import _toolkit_repr_print
-import logging as _logging
 
 
 def _BOW_FEATURE_EXTRACTOR(sf, target=None):

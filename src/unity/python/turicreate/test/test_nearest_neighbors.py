@@ -28,7 +28,6 @@ if sys.version_info.major > 2:
     long = int
 
 import os as _os
-_lfs = _os.environ['LFS_ROOT']
 
 
 class NearestNeighborsCreateTest(unittest.TestCase):

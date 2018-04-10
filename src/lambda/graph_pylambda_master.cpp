@@ -39,7 +39,7 @@ graph_pylambda_master::graph_pylambda_master(size_t nworkers) {
   if (nworkers < thread::cpu_count()) {
     logprogress_stream << "Using default " << nworkers << " lambda workers.\n";
     logprogress_stream << "To maximize the degree of parallelism, add the following code to the beginning of the program:\n";
-    logprogress_stream << "\"turicreate.set_runtime_config(\'TURI_DEFAULT_NUM_GRAPH_LAMBDA_WORKERS\', " << thread::cpu_count() << ")\"\n";
+    logprogress_stream << "\"turicreate.config.set_runtime_config(\'TURI_DEFAULT_NUM_GRAPH_LAMBDA_WORKERS\', " << thread::cpu_count() << ")\"\n";
     logprogress_stream << "Note that increasing the degree of parallelism also increases the memory footprint." << std::endl;
   }
 }

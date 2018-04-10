@@ -1,0 +1,33 @@
+{
+    "name": "user-interface",
+    "version": "0.1.0",
+    "private": true,
+    "homepage": "./",
+    "dependencies": {
+        "@fortawesome/fontawesome": "^1.1.5",
+        "@fortawesome/fontawesome-free-solid": "^5.0.9",
+        "@fortawesome/react-fontawesome": "0.0.18",
+        "d3": "^5.0.0",
+        "element-resize-event": "^2.0.9",
+        "react": "^16.2.0",
+        "react-dom": "^16.2.0",
+        "react-fontawesome": "^1.6.1",
+        "react-json-pretty": "^1.7.5",
+        "vega": "^3.2.1",
+        "vega-embed": "^3.2.0",
+        "vega-tooltip": "^0.6.1"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test --env=jsdom",
+        "eject": "react-scripts eject"
+    },
+    "devDependencies": {
+        "babel-cli": "^6.26.0",
+        "babel-plugin-transform-class-properties": "^6.24.1",
+        "babel-plugin-transform-react-remove-prop-types": "^0.4.13",
+        "babel-preset-es2017": "^6.24.1",
+        "react-scripts": "1.1.1"
+    }
+}

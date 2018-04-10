@@ -30,7 +30,7 @@ import turicreate as tc
 y    = tc.SArray(["cat", "dog", "cat", "cat"])
 yhat = tc.SArray(["cat", "dog", "cat", "dog"])
 
-print tc.evaluation.accuracy(y, yhat)
+print(tc.evaluation.accuracy(y, yhat))
 ```
 ```
 0.75
@@ -64,9 +64,9 @@ import turicreate as tc
 y    = tc.SArray(["cat", "dog", "foosa", "cat"])
 yhat = tc.SArray(["cat", "dog", "cat", "dog"])
 
-print tc.evaluation.accuracy(y, yhat, average = "micro")
-print tc.evaluation.accuracy(y, yhat, average = "macro")
-print tc.evaluation.accuracy(y, yhat, average = None)
+print(tc.evaluation.accuracy(y, yhat, average = "micro"))
+print(tc.evaluation.accuracy(y, yhat, average = "macro"))
+print(tc.evaluation.accuracy(y, yhat, average = None))
 ```
 ```no-highlight
 0.5
@@ -259,7 +259,7 @@ predictions = turicreate.SArray(['dog', 'cat', 'cat', 'dog', 'cat', 'dog', 'cat'
 
 pr_score   = turicreate.evaluation.precision(targets, predictions)
 rec_score  = turicreate.evaluation.recall(targets, predictions)
-print pr_score, rec_score
+print(pr_score, rec_score)
 ```
 ```no-highlight
 0.25, 0.5
@@ -287,8 +287,8 @@ macro_pr = turicreate.evaluation.precision(targets, predictions, average='macro'
 micro_pr = turicreate.evaluation.precision(targets, predictions, average='micro')
 per_class_pr = turicreate.evaluation.precision(targets, predictions, average=None)
 
-print macro_pr, micro_pr
-print per_class_pr
+print(macro_pr, micro_pr)
+print(per_class_pr)
 ```
 ```no-highlight
 0.694444444444 0.625
@@ -330,7 +330,7 @@ predictions = turicreate.SArray([1, 0, 0, 1, 0, 1, 0, 1])
 
 f1    = turicreate.evaluation.f1_score(targets, predictions)
 fbeta = turicreate.evaluation.fbeta_score(targets, predictions, beta = 2.0)
-print f1, fbeta
+print(f1, fbeta)
 ```
 ```no-highlight
 0.333333333333 0.416666666667
@@ -347,7 +347,7 @@ predictions = turicreate.SArray(['dog', 'cat', 'cat', 'dog', 'cat', 'dog', 'cat'
 
 f1    = turicreate.evaluation.f1_score(targets, predictions)
 fbeta = turicreate.evaluation.fbeta_score(targets, predictions, beta = 2.0)
-print f1, fbeta
+print(f1, fbeta)
 ```
 ```no-highlight
 0.333333333333 0.416666666667
@@ -472,7 +472,7 @@ targets = turicreate.SArray([0, 1, 1, 0])
 predictions = turicreate.SArray([0.1, 0.35, 0.7, 0.99])
 
 auc = turicreate.evaluation.auc(targets, predictions)
-print auc
+print(auc)
 ```
 ```no-highlight
 0.5
@@ -492,7 +492,7 @@ targets = turicreate.SArray(["cat", "dog", "cat", "dog"])
 predictions = turicreate.SArray([0.1, 0.35, 0.7, 0.99])
 
 auc = turicreate.evaluation.auc(targets, predictions)
-print auc
+print(auc)
 ```
 ```no-highlight
 0.5

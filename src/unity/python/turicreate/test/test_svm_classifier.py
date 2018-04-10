@@ -20,7 +20,6 @@ from sklearn.metrics import *
 import shutil
 
 import os as _os
-_lfs = _os.environ['LFS_ROOT']
 
 class SVMClassifierTest(unittest.TestCase):
     """

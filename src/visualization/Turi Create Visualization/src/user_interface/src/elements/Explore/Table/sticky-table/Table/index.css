@@ -1,0 +1,4 @@
+.sticky-table .sticky-table-container {
+  display: table;
+  box-sizing: border-box;
+}

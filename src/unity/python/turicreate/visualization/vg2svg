@@ -1,0 +1,60 @@
+#!/usr/bin/env node
+// Render a Vega specification to SVG
+
+var helpText =
+  'Render a Vega specification to SVG.\n\n' +
+  'Usage: vg2svg [vega_json_file] [output_svg_file]\n' +
+  '  If no arguments are provided, reads from stdin.\n' +
+  '  If output_svg_file is not provided, writes to stdout.\n\n' +
+  'To load data, you may need to set a base directory:\n' +
+  '  For web retrieval, use `-b http://host/data/`. \n' +
+  '  For files, use `-b file:///dir/data/` (absolute) or `-b data/` (relative).';
+
+var svgHeader =
+  '<?xml version="1.0" encoding="utf-8"?>\n' +
+  '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" ' +
+  '"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n';
+
+// import required libraries
+var path = require('path'),
+    fs = require('fs'),
+    vega = require('./vega_3.2.1.js'),
+    process = require('process');
+
+// input / output files
+var base = null,
+    header = '',
+    myArgs = process.argv.slice(2),
+    specFile = myArgs[0],
+    outputFile = myArgs[1];
+
+// load spec, render to png
+fs.readFile(specFile, 'utf8', function(err, text) {
+  if (err) throw err;
+  render(JSON.parse(text));
+});
+
+// ---
+
+function writeSVG(svg, file) {
+  svg = header + svg;
+  if (file) {
+    // write to file
+    fs.writeFile(file, svg, function(err) { if (err) throw err; });
+  } else {
+    // write to stdout
+    process.stdout.write(svg);
+  }
+}
+
+function render(spec) {
+  new vega.View(vega.parse(spec), {
+      loader: vega.loader({baseURL: base}),
+      logLevel: vega.Warn,
+      renderer: 'none'
+    })
+    .initialize()
+    .toSVG()
+    .then(function(svg) { writeSVG(svg, outputFile); })
+    .catch(function(err) { console.error(err); });
+}

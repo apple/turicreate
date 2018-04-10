@@ -1018,7 +1018,7 @@ class gl_sarray {
    * [1,3,6,9]
    * \endcode
    */
-  gl_sarray sample(double fraction, size_t seed) const;
+  gl_sarray sample(double fraction, size_t seed, bool exact=false) const;
 
   /**
    * Return true if every element of the \ref gl_sarray evaluates to true. For

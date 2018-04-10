@@ -135,7 +135,7 @@ class ImageClassTest(unittest.TestCase):
         # Test auto format, with path and recursive
         sf1 = image_analysis.load_images(image_url_dir, "auto", True, True)
         self.assertEqual(sf1.num_columns(), 2)
-        self.assertEqual(sf1.num_rows(), 4)
+        self.assertEqual(sf1.num_rows(), 18)
         self.assertEqual(sf1['image'].dtype, image.Image)
 
         # Test auto format, with path and non recursive
@@ -147,7 +147,7 @@ class ImageClassTest(unittest.TestCase):
         # Test auto format, without path and recursive
         sf3 = image_analysis.load_images(image_url_dir, "auto", False, True)
         self.assertEqual(sf3.num_columns(), 1)
-        self.assertEqual(sf3.num_rows(), 4)
+        self.assertEqual(sf3.num_rows(), 18)
         self.assertEqual(sf3['image'].dtype, image.Image)
 
         # Test auto format, without path and non recursive
@@ -241,4 +241,43 @@ class ImageClassTest(unittest.TestCase):
         for p in range(len(pixel_data)):
             self.assertEqual(pixel_data[p], 50)
 
+        # Load images and make sure shape is right
+        img_color = image.Image(os.path.join(current_file_dir, 'images', 'sample.png'))
+        self.assertEqual(img_color.pixel_data.shape, (444, 800, 3))
 
+        img_gray = image.Image(os.path.join(current_file_dir, 'images', 'nested', 'sample_grey.png'))
+        self.assertEqual(img_gray.pixel_data.shape, (444, 800))
+
+    def test_png_bitdepth(self):
+        def path(name):
+            return os.path.join(current_file_dir, 'images', 'bitdepths', name)
+
+        # Test images with varying bitdepth and check correctness against 4 reference pixels
+        images_info = [
+            # path, bitdepth, pixel_data[0, 0], pixel_data[0, 1], pixel_data[0, 200], pixel_data[40, 400]
+            (path('color_1bit.png'),  [0, 0, 0], [0, 0, 0], [  0, 255, 255], [255, 255,   0]),
+            (path('color_2bit.png'),  [0, 0, 0], [0, 0, 0], [ 85, 255, 170], [170, 170,  85]),
+            (path('color_4bit.png'),  [0, 0, 0], [0, 0, 0], [ 68, 221, 187], [153, 187, 102]),
+            (path('color_8bit.png'),  [0, 0, 0], [0, 1, 2], [ 73, 219, 182], [146, 182, 109]),
+            (path('color_16bit.png'), [0, 0, 0], [0, 1, 2], [ 73, 219, 182], [146, 182, 109]),
+
+            (path('gray_1bit.png'),  0, 0,   0, 255),
+            (path('gray_2bit.png'),  0, 0,  85, 170),
+            (path('gray_4bit.png'),  0, 0,  68, 153),
+            (path('gray_8bit.png'),  0, 0,  73, 146),
+            (path('gray_16bit.png'), 0, 0,  73, 146),
+
+            (path('palette_1bit.png'), [127,   0, 255], [127,   0, 255], [127,   0, 255], [255,   0,   0]),
+            (path('palette_2bit.png'), [127,   0, 255], [127,   0, 255], [ 42, 220, 220], [212, 220, 127]),
+            (path('palette_4bit.png'), [127,   0, 255], [127,   0, 255], [  8, 189, 232], [178, 242, 149]),
+            (path('palette_8bit.png'), [127,   0, 255], [127,   0, 255], [ 18, 199, 229], [164, 248, 158]),
+        ]
+
+        for path, color_0_0, color_0_1, color_0_200, color_40_400 in images_info:
+            img = image.Image(path)
+            data = img.pixel_data
+            ref_type = type(color_0_0)
+            self.assertEqual(ref_type(data[0, 0]), color_0_0)
+            self.assertEqual(ref_type(data[0, 1]), color_0_1)
+            self.assertEqual(ref_type(data[0, 200]), color_0_200)
+            self.assertEqual(ref_type(data[40, 400]), color_40_400)

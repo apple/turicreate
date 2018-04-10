@@ -21,6 +21,7 @@ This is the User Guide for Turi Create
         * [How it works](image_classifier/how-it-works.md)
     * [Image similarity](image_similarity/README.md)
     * [Object detection](object_detection/README.md)
+        * [Data Preparation](object_detection/data-preparation.md)
         * [Advanced Usage](object_detection/advanced-usage.md)
         * [How it works](object_detection/how-it-works.md)
     * [Activity classification](activity_classifier/README.md)

@@ -28,7 +28,6 @@ demoapps/pagerank/matlab_tools/*.tsv
 
 description.json
 
-tags
 *swp
 \.mchg\.mchg
 .ycm_extra_conf*
@@ -43,7 +42,6 @@ dist
 /build
 eggs
 parts
-bin
 var
 sdist
 develop-eggs
@@ -59,9 +57,6 @@ pip-log.txt
 .tox
 pytest.xml
 
-# Translations
-*.mo
-
 # Mr Developer
 .mr.developer.cfg
 .project
@@ -76,23 +71,18 @@ pydocs/*
 # Mr Old School Data Scientist
 .Rhistory
 
-# log files
-*.log
-
 
 __MACOSX
 .ipynb_checkpoints
 
 .DS_Store
 .Rproj.user
-*.Rd
 **/*.dSYM/
 *.dylib
 xcuserdata/
 deps/env
 deps/local
 deps/build
-doc/
 
 /dummy.cpp
 

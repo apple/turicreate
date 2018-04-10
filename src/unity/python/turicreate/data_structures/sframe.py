@@ -35,7 +35,6 @@ import datetime
 import time
 import itertools
 import logging as _logging
-import os
 import subprocess
 import uuid
 import platform
@@ -47,33 +46,11 @@ import csv
 __all__ = ['SFrame']
 __LOGGER__ = _logging.getLogger(__name__)
 
-SFRAME_GARBAGE_COLLECTOR = []
-SFRAME_TURIUTIL_REF = None
-
 FOOTER_STRS = ['Note: Only the head of the SFrame is printed.',
                'You can use print_rows(num_rows=m, num_columns=n) to print more rows and columns.']
 
 LAZY_FOOTER_STRS = ['Note: Only the head of the SFrame is printed. This SFrame is lazily evaluated.',
                     'You can use sf.materialize() to force materialization.']
-root_package_name = __import__(__name__.split('.')[0]).__name__
-SFRAME_ROOTS = [# Binary/lib location in production egg
-                os.path.abspath(os.path.join(os.path.dirname(
-                    os.path.realpath(__file__)), '..')),
-                # Build tree location of SFrame binaries
-                os.path.abspath(os.path.join(os.path.dirname(
-                    os.path.realpath(__file__)),
-                        '..', '..',  '..', '..','..','src','sframe')),
-                # Location of python sources
-                os.path.abspath(os.path.join(os.path.dirname(
-                    os.path.realpath(__file__)),
-                        '..', '..',  '..', '..', 'unity', 'python', root_package_name)),
-                # Build tree dependency location
-                os.path.abspath(os.path.join(os.path.dirname(
-                    os.path.realpath(__file__)),
-                        '..', '..',  '..', '..', '..', '..', 'deps', 'local', 'lib'))
-                ]
-
-HDFS_LIB = "libhdfs.so"
 
 if sys.version_info.major > 2:
     long = int
@@ -759,10 +736,6 @@ class SFrame(object):
                     _format = 'dataframe'
                 elif (isinstance(data, str) or
                       (sys.version_info.major < 3 and isinstance(data, unicode))):
-                    if data.find('://') == -1:
-                        suffix = 'local'
-                    else:
-                        suffix = data.split('://')[0]
 
                     if data.endswith(('.csv', '.csv.gz')):
                         _format = 'csv'
@@ -839,10 +812,6 @@ class SFrame(object):
                     pass
                 else:
                     raise ValueError('Unknown input type: ' + format)
-
-        sframe_size = -1
-        if self.__has_size__():
-          sframe_size = self.num_rows()
 
     @staticmethod
     def _infer_column_types_from_lines(first_rows):
@@ -1053,14 +1022,6 @@ class SFrame(object):
             type_hints = column_type_hints
         else:
             raise TypeError("Invalid type for column_type_hints. Must be a dictionary, list or a single type.")
-
-
-
-        suffix=''
-        if url.find('://') == -1:
-            suffix = 'local'
-        else:
-            suffix = url.split('://')[0]
 
         try:
             if (not verbose):
@@ -2594,19 +2555,23 @@ class SFrame(object):
         with cython_context():
             return SFrame(_proxy=self.__proxy__.flat_map(fn, column_names, column_types, seed))
 
-    def sample(self, fraction, seed=None):
+    def sample(self, fraction, seed=None, exact=False):
         """
         Sample a fraction of the current SFrame's rows.
 
         Parameters
         ----------
         fraction : float
-            Approximate fraction of the rows to fetch. Must be between 0 and 1.
-            The number of rows returned is approximately the fraction times the
-            number of rows.
+            Fraction of the rows to fetch. Must be between 0 and 1.
+            if exact is False (default), the number of rows returned is
+            approximately the fraction times the number of rows.
 
         seed : int, optional
             Seed for the random number generator used to sample.
+
+        exact: bool, optional
+            Defaults to False. If exact=True, an exact fraction is returned, 
+            but at a performance penalty.
 
         Returns
         -------
@@ -2637,24 +2602,32 @@ class SFrame(object):
             return self
         else:
             with cython_context():
-                return SFrame(_proxy=self.__proxy__.sample(fraction, seed))
+                return SFrame(_proxy=self.__proxy__.sample(fraction, seed, exact))
 
-    def random_split(self, fraction, seed=None):
+    def random_split(self, fraction, seed=None, exact=False):
         """
         Randomly split the rows of an SFrame into two SFrames. The first SFrame
         contains *M* rows, sampled uniformly (without replacement) from the
         original SFrame. *M* is approximately the fraction times the original
         number of rows. The second SFrame contains the remaining rows of the
-        original SFrame.
+        original SFrame. 
+        
+        An exact fraction partition can be optionally obtained by setting 
+        exact=True.
 
         Parameters
         ----------
         fraction : float
-            Approximate fraction of the rows to fetch for the first returned
-            SFrame. Must be between 0 and 1.
+            Fraction of the rows to fetch. Must be between 0 and 1.
+            if exact is False (default), the number of rows returned is
+            approximately the fraction times the number of rows.
 
         seed : int, optional
             Seed for the random number generator used to split.
+
+        exact: bool, optional
+            Defaults to False. If exact=True, an exact fraction is returned, 
+            but at a performance penalty.
 
         Returns
         -------
@@ -2688,7 +2661,7 @@ class SFrame(object):
 
 
         with cython_context():
-            proxy_pair = self.__proxy__.random_split(fraction, seed)
+            proxy_pair = self.__proxy__.random_split(fraction, seed, exact)
             return (SFrame(data=[], _proxy=proxy_pair[0]), SFrame(data=[], _proxy=proxy_pair[1]))
 
     def topk(self, column_name, k=10, reverse=False):
@@ -4449,7 +4422,7 @@ class SFrame(object):
         import sys
         import os
 
-        if sys.platform != 'darwin' and sys.platform != 'linux2':
+        if sys.platform != 'darwin' and sys.platform != 'linux2' and sys.platform != 'linux':
             raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
 
         path_to_client = _get_client_app_path()

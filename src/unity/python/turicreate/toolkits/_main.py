@@ -55,7 +55,7 @@ def run(toolkit_name, options, verbose=True, show_progress=False):
     unity = glconnect.get_unity()
     if (not verbose):
         glconnect.get_server().set_log_progress(False)
-    # spawn progress threads
+
     try:
         start_time = time.time()
         (success, message, params) = unity.run_toolkit(toolkit_name, options)
@@ -65,15 +65,6 @@ def run(toolkit_name, options, verbose=True, show_progress=False):
 
     if (len(message) > 0):
         logging.getLogger(__name__).error("Toolkit error: " + message)
-
-    track_props = {}
-    track_props['success'] = success
-
-    if success:
-        track_props['runtime'] = end_time - start_time
-    else:
-        if (len(message) > 0):
-            track_props['message'] = message
 
     # set the verbose level back to default
     glconnect.get_server().set_log_progress(True)

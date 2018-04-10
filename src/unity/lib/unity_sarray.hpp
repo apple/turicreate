@@ -514,7 +514,7 @@ class unity_sarray: public unity_sarray_base {
    * Returns a uniform random sample of the sarray, that contains percent of
    * the total elements, without replacement, using the random_seed.
    */
-  std::shared_ptr<unity_sarray_base> sample(float percent, int random_seed);
+  std::shared_ptr<unity_sarray_base> sample(float percent, int random_seed, bool exact=false);
 
   /**
    * Returns an SArray of type flex_int that contains the hash of each element.
@@ -754,10 +754,29 @@ class unity_sarray: public unity_sarray_base {
    static std::shared_ptr<unity_sarray_base>
        create_sequential_sarray(ssize_t size, ssize_t start, bool reverse);
 
+   /**
+    * Construct a boolean array with approximately a percent of the array 
+    * randomly true.
+    *
+    * if exact is false, 
+    * each row is a sample from Bernoulli(percent). On average, 'percent' 
+    * fraction of the array will be true, but this will not be exact.
+    *
+    * If exact is true, \ref make_exact_uniform_boolean_array is used.
+    */
    static std::shared_ptr<unity_sarray_base> make_uniform_boolean_array(size_t size,
                                                                  float percent,
-                                                                 int random_seed);
+                                                                 int random_seed,
+                                                                 bool exact=false);
 
+   /**
+    * Construct a boolean array with exactly a certain number of true elements.
+    *
+    * if num_trues is > size, an array of all trues of length size is returned.
+    */
+   static std::shared_ptr<unity_sarray_base> make_exact_uniform_boolean_array(size_t size,
+                                                                              size_t num_trues,
+                                                                              int random_seed);
    std::shared_ptr<unity_sarray_base> builtin_rolling_apply(
        const std::string &fn_name,
        ssize_t before,
