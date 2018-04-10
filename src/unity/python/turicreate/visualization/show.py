@@ -133,8 +133,8 @@ def scatter(x, y, xlabel="X", ylabel="Y", title=None):
     >>> y = x * 2
     >>> scplt = turicreate.visualization.scatter(x, y)
     """
-    if (type(x) != tc.data_structures.sarray.SArray or 
-        type(y) != tc.data_structures.sarray.SArray or
+    if (not isinstance(x, tc.data_structures.sarray.SArray) or 
+        not isinstance(y, tc.data_structures.sarray.SArray) or
         x.dtype not in [int, float] or y.dtype not in [int, float]):
         raise ValueError("turicreate.visualization.scatter supports " + 
             "SArrays of dtypes: int, float")
@@ -182,8 +182,8 @@ def categorical_heatmap(x, y, xlabel="X", ylabel="Y", title=None):
     >>> y = turicreate.SArray(['a','b','c','d','e'])
     >>> catheat = turicreate.visualization.categorical_heatmap(x, y)
     """
-    if (type(x) != tc.data_structures.sarray.SArray or 
-        type(y) != tc.data_structures.sarray.SArray or
+    if (not isinstance(x, tc.data_structures.sarray.SArray) or 
+        not isinstance(y, tc.data_structures.sarray.SArray) or
         x.dtype != str or y.dtype != str):
         raise ValueError("turicreate.visualization.categorical_heatmap supports " + 
             "SArrays of dtype: str")
@@ -231,8 +231,8 @@ def heatmap(x, y, xlabel="X", ylabel="Y", title=None):
     >>> y = x * 2 
     >>> heat = turicreate.visualization.heatmap(x, y)
     """
-    if (type(x) != tc.data_structures.sarray.SArray or 
-        type(y) != tc.data_structures.sarray.SArray or
+    if (not isinstance(x, tc.data_structures.sarray.SArray) or 
+        not isinstance(y, tc.data_structures.sarray.SArray) or
         x.dtype not in [int, float] or y.dtype not in [int, float]):
         raise ValueError("turicreate.visualization.heatmap supports " + 
             "SArrays of dtype: int, float")
@@ -277,8 +277,8 @@ def box_plot(x, y, xlabel="X", ylabel="Y", title=None):
 
     >>> bp = turicreate.visualization.box_plot(tc.SArray(['a','b','c','a','a']),tc.SArray([4.0,3.25,2.1,2.0,1.0]))
     """
-    if (type(x) != tc.data_structures.sarray.SArray or 
-        type(y) != tc.data_structures.sarray.SArray or
+    if (not isinstance(x, tc.data_structures.sarray.SArray) or 
+        not isinstance(y, tc.data_structures.sarray.SArray) or
         x.dtype != str or y.dtype not in [int, float]):
         raise ValueError("turicreate.visualization.box_plot supports " + 
             "x as SArray of dtype str and y as SArray of dtype: int, float." +
@@ -315,7 +315,7 @@ def columnwise_summary(sf):
     >>> sf_test = turicreate.SFrame([x,x,x,x,s,s,s,x,s,x,s,s,s,x,x])
     >>> colsum = turicreate.visualization.columnwise_summary(sf_test)
     """
-    if (type(sf) != tc.data_structures.sframe.SFrame):
+    if not isinstance(sf, tc.data_structures.sframe.SFrame):
         raise ValueError("turicreate.visualization.columnwise_summary " + 
             "supports SFrame")
     path_to_client = _get_client_app_path()
@@ -354,7 +354,7 @@ def histogram(sa, xlabel="Values", ylabel="Count", title=None):
     >>> x = turicreate.SArray([1,2,3,4,5,1,1,1,1,2,2,3,2,3,1,1,1,4])
     >>> hist = turicreate.visualization.histogram(x)
     """
-    if (type(sa) != tc.data_structures.sarray.SArray or 
+    if (not isinstance(sa, tc.data_structures.sarray.SArray) or 
         sa.dtype not in [int, float]):
         raise ValueError("turicreate.visualization.histogram supports " + 
             "SArrays of dtypes: int, float")
@@ -396,7 +396,8 @@ def item_frequency(sa, xlabel="Values", ylabel="Count", title=None):
     >>> x = turicreate.SArray(['a','ab','acd','ab','a','a','a','ab','cd'])
     >>> ifplt = turicreate.visualization.item_frequency(x)
     """
-    if (type(sa) != tc.data_structures.sarray.SArray or sa.dtype != str):
+    if (not isinstance(sa, tc.data_structures.sarray.SArray) or
+        sa.dtype != str):
         raise ValueError("turicreate.visualization.item_frequency supports " + 
             "SArrays of dtype str")
     path_to_client = _get_client_app_path()
