@@ -8,18 +8,24 @@ import TcTable from './elements/Explore/Table/index.js';
 var command_down = 0;
 var body_zoom = 100;
 
+var LEFT_COMMAND_KEY = 91;
+var RIGHT_COMMAND_KEY = 93;
+var PLUS_KEY = 187;
+var MINUS_KEY = 189;
+
+
 document.onkeydown = function(e) {
     var key_code = e.keyCode || e.charCode;
-    if (key_code == 91 || key_code == 93){
+    if (key_code == LEFT_COMMAND_KEY || key_code == RIGHT_COMMAND_KEY){
         command_down += 1;
     }
     
-    if(key_code == 187 && command_down > 0){
+    if(key_code == PLUS_KEY && command_down > 0){
         body_zoom += 10;
         document.body.style.zoom = body_zoom+"%"
     }
     
-    if(key_code == 189 && command_down > 0){
+    if(key_code == MINUS_KEY && command_down > 0){
         if(body_zoom > 10){
             body_zoom -= 10;
             document.body.style.zoom = body_zoom+"%"
