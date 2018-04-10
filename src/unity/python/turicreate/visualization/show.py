@@ -99,23 +99,18 @@ def scatter(x, y, xlabel="X", ylabel="Y", title=None):
     """
     Plots the data in `x` on the X axis and the data in `y` on the Y axis
     in a 2d scatterplot, and returns the resulting Plot object.
-    Uses the following heuristic to choose the visualization:
-
-    The scatter method supports SArrays of dtypes: int, float, str.
-
-    Notes
-    -----
-    - The plot will render either inline in a Jupyter Notebook, or in a
-      native GUI window, depending on the value provided in
-      `turicreate.visualization.set_target` (defaults to 'auto').
+    
+    The function supports SArrays of dtypes: int, float.
 
     Parameters
     ----------
     x : SArray
-      The data to plot on the X axis of the scatter plot.
+      The data to plot on the X axis of the scatter plot. 
+      Must be numeric (int/float)
     y : SArray
       The data to plot on the Y axis of the scatter plot. Must be the same
       length as `x`.
+      Must be numeric (int/float)
     xlabel : str (optional)
       The text label for the X axis. Defaults to "X".
     ylabel : str (optional)
@@ -125,15 +120,17 @@ def scatter(x, y, xlabel="X", ylabel="Y", title=None):
       will be "<xlabel> vs. <ylabel>". Otherwise, the string passed in as the
       title will be used as the plot title.
 
+    Return Value
+    ------------
+    An object of Plot that is the scatter plot
+
     Examples
     --------
-    Show a scatter plot.
+    Make a scatter plot.
 
     >>> x = turicreate.SArray([1,2,3,4,5])
     >>> y = x * 2
     >>> scplt = turicreate.visualization.scatter(x, y)
-    >>> scplt.show()
-
     """
     if (type(x) != tc.data_structures.sarray.SArray or 
         type(y) != tc.data_structures.sarray.SArray or
@@ -148,6 +145,41 @@ def scatter(x, y, xlabel="X", ylabel="Y", title=None):
     return Plot(plt_ref)
 
 def categorical_heatmap(x, y, xlabel="X", ylabel="Y", title=None):
+    """
+    Plots the data in `x` on the X axis and the data in `y` on the Y axis
+    in a 2d categorical heatmap, and returns the resulting Plot object.
+    
+    The function supports SArrays of dtypes str.
+
+    Parameters
+    ----------
+    x : SArray
+      The data to plot on the X axis of the categorical heatmap. 
+      Must be string SArray
+    y : SArray
+      The data to plot on the Y axis of the categorical heatmap. 
+      Must be string SArray and must be the same length as `x`.
+    xlabel : str (optional)
+      The text label for the X axis. Defaults to "X".
+    ylabel : str (optional)
+      The text label for the Y axis. Defaults to "Y".
+    title : str (optional)
+      The title of the plot. Defaults to None. If the value is None, the title
+      will be "<xlabel> vs. <ylabel>". Otherwise, the string passed in as the
+      title will be used as the plot title.
+
+    Return Value
+    ------------
+    An object of Plot that is the categorical heatmap
+
+    Examples
+    --------
+    Make a categorical heatmap.
+
+    >>> x = turicreate.SArray(['1','2','3','4','5'])
+    >>> y = turicreate.SArray(['a','b','c','d','e'])
+    >>> catheat = turicreate.visualization.categorical_heatmap(x, y)
+    """
     if (type(x) != tc.data_structures.sarray.SArray or 
         type(y) != tc.data_structures.sarray.SArray or
         x.dtype != str or y.dtype != str):
@@ -161,6 +193,41 @@ def categorical_heatmap(x, y, xlabel="X", ylabel="Y", title=None):
     return Plot(plt_ref)
 
 def heatmap(x, y, xlabel="X", ylabel="Y", title=None):
+    """
+    Plots the data in `x` on the X axis and the data in `y` on the Y axis
+    in a 2d heatmap, and returns the resulting Plot object.
+    
+    The function supports SArrays of dtypes int, float.
+
+    Parameters
+    ----------
+    x : SArray
+      The data to plot on the X axis of the heatmap. 
+      Must be numeric (int/float)
+    y : SArray
+      The data to plot on the Y axis of the heatmap. 
+      Must be numeric (int/float) and must be the same length as `x`.
+    xlabel : str (optional)
+      The text label for the X axis. Defaults to "X".
+    ylabel : str (optional)
+      The text label for the Y axis. Defaults to "Y".
+    title : str (optional)
+      The title of the plot. Defaults to None. If the value is None, the title
+      will be "<xlabel> vs. <ylabel>". Otherwise, the string passed in as the
+      title will be used as the plot title.
+
+    Return Value
+    ------------
+    An object of Plot that is the heatmap
+
+    Examples
+    --------
+    Make a heatmap.
+
+    >>> x = turicreate.SArray([1,2,3,4,5])
+    >>> y = x * 2 
+    >>> heat = turicreate.visualization.heatmap(x, y)
+    """
     if (type(x) != tc.data_structures.sarray.SArray or 
         type(y) != tc.data_structures.sarray.SArray or
         x.dtype not in [int, float] or y.dtype not in [int, float]):
@@ -173,6 +240,39 @@ def heatmap(x, y, xlabel="X", ylabel="Y", title=None):
     return Plot(plt_ref)
 
 def box_plot(x, y, xlabel="X", ylabel="Y", title=None):
+    """
+    Plots the data in `x` on the X axis and the data in `y` on the Y axis
+    in a 2d box and whiskers plot, and returns the resulting Plot object.
+    
+    The function x as SArray of dtype str and y as SArray of dtype: int, float.
+
+    Parameters
+    ----------
+    x : SArray
+      The data to plot on the X axis of the box and whiskers plot. 
+      Must be an SArray with dtype string
+    y : SArray
+      The data to plot on the Y axis of the box and whiskers plot. 
+      Must be numeric (int/float) and must be the same length as `x`.
+    xlabel : str (optional)
+      The text label for the X axis. Defaults to "X".
+    ylabel : str (optional)
+      The text label for the Y axis. Defaults to "Y".
+    title : str (optional)
+      The title of the plot. Defaults to None. If the value is None, the title
+      will be "<xlabel> vs. <ylabel>". Otherwise, the string passed in as the
+      title will be used as the plot title.
+
+    Return Value
+    ------------
+    An object of Plot that is the box and whiskers plot
+
+    Examples
+    --------
+    Make a box and whiskers plot.
+
+    >>> bp = turicreate.visualization.box_plot(tc.SArray(['a','b','c','a','a']),tc.SArray([4.0,3.25,2.1,2.0,1.0]))
+    """
     if (type(x) != tc.data_structures.sarray.SArray or 
         type(y) != tc.data_structures.sarray.SArray or
         x.dtype != str or y.dtype not in [int, float]):
@@ -186,6 +286,30 @@ def box_plot(x, y, xlabel="X", ylabel="Y", title=None):
     return Plot(plt_ref)
 
 def columnwise_summary(sf):
+    """
+    Plots a columnwise summary of the sframe provided as input, 
+    and returns the resulting Plot object.
+    
+    The function supports SFrames.
+
+    Parameters
+    ----------
+    sf : SFrame
+      The data to get a columnwise summary for
+    
+    Return Value
+    ------------
+    An object of Plot that is the columnwise summary
+
+    Examples
+    --------
+    Make a columnwise summary of an SFrame.
+
+    >>> x = turicreate.SArray([1,2,3,4,5])
+    >>> s = turicreate.SArray(['a','b','c','a','a'])
+    >>> sf_test = turicreate.SFrame([x,x,x,x,s,s,s,x,s,x,s,s,s,x,x])
+    >>> colsum = turicreate.visualization.columnwise_summary(sf_test)
+    """
     if (type(sf) != tc.data_structures.sframe.SFrame):
         raise ValueError("turicreate.visualization.columnwise_summary " + 
             "supports SFrame")
@@ -194,6 +318,36 @@ def columnwise_summary(sf):
     return Plot(plt_ref)
 
 def histogram(sa, xlabel="Values", ylabel="Count", title=None):
+    """
+    Plots a histogram of the sarray provided as input, and returns the 
+    resulting Plot object.
+    
+    The function supports numeric SArrays with dtypes int or float.
+
+    Parameters
+    ----------
+    sa : SArray
+      The data to get a histogram for. Must be numeric (int/float)
+    xlabel : str (optional)
+      The text label for the X axis. Defaults to "Values".
+    ylabel : str (optional)
+      The text label for the Y axis. Defaults to "Count".
+    title : str (optional)
+      The title of the plot. Defaults to None. If the value is None, the title
+      will be "<xlabel> vs. <ylabel>". Otherwise, the string passed in as the
+      title will be used as the plot title.
+    
+    Return Value
+    ------------
+    An object of Plot that is the histogram
+
+    Examples
+    --------
+    Make a histogram of an SArray.
+
+    >>> x = turicreate.SArray([1,2,3,4,5,1,1,1,1,2,2,3,2,3,1,1,1,4])
+    >>> hist = turicreate.visualization.histogram(x)
+    """
     if (type(sa) != tc.data_structures.sarray.SArray or 
         sa.dtype not in [int, float]):
         raise ValueError("turicreate.visualization.histogram supports " + 
@@ -205,8 +359,38 @@ def histogram(sa, xlabel="Values", ylabel="Count", title=None):
     return Plot(plt_ref)
 
 def item_frequency(sa, xlabel="Values", ylabel="Count", title=None):
+    """
+    Plots an item frequency of the sarray provided as input, and returns the 
+    resulting Plot object.
+    
+    The function supports SArrays with dtype str.
+
+    Parameters
+    ----------
+    sa : SArray
+      The data to get an item frequency for. Must have dtype str
+    xlabel : str (optional)
+      The text label for the X axis. Defaults to "Values".
+    ylabel : str (optional)
+      The text label for the Y axis. Defaults to "Count".
+    title : str (optional)
+      The title of the plot. Defaults to None. If the value is None, the title
+      will be "<xlabel> vs. <ylabel>". Otherwise, the string passed in as the
+      title will be used as the plot title.
+    
+    Return Value
+    ------------
+    An object of Plot that is the item frequency plot
+
+    Examples
+    --------
+    Make an item frequency of an SArray.
+
+    >>> x = turicreate.SArray(['a','ab','acd','ab','a','a','a','ab','cd'])
+    >>> ifplt = turicreate.visualization.item_frequency(x)
+    """
     if (type(sa) != tc.data_structures.sarray.SArray or sa.dtype != str):
-        raise ValueError("turicreate.visualization.histogram supports " + 
+        raise ValueError("turicreate.visualization.item_frequency supports " + 
             "SArrays of dtype str")
     path_to_client = _get_client_app_path()
     title = _get_title(title)
