@@ -1842,6 +1842,15 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
               case flex_type_enum::LIST:
                 ss << value.to<std::string>();
                 break;
+              case flex_type_enum::ND_VECTOR:
+                {
+                  std::string nd_vector_value = value.to<std::string>();
+                  if(nd_vector_value.length() > resize_table_view){
+                    nd_vector_value.resize(resize_table_view);
+                  }
+                  ss << turi::visualization::extra_label_escape(nd_vector_value);
+                  break;
+                }
               default:
                 default_string = value.to<std::string>();
                 if(default_string.length() > resize_table_view){
@@ -2004,35 +2013,9 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
             }
             break;
           case flex_type_enum::LIST:
-            {
-              std::stringstream ss;
-              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
-              ss << ", \"type\": " << value.get_type();
-              ss << ", \"data\": " << turi::visualization::extra_label_escape(value.to<std::string>());
-              ss << "}}" << std::endl;
-              ew << ss.str();
-              break;
-            }
           case flex_type_enum::DICT:
-            {
-              std::stringstream ss;
-              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
-              ss << ", \"type\": " << value.get_type();
-              ss << ", \"data\": " << turi::visualization::extra_label_escape(value.to<std::string>());
-              ss << "}}" << std::endl;
-              ew << ss.str();
-              break;
-            }
           case flex_type_enum::STRING:
-            {
-              std::stringstream ss;
-              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
-              ss << ", \"type\": " << value.get_type();
-              ss << ", \"data\": " << turi::visualization::extra_label_escape(value.to<std::string>());
-              ss << "}}" << std::endl;
-              ew << ss.str();
-              break;
-            }
+          case flex_type_enum::ND_VECTOR:
           default:
             {
               std::stringstream ss;

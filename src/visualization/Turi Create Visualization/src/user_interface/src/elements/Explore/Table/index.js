@@ -89,6 +89,20 @@ class TcTable extends Component {
             </div>
           </div>
                 );
+      case "ndarray":
+            return (
+              <div style={{"position":"relative"}}>
+                <div className="array_value" onClick={(e) => this.divClick(e)}>
+                  <span className="default_span_color" onClick={(e) => this.spanClick(e)}>
+                    { value }
+                  </span>
+                </div>
+                <div className="arrow_right" onClick={(e) => this.arrowClick(e)}>
+                  <FontAwesomeIcon icon={faAngleDown} style={{"display": "block"}} onClick={(e) => this.spanClick(e)} />
+                  <FontAwesomeIcon icon={faAngleUp} style={{"display": "none"}} onClick={(e) => this.spanClick(e)} />
+                </div>
+                </div>
+              );
       default:
         return (
           <div>
@@ -446,6 +460,7 @@ class TcTable extends Component {
       case "string":
       case "dictionary":
       case "array":
+      case "ndarray":
       case "list":
         var active_element_loop = e.target.parentElement.parentElement.getElementsByClassName("active_element");
 
