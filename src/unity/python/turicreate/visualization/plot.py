@@ -165,7 +165,7 @@ class Plot(object):
                 + temp_file_path + " " + filepath)
             if exitcode == _NODE_NOT_FOUND_ERROR_CODE:
                 # user doesn't have node installed
-                raise NameError("Node.js not found. Saving as PNG and SVG" +
+                raise RuntimeError("Node.js not found. Saving as PNG and SVG" +
                     " requires Node.js, please download and install Node.js " +
                     "from here and try again: https://nodejs.org/en/download/")
             elif exitcode == 0:
