@@ -98,7 +98,7 @@ def show(x, y, xlabel="X", ylabel="Y", title=None):
 def scatter(x, y, xlabel="X", ylabel="Y", title=None):
     """
     Plots the data in `x` on the X axis and the data in `y` on the Y axis
-    in a 2d scatterplot, and returns the resulting Plot object.
+    in a 2d scatter plot, and returns the resulting Plot object.
     
     The function supports SArrays of dtypes: int, float.
 
@@ -106,11 +106,11 @@ def scatter(x, y, xlabel="X", ylabel="Y", title=None):
     ----------
     x : SArray
       The data to plot on the X axis of the scatter plot. 
-      Must be numeric (int/float)
+      Must be numeric (int/float).
     y : SArray
       The data to plot on the Y axis of the scatter plot. Must be the same
       length as `x`.
-      Must be numeric (int/float)
+      Must be numeric (int/float).
     xlabel : str (optional)
       The text label for the X axis. Defaults to "X".
     ylabel : str (optional)
@@ -120,9 +120,10 @@ def scatter(x, y, xlabel="X", ylabel="Y", title=None):
       will be "<xlabel> vs. <ylabel>". Otherwise, the string passed in as the
       title will be used as the plot title.
 
-    Return Value
-    ------------
-    An object of Plot that is the scatter plot
+    Returns
+    -------
+    out : Plot
+      A :class: Plot object that is the scatter plot.
 
     Examples
     --------
@@ -168,9 +169,10 @@ def categorical_heatmap(x, y, xlabel="X", ylabel="Y", title=None):
       will be "<xlabel> vs. <ylabel>". Otherwise, the string passed in as the
       title will be used as the plot title.
 
-    Return Value
-    ------------
-    An object of Plot that is the categorical heatmap
+    Returns
+    -------
+    out : Plot
+      A :class: Plot object that is the categorical heatmap.
 
     Examples
     --------
@@ -203,7 +205,7 @@ def heatmap(x, y, xlabel="X", ylabel="Y", title=None):
     ----------
     x : SArray
       The data to plot on the X axis of the heatmap. 
-      Must be numeric (int/float)
+      Must be numeric (int/float).
     y : SArray
       The data to plot on the Y axis of the heatmap. 
       Must be numeric (int/float) and must be the same length as `x`.
@@ -216,9 +218,10 @@ def heatmap(x, y, xlabel="X", ylabel="Y", title=None):
       will be "<xlabel> vs. <ylabel>". Otherwise, the string passed in as the
       title will be used as the plot title.
 
-    Return Value
-    ------------
-    An object of Plot that is the heatmap
+    Returns
+    -------
+    out : Plot
+      A :class: Plot object that is the heatmap.
 
     Examples
     --------
@@ -250,7 +253,7 @@ def box_plot(x, y, xlabel="X", ylabel="Y", title=None):
     ----------
     x : SArray
       The data to plot on the X axis of the box and whiskers plot. 
-      Must be an SArray with dtype string
+      Must be an SArray with dtype string.
     y : SArray
       The data to plot on the Y axis of the box and whiskers plot. 
       Must be numeric (int/float) and must be the same length as `x`.
@@ -263,9 +266,10 @@ def box_plot(x, y, xlabel="X", ylabel="Y", title=None):
       will be "<xlabel> vs. <ylabel>". Otherwise, the string passed in as the
       title will be used as the plot title.
 
-    Return Value
-    ------------
-    An object of Plot that is the box and whiskers plot
+    Returns
+    -------
+    out : Plot
+      A :class: Plot object that is the box and whiskers plot.
 
     Examples
     --------
@@ -295,11 +299,12 @@ def columnwise_summary(sf):
     Parameters
     ----------
     sf : SFrame
-      The data to get a columnwise summary for
+      The data to get a columnwise summary for.
     
-    Return Value
-    ------------
-    An object of Plot that is the columnwise summary
+    Returns
+    -------
+    out : Plot
+      A :class: Plot object that is the columnwise summary plot.
 
     Examples
     --------
@@ -327,7 +332,7 @@ def histogram(sa, xlabel="Values", ylabel="Count", title=None):
     Parameters
     ----------
     sa : SArray
-      The data to get a histogram for. Must be numeric (int/float)
+      The data to get a histogram for. Must be numeric (int/float).
     xlabel : str (optional)
       The text label for the X axis. Defaults to "Values".
     ylabel : str (optional)
@@ -337,9 +342,10 @@ def histogram(sa, xlabel="Values", ylabel="Count", title=None):
       will be "<xlabel> vs. <ylabel>". Otherwise, the string passed in as the
       title will be used as the plot title.
     
-    Return Value
-    ------------
-    An object of Plot that is the histogram
+    Returns
+    -------
+    out : Plot
+      A :class: Plot object that is the histogram.
 
     Examples
     --------
@@ -378,9 +384,10 @@ def item_frequency(sa, xlabel="Values", ylabel="Count", title=None):
       will be "<xlabel> vs. <ylabel>". Otherwise, the string passed in as the
       title will be used as the plot title.
     
-    Return Value
-    ------------
-    An object of Plot that is the item frequency plot
+    Returns
+    -------
+    out : Plot
+      A :class: Plot object that is the item frequency plot.
 
     Examples
     --------
