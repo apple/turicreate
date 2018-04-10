@@ -271,7 +271,7 @@ package_wheel() {
     # Change the platform tag embedded in the file name
     temp=`echo $WHEEL_PATH | perl -ne 'print m/(^.*-).*$/'`
     temp=${temp/-cpdarwin-/-cp35m-}
-    platform_tag="macosx_10_5_x86_64.macosx_10_6_intel.macosx_10_9_intel.macosx_10_9_x86_64.macosx_10_10_intel.macosx_10_10_x86_64.macosx_10_11_intel.macosx_10_11_x86_64"
+    platform_tag="macosx_10_12_intel.macosx_10_12_x86_64"
     NEW_WHEEL_PATH=${temp}${platform_tag}".whl"
     mv ${WHEEL_PATH} ${NEW_WHEEL_PATH}
     WHEEL_PATH=${NEW_WHEEL_PATH}

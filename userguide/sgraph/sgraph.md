@@ -54,7 +54,7 @@ edge_data = SFrame.read_csv('bond_edges.csv')
 
 g = SGraph()
 g = g.add_edges(edge_data, src_field='src', dst_field='dst')
-print g
+print(g)
 ```
 ```no-highlight
 SGraph({'num_edges': 20, 'num_vertices': 10})
@@ -110,7 +110,7 @@ edges.
 
 ```python
 sub_verts = g.get_vertices(ids=['James Bond'])
-print sub_verts
+print(sub_verts)
 ```
 ```no-highlight
 +------------+--------+-----------------+---------+
@@ -123,7 +123,7 @@ print sub_verts
 
 ```python
 sub_edges = g.get_edges(fields={'relation': 'worksfor'})
-print sub_edges
+print(sub_edges)
 ```
 ```no-highlight
 +---------------+-------------+----------+

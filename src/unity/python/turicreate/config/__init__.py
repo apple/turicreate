@@ -169,7 +169,7 @@ def set_log_level(level):
 def get_runtime_config():
     """
     Returns all the Turi Create configuration variables that can be set
-    at runtime. See :py:func:`turicreate.set_runtime_config()` to set these
+    at runtime. See :py:func:`turicreate.config.set_runtime_config()` to set these
     values and for documentation on the effect of each variable.
 
     Returns
@@ -188,7 +188,7 @@ def set_runtime_config(name, value):
     """
     Configures system behavior at runtime. These configuration values are also
     read from environment variables at program startup if available. See
-    :py:func:`turicreate.get_runtime_config()` to get the current values for
+    :py:func:`turicreate.config.get_runtime_config()` to get the current values for
     each variable.
 
     Note that defaults may change across versions and the names

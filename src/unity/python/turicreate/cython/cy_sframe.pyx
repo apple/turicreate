@@ -241,16 +241,16 @@ cdef class UnitySFrameProxy:
         with nogil:
             self.thisptr.save_as_csv(url, csv_options)
 
-    cpdef sample(self, float percent, int random_seed):
+    cpdef sample(self, float percent, int random_seed, bint exact=False):
         cdef unity_sframe_base_ptr proxy
         with nogil:
-            proxy = self.thisptr.sample(percent, random_seed)
+            proxy = self.thisptr.sample(percent, random_seed, exact)
         return create_proxy_wrapper_from_existing_proxy(proxy)
 
-    cpdef random_split(self, float percent, int random_seed):
+    cpdef random_split(self, float percent, int random_seed, bint exact=False):
         cdef cpplist[unity_sframe_base_ptr] sf_array
         with nogil:
-            sf_array = self.thisptr.random_split(percent, random_seed)
+            sf_array = self.thisptr.random_split(percent, random_seed, exact)
         assert sf_array.size() == 2
         cdef unity_sframe_base_ptr proxy_first = (sf_array.front())
         cdef unity_sframe_base_ptr proxy_second = (sf_array.back())

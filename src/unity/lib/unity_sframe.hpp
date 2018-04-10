@@ -388,14 +388,14 @@ class unity_sframe : public unity_sframe_base {
    *
    * Returns a list of size 2 of the unity_sframes resulting from the split.
    */
-  std::list<std::shared_ptr<unity_sframe_base>> random_split(float percent, int random_seed);
+  std::list<std::shared_ptr<unity_sframe_base>> random_split(float percent, int random_seed, bool exact=false);
 
   /**
    * Sample the rows of sframe uniformly with ratio = percent, and seed = random_seed.
    *
    * Returns unity_sframe* containing the sampled rows.
    */
-  std::shared_ptr<unity_sframe_base> sample(float percent, int random_seed);
+  std::shared_ptr<unity_sframe_base> sample(float percent, int random_seed, bool exact=false);
 
   /**
    * materialize the sframe, this is different from save() as this is a temporary persist of

@@ -105,7 +105,7 @@ probability.
 
 ```python
 predictions = model.classify(test_data)
-print predictions
+print(predictions)
 ```
 ```no-highlight
 +-------+----------------+
@@ -167,8 +167,8 @@ tabulation of predicted and actual class labels.
 
 ```python
 result = model.evaluate(test_data)
-print "Accuracy         : %s" % result['accuracy']
-print "Confusion Matrix : \n%s" % result['confusion_matrix']
+print(Accuracy         : %s" % result['accuracy'])
+print("Confusion Matrix : \n%s" % result['confusion_matrix'])
 ```
 ```no-highlight
 Accuracy         : 0.860862092991
@@ -247,7 +247,7 @@ predictions, ordered by class probability, for each data point in the test set.
 
 ```python
 top = model.predict_topk(test_data, output_type='probability', k = 3)
-print top
+print(top)
 ```
 ```no-highlight
 Columns:

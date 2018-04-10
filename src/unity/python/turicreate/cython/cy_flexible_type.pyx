@@ -1455,7 +1455,7 @@ cdef inline bint _tr_buffer_to_flex_nd_vec(flex_nd_vec& retv, object v):
         #print "base and offset conversion"
         # compute offset
         offset = (np.byte_bounds(v)[0] - np.byte_bounds(v.base)[0]) // v.itemsize
-        if not _tr_buffer_to_flex_vec(f_elements, v.base.reshape(-1)[offset:]):
+        if not _tr_buffer_to_flex_vec(f_elements, v.base.reshape(-1)[offset:offset+v.size]):
             #print "base and offset conversion fail"
             return False
 

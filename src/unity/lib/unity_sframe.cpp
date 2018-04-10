@@ -1018,10 +1018,11 @@ void unity_sframe::save_as_csv(const std::string& url,
 }
 
 std::shared_ptr<unity_sframe_base> unity_sframe::sample(float percent,
-                                                        int random_seed) {
+                                                        int random_seed,
+                                                        bool exact) {
   logstream(LOG_INFO) << "Args: " << percent << ", " << random_seed << std::endl;
   auto logical_filter_array = std::static_pointer_cast<unity_sarray>(
-    unity_sarray::make_uniform_boolean_array(size(), percent, random_seed));
+    unity_sarray::make_uniform_boolean_array(size(), percent, random_seed, exact));
   return logical_filter(logical_filter_array);
 }
 
@@ -1051,12 +1052,12 @@ std::string unity_sframe::query_plan_string() {
 }
 
 std::list<std::shared_ptr<unity_sframe_base>>
-unity_sframe::random_split(float percent, int random_seed) {
+unity_sframe::random_split(float percent, int random_seed, bool exact) {
   log_func_entry();
   logstream(LOG_INFO) << "Args: " << percent << ", " << random_seed << std::endl;
 
   auto logical_filter_array = std::static_pointer_cast<unity_sarray>(
-    unity_sarray::make_uniform_boolean_array(size(), percent, random_seed));
+    unity_sarray::make_uniform_boolean_array(size(), percent, random_seed, exact));
   return logical_filter_split(logical_filter_array);
 }
 
@@ -1864,6 +1865,187 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
       }
     };
 
+    auto getAccordion = [self, &reader, &ew, &column_names, &empty_tz](std::string column_name, size_t index) {
+
+        ASSERT_TRUE(std::find(column_names.begin(), column_names.end(), column_name) != column_names.end());
+        DASSERT_LT(index, self->size());
+        DASSERT_GE(index, 0);
+
+        auto accordion_sa = self->select_column(column_name);
+        auto gl_sa = gl_sarray(accordion_sa);
+
+        flexible_type value = gl_sa[index];
+
+        switch (value.get_type()) {
+          case flex_type_enum::UNDEFINED:
+            break;
+          case flex_type_enum::FLOAT:
+            {
+              std::stringstream ss;
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << ", \"type\": " << value.get_type();
+              ss << ", \"data\": " << value.get<flex_float>();
+              ss << "}}" << std::endl;
+              ew << ss.str();
+            }
+            break;
+          case flex_type_enum::INTEGER:
+            {
+              std::stringstream ss;
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << ", \"type\": " << value.get_type();
+              ss << ", \"data\": " << value.get<flex_int>();
+              ss << "}}" << std::endl;
+              ew << ss.str();
+            }
+            break;
+          case flex_type_enum::IMAGE:
+            {
+              std::stringstream ss;
+              flex_image img = value.get<flex_image>();
+              img = turi::image_util::encode_image(img);
+
+              const unsigned char * image_data = img.get_image_data();
+              size_t image_data_size = img.m_image_data_size;
+
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << ", \"type\": " << value.get_type();
+              ss << ", \"data\": ";
+              ss << "{\"width\": " << img.m_width << ", ";
+              ss << "\"height\": " << img.m_height << ", ";
+              ss << "\"data\": \"";
+              std::copy(
+                to_base64(image_data),
+                to_base64(image_data + image_data_size),
+                std::ostream_iterator<char>(ss)
+              );
+
+              ss << "\", \"format\": \"";
+              switch (img.m_format) {
+                case Format::JPG:
+                  ss << "jpeg";
+                  break;
+                case Format::PNG:
+                  ss << "png";
+                  break;
+                case Format::RAW_ARRAY:
+                  ss << "raw";
+                  break;
+                case Format::UNDEFINED:
+                  // TODO - not sure what to do here.
+                  // For now, treat it as raw, but this will probably
+                  // display garbage for the user.
+                  ss << "raw";
+                  break;
+              }
+              ss << "\"}}}\n";
+              ew << ss.str();
+            }
+
+            break;
+          case flex_type_enum::DATETIME:
+            {
+              std::stringstream ss;
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << ", \"type\": " << value.get_type();
+              ss << ", \"data\": ";
+              ss << "\"";
+              const auto& dt = value.get<flex_date_time>();
+
+              if (dt.time_zone_offset() != flex_date_time::EMPTY_TIMEZONE) {
+                std::string prefix = "0.";
+                int sign_adjuster = 1;
+                if(dt.time_zone_offset() < 0) {
+                  sign_adjuster = -1;
+                  prefix = "-0.";
+                }
+                boost::local_time::time_zone_ptr zone(
+                    new boost::local_time::posix_time_zone(
+                        "GMT" + prefix +
+                        std::to_string(sign_adjuster *
+                                       dt.time_zone_offset() *
+                                       flex_date_time::TIMEZONE_RESOLUTION_IN_MINUTES)));
+                boost::local_time::local_date_time az(
+                    flexible_type_impl::ptime_from_time_t(dt.posix_timestamp(),
+                                                          dt.microsecond()), zone);
+                ss << az;
+              } else {
+                boost::local_time::local_date_time az(
+                    flexible_type_impl::ptime_from_time_t(dt.posix_timestamp(),
+                                                          dt.microsecond()),
+                    empty_tz);
+                ss << az;
+              }
+
+              ss << "\"}}" << std::endl;
+              ew << ss.str();
+            }
+            break;
+          case flex_type_enum::VECTOR:
+            {
+              std::stringstream ss;
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << ", \"type\": " << value.get_type();
+              ss << ", \"data\": ";
+              std::stringstream strm;
+              const flex_vec& vec = value.get<flex_vec>();
+
+              strm << "[";
+              for (size_t i = 0; i < vec.size(); ++i) {
+                strm << vec[i];
+                if (i + 1 < vec.size()) strm << ", ";
+              }
+              strm << "]";
+              std::string default_string;
+
+              ss << turi::visualization::extra_label_escape(strm.str());
+              ss << "}}" << std::endl;
+              ew << ss.str();
+            }
+            break;
+          case flex_type_enum::LIST:
+            {
+              std::stringstream ss;
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << ", \"type\": " << value.get_type();
+              ss << ", \"data\": " << turi::visualization::extra_label_escape(value.to<std::string>());
+              ss << "}}" << std::endl;
+              ew << ss.str();
+              break;
+            }
+          case flex_type_enum::DICT:
+            {
+              std::stringstream ss;
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << ", \"type\": " << value.get_type();
+              ss << ", \"data\": " << turi::visualization::extra_label_escape(value.to<std::string>());
+              ss << "}}" << std::endl;
+              ew << ss.str();
+              break;
+            }
+          case flex_type_enum::STRING:
+            {
+              std::stringstream ss;
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << ", \"type\": " << value.get_type();
+              ss << ", \"data\": " << turi::visualization::extra_label_escape(value.to<std::string>());
+              ss << "}}" << std::endl;
+              ew << ss.str();
+              break;
+            }
+          default:
+            {
+              std::stringstream ss;
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << ", \"type\": " << value.get_type();
+              ss << ", \"data\": " << turi::visualization::extra_label_escape(value.to<std::string>());
+              ss << "}}" << std::endl;
+              ew << ss.str();
+              break;
+            }
+        };
+    };
+
     // pass the first 1k rows
     getRows(0, 100);
 
@@ -1930,27 +2112,39 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
       }
 
       // parse the message as json
-      flex_int start = -1,
-               end = -1;
+      flex_int start = -1, end = -1, index = -1;
+      std::string column_name;
+
+      enum MethodType {GetRows = 0, GetAccordion = 1};
+      MethodType response;
+
       auto sa = gl_sarray(std::vector<flexible_type>(1, input)).astype(flex_type_enum::DICT);
       flex_dict dict = sa[0].get<flex_dict>();
       for (const auto& pair : dict) {
         const auto& key = pair.first.get<flex_string>();
         const auto& value = pair.second;
         if (key == "method") {
-          DASSERT_EQ(value.get<flex_string>(), "get_rows");
+          if(value.get<flex_string>() == "get_rows"){
+            response = GetRows;
+          }else if(value.get<flex_string>() == "get_accordion"){
+            response = GetAccordion;
+          }
         } else if (key == "start") {
           start = value.get<flex_int>();
         } else if (key == "end") {
           end = value.get<flex_int>();
+        }else if (key == "column") {
+          column_name = value.get<flex_string>();
+        }else if (key == "index"){
+          index = value.get<flex_int>();
         }
       }
 
-      DASSERT_GT(start, -1);
-      DASSERT_GT(end, -1);
-
-      getRows(start, end);
-
+      if(response == GetRows){
+        getRows(start, end);
+      }else if(response == GetAccordion){
+        getAccordion(column_name, index);
+      }
     }
   });
 

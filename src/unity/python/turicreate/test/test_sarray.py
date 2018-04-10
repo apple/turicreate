@@ -1109,6 +1109,9 @@ class SArrayTest(unittest.TestCase):
 
         sa_sample = SArray().sample(.5, 9)
         self.assertEqual(len(sa_sample), 0)
+        self.assertEqual(len(SArray.from_sequence(100).sample(0.5, 1, exact=True)), 50)
+        self.assertEqual(len(SArray.from_sequence(100).sample(0.5, 2, exact=True)), 50)
+
 
     def test_hash(self):
         a = SArray([0,1,0,1,0,1,0,1], int)

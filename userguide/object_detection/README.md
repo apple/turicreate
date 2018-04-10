@@ -5,18 +5,21 @@ detector will produce instance predictions that may look something like this:
 
 ![Two dogs each with a predicted bounding box around their face](images/dogs.jpg)
 
-This particular model was instructed to detect instances of cat and dog faces. The
-notion of localization is here provided by bounding boxes around the instances.
+This particular model was instructed to detect instances of animal faces.
+The notion of localization is here provided by bounding boxes around the
+instances.
 
 #### Introductory Example
 
-In this example, the goal is to **predict** if there are **cats or dogs** in a picture and where in the picture they are located.
+In this example, the goal is to **predict** if there are **bikes or cars** in a
+picture and where in the picture they are located (Go to [Data
+Preparation](data-preparation.md) to find out how to get `ig02.sframe`).
 
 ```python
 import turicreate as tc
 
 # Load the data
-data =  tc.SFrame('cats-dogs.sframe')
+data =  tc.SFrame('ig02.sframe')
 
 # Make a train-test split
 train_data, test_data = data.random_split(0.8)
@@ -47,8 +50,8 @@ to prediction data, at least what you hope it will look like. Here is an example
 
 ![Two balls and a cup with ground truth bounding boxes](images/ground_truth.jpg)
 
-In this example, since we chose *ball* and *cup* to be object classes, each
-instance of these objects gets a ground truth bounding box. In this scenario we are not
+In this particular example, we chose *ball* and *cup* to be object classes. Each
+instance of these objects therefore gets a ground truth bounding box. In this scenario we are not
 interested in detecting fruit, so we leave them unmarked. You should decide a
 list of object classes of interest, preferably in advance. If you start marking
 up all potentially interesting objects in your training images, you may end up with
@@ -143,8 +146,6 @@ Once you have arranged your data, it is worth visually checking that the boundin
 match your expectations:
 
 ```python
-import turicreate as tc
-
 data['image_with_ground_truth'] = \
     tc.object_detector.util.draw_bounding_boxes(data['image'], data['annotations'])
 data.explore()
@@ -205,7 +206,7 @@ annotations to visually inspect our predictions:
 ```python
 test['image_with_predictions'] = \
     tc.object_detector.util.draw_bounding_boxes(test['image'], test['predictions'])
-test.explore()
+test[['image', 'image_with_predictions']].explore()
 ```
 
 ![Predicted bounding boxes visualized](images/explore_predictions.png)
