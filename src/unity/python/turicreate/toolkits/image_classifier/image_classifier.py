@@ -217,7 +217,6 @@ class ImageClassifier(_CustomModel):
         """
 
         width = 40
-        key_str = "{:<{}}: {}"
 
         sections, section_titles = self._get_summary_struct()
         out = _tkutl._toolkit_repr_print(self, sections, section_titles,

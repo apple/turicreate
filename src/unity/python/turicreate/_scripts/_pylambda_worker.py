@@ -31,23 +31,6 @@ def get_installation_flavor():
                           % get_main_dir())
 
 
-def load_isolated_gl_module(subdir, name):
-
-    if subdir:
-        path = join(get_main_dir(), subdir)
-    else:
-        path = get_main_dir()
-
-    fp, pathname, description = imp.find_module(name, [path])
-
-    try:
-        return imp.load_module(name, fp, pathname, description)
-    finally:
-        # Since we may exit via an exception, close fp explicitly.
-        if fp:
-            fp.close()
-
-
 def setup_environment(info_log_function = None, error_log_function = None):
 
     def _write_log(s, error = False):
