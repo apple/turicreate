@@ -1673,7 +1673,101 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
       ew << ss.str();
     }
 
-    auto getRows = [self, &reader, &ew, &column_names, &empty_tz, &image_queue](size_t start, size_t end) {
+    std::function<std::string(flexible_type&)> listHelper;
+    listHelper = [&listHelper, &empty_tz](flexible_type& value) {
+      std::stringstream ss;
+
+      switch (value.get_type()) {
+        case flex_type_enum::UNDEFINED:
+          ss << "null";
+        case flex_type_enum::FLOAT:
+          {
+            flex_float f = value.get<flex_float>();
+            if (std::isnan(f)) {
+              ss << "\"nan\"";
+              break;
+            }
+            if (std::isinf(f)) {
+              if (f > 0) {
+                ss << "\"inf\"";
+              } else {
+                ss << "\"-inf\"";
+              }
+              break;
+            }
+          }
+        case flex_type_enum::INTEGER:
+          ss << value;
+        case flex_type_enum::DATETIME:
+          {
+            ss << "\"";
+            const auto& dt = value.get<flex_date_time>();
+
+            if (dt.time_zone_offset() != flex_date_time::EMPTY_TIMEZONE) {
+              std::string prefix = "0.";
+              int sign_adjuster = 1;
+              if(dt.time_zone_offset() < 0) {
+                sign_adjuster = -1;
+                prefix = "-0.";
+              }
+
+              boost::local_time::time_zone_ptr zone(
+                  new boost::local_time::posix_time_zone(
+                      "GMT" + prefix +
+                      std::to_string(sign_adjuster *
+                                     dt.time_zone_offset() *
+                                     flex_date_time::TIMEZONE_RESOLUTION_IN_MINUTES)));
+              boost::local_time::local_date_time az(
+                  flexible_type_impl::ptime_from_time_t(dt.posix_timestamp(),
+                                                        dt.microsecond()), zone);
+              ss << az;
+            } else {
+              boost::local_time::local_date_time az(
+                  flexible_type_impl::ptime_from_time_t(dt.posix_timestamp(),
+                                                        dt.microsecond()),
+                  empty_tz);
+              ss << az;
+            }
+            ss << "\"";
+          }
+          break;
+        case flex_type_enum::VECTOR:
+          {
+            const flex_vec& vec = value.get<flex_vec>();
+
+            ss << "[";
+            for (size_t i = 0; i < vec.size(); ++i) {
+              ss << vec[i];
+              if (i + 1 < vec.size()) ss << ", ";
+            }
+            ss << "]";
+          }
+          break;
+        case flex_type_enum::LIST:
+          {
+            const flex_list& vec = value.get<flex_list>();
+            ss << "[";
+
+            for (size_t i = 0; i < vec.size(); ++i) {
+              flexible_type val = vec[i];
+              ss << listHelper(val);
+              if (i + 1 < vec.size()) ss << ", ";
+            }
+
+            ss << "]";
+            break;
+          }
+        default:
+          {
+            ss << turi::visualization::extra_label_escape(value.to<std::string>());
+          }
+          break;
+      }
+
+      return ss.str();
+    };
+
+    auto getRows = [self, &reader, &ew, &column_names, &empty_tz, &image_queue, &listHelper](size_t start, size_t end) {
 
       // send table data
       {
@@ -1840,8 +1934,11 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
                 }
                 break;
               case flex_type_enum::LIST:
-                ss << value.to<std::string>();
-                break;
+                {
+                  flexible_type val = value;
+                  ss << listHelper(val);
+                  break;
+                }
               default:
                 default_string = value.to<std::string>();
                 if(default_string.length() > resize_table_view){
@@ -1865,7 +1962,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
       }
     };
 
-    auto getAccordion = [self, &reader, &ew, &column_names, &empty_tz](std::string column_name, size_t index) {
+    auto getAccordion = [self, &reader, &ew, &column_names, &empty_tz, &listHelper](std::string column_name, size_t index) {
 
         ASSERT_TRUE(std::find(column_names.begin(), column_names.end(), column_name) != column_names.end());
         DASSERT_LT(index, self->size());
@@ -2005,10 +2102,11 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
             break;
           case flex_type_enum::LIST:
             {
+              flexible_type val = value;
               std::stringstream ss;
               ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
               ss << ", \"type\": " << value.get_type();
-              ss << ", \"data\": " << turi::visualization::extra_label_escape(value.to<std::string>());
+              ss << ", \"data\": " << listHelper(val);
               ss << "}}" << std::endl;
               ew << ss.str();
               break;
