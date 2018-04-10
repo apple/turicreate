@@ -10,7 +10,7 @@ from subprocess import PIPE as _PIPE
 
 _target = 'auto'
 
-NODE_NOT_FOUND_ERROR_CODE = 127
+_NODE_NOT_FOUND_ERROR_CODE = 127
 
 def _run_cmdline(command):
     # runs a shell command
@@ -163,7 +163,7 @@ class Plot(object):
             (exitcode, stdout, stderr) = _run_cmdline("node " + 
                 absolute_path_to_vg2png_vg2svg + " " 
                 + temp_file_path + " " + filepath)
-            if exitcode == NODE_NOT_FOUND_ERROR_CODE:
+            if exitcode == _NODE_NOT_FOUND_ERROR_CODE:
                 # user doesn't have node installed
                 raise NameError("Node.js not found. Saving as PNG and SVG" +
                     " requires Node.js, please download and install Node.js " +
