@@ -36,7 +36,7 @@ document.onkeydown = function(e) {
 document.onkeyup = function(e) {
     var key_code = e.keyCode || e.charCode;
     
-    if (key_code == 91 || key_code == 93){
+    if (key_code == LEFT_COMMAND_KEY || key_code == RIGHT_COMMAND_KEY){
         command_down -= 1;
     }
 };
