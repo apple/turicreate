@@ -12,13 +12,9 @@ from __future__ import absolute_import as _
 from .._sys_util import get_config_file
 from .._sys_util import setup_environment_from_config_file
 from .._sys_util import write_config_file_value
-from .._sys_util import get_library_name
-from .._sys_util import make_unity_server_env
 
 import unittest
 import tempfile
-import subprocess
-import sys
 
 from os.path import join
 import os

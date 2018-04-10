@@ -1028,7 +1028,7 @@ def _modules_to_main(modList):
         if type(modname) is str:
             try:
                 mod = __import__(modname)
-            except Exception as e:
+            except Exception:
                 sys.stderr.write('warning: could not import %s\n.  '
                                  'Your function may unexpectedly error due to this import failing;'
                                  'A version mismatch is likely.  Specific error was:\n' % modname)

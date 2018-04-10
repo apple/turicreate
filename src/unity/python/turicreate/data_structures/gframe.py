@@ -294,7 +294,7 @@ class GFrame(SFrame):
 
             return self
         else:
-            return super(GFrame, self).add_row_number(names, column_name=column_name, start=start,inplace=inplace)
+            return super(GFrame, self).add_row_number(column_name=column_name, start=start,inplace=inplace)
 
 
 

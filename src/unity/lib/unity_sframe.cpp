@@ -1696,7 +1696,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
 
             ss << visualization::extra_label_escape(columnName) << ": ";
             ss << escapeForTable(value, empty_tz, &image_queue, count, columnName);
-
+            
             if (j != row.size() - 1) {
               ss << ",";
             }
@@ -1861,25 +1861,8 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
               break;
             }
           case flex_type_enum::DICT:
-            {
-              std::stringstream ss;
-              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
-              ss << ", \"type\": " << value.get_type();
-              ss << ", \"data\": " << turi::visualization::extra_label_escape(value.to<std::string>());
-              ss << "}}" << std::endl;
-              ew << ss.str();
-              break;
-            }
           case flex_type_enum::STRING:
-            {
-              std::stringstream ss;
-              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
-              ss << ", \"type\": " << value.get_type();
-              ss << ", \"data\": " << turi::visualization::extra_label_escape(value.to<std::string>());
-              ss << "}}" << std::endl;
-              ew << ss.str();
-              break;
-            }
+          case flex_type_enum::ND_VECTOR:
           default:
             {
               std::stringstream ss;

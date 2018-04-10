@@ -19,7 +19,6 @@ from turicreate.toolkits._private_utils import _validate_row_label
 from turicreate.toolkits._private_utils import _validate_lists
 from turicreate.toolkits._private_utils import _robust_column_name
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
-from turicreate.toolkits._private_utils import _validate_lists
 
 from turicreate.toolkits.distances._util import _convert_distance_names_to_functions
 from turicreate.toolkits.distances._util import _validate_composite_distance

@@ -149,7 +149,6 @@ class SFrameBuilder(object):
         if not hasattr(data, '__iter__'):
             raise TypeError("append_multiple must be passed an iterable object")
         tmp_list = []
-        block_pos = 0
 
         # Avoid copy in cases that we are passed materialized data that is
         # smaller than our block size

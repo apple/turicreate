@@ -400,6 +400,7 @@ class StickyTable extends PureComponent {
               case window.flex_type_enum.dict:
               case window.flex_type_enum.vector:
               case window.flex_type_enum.list:
+              case window.flex_type_enum.nd_vector:
                 data_entries.push(<JSONPretty className="json-pretty" json={this.props.data.data}></JSONPretty>);
                 break;
               default:
