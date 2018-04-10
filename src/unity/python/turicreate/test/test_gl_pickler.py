@@ -20,7 +20,6 @@ from turicreate import _gl_pickle as gl_pickle
 from turicreate.util import _assert_sframe_equal as assert_sframe_equal
 
 import os as _os
-_lfs = _os.environ['LFS_ROOT']
 
 
 class GLPicklingTest(unittest.TestCase):

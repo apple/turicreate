@@ -429,8 +429,8 @@ gl_sarray gl_sarray::filter(std::function<bool(const flexible_type&)> fn,
 gl_sarray gl_sarray::sample(double fraction) const {
   return get_proxy()->sample(fraction, time(NULL));
 }
-gl_sarray gl_sarray::sample(double fraction, size_t seed) const {
-  return get_proxy()->sample(fraction, seed);
+gl_sarray gl_sarray::sample(double fraction, size_t seed, bool exact) const {
+  return get_proxy()->sample(fraction, seed, exact);
 }
 bool gl_sarray::all() const {
   return get_proxy()->all();

@@ -18,10 +18,6 @@ date
 pip install target/turicreate-*.whl
 date
 
-# create a variable for project root dir
-# it will be used inside unit test
-export LFS_ROOT=$PWD/lfs
-
 cd $BUILD_TYPE/src/unity/python
 make python_source
 cd ../../../..

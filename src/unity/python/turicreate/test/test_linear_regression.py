@@ -29,7 +29,6 @@ if sys.version_info.major == 3:
     from functools import reduce
 
 import os as _os
-_lfs = _os.environ['LFS_ROOT']
 
 class LinearRegressionTest(unittest.TestCase):
     """

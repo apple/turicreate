@@ -120,8 +120,8 @@ def _mxnet_check():
         import mxnet as _mx
         version_tuple = tuple(int(x) for x in _mx.__version__.split('.') if x.isdigit())
         lowest_version = (0, 11, 0)
-        not_yet_supported_version = (1, 0, 0)
-        recommended_version_str = '0.12.1'
+        not_yet_supported_version = (1, 2, 0)
+        recommended_version_str = '1.1.0'
         if not (lowest_version <= version_tuple < not_yet_supported_version):
             print('WARNING: You are using MXNet', _mx.__version__, 'which may result in breaking behavior.')
             print('         To fix this, please install the currently recommended version:')

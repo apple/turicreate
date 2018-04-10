@@ -7,8 +7,6 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-import array as _array
-import datetime as _datetime
 import json as _json
 
 def to_serializable(obj):
@@ -36,7 +34,6 @@ def dumps(obj):
       valid schema information to disambiguate various other wrapped types
       (like Image) from dict.
     """
-    from . import extensions
     (data, schema) = to_serializable(obj)
     return _json.dumps({'data': data, 'schema': schema})
 
@@ -50,6 +47,5 @@ def loads(json_string):
       method in this module, including both data and schema.
       If it does not the result will be unspecified and may raise exceptions.
     """
-    from . import extensions
     result = _json.loads(json_string)
     return from_serializable(**result)

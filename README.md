@@ -39,20 +39,20 @@ It's easy to use the resulting model in an [iOS application](https://developer.a
 <p align="center"><img src="https://docs-assets.developer.apple.com/published/a2c37bce1f/689f61a6-1087-4112-99d9-bbfb326e3138.png" alt="Turi Create" width="600"></p>
 
 With Turi Create, you can tackle a number of common scenarios:
-* [Recommender systems](userguide/recommender/README.md)
-* [Image classification](userguide/image_classifier/README.md)
-* [Image similarity](userguide/image_similarity/README.md)
-* [Object detection](userguide/object_detection/README.md)
-* [Activity classifier](userguide/activity_classifier/README.md)
-* [Text classifier](userguide/text_classifier/README.md)
+* [Recommender systems](https://apple.github.io/turicreate/docs/userguide/recommender/)
+* [Image classification](https://apple.github.io/turicreate/docs/userguide/image_classifier/)
+* [Image similarity](https://apple.github.io/turicreate/docs/userguide/image_similarity/)
+* [Object detection](https://apple.github.io/turicreate/docs/userguide/object_detection/)
+* [Activity classifier](https://apple.github.io/turicreate/docs/userguide/activity_classifier/)
+* [Text classifier](https://apple.github.io/turicreate/docs/userguide/text_classifier/)
 
 You can also work with essential machine learning models, organized into algorithm-based toolkits:
-* [Classifiers](userguide/supervised-learning/classifier.md)
-* [Regression](userguide/supervised-learning/regression.md)
-* [Graph analytics](userguide/graph_analytics/README.md)
-* [Clustering](userguide/clustering/README.md)
-* [Nearest Neighbors](userguide/nearest_neighbors/nearest_neighbors.md)
-* [Topic models](userguide/text/README.md)
+* [Classifiers](https://apple.github.io/turicreate/docs/userguide/supervised-learning/classifier.html)
+* [Regression](https://apple.github.io/turicreate/docs/userguide/supervised-learning/regression.html)
+* [Graph analytics](https://apple.github.io/turicreate/docs/userguide/graph_analytics/)
+* [Clustering](https://apple.github.io/turicreate/docs/userguide/clustering/)
+* [Nearest Neighbors](https://apple.github.io/turicreate/docs/userguide/nearest_neighbors/nearest_neighbors.html)
+* [Topic models](https://apple.github.io/turicreate/docs/userguide/text/)
 
 Supported Platforms
 -------------------
@@ -133,11 +133,11 @@ CUDA-enabled `mxnet-cu80` package:
 
 ```
 (venv) pip uninstall -y mxnet
-(venv) pip install mxnet-cu80==0.12.1
+(venv) pip install mxnet-cu80==1.1.0
 ```
 
 Make sure you install the same version of MXNet as the one `turicreate` recommends
-(currently `0.12.1`). If you have trouble setting up the GPU, the [MXNet
+(currently `1.1.0`). If you have trouble setting up the GPU, the [MXNet
 installation instructions](https://mxnet.incubator.apache.org/get_started/install.html) may
 offer additional help.
 

@@ -1929,17 +1929,23 @@ class SArray(object):
             return SArray(_proxy=self.__proxy__.filter(fn, skip_na, seed))
 
 
-    def sample(self, fraction, seed=None):
+    def sample(self, fraction, seed=None, exact=False):
         """
         Create an SArray which contains a subsample of the current SArray.
 
         Parameters
         ----------
         fraction : float
-            The fraction of the rows to fetch. Must be between 0 and 1.
+            Fraction of the rows to fetch. Must be between 0 and 1.
+            if exact is False (default), the number of rows returned is
+            approximately the fraction times the number of rows.
 
-        seed : int
+        seed : int, optional
             The random seed for the random number generator.
+
+        exact: bool, optional
+            Defaults to False. If exact=True, an exact fraction is returned, 
+            but at a performance penalty.
 
         Returns
         -------
@@ -1963,7 +1969,7 @@ class SArray(object):
 
 
         with cython_context():
-            return SArray(_proxy=self.__proxy__.sample(fraction, seed))
+            return SArray(_proxy=self.__proxy__.sample(fraction, seed, exact))
 
     def hash(self, seed=0):
         """

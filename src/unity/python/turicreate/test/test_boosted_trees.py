@@ -21,8 +21,8 @@ from array import array
 
 import os as _os
 
-_lfs = _os.environ['LFS_ROOT']
-mushroom_dataset = _os.path.join(_lfs, 'datasets', 'xgboost','mushroom.csv')
+dirname = _os.path.dirname(__file__)
+mushroom_dataset = _os.path.join(dirname, 'mushroom.csv')
 
 
 _DEFAULT_OPTIONS_REGRESSION = {

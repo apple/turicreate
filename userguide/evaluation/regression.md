@@ -34,7 +34,7 @@ import turicreate as tc
 y    = tc.SArray([3.1, 2.4, 7.6, 1.9])
 yhat = tc.SArray([4.1, 2.3, 7.4, 1.7])
 
-print tc.evaluation.rmse(y, yhat)
+print(tc.evaluation.rmse(y, yhat))
 ```
 ```
 0.522015325446
@@ -54,7 +54,7 @@ import turicreate as tc
 y    = tc.SArray([3.1, 2.4, 7.6, 1.9])
 yhat = tc.SArray([4.1, 2.3, 7.4, 1.7])
 
-print tc.evaluation.max_error(y, yhat)
+print(tc.evaluation.max_error(y, yhat))
 ```
 ```
 1.0

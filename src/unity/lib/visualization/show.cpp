@@ -76,10 +76,5 @@ namespace turi {
           throw std::runtime_error("Unsupported combination of SArray dtypes for x and y. Currently supported are: [int, float, str].");
         }
     }
-
-    BEGIN_FUNCTION_REGISTRATION
-    REGISTER_FUNCTION(plot, "path_to_client", "x", "y", "xlabel", "ylabel", "title")
-    END_FUNCTION_REGISTRATION
-
   }
 }

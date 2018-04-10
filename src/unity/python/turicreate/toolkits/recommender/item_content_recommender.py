@@ -13,9 +13,7 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import turicreate as _turicreate
 from turicreate import SFrame as _SFrame
-from turicreate import SArray as _SArray
 from turicreate.toolkits.recommender.util import _Recommender
-from array import array as _array
 
 
 def create(item_data, item_id,

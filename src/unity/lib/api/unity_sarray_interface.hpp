@@ -58,7 +58,7 @@ GENERATE_INTERFACE_AND_PROXY(unity_sarray_base, unity_sarray_proxy,
       (std::shared_ptr<unity_sarray_base>, drop_missing_values, )
       (std::shared_ptr<unity_sarray_base>, fill_missing_values, (flexible_type))
       (std::shared_ptr<unity_sarray_base>, clip, (flexible_type)(flexible_type))
-      (std::shared_ptr<unity_sarray_base>, sample, (float)(int))
+      (std::shared_ptr<unity_sarray_base>, sample, (float)(int)(bool))
       (std::shared_ptr<unity_sarray_base>, hash, (int))
       (std::shared_ptr<unity_sarray_base>, tail, (size_t))
       (std::vector<flexible_type>, _tail, (size_t))

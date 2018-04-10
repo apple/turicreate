@@ -37,6 +37,7 @@
 #include <exceptions/error_types.hpp>
 #include <unity/lib/visualization/process_wrapper.hpp>
 #include <unity/lib/visualization/histogram.hpp>
+#include <unity/lib/visualization/columnwise_summary.hpp>
 #include <unity/lib/visualization/item_frequency.hpp>
 #include <unity/lib/visualization/transformation.hpp>
 #include <unity/lib/visualization/thread.hpp>
@@ -1017,10 +1018,11 @@ void unity_sframe::save_as_csv(const std::string& url,
 }
 
 std::shared_ptr<unity_sframe_base> unity_sframe::sample(float percent,
-                                                        int random_seed) {
+                                                        int random_seed,
+                                                        bool exact) {
   logstream(LOG_INFO) << "Args: " << percent << ", " << random_seed << std::endl;
   auto logical_filter_array = std::static_pointer_cast<unity_sarray>(
-    unity_sarray::make_uniform_boolean_array(size(), percent, random_seed));
+    unity_sarray::make_uniform_boolean_array(size(), percent, random_seed, exact));
   return logical_filter(logical_filter_array);
 }
 
@@ -1050,12 +1052,12 @@ std::string unity_sframe::query_plan_string() {
 }
 
 std::list<std::shared_ptr<unity_sframe_base>>
-unity_sframe::random_split(float percent, int random_seed) {
+unity_sframe::random_split(float percent, int random_seed, bool exact) {
   log_func_entry();
   logstream(LOG_INFO) << "Args: " << percent << ", " << random_seed << std::endl;
 
   auto logical_filter_array = std::static_pointer_cast<unity_sarray>(
-    unity_sarray::make_uniform_boolean_array(size(), percent, random_seed));
+    unity_sarray::make_uniform_boolean_array(size(), percent, random_seed, exact));
   return logical_filter_split(logical_filter_array);
 }
 
@@ -1584,99 +1586,12 @@ void unity_sframe::show(const std::string& path_to_client) {
 }
 
 std::shared_ptr<model_base> unity_sframe::plot(const std::string& path_to_client){
-
   using namespace turi;
   using namespace turi::visualization;
 
-  logprogress_stream << "Materializing SFrame..." << std::endl;
-  this->materialize();
-  logprogress_stream << "Done." << std::endl;
-
-  if (this->size() == 0) {
-    log_and_throw("Nothing to show; SFrame is empty.");
-  }
-
-
   std::shared_ptr<unity_sframe_base> self = this->select_columns(this->column_names());
-  transformation_collection column_transformers;
 
-  std::vector<std::string> column_names;
-
-  size_t i = 0;
-  bool warned_on_unsupported_dtype = false;
-  bool warned_on_too_many_columns = false;
-  for (const std::string& col : self->column_names()) {
-    std::shared_ptr<unity_sarray_base> sarr = self->select_column(col);
-
-    if (i >= 50 && !warned_on_too_many_columns) {
-      // we are past the limit for reasonable perf in the view.
-      // warn and omit the column.
-      warned_on_too_many_columns = true;
-      logprogress_stream << "Warning: Skipping column '"
-                         << col
-                         << "' ["
-                         << flex_type_enum_to_name(sarr->dtype())
-                         << "]. Unable to show more than 50 columns."
-                         << std::endl
-                         << "Further warnings of more than 50 columns will be suppressed."
-                         << std::endl;
-      continue;
-    }
-
-    switch (sarr->dtype()) {
-      case flex_type_enum::INTEGER:
-      case flex_type_enum::FLOAT:
-      {
-        i++;
-        std::shared_ptr<histogram> hist = std::make_shared<histogram>();
-        hist->init(sarr);
-        column_transformers.push_back(hist);
-        column_names.push_back(col);
-        break;
-      }
-      case flex_type_enum::STRING:
-      {
-        i++;
-        std::shared_ptr<item_frequency> item_freq = std::make_shared<item_frequency>();
-        item_freq->init(sarr);
-        column_transformers.push_back(item_freq);
-        column_names.push_back(col);
-        break;
-      }
-      default:
-        if (!warned_on_unsupported_dtype) {
-          warned_on_unsupported_dtype = true;
-          logprogress_stream << "Warning: Skipping column '"
-                             << col
-                             << "'. Unable to show columns of type '"
-                             << flex_type_enum_to_name(sarr->dtype())
-                             << "'; only [int, float, str] can be shown."
-                             << std::endl
-                             << "Further warnings of unsupported type will be suppressed."
-                             << std::endl;
-        }
-        break;
-    }
-  }
-
-  DASSERT_EQ(column_transformers.size(), column_names.size());
-  if(column_transformers.size() == 0){
-    log_and_throw("Nothing to show, because there are no columns of type [int, float, str]");
-  }
-
-  std::vector<flex_type_enum> column_types;
-
-  for(size_t i = 0; i < column_names.size(); i++){
-    std::shared_ptr<unity_sarray_base> sarr = self->select_column(column_names[i]);
-    column_types.push_back(sarr->dtype());
-  }
-
-  std::shared_ptr<summary_view_transformation> summary_view_transformers = std::make_shared<summary_view_transformation>(column_transformers, column_names, column_types, self->size());
-  std::string summary_view_vega_spec  = summary_view_spec(column_transformers.size());
-
-  std::shared_ptr<transformation_base> shared_unity_transformer = std::static_pointer_cast<transformation_base>(summary_view_transformers);
-
-  return std::make_shared<Plot>(path_to_client, summary_view_vega_spec, shared_unity_transformer, (self->size() * column_transformers.size()));
+  return plot_columnwise_summary(path_to_client, self);
 }
 
 void unity_sframe::explore(const std::string& path_to_client, const std::string& title) {
@@ -1950,6 +1865,187 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
       }
     };
 
+    auto getAccordion = [self, &reader, &ew, &column_names, &empty_tz](std::string column_name, size_t index) {
+
+        ASSERT_TRUE(std::find(column_names.begin(), column_names.end(), column_name) != column_names.end());
+        DASSERT_LT(index, self->size());
+        DASSERT_GE(index, 0);
+
+        auto accordion_sa = self->select_column(column_name);
+        auto gl_sa = gl_sarray(accordion_sa);
+
+        flexible_type value = gl_sa[index];
+
+        switch (value.get_type()) {
+          case flex_type_enum::UNDEFINED:
+            break;
+          case flex_type_enum::FLOAT:
+            {
+              std::stringstream ss;
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << ", \"type\": " << value.get_type();
+              ss << ", \"data\": " << value.get<flex_float>();
+              ss << "}}" << std::endl;
+              ew << ss.str();
+            }
+            break;
+          case flex_type_enum::INTEGER:
+            {
+              std::stringstream ss;
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << ", \"type\": " << value.get_type();
+              ss << ", \"data\": " << value.get<flex_int>();
+              ss << "}}" << std::endl;
+              ew << ss.str();
+            }
+            break;
+          case flex_type_enum::IMAGE:
+            {
+              std::stringstream ss;
+              flex_image img = value.get<flex_image>();
+              img = turi::image_util::encode_image(img);
+
+              const unsigned char * image_data = img.get_image_data();
+              size_t image_data_size = img.m_image_data_size;
+
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << ", \"type\": " << value.get_type();
+              ss << ", \"data\": ";
+              ss << "{\"width\": " << img.m_width << ", ";
+              ss << "\"height\": " << img.m_height << ", ";
+              ss << "\"data\": \"";
+              std::copy(
+                to_base64(image_data),
+                to_base64(image_data + image_data_size),
+                std::ostream_iterator<char>(ss)
+              );
+
+              ss << "\", \"format\": \"";
+              switch (img.m_format) {
+                case Format::JPG:
+                  ss << "jpeg";
+                  break;
+                case Format::PNG:
+                  ss << "png";
+                  break;
+                case Format::RAW_ARRAY:
+                  ss << "raw";
+                  break;
+                case Format::UNDEFINED:
+                  // TODO - not sure what to do here.
+                  // For now, treat it as raw, but this will probably
+                  // display garbage for the user.
+                  ss << "raw";
+                  break;
+              }
+              ss << "\"}}}\n";
+              ew << ss.str();
+            }
+
+            break;
+          case flex_type_enum::DATETIME:
+            {
+              std::stringstream ss;
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << ", \"type\": " << value.get_type();
+              ss << ", \"data\": ";
+              ss << "\"";
+              const auto& dt = value.get<flex_date_time>();
+
+              if (dt.time_zone_offset() != flex_date_time::EMPTY_TIMEZONE) {
+                std::string prefix = "0.";
+                int sign_adjuster = 1;
+                if(dt.time_zone_offset() < 0) {
+                  sign_adjuster = -1;
+                  prefix = "-0.";
+                }
+                boost::local_time::time_zone_ptr zone(
+                    new boost::local_time::posix_time_zone(
+                        "GMT" + prefix +
+                        std::to_string(sign_adjuster *
+                                       dt.time_zone_offset() *
+                                       flex_date_time::TIMEZONE_RESOLUTION_IN_MINUTES)));
+                boost::local_time::local_date_time az(
+                    flexible_type_impl::ptime_from_time_t(dt.posix_timestamp(),
+                                                          dt.microsecond()), zone);
+                ss << az;
+              } else {
+                boost::local_time::local_date_time az(
+                    flexible_type_impl::ptime_from_time_t(dt.posix_timestamp(),
+                                                          dt.microsecond()),
+                    empty_tz);
+                ss << az;
+              }
+
+              ss << "\"}}" << std::endl;
+              ew << ss.str();
+            }
+            break;
+          case flex_type_enum::VECTOR:
+            {
+              std::stringstream ss;
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << ", \"type\": " << value.get_type();
+              ss << ", \"data\": ";
+              std::stringstream strm;
+              const flex_vec& vec = value.get<flex_vec>();
+
+              strm << "[";
+              for (size_t i = 0; i < vec.size(); ++i) {
+                strm << vec[i];
+                if (i + 1 < vec.size()) strm << ", ";
+              }
+              strm << "]";
+              std::string default_string;
+
+              ss << turi::visualization::extra_label_escape(strm.str());
+              ss << "}}" << std::endl;
+              ew << ss.str();
+            }
+            break;
+          case flex_type_enum::LIST:
+            {
+              std::stringstream ss;
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << ", \"type\": " << value.get_type();
+              ss << ", \"data\": " << turi::visualization::extra_label_escape(value.to<std::string>());
+              ss << "}}" << std::endl;
+              ew << ss.str();
+              break;
+            }
+          case flex_type_enum::DICT:
+            {
+              std::stringstream ss;
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << ", \"type\": " << value.get_type();
+              ss << ", \"data\": " << turi::visualization::extra_label_escape(value.to<std::string>());
+              ss << "}}" << std::endl;
+              ew << ss.str();
+              break;
+            }
+          case flex_type_enum::STRING:
+            {
+              std::stringstream ss;
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << ", \"type\": " << value.get_type();
+              ss << ", \"data\": " << turi::visualization::extra_label_escape(value.to<std::string>());
+              ss << "}}" << std::endl;
+              ew << ss.str();
+              break;
+            }
+          default:
+            {
+              std::stringstream ss;
+              ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
+              ss << ", \"type\": " << value.get_type();
+              ss << ", \"data\": " << turi::visualization::extra_label_escape(value.to<std::string>());
+              ss << "}}" << std::endl;
+              ew << ss.str();
+              break;
+            }
+        };
+    };
+
     // pass the first 1k rows
     getRows(0, 100);
 
@@ -2016,27 +2112,39 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
       }
 
       // parse the message as json
-      flex_int start = -1,
-               end = -1;
+      flex_int start = -1, end = -1, index = -1;
+      std::string column_name;
+
+      enum MethodType {GetRows = 0, GetAccordion = 1};
+      MethodType response;
+
       auto sa = gl_sarray(std::vector<flexible_type>(1, input)).astype(flex_type_enum::DICT);
       flex_dict dict = sa[0].get<flex_dict>();
       for (const auto& pair : dict) {
         const auto& key = pair.first.get<flex_string>();
         const auto& value = pair.second;
         if (key == "method") {
-          DASSERT_EQ(value.get<flex_string>(), "get_rows");
+          if(value.get<flex_string>() == "get_rows"){
+            response = GetRows;
+          }else if(value.get<flex_string>() == "get_accordion"){
+            response = GetAccordion;
+          }
         } else if (key == "start") {
           start = value.get<flex_int>();
         } else if (key == "end") {
           end = value.get<flex_int>();
+        }else if (key == "column") {
+          column_name = value.get<flex_string>();
+        }else if (key == "index"){
+          index = value.get<flex_int>();
         }
       }
 
-      DASSERT_GT(start, -1);
-      DASSERT_GT(end, -1);
-
-      getRows(start, end);
-
+      if(response == GetRows){
+        getRows(start, end);
+      }else if(response == GetAccordion){
+        getAccordion(column_name, index);
+      }
     }
   });
 
