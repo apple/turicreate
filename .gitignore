@@ -83,6 +83,7 @@ xcuserdata/
 deps/env
 deps/local
 deps/build
+*node_modules/*
 
 /dummy.cpp
 

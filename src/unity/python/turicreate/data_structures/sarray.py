@@ -2911,7 +2911,7 @@ class SArray(object):
 
         returned_plot.show()
 
-    def __plot(self, title=None, xlabel=None, ylabel=None):
+    def plot(self, title=None, xlabel=None, ylabel=None):
 
         path_to_client = _get_client_app_path()
 
