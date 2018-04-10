@@ -4,8 +4,19 @@ from __future__ import absolute_import as _
 import json as _json
 import os as _os
 from tempfile import mkstemp as _mkstemp
+from subprocess import Popen as _Popen 
+from subprocess import PIPE as _PIPE
 
 _target = 'auto'
+
+_NODE_NOT_FOUND_ERROR_CODE = 127
+
+def _run_cmdline(command):
+    # runs a shell command
+    p = _Popen(args=command, stdout=_PIPE, stderr=_PIPE, shell=True)
+    stdout_feed, stderr_feed = p.communicate() # wait for completion
+    exit_code = p.poll()
+    return (exit_code, stdout_feed, stderr_feed)
 
 def set_target(target='auto'):
     """
@@ -140,21 +151,35 @@ class Plot(object):
         elif filepath.endswith(".png") or filepath.endswith(".svg"):
             # save as png/svg, but json first
             spec = self._get_vega(include_data = True)
-            extension = filepath[-3:]
+            EXTENSION_START_INDEX = -3
+            extension = filepath[EXTENSION_START_INDEX:]
             temp_file_tuple = _mkstemp()
             temp_file_path = temp_file_tuple[1]
             with open(temp_file_path, 'w') as fp:
                 _json.dump(spec, fp)
             dirname = _os.path.dirname(__file__)
             relative_path_to_vg2png_vg2svg = "../vg2" + extension
-            absolute_path_to_vg2png_vg2svg = _os.path.join(
-                dirname, relative_path_to_vg2png_vg2svg)
-            _os.system("node " + absolute_path_to_vg2png_vg2svg + " " + temp_file_path + " " + filepath)
+            absolute_path_to_vg2png_vg2svg = _os.path.join(dirname, 
+                relative_path_to_vg2png_vg2svg)
+            (exitcode, stdout, stderr) = _run_cmdline("node " + 
+                absolute_path_to_vg2png_vg2svg + " " 
+                + temp_file_path + " " + filepath)
+            if exitcode == _NODE_NOT_FOUND_ERROR_CODE:
+                # user doesn't have node installed
+                raise RuntimeError("Node.js not found. Saving as PNG and SVG" +
+                    " requires Node.js, please download and install Node.js " +
+                    "from here and try again: https://nodejs.org/en/download/")
+            elif exitcode == 0:
+                # success
+                pass
+            else:
+                # something else
+                raise RuntimeError(stderr)
             # delete temp file that user didn't ask for
-            _os.system("rm " + temp_file_path) 
+            _run_cmdline("rm " + temp_file_path) 
         else:
-            raise NotImplementedError("filename must end in .json, .svg, or .png")
-
+            raise NotImplementedError("filename must end in" +
+                " .json, .svg, or .png")
 
     def _get_data(self):
         return _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_data'}))
