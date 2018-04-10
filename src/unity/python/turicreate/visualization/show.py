@@ -96,6 +96,51 @@ def show(x, y, xlabel="X", ylabel="Y", title=None):
     Plot(plt_ref).show()
 
 def scatter(x, y, xlabel="X", ylabel="Y", title=None):
+    """
+    Plots the data in `x` on the X axis and the data in `y` on the Y axis
+    in a 2d scatterplot, and returns the resulting Plot object.
+    Uses the following heuristic to choose the visualization:
+
+    The scatter method supports SArrays of dtypes: int, float, str.
+
+    Notes
+    -----
+    - The plot will render either inline in a Jupyter Notebook, or in a
+      native GUI window, depending on the value provided in
+      `turicreate.visualization.set_target` (defaults to 'auto').
+
+    Parameters
+    ----------
+    x : SArray
+      The data to plot on the X axis of the scatter plot.
+    y : SArray
+      The data to plot on the Y axis of the scatter plot. Must be the same
+      length as `x`.
+    xlabel : str (optional)
+      The text label for the X axis. Defaults to "X".
+    ylabel : str (optional)
+      The text label for the Y axis. Defaults to "Y".
+    title : str (optional)
+      The title of the plot. Defaults to None. If the value is None, the title
+      will be "<xlabel> vs. <ylabel>". Otherwise, the string passed in as the
+      title will be used as the plot title.
+
+    Examples
+    --------
+    Show a scatter plot.
+
+    >>> x = turicreate.SArray([1,2,3,4,5])
+    >>> y = x * 2
+    >>> scplt = turicreate.visualization.scatter(x, y)
+    >>> scplt.show()
+
+    """
+    if (type(x) != tc.data_structures.sarray.SArray or 
+        type(y) != tc.data_structures.sarray.SArray or
+        x.dtype not in [int, float] or y.dtype not in [int, float]):
+        raise ValueError("turicreate.visualization.scatter supports " + 
+            "SArrays of dtypes: int, float")
+    # legit input
     path_to_client = _get_client_app_path()
     title = _get_title(title)
     plt_ref = tc.extensions.plot_scatter(path_to_client, x, y, 
@@ -103,6 +148,12 @@ def scatter(x, y, xlabel="X", ylabel="Y", title=None):
     return Plot(plt_ref)
 
 def categorical_heatmap(x, y, xlabel="X", ylabel="Y", title=None):
+    if (type(x) != tc.data_structures.sarray.SArray or 
+        type(y) != tc.data_structures.sarray.SArray or
+        x.dtype != str or y.dtype != str):
+        raise ValueError("turicreate.visualization.categorical_heatmap supports " + 
+            "SArrays of dtype: str")
+    # legit input
     path_to_client = _get_client_app_path()
     title = _get_title(title)
     plt_ref = tc.extensions.plot_categorical_heatmap(path_to_client, x, y, 
@@ -110,6 +161,11 @@ def categorical_heatmap(x, y, xlabel="X", ylabel="Y", title=None):
     return Plot(plt_ref)
 
 def heatmap(x, y, xlabel="X", ylabel="Y", title=None):
+    if (type(x) != tc.data_structures.sarray.SArray or 
+        type(y) != tc.data_structures.sarray.SArray or
+        x.dtype not in [int, float] or y.dtype not in [int, float]):
+        raise ValueError("turicreate.visualization.heatmap supports " + 
+            "SArrays of dtype: int, float")
     path_to_client = _get_client_app_path()
     title = _get_title(title)
     plt_ref = tc.extensions.plot_heatmap(path_to_client, x, y, 
@@ -117,6 +173,12 @@ def heatmap(x, y, xlabel="X", ylabel="Y", title=None):
     return Plot(plt_ref)
 
 def box_plot(x, y, xlabel="X", ylabel="Y", title=None):
+    if (type(x) != tc.data_structures.sarray.SArray or 
+        type(y) != tc.data_structures.sarray.SArray or
+        x.dtype != str or y.dtype not in [int, float]):
+        raise ValueError("turicreate.visualization.box_plot supports " + 
+            "x as SArray of dtype str and y as SArray of dtype: int, float." +
+            "\nExample: turicreate.visualization.box_plot(tc.SArray(['a','b','c','a','a']),tc.SArray([4.0,3.25,2.1,2.0,1.0]))")
     path_to_client = _get_client_app_path()
     title = _get_title(title)
     plt_ref = tc.extensions.plot_boxes_and_whiskers(path_to_client, x, y, 
@@ -124,11 +186,18 @@ def box_plot(x, y, xlabel="X", ylabel="Y", title=None):
     return Plot(plt_ref)
 
 def columnwise_summary(sf):
+    if (type(sf) != tc.data_structures.sframe.SFrame):
+        raise ValueError("turicreate.visualization.columnwise_summary " + 
+            "supports SFrame")
     path_to_client = _get_client_app_path()
     plt_ref = tc.extensions.plot_columnwise_summary(path_to_client, sf)
     return Plot(plt_ref)
 
 def histogram(sa, xlabel="Values", ylabel="Count", title=None):
+    if (type(sa) != tc.data_structures.sarray.SArray or 
+        sa.dtype not in [int, float]):
+        raise ValueError("turicreate.visualization.histogram supports " + 
+            "SArrays of dtypes: int, float")
     path_to_client = _get_client_app_path()
     title = _get_title(title)
     plt_ref = tc.extensions.plot_histogram(path_to_client, sa, 
@@ -136,6 +205,9 @@ def histogram(sa, xlabel="Values", ylabel="Count", title=None):
     return Plot(plt_ref)
 
 def item_frequency(sa, xlabel="Values", ylabel="Count", title=None):
+    if (type(sa) != tc.data_structures.sarray.SArray or sa.dtype != str):
+        raise ValueError("turicreate.visualization.histogram supports " + 
+            "SArrays of dtype str")
     path_to_client = _get_client_app_path()
     title = _get_title(title)
     plt_ref = tc.extensions.plot_item_frequency(path_to_client, sa, 
