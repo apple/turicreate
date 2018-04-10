@@ -9,7 +9,6 @@ from __future__ import absolute_import as _
 from ..data_structures.sframe import SFrame
 from ..data_structures.sarray import SArray
 from ..data_structures.image import Image
-from ..connect import main as glconnect
 from ..util import _assert_sframe_equal, generate_random_sframe
 from .. import _launch, load_sframe, aggregate
 from . import util

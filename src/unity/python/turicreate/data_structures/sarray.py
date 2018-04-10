@@ -735,7 +735,7 @@ class SArray(object):
                 headln = unicode(headln.decode('string_escape'),'utf-8',errors='replace').encode('utf-8')
             else:
                 headln = str(list(self.head(100)))
-        if (self.__proxy__.has_size() == False or len(self) > 100):
+        if (self.__proxy__.has_size() is False or len(self) > 100):
             # cut the last close bracket
             # and replace it with ...
             headln = headln[0:-1] + ", ... ]"

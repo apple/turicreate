@@ -9,14 +9,11 @@ Class definition and utilities for the image similarity toolkit.
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-import copy as _copy
 import time as _time
-import sys as _sys
 
 import turicreate as _tc
 from turicreate.toolkits._model import CustomModel as _CustomModel
 import turicreate.toolkits._internal_utils as _tkutl
-import turicreate.toolkits._private_utils as _pvtutl
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import ExposeAttributesFromProxy as _ExposeAttributesFromProxy
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
@@ -219,7 +216,6 @@ class ImageSimilarityModel(_CustomModel):
         """
 
         width = 40
-        key_str = "{:<{}}: {}"
 
         sections, section_titles = self._get_summary_struct()
         out = _tkutl._toolkit_repr_print(self, sections, section_titles,

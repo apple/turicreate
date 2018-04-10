@@ -1,7 +1,6 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-import logging as _logging
 import json as _json
 import os as _os
 from tempfile import mkstemp as _mkstemp
@@ -165,7 +164,7 @@ class Plot(object):
             for x in range(len(spec["data"])):
                 if(spec["data"][x]["name"] == "source_2"):
                     spec["data"][x] = data
-                    break;
+                    break
             return spec
         else:
             return _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_spec'}))["vega_spec"]
