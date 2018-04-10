@@ -5,6 +5,36 @@ import TcPlot from './elements/Plot/Chart/index.js';
 import TcSummary from './elements/Plot/Summary/index.js';
 import TcTable from './elements/Explore/Table/index.js';
 
+var command_down = 0;
+var body_zoom = 100;
+
+document.onkeydown = function(e) {
+    var key_code = e.keyCode || e.charCode;
+    if (key_code == 91 || key_code == 93){
+        command_down += 1;
+    }
+    
+    if(key_code == 187 && command_down > 0){
+        body_zoom += 10;
+        document.body.style.zoom = body_zoom+"%"
+    }
+    
+    if(key_code == 189 && command_down > 0){
+        if(body_zoom > 10){
+            body_zoom -= 10;
+            document.body.style.zoom = body_zoom+"%"
+        }
+    }
+};
+
+document.onkeyup = function(e) {
+    var key_code = e.keyCode || e.charCode;
+    
+    if (key_code == 91 || key_code == 93){
+        command_down -= 1;
+    }
+};
+
 var SpecType = Object.freeze({"table":1, "vega":2, "summary":3, "annotate": 4})
 window.flex_type_enum = Object.freeze({"integer":0, "float":1, "string":2, "vector": 3, "list": 4, "dict": 5, "datetime": 6, "undefined": 7, "image": 8, "nd_vector": 9});
 
