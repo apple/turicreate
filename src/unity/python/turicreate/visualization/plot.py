@@ -100,20 +100,17 @@ class Plot(object):
 
                 self.__proxy__.get('call_function', {'__function_name__': 'show'})
 
-    def save(self, filepath, include_data=True):
+    def save(self, filepath):
         """
         A method for saving the Plot object in a vega representation
 
         Parameters
         ----------
-        include_data : bool, optional
-            If True, save's the Plot in a vega spec with the data spec
-            included.
-
-        Notes
-        -----
-        - The save method saves the Plot object in a vega json format
-
+        filepath: string
+            The destination filepath where the plot object must be saved as.
+            The extension of this filepath determines what format the plot will
+            be saved as. Currently supported formats are JSON, PNG, and SVG.
+        
         Examples
         --------
         Suppose 'plt' is an Plot Object
@@ -126,13 +123,18 @@ class Plot(object):
 
         >>> plt.save('vega_spec.json', False)
 
+        We can save the plot as a PNG/SVG using:
+
+        >>> plt.save('test.png')
+        >>> plt.save('test.svg')
+
         """
         if type(filepath) != str:
             raise ValueError("filepath provided is not a string")
 
         if filepath.endswith(".json"):
             # save as vega json
-            spec = self._get_vega(include_data = include_data)
+            spec = self._get_vega(include_data = True)
             with open(filepath, 'w') as fp:
                 _json.dump(spec, fp)
         elif filepath.endswith(".png") or filepath.endswith(".svg"):
