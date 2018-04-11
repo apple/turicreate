@@ -250,10 +250,14 @@ class TcTable extends Component {
         var lower_bound;
         var upper_bound;
 
-        if(parseInt(value, 10) >= $this.size || parseInt(value, 10) < 0){
-            return "err: out of bounds";
+        if(parseInt(value, 10) >= $this.size){
+          value = $this.size - 1;
         }
-
+        
+        if(parseInt(value, 10) < 0){
+          value = 0;
+        }
+        
         lower_bound = Math.floor(parseInt(value, 10)/$this.step_size);
         upper_bound = lower_bound + 1;
         
