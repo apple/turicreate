@@ -38,7 +38,7 @@ There are three primary visualization methods in Turi Create:
   and
   [SArray.explore](https://apple.github.io/turicreate/docs/api/generated/turicreate.SArray.explore.html).
 
-Turi Create also enables users to create independent plots including 
+Turi Create also enables you to create independent plots including 
 scatter plots ([visualization.scatter](https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.scatter.html)), 
 heatmaps ([visualization.heatmap](https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.heatmap.html)), 
 categorical heatmaps ([visualization.categorical_heatmap](https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.categorical_heatmap.html)), 
@@ -142,6 +142,21 @@ support Vega specifications, like the
 You can find these options in the `File` menu as shown below:
 
 ![Turi Create Visualization File Menu](images/show_file_menu.png)
+
+Turi Create also lets you save plots as PNG, SVG, or JSON as part of the 
+Python Plot API. You can save a Plot object by invoking the `save` method, as 
+shown in the example below:
+
+```
+import turicreate as tc
+# build the plot
+x = tc.SArray([1,2,3,4,5]); y = x * 2
+custom_plot = tc.visualization.scatter(x,y)
+# save the plot
+custom_plot.save("custom.json")
+custom_plot.save("custom.png")
+custom_plot.save("custom.svg")
+```
 
 #### Explore
 
