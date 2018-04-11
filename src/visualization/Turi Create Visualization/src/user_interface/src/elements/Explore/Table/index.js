@@ -243,9 +243,6 @@ class TcTable extends Component {
         lower_bound = Math.floor(parseInt(value, 10)/$this.step_size);
         upper_bound = lower_bound + 1;
         
-        console.log(lower_bound)
-        console.log(upper_bound)
-        
         if(bound_increment ==  0){
             $this.set_lower = (lower_bound-1 >= 0)?(lower_bound-1):0;
             $this.set_higher = (lower_bound-1 >= 0)?upper_bound:2;
