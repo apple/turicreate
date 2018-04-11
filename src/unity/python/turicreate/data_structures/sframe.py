@@ -4449,7 +4449,7 @@ class SFrame(object):
         >>> sf.show()
         """
 
-        returned_plot = self.__plot()
+        returned_plot = self.plot()
 
         returned_plot.show()
 
