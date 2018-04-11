@@ -3,6 +3,10 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#ifndef __TC_VIS_EXTREMA
+#define __TC_VIS_EXTREMA
+
 #include "../gl_sarray.hpp"
 
 #include <ostream>
@@ -75,3 +79,5 @@ struct bounding_box {
 };
 
 }}
+
+#endif

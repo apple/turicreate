@@ -6,6 +6,7 @@ make_library(
     boxes_and_whiskers.cpp
     categorical_heatmap.cpp
     columnwise_summary.cpp
+    escape.cpp
     groupby.cpp
     heatmap.cpp
     histogram.cpp

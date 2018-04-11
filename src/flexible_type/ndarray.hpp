@@ -14,7 +14,7 @@ namespace flexible_type_impl {
 
 
 template <typename T>
-static void mod_helper(T& a, const T& b, 
+static void mod_helper(T& a, const T& b,
                        typename std::enable_if<std::is_floating_point<T>::value>::type* = 0) {
   a = fmod(a,b);
 }
@@ -26,9 +26,9 @@ static void mod_helper(T& a, const T& b,
 /**
  * A generic dense multidimensional array.
  *
- * This class implements a very minimal generic dense multidimensional 
+ * This class implements a very minimal generic dense multidimensional
  * array type.
- * 
+ *
  * The basic layout is simple.
  *  - elems: is a flattened array of all the elements
  *  - start: The offset of the 0th element in elems.
@@ -42,7 +42,7 @@ static void mod_helper(T& a, const T& b,
  *
  *   ndarray[i,j,k] = elements[start + i * stride[0] + j * stride[1] + k * stride[2]]
  *
- * Note the stride are not based on the element size. i.e. if we have a simple 
+ * Note the stride are not based on the element size. i.e. if we have a simple
  * 1-D array, stride[0] is always 1. (as opposed to sizeof(T)).
  *
  * The NDArray's default construction layout is "C" ordering: the stride
@@ -60,7 +60,7 @@ static void mod_helper(T& a, const T& b,
  *
  * Note
  * ----
- * The performance of the ndarray operators is probably not particularly 
+ * The performance of the ndarray operators is probably not particularly
  * optimized. Really, the \ref increment_index() system should be replaced
  * with an iterator.
  **/
@@ -81,18 +81,18 @@ class ndarray {
  public:
 
   /// construct with custom stride ordering
-  ndarray(const container_type& elements = container_type(), 
+  ndarray(const container_type& elements = container_type(),
           const index_range_type& shape = index_range_type(),
           const index_range_type& stride = index_range_type(),
           const index_type start = 0):
               ndarray(std::make_shared<container_type>(elements), shape, stride, start) {}
 
   /// construct with custom stride ordering
-  ndarray(const std::shared_ptr<container_type>& elements, 
+  ndarray(const std::shared_ptr<container_type>& elements,
           const index_range_type& shape = index_range_type(),
           const index_range_type& stride = index_range_type(),
-          const index_type start = 0): 
-              m_elem(elements), m_shape(shape), m_stride(stride), m_start(start) { 
+          const index_type start = 0):
+              m_elem(elements), m_shape(shape), m_stride(stride), m_start(start) {
     // construct m_shape if not given
     if (m_shape.size() == 0 && elements->size() - m_start > 0) {
       m_shape.push_back(elements->size() - m_start);
@@ -156,7 +156,7 @@ class ndarray {
   /**
    * Returns the linear index given an N-d index
    * performing bounds checking on the index ranges.
-   * 
+   *
    * \code
    * std::vector<size_t> indices = {1,5,2};
    * arr.at(arr.index(indices)) = 10 // also bounds check the linear index
@@ -320,15 +320,15 @@ class ndarray {
    * N-d index.
    */
   bool is_full() const {
-    return m_start == 0 && 
-        num_elem() == m_elem->size() && 
+    return m_start == 0 &&
+        num_elem() == m_elem->size() &&
         last_index() == m_elem->size();
   }
 
   /**
-   * Returns true if the shape and stride of the array is laid out 
+   * Returns true if the shape and stride of the array is laid out
    * correctly such at all array indices are within elements().size().
-   * 
+   *
    * An ndarray can be invalid for instance, if the stride is too large,
    * or if the shape is larger than the total number of elements.
    */
@@ -338,7 +338,7 @@ class ndarray {
           last_index() + m_start <= m_elem->size();  // max index (as computed by stride( is in m_elem
   }
 
-  /** 
+  /**
    * Returns true if the stride is ordered canonically.
    * The strides must be non-increasing and non-zero.
   */
@@ -435,7 +435,7 @@ class ndarray {
 
   /**
    * Returns a compacted ndarray.
-   * 
+   *
    * A compacted NDArray has the same stride ordering as the original array,
    * but enforces that the array is full. This essentially means that the
    * elements array has the same order of elements, but skipped elements are
@@ -467,7 +467,7 @@ class ndarray {
     // compute the stride
     ret.m_stride[stride_ordering[0].second] = 1;
     for (size_t i = 1;i < m_stride.size(); ++i) {
-      ret.m_stride[stride_ordering[i].second] = 
+      ret.m_stride[stride_ordering[i].second] =
           ret.m_stride[stride_ordering[i - 1].second] * ret.m_shape[stride_ordering[i - 1].second];
     }
 
@@ -532,7 +532,7 @@ class ndarray {
     return *this;
   }
 
-  /// scalar addition. 
+  /// scalar addition.
   ndarray<T>& operator+=(T other) {
     if (num_elem() == 0) return *this;
     ensure_unique();
@@ -555,7 +555,7 @@ class ndarray {
     return *this;
   }
 
-  /// scalar subtraction. 
+  /// scalar subtraction.
   ndarray<T>& operator-=(T other) {
     if (num_elem() == 0) return *this;
     ensure_unique();
@@ -578,7 +578,7 @@ class ndarray {
     return *this;
   }
 
-  /// scalar multiplication 
+  /// scalar multiplication
   ndarray<T>& operator*=(T other) {
     if (num_elem() == 0) return *this;
     ensure_unique();
@@ -626,7 +626,7 @@ class ndarray {
     return *this;
   }
 
-  /// scalar modulo. 
+  /// scalar modulo.
   ndarray<T>& operator%=(T other) {
     if (num_elem() == 0) return *this;
     ensure_unique();
@@ -689,7 +689,7 @@ class ndarray {
     }while(1);
     for (size_t i = 0;i < idx.size(); ++i) os << "]";
   }
-  
+
  private:
   /**
    * Returns one past the last valid linear index of the array according to the
