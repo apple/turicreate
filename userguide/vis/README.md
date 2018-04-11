@@ -150,7 +150,8 @@ shown in the example below:
 ```
 import turicreate as tc
 # build the plot
-x = tc.SArray([1,2,3,4,5]); y = x * 2
+x = tc.SArray([1,2,3,4,5])
+y = x * 2
 custom_plot = tc.visualization.scatter(x,y)
 # save the plot
 custom_plot.save("custom.json")
