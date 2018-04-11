@@ -62,6 +62,7 @@ class StickyTable extends PureComponent {
     this.onResize();
       
     var header_elements = document.getElementsByClassName("header_element");
+    
     for(var v = 0; v < header_elements.length; v++){
         header_elements[v].style.height = this.getModeHeights() + "px";
     }
@@ -167,18 +168,18 @@ class StickyTable extends PureComponent {
   }
 
   handleScroll = () => {
-
     if (this.props.onScroll) {
       this.props.onScroll(this.scrollData);
     }
-    var scroll_up = this.getScrollBottom();
-    var scroll_down = this.getScrollTop();
+    
+    var scroll_down = this.getScrollBottom();
+    var scroll_up = this.getScrollTop();
       
-    if(scroll_up == 1){
+    if(scroll_down == 1){
       this.updateScrollDown();
     }
 
-    if(scroll_down == 0){
+    if(scroll_up == 0){
       this.updateScrollUp();
     }
   }
@@ -188,9 +189,19 @@ class StickyTable extends PureComponent {
       return "Max value reached";
     }else if(this.props.scroll_state){
       var element = document.getElementsByClassName("header_element");
-        
       if(element.length > 0){
-        this.scrollVal = element[element.length - 1].innerText - 8;
+          
+        var element_to_jump = element[element.length - 1].innerText;
+        
+        for(var v = 0; v < element.length; v++){
+            var bounding_rectangle = element[v].getBoundingClientRect();
+            if(bounding_rectangle.top > 0){
+                element_to_jump = element[v].innerText;
+                break;
+            }
+        };
+        
+        this.scrollVal = element_to_jump;
         this.props.scroll_callback(this.scrollVal, this.props.parent_context, 1);
       }
     }

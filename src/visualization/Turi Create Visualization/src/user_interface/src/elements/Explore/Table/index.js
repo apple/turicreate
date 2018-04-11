@@ -240,27 +240,22 @@ class TcTable extends Component {
             return "err: out of bounds";
         }
 
-        if(parseInt(value, 10)%$this.step_size  != 0){
-          lower_bound = Math.floor(parseInt(value, 10)/$this.step_size);
-          upper_bound = Math.ceil(parseInt(value, 10)/$this.step_size);
-        }else{
-          lower_bound = Math.floor(parseInt(value, 10)/$this.step_size);
-          upper_bound = lower_bound + 1;
-        }
+        lower_bound = Math.floor(parseInt(value, 10)/$this.step_size);
+        upper_bound = lower_bound + 1;
+        
+        console.log(lower_bound)
+        console.log(upper_bound)
         
         if(bound_increment ==  0){
             $this.set_lower = (lower_bound-1 >= 0)?(lower_bound-1):0;
-            $this.set_higher = upper_bound;
-            
-            lower_value = ($this.set_lower-1 >= 0)?(($this.set_lower-1)*$this.step_size):0;
-            upper_value = ($this.set_higher*$this.step_size > $this.size)?$this.size:($this.set_higher*$this.step_size);
+            $this.set_higher = (lower_bound-1 >= 0)?upper_bound:2;
         }else{
             $this.set_lower += bound_increment;
             $this.set_higher += bound_increment;
-            
-            lower_value = ($this.set_lower-1 >= 0)?(($this.set_lower)*$this.step_size):0;
-            upper_value = ($this.set_higher*$this.step_size > $this.size)?$this.size:($this.set_higher*$this.step_size);
         }
+        
+        lower_value = ($this.set_lower-1 >= 0)?(($this.set_lower)*$this.step_size):0;
+        upper_value = ($this.set_higher*$this.step_size > $this.size)?$this.size:($this.set_higher*$this.step_size);
         
         $this.getRows(lower_value, upper_value);
         $this.scrollVal = parseInt(value, 10);
@@ -582,10 +577,11 @@ class TcTable extends Component {
       }
     }
 
-
-    this.set_higher = ((Math.max(...row_ids)+1)/this.step_size);
-    this.set_lower = (Math.min(...row_ids)/this.step_size);
       
+    var n = Math.floor(Math.min(...row_ids)/this.step_size);
+      
+    this.set_higher = n + 2;
+    this.set_lower = n;
       
     var parent_context = this;
 
