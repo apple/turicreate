@@ -13,6 +13,7 @@ import ctypes
 import glob as _glob
 import subprocess as _subprocess
 from ._scripts import _pylambda_worker
+from copy import copy
 from .util import sys_info as _sys_info
 
 if sys.version_info.major == 2:

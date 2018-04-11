@@ -10,6 +10,7 @@ import os
 import time
 import logging
 import platform
+import sys as _sys
 
 class TuriConfig:
 

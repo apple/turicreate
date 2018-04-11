@@ -11,6 +11,7 @@ Defines a basic interface for a model object.
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
+import json
 
 import turicreate as _tc
 import turicreate.connect.main as glconnect

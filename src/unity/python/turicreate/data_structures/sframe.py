@@ -35,6 +35,9 @@ import datetime
 import time
 import itertools
 import logging as _logging
+import subprocess
+import uuid
+import platform
 import numbers
 import sys
 import six
@@ -3596,7 +3599,7 @@ class SFrame(object):
                     tmpname = '__' + '-'.join(self.column_names())
                 try:
                     self.add_column(sa_value, tmpname, inplace=True)
-                except Exception:
+                except Exception as e:
                     if (single_column):
                         self.add_column(saved_column, key, inplace=True)
                     raise

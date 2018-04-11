@@ -26,7 +26,7 @@ def _get_client_app_path():
 def _get_title(title):
     if title == "":
         title = " "
-    if title is None:
+    if title == None:
         title = ""
 
     return title

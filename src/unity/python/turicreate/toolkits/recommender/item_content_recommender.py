@@ -170,6 +170,7 @@ def create(item_data, item_id,
     # Translate any string columns to actually work in nearest
     # neighbors by making it a categorical list.  Also translate lists
     # into dicts, and normalize numeric columns.
+    normalization_columns = []
     gaussian_kernel_metrics = set()
 
     for c in item_columns:

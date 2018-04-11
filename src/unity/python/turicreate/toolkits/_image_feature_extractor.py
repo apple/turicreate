@@ -146,6 +146,7 @@ class MXFeatureExtractor(ImageFeatureExtractor):
         fe_mxmodel = self.ptModel.mxmodel
 
         if self.ptModel.is_feature_layer_final:
+            feature_layer = self.ptModel.feature_layer
             feature_layer_size = self.ptModel.feature_layer_size
             num_dummy_classes = 10
             feature_layer_sym = sym.get_children()[0]

@@ -8,6 +8,8 @@
 
 import os
 import sys
+import glob
+import subprocess
 from setuptools import setup, find_packages, Extension
 from setuptools.dist import Distribution
 from setuptools.command.install import install
@@ -49,6 +51,7 @@ class InstallEngine(install):
         from distutils.util import get_platform
         from pkg_resources import parse_version
         cur_platform = get_platform()
+        py_shobj_ext = 'so'
 
         if cur_platform.startswith("macosx"):
 
@@ -62,6 +65,7 @@ class InstallEngine(install):
         elif cur_platform.startswith('linux'):
             pass
         elif cur_platform.startswith('win'):
+            py_shobj_ext = 'pyd'
             win_ver = platform.version()
             # Verify this is Vista or above
             if parse_version(win_ver) < parse_version('6.0'):
@@ -78,6 +82,11 @@ class InstallEngine(install):
             sys.stderr.write(msg)
             sys.exit(1)
 
+        from distutils import sysconfig
+        import stat
+        import glob
+
+        root_path = os.path.join(self.install_lib, PACKAGE_NAME)
 
 if __name__ == '__main__':
     from distutils.util import get_platform

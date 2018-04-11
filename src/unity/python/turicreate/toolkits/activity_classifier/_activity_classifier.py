@@ -12,6 +12,7 @@ from __future__ import division as _
 
 import numpy as _np
 import time as _time
+import sys as _sys
 import six as _six
 
 from turicreate import SArray as _SArray, SFrame as _SFrame
@@ -275,6 +276,11 @@ class ActivityClassifier(_CustomModel):
         _tkutl._model_version_check(version, cls._PYTHON_ACTIVITY_CLASSIFIER_VERSION)
 
         data_seq_len = state['prediction_window'] * state['_predictions_in_chunk']
+        data = {'data': (state['_recalibrated_batch_size'], data_seq_len, len(state['features']))}
+        labels = [
+            ('target', (state['_recalibrated_batch_size'], state['_predictions_in_chunk'], 1)),
+            ('weights', (state['_recalibrated_batch_size'], state['_predictions_in_chunk'], 1))
+        ]
 
         from ._model_architecture import _define_model
         context = _mxnet_utils.get_mxnet_context(max_devices=state['num_sessions'])
@@ -287,6 +293,7 @@ class ActivityClassifier(_CustomModel):
         win = state['prediction_window'] * preds_in_chunk
         num_features = len(state['features'])
         data_shapes = [('data', (batch_size, win, num_features))]
+        target_shape= (batch_size, preds_in_chunk, 1)
 
         _pred_model.bind(data_shapes=data_shapes, label_shapes=None,
                          for_training=False)
