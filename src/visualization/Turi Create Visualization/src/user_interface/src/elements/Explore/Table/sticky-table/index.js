@@ -168,7 +168,7 @@ class StickyTable extends PureComponent {
     }
     var scroll_up = this.getScrollBottom();
     var scroll_down = this.getScrollTop();
-
+      
     if(scroll_up == 1){
       this.updateScrollDown();
     }
@@ -177,19 +177,12 @@ class StickyTable extends PureComponent {
       this.updateScrollUp();
     }
   }
-
+    
   updateScrollDown = () => {
     if(this.props.set_higher*this.props.step_size >= this.props.size){
       return "Max value reached";
     }else if(this.scroll){
-      this.props.set_lower += 1;
-      this.props.set_higher+= 1;
-
-      var lower_value = (this.props.set_lower >= 0)?(this.props.set_lower*this.props.step_size):0;
-      var upper_value = (this.props.set_higher*this.props.step_size > this.props.size)?this.props.size:(this.props.set_higher*this.props.step_size);
-
-      var element = document.getElementsByClassName("header_element");
-
+        
       if(element.length > 0){
         this.scrollVal = element[element.length - 1].innerText - 8;
       }
@@ -202,13 +195,6 @@ class StickyTable extends PureComponent {
     if(this.props.set_lower*this.props.step_size <= 0){
       return "Min value reached";
     }else if(this.scroll){
-      this.props.set_lower -= 1;
-      this.props.set_higher -= 1;
-
-      var lower_value = (this.props.set_lower >= 0)?(this.props.set_lower*this.props.step_size):0;
-      var upper_value = (this.props.set_higher*this.props.step_size > this.props.size)?this.props.size:(this.props.set_higher*this.props.step_size);
-
-      var element = document.getElementsByClassName("header_element");
 
       if(element.length > 0){
         this.scrollVal = element[0].innerText;
@@ -228,13 +214,15 @@ class StickyTable extends PureComponent {
 
   getRows = (start_index, end_index) => {
     this.scroll = false;
+      /*
     if(window.navigator.platform == 'MacIntel'){
       window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'getRows', start: start_index, end: end_index});
     }else{
       window.postMessageToNativeClient('{"method":"get_rows", "start":' + start_index + ', "end": ' + end_index + '}');
     }
+       */
   }
-
+    
   onResize = () => {
     this.setScrollBarDims();
     this.setScrollBarWrapperDims();

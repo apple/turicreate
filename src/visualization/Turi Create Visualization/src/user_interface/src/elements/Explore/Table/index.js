@@ -222,7 +222,7 @@ class TcTable extends Component {
     var lower_bound;
     var upper_bound;
 
-    if(value > this.size || value < 0){
+    if(value >= this.size || value < 0){
         return "err: out of bounds";
     }
 
@@ -239,7 +239,7 @@ class TcTable extends Component {
 
     lower_value = (lower_bound-1 >= 0)?((lower_bound-1)*this.step_size):0;
     upper_value = (upper_bound*this.step_size > this.size)?this.size:(upper_bound*this.step_size);
-
+      
     this.getRows(lower_value, upper_value);
 
     this.scrollVal = value;
