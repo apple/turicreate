@@ -2907,7 +2907,7 @@ class SArray(object):
         >>> sa.show(title="My Plot Title", xlabel="My X Axis", ylabel="My Y Axis")
         """
 
-        returned_plot = self.__plot(title, xlabel, ylabel)
+        returned_plot = self.plot(title, xlabel, ylabel)
 
         returned_plot.show()
 
