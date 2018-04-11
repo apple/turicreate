@@ -60,6 +60,11 @@ class StickyTable extends PureComponent {
   componentDidUpdate() {
     this.scrollToValue();
     this.onResize();
+      
+    var header_elements = document.getElementsByClassName("header_element");
+    for(var v = 0; v < header_elements.length; v++){
+        header_elements[v].style.height = this.getModeHeights() + "px";
+    }
   }
 
   componentWillUnmount() {
@@ -86,8 +91,8 @@ class StickyTable extends PureComponent {
             break;
         }
     }
-
-    this.scroll = true;
+      
+    this.props.reset_scroll(this.props.parent_context);
   }
 
   addScrollBarEventHandlers() {
@@ -181,26 +186,26 @@ class StickyTable extends PureComponent {
   updateScrollDown = () => {
     if(this.props.set_higher*this.props.step_size >= this.props.size){
       return "Max value reached";
-    }else if(this.scroll){
+    }else if(this.props.scroll_state){
+      var element = document.getElementsByClassName("header_element");
         
       if(element.length > 0){
         this.scrollVal = element[element.length - 1].innerText - 8;
+        this.props.scroll_callback(this.scrollVal, this.props.parent_context, 1);
       }
-
-      this.getRows(lower_value, upper_value);
     }
   }
 
   updateScrollUp = () => {
     if(this.props.set_lower*this.props.step_size <= 0){
       return "Min value reached";
-    }else if(this.scroll){
+    }else if(this.props.scroll_state){
+      var element = document.getElementsByClassName("header_element");
 
       if(element.length > 0){
-        this.scrollVal = element[0].innerText;
+        this.scrollVal = parseInt(element[0].innerText, 10);
+        this.props.scroll_callback(this.scrollVal, this.props.parent_context, -1);
       }
-
-      this.getRows(lower_value, upper_value);
     }
   }
 
@@ -214,13 +219,6 @@ class StickyTable extends PureComponent {
 
   getRows = (start_index, end_index) => {
     this.scroll = false;
-      /*
-    if(window.navigator.platform == 'MacIntel'){
-      window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'getRows', start: start_index, end: end_index});
-    }else{
-      window.postMessageToNativeClient('{"method":"get_rows", "start":' + start_index + ', "end": ' + end_index + '}');
-    }
-       */
   }
     
   onResize = () => {
@@ -280,7 +278,8 @@ class StickyTable extends PureComponent {
       return +mode;
     }
 
-    var heights = []
+    var heights = [];
+      
     if (this.props.stickyColumnCount) {
       for (var r = 0; r < this.rowCount; r++) {
         heights.push(this.getSize(this.realTable.childNodes[r].childNodes[0]).height)
@@ -297,7 +296,7 @@ class StickyTable extends PureComponent {
     var column_offset_top = 0;
       
     if (this.props.stickyColumnCount) {
-      for (r = 1; r < this.rowCount-1; r++) {
+      for (r = 1; r < this.rowCount; r++) {
         cellToCopy = this.realTable.childNodes[r].firstChild;
         if (cellToCopy) {
           this.realTable.childNodes[r].childNodes[1].style.height = this.getModeHeights() + "px";
