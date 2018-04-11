@@ -38,6 +38,14 @@ There are three primary visualization methods in Turi Create:
   and
   [SArray.explore](https://apple.github.io/turicreate/docs/api/generated/turicreate.SArray.explore.html).
 
+Turi Create also enables users to create independent plots including 
+scatter plots ([visualization.scatter](https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.scatter.html)), 
+heatmaps ([visualization.heatmap](https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.heatmap.html)), 
+categorical heatmaps ([visualization.categorical_heatmap](https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.categorical_heatmap.html)), 
+histograms ([visualization.histogram](https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.histogram.html)), 
+columnwise summaries ([visualization.columnwise_summary](https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.columnwise_summary.html)), and 
+item frequency plots ([visualization.item_frequency](https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.item_frequency.html)).
+
 #### Show
 
 The `show` method displays a plot of the requested data structure or pair of
