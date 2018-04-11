@@ -5,6 +5,22 @@
 namespace turi {
 namespace visualization {
 
+
+std::string escape_float(flex_float value) {
+  if (std::isnan(value)) {
+    return "\"nan\"";
+  }
+
+  if (std::isinf(value)) {
+    if (value > 0) {
+      return "\"inf\"";
+    } else {
+      return "\"-inf\"";
+    }
+  }
+  return std::to_string(value);
+}
+
 std::string escapeForTable( const flexible_type& value,
                             boost::local_time::time_zone_ptr empty_tz,
                             std::queue<visualization::vega_data::Image>* image_queue,
@@ -102,6 +118,47 @@ std::string escapeForTable( const flexible_type& value,
           ss << "]";
           break;
         }
+      case flex_type_enum::DICT:
+        {
+          ss << "{";
+          flex_dict dict = value.get<flex_dict>();
+          size_t i = 0;
+          for (const auto& pair : dict) {
+            const auto& dict_key = pair.first.get<flex_string>();
+            const auto& dict_value = pair.second;
+            ss << turi::visualization::extra_label_escape(dict_key);
+            ss << " : ";
+            ss << turi::visualization::escapeForTable(dict_value, empty_tz);
+            if (i + 1 < dict.size()) ss << ", ";
+            i++;
+          }
+          ss << "}";
+        }
+        break;
+      case flex_type_enum::ND_VECTOR:
+        {
+          flex_nd_vec val = value.get<flex_nd_vec>();
+          std::vector<size_t> idx(val.shape().size(), 0);
+          if (val.num_elem() == 0) ss << "[]";
+
+          for (size_t i = 0;i < idx.size(); ++i) ss << "[";
+
+          size_t next_bracket_depth;
+          bool is_first_element = true;
+          do {
+            if (is_first_element == false) ss << ",";
+            ss << escape_float(val[val.fast_index(idx)]);
+            is_first_element = false;
+            next_bracket_depth = val.increment_index(idx);
+            if (next_bracket_depth == 0) break;
+            for (size_t i = next_bracket_depth ;i < idx.size(); ++i) ss << "]";
+            if (next_bracket_depth < idx.size()) ss << ",";
+            for (size_t i = next_bracket_depth;i < idx.size(); ++i) ss << "[";
+            if (next_bracket_depth < idx.size()) is_first_element = true;
+          }while(1);
+          for (size_t i = 0;i < idx.size(); ++i) ss << "]";
+        }
+        break;
       case flex_type_enum::IMAGE:
         {
           if(image_queue != NULL){
