@@ -249,16 +249,16 @@ class TcTable extends Component {
         var upper_value = 0;
         var lower_bound;
         var upper_bound;
-
-        if(parseInt(value, 10) >= $this.size){
-          value = $this.size - 1;
-        }
         
-        if(parseInt(value, 10) < 0){
+        value = parseInt(value, 10);
+        
+        if(value >= $this.size){
+          value = $this.size - 1;
+        }else if(value < 0){
           value = 0;
         }
         
-        lower_bound = Math.floor(parseInt(value, 10)/$this.step_size);
+        lower_bound = Math.floor(value/$this.step_size);
         upper_bound = lower_bound + 1;
         
         if(bound_increment ==  0){
@@ -273,7 +273,7 @@ class TcTable extends Component {
         upper_value = ($this.set_higher*$this.step_size > $this.size)?$this.size:($this.set_higher*$this.step_size);
         
         $this.getRows(lower_value, upper_value);
-        $this.scrollVal = parseInt(value, 10);
+        $this.scrollVal = value;
     }
     $this.table_scroll = false;
     $this.drawTable()
