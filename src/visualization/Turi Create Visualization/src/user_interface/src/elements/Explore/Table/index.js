@@ -120,6 +120,7 @@ class TcTable extends Component {
     this.step_size = (this.props.step_size)?this.props.step_size:50;
     this.test_this = "element";
     this.scrollVal = -1;
+    this.table_scroll = true
     this.state = {
       windowHeight: window.innerHeight,
       windowWidth: window.innerWidth,
@@ -207,10 +208,18 @@ class TcTable extends Component {
   componentWillMount(){
     window.removeEventListener('resize', this.handleResize.bind(this));
   }
+    
+  reset_scroll($this){
+    $this.table_scroll = true;
+  }
+    
+  callbackScroll(e, $this, bound_increment){
+    $this.jump_to_wrapper(e, $this, bound_increment);
+  }
 
   enterPressJumpRow(e) {
     if(e.keyCode == 13){
-      if(this.rowNum != null){
+      if(this.rowNum != null && this.table_scroll){
         var row_number = this.rowNum.value;
         this.rowNum.value = "";
         if(!isNaN(parseInt(row_number, 10))){
@@ -221,7 +230,7 @@ class TcTable extends Component {
   }
 
   rowHandler(e){
-    if(this.rowNum != null){
+    if(this.rowNum != null && this.table_scroll){
       var row_number = this.rowNum.value;
       this.rowNum.value = "";
       if(!isNaN(parseInt(row_number, 10))){
@@ -229,34 +238,41 @@ class TcTable extends Component {
       }
     }
   }
-
+    
   jump_to(value){
-    var lower_value = 0;
-    var upper_value = 0;
-    var lower_bound;
-    var upper_bound;
+      this.jump_to_wrapper(value, this, 0);
+  }
 
-    if(value > this.size || value < 0){
-        return "err: out of bounds";
+  jump_to_wrapper(value, $this, bound_increment){
+    if($this.table_scroll){
+        var lower_value = 0;
+        var upper_value = 0;
+        var lower_bound;
+        var upper_bound;
+
+        if(parseInt(value, 10) >= $this.size || parseInt(value, 10) < 0){
+            return "err: out of bounds";
+        }
+
+        lower_bound = Math.floor(parseInt(value, 10)/$this.step_size);
+        upper_bound = lower_bound + 1;
+        
+        if(bound_increment ==  0){
+            $this.set_lower = (lower_bound-1 >= 0)?(lower_bound-1):0;
+            $this.set_higher = (lower_bound-1 >= 0)?upper_bound:2;
+        }else{
+            $this.set_lower += bound_increment;
+            $this.set_higher += bound_increment;
+        }
+        
+        lower_value = ($this.set_lower-1 >= 0)?(($this.set_lower)*$this.step_size):0;
+        upper_value = ($this.set_higher*$this.step_size > $this.size)?$this.size:($this.set_higher*$this.step_size);
+        
+        $this.getRows(lower_value, upper_value);
+        $this.scrollVal = parseInt(value, 10);
     }
-
-    if(value%this.step_size  != 0){
-      lower_bound = Math.floor(value/this.step_size);
-      upper_bound = Math.ceil(value/this.step_size);
-    }else{
-      lower_bound = Math.floor(value/this.step_size);
-      upper_bound = lower_bound + 1;
-    }
-
-    this.set_lower = (lower_bound-1 >= 0)?(lower_bound-1):0;
-    this.set_higher = upper_bound;
-
-    lower_value = (lower_bound-1 >= 0)?((lower_bound-1)*this.step_size):0;
-    upper_value = (upper_bound*this.step_size > this.size)?this.size:(upper_bound*this.step_size);
-
-    this.getRows(lower_value, upper_value);
-
-    this.scrollVal = value;
+    $this.table_scroll = false;
+    $this.drawTable()
   }
 
   getRows(start_index, end_index) {
@@ -573,9 +589,13 @@ class TcTable extends Component {
       }
     }
 
-
-    this.set_higher = ((Math.max(...row_ids)+1)/this.step_size);
-    this.set_lower = (Math.min(...row_ids)/this.step_size);
+      
+    var n = Math.floor(Math.min(...row_ids)/this.step_size);
+      
+    this.set_higher = n + 2;
+    this.set_lower = n;
+      
+    var parent_context = this;
 
     if(this.title != ""){
       var tableTitle = (
@@ -588,7 +608,7 @@ class TcTable extends Component {
 
     var tableBody = (
                       <div className="resize_container" key="tableBody" style={{ "height": this.state.windowHeight-44, "width": this.state.windowWidth}}>
-                        <StickyTable scrollVal={this.scrollVal} size={this.size} step_size={this.step_size} set_lower={this.set_lower} set_higher={this.set_higher}  y={this.y} data={this.data_sent} column_name={this.column_name} style={{ "height": this.state.windowHeight-44, "width": this.state.windowWidth}}>
+                     <StickyTable parent_context={parent_context} scroll_state={this.table_scroll} scrollVal={this.scrollVal} size={this.size} step_size={this.step_size} set_lower={this.set_lower} set_higher={this.set_higher}  y={this.y} data={this.data_sent} column_name={this.column_name} scroll_callback={this.callbackScroll} reset_scroll={this.reset_scroll} style={{ "height": this.state.windowHeight-44, "width": this.state.windowWidth}}>
                           {rows}
                         </StickyTable>
                       </div>
