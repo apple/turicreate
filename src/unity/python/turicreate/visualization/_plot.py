@@ -205,9 +205,9 @@ class Plot(object):
                             # happened.
                             raise RuntimeError(stderr)
                 else:
-                    raise RuntimeError("Canvas-Prebuilt not found. " +
-                        "Saving as PNG and SVG requires Canvas-Prebuilt, " +
-                        "please download and install Canvas-Prebuilt by " +
+                    raise RuntimeError("canvas-prebuilt not found. " +
+                        "Saving as PNG and SVG requires canvas-prebuilt, " +
+                        "please download and install canvas-prebuilt by " +
                         "running this command, and try again: " +
                         "`npm install -g canvas-prebuilt`")
             elif exitcode == _SUCCESS:

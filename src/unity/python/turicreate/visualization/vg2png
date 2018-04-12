@@ -48,5 +48,5 @@ function render(spec) {
     .initialize()
     .toCanvas()
     .then(function(canvas) { writePNG(canvas, outputFile); })
-    .catch(function(err) { process.exit(_CANVAS_PREBUILT_NON_EXISTENT); });
+    .catch(function(err) { console.error(err); process.exit(_CANVAS_PREBUILT_NON_EXISTENT); });
 }
