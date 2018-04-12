@@ -30,7 +30,7 @@ make_library(unity_core
     ../extensions/additional_sframe_utilities.cpp
     unity_sarray_builder.cpp
     unity_sframe_builder.cpp
-    ${VISUALIZATION_SOURCES}
+    visualization/columnwise_summary.cpp
   REQUIRES
     flexible_type
     pylambda 

@@ -1,11 +1,16 @@
 project(unity)
 
+# HACK HACK HACK
+# columnwise_summary.cpp should be in this file, not the parent directory,
+# but including it here for some reason causes linker errors
+# in release/test (C++ unit tests) - but not debug! And only on Linux.
+# Not sure why.
+
 make_library(
   visualization
   SOURCES
     boxes_and_whiskers.cpp
     categorical_heatmap.cpp
-    columnwise_summary.cpp
     escape.cpp
     groupby.cpp
     heatmap.cpp
