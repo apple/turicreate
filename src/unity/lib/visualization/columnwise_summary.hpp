@@ -14,10 +14,10 @@
 #include <unity/lib/visualization/summary_view.hpp>
 #include <unity/lib/visualization/vega_data.hpp>
 #include <unity/lib/visualization/vega_spec.hpp>
-#include <unity/lib/unity_sframe.hpp>
-#include <unity/lib/gl_sframe.hpp>
 
 namespace turi {
+  class unity_sframe_base;
+
   namespace visualization {
     std::shared_ptr<Plot> plot_columnwise_summary(
       const std::string& path_to_client, std::shared_ptr<unity_sframe_base> sf);
