@@ -1,4 +1,5 @@
 #include "columnwise_summary.hpp"
+#include <unity/lib/unity_sframe.hpp>
 
 namespace turi {
   namespace visualization {
