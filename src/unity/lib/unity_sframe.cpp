@@ -37,6 +37,7 @@
 #include <exceptions/error_types.hpp>
 #include <unity/lib/visualization/process_wrapper.hpp>
 #include <unity/lib/visualization/histogram.hpp>
+#include <unity/lib/visualization/escape.hpp>
 #include <unity/lib/visualization/columnwise_summary.hpp>
 #include <unity/lib/visualization/item_frequency.hpp>
 #include <unity/lib/visualization/transformation.hpp>
@@ -1627,15 +1628,6 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
     using namespace gregorian;
     using posix_time::time_duration;
 
-    typedef boost::archive::iterators::base64_from_binary<
-      // retrieve 6 bit integers from a sequence of 8 bit bytes
-      boost::archive::iterators::transform_width<
-        const unsigned char *,
-        6,
-        8
-      >
-    > to_base64;
-
     time_zone_names empty_timezone("", "", "", "");
     time_duration empty_utc_offset(0,0,0);
     dst_adjustment_offsets empty_adj_offsets(time_duration(0,0,0),
@@ -1701,164 +1693,10 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
           for (size_t j=0; j<row.size(); j++) {
             const auto& columnName = column_names[j];
             const auto& value = row[j];
+
             ss << visualization::extra_label_escape(columnName) << ": ";
+            ss << escapeForTable(value, empty_tz, &image_queue, count, columnName);
 
-            std::string default_string;
-
-            switch (value.get_type()) {
-              case flex_type_enum::UNDEFINED:
-                ss << "null";
-                break;
-              case flex_type_enum::FLOAT:
-                {
-                  // deal with inf/nan cases
-                  flex_float f = value.get<flex_float>();
-                  if (std::isnan(f)) {
-                    ss << "\"nan\"";
-                    break;
-                  }
-                  if (std::isinf(f)) {
-                    if (f > 0) {
-                      ss << "\"inf\"";
-                    } else {
-                      ss << "\"-inf\"";
-                    }
-                    break;
-                  }
-                } // fall through to int, if we didn't hit a break above
-              case flex_type_enum::INTEGER:
-                ss << value;
-                break;
-              case flex_type_enum::IMAGE:
-                {
-                  const size_t resized_height = 40;
-
-                  flex_image img_temporary = value.get<flex_image>();
-                  double image_ratio = ((img_temporary.m_width*1.0)/(img_temporary.m_height*1.0));
-                  double calculated_width = (image_ratio * resized_height);
-                  size_t resized_width = static_cast<int>(calculated_width);
-                  flex_image img = turi::image_util::resize_image(img_temporary,
-                          resized_width, resized_height, img_temporary.m_channels, img_temporary.is_decoded());
-                  img = turi::image_util::encode_image(img);
-
-                  const unsigned char * image_data = img.get_image_data();
-
-                  visualization::vega_data::Image image_temp;
-
-                  image_temp.idx = count;
-                  image_temp.column = visualization::extra_label_escape(columnName);
-                  image_temp.img = img_temporary;
-
-                  image_queue.push(image_temp);
-
-                  size_t image_data_size = img.m_image_data_size;
-                  ss << "{\"width\": " << img.m_width << ", ";
-                  ss << "\"height\": " << img.m_height << ", ";
-                  ss << "\"idx\": " << count << ", ";
-                  ss << "\"column\": " << visualization::extra_label_escape(columnName) << ", ";
-                  ss << "\"data\": \"";
-
-                  std::copy(
-                    to_base64(image_data),
-                    to_base64(image_data + image_data_size),
-                    std::ostream_iterator<char>(ss)
-                  );
-
-                  ss << "\", \"format\": \"";
-                  switch (img.m_format) {
-                    case Format::JPG:
-                      ss << "jpeg";
-                      break;
-                    case Format::PNG:
-                      ss << "png";
-                      break;
-                    case Format::RAW_ARRAY:
-                      ss << "raw";
-                      break;
-                    case Format::UNDEFINED:
-                      // TODO - not sure what to do here.
-                      // For now, treat it as raw, but this will probably
-                      // display garbage for the user.
-                      ss << "raw";
-                      break;
-                  }
-                  ss << "\"}";
-                }
-                break;
-              case flex_type_enum::DATETIME:
-                {
-
-                  ss << "\"";
-                  const auto& dt = value.get<flex_date_time>();
-
-                  if (dt.time_zone_offset() != flex_date_time::EMPTY_TIMEZONE) {
-                    std::string prefix = "0.";
-                    int sign_adjuster = 1;
-                    if(dt.time_zone_offset() < 0) {
-                      sign_adjuster = -1;
-                      prefix = "-0.";
-                    }
-                    // prepend a GMT0. or GMT-0. to the string for the timezone information
-                    // TODO: This can be optimized by precomputing this for all zones outsize
-                    // of the function.
-                    boost::local_time::time_zone_ptr zone(
-                        new boost::local_time::posix_time_zone(
-                            "GMT" + prefix +
-                            std::to_string(sign_adjuster *
-                                           dt.time_zone_offset() *
-                                           flex_date_time::TIMEZONE_RESOLUTION_IN_MINUTES)));
-                    boost::local_time::local_date_time az(
-                        flexible_type_impl::ptime_from_time_t(dt.posix_timestamp(),
-                                                              dt.microsecond()), zone);
-                    ss << az;
-                  } else {
-                    boost::local_time::local_date_time az(
-                        flexible_type_impl::ptime_from_time_t(dt.posix_timestamp(),
-                                                              dt.microsecond()),
-                        empty_tz);
-                    ss << az;
-                  }
-                  ss << "\"";
-                }
-                break;
-              case flex_type_enum::VECTOR:
-                {
-                  std::stringstream strm;
-                  const flex_vec& vec = value.get<flex_vec>();
-
-                  strm << "[";
-                  for (size_t i = 0; i < vec.size(); ++i) {
-                    strm << vec[i];
-                    if (i + 1 < vec.size()) strm << ", ";
-                  }
-                  strm << "]";
-                  default_string = strm.str();
-                  if(default_string.length() > resize_table_view){
-                    default_string.resize(resize_table_view);
-                  }
-                  ss << turi::visualization::extra_label_escape(default_string);
-                }
-                break;
-              case flex_type_enum::LIST:
-                ss << value.to<std::string>();
-                break;
-              case flex_type_enum::ND_VECTOR:
-                {
-                  std::string nd_vector_value = value.to<std::string>();
-                  if(nd_vector_value.length() > resize_table_view){
-                    nd_vector_value.resize(resize_table_view);
-                  }
-                  ss << turi::visualization::extra_label_escape(nd_vector_value);
-                  break;
-                }
-              default:
-                default_string = value.to<std::string>();
-                if(default_string.length() > resize_table_view){
-                  default_string.resize(resize_table_view);
-                }
-                ss << turi::visualization::extra_label_escape(default_string);
-                break;
-            }
             if (j != row.size() - 1) {
               ss << ",";
             }
@@ -2014,14 +1852,14 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
             break;
           case flex_type_enum::LIST:
           case flex_type_enum::DICT:
-          case flex_type_enum::STRING:
           case flex_type_enum::ND_VECTOR:
+          case flex_type_enum::STRING:
           default:
             {
               std::stringstream ss;
               ss << "{\"accordion_spec\": {\"index\": " << index << ", \"column\":" << turi::visualization::extra_label_escape(column_name);
               ss << ", \"type\": " << value.get_type();
-              ss << ", \"data\": " << turi::visualization::extra_label_escape(value.to<std::string>());
+              ss << ", \"data\": " << escapeForTable(value, empty_tz);
               ss << "}}" << std::endl;
               ew << ss.str();
               break;

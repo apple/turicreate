@@ -3,6 +3,10 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#ifndef __TC_VIS_HEATMAP
+#define __TC_VIS_HEATMAP
+
 #include <unity/lib/gl_sframe.hpp>
 
 #include "extrema.hpp"
@@ -65,3 +69,5 @@ namespace visualization {
                     const std::string& title);
 
 }}
+
+#endif

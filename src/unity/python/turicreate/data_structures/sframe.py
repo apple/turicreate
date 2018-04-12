@@ -4449,11 +4449,36 @@ class SFrame(object):
         >>> sf.show()
         """
 
-        returned_plot = self.__plot()
+        returned_plot = self.plot()
 
         returned_plot.show()
 
     def plot(self):
+        """
+        Create a Plot object that contains a summary of each column 
+        in an SFrame. 
+
+        Notes
+        -----
+        - The plot will render either inline in a Jupyter Notebook, or in a
+          native GUI window, depending on the value provided in
+          `turicreate.visualization.set_target` (defaults to 'auto').
+
+        Returns
+        -------
+        out : Plot
+        A :class: Plot object that is the columnwise summary of the sframe.
+
+        Examples
+        --------
+        Suppose 'sf' is an SFrame, we can make a plot object as:
+
+        >>> plt = sf.plot()
+
+        We can then visualize the plot using:
+
+        >>> plt.show()
+        """
         path_to_client = _get_client_app_path()
 
         return Plot(self.__proxy__.plot(path_to_client))

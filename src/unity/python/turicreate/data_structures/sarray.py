@@ -2907,12 +2907,53 @@ class SArray(object):
         >>> sa.show(title="My Plot Title", xlabel="My X Axis", ylabel="My Y Axis")
         """
 
-        returned_plot = self.__plot(title, xlabel, ylabel)
+        returned_plot = self.plot(title, xlabel, ylabel)
 
         returned_plot.show()
 
     def plot(self, title=None, xlabel=None, ylabel=None):
+        """
+        Create a Plot object representing the SArray.
 
+        Notes
+        -----
+        - The plot will render either inline in a Jupyter Notebook, or in a
+          native GUI window, depending on the value provided in
+          `turicreate.visualization.set_target` (defaults to 'auto').
+
+        Parameters
+        ----------
+        title : str
+            The plot title to show for the resulting visualization. Defaults to None.
+            If the title is None, a default title will be provided.
+
+        xlabel : str
+            The X axis label to show for the resulting visualization. Defaults to None.
+            If the xlabel is None, a default X axis label will be provided.
+
+        ylabel : str
+            The Y axis label to show for the resulting visualization. Defaults to None.
+            If the ylabel is None, a default Y axis label will be provided.
+
+        Returns
+        -------
+        out : Plot
+        A :class: Plot object that is the visualization of the SArray.
+
+        Examples
+        --------
+        Suppose 'sa' is an SArray, we can create a plot of it using:
+
+        >>> plt = sa.plot()
+
+        To override the default plot title and axis labels:
+
+        >>> plt = sa.plot(title="My Plot Title", xlabel="My X Axis", ylabel="My Y Axis")
+
+        We can then visualize the plot using:
+
+        >>> plt.show()
+        """
         path_to_client = _get_client_app_path()
 
         if title == "":
