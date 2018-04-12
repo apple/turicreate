@@ -9,6 +9,7 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 from ..data_structures.sarray import SArray
+from .. import load_sarray
 from ..util.timezone import GMT
 from . import util
 
@@ -176,6 +177,14 @@ class SArrayTest(unittest.TestCase):
         self.__test_equal(SArray([1,2,None]).is_in([1]), [1,0,0], int)
 
     def test_save_load(self):
+
+        # Check top level load function
+        with util.TempDirectory() as f:
+            sa = SArray(self.float_data)
+            sa.save(f)
+            sa2 = load_sarray(f)
+            self.__test_equal(sa2, self.float_data)
+
         # Make sure these files don't exist before testing
         self._remove_sarray_files("intarr")
         self._remove_sarray_files("fltarr")
