@@ -199,7 +199,7 @@ class Plot(object):
     def _repr_javascript_(self):
         from IPython.core.display import display, HTML
 
-        vega_spec = self._get_vega(True)["vega_spec"]
+        vega_spec = self._get_vega(True)
 
         vega_html = '<html lang="en"> \
                         <head> \
