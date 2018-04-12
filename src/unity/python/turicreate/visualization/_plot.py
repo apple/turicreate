@@ -188,22 +188,22 @@ class Plot(object):
                         "npm link canvas-prebuilt")
                     if link_exitcode == _PERMISSION_DENIED_ERROR_CODE:
                         # They don't have permission, tell them.
-                        raise RuntimeError("`npm link canvas-prebuilt`" + 
-                            " failed, Permission Denied. Contact your system" +
-                            " administrator for access.")
-                    else:
+                        raise RuntimeError(link_stderr + '\n\n' +
+                            "`npm link canvas-prebuilt` failed, " +
+                            "Permission Denied.")
+                    elif link_exitcode == _SUCCESS:
                         # canvas-prebuilt link is now successful, so run the 
                         # node vg2[png|svg] json_filepath out_filepath
                         # command again.
                         (exitcode, stdout, stderr) = _run_cmdline("node " +
                             absolute_path_to_vg2png_vg2svg + " "
                             + temp_file_path + " " + filepath)
-                        if exitcode == _SUCCESS:
-                            pass
-                        else:
+                        if exitcode != _SUCCESS:
                             # something else that we have not identified yet
                             # happened.
                             raise RuntimeError(stderr)
+                    else:
+                        raise RuntimeError(link_stderr)
                 else:
                     raise RuntimeError("canvas-prebuilt not found. " +
                         "Saving as PNG and SVG requires canvas-prebuilt, " +
