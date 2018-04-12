@@ -166,10 +166,6 @@ class Plot(object):
                 absolute_path_to_vg2png_vg2svg + " "
                 + temp_file_path + " " + filepath)
 
-            print(exitcode)
-            print(stdout)
-            print(stderr)
-
             if exitcode == _NODE_NOT_FOUND_ERROR_CODE:
                 # user doesn't have node installed
                 raise RuntimeError("Node.js not found. Saving as PNG and SVG" +
