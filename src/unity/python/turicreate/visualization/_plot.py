@@ -4,12 +4,13 @@ from __future__ import absolute_import as _
 import json as _json
 import os as _os
 from tempfile import mkstemp as _mkstemp
-from subprocess import Popen as _Popen 
+from subprocess import Popen as _Popen
 from subprocess import PIPE as _PIPE
 
 _target = 'auto'
 
 _NODE_NOT_FOUND_ERROR_CODE = 127
+_CANVAS_PREBUILT_NON_EXISTENT = 1
 
 def _run_cmdline(command):
     # runs a shell command
@@ -121,7 +122,7 @@ class Plot(object):
             The destination filepath where the plot object must be saved as.
             The extension of this filepath determines what format the plot will
             be saved as. Currently supported formats are JSON, PNG, and SVG.
-        
+
         Examples
         --------
         Suppose 'plt' is an Plot Object
@@ -159,16 +160,28 @@ class Plot(object):
                 _json.dump(spec, fp)
             dirname = _os.path.dirname(__file__)
             relative_path_to_vg2png_vg2svg = "../vg2" + extension
-            absolute_path_to_vg2png_vg2svg = _os.path.join(dirname, 
+            absolute_path_to_vg2png_vg2svg = _os.path.join(dirname,
                 relative_path_to_vg2png_vg2svg)
-            (exitcode, stdout, stderr) = _run_cmdline("node " + 
-                absolute_path_to_vg2png_vg2svg + " " 
+            (exitcode, stdout, stderr) = _run_cmdline("node " +
+                absolute_path_to_vg2png_vg2svg + " "
                 + temp_file_path + " " + filepath)
+
+            print(exitcode)
+            print(stdout)
+            print(stderr)
+
             if exitcode == _NODE_NOT_FOUND_ERROR_CODE:
                 # user doesn't have node installed
                 raise RuntimeError("Node.js not found. Saving as PNG and SVG" +
                     " requires Node.js, please download and install Node.js " +
                     "from here and try again: https://nodejs.org/en/download/")
+
+            if exitcode == _CANVAS_PREBUILT_NON_EXISTENT:
+                raise RuntimeError("Canvas-Prebuilt not found. Saving as PNG and SVG" +
+                    " requires Canvas-Prebuilt, please download and install Canvas" +
+                    "-Prebuilt by running this command, and try again: " +
+                    "`npm install -g canvas-prebuilt`")
+
             elif exitcode == 0:
                 # success
                 pass
@@ -176,7 +189,7 @@ class Plot(object):
                 # something else
                 raise RuntimeError(stderr)
             # delete temp file that user didn't ask for
-            _run_cmdline("rm " + temp_file_path) 
+            _run_cmdline("rm " + temp_file_path)
         else:
             raise NotImplementedError("filename must end in" +
                 " .json, .svg, or .png")

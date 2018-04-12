@@ -18,6 +18,7 @@ var path = require('path'),
 
 // set baseURL if provided on command line
 var base = null;
+var _CANVAS_PREBUILT_NON_EXISTENT = 1;
 
 // input / output files
 var myArgs = process.argv.slice(2),
@@ -47,5 +48,5 @@ function render(spec) {
     .initialize()
     .toCanvas()
     .then(function(canvas) { writePNG(canvas, outputFile); })
-    .catch(function(err) { console.error(err); });
+    .catch(function(err) { process.exit(_CANVAS_PREBUILT_NON_EXISTENT); });
 }
