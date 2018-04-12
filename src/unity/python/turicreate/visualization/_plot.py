@@ -173,9 +173,9 @@ class Plot(object):
                     "from here and try again: https://nodejs.org/en/download/")
 
             if exitcode == _CANVAS_PREBUILT_NON_EXISTENT:
-                raise RuntimeError("Canvas-Prebuilt not found. Saving as PNG and SVG" +
-                    " requires Canvas-Prebuilt, please download and install Canvas" +
-                    "-Prebuilt by running this command, and try again: " +
+                raise RuntimeError("canvas-prebuilt not found. Saving as PNG and SVG" +
+                    " requires canvas-prebuilt, please download and install canvas" +
+                    "-prebuilt by running this command, and try again: " +
                     "`npm install -g canvas-prebuilt`")
 
             elif exitcode == 0:
