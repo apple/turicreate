@@ -1,7 +1,7 @@
 #define BOOST_TEST_MODULE capi_datetime
 
 #include <boost/test/unit_test.hpp>
-#include <capi/TuriCore.h>
+#include <capi/TuriCreate.h>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <flexible_type/flexible_type.hpp>
 #include <util/test_macros.hpp>

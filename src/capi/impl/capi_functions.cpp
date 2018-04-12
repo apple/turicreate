@@ -1,6 +1,7 @@
-#include <capi/TuriCore.h>
+#include <capi/TuriCreate.h>
 
 #include <capi/impl/capi_error_handling.hpp>
+#include <capi/impl/capi_initialization_internal.hpp>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <platform/export.hpp>
 #include <unity/lib/unity_global.hpp>
@@ -11,6 +12,7 @@ EXPORT tc_variant* tc_function_call(
     tc_error** error) {
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   turi::variant_map_type params = arguments->value;
   turi::toolkit_function_response_type response =

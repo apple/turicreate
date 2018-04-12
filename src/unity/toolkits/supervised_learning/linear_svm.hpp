@@ -12,6 +12,7 @@
 
 // Toolkits
 #include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <unity/toolkits/coreml_export/ml_model_wrapper.hpp>
 
 // Optimization Interface
 #include <optimization/optimization_interface.hpp>
@@ -90,7 +91,7 @@ class EXPORT linear_svm: public supervised_learning_model_base {
    *
    * \param[in] opts Options to set
    */
-  void init_options(const std::map<std::string,flexible_type>& _opts);
+  void init_options(const std::map<std::string,flexible_type>& _opts) override;
 
 
   /**
@@ -168,7 +169,7 @@ class EXPORT linear_svm: public supervised_learning_model_base {
     _coefs = coefs;
   }
   
-  void export_to_coreml(const std::string& filename);
+  std::shared_ptr<MLModelWrapper> export_to_coreml() override;
 
   SUPERVISED_LEARNING_METHODS_REGISTRATION(
       "classifier_svm", linear_svm); 

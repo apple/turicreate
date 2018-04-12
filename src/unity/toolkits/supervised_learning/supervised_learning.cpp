@@ -18,6 +18,7 @@
 #include <toolkits/supervised_learning/xgboost.hpp>
 #include <toolkits/supervised_learning/supervised_learning.hpp>
 #include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <toolkits/supervised_learning/classifier_evaluations.hpp>
 
 // ML Data
 #include <ml_data/ml_data_iterator.hpp>
@@ -448,7 +449,7 @@ supervised_learning_model_base::predict(const ml_data& test_data,
   }
 
   // Multi-class error
-  if (name().find("classifier") != std::string::npos) {
+  if (is_classifier()) {
     size_t num_classes = variant_get_value<size_t>(state.at("num_classes"));
     if (((output_type == "margin") || (output_type == "probability"))
                                                   && num_classes > 2){
@@ -1107,6 +1108,30 @@ variant_map_type supervised_learning_model_base::api_evaluate(
   ml_data m_data = setup_ml_data_for_evaluation(
       X, y, model, missing_value_action);
 
+
+  if(metric == "report") {
+    if(is_classifier()) {
+      std::string target = variant_get_ref<flexible_type>(state.at("target"));
+      std::string pred_column = target + ".predicted";
+
+
+      gl_sframe out;
+
+      out[target] = data[target];
+      out[pred_column] = api_predict(data, missing_value_action_str, "class");
+
+      variant_map_type ret = evaluate(m_data, "auto");
+
+      ret["confusion_matrix"] = confusion_matrix(out, target, pred_column);
+      ret["report_by_class"] = classifier_report_by_class(out, target, pred_column);
+
+      return ret;
+
+    } else {
+      metric = "auto";
+    }
+  }
+
   variant_map_type results = evaluate(m_data, metric);
   return results;
 }
@@ -1127,6 +1152,41 @@ gl_sarray supervised_learning_model_base::api_extract_features(
   sframe X = setup_test_data_sframe(test_data, model, missing_value_action);
 
   return extract_features(X, missing_value_action);
+}
+
+std::shared_ptr<MLModelWrapper>
+supervised_learning_model_base::api_export_to_coreml(
+    const std::string& filename) {
+  std::shared_ptr<MLModelWrapper> model = export_to_coreml();
+
+  if (filename != "") {
+    model->save(filename);
+  }
+
+  return model;
+}
+
+/**
+ * Get the missing value enum from the string.
+ *
+ * [in] Missing value action as seen by the user.
+ * \returns Missing value action enum
+ */
+ml_missing_value_action
+supervised_learning_model_base::get_missing_value_enum_from_string(
+    const std::string& missing_value_str) const {
+  if (missing_value_str == "auto" || missing_value_str.empty()) {
+    return support_missing_value() ? ml_missing_value_action::USE_NAN
+                                   : ml_missing_value_action::IMPUTE;
+  } else if (missing_value_str == "error") {
+    return ml_missing_value_action::ERROR;
+  } else if (missing_value_str == "impute") {
+    return ml_missing_value_action::IMPUTE;
+  } else if (missing_value_str == "none") {
+    return ml_missing_value_action::USE_NAN;
+  } else {
+    log_and_throw("Missing value type '" + missing_value_str + "' not supported.");
+  }
 }
 
 /**

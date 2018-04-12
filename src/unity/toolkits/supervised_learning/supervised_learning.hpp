@@ -23,6 +23,7 @@
 #include <unity/lib/variant.hpp>
 #include <unity/lib/unity_base_types.hpp>
 #include <unity/lib/variant_deep_serialize.hpp>
+#include <unity/toolkits/coreml_export/ml_model_wrapper.hpp>
 
 #include <numerics/armadillo.hpp>
 
@@ -708,16 +709,17 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
 
   /** Export to CoreML. 
    */
-  virtual void export_to_coreml(const std::string& filename) {} 
+  virtual std::shared_ptr<MLModelWrapper> export_to_coreml() = 0;
+
+  std::shared_ptr<MLModelWrapper> api_export_to_coreml(const std::string& file);
 
 #define SUPERVISED_LEARNING_METHODS_REGISTRATION(name, class_name)             \
                                                                                \
   BEGIN_CLASS_MEMBER_REGISTRATION(name)                                        \
                                                                                \
   REGISTER_CLASS_MEMBER_FUNCTION(class_name::list_fields)                      \
-  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_value",                            \
-                                       class_name::get_value_from_state,       \
-                                       "field");                               \
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(                                        \
+      "get_value", class_name::get_value_from_state, "field");                 \
                                                                                \
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("train", class_name::api_train, "data", \
                                        "target", "validation_data",            \
@@ -731,72 +733,77 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
                                        "data", "missing_value_action",         \
                                        "output_type");                         \
                                                                                \
-  register_defaults("predict",                                                 \
-                    {{"missing_value_action", std::string("error")},           \
+  register_defaults("predict", {{"missing_value_action", std::string("auto")}, \
                      {"output_type", std::string("")}});                       \
                                                                                \
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("fast_predict",                         \
-                                       class_name::fast_predict,               \
-                                       "rows", "missing_value_action",         \
-                                       "output_type");                         \
+                                       class_name::fast_predict, "rows",       \
+                                       "missing_value_action", "output_type"); \
                                                                                \
   register_defaults("fast_predict",                                            \
-                    {{"missing_value_action", std::string("error")},           \
+                    {{"missing_value_action", std::string("auto")},            \
                      {"output_type", std::string("")}});                       \
                                                                                \
-  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("predict_topk",                         \
-                                       class_name::api_predict_topk,           \
-                                       "data", "missing_value_action",         \
-                                       "output_type", "topk");                 \
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(                                        \
+      "predict_topk", class_name::api_predict_topk, "data",                    \
+      "missing_value_action", "output_type", "topk");                          \
                                                                                \
   register_defaults("predict_topk",                                            \
                     {{"missing_value_action", std::string("error")},           \
                      {"output_type", std::string("")}});                       \
                                                                                \
-  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("fast_predict_topk",                    \
-				       class_name::fast_predict_topk,          \
-                                       "rows", "missing_value_action",         \
-                                       "output_type", "topk");                 \
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(                                        \
+      "fast_predict_topk", class_name::fast_predict_topk, "rows",              \
+      "missing_value_action", "output_type", "topk");                          \
                                                                                \
   register_defaults("fast_predict_topk",                                       \
-                    {{"missing_value_action", std::string("error")},           \
+                    {{"missing_value_action", std::string("auto")},            \
                      {"output_type", std::string("")}});                       \
                                                                                \
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("classify", class_name::api_classify,   \
                                        "data", "missing_value_action");        \
                                                                                \
   register_defaults("classify",                                                \
-                    {{"missing_value_action", std::string("error")}});         \
+                    {{"missing_value_action", std::string("auto")}});          \
                                                                                \
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("fast_classify",                        \
-                                       class_name::fast_classify,              \
-                                       "rows", "missing_value_action");        \
+                                       class_name::fast_classify, "rows",      \
+                                       "missing_value_action");                \
                                                                                \
   register_defaults("fast_classify",                                           \
-                    {{"missing_value_action", std::string("error")}});         \
+                    {{"missing_value_action", std::string("auto")}});          \
                                                                                \
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("evaluate", class_name::api_evaluate,   \
                                        "data", "missing_value_action",         \
                                        "metric");                              \
                                                                                \
   register_defaults("evaluate",                                                \
-                    {{"missing_value_action", std::string("error")}});         \
+                    {{"metric", std::string("_report")},                        \
+                     {"missing_value_action", std::string("auto")}});          \
                                                                                \
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("extract_features",                     \
                                        class_name::api_extract_features,       \
                                        "data", "missing_value_action");        \
                                                                                \
   register_defaults("extract_features",                                        \
-                    {{"missing_value_action", std::string("error")}});         \
+                    {{"missing_value_action", std::string("auto")}});          \
                                                                                \
   REGISTER_CLASS_MEMBER_FUNCTION(class_name::is_trained);                      \
   REGISTER_CLASS_MEMBER_FUNCTION(class_name::get_train_stats);                 \
   REGISTER_CLASS_MEMBER_FUNCTION(class_name::get_feature_names);               \
   REGISTER_CLASS_MEMBER_FUNCTION(class_name::get_option_value);                \
                                                                                \
-  REGISTER_CLASS_MEMBER_FUNCTION(class_name::export_to_coreml, "filename");    \
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(                                        \
+      "export_to_coreml", class_name::api_export_to_coreml, "filename");       \
+                                                                               \
+  register_defaults("export_to_coreml", {{"filename", std::string("")}});      \
                                                                                \
   END_CLASS_MEMBER_REGISTRATION
+
+
+  protected:
+   ml_missing_value_action get_missing_value_enum_from_string(
+       const std::string& missing_value_str) const;
 };
 
 /**

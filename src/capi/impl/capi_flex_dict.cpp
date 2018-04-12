@@ -1,6 +1,7 @@
-#include <capi/TuriCore.h>
+#include <capi/TuriCreate.h>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
+#include <capi/impl/capi_initialization_internal.hpp>
 #include <export.hpp>
 #include <flexible_type/flexible_type.hpp>
 
@@ -8,14 +9,9 @@ extern "C" {
 
 EXPORT tc_flex_dict* tc_flex_dict_create(tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
   return new_tc_flex_dict();
   ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT void tc_flex_dict_destroy(tc_flex_dict* fd) {
-  if (fd) {
-    delete fd;
-  }
 }
 
 // Returns the size of the dictionary
@@ -30,6 +26,7 @@ EXPORT uint64_t tc_flex_dict_add_element(tc_flex_dict* ft,
                                          const tc_flexible_type* second,
                                          tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, ft, "flex dict", uint64_t(-1)); 
   CHECK_NOT_NULL(error, first, "key flexible_type", uint64_t(-1)); 
@@ -49,6 +46,7 @@ EXPORT void tc_flex_dict_extract_entry(const tc_flex_dict* ft,
                                        tc_flexible_type* value_dest,
                                        tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, ft, "flex dict"); 
   CHECK_NOT_NULL(error, key_dest, "key dest flexible_type"); 

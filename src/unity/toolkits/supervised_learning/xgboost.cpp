@@ -493,6 +493,7 @@ std::shared_ptr< sarray<flexible_type> > transform_prediction(const std::vector<
                      *sa);
           break;
         }
+      case prediction_type_enum::NA:
       case prediction_type_enum::CLASS:
         {
           sa->set_type(ml_mdata->target_column_type());
@@ -540,6 +541,7 @@ std::shared_ptr< sarray<flexible_type> > transform_prediction(const std::vector<
           turi::copy(max_probability.begin(), max_probability.end(), *sa);
           break;
         }
+      case prediction_type_enum::NA:
       case prediction_type_enum::CLASS_INDEX:
       case prediction_type_enum::CLASS:
         {
@@ -1800,8 +1802,8 @@ static double hexadecimal_to_float(std::string hex) {
 }
 
 
-void xgboost_model::_export_xgboost_model(const std::string& filename,
-      bool is_classifier, bool is_random_forest,
+std::shared_ptr<MLModelWrapper> xgboost_model::_export_xgboost_model(bool is_classifier,
+      bool is_random_forest,
       const std::map<std::string, flexible_type>& context) {
 
   flex_list tree_fl = this->get_trees().get<flex_list>();
@@ -1993,10 +1995,9 @@ void xgboost_model::_export_xgboost_model(const std::string& filename,
   // Add ml_metadata
   add_metadata(pipeline.m_spec, context);
 
-  CoreML::Result r = pipeline.save(filename);
-  if(!r.good()) {
-    log_and_throw("Could not export model: " + r.message());
-  }
+  auto model_wrapper = std::make_shared<MLModelWrapper>(std::make_shared<CoreML::Pipeline>(pipeline));
+
+  return model_wrapper;
 }
 
 }  // namespace xgboost

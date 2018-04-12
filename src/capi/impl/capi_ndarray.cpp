@@ -1,5 +1,6 @@
-#include <capi/TuriCore.h>
+#include <capi/TuriCreate.h>
 #include <capi/impl/capi_error_handling.hpp>
+#include <capi/impl/capi_initialization_internal.hpp>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <export.hpp>
 #include <flexible_type/flexible_type.hpp>
@@ -8,6 +9,7 @@ extern "C" {
 
 EXPORT tc_ndarray* tc_ndarray_create_empty(tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   return new_tc_ndarray();
 
@@ -18,6 +20,7 @@ EXPORT tc_ndarray* tc_ndarray_create_from_data(uint64_t n_dim, const uint64_t* s
                                         const int64_t* strides,
                                         const double* in_data, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   if(shape == nullptr) {
     return new_tc_ndarray();
@@ -82,6 +85,7 @@ EXPORT tc_ndarray* tc_ndarray_create_from_data(uint64_t n_dim, const uint64_t* s
 EXPORT uint64_t tc_ndarray_num_dimensions(const tc_ndarray* ndv, tc_error** error) {
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, ndv, "tc_ndarray", NULL);
 
@@ -93,6 +97,7 @@ EXPORT uint64_t tc_ndarray_num_dimensions(const tc_ndarray* ndv, tc_error** erro
 EXPORT const uint64_t* tc_ndarray_shape(const tc_ndarray* ndv, tc_error** error) {
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, ndv, "tc_ndarray", NULL);
 
@@ -106,6 +111,7 @@ EXPORT const uint64_t* tc_ndarray_shape(const tc_ndarray* ndv, tc_error** error)
 EXPORT const int64_t* tc_ndarray_strides(const tc_ndarray* ndv, tc_error** error) {
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, ndv, "tc_ndarray", NULL);
 
@@ -117,6 +123,7 @@ EXPORT const int64_t* tc_ndarray_strides(const tc_ndarray* ndv, tc_error** error
 EXPORT const double* tc_ndarray_data(const tc_ndarray* ndv, tc_error** error) {
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, ndv, "tc_ndarray", NULL);
 
@@ -127,10 +134,6 @@ EXPORT const double* tc_ndarray_data(const tc_ndarray* ndv, tc_error** error) {
   }
 
   ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT void tc_ndarray_destroy(tc_ndarray* ndv) {
-  delete ndv;
 }
 
 } // End Extern "C"

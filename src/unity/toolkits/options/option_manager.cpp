@@ -120,12 +120,12 @@ void option_manager::create_option(const option_handling::option_info& opt, bool
 
     DASSERT_LT(it->second, options_reference.size());
     
-    if(!allow_override) {
-      log_and_throw(std::string("INTERNAL ERROR: Option ") + opt.name + " defined twice.");
-    } else {
+    if(allow_override) {
       size_t idx = it->second;
       options_reference[idx] = opt;
       _current_option_values[opt.name] = opt.default_value; 
+    } else {
+      logstream(LOG_DEBUG) << "Option " << opt.name << " defined a second time.";
     }
   } else { 
     options_reference.push_back(opt);

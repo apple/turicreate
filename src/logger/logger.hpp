@@ -331,6 +331,15 @@
     throw_error();                                                  \
   } while(0)                                                 
 
+#define std_log_and_throw(key_type, message)          \
+  do {                                                \
+    auto throw_error = [&]() GL_COLD_NOINLINE_ERROR { \
+      logstream(LOG_ERROR) << (message) << std::endl; \
+      throw(key_type(message));                       \
+    };                                                \
+    throw_error();                                    \
+  } while (0)
+
 #ifdef COMPILER_HAS_IOS_BASE_FAILURE_WITH_ERROR_CODE
 #define log_and_throw_io_failure(message)                             \
   do {                                                                \

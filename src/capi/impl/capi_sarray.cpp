@@ -1,6 +1,7 @@
-#include <capi/TuriCore.h>
+#include <capi/TuriCreate.h>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
+#include <capi/impl/capi_initialization_internal.hpp>
 #include <flexible_type/flexible_type.hpp>
 #include <export.hpp>
 #include <sstream>
@@ -10,6 +11,7 @@ extern "C" {
 EXPORT tc_sarray* tc_sarray_create_empty(tc_error** error) {
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   return new_tc_sarray();
 
@@ -20,6 +22,7 @@ EXPORT tc_sarray* tc_sarray_create_from_sequence(
     uint64_t start, uint64_t end, tc_error** error) {
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   uint64_t _start = std::min(start, end);
   uint64_t _end = std::max(start, end);
@@ -34,6 +37,7 @@ EXPORT tc_sarray* tc_sarray_create_from_const(
     const tc_flexible_type* ft, uint64_t n, tc_error** error) {
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, ft, "flexible_type", NULL);
 
@@ -46,6 +50,7 @@ EXPORT tc_sarray* tc_sarray_create_copy(
     const tc_sarray* sa, tc_error** error) {
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa, "sarray", NULL);
 
@@ -58,6 +63,7 @@ EXPORT tc_sarray* tc_sarray_create_from_list(
     const tc_flex_list* fl, tc_error** error) {
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   if(fl == NULL) {
     set_error(error, "flex_list instance null.");
@@ -73,6 +79,7 @@ EXPORT tc_sarray* tc_sarray_create_from_list(
 EXPORT tc_sarray* tc_sarray_load(const char* url, tc_error** error) { 
   
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   return new_tc_sarray(turi::gl_sarray(url));
 
@@ -83,6 +90,7 @@ EXPORT tc_sarray* tc_sarray_load(const char* url, tc_error** error) {
 EXPORT void tc_sarray_save(const tc_sarray* sa, const char* url, tc_error** error) {
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
   
   CHECK_NOT_NULL(error, sa, "sarray");
 
@@ -94,6 +102,7 @@ EXPORT void tc_sarray_save(const tc_sarray* sa, const char* url, tc_error** erro
 EXPORT void tc_sarray_save_as_text(const tc_sarray* sa, const char* url, tc_error** error) {
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
   
   CHECK_NOT_NULL(error, sa, "sarray");
 
@@ -107,6 +116,7 @@ EXPORT tc_flexible_type* tc_sarray_extract_element(
     const tc_sarray* sa, uint64_t index, tc_error** error) {
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa, "sarray", NULL);
 
@@ -143,6 +153,7 @@ EXPORT tc_sarray* tc_op_sarray_plus_sarray(
     const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error) {
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
   CHECK_NOT_NULL(error, sa2, "SArray 2", NULL);
@@ -156,6 +167,7 @@ EXPORT tc_sarray* tc_op_sarray_minus_sarray(
     const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
   CHECK_NOT_NULL(error, sa2, "SArray 2", NULL);
@@ -169,6 +181,7 @@ EXPORT tc_sarray* tc_op_sarray_div_sarray(
     const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
   CHECK_NOT_NULL(error, sa2, "SArray 2", NULL);
@@ -182,6 +195,7 @@ EXPORT tc_sarray* tc_op_sarray_mult_sarray(
     const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
   CHECK_NOT_NULL(error, sa2, "SArray 2", NULL);
@@ -195,6 +209,7 @@ EXPORT tc_sarray* tc_op_sarray_plus_ft(
     const tc_sarray* sa1, const tc_flexible_type* ft2, tc_error** error){
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa1, "sarray", NULL);
 
@@ -209,6 +224,7 @@ EXPORT tc_sarray* tc_op_sarray_minus_ft(
     const tc_sarray* sa1, const tc_flexible_type* ft2, tc_error** error){
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa1, "sarray", NULL);
 
@@ -223,6 +239,7 @@ EXPORT tc_sarray* tc_op_sarray_div_ft(
     const tc_sarray* sa1, const tc_flexible_type* ft2, tc_error** error){
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa1, "sarray", NULL);
 
@@ -237,6 +254,7 @@ EXPORT tc_sarray* tc_op_sarray_mult_ft(
     const tc_sarray* sa1, const tc_flexible_type* ft2, tc_error** error){
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa1, "sarray", NULL);
 
@@ -252,6 +270,7 @@ EXPORT tc_sarray* tc_op_sarray_lt_sarray(
     const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
 
     ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
     CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
 
@@ -267,6 +286,7 @@ EXPORT tc_sarray* tc_op_sarray_gt_sarray(
     const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
 
     ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
     CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
 
@@ -281,6 +301,7 @@ EXPORT tc_sarray* tc_op_sarray_le_sarray(
     const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
 
     ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
     CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
 
@@ -295,6 +316,7 @@ EXPORT tc_sarray* tc_op_sarray_ge_sarray(
     const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
 
     ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
     CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
 
@@ -309,6 +331,7 @@ EXPORT tc_sarray* tc_op_sarray_eq_sarray(
     const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
 
     ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
     CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
 
@@ -322,6 +345,7 @@ EXPORT tc_sarray* tc_op_sarray_eq_sarray(
 EXPORT tc_sarray* tc_op_sarray_lt_ft(
     const tc_sarray* sa1, const tc_flexible_type* ft2, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa1, "sarray", NULL);
 
@@ -335,6 +359,7 @@ EXPORT tc_sarray* tc_op_sarray_lt_ft(
 EXPORT tc_sarray* tc_op_sarray_gt_ft(
     const tc_sarray* sa1, const tc_flexible_type* ft2, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa1, "sarray", NULL);
 
@@ -348,6 +373,7 @@ EXPORT tc_sarray* tc_op_sarray_gt_ft(
 EXPORT tc_sarray* tc_op_sarray_ge_ft(
     const tc_sarray* sa1, const tc_flexible_type* ft2, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa1, "sarray", NULL);
 
@@ -361,6 +387,7 @@ EXPORT tc_sarray* tc_op_sarray_ge_ft(
 EXPORT tc_sarray* tc_op_sarray_le_ft(
     const tc_sarray* sa1, const tc_flexible_type* ft2, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa1, "sarray", NULL);
 
@@ -374,6 +401,7 @@ EXPORT tc_sarray* tc_op_sarray_le_ft(
 EXPORT tc_sarray* tc_op_sarray_eq_ft(
     const tc_sarray* sa1, const tc_flexible_type* ft2, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa1, "sarray", NULL);
 
@@ -387,6 +415,7 @@ EXPORT tc_sarray* tc_op_sarray_eq_ft(
 EXPORT tc_sarray* tc_op_sarray_logical_and_sarray(
     const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
 
@@ -400,6 +429,7 @@ EXPORT tc_sarray* tc_op_sarray_logical_and_sarray(
 EXPORT tc_sarray* tc_op_sarray_bitwise_and_sarray(
     const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
 
@@ -413,6 +443,7 @@ EXPORT tc_sarray* tc_op_sarray_bitwise_and_sarray(
 EXPORT tc_sarray* tc_op_sarray_logical_or_sarray(
     const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
 
@@ -426,6 +457,7 @@ EXPORT tc_sarray* tc_op_sarray_logical_or_sarray(
 EXPORT tc_sarray* tc_op_sarray_bitwise_or_sarray(
     const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
 
@@ -439,6 +471,7 @@ EXPORT tc_sarray* tc_op_sarray_bitwise_or_sarray(
 EXPORT tc_sarray* tc_sarray_apply_mask(
     const tc_sarray* sa1, const tc_sarray* mask, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
 
@@ -451,6 +484,7 @@ EXPORT tc_sarray* tc_sarray_apply_mask(
 
 EXPORT int tc_sarray_all_nonzero(const tc_sarray* sa1, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa1, "sarray", NULL);
 
@@ -461,6 +495,7 @@ EXPORT int tc_sarray_all_nonzero(const tc_sarray* sa1, tc_error** error){
 
 EXPORT int tc_sarray_any_nonzero(const tc_sarray* sa1, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa1, "sarray", NULL);
 
@@ -472,6 +507,7 @@ EXPORT int tc_sarray_any_nonzero(const tc_sarray* sa1, tc_error** error){
 
 EXPORT void tc_sarray_materialize(tc_sarray* sa1, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa1, "sarray");
 
@@ -482,6 +518,7 @@ EXPORT void tc_sarray_materialize(tc_sarray* sa1, tc_error** error){
 
 EXPORT tc_sarray* tc_sarray_head(const tc_sarray* src, uint64_t n, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -492,6 +529,7 @@ EXPORT tc_sarray* tc_sarray_head(const tc_sarray* src, uint64_t n, tc_error** er
 
 EXPORT tc_sarray* tc_sarray_tail(const tc_sarray* src, uint64_t n, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -503,6 +541,7 @@ EXPORT tc_sarray* tc_sarray_tail(const tc_sarray* src, uint64_t n, tc_error** er
 EXPORT tc_sarray* tc_sarray_count_words(
     const tc_sarray* src, int to_lower, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -514,6 +553,7 @@ EXPORT tc_sarray* tc_sarray_count_words(
 EXPORT tc_sarray* tc_sarray_count_words_with_delimiters(
     const tc_sarray* src, int to_lower, tc_flex_list* delimiters, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -527,6 +567,7 @@ EXPORT tc_sarray* tc_sarray_count_words_with_delimiters(
 EXPORT tc_sarray* tc_sarray_count_word_ngrams(
     const tc_sarray* src, uint64_t n, bool to_lower, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -538,6 +579,7 @@ EXPORT tc_sarray* tc_sarray_count_word_ngrams(
 EXPORT tc_sarray* tc_sarray_count_character_ngrams(
     const tc_sarray* src, size_t n, bool to_lower, bool ignore_space, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -549,6 +591,7 @@ EXPORT tc_sarray* tc_sarray_count_character_ngrams(
 EXPORT tc_sarray* tc_sarray_dict_trim_by_keys(
     const tc_sarray* src, const tc_flex_list* keys, int exclude_keys, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -560,6 +603,7 @@ EXPORT tc_sarray* tc_sarray_dict_trim_by_keys(
 EXPORT tc_sarray* tc_sarray_dict_trim_by_value_range(
     const tc_sarray* src, const tc_flexible_type* lower, const tc_flexible_type* upper, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, lower, "flexible_type", NULL);
   CHECK_NOT_NULL(error, upper, "flexible_type", NULL);
@@ -573,6 +617,7 @@ EXPORT tc_sarray* tc_sarray_dict_trim_by_value_range(
 
 EXPORT tc_flexible_type* tc_sarray_max(const tc_sarray* src, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -583,6 +628,7 @@ EXPORT tc_flexible_type* tc_sarray_max(const tc_sarray* src, tc_error** error){
 
 EXPORT tc_flexible_type* tc_sarray_min(const tc_sarray* src, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -593,6 +639,7 @@ EXPORT tc_flexible_type* tc_sarray_min(const tc_sarray* src, tc_error** error){
 
 EXPORT tc_flexible_type* tc_sarray_mean(const tc_sarray* src, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -603,6 +650,7 @@ EXPORT tc_flexible_type* tc_sarray_mean(const tc_sarray* src, tc_error** error){
 
 EXPORT tc_flexible_type* tc_sarray_std(const tc_sarray* src, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -613,6 +661,7 @@ EXPORT tc_flexible_type* tc_sarray_std(const tc_sarray* src, tc_error** error){
 
 EXPORT uint64_t tc_sarray_nnz(const tc_sarray* src, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -623,6 +672,7 @@ EXPORT uint64_t tc_sarray_nnz(const tc_sarray* src, tc_error** error){
 
 EXPORT size_t tc_sarray_num_missing(const tc_sarray* src, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -633,6 +683,7 @@ EXPORT size_t tc_sarray_num_missing(const tc_sarray* src, tc_error** error){
 
 EXPORT tc_sarray* tc_sarray_dict_keys(const tc_sarray* src, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -643,6 +694,7 @@ EXPORT tc_sarray* tc_sarray_dict_keys(const tc_sarray* src, tc_error** error){
 
 EXPORT tc_sarray* tc_sarray_dict_has_any_keys(const tc_sarray* src, const tc_flex_list* keys, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -655,6 +707,7 @@ EXPORT tc_sarray* tc_sarray_dict_has_any_keys(const tc_sarray* src, const tc_fle
 
 EXPORT tc_sarray* tc_sarray_dict_has_all_keys(const tc_sarray* src, const tc_flex_list* keys, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -667,6 +720,7 @@ EXPORT tc_sarray* tc_sarray_dict_has_all_keys(const tc_sarray* src, const tc_fle
 
 EXPORT tc_sarray* tc_sarray_sample(const tc_sarray* src, double fraction, uint64_t seed, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -677,6 +731,7 @@ EXPORT tc_sarray* tc_sarray_sample(const tc_sarray* src, double fraction, uint64
 
 EXPORT tc_sarray* tc_sarray_datetime_to_str_with_format(const tc_sarray* src, const char* format, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -687,6 +742,7 @@ EXPORT tc_sarray* tc_sarray_datetime_to_str_with_format(const tc_sarray* src, co
 
 EXPORT tc_sarray* tc_sarray_datetime_to_str(const tc_sarray* src, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -697,6 +753,7 @@ EXPORT tc_sarray* tc_sarray_datetime_to_str(const tc_sarray* src, tc_error** err
 
 EXPORT tc_sarray* tc_sarray_str_to_datetime(const tc_sarray* src, const char* format, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -707,6 +764,7 @@ EXPORT tc_sarray* tc_sarray_str_to_datetime(const tc_sarray* src, const char* fo
 
 EXPORT tc_sarray* tc_sarray_clip(const tc_sarray* src, tc_flexible_type* lower, tc_flexible_type* upper, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, lower, "flexible_type", NULL);
   CHECK_NOT_NULL(error, upper, "flexible_type", NULL);
@@ -720,6 +778,7 @@ EXPORT tc_sarray* tc_sarray_clip(const tc_sarray* src, tc_flexible_type* lower, 
 
 EXPORT tc_sarray* tc_sarray_drop_nan(const tc_sarray* src, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -730,6 +789,7 @@ EXPORT tc_sarray* tc_sarray_drop_nan(const tc_sarray* src, tc_error** error){
 
 EXPORT tc_sarray* tc_sarray_replace_nan(const tc_sarray* src, tc_flexible_type* value, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, value, "flexible_type", NULL);
 
@@ -743,6 +803,7 @@ EXPORT tc_sarray* tc_sarray_replace_nan(const tc_sarray* src, tc_flexible_type* 
 
 EXPORT tc_sarray* tc_sarray_topk_index(const tc_sarray* src, size_t topk, int reverse, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -753,6 +814,7 @@ EXPORT tc_sarray* tc_sarray_topk_index(const tc_sarray* src, size_t topk, int re
 
 EXPORT tc_sarray* tc_sarray_append(const tc_sarray* src, const tc_sarray* other, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -765,6 +827,7 @@ EXPORT tc_sarray* tc_sarray_append(const tc_sarray* src, const tc_sarray* other,
 
 EXPORT tc_sarray* tc_sarray_unique(const tc_sarray* src, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -775,6 +838,7 @@ EXPORT tc_sarray* tc_sarray_unique(const tc_sarray* src, tc_error** error){
 
 EXPORT int tc_sarray_is_materialized(const tc_sarray* src, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -787,6 +851,7 @@ EXPORT int tc_sarray_is_materialized(const tc_sarray* src, tc_error** error){
 EXPORT tc_flexible_type* tc_sarray_sum(const tc_sarray* sa, tc_error** error) {
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa, "sarray", NULL);
 
@@ -799,6 +864,7 @@ EXPORT tc_flexible_type* tc_sarray_sum(const tc_sarray* sa, tc_error** error) {
 EXPORT int tc_sarray_equals(const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error) {
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa1, "sarray", NULL);
 
@@ -813,6 +879,7 @@ EXPORT int tc_sarray_equals(const tc_sarray* sa1, const tc_sarray* sa2, tc_error
 // Wrap the printing.  Returns a string flexible type.
 EXPORT tc_flexible_type* tc_sarray_text_summary(const tc_sarray* sa, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa, "sarray", NULL);
 
@@ -834,6 +901,7 @@ EXPORT tc_sarray* tc_sarray_apply(
     bool skip_undefined,
     tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa, "SArray passed in is null.", NULL);
   CHECK_NOT_NULL(error, callback, "Callback function passed in is null.", NULL);
@@ -857,8 +925,8 @@ EXPORT tc_sarray* tc_sarray_apply(
     // (hopefully) encloses the call that triggered this wrapper's invocation.
     if (error != nullptr) {
       std::string message = std::move(error->value);
-      tc_error_destroy(&error);
-      if (out != nullptr) tc_ft_destroy(out);
+      tc_release(&error);
+      if (out != nullptr) tc_release(out);
       throw message;
     }
     if (out == nullptr) {
@@ -868,7 +936,7 @@ EXPORT tc_sarray* tc_sarray_apply(
 
     // Return the value that the callback produced.
     turi::flexible_type ret = out->value;
-    tc_ft_destroy(out);
+    tc_release(out);
     return ret;
   };
 
@@ -876,10 +944,6 @@ EXPORT tc_sarray* tc_sarray_apply(
       std::move(wrapper), turi::flex_type_enum(type), skip_undefined));
 
   ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT void tc_sarray_destroy(tc_sarray* sa) {
-  delete sa;
 }
 
 }

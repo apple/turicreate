@@ -6,6 +6,7 @@
 #include <unity/toolkits/supervised_learning/linear_regression.hpp>
 #include <unity/toolkits/supervised_learning/linear_svm.hpp>
 #include <unity/toolkits/supervised_learning/logistic_regression.hpp>
+#include <unity/toolkits/supervised_learning/classifier_evaluations.hpp>
 #include <unity/toolkits/supervised_learning/automatic_model_creation.hpp>
 #include <unity/lib/toolkit_function_macros.hpp>
 
@@ -39,6 +40,9 @@ REGISTER_FUNCTION(_get_metadata_mapping, "model");
  *
  *
  */
+REGISTER_FUNCTION(classifier_report_by_class, "data", "target", "predicted");
+REGISTER_FUNCTION(confusion_matrix, "data", "target", "predicted");
+
 REGISTER_FUNCTION(create_automatic_classifier_model, "data", "target", "validation_data", "options");
 REGISTER_FUNCTION(create_automatic_regression_model, "data", "target", "validation_data", "options");
 END_FUNCTION_REGISTRATION

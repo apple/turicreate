@@ -171,7 +171,7 @@ struct variant_converter<T,
       std::string errormsg = 
           std::string("Expecting a flexible_type. Got a ") + 
           get_variant_which_name(val.which());
-      throw(errormsg);
+      std_log_and_throw(std::invalid_argument, errormsg);
     }
     return flexible_type_converter<T>().get(f);
   }
@@ -395,8 +395,10 @@ struct variant_converter<std::pair<S, T>,
   std::pair<S, T> get(const variant_type& val) {
     std::vector<variant_type> ret = 
         variant_converter<std::vector<variant_type>>().get(val);
-    ASSERT_MSG(ret.size() == 2,
+    if (ret.size() != 2) {
+      std_log_and_throw(std::invalid_argument,
                "Expecting an array of length 2");
+    }
     return {variant_converter<S>().get(ret[0]), 
             variant_converter<T>().get(ret[1])};
   }
@@ -490,8 +492,9 @@ struct variant_converter<std::tuple<Args...>,
     std::vector<variant_type> cv = 
         variant_converter<std::vector<variant_type>>().get(val);
     if (cv.size() != sizeof...(Args)) {
-      std::string error_msg = "Expecting an array of length " + std::to_string(sizeof...(Args));
-      ASSERT_MSG(cv.size() == sizeof...(Args), error_msg.c_str());
+      std::string error_msg =
+          "Expecting an array of length " + std::to_string(sizeof...(Args));
+      std_log_and_throw(std::invalid_argument, error_msg);
     }
 
     typename boost::mpl::range_c<int, 0, sizeof...(Args)>::type tuple_range;
@@ -537,7 +540,8 @@ struct variant_converter<std::function<S(Args...)>,
     };
   }
   variant_type set(const std::function<S(Args...)>& val) {
-    throw("Cannot convert function to variant");
+    std_log_and_throw(std::invalid_argument,
+                      "Cannot convert function to variant");
   }
 };
 

@@ -2,12 +2,13 @@
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
 #include <unity/lib/gl_sframe.hpp>
-#include <capi/TuriCore.h>
+#include <unity/lib/gl_sarray.hpp>
+#include <capi/TuriCreate.h>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <vector>
 #include <iostream>
 #include <ctime>
-#include <unity/extensions/random_sframe_generation.hpp>
+#include <unity/toolkits/util/random_sframe_generation.hpp>
 #include "capi_utils.hpp"
 
 BOOST_AUTO_TEST_CASE(test_sframe_allocation) {
@@ -15,9 +16,9 @@ BOOST_AUTO_TEST_CASE(test_sframe_allocation) {
 
     tc_sframe* sf = tc_sframe_create_empty(&error);
 
-    TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
-    tc_sframe_destroy(sf);
+  tc_release(sf);
   }
 
 BOOST_AUTO_TEST_CASE(test_sframe_save_load) {
@@ -34,7 +35,7 @@ for(const char* url : {"sf_tmp_1/"} ) {
 
     tc_sframe* sf_src = tc_sframe_create_empty(&error);
 
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     for(auto p : data) {
 
@@ -42,39 +43,39 @@ for(const char* url : {"sf_tmp_1/"} ) {
 
       tc_sframe_add_column(sf_src, p.first.c_str(), sa, &error);
 
-      TS_ASSERT(error == NULL);
+      CAPI_CHECK_ERROR(error);
 
-      tc_sarray_destroy(sa);
+      tc_release(sa);
     }
 
     tc_sframe_save(sf_src, url, &error); 
 
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
-    tc_sframe_destroy(sf_src); 
+    tc_release(sf_src);
 
     tc_sframe* sf = tc_sframe_load(url, &error); 
 
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     // Check everything
     for(auto p : data) {
       // Make sure it gets out what we want it to.
       tc_sarray* sa = tc_sframe_extract_column_by_name(sf, p.first.c_str(), &error);
 
-      TS_ASSERT(error == NULL);
+      CAPI_CHECK_ERROR(error);
 
       tc_sarray* ref_sa = make_sarray_double(p.second);
 
       int is_equal = tc_sarray_equals(sa, ref_sa, &error);
       TS_ASSERT(is_equal);
 
-      TS_ASSERT(error == NULL);
+      CAPI_CHECK_ERROR(error);
 
-      tc_sarray_destroy(sa);
+      tc_release(sa);
     }
 
-    tc_sframe_destroy(sf);
+    tc_release(sf);
   }
 }
 
@@ -91,7 +92,7 @@ std::vector<std::pair<std::string, std::vector<double> > > data
 
     tc_sframe* sf = tc_sframe_create_empty(&error);
 
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     for(auto p : data) {
 
@@ -99,9 +100,9 @@ std::vector<std::pair<std::string, std::vector<double> > > data
 
       tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
 
-      TS_ASSERT(error == NULL);
+      CAPI_CHECK_ERROR(error);
 
-      tc_sarray_destroy(sa);
+      tc_release(sa);
     }
 
     // Check everything
@@ -109,19 +110,19 @@ std::vector<std::pair<std::string, std::vector<double> > > data
       // Make sure it gets out what we want it to.
       tc_sarray* sa = tc_sframe_extract_column_by_name(sf, p.first.c_str(), &error);
 
-      TS_ASSERT(error == NULL);
+      CAPI_CHECK_ERROR(error);
 
       tc_sarray* ref_sa = make_sarray_double(p.second);
 
       int is_equal = tc_sarray_equals(sa, ref_sa, &error);
       TS_ASSERT(is_equal);
 
-      TS_ASSERT(error == NULL);
+      CAPI_CHECK_ERROR(error);
 
-      tc_sarray_destroy(sa);
+      tc_release(sa);
     }
 
-    tc_sframe_destroy(sf);
+    tc_release(sf);
   }
 
 BOOST_AUTO_TEST_CASE(test_sframe_append_test) {
@@ -141,10 +142,10 @@ BOOST_AUTO_TEST_CASE(test_sframe_append_test) {
         {"b",    {7.0, 2., 3., 1.5} } };
 
   tc_sframe* sf1 = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   tc_sframe* sf2 = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl_1;
   turi::gl_sframe sf_gl_2;
@@ -153,7 +154,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_append_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf1, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -165,14 +166,14 @@ BOOST_AUTO_TEST_CASE(test_sframe_append_test) {
 
     sf_gl_1.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   for(auto p : append_data) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf2, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -184,24 +185,24 @@ BOOST_AUTO_TEST_CASE(test_sframe_append_test) {
 
     sf_gl_2.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   turi::gl_sframe gl_combined_sframe = sf_gl_1.append(sf_gl_2);
   tc_sframe* tc_combined_sframe = tc_sframe_append(sf1, sf2, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   TS_ASSERT(gl_combined_sframe.column_names() == tc_combined_sframe->value.column_names());
   TS_ASSERT(gl_combined_sframe.column_types() == tc_combined_sframe->value.column_types());
 
-  tc_sframe_destroy(sf1);
-  tc_sframe_destroy(sf2);
+  tc_release(sf1);
+  tc_release(sf2);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_is_materialized_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl;
 
@@ -217,7 +218,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_is_materialized_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -229,25 +230,25 @@ BOOST_AUTO_TEST_CASE(test_sframe_is_materialized_test) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   tc_sframe* sampled_frame = tc_sframe_sample(sf, 0.8, 23, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sampled_gl_sframe = sf_gl.sample(0.8, 23);
 
   TS_ASSERT(tc_sframe_is_materialized(sf, &error) == sf_gl.is_materialized());
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   TS_ASSERT(tc_sframe_is_materialized(sampled_frame, &error) == sampled_gl_sframe.is_materialized());
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_materialize_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl;
 
@@ -263,7 +264,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_materialize_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -275,33 +276,33 @@ BOOST_AUTO_TEST_CASE(test_sframe_materialize_test) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   tc_sframe* sampled_frame = tc_sframe_sample(sf, 0.8, 23, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sampled_gl_sframe = sf_gl.sample(0.8, 23);
 
   TS_ASSERT(tc_sframe_is_materialized(sf, &error) == sf_gl.is_materialized());
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   TS_ASSERT(tc_sframe_is_materialized(sampled_frame, &error) == sampled_gl_sframe.is_materialized());
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   tc_sframe_materialize(sampled_frame, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   sampled_gl_sframe.materialize();
 
   TS_ASSERT(tc_sframe_is_materialized(sampled_frame, &error) == sampled_gl_sframe.is_materialized());
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_size_is_known_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl;
 
@@ -315,7 +316,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_size_is_known_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -327,22 +328,22 @@ BOOST_AUTO_TEST_CASE(test_sframe_size_is_known_test) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   bool tc_boolean = tc_sframe_size_is_known(sf, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   bool sf_gl_bool = sf_gl.has_size();
 
   TS_ASSERT(tc_boolean == sf_gl_bool);
-  tc_sframe_destroy(sf);
+  tc_release(sf);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_contains_column_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl;
 
@@ -356,7 +357,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_contains_column_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -368,27 +369,27 @@ BOOST_AUTO_TEST_CASE(test_sframe_contains_column_test) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   bool tc_boolean = sf_gl.contains_column("col1");
   bool sf_gl_bool = tc_sframe_contains_column(sf, "col1", &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   bool tc_boolean_2 = sf_gl.contains_column("bla");
   bool sf_gl_bool_2 = tc_sframe_contains_column(sf, "bla", &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   TS_ASSERT(tc_boolean == sf_gl_bool);
   TS_ASSERT(tc_boolean_2 == sf_gl_bool_2);
-  tc_sframe_destroy(sf);
+  tc_release(sf);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_sample_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl;
 
@@ -404,7 +405,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_sample_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -416,25 +417,25 @@ BOOST_AUTO_TEST_CASE(test_sframe_sample_test) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   tc_sframe* sampled_frame = tc_sframe_sample(sf, 0.8, 23, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sampled_gl_sframe = sf_gl.sample(0.8, 23);
 
   TS_ASSERT(sampled_gl_sframe.column_names() == sampled_frame->value.column_names());
   TS_ASSERT(sampled_gl_sframe.column_types() == sampled_frame->value.column_types());
 
-  tc_sframe_destroy(sf);
-  tc_sframe_destroy(sampled_frame);
+  tc_release(sf);
+  tc_release(sampled_frame);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_topk_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl;
 
@@ -450,7 +451,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_topk_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -462,25 +463,25 @@ BOOST_AUTO_TEST_CASE(test_sframe_topk_test) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   tc_sframe* sampled_frame = tc_sframe_topk(sf, "col1", 10, false, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sampled_gl_sframe = sf_gl.topk("col1", 10, false);
 
   TS_ASSERT(sampled_gl_sframe.column_names() == sampled_frame->value.column_names());
   TS_ASSERT(sampled_gl_sframe.column_types() == sampled_frame->value.column_types());
 
-  tc_sframe_destroy(sf);
-  tc_sframe_destroy(sampled_frame);
+  tc_release(sf);
+  tc_release(sampled_frame);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_replace_add_column_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl;
 
@@ -499,7 +500,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_replace_add_column_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -511,7 +512,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_replace_add_column_test) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   turi::flex_list replc_list;
@@ -525,22 +526,22 @@ BOOST_AUTO_TEST_CASE(test_sframe_replace_add_column_test) {
   tc_sarray* sa_given = make_sarray_double(replacing.second);
 
   tc_sframe_replace_add_column(sf, replacing.first.c_str(), sa_given, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   sf_gl.replace_add_column(repl, replacing.first.c_str());
 
-  tc_sarray_destroy(sa_given);
+  tc_release(sa_given);
 
   TS_ASSERT(sf_gl.column_names() == sf->value.column_names());
   TS_ASSERT(sf_gl.column_types() == sf->value.column_types());
 
-  tc_sframe_destroy(sf);
+  tc_release(sf);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_add_constant_column_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl;
 
@@ -556,7 +557,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_add_constant_column_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -568,14 +569,14 @@ BOOST_AUTO_TEST_CASE(test_sframe_add_constant_column_test) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   tc_flexible_type* ft = tc_ft_create_from_double(43.0, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   tc_sframe_add_constant_column(sf, "new_column", ft, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::flexible_type f_float(43.0);
 
@@ -584,14 +585,14 @@ BOOST_AUTO_TEST_CASE(test_sframe_add_constant_column_test) {
   TS_ASSERT(sf_gl.column_names() == sf->value.column_names());
   TS_ASSERT(sf_gl.column_types() == sf->value.column_types());
 
-  tc_ft_destroy(ft);
-  tc_sframe_destroy(sf);
+  tc_release(ft);
+  tc_release(sf);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_add_column_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl;
 
@@ -610,7 +611,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_add_column_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -622,7 +623,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_add_column_test) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   turi::flex_list replc_list;
@@ -636,14 +637,14 @@ BOOST_AUTO_TEST_CASE(test_sframe_add_column_test) {
   tc_sarray* sa_given = make_sarray_double(replacing.second);
 
   tc_sframe_add_column(sf, "new_col", sa_given, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   sf_gl.add_column(repl, "new_col");
 
   TS_ASSERT(sf_gl.column_names() == sf->value.column_names());
   TS_ASSERT(sf_gl.column_types() == sf->value.column_types());
 
-  tc_sframe_destroy(sf);
+  tc_release(sf);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_add_columns_test) {
@@ -663,10 +664,10 @@ BOOST_AUTO_TEST_CASE(test_sframe_add_columns_test) {
         {"more",    {7.0, 2., 3., 1.5} } };
 
   tc_sframe* sf1 = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   tc_sframe* sf2 = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl_1;
   turi::gl_sframe sf_gl_2;
@@ -675,7 +676,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_add_columns_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf1, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -687,14 +688,14 @@ BOOST_AUTO_TEST_CASE(test_sframe_add_columns_test) {
 
     sf_gl_1.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   for(auto p : append_data) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf2, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -706,25 +707,25 @@ BOOST_AUTO_TEST_CASE(test_sframe_add_columns_test) {
 
     sf_gl_2.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   tc_sframe_add_columns(sf1, sf2, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   sf_gl_1.add_columns(sf_gl_2);
 
   TS_ASSERT(sf_gl_1.column_names() == sf1->value.column_names());
   TS_ASSERT(sf_gl_1.column_types() == sf1->value.column_types());
 
-  tc_sframe_destroy(sf1);
-  tc_sframe_destroy(sf2);
+  tc_release(sf1);
+  tc_release(sf2);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_swap_columns_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl;
 
@@ -740,7 +741,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_swap_columns_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -752,24 +753,24 @@ BOOST_AUTO_TEST_CASE(test_sframe_swap_columns_test) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   tc_sframe_swap_columns(sf, "col1", "a", &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   sf_gl.swap_columns("col1", "a");
 
   TS_ASSERT(sf_gl.column_names() == sf->value.column_names());
   TS_ASSERT(sf_gl.column_types() == sf->value.column_types());
 
-  tc_sframe_destroy(sf);
+  tc_release(sf);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_rename_column_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl;
 
@@ -785,7 +786,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_rename_column_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -797,27 +798,27 @@ BOOST_AUTO_TEST_CASE(test_sframe_rename_column_test) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   std::map<std::string, std::string> m;
   m.insert(std::pair<std::string, std::string>("col1", "a1"));
 
   tc_sframe_rename_column(sf, "col1", "a1", &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   sf_gl.rename(m);
 
   TS_ASSERT(sf_gl.column_names() == sf->value.column_names());
   TS_ASSERT(sf_gl.column_types() == sf->value.column_types());
 
-  tc_sframe_destroy(sf);
+  tc_release(sf);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_fillna_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl;
 
@@ -833,7 +834,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_fillna_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -845,31 +846,31 @@ BOOST_AUTO_TEST_CASE(test_sframe_fillna_test) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   tc_flexible_type* ft = tc_ft_create_from_double(43.0, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::flexible_type f_float(43.0);
 
   tc_sframe* sampled_frame = tc_sframe_fillna(sf, "col1", ft, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sampled_gl_sframe = sf_gl.fillna("col1", f_float);
 
   TS_ASSERT(sampled_gl_sframe.column_names() == sampled_frame->value.column_names());
   TS_ASSERT(sampled_gl_sframe.column_types() == sampled_frame->value.column_types());
 
-  tc_ft_destroy(ft);
-  tc_sframe_destroy(sf);
-  tc_sframe_destroy(sampled_frame);
+  tc_release(ft);
+  tc_release(sf);
+  tc_release(sampled_frame);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_filter_by_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl;
 
@@ -888,7 +889,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_filter_by_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -900,7 +901,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_filter_by_test) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   turi::flex_list replacing_list;
@@ -914,24 +915,24 @@ BOOST_AUTO_TEST_CASE(test_sframe_filter_by_test) {
   tc_sarray* filtering_sa = make_sarray_double(replacing.second);
 
   tc_sframe* sampled_frame = tc_sframe_filter_by(sf, filtering_sa, "col1", false, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sampled_gl_sframe = sf_gl.filter_by(rpling, "col1", false);
 
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   TS_ASSERT(sampled_gl_sframe.column_names() == sampled_frame->value.column_names());
   TS_ASSERT(sampled_gl_sframe.column_types() == sampled_frame->value.column_types());
 
-  tc_sarray_destroy(filtering_sa);
-  tc_sframe_destroy(sf);
-  tc_sframe_destroy(sampled_frame);
+  tc_release(filtering_sa);
+  tc_release(sf);
+  tc_release(sampled_frame);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_pack_unpack_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl;
 
@@ -947,7 +948,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_pack_unpack_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -959,11 +960,11 @@ BOOST_AUTO_TEST_CASE(test_sframe_pack_unpack_test) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   tc_flexible_type* ft = tc_ft_create_from_double(43.0, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::flexible_type f_float(43.0);
 
@@ -974,23 +975,23 @@ BOOST_AUTO_TEST_CASE(test_sframe_pack_unpack_test) {
   TS_ASSERT(sampled_gl_sframe.column_types() == sampled_frame->value.column_types());
 
   tc_sframe* unpack_frame = tc_sframe_unpack(sampled_frame, "col", &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe unpack_gl_sframe = sampled_gl_sframe.unpack("col");
 
   TS_ASSERT(unpack_gl_sframe.column_names() == unpack_frame->value.column_names());
   TS_ASSERT(unpack_gl_sframe.column_types() == unpack_frame->value.column_types());
 
-  tc_ft_destroy(ft);
-  tc_sframe_destroy(sf);
-  tc_sframe_destroy(sampled_frame);
-  tc_sframe_destroy(unpack_frame);
+  tc_release(ft);
+  tc_release(sf);
+  tc_release(sampled_frame);
+  tc_release(unpack_frame);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_stack_unstack_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl;
 
@@ -1006,7 +1007,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_stack_unstack_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -1018,21 +1019,21 @@ BOOST_AUTO_TEST_CASE(test_sframe_stack_unstack_test) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   tc_flexible_type* ft = tc_ft_create_from_double(43.0, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::flexible_type f_float(43.0);
 
   tc_sframe* pre_sampled_frame = tc_sframe_pack_columns_string(sf, "col", "col", tc_ft_type_enum::FT_TYPE_LIST, ft, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe pre_sampled_gl_sframe = sf_gl.pack_columns("col", "col", turi::flex_type_enum::LIST, f_float);
 
   tc_sframe* sampled_frame = tc_sframe_stack(pre_sampled_frame, "col", &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sampled_gl_sframe = pre_sampled_gl_sframe.stack("col", "col");
 
@@ -1040,25 +1041,25 @@ BOOST_AUTO_TEST_CASE(test_sframe_stack_unstack_test) {
   TS_ASSERT(sampled_gl_sframe.column_types() == sampled_frame->value.column_types());
 
   tc_sframe* unstacked_frame = tc_sframe_unstack(sampled_frame, "col", "col", &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe unstacked_gl_sframe = sampled_gl_sframe.unstack("col", "col");
 
   TS_ASSERT(unstacked_gl_sframe.column_names() == unstacked_frame->value.column_names());
   TS_ASSERT(unstacked_gl_sframe.column_types() == unstacked_frame->value.column_types());
 
-  tc_ft_destroy(ft);
-  tc_sframe_destroy(sf);
-  tc_sframe_destroy(sampled_frame);
-  tc_sframe_destroy(unstacked_frame);
-  tc_sframe_destroy(pre_sampled_frame);
+  tc_release(ft);
+  tc_release(sf);
+  tc_release(sampled_frame);
+  tc_release(unstacked_frame);
+  tc_release(pre_sampled_frame);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_stack_and_rename_test) {
 
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl;
 
@@ -1074,7 +1075,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_stack_and_rename_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -1086,21 +1087,21 @@ BOOST_AUTO_TEST_CASE(test_sframe_stack_and_rename_test) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   tc_flexible_type* ft = tc_ft_create_from_double(43.0, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::flexible_type f_float(43.0);
 
   tc_sframe* pre_sampled_frame = tc_sframe_pack_columns_string(sf, "col", "col", tc_ft_type_enum::FT_TYPE_LIST, ft, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe pre_sampled_gl_sframe = sf_gl.pack_columns("col", "col", turi::flex_type_enum::LIST, f_float);
 
   tc_sframe* sampled_frame = tc_sframe_stack_and_rename(pre_sampled_frame, "col", "col2", false, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sampled_gl_sframe = pre_sampled_gl_sframe.stack("col", "col2");
 
@@ -1108,25 +1109,25 @@ BOOST_AUTO_TEST_CASE(test_sframe_stack_and_rename_test) {
   TS_ASSERT(sampled_gl_sframe.column_types() == sampled_frame->value.column_types());
 
   tc_sframe* unstacked_frame = tc_sframe_unstack(sampled_frame, "col2", "col", &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe unstacked_gl_sframe = sampled_gl_sframe.unstack("col2", "col");
 
   TS_ASSERT(unstacked_gl_sframe.column_names() == unstacked_frame->value.column_names());
   TS_ASSERT(unstacked_gl_sframe.column_types() == unstacked_frame->value.column_types());
 
-  tc_ft_destroy(ft);
-  tc_sframe_destroy(sf);
-  tc_sframe_destroy(sampled_frame);
-  tc_sframe_destroy(unstacked_frame);
-  tc_sframe_destroy(pre_sampled_frame);
+  tc_release(ft);
+  tc_release(sf);
+  tc_release(sampled_frame);
+  tc_release(unstacked_frame);
+  tc_release(pre_sampled_frame);
   TS_ASSERT(true);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_unique_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl;
 
@@ -1142,7 +1143,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_unique_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -1154,26 +1155,26 @@ BOOST_AUTO_TEST_CASE(test_sframe_unique_test) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   tc_sframe* pre_sampled_frame = tc_sframe_unique(sf, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe pre_sampled_gl_sframe = sf_gl.unique();
 
   TS_ASSERT(pre_sampled_gl_sframe.column_names() == pre_sampled_frame->value.column_names());
   TS_ASSERT(pre_sampled_gl_sframe.column_types() == pre_sampled_frame->value.column_types());
 
-  tc_sframe_destroy(sf);
-  tc_sframe_destroy(pre_sampled_frame);
+  tc_release(sf);
+  tc_release(pre_sampled_frame);
   TS_ASSERT(true);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_single_sort_column_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl;
 
@@ -1189,7 +1190,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_single_sort_column_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -1201,26 +1202,26 @@ BOOST_AUTO_TEST_CASE(test_sframe_single_sort_column_test) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   tc_sframe* pre_sampled_frame = tc_sframe_sort_single_column(sf, "col1", true, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe pre_sampled_gl_sframe = sf_gl.sort("col1", true);
 
   TS_ASSERT(pre_sampled_gl_sframe.column_names() == pre_sampled_frame->value.column_names());
   TS_ASSERT(pre_sampled_gl_sframe.column_types() == pre_sampled_frame->value.column_types());
 
-  tc_sframe_destroy(sf);
-  tc_sframe_destroy(pre_sampled_frame);
+  tc_release(sf);
+  tc_release(pre_sampled_frame);
   TS_ASSERT(true);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_sort_multiple_columns_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl;
 
@@ -1236,7 +1237,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_sort_multiple_columns_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -1248,22 +1249,22 @@ BOOST_AUTO_TEST_CASE(test_sframe_sort_multiple_columns_test) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   tc_flex_list* flex_lst = new_tc_flex_list();
 
   tc_flexible_type* ft = tc_ft_create_from_cstring("col1", &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   tc_flexible_type* ft2 = tc_ft_create_from_cstring("col2", &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   tc_flex_list_add_element(flex_lst, ft, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   tc_flex_list_add_element(flex_lst, ft2, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   std::vector<std::string> columns_transform;
 
@@ -1271,22 +1272,22 @@ BOOST_AUTO_TEST_CASE(test_sframe_sort_multiple_columns_test) {
   columns_transform.push_back("col2");
 
   tc_sframe* pre_sampled_frame = tc_sframe_sort_multiple_columns(sf, flex_lst, true, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe pre_sampled_gl_sframe = sf_gl.sort(columns_transform, true);
 
   TS_ASSERT(pre_sampled_gl_sframe.column_names() == pre_sampled_frame->value.column_names());
   TS_ASSERT(pre_sampled_gl_sframe.column_types() == pre_sampled_frame->value.column_types());
 
-  tc_sframe_destroy(sf);
-  tc_sframe_destroy(pre_sampled_frame);
+  tc_release(sf);
+  tc_release(pre_sampled_frame);
   TS_ASSERT(true);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_dropna_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl;
 
@@ -1303,7 +1304,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_dropna_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -1315,36 +1316,36 @@ BOOST_AUTO_TEST_CASE(test_sframe_dropna_test) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   tc_flex_list* flex_lst = new_tc_flex_list();
   tc_flexible_type* ft = tc_ft_create_from_cstring("col1", &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   tc_flex_list_add_element(flex_lst, ft, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   std::vector<std::string> columns_transform;
   columns_transform.push_back("col1");
 
   tc_sframe* pre_sampled_frame = tc_sframe_dropna(sf, flex_lst, "any", &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe pre_sampled_gl_sframe = sf_gl.dropna(columns_transform, "any");
 
   TS_ASSERT(pre_sampled_gl_sframe.column_names() == pre_sampled_frame->value.column_names());
   TS_ASSERT(pre_sampled_gl_sframe.column_types() == pre_sampled_frame->value.column_types());
 
-  tc_sframe_destroy(sf);
-  tc_sframe_destroy(pre_sampled_frame);
+  tc_release(sf);
+  tc_release(pre_sampled_frame);
   TS_ASSERT(true);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_slice_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl;
 
@@ -1361,7 +1362,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_slice_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -1373,26 +1374,26 @@ BOOST_AUTO_TEST_CASE(test_sframe_slice_test) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   tc_sframe* pre_sampled_frame = tc_sframe_slice(sf, 1, 3, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe pre_sampled_gl_sframe = sf_gl[{1,3}];
 
   TS_ASSERT(pre_sampled_gl_sframe.column_names() == pre_sampled_frame->value.column_names());
   TS_ASSERT(pre_sampled_gl_sframe.column_types() == pre_sampled_frame->value.column_types());
 
-  tc_sframe_destroy(sf);
-  tc_sframe_destroy(pre_sampled_frame);
+  tc_release(sf);
+  tc_release(pre_sampled_frame);
   TS_ASSERT(true);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_row_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl;
 
@@ -1409,7 +1410,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_row_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -1421,16 +1422,16 @@ BOOST_AUTO_TEST_CASE(test_sframe_row_test) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   tc_flex_list* fl = tc_sframe_extract_row(sf, 1, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   
   TS_ASSERT(fl->value == sf->value[1]); 
 
-  tc_sframe_destroy(sf);
-  tc_flex_list_destroy(fl);
+  tc_release(sf);
+  tc_release(fl);
 
 }
 
@@ -1438,7 +1439,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_row_test) {
 BOOST_AUTO_TEST_CASE(test_sframe_slice_stride_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sf_gl;
 
@@ -1455,7 +1456,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_slice_stride_test) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -1467,19 +1468,19 @@ BOOST_AUTO_TEST_CASE(test_sframe_slice_stride_test) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   tc_sframe* pre_sampled_frame = tc_sframe_slice_stride(sf, 1, 5, 2, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe pre_sampled_gl_sframe = sf_gl[{1, 5, 2}];
 
   TS_ASSERT(pre_sampled_gl_sframe.column_names() == pre_sampled_frame->value.column_names());
   TS_ASSERT(pre_sampled_gl_sframe.column_types() == pre_sampled_frame->value.column_types());
 
-  tc_sframe_destroy(sf);
-  tc_sframe_destroy(pre_sampled_frame);
+  tc_release(sf);
+  tc_release(pre_sampled_frame);
   TS_ASSERT(true);
 }
 
@@ -1487,19 +1488,19 @@ BOOST_AUTO_TEST_CASE(test_sframe_read_json) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_read_json("./json_test.json", &error);
 
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   size_t nc = tc_sframe_num_columns(sf, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   TS_ASSERT(nc == 2);
   
   size_t nr = tc_sframe_num_rows(sf, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   TS_ASSERT(nr == 3);
 
-  tc_sframe_destroy(sf);
+  tc_release(sf);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_groupby_manual_sframe) {
@@ -1509,7 +1510,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_manual_sframe) {
   tc_groupby_aggregator* gb_manual = new_tc_groupby_aggregator();
   tc_flex_list *column_list = new_tc_flex_list();
   tc_sframe* sf = tc_sframe_create_empty(&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   turi::gl_sframe sf_gl;
 
   /* * +---------+----------+--------+
@@ -1539,7 +1540,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_manual_sframe) {
     tc_sarray* sa = make_sarray_double(p.second);
 
     tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     turi::flex_list lst;
 
@@ -1551,23 +1552,23 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_manual_sframe) {
 
     sf_gl.add_column(g, p.first.c_str());
 
-    tc_sarray_destroy(sa);
+    tc_release(sa);
   }
 
   // construct a group_by_aggregator and all the things needed to make a call
   // to tc_sframe_group_by
 
   tc_flexible_type* user_id_ft = tc_ft_create_from_cstring("user_id", &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   tc_flex_list_add_element(column_list, user_id_ft, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   tc_groupby_aggregator_add_count(gb_manual, "count", &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   tc_sframe* sampled_frame = tc_sframe_group_by(sf, column_list, gb_manual, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   // make groupkeys and operators, call C++ groupby
   std::vector<std::string> group_keys;
@@ -1579,10 +1580,10 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_manual_sframe) {
 
   TS_ASSERT(check_equality_gl_sframe(sampled_frame->value, sampled_gl_sframe));
 
-  tc_groupby_aggregator_destroy(gb_manual);
-  tc_flex_list_destroy(column_list);
-  tc_sframe_destroy(sf);
-  tc_sframe_destroy(sampled_frame);
+  tc_release(gb_manual);
+  tc_release(column_list);
+  tc_release(sf);
+  tc_release(sampled_frame);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_most_aggregates) {
@@ -1593,7 +1594,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_most_aggregates) {
   tc_groupby_aggregator* gb1 = new_tc_groupby_aggregator();
   tc_flex_list *column_list1 = new_tc_flex_list();
 
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   size_t n_rows1 = 10000;
   size_t n_columns1 = 100;
   std::string column_types1 = "R";
@@ -1617,48 +1618,48 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_most_aggregates) {
 
   // C interface
   tc_groupby_aggregator_add_sum(gb1, "a_sum", zeroth_column.c_str(), &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   tc_groupby_aggregator_add_max(gb1, "a_max", zeroth_column.c_str(), &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   tc_groupby_aggregator_add_min(gb1, "a_min", zeroth_column.c_str(), &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   tc_groupby_aggregator_add_mean(gb1, "a_mean", zeroth_column.c_str(), &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   tc_groupby_aggregator_add_avg(gb1, "a_avg", zeroth_column.c_str(), &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   tc_groupby_aggregator_add_var(gb1, "a_var", zeroth_column.c_str(), &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   tc_groupby_aggregator_add_variance(gb1, "a_variance", zeroth_column.c_str(),
     &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   tc_groupby_aggregator_add_std(gb1, "a_std", zeroth_column.c_str(), &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   tc_groupby_aggregator_add_stdv(gb1, "a_stdv", zeroth_column.c_str(), &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   tc_groupby_aggregator_add_select_one(gb1, "a_select_one",
     sf_gl1.column_name(50).c_str(), &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   tc_groupby_aggregator_add_count_distinct(gb1, "a_count_distinct",
     sf_gl1.column_name(75).c_str(), &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   tc_groupby_aggregator_add_concat_one_column(gb1, "a_concat_one_column",
     sf_gl1.column_name(25).c_str(), &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   tc_groupby_aggregator_add_concat_two_columns(gb1, "a_concat_two_columns",
     sf_gl1.column_name(20).c_str(), sf_gl1.column_name(80).c_str(), &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   tc_groupby_aggregator_add_count(gb1, "a_count", &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   tc_flexible_type* last_ft = tc_ft_create_from_cstring(last_column.c_str(),
     &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   tc_flex_list_add_element(column_list1, last_ft, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   tc_sframe* sampled_frame1 = tc_sframe_group_by(sf1,column_list1,gb1,&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   // C++ interface
   std::vector<std::string> group_keys;
@@ -1688,10 +1689,10 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_most_aggregates) {
   // Check for equality
   TS_ASSERT(check_equality_gl_sframe(sampled_frame1->value, sampled_gl_sframe));
 
-  tc_groupby_aggregator_destroy(gb1);
-  tc_flex_list_destroy(column_list1);
-  tc_sframe_destroy(sf1);
-  tc_sframe_destroy(sampled_frame1);
+  tc_release(gb1);
+  tc_release(column_list1);
+  tc_release(sf1);
+  tc_release(sampled_frame1);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_quantiles) {
@@ -1701,7 +1702,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_quantiles) {
   tc_groupby_aggregator* gb1 = new_tc_groupby_aggregator();
   tc_flex_list *column_list1 = new_tc_flex_list();
 
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   size_t n_rows1 = 10000;
   size_t n_columns1 = 100;
   std::string column_types1 = "RZ";
@@ -1726,30 +1727,30 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_quantiles) {
 
   tc_flex_list *quantiles = new_tc_flex_list();
   tc_flexible_type *ft_25 = tc_ft_create_from_double(0.25, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   tc_flex_list_add_element(quantiles, ft_25, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   tc_flexible_type *ft_50 = tc_ft_create_from_double(0.5, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   tc_flex_list_add_element(quantiles, ft_50, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   // C interface
   tc_groupby_aggregator_add_quantile(gb1, "a_quantile",
     zeroth_column.c_str(), 0.75, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   tc_groupby_aggregator_add_quantiles(gb1, "a_quantiles",
     zeroth_column.c_str(), quantiles, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   tc_flexible_type* last_ft = tc_ft_create_from_cstring(last_column.c_str(),
     &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   tc_flex_list_add_element(column_list1, last_ft, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   tc_sframe* sampled_frame1 = tc_sframe_group_by(sf1,column_list1,gb1,&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   // C++ interface
   std::vector<std::string> group_keys;
@@ -1771,11 +1772,11 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_quantiles) {
   TS_ASSERT(sampled_frame1->value.column_types() == sampled_gl_sframe.column_types());
   TS_ASSERT(check_equality_gl_sframe(sampled_frame1->value, sampled_gl_sframe));
 
-  tc_groupby_aggregator_destroy(gb1);
-  tc_flex_list_destroy(column_list1);
-  tc_flex_list_destroy(quantiles);
-  tc_sframe_destroy(sf1);
-  tc_sframe_destroy(sampled_frame1);
+  tc_release(gb1);
+  tc_release(column_list1);
+  tc_release(quantiles);
+  tc_release(sf1);
+  tc_release(sampled_frame1);
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_argminmax) {
@@ -1785,7 +1786,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_argminmax) {
   tc_groupby_aggregator* gb1 = new_tc_groupby_aggregator();
   tc_flex_list *column_list1 = new_tc_flex_list();
 
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   size_t n_rows1 = 10000;
   size_t n_columns1 = 100;
   std::string column_types1 = "RZ";
@@ -1811,19 +1812,19 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_argminmax) {
   // C interface
   tc_groupby_aggregator_add_argmax(gb1, "a_argmax",
     zeroth_column.c_str(), first_column.c_str(), &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   tc_groupby_aggregator_add_argmin(gb1, "a_argmin",
     zeroth_column.c_str(), first_column.c_str(), &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   tc_flexible_type* last_ft = tc_ft_create_from_cstring(last_column.c_str(),
     &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
   tc_flex_list_add_element(column_list1, last_ft, &error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   tc_sframe* sampled_frame1 = tc_sframe_group_by(sf1,column_list1,gb1,&error);
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   // C++ interface
   std::vector<std::string> group_keys;
@@ -1842,8 +1843,69 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_argminmax) {
   TS_ASSERT(sampled_frame1->value.column_types() == sampled_gl_sframe.column_types());
   TS_ASSERT(check_equality_gl_sframe(sampled_frame1->value, sampled_gl_sframe));
 
-  tc_groupby_aggregator_destroy(gb1);
-  tc_flex_list_destroy(column_list1);
-  tc_sframe_destroy(sf1);
-  tc_sframe_destroy(sampled_frame1);
+  tc_release(gb1);
+  tc_release(column_list1);
+  tc_release(sf1);
+  tc_release(sampled_frame1);
+}
+
+BOOST_AUTO_TEST_CASE(test_sframe_apply) {
+  // Construct an SArray of arbitary double values.
+  tc_sframe* data = make_sframe_double({{"a", {1.0, 2.0, 3.0, 4.0, 5.0}},
+                                       {"c", {1.0, 2.0, 3.0, 4.0, 5.0}}});
+  TS_ASSERT_DIFFERS(data, nullptr);
+
+  // Create a simple lambda, which interprets all the features in the row as
+  // doubles and multiplies them together.
+  auto lambda = [](tc_flex_list* row, tc_error** error) -> tc_flexible_type* {
+    double result = 1.0;
+    uint64_t n = tc_flex_list_size(row);
+    for (uint64_t i = 0; i < n; ++i) {
+      tc_flexible_type* elem = tc_flex_list_extract_element(row, i, error);
+      if (*error != nullptr) return nullptr;
+      if (!tc_ft_is_double(elem)) continue;
+      result *= tc_ft_double(elem, error);
+      if (*error != nullptr) return nullptr;
+    }
+    return tc_ft_create_from_double(result, error);
+  };
+  using lambda_type = decltype(lambda);
+
+  // Wrap the lambda as C function pointers and void* context.
+  void* userdata = static_cast<void*>(new lambda_type(lambda));
+  auto deleter = [](void* p) {
+    auto* ptr = static_cast<lambda_type*>(p);
+    delete ptr;
+  };
+  auto dispatcher = [](tc_flex_list* row, void* data, tc_error** error) {
+    auto* ptr = static_cast<lambda_type*>(data);
+    return (*ptr)(row, error);
+  };
+
+  // Dispatch the wrapped lambda.
+  tc_error* error = nullptr;
+  tc_sarray* ret = tc_sframe_apply(data, dispatcher, deleter, userdata,
+                                  FT_TYPE_FLOAT, &error);
+  TS_ASSERT_EQUALS(error, nullptr);
+  TS_ASSERT_DIFFERS(ret, nullptr);
+
+  // Verify the contents of the resulting SArray.
+  const std::vector<double> expected = {1.0, 4.0, 9.0, 16.0, 25.0};
+  uint64_t length = tc_sarray_size(ret);
+  TS_ASSERT_EQUALS(length, expected.size());
+  for (uint64_t i = 0; i < length; ++i) {
+    tc_flexible_type* ft = tc_sarray_extract_element(ret, i, &error);
+    TS_ASSERT_EQUALS(error, nullptr);
+    TS_ASSERT(tc_ft_is_double(ft));
+
+    double val = tc_ft_double(ft, &error);
+    TS_ASSERT_EQUALS(error, nullptr);
+    TS_ASSERT_EQUALS(val, expected[i]);
+
+    tc_release(ft);
+  }
+
+  // Clean up.
+  tc_release(ret);
+  tc_release(data);
 }

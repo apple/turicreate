@@ -441,6 +441,7 @@ class RandomForestClassifier(_Classifier, _TreeModelMixin):
 def create(dataset, target,
            features=None,
            max_iterations=10,
+           max_depth=6,
            validation_set='auto',
            verbose=True, class_weights=None,
            random_seed=None,

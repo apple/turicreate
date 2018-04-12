@@ -14,7 +14,7 @@
 #include <flexible_type/flexible_type.hpp>
 #include <flexible_type/ndarray.hpp>
 
-#include <capi/TuriCore.h>
+#include <capi/TuriCreate.h>
 #include <capi/impl/capi_wrapper_structs.hpp>
 
 using namespace turi;
@@ -64,28 +64,10 @@ static void test_array_path(const ndarray<double>& a) {
   const double* data = tc_ndarray_data(X, &error);
 
   // Construct another tc_ndarray object with these.
-  tc_ndarray* X2 =
-      tc_ndarray_create_from_data(n_dim, shape, strides, data, &error);
+ tc_ndarray* X2 = tc_ndarray_create_from_data(n_dim, shape, strides, data, &error);
   BOOST_TEST(error == nullptr);
 
   nd_assert_equal(a, X2->value);
-
-
-  // Test going through flexible type.
-  tc_flexible_type* ft = tc_ft_create_from_ndarray(X2, &error); 
-  BOOST_TEST(error == nullptr);
-
-  BOOST_TEST(tc_ft_is_ndarray(ft));
-
-  tc_ndarray* X3 = tc_ft_ndarray(ft, &error);
-  BOOST_TEST(error == nullptr);
-  
-  nd_assert_equal(X2->value, X3->value);
-  
-  tc_ndarray_destroy(X2);
-  tc_ndarray_destroy(X3);
-
-  tc_ft_destroy(ft);
 }
 
 

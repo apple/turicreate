@@ -41,6 +41,7 @@
 #include <unity/toolkits/feature_engineering/class_registrations.hpp>
 #include <unity/toolkits/pattern_mining/class_registrations.hpp>
 #include <unity/toolkits/clustering/class_registrations.hpp>
+#include <unity/toolkits/util/class_registrations.hpp>
 
 namespace turi {
 
@@ -70,6 +71,7 @@ void register_functions(toolkit_function_registry& registry) {
   registry.register_toolkit_function(turi::ml_model_sdk::get_toolkit_function_registration());
   registry.register_toolkit_function(turi::pattern_mining::get_toolkit_function_registration());
   registry.register_toolkit_function(turi::sdk_model::activity_classification::get_toolkit_function_registration());
+  registry.register_toolkit_function(turi::util::get_toolkit_function_registration());
 }
 
 namespace registration_internal {

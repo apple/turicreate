@@ -1,9 +1,10 @@
-#include <capi/TuriCore.h>
+#include <capi/TuriCreate.h>
 
 #include <memory>
 
 #include <export.hpp>
 #include <capi/impl/capi_error_handling.hpp>
+#include <capi/impl/capi_initialization_internal.hpp>
 #include <capi/impl/capi_wrapper_structs.hpp>
 
 /******************************************************************************/
@@ -16,6 +17,7 @@ extern "C" {
 
 EXPORT tc_datetime* tc_datetime_create_empty(tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   return new_tc_datetime();
 
@@ -27,6 +29,7 @@ EXPORT tc_datetime* tc_datetime_create_empty(tc_error** error) {
 EXPORT tc_datetime* tc_datetime_create_from_posix_timestamp(
   int64_t posix_timestamp, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   return new_tc_datetime(posix_timestamp);
 
@@ -38,6 +41,7 @@ EXPORT tc_datetime* tc_datetime_create_from_posix_timestamp(
 EXPORT tc_datetime* tc_datetime_create_from_posix_highres_timestamp(
     double posix_timestamp, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   turi::flex_date_time impl;
   impl.set_microsecond_res_timestamp(posix_timestamp);
@@ -50,6 +54,7 @@ EXPORT tc_datetime* tc_datetime_create_from_posix_highres_timestamp(
 EXPORT tc_datetime* tc_datetime_create_from_string(
       const char* datetime_str, const char* format_str, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, datetime_str, "Datetime string", nullptr);
 
@@ -69,6 +74,7 @@ EXPORT void tc_datetime_set_time_zone_offset(
     tc_datetime* dt, int64_t n_tz_hour_offset, int64_t n_tz_15min_offsets,
     tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, dt, "Datetime");
 
@@ -79,6 +85,7 @@ EXPORT void tc_datetime_set_time_zone_offset(
 EXPORT int64_t tc_datetime_get_time_zone_offset_minutes(
     const tc_datetime* dt, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, dt, "Datetime", 0);
 
@@ -91,6 +98,7 @@ EXPORT int64_t tc_datetime_get_time_zone_offset_minutes(
 EXPORT void tc_datetime_set_microsecond(
       tc_datetime* dt, uint64_t microseconds, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, dt, "Datetime");
 
@@ -101,6 +109,7 @@ EXPORT void tc_datetime_set_microsecond(
 EXPORT uint64_t tc_datetime_get_microsecond(
       const tc_datetime* dt, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, dt, "Datetime", 0);
 
@@ -114,6 +123,7 @@ EXPORT uint64_t tc_datetime_get_microsecond(
 EXPORT void tc_datetime_set_timestamp(
       tc_datetime* dt, int64_t d, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, dt, "Datetime");
 
@@ -123,6 +133,7 @@ EXPORT void tc_datetime_set_timestamp(
 }
 EXPORT int64_t tc_datetime_get_timestamp(tc_datetime* dt, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, dt, "Datetime", 0);
 
@@ -136,6 +147,7 @@ EXPORT int64_t tc_datetime_get_timestamp(tc_datetime* dt, tc_error** error) {
 EXPORT void tc_datetime_set_highres_timestamp(
     tc_datetime* dt, double d, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, dt, "Datetime");
 
@@ -146,6 +158,7 @@ EXPORT void tc_datetime_set_highres_timestamp(
 EXPORT double tc_datetime_get_highres_timestamp(
     tc_datetime* dt, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, dt, "Datetime", 0.0);
 
@@ -158,6 +171,7 @@ EXPORT double tc_datetime_get_highres_timestamp(
 EXPORT int tc_datetime_less_than(
       const tc_datetime* dt1, const tc_datetime* dt2, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, dt1, "Datetime", false);
   CHECK_NOT_NULL(error, dt2, "Datetime", false);
@@ -171,6 +185,7 @@ EXPORT int tc_datetime_less_than(
 EXPORT int tc_datetime_equal(
       const tc_datetime* dt1, const tc_datetime* dt2, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, dt1, "Datetime", false);
   CHECK_NOT_NULL(error, dt2, "Datetime", false);
@@ -178,11 +193,6 @@ EXPORT int tc_datetime_equal(
   return dt1->value == dt2->value;
 
   ERROR_HANDLE_END(error, 0);
-}
-
-// Destructor
-EXPORT void tc_datetime_destroy(tc_datetime* dt) {
-  delete dt;
 }
 
 }  // extern "C"

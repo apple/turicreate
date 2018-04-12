@@ -269,6 +269,7 @@ flexible_type linear_svm::predict_single_example(
       return (margin >= 0.0); 
 
     // Class
+    case prediction_type_enum::NA:
     case prediction_type_enum::CLASS: 
     {
       size_t class_id = (margin >= 0.0);
@@ -278,7 +279,6 @@ flexible_type linear_svm::predict_single_example(
     // Not supported types
     case prediction_type_enum::PROBABILITY:
     case prediction_type_enum::MAX_PROBABILITY:
-    case prediction_type_enum::NA:
     case prediction_type_enum::RANK:
     case prediction_type_enum::PROBABILITY_VECTOR:
       log_and_throw("Output type not supported.");
@@ -303,6 +303,7 @@ flexible_type linear_svm::predict_single_example(
       case prediction_type_enum::CLASS_INDEX:
       return (margin >= 0.0);
     // Class
+    case prediction_type_enum::NA:
     case prediction_type_enum::CLASS: 
     {
       size_t class_id = (margin >= 0.0);
@@ -312,7 +313,6 @@ flexible_type linear_svm::predict_single_example(
     // Not supported
     case prediction_type_enum::PROBABILITY:
     case prediction_type_enum::MAX_PROBABILITY:
-    case prediction_type_enum::NA:
     case prediction_type_enum::RANK:
     case prediction_type_enum::PROBABILITY_VECTOR:
       log_and_throw("Output type not supported.");
@@ -410,7 +410,7 @@ size_t linear_svm::get_version() const{
   return SVM_MODEL_VERSION;  
 }
   
-void linear_svm::export_to_coreml(const std::string& filename) { 
+std::shared_ptr<MLModelWrapper> linear_svm::export_to_coreml() {
 
   std::string prob_column_name = ml_mdata->target_column_name() + "Probability";
   CoreML::Pipeline  pipeline = CoreML::Pipeline::Classifier(ml_mdata->target_column_name(), prob_column_name, "");
@@ -480,12 +480,9 @@ void linear_svm::export_to_coreml(const std::string& filename) {
   add_metadata(pipeline.m_spec, context);
 
   // Save pipeline
-  CoreML::Result r = pipeline.save(filename);
-  if(!r.good()) {
-    log_and_throw("Could not export model: " + r.message());
-  }
+  auto model_wrapper = std::make_shared<MLModelWrapper>(std::make_shared<CoreML::Pipeline>(pipeline));
 
-
+  return model_wrapper;
 }
 
 } // supervised

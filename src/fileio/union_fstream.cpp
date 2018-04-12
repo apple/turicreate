@@ -82,6 +82,11 @@ union_fstream::union_fstream(std::string url,
       original_input_stream_handle = std::static_pointer_cast<std::istream>(s3stream);
     }
   } else {
+    // Remove the preceeding file:// if it's a local URL.
+    if(boost::algorithm::starts_with(url, "file://")) {
+      url = url.substr(7);
+    }
+
     // must be local file
     if (is_output_stream) {
       // Output stream must be a local openable file.

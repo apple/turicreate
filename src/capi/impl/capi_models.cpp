@@ -1,26 +1,7 @@
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
-
-#include <unity/server/unity_server_control.hpp>
+#include <capi/impl/capi_initialization_internal.hpp>
 #include <unity/lib/unity_global.hpp>
-
-
-// Allows the exact registration to be overridden in the build process.
-#ifdef TC_CAPI_SERVER_INITIALIZER_CREATION_FUNCTION
-
-  extern const turi::unity_server_initializer& TC_CAPI_SERVER_INITIALIZER_CREATION_FUNCTION();
-
-#else
-
-static const turi::unity_server_initializer& default_server_init() {
-  static turi::unity_server_initializer default_init;
-   return default_init;
-}
-
-#define TC_CAPI_SERVER_INITIALIZER_CREATION_FUNCTION default_server_init
-#endif
-
-
 
 /******************************************************************************/
 /*                                                                            */
@@ -31,29 +12,10 @@ static const turi::unity_server_initializer& default_server_init() {
 struct tc_model_struct; 
 typedef struct tc_model_struct tc_model;
 
-EXPORT void tc_initialize(const char* log_file, tc_error** error) {
-  // Set up the unity server
-  ERROR_HANDLE_START();
-
-  // Initialize the server -- set up default environment values
-  turi::unity_server_options s_opts;
-
-  s_opts.log_file = log_file;
-  s_opts.root_path = "";
-  s_opts.daemon = false;
-  s_opts.log_rotation_interval = 0;
-  s_opts.log_rotation_truncate = 0;
-
-  const turi::unity_server_initializer& server_initializer
-    = TC_CAPI_SERVER_INITIALIZER_CREATION_FUNCTION();
-
-  turi::start_server(s_opts, server_initializer);
-
-  ERROR_HANDLE_END(error);
-}
-
 EXPORT tc_model* tc_model_new(const char* model_name, tc_error** error) { 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
+  turi::ensure_server_initialized();
 
   std::shared_ptr<turi::model_base> model 
     = turi::get_unity_global_singleton()->create_toolkit_class(model_name); 
@@ -65,6 +27,7 @@ EXPORT tc_model* tc_model_new(const char* model_name, tc_error** error) {
 
 EXPORT tc_model* tc_model_load(const char* url, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
   CHECK_NOT_NULL(error, url, "url", nullptr);
 
   turi::variant_map_type result =
@@ -91,6 +54,7 @@ EXPORT tc_model* tc_model_load(const char* url, tc_error** error) {
 EXPORT void tc_model_save(
     const tc_model* model, const char* url, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
   CHECK_NOT_NULL(error, model, "model");
   CHECK_NOT_NULL(error, url, "url");
 
@@ -101,6 +65,7 @@ EXPORT void tc_model_save(
 
 EXPORT const char* tc_model_name(const tc_model* model, tc_error **error) { 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   return model->value->name().c_str();
   ERROR_HANDLE_END(error, "");
@@ -111,6 +76,7 @@ EXPORT tc_variant* tc_model_call_method(const tc_model* model, const char* metho
                                         const tc_parameters* arguments, tc_error** error) {
   
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   turi::variant_type result = model->value->call_function(method, arguments->value); 
 
@@ -118,11 +84,4 @@ EXPORT tc_variant* tc_model_call_method(const tc_model* model, const char* metho
   
   ERROR_HANDLE_END(error, NULL);
 }
-
-EXPORT void tc_model_destroy(tc_model* model) {
-  delete model; 
-}
-
-
-
 

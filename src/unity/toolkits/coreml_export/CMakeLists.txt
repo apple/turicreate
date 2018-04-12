@@ -51,6 +51,7 @@ make_library(unity_coreml_model_export
     xgboost_exporter.cpp
     linear_models_exporter.cpp
     coreml_export_utils.cpp
+    ml_model_wrapper.cpp
   REQUIRES
     numerics
     protobuf

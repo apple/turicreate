@@ -224,7 +224,8 @@ struct fill_named_in_args {
     if (n < inargnames.size()) {
       variant_map_type::const_iterator kv = params->find(inargnames[n]);
       if (kv == params->end()) {
-        log_and_throw("Missing toolkit function parameter: " + inargnames[n]);
+        std_log_and_throw(std::invalid_argument,
+            "Missing toolkit function parameter: " + inargnames[n]);
       }
 
       boost::fusion::at_c<n>(*inargs) = read_arg<element_type>(kv->second);

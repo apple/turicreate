@@ -1,7 +1,7 @@
 #ifndef TURI_CAPI_WRAPPER_STRUCTS_HPP_
 #define TURI_CAPI_WRAPPER_STRUCTS_HPP_
 
-#include <capi/TuriCore.h>
+#include <capi/TuriCreate.h>
 #include <unity/lib/variant.hpp>
 #include <unity/lib/variant_converter.hpp>
 #include <flexible_type/flexible_type.hpp>
@@ -69,7 +69,7 @@ struct capi_struct_type_info {
   }
 
 typedef std::map<std::string, turi::aggregate::groupby_descriptor_type> groupby_aggregator_map_type;
-// TODO: make this more full featured than just a string error message.
+
 DECLARE_CAPI_WRAPPER_STRUCT(tc_error, std::string);
 DECLARE_CAPI_WRAPPER_STRUCT(tc_datetime, turi::flex_date_time);
 DECLARE_CAPI_WRAPPER_STRUCT(tc_flex_dict, turi::flex_dict);

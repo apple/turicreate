@@ -1,5 +1,6 @@
-#include <capi/TuriCore.h>
+#include <capi/TuriCreate.h>
 #include <capi/impl/capi_error_handling.hpp>
+#include <capi/impl/capi_initialization_internal.hpp>
 #include <string>
 #include <export.hpp>
 
@@ -11,7 +12,7 @@ extern "C" {
  *
  *  Return object is a null-terminated c-style message string.
  *
- *  The char buffer returned is invalidated by calling tc_error_destroy.
+ *  The char buffer returned is invalidated by calling tc_release.
  */
 EXPORT const char* tc_error_message(const tc_error* error) {
   if(error == NULL) {
@@ -19,21 +20,6 @@ EXPORT const char* tc_error_message(const tc_error* error) {
   } else {
     return error->value.c_str();
   }
-}
-
-
-/** Destroys an error structure, deallocating error content data.
- *
- *  Only needs to be called if an error occured.
- *
- *  Sets the pointer to the error struct to NULL.
- */
-EXPORT void tc_error_destroy(tc_error** error_ptr) {
-  if(*error_ptr != NULL) {
-    delete (*error_ptr);
-  }
-
-  *error_ptr = NULL;
 }
 
 } // End the extern "C" block
@@ -60,30 +46,10 @@ void fill_error_from_exception(std::exception_ptr eptr, tc_error** error) {
 
 void set_error(tc_error** error, const std::string& message) {
   if(*error != NULL) {
-    tc_error_destroy(error);
+    tc_release(error);
   }
 
-  *error = new tc_error;
+  *error = new_tc_error();
 
   (*error)->value = message;
 }
-
-
-void __set_null_error(tc_error** error, int pos, const char* struct_name, const char* function) {
-  std::ostringstream ss;
-  ss << "In function " << function << ", parameter " << pos
-     << "; expecting struct of type " << struct_name
-     << ", got null.";
-  set_error(error, ss.str());
-}
-
-void __set_type_error(tc_error** error, int pos, const char* struct_name, const char* function,
-    const char* actual_type) {
-
-  std::ostringstream ss;
-  ss << "In function " << function << ", parameter " << pos
-     << ": expected struct of type " << struct_name
-     << ", got struct of type " << actual_type << ".";
-  set_error(error, ss.str());
-}
-

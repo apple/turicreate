@@ -1,6 +1,7 @@
-#include <capi/TuriCore.h>
+#include <capi/TuriCreate.h>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
+#include <capi/impl/capi_initialization_internal.hpp>
 #include <sframe/sframe.hpp>
 #include <flexible_type/flexible_type.hpp>
 #include <unity/lib/unity_sframe.hpp>
@@ -13,11 +14,12 @@
 /*   Parameter List                                                           */
 /*                                                                            */
 /******************************************************************************/
-
+extern "C" {
 
 // Create a new set of parameters
 EXPORT tc_parameters* tc_parameters_create_empty(tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   return new_tc_parameters();
 
@@ -27,6 +29,7 @@ EXPORT tc_parameters* tc_parameters_create_empty(tc_error** error) {
 // Add a new value to the set of parameters
 EXPORT void tc_parameters_add(tc_parameters* params, const char* name, const tc_variant* variant, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters");
   CHECK_NOT_NULL(error, variant, "tc_variant");
@@ -39,6 +42,7 @@ EXPORT void tc_parameters_add(tc_parameters* params, const char* name, const tc_
 // Returns true if an entry exists, false otherwise   
 EXPORT bool tc_parameters_entry_exists(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
 
@@ -50,6 +54,7 @@ EXPORT bool tc_parameters_entry_exists(const tc_parameters* params, const char* 
 // Retrieves a variant from the set of parameters
 EXPORT tc_variant* tc_parameters_retrieve(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", NULL);
 
@@ -63,6 +68,7 @@ EXPORT tc_variant* tc_parameters_retrieve(const tc_parameters* params, const cha
 // Convenient specializations of tc_parameters_add
 EXPORT void tc_parameters_add_int64(tc_parameters* params, const char* name, int64_t value, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters");
 
@@ -73,6 +79,7 @@ EXPORT void tc_parameters_add_int64(tc_parameters* params, const char* name, int
 
 EXPORT void tc_parameters_add_double(tc_parameters* params, const char* name, double value, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters");
 
@@ -83,6 +90,7 @@ EXPORT void tc_parameters_add_double(tc_parameters* params, const char* name, do
 
 EXPORT void tc_parameters_add_cstring(tc_parameters* params, const char* name, const char* str, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters");
   CHECK_NOT_NULL(error, str, "cstring");
@@ -94,6 +102,7 @@ EXPORT void tc_parameters_add_cstring(tc_parameters* params, const char* name, c
 
 EXPORT void tc_parameters_add_string(tc_parameters* params, const char* name, const char* str, uint64_t n, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters");
   CHECK_NOT_NULL(error, str, "string");
@@ -105,6 +114,7 @@ EXPORT void tc_parameters_add_string(tc_parameters* params, const char* name, co
 
 EXPORT void tc_parameters_add_double_array(tc_parameters* params, const char* name, const double* data, uint64_t n, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters");
   CHECK_NOT_NULL(error, data, "data");
@@ -116,6 +126,7 @@ EXPORT void tc_parameters_add_double_array(tc_parameters* params, const char* na
 
 EXPORT void tc_parameters_add_flex_list(tc_parameters* params, const char* name, const tc_flex_list* fl, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters");
   CHECK_NOT_NULL(error, fl, "tc_flex_list");
@@ -127,6 +138,7 @@ EXPORT void tc_parameters_add_flex_list(tc_parameters* params, const char* name,
 
 EXPORT void tc_parameters_add_flex_dict(tc_parameters* params, const char* name, const tc_flex_dict* fd, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters");
   CHECK_NOT_NULL(error, fd, "tc_flex_dict");
@@ -138,6 +150,7 @@ EXPORT void tc_parameters_add_flex_dict(tc_parameters* params, const char* name,
 
 EXPORT void tc_parameters_add_datetime(tc_parameters* params, const char* name, const tc_datetime* dt, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters");
   CHECK_NOT_NULL(error, dt, "tc_datetime");
@@ -149,6 +162,7 @@ EXPORT void tc_parameters_add_datetime(tc_parameters* params, const char* name, 
 
 EXPORT void tc_parameters_add_image(tc_parameters* params, const char* name, const tc_flex_image* fi, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters");
   CHECK_NOT_NULL(error, fi, "tc_flex_image");
@@ -160,6 +174,7 @@ EXPORT void tc_parameters_add_image(tc_parameters* params, const char* name, con
 
 EXPORT void tc_parameters_add_flexible_type(tc_parameters* params, const char* name, const tc_flexible_type* ft, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters");
   CHECK_NOT_NULL(error, ft, "tc_flexible_type");
@@ -171,6 +186,7 @@ EXPORT void tc_parameters_add_flexible_type(tc_parameters* params, const char* n
 
 EXPORT void tc_parameters_add_sarray(tc_parameters* params, const char* name, const tc_sarray* sa, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters");
   CHECK_NOT_NULL(error, sa, "tc_sarray");
@@ -182,6 +198,7 @@ EXPORT void tc_parameters_add_sarray(tc_parameters* params, const char* name, co
 
 EXPORT void tc_parameters_add_sframe(tc_parameters* params, const char* name, const tc_sframe* sf, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters");
   CHECK_NOT_NULL(error, sf, "tc_sframe");
@@ -193,6 +210,7 @@ EXPORT void tc_parameters_add_sframe(tc_parameters* params, const char* name, co
 
 EXPORT void tc_parameters_add_parameters(tc_parameters* params, const char* name, const tc_parameters* p, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters");
   CHECK_NOT_NULL(error, p, "tc_parameters");
@@ -204,6 +222,7 @@ EXPORT void tc_parameters_add_parameters(tc_parameters* params, const char* name
 
 EXPORT void tc_parameters_add_model(tc_parameters* params, const char* name, const tc_model* m, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters");
   CHECK_NOT_NULL(error, m, "tc_model");
@@ -215,6 +234,7 @@ EXPORT void tc_parameters_add_model(tc_parameters* params, const char* name, con
 
 EXPORT bool tc_parameters_is_int64(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
 
@@ -228,6 +248,7 @@ EXPORT bool tc_parameters_is_int64(const tc_parameters* params, const char* name
 
 EXPORT bool tc_parameters_is_double(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
 
@@ -241,6 +262,7 @@ EXPORT bool tc_parameters_is_double(const tc_parameters* params, const char* nam
 
 EXPORT bool tc_parameters_is_cstring(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
 
@@ -254,6 +276,7 @@ EXPORT bool tc_parameters_is_cstring(const tc_parameters* params, const char* na
 
 EXPORT bool tc_parameters_is_string(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
 
@@ -267,6 +290,7 @@ EXPORT bool tc_parameters_is_string(const tc_parameters* params, const char* nam
 
 EXPORT bool tc_parameters_is_double_array(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
 
@@ -280,6 +304,7 @@ EXPORT bool tc_parameters_is_double_array(const tc_parameters* params, const cha
 
 EXPORT bool tc_parameters_is_flex_list(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
 
@@ -293,6 +318,7 @@ EXPORT bool tc_parameters_is_flex_list(const tc_parameters* params, const char* 
 
 EXPORT bool tc_parameters_is_flex_dict(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
 
@@ -306,6 +332,7 @@ EXPORT bool tc_parameters_is_flex_dict(const tc_parameters* params, const char* 
 
 EXPORT bool tc_parameters_is_datetime(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
 
@@ -319,6 +346,7 @@ EXPORT bool tc_parameters_is_datetime(const tc_parameters* params, const char* n
 
 EXPORT bool tc_parameters_is_image(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
 
@@ -334,6 +362,7 @@ EXPORT bool tc_parameters_is_image(const tc_parameters* params, const char* name
 EXPORT bool tc_parameters_is_flexible_type(const tc_parameters* params,
     const char* name, tc_error** error) {  
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
 
@@ -347,6 +376,7 @@ EXPORT bool tc_parameters_is_flexible_type(const tc_parameters* params,
 EXPORT bool tc_parameters_is_sarray(const tc_parameters* params,
       const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
 
@@ -360,6 +390,7 @@ EXPORT bool tc_parameters_is_sarray(const tc_parameters* params,
 // Query the type of the parameter
 EXPORT bool tc_parameters_is_sframe(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
 
@@ -372,6 +403,7 @@ EXPORT bool tc_parameters_is_sframe(const tc_parameters* params, const char* nam
 
 EXPORT bool tc_parameters_is_parameters(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
 
@@ -384,6 +416,7 @@ EXPORT bool tc_parameters_is_parameters(const tc_parameters* params, const char*
 
 EXPORT bool tc_parameters_is_model(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", false);
 
@@ -396,6 +429,7 @@ EXPORT bool tc_parameters_is_model(const tc_parameters* params, const char* name
 
 EXPORT int64_t tc_parameters_retrieve_int64(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", NULL);
 
@@ -407,6 +441,7 @@ EXPORT int64_t tc_parameters_retrieve_int64(const tc_parameters* params, const c
  
 EXPORT double tc_parameters_retrieve_double(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", NULL);
 
@@ -418,6 +453,7 @@ EXPORT double tc_parameters_retrieve_double(const tc_parameters* params, const c
  
 EXPORT tc_flexible_type* tc_parameters_retrieve_string(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", NULL);
 
@@ -429,6 +465,7 @@ EXPORT tc_flexible_type* tc_parameters_retrieve_string(const tc_parameters* para
 
 EXPORT tc_flexible_type* tc_parameters_retrieve_array(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", NULL);
 
@@ -440,6 +477,7 @@ EXPORT tc_flexible_type* tc_parameters_retrieve_array(const tc_parameters* param
  
 EXPORT tc_flex_list* tc_parameters_retrieve_flex_list(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", NULL);
 
@@ -451,6 +489,7 @@ EXPORT tc_flex_list* tc_parameters_retrieve_flex_list(const tc_parameters* param
 
 EXPORT tc_flex_dict* tc_parameters_retrieve_flex_dict(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", NULL);
 
@@ -462,6 +501,7 @@ EXPORT tc_flex_dict* tc_parameters_retrieve_flex_dict(const tc_parameters* param
 
 EXPORT tc_datetime* tc_parameters_retrieve_datetime(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", NULL);
 
@@ -473,6 +513,7 @@ EXPORT tc_datetime* tc_parameters_retrieve_datetime(const tc_parameters* params,
 
 EXPORT tc_flex_image* tc_parameters_retrieve_image(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", NULL);
 
@@ -486,6 +527,7 @@ EXPORT tc_flex_image* tc_parameters_retrieve_image(const tc_parameters* params, 
 EXPORT tc_flexible_type* tc_parameters_retrieve_flexible_type(
     const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", NULL);
 
@@ -500,6 +542,7 @@ EXPORT tc_sarray* tc_parameters_retrieve_sarray(const tc_parameters* params,
     const char* name, tc_error** error) {
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
     
   CHECK_NOT_NULL(error, params, "tc_parameters", NULL);
 
@@ -515,6 +558,7 @@ EXPORT tc_sframe* tc_parameters_retrieve_sframe(
     const char* name, tc_error** error) {
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", NULL);
 
@@ -526,6 +570,7 @@ EXPORT tc_sframe* tc_parameters_retrieve_sframe(
 
 EXPORT tc_parameters* tc_parameters_retrieve_parameters(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", NULL);
 
@@ -537,6 +582,7 @@ EXPORT tc_parameters* tc_parameters_retrieve_parameters(const tc_parameters* par
  
 EXPORT tc_model* tc_parameters_retrieve_model(const tc_parameters* params, const char* name, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, params, "tc_parameters", NULL);
 
@@ -547,7 +593,4 @@ EXPORT tc_model* tc_parameters_retrieve_model(const tc_parameters* params, const
   ERROR_HANDLE_END(error, NULL); 
 }
 
-// delete the parameter container. 
-EXPORT void tc_parameters_destroy(tc_parameters* params) {
-  delete params; 
 }

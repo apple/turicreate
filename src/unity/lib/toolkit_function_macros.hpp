@@ -59,7 +59,9 @@
  *
  */
 #define BEGIN_FUNCTION_REGISTRATION                         \
-   __attribute__((visibility("default"))) std::vector<::turi::toolkit_function_specification> get_toolkit_function_registration() { \
+  __attribute__((visibility("default")))                  \
+      std::vector<::turi::toolkit_function_specification> \
+      get_toolkit_function_registration() {               \
      std::vector<::turi::toolkit_function_specification> specs;
 
 /**

@@ -2,7 +2,7 @@
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
 
-#include <capi/TuriCore.h>
+#include <capi/TuriCreate.h>
 #include <vector>
 #include "capi_utils.hpp"
 
@@ -14,41 +14,41 @@ struct capi_test_parameters {
 
 
    tc_parameters* p = tc_parameters_create_empty(&error);
-   TS_ASSERT(error == NULL);
+   CAPI_CHECK_ERROR(error);
 
    tc_flexible_type* ft = tc_ft_create_from_double(9.0, &error);
-   TS_ASSERT(error == NULL);
+   CAPI_CHECK_ERROR(error);
 
    tc_parameters_add_flexible_type(p, "arg1", ft, &error); 
-   TS_ASSERT(error == NULL);
+   CAPI_CHECK_ERROR(error);
 
-   tc_ft_destroy(ft);
+   tc_release(ft);
 
    int is_ft = tc_parameters_is_flexible_type(p, "arg1", &error); 
-   TS_ASSERT(error == NULL);
+   CAPI_CHECK_ERROR(error);
    TS_ASSERT(is_ft == 1); 
 
 
    ft = tc_parameters_retrieve_flexible_type(p, "arg1", &error); 
-   TS_ASSERT(error == NULL); 
+   CAPI_CHECK_ERROR(error);
 
    int is_dbl = tc_ft_is_double(ft); 
    TS_ASSERT(is_dbl);
 
    double x = tc_ft_double(ft, &error); 
-   TS_ASSERT(error == NULL); 
+   CAPI_CHECK_ERROR(error);
    TS_ASSERT_EQUALS(x, 9.0);
-   tc_ft_destroy(ft);
+   tc_release(ft);
 
    is_dbl = tc_parameters_is_double(p, "arg1", &error);
-   TS_ASSERT(error == NULL); 
+   CAPI_CHECK_ERROR(error);
    TS_ASSERT(is_dbl);
 
    x = tc_parameters_retrieve_double(p, "arg1", &error);
-   TS_ASSERT(error == NULL); 
+   CAPI_CHECK_ERROR(error);
    TS_ASSERT_EQUALS(x, 9.0);
 
-   tc_parameters_destroy(p);
+   tc_release(p);
  }
  
  void test_parameters_sarray() {
@@ -56,17 +56,17 @@ struct capi_test_parameters {
    tc_error* error = NULL;
 
    tc_parameters* p = tc_parameters_create_empty(&error);
-   TS_ASSERT(error == NULL);
+   CAPI_CHECK_ERROR(error);
 
    tc_sarray* sa = make_sarray_double({1.0, 2.0, 4.0});
 
    tc_parameters_add_sarray(p, "arg1", sa, &error); 
-   TS_ASSERT(error == NULL);
+   CAPI_CHECK_ERROR(error);
 
-   tc_sarray_destroy(sa);
+   tc_release(sa);
 
    int is_sa = tc_parameters_is_sarray(p, "arg1", &error); 
-   TS_ASSERT(error == NULL);
+   CAPI_CHECK_ERROR(error);
    TS_ASSERT(is_sa == 1); 
 
    sa = tc_parameters_retrieve_sarray(p, "arg1", &error); 
@@ -75,9 +75,9 @@ struct capi_test_parameters {
 
    TS_ASSERT_EQUALS(size, 3);
 
-   tc_sarray_destroy(sa);
+   tc_release(sa);
 
-   tc_parameters_destroy(p);
+   tc_release(p);
   
  }
  
@@ -86,7 +86,7 @@ struct capi_test_parameters {
    tc_error* error = NULL;
 
    tc_parameters* p = tc_parameters_create_empty(&error);
-   TS_ASSERT(error == NULL);
+   CAPI_CHECK_ERROR(error);
 
    typedef std::pair<std::string, std::vector<double> > p_t; 
    tc_sframe* sf = make_sframe_double(
@@ -95,12 +95,12 @@ struct capi_test_parameters {
        });
 
    tc_parameters_add_sframe(p, "arg1", sf, &error); 
-   TS_ASSERT(error == NULL);
+   CAPI_CHECK_ERROR(error);
 
-   tc_sframe_destroy(sf);
+   tc_release(sf);
 
    int is_sf = tc_parameters_is_sframe(p, "arg1", &error); 
-   TS_ASSERT(error == NULL);
+   CAPI_CHECK_ERROR(error);
    TS_ASSERT(is_sf == 1); 
 
    sf = tc_parameters_retrieve_sframe(p, "arg1", &error); 
@@ -113,8 +113,8 @@ struct capi_test_parameters {
 
    TS_ASSERT_EQUALS(cols, 2); 
 
-   tc_sframe_destroy(sf);
-   tc_parameters_destroy(p);
+   tc_release(sf);
+   tc_release(p);
  }
 
 

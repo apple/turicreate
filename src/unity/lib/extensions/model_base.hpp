@@ -108,38 +108,38 @@ class EXPORT model_base: public cppipc::ipc_object_base {
    * Lists all the registered functions.
    * Returns a map of function name to array of argument names for the function.
    */
-  std::map<std::string, std::vector<std::string> > list_functions();
+  const std::map<std::string, std::vector<std::string> >& list_functions();
 
   /**
    * Lists all the get-table properties of the class.
    */
-  std::vector<std::string> list_get_properties();
+  const std::vector<std::string>& list_get_properties();
 
   /**
    * Lists all the set-table properties of the class.
    */
-  std::vector<std::string> list_set_properties();
+  const std::vector<std::string>& list_set_properties();
 
   /**
    * Calls a user defined function.
    */
-  variant_type call_function(std::string function, variant_map_type argument);
+  variant_type call_function(const std::string& function, variant_map_type argument);
 
   /**
    * Reads a property.
    */
-  variant_type get_property(std::string property);
+  variant_type get_property(const std::string& property);
  
   /**
    * Sets a property. The new value of the property should appear in the
    * argument map under the key "value".
    */ 
-  variant_type set_property(std::string property, variant_map_type argument);
+  variant_type set_property(const std::string& property, variant_map_type argument);
 
   /**
    * Returns the toolkit documentation for a function or property.
    */
-  std::string get_docstring(std::string symbol);
+  const std::string& get_docstring(const std::string& symbol);
 
   // TODO: Remove this vestigial macro invocation once the dependency on cppipc
   // has been removed.
@@ -166,46 +166,63 @@ class EXPORT model_base: public cppipc::ipc_object_base {
   /**
    * Adds a function with the specified name, and argument list.
    */
-  void register_function(
-      std::string fnname, std::vector<std::string> arguments, impl_fn fn);
+  void register_function(std::string fnname,
+                         const std::vector<std::string>& arguments, impl_fn fn);
 
   /**
    * Registers default argument values
    */
-  void register_defaults(std::string fnname, 
+  void register_defaults(const std::string& fnname,
                          const variant_map_type& arguments);
 
   /**
    * Adds a property setter with the specified name.
    */
-  void register_setter(std::string propname, impl_fn setfn);
+  void register_setter(const std::string& propname, impl_fn setfn);
 
   /**
    * Adds a property getter with the specified name.
    */
-  void register_getter(std::string propname, impl_fn getfn);
+  void register_getter(const std::string& propname, impl_fn getfn);
 
   /**
    * Adds a docstring for the specified function or property name.
    */
-  void register_docstring(std::pair<std::string, std::string> fnname_docstring);
+  void register_docstring(const std::pair<std::string, std::string>& fnname_docstring);
 
  private:
   // whether perform registration has been called
   bool m_registered = false;
   // a description of all the function arguments. This is returned by 
-  // list_functions()
+  // list_functions().
   std::map<std::string, std::vector<std::string>> m_function_args;
-  // default arguments if any
+
+  // default arguments, if any
   std::map<std::string, variant_map_type> m_function_default_args;
   // The implementation of each function
   std::map<std::string, impl_fn> m_function_list;
   // The implementation of each setter function
   std::map<std::string, impl_fn> m_set_property_list;
+  mutable std::vector<std::string> m_set_property_cache;
+
   // The implementation of each getter function
   std::map<std::string, impl_fn > m_get_property_list;
+  mutable std::vector<std::string> m_get_property_cache;
+
   // The docstring for each symbol
   std::map<std::string, std::string> m_docstring;
+
+  // Internal helper functions
+  inline void _check_registration();
+
+  template <typename T>
+  GL_COLD_NOINLINE_ERROR
+  void _raise_not_found_error(const std::string& name,
+                             const std::map<std::string, T>& m);
+
+  std::string _make_method_name(const std::string& function);
+
+
 };
 
 // TODO: Remove this proxy subclass once the dependency on cppipc has been

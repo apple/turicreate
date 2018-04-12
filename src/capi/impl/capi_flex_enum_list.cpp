@@ -1,6 +1,7 @@
-#include <capi/TuriCore.h>
+#include <capi/TuriCreate.h>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
+#include <capi/impl/capi_initialization_internal.hpp>
 #include <export.hpp>
 #include <flexible_type/flexible_type.hpp>
 
@@ -15,14 +16,16 @@ extern "C" {
 
 EXPORT tc_flex_enum_list* tc_flex_enum_list_create(tc_error** error) {
 ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
-return new tc_flex_enum_list;
+  return new_tc_flex_enum_list();
 
 ERROR_HANDLE_END(error, NULL);
 }
 
 EXPORT tc_flex_enum_list* tc_flex_enum_list_create_with_capacity(uint64_t capacity, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   tc_flex_enum_list* ret = new tc_flex_enum_list;
   ret->value.reserve(capacity);
@@ -37,6 +40,7 @@ EXPORT uint64_t tc_flex_enum_list_add_element(tc_flex_enum_list* fl, const tc_ft
    tc_error** error) {
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, ft, "tc_ft_type_enum", NULL);
 
@@ -61,6 +65,7 @@ EXPORT tc_ft_type_enum tc_flex_enum_list_extract_element(
     const tc_flex_enum_list* fl, uint64_t index, tc_error **error) {
 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   if(fl == NULL) {
     set_error(error, "tc_flex_enum_list instance null.");
@@ -81,10 +86,5 @@ EXPORT uint64_t tc_flex_enum_list_size(const tc_flex_enum_list* fl) {
   if(fl == NULL) { return 0; }
   return fl->value.size();
 }
-
-EXPORT void tc_flex_enum_list_destroy(tc_flex_enum_list* fl) {
-  delete fl;
-}
-
 
 }

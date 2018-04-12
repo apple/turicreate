@@ -764,7 +764,7 @@ size_t logistic_regression::get_version() const{
   return LOGISTIC_REGRESSION_MODEL_VERSION;
 }
 
-void logistic_regression::export_to_coreml(const std::string& filename) {
+std::shared_ptr<MLModelWrapper> logistic_regression::export_to_coreml() {
 
   std::string prob_column_name = ml_mdata->target_column_name() + " Probability";
   CoreML::Pipeline  pipeline = CoreML::Pipeline::Classifier(ml_mdata->target_column_name(), prob_column_name, "");
@@ -834,10 +834,9 @@ void logistic_regression::export_to_coreml(const std::string& filename) {
   add_metadata(pipeline.m_spec, context_metadata);
 
   // Save pipeline
-  CoreML::Result r = pipeline.save(filename);
-  if(!r.good()) {
-    log_and_throw("Could not export model: " + r.message());
-  }
+  auto model_wrapper = std::make_shared<MLModelWrapper>(std::make_shared<CoreML::Pipeline>(pipeline));
+
+  return model_wrapper;
 }
 
 } // supervised

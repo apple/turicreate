@@ -1,7 +1,8 @@
-#include <capi/TuriCore.h>
+#include <capi/TuriCreate.h>
 #include <unity/lib/toolkit_util.hpp>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
+#include <capi/impl/capi_initialization_internal.hpp>
 #include <flexible_type/flexible_type.hpp>
 #include <export.hpp>
 
@@ -10,10 +11,11 @@
 /*   Variant List                                                             */
 /*                                                                            */
 /******************************************************************************/
-
+extern "C" {
 
 EXPORT tc_variant* tc_variant_create_from_int64(int64_t n, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   return new_tc_variant(n);
 
@@ -22,6 +24,7 @@ EXPORT tc_variant* tc_variant_create_from_int64(int64_t n, tc_error** error) {
 
 EXPORT tc_variant* tc_variant_create_from_double(double n, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   return new_tc_variant(n);
 
@@ -31,6 +34,7 @@ EXPORT tc_variant* tc_variant_create_from_double(double n, tc_error** error){
 
 EXPORT tc_variant* tc_variant_create_from_cstring(const char* str, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, str, "CString", NULL);
 
@@ -42,6 +46,7 @@ EXPORT tc_variant* tc_variant_create_from_cstring(const char* str, tc_error** er
 
 EXPORT tc_variant* tc_variant_create_from_string(const char* str, uint64_t n, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, str, "String", NULL);
 
@@ -53,6 +58,7 @@ EXPORT tc_variant* tc_variant_create_from_string(const char* str, uint64_t n, tc
 
 EXPORT tc_variant* tc_variant_create_from_double_array(const double* data, uint64_t n, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, data, "Double Array", NULL);
 
@@ -64,8 +70,9 @@ EXPORT tc_variant* tc_variant_create_from_double_array(const double* data, uint6
 
 EXPORT tc_variant* tc_variant_create_from_flex_list(const tc_flex_list* fl, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
-  CHECK_INPUT_STRUCT(1, fl, tc_flex_list, error, NULL);
+  CHECK_NOT_NULL(error, fl, "Flex List", NULL);
 
   return new_tc_variant(fl->value);
 
@@ -75,6 +82,7 @@ EXPORT tc_variant* tc_variant_create_from_flex_list(const tc_flex_list* fl, tc_e
 
 EXPORT tc_variant* tc_variant_create_from_flex_dict(const tc_flex_dict* td, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, td, "Flex Dictionary", NULL);
 
@@ -85,6 +93,7 @@ EXPORT tc_variant* tc_variant_create_from_flex_dict(const tc_flex_dict* td, tc_e
 
 EXPORT tc_variant* tc_variant_create_from_datetime(const tc_datetime* dt, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, turi::flexible_type(dt->value), "Flex Datetime", NULL);
 
@@ -95,6 +104,7 @@ EXPORT tc_variant* tc_variant_create_from_datetime(const tc_datetime* dt, tc_err
 
 EXPORT tc_variant* tc_variant_create_from_image(const tc_flex_image* fi, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, turi::flexible_type(fi->value), "Flex Image", NULL);
 
@@ -106,6 +116,7 @@ EXPORT tc_variant* tc_variant_create_from_image(const tc_flex_image* fi, tc_erro
 
 EXPORT tc_variant* tc_variant_create_from_flexible_type(const tc_flexible_type* ft, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, ft, "Flex Type", NULL);
 
@@ -117,6 +128,7 @@ EXPORT tc_variant* tc_variant_create_from_flexible_type(const tc_flexible_type* 
 
 EXPORT tc_variant* tc_variant_create_from_sarray(const tc_sarray* sa, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sa, "SArray", NULL);
 
@@ -127,6 +139,7 @@ EXPORT tc_variant* tc_variant_create_from_sarray(const tc_sarray* sa, tc_error**
 
 EXPORT tc_variant* tc_variant_create_from_sframe(const tc_sframe* sf, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sf, "SFrame", NULL);
 
@@ -137,6 +150,7 @@ EXPORT tc_variant* tc_variant_create_from_sframe(const tc_sframe* sf, tc_error**
 
 EXPORT tc_variant* tc_variant_create_from_parameters(const tc_parameters* tp, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, tp, "Parameters", NULL);
 
@@ -148,6 +162,7 @@ EXPORT tc_variant* tc_variant_create_from_parameters(const tc_parameters* tp, tc
 
 EXPORT tc_variant* tc_variant_create_from_model(const tc_model* tm, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, tm, "Model", NULL);
 
@@ -159,6 +174,7 @@ EXPORT tc_variant* tc_variant_create_from_model(const tc_model* tm, tc_error** e
 
 EXPORT tc_variant* tc_variant_create_copy(const tc_variant* tv, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, tv, "Variant", NULL);
 
@@ -226,6 +242,7 @@ EXPORT int tc_variant_is_model(const tc_variant* ft){
 
 EXPORT int64_t tc_variant_int64(const tc_variant* ft, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   return turi::variant_get_ref<turi::flexible_type>(ft->value).get<turi::flex_int>();
 
@@ -234,6 +251,7 @@ EXPORT int64_t tc_variant_int64(const tc_variant* ft, tc_error** error){
 
 EXPORT double tc_variant_double(const tc_variant* ft, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   return turi::variant_get_ref<turi::flexible_type>(ft->value).get<turi::flex_float>();
 
@@ -242,6 +260,7 @@ EXPORT double tc_variant_double(const tc_variant* ft, tc_error** error){
 
 EXPORT uint64_t tc_variant_string_length(const tc_variant* ft, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   if(ft == NULL) {
     set_error(error, "Flexible type is null");
@@ -260,6 +279,7 @@ EXPORT uint64_t tc_variant_string_length(const tc_variant* ft, tc_error** error)
 
 EXPORT const char* tc_variant_string_data(const tc_variant* ft, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, ft, "Flexible type", NULL);
 
@@ -275,6 +295,7 @@ EXPORT const char* tc_variant_string_data(const tc_variant* ft, tc_error** error
 
 EXPORT uint64_t tc_variant_array_length(const tc_variant* ft, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, ft, "Flexible type", NULL);
 
@@ -290,6 +311,7 @@ EXPORT uint64_t tc_variant_array_length(const tc_variant* ft, tc_error** error){
 
 EXPORT const double* tc_variant_array_data(const tc_variant* ft, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, ft, "Flexible type", NULL);
 
@@ -306,6 +328,7 @@ EXPORT const double* tc_variant_array_data(const tc_variant* ft, tc_error** erro
 
 EXPORT tc_flex_list* tc_variant_flex_list(const tc_variant* ft, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, ft, "Flexible type", NULL);
 
@@ -321,6 +344,7 @@ EXPORT tc_flex_list* tc_variant_flex_list(const tc_variant* ft, tc_error** error
 
 EXPORT tc_flex_dict* tc_variant_flex_dict(const tc_variant* ft, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, ft, "Flexible type", NULL);
 
@@ -336,6 +360,7 @@ EXPORT tc_flex_dict* tc_variant_flex_dict(const tc_variant* ft, tc_error** error
 
 EXPORT tc_flex_image* tc_variant_flex_image(const tc_variant* ft, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, ft, "Flexible type", NULL);
 
@@ -350,6 +375,7 @@ EXPORT tc_flex_image* tc_variant_flex_image(const tc_variant* ft, tc_error** err
 }
 EXPORT tc_datetime* tc_variant_datetime(const tc_variant* ft, tc_error** error){
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, ft, "Flexible type", NULL);
 
@@ -366,6 +392,7 @@ EXPORT tc_datetime* tc_variant_datetime(const tc_variant* ft, tc_error** error){
 EXPORT tc_flexible_type* tc_variant_flexible_type(
     const tc_variant* var, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
   CHECK_NOT_NULL(error, var, "Variant", nullptr);
 
   if (!tc_variant_is_flexible_type(var)) {
@@ -381,6 +408,7 @@ EXPORT tc_flexible_type* tc_variant_flexible_type(
 
 EXPORT tc_sarray* tc_variant_sarray(const tc_variant* var, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
   CHECK_NOT_NULL(error, var, "Variant", nullptr);
 
   if (!tc_variant_is_sarray(var)) {
@@ -397,6 +425,7 @@ EXPORT tc_sarray* tc_variant_sarray(const tc_variant* var, tc_error** error) {
 
 EXPORT tc_sframe* tc_variant_sframe(const tc_variant* var, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
   CHECK_NOT_NULL(error, var, "Variant", nullptr);
 
   if (!tc_variant_is_sframe(var)) {
@@ -414,6 +443,7 @@ EXPORT tc_sframe* tc_variant_sframe(const tc_variant* var, tc_error** error) {
 EXPORT tc_parameters* tc_variant_parameters(
     const tc_variant* var, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
   CHECK_NOT_NULL(error, var, "Variant", nullptr);
 
   if (!tc_variant_is_parameters(var)) {
@@ -429,6 +459,7 @@ EXPORT tc_parameters* tc_variant_parameters(
 
 EXPORT tc_model* tc_variant_model(const tc_variant* var, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
   CHECK_NOT_NULL(error, var, "Variant", nullptr);
 
   if (!tc_variant_is_model(var)) {
@@ -442,6 +473,4 @@ EXPORT tc_model* tc_variant_model(const tc_variant* var, tc_error** error) {
   ERROR_HANDLE_END(error, nullptr);
 }
 
-EXPORT void tc_variant_destroy(tc_variant* v) {
-  delete v;
 }

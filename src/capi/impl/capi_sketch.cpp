@@ -1,6 +1,7 @@
-#include <capi/TuriCore.h>
+#include <capi/TuriCreate.h>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
+#include <capi/impl/capi_initialization_internal.hpp>
 #include <capi/impl/capi_sketch.hpp>
 #include <export.hpp> 
 
@@ -11,6 +12,7 @@ extern "C" {
 
   EXPORT tc_sketch* tc_sketch_create(const tc_sarray* sa, bool background, const tc_flex_list* keys, tc_error **error) {
     ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
     tc_sketch* ret = new_tc_sketch();
     ret->value->construct_from_sarray(
@@ -38,6 +40,7 @@ extern "C" {
 
   EXPORT double tc_sketch_get_quantile(tc_sketch* sk, double quantile, tc_error **error) {
     ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
     CHECK_NOT_NULL(error, sk, "Sketch", 0.0);
     return sk->value->get_quantile(quantile);
@@ -47,6 +50,7 @@ extern "C" {
 
   EXPORT double tc_sketch_frequency_count(tc_sketch* sk, const tc_flexible_type* value, tc_error **error) {
     ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
     CHECK_NOT_NULL(error, sk, "Sketch", 0.0);
     CHECK_NOT_NULL(error, value, "Flexible type", 0.0);
@@ -82,6 +86,7 @@ extern "C" {
 
   EXPORT tc_sketch* tc_sketch_element_sub_sketch(const tc_sketch* sk, const tc_flexible_type* key, tc_error **error) {
     ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
     CHECK_NOT_NULL(error, sk, "Sketch", NULL);
     CHECK_NOT_NULL(error, key, "Sub-sketch key", NULL);
@@ -102,6 +107,7 @@ extern "C" {
 
   EXPORT tc_sketch* tc_sketch_element_length_summary(const tc_sketch* sk, tc_error** error) {
     ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
     CHECK_NOT_NULL(error, sk, "Sketch", NULL);
 
     return new_tc_sketch(sk->value->element_length_summary());
@@ -111,6 +117,7 @@ extern "C" {
 
   EXPORT tc_sketch* tc_sketch_element_summary(const tc_sketch* sk, tc_error** error) {
     ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
     CHECK_NOT_NULL(error, sk, "Sketch", NULL);
 
     return new_tc_sketch(sk->value->element_summary());
@@ -120,6 +127,7 @@ extern "C" {
 
   EXPORT tc_sketch* tc_sketch_dict_key_summary(const tc_sketch* sk, tc_error **error) {
     ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
     CHECK_NOT_NULL(error, sk, "Sketch", NULL);
 
     return new_tc_sketch(sk->value->dict_key_summary());
@@ -129,6 +137,7 @@ extern "C" {
 
   EXPORT tc_sketch* tc_sketch_dict_value_summary(const tc_sketch* sk, tc_error **error) {
     ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
     CHECK_NOT_NULL(error, sk, "Sketch", NULL);
 
     return new_tc_sketch(sk->value->dict_value_summary());
@@ -138,6 +147,7 @@ extern "C" {
 
   EXPORT double tc_sketch_mean(const tc_sketch* sk, tc_error** error) {
     ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
     CHECK_NOT_NULL(error, sk, "Sketch", NULL);
 
     return sk->value->mean();
@@ -147,6 +157,7 @@ extern "C" {
 
   EXPORT double tc_sketch_max(const tc_sketch* sk, tc_error** error) {
     ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
     CHECK_NOT_NULL(error, sk, "Sketch", NULL);
 
     return sk->value->max();
@@ -156,6 +167,7 @@ extern "C" {
 
   EXPORT double tc_sketch_min(const tc_sketch* sk, tc_error **error) {
     ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
     CHECK_NOT_NULL(error, sk, "Sketch", NULL);
 
     return sk->value->min();
@@ -165,6 +177,7 @@ extern "C" {
 
   EXPORT double tc_sketch_sum(const tc_sketch* sk, tc_error **error) {
     ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
     CHECK_NOT_NULL(error, sk, "Sketch", NULL);
 
     return sk->value->sum();
@@ -174,6 +187,7 @@ extern "C" {
 
   EXPORT double tc_sketch_variance(const tc_sketch* sk, tc_error **error) {
     ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
     CHECK_NOT_NULL(error, sk, "Sketch", NULL);
 
     return sk->value->var();
@@ -200,12 +214,6 @@ extern "C" {
       return;
     }
     sk->value->cancel();
-  }
-
-  EXPORT void tc_sketch_destroy(tc_sketch *sk) {
-    if (sk) {
-      delete sk;
-    }
   }
 
 }

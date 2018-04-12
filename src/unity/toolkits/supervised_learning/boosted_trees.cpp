@@ -186,7 +186,7 @@ void boosted_trees_regression::init_options(
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
 }
 
-void boosted_trees_regression::export_to_coreml(const std::string& filename) { 
+std::shared_ptr<MLModelWrapper> boosted_trees_regression::export_to_coreml() {
   
   std::map<std::string, flexible_type> context = { 
     {"model_type", "boosted_trees"}, 
@@ -194,7 +194,7 @@ void boosted_trees_regression::export_to_coreml(const std::string& filename) {
     {"class", name()}, 
     {"short_description", "Boosted Tree Regression model."}};
 
-  this->_export_xgboost_model(filename, false, false, context); 
+  return this->_export_xgboost_model(false, false, context);
 }
 
 /**
@@ -263,7 +263,7 @@ void boosted_trees_classifier::init_options(
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
 }
   
-void boosted_trees_classifier::export_to_coreml(const std::string& filename) { 
+std::shared_ptr<MLModelWrapper> boosted_trees_classifier::export_to_coreml() {
   
   std::map<std::string, flexible_type> context = { 
     {"model_type", "boosted_trees"}, 
@@ -271,7 +271,7 @@ void boosted_trees_classifier::export_to_coreml(const std::string& filename) {
     {"class", name()}, 
     {"short_description", "Boosted Tree classification model."}};
 
-  this->_export_xgboost_model(filename, true, false, context); 
+  return this->_export_xgboost_model(true, false, context);
 }
 
 

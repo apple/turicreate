@@ -1,6 +1,7 @@
-#include <capi/TuriCore.h>
+#include <capi/TuriCreate.h>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
+#include <capi/impl/capi_initialization_internal.hpp>
 #include <flexible_type/flexible_type.hpp> 
 #include <unity/lib/image_util.hpp>
 #include <export.hpp>
@@ -21,6 +22,7 @@ EXPORT tc_flex_image* tc_flex_image_create_from_path(const char* path,
                                                      const char* format,
                                                      tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   turi::flexible_type image_type = turi::image_util::load_image(path, format);
   return new_tc_flex_image(image_type.get<turi::flex_image>());
@@ -33,6 +35,7 @@ EXPORT tc_flex_image* tc_flex_image_create_from_data(
     const char* data, uint64_t height, uint64_t width, uint64_t channels,
     uint64_t total_data_size, const char* format, tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   turi::Format format_enum; 
 
@@ -56,6 +59,7 @@ EXPORT tc_flex_image* tc_flex_image_create_from_data(
 
 EXPORT uint64_t tc_flex_image_width(const tc_flex_image* image, tc_error** error) { 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, image, "image", 0); 
 
@@ -67,6 +71,7 @@ EXPORT uint64_t tc_flex_image_width(const tc_flex_image* image, tc_error** error
 
 EXPORT uint64_t tc_flex_image_height(const tc_flex_image* image, tc_error** error) { 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, image, "image", 0); 
 
@@ -77,6 +82,7 @@ EXPORT uint64_t tc_flex_image_height(const tc_flex_image* image, tc_error** erro
  
 EXPORT uint64_t tc_flex_image_num_channels(const tc_flex_image* image, tc_error** error) { 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, image, "image", 0); 
 
@@ -87,6 +93,7 @@ EXPORT uint64_t tc_flex_image_num_channels(const tc_flex_image* image, tc_error*
  
 EXPORT uint64_t tc_flex_image_data_size(const tc_flex_image* image, tc_error** error) { 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, image, "image", 0); 
 
@@ -97,6 +104,7 @@ EXPORT uint64_t tc_flex_image_data_size(const tc_flex_image* image, tc_error** e
  
 EXPORT const char* tc_flex_image_data(const tc_flex_image* image, tc_error** error) { 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, image, "image", NULL); 
 
@@ -107,6 +115,7 @@ EXPORT const char* tc_flex_image_data(const tc_flex_image* image, tc_error** err
  
 EXPORT const char* tc_flex_image_format(const tc_flex_image* image, tc_error** error) { 
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, image, "image", NULL); 
 
@@ -118,10 +127,6 @@ EXPORT const char* tc_flex_image_format(const tc_flex_image* image, tc_error** e
   }
 
   ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT void tc_flex_image_destroy(tc_flex_image* image) {
-  delete image; 
 }
 
 }

@@ -7,6 +7,7 @@
 #define TURI_BOOSTED_TREES_H_
 // unity xgboost
 #include <toolkits/supervised_learning/xgboost.hpp>
+#include <unity/toolkits/coreml_export/ml_model_wrapper.hpp>
 
 #include <export.hpp>
 
@@ -37,7 +38,7 @@ class EXPORT boosted_trees_regression: public xgboost_model {
    */
   void configure(void) override;
 
-  void export_to_coreml(const std::string& filename);
+  std::shared_ptr<MLModelWrapper> export_to_coreml() override;
 
   SUPERVISED_LEARNING_METHODS_REGISTRATION(
       "boosted_trees_regression", 
@@ -102,7 +103,7 @@ class EXPORT boosted_trees_classifier : public xgboost_model {
        });
   }
  
-  void export_to_coreml(const std::string& filename);
+  std::shared_ptr<MLModelWrapper> export_to_coreml() override;
 
   SUPERVISED_LEARNING_METHODS_REGISTRATION(
       "boosted_trees_classifier", 

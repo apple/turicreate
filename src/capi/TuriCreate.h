@@ -77,10 +77,13 @@ typedef struct tc_flex_enum_list_struct tc_flex_enum_list;
 /*                                                                            */
 /******************************************************************************/
 
-/** Initialize the framework. Call before calling any previous function.
+/** Initializing the framework. 
+ *
+ *  Call these before calling any non-setup function.
  *
  */
-void tc_initialize(const char* log_file, tc_error**);
+void tc_setup_log_location(const char* log_file, tc_error** error);
+
 
 /******************************************************************************/
 /*                                                                            */
@@ -116,13 +119,15 @@ void tc_initialize(const char* log_file, tc_error**);
 const char* tc_error_message(const tc_error* error);
 
 
-/** Destroys an error structure, deallocating error content data.
+/** Destroys any types.
+ *
+ *  Must be called on the
  *
  *  Only needs to be called if an error occured.
  *
  *  Sets the pointer to the error struct to NULL.
  */
-void tc_error_destroy(tc_error** error_ptr);
+void tc_release(void* v);
 
 
 
@@ -211,11 +216,6 @@ tc_ndarray* tc_ft_ndarray(const tc_flexible_type*, tc_error**);
 // Casting to string can be used to print the value.
 tc_flexible_type* tc_ft_as_string(const tc_flexible_type*, tc_error** error);
 
-/*****************************************************/
-/*    Destructor                                     */
-/*****************************************************/
-
-void tc_ft_destroy(tc_flexible_type*);
 
 /******************************************************************************/
 /*                                                                            */
@@ -234,7 +234,6 @@ tc_flexible_type* tc_flex_list_extract_element(
 
 uint64_t tc_flex_list_size(const tc_flex_list*);
 
-void tc_flex_list_destroy(tc_flex_list*);
 
 
 /******************************************************************************/
@@ -259,7 +258,6 @@ uint64_t tc_flex_dict_add_element(tc_flex_dict* ft, const tc_flexible_type* firs
 void tc_flex_dict_extract_entry(const tc_flex_dict* ft, uint64_t entry_index, tc_flexible_type* key_dest, tc_flexible_type* value_dest, tc_error**);
 
 // Destroy the dictionary.
-void tc_flex_dict_destroy(tc_flex_dict*);
 
 /******************************************************************************/
 /*                                                                            */
@@ -304,8 +302,6 @@ int tc_datetime_less_than(const tc_datetime* dt1, const tc_datetime* dt2, tc_err
 // Returns nonzero if the time dt1 is equal to the time dt2
 int tc_datetime_equal(const tc_datetime* dt1, const tc_datetime* dt2, tc_error**);
 
-// Destructor
-void tc_datetime_destroy(tc_datetime*);
 
 
 /******************************************************************************/
@@ -331,9 +327,6 @@ uint64_t tc_flex_image_data_size(const tc_flex_image*, tc_error**);
 const char* tc_flex_image_data(const tc_flex_image*, tc_error**);
 const char* tc_flex_image_format(const tc_flex_image*, tc_error**);
 
-// Destructor
-void tc_flex_image_destroy(tc_flex_image*);
-
 /******************************************************************************/
 /*                                                                            */
 /*    flex_nd_array                                                           */
@@ -351,7 +344,6 @@ const uint64_t* tc_ndarray_shape(const tc_ndarray*, tc_error**);
 const int64_t* tc_ndarray_strides(const tc_ndarray*, tc_error**);
 const double* tc_ndarray_data(const tc_ndarray*, tc_error**);
 
-void tc_ndarray_destroy(tc_ndarray*);
 
 /******************************************************************************/
 /*                                                                            */
@@ -368,7 +360,6 @@ uint64_t tc_flex_enum_list_add_element(tc_flex_enum_list* fl, const tc_ft_type_e
 tc_ft_type_enum tc_flex_enum_list_extract_element(
     const tc_flex_enum_list* fl, uint64_t index, tc_error **error);
 uint64_t tc_flex_enum_list_size(const tc_flex_enum_list* fl);
-void tc_flex_enum_list_destroy(tc_flex_enum_list* fl);
 
 
 /******************************************************************************/
@@ -394,11 +385,11 @@ static tc_sarray* tc_sarray_create(const tc_flex_list* data, tc_error** error) {
    return tc_sarray_create_from_list(data, error);
 }
 
-tc_sarray* tc_sarray_load(const char* url, tc_error** error); 
+tc_sarray* tc_sarray_load(const char* url, tc_error** error);
 
-void tc_sarray_save(const tc_sarray* sa, const char* url, tc_error** error); 
+void tc_sarray_save(const tc_sarray* sa, const char* url, tc_error** error);
 
-void tc_sarray_save_as_text(const tc_sarray* sa, const char* url, tc_error** error); 
+void tc_sarray_save_as_text(const tc_sarray* sa, const char* url, tc_error** error);
 
 tc_sarray* tc_sarray_create_copy(const tc_sarray* src, tc_error** error);
 
@@ -506,7 +497,6 @@ tc_sarray* tc_sarray_apply(
     tc_error** error);
 
 // Destructor
-void tc_sarray_destroy(tc_sarray* sa);
 
 
 
@@ -520,11 +510,11 @@ tc_sframe* tc_sframe_create_empty(tc_error**);
 
 tc_sframe* tc_sframe_create_copy(tc_sframe*, tc_error**);
 
-tc_sframe* tc_sframe_load(const char* url, tc_error** error); 
+tc_sframe* tc_sframe_load(const char* url, tc_error** error);
 
-void tc_sframe_save(const tc_sframe* sf, const char* url, tc_error** error); 
+void tc_sframe_save(const tc_sframe* sf, const char* url, tc_error** error);
 
-void tc_sframe_save_as_csv(const tc_sframe* sf, const char* url, tc_error** error); 
+void tc_sframe_save_as_csv(const tc_sframe* sf, const char* url, tc_error** error);
 
 // Adds the column to the sframe.
 void tc_sframe_add_column(tc_sframe* sf, const char* column_name,
@@ -608,7 +598,7 @@ tc_sframe* tc_sframe_dropna(const tc_sframe* sf, const tc_flex_list* columns, co
 tc_sframe* tc_sframe_slice(const tc_sframe* sf, const uint64_t start, const uint64_t end, tc_error**);
 tc_sframe* tc_sframe_slice_stride(const tc_sframe* sf, const uint64_t start, const uint64_t end, const uint64_t stride, tc_error**);
 
-tc_flex_list* tc_sframe_extract_row(const tc_sframe* sf, uint64_t row_index, tc_error**);  
+tc_flex_list* tc_sframe_extract_row(const tc_sframe* sf, uint64_t row_index, tc_error**);
 
 
 // Whizbangery
@@ -628,6 +618,7 @@ tc_sframe* tc_sframe_append(tc_sframe* top, tc_sframe* bottom, tc_error **error)
 
 
 // groupby stuff!
+tc_groupby_aggregator* tc_groupby_aggregator_create(tc_error**);
 void tc_groupby_aggregator_add_count(tc_groupby_aggregator* gb, const char* dest_column, tc_error**);
 void tc_groupby_aggregator_add_sum(tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
 void tc_groupby_aggregator_add_max(tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
@@ -646,12 +637,27 @@ void tc_groupby_aggregator_add_quantile(tc_groupby_aggregator* gb, const char* d
 void tc_groupby_aggregator_add_quantiles(tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, const tc_flex_list* quantiles, tc_error**);
 void tc_groupby_aggregator_add_argmax(tc_groupby_aggregator* gb, const char* dest_column, const char* agg, const char* out, tc_error**);
 void tc_groupby_aggregator_add_argmin(tc_groupby_aggregator* gb, const char* dest_column, const char* agg, const char* out, tc_error**);
-void tc_groupby_aggregator_destroy(tc_groupby_aggregator *gb);
 
 tc_sframe* tc_sframe_group_by(const tc_sframe *sf, const tc_flex_list* column_list, const tc_groupby_aggregator* gb, tc_error **);
 
+// Applies `callback` to each row of `data` and returns an sarray collecting the
+// return values. If `context` is non-null, it will be passed along with each
+// row to the callback, and `context_release_callback` will be invoked on the
+// context when finished. The returned sarray will have the given `type`, so the
+// callback must return values of that type (or undefined). Each row is
+// represented as a list of feature values, in the order defined by
+// tc_sframe_column_names.
+tc_sarray* tc_sframe_apply(
+    const tc_sframe* data,
+    tc_flexible_type* (*callback)(
+        tc_flex_list* row, void* context, tc_error** error),
+    void (*context_release_callback)(void* context),
+    void* context,
+    tc_ft_type_enum type,
+    tc_error** error);
+
+
 // Destructor
-void tc_sframe_destroy(tc_sframe* sa);
 
 /******************************************************************************/
 /*                                                                            */
@@ -718,7 +724,6 @@ tc_sframe* tc_variant_sframe(const tc_variant*, tc_error**);
 tc_parameters* tc_variant_parameters(const tc_variant*, tc_error** error);
 tc_model* tc_variant_model(const tc_variant*, tc_error**);
 
-void tc_variant_destroy(tc_variant*);
 
 /******************************************************************************/
 /*                                                                            */
@@ -782,7 +787,6 @@ tc_parameters* tc_parameters_retrieve_parameters(const tc_parameters*, const cha
 tc_model* tc_parameters_retrieve_model(const tc_parameters*, const char* name, tc_error**);
 
 // delete the parameter container.
-void tc_parameters_destroy(tc_parameters*);
 
 
 /******************************************************************************/
@@ -801,8 +805,6 @@ const char* tc_model_name(const tc_model*, tc_error**);
 
 tc_variant* tc_model_call_method(const tc_model* model, const char* method,
                                  const tc_parameters* arguments, tc_error**);
-
-void tc_model_destroy(tc_model*);
 
 /******************************************************************************/
 /*                                                                            */
@@ -845,11 +847,6 @@ double tc_sketch_variance(const tc_sketch*, tc_error**);
 size_t tc_sketch_size(const tc_sketch*);
 size_t tc_sketch_num_undefined(const tc_sketch*);
 void tc_sketch_cancel(tc_sketch*);
-
-void tc_sketch_destroy(tc_sketch *);
-
-
-
 
 
 

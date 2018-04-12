@@ -12,6 +12,7 @@
 
 // Toolkits
 #include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <unity/toolkits/coreml_export/ml_model_wrapper.hpp>
 
 // Optimization Interface
 #include <optimization/optimization_interface.hpp>
@@ -65,7 +66,7 @@ class EXPORT linear_regression: public supervised_learning_model_base {
    *
    * \param[in] _options Options to set
    */
-  void init_options(const std::map<std::string,flexible_type>& _options);
+  void init_options(const std::map<std::string,flexible_type>& _options) override;
   
   /**
    * Gets the model version number
@@ -125,7 +126,7 @@ class EXPORT linear_regression: public supervised_learning_model_base {
     _coefs = coefs;
   }
 
-  void export_to_coreml(const std::string& filename);
+  std::shared_ptr<MLModelWrapper> export_to_coreml() override;
 
   SUPERVISED_LEARNING_METHODS_REGISTRATION(
       "regression_linear_regression", linear_regression); 

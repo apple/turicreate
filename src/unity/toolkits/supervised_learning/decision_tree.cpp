@@ -120,7 +120,7 @@ void decision_tree_regression::init_options(
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
 }
 
-void decision_tree_regression::export_to_coreml(const std::string& filename) { 
+std::shared_ptr<MLModelWrapper> decision_tree_regression::export_to_coreml() {
   
   std::map<std::string, flexible_type> context = { 
     {"model_type", "decision_tree"}, 
@@ -128,7 +128,7 @@ void decision_tree_regression::export_to_coreml(const std::string& filename) {
     {"class", name()}, 
     {"short_description", "Decision Tree Regression model."}};
 
-  this->_export_xgboost_model(filename, false, true, context); 
+  return this->_export_xgboost_model(false, true, context);
 }
 
 /**
@@ -198,7 +198,7 @@ void decision_tree_classifier::init_options(
 
 }
 
-void decision_tree_classifier::export_to_coreml(const std::string& filename) { 
+std::shared_ptr<MLModelWrapper> decision_tree_classifier::export_to_coreml() {
   
   std::map<std::string, flexible_type> context = { 
     {"model_type", "decision_tree"}, 
@@ -206,7 +206,7 @@ void decision_tree_classifier::export_to_coreml(const std::string& filename) {
     {"class", name()}, 
     {"short_description", "Decision Tree classification model."}};
 
-  this->_export_xgboost_model(filename, true, true, context); 
+  return this->_export_xgboost_model(true, true, context);
 }
 
 

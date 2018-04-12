@@ -1,13 +1,29 @@
 #ifndef CAPI_TEST_UTILS
 #define CAPI_TEST_UTILS
 
-#include <capi/TuriCore.h>
+#include <capi/TuriCreate.h>
+#include <capi/impl/capi_wrapper_structs.hpp>
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/lib/gl_sarray.hpp>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <flexible_type/flexible_type.hpp>
 #include <cmath>
 #include <vector>
+#include <iostream>
+
+#define CAPI_CHECK_ERROR(error)                                     \
+  do {                                                              \
+    if (error != nullptr) {                                         \
+      std::ostringstream ss;                                        \
+      ss << "C-API ERROR: " << __FILE__ << ": " << __LINE__ << ": " \
+         << error->value;                                           \
+      std::cout << ss.str() << std::endl;                           \
+      throw std::runtime_error(ss.str());                           \
+    }                                                               \
+  } while (false)
+
+
+
 
 static tc_flex_list* make_flex_list_double(const std::vector<double>& v) {
 
@@ -15,18 +31,18 @@ static tc_flex_list* make_flex_list_double(const std::vector<double>& v) {
 
   tc_flex_list* fl = tc_flex_list_create(&error);
 
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   size_t pos = 0;
 
   for(double t : v) {
     tc_flexible_type* ft = tc_ft_create_from_double(t, &error);
 
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     size_t idx = tc_flex_list_add_element(fl, ft, &error);
 
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     TS_ASSERT_EQUALS(idx, pos);
     ++pos;
@@ -35,23 +51,23 @@ static tc_flex_list* make_flex_list_double(const std::vector<double>& v) {
 
     TS_ASSERT_EQUALS(pos, actual_size);
 
-    tc_ft_destroy(ft);
+    tc_release(ft);
   }
 
   // Go through and make sure things are equal
   for(size_t i = 0; i < v.size(); ++i) {
     tc_flexible_type* ft = tc_flex_list_extract_element(fl, i, &error);
 
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     TS_ASSERT(tc_ft_is_double(ft) != 0);
 
     double val = tc_ft_double(ft, &error);
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     TS_ASSERT(v[i] == val);
 
-    tc_ft_destroy(ft);
+    tc_release(ft);
   }
 
   return fl;
@@ -63,18 +79,18 @@ static tc_flex_list* make_flex_list_string(const std::vector<std::string>& v) {
 
   tc_flex_list* fl = tc_flex_list_create(&error);
 
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   size_t pos = 0;
 
   for(std::string t : v) {
     tc_flexible_type* ft = tc_ft_create_from_cstring(t.c_str(), &error);
 
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     size_t idx = tc_flex_list_add_element(fl, ft, &error);
 
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     TS_ASSERT_EQUALS(idx, pos);
     ++pos;
@@ -83,7 +99,7 @@ static tc_flex_list* make_flex_list_string(const std::vector<std::string>& v) {
 
     TS_ASSERT_EQUALS(pos, actual_size);
 
-    tc_ft_destroy(ft);
+    tc_release(ft);
   }
 
   return fl;
@@ -97,22 +113,22 @@ static tc_sarray* make_sarray_double(const std::vector<double>& v) {
 
   tc_sarray* sa = tc_sarray_create_from_list(fl, &error);
 
-  TS_ASSERT(error == NULL);
+  CAPI_CHECK_ERROR(error);
 
   {
     // Make sure it gets out what we want it to.
     for(size_t i = 0; i < v.size(); ++i) {
       tc_flexible_type* ft = tc_sarray_extract_element(sa, i, &error);
-      TS_ASSERT(error == NULL);
+      CAPI_CHECK_ERROR(error);
 
       TS_ASSERT(tc_ft_is_double(ft) != 0);
 
       double val = tc_ft_double(ft, &error);
-      TS_ASSERT(error == NULL);
+      CAPI_CHECK_ERROR(error);
 
       TS_ASSERT(v[i] == val);
 
-      tc_ft_destroy(ft);
+      tc_release(ft);
     }
   }
 
@@ -125,7 +141,7 @@ static tc_sframe* make_sframe_double(const std::vector<std::pair<std::string, st
 
     tc_sframe* sf = tc_sframe_create_empty(&error);
 
-    TS_ASSERT(error == NULL);
+    CAPI_CHECK_ERROR(error);
 
     for(auto p : data) {
 
@@ -133,9 +149,9 @@ static tc_sframe* make_sframe_double(const std::vector<std::pair<std::string, st
 
       tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
 
-      TS_ASSERT(error == NULL);
+      CAPI_CHECK_ERROR(error);
 
-      tc_sarray_destroy(sa);
+      tc_release(sa);
     }
 
     // Check everything
@@ -143,15 +159,15 @@ static tc_sframe* make_sframe_double(const std::vector<std::pair<std::string, st
       // Make sure it gets out what we want it to.
       tc_sarray* sa = tc_sframe_extract_column_by_name(sf, p.first.c_str(), &error);
 
-      TS_ASSERT(error == NULL);
+      CAPI_CHECK_ERROR(error);
 
       tc_sarray* ref_sa = make_sarray_double(p.second);
 
       TS_ASSERT(tc_sarray_equals(sa, ref_sa, &error));
 
-      TS_ASSERT(error == NULL);
+      CAPI_CHECK_ERROR(error);
 
-      tc_sarray_destroy(sa);
+      tc_release(sa);
     }
 
     return sf;
@@ -203,6 +219,7 @@ static bool check_equality_gl_sframe(
       return true;
     }
   }
+  return false;
 }
 
 #endif
