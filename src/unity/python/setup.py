@@ -153,6 +153,9 @@ if __name__ == '__main__':
                      'Turi Create Visualization.app/Contents/Resources/*.dylib',
                      'Turi Create Visualization.app/Contents/PkgInfo',
                      'Turi Create Visualization.app/Contents/MacOS/Turi Create Visualization',
+                     'visualization/vega_3.2.1.js',
+                     'visualization/vg2png',
+                     'visualization/vg2svg',
 
                      # Linux visualization
 		     'Turi Create Visualization/icudtl.dat',
@@ -176,7 +179,10 @@ if __name__ == '__main__':
 		     'Turi Create Visualization/natives_blob.bin',
 		     'Turi Create Visualization/libcef.so',
 		     'Turi Create Visualization/v8_context_snapshot.bin',
-		     'Turi Create Visualization/cef_extensions.pak'
+		     'Turi Create Visualization/cef_extensions.pak',
+             'visualization/vega_3.2.1.js',
+             'visualization/vg2png',
+             'visualization/vg2svg'
                      ]},
         packages=find_packages(
             exclude=["*.tests", "*.tests.*", "tests.*", "tests", "*.test", "*.test.*", "test.*", "test",
