@@ -94,7 +94,7 @@ class TcTable extends Component {
               <div style={{"position":"relative"}}>
                 <div className="array_value" onClick={(e) => this.divClick(e)}>
                   <span className="default_span_color" onClick={(e) => this.spanClick(e)}>
-                    { value }
+                    { JSON.stringify(value) }
                   </span>
                 </div>
                 <div className="arrow_right" onClick={(e) => this.arrowClick(e)}>
