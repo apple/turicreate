@@ -9,8 +9,10 @@ from subprocess import PIPE as _PIPE
 
 _target = 'auto'
 
+_SUCCESS = 0
+_CANVAS_PREBUILT_NOT_FOUND_ERROR = 1
 _NODE_NOT_FOUND_ERROR_CODE = 127
-_CANVAS_PREBUILT_NON_EXISTENT = 1
+_PERMISSION_DENIED_ERROR_CODE = 243
 
 def _run_cmdline(command):
     # runs a shell command
@@ -162,6 +164,7 @@ class Plot(object):
             relative_path_to_vg2png_vg2svg = "../vg2" + extension
             absolute_path_to_vg2png_vg2svg = _os.path.join(dirname,
                 relative_path_to_vg2png_vg2svg)
+            # try node vg2[png|svg] json_filepath out_filepath
             (exitcode, stdout, stderr) = _run_cmdline("node " +
                 absolute_path_to_vg2png_vg2svg + " "
                 + temp_file_path + " " + filepath)
@@ -171,18 +174,45 @@ class Plot(object):
                 raise RuntimeError("Node.js not found. Saving as PNG and SVG" +
                     " requires Node.js, please download and install Node.js " +
                     "from here and try again: https://nodejs.org/en/download/")
-
-            if exitcode == _CANVAS_PREBUILT_NON_EXISTENT:
-                raise RuntimeError("Canvas-Prebuilt not found. Saving as PNG and SVG" +
-                    " requires Canvas-Prebuilt, please download and install Canvas" +
-                    "-Prebuilt by running this command, and try again: " +
-                    "`npm install -g canvas-prebuilt`")
-
-            elif exitcode == 0:
-                # success
+            elif exitcode == _CANVAS_PREBUILT_NOT_FOUND_ERROR:
+                # try to see if canvas-prebuilt is globally installed
+                # if it is, then link it
+                # if not, tell the user to install it
+                (is_installed_exitcode, 
+                    is_installed_stdout, 
+                    is_installed_stderr) =  _run_cmdline(
+                    "npm ls -g -json | grep canvas-prebuilt")
+                if is_installed_exitcode == _SUCCESS:
+                    # npm link canvas-prebuilt 
+                    link_exitcode, link_stdout, link_stderr = _run_cmdline(
+                        "npm link canvas-prebuilt")
+                    if link_exitcode == _PERMISSION_DENIED_ERROR_CODE:
+                        # They don't have permission, tell them.
+                        raise RuntimeError("`npm link canvas-prebuilt`" + 
+                            " failed, Permission Denied. Contact your system" +
+                            " administrator for access.")
+                    else:
+                        # canvas-prebuilt link is now successful, so run the 
+                        # node vg2[png|svg] json_filepath out_filepath
+                        # command again.
+                        (exitcode, stdout, stderr) = _run_cmdline("node " +
+                            absolute_path_to_vg2png_vg2svg + " "
+                            + temp_file_path + " " + filepath)
+                        if exitcode == _SUCCESS:
+                            pass
+                        else:
+                            # something else that we have not identified yet
+                            # happened.
+                            raise RuntimeError(stderr)
+                else:
+                    raise RuntimeError("Canvas-Prebuilt not found. " +
+                        "Saving as PNG and SVG requires Canvas-Prebuilt, " +
+                        "please download and install Canvas-Prebuilt by " +
+                        "running this command, and try again: " +
+                        "`npm install -g canvas-prebuilt`")
+            elif exitcode == _SUCCESS:
                 pass
             else:
-                # something else
                 raise RuntimeError(stderr)
             # delete temp file that user didn't ask for
             _run_cmdline("rm " + temp_file_path)
