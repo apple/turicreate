@@ -54,6 +54,36 @@ def _create_sequential_sarray(size, start=0, reverse=False):
     with cython_context():
         return SArray(_proxy=glconnect.get_unity().create_sequential_sarray(size, start, reverse))
 
+def load_sarray(filename):
+    """
+    Load an SArray. The filename extension is used to determine the format
+    automatically. This function is particurly useful for SArrays previously
+    saved in binary format. If the SArray is in binary format, ``filename`` is
+    actually a directory, created when the SArray is saved.
+
+    Paramaters
+    ----------
+    filename : string
+        Location of the file to load. Can be a local path or a remote URL.
+
+    Returns
+    -------
+    out : SArray
+
+    See Also
+    --------
+    SArray.save
+
+    Examples
+    --------
+    >>> sa = turicreate.SArray(data=[1,2,3,4,5])
+    >>> sa.save('./my_sarray')
+    >>> sa_loaded = turicreate.load_sarray('./my_sarray')
+    """
+    sa = SArray(data=filename)
+    return sa
+
+
 class SArray(object):
     """
     An immutable, homogeneously typed array object backed by persistent storage.
