@@ -2,6 +2,8 @@ var dir_d56491e8d5b35b61b56ddf41bf8f0fad =
 [
     [ "boxes_and_whiskers.hpp", "boxes__and__whiskers_8hpp_source.html", null ],
     [ "categorical_heatmap.hpp", "categorical__heatmap_8hpp_source.html", null ],
+    [ "columnwise_summary.hpp", "columnwise__summary_8hpp_source.html", null ],
+    [ "escape.hpp", "escape_8hpp_source.html", null ],
     [ "extrema.hpp", "extrema_8hpp_source.html", null ],
     [ "groupby.hpp", "unity_2lib_2visualization_2groupby_8hpp_source.html", null ],
     [ "heatmap.hpp", "heatmap_8hpp_source.html", null ],

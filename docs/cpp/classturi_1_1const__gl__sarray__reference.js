@@ -45,7 +45,7 @@ var classturi_1_1const__gl__sarray__reference =
     [ "pixel_array_to_image", "classturi_1_1const__gl__sarray__reference.html#ac5740cd84d81ae6650821a103d169afd", null ],
     [ "range_iterator", "classturi_1_1const__gl__sarray__reference.html#a794f5473a3f45251833f4000c0640147", null ],
     [ "sample", "classturi_1_1const__gl__sarray__reference.html#ab1727696bdb1c241d9e3599120295594", null ],
-    [ "sample", "classturi_1_1const__gl__sarray__reference.html#aa5e1564b75222ed8809e6c97bd566747", null ],
+    [ "sample", "classturi_1_1const__gl__sarray__reference.html#a93c5dea15a8f1a5334dc40837cdd47bf", null ],
     [ "save", "classturi_1_1const__gl__sarray__reference.html#a122824651f590205f51d74135cebe766", null ],
     [ "show", "classturi_1_1const__gl__sarray__reference.html#aa4c602f859b630f75f15efe84b456f14", null ],
     [ "size", "classturi_1_1const__gl__sarray__reference.html#a0957b7d1b3be9da62f6e3b1f1f46c43c", null ],

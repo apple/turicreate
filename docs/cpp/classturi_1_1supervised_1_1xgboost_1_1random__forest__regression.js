@@ -54,6 +54,8 @@ var classturi_1_1supervised_1_1xgboost_1_1random__forest__regression =
     [ "num_unpacked_features", "classturi_1_1supervised_1_1xgboost_1_1random__forest__regression.html#a3282c25c0c52a9d916611d7592f12465", null ],
     [ "predict", "classturi_1_1supervised_1_1xgboost_1_1random__forest__regression.html#ade2d48b5c27daca4b88297cb9d543c83", null ],
     [ "predict", "classturi_1_1supervised_1_1xgboost_1_1random__forest__regression.html#a9ff44ba478e93f80be9e32bca0e25e44", null ],
+    [ "predict", "classturi_1_1supervised_1_1xgboost_1_1random__forest__regression.html#af616ce476f235ac9655ca7b6501bfa86", null ],
+    [ "predict", "classturi_1_1supervised_1_1xgboost_1_1random__forest__regression.html#a9ff44ba478e93f80be9e32bca0e25e44", null ],
     [ "predict_single_example", "classturi_1_1supervised_1_1xgboost_1_1random__forest__regression.html#a64cffb1d927e40e6f3c6e23890d6bd31", null ],
     [ "predict_single_example", "classturi_1_1supervised_1_1xgboost_1_1random__forest__regression.html#ac3d2ee32fc69539990fcbb1234f2f173", null ],
     [ "predict_single_example", "classturi_1_1supervised_1_1xgboost_1_1random__forest__regression.html#ab7906735178919afac6c6f260957c1df", null ],
