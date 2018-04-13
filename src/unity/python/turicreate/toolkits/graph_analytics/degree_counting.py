@@ -77,7 +77,7 @@ def create(graph, verbose=True):
     If given an :class:`~turicreate.SGraph` ``g``, we can create
     a :class:`~turicreate.degree_counting.DegreeCountingModel` as follows:
 
-    >>> g = turicreate.load_graph('http://snap.stanford.edu/data/web-Google.txt.gz',
+    >>> g = turicreate.load_sgraph('http://snap.stanford.edu/data/web-Google.txt.gz',
     ...                         format='snap')
     >>> m = turicreate.degree_counting.create(g)
     >>> g2 = m['graph']

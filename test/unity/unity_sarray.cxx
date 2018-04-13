@@ -1112,6 +1112,31 @@ struct unity_sarray_test {
     read_arc.close();
     _assert_sarray_equals(sa2, {"abcdef", "ghijkl"});
   }
+
+  void make_exact_uniform() {
+    // exact 50
+    auto sa = unity_sarray::make_exact_uniform_boolean_array(100, 50, 0);
+    TS_ASSERT_EQUALS(sa->sum().get<flex_int>(), 50);
+    // exact 50 with different seed
+    auto sb = unity_sarray::make_exact_uniform_boolean_array(100, 50, 1);
+    TS_ASSERT_EQUALS(sb->sum().get<flex_int>(), 50);
+    // these two exact 50s should be different
+    TS_ASSERT(sa->vector_operator(sb, "!=")->sum().get<flex_int>() > 0);
+
+    // empty
+    auto sc = unity_sarray::make_exact_uniform_boolean_array(100, 0, 2);
+    TS_ASSERT_EQUALS(sc->sum().get<flex_int>(), 0);
+    // full 
+    auto sd = unity_sarray::make_exact_uniform_boolean_array(100, 100, 3);
+    TS_ASSERT_EQUALS(sd->sum().get<flex_int>(), 100);
+    // more than full 
+    auto se = unity_sarray::make_exact_uniform_boolean_array(100, 200, 3);
+    TS_ASSERT_EQUALS(se->sum().get<flex_int>(), 100);
+
+    // boundary
+    auto sf = unity_sarray::make_exact_uniform_boolean_array(100, 99, 10);
+    TS_ASSERT_EQUALS(sf->sum().get<flex_int>(), 99);
+  }
 };
 
 BOOST_FIXTURE_TEST_SUITE(_unity_sarray_test, unity_sarray_test)
@@ -1177,5 +1202,8 @@ BOOST_AUTO_TEST_CASE(test_sparse_vector_save_load) {
 }
 BOOST_AUTO_TEST_CASE(test_save_load) {
   unity_sarray_test::test_save_load();
+}
+BOOST_AUTO_TEST_CASE(make_exact_uniform) {
+  unity_sarray_test::make_exact_uniform();
 }
 BOOST_AUTO_TEST_SUITE_END()

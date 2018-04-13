@@ -387,14 +387,15 @@ EXPORT std::string get_protocol(std::string path) {
     std::string ret = boost::algorithm::to_lower_copy(path.substr(0, proto));
     // Strip out file as a specific protocol
     if(ret == "file") {
-    return "";
+      return "";
     } else {
       return ret;
-  }
+    }
 
   } else {
     return "";
-  }}
+  }
+}
 
 std::string remove_protocol(std::string path) {
   size_t proto = path.find("://");

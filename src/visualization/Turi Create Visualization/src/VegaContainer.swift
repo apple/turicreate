@@ -46,7 +46,7 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
         
         // load app bundle
         let appBundle = Bundle.main
-        let htmlPath = appBundle.url(forResource: "vega_viz", withExtension: "html")
+        let htmlPath = appBundle.url(forResource: "index", withExtension: "html", subdirectory: "build")
         self.view.loadFileURL(htmlPath!, allowingReadAccessTo: appBundle.bundleURL)
         self.view.configuration.userContentController.add(self, name: "scriptHandler")
     }
@@ -145,7 +145,21 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
             
             self.pipe!.writePipe(method: "get_rows", start: start_num, end: end_num)
             break
+        
+        case "getAccordion":
+            guard let column_name = messageBody["column"] as? String else {
+                assert(false, "column in getAccordion")
+                return
+            }
             
+            guard let index_num = messageBody["index"] as? String else {
+                assert(false, "index in getAccordion")
+                return
+            }
+            
+            self.pipe!.writeAccordion(method: "get_accordian", column_name: column_name, index_val: index_num)
+            
+            break
         default:
             assert(false)
             break
@@ -186,7 +200,24 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
         // TODO: write function to check valid image spec
         self.image_spec.append(image_spec)
     }
-
+    
+    public func add_accordion(accordion_spec: [String: Any]){
+        DispatchQueue.main.async {
+            
+            let raw_data = ["data": accordion_spec] as [String : Any]
+            let arrData = try! JSONSerialization.data(withJSONObject: raw_data)
+            let json_string = String(data: arrData, encoding: .utf8)!
+            let updateJS = String(format: "setAccordionData(%@);", json_string)
+            
+            self.view.evaluateJavaScript(updateJS, completionHandler: {(value, err) in
+                if err != nil {
+                    // if we got here, we got a JS error
+                    log(err.debugDescription)
+                    assert(false)
+                }
+            });
+        }
+    }
     
     public func save_data() {
         
@@ -352,6 +383,7 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: self.send_data)
                 return
             }
+            
             
             let updateJS: String
             if self.data_spec.count != 0 {

@@ -60,7 +60,7 @@ StringValue = ([str('bork'), unicode('bork'), b'bork', b'']
                + [_dt('') for _dt in
                   [np.unicode, np.unicode_, str, unicode, np.str,
                    np.str_, np.string_]])
-                   
+
 special_types.add(id(StringValue))
 
 DictValue = [{'a' : 12}, dict()]
@@ -209,6 +209,7 @@ def verify_inference(values, expected_type):
                     "\nOutput value = %s"
                     "\nReconverted  = %s")
                    % (str(v_list), str(result), reconverted_result))
+
 
 
 
@@ -544,4 +545,21 @@ class FlexibleTypeTest(unittest.TestCase):
         self.assertEqual(pytype_from_type_name("undefined"), type(None))
 
         self.assertRaises(ValueError, lambda: pytype_from_type_name("happiness"))
+
+    def test_type_conversions(self):
+        # testing valid sarray of inf's (inf is a float)
+        sa_all_inf = SArray(["inf", "Inf", "iNf", "inF", "INF"])
+        sa_all_inf.astype(float) # should not raise error so we good
+        # testing invalid sarray of float words
+        sa_float_words = SArray(["inf", "infiltrate", "nanana", "2.0version"])
+        with self.assertRaises(RuntimeError):
+            sa_float_words.astype(float)
+        # testing invalid sarray of int words
+        sa_int_words = SArray(["1world", "2dreams", "3000apples"])
+        with self.assertRaises(RuntimeError):
+            sa_int_words.astype(int)
+
+
+
+
         

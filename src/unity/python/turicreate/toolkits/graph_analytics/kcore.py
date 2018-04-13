@@ -119,7 +119,7 @@ def create(graph, kmin=0, kmax=10, verbose=True):
     If given an :class:`~turicreate.SGraph` ``g``, we can create
     a :class:`~turicreate.kcore.KcoreModel` as follows:
 
-    >>> g = turicreate.load_graph('http://snap.stanford.edu/data/email-Enron.txt.gz', format='snap')
+    >>> g = turicreate.load_sgraph('http://snap.stanford.edu/data/email-Enron.txt.gz', format='snap')
     >>> kc = turicreate.kcore.create(g)
 
     We can obtain the ``core id`` corresponding to each vertex in the graph

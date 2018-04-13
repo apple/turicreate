@@ -21,7 +21,7 @@
 
 // Toolkits
 #include <toolkits/supervised_learning/supervised_learning.hpp>
-#include <unity/toolkits/coreml_export/ml_model_wrapper.hpp>
+#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
 
 // Forward delcare
 namespace xgboost {
@@ -306,7 +306,7 @@ protected:
 
   size_t num_batches_ = 0;
   
-  std::shared_ptr<MLModelWrapper> _export_xgboost_model(bool is_classifier,
+  std::shared_ptr<coreml::MLModelWrapper> _export_xgboost_model(bool is_classifier,
       bool is_random_forest,
       const std::map<std::string, flexible_type>& context);
 

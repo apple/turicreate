@@ -11,6 +11,14 @@ import numpy as _np
 from turicreate.toolkits._internal_utils import _numeric_param_check_range
 
 
+def _string_hash(s):
+    """String hash (djb2) with consistency between py2/py3 and persistency between runs (unlike `hash`)."""
+    h = 5381
+    for c in s:
+        h = h * 33 + ord(c)
+    return h
+
+
 COLOR_NAMES = [
     'AliceBlue', 'Chartreuse', 'Aqua', 'Aquamarine', 'Azure', 'Beige',
     'Bisque', 'BlanchedAlmond', 'BlueViolet', 'BurlyWood', 'CadetBlue',
@@ -50,7 +58,7 @@ def _annotate_image(pil_image, anns, confidence_threshold):
         if 'confidence' in ann and ann['confidence'] < confidence_threshold:
             continue
         if 'label' in ann:
-            color = COLOR_NAMES[hash(ann['label']) % len(COLOR_NAMES)]
+            color = COLOR_NAMES[_string_hash(ann['label']) % len(COLOR_NAMES)]
         else:
             color = 'White'
 
@@ -120,6 +128,10 @@ def draw_bounding_boxes(images, annotations, confidence_threshold=0):
     def draw_single_image(row):
         image = row['image']
         anns = row['annotations']
+        if anns == None:
+            anns = []
+        elif type(anns) == dict:
+            anns = [anns]
         pil_img = Image.fromarray(image.pixel_data)
         _annotate_image(pil_img, anns, confidence_threshold=confidence_threshold)
         image = _np.array(pil_img)

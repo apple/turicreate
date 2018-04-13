@@ -65,6 +65,7 @@ typedef std::map<std::string, flexible_type> global_configuration_type;
       (bool, __chmod__, (const std::string&)(short))
       (size_t, __get_heap_size__, )
       (size_t, __get_allocated_size__, )
+      (void, set_log_level, (size_t))
       (global_configuration_type, list_globals, (bool))
       (std::string, set_global, (std::string)(flexible_type))
       (std::shared_ptr<unity_sarray_base>, create_sequential_sarray, (ssize_t)(ssize_t)(bool))

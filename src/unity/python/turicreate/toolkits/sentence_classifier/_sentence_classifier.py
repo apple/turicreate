@@ -6,11 +6,12 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
+
 import turicreate as _tc
+from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits._internal_utils import _toolkit_repr_print
-import logging as _logging
 
 
 def _BOW_FEATURE_EXTRACTOR(sf, target=None):
@@ -79,7 +80,7 @@ def create(dataset, target, features=None, method='auto', validation_set='auto')
 
     >>> metrics = m.evaluate(dataset)
     """
-    logger = _logging.getLogger(__name__)
+    _raise_error_if_not_sframe(dataset, "dataset")
 
     # Validate method.
     if method == 'auto':

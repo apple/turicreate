@@ -410,7 +410,7 @@ size_t linear_svm::get_version() const{
   return SVM_MODEL_VERSION;  
 }
   
-std::shared_ptr<MLModelWrapper> linear_svm::export_to_coreml() {
+std::shared_ptr<coreml::MLModelWrapper> linear_svm::export_to_coreml() {
 
   std::string prob_column_name = ml_mdata->target_column_name() + "Probability";
   CoreML::Pipeline  pipeline = CoreML::Pipeline::Classifier(ml_mdata->target_column_name(), prob_column_name, "");
@@ -480,7 +480,7 @@ std::shared_ptr<MLModelWrapper> linear_svm::export_to_coreml() {
   add_metadata(pipeline.m_spec, context);
 
   // Save pipeline
-  auto model_wrapper = std::make_shared<MLModelWrapper>(std::make_shared<CoreML::Pipeline>(pipeline));
+  auto model_wrapper = std::make_shared<coreml::MLModelWrapper>(std::make_shared<CoreML::Pipeline>(pipeline));
 
   return model_wrapper;
 }

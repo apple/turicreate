@@ -381,7 +381,7 @@ flex_image get_img_visitor::operator()(const flex_nd_vec& v) const {
     width = v.shape()[1];
     channels = v.shape()[2];
   }
-  ASSERT_MSG(channels == 1 || channels == 3 || channels == 4, "Channels must be 1,3 or 4");
+  ASSERT_MSG(channels == 1 || channels == 3 || channels == 4, "Channels must be 1, 3 or 4");
 
   size_t npixels = channels * height * width;
   if (npixels == 0) {

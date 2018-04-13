@@ -116,7 +116,7 @@ created, we can access the coefficients as follows:
 
 ```python
 coefs = model['coefficients']
-print coefs
+print(coefs)
 ```
 ```no-highlight
 +-----------------------+-------+-------------------+-------------------+
@@ -199,16 +199,16 @@ model = tc.linear_regression.create(train_data, target='stars',
                                                 'city'])
 
 # Number of feature columns
-print "Number of features          : %s" % model['num_features']
+print("Number of features          : %s" % model['num_features'])
 
 # Number of features (including expanded lists and dictionaries)
-print "Number of unpacked features : %s" % model['num_unpacked_features']
+print("Number of unpacked features : %s" % model['num_unpacked_features'])
 
 # Number of coefficients in the model
-print "Number of coefficients      : %s" % model['num_coefficients']
+print("Number of coefficients      : %s" % model['num_coefficients'])
 
 # A coefficient is included for each category
-print model['coefficients']
+print(model['coefficients'])
 ```
 ```no-highlight
 Number of features          : 5
@@ -263,7 +263,9 @@ that all tags **not explicitly provided are treated as features with value
 zero**. We illustrate with the following example:
 
 ```python
-print train_data['categories_dict'].head(3)
+print(train_data['categories_dict'].head(3))
+```
+```no-highlight
 [{'Breakfast & Brunch': 1, 'Restaurants': 1},
  {'Restaurants': 1, 'Pizza': 1, 'Italian': 1},
  {'Dog Parks': 1, 'Parks': 1, 'Active Life': 1}]
@@ -286,16 +288,16 @@ model = tc.linear_regression.create(train_data, target='stars',
                                                 'categories_dict'])
 
 # Number of feature columns
-print "Number of features          : %s" % model['num_features']
+print("Number of features          : %s" % model['num_features'])
 
 # Number of features (including expanded lists and dictionaries)
-print "Number of unpacked features : %s" % model['num_unpacked_features']
+print("Number of unpacked features : %s" % model['num_unpacked_features'])
 
 # Number of coefficients in the model
-print "Number of coefficients      : %s" % model['num_coefficients']
+print("Number of coefficients      : %s" % model['num_coefficients'])
 
 # A coefficient is included for each key in the dictionary
-print model['coefficients']
+print(model['coefficients'])
 ```
 ```no-highlight
 Number of features          : 5
@@ -342,7 +344,9 @@ from array import array
 
 # List of features
 train_data['votes_list'] = train_data['votes'].apply(lambda x: x.values())
-print train_data['votes_list'].head(3)
+print(train_data['votes_list'].head(3))
+```
+```no-highlight
 [array('d', [0.0, 5.0, 2.0]),
  array('d', [0.0, 0.0, 0.0]),
  array('d', [0.0, 2.0, 1.0])]
@@ -363,16 +367,16 @@ model = tc.linear_regression.create(train_data, target='stars',
 
 
 # Number of feature columns
-print "Number of features          : %s" % model['num_features']
+print("Number of features          : %s" % model['num_features'])
 
 # Number of features (including expanded lists and dictionaries)
-print "Number of unpacked features : %s" % model['num_unpacked_features']
+print("Number of unpacked features : %s" % model['num_unpacked_features'])
 
 # Number of coefficients in the model
-print "Number of coefficients      : %s" % model['num_coefficients']
+print("Number of coefficients      : %s" % model['num_coefficients'])
 
 # A coefficient is included for each index in the list
-print model['coefficients']
+print(model['coefficients'])
 ```
 ```no-highlight
 Number of features          : 5
@@ -539,7 +543,7 @@ new_data = tc.SFrame({'user_avg_stars': [None],
                        'categories_dict': [{'Pizza': 1}]
                       })
 prediction = model.predict(new_data)
-print prediction
+print(prediction)
 
 # An SFrame without the 'user_avg_stars' feature. predict() will impute the
 # entire feature to the mean value observed during training.

@@ -12,6 +12,7 @@
 #include <flexible_type/flexible_type.hpp>
 #include <sframe/dataframe.hpp>
 #include <serialization/serialization_includes.hpp>
+
 namespace turi {
 class model_base;
 struct function_closure_info;
@@ -175,5 +176,3 @@ inline typename std::decay<T>::type variant_get_value(const variant_type& v) {
 } // namespace turi
 #include <unity/lib/api/function_closure_info.hpp>
 #endif
-
-

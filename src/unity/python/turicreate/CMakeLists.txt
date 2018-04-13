@@ -49,6 +49,14 @@ set_property(DIRECTORY PROPERTY INSTALLATION_EXTENSIONS "${INSTALLATION_EXTENSIO
 set_property(DIRECTORY PROPERTY INSTALLATION_BINARY_TARGETS "${INSTALLATION_BINARY_TARGETS}")
 set_property(DIRECTORY PROPERTY INSTALLATION_BINARY_FILES "${INSTALLATION_BINARY_FILES}")
 
+add_custom_target(
+  visualization_vega ALL
+  DEPENDS visualization_client
+  COMMAND cp "${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vega_3.2.1.js" "${CMAKE_CURRENT_BINARY_DIR}"
+  COMMAND cp "${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vg2png" "${CMAKE_CURRENT_BINARY_DIR}"
+  COMMAND cp "${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vg2svg" "${CMAKE_CURRENT_BINARY_DIR}"
+)
+
 if (APPLE)
   add_custom_target(
     visualization_client_app ALL

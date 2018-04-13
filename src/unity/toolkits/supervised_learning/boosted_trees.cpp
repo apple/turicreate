@@ -186,7 +186,7 @@ void boosted_trees_regression::init_options(
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
 }
 
-std::shared_ptr<MLModelWrapper> boosted_trees_regression::export_to_coreml() {
+std::shared_ptr<coreml::MLModelWrapper> boosted_trees_regression::export_to_coreml() {
   
   std::map<std::string, flexible_type> context = { 
     {"model_type", "boosted_trees"}, 
@@ -263,7 +263,7 @@ void boosted_trees_classifier::init_options(
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
 }
   
-std::shared_ptr<MLModelWrapper> boosted_trees_classifier::export_to_coreml() {
+std::shared_ptr<coreml::MLModelWrapper> boosted_trees_classifier::export_to_coreml() {
   
   std::map<std::string, flexible_type> context = { 
     {"model_type", "boosted_trees"}, 

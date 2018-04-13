@@ -12,7 +12,7 @@
 
 // Toolkits
 #include <toolkits/supervised_learning/supervised_learning.hpp>
-#include <unity/toolkits/coreml_export/ml_model_wrapper.hpp>
+#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
 
 // Optimization Interface
 #include <optimization/optimization_interface.hpp>
@@ -126,7 +126,7 @@ class EXPORT linear_regression: public supervised_learning_model_base {
     _coefs = coefs;
   }
 
-  std::shared_ptr<MLModelWrapper> export_to_coreml() override;
+  std::shared_ptr<coreml::MLModelWrapper> export_to_coreml() override;
 
   SUPERVISED_LEARNING_METHODS_REGISTRATION(
       "regression_linear_regression", linear_regression); 

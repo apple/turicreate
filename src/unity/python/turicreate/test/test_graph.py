@@ -6,7 +6,7 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-from ..data_structures.sgraph import SGraph, Vertex, Edge, load_graph
+from ..data_structures.sgraph import SGraph, Vertex, Edge, load_sgraph
 from ..data_structures.sframe import SFrame
 from . import util
 
@@ -160,7 +160,7 @@ class GraphTests(unittest.TestCase):
         g = SGraph().add_vertices(self.vertices, 'vid').add_edges(self.edges, 'src_id', 'dst_id')
         with util.TempDirectory() as f:
             g.save(f)
-            g2 = load_graph(f, 'binary')
+            g2 = load_sgraph(f, 'binary')
             self.assertEqual(g2.summary(), {'num_vertices': 4, 'num_edges': 3})
             self.assertItemsEqual(g2.get_fields(), {'__id', '__src_id', '__dst_id', 'color', 'vec', 'weight'})
 
@@ -217,7 +217,7 @@ class GraphTests(unittest.TestCase):
             fcsv.write(toy_graph_csv)
             fcsv.file.flush()
             for (fname, fmt) in zip([fsnap.name, ftsv.name, fcsv.name], ['snap', 'tsv', 'csv']):
-                g = load_graph(fname, fmt)
+                g = load_sgraph(fname, fmt)
                 self.assertEqual(g.summary(), {'num_vertices': 3, 'num_edges': 6})
                 temp_fnames.append(fname)
 

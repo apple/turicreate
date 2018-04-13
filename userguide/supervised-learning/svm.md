@@ -105,7 +105,7 @@ for that feature in an upcoming release.
 
 ```python
 predictions = model.classify(test_data)
-print predictions
+print(predictions)
 ```
 ```no-highlight
 +-------+

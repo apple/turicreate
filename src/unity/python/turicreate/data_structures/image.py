@@ -6,12 +6,8 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-try:
-    from io import BytesIO as _StringIO
-except ImportError:
-    from StringIO import StringIO as _StringIO
 
-from ..deps import numpy as _np, HAS_NUMPY as _HAS_NUMPY
+from ..deps import numpy as _np
 import array as _array
 
 _JPG = "JPG"
@@ -153,16 +149,10 @@ class Image(object):
 
         Returns
         -------
-        out : {array.array | numpy.array}
-            The pixel data of the Image object. If user has numpy, it
-            is returned as a multi-dimensional numpy array, where the shape of the
-            array represents the shape of the image.  Otherwise, it is
-            returned as a flat array.array with interleaved pixel values
-            ie. it is stored as RGBRGBRGB, where each sequence of three values
-            represents the Red, Green, and Blue. If the image is grayscale,
-            there is only one value per pixel. If the image is RGBA, there are
-            four values per pixel. The pixels are stored in row-major order.
-
+        out : numpy.array
+            The pixel data of the Image object. It returns a multi-dimensional
+            numpy array, where the shape of the array represents the shape of
+            the image (height, weight, channels).
 
         See Also
         --------
@@ -175,19 +165,12 @@ class Image(object):
         >>> image_array = img.pixel_data
         """
 
-        try:
-            pil_img = self._to_pil_image()
-            if _HAS_NUMPY:
-                return _np.asarray(pil_img)
-            else:
-                ret = _array.array('B')
-                if self._channels == 1:
-                    ret.fromlist([z for z in pil_img.getdata()])
-                else:
-                    ret.fromlist([z for i in pil_img.getdata() for z in i])
-                return ret
-        except ImportError:
-            print("Install pillow to get the pixel_data property")
+        from .. import extensions as _extensions
+        data = _np.zeros((self.height, self.width, self.channels), dtype=_np.uint8)
+        _extensions.image_load_to_numpy(self, data.ctypes.data, data.strides)
+        if self.channels == 1:
+            data = data.squeeze(2)
+        return data
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
@@ -208,19 +191,8 @@ class Image(object):
         return ret
 
     def _to_pil_image(self):
-        from PIL import Image as _PIL_image
-        if self._format_enum == _format[_RAW]:
-            if self.channels == 1:
-                img = _PIL_image.frombytes('L', (self._width, self._height), bytes(self._image_data))
-            elif self.channels == 3:
-                img = _PIL_image.frombytes('RGB', (self._width, self._height), bytes(self._image_data))
-            elif self.channels == 4:
-                img = _PIL_image.frombytes('RGBA', (self._width, self._height), bytes(self._image_data))
-            else:
-                raise ValueError('Unsupported channel size: ' + str(self.channels))
-        else:
-            img = _PIL_image.open(_StringIO(self._image_data))
-        return img
+        from PIL import Image as _PIL_Image
+        return _PIL_Image.fromarray(self.pixel_data)
 
     def show(self):
         """

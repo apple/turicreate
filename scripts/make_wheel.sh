@@ -5,22 +5,15 @@ set -e
 # Force LD_LIBRARY_PATH to look up from deps
 # Otherwise, binaries run during compilation will prefer system libraries,
 # which might not use the correct glibc version.
-# This seems to repro on Ubuntu 11.10 (Oneiric).
 
 PYTHON_SCRIPTS=deps/env/bin
 if [[ $OSTYPE == msys ]]; then
   PYTHON_SCRIPTS=deps/conda/bin/Scripts
 fi
 
-if [[ -z $PY_MAJOR_VERSION ]]; then
-  PY_MAJOR_VERSION=`python -V 2>&1 | perl -ne 'print m/^Python (\d\.\d)/'`
-fi
-
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 WORKSPACE=${SCRIPT_DIR}/..
-ABS_WORKSPACE=`dirname $SCRIPT_DIR`
 build_type="release"
-export TURICREATE_USERNAME=''
 #export LD_LIBRARY_PATH=${ROOT_DIR}/deps/local/lib:${ROOT_DIR}/deps/local/lib64:$LD_LIBRARY_PATH
 
 print_help() {
@@ -30,24 +23,34 @@ print_help() {
   echo
   echo "  --build_number=[version] The build number of the wheel, e.g. 123. Or 123.gpu"
   echo
-  echo "  --skip_test              Skip unit test and doc generation."
+  echo "  --skip_test              Skip unit tests (Python & C++)."
   echo
   echo "  --skip_cpp_test          Skip C++ unit tests. C++ tests are default skipped on Windows."
   echo
-  echo "  --skip_build             Skip the build process"
+  echo "  --skip_build             Skip the build process."
   echo
-  echo "  --skip_doc               Skip the doc generation"
+  echo "  --skip_doc               Skip the generation of documentation."
   echo
-  echo "  --debug                  Use debug build instead of release"
+  echo "  --debug                  Use debug build instead of release."
   echo
-  echo "  --num_procs=n            Specify the number of proceses to run in parallel"
+  echo "  --num_procs=n            Specify the number of proceses to run in parallel."
   echo
   echo "  --target-dir=[dir]       The directory where the wheel and associated files are put."
+  echo
+  echo "  --python2.7              Use Python 2.7 (default)."
+  echo
+  echo "  --python3.5              Use Python 3.5, default is Python 2.7."
+  echo
+  echo "  --python3.6              Use Python 3.6, default is Python 2.7."
   echo
   echo "Produce a local wheel and skip test and doc generation"
   echo "Example: ./make_wheel.sh --skip_test"
   exit 1
 } # end of print help
+
+python27=0
+python35=0
+python36=0
 
 # command flag options
 # Parse command line configure flags ------------------------------------------
@@ -61,6 +64,9 @@ while [ $# -gt 0 ]
     --skip_cpp_test)        SKIP_CPP_TEST=1;;
     --skip_build)           SKIP_BUILD=1;;
     --skip_doc)             SKIP_DOC=1;;
+    --python2.7)            python27=1;;
+    --python3.5)            python35=1;;
+    --python3.6)            python36=1;;
     --release)              build_type="release";;
     --debug)                build_type="debug";;
     --help)                 print_help ;;
@@ -112,11 +118,14 @@ build_source() {
   # Configure
   cd ${WORKSPACE}
 
-  # ./configure --cleanup --yes
+  if [[ $(($python27 + $python35 + $python36)) -gt 1 ]]; then
+    echo "Two or more versions of Python specified. Pick one."
+    exit 1
+  fi
 
-  if [[ "$PY_MAJOR_VERSION" == "3.5" ]]; then
+  if [[ "$python35" == "1" ]]; then
       ./configure --python3.5
-  elif [[ "$PY_MAJOR_VERSION" == "3.6" ]]; then
+  elif [[ "$python36" == "1" ]]; then
       ./configure --python3.6
   else
       ./configure --python2.7
@@ -146,20 +155,21 @@ build_source() {
 
 # Run all unit test
 cpp_test() {
-  echo -e "\n\n\n================= Running Unit Test ================\n\n\n"
-  cd ${WORKSPACE}/${build_type}
+  echo -e "\n\n\n================= Running C++ Unit Tests ================\n\n\n"
+  cd ${WORKSPACE}/${build_type}/test
   push_ld_library_path
-  ${WORKSPACE}/scripts/run_cpp_tests.py -j 1
+  ${WORKSPACE}/scripts/run_cpp_tests.py -j${NUM_PROCS}
   pop_ld_library_path
+  echo -e "\n\n\n================= Done C++ Unit Tests ================\n\n\n"
 }
 
 # Run all unit test
 unit_test() {
-  echo -e "\n\n\n================= Running Unit Test ================\n\n\n"
+  echo -e "\n\n\n================= Running Python Unit Tests ================\n\n\n"
 
   cd ${WORKSPACE}
   scripts/run_python_test.sh ${build_type}
-  echo -e "\n\n================= Done Unit Test ================\n\n"
+  echo -e "\n\n================= Done Python Unit Tests ================\n\n"
 }
 
 mac_patch_rpath() {
@@ -226,13 +236,22 @@ package_wheel() {
     cd ${WORKSPACE}/${build_type}/src/unity/python/turicreate
     BINARY_LIST=`find . -type f -exec file {} \; | grep x86 | cut -d: -f 1`
     echo "Stripping binaries: $BINARY_LIST"
+
+    # make newline the separator for items in for loop - default is whitespace
+    OLD_IFS=${IFS}
+    IFS=$'\n'
+
     for f in $BINARY_LIST; do
       if [ $OSTYPE == "msys" ] && [ $f == "./pylambda_worker.exe" ]; then
         echo "Skipping pylambda_worker"
       else
+        echo "Stripping $f"
         strip -s $f;
       fi
     done
+
+    # set IFS back to default
+    IFS=${OLD_IFS}
     cd ..
   fi
 
@@ -252,7 +271,7 @@ package_wheel() {
     # Change the platform tag embedded in the file name
     temp=`echo $WHEEL_PATH | perl -ne 'print m/(^.*-).*$/'`
     temp=${temp/-cpdarwin-/-cp35m-}
-    platform_tag="macosx_10_5_x86_64.macosx_10_6_intel.macosx_10_9_intel.macosx_10_9_x86_64.macosx_10_10_intel.macosx_10_10_x86_64.macosx_10_11_intel.macosx_10_11_x86_64"
+    platform_tag="macosx_10_12_intel.macosx_10_12_x86_64"
     NEW_WHEEL_PATH=${temp}${platform_tag}".whl"
     mv ${WHEEL_PATH} ${NEW_WHEEL_PATH}
     WHEEL_PATH=${NEW_WHEEL_PATH}
@@ -260,11 +279,11 @@ package_wheel() {
 
   # Set Python Language Version Number
   NEW_WHEEL_PATH=${WHEEL_PATH}
-  if [[ "$PY_MAJOR_VERSION" == "3.5" ]]; then
+  if [[ "$python35" == "1" ]]; then
       NEW_WHEEL_PATH=${WHEEL_PATH/-py3-/-cp35-}
-  elif [[ "$PY_MAJOR_VERSION" == "3.6" ]]; then
+  elif [[ "$python36" == "1" ]]; then
       NEW_WHEEL_PATH=${WHEEL_PATH/-py3-/-cp36-}
-  elif [[ "$PY_MAJOR_VERSION" == "2.7" ]]; then
+  else
       NEW_WHEEL_PATH=${WHEEL_PATH/-py2-/-cp27-}
   fi
   if [[ ! ${WHEEL_PATH} == ${NEW_WHEEL_PATH} ]]; then

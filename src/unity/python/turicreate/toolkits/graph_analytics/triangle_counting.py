@@ -105,7 +105,7 @@ def create(graph, verbose=True):
     :class:`~turicreate.triangle_counting.TriangleCountingModel` as follows:
 
     >>> g =
-    >>> turicreate.load_graph('http://snap.stanford.edu/data/email-Enron.txt.gz',
+    >>> turicreate.load_sgraph('http://snap.stanford.edu/data/email-Enron.txt.gz',
             >>> format='snap') tc = turicreate.triangle_counting.create(g)
 
     We can obtain the number of triangles that each vertex in the graph ``g``

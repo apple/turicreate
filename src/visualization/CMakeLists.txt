@@ -34,7 +34,6 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
     )
 
 
-    set(CEF_LIB_SO ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/libcef.so)
     set(CEF_RESOURCES ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Resources)
 
     set(TC_VIZ_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/TcViz")
@@ -54,14 +53,16 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
 
     set(LIB_CEF_DLL_WRAPPER "${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/libcef_dll_wrapper/libcef_dll_wrapper.a")
     set(LIB_CEF "${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/libcef.so")
+    set(LIB_CEF_SO_DEPS
+      ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/libEGL.so
+      ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/libGLESv2.so)
+    set(LIB_CEF_SWIFTSHADER_SO_DEPS
+      ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/swiftshader/libEGL.so
+      ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/swiftshader/libGLESv2.so)
     set(V8_CONTEXT_SNAPSHOT "${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/v8_context_snapshot.bin")
     set(SNAPSHOT_BLOB "${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/snapshot_blob.bin")
     set(NATIVES_BLOB "${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/natives_blob.bin")
-
-    set(TC_NPM_BUILD "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/js/build/index.js")
-    set(TC_VEGA_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/vega_viz.html")
-    set(TC_CSS "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/table_view.css")
-    set(TC_VEGA_DEPS "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/deps")
+    set(TC_NPM_BUILD "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface/build")
 
     include_directories(
       ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef
@@ -70,6 +71,9 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
     set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "${TC_VIZ_DIRECTORY}")
 
     add_executable(visualization_client "${TCVIZ_SRCS}")
+
+    set_target_properties(visualization_client
+      PROPERTIES LINK_FLAGS "-Wl,--unresolved-symbols=ignore-in-shared-libs")
 
     target_link_libraries(visualization_client
       ${LIB_CEF_DLL_WRAPPER}
@@ -87,7 +91,7 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
 
             COMMAND npm run build
 
-            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/js/"
+            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface"
 
             COMMENT "Building NPM Package for Turi Create Visualization"
 
@@ -103,28 +107,12 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
             COMMAND ${CMAKE_COMMAND} -E make_directory
                     ${TC_VIZ_HTML_DIRECTORY}
 
-            COMMAND ${CMAKE_COMMAND} -E copy
-                    ${TC_NPM_BUILD}
-                    ${TC_VIZ_HTML_DIRECTORY}
-
-            COMMAND ${CMAKE_COMMAND} -E copy
-                    ${TC_VEGA_SOURCE}
-                    ${TC_VIZ_HTML_DIRECTORY}
-
-            COMMAND ${CMAKE_COMMAND} -E copy
-                    ${TC_CSS}
-                    ${TC_VIZ_HTML_DIRECTORY}
-
             COMMAND ${CMAKE_COMMAND} -E copy_directory
-                    ${TC_VEGA_DEPS}
+                    ${TC_NPM_BUILD}
                     ${TC_VIZ_HTML_DIRECTORY}
 
             COMMAND ${CMAKE_COMMAND} -E make_directory
                     ${TC_VIZ_LOCALES_DIRECTORY}
-
-            COMMAND ${CMAKE_COMMAND} -E copy
-                    ${CEF_LIB_SO}
-                    ${TC_VIZ_DIRECTORY}
 
             COMMAND ${CMAKE_COMMAND} -E copy_directory
                     ${CEF_RESOURCES}
@@ -153,6 +141,17 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
             COMMAND ${CMAKE_COMMAND} -E copy
                     ${NATIVES_BLOB}
                     ${TC_VIZ_DIRECTORY}
+
+            COMMAND ${CMAKE_COMMAND} -E make_directory
+                    ${TC_VIZ_DIRECTORY}/swiftshader
+
+            COMMAND ${CMAKE_COMMAND} -E copy
+                    ${LIB_CEF_SO_DEPS}
+                    ${TC_VIZ_DIRECTORY}
+
+            COMMAND ${CMAKE_COMMAND} -E copy
+                    ${LIB_CEF_SWIFTSHADER_SO_DEPS}
+                    ${TC_VIZ_DIRECTORY}/swiftshader
 
             VERBATIM
     )

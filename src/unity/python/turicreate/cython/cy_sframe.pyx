@@ -27,6 +27,8 @@ from .cy_dataframe cimport is_pandas_dataframe
 from .cy_sarray cimport create_proxy_wrapper_from_existing_proxy as sarray_proxy
 from .cy_sarray cimport UnitySArrayProxy
 
+from .cy_model cimport create_model_from_proxy
+
 from .cy_cpp_utils cimport str_to_cpp, cpp_to_str
 from .cy_cpp_utils cimport to_vector_of_strings, from_vector_of_strings
 from .cy_cpp_utils cimport to_nested_vectors_of_strings, dict_to_string_string_map
@@ -136,6 +138,13 @@ cdef class UnitySFrameProxy:
         with nogil:
             self.thisptr.show(path_to_client)
 
+    cpdef plot(self, _path_to_client):
+        cdef string path_to_client = str_to_cpp(_path_to_client)
+        cdef model_base_ptr proxy
+        with nogil:
+            proxy = self.thisptr.plot(path_to_client)
+        return create_model_from_proxy(proxy)
+
     cpdef explore(self, _path_to_client, _title):
         cdef string path_to_client = str_to_cpp(_path_to_client)
         cdef string title = str_to_cpp(_title)
@@ -232,16 +241,16 @@ cdef class UnitySFrameProxy:
         with nogil:
             self.thisptr.save_as_csv(url, csv_options)
 
-    cpdef sample(self, float percent, int random_seed):
+    cpdef sample(self, float percent, int random_seed, bint exact=False):
         cdef unity_sframe_base_ptr proxy
         with nogil:
-            proxy = self.thisptr.sample(percent, random_seed)
+            proxy = self.thisptr.sample(percent, random_seed, exact)
         return create_proxy_wrapper_from_existing_proxy(proxy)
 
-    cpdef random_split(self, float percent, int random_seed):
+    cpdef random_split(self, float percent, int random_seed, bint exact=False):
         cdef cpplist[unity_sframe_base_ptr] sf_array
         with nogil:
-            sf_array = self.thisptr.random_split(percent, random_seed)
+            sf_array = self.thisptr.random_split(percent, random_seed, exact)
         assert sf_array.size() == 2
         cdef unity_sframe_base_ptr proxy_first = (sf_array.front())
         cdef unity_sframe_base_ptr proxy_second = (sf_array.back())

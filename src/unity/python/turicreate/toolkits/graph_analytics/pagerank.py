@@ -157,7 +157,7 @@ def create(graph, reset_probability=0.15,
     If given an :class:`~turicreate.SGraph` ``g``, we can create
     a :class:`~turicreate.pagerank.PageRankModel` as follows:
 
-    >>> g = turicreate.load_graph('http://snap.stanford.edu/data/email-Enron.txt.gz', format='snap')
+    >>> g = turicreate.load_sgraph('http://snap.stanford.edu/data/email-Enron.txt.gz', format='snap')
     >>> pr = turicreate.pagerank.create(g)
 
     We can obtain the page rank corresponding to each vertex in the graph ``g``

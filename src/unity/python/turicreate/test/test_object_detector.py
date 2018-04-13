@@ -171,6 +171,20 @@ class ObjectDetectorTest(unittest.TestCase):
     def test_create_with_empty_dataset(self):
         tc.object_detector.create(self.sf[:0])
 
+    def test_dict_annotations(self):
+        sf_copy = self.sf[:]
+        sf_copy[self.annotations] = sf_copy[self.annotations].apply(lambda x: x[0] if len(x) > 0 else None)
+        dict_model = tc.object_detector.create(sf_copy,
+                          feature=self.feature,
+                          annotations=self.annotations,
+                          max_iterations=1,
+                          model=self.pre_trained_model)
+
+        pred = dict_model.predict(sf_copy)
+        metrics = dict_model.evaluate(sf_copy)
+        annotated_img = tc.object_detector.util.draw_bounding_boxes(sf_copy[self.feature],
+                sf_copy[self.annotations])
+
     def test_invalid_num_gpus(self):
         num_gpus = tc.config.get_num_gpus()
         tc.config.set_num_gpus(-2)

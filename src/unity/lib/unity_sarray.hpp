@@ -10,6 +10,7 @@
 #include <memory>
 #include <flexible_type/flexible_type.hpp>
 #include <unity/lib/api/unity_sarray_interface.hpp>
+#include <unity/lib/visualization/plot.hpp>
 
 namespace turi {
 
@@ -89,8 +90,8 @@ class unity_sarray: public unity_sarray_base {
   /**
    * Constructs a unity_sarray from a parallel iterator generator.
    */
-   void construct_from_planner_node(std::shared_ptr<query_eval::planner_node> node); 
-                                    
+   void construct_from_planner_node(std::shared_ptr<query_eval::planner_node> node);
+
 
   /**
    * Constructs an Sarray from an existing directory on disk saved with
@@ -115,7 +116,7 @@ class unity_sarray: public unity_sarray_base {
   /**
    * Constructs an SArray from one or more json record files.
    *
-   * Each json record file contains an array of dictionaries. 
+   * Each json record file contains an array of dictionaries.
    * Resultant SArray is of dictionary type.
    */
   void construct_from_json_record_files(std::string url);
@@ -152,7 +153,7 @@ class unity_sarray: public unity_sarray_base {
   size_t size();
 
   /**
-   * Returns true if size is obtainable efficiently. 
+   * Returns true if size is obtainable efficiently.
    */
   bool has_size();
 
@@ -271,18 +272,18 @@ class unity_sarray: public unity_sarray_base {
    * empty array returns false.
    */
   bool any();
-  
+
   /**
-   * Creates a new SArray with the datetime values casted to string. 
+   * Creates a new SArray with the datetime values casted to string.
    *
-   * "format" determines the string format for the output SArray. 
+   * "format" determines the string format for the output SArray.
    */
   std::shared_ptr<unity_sarray_base> datetime_to_str(std::string format);
- 
+
   /**
    * Creates a new SArray with the string values casted to datetime.
-   * 
-   * "format" determines the string format for the input SArray. 
+   *
+   * "format" determines the string format for the input SArray.
    */
   std::shared_ptr<unity_sarray_base> str_to_datetime(std::string format);
 
@@ -305,7 +306,7 @@ class unity_sarray: public unity_sarray_base {
    * become undefined values.
    * \see astype
    */
-  std::shared_ptr<unity_sarray_base> lazy_astype(flex_type_enum dtype, 
+  std::shared_ptr<unity_sarray_base> lazy_astype(flex_type_enum dtype,
                                                  bool undefined_on_failure = false);
 
   /**
@@ -513,7 +514,7 @@ class unity_sarray: public unity_sarray_base {
    * Returns a uniform random sample of the sarray, that contains percent of
    * the total elements, without replacement, using the random_seed.
    */
-  std::shared_ptr<unity_sarray_base> sample(float percent, int random_seed);
+  std::shared_ptr<unity_sarray_base> sample(float percent, int random_seed, bool exact=false);
 
   /**
    * Returns an SArray of type flex_int that contains the hash of each element.
@@ -592,12 +593,12 @@ class unity_sarray: public unity_sarray_base {
    **     sa_ret = sa.apply(lambda x: len(x))
   **/
   std::shared_ptr<unity_sarray_base> item_length();
-  
+
   /**
    * Expand an SArray of datetime type to a set of new columns.
    *
    * \param column_name_prefix: prefix for the expanded column name
-   * \param expanded_column_elements: a list including the elements to expand 
+   * \param expanded_column_elements: a list including the elements to expand
    *  from the datetime column. Elements could be 'year','month','day'
    *  'hour','minute','second', and 'timezone'.
    * \param expanded_columns_types: list of types for the expanded columns
@@ -750,13 +751,32 @@ class unity_sarray: public unity_sarray_base {
     */
    std::shared_ptr<unity_sarray_base> copy_range(size_t start, size_t step, size_t end);
 
-   static std::shared_ptr<unity_sarray_base> 
+   static std::shared_ptr<unity_sarray_base>
        create_sequential_sarray(ssize_t size, ssize_t start, bool reverse);
 
+   /**
+    * Construct a boolean array with approximately a percent of the array 
+    * randomly true.
+    *
+    * if exact is false, 
+    * each row is a sample from Bernoulli(percent). On average, 'percent' 
+    * fraction of the array will be true, but this will not be exact.
+    *
+    * If exact is true, \ref make_exact_uniform_boolean_array is used.
+    */
    static std::shared_ptr<unity_sarray_base> make_uniform_boolean_array(size_t size,
                                                                  float percent,
-                                                                 int random_seed);
+                                                                 int random_seed,
+                                                                 bool exact=false);
 
+   /**
+    * Construct a boolean array with exactly a certain number of true elements.
+    *
+    * if num_trues is > size, an array of all trues of length size is returned.
+    */
+   static std::shared_ptr<unity_sarray_base> make_exact_uniform_boolean_array(size_t size,
+                                                                              size_t num_trues,
+                                                                              int random_seed);
    std::shared_ptr<unity_sarray_base> builtin_rolling_apply(
        const std::string &fn_name,
        ssize_t before,
@@ -773,6 +793,11 @@ class unity_sarray: public unity_sarray_base {
             const std::string& title,
             const std::string& xlabel,
             const std::string& ylabel);
+
+  std::shared_ptr<model_base> plot(const std::string& path_to_client,
+                          const std::string& _title,
+                          const std::string& _xlabel,
+                          const std::string& _ylabel);
 
  private:
   /**
@@ -839,7 +864,7 @@ class unity_sarray: public unity_sarray_base {
 
 
   void construct_from_unity_sarray(const unity_sarray& other);
-  
+
 };
 
 } // namespace turi

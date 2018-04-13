@@ -38,11 +38,21 @@ There are three primary visualization methods in Turi Create:
   and
   [SArray.explore](https://apple.github.io/turicreate/docs/api/generated/turicreate.SArray.explore.html).
 
+Turi Create also enables you to create independent plots including 
+[scatter plots](https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.scatter.html), 
+[heatmaps](https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.heatmap.html), 
+[categorical heatmaps](https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.categorical_heatmap.html), 
+[histograms](https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.histogram.html), 
+[columnwise summaries](https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.columnwise_summary.html), and 
+[item frequency plots](https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.item_frequency.html).
+
 #### Show
 
-The `show` method opens a visualization window and streams a plot of the
-requested data structure or pair of data structures to the user, with an
-automatically selected plot type.
+The `show` method displays a plot of the requested data structure or pair of
+data structures to the user, with an automatically selected plot type. When in
+Jupyter Notebook, it outputs to the notebook by default, and otherwise opens a
+native window. This behavior can be controlled with
+[`turicreate.visualization.set_target`](https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.set_target.html).
 
 ##### Streaming Capability
 
@@ -132,6 +142,22 @@ support Vega specifications, like the
 You can find these options in the `File` menu as shown below:
 
 ![Turi Create Visualization File Menu](images/show_file_menu.png)
+
+Turi Create also lets you save plots as PNG, SVG, or JSON as part of the 
+Python Plot API. You can save a Plot object by invoking the `save` method, as 
+shown in the example below:
+
+```
+import turicreate as tc
+# build the plot
+x = tc.SArray([1,2,3,4,5])
+y = x * 2
+custom_plot = tc.visualization.scatter(x,y)
+# save the plot
+custom_plot.save("custom.json")
+custom_plot.save("custom.png")
+custom_plot.save("custom.svg")
+```
 
 #### Explore
 

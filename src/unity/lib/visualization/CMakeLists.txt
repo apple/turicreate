@@ -5,17 +5,21 @@ make_library(
   SOURCES
     boxes_and_whiskers.cpp
     categorical_heatmap.cpp
+    columnwise_summary.cpp
+    escape.cpp
     groupby.cpp
     heatmap.cpp
     histogram.cpp
     hyperloglog.cpp
     io_buffer.cpp
     item_frequency.cpp
+    plot.cpp
     process_wrapper.cpp
+    registration.cpp
     scatter.cpp
     show.cpp
+    summary_view.cpp
     thread.cpp
-    transformation.cpp
     vega_data.cpp
     vega_spec.cpp
   REQUIRES
@@ -53,7 +57,7 @@ foreach(SOURCE_FILE ${GENERATED_VEGA_JSON_HEADERS})
     COMMENT "Generating ${GENERATED_FILE}"
     VERBATIM
   )
-  
+
   string(
     MAKE_C_IDENTIFIER
     ${SOURCE_FILE}

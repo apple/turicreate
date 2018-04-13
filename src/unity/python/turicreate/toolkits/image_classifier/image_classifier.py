@@ -217,7 +217,6 @@ class ImageClassifier(_CustomModel):
         """
 
         width = 40
-        key_str = "{:<{}}: {}"
 
         sections, section_titles = self._get_summary_struct()
         out = _tkutl._toolkit_repr_print(self, sections, section_titles,
@@ -362,7 +361,7 @@ class ImageClassifier(_CustomModel):
     def predict_topk(self, dataset, output_type="probability", k=3):
         """
         Return top-k predictions for the ``dataset``, using the trained model.
-        Predictions are returned as an SFrame with three columns: `row_id`,
+        Predictions are returned as an SFrame with three columns: `id`,
         `class`, and `probability`, `margin`,  or `rank`, depending on the ``output_type``
         parameter. Input dataset size must be the same as for training of the model.
 
@@ -397,21 +396,21 @@ class ImageClassifier(_CustomModel):
         --------
         >>> pred = m.predict_topk(validation_data, k=3)
         >>> pred
-        +--------+-------+-------------------+
-        | row_id | class |   probability     |
-        +--------+-------+-------------------+
-        |   0    |   4   |   0.995623886585  |
-        |   0    |   9   |  0.0038311756216  |
-        |   0    |   7   | 0.000301006948575 |
-        |   1    |   1   |   0.928708016872  |
-        |   1    |   3   |  0.0440889261663  |
-        |   1    |   2   |  0.0176190119237  |
-        |   2    |   3   |   0.996967732906  |
-        |   2    |   2   |  0.00151345680933 |
-        |   2    |   7   | 0.000637513934635 |
-        |   3    |   1   |   0.998070061207  |
-        |  ...   |  ...  |        ...        |
-        +--------+-------+-------------------+
+        +----+-------+-------------------+
+        | id | class |   probability     |
+        +----+-------+-------------------+
+        | 0  |   4   |   0.995623886585  |
+        | 0  |   9   |  0.0038311756216  |
+        | 0  |   7   | 0.000301006948575 |
+        | 1  |   1   |   0.928708016872  |
+        | 1  |   3   |  0.0440889261663  |
+        | 1  |   2   |  0.0176190119237  |
+        | 2  |   3   |   0.996967732906  |
+        | 2  |   2   |  0.00151345680933 |
+        | 2  |   7   | 0.000637513934635 |
+        | 3  |   1   |   0.998070061207  |
+        | .. |  ...  |        ...        |
+        +----+-------+-------------------+
         [35688 rows x 3 columns]
         """
         if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image)):

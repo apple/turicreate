@@ -124,8 +124,8 @@ class ImageClassifierTest(unittest.TestCase):
 
     def test_predict(self):
         model = self.model
-        for output_type in ['score', 'probability', 'class']:
-            preds = model.predict(self.sf.head())
+        for output_type in ['class', 'probability_vector']:
+            preds = model.predict(self.sf.head(), output_type=output_type)
             self.assertEqual(len(preds), len(self.sf.head()))
 
     def test_single_image(self):
@@ -190,11 +190,11 @@ class ImageClassifierTest(unittest.TestCase):
 
     def test_predict_topk(self):
         model = self.model
-        for output_type in ['score', 'probability', 'class']:
-            preds = model.predict_topk(self.sf.head())
+        for output_type in ['margin', 'probability', 'rank']:
+            preds = model.predict_topk(self.sf.head(), output_type = output_type)
             self.assertEqual(len(preds), 3 * len(self.sf.head()))
 
-            preds = model.predict_topk(self.sf.head(), k = 5)
+            preds = model.predict_topk(self.sf.head(), k = 5, output_type = output_type)
             self.assertEqual(len(preds), 5 * len(self.sf.head()))
 
     def test__list_fields(self):

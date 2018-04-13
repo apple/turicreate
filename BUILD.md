@@ -26,6 +26,7 @@ You will need:
 * On macOS, [Xcode](https://itunes.apple.com/us/app/xcode/id497799835) with command line tools (tested with Xcode 9)
 * On Linux, a C++ compiler toolchain with C++11 support
 * [Node.js](https://nodejs.org) 6.x or later with `node` and `npm` in `$PATH`
+* The python `virtualenv` package.
 
 Turi Create automatically satisfies other dependencies in the `deps/` directory,
 which includes compiler support and dependent libraries.

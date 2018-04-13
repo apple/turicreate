@@ -120,7 +120,7 @@ void decision_tree_regression::init_options(
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
 }
 
-std::shared_ptr<MLModelWrapper> decision_tree_regression::export_to_coreml() {
+std::shared_ptr<coreml::MLModelWrapper> decision_tree_regression::export_to_coreml() {
   
   std::map<std::string, flexible_type> context = { 
     {"model_type", "decision_tree"}, 
@@ -198,7 +198,7 @@ void decision_tree_classifier::init_options(
 
 }
 
-std::shared_ptr<MLModelWrapper> decision_tree_classifier::export_to_coreml() {
+std::shared_ptr<coreml::MLModelWrapper> decision_tree_classifier::export_to_coreml() {
   
   std::map<std::string, flexible_type> context = { 
     {"model_type", "decision_tree"}, 

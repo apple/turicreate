@@ -8,10 +8,7 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import unittest
 import turicreate as tc
-import math
 import uuid
-import random
-import copy
 from turicreate.toolkits import evaluation
 from turicreate.toolkits._main import ToolkitError
 import shutil

@@ -8,14 +8,12 @@
 
 import os
 import sys
-import glob
-import subprocess
 from setuptools import setup, find_packages, Extension
 from setuptools.dist import Distribution
 from setuptools.command.install import install
 
 PACKAGE_NAME="turicreate"
-VERSION='4.1'#{{VERSION_STRING}}
+VERSION='4.3a1'#{{VERSION_STRING}}
 
 # Prevent distutils from thinking we are a pure python package
 class BinaryDistribution(Distribution):
@@ -51,7 +49,6 @@ class InstallEngine(install):
         from distutils.util import get_platform
         from pkg_resources import parse_version
         cur_platform = get_platform()
-        py_shobj_ext = 'so'
 
         if cur_platform.startswith("macosx"):
 
@@ -65,7 +62,6 @@ class InstallEngine(install):
         elif cur_platform.startswith('linux'):
             pass
         elif cur_platform.startswith('win'):
-            py_shobj_ext = 'pyd'
             win_ver = platform.version()
             # Verify this is Vista or above
             if parse_version(win_ver) < parse_version('6.0'):
@@ -82,11 +78,6 @@ class InstallEngine(install):
             sys.stderr.write(msg)
             sys.exit(1)
 
-        from distutils import sysconfig
-        import stat
-        import glob
-
-        root_path = os.path.join(self.install_lib, PACKAGE_NAME)
 
 if __name__ == '__main__':
     from distutils.util import get_platform
@@ -147,24 +138,50 @@ if __name__ == '__main__':
                      '*.dll', '*.def',
                      'deploy/*.jar', '*.exe', 'libminipsutil.*',
                      'mxnet/*.ttf',
-                    'Turi Create Visualization.app/Contents/_CodeSignature/CodeResources',
-                    'Turi Create Visualization.app/Contents/Frameworks/*.dylib',
-                    'Turi Create Visualization.app/Contents/Info.plist',
-                    'Turi Create Visualization.app/Contents/Resources/*.car',
-                    'Turi Create Visualization.app/Contents/Resources/*.css',
-                    'Turi Create Visualization.app/Contents/Resources/*.icns',
-                    'Turi Create Visualization.app/Contents/Resources/*.js',
-                    'Turi Create Visualization.app/Contents/Resources/*.html',
-                    'Turi Create Visualization.app/Contents/Resources/Base.lproj/Main.storyboardc/XfG-lQ-9wD-view-m2S-Jp-Qdl.nib',
-                    'Turi Create Visualization.app/Contents/Resources/Base.lproj/Main.storyboardc/NSViewController-99M-uP-3Iu.nib',
-                    'Turi Create Visualization.app/Contents/Resources/Base.lproj/Main.storyboardc/mainWindow.nib',
-                    'Turi Create Visualization.app/Contents/Resources/Base.lproj/Main.storyboardc/MainMenu.nib',
-                    'Turi Create Visualization.app/Contents/Resources/Base.lproj/Main.storyboardc/Info.plist',
-                    'Turi Create Visualization.app/Contents/Resources/Base.lproj/Main.storyboardc/mainWindowRun.nib',
-                    'Turi Create Visualization.app/Contents/Resources/Base.lproj/Main.storyboardc/99M-uP-3Iu-view-SkP-0p-uFQ.nib',
-                    'Turi Create Visualization.app/Contents/Resources/*.dylib',
-                    'Turi Create Visualization.app/Contents/PkgInfo',
-                    'Turi Create Visualization.app/Contents/MacOS/Turi Create Visualization'
+
+                     # macOS visualization
+                     'Turi Create Visualization.app/Contents/_CodeSignature/CodeResources',
+                     'Turi Create Visualization.app/Contents/Frameworks/*.dylib',
+                     'Turi Create Visualization.app/Contents/Info.plist',
+                     'Turi Create Visualization.app/Contents/Resources/*.car',
+                     'Turi Create Visualization.app/Contents/Resources/*.css',
+                     'Turi Create Visualization.app/Contents/Resources/*.icns',
+                     'Turi Create Visualization.app/Contents/Resources/*.js',
+                     'Turi Create Visualization.app/Contents/Resources/*.html',
+                     'Turi Create Visualization.app/Contents/Resources/Base.lproj/Main.storyboardc/*.nib',
+                     'Turi Create Visualization.app/Contents/Resources/Base.lproj/Main.storyboardc/Info.plist',
+                     'Turi Create Visualization.app/Contents/Resources/*.dylib',
+                     'Turi Create Visualization.app/Contents/PkgInfo',
+                     'Turi Create Visualization.app/Contents/MacOS/Turi Create Visualization',
+                     
+                     # Linux visualization
+        		     'Turi Create Visualization/icudtl.dat',
+        		     'Turi Create Visualization/visualization_client',
+        		     'Turi Create Visualization/snapshot_blob.bin',
+        		     'Turi Create Visualization/cef_100_percent.pak',
+        		     'Turi Create Visualization/locales/*.pak',
+        		     'Turi Create Visualization/locales/*.info',
+        		     'Turi Create Visualization/cef_200_percent.pak',
+        		     'Turi Create Visualization/cef.pak',
+        		     'Turi Create Visualization/devtools_resources.pak',
+        		     'Turi Create Visualization/html/vega.min.js',
+        		     'Turi Create Visualization/html/index.js',
+        		     'Turi Create Visualization/html/vega_viz.html',
+        		     'Turi Create Visualization/html/d3.v4.min.js',
+        		     'Turi Create Visualization/html/vega-lite.min.js',
+        		     'Turi Create Visualization/html/vega-tooltip.min.css',
+        		     'Turi Create Visualization/html/vega-tooltip.min.js',
+        		     'Turi Create Visualization/html/vega-embed.min.js',
+        		     'Turi Create Visualization/html/table_view.css',
+        		     'Turi Create Visualization/natives_blob.bin',
+        		     'Turi Create Visualization/libcef.so',
+        		     'Turi Create Visualization/v8_context_snapshot.bin',
+        		     'Turi Create Visualization/cef_extensions.pak',
+                     
+                     # Plot.save dependencies
+                     'visualization/vega_3.2.1.js',
+                     'visualization/vg2png',
+                     'visualization/vg2svg'
                      ]},
         packages=find_packages(
             exclude=["*.tests", "*.tests.*", "tests.*", "tests", "*.test", "*.test.*", "test.*", "test",
@@ -178,7 +195,7 @@ if __name__ == '__main__':
             "decorator >= 4.0.9",
             "prettytable == 0.7.2",
             "requests >= 2.9.1",
-            "mxnet >= 0.11, < 1.0.0",
+            "mxnet >= 0.11, < 1.2.0",
             "coremltools == 0.8",
             "pillow >= 3.3.0",
             "pandas >= 0.19.0",

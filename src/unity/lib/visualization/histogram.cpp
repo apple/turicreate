@@ -6,7 +6,9 @@
 #include "histogram.hpp"
 
 #include <parallel/lambda_omp.hpp>
+#include <unity/lib/visualization/escape.hpp>
 
+#include <string>
 #include <cmath>
 
 namespace turi {
@@ -308,20 +310,6 @@ std::string histogram_result::vega_column_data(bool) const {
   return ss.str();
 }
 
-static std::string escape_float(flex_float value) {
-  if (std::isnan(value)) {
-    return "\"nan\"";
-  }
-  if (std::isinf(value)) {
-    if (value > 0) {
-      return "\"inf\"";
-    } else {
-      return "\"-inf\"";
-    }
-  }
-  return std::to_string(value);
-}
-
 std::string histogram_result::vega_summary_data() const {
   std::stringstream ss;
 
@@ -345,5 +333,49 @@ std::string histogram_result::vega_summary_data() const {
   return ss.str();
 
 }
+
+std::shared_ptr<Plot> plot_histogram(const std::string& path_to_client,
+  gl_sarray& sa, std::string xlabel, std::string ylabel,
+  std::string title) {
+    using namespace turi;
+    using namespace turi::visualization;
+
+    logprogress_stream << "Materializing SArray..." << std::endl;
+    sa.materialize();
+    logprogress_stream << "Done." << std::endl;
+
+    if (sa.size() == 0) {
+      log_and_throw("Nothing to show; SArray is empty.");
+    }
+
+    std::shared_ptr<const gl_sarray> self = std::make_shared<const gl_sarray>(sa);
+
+    histogram hist;
+
+    if (title.empty()) {
+      title = std::string("Distribution of Values [");
+      title.append(flex_type_enum_to_name(self->dtype()));
+      title.append("]");
+    }
+
+    if (xlabel.empty()) {
+      xlabel = "Values";
+    }
+
+    if (ylabel.empty()) {
+      ylabel = "Count";
+    }
+
+    std::stringstream ss;
+    ss << histogram_spec(title, xlabel, ylabel);
+    std::string histogram_spec = ss.str();
+    double size_array = static_cast<double>(self->size());
+
+    hist.init(*self);
+
+    std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<histogram>(hist);
+    return std::make_shared<Plot>(path_to_client, histogram_spec, shared_unity_transformer, size_array);
+}
+
 
 }}

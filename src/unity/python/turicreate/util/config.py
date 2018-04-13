@@ -10,7 +10,6 @@ import os
 import time
 import logging
 import platform
-import sys as _sys
 
 class TuriConfig:
 
@@ -57,15 +56,13 @@ class TuriConfig:
                 log_dir = "/tmp"
 
         self.log_dir = log_dir
-        ts = str(int(time.time()))
-        root_package_name = __import__(__name__.split('.')[0]).__name__
 
         # NOTE: Remember to update slots if you are adding any config parameters to this file.
 
     def get_unity_log(self):
         ts = str(int(time.time()))
         log_ext = '.log'
-        root_package_name = __import__(__name__.split('.')[0]).__name__
+        root_package_name = 'turicreate'
         return os.path.join(self.log_dir, root_package_name + '_server_' + str(ts) + log_ext)
 
 DEFAULT_CONFIG = TuriConfig()

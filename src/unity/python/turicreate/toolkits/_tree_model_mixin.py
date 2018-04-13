@@ -60,7 +60,6 @@ class TreeModelMixin(object):
             +-----------------------------+-------+-------+
             [31 rows x 3 columns]
         """
-        metric_name = '.'.join([self.__module__, 'get_feature_importance'])
         return tc.extensions._xgboost_feature_importance(self.__proxy__)
 
     def extract_features(self, dataset, missing_value_action='auto'):

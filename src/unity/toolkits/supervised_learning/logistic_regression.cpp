@@ -37,13 +37,6 @@
 #include <cmath>
 #include <serialization/serialization_includes.hpp>
 
-// Distributed
-#ifdef HAS_DISTRIBUTED
-#include <distributed/distributed_context.hpp>
-#include <rpc/dc_global.hpp>
-#include <rpc/dc.hpp>
-#endif
-
 #define LOGISTIC_REGRESSION_NEWTON_VARIABLES_HARD_LIMIT 10000
 #define LOGISTIC_REGRESSION_NEWTON_VARIABLES_SOFT_LIMIT 500
 
@@ -764,7 +757,7 @@ size_t logistic_regression::get_version() const{
   return LOGISTIC_REGRESSION_MODEL_VERSION;
 }
 
-std::shared_ptr<MLModelWrapper> logistic_regression::export_to_coreml() {
+std::shared_ptr<coreml::MLModelWrapper> logistic_regression::export_to_coreml() {
 
   std::string prob_column_name = ml_mdata->target_column_name() + " Probability";
   CoreML::Pipeline  pipeline = CoreML::Pipeline::Classifier(ml_mdata->target_column_name(), prob_column_name, "");
@@ -834,7 +827,7 @@ std::shared_ptr<MLModelWrapper> logistic_regression::export_to_coreml() {
   add_metadata(pipeline.m_spec, context_metadata);
 
   // Save pipeline
-  auto model_wrapper = std::make_shared<MLModelWrapper>(std::make_shared<CoreML::Pipeline>(pipeline));
+  auto model_wrapper = std::make_shared<coreml::MLModelWrapper>(std::make_shared<CoreML::Pipeline>(pipeline));
 
   return model_wrapper;
 }

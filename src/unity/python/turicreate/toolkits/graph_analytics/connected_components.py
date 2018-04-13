@@ -102,7 +102,7 @@ def create(graph, verbose=True):
     a :class:`~turicreate.connected_components.ConnectedComponentsModel` as
     follows:
 
-    >>> g = turicreate.load_graph('http://snap.stanford.edu/data/email-Enron.txt.gz', format='snap')
+    >>> g = turicreate.load_sgraph('http://snap.stanford.edu/data/email-Enron.txt.gz', format='snap')
     >>> cc = turicreate.connected_components.create(g)
     >>> cc.summary()
 

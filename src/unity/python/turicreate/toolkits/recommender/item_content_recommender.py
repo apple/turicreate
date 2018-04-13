@@ -13,7 +13,6 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import turicreate as _turicreate
 from turicreate import SFrame as _SFrame
-from turicreate import SArray as _SArray
 from turicreate.toolkits.recommender.util import _Recommender
 from turicreate.cython.cy_server import QuietProgress
 from array import array as _array
@@ -173,7 +172,6 @@ def create(item_data, item_id,
     # Translate any string columns to actually work in nearest
     # neighbors by making it a categorical list.  Also translate lists
     # into dicts, and normalize numeric columns.
-    normalization_columns = []
     gaussian_kernel_metrics = set()
 
     for c in item_columns:

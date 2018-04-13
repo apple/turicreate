@@ -45,16 +45,6 @@ static double hexadecimal_to_float(std::string hex) {
     is_little_endian = ((unsigned char*)(&test))[0] != 0;
   }
 
-  /*    int val[8];
-        char digits[17] = "0123456789ABCDEF";
-        for(int i = 0; i < 8; ++i) {
-        val[i] = int(std::find(digits, digits+16, hex[i]) - digits);
-        }
-
-        for(int i = 0; i < 4; ++i) {
-        p[i] = val[2*i] + 16 * val[2+i + 1];
-        }
-  */ 
   { 
     int a = 0, b = 0, c = 0, d = 0;
 
@@ -197,7 +187,6 @@ void export_xgboost_model(const std::string& filename,
       std::map<flex_string, flexible_type> node_dict(node_dict_raw.begin(), node_dict_raw.end());
       flex_int node_id = node_dict.at("id").get<flex_int>();
       flex_string type = node_dict.at("type").get<flex_string>();
-      flex_float value = node_dict.at("value").to<flex_float>();
 
       // Get the exact non-lossy double value and use that.  But it's stored as an
       flex_float exact_value = hexadecimal_to_float(node_dict.at("value_hexadecimal").get<flex_string>());

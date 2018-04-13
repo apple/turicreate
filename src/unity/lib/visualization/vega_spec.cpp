@@ -27,7 +27,7 @@ namespace visualization {
 std::string escape_string(const std::string& str) {
   std::string ret;
   size_t ret_len;
-  ::turi::escape_string(str, '\\', true /* use_escape_char */, '\"', true /* use_quote_char */, true /* double_quote */, ret, ret_len);
+  ::turi::escape_string(str, '\\', true /* use_escape_char */, '\"', true /* use_quote_char */, false /* double_quote */, ret, ret_len);
 
   // ::turi::escape_string may yield an std::string padded with null terminators, and ret_len represents the true length.
   // truncate to the ret_len length.

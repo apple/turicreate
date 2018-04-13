@@ -54,7 +54,6 @@ void recsys_itemcf::set_extra_data(const std::map<std::string, variant_type>& ex
 
   size_t item_id_col_idx = nearest_items.column_index(item_column);
   size_t similar_col_idx = nearest_items.column_index("similar");
-  size_t score_col_idx = nearest_items.column_index("score");
 
   // Check column types
   if ((nearest_items.column_type(item_id_col_idx) != item_type()) ||
@@ -280,8 +279,6 @@ sframe recsys_itemcf::predict(const v2::ml_data& test_data) const {
   
   std::shared_ptr<sarray<flexible_type> > ret(new sarray<flexible_type>);
 
-  size_t n_threads = thread::cpu_count(); 
-  
   ret->open_for_write(1);
   ret->set_type(flex_type_enum::FLOAT);
 

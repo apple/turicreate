@@ -9,12 +9,10 @@ from __future__ import absolute_import as _
 import sys
 import os
 import logging
-from distutils.util import get_platform as _get_platform
 import ctypes
 import glob as _glob
 import subprocess as _subprocess
 from ._scripts import _pylambda_worker
-from copy import copy
 from .util import sys_info as _sys_info
 
 if sys.version_info.major == 2:
@@ -132,11 +130,7 @@ def test_pylambda_worker():
     process in order to print out additional diagnostic information
     in case there is an error.
     """
-
     import os
-
-    environment = os.environ.copy()
-    
     from os.path import join
     from os.path import exists
     import tempfile

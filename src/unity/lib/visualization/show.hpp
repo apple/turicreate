@@ -8,6 +8,7 @@
 
 #include <unity/lib/gl_sarray.hpp>
 #include <unity/lib/toolkit_function_specification.hpp>
+#include <unity/lib/visualization/plot.hpp>
 
 namespace turi {
   namespace visualization {
@@ -15,7 +16,7 @@ namespace turi {
     std::vector<toolkit_function_specification>
       get_toolkit_function_registration();
 
-    void show(const std::string& path_to_client,
+    std::shared_ptr<Plot> plot(const std::string& path_to_client,
               gl_sarray& x,
               gl_sarray& y,
               const std::string& xlabel,

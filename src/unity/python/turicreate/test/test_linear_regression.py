@@ -18,18 +18,13 @@ from sklearn import linear_model
 import statsmodels.formula.api as sm
 import shutil
 
-# Check answers
-import pandas as pd
 import numpy as np
 from turicreate.toolkits._main import ToolkitError
 from turicreate.toolkits.regression.linear_regression import _DEFAULT_SOLVER_OPTIONS
 
-import sys
 if sys.version_info.major == 3:
     from functools import reduce
 
-import os as _os
-_lfs = _os.environ['LFS_ROOT']
 
 class LinearRegressionTest(unittest.TestCase):
     """

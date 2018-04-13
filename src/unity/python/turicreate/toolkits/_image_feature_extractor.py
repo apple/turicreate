@@ -47,7 +47,6 @@ class MXFeatureExtractor(ImageFeatureExtractor):
         ptModel: ImageClassifierPreTrainedModel
             An instance of a pre-trained model.
         """
-        import mxnet as _mx
         self.ptModel = ptModel
         self.data_layer = ptModel.data_layer
         self.feature_layer = ptModel.feature_layer
@@ -66,6 +65,8 @@ class MXFeatureExtractor(ImageFeatureExtractor):
         if (label_layer is not None) and (label_layer not in arg_params):
             arg_params[label_layer] = _mx.nd.array([0])
 
+        # Make sure we do not use a number of contexts that could leave empty workloads
+        context = context[:batch_size]
         model = _mx.mod.Module(symbol=feature_layer_sym, label_names=None, context=context)
         model.bind(for_training=False, data_shapes=[(data_layer, (batch_size, ) + image_shape)])
         model.set_params(arg_params, aux_params)
@@ -145,7 +146,6 @@ class MXFeatureExtractor(ImageFeatureExtractor):
         fe_mxmodel = self.ptModel.mxmodel
 
         if self.ptModel.is_feature_layer_final:
-            feature_layer = self.ptModel.feature_layer
             feature_layer_size = self.ptModel.feature_layer_size
             num_dummy_classes = 10
             feature_layer_sym = sym.get_children()[0]

@@ -100,7 +100,7 @@ def create(graph, verbose=True):
     If given an :class:`~turicreate.SGraph` ``g``, we can create
     a :class:`~turicreate.graph_coloring.GraphColoringModel` as follows:
 
-    >>> g = turicreate.load_graph('http://snap.stanford.edu/data/email-Enron.txt.gz', format='snap')
+    >>> g = turicreate.load_sgraph('http://snap.stanford.edu/data/email-Enron.txt.gz', format='snap')
     >>> gc = turicreate.graph_coloring.create(g)
 
     We can obtain the ``color id`` corresponding to each vertex in the graph ``g``

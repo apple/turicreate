@@ -149,6 +149,10 @@ class SFrameDetectionIter(_mx.io.DataIter):
             oshape = orig_image.shape
             if self.load_labels:
                 label = row[self.annotations_column]
+                if label == None:
+                    label = []
+                elif type(label) == dict:
+                    label = [label]
 
                 def is_valid(ann):
                     is_rect = ('type' not in ann or ann['type'] == 'rectangle')

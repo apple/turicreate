@@ -95,7 +95,7 @@ cdef class UnityGlobalProxy:
                 variant_map_to_dict(response.params))
 
     cpdef save_model(self, model, _url, sidedata={}):
-        cdef string url = str_to_cpp(_url) 
+        cdef string url = str_to_cpp(_url)
         proxy = model.__proxy__
         cdef model_base_ptr m = ((<UnityModel?>(proxy.__proxy__))._base_ptr)
         cdef variant_map_type varmap_sidedata = variant_map_from_dict(sidedata)
@@ -103,14 +103,14 @@ cdef class UnityGlobalProxy:
             self.thisptr.save_model(m, varmap_sidedata, url)
 
     cpdef save_model2(self, _modelname, _url, sidedata={}):
-        cdef string modelname = str_to_cpp(_modelname) 
-        cdef string url = str_to_cpp(_url) 
+        cdef string modelname = str_to_cpp(_modelname)
+        cdef string url = str_to_cpp(_url)
         cdef variant_map_type varmap_sidedata = variant_map_from_dict(sidedata)
         with nogil:
             self.thisptr.save_model2(modelname, varmap_sidedata, url)
 
     cpdef load_model(self, _url):
-        cdef string url = str_to_cpp(_url) 
+        cdef string url = str_to_cpp(_url)
         cdef variant_map_type response
         with nogil:
             response = self.thisptr.load_model(url)
@@ -171,6 +171,9 @@ cdef class UnityGlobalProxy:
 
     cpdef __get_allocated_size__(self):
         return self.thisptr.__get_allocated_size__()
+
+    cpdef set_log_level(self, size_t level):
+        return self.thisptr.set_log_level(level)
 
     cpdef list_globals(self, bint runtime_modifiable):
         return pydict_from_gl_options_map(self.thisptr.list_globals(runtime_modifiable))

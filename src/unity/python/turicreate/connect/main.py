@@ -16,16 +16,9 @@ from ..cython.cy_server import EmbeddedServer
 import decorator
 import logging
 
-""" The module level logger object """
-__LOGGER__ = logging.getLogger(__name__)
-
 """ Global variables """
 __UNITY_GLOBAL_PROXY__ = None
 __SERVER__ = None
-
-ENGINE_START_ERROR_MESSAGE = 'Cannot connect to SFrame engine. ' + \
-    'If you believe this to be a bug, check https://github.com/turi-code/SFrame/issues for known issues.'
-
 
 # Decorator which catch the exception and output to log error.
 @decorator.decorator
@@ -39,15 +32,19 @@ def __catch_and_log__(func, *args, **kargs):
 
 @__catch_and_log__
 def launch(server_log=None):
-    server = None
+    global __UNITY_GLOBAL_PROXY__
+    global __SERVER__
+
     server = EmbeddedServer(server_log)
     server.start()
     server.set_log_progress(True)
-    global __UNITY_GLOBAL_PROXY__
-    global __SERVER__
+
+    # This must be imported after server.set_log_progress is called.
+    from ..extensions import _publish
+
     __UNITY_GLOBAL_PROXY__ = UnityGlobalProxy()
     __SERVER__ = server
-    from ..extensions import _publish
+
     _publish()
 
 
@@ -57,7 +54,6 @@ def get_server():
 def get_unity():
     """
     Returns the unity global object of the current connection.
-    If no connection is present, automatically launch a localserver connection.
     """
     return __UNITY_GLOBAL_PROXY__
 

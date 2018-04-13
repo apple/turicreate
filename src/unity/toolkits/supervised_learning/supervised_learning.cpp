@@ -26,15 +26,6 @@
 // Evaluation
 #include <unity/toolkits/evaluation/metrics.hpp>
 
-// Distributed
-#ifdef HAS_DISTRIBUTED
-#include <unity/dml/dml_class_registry.hpp>
-#include <distributed/distributed_context.hpp>
-#include <rpc/dc_global.hpp>
-#include <rpc/dc.hpp>
-#endif
-
-
 namespace turi {
 namespace supervised {
 
@@ -54,13 +45,8 @@ EXPORT std::shared_ptr<supervised_learning_model_base> create(
   // Construct an object of the right type.
   // --------------------------------------------------------------------------
   std::shared_ptr<supervised_learning_model_base> model;
-#ifdef HAS_DISTRIBUTED
-   model = std::static_pointer_cast<supervised_learning_model_base>(
-               dml_class_registry::get_instance().get_toolkit_class(model_name));
-#else
    model = std::static_pointer_cast<supervised_learning_model_base>(
                get_unity_global_singleton()->create_toolkit_class(model_name));
-#endif
 
   // Error handling.
   // --------------------------------------------------------------------------
@@ -142,23 +128,7 @@ void supervised_learning_model_base::init(const sframe& X, const sframe& y,
   // Construct the ml_data.
   ml_data data;
   sframe sf_data = X.add_column(y.select_column(0), target_col);
-#ifdef HAS_DISTRIBUTED
-  auto dc = distributed_control_global::get_instance();
-  DASSERT_TRUE(dc != NULL);
-  size_t procid = dc->procid();
-  size_t numprocs = dc->numprocs();
-  size_t start_row = procid * X.num_rows() / numprocs;
-  size_t end_row = (procid + 1) * X.num_rows() / numprocs;
-  data.fill(sf_data,
-            std::make_pair(start_row, end_row),
-            target_col,
-            mode_overides,
-            false, // immutable metadta, default false
-            missing_value_action);
-  reconcile_distributed_ml_data(data, sorted_columns);
-#else
   data.fill(sf_data, target_col, mode_overides, false, missing_value_action);
-#endif
   this->ml_mdata = data.metadata();
 
   // Update the model
@@ -714,11 +684,6 @@ std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
   // Timers.
   timer t;
   double start_time = t.current_time();
-#ifdef HAS_DISTRIBUTED
-  auto dc = distributed_control_global::get_instance();
-  DASSERT_TRUE(dc != NULL);
-  logstream(LOG_INFO) << "Worker (" << dc->procid() << ") ";
-#endif
   logstream(LOG_INFO) << "Starting evaluation" << std::endl;
 
   // Variables needed.
@@ -860,26 +825,14 @@ std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
     }
   });
 
-#ifdef HAS_DISTRIBUTED
-  logstream(LOG_INFO) << "Worker (" << dc->procid()
-            << ") Evaluation computation done at "
-            << (t.current_time() - start_time) << "s" << std::endl;
-#endif
-
   // Get results
   std::map<std::string, variant_type> results;
   for(size_t i=0; i < evaluators.size(); i++){
       results[evaluator_names[i]] = evaluators[i]->get_metric();
   }
 
-#ifdef HAS_DISTRIBUTED
-  logstream(LOG_INFO) << "Worker (" << dc->procid()
-            << ") Evaluation communication done at "
-            << (t.current_time() - start_time) << "s" << std::endl;
-#else
   logstream(LOG_INFO) << "Evaluation done at "
             << (t.current_time() - start_time) << "s" << std::endl;
-#endif
 
   return results;
 }
@@ -1154,10 +1107,10 @@ gl_sarray supervised_learning_model_base::api_extract_features(
   return extract_features(X, missing_value_action);
 }
 
-std::shared_ptr<MLModelWrapper>
+std::shared_ptr<coreml::MLModelWrapper>
 supervised_learning_model_base::api_export_to_coreml(
     const std::string& filename) {
-  std::shared_ptr<MLModelWrapper> model = export_to_coreml();
+  std::shared_ptr<coreml::MLModelWrapper> model = export_to_coreml();
 
   if (filename != "") {
     model->save(filename);

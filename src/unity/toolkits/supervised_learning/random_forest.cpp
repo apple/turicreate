@@ -171,7 +171,7 @@ void random_forest_regression::init_options(
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
 }
 
-std::shared_ptr<MLModelWrapper> random_forest_regression::export_to_coreml() {
+std::shared_ptr<coreml::MLModelWrapper> random_forest_regression::export_to_coreml() {
   
   std::map<std::string, flexible_type> context = { 
     {"model_type", "random_forest"}, 
@@ -248,7 +248,7 @@ void random_forest_classifier::init_options(
 
 }
 
-std::shared_ptr<MLModelWrapper> random_forest_classifier::export_to_coreml() {
+std::shared_ptr<coreml::MLModelWrapper> random_forest_classifier::export_to_coreml() {
   
   std::map<std::string, flexible_type> context = { 
     {"model_type", "random_forest"}, 

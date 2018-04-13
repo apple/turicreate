@@ -11,6 +11,7 @@
 #include "vega_spec.hpp"
 
 #include <parallel/lambda_omp.hpp>
+#include <unity/lib/visualization/transformation.hpp>
 
 #include <cmath>
 #include <thread>
@@ -31,7 +32,7 @@ static inline gl_sarray validate_dtype(const gl_sarray& input) {
   return input;
 }
 
-void turi::visualization::show_heatmap(const std::string& path_to_client,
+std::shared_ptr<Plot> turi::visualization::plot_heatmap(const std::string& path_to_client,
                                        const gl_sarray& x,
                                        const gl_sarray& y,
                                        const std::string& xlabel,
@@ -39,34 +40,24 @@ void turi::visualization::show_heatmap(const std::string& path_to_client,
                                        const std::string& title) {
   validate_dtype(x);
   validate_dtype(y);
-  DASSERT_EQ(x.size(), y.size());
 
-  ::turi::visualization::run_thread([path_to_client, x, y, xlabel, ylabel, title]() {
+  std::stringstream ss;
+  ss << heatmap_spec(xlabel, ylabel, title);
+  std::string heatmap_specification = ss.str();
 
-    process_wrapper ew(path_to_client);
-    ew << heatmap_spec(xlabel, ylabel, title);
+  double size_array = static_cast<double>(x.size());
 
-    heatmap hm;
-    gl_sframe temp_sf;
-    temp_sf[x_name] = x;
-    temp_sf[y_name] = y;
-    hm.init(temp_sf);
-    while (ew.good()) {
-      vega_data vd;
-      auto result = hm.get();
-      vd << result->vega_column_data();
+  heatmap hm;
 
-      double num_rows_processed =  static_cast<double>(hm.get_rows_processed());
-      double size_array = static_cast<double>(x.size());
-      double percent_complete = num_rows_processed/size_array;
-      ew << vd.get_data_spec(percent_complete);
+  gl_sframe temp_sf;
 
-      if (hm.eof()) {
-        break;
-      }
-    }
+  temp_sf[x_name] = x;
+  temp_sf[y_name] = y;
 
-  });
+  hm.init(temp_sf);
+
+  std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<heatmap>(hm);
+  return std::make_shared<Plot>(path_to_client, heatmap_specification, shared_unity_transformer, size_array);
 }
 
 heatmap_result::heatmap_result() : bins(NUM_BINS, std::vector<flex_int>(NUM_BINS, 0)) {}

@@ -1,0 +1,52 @@
+#!/usr/bin/env node
+// Render a Vega specification to PNG, using node canvas
+
+var helpText =
+  'Render a Vega specification to PNG.\n\n' +
+  'Usage: vg2png [vega_json_file] [output_png_file]\n' +
+  '  If no arguments are provided, reads from stdin.\n' +
+  '  If output_png_file is not provided, writes to stdout.\n\n' +
+  'To load data, you may need to set a base directory:\n' +
+  '  For web retrieval, use `-b http://host/data/`. \n' +
+  '  For files, use `-b file:///dir/data/` (absolute) or `-b data/` (relative).';
+
+// import required libraries
+var path = require('path'),
+    fs = require('fs'),
+    vega = require('./vega_3.2.1.js'),
+    process = require('process');
+
+// set baseURL if provided on command line
+var base = null;
+var _CANVAS_PREBUILT_NON_EXISTENT = 1;
+
+// input / output files
+var myArgs = process.argv.slice(2),
+    specFile = myArgs[0],
+    outputFile = myArgs[1];
+
+// load spec, render to png
+fs.readFile(specFile, 'utf8', function(err, text) {
+  if (err) throw err;
+  render(JSON.parse(text));
+});
+
+// ---
+
+function writePNG(canvas, file) {
+  var out = file ? fs.createWriteStream(file) : process.stdout;
+  var stream = canvas.createPNGStream();
+  stream.on('data', function(chunk) { out.write(chunk); });
+}
+
+function render(spec) {
+  new vega.View(vega.parse(spec), {
+      loader: vega.loader({baseURL: base}),
+      logLevel: vega.Warn,
+      renderer: 'none'
+    })
+    .initialize()
+    .toCanvas()
+    .then(function(canvas) { writePNG(canvas, outputFile); })
+    .catch(function(err) { console.error(err); process.exit(_CANVAS_PREBUILT_NON_EXISTENT); });
+}

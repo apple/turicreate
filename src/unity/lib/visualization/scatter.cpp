@@ -27,44 +27,89 @@ static std::string to_string(const flexible_type& ft) {
   }
 }
 
-void turi::visualization::show_scatter(const std::string& path_to_client,
+scatter_result::scatter_result(gl_sframe sf) : m_sf(sf) {}
+
+void scatter::init(gl_sframe sf){
+  m_sf = sf;
+}
+
+std::shared_ptr<transformation_output> scatter::get(){
+  return std::make_shared<scatter_result>(m_sf);
+}
+
+bool scatter::eof() const{
+  return true;
+}
+
+flex_int scatter::get_rows_processed() const{
+  return m_sf.size();
+}
+
+size_t scatter::get_batch_size() const{
+  return m_sf.size();
+}
+
+std::string scatter_result::vega_column_data(bool sframe) const {
+    std::stringstream ss;
+    size_t x = 0;
+    size_t size_list = m_sf.size();
+
+    for (size_t i=0; i < size_list; i++) {
+
+      if (m_sf["x"][i].get_type() == flex_type_enum::UNDEFINED ||
+          m_sf["y"][i].get_type() == flex_type_enum::UNDEFINED) {
+        continue;
+      }
+
+      if (m_sf["x"][i].get_type() == flex_type_enum::FLOAT &&
+          !std::isfinite(m_sf["x"][i].get<flex_float>())) {
+        continue;
+      }
+      if (m_sf["y"][i].get_type() == flex_type_enum::FLOAT &&
+          !std::isfinite(m_sf["y"][i].get<flex_float>())) {
+        continue;
+      }
+
+      if(x !=  0){
+        ss << ",";
+      }
+
+      ss << "{\"x\": " + to_string(m_sf["x"][i]) + ", \"y\": " + to_string(m_sf["y"][i]) + "}";
+
+      x++;
+    }
+
+    return ss.str();
+}
+
+
+std::shared_ptr<Plot> turi::visualization::plot_scatter(const std::string& path_to_client,
                                        const gl_sarray& x,
                                        const gl_sarray& y,
                                        const std::string& xlabel,
                                        const std::string& ylabel,
                                        const std::string& title) {
 
-  ::turi::visualization::run_thread([path_to_client, x, y, xlabel, ylabel, title]() {
 
-    DASSERT_EQ(x.size(), y.size());
+  DASSERT_EQ(x.size(), y.size());
 
-    process_wrapper ew(path_to_client);
-    ew << scatter_spec(xlabel, ylabel, title);
+  std::stringstream ss;
+  ss << scatter_spec(xlabel, ylabel, title);
+  std::string scatter_specification = ss.str();
 
-    vega_data vd;
+  double size_array = static_cast<double>(x.size());
 
-    for (size_t i=0; i<x.size(); i++) {
-      if (x[i].get_type() == flex_type_enum::UNDEFINED ||
-          y[i].get_type() == flex_type_enum::UNDEFINED) {
-        // TODO: show undefined values
-        // for now, just skip them
-        continue;
-      }
+  scatter sct;
 
-      // for now, skip NaN/inf as well.
-      if (x[i].get_type() == flex_type_enum::FLOAT &&
-          !std::isfinite(x[i].get<flex_float>())) {
-        continue;
-      }
-      if (y[i].get_type() == flex_type_enum::FLOAT &&
-          !std::isfinite(y[i].get<flex_float>())) {
-        continue;
-      }
-      vd << "{\"x\": " + to_string(x[i]) + ", \"y\": " + to_string(y[i]) + "}";
-    }
+  gl_sframe temp_sf;
 
-    ew << vd.get_data_spec(1.0 /* progress */);
+  temp_sf["x"] = x;
+  temp_sf["y"] = y;
 
-  });
+  sct.init(temp_sf);
+
+  std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<scatter>(sct);
+  return std::make_shared<Plot>(path_to_client, scatter_specification, shared_unity_transformer, size_array);
 
 }
+

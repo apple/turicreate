@@ -16,12 +16,8 @@
 #include <optimization/regularizer_interface.hpp>
 #include <optimization/line_search-inl.hpp>
 #include <table_printer/table_printer.hpp>
-#include <table_printer/table_printer.hpp>
 #include <numerics/armadillo.hpp>
 
-#ifdef HAS_DISTRIBUTED
-#include <distributed/utils.hpp>
-#endif
 
 // TODO: List of todo's for this file
 //------------------------------------------------------------------------------
@@ -329,10 +325,6 @@ inline solver_return lbfgs(first_order_opt_interface& model,
       auto row = model.get_status(point, stat_info);
       printer.print_progress_row_strs(iters, row);
 
-#ifdef HAS_DISTRIBUTED
-      bool gradient_all_equals = distributed_check_equals(arma::norm(gradient, 2));
-      ASSERT_MSG(gradient_all_equals, "detect inconsistent gradients");
-#endif
     }
     printer.print_footer();
 

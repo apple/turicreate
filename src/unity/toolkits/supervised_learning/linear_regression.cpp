@@ -420,7 +420,7 @@ size_t linear_regression::get_version() const{
   return LINEAR_REGRESSION_MODEL_VERSION;  
 }
 
-std::shared_ptr<MLModelWrapper> linear_regression::export_to_coreml() {
+std::shared_ptr<coreml::MLModelWrapper> linear_regression::export_to_coreml() {
 
   CoreML::Pipeline pipeline = CoreML::Pipeline::Regressor(
       ml_mdata->target_column_name(),
@@ -457,7 +457,7 @@ std::shared_ptr<MLModelWrapper> linear_regression::export_to_coreml() {
 
   add_metadata(pipeline.m_spec, context_metadata);
 
-  auto model_wrapper = std::make_shared<MLModelWrapper>(std::make_shared<CoreML::Pipeline>(pipeline));
+  auto model_wrapper = std::make_shared<coreml::MLModelWrapper>(std::make_shared<CoreML::Pipeline>(pipeline));
 
 
   return model_wrapper;

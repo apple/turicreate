@@ -64,9 +64,6 @@ if [[ $GLC_EGG_UNDER_TEST == "" ]]; then
         print_help
 fi
 
-# set -x down here, so the help prints sanely
-set -x
-
 # Set up virtual environment
 if [[ "$VIRTUALENV" == "" ]]; then
   VIRTUALENV=virtualenv
@@ -81,7 +78,6 @@ pip install $GLC_EGG_UNDER_TEST
 
 export TEST_EXCLUDE_REGEX
 export TEST_INCLUDE_REGEX
-export TURICREATE_USERNAME=''       # Disable metric logging
 export OPENBLAS_NUM_THREADS=1
 echo $TEST_INCLUDE_REGEX
 python driver.py

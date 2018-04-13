@@ -25,7 +25,7 @@ static bool isNumeric(const turi::gl_sarray& sa) {
 namespace turi {
   namespace visualization {
 
-    void show(const std::string& path_to_client,
+    std::shared_ptr<Plot> plot(const std::string& path_to_client,
               gl_sarray& x,
               gl_sarray& y,
               const std::string& xlabel,
@@ -57,28 +57,24 @@ namespace turi {
 
         if (isNumeric(x) && isNumeric(y)) {
           if (size <= 5000) {
-            show_scatter(path_to_client, x, y, xlabel, ylabel, title);
+            return plot_scatter(path_to_client, x, y, xlabel, ylabel, title);
           } else {
-            show_heatmap(path_to_client, x, y, xlabel, ylabel, title);
+            return plot_heatmap(path_to_client, x, y, xlabel, ylabel, title);
           }
         } else if (isNumeric(x) && isString(y)) {
           // TODO -- actually show this with the axes the user asked for
           // but for now, just flip them
-          show_boxes_and_whiskers(path_to_client, y, x, xlabel, ylabel, title);
+
+          return plot_boxes_and_whiskers(path_to_client, y, x, xlabel, ylabel, title);
         } else if (isNumeric(y) && isString(x)) {
-          show_boxes_and_whiskers(path_to_client, x, y, xlabel, ylabel, title);
+
+          return plot_boxes_and_whiskers(path_to_client, x, y, xlabel, ylabel, title);
         } else if (isString(x) &&
                    isString(y)) {
-          show_categorical_heatmap(path_to_client, x, y, xlabel, ylabel, title);
+          return plot_categorical_heatmap(path_to_client, x, y, xlabel, ylabel, title);
         } else {
           throw std::runtime_error("Unsupported combination of SArray dtypes for x and y. Currently supported are: [int, float, str].");
         }
-
     }
-
-    BEGIN_FUNCTION_REGISTRATION
-    REGISTER_FUNCTION(show, "path_to_client", "x", "y", "xlabel", "ylabel", "title")
-    END_FUNCTION_REGISTRATION
-
   }
 }

@@ -208,7 +208,7 @@ def create(graph, label_field,
     If given an :class:`~turicreate.SGraph` ``g``, we can create
     a :class:`~turicreate.label_propagation.LabelPropagationModel` as follows:
 
-    >>> g = turicreate.load_graph('http://snap.stanford.edu/data/email-Enron.txt.gz',
+    >>> g = turicreate.load_sgraph('http://snap.stanford.edu/data/email-Enron.txt.gz',
     ...                         format='snap')
     # Initialize random classes for a subset of vertices
     # Leave the unobserved vertices with None label.

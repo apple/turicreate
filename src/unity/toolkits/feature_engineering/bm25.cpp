@@ -183,7 +183,6 @@ double bm25_apply(const flexible_type& input,
             const double b,
             const size_t min_t,
             const size_t max_t) {
-  size_t index = 0;
   size_t document_frequency;
   double bm25_score = 0.0;
   flexible_type processed_input;
@@ -243,7 +242,6 @@ double bm25_apply(const flexible_type& input,
         const std::pair<flexible_type, flexible_type>& kvp = dv[k];
         term_frequency = 0;
         if(std::find(query.begin(), query.end(), kvp.first) != query.end()){
-          index = indexer->lookup(kvp.first);
           document_frequency = indexer->lookup_counts(kvp.first);
           if ((document_frequency >= min_t) && (document_frequency <= max_t)){
             if (kvp.second.get_type() == flex_type_enum::INTEGER) {

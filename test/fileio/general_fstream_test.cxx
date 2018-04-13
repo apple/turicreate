@@ -49,6 +49,13 @@ struct general_fstream_test {
 
     void test_caching_url() {
       std::string fname = "cache://" + std::string(tmpname);
+      logstream(LOG_INFO) << "Test on url: " << fname  << std::endl;
+      TS_ASSERT_EQUALS(helper_test_basic_read_write(fname), 0);
+      TS_ASSERT_EQUALS(helper_test_seek(fname), 0);
+    }
+
+    void test_caching_url() {
+      std::string fname = "cache://" + std::string(tmpname);
       logstream(LOG_INFO) << "Test on url: " << fname  << std::endl;      TS_ASSERT_EQUALS(helper_test_basic_read_write(fname), 0);
       TS_ASSERT_EQUALS(helper_test_seek(fname), 0);
 

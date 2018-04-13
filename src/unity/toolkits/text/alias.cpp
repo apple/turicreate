@@ -355,9 +355,7 @@ std::map<std::string, size_t> alias_topic_model::sample_counts( v2::ml_data d, s
 
     // Load topic assignments for words in this block's documents
     auto doc_assignments = std::vector<std::vector<size_t>>(block_size);
-    size_t num_read = assignments_reader->read_rows(block_start,
-                                                    block_end,
-                                                    doc_assignments);
+    assignments_reader->read_rows(block_start, block_end, doc_assignments);
 
     // Load documents in this block
     auto d_block = d.slice(block_start, block_end);

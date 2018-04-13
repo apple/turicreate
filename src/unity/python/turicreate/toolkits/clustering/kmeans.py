@@ -17,7 +17,6 @@ import turicreate as _tc
 from turicreate.toolkits._model import Model as _Model
 from turicreate.data_structures.sframe import SFrame as _SFrame
 import turicreate.toolkits._internal_utils as _tkutl
-from turicreate.toolkits._private_utils import _robust_column_name
 from turicreate.toolkits._private_utils import _validate_row_label
 from turicreate.toolkits._private_utils import _summarize_accessible_fields
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
@@ -141,8 +140,6 @@ def _validate_features(features, column_type_map, valid_types, label):
     valid_features : list[str]
         Names of features to include in the model.
     """
-    # logger = _logging.getLogger(__name__)
-
     if not isinstance(features, list):
         raise TypeError("Input 'features' must be a list, if specified.")
 
@@ -400,7 +397,6 @@ class KmeansModel(_Model):
         """
 
         width = 32
-        key_str = "{:<{}}: {}"
 
         (sections, section_titles) = self._get_summary_struct()
         accessible_fields = {
@@ -529,9 +525,6 @@ def create(dataset, num_clusters=None, features=None, label=None,
     ...
     >>> model = turicreate.kmeans.create(sf, num_clusters=3)
     """
-
-    logger = _logging.getLogger(__name__)
-
     opts = {'model_name': 'kmeans',
             'max_iterations': max_iterations,
             }

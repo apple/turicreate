@@ -12,7 +12,6 @@ from ..data_structures.sarray import SArray
 from ..util.timezone import GMT
 from . import util
 
-import binascii
 import pandas as pd
 import numpy as np
 import unittest
@@ -24,7 +23,6 @@ import math
 import shutil
 import array
 import time
-import itertools
 import warnings
 import functools
 import tempfile
@@ -1111,6 +1109,9 @@ class SArrayTest(unittest.TestCase):
 
         sa_sample = SArray().sample(.5, 9)
         self.assertEqual(len(sa_sample), 0)
+        self.assertEqual(len(SArray.from_sequence(100).sample(0.5, 1, exact=True)), 50)
+        self.assertEqual(len(SArray.from_sequence(100).sample(0.5, 2, exact=True)), 50)
+
 
     def test_hash(self):
         a = SArray([0,1,0,1,0,1,0,1], int)
@@ -2866,7 +2867,7 @@ class SArrayTest(unittest.TestCase):
         sa = SArray(iso_str_list)
         self.__test_equal(sa,self.datetime_data,dt.datetime)
 
-        iso_str_list[2] = pd.tslib.NaT
+        iso_str_list[2] = pd.NaT
         sa = SArray(iso_str_list)
         self.__test_equal(sa,self.datetime_data,dt.datetime)
 

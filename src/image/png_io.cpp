@@ -100,6 +100,9 @@ void setup_png_reader(const char* data, size_t length, png_structp* outpng_ptr, 
     throw(std::string("Unexpected libpng error"));
   }
 
+  png_set_option(png_ptr, PNG_MAXIMUM_INFLATE_WINDOW,
+                 PNG_OPTION_ON);
+
   // png info struct
   png_infop info_ptr = NULL;
   info_ptr = png_create_info_struct(png_ptr);
@@ -224,10 +227,6 @@ void parse_png(const char* data, size_t length,
 
   width = _width;
   height = _height;
-  if (bit_depth != 8) {
-    png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
-    log_and_throw(std::string("Unsupported PNG bit depth: " + std::to_string(bit_depth)));
-  }
 
   channels = png_num_channels(color_type);
   if (channels != 1 && channels != 3 && channels != 4) {
@@ -318,6 +317,20 @@ void decode_png(const char* data, size_t length, char** out_data, size_t& out_le
   // Handle 256-color indexed images (type P) by converting to RGB
   if (color_type == PNG_COLOR_TYPE_PALETTE) {
       png_set_palette_to_rgb(png_ptr);
+  }
+
+  // Handle bit depths smaller than 8
+  if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) {
+      png_set_expand_gray_1_2_4_to_8(png_ptr);
+  }
+
+  // Handle 16-bit depth by removing precision
+  if (bit_depth == 16) {
+#if PNG_LIBPNG_VER >= 10504
+       png_set_scale_16(png_ptr);
+#else
+       png_set_strip_16(png_ptr);
+#endif
   }
 
   int channels = png_num_channels(color_type);

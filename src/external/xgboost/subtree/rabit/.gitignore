@@ -30,7 +30,6 @@
 *.pyc
 *.mpi
 *.exe
-*.txt
 *tmp*
 *.rabit
 *.mock

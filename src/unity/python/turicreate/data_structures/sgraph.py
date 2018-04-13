@@ -13,7 +13,6 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-from .. import connect as _mt
 from ..connect import main as glconnect
 from .sframe import SFrame
 from .sarray import SArray
@@ -1042,7 +1041,7 @@ class SGraph(object):
         Save and load in binary format.
 
         >>> g.save('mygraph')
-        >>> g2 = turicreate.load_graph('mygraph')
+        >>> g2 = turicreate.load_sgraph('mygraph')
 
         Save in JSON format.
 
@@ -1151,12 +1150,6 @@ class SGraph(object):
 #/*                            Module Function                             */
 #/*                                                                        */
 #/**************************************************************************/
-def load_graph(filename, format='binary', delimiter='auto'):
-    import warnings
-    warnings.warn("load_graph has been renamed to load_sgraph. This function will be removed in the next release.", PendingDeprecationWarning)
-    return load_sgraph(filename, format=format)
-
-
 def load_sgraph(filename, format='binary', delimiter='auto'):
     """
     Load SGraph from text file or previously saved SGraph binary.
@@ -1196,7 +1189,7 @@ def load_sgraph(filename, format='binary', delimiter='auto'):
     Save and load in binary format.
 
     >>> g.save('mygraph')
-    >>> g2 = turicreate.load_graph('mygraph')
+    >>> g2 = turicreate.load_sgraph('mygraph')
     """
 
 

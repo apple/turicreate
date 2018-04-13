@@ -76,7 +76,6 @@ else:
 # module, breaking the recursive relation. And the tc.extensions wrapper will
 # have all the stuff in it for tab completion by IPython.
 
-import sys as _sys
 _thismodule = _sys.modules[__name__]
 class_uid_to_class = {}
 
@@ -195,9 +194,8 @@ def _create_class_instance(class_name, _proxy):
     Look for the class in .extensions in case it has already been
     imported (perhaps as a builtin extensions hard compiled into unity_server).
     """
-    root_package_name = __import__(__name__.split('.')[0]).__name__
     try:
-        return _class_instance_from_name(root_package_name + ".extensions." + class_name, _proxy=_proxy)
+        return _class_instance_from_name('turicreate.extensions.' + class_name, _proxy=_proxy)
     except:
         pass
     return _class_instance_from_name(class_name, _proxy=_proxy)
@@ -585,7 +583,6 @@ def ext_import(soname, module_subpath=""):
         raise RuntimeError(ret)
     _publish()
     # push the functions into the corresponding module namespace
-    filename = os.path.basename(soname)
     return unity.list_toolkit_functions_in_dynamic_module(soname) + unity.list_toolkit_classes_in_dynamic_module(soname)
 
 

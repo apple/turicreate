@@ -100,7 +100,6 @@ class SArrayBuilder(object):
         if not hasattr(data, '__iter__'):
             raise TypeError("append_multiple must be passed an iterable object")
         tmp_list = []
-        block_pos = 0
 
         for i in data:
             tmp_list.append(i)

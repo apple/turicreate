@@ -1,4 +1,4 @@
-#Text Analysis
+# Text Analysis
 
 Suppose our text data is currently arranged into a single file, where
 each line of that file contains all of the text in a single document.

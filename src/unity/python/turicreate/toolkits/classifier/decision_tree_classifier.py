@@ -12,7 +12,6 @@ from __future__ import absolute_import as _
 import turicreate as _turicreate
 from turicreate.toolkits._supervised_learning import Classifier as _Classifier
 import turicreate.toolkits._supervised_learning as _sl
-import turicreate.toolkits._main as _toolkits_main
 
 from turicreate.toolkits._internal_utils import _toolkit_repr_print
 from turicreate.toolkits._internal_utils import _raise_error_evaluation_metric_is_valid

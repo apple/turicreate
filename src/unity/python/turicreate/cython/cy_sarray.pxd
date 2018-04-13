@@ -9,7 +9,7 @@ from .cy_flexible_type cimport flex_list
 from .cy_flexible_type cimport gl_options_map
 from libcpp.vector cimport vector
 from libcpp.string cimport string
-from .cy_unity_base_types cimport * 
+from .cy_unity_base_types cimport *
 from .cy_unity cimport function_closure_info
 from .cy_unity cimport make_function_closure_info
 
@@ -59,7 +59,7 @@ cdef extern from "<unity/lib/unity_sarray.hpp>" namespace "turi":
         unity_sarray_base_ptr vector_operator(unity_sarray_base_ptr, string) except +
         unity_sarray_base_ptr drop_missing_values() except +
         unity_sarray_base_ptr fill_missing_values(flexible_type) except +
-        unity_sarray_base_ptr sample(float, int) except +
+        unity_sarray_base_ptr sample(float, int, bint) except +
         unity_sarray_base_ptr hash(int) except +
         void materialize() except +
         bint is_materialized() except +
@@ -85,7 +85,7 @@ cdef extern from "<unity/lib/unity_sarray.hpp>" namespace "turi":
         unity_sarray_base_ptr ternary_operator(unity_sarray_base_ptr, unity_sarray_base_ptr) except +
         unity_sarray_base_ptr to_const(const flexible_type&, flex_type_enum) except +
         void show(const string&, const string&, const string&, const string&) except +
-
+        model_base_ptr plot(const string&, const string&, const string&, const string&) except +
 
 cdef create_proxy_wrapper_from_existing_proxy(const unity_sarray_base_ptr& proxy)
 
@@ -147,7 +147,7 @@ cdef class UnitySArrayProxy:
     cpdef var(self, size_t ddof)
 
     cpdef nnz(self)
-  
+
     cpdef str_to_datetime(self, str_format)
 
     cpdef datetime_to_str(self, str_format)
@@ -172,7 +172,7 @@ cdef class UnitySArrayProxy:
 
     cpdef fill_missing_values(self, default_value)
 
-    cpdef sample(self, float percent, int seed)
+    cpdef sample(self, float percent, int seed, bint exact=*)
 
     cpdef hash(self, int seed)
 
@@ -203,7 +203,7 @@ cdef class UnitySArrayProxy:
     cpdef item_length(self)
 
     cpdef unpack_dict(self, column_name_prefix, object, na_value)
-  
+
     cpdef expand(self, column_name_prefix, object, value_types)
 
     cpdef unpack(self, column_name_prefix, object, value_types, na_value)
@@ -225,3 +225,5 @@ cdef class UnitySArrayProxy:
     cpdef to_const(self, object value, type t)
 
     cpdef show(self, path_to_client, title, xlabel, ylabel)
+
+    cpdef plot(self, path_to_client, title, xlabel, ylabel)

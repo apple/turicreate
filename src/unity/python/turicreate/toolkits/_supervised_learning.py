@@ -25,7 +25,6 @@ class SupervisedLearningModel(Model):
     several feature variables.
     """
     def __init__(self, model_proxy=None, name=None):
-        """__init__(self)"""
         self.__proxy__ = model_proxy
         self.__name__ = name
 

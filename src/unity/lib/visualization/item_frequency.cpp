@@ -100,6 +100,10 @@ std::string item_frequency_result::vega_column_data(bool sframe) const {
       continue;
     }
 
+    if(x != 0){
+      ss << ",";
+    }
+
     DASSERT_TRUE(flex_value.get_type() == flex_type_enum::STRING);
     const auto& value = flex_value.get<flex_string>();
 
@@ -119,12 +123,62 @@ std::string item_frequency_result::vega_column_data(bool sframe) const {
     ss << count;
     ss << "}";
 
-    if(x != (size_list - 1)){
-      ss << ",";
-    }
-
     x++;
   }
 
   return ss.str();
 }
+
+namespace turi {
+  namespace visualization {
+
+    std::shared_ptr<Plot> plot_item_frequency(const std::string& path_to_client, 
+      gl_sarray& sa, std::string xlabel, std::string ylabel, 
+      std::string title) {
+
+        using namespace turi;
+        using namespace turi::visualization;
+
+        logprogress_stream << "Materializing SArray..." << std::endl;
+        sa.materialize();
+        logprogress_stream << "Done." << std::endl;
+
+        if (sa.size() == 0) {
+          log_and_throw("Nothing to show; SArray is empty.");
+        }
+
+        std::shared_ptr<const gl_sarray> self = std::make_shared<const gl_sarray>(sa);
+
+        item_frequency item_freq;
+        item_freq.init(*self);
+
+        auto transformer = std::dynamic_pointer_cast<item_frequency_result>(item_freq.get());
+        auto result = transformer->emit().get<flex_dict>();
+        size_t length_list = std::min(200UL, result.size());
+        
+        if (title.empty()) {
+          title = std::string("Distribution of Values [");
+          title.append(flex_type_enum_to_name(self->dtype()));
+          title.append("]");
+        }
+
+        if (xlabel.empty()) {
+          xlabel = "Count";
+        }
+        if (ylabel.empty()) {
+          ylabel = "Values";
+        }
+
+        std::stringstream ss;
+        ss << categorical_spec(length_list, title, xlabel, ylabel);
+        std::string category_spec = ss.str();
+
+        double size_array = static_cast<double>(self->size());
+
+        std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<item_frequency>(item_freq);
+        return std::make_shared<Plot>(path_to_client, category_spec, shared_unity_transformer, size_array);
+      }
+
+  }
+}
+

@@ -14,11 +14,6 @@ from turicreate.toolkits.graph_analytics._model_base import GraphAnalyticsModel 
 from turicreate.cython.cy_server import QuietProgress
 import copy as _copy
 
-_HAS_IPYTHON = True
-try:
-    import IPython.core.display as _IPython
-except:
-    _HAS_IPYTHON = False
 
 class ShortestPathModel(_ModelBase):
     """
@@ -233,7 +228,7 @@ def create(graph, source_vid, weight_field="", max_distance=1e30, verbose=True):
     If given an :class:`~turicreate.SGraph` ``g``, we can create
     a :class:`~turicreate.shortest_path.ShortestPathModel` as follows:
 
-    >>> g = turicreate.load_graph('http://snap.stanford.edu/data/email-Enron.txt.gz', format='snap')
+    >>> g = turicreate.load_sgraph('http://snap.stanford.edu/data/email-Enron.txt.gz', format='snap')
     >>> sp = turicreate.shortest_path.create(g, source_vid=1)
 
     We can obtain the shortest path distance from the source vertex to each

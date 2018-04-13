@@ -9,7 +9,6 @@ from __future__ import absolute_import as _
 from ..data_structures.sframe import SFrame
 from ..data_structures.sarray import SArray
 from ..data_structures.image import Image
-from ..connect import main as glconnect
 from ..util import _assert_sframe_equal, generate_random_sframe
 from .. import _launch, load_sframe, aggregate
 from . import util
@@ -196,6 +195,25 @@ class SFrameTest(unittest.TestCase):
         sf = SFrame(data=original_p)
         self.__test_equal(sf, original_p)
 
+    def test_auto_parse_csv_with_bom(self):
+        with tempfile.NamedTemporaryFile(mode='w', delete=False) as csvfile:
+            df = pd.DataFrame({'float_data': self.float_data,
+                               'int_data': self.int_data,
+                               'string_data': self.a_to_z[:len(self.int_data)]})
+            df.to_csv(csvfile, index=False)
+            csvfile.close()
+
+            import codecs
+            with open(csvfile.name, 'rb') as f:
+                content = f.read()
+            with open(csvfile.name, 'wb') as f:
+                f.write(codecs.BOM_UTF8)
+                f.write(content)
+
+            sf = SFrame.read_csv(csvfile.name, header=True)
+            self.assertEqual(sf.dtype, [float, int, str])
+            self.__test_equal(sf, df)
+
     def test_auto_parse_csv(self):
         with tempfile.NamedTemporaryFile(mode='w', delete=False) as csvfile:
             df = pd.DataFrame({'float_data': self.float_data,
@@ -208,7 +226,6 @@ class SFrameTest(unittest.TestCase):
 
             self.assertEqual(sf.dtype, [float, int, str])
             self.__test_equal(sf, df)
-
 
     def test_parse_csv(self):
         with tempfile.NamedTemporaryFile(mode='w', delete=False) as csvfile:
@@ -867,6 +884,8 @@ class SFrameTest(unittest.TestCase):
         sample_sf2 = sf.sample(.12, 9)
         self.assertEqual(len(sample_sf), len(sample_sf2))
         assert_frame_equal(sample_sf.head().to_dataframe(), sample_sf2.head().to_dataframe())
+        self.assertEqual(len(sf.sample(0.5,1,exact=True)), 50)
+        self.assertEqual(len(sf.sample(0.5,2,exact=True)), 50)
 
         for i in sample_sf:
             self.assertTrue(str(i) in entry_list)
@@ -892,6 +911,9 @@ class SFrameTest(unittest.TestCase):
 
         self.assertEqual(len(SFrame().random_split(.4)[0]), 0)
         self.assertEqual(len(SFrame().random_split(.4)[1]), 0)
+
+        self.assertEqual(len(sf.random_split(0.5,1,exact=True)[0]), 50)
+        self.assertEqual(len(sf.random_split(0.5,2,exact=True)[0]), 50)
 
     # tests add_column, rename
     def test_edit_column_ops(self):

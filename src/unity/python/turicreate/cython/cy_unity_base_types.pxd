@@ -52,6 +52,6 @@ ctypedef shared_ptr[unity_sframe_base] unity_sframe_base_ptr
 ctypedef shared_ptr[unity_sgraph_base] unity_sgraph_base_ptr
 ctypedef shared_ptr[unity_sketch_base] unity_sketch_base_ptr
 ctypedef shared_ptr[model_base] model_base_ptr
-ctypedef shared_ptr[unity_global_base] unity_global_base_ptr 
+ctypedef shared_ptr[unity_global_base] unity_global_base_ptr
 ctypedef shared_ptr[unity_sarray_builder_base] unity_sarray_builder_base_ptr
 ctypedef shared_ptr[unity_sframe_builder_base] unity_sframe_builder_base_ptr

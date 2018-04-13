@@ -23,13 +23,6 @@
 // Regularizer
 #include <optimization/regularizers-inl.hpp>
 
-// Distributed
-#ifdef HAS_DISTRIBUTED
-#include <distributed/distributed_context.hpp>
-#include <rpc/dc_global.hpp>
-#include <rpc/dc.hpp>
-#endif
-
 // Utilities
 #include <numerics/armadillo.hpp>
 #include <cmath>
@@ -83,10 +76,6 @@ logistic_regression_opt_interface::logistic_regression_opt_interface(
 
   // Initialize reader and other data
   examples = data.num_rows();
-#ifdef HAS_DISTRIBUTED 
-  auto dc = distributed_control_global::get_instance();
-  dc->all_reduce(examples);
-#endif
   features = data.num_columns();
   n_threads = turi::thread_pool::get_instance().size();
 
@@ -252,11 +241,6 @@ void logistic_regression_opt_interface::compute_first_order_statistics(const
   timer t;
   double start_time = t.current_time();
 
-#ifdef HAS_DISTRIBUTED
-  auto dc = distributed_control_global::get_instance();
-  DASSERT_TRUE(dc != NULL);
-  logstream(LOG_INFO) << "Worker (" << dc->procid() << ") ";
-#endif
   logstream(LOG_INFO) << "Starting first order stats computation" << std::endl; 
 
   // Dense data. 
@@ -339,20 +323,8 @@ void logistic_regression_opt_interface::compute_first_order_statistics(const
     function_value += f[i];
   }
 
-#ifdef HAS_DISTRIBUTED
-  logstream(LOG_INFO) << "Worker (" << dc->procid() << ") Computation done at " 
-                      << (t.current_time() - start_time) << "s" << std::endl; 
-
-  dc->all_reduce(gradient, true);
-  dc->all_reduce(function_value, true);
-
-  logstream(LOG_INFO) << "Worker (" << dc->procid() << ") All-reduce done at " 
-                      << (t.current_time() - start_time) << "s" << std::endl; 
-#else
   logstream(LOG_INFO) << "Computation done at " 
                       << (t.current_time() - start_time) << "s" << std::endl; 
-#endif
-
 }
 
 /**
@@ -364,11 +336,6 @@ void logistic_regression_opt_interface::compute_second_order_statistics(
     
   timer t;
   double start_time = t.current_time();
-#ifdef HAS_DISTRIBUTED
-  auto dc = distributed_control_global::get_instance();
-  DASSERT_TRUE(dc != NULL);
-  logstream(LOG_INFO) << "Worker (" << dc->procid() << ") ";
-#endif
   logstream(LOG_INFO) << "Starting second order stats computation" << std::endl; 
 
   // Init  
@@ -494,21 +461,8 @@ void logistic_regression_opt_interface::compute_second_order_statistics(
     function_value += f[i];
   }
 
-#ifdef HAS_DISTRIBUTED
-  logstream(LOG_INFO) << "Worker (" << dc->procid() << ") Computation done at " 
-                      << (t.current_time() - start_time) << "s" << std::endl; 
-
-  dc->all_reduce(hessian, true);
-  dc->all_reduce(gradient, true);
-  dc->all_reduce(function_value, true);
-
-  logstream(LOG_INFO) << "Worker (" << dc->procid() << ") All-reduce done at " 
-                      << (t.current_time() - start_time) << "s" << std::endl; 
-#else
   logstream(LOG_INFO) << "Computation done at " 
                       << (t.current_time() - start_time) << "s" << std::endl; 
-#endif
-
 }
 
 void logistic_regression_opt_interface::compute_second_order_statistics(

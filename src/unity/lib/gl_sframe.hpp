@@ -1044,7 +1044,7 @@ class gl_sframe {
    *  ? rows x 2 columns]
    * \endcode
    */
-  gl_sframe sample(double fraction, size_t seed) const;
+  gl_sframe sample(double fraction, size_t seed, bool exact=false) const;
 
 
   /**
@@ -1100,7 +1100,7 @@ class gl_sframe {
    * 44 980
    * \endcode
    */
-  std::pair<gl_sframe, gl_sframe> random_split(double fraction, size_t seed) const;
+  std::pair<gl_sframe, gl_sframe> random_split(double fraction, size_t seed, bool exact=false) const;
 
   /**
    * Get top k rows according to the given column. Result is according to and
