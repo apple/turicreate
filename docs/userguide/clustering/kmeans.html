@@ -385,7 +385,20 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.3.4.1" data-path="../object_detection/advanced-usage.html">
+        <li class="chapter " data-level="1.3.4.1" data-path="../object_detection/data-preparation.html">
+            
+                <a href="../object_detection/data-preparation.html">
+            
+                    
+                    Data Preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.2" data-path="../object_detection/advanced-usage.html">
             
                 <a href="../object_detection/advanced-usage.html">
             
@@ -398,7 +411,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.4.2" data-path="../object_detection/how-it-works.html">
+        <li class="chapter " data-level="1.3.4.3" data-path="../object_detection/how-it-works.html">
             
                 <a href="../object_detection/how-it-works.html">
             
@@ -992,7 +1005,7 @@ time, and training iterations. It also shows that the K-means results
 are returned in two SFrames contained in the model: <code>cluster_id</code> and
 <code>cluster_info</code>. The <code>cluster_info</code> SFrame indicates the final cluster
 centers, one per row, in terms of the same features used to create the
-model.</p><pre><code class="lang-python">kmeans_model[<span class="hljs-string">&apos;cluster_info&apos;</span>].print_rows(num_columns=<span class="hljs-number">5</span>, max_row_width=<span class="hljs-number">80</span>,
+model.</p><pre><code class="lang-python">kmeans_model.cluster_info.print_rows(num_columns=<span class="hljs-number">5</span>, max_row_width=<span class="hljs-number">80</span>,
                                         max_column_width=<span class="hljs-number">10</span>)</code></pre>
 <pre><code class="lang-no-highlight">+-----------+-----------+-----------+------------+-----------+-----+
 |    FNC1   |    FNC2   |    FNC3   |    FNC4    |    FNC5   | ... |
@@ -1007,7 +1020,7 @@ model.</p><pre><code class="lang-python">kmeans_model[<span class="hljs-string">
 [6 rows x 413 columns]</code></pre>
 <p>The last three columns of the <code>cluster_info</code> SFrame indicate metadata about the
 corresponding cluster: ID number, number of points in the cluster, and the
-within-cluster sum of squared distances to the center.</p><pre><code class="lang-python">kmeans_model[<span class="hljs-string">&apos;cluster_info&apos;</span>][[<span class="hljs-string">&apos;cluster_id&apos;</span>, <span class="hljs-string">&apos;size&apos;</span>, <span class="hljs-string">&apos;sum_squared_distance&apos;</span>]]</code></pre>
+within-cluster sum of squared distances to the center.</p><pre><code class="lang-python">kmeans_model.cluster_info[[<span class="hljs-string">&apos;cluster_id&apos;</span>, <span class="hljs-string">&apos;size&apos;</span>, <span class="hljs-string">&apos;sum_squared_distance&apos;</span>]]</code></pre>
 <pre><code class="lang-no-highlight">+------------+------+----------------------+
 | cluster_id | size | sum_squared_distance |
 +------------+------+----------------------+
@@ -1021,7 +1034,7 @@ within-cluster sum of squared distances to the center.</p><pre><code class="lang
 [6 rows x 3 columns]</code></pre>
 <p>The <code>cluster_id</code> field of the model shows the cluster assignment for each input
 data point, along with the Euclidean distance from the point to its assigned
-cluster&apos;s center.</p><pre><code class="lang-python">kmeans_model[<span class="hljs-string">&apos;cluster_id&apos;</span>].head()</code></pre>
+cluster&apos;s center.</p><pre><code class="lang-python">kmeans_model.cluster_id.head()</code></pre>
 <pre><code class="lang-no-highlight">+--------+------------+---------------+
 | row_id | cluster_id |    distance   |
 +--------+------------+---------------+
@@ -1063,7 +1076,7 @@ chosen randomly from a sample of the original dataset, then passed to the final
 K-means model.</p><pre><code class="lang-python">kmeans_sample = tc.kmeans.create(sf.sample(<span class="hljs-number">0.2</span>), num_clusters=K,
                                  max_iterations=<span class="hljs-number">0</span>)
 
-my_centers = kmeans_sample[<span class="hljs-string">&apos;cluster_info&apos;</span>]
+my_centers = kmeans_sample.cluster_info
 my_centers = my_centers.remove_columns([<span class="hljs-string">&apos;cluster_id&apos;</span>, <span class="hljs-string">&apos;size&apos;</span>,
                                         <span class="hljs-string">&apos;sum_squared_distance&apos;</span>])
 
@@ -1158,7 +1171,7 @@ Proceedings of the 19th International Conference on World Wide Web. pp.
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"KMeans","level":"1.4.2.1","depth":3,"next":{"title":"DBSCAN","level":"1.4.2.2","depth":3,"path":"clustering/dbscan.md","ref":"clustering/dbscan.md","articles":[]},"previous":{"title":"Clustering","level":"1.4.2","depth":2,"path":"clustering/README.md","ref":"clustering/README.md","articles":[{"title":"KMeans","level":"1.4.2.1","depth":3,"path":"clustering/kmeans.md","ref":"clustering/kmeans.md","articles":[]},{"title":"DBSCAN","level":"1.4.2.2","depth":3,"path":"clustering/dbscan.md","ref":"clustering/dbscan.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"clustering/kmeans.md","mtime":"2018-02-14T19:35:07.112Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-03-07T05:42:10.712Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"KMeans","level":"1.4.2.1","depth":3,"next":{"title":"DBSCAN","level":"1.4.2.2","depth":3,"path":"clustering/dbscan.md","ref":"clustering/dbscan.md","articles":[]},"previous":{"title":"Clustering","level":"1.4.2","depth":2,"path":"clustering/README.md","ref":"clustering/README.md","articles":[{"title":"KMeans","level":"1.4.2.1","depth":3,"path":"clustering/kmeans.md","ref":"clustering/kmeans.md","articles":[]},{"title":"DBSCAN","level":"1.4.2.2","depth":3,"path":"clustering/dbscan.md","ref":"clustering/dbscan.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"clustering/kmeans.md","mtime":"2018-03-26T17:56:49.290Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-04-13T23:44:02.321Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

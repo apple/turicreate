@@ -385,7 +385,20 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.3.4.1" data-path="../object_detection/advanced-usage.html">
+        <li class="chapter " data-level="1.3.4.1" data-path="../object_detection/data-preparation.html">
+            
+                <a href="../object_detection/data-preparation.html">
+            
+                    
+                    Data Preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.2" data-path="../object_detection/advanced-usage.html">
             
                 <a href="../object_detection/advanced-usage.html">
             
@@ -398,7 +411,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.4.2" data-path="../object_detection/how-it-works.html">
+        <li class="chapter " data-level="1.3.4.3" data-path="../object_detection/how-it-works.html">
             
                 <a href="../object_detection/how-it-works.html">
             
@@ -1018,7 +1031,7 @@ to the target variable, <strong>holding all other features constant</strong>. Th
 coefficient (positive or negative) gives the direction of the association.</p><p>When a Turi Create regression model is trained, the <code>model.summary()</code> output
 shows the largest positive and negative coefficients. After a model is
 created, we can access the coefficients as follows:</p><pre><code class="lang-python">coefs = model[<span class="hljs-string">&apos;coefficients&apos;</span>]
-<span class="hljs-keyword">print</span> coefs</code></pre>
+print(coefs)</code></pre>
 <pre><code class="lang-no-highlight">+-----------------------+-------+-------------------+-------------------+
 |          name         | index |       value       |       stderr      |
 +-----------------------+-------+-------------------+-------------------+
@@ -1069,16 +1082,16 @@ model = tc.linear_regression.create(train_data, target=<span class="hljs-string"
                                                 <span class="hljs-string">&apos;city&apos;</span>])
 
 <span class="hljs-comment"># Number of feature columns</span>
-<span class="hljs-keyword">print</span> <span class="hljs-string">&quot;Number of features          : %s&quot;</span> % model[<span class="hljs-string">&apos;num_features&apos;</span>]
+print(<span class="hljs-string">&quot;Number of features          : %s&quot;</span> % model[<span class="hljs-string">&apos;num_features&apos;</span>])
 
 <span class="hljs-comment"># Number of features (including expanded lists and dictionaries)</span>
-<span class="hljs-keyword">print</span> <span class="hljs-string">&quot;Number of unpacked features : %s&quot;</span> % model[<span class="hljs-string">&apos;num_unpacked_features&apos;</span>]
+print(<span class="hljs-string">&quot;Number of unpacked features : %s&quot;</span> % model[<span class="hljs-string">&apos;num_unpacked_features&apos;</span>])
 
 <span class="hljs-comment"># Number of coefficients in the model</span>
-<span class="hljs-keyword">print</span> <span class="hljs-string">&quot;Number of coefficients      : %s&quot;</span> % model[<span class="hljs-string">&apos;num_coefficients&apos;</span>]
+print(<span class="hljs-string">&quot;Number of coefficients      : %s&quot;</span> % model[<span class="hljs-string">&apos;num_coefficients&apos;</span>])
 
 <span class="hljs-comment"># A coefficient is included for each category</span>
-<span class="hljs-keyword">print</span> model[<span class="hljs-string">&apos;coefficients&apos;</span>]</code></pre>
+print(model[<span class="hljs-string">&apos;coefficients&apos;</span>])</code></pre>
 <pre><code class="lang-no-highlight">Number of features          : 5
 Number of unpacked features : 5
 Number of coefficients      : 64
@@ -1116,10 +1129,10 @@ categorical variables, a business may have several tags. These tags are stored
 using dictionaries.  <strong>Not all tags</strong> are associated with every restaurant, so
 we will only store those tags that are associated with restaurant and assume
 that all tags <strong>not explicitly provided are treated as features with value
-zero</strong>. We illustrate with the following example:</p><pre><code class="lang-python"><span class="hljs-keyword">print</span> train_data[<span class="hljs-string">&apos;categories_dict&apos;</span>].head(<span class="hljs-number">3</span>)
-[{<span class="hljs-string">&apos;Breakfast &amp; Brunch&apos;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&apos;Restaurants&apos;</span>: <span class="hljs-number">1</span>},
- {<span class="hljs-string">&apos;Restaurants&apos;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&apos;Pizza&apos;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&apos;Italian&apos;</span>: <span class="hljs-number">1</span>},
- {<span class="hljs-string">&apos;Dog Parks&apos;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&apos;Parks&apos;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&apos;Active Life&apos;</span>: <span class="hljs-number">1</span>}]</code></pre>
+zero</strong>. We illustrate with the following example:</p><pre><code class="lang-python">print(train_data[<span class="hljs-string">&apos;categories_dict&apos;</span>].head(<span class="hljs-number">3</span>))</code></pre>
+<pre><code class="lang-no-highlight">[{&apos;Breakfast &amp; Brunch&apos;: 1, &apos;Restaurants&apos;: 1},
+ {&apos;Restaurants&apos;: 1, &apos;Pizza&apos;: 1, &apos;Italian&apos;: 1},
+ {&apos;Dog Parks&apos;: 1, &apos;Parks&apos;: 1, &apos;Active Life&apos;: 1}]</code></pre>
 <p>We can now create a linear regression model with <strong>categories_dict</strong> included
 in the feature list. A coefficient is added for each key encountered in the
 input data. If the test data contains keys that were not present during
@@ -1132,16 +1145,16 @@ model = tc.linear_regression.create(train_data, target=<span class="hljs-string"
                                                 <span class="hljs-string">&apos;categories_dict&apos;</span>])
 
 <span class="hljs-comment"># Number of feature columns</span>
-<span class="hljs-keyword">print</span> <span class="hljs-string">&quot;Number of features          : %s&quot;</span> % model[<span class="hljs-string">&apos;num_features&apos;</span>]
+print(<span class="hljs-string">&quot;Number of features          : %s&quot;</span> % model[<span class="hljs-string">&apos;num_features&apos;</span>])
 
 <span class="hljs-comment"># Number of features (including expanded lists and dictionaries)</span>
-<span class="hljs-keyword">print</span> <span class="hljs-string">&quot;Number of unpacked features : %s&quot;</span> % model[<span class="hljs-string">&apos;num_unpacked_features&apos;</span>]
+print(<span class="hljs-string">&quot;Number of unpacked features : %s&quot;</span> % model[<span class="hljs-string">&apos;num_unpacked_features&apos;</span>])
 
 <span class="hljs-comment"># Number of coefficients in the model</span>
-<span class="hljs-keyword">print</span> <span class="hljs-string">&quot;Number of coefficients      : %s&quot;</span> % model[<span class="hljs-string">&apos;num_coefficients&apos;</span>]
+print(<span class="hljs-string">&quot;Number of coefficients      : %s&quot;</span> % model[<span class="hljs-string">&apos;num_coefficients&apos;</span>])
 
 <span class="hljs-comment"># A coefficient is included for each key in the dictionary</span>
-<span class="hljs-keyword">print</span> model[<span class="hljs-string">&apos;coefficients&apos;</span>]</code></pre>
+print(model[<span class="hljs-string">&apos;coefficients&apos;</span>])</code></pre>
 <pre><code class="lang-no-highlight">Number of features          : 5
 Number of unpacked features : 511
 Number of coefficients      : 512
@@ -1175,10 +1188,10 @@ each vote type.</p><pre><code class="lang-python"><span class="hljs-keyword">fro
 
 <span class="hljs-comment"># List of features</span>
 train_data[<span class="hljs-string">&apos;votes_list&apos;</span>] = train_data[<span class="hljs-string">&apos;votes&apos;</span>].apply(<span class="hljs-keyword">lambda</span> x: x.values())
-<span class="hljs-keyword">print</span> train_data[<span class="hljs-string">&apos;votes_list&apos;</span>].head(<span class="hljs-number">3</span>)
-[array(<span class="hljs-string">&apos;d&apos;</span>, [<span class="hljs-number">0.0</span>, <span class="hljs-number">5.0</span>, <span class="hljs-number">2.0</span>]),
- array(<span class="hljs-string">&apos;d&apos;</span>, [<span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>]),
- array(<span class="hljs-string">&apos;d&apos;</span>, [<span class="hljs-number">0.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">1.0</span>])]</code></pre>
+print(train_data[<span class="hljs-string">&apos;votes_list&apos;</span>].head(<span class="hljs-number">3</span>))</code></pre>
+<pre><code class="lang-no-highlight">[array(&apos;d&apos;, [0.0, 5.0, 2.0]),
+ array(&apos;d&apos;, [0.0, 0.0, 0.0]),
+ array(&apos;d&apos;, [0.0, 2.0, 1.0])]</code></pre>
 <p><strong>Notice</strong> that the SArray of numeric lists must be of dtype <strong>array</strong> and the
 array in each row must be <strong>of the same length</strong>. The <code>astype()</code> function of
 the SArray can help convert your data from type <code>array</code> to <code>list</code>.</p><pre><code class="lang-python"><span class="hljs-comment"># Create a model with numeric-list features.</span>
@@ -1191,16 +1204,16 @@ model = tc.linear_regression.create(train_data, target=<span class="hljs-string"
 
 
 <span class="hljs-comment"># Number of feature columns</span>
-<span class="hljs-keyword">print</span> <span class="hljs-string">&quot;Number of features          : %s&quot;</span> % model[<span class="hljs-string">&apos;num_features&apos;</span>]
+print(<span class="hljs-string">&quot;Number of features          : %s&quot;</span> % model[<span class="hljs-string">&apos;num_features&apos;</span>])
 
 <span class="hljs-comment"># Number of features (including expanded lists and dictionaries)</span>
-<span class="hljs-keyword">print</span> <span class="hljs-string">&quot;Number of unpacked features : %s&quot;</span> % model[<span class="hljs-string">&apos;num_unpacked_features&apos;</span>]
+print(<span class="hljs-string">&quot;Number of unpacked features : %s&quot;</span> % model[<span class="hljs-string">&apos;num_unpacked_features&apos;</span>])
 
 <span class="hljs-comment"># Number of coefficients in the model</span>
-<span class="hljs-keyword">print</span> <span class="hljs-string">&quot;Number of coefficients      : %s&quot;</span> % model[<span class="hljs-string">&apos;num_coefficients&apos;</span>]
+print(<span class="hljs-string">&quot;Number of coefficients      : %s&quot;</span> % model[<span class="hljs-string">&apos;num_coefficients&apos;</span>])
 
 <span class="hljs-comment"># A coefficient is included for each index in the list</span>
-<span class="hljs-keyword">print</span> model[<span class="hljs-string">&apos;coefficients&apos;</span>]</code></pre>
+print(model[<span class="hljs-string">&apos;coefficients&apos;</span>])</code></pre>
 <pre><code class="lang-no-highlight">Number of features          : 5
 Number of unpacked features : 7
 Number of coefficients      : 8
@@ -1326,7 +1339,7 @@ new_data = tc.SFrame({<span class="hljs-string">&apos;user_avg_stars&apos;</span
                        <span class="hljs-string">&apos;categories_dict&apos;</span>: [{<span class="hljs-string">&apos;Pizza&apos;</span>: <span class="hljs-number">1</span>}]
                       })
 prediction = model.predict(new_data)
-<span class="hljs-keyword">print</span> prediction
+print(prediction)
 
 <span class="hljs-comment"># An SFrame without the &apos;user_avg_stars&apos; feature. predict() will impute the</span>
 <span class="hljs-comment"># entire feature to the mean value observed during training.</span>
@@ -1418,7 +1431,7 @@ model = tc.linear_regression.create(train_data, target=<span class="hljs-string"
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Linear Regression","level":"1.4.5.3","depth":3,"next":{"title":"Random Forest Regression","level":"1.4.5.4","depth":3,"path":"supervised-learning/random_forest_regression.md","ref":"supervised-learning/random_forest_regression.md","articles":[]},"previous":{"title":"Decision Tree Regression","level":"1.4.5.2","depth":3,"path":"supervised-learning/decision_tree_regression.md","ref":"supervised-learning/decision_tree_regression.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"supervised-learning/linear-regression.md","mtime":"2018-02-14T19:35:07.158Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-03-07T05:42:10.712Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Linear Regression","level":"1.4.5.3","depth":3,"next":{"title":"Random Forest Regression","level":"1.4.5.4","depth":3,"path":"supervised-learning/random_forest_regression.md","ref":"supervised-learning/random_forest_regression.md","articles":[]},"previous":{"title":"Decision Tree Regression","level":"1.4.5.2","depth":3,"path":"supervised-learning/decision_tree_regression.md","ref":"supervised-learning/decision_tree_regression.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"supervised-learning/linear-regression.md","mtime":"2018-04-06T23:42:03.450Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-04-13T23:44:02.321Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

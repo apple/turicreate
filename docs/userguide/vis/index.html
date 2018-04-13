@@ -385,7 +385,20 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.3.4.1" data-path="../object_detection/advanced-usage.html">
+        <li class="chapter " data-level="1.3.4.1" data-path="../object_detection/data-preparation.html">
+            
+                <a href="../object_detection/data-preparation.html">
+            
+                    
+                    Data Preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.2" data-path="../object_detection/advanced-usage.html">
             
                 <a href="../object_detection/advanced-usage.html">
             
@@ -398,7 +411,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.4.2" data-path="../object_detection/how-it-works.html">
+        <li class="chapter " data-level="1.3.4.3" data-path="../object_detection/how-it-works.html">
             
                 <a href="../object_detection/how-it-works.html">
             
@@ -956,9 +969,17 @@ data. See
 and
 <a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.SArray.explore.html" target="_blank">SArray.explore</a>.
 </li></ul>
-<h4 id="show"><a name="show" class="plugin-anchor" href="#show"><i class="fa fa-link" aria-hidden="true"></i></a>Show</h4><p>The <code>show</code> method opens a visualization window and streams a plot of the
-requested data structure or pair of data structures to the user, with an
-automatically selected plot type.</p><h5 id="streaming-capability"><a name="streaming-capability" class="plugin-anchor" href="#streaming-capability"><i class="fa fa-link" aria-hidden="true"></i></a>Streaming Capability</h5><p>Visualizations produced by <code>show</code> mostly involve aggregated data. Some examples
+<p>Turi Create also enables you to create independent plots including 
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.scatter.html" target="_blank">scatter plots</a>, 
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.heatmap.html" target="_blank">heatmaps</a>, 
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.categorical_heatmap.html" target="_blank">categorical heatmaps</a>, 
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.histogram.html" target="_blank">histograms</a>, 
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.columnwise_summary.html" target="_blank">columnwise summaries</a>, and 
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.item_frequency.html" target="_blank">item frequency plots</a>.</p><h4 id="show"><a name="show" class="plugin-anchor" href="#show"><i class="fa fa-link" aria-hidden="true"></i></a>Show</h4><p>The <code>show</code> method displays a plot of the requested data structure or pair of
+data structures to the user, with an automatically selected plot type. When in
+Jupyter Notebook, it outputs to the notebook by default, and otherwise opens a
+native window. This behavior can be controlled with
+<a href="https://apple.github.io/turicreate/docs/api/generated/turicreate.visualization.set_target.html" target="_blank"><code>turicreate.visualization.set_target</code></a>.</p><h5 id="streaming-capability"><a name="streaming-capability" class="plugin-anchor" href="#streaming-capability"><i class="fa fa-link" aria-hidden="true"></i></a>Streaming Capability</h5><p>Visualizations produced by <code>show</code> mostly involve aggregated data. Some examples
 of aggregation used in Turi Create visualization include
 <a href="https://en.wikipedia.org/wiki/Histogram" target="_blank">histogram binning</a>, used in the
 histogram and heat map plots, and
@@ -1019,7 +1040,18 @@ you to share, publish, or view the rendered plot, while the Vega specification
 allows for customization of the rendered plot using a variety of tools that
 support Vega specifications, like the
 <a href="https://vega.github.io/editor/#/" target="_blank">online editor</a>.
-You can find these options in the <code>File</code> menu as shown below:</p><p><img alt="Turi Create Visualization File Menu" src="images/show_file_menu.png"></p><h4 id="explore"><a name="explore" class="plugin-anchor" href="#explore"><i class="fa fa-link" aria-hidden="true"></i></a>Explore</h4><p>The <code>explore</code> method allows for interactive exploration of the dataset,
+You can find these options in the <code>File</code> menu as shown below:</p><p><img alt="Turi Create Visualization File Menu" src="images/show_file_menu.png"></p><p>Turi Create also lets you save plots as PNG, SVG, or JSON as part of the 
+Python Plot API. You can save a Plot object by invoking the <code>save</code> method, as 
+shown in the example below:</p><pre><code>import turicreate as tc
+# build the plot
+x = tc.SArray([1,2,3,4,5])
+y = x * 2
+custom_plot = tc.visualization.scatter(x,y)
+# save the plot
+custom_plot.save(&quot;custom.json&quot;)
+custom_plot.save(&quot;custom.png&quot;)
+custom_plot.save(&quot;custom.svg&quot;)</code></pre>
+<h4 id="explore"><a name="explore" class="plugin-anchor" href="#explore"><i class="fa fa-link" aria-hidden="true"></i></a>Explore</h4><p>The <code>explore</code> method allows for interactive exploration of the dataset,
 including raw (non-aggregated) data. This takes the form of a
 scrollable table capable of showing all rows and columns from the dataset:</p><p><img alt="SFrame.explore" src="images/sframe_explore.png"></p><p>Unlike <code>show</code>, the result of <code>explore</code> cannot be saved to <code>.png</code> or exported as
 a Vega specification.</p><h4 id="see-also"><a name="see-also" class="plugin-anchor" href="#see-also"><i class="fa fa-link" aria-hidden="true"></i></a>See also</h4><p>To see examples of all the possible visualizations you can get from Turi
@@ -1079,7 +1111,7 @@ For specific methods and their API parameters, see:</p><ul><li><a href="https://
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Visualization","level":"1.2.4","depth":2,"next":{"title":"Example Gallery","level":"1.2.4.1","depth":3,"path":"vis/gallery.md","ref":"vis/gallery.md","articles":[]},"previous":{"title":"Text data","level":"1.2.3","depth":2,"path":"text/analysis.md","ref":"text/analysis.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"vis/README.md","mtime":"2018-02-14T19:35:07.177Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-03-07T05:42:10.712Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Visualization","level":"1.2.4","depth":2,"next":{"title":"Example Gallery","level":"1.2.4.1","depth":3,"path":"vis/gallery.md","ref":"vis/gallery.md","articles":[]},"previous":{"title":"Text data","level":"1.2.3","depth":2,"path":"text/analysis.md","ref":"text/analysis.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"vis/README.md","mtime":"2018-04-11T22:27:22.836Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-04-13T23:44:02.321Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

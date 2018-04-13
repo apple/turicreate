@@ -2,7 +2,7 @@
 <!DOCTYPE HTML>
 <html lang="" >
     <head>
-        <title>Machine learning essentials · GitBook</title>
+        <title>Data Preparation · GitBook</title>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
@@ -61,10 +61,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="../supervised-learning/classifier.html" />
+    <link rel="next" href="advanced-usage.html" />
     
     
-    <link rel="prev" href="../text_classifier/" />
+    <link rel="prev" href="./" />
     
 
     </head>
@@ -371,9 +371,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.4" data-path="../object_detection/">
+        <li class="chapter " data-level="1.3.4" data-path="./">
             
-                <a href="../object_detection/">
+                <a href="./">
             
                     
                     Object detection
@@ -385,9 +385,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.3.4.1" data-path="../object_detection/data-preparation.html">
+        <li class="chapter active" data-level="1.3.4.1" data-path="data-preparation.html">
             
-                <a href="../object_detection/data-preparation.html">
+                <a href="data-preparation.html">
             
                     
                     Data Preparation
@@ -398,9 +398,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.4.2" data-path="../object_detection/advanced-usage.html">
+        <li class="chapter " data-level="1.3.4.2" data-path="advanced-usage.html">
             
-                <a href="../object_detection/advanced-usage.html">
+                <a href="advanced-usage.html">
             
                     
                     Advanced Usage
@@ -411,9 +411,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.4.3" data-path="../object_detection/how-it-works.html">
+        <li class="chapter " data-level="1.3.4.3" data-path="how-it-works.html">
             
-                <a href="../object_detection/how-it-works.html">
+                <a href="how-it-works.html">
             
                     
                     How it works
@@ -518,9 +518,9 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.4" data-path="./">
+        <li class="chapter " data-level="1.4" data-path="../modeling-data/">
             
-                <a href="./">
+                <a href="../modeling-data/">
             
                     
                     Machine learning essentials
@@ -922,7 +922,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Machine learning essentials</a>
+        <a href=".." >Data Preparation</a>
     </h1>
 </div>
 
@@ -937,10 +937,119 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="creating-models"><a name="creating-models" class="plugin-anchor" href="#creating-models"><i class="fa fa-link" aria-hidden="true"></i></a>Creating Models</h1><p>Models of your data can provide a principled way of making predictions
-from it. Turi Create offers two types of toolkits: algorithm-based and
-application-based. This section will cover individual algorithm-based
-toolkits, including some background on the models that they use.</p>
+                                <h1 id="ig02-data-preparation"><a name="ig02-data-preparation" class="plugin-anchor" href="#ig02-data-preparation"><i class="fa fa-link" aria-hidden="true"></i></a>IG02 Data Preparation</h1><p>In this section, we will show you how to download a publicly available dataset
+and load it into an SFrame. This will allow you to try out the Object Detection
+toolkit for yourself. To get this dataset into the format expected by our
+toolkit, we will rely on many useful SFrame functions.</p><p><em>Note: Please make sure that you have Turi Create 4.3 or above for these steps</em></p><p>The dataset that we will use is <a href="https://lear.inrialpes.fr/people/marszalek/data/ig02/" target="_blank">INRIA Annotations for Graz-02
+(IG02)</a><sup><a href="#fn_1" id="reffn_1">1</a></sup><sup><a href="#fn_2" id="reffn_2">2</a></sup>. Our goal is to
+make a detector that can spot bikes and cars. Go ahead and click this link and
+download <code>ig02-v1.0-bikes.zip</code> and <code>ig02-v1.0-cars.zip</code>. In this tutorial, we
+will assume that you have unzipped these files into <code>~/Downloads/ig02</code>. That
+is, you should have the following data structure:</p><pre><code>~/Downloads/ig02/
+    bike/
+        bike_001.image.png
+        bike_001.mask.0.png
+        bike_001.mask.1.png
+        bike_001.mask.2.png
+        bike_001.mask.3.png
+        bike_002.image.png
+        ...
+    cars/
+        carsgraz_001.image.png
+        carsgraz_001.mask.0.png
+        carsgraz_002.image.png
+        ...</code></pre>
+<p>This dataset contains masks marking the exact pixels belonging to each object
+instance. Each image may have several masks to indicate the presence of
+multiple objects. Red pixels indicate object presence and green indicate
+presence but with <a href="https://en.wikipedia.org/wiki/Occultation" target="_blank">occlusion</a>. For
+object detection, we will convert this richly annotated data to bounding boxes.
+Here is a snippet to turn this into an SFrame:</p><pre><code class="lang-python"><span class="hljs-keyword">import</span> turicreate <span class="hljs-keyword">as</span> tc
+<span class="hljs-keyword">import</span> os
+
+<span class="hljs-comment"># Change if applicable</span>
+ig02_path = <span class="hljs-string">&apos;~/Desktop/ig02&apos;</span>
+
+<span class="hljs-comment"># Load all images in random order</span>
+raw_sf = tc.image_analysis.load_images(ig02_path, recursive=<span class="hljs-keyword">True</span>,
+                                       random_order=<span class="hljs-keyword">True</span>)
+
+<span class="hljs-comment"># Split file names so that we can determine what kind of image each row is</span>
+<span class="hljs-comment"># E.g. bike_005.mask.0.png -&gt; [&apos;bike_005&apos;, &apos;mask&apos;]</span>
+info = raw_sf[<span class="hljs-string">&apos;path&apos;</span>].apply(<span class="hljs-keyword">lambda</span> path: os.path.basename(path).split(<span class="hljs-string">&apos;.&apos;</span>)[:<span class="hljs-number">2</span>])
+
+<span class="hljs-comment"># Rename columns to &apos;name&apos; and &apos;type&apos;</span>
+info = info.unpack().rename({<span class="hljs-string">&apos;X.0&apos;</span>: <span class="hljs-string">&apos;name&apos;</span>, <span class="hljs-string">&apos;X.1&apos;</span>: <span class="hljs-string">&apos;type&apos;</span>})
+
+<span class="hljs-comment"># Add to our main SFrame</span>
+raw_sf = raw_sf.add_columns(info)
+
+<span class="hljs-comment"># Extract label (e.g. &apos;bike&apos;) from name (e.g. &apos;bike_003&apos;)</span>
+raw_sf[<span class="hljs-string">&apos;label&apos;</span>] = raw_sf[<span class="hljs-string">&apos;name&apos;</span>].apply(<span class="hljs-keyword">lambda</span> name: name.split(<span class="hljs-string">&apos;_&apos;</span>)[<span class="hljs-number">0</span>])
+
+<span class="hljs-comment"># Original path no longer needed</span>
+<span class="hljs-keyword">del</span> raw_sf[<span class="hljs-string">&apos;path&apos;</span>]
+
+<span class="hljs-comment"># Split into images and masks</span>
+sf_images = raw_sf[raw_sf[<span class="hljs-string">&apos;type&apos;</span>] == <span class="hljs-string">&apos;image&apos;</span>]
+sf_masks = raw_sf[raw_sf[<span class="hljs-string">&apos;type&apos;</span>] == <span class="hljs-string">&apos;mask&apos;</span>]
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">mask_to_bbox_coordinates</span><span class="hljs-params">(img)</span>:</span>
+    <span class="hljs-string">&quot;&quot;&quot;
+    Takes a tc.Image of a mask and returns a dictionary representing bounding
+    box coordinates: e.g. {&apos;x&apos;: 100, &apos;y&apos;: 120, &apos;width&apos;: 80, &apos;height&apos;: 120}
+    &quot;&quot;&quot;</span>
+    <span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+    mask = img.pixel_data
+    <span class="hljs-keyword">if</span> mask.max() == <span class="hljs-number">0</span>:
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">None</span>
+    <span class="hljs-comment"># Take max along both x and y axis, and find first and last non-zero value</span>
+    x0, x1 = np.where(mask.max(<span class="hljs-number">0</span>))[<span class="hljs-number">0</span>][[<span class="hljs-number">0</span>, <span class="hljs-number">-1</span>]]
+    y0, y1 = np.where(mask.max(<span class="hljs-number">1</span>))[<span class="hljs-number">0</span>][[<span class="hljs-number">0</span>, <span class="hljs-number">-1</span>]]
+
+    <span class="hljs-keyword">return</span> {<span class="hljs-string">&apos;x&apos;</span>: (x0 + x1) / <span class="hljs-number">2</span>, <span class="hljs-string">&apos;width&apos;</span>: (x1 - x0),
+            <span class="hljs-string">&apos;y&apos;</span>: (y0 + y1) / <span class="hljs-number">2</span>, <span class="hljs-string">&apos;height&apos;</span>: (y1 - y0)}
+
+<span class="hljs-comment"># Convert masks to bounding boxes (drop masks that did not contain bounding box)</span>
+sf_masks[<span class="hljs-string">&apos;coordinates&apos;</span>] = sf_masks[<span class="hljs-string">&apos;image&apos;</span>].apply(mask_to_bbox_coordinates)
+
+<span class="hljs-comment"># There can be empty masks (which returns None), so let&apos;s get rid of those</span>
+sf_masks = sf_masks.dropna(<span class="hljs-string">&apos;coordinates&apos;</span>)
+
+<span class="hljs-comment"># Combine label and coordinates into a bounding box dictionary</span>
+sf_masks = sf_masks.pack_columns([<span class="hljs-string">&apos;label&apos;</span>, <span class="hljs-string">&apos;coordinates&apos;</span>],
+                                 new_column_name=<span class="hljs-string">&apos;bbox&apos;</span>, dtype=dict)
+
+<span class="hljs-comment"># Combine bounding boxes of the same &apos;name&apos; into lists</span>
+sf_annotations = sf_masks.groupby(<span class="hljs-string">&apos;name&apos;</span>,
+                                 {<span class="hljs-string">&apos;annotations&apos;</span>: tc.aggregate.CONCAT(<span class="hljs-string">&apos;bbox&apos;</span>)})
+
+<span class="hljs-comment"># Join annotations with the images. Note, some images do not have annotations,</span>
+<span class="hljs-comment"># but we still want to keep them in the dataset. This is why it is important to</span>
+<span class="hljs-comment"># a LEFT join.</span>
+sf = sf_images.join(sf_annotations, on=<span class="hljs-string">&apos;name&apos;</span>, how=<span class="hljs-string">&apos;left&apos;</span>)
+
+<span class="hljs-comment"># The LEFT join fills missing matches with None, so we replace these with empty</span>
+<span class="hljs-comment"># lists instead using fillna.</span>
+sf[<span class="hljs-string">&apos;annotations&apos;</span>] = sf[<span class="hljs-string">&apos;annotations&apos;</span>].fillna([])
+
+<span class="hljs-comment"># Remove unnecessary columns</span>
+<span class="hljs-keyword">del</span> sf[<span class="hljs-string">&apos;type&apos;</span>]
+
+<span class="hljs-comment"># Save SFrame</span>
+sf.save(<span class="hljs-string">&apos;ig02.sframe&apos;</span>)</code></pre>
+<p>There are many useful data preparation tips in these steps, so we encourage you
+to go through it in an interactive session or a notebook so that you can
+inspect the outcome of each command.</p><p>After you have run this script, you should have <code>ig02.sframe</code> in your current
+directory. This SFrame can be used as described in the <a href="./">Object detection user
+guide</a>.</p><h2 id="references"><a name="references" class="plugin-anchor" href="#references"><i class="fa fa-link" aria-hidden="true"></i></a>References</h2><p>The <a href="lear.inrialpes.fr/people/marszalek/data/ig02">IG02</a> dataset is described
+further in:</p><blockquote id="fn_1">
+<sup>1</sup>. Marcin Marsza&#x142;ek and Cordelia Schmid. <a href="http://lear.inrialpes.fr/pubs/2007/MS07a/" target="_blank">Accurate Object Localization with Shape Masks.</a> IEEE Conference on Computer Vision &amp; Pattern Recognition, 2007.<a href="#reffn_1" title="Jump back to footnote [1] in the text."> &#x21A9;</a>
+</blockquote>
+<blockquote id="fn_2">
+<sup>2</sup>. A. Opelt, A. Pinz, M. Fussenegger, P. Auer. <a href="http://www.emt.tugraz.at/~opelt/download_data/Generic_object_recognition_with_boosting.pdf" target="_blank">Generic Object Recognition with Boosting.</a> IEEE Transactions on Pattern Recognition and Machine Intelligence (PAMI), Vol.28, No. 3, March 2006.<a href="#reffn_2" title="Jump back to footnote [2] in the text."> &#x21A9;</a>
+</blockquote>
+
                                 
                                 </section>
                             
@@ -967,12 +1076,12 @@ toolkits, including some background on the models that they use.</p>
 
             
                 
-                <a href="../text_classifier/" class="navigation navigation-prev " aria-label="Previous page: Text classifier">
+                <a href="./" class="navigation navigation-prev " aria-label="Previous page: Object detection">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="../supervised-learning/classifier.html" class="navigation navigation-next " aria-label="Next page: Classification">
+                <a href="advanced-usage.html" class="navigation navigation-next " aria-label="Next page: Advanced Usage">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -983,7 +1092,7 @@ toolkits, including some background on the models that they use.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Machine learning essentials","level":"1.4","depth":1,"next":{"title":"Classification","level":"1.4.1","depth":2,"path":"supervised-learning/classifier.md","ref":"supervised-learning/classifier.md","articles":[{"title":"Boosted Trees Classifier","level":"1.4.1.1","depth":3,"path":"supervised-learning/boosted_trees_classifier.md","ref":"supervised-learning/boosted_trees_classifier.md","articles":[]},{"title":"Decision Tree Classifier","level":"1.4.1.2","depth":3,"path":"supervised-learning/decision_tree_classifier.md","ref":"supervised-learning/decision_tree_classifier.md","articles":[]},{"title":"Logistic Regression","level":"1.4.1.3","depth":3,"path":"supervised-learning/logistic-regression.md","ref":"supervised-learning/logistic-regression.md","articles":[]},{"title":"Nearest Neighbor Classifier","level":"1.4.1.4","depth":3,"path":"supervised-learning/knn_classifier.md","ref":"supervised-learning/knn_classifier.md","articles":[]},{"title":"Random Forest Classifier","level":"1.4.1.5","depth":3,"path":"supervised-learning/random_forest_classifier.md","ref":"supervised-learning/random_forest_classifier.md","articles":[]},{"title":"SVM","level":"1.4.1.6","depth":3,"path":"supervised-learning/svm.md","ref":"supervised-learning/svm.md","articles":[]}]},"previous":{"title":"Text classifier","level":"1.3.6","depth":2,"path":"text_classifier/README.md","ref":"text_classifier/README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"modeling-data/README.md","mtime":"2018-03-26T17:56:49.370Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-04-13T23:44:02.321Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Data Preparation","level":"1.3.4.1","depth":3,"next":{"title":"Advanced Usage","level":"1.3.4.2","depth":3,"path":"object_detection/advanced-usage.md","ref":"object_detection/advanced-usage.md","articles":[]},"previous":{"title":"Object detection","level":"1.3.4","depth":2,"path":"object_detection/README.md","ref":"object_detection/README.md","articles":[{"title":"Data Preparation","level":"1.3.4.1","depth":3,"path":"object_detection/data-preparation.md","ref":"object_detection/data-preparation.md","articles":[]},{"title":"Advanced Usage","level":"1.3.4.2","depth":3,"path":"object_detection/advanced-usage.md","ref":"object_detection/advanced-usage.md","articles":[]},{"title":"How it works","level":"1.3.4.3","depth":3,"path":"object_detection/how-it-works.md","ref":"object_detection/how-it-works.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"object_detection/data-preparation.md","mtime":"2018-04-06T23:42:03.428Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-04-13T23:44:02.321Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

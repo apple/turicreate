@@ -385,7 +385,20 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.3.4.1" data-path="../object_detection/advanced-usage.html">
+        <li class="chapter " data-level="1.3.4.1" data-path="../object_detection/data-preparation.html">
+            
+                <a href="../object_detection/data-preparation.html">
+            
+                    
+                    Data Preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.2" data-path="../object_detection/advanced-usage.html">
             
                 <a href="../object_detection/advanced-usage.html">
             
@@ -398,7 +411,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.4.2" data-path="../object_detection/how-it-works.html">
+        <li class="chapter " data-level="1.3.4.3" data-path="../object_detection/how-it-works.html">
             
                 <a href="../object_detection/how-it-works.html">
             
@@ -948,7 +961,7 @@ of predictions (the number of test data points).</p><p><script type="math/tex; m
 y    = tc.SArray([<span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;dog&quot;</span>, <span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;cat&quot;</span>])
 yhat = tc.SArray([<span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;dog&quot;</span>, <span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;dog&quot;</span>])
 
-<span class="hljs-keyword">print</span> tc.evaluation.accuracy(y, yhat)</code></pre>
+print(tc.evaluation.accuracy(y, yhat))</code></pre>
 <pre><code>0.75</code></pre>
 <p>Accuracy looks easy enough. However, it makes no distinction between classes;
 correct answers for each class are treated equally. Sometimes this is not
@@ -972,9 +985,9 @@ unweighted mean. This does not take label imbalance into account.
 y    = tc.SArray([<span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;dog&quot;</span>, <span class="hljs-string">&quot;foosa&quot;</span>, <span class="hljs-string">&quot;cat&quot;</span>])
 yhat = tc.SArray([<span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;dog&quot;</span>, <span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;dog&quot;</span>])
 
-<span class="hljs-keyword">print</span> tc.evaluation.accuracy(y, yhat, average = <span class="hljs-string">&quot;micro&quot;</span>)
-<span class="hljs-keyword">print</span> tc.evaluation.accuracy(y, yhat, average = <span class="hljs-string">&quot;macro&quot;</span>)
-<span class="hljs-keyword">print</span> tc.evaluation.accuracy(y, yhat, average = <span class="hljs-keyword">None</span>)</code></pre>
+print(tc.evaluation.accuracy(y, yhat, average = <span class="hljs-string">&quot;micro&quot;</span>))
+print(tc.evaluation.accuracy(y, yhat, average = <span class="hljs-string">&quot;macro&quot;</span>))
+print(tc.evaluation.accuracy(y, yhat, average = <span class="hljs-keyword">None</span>))</code></pre>
 <pre><code class="lang-no-highlight">0.5
 0.666666666667
 {&apos;dog&apos;: 0.75, &apos;foosa&apos;: 0.75, &apos;cat&apos;: 0.5}</code></pre>
@@ -1091,7 +1104,7 @@ predictions = turicreate.SArray([<span class="hljs-string">&apos;dog&apos;</span
 
 pr_score   = turicreate.evaluation.precision(targets, predictions)
 rec_score  = turicreate.evaluation.recall(targets, predictions)
-<span class="hljs-keyword">print</span> pr_score, rec_score</code></pre>
+print(pr_score, rec_score)</code></pre>
 <pre><code class="lang-no-highlight">0.25, 0.5</code></pre>
 <h3 id="multi-class-precision-recall"><a name="multi-class-precision-recall" class="plugin-anchor" href="#multi-class-precision-recall"><i class="fa fa-link" aria-hidden="true"></i></a>Multi-class precision-recall</h3><p>Precision and recall scores can also be defined in the multi-class setting.
 Here, the metrics can be &quot;averaged&quot; across all the classes in many possible
@@ -1111,8 +1124,8 @@ macro_pr = turicreate.evaluation.precision(targets, predictions, average=<span c
 micro_pr = turicreate.evaluation.precision(targets, predictions, average=<span class="hljs-string">&apos;micro&apos;</span>)
 per_class_pr = turicreate.evaluation.precision(targets, predictions, average=<span class="hljs-keyword">None</span>)
 
-<span class="hljs-keyword">print</span> macro_pr, micro_pr
-<span class="hljs-keyword">print</span> per_class_pr</code></pre>
+print(macro_pr, micro_pr)
+print(per_class_pr)</code></pre>
 <pre><code class="lang-no-highlight">0.694444444444 0.625
 {&apos;foosa&apos;: 1.0, &apos;dog&apos;: 0.3333333333333333, &apos;cat&apos;: 0.75}</code></pre>
 <p><strong>Note:</strong> The micro average precision, recall, and accuracy scores are
@@ -1132,7 +1145,7 @@ predictions = turicreate.SArray([<span class="hljs-number">1</span>, <span class
 
 f1    = turicreate.evaluation.f1_score(targets, predictions)
 fbeta = turicreate.evaluation.fbeta_score(targets, predictions, beta = <span class="hljs-number">2.0</span>)
-<span class="hljs-keyword">print</span> f1, fbeta</code></pre>
+print(f1, fbeta)</code></pre>
 <pre><code class="lang-no-highlight">0.333333333333 0.416666666667</code></pre>
 <p>Like the other metrics, the F1-score (or F-beta score) can also be defined when
 the target classes are of type <strong>string</strong>.  For binary classification, when the
@@ -1142,7 +1155,7 @@ predictions = turicreate.SArray([<span class="hljs-string">&apos;dog&apos;</span
 
 f1    = turicreate.evaluation.f1_score(targets, predictions)
 fbeta = turicreate.evaluation.fbeta_score(targets, predictions, beta = <span class="hljs-number">2.0</span>)
-<span class="hljs-keyword">print</span> f1, fbeta</code></pre>
+print(f1, fbeta)</code></pre>
 <pre><code class="lang-no-highlight">0.333333333333 0.416666666667</code></pre>
 <h3 id="multi-class-f-scores"><a name="multi-class-f-scores" class="plugin-anchor" href="#multi-class-f-scores"><i class="fa fa-link" aria-hidden="true"></i></a>Multi-class F-scores</h3><p>F-scores can also be defined in the multi-class setting.  Here, the metrics can
 be &quot;averaged&quot; across all the classes in many possible ways. Some of them are:</p><ul><li><strong>micro</strong>: Calculate metrics globally by counting the total number of times
@@ -1231,7 +1244,7 @@ little area.</p><pre><code class="lang-python">targets = turicreate.SArray([<spa
 predictions = turicreate.SArray([<span class="hljs-number">0.1</span>, <span class="hljs-number">0.35</span>, <span class="hljs-number">0.7</span>, <span class="hljs-number">0.99</span>])
 
 auc = turicreate.evaluation.auc(targets, predictions)
-<span class="hljs-keyword">print</span> auc</code></pre>
+print(auc)</code></pre>
 <pre><code class="lang-no-highlight">0.5</code></pre>
 <p><strong>Note</strong>: The AUC score is computed using a binned histogram and hence always
 contains 100K rows. The binned histogram provides a curve that is accurate to
@@ -1242,7 +1255,7 @@ is considered the &quot;positive&quot; label.</p><pre><code class="lang-python">
 predictions = turicreate.SArray([<span class="hljs-number">0.1</span>, <span class="hljs-number">0.35</span>, <span class="hljs-number">0.7</span>, <span class="hljs-number">0.99</span>])
 
 auc = turicreate.evaluation.auc(targets, predictions)
-<span class="hljs-keyword">print</span> auc</code></pre>
+print(auc)</code></pre>
 <pre><code class="lang-no-highlight">0.5</code></pre>
 <h3 id="multi-class-area-under-curve"><a name="multi-class-area-under-curve" class="plugin-anchor" href="#multi-class-area-under-curve"><i class="fa fa-link" aria-hidden="true"></i></a>Multi-class area under curve</h3><p>The AUC score can also be defined in the multi-class setting.  Here, the
 metrics can be &quot;averaged&quot; across all the classes in many possible ways. Some of
@@ -1349,7 +1362,7 @@ of the plot represents a better model.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Classification metrics","level":"1.5.2","depth":2,"next":{"title":"Deployment","level":"1.6","depth":1,"path":"deployment/README.md","ref":"deployment/README.md","articles":[]},"previous":{"title":"Regression metrics","level":"1.5.1","depth":2,"path":"evaluation/regression.md","ref":"evaluation/regression.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"evaluation/classification.md","mtime":"2018-02-14T19:35:07.114Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-03-07T05:42:10.712Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Classification metrics","level":"1.5.2","depth":2,"next":{"title":"Deployment","level":"1.6","depth":1,"path":"deployment/README.md","ref":"deployment/README.md","articles":[]},"previous":{"title":"Regression metrics","level":"1.5.1","depth":2,"path":"evaluation/regression.md","ref":"evaluation/regression.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"evaluation/classification.md","mtime":"2018-04-06T23:42:03.425Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-04-13T23:44:02.321Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
