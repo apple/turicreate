@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.get_similar_users &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.get_similar_users &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -134,27 +134,28 @@ available for item_similarity models.)</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>users</strong> : SArray or list; optional</p>
-<blockquote>
-<div><p>An <a class="reference internal" href="turicreate.SArray.html#turicreate.SArray" title="turicreate.SArray"><code class="xref py py-class docutils literal"><span class="pre">SArray</span></code></a> or list of user ids for which to get
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>users</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray or list; optional</span></dt>
+<dd><p class="first last">An <a class="reference internal" href="turicreate.SArray.html#turicreate.SArray" title="turicreate.SArray"><code class="xref py py-class docutils literal"><span class="pre">SArray</span></code></a> or list of user ids for which to get
 similar users. If &#8216;None&#8217;, then return the <cite>k</cite> most similar users for
 all users in the training set.</p>
-</div></blockquote>
-<p><strong>k</strong> : int, optional</p>
-<blockquote>
-<div><p>The number of neighbors to return for each user.</p>
-</div></blockquote>
+</dd>
+<dt><strong>k</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The number of neighbors to return for each user.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SFrame</p>
-<blockquote class="last">
-<div><p>A SFrame with the top ranked similar users for each user. The
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">A SFrame with the top ranked similar users for each user. The
 columns <cite>user</cite>, &#8216;similar&#8217;, &#8216;score&#8217; and &#8216;rank&#8217;, where
 <cite>user</cite> matches the user column name specified at training time.
 The &#8216;rank&#8217; is between 1 and <cite>k</cite> and &#8216;score&#8217; gives the similarity
 score of that user. The value of the score depends on the method
 used for computing user similarities.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -179,7 +180,7 @@ used for computing user similarities.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -197,7 +198,7 @@ used for computing user similarities.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

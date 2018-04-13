@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.object_detector.util.draw_bounding_boxes &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.object_detector.util.draw_bounding_boxes &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="object_detector" href="../turicreate.toolkits.object_detector.html"/>
         <link rel="next" title="turicreate.object_detector.util.stack_annotations" href="turicreate.object_detector.util.stack_annotations.html"/>
         <link rel="prev" title="turicreate.object_detector.ObjectDetector" href="turicreate.object_detector.ObjectDetector.html"/> 
@@ -137,31 +137,31 @@ returning annotated copies of the images.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>images: SArray or Image</strong></p>
-<blockquote>
-<div><p>An <cite>SArray</cite> of type <cite>Image</cite>. A single <cite>Image</cite> instance may also be
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>images: SArray or Image</strong></dt>
+<dd><p class="first last">An <cite>SArray</cite> of type <cite>Image</cite>. A single <cite>Image</cite> instance may also be
 given.</p>
-</div></blockquote>
-<p><strong>annotations: SArray or list</strong></p>
-<blockquote>
-<div><p>An <cite>SArray</cite> of annotations (either output from the
+</dd>
+<dt><strong>annotations: SArray or list</strong></dt>
+<dd><p class="first last">An <cite>SArray</cite> of annotations (either output from the
 <cite>ObjectDetector.predict</cite> function or ground truth). A single list of
 annotations may also be given, provided that it is coupled with a
 single image.</p>
-</div></blockquote>
-<p><strong>confidence_threshold: float</strong></p>
-<blockquote>
-<div><p>Confidence threshold can limit the number of boxes to draw. By
+</dd>
+<dt><strong>confidence_threshold: float</strong></dt>
+<dd><p class="first last">Confidence threshold can limit the number of boxes to draw. By
 default, this is set to 0, since the prediction may have already pruned
 with an appropriate confidence threshold.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">annotated_images: SArray or Image</p>
-<blockquote class="last">
-<div><p>Similar to the input <cite>images</cite>, except the images are decorated with
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>annotated_images: SArray or Image</strong></dt>
+<dd><p class="first last">Similar to the input <cite>images</cite>, except the images are decorated with
 boxes to visualize the object instances.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -192,7 +192,7 @@ boxes to visualize the object instances.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -210,7 +210,7 @@ boxes to visualize the object instances.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

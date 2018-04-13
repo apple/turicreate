@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.toolkits.distances.build_address_distance &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.toolkits.distances.build_address_distance &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="distances" href="../turicreate.toolkits.distances.html"/>
         <link rel="next" title="evaluation" href="../turicreate.toolkits.evaluation.html"/>
         <link rel="prev" title="turicreate.toolkits.distances.compute_composite_distance" href="turicreate.toolkits.distances.compute_composite_distance.html"/> 
@@ -140,19 +140,21 @@ distance functions must be appropriate for the given model.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>number, street, city, state, zip_code</strong> : string, optional</p>
-<blockquote>
-<div><p>Name of the SFrame column for the feature corresponding to the address
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>number, street, city, state, zip_code</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">Name of the SFrame column for the feature corresponding to the address
 component. Each feature name is mapped to an appropriate distance
 function and scalar multiplier.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>dist</strong> : list</p>
-<blockquote class="last">
-<div><p>A composite distance function, mapping sets of feature names to distance
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>dist</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">A composite distance function, mapping sets of feature names to distance
 functions.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -194,7 +196,7 @@ functions.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -212,7 +214,7 @@ functions.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

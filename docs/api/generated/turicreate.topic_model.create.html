@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.topic_model.create &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.topic_model.create &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="topic_model" href="../turicreate.toolkits.topic_model.html"/>
         <link rel="next" title="turicreate.topic_model.perplexity" href="turicreate.topic_model.perplexity.html"/>
         <link rel="prev" title="turicreate.topic_model.TopicModel" href="turicreate.topic_model.TopicModel.html"/> 
@@ -140,86 +140,76 @@ collection.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SArray of type dict or SFrame with a single column of type dict</p>
-<blockquote>
-<div><p>A bag of words representation of a document corpus.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray of type dict or SFrame with a single column of type dict</span></dt>
+<dd><p class="first last">A bag of words representation of a document corpus.
 Each element is a dictionary representing a single document, where
 the keys are words and the values are the number of times that word
 occurs in that document.</p>
-</div></blockquote>
-<p><strong>num_topics</strong> : int, optional</p>
-<blockquote>
-<div><p>The number of topics to learn.</p>
-</div></blockquote>
-<p><strong>initial_topics</strong> : SFrame, optional</p>
-<blockquote>
-<div><p>An SFrame with a column of unique words representing the vocabulary
+</dd>
+<dt><strong>num_topics</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The number of topics to learn.</p>
+</dd>
+<dt><strong>initial_topics</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
+<dd><p class="first last">An SFrame with a column of unique words representing the vocabulary
 and a column of dense vectors representing
 probability of that word given each topic. When provided,
 these values are used to initialize the algorithm.</p>
-</div></blockquote>
-<p><strong>alpha</strong> : float, optional</p>
-<blockquote>
-<div><p>Hyperparameter that controls the diversity of topics in a document.
+</dd>
+<dt><strong>alpha</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Hyperparameter that controls the diversity of topics in a document.
 Smaller values encourage fewer topics per document.
 Provided value must be positive. Default value is 50/num_topics.</p>
-</div></blockquote>
-<p><strong>beta</strong> : float, optional</p>
-<blockquote>
-<div><p>Hyperparameter that controls the diversity of words in a topic.
+</dd>
+<dt><strong>beta</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Hyperparameter that controls the diversity of words in a topic.
 Smaller values encourage fewer words per topic. Provided value
 must be positive.</p>
-</div></blockquote>
-<p><strong>num_iterations</strong> : int, optional</p>
-<blockquote>
-<div><p>The number of iterations to perform.</p>
-</div></blockquote>
-<p><strong>num_burnin</strong> : int, optional</p>
-<blockquote>
-<div><p>The number of iterations to perform when inferring the topics for
+</dd>
+<dt><strong>num_iterations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The number of iterations to perform.</p>
+</dd>
+<dt><strong>num_burnin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The number of iterations to perform when inferring the topics for
 documents at prediction time.</p>
-</div></blockquote>
-<p><strong>verbose</strong> : bool, optional</p>
-<blockquote>
-<div><p>When True, print most probable words for each topic while printing
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">When True, print most probable words for each topic while printing
 progress.</p>
-</div></blockquote>
-<p><strong>print_interval</strong> : int, optional</p>
-<blockquote>
-<div><p>The number of iterations to wait between progress reports.</p>
-</div></blockquote>
-<p><strong>associations</strong> : SFrame, optional</p>
-<blockquote>
-<div><p>An SFrame with two columns named &#8220;word&#8221; and &#8220;topic&#8221; containing words
+</dd>
+<dt><strong>print_interval</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The number of iterations to wait between progress reports.</p>
+</dd>
+<dt><strong>associations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
+<dd><p class="first last">An SFrame with two columns named &#8220;word&#8221; and &#8220;topic&#8221; containing words
 and the topic id that the word should be associated with. These words
 are not considered during learning.</p>
-</div></blockquote>
-<p><strong>validation_set</strong> : SArray of type dict or SFrame with a single column</p>
-<blockquote>
-<div><p>A bag of words representation of a document corpus, similar to the
+</dd>
+<dt><strong>validation_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray of type dict or SFrame with a single column</span></dt>
+<dd><p class="first last">A bag of words representation of a document corpus, similar to the
 format required for <cite>dataset</cite>. This will be used to monitor model
 performance during training. Each document in the provided validation
 set is randomly split: the first portion is used estimate which topic
 each document belongs to, and the second portion is used to estimate
 the model&#8217;s performance at predicting the unseen words in the test data.</p>
-</div></blockquote>
-<p><strong>method</strong> : {&#8216;cgs&#8217;, &#8216;alias&#8217;}, optional</p>
-<blockquote>
-<div><p>The algorithm used for learning the model.</p>
-<ul class="simple">
+</dd>
+<dt><strong>method</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;cgs&#8217;, &#8216;alias&#8217;}, optional</span></dt>
+<dd><p class="first">The algorithm used for learning the model.</p>
+<ul class="last simple">
 <li><em>cgs:</em> Collapsed Gibbs sampling</li>
 <li><em>alias:</em> AliasLDA method.</li>
 </ul>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : TopicModel</p>
-<blockquote class="last">
-<div><p>A fitted topic model. This can be used with
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">TopicModel</span></dt>
+<dd><p class="first">A fitted topic model. This can be used with
 <a class="reference internal" href="turicreate.topic_model.TopicModel.get_topics.html#turicreate.topic_model.TopicModel.get_topics" title="turicreate.topic_model.TopicModel.get_topics"><code class="xref py py-func docutils literal"><span class="pre">get_topics()</span></code></a> and
 <a class="reference internal" href="turicreate.topic_model.TopicModel.predict.html#turicreate.topic_model.TopicModel.predict" title="turicreate.topic_model.TopicModel.predict"><code class="xref py py-func docutils literal"><span class="pre">predict()</span></code></a>. While fitting is in progress, several
 metrics are shown, including:</p>
-<table border="1" class="docutils">
+<table border="1" class="last docutils">
 <colgroup>
 <col width="26%" />
 <col width="74%" />
@@ -242,7 +232,8 @@ training data. See the documentation on evaluate.</td>
 </tr>
 </tbody>
 </table>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -325,7 +316,7 @@ training.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -343,7 +334,7 @@ training.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

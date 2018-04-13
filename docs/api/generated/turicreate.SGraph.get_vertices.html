@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SGraph.get_vertices &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SGraph.get_vertices &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -129,31 +129,31 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ids</strong> : list [int | float | str] or SArray</p>
-<blockquote>
-<div><p>List of vertex IDs to retrieve. Only vertices in this list will be
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>ids</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list [int | float | str] or SArray</span></dt>
+<dd><p class="first last">List of vertex IDs to retrieve. Only vertices in this list will be
 returned. Also accepts a single vertex id.</p>
-</div></blockquote>
-<p><strong>fields</strong> : dict | pandas.DataFrame</p>
-<blockquote>
-<div><p>Dictionary specifying equality constraint on field values. For
+</dd>
+<dt><strong>fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict | pandas.DataFrame</span></dt>
+<dd><p class="first last">Dictionary specifying equality constraint on field values. For
 example <code class="docutils literal"><span class="pre">{'gender':</span> <span class="pre">'M'}</span></code>, returns only vertices whose &#8216;gender&#8217;
 field is &#8216;M&#8217;. <code class="docutils literal"><span class="pre">None</span></code> can be used to designate a wild card. For
 example, {&#8216;relationship&#8217;: None} will find all vertices with the
 field &#8216;relationship&#8217; regardless of the value.</p>
-</div></blockquote>
-<p><strong>format</strong> : {&#8216;sframe&#8217;, &#8216;list&#8217;}</p>
-<blockquote>
-<div><p>Output format. The SFrame output (default) contains a column
+</dd>
+<dt><strong>format</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;sframe&#8217;, &#8216;list&#8217;}</span></dt>
+<dd><p class="first last">Output format. The SFrame output (default) contains a column
 <code class="docutils literal"><span class="pre">__src_id</span></code> with vertex IDs and a column for each vertex attribute.
 List output returns a list of Vertex objects.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SFrame or list [Vertex]</p>
-<blockquote class="last">
-<div><p>An SFrame or list of Vertex objects.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame or list [Vertex]</span></dt>
+<dd><p class="first last">An SFrame or list of Vertex objects.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -210,7 +210,7 @@ List output returns a list of Vertex objects.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -228,7 +228,7 @@ List output returns a list of Vertex objects.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

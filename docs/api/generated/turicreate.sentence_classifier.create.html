@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.sentence_classifier.create &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.sentence_classifier.create &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="sentence_classifier" href="../turicreate.toolkits.sentence_classifier.html"/>
         <link rel="next" title="turicreate.sentence_classifier.SentenceClassifier" href="turicreate.sentence_classifier.SentenceClassifier.html"/>
         <link rel="prev" title="turicreate.sentence_classifier.SentenceClassifier" href="turicreate.sentence_classifier.SentenceClassifier.html"/> 
@@ -139,29 +139,25 @@ using a bag-of-words representation of the text dataset.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset: SFrame</strong></p>
-<blockquote>
-<div><p>Contains one column that contains the text dataset of interest.  This can be
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dataset: SFrame</strong></dt>
+<dd><p class="first last">Contains one column that contains the text dataset of interest.  This can be
 unstructured text dataset, such as that appearing in forums, user-generated
 reviews, and so on.</p>
-</div></blockquote>
-<p><strong>target: str</strong></p>
-<blockquote>
-<div><p>The column name containing class labels for each document.</p>
-</div></blockquote>
-<p><strong>features: list[str], optional</strong></p>
-<blockquote>
-<div><p>The column names of interest containing text dataset. Each provided column
+</dd>
+<dt><strong>target: str</strong></dt>
+<dd><p class="first last">The column name containing class labels for each document.</p>
+</dd>
+<dt><strong>features: list[str], optional</strong></dt>
+<dd><p class="first last">The column names of interest containing text dataset. Each provided column
 must be str type. Defaults to using all columns of type str.</p>
-</div></blockquote>
-<p><strong>method: str, optional</strong></p>
-<blockquote>
-<div><p>Method to use for feature engineering and modeling. Currently only
+</dd>
+<dt><strong>method: str, optional</strong></dt>
+<dd><p class="first last">Method to use for feature engineering and modeling. Currently only
 bag-of-words and logistic classifier (&#8216;bow-logistic&#8217;) is available.</p>
-</div></blockquote>
-<p><strong>validation_set</strong> : SFrame, optional</p>
-<blockquote>
-<div><p>A dataset for monitoring the model&#8217;s generalization performance.
+</dd>
+<dt><strong>validation_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
+<dd><p class="first last">A dataset for monitoring the model&#8217;s generalization performance.
 For each row of the progress table, the chosen metrics are computed
 for both the provided training dataset and the validation_set. The
 format of this SFrame must be the same as the training set.
@@ -169,10 +165,14 @@ By default this argument is set to &#8216;auto&#8217; and a validation set is
 automatically sampled and used for progress printing. If
 validation_set is set to None, then no additional metrics
 are computed. The default value is &#8216;auto&#8217;.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>out</strong> : <a class="reference internal" href="turicreate.sentence_classifier.SentenceClassifier.html#turicreate.sentence_classifier.SentenceClassifier" title="turicreate.sentence_classifier.SentenceClassifier"><code class="xref py py-class docutils literal"><span class="pre">SentenceClassifier</span></code></a></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference internal" href="turicreate.sentence_classifier.SentenceClassifier.html#turicreate.sentence_classifier.SentenceClassifier" title="turicreate.sentence_classifier.SentenceClassifier"><code class="xref py py-class docutils literal"><span class="pre">SentenceClassifier</span></code></a></span></dt>
+<dd></dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -212,7 +212,7 @@ are computed. The default value is &#8216;auto&#8217;.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -230,7 +230,7 @@ are computed. The default value is &#8216;auto&#8217;.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

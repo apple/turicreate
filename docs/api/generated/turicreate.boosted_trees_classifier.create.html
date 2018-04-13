@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.boosted_trees_classifier.create &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.boosted_trees_classifier.create &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="classifier" href="../turicreate.toolkits.classifier.html"/>
         <link rel="next" title="turicreate.boosted_trees_classifier.BoostedTreesClassifier" href="turicreate.boosted_trees_classifier.BoostedTreesClassifier.html"/>
         <link rel="prev" title="turicreate.decision_tree_classifier.DecisionTreeClassifier" href="turicreate.decision_tree_classifier.DecisionTreeClassifier.html"/> 
@@ -138,32 +138,28 @@ gradient boosted trees (sometimes known as GBMs).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
-<blockquote>
-<div><p>A training dataset containing feature columns and a target column.</p>
-</div></blockquote>
-<p><strong>target</strong> : str</p>
-<blockquote>
-<div><p>Name of the column containing the target variable. The values in this
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">A training dataset containing feature columns and a target column.</p>
+</dd>
+<dt><strong>target</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">Name of the column containing the target variable. The values in this
 column must be of string or integer type.  String target variables are
 automatically mapped to integers in alphabetical order of the variable values.
 For example, a target variable with &#8216;cat&#8217;, &#8216;dog&#8217;, and &#8216;foosa&#8217; as possible
 values is mapped to 0, 1, and, 2 respectively.</p>
-</div></blockquote>
-<p><strong>features</strong> : list[str], optional</p>
-<blockquote>
-<div><p>A list of columns names of features used for training the model.
+</dd>
+<dt><strong>features</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[str], optional</span></dt>
+<dd><p class="first last">A list of columns names of features used for training the model.
 Defaults to None, which uses all columns in the SFrame <code class="docutils literal"><span class="pre">dataset</span></code>
 excepting the target column..</p>
-</div></blockquote>
-<p><strong>max_iterations</strong> : int, optional</p>
-<blockquote>
-<div><p>The maximum number of iterations for boosting. Each iteration results
+</dd>
+<dt><strong>max_iterations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The maximum number of iterations for boosting. Each iteration results
 in the creation of an extra tree.</p>
-</div></blockquote>
-<p><strong>validation_set</strong> : SFrame, optional</p>
-<blockquote>
-<div><p>A dataset for monitoring the model&#8217;s generalization performance.
+</dd>
+<dt><strong>validation_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
+<dd><p class="first last">A dataset for monitoring the model&#8217;s generalization performance.
 For each row of the progress table, the chosen metrics are computed
 for both the provided training dataset and the validation_set. The
 format of this SFrame must be the same as the training set.
@@ -173,10 +169,9 @@ validation_set is set to None, then no additional metrics
 are computed. This is computed once per full iteration. Large
 differences in model accuracy between the training data and validation
 data is indicative of overfitting. The default value is &#8216;auto&#8217;.</p>
-</div></blockquote>
-<p><strong>class_weights</strong> : {dict, <cite>auto</cite>}, optional</p>
-<blockquote>
-<div><p>Weights the examples in the training data according to the given class
+</dd>
+<dt><strong>class_weights</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{dict, <cite>auto</cite>}, optional</span></dt>
+<dd><p class="first last">Weights the examples in the training data according to the given class
 weights. If provided, the dictionary must contain a key for each class
 label. The value can be any positive number greater than 1e-20. Weights
 are interpreted as relative to each other. So setting the weights to be
@@ -185,69 +180,59 @@ effect as setting them to be 20.0 and 10.0, respectively. If set to
 <cite>None</cite>, all classes are taken to have weight 1.0. The <cite>auto</cite> mode sets
 the class weight to be inversely proportional to the number of examples
 in the training data with the given class.</p>
-</div></blockquote>
-<p><strong>max_depth</strong> : float, optional</p>
-<blockquote>
-<div><p>Maximum depth of a tree. Must be at least 1.</p>
-</div></blockquote>
-<p><strong>step_size</strong> : float, [0,1], optional</p>
-<blockquote>
-<div><p>Step size (shrinkage) used in update to prevents overfitting.  It
+</dd>
+<dt><strong>max_depth</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Maximum depth of a tree. Must be at least 1.</p>
+</dd>
+<dt><strong>step_size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, [0,1], optional</span></dt>
+<dd><p class="first last">Step size (shrinkage) used in update to prevents overfitting.  It
 shrinks the prediction of each weak learner to make the boosting
 process more conservative.  The smaller the step size, the more conservative
 the algorithm will be. Smaller step_size work well when
 <cite>max_iterations</cite> is large.</p>
-</div></blockquote>
-<p><strong>min_loss_reduction</strong> : float, optional (non-negative)</p>
-<blockquote>
-<div><p>Minimum loss reduction required to make a further partition/split a
+</dd>
+<dt><strong>min_loss_reduction</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional (non-negative)</span></dt>
+<dd><p class="first last">Minimum loss reduction required to make a further partition/split a
 node during the tree learning phase. Larger (more positive) values
 can help prevent overfitting by avoiding splits that do not
 sufficiently reduce the loss function.</p>
-</div></blockquote>
-<p><strong>min_child_weight</strong> : float, optional (non-negative)</p>
-<blockquote>
-<div><p>Controls the minimum weight of each leaf node. Larger values result in
+</dd>
+<dt><strong>min_child_weight</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional (non-negative)</span></dt>
+<dd><p class="first last">Controls the minimum weight of each leaf node. Larger values result in
 more conservative tree learning and help prevent overfitting.
 Formally, this is minimum sum of instance weights (hessians) in each
 node. If the tree learning algorithm results in a leaf node with the
 sum of instance weights less than <cite>min_child_weight</cite>, tree building
 will terminate.</p>
-</div></blockquote>
-<p><strong>row_subsample</strong> : float, [0,1], optional</p>
-<blockquote>
-<div><p>Subsample the ratio of the training set in each iteration of tree
+</dd>
+<dt><strong>row_subsample</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, [0,1], optional</span></dt>
+<dd><p class="first last">Subsample the ratio of the training set in each iteration of tree
 construction.  This is called the bagging trick and can usually help
 prevent overfitting.  Setting this to a value of 0.5 results in the
 model randomly sampling half of the examples (rows) to grow each tree.</p>
-</div></blockquote>
-<p><strong>column_subsample</strong> : float, [0,1], optional</p>
-<blockquote>
-<div><p>Subsample ratio of the columns in each iteration of tree
+</dd>
+<dt><strong>column_subsample</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, [0,1], optional</span></dt>
+<dd><p class="first last">Subsample ratio of the columns in each iteration of tree
 construction.  Like row_subsample, this can also help prevent
 model overfitting.  Setting this to a value of 0.5 results in the
 model randomly sampling half of the columns to grow each tree.</p>
-</div></blockquote>
-<p><strong>verbose</strong> : boolean, optional</p>
-<blockquote>
-<div><p>Print progress information during training (if set to true).</p>
-</div></blockquote>
-<p><strong>random_seed</strong> : int, optional</p>
-<blockquote>
-<div><p>Seeds random opertations such as column and row subsampling, such that
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
+<dd><p class="first last">Print progress information during training (if set to true).</p>
+</dd>
+<dt><strong>random_seed</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">Seeds random opertations such as column and row subsampling, such that
 results are reproducable.</p>
-</div></blockquote>
-<p><strong>metric</strong> : str or list[str], optional</p>
-<blockquote>
-<div><p>Performance metric(s) that are tracked during training. When specified,
+</dd>
+<dt><strong>metric</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or list[str], optional</span></dt>
+<dd><p class="first last">Performance metric(s) that are tracked during training. When specified,
 the progress table will display the tracked metric(s) on training and
 validation set.
 Supported metrics are: {&#8216;accuracy&#8217;, &#8216;auc&#8217;, &#8216;log_loss&#8217;}</p>
-</div></blockquote>
-<p><strong>kwargs</strong> : dict, optional</p>
-<blockquote>
-<div><p>Additional arguments for training the model.</p>
-<ul class="simple">
+</dd>
+<dt><strong>kwargs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd><p class="first">Additional arguments for training the model.</p>
+<ul class="last simple">
 <li><dl class="first docutils">
 <dt><code class="docutils literal"><span class="pre">early_stopping_rounds</span></code> <span class="classifier-delimiter">:</span> <span class="classifier">int, default None</span></dt>
 <dd>If the validation metric does not improve after &lt;early_stopping_rounds&gt;,
@@ -278,13 +263,15 @@ exact the same training data as the checkpointed model.</dd>
 </dl>
 </li>
 </ul>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : BoostedTreesClassifier</p>
-<blockquote class="last">
-<div><p>A trained gradient boosted trees model for classifications tasks.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">BoostedTreesClassifier</span></dt>
+<dd><p class="first last">A trained gradient boosted trees model for classifications tasks.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -331,7 +318,7 @@ exact the same training data as the checkpointed model.</dd>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -349,7 +336,7 @@ exact the same training data as the checkpointed model.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

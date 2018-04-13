@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SArray.summary &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SArray.summary &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -133,27 +133,28 @@ detail.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>background</strong> : boolean, optional</p>
-<blockquote>
-<div><p>If True, the sketch construction will return immediately and the
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>background</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
+<dd><p class="first last">If True, the sketch construction will return immediately and the
 sketch will be constructed in the background. While this is going on,
 the sketch can be queried incrementally, but at a performance penalty.
 Defaults to False.</p>
-</div></blockquote>
-<p><strong>sub_sketch_keys</strong> : int | str | list of int | list of str, optional</p>
-<blockquote>
-<div><p>For SArray of dict type, also constructs sketches for a given set of keys,
+</dd>
+<dt><strong>sub_sketch_keys</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int | str | list of int | list of str, optional</span></dt>
+<dd><p class="first last">For SArray of dict type, also constructs sketches for a given set of keys,
 For SArray of array type, also constructs sketches for the given indexes.
 The sub sketches may be queried using: <a class="reference internal" href="turicreate.Sketch.element_sub_sketch.html#turicreate.Sketch.element_sub_sketch" title="turicreate.Sketch.element_sub_sketch"><code class="xref py py-func docutils literal"><span class="pre">element_sub_sketch()</span></code></a>.
 Defaults to None in which case no subsketches will be constructed.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : Sketch</p>
-<blockquote class="last">
-<div><p>Sketch object that contains descriptive statistics for this SArray.
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Sketch</span></dt>
+<dd><p class="first last">Sketch object that contains descriptive statistics for this SArray.
 Many of the statistics are approximate.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -171,7 +172,7 @@ Many of the statistics are approximate.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -189,7 +190,7 @@ Many of the statistics are approximate.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

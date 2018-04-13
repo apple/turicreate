@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.evaluation.roc_curve &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.evaluation.roc_curve &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="evaluation" href="../turicreate.toolkits.evaluation.html"/>
         <link rel="next" title="turicreate.evaluation.rmse" href="turicreate.evaluation.rmse.html"/>
         <link rel="prev" title="turicreate.evaluation.recall" href="turicreate.evaluation.recall.html"/> 
@@ -137,39 +137,38 @@ only binary classification is supported.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>targets</strong> : SArray</p>
-<blockquote>
-<div><p>An SArray containing the observed values. For binary classification,
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>targets</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray</span></dt>
+<dd><p class="first last">An SArray containing the observed values. For binary classification,
 the alpha-numerically first category is considered the reference
 category.</p>
-</div></blockquote>
-<p><strong>predictions</strong> : SArray</p>
-<blockquote>
-<div><p>The prediction that corresponds to each target value.  This vector must
+</dd>
+<dt><strong>predictions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray</span></dt>
+<dd><p class="first last">The prediction that corresponds to each target value.  This vector must
 have the same length as <code class="docutils literal"><span class="pre">targets</span></code>. Target scores, can either be
 probability estimates of the positive class, confidence values, or
 binary decisions.</p>
-</div></blockquote>
-<p><strong>average</strong> : string, [None (default)]</p>
-<blockquote>
-<div><p>Metric averaging strategies for multiclass classification. Averaging
+</dd>
+<dt><strong>average</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, [None (default)]</span></dt>
+<dd><p class="first">Metric averaging strategies for multiclass classification. Averaging
 strategies can be one of the following:</p>
-<blockquote>
+<blockquote class="last">
 <div><ul class="simple">
 <li>None: No averaging is performed and a single metric is returned
 for each class.</li>
 </ul>
 </div></blockquote>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SFrame</p>
-<blockquote class="last">
-<div><p>Each row represents the predictive performance when using a given
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first">Each row represents the predictive performance when using a given
 cutoff threshold, where all predictions above that cutoff are
 considered &#8220;positive&#8221;. Four columns are used to describe the
 performance:</p>
-<blockquote>
+<blockquote class="last">
 <div><ul class="simple">
 <li>tpr   : True positive rate, the number of true positives divided by the number of positives.</li>
 <li>fpr   : False positive rate, the number of false positives divided by the number of negatives.</li>
@@ -178,7 +177,8 @@ performance:</p>
 <li>class : Reference class for this ROC curve.</li>
 </ul>
 </div></blockquote>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -325,7 +325,7 @@ is hence accurate only to the 5th decimal.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -343,7 +343,7 @@ is hence accurate only to the 5th decimal.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

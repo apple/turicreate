@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.evaluation.log_loss &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.evaluation.log_loss &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="evaluation" href="../turicreate.toolkits.evaluation.html"/>
         <link rel="next" title="turicreate.evaluation.precision" href="turicreate.evaluation.precision.html"/>
         <link rel="prev" title="turicreate.evaluation.fbeta_score" href="turicreate.evaluation.fbeta_score.html"/> 
@@ -152,24 +152,25 @@ observation <cite>i</cite> has class label <cite>j</cite>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>targets</strong> : SArray</p>
-<blockquote>
-<div><p>Ground truth class labels. This can either contain integers or strings.</p>
-</div></blockquote>
-<p><strong>predictions</strong> : SArray</p>
-<blockquote>
-<div><p>The predicted probability that corresponds to each target value. For
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>targets</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray</span></dt>
+<dd><p class="first last">Ground truth class labels. This can either contain integers or strings.</p>
+</dd>
+<dt><strong>predictions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray</span></dt>
+<dd><p class="first last">The predicted probability that corresponds to each target value. For
 binary classification, the probability corresponds to the probability
 of the &#8220;positive&#8221; label being predicted. For multi-class
 classification, the predictions are expected to be an array of
 predictions for each class.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : float</p>
-<blockquote class="last">
-<div><p>The log_loss.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">The log_loss.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -260,7 +261,7 @@ corresponds to &#8220;cat&#8221;, the 0.2 to &#8220;dog&#8221; and the 0.7 to &#
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -278,7 +279,7 @@ corresponds to &#8220;cat&#8221;, the 0.2 to &#8220;dog&#8221; and the 0.7 to &#
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

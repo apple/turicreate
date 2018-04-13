@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.text_analytics.random_split &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.text_analytics.random_split &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="text_analytics" href="../turicreate.toolkits.text_analytics.html"/>
         <link rel="next" title="turicreate.text_analytics.stopwords" href="turicreate.text_analytics.stopwords.html"/>
         <link rel="prev" title="turicreate.text_analytics.parse_docword" href="turicreate.text_analytics.parse_docword.html"/> 
@@ -139,21 +139,22 @@ set.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SArray of type dict, SFrame with columns of type dict</p>
-<blockquote>
-<div><p>A data set in bag-of-words format.</p>
-</div></blockquote>
-<p><strong>prob</strong> : float, optional</p>
-<blockquote>
-<div><p>Probability for sampling a word to be placed in the test set.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray of type dict, SFrame with columns of type dict</span></dt>
+<dd><p class="first last">A data set in bag-of-words format.</p>
+</dd>
+<dt><strong>prob</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Probability for sampling a word to be placed in the test set.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>train, test</strong> : SArray</p>
-<blockquote class="last">
-<div><p>Two data sets in bag-of-words format, where the combined counts are
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>train, test</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray</span></dt>
+<dd><p class="first last">Two data sets in bag-of-words format, where the combined counts are
 equal to the counts in the original data set.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -189,7 +190,7 @@ equal to the counts in the original data set.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -207,7 +208,7 @@ equal to the counts in the original data set.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

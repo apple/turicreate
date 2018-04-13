@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.pack_columns &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SFrame.pack_columns &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +123,7 @@
 <h1>turicreate.SFrame.pack_columns<a class="headerlink" href="#turicreate-sframe-pack-columns" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SFrame.pack_columns">
-<code class="descclassname">SFrame.</code><code class="descname">pack_columns</code><span class="sig-paren">(</span><em>column_names=None</em>, <em>column_name_prefix=None</em>, <em>dtype=&lt;class 'list'&gt;</em>, <em>fill_na=None</em>, <em>remove_prefix=True</em>, <em>new_column_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.pack_columns" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SFrame.</code><code class="descname">pack_columns</code><span class="sig-paren">(</span><em>column_names=None</em>, <em>column_name_prefix=None</em>, <em>dtype=&lt;type 'list'&gt;</em>, <em>fill_na=None</em>, <em>remove_prefix=True</em>, <em>new_column_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.pack_columns" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pack columns of the current SFrame into one single column. The result
 is a new SFrame with the unaffected columns from the original SFrame
 plus the newly created column.</p>
@@ -146,47 +146,44 @@ dictionary key and column value becomes dictionary value</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>column_names</strong> : list[str], optional</p>
-<blockquote>
-<div><p>A list of column names to be packed.  If omitted and
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>column_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[str], optional</span></dt>
+<dd><p class="first last">A list of column names to be packed.  If omitted and
 <cite>column_name_prefix</cite> is not specified, all columns from current SFrame
 are packed.  This parameter is mutually exclusive with the
 <cite>column_name_prefix</cite> parameter.</p>
-</div></blockquote>
-<p><strong>column_name_prefix</strong> : str, optional</p>
-<blockquote>
-<div><p>Pack all columns with the given <cite>column_name_prefix</cite>.
+</dd>
+<dt><strong>column_name_prefix</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Pack all columns with the given <cite>column_name_prefix</cite>.
 This parameter is mutually exclusive with the <cite>columns_names</cite> parameter.</p>
-</div></blockquote>
-<p><strong>dtype</strong> : dict | array.array | list, optional</p>
-<blockquote>
-<div><p>The resulting packed column type. If not provided, dtype is list.</p>
-</div></blockquote>
-<p><strong>fill_na</strong> : value, optional</p>
-<blockquote>
-<div><p>Value to fill into packed column if missing value is encountered.
+</dd>
+<dt><strong>dtype</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict | array.array | list, optional</span></dt>
+<dd><p class="first last">The resulting packed column type. If not provided, dtype is list.</p>
+</dd>
+<dt><strong>fill_na</strong> <span class="classifier-delimiter">:</span> <span class="classifier">value, optional</span></dt>
+<dd><p class="first last">Value to fill into packed column if missing value is encountered.
 If packing to dictionary, <cite>fill_na</cite> is only applicable to dictionary
 values; missing keys are not replaced.</p>
-</div></blockquote>
-<p><strong>remove_prefix</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True and <cite>column_name_prefix</cite> is specified, the dictionary key will
+</dd>
+<dt><strong>remove_prefix</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True and <cite>column_name_prefix</cite> is specified, the dictionary key will
 be constructed by removing the prefix from the column name.
 This option is only applicable when packing to dict type.</p>
-</div></blockquote>
-<p><strong>new_column_name</strong> : str, optional</p>
-<blockquote>
-<div><p>Packed column name.  If not given and <cite>column_name_prefix</cite> is given,
+</dd>
+<dt><strong>new_column_name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Packed column name.  If not given and <cite>column_name_prefix</cite> is given,
 then the prefix will be used as the new column name, otherwise name
 is generated automatically.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SFrame</p>
-<blockquote class="last">
-<div><p>An SFrame that contains columns that are not packed, plus the newly
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">An SFrame that contains columns that are not packed, plus the newly
 packed column.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -307,7 +304,7 @@ type, and with missing value replaced with 0:</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -325,7 +322,7 @@ type, and with missing value replaced with 0:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

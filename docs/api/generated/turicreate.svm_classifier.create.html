@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.svm_classifier.create &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.svm_classifier.create &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="classifier" href="../turicreate.toolkits.classifier.html"/>
         <link rel="next" title="turicreate.svm_classifier.SVMClassifier" href="turicreate.svm_classifier.SVMClassifier.html"/>
         <link rel="prev" title="turicreate.logistic_classifier.LogisticClassifier" href="turicreate.logistic_classifier.LogisticClassifier.html"/> 
@@ -142,22 +142,20 @@ loss (multiplied by the &#8216;penalty&#8217; term) and a l2-norm on the weight 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
-<blockquote>
-<div><p>Dataset for training the model.</p>
-</div></blockquote>
-<p><strong>target</strong> : string</p>
-<blockquote>
-<div><p>Name of the column containing the target variable. The values in this
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">Dataset for training the model.</p>
+</dd>
+<dt><strong>target</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Name of the column containing the target variable. The values in this
 column must be of string or integer type. String target variables are
 automatically mapped to integers in alphabetical order of the variable
 values. For example, a target variable with &#8216;cat&#8217; and &#8216;dog&#8217; as possible
 values is mapped to 0 and 1 respectively with 0 being the base class
 and 1 being the reference class.</p>
-</div></blockquote>
-<p><strong>features</strong> : list[string], optional</p>
-<blockquote>
-<div><p>Names of the columns containing features. &#8216;None&#8217; (the default) indicates
+</dd>
+<dt><strong>features</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[string], optional</span></dt>
+<dd><p class="first">Names of the columns containing features. &#8216;None&#8217; (the default) indicates
 that all columns except the target variable should be used as features.</p>
 <p>The features are columns in the input SFrame that can be of the
 following types:</p>
@@ -171,22 +169,20 @@ Each key of a dictionary is treated as a separate feature and the
 value in the dictionary corresponds to the value of the feature.
 Dictionaries are ideal for representing sparse data.</li>
 </ul>
-<p>Columns of type <em>list</em> are not supported. Convert them to array in
+<p class="last">Columns of type <em>list</em> are not supported. Convert them to array in
 case all entries in the list are of numeric types and separate them
 out into different columns if they are of mixed type.</p>
-</div></blockquote>
-<p><strong>penalty</strong> : float, optional</p>
-<blockquote>
-<div><p>Penalty term on the mis-classification loss of the model. The larger
+</dd>
+<dt><strong>penalty</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Penalty term on the mis-classification loss of the model. The larger
 this weight, the more the model coefficients shrink toward 0.  The
 larger the penalty, the lower is the emphasis placed on misclassified
 examples, and the classifier would spend more time maximizing the
 margin for correctly classified examples. The default value is 1.0;
 this parameter must be set to a value of at least 1e-10.</p>
-</div></blockquote>
-<p><strong>solver</strong> : string, optional</p>
-<blockquote>
-<div><p>Name of the solver to be used to solve the problem. See the
+</dd>
+<dt><strong>solver</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first">Name of the solver to be used to solve the problem. See the
 references for more detail on each solver. Available solvers are:</p>
 <ul class="simple">
 <li><em>auto (default)</em>: automatically chooses the best solver (from the ones
@@ -194,54 +190,48 @@ listed below) for the data and model parameters.</li>
 <li><em>lbfgs</em>: lLimited memory BFGS (<code class="docutils literal"><span class="pre">lbfgs</span></code>) is a robust solver for wide
 datasets(i.e datasets with many coefficients).</li>
 </ul>
-<p>The solvers are all automatically tuned and the default options should
+<p class="last">The solvers are all automatically tuned and the default options should
 function well. See the solver options guide for setting additional
 parameters for each of the solvers.</p>
-</div></blockquote>
-<p><strong>feature_rescaling</strong> : bool, default = true</p>
-<blockquote>
-<div><p>Feature rescaling is an important pre-processing step that ensures
+</dd>
+<dt><strong>feature_rescaling</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, default = true</span></dt>
+<dd><p class="first last">Feature rescaling is an important pre-processing step that ensures
 that all features are on the same scale. An l2-norm rescaling is
 performed to make sure that all features are of the same norm. Categorical
 features are also rescaled by rescaling the dummy variables that
 are used to represent them. The coefficients are returned in original
 scale of the problem.</p>
-</div></blockquote>
-<p><strong>convergence_threshold :</strong></p>
-<blockquote>
-<div><p>Convergence is tested using variation in the training objective. The
+</dd>
+<dt><strong>convergence_threshold :</strong></dt>
+<dd><p class="first last">Convergence is tested using variation in the training objective. The
 variation in the training objective is calculated using the difference
 between the objective values between two steps. Consider reducing this
 below the default value (0.01) for a more accurately trained model.
 Beware of overfitting (i.e a model that works well only on the training
 data) if this parameter is set to a very low value.</p>
-</div></blockquote>
-<p><strong>max_iterations</strong> : int, optional</p>
-<blockquote>
-<div><p>The maximum number of allowed passes through the data. More passes over
+</dd>
+<dt><strong>max_iterations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The maximum number of allowed passes through the data. More passes over
 the data can result in a more accurately trained model. Consider
 increasing this (the default value is 10) if the training accuracy is
 low and the <em>Grad-Norm</em> in the display is large.</p>
-</div></blockquote>
-<p><strong>lbfgs_memory_level</strong> : int, optional</p>
-<blockquote>
-<div><p>The L-BFGS algorithm keeps track of gradient information from the
+</dd>
+<dt><strong>lbfgs_memory_level</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The L-BFGS algorithm keeps track of gradient information from the
 previous <code class="docutils literal"><span class="pre">lbfgs_memory_level</span></code> iterations. The storage requirement for
 each of these gradients is the <code class="docutils literal"><span class="pre">num_coefficients</span></code> in the problem.
 Increasing the <code class="docutils literal"><span class="pre">lbfgs_memory_level</span></code> can help improve the quality of
 the model trained. Setting this to more than <code class="docutils literal"><span class="pre">max_iterations</span></code> has the
 same effect as setting it to <code class="docutils literal"><span class="pre">max_iterations</span></code>.</p>
-</div></blockquote>
-<p><strong>class_weights</strong> : {dict, <cite>auto</cite>}, optional</p>
-<blockquote>
-<div><p>Weights the examples in the training data according to the given class
+</dd>
+<dt><strong>class_weights</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{dict, <cite>auto</cite>}, optional</span></dt>
+<dd><p class="first last">Weights the examples in the training data according to the given class
 weights. If set to <cite>None</cite>, all classes are supposed to have weight one. The
 <cite>auto</cite> mode set the class weight to be inversely proportional to number of
 examples in the training data with the given class.</p>
-</div></blockquote>
-<p><strong>validation_set</strong> : SFrame, optional</p>
-<blockquote>
-<div><p>A dataset for monitoring the model&#8217;s generalization performance.
+</dd>
+<dt><strong>validation_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
+<dd><p class="first last">A dataset for monitoring the model&#8217;s generalization performance.
 For each row of the progress table, the chosen metrics are computed
 for both the provided training dataset and the validation_set. The
 format of this SFrame must be the same as the training set.
@@ -249,18 +239,19 @@ By default this argument is set to &#8216;auto&#8217; and a validation set is
 automatically sampled and used for progress printing. If
 validation_set is set to None, then no additional metrics
 are computed. The default value is &#8216;auto&#8217;.</p>
-</div></blockquote>
-<p><strong>verbose</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, print progress updates.</p>
-</div></blockquote>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True, print progress updates.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SVMClassifier</p>
-<blockquote class="last">
-<div><p>A trained model of type
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SVMClassifier</span></dt>
+<dd><p class="first last">A trained model of type
 <a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.html#turicreate.svm_classifier.SVMClassifier" title="turicreate.svm_classifier.SVMClassifier"><code class="xref py py-class docutils literal"><span class="pre">SVMClassifier</span></code></a>.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -324,7 +315,7 @@ SVM and its Applications in Large-Scale Text Categorization (ICML 2003)</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -342,7 +333,7 @@ SVM and its Applications in Large-Scale Text Categorization (ICML 2003)</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

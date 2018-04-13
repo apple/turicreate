@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.read_csv_with_errors &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SFrame.read_csv_with_errors &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -132,48 +132,40 @@ encountered.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>url</strong> : string</p>
-<blockquote>
-<div><p>Location of the CSV file or directory to load. If URL is a directory
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>url</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Location of the CSV file or directory to load. If URL is a directory
 or a &#8220;glob&#8221; pattern, all matching files will be loaded.</p>
-</div></blockquote>
-<p><strong>delimiter</strong> : string, optional</p>
-<blockquote>
-<div><p>This describes the delimiter used for parsing csv files.</p>
-</div></blockquote>
-<p><strong>header</strong> : bool, optional</p>
-<blockquote>
-<div><p>If true, uses the first row as the column names. Otherwise use the
+</dd>
+<dt><strong>delimiter</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">This describes the delimiter used for parsing csv files.</p>
+</dd>
+<dt><strong>header</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If true, uses the first row as the column names. Otherwise use the
 default column names: &#8216;X1, X2, ...&#8217;.</p>
-</div></blockquote>
-<p><strong>comment_char</strong> : string, optional</p>
-<blockquote>
-<div><p>The character which denotes that the
+</dd>
+<dt><strong>comment_char</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">The character which denotes that the
 remainder of the line is a comment.</p>
-</div></blockquote>
-<p><strong>escape_char</strong> : string, optional</p>
-<blockquote>
-<div><p>Character which begins a C escape sequence</p>
-</div></blockquote>
-<p><strong>double_quote</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, two consecutive quotes in a string are parsed to a single
+</dd>
+<dt><strong>escape_char</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">Character which begins a C escape sequence</p>
+</dd>
+<dt><strong>double_quote</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True, two consecutive quotes in a string are parsed to a single
 quote.</p>
-</div></blockquote>
-<p><strong>quote_char</strong> : string, optional</p>
-<blockquote>
-<div><p>Character sequence that indicates a quote.</p>
-</div></blockquote>
-<p><strong>skip_initial_space</strong> : bool, optional</p>
-<blockquote>
-<div><p>Ignore extra spaces at the start of a field</p>
-</div></blockquote>
-<p><strong>column_type_hints</strong> : None, type, list[type], dict[string, type], optional</p>
-<blockquote>
-<div><p>This provides type hints for each column. By default, this method
+</dd>
+<dt><strong>quote_char</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">Character sequence that indicates a quote.</p>
+</dd>
+<dt><strong>skip_initial_space</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">Ignore extra spaces at the start of a field</p>
+</dd>
+<dt><strong>column_type_hints</strong> <span class="classifier-delimiter">:</span> <span class="classifier">None, type, list[type], dict[string, type], optional</span></dt>
+<dd><p class="first">This provides type hints for each column. By default, this method
 attempts to detect the type of each column automatically.</p>
 <p>Supported types are int, float, str, list, dict, and array.array.</p>
-<ul class="simple">
+<ul class="last simple">
 <li>If a single type is provided, the type will be
 applied to all columns. For instance, column_type_hints=float
 will force all columns to be parsed as float.</li>
@@ -187,44 +179,40 @@ belongs to.
 For instance {&#8216;user&#8217;:int} will hint that the column called &#8220;user&#8221;
 should be parsed as an integer, and the rest will be type inferred.</li>
 </ul>
-</div></blockquote>
-<p><strong>na_values</strong> : str | list of str, optional</p>
-<blockquote>
-<div><p>A string or list of strings to be interpreted as missing values.</p>
-</div></blockquote>
-<p><strong>line_terminator</strong> : str, optional</p>
-<blockquote>
-<div><p>A string to be interpreted as the line terminator. Defaults to &#8220;n&#8221;
+</dd>
+<dt><strong>na_values</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str | list of str, optional</span></dt>
+<dd><p class="first last">A string or list of strings to be interpreted as missing values.</p>
+</dd>
+<dt><strong>line_terminator</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">A string to be interpreted as the line terminator. Defaults to &#8220;n&#8221;
 which will also correctly match Mac, Linux and Windows line endings
 (&#8220;r&#8221;, &#8220;n&#8221; and &#8220;rn&#8221; respectively)</p>
-</div></blockquote>
-<p><strong>usecols</strong> : list of str, optional</p>
-<blockquote>
-<div><p>A subset of column names to output. If unspecified (default),
+</dd>
+<dt><strong>usecols</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of str, optional</span></dt>
+<dd><p class="first last">A subset of column names to output. If unspecified (default),
 all columns will be read. This can provide performance gains if the
 number of columns are large. If the input file has no headers,
 usecols=[&#8216;X1&#8217;,&#8217;X3&#8217;] will read columns 1 and 3.</p>
-</div></blockquote>
-<p><strong>nrows</strong> : int, optional</p>
-<blockquote>
-<div><p>If set, only this many rows will be read from the file.</p>
-</div></blockquote>
-<p><strong>skiprows</strong> : int, optional</p>
-<blockquote>
-<div><p>If set, this number of rows at the start of the file are skipped.</p>
-</div></blockquote>
-<p><strong>verbose</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, print the progress.</p>
-</div></blockquote>
+</dd>
+<dt><strong>nrows</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">If set, only this many rows will be read from the file.</p>
+</dd>
+<dt><strong>skiprows</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">If set, this number of rows at the start of the file are skipped.</p>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True, print the progress.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : tuple</p>
-<blockquote class="last">
-<div><p>The first element is the SFrame with good data. The second element
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">tuple</span></dt>
+<dd><p class="first last">The first element is the SFrame with good data. The second element
 is a dictionary of filenames to SArrays indicating for each file,
 what are the incorrectly parsed lines encountered.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -269,7 +257,7 @@ what are the incorrectly parsed lines encountered.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -287,7 +275,7 @@ what are the incorrectly parsed lines encountered.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

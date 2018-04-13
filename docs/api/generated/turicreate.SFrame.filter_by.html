@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.filter_by &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SFrame.filter_by &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -133,27 +133,27 @@ SArray, we attempt to convert it to one before filtering.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>values</strong> : SArray | list | numpy.ndarray | pandas.Series | str</p>
-<blockquote>
-<div><p>The values to use to filter the SFrame.  The resulting SFrame will
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>values</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray | list | numpy.ndarray | pandas.Series | str</span></dt>
+<dd><p class="first last">The values to use to filter the SFrame.  The resulting SFrame will
 only include rows that have one of these values in the given
 column.</p>
-</div></blockquote>
-<p><strong>column_name</strong> : str</p>
-<blockquote>
-<div><p>The column of the SFrame to match with the given <cite>values</cite>.</p>
-</div></blockquote>
-<p><strong>exclude</strong> : bool</p>
-<blockquote>
-<div><p>If True, the result SFrame will contain all rows EXCEPT those that
+</dd>
+<dt><strong>column_name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The column of the SFrame to match with the given <cite>values</cite>.</p>
+</dd>
+<dt><strong>exclude</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">If True, the result SFrame will contain all rows EXCEPT those that
 have one of <code class="docutils literal"><span class="pre">values</span></code> in <code class="docutils literal"><span class="pre">column_name</span></code>.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SFrame</p>
-<blockquote class="last">
-<div><p>The filtered SFrame.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">The filtered SFrame.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -194,7 +194,7 @@ have one of <code class="docutils literal"><span class="pre">values</span></code
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -212,7 +212,7 @@ have one of <code class="docutils literal"><span class="pre">values</span></code
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

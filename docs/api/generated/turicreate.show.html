@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.show &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.show &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -142,33 +142,36 @@ value.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : SArray</p>
-<blockquote>
-<div><p>The data to plot on the X axis of a 2d visualization.</p>
-</div></blockquote>
-<p><strong>y</strong> : SArray</p>
-<blockquote>
-<div><p>The data to plot on the Y axis of a 2d visualization. Must be the same
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>x</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray</span></dt>
+<dd><p class="first last">The data to plot on the X axis of a 2d visualization.</p>
+</dd>
+<dt><strong>y</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray</span></dt>
+<dd><p class="first last">The data to plot on the Y axis of a 2d visualization. Must be the same
 length as <cite>x</cite>.</p>
-</div></blockquote>
-<p><strong>xlabel</strong> : str (optional)</p>
-<blockquote>
-<div><p>The text label for the X axis. Defaults to &#8220;X&#8221;.</p>
-</div></blockquote>
-<p><strong>ylabel</strong> : str (optional)</p>
-<blockquote>
-<div><p>The text label for the Y axis. Defaults to &#8220;Y&#8221;.</p>
-</div></blockquote>
-<p><strong>title</strong> : str (optional)</p>
-<blockquote class="last">
-<div><p>The title of the plot. Defaults to None. If the value is None, the title
+</dd>
+<dt><strong>xlabel</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str (optional)</span></dt>
+<dd><p class="first last">The text label for the X axis. Defaults to &#8220;X&#8221;.</p>
+</dd>
+<dt><strong>ylabel</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str (optional)</span></dt>
+<dd><p class="first last">The text label for the Y axis. Defaults to &#8220;Y&#8221;.</p>
+</dd>
+<dt><strong>title</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str (optional)</span></dt>
+<dd><p class="first last">The title of the plot. Defaults to None. If the value is None, the title
 will be &#8220;&lt;xlabel&gt; vs. &lt;ylabel&gt;&#8221;. Otherwise, the string passed in as the
 title will be used as the plot title.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>The plot will render either inline in a Jupyter Notebook, or in a
+native GUI window, depending on the value provided in
+<cite>turicreate.visualization.set_target</cite> (defaults to &#8216;auto&#8217;).</li>
+</ul>
 <p class="rubric">Examples</p>
 <p>Show a categorical heat map of pets and their feelings.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;cat&#39;</span><span class="p">])</span>
@@ -199,7 +202,7 @@ the axes and plot title with custom strings.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -217,7 +220,7 @@ the axes and plot title with custom strings.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

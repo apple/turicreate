@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.recommender.item_content_recommender.ItemContentRecommender.evaluate &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.recommender.item_content_recommender.ItemContentRecommender.evaluate &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -148,45 +148,41 @@ defined as</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
-<blockquote>
-<div><p>An SFrame that is in the same format as provided for training.</p>
-</div></blockquote>
-<p><strong>metric</strong> : str, {&#8216;auto&#8217;, &#8216;rmse&#8217;, &#8216;precision_recall&#8217;}, optional</p>
-<blockquote>
-<div><p>Metric to use for evaluation. The default automatically chooses
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">An SFrame that is in the same format as provided for training.</p>
+</dd>
+<dt><strong>metric</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, {&#8216;auto&#8217;, &#8216;rmse&#8217;, &#8216;precision_recall&#8217;}, optional</span></dt>
+<dd><p class="first last">Metric to use for evaluation. The default automatically chooses
 &#8216;rmse&#8217; for models trained with a <cite>target</cite>, and &#8216;precision_recall&#8217;
 otherwise.</p>
-</div></blockquote>
-<p><strong>exclude_known_for_precision_recall</strong> : bool, optional</p>
-<blockquote>
-<div><p>A useful option for evaluating precision-recall. Recommender models
+</dd>
+<dt><strong>exclude_known_for_precision_recall</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">A useful option for evaluating precision-recall. Recommender models
 have the option to exclude items seen in the training data from the
 final recommendation list. Set this option to True when evaluating
 on test data, and False when evaluating precision-recall on training
 data.</p>
-</div></blockquote>
-<p><strong>target</strong> : str, optional</p>
-<blockquote>
-<div><p>The name of the target column for evaluating rmse. If the model is
+</dd>
+<dt><strong>target</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The name of the target column for evaluating rmse. If the model is
 trained with a target column, the default is to using the same
 column. If the model is trained without a target column and <cite>metric</cite>
 is set to &#8216;rmse&#8217;, this option must provided by user.</p>
-</div></blockquote>
-<p><strong>verbose</strong> : bool, optional</p>
-<blockquote>
-<div><p>Enables verbose output. Default is verbose.</p>
-</div></blockquote>
-<p><strong>**kwargs</strong></p>
-<blockquote>
-<div><p>When <cite>metric</cite> is set to &#8216;precision_recall&#8217;, these parameters
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">Enables verbose output. Default is verbose.</p>
+</dd>
+<dt><strong>**kwargs</strong></dt>
+<dd><p class="first last">When <cite>metric</cite> is set to &#8216;precision_recall&#8217;, these parameters
 are passed on to <a class="reference internal" href="turicreate.recommender.item_content_recommender.ItemContentRecommender.evaluate_precision_recall.html#turicreate.recommender.item_content_recommender.ItemContentRecommender.evaluate_precision_recall" title="turicreate.recommender.item_content_recommender.ItemContentRecommender.evaluate_precision_recall"><code class="xref py py-meth docutils literal"><span class="pre">evaluate_precision_recall()</span></code></a>.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SFrame or dict</p>
-<blockquote class="last">
-<div><p>Results from the model evaluation procedure. If the model is trained
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame or dict</span></dt>
+<dd><p class="first last">Results from the model evaluation procedure. If the model is trained
 on a target (i.e. RMSE is the evaluation criterion), a dictionary
 with three items is returned: items <em>rmse_by_user</em> and
 <em>rmse_by_item</em> are SFrames with per-user and per-item RMSE, while
@@ -194,7 +190,8 @@ with three items is returned: items <em>rmse_by_user</em> and
 trained without a target (i.e. precision and recall are the
 evaluation criteria) an <a class="reference internal" href="turicreate.SFrame.html#turicreate.SFrame" title="turicreate.SFrame"><code class="xref py py-class docutils literal"><span class="pre">SFrame</span></code></a> is returned
 with both of these metrics for each user at several cutoff values.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -224,7 +221,7 @@ with both of these metrics for each user at several cutoff values.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -242,7 +239,7 @@ with both of these metrics for each user at several cutoff values.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

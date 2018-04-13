@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.image_analysis.load_images &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.image_analysis.load_images &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="image_analysis" href="../turicreate.toolkits.image_analysis.html"/>
         <link rel="next" title="turicreate.image_analysis.resize" href="turicreate.image_analysis.resize.html"/>
         <link rel="prev" title="turicreate.image_analysis.resize" href="turicreate.image_analysis.resize.html"/> 
@@ -136,45 +136,42 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>url</strong> : str</p>
-<blockquote>
-<div><p>The string of the path where all the images are stored.</p>
-</div></blockquote>
-<p><strong>format</strong> : {&#8216;PNG&#8217; | &#8216;JPG&#8217; | &#8216;auto&#8217;}, optional</p>
-<blockquote>
-<div><p>The format of the images in the directory. The default &#8216;auto&#8217; parameter
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>url</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The string of the path where all the images are stored.</p>
+</dd>
+<dt><strong>format</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;PNG&#8217; | &#8216;JPG&#8217; | &#8216;auto&#8217;}, optional</span></dt>
+<dd><p class="first last">The format of the images in the directory. The default &#8216;auto&#8217; parameter
 value tries to infer the image type from the file extension. If a
 format is specified, all images must be of that format.</p>
-</div></blockquote>
-<p><strong>with_path</strong> : bool, optional</p>
-<blockquote>
-<div><p>Indicates whether a path column is added to the SFrame. If &#8216;with_path&#8217;
+</dd>
+<dt><strong>with_path</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">Indicates whether a path column is added to the SFrame. If &#8216;with_path&#8217;
 is set to True,  the returned SFrame contains a &#8216;path&#8217; column, which
 holds a path string for each Image object.</p>
-</div></blockquote>
-<p><strong>recursive</strong> : bool, optional</p>
-<blockquote>
-<div><p>Indicates whether &#8216;load_images&#8217; should do recursive directory traversal,
+</dd>
+<dt><strong>recursive</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">Indicates whether &#8216;load_images&#8217; should do recursive directory traversal,
 or a flat directory traversal.</p>
-</div></blockquote>
-<p><strong>ignore_failure</strong> : bool, optional</p>
-<blockquote>
-<div><p>If true, prints warning for failed images and keep loading the rest of
+</dd>
+<dt><strong>ignore_failure</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If true, prints warning for failed images and keep loading the rest of
 the images.</p>
-</div></blockquote>
-<p><strong>random_order</strong> : bool, optional</p>
-<blockquote>
-<div><p>Load images in random order.</p>
-</div></blockquote>
+</dd>
+<dt><strong>random_order</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">Load images in random order.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SFrame</p>
-<blockquote class="last">
-<div><p>Returns an SFrame with either an &#8216;image&#8217; column or both an &#8216;image&#8217; and
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">Returns an SFrame with either an &#8216;image&#8217; column or both an &#8216;image&#8217; and
 a &#8216;path&#8217; column. The &#8216;image&#8217; column is a column of Image objects. If
 with_path is True, there is also a &#8216;path&#8217; column which contains the image
 path for each of each corresponding Image object.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -207,7 +204,7 @@ path for each of each corresponding Image object.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -225,7 +222,7 @@ path for each of each corresponding Image object.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

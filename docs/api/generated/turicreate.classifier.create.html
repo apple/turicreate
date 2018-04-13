@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.classifier.create &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.classifier.create &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="classifier" href="../turicreate.toolkits.classifier.html"/>
         <link rel="next" title="turicreate.random_forest_classifier.create" href="turicreate.random_forest_classifier.create.html"/>
         <link rel="prev" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier" href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.html"/> 
@@ -139,23 +139,21 @@ of the corresponding model.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
-<blockquote>
-<div><p>Dataset for training the model.</p>
-</div></blockquote>
-<p><strong>target</strong> : string</p>
-<blockquote>
-<div><p>Name of the column containing the target variable. The values in this
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">Dataset for training the model.</p>
+</dd>
+<dt><strong>target</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Name of the column containing the target variable. The values in this
 column must be of string or integer type. String target variables are
 automatically mapped to integers in the order in which they are
 provided.  For example, a target variable with &#8216;cat&#8217; and &#8216;dog&#8217; as
 possible values is mapped to 0 and 1 respectively with 0 being the base
 class and 1 being the reference class. Use <cite>model.classes</cite> to
 retrieve the order in which the classes are mapped.</p>
-</div></blockquote>
-<p><strong>features</strong> : list[string], optional</p>
-<blockquote>
-<div><p>Names of the columns containing features. &#8216;None&#8217; (the default) indicates
+</dd>
+<dt><strong>features</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[string], optional</span></dt>
+<dd><p class="first">Names of the columns containing features. &#8216;None&#8217; (the default) indicates
 that all columns except the target variable should be used as features.</p>
 <p>The features are columns in the input SFrame that can be of the
 following types:</p>
@@ -169,28 +167,30 @@ Each key of a dictionary is treated as a separate feature and the
 value in the dictionary corresponds to the value of the feature.
 Dictionaries are ideal for representing sparse data.</li>
 </ul>
-<p>Columns of type <em>list</em> are not supported. Convert such feature
+<p class="last">Columns of type <em>list</em> are not supported. Convert such feature
 columns to type array if all entries in the list are of numeric
 types. If the lists contain data of mixed types, separate
 them out into different columns.</p>
-</div></blockquote>
-<p><strong>validation_set</strong> : SFrame, optional</p>
-<blockquote>
-<div><p>A dataset for monitoring the model&#8217;s generalization performance.  For
+</dd>
+<dt><strong>validation_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
+<dd><p class="first last">A dataset for monitoring the model&#8217;s generalization performance.  For
 each row of the progress table, the chosen metrics are computed for
 both the provided training dataset and the validation_set. The format
 of this SFrame must be the same as the training set.  By default this
 argument is set to &#8216;auto&#8217; and a validation set is automatically sampled
 and used for progress printing. If validation_set is set to None, then
 no additional metrics are computed. The default value is &#8216;auto&#8217;.</p>
-</div></blockquote>
-<p><strong>verbose</strong> : boolean, optional</p>
-<blockquote>
-<div><p>If True, print progress information during training.</p>
-</div></blockquote>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
+<dd><p class="first last">If True, print progress information during training.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>out</strong> : A trained classifier model.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">A trained classifier model.</span></dt>
+<dd></dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -236,7 +236,7 @@ no additional metrics are computed. The default value is &#8216;auto&#8217;.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -254,7 +254,7 @@ no additional metrics are computed. The default value is &#8216;auto&#8217;.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

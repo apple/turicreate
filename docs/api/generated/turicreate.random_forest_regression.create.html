@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.random_forest_regression.create &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.random_forest_regression.create &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="regression" href="../turicreate.toolkits.regression.html"/>
         <link rel="next" title="turicreate.random_forest_regression.RandomForestRegression" href="turicreate.random_forest_regression.RandomForestRegression.html"/>
         <link rel="prev" title="turicreate.regression.create" href="turicreate.regression.create.html"/> 
@@ -139,62 +139,53 @@ from list- or dictionary-type SFrame columns.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
-<blockquote>
-<div><p>A training dataset containing feature columns and a target column.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">A training dataset containing feature columns and a target column.
 Only numerical typed (int, float) target column is allowed.</p>
-</div></blockquote>
-<p><strong>target</strong> : str</p>
-<blockquote>
-<div><p>The name of the column in <code class="docutils literal"><span class="pre">dataset</span></code> that is the prediction target.
+</dd>
+<dt><strong>target</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The name of the column in <code class="docutils literal"><span class="pre">dataset</span></code> that is the prediction target.
 This column must have a numeric type.</p>
-</div></blockquote>
-<p><strong>features</strong> : list[str], optional</p>
-<blockquote>
-<div><p>A list of columns names of features used for training the model.
+</dd>
+<dt><strong>features</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[str], optional</span></dt>
+<dd><p class="first last">A list of columns names of features used for training the model.
 Defaults to None, using all columns.</p>
-</div></blockquote>
-<p><strong>max_iterations</strong> : int, optional</p>
-<blockquote>
-<div><p>The number of iterations to perform.</p>
-</div></blockquote>
-<p><strong>max_depth</strong> : float, optional</p>
-<blockquote>
-<div><p>Maximum depth of a tree.</p>
-</div></blockquote>
-<p><strong>min_loss_reduction</strong> : float, optional (non-negative)</p>
-<blockquote>
-<div><p>Minimum loss reduction required to make a further partition/split a
+</dd>
+<dt><strong>max_iterations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The number of iterations to perform.</p>
+</dd>
+<dt><strong>max_depth</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Maximum depth of a tree.</p>
+</dd>
+<dt><strong>min_loss_reduction</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional (non-negative)</span></dt>
+<dd><p class="first last">Minimum loss reduction required to make a further partition/split a
 node during the tree learning phase. Larger (more positive) values
 can help prevent overfitting by avoiding splits that do not
 sufficiently reduce the loss function.</p>
-</div></blockquote>
-<p><strong>min_child_weight</strong> : float, optional (non-negative)</p>
-<blockquote>
-<div><p>Controls the minimum weight of each leaf node. Larger values result in
+</dd>
+<dt><strong>min_child_weight</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional (non-negative)</span></dt>
+<dd><p class="first last">Controls the minimum weight of each leaf node. Larger values result in
 more conservative tree learning and help prevent overfitting.
 Formally, this is minimum sum of instance weights (hessians) in each
 node. If the tree learning algorithm results in a leaf node with the
 sum of instance weights less than <cite>min_child_weight</cite>, tree building
 will terminate.</p>
-</div></blockquote>
-<p><strong>row_subsample</strong> : float, optional</p>
-<blockquote>
-<div><p>Subsample the ratio of the training set in each iteration of tree
+</dd>
+<dt><strong>row_subsample</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Subsample the ratio of the training set in each iteration of tree
 construction.  This is called the bagging trick and usually can help
 prevent overfitting.  Setting it to 0.5 means that model randomly
 collected half of the examples (rows) to grow each tree.</p>
-</div></blockquote>
-<p><strong>column_subsample</strong> : float, optional</p>
-<blockquote>
-<div><p>Subsample ratio of the columns in each iteration of tree
+</dd>
+<dt><strong>column_subsample</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Subsample ratio of the columns in each iteration of tree
 construction.  Like row_subsample, this also usually can help
 prevent overfitting.  Setting it to 0.5 means that model randomly
 collected half of the columns to grow each tree.</p>
-</div></blockquote>
-<p><strong>validation_set</strong> : SFrame, optional</p>
-<blockquote>
-<div><p>A dataset for monitoring the model&#8217;s generalization performance.
+</dd>
+<dt><strong>validation_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
+<dd><p class="first last">A dataset for monitoring the model&#8217;s generalization performance.
 For each row of the progress table, the chosen metrics are computed
 for both the provided training dataset and the validation_set. The
 format of this SFrame must be the same as the training set.
@@ -204,27 +195,23 @@ validation_set is set to None, then no additional metrics
 are computed. This is computed once per full iteration. Large
 differences in model accuracy between the training data and validation
 data is indicative of overfitting. The default value is &#8216;auto&#8217;.</p>
-</div></blockquote>
-<p><strong>verbose</strong> : boolean, optional</p>
-<blockquote>
-<div><p>If True, print progress information during training.</p>
-</div></blockquote>
-<p><strong>random_seed</strong> : int, optional</p>
-<blockquote>
-<div><p>Seeds random operations such as column and row subsampling, such that
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
+<dd><p class="first last">If True, print progress information during training.</p>
+</dd>
+<dt><strong>random_seed</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">Seeds random operations such as column and row subsampling, such that
 results are reproducible.</p>
-</div></blockquote>
-<p><strong>metric</strong> : str or list[str], optional</p>
-<blockquote>
-<div><p>Performance metric(s) that are tracked during training. When specified,
+</dd>
+<dt><strong>metric</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or list[str], optional</span></dt>
+<dd><p class="first last">Performance metric(s) that are tracked during training. When specified,
 the progress table will display the tracked metric(s) on training and
 validation set.
 Supported metrics are: {&#8216;rmse&#8217;, &#8216;max_error&#8217;}</p>
-</div></blockquote>
-<p><strong>kwargs</strong> : dict, optional</p>
-<blockquote>
-<div><p>Additional arguments for training the model.</p>
-<ul class="simple">
+</dd>
+<dt><strong>kwargs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd><p class="first">Additional arguments for training the model.</p>
+<ul class="last simple">
 <li><dl class="first docutils">
 <dt><code class="docutils literal"><span class="pre">model_checkpoint_path</span></code> <span class="classifier-delimiter">:</span> <span class="classifier">str, default None</span></dt>
 <dd>If specified, checkpoint the model training to the given path every n iterations,
@@ -248,13 +235,15 @@ exact the same training data as the checkpointed model.</dd>
 </dl>
 </li>
 </ul>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : RandomForestRegression</p>
-<blockquote class="last">
-<div><p>A trained random forest model for regression tasks.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">RandomForestRegression</span></dt>
+<dd><p class="first last">A trained random forest model for regression tasks.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -309,7 +298,7 @@ exact the same training data as the checkpointed model.</dd>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -327,7 +316,7 @@ exact the same training data as the checkpointed model.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.recommender.util.compare_models &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.recommender.util.compare_models &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="recommender" href="../turicreate.toolkits.recommender.html"/>
         <link rel="next" title="turicreate.recommender.util.random_split_by_user" href="turicreate.recommender.util.random_split_by_user.html"/>
         <link rel="prev" title="turicreate.recommender.popularity_recommender.PopularityRecommender" href="turicreate.recommender.popularity_recommender.PopularityRecommender.html"/> 
@@ -141,55 +141,50 @@ precision-recall.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
-<blockquote>
-<div><p>The dataset to use for model evaluation.</p>
-</div></blockquote>
-<p><strong>models</strong> : list[recommender models]</p>
-<blockquote>
-<div><p>List of trained recommender models.</p>
-</div></blockquote>
-<p><strong>model_names</strong> : list[str], optional</p>
-<blockquote>
-<div><p>List of model name strings for display.</p>
-</div></blockquote>
-<p><strong>user_sample</strong> : float, optional</p>
-<blockquote>
-<div><p>Sampling proportion of unique users to use in estimating model
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">The dataset to use for model evaluation.</p>
+</dd>
+<dt><strong>models</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[recommender models]</span></dt>
+<dd><p class="first last">List of trained recommender models.</p>
+</dd>
+<dt><strong>model_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[str], optional</span></dt>
+<dd><p class="first last">List of model name strings for display.</p>
+</dd>
+<dt><strong>user_sample</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Sampling proportion of unique users to use in estimating model
 performance. Defaults to 1.0, i.e. use all users in the dataset.</p>
-</div></blockquote>
-<p><strong>metric</strong> : str, {&#8216;auto&#8217;, &#8216;rmse&#8217;, &#8216;precision_recall&#8217;}, optional</p>
-<blockquote>
-<div><p>Metric for the evaluation. The default automatically splits
+</dd>
+<dt><strong>metric</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, {&#8216;auto&#8217;, &#8216;rmse&#8217;, &#8216;precision_recall&#8217;}, optional</span></dt>
+<dd><p class="first last">Metric for the evaluation. The default automatically splits
 models into two groups with their default evaluation metric respectively:
 &#8216;rmse&#8217; for models trained with a target, and &#8216;precision_recall&#8217;
 otherwise.</p>
-</div></blockquote>
-<p><strong>target</strong> : str, optional</p>
-<blockquote>
-<div><p>The name of the target column for evaluating rmse. If the model is
+</dd>
+<dt><strong>target</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The name of the target column for evaluating rmse. If the model is
 trained with a target column, the default is to using the same column.
 If the model is trained without a target column and <cite>metric=&#8217;rmse&#8217;</cite>,
 then this option must be provided by user.</p>
-</div></blockquote>
-<p><strong>exclude_known_for_precision_recall</strong> : bool, optional</p>
-<blockquote>
-<div><p>A useful option when <cite>metric=&#8217;precision_recall&#8217;</cite>. Recommender models
+</dd>
+<dt><strong>exclude_known_for_precision_recall</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">A useful option when <cite>metric=&#8217;precision_recall&#8217;</cite>. Recommender models
 automatically exclude items seen in the training data from the
 final recommendation list. If the input evaluation <cite>dataset</cite> is the
 same as the data used for training the models, set this option to False.</p>
-</div></blockquote>
-<p><strong>verbose</strong> : bool, optional</p>
-<blockquote>
-<div><p>If true, print the progress.</p>
-</div></blockquote>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If true, print the progress.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : list[SFrame]</p>
-<blockquote class="last">
-<div><p>A list of results where each one is an sframe of evaluation results of
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[SFrame]</span></dt>
+<dd><p class="first last">A list of results where each one is an sframe of evaluation results of
 the respective model on the given dataset</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -259,7 +254,7 @@ do:</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -277,7 +272,7 @@ do:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

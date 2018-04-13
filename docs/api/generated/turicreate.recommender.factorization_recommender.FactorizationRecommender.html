@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.recommender.factorization_recommender.FactorizationRecommender &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.recommender.factorization_recommender.FactorizationRecommender &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="recommender" href="../turicreate.toolkits.recommender.html"/>
         <link rel="next" title="turicreate.recommender.ranking_factorization_recommender.create" href="turicreate.recommender.ranking_factorization_recommender.create.html"/>
         <link rel="prev" title="turicreate.recommender.factorization_recommender.create" href="turicreate.recommender.factorization_recommender.create.html"/> 
@@ -133,7 +133,7 @@
 <em class="property">class </em><code class="descclassname">turicreate.recommender.factorization_recommender.</code><code class="descname">FactorizationRecommender</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.recommender.factorization_recommender.FactorizationRecommender" title="Permalink to this definition">¶</a></dt>
 <dd><p>A FactorizationRecommender learns latent factors for each
 user and item and uses them to make rating predictions.</p>
-<p>FactorizationRecommender <a class="reference internal" href="#koren-et-al610" id="id1">[Koren_et_al610]</a> contains a number of options that
+<p>FactorizationRecommender <a class="reference internal" href="#r8fda7561eebb-koren-et-al" id="id1">[Koren_et_al]</a> contains a number of options that
 tailor to a variety of datasets and evaluation metrics, making this one of
 the most powerful model in the Turi Create recommender toolkit.</p>
 <p><strong>Side information</strong></p>
@@ -217,7 +217,7 @@ denotes the item latent factors.  The loss function
 <span class="math">\(\lambda_1\)</span> denotes the <cite>linear_regularization</cite> parameter and
 <span class="math">\(\lambda_2\)</span> the <cite>regularization</cite> parameter.</p>
 <p>The model is trained using one of the following solvers:</p>
-<p>(a) Stochastic Gradient Descent <a class="reference internal" href="#sgd610" id="id2">[sgd610]</a> with additional tricks <a class="reference internal" href="#bottou610" id="id3">[Bottou610]</a>
+<p>(a) Stochastic Gradient Descent <a class="reference internal" href="#r8fda7561eebb-sgd" id="id2">[sgd]</a> with additional tricks <a class="reference internal" href="#r8fda7561eebb-bottou" id="id3">[Bottou]</a>
 to improve convergence. The optimization is done in parallel
 over multiple threads. This procedure is inherently random, so different
 calls to <cite>create()</cite> may return slightly different models, even with the
@@ -227,7 +227,7 @@ computed by fixing the item latent factors and vice versa.</p>
 <p>The Factorization Machine recommender model approximates target rating
 values as a weighted combination of user and item latent factors, biases,
 side features, and their pairwise combinations.</p>
-<p>The Factorization Machine <a class="reference internal" href="#rendle610" id="id4">[Rendle610]</a> is a generalization of Matrix Factorization.
+<p>The Factorization Machine <a class="reference internal" href="#r8fda7561eebb-rendle" id="id4">[Rendle]</a> is a generalization of Matrix Factorization.
 In particular, while Matrix Factorization learns latent factors for only the
 user and item interactions, the Factorization Machine learns latent factors
 for all variables, including side features, and also allows for interactions
@@ -236,31 +236,31 @@ modeling complex relationships in the data. Typically,
 using <cite>linear_side_features=True</cite> performs better in terms of RMSE,
 but may require a longer training time.</p>
 <p class="rubric">References</p>
-<table class="docutils citation" frame="void" id="koren-et-al610" rules="none">
+<table class="docutils citation" frame="void" id="r8fda7561eebb-koren-et-al" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[Koren_et_al610]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id5">2</a>)</em> Koren, Yehuda, Robert Bell and Chris Volinsky. <a class="reference external" href="http://www2.research.att.com/~volinsky/papers/ieeecomputer.pdf?utm_source=twitterfeed&amp;utm_medium=twitter">&#8220;Matrix
+<tr><td class="label">[Koren_et_al]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id5">2</a>)</em> Koren, Yehuda, Robert Bell and Chris Volinsky. <a class="reference external" href="http://www2.research.att.com/~volinsky/papers/ieeecomputer.pdf?utm_source=twitterfeed&amp;utm_medium=twitter">&#8220;Matrix
 Factorization Techniques for Recommender Systems.&#8221;</a> Computer Volume: 42, Issue: 8 (2009): 30-37.</td></tr>
 </tbody>
 </table>
-<table class="docutils citation" frame="void" id="sgd610" rules="none">
+<table class="docutils citation" frame="void" id="r8fda7561eebb-sgd" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[sgd610]</td><td><em>(<a class="fn-backref" href="#id2">1</a>, <a class="fn-backref" href="#id6">2</a>)</em> <a class="reference external" href="http://en.wikipedia.org/wiki/Stochastic_gradient_descent">Wikipedia - Stochastic gradient descent</a></td></tr>
+<tr><td class="label">[sgd]</td><td><em>(<a class="fn-backref" href="#id2">1</a>, <a class="fn-backref" href="#id6">2</a>)</em> <a class="reference external" href="http://en.wikipedia.org/wiki/Stochastic_gradient_descent">Wikipedia - Stochastic gradient descent</a></td></tr>
 </tbody>
 </table>
-<table class="docutils citation" frame="void" id="bottou610" rules="none">
+<table class="docutils citation" frame="void" id="r8fda7561eebb-bottou" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[Bottou610]</td><td><em>(<a class="fn-backref" href="#id3">1</a>, <a class="fn-backref" href="#id7">2</a>)</em> Leon Bottou, <a class="reference external" href="http://research.microsoft.com/apps/pubs/default.aspx?id=192769">&#8220;Stochastic Gradient Tricks,&#8221;</a>
+<tr><td class="label">[Bottou]</td><td><em>(<a class="fn-backref" href="#id3">1</a>, <a class="fn-backref" href="#id7">2</a>)</em> Leon Bottou, <a class="reference external" href="http://research.microsoft.com/apps/pubs/default.aspx?id=192769">&#8220;Stochastic Gradient Tricks,&#8221;</a>
 Neural Networks, Tricks of the Trade, Reloaded, 430&#8211;445, Lecture Notes
 in Computer Science (LNCS 7700), Springer, 2012.</td></tr>
 </tbody>
 </table>
-<table class="docutils citation" frame="void" id="rendle610" rules="none">
+<table class="docutils citation" frame="void" id="r8fda7561eebb-rendle" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[Rendle610]</td><td><em>(<a class="fn-backref" href="#id4">1</a>, <a class="fn-backref" href="#id8">2</a>)</em> Steffen Rendle, <a class="reference external" href="http://www.csie.ntu.edu.tw/~b97053/paper/Rendle2010FM.pdf">&#8220;Factorization Machines,&#8221;</a> in
+<tr><td class="label">[Rendle]</td><td><em>(<a class="fn-backref" href="#id4">1</a>, <a class="fn-backref" href="#id8">2</a>)</em> Steffen Rendle, <a class="reference external" href="http://www.csie.ntu.edu.tw/~b97053/paper/Rendle2010FM.pdf">&#8220;Factorization Machines,&#8221;</a> in
 Proceedings of the 10th IEEE International Conference on Data Mining
 (ICDM), 2010.</td></tr>
 </tbody>
@@ -332,7 +332,7 @@ Proceedings of the 10th IEEE International Conference on Data Mining
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -350,7 +350,7 @@ Proceedings of the 10th IEEE International Conference on Data Mining
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

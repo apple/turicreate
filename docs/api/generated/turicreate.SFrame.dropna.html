@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.dropna &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SFrame.dropna &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -135,23 +135,24 @@ consider all columns when searching for missing values.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>columns</strong> : list or str, optional</p>
-<blockquote>
-<div><p>The columns to use when looking for missing values. By default, all
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>columns</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or str, optional</span></dt>
+<dd><p class="first last">The columns to use when looking for missing values. By default, all
 columns are used.</p>
-</div></blockquote>
-<p><strong>how</strong> : {&#8216;any&#8217;, &#8216;all&#8217;}, optional</p>
-<blockquote>
-<div><p>Specifies whether a row should be dropped if at least one column
+</dd>
+<dt><strong>how</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;any&#8217;, &#8216;all&#8217;}, optional</span></dt>
+<dd><p class="first last">Specifies whether a row should be dropped if at least one column
 has missing values, or if all columns have missing values.  &#8216;any&#8217; is
 default.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SFrame</p>
-<blockquote class="last">
-<div><p>SFrame with missing values removed (according to the given rules).</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">SFrame with missing values removed (according to the given rules).</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -209,7 +210,7 @@ default.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -227,7 +228,7 @@ default.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

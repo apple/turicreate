@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SArray.apply &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SArray.apply &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -133,33 +133,32 @@ SArray are used to make a guess about the data type.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>fn</strong> : function</p>
-<blockquote>
-<div><p>The function to transform each element. Must return exactly one
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>fn</strong> <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
+<dd><p class="first last">The function to transform each element. Must return exactly one
 value which can be cast into the type specified by <code class="docutils literal"><span class="pre">dtype</span></code>.
 This can also be a toolkit extension function which is compiled
 as a native shared library using SDK.</p>
-</div></blockquote>
-<p><strong>dtype</strong> : {None, int, float, str, list, array.array, dict, turicreate.Image}, optional</p>
-<blockquote>
-<div><p>The data type of the new SArray. If <code class="docutils literal"><span class="pre">None</span></code>, the first 100 elements
+</dd>
+<dt><strong>dtype</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{None, int, float, str, list, array.array, dict, turicreate.Image}, optional</span></dt>
+<dd><p class="first last">The data type of the new SArray. If <code class="docutils literal"><span class="pre">None</span></code>, the first 100 elements
 of the array are used to guess the target data type.</p>
-</div></blockquote>
-<p><strong>skip_na</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, will not apply <code class="docutils literal"><span class="pre">fn</span></code> to any undefined values.</p>
-</div></blockquote>
-<p><strong>seed</strong> : int, optional</p>
-<blockquote>
-<div><p>Used as the seed if a random number generator is included in <code class="docutils literal"><span class="pre">fn</span></code>.</p>
-</div></blockquote>
+</dd>
+<dt><strong>skip_na</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True, will not apply <code class="docutils literal"><span class="pre">fn</span></code> to any undefined values.</p>
+</dd>
+<dt><strong>seed</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">Used as the seed if a random number generator is included in <code class="docutils literal"><span class="pre">fn</span></code>.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SArray</p>
-<blockquote class="last">
-<div><p>The SArray transformed by <code class="docutils literal"><span class="pre">fn</span></code>. Each element of the SArray is of
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray</span></dt>
+<dd><p class="first last">The SArray transformed by <code class="docutils literal"><span class="pre">fn</span></code>. Each element of the SArray is of
 type <code class="docutils literal"><span class="pre">dtype</span></code>.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -214,7 +213,7 @@ type <code class="docutils literal"><span class="pre">dtype</span></code>.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -232,7 +231,7 @@ type <code class="docutils literal"><span class="pre">dtype</span></code>.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.save &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SFrame.save &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -129,21 +129,21 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : string</p>
-<blockquote>
-<div><p>The location to save the SFrame. Either a local directory or a
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">The location to save the SFrame. Either a local directory or a
 remote URL. If the format is &#8216;binary&#8217;, a directory will be created
 at the location which will contain the sframe.</p>
-</div></blockquote>
-<p><strong>format</strong> : {&#8216;binary&#8217;, &#8216;csv&#8217;, &#8216;json&#8217;}, optional</p>
-<blockquote class="last">
-<div><p>Format in which to save the SFrame. Binary saved SFrames can be
+</dd>
+<dt><strong>format</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;binary&#8217;, &#8216;csv&#8217;, &#8216;json&#8217;}, optional</span></dt>
+<dd><p class="first last">Format in which to save the SFrame. Binary saved SFrames can be
 loaded much faster and without any format conversion losses. If not
 given, will try to infer the format from filename given. If file
 name ends with &#8216;csv&#8217; or &#8216;.csv.gz&#8217;, then save as &#8216;csv&#8217; format,
 otherwise save as &#8216;binary&#8217; format.
 See export_csv for more csv saving options.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -174,7 +174,7 @@ See export_csv for more csv saving options.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -192,7 +192,7 @@ See export_csv for more csv saving options.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

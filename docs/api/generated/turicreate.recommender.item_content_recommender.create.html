@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.recommender.item_content_recommender.create &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.recommender.item_content_recommender.create &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="recommender" href="../turicreate.toolkits.recommender.html"/>
         <link rel="next" title="turicreate.recommender.item_content_recommender.ItemContentRecommender" href="turicreate.recommender.item_content_recommender.ItemContentRecommender.html"/>
         <link rel="prev" title="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender" href="turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.html"/> 
@@ -144,55 +144,49 @@ items in a user&#8217;s set of rated items.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>item_data</strong> : SFrame</p>
-<blockquote>
-<div><p>An SFrame giving the content of the items to use to learn the
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>item_data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">An SFrame giving the content of the items to use to learn the
 structure of similar items.  The SFrame must have one column
 that matches the name of the <cite>item_id</cite>; this gives a unique
 identifier that can then be used to make recommendations.  The rest
 of the columns are then used in the distance calculations
 below.</p>
-</div></blockquote>
-<p><strong>item_id</strong> : string</p>
-<blockquote>
-<div><p>The name of the column in item_data (and <cite>observation_data</cite>,
+</dd>
+<dt><strong>item_id</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">The name of the column in item_data (and <cite>observation_data</cite>,
 if given) that represents the item ID.</p>
-</div></blockquote>
-<p><strong>observation_data</strong> : None (optional)</p>
-<blockquote>
-<div><p>An SFrame giving user and item interaction data.  This
+</dd>
+<dt><strong>observation_data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">None (optional)</span></dt>
+<dd><p class="first last">An SFrame giving user and item interaction data.  This
 information is stored in the model, and the recommender will
 recommend the items with the most similar content to the
 items that were present and/or highly rated for that user.</p>
-</div></blockquote>
-<p><strong>user_id</strong> : None (optional)</p>
-<blockquote>
-<div><p>If observation_data is given, then this specifies the column
+</dd>
+<dt><strong>user_id</strong> <span class="classifier-delimiter">:</span> <span class="classifier">None (optional)</span></dt>
+<dd><p class="first last">If observation_data is given, then this specifies the column
 name corresponding to the user identifier.</p>
-</div></blockquote>
-<p><strong>target_id</strong> : None (optional)</p>
-<blockquote>
-<div><p>If observation_data is given, then this specifies the column
+</dd>
+<dt><strong>target_id</strong> <span class="classifier-delimiter">:</span> <span class="classifier">None (optional)</span></dt>
+<dd><p class="first last">If observation_data is given, then this specifies the column
 name corresponding to the target or rating.</p>
-</div></blockquote>
-<p><strong>weights</strong> : dict or &#8216;auto&#8217; (optional)</p>
-<blockquote>
-<div><p>If given, then weights must be a dictionary of column names
+</dd>
+<dt><strong>weights</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict or &#8216;auto&#8217; (optional)</span></dt>
+<dd><p class="first last">If given, then weights must be a dictionary of column names
 present in item_data to weights between the column names.  If
 &#8216;auto&#8217; is given, the all columns are weighted equally.</p>
-</div></blockquote>
-<p><strong>max_item_neighborhood_size</strong> : int, 64</p>
-<blockquote>
-<div><p>For each item, we hold this many similar items to use when
+</dd>
+<dt><strong>max_item_neighborhood_size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, 64</span></dt>
+<dd><p class="first last">For each item, we hold this many similar items to use when
 aggregating models for predictions.  Decreasing this value
 decreases the memory required by the model and decreases the
 time required to generate recommendations, but it may also
 decrease recommendation accuracy.</p>
-</div></blockquote>
-<p><strong>verbose</strong> : True or False (optional)</p>
-<blockquote class="last">
-<div><p>If set to False, then less information is printed.</p>
-</div></blockquote>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">True or False (optional)</span></dt>
+<dd><p class="first last">If set to False, then less information is printed.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -263,7 +257,7 @@ rank    int</dd>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -281,7 +275,7 @@ rank    int</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.image_analysis.resize &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.image_analysis.resize &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="image_analysis" href="../turicreate.toolkits.image_analysis.html"/>
         <link rel="next" title="nearest_neighbors" href="../turicreate.toolkits.nearest_neighbors.html"/>
         <link rel="prev" title="turicreate.image_analysis.load_images" href="turicreate.image_analysis.load_images.html"/> 
@@ -137,35 +137,33 @@ number of channels.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>image</strong> : turicreate.Image | SArray</p>
-<blockquote>
-<div><p>The image or SArray of images to be resized.</p>
-</div></blockquote>
-<p><strong>width</strong> : int</p>
-<blockquote>
-<div><p>The width the image is resized to.</p>
-</div></blockquote>
-<p><strong>height</strong> : int</p>
-<blockquote>
-<div><p>The height the image is resized to.</p>
-</div></blockquote>
-<p><strong>channels</strong> : int, optional</p>
-<blockquote>
-<div><p>The number of channels the image is resized to. 1 channel
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>image</strong> <span class="classifier-delimiter">:</span> <span class="classifier">turicreate.Image | SArray</span></dt>
+<dd><p class="first last">The image or SArray of images to be resized.</p>
+</dd>
+<dt><strong>width</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The width the image is resized to.</p>
+</dd>
+<dt><strong>height</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The height the image is resized to.</p>
+</dd>
+<dt><strong>channels</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The number of channels the image is resized to. 1 channel
 corresponds to grayscale, 3 channels corresponds to RGB, and 4
 channels corresponds to RGBA images.</p>
-</div></blockquote>
-<p><strong>decode</strong> : bool, optional</p>
-<blockquote>
-<div><p>Whether to store the resized image in decoded format. Decoded takes
+</dd>
+<dt><strong>decode</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">Whether to store the resized image in decoded format. Decoded takes
 more space, but makes the resize and future operations on the image faster.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : turicreate.Image</p>
-<blockquote class="last">
-<div><p>Returns a resized Image object.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">turicreate.Image</span></dt>
+<dd><p class="first last">Returns a resized Image object.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -212,7 +210,7 @@ and Blue values.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -230,7 +228,7 @@ and Blue values.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

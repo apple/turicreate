@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.activity_classifier.create &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.activity_classifier.create &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="activity_classifier" href="../turicreate.toolkits.activity_classifier.html"/>
         <link rel="next" title="turicreate.activity_classifier.ActivityClassifier" href="turicreate.activity_classifier.ActivityClassifier.html"/>
         <link rel="prev" title="turicreate.activity_classifier.util.random_split_by_session" href="turicreate.activity_classifier.util.random_split_by_session.html"/> 
@@ -136,68 +136,62 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
-<blockquote>
-<div><p>Input data which consists of <cite>sessions</cite> of data where each session is
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">Input data which consists of <cite>sessions</cite> of data where each session is
 a sequence of data. The data must be in <cite>stacked</cite> format, grouped by
 session. Within each session, the data is assumed to be sorted
 temporally. Columns in <cite>features</cite> will be used to train a model that
 will make a prediction using labels in the <cite>target</cite> column.</p>
-</div></blockquote>
-<p><strong>session_id</strong> : string</p>
-<blockquote>
-<div><p>Name of the column that contains a unique ID for each session.</p>
-</div></blockquote>
-<p><strong>target</strong> : string</p>
-<blockquote>
-<div><p>Name of the column containing the target variable. The values in this
+</dd>
+<dt><strong>session_id</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Name of the column that contains a unique ID for each session.</p>
+</dd>
+<dt><strong>target</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Name of the column containing the target variable. The values in this
 column must be of string or integer type. Use <cite>model.classes</cite> to
 retrieve the order in which the classes are mapped.</p>
-</div></blockquote>
-<p><strong>features</strong> : list[string], optional</p>
-<blockquote>
-<div><p>Name of the columns containing the input features that will be used
+</dd>
+<dt><strong>features</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[string], optional</span></dt>
+<dd><p class="first last">Name of the columns containing the input features that will be used
 for classification. If set to <cite>None</cite>, all columns except <cite>session_id</cite>
 and <cite>target</cite> will be used.</p>
-</div></blockquote>
-<p><strong>prediction_window</strong> : int, optional</p>
-<blockquote>
-<div><p>Number of time units between predictions. For example, if your input
+</dd>
+<dt><strong>prediction_window</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">Number of time units between predictions. For example, if your input
 data is sampled at 100Hz, and the <cite>prediction_window</cite> is set to 100,
 then this model will make a prediction every 1 second.</p>
-</div></blockquote>
-<p><strong>validation_set</strong> : SFrame, optional</p>
-<blockquote>
-<div><p>A dataset for monitoring the model&#8217;s generalization performance to
+</dd>
+<dt><strong>validation_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
+<dd><p class="first">A dataset for monitoring the model&#8217;s generalization performance to
 prevent the model from overfitting to the training data.</p>
 <p>For each row of the progress table, accuracy is measured over the
 provided training dataset and the <cite>validation_set</cite>. The format of this
 SFrame must be the same as the training set.</p>
-<p>When set to &#8216;auto&#8217;, a validation set is automatically sampled from the
+<p class="last">When set to &#8216;auto&#8217;, a validation set is automatically sampled from the
 training data (if the training data has &gt; 100 sessions). If
 validation_set is set to None, then all the data will be used for
 training.</p>
-</div></blockquote>
-<p><strong>max_iterations</strong> : int , optional</p>
-<blockquote>
-<div><p>Maximum number of iterations/epochs made over the data during the
+</dd>
+<dt><strong>max_iterations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int , optional</span></dt>
+<dd><p class="first last">Maximum number of iterations/epochs made over the data during the
 training phase.</p>
-</div></blockquote>
-<p><strong>batch_size</strong> : int, optional</p>
-<blockquote>
-<div><p>Number of sequence chunks used per training step. Must be greater than
+</dd>
+<dt><strong>batch_size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">Number of sequence chunks used per training step. Must be greater than
 the number of GPUs in use.</p>
-</div></blockquote>
-<p><strong>verbose</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, print progress updates and model details.</p>
-</div></blockquote>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True, print progress updates and model details.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : ActivityClassifier</p>
-<blockquote class="last">
-<div><p>A trained <a class="reference internal" href="turicreate.activity_classifier.ActivityClassifier.html#turicreate.activity_classifier.ActivityClassifier" title="turicreate.activity_classifier.ActivityClassifier"><code class="xref py py-class docutils literal"><span class="pre">ActivityClassifier</span></code></a> model.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ActivityClassifier</span></dt>
+<dd><p class="first last">A trained <a class="reference internal" href="turicreate.activity_classifier.ActivityClassifier.html#turicreate.activity_classifier.ActivityClassifier" title="turicreate.activity_classifier.ActivityClassifier"><code class="xref py py-class docutils literal"><span class="pre">ActivityClassifier</span></code></a> model.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -260,7 +254,7 @@ the number of GPUs in use.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -278,7 +272,7 @@ the number of GPUs in use.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

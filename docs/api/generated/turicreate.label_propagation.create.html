@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.label_propagation.create &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.label_propagation.create &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="graph_analytics" href="../turicreate.toolkits.graph_analytics.html"/>
         <link rel="next" title="turicreate.label_propagation.LabelPropagationModel" href="turicreate.label_propagation.LabelPropagationModel.html"/>
         <link rel="prev" title="turicreate.kcore.KcoreModel" href="turicreate.kcore.KcoreModel.html"/> 
@@ -146,55 +146,52 @@ if the number of classes exceeds the maximum value (1000).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>graph</strong> : SGraph</p>
-<blockquote>
-<div><p>The graph on which to compute the label propagation.</p>
-</div></blockquote>
-<p><strong>label_field: str</strong></p>
-<blockquote>
-<div><p>Vertex field storing the initial vertex labels. The values in
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>graph</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SGraph</span></dt>
+<dd><p class="first last">The graph on which to compute the label propagation.</p>
+</dd>
+<dt><strong>label_field: str</strong></dt>
+<dd><p class="first last">Vertex field storing the initial vertex labels. The values in
 must be [0, num_classes). None values indicate unobserved vertex labels.</p>
-</div></blockquote>
-<p><strong>threshold</strong> : float, optional</p>
-<blockquote>
-<div><p>Threshold for convergence, measured in the average L2 norm
+</dd>
+<dt><strong>threshold</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Threshold for convergence, measured in the average L2 norm
 (the sum of squared values) of the delta of each vertex&#8217;s
 label probability vector.</p>
-</div></blockquote>
-<p><strong>max_iterations: int, optional</strong></p>
-<blockquote>
-<div><p>The max number of iterations to run. Default is unlimited.
+</dd>
+<dt><strong>max_iterations: int, optional</strong></dt>
+<dd><p class="first last">The max number of iterations to run. Default is unlimited.
 If set, the algorithm terminates when either max_iterations
 or convergence threshold is reached.</p>
-</div></blockquote>
-<p><strong>weight_field: str, optional</strong></p>
-<blockquote>
-<div><p>Vertex field for edge weight. If empty, all edges are assumed
+</dd>
+<dt><strong>weight_field: str, optional</strong></dt>
+<dd><p class="first last">Vertex field for edge weight. If empty, all edges are assumed
 to have unit weight.</p>
-</div></blockquote>
-<p><strong>self_weight: float, optional</strong></p>
-<blockquote>
-<div><p>The weight for self edge.</p>
-</div></blockquote>
-<p><strong>undirected: bool, optional</strong></p>
-<blockquote>
-<div><p>If true, treat each edge as undirected, and propagates label in
+</dd>
+<dt><strong>self_weight: float, optional</strong></dt>
+<dd><p class="first last">The weight for self edge.</p>
+</dd>
+<dt><strong>undirected: bool, optional</strong></dt>
+<dd><p class="first last">If true, treat each edge as undirected, and propagates label in
 both directions.</p>
-</div></blockquote>
-<p><strong>_single_precision</strong> : bool, optional</p>
-<blockquote>
-<div><p>If true, running label propagation in single precision. The resulting
+</dd>
+<dt><strong>_single_precision</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If true, running label propagation in single precision. The resulting
 probability values may less accurate, but should run faster
 and use less memory.</p>
-</div></blockquote>
-<p><strong>_distributed</strong> : distributed environment, internal</p>
-<p><strong>verbose</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, print progress updates.</p>
-</div></blockquote>
+</dd>
+<dt><strong>_distributed</strong> <span class="classifier-delimiter">:</span> <span class="classifier">distributed environment, internal</span></dt>
+<dd></dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True, print progress updates.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>out</strong> : LabelPropagationModel</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">LabelPropagationModel</span></dt>
+<dd></dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -271,7 +268,7 @@ each label in the graph <code class="docutils literal"><span class="pre">g</span
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -289,7 +286,7 @@ each label in the graph <code class="docutils literal"><span class="pre">g</span
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

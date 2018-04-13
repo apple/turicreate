@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SArray.pixel_array_to_image &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SArray.pixel_array_to_image &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -130,34 +130,32 @@ of uniform size.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>width: int</strong></p>
-<blockquote>
-<div><p>The width of the new images.</p>
-</div></blockquote>
-<p><strong>height: int</strong></p>
-<blockquote>
-<div><p>The height of the new images.</p>
-</div></blockquote>
-<p><strong>channels: int.</strong></p>
-<blockquote>
-<div><p>Number of channels of the new images.</p>
-</div></blockquote>
-<p><strong>undefined_on_failure: bool , optional , default True</strong></p>
-<blockquote>
-<div><p>If True, return None type instead of Image type in failure instances.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>width: int</strong></dt>
+<dd><p class="first last">The width of the new images.</p>
+</dd>
+<dt><strong>height: int</strong></dt>
+<dd><p class="first last">The height of the new images.</p>
+</dd>
+<dt><strong>channels: int.</strong></dt>
+<dd><p class="first last">Number of channels of the new images.</p>
+</dd>
+<dt><strong>undefined_on_failure: bool , optional , default True</strong></dt>
+<dd><p class="first last">If True, return None type instead of Image type in failure instances.
 If False, raises error upon failure.</p>
-</div></blockquote>
-<p><strong>allow_rounding: bool, optional , default False</strong></p>
-<blockquote>
-<div><p>If True, rounds non-integer values when converting to Image type.
+</dd>
+<dt><strong>allow_rounding: bool, optional , default False</strong></dt>
+<dd><p class="first last">If True, rounds non-integer values when converting to Image type.
 If False, raises error upon rounding.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SArray[turicreate.Image]</p>
-<blockquote class="last">
-<div><p>The SArray converted to the type &#8216;turicreate.Image&#8217;.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray[turicreate.Image]</span></dt>
+<dd><p class="first last">The SArray converted to the type &#8216;turicreate.Image&#8217;.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -188,7 +186,7 @@ from 0 to 255. If we just convert without scaling, all values below one would be
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -206,7 +204,7 @@ from 0 to 255. If we just convert without scaling, all values below one would be
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

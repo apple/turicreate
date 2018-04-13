@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SGraph.add_edges &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SGraph.add_edges &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -136,29 +136,29 @@ the value <code class="docutils literal"><span class="pre">None</span></code>.</
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>edges</strong> : Edge | list [Edge] | pandas.DataFrame | SFrame</p>
-<blockquote>
-<div><p>Edge data. If the edges are in an SFrame or DataFrame, then
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Edge | list [Edge] | pandas.DataFrame | SFrame</span></dt>
+<dd><p class="first last">Edge data. If the edges are in an SFrame or DataFrame, then
 <code class="docutils literal"><span class="pre">src_field</span></code> and <code class="docutils literal"><span class="pre">dst_field</span></code> are required to specify the columns
 that contain the source and destination vertex IDs. Additional
 columns are treated as edge attributes.</p>
-</div></blockquote>
-<p><strong>src_field</strong> : string, optional</p>
-<blockquote>
-<div><p>Column in the SFrame or DataFrame to use as source vertex IDs. Not
+</dd>
+<dt><strong>src_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">Column in the SFrame or DataFrame to use as source vertex IDs. Not
 required if <code class="docutils literal"><span class="pre">edges</span></code> is a list.</p>
-</div></blockquote>
-<p><strong>dst_field</strong> : string, optional</p>
-<blockquote>
-<div><p>Column in the SFrame or Pandas DataFrame to use as destination
+</dd>
+<dt><strong>dst_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">Column in the SFrame or Pandas DataFrame to use as destination
 vertex IDs. Not required if <code class="docutils literal"><span class="pre">edges</span></code> is a list.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SGraph</p>
-<blockquote class="last">
-<div><p>A new SGraph with <cite>edges</cite> added.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SGraph</span></dt>
+<dd><p class="first last">A new SGraph with <cite>edges</cite> added.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -209,7 +209,7 @@ vertices.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -227,7 +227,7 @@ vertices.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

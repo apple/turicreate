@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.to_sql &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SFrame.to_sql &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -134,38 +134,35 @@ parameterized SQL insert statements.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>conn</strong> : dbapi2.Connection</p>
-<blockquote>
-<div><p>A DBAPI2 connection object. Any connection object originating from
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>conn</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dbapi2.Connection</span></dt>
+<dd><p class="first last">A DBAPI2 connection object. Any connection object originating from
 the &#8216;connect&#8217; method of a DBAPI2-compliant package can be used.</p>
-</div></blockquote>
-<p><strong>table_name</strong> : str</p>
-<blockquote>
-<div><p>The name of the table to append the data in this SFrame.</p>
-</div></blockquote>
-<p><strong>dbapi_module</strong> : module | package, optional</p>
-<blockquote>
-<div><p>The top-level DBAPI2 module/package that constructed the given
+</dd>
+<dt><strong>table_name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The name of the table to append the data in this SFrame.</p>
+</dd>
+<dt><strong>dbapi_module</strong> <span class="classifier-delimiter">:</span> <span class="classifier">module | package, optional</span></dt>
+<dd><p class="first last">The top-level DBAPI2 module/package that constructed the given
 connection object. By default, a best guess of which module the
 connection came from is made. In the event that this guess is wrong,
 this will need to be specified.</p>
-</div></blockquote>
-<p><strong>use_python_type_specifiers</strong> : bool, optional</p>
-<blockquote>
-<div><p>If the DBAPI2 module&#8217;s parameter marker style is &#8216;format&#8217; or
+</dd>
+<dt><strong>use_python_type_specifiers</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If the DBAPI2 module&#8217;s parameter marker style is &#8216;format&#8217; or
 &#8216;pyformat&#8217;, attempt to use accurate type specifiers for each value
 (&#8216;s&#8217; for string, &#8216;d&#8217; for integer, etc.). Many DBAPI2 modules simply
 use &#8216;s&#8217; for all types if they use these parameter markers, so this is
 False by default.</p>
-</div></blockquote>
-<p><strong>use_exact_column_names</strong> : bool, optional</p>
-<blockquote class="last">
-<div><p>Specify the column names of the SFrame when inserting its contents
+</dd>
+<dt><strong>use_exact_column_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">Specify the column names of the SFrame when inserting its contents
 into the DB. If the specified table does not have the exact same
 column names as the SFrame, inserting the data will fail. If False,
 the columns in the SFrame are inserted in order without care of the
 schema of the DB table. True by default.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -183,7 +180,7 @@ schema of the DB table. True by default.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -201,7 +198,7 @@ schema of the DB table. True by default.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

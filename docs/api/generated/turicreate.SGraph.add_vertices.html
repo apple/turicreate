@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SGraph.add_vertices &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SGraph.add_vertices &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -135,24 +135,25 @@ added, with existing vertices acquiring the value <code class="docutils literal"
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>vertices</strong> : Vertex | list [Vertex] | pandas.DataFrame | SFrame</p>
-<blockquote>
-<div><p>Vertex data. If the vertices are in an SFrame or DataFrame, then
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>vertices</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Vertex | list [Vertex] | pandas.DataFrame | SFrame</span></dt>
+<dd><p class="first last">Vertex data. If the vertices are in an SFrame or DataFrame, then
 <code class="docutils literal"><span class="pre">vid_field</span></code> specifies the column containing the vertex IDs.
 Additional columns are treated as vertex attributes.</p>
-</div></blockquote>
-<p><strong>vid_field</strong> : string, optional</p>
-<blockquote>
-<div><p>Column in the DataFrame or SFrame to use as vertex ID. Required if
+</dd>
+<dt><strong>vid_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">Column in the DataFrame or SFrame to use as vertex ID. Required if
 vertices is an SFrame. If <code class="docutils literal"><span class="pre">vertices</span></code> is a DataFrame and
 <code class="docutils literal"><span class="pre">vid_field</span></code> is not specified, the row index is used as vertex ID.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SGraph</p>
-<blockquote class="last">
-<div><p>A new SGraph with vertices added.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SGraph</span></dt>
+<dd><p class="first last">A new SGraph with vertices added.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -201,7 +202,7 @@ will conform to the specification in this method.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -219,7 +220,7 @@ will conform to the specification in this method.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

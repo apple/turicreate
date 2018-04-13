@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.topic_model.perplexity &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.topic_model.perplexity &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="topic_model" href="../turicreate.toolkits.topic_model.html"/>
         <link rel="next" title="turicreate.topic_model.TopicModel" href="turicreate.topic_model.TopicModel.html"/>
         <link rel="prev" title="turicreate.topic_model.create" href="turicreate.topic_model.create.html"/> 
@@ -151,29 +151,27 @@ and document d</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>test_data</strong> : SArray of type dict or SFrame with a single column of type dict</p>
-<blockquote>
-<div><p>Documents in bag-of-words format.</p>
-</div></blockquote>
-<p><strong>predictions</strong> : SArray</p>
-<blockquote>
-<div><p>An SArray of vector type, where each vector contains estimates of the
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>test_data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray of type dict or SFrame with a single column of type dict</span></dt>
+<dd><p class="first last">Documents in bag-of-words format.</p>
+</dd>
+<dt><strong>predictions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray</span></dt>
+<dd><p class="first last">An SArray of vector type, where each vector contains estimates of the
 probability that this document belongs to each of the topics.
 This must have the same size as test_data; otherwise an exception
 occurs. This can be the output of
 <a class="reference internal" href="turicreate.topic_model.TopicModel.predict.html#turicreate.topic_model.TopicModel.predict" title="turicreate.topic_model.TopicModel.predict"><code class="xref py py-func docutils literal"><span class="pre">predict()</span></code></a>, for example.</p>
-</div></blockquote>
-<p><strong>topics</strong> : SFrame</p>
-<blockquote>
-<div><p>An SFrame containing two columns: &#8216;vocabulary&#8217; and &#8216;topic_probabilities&#8217;.
+</dd>
+<dt><strong>topics</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">An SFrame containing two columns: &#8216;vocabulary&#8217; and &#8216;topic_probabilities&#8217;.
 The value returned by m[&#8216;topics&#8217;] is a valid input for this argument,
 where m is a trained <a class="reference internal" href="turicreate.topic_model.TopicModel.html#turicreate.topic_model.TopicModel" title="turicreate.topic_model.TopicModel"><code class="xref py py-class docutils literal"><span class="pre">TopicModel</span></code></a>.</p>
-</div></blockquote>
-<p><strong>vocabulary</strong> : SArray</p>
-<blockquote class="last">
-<div><p>An SArray of words to use. All words in test_data that are not in this
+</dd>
+<dt><strong>vocabulary</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray</span></dt>
+<dd><p class="first last">An SArray of words to use. All words in test_data that are not in this
 vocabulary will be ignored.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -181,16 +179,16 @@ vocabulary will be ignored.</p>
 <p class="rubric">Notes</p>
 <p>For more details, see equations 13-16 of [PattersonTeh2013].</p>
 <p class="rubric">References</p>
-<table class="docutils citation" frame="void" id="perp1820" rules="none">
+<table class="docutils citation" frame="void" id="rcd72a313dfc4-perp" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[PERP1820]</a></td><td><a class="reference external" href="http://en.wikipedia.org/wiki/Perplexity">Wikipedia - perplexity</a></td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id1">[PERP]</a></td><td><a class="reference external" href="http://en.wikipedia.org/wiki/Perplexity">Wikipedia - perplexity</a></td></tr>
 </tbody>
 </table>
-<table class="docutils citation" frame="void" id="pattersonteh20131820" rules="none">
+<table class="docutils citation" frame="void" id="rcd72a313dfc4-pattersonteh2013" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[PattersonTeh20131820]</a></td><td>Patterson, Teh. <a class="reference external" href="http://www.stats.ox.ac.uk/~teh/research/compstats/PatTeh2013a.pdf">&#8220;Stochastic Gradient Riemannian
+<tr><td class="label"><a class="fn-backref" href="#id2">[PattersonTeh2013]</a></td><td>Patterson, Teh. <a class="reference external" href="http://www.stats.ox.ac.uk/~teh/research/compstats/PatTeh2013a.pdf">&#8220;Stochastic Gradient Riemannian
 Langevin Dynamics on the Probability Simplex&#8221;</a>
 NIPS, 2013.</td></tr>
 </tbody>
@@ -230,7 +228,7 @@ NIPS, 2013.</td></tr>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -248,7 +246,7 @@ NIPS, 2013.</td></tr>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

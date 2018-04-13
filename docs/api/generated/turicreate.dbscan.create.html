@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.dbscan.create &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.dbscan.create &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="clustering" href="../turicreate.toolkits.clustering.html"/>
         <link rel="next" title="turicreate.dbscan.DBSCANModel" href="turicreate.dbscan.DBSCANModel.html"/>
         <link rel="prev" title="turicreate.kmeans.KmeansModel" href="turicreate.kmeans.KmeansModel.html"/> 
@@ -151,22 +151,20 @@ cluster.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
-<blockquote>
-<div><p>Training data, with each row corresponding to an observation. Must
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">Training data, with each row corresponding to an observation. Must
 include all features specified in the <cite>features</cite> parameter, but may have
 additional columns as well.</p>
-</div></blockquote>
-<p><strong>features</strong> : list[str], optional</p>
-<blockquote>
-<div><p>Name of the columns with features to use in comparing records. &#8216;None&#8217;
+</dd>
+<dt><strong>features</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[str], optional</span></dt>
+<dd><p class="first last">Name of the columns with features to use in comparing records. &#8216;None&#8217;
 (the default) indicates that all columns of the input <cite>dataset</cite> should
 be used to train the model. All features must be numeric, i.e. integer
 or float types.</p>
-</div></blockquote>
-<p><strong>distance</strong> : str or list[list], optional</p>
-<blockquote>
-<div><p>Function to measure the distance between any two input data rows. This
+</dd>
+<dt><strong>distance</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or list[list], optional</span></dt>
+<dd><p class="first">Function to measure the distance between any two input data rows. This
 may be one of two types:</p>
 <ul class="simple">
 <li><em>String</em>: the name of a standard distance function. One of
@@ -186,31 +184,30 @@ items:<ol class="arabic">
 <p>For more information about Turi Create distance functions, please
 see the <a class="reference internal" href="../turicreate.toolkits.distances.html#module-turicreate.toolkits.distances" title="turicreate.toolkits.distances"><code class="xref py py-mod docutils literal"><span class="pre">distances</span></code></a> module.</p>
 <p>For sparse vectors, missing keys are assumed to have value 0.0.</p>
-<p>If &#8216;distance&#8217; is left unspecified, a composite distance is constructed
+<p class="last">If &#8216;distance&#8217; is left unspecified, a composite distance is constructed
 automatically based on feature types.</p>
-</div></blockquote>
-<p><strong>radius</strong> : int or float, optional</p>
-<blockquote>
-<div><p>Size of each point&#8217;s neighborhood, with respect to the specified
+</dd>
+<dt><strong>radius</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int or float, optional</span></dt>
+<dd><p class="first last">Size of each point&#8217;s neighborhood, with respect to the specified
 distance function.</p>
-</div></blockquote>
-<p><strong>min_core_neighbors</strong> : int, optional</p>
-<blockquote>
-<div><p>Number of neighbors that must be within distance <cite>radius</cite> of a point in
+</dd>
+<dt><strong>min_core_neighbors</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">Number of neighbors that must be within distance <cite>radius</cite> of a point in
 order for that point to be considered a &#8220;core point&#8221; of a cluster.</p>
-</div></blockquote>
-<p><strong>verbose</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, print progress updates and model details during model creation.</p>
-</div></blockquote>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True, print progress updates and model details during model creation.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : DBSCANModel</p>
-<blockquote class="last">
-<div><p>A model containing a cluster label for each row in the input <cite>dataset</cite>.
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">DBSCANModel</span></dt>
+<dd><p class="first last">A model containing a cluster label for each row in the input <cite>dataset</cite>.
 Also contains the indices of the core points, cluster boundary points,
 and noise points.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -298,7 +295,7 @@ pp. 226-231.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -316,7 +313,7 @@ pp. 226-231.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

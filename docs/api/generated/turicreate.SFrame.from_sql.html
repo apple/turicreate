@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.from_sql &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SFrame.from_sql &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -129,54 +129,52 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>conn</strong> : dbapi2.Connection</p>
-<blockquote>
-<div><p>A DBAPI2 connection object. Any connection object originating from
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>conn</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dbapi2.Connection</span></dt>
+<dd><p class="first last">A DBAPI2 connection object. Any connection object originating from
 the &#8216;connect&#8217; method of a DBAPI2-compliant package can be used.</p>
-</div></blockquote>
-<p><strong>sql_statement</strong> : str</p>
-<blockquote>
-<div><p>The query to be sent to the database through the given connection.
+</dd>
+<dt><strong>sql_statement</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The query to be sent to the database through the given connection.
 No checks are performed on the <cite>sql_statement</cite>. Any side effects from
 the query will be reflected on the database.  If no result rows are
 returned, an empty SFrame is created.</p>
-</div></blockquote>
-<p><strong>params</strong> : iterable | dict, optional</p>
-<blockquote>
-<div><p>Parameters to substitute for any parameter markers in the
+</dd>
+<dt><strong>params</strong> <span class="classifier-delimiter">:</span> <span class="classifier">iterable | dict, optional</span></dt>
+<dd><p class="first last">Parameters to substitute for any parameter markers in the
 <cite>sql_statement</cite>. Be aware that the style of parameters may vary
 between different DBAPI2 packages.</p>
-</div></blockquote>
-<p><strong>type_inference_rows</strong> : int, optional</p>
-<blockquote>
-<div><p>The maximum number of rows to use for determining the column types of
+</dd>
+<dt><strong>type_inference_rows</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The maximum number of rows to use for determining the column types of
 the SFrame. These rows are held in Python until all column types are
 determined or the maximum is reached.</p>
-</div></blockquote>
-<p><strong>dbapi_module</strong> : module | package, optional</p>
-<blockquote>
-<div><p>The top-level DBAPI2 module/package that constructed the given
+</dd>
+<dt><strong>dbapi_module</strong> <span class="classifier-delimiter">:</span> <span class="classifier">module | package, optional</span></dt>
+<dd><p class="first last">The top-level DBAPI2 module/package that constructed the given
 connection object. By default, a best guess of which module the
 connection came from is made. In the event that this guess is wrong,
 this will need to be specified.</p>
-</div></blockquote>
-<p><strong>column_type_hints</strong> : dict | list | type, optional</p>
-<blockquote>
-<div><p>Specifies the types of the output SFrame. If a dict is given, it must
+</dd>
+<dt><strong>column_type_hints</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict | list | type, optional</span></dt>
+<dd><p class="first last">Specifies the types of the output SFrame. If a dict is given, it must
 have result column names as keys, but need not have all of the result
 column names. If a list is given, the length of the list must match
 the number of result columns. If a single type is given, all columns
 in the output SFrame will be this type. If the result type is
 incompatible with the types given in this argument, a casting error
 will occur.</p>
-</div></blockquote>
-<p><strong>cursor_arraysize</strong> : int, optional</p>
-<blockquote>
-<div><p>The number of rows to fetch from the database at one time.</p>
-</div></blockquote>
+</dd>
+<dt><strong>cursor_arraysize</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The number of rows to fetch from the database at one time.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>out</strong> : SFrame</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd></dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -215,7 +213,7 @@ will occur.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -233,7 +231,7 @@ will occur.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

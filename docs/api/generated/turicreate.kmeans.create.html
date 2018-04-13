@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.kmeans.create &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.kmeans.create &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="clustering" href="../turicreate.toolkits.clustering.html"/>
         <link rel="next" title="turicreate.kmeans.KmeansModel" href="turicreate.kmeans.KmeansModel.html"/>
         <link rel="prev" title="turicreate.dbscan.DBSCANModel" href="turicreate.dbscan.DBSCANModel.html"/> 
@@ -141,17 +141,15 @@ cluster membership between iterations, the algorithm terminates.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
-<blockquote>
-<div><p>Each row in the SFrame is an observation.</p>
-</div></blockquote>
-<p><strong>num_clusters</strong> : int</p>
-<blockquote>
-<div><p>Number of clusters. This is the &#8216;k&#8217; in k-means.</p>
-</div></blockquote>
-<p><strong>features</strong> : list[str], optional</p>
-<blockquote>
-<div><p>Names of feature columns to use in computing distances between
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">Each row in the SFrame is an observation.</p>
+</dd>
+<dt><strong>num_clusters</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Number of clusters. This is the &#8216;k&#8217; in k-means.</p>
+</dd>
+<dt><strong>features</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[str], optional</span></dt>
+<dd><p class="first">Names of feature columns to use in computing distances between
 observations and cluster centers. &#8216;None&#8217; (the default) indicates that
 all columns should be used as features. Columns may be of the following
 types:</p>
@@ -162,50 +160,47 @@ is treated as a distinct feature in the model.</li>
 <li><em>Dict</em>: dictionary of keys mapped to numeric values. Each unique key
 is treated as a distinct feature in the model.</li>
 </ul>
-<p>Note that columns of type <em>list</em> are not supported. Convert them to
+<p class="last">Note that columns of type <em>list</em> are not supported. Convert them to
 array columns if all entries in the list are of numeric types.</p>
-</div></blockquote>
-<p><strong>label</strong> : str, optional</p>
-<blockquote>
-<div><p>Name of the column to use as row labels in the Kmeans output. The
+</dd>
+<dt><strong>label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the column to use as row labels in the Kmeans output. The
 values in this column must be integers or strings. If not specified,
 row numbers are used by default.</p>
-</div></blockquote>
-<p><strong>initial_centers</strong> : SFrame, optional</p>
-<blockquote>
-<div><p>Initial centers to use when starting the K-means algorithm. If
+</dd>
+<dt><strong>initial_centers</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
+<dd><p class="first">Initial centers to use when starting the K-means algorithm. If
 specified, this parameter overrides the <em>num_clusters</em> parameter. The
 &#8216;initial_centers&#8217; SFrame must contain the same features used in the
 input &#8216;dataset&#8217;.</p>
-<p>If not specified (the default), initial centers are chosen
+<p class="last">If not specified (the default), initial centers are chosen
 intelligently with the K-means++ algorithm.</p>
-</div></blockquote>
-<p><strong>max_iterations</strong> : int, optional</p>
-<blockquote>
-<div><p>The maximum number of iterations to run. Prints a warning if the
+</dd>
+<dt><strong>max_iterations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The maximum number of iterations to run. Prints a warning if the
 algorithm does not converge after max_iterations iterations. If set to
 0, the model returns clusters defined by the initial centers and
 assignments to those centers.</p>
-</div></blockquote>
-<p><strong>batch_size</strong> : int, optional</p>
-<blockquote>
-<div><p>Number of randomly-chosen data points to use in each iteration. If
+</dd>
+<dt><strong>batch_size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">Number of randomly-chosen data points to use in each iteration. If
 &#8216;None&#8217; (the default) or greater than the number of rows in &#8216;dataset&#8217;,
 then this parameter is ignored: all rows of <cite>dataset</cite> are used in each
 iteration and model training terminates once point assignments stop
 changing or <cite>max_iterations</cite> is reached.</p>
-</div></blockquote>
-<p><strong>verbose</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, print model training progress to the screen.</p>
-</div></blockquote>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True, print model training progress to the screen.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : KmeansModel</p>
-<blockquote class="last">
-<div><p>A Model object containing a cluster id for each vertex, and the centers
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">KmeansModel</span></dt>
+<dd><p class="first last">A Model object containing a cluster id for each vertex, and the centers
 of the clusters.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -269,7 +264,7 @@ Proceedings of the 19th International Conference on World Wide Web. pp.
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -287,7 +282,7 @@ Proceedings of the 19th International Conference on World Wide Web. pp.
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

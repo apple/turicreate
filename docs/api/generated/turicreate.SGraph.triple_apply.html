@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SGraph.triple_apply &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SGraph.triple_apply &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -139,35 +139,35 @@ returned SGraph is equivalent to the following pseudocode:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>triple_apply_fn</strong> : function</p>
-<blockquote>
-<div><p>The function to apply to each triple of (source_vertex, edge,
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>triple_apply_fn</strong> <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
+<dd><p class="first last">The function to apply to each triple of (source_vertex, edge,
 target_vertex). This function must take as input a tuple of
 (source_data, edge_data, target_data) and return a tuple of
 (new_source_data, new_edge_data, new_target_data). All variables in
 the both tuples must be of dict type.
 This can also be a toolkit extension function which is compiled
 as a native shared library using SDK.</p>
-</div></blockquote>
-<p><strong>mutated_fields</strong> : list[str] | str</p>
-<blockquote>
-<div><p>Fields that <code class="docutils literal"><span class="pre">triple_apply_fn</span></code> will mutate. Note: columns that are
+</dd>
+<dt><strong>mutated_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[str] | str</span></dt>
+<dd><p class="first last">Fields that <code class="docutils literal"><span class="pre">triple_apply_fn</span></code> will mutate. Note: columns that are
 actually mutated by the triple apply function but not specified in
 <code class="docutils literal"><span class="pre">mutated_fields</span></code> will have undetermined effects.</p>
-</div></blockquote>
-<p><strong>input_fields</strong> : list[str] | str, optional</p>
-<blockquote>
-<div><p>Fields that <code class="docutils literal"><span class="pre">triple_apply_fn</span></code> will have access to.
+</dd>
+<dt><strong>input_fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[str] | str, optional</span></dt>
+<dd><p class="first last">Fields that <code class="docutils literal"><span class="pre">triple_apply_fn</span></code> will have access to.
 The default is <code class="docutils literal"><span class="pre">None</span></code>, which grants access to all fields.
 <code class="docutils literal"><span class="pre">mutated_fields</span></code> will always be included in <code class="docutils literal"><span class="pre">input_fields</span></code>.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SGraph</p>
-<blockquote class="last">
-<div><p>A new SGraph with updated vertex and edge data. Only fields
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SGraph</span></dt>
+<dd><p class="first last">A new SGraph with updated vertex and edge data. Only fields
 specified in the <code class="docutils literal"><span class="pre">mutated_fields</span></code> parameter are updated.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -243,7 +243,7 @@ triple.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -261,7 +261,7 @@ triple.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

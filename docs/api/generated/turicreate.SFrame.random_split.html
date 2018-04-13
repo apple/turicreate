@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.random_split &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SFrame.random_split &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,31 +123,39 @@
 <h1>turicreate.SFrame.random_split<a class="headerlink" href="#turicreate-sframe-random-split" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SFrame.random_split">
-<code class="descclassname">SFrame.</code><code class="descname">random_split</code><span class="sig-paren">(</span><em>fraction</em>, <em>seed=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.random_split" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SFrame.</code><code class="descname">random_split</code><span class="sig-paren">(</span><em>fraction</em>, <em>seed=None</em>, <em>exact=False</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.random_split" title="Permalink to this definition">¶</a></dt>
 <dd><p>Randomly split the rows of an SFrame into two SFrames. The first SFrame
 contains <em>M</em> rows, sampled uniformly (without replacement) from the
 original SFrame. <em>M</em> is approximately the fraction times the original
 number of rows. The second SFrame contains the remaining rows of the
 original SFrame.</p>
+<p>An exact fraction partition can be optionally obtained by setting 
+exact=True.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>fraction</strong> : float</p>
-<blockquote>
-<div><p>Approximate fraction of the rows to fetch for the first returned
-SFrame. Must be between 0 and 1.</p>
-</div></blockquote>
-<p><strong>seed</strong> : int, optional</p>
-<blockquote>
-<div><p>Seed for the random number generator used to split.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>fraction</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Fraction of the rows to fetch. Must be between 0 and 1.
+if exact is False (default), the number of rows returned is
+approximately the fraction times the number of rows.</p>
+</dd>
+<dt><strong>seed</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">Seed for the random number generator used to split.</p>
+</dd>
+<dt><strong>exact: bool, optional</strong></dt>
+<dd><p class="first last">Defaults to False. If exact=True, an exact fraction is returned, 
+but at a performance penalty.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : tuple [SFrame]</p>
-<blockquote class="last">
-<div><p>Two new SFrames.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">tuple [SFrame]</span></dt>
+<dd><p class="first last">Two new SFrames.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -174,7 +182,7 @@ it into training and testing datasets with about a 90%/10% split.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -192,7 +200,7 @@ it into training and testing datasets with about a 90%/10% split.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

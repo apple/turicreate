@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.text_analytics.count_ngrams &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.text_analytics.count_ngrams &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="text_analytics" href="../turicreate.toolkits.text_analytics.html"/>
         <link rel="next" title="turicreate.text_analytics.parse_sparse" href="turicreate.text_analytics.parse_sparse.html"/>
         <link rel="prev" title="turicreate.text_analytics.count_words" href="turicreate.text_analytics.count_words.html"/> 
@@ -141,57 +141,53 @@ and numeric values, or lists of strings.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sa</strong> : SArray[str | dict | list]</p>
-<blockquote>
-<div><p>Input text data.</p>
-</div></blockquote>
-<p><strong>n</strong> : int, optional</p>
-<blockquote>
-<div><p>The number of words in each n-gram. An <code class="docutils literal"><span class="pre">n</span></code> value of 1 returns word
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>sa</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray[str | dict | list]</span></dt>
+<dd><p class="first last">Input text data.</p>
+</dd>
+<dt><strong>n</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The number of words in each n-gram. An <code class="docutils literal"><span class="pre">n</span></code> value of 1 returns word
 counts.</p>
-</div></blockquote>
-<p><strong>method</strong> : {&#8216;word&#8217;, &#8216;character&#8217;}, optional</p>
-<blockquote>
-<div><p>If &#8220;word&#8221;, the function performs a count of word n-grams. If
+</dd>
+<dt><strong>method</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;word&#8217;, &#8216;character&#8217;}, optional</span></dt>
+<dd><p class="first last">If &#8220;word&#8221;, the function performs a count of word n-grams. If
 &#8220;character&#8221;, does a character n-gram count.</p>
-</div></blockquote>
-<p><strong>to_lower</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, all words are converted to lower case before counting.</p>
-</div></blockquote>
-<p><strong>delimiters</strong> : list[str], None, optional</p>
-<blockquote>
-<div><p>If method is &#8220;word&#8221;, input strings are tokenized using delimiter
+</dd>
+<dt><strong>to_lower</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True, all words are converted to lower case before counting.</p>
+</dd>
+<dt><strong>delimiters</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[str], None, optional</span></dt>
+<dd><p class="first last">If method is &#8220;word&#8221;, input strings are tokenized using delimiter
 characters in this list. Each entry in this list must contain a single
 character. If set to <cite>None</cite>, then a Penn treebank-style tokenization is
 used, which contains smart handling of punctuations. If method is
 &#8220;character,&#8221; this option is ignored.</p>
-</div></blockquote>
-<p><strong>ignore_punct</strong> : bool, optional</p>
-<blockquote>
-<div><p>If method is &#8220;character&#8221;, indicates if <em>punctuations</em> between words are
+</dd>
+<dt><strong>ignore_punct</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If method is &#8220;character&#8221;, indicates if <em>punctuations</em> between words are
 counted as part of the n-gram. For instance, with the input SArray
 element of &#8220;fun.games&#8221;, if this parameter is set to False one
 tri-gram would be &#8216;n.g&#8217;. If <code class="docutils literal"><span class="pre">ignore_punct</span></code> is set to True, there
 would be no such tri-gram (there would still be &#8216;nga&#8217;). This
 parameter has no effect if the method is set to &#8220;word&#8221;.</p>
-</div></blockquote>
-<p><strong>ignore_space</strong> : bool, optional</p>
-<blockquote>
-<div><p>If method is &#8220;character&#8221;, indicates if <em>spaces</em> between words are
+</dd>
+<dt><strong>ignore_space</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If method is &#8220;character&#8221;, indicates if <em>spaces</em> between words are
 counted as part of the n-gram. For instance, with the input SArray
 element of &#8220;fun games&#8221;, if this parameter is set to False one
 tri-gram would be &#8216;n g&#8217;. If <code class="docutils literal"><span class="pre">ignore_space</span></code> is set to True, there
 would be no such tri-gram (there would still be &#8216;nga&#8217;). This
 parameter has no effect if the method is set to &#8220;word&#8221;.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SArray[dict]</p>
-<blockquote class="last">
-<div><p>An SArray of dictionary type, where each key is the n-gram string
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray[dict]</span></dt>
+<dd><p class="first last">An SArray of dictionary type, where each key is the n-gram string
 and each value is its count.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -269,7 +265,7 @@ punctuations, spaces, neither, or both.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -287,7 +283,7 @@ punctuations, spaces, neither, or both.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

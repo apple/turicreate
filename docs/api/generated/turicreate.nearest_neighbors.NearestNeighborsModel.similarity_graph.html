@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.nearest_neighbors.NearestNeighborsModel.similarity_graph &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.nearest_neighbors.NearestNeighborsModel.similarity_graph &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -133,29 +133,26 @@ self-edges.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>k</strong> : int, optional</p>
-<blockquote>
-<div><p>Maximum number of neighbors to return for each point in the
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>k</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">Maximum number of neighbors to return for each point in the
 dataset. Setting this to <code class="docutils literal"><span class="pre">None</span></code> deactivates the constraint, so
 that all neighbors are returned within <code class="docutils literal"><span class="pre">radius</span></code> of a given point.</p>
-</div></blockquote>
-<p><strong>radius</strong> : float, optional</p>
-<blockquote>
-<div><p>For a given point, only neighbors within this distance are
+</dd>
+<dt><strong>radius</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">For a given point, only neighbors within this distance are
 returned. The default is <code class="docutils literal"><span class="pre">None</span></code>, in which case the <code class="docutils literal"><span class="pre">k</span></code> nearest
 neighbors are returned for each query point, regardless of
 distance.</p>
-</div></blockquote>
-<p><strong>include_self_edges</strong> : bool, optional</p>
-<blockquote>
-<div><p>For most distance functions, each point in the model&#8217;s reference
+</dd>
+<dt><strong>include_self_edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">For most distance functions, each point in the model&#8217;s reference
 dataset is its own nearest neighbor. If this parameter is set to
 False, this result is ignored, and the nearest neighbors are
 returned <em>excluding</em> the point itself.</p>
-</div></blockquote>
-<p><strong>output_type</strong> : {&#8216;SGraph&#8217;, &#8216;SFrame&#8217;}, optional</p>
-<blockquote>
-<div><p>By default, the results are returned in the form of an SGraph,
+</dd>
+<dt><strong>output_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;SGraph&#8217;, &#8216;SFrame&#8217;}, optional</span></dt>
+<dd><p class="first last">By default, the results are returned in the form of an SGraph,
 where each point in the reference dataset is a vertex and an edge A
 -&gt; B indicates that vertex B is a nearest neighbor of vertex A. If
 &#8216;output_type&#8217; is set to &#8216;SFrame&#8217;, the output is in the same form as
@@ -163,18 +160,19 @@ the results of the &#8216;query&#8217; method: an SFrame with columns
 indicating the query label (in this case the query data is the same
 as the reference data), reference label, distance between the two
 points, and the rank of the neighbor.</p>
-</div></blockquote>
-<p><strong>verbose</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, print progress updates and model details.</p>
-</div></blockquote>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True, print progress updates and model details.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SFrame or SGraph</p>
-<blockquote class="last">
-<div><p>The type of the output object depends on the &#8216;output_type&#8217;
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame or SGraph</span></dt>
+<dd><p class="first last">The type of the output object depends on the &#8216;output_type&#8217;
 parameter. See the parameter description for more detail.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -226,7 +224,7 @@ from the results.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -244,7 +242,7 @@ from the results.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

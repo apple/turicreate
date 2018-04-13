@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.nearest_neighbors.NearestNeighborsModel.query &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.nearest_neighbors.NearestNeighborsModel.query &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -133,49 +133,47 @@ exclude results that match query points to themselves.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
-<blockquote>
-<div><p>Query data. Must contain columns with the same names and types as
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">Query data. Must contain columns with the same names and types as
 the features used to train the model. Additional columns are
 allowed, but ignored. Please see the nearest neighbors
 <a class="reference internal" href="turicreate.nearest_neighbors.create.html#turicreate.nearest_neighbors.create" title="turicreate.nearest_neighbors.create"><code class="xref py py-func docutils literal"><span class="pre">create()</span></code></a> documentation for more
 detail on allowable data types.</p>
-</div></blockquote>
-<p><strong>label</strong> : str, optional</p>
-<blockquote>
-<div><p>Name of the query SFrame column with row labels. If &#8216;label&#8217; is not
+</dd>
+<dt><strong>label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Name of the query SFrame column with row labels. If &#8216;label&#8217; is not
 specified, row numbers are used to identify query dataset rows in
 the output SFrame.</p>
-</div></blockquote>
-<p><strong>k</strong> : int, optional</p>
-<blockquote>
-<div><p>Number of nearest neighbors to return from the reference set for
+</dd>
+<dt><strong>k</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">Number of nearest neighbors to return from the reference set for
 each query observation. The default is 5 neighbors, but setting it
 to <code class="docutils literal"><span class="pre">None</span></code> will return all neighbors within <code class="docutils literal"><span class="pre">radius</span></code> of the
 query point.</p>
-</div></blockquote>
-<p><strong>radius</strong> : float, optional</p>
-<blockquote>
-<div><p>Only neighbors whose distance to a query point is smaller than this
+</dd>
+<dt><strong>radius</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Only neighbors whose distance to a query point is smaller than this
 value are returned. The default is <code class="docutils literal"><span class="pre">None</span></code>, in which case the
 <code class="docutils literal"><span class="pre">k</span></code> nearest neighbors are returned for each query point,
 regardless of distance.</p>
-</div></blockquote>
-<p><strong>verbose: bool, optional</strong></p>
-<blockquote>
-<div><p>If True, print progress updates and model details.</p>
-</div></blockquote>
+</dd>
+<dt><strong>verbose: bool, optional</strong></dt>
+<dd><p class="first last">If True, print progress updates and model details.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SFrame</p>
-<blockquote class="last">
-<div><p>An SFrame with the k-nearest neighbors of each query observation.
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">An SFrame with the k-nearest neighbors of each query observation.
 The result contains four columns: the first is the label of the
 query observation, the second is the label of the nearby reference
 observation, the third is the distance between the query and
 reference observations, and the fourth is the rank of the reference
 observation among the query&#8217;s k-nearest neighbors.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -240,7 +238,7 @@ reference SFrame. This SFrame is passed to the <code class="docutils literal"><s
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -258,7 +256,7 @@ reference SFrame. This SFrame is passed to the <code class="docutils literal"><s
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

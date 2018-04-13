@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.decision_tree_regression.create &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.decision_tree_regression.create &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="regression" href="../turicreate.toolkits.regression.html"/>
         <link rel="next" title="turicreate.decision_tree_regression.DecisionTreeRegression" href="turicreate.decision_tree_regression.DecisionTreeRegression.html"/>
         <link rel="prev" title="turicreate.random_forest_regression.RandomForestRegression" href="turicreate.random_forest_regression.RandomForestRegression.html"/> 
@@ -139,68 +139,61 @@ from list- or dictionary-type SFrame columns.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
-<blockquote>
-<div><p>A training dataset containing feature columns and a target column.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">A training dataset containing feature columns and a target column.
 Only numerical typed (int, float) target column is allowed.</p>
-</div></blockquote>
-<p><strong>target</strong> : str</p>
-<blockquote>
-<div><p>The name of the column in <code class="docutils literal"><span class="pre">dataset</span></code> that is the prediction target.
+</dd>
+<dt><strong>target</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The name of the column in <code class="docutils literal"><span class="pre">dataset</span></code> that is the prediction target.
 This column must have a numeric type.</p>
-</div></blockquote>
-<p><strong>features</strong> : list[str], optional</p>
-<blockquote>
-<div><p>A list of columns names of features used for training the model.
+</dd>
+<dt><strong>features</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[str], optional</span></dt>
+<dd><p class="first last">A list of columns names of features used for training the model.
 Defaults to None, using all columns.</p>
-</div></blockquote>
-<p><strong>validation_set</strong> : SFrame, optional</p>
-<blockquote>
-<div><p>The validation set that is used to watch the validation result as
+</dd>
+<dt><strong>validation_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
+<dd><p class="first last">The validation set that is used to watch the validation result as
 boosting progress.</p>
-</div></blockquote>
-<p><strong>max_depth</strong> : float, optional</p>
-<blockquote>
-<div><p>Maximum depth of a tree. Must be at least 1.</p>
-</div></blockquote>
-<p><strong>min_loss_reduction</strong> : float, optional (non-negative)</p>
-<blockquote>
-<div><p>Minimum loss reduction required to make a further partition/split a
+</dd>
+<dt><strong>max_depth</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Maximum depth of a tree. Must be at least 1.</p>
+</dd>
+<dt><strong>min_loss_reduction</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional (non-negative)</span></dt>
+<dd><p class="first last">Minimum loss reduction required to make a further partition/split a
 node during the tree learning phase. Larger (more positive) values
 can help prevent overfitting by avoiding splits that do not
 sufficiently reduce the loss function.</p>
-</div></blockquote>
-<p><strong>min_child_weight</strong> : float, optional (non-negative)</p>
-<blockquote>
-<div><p>Controls the minimum weight of each leaf node. Larger values result in
+</dd>
+<dt><strong>min_child_weight</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional (non-negative)</span></dt>
+<dd><p class="first last">Controls the minimum weight of each leaf node. Larger values result in
 more conservative tree learning and help prevent overfitting.
 Formally, this is minimum sum of instance weights (hessians) in each
 node. If the tree learning algorithm results in a leaf node with the
 sum of instance weights less than <cite>min_child_weight</cite>, tree building
 will terminate.</p>
-</div></blockquote>
-<p><strong>verbose</strong> : boolean, optional</p>
-<blockquote>
-<div><p>If True, print progress information during training.</p>
-</div></blockquote>
-<p><strong>random_seed: int, optional</strong></p>
-<blockquote>
-<div><p>Seeds random operations such as column and row subsampling, such that
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
+<dd><p class="first last">If True, print progress information during training.</p>
+</dd>
+<dt><strong>random_seed: int, optional</strong></dt>
+<dd><p class="first last">Seeds random operations such as column and row subsampling, such that
 results are reproducible.</p>
-</div></blockquote>
-<p><strong>metric</strong> : str or list[str], optional</p>
-<blockquote>
-<div><p>Performance metric(s) that are tracked during training. When specified,
+</dd>
+<dt><strong>metric</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str or list[str], optional</span></dt>
+<dd><p class="first last">Performance metric(s) that are tracked during training. When specified,
 the progress table will display the tracked metric(s) on training and
 validation set.
 Supported metrics are: {&#8216;rmse&#8217;, &#8216;max_error&#8217;}</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : DecisionTreeRegression</p>
-<blockquote class="last">
-<div><p>A trained decision tree model</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">DecisionTreeRegression</span></dt>
+<dd><p class="first last">A trained decision tree model</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -256,7 +249,7 @@ Supported metrics are: {&#8216;rmse&#8217;, &#8216;max_error&#8217;}</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -274,7 +267,7 @@ Supported metrics are: {&#8216;rmse&#8217;, &#8216;max_error&#8217;}</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

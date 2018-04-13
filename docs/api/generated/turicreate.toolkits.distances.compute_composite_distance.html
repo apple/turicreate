@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.toolkits.distances.compute_composite_distance &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.toolkits.distances.compute_composite_distance &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="distances" href="../turicreate.toolkits.distances.html"/>
         <link rel="next" title="turicreate.toolkits.distances.build_address_distance" href="turicreate.toolkits.distances.build_address_distance.html"/>
         <link rel="prev" title="turicreate.toolkits.distances.weighted_jaccard" href="turicreate.toolkits.distances.weighted_jaccard.html"/> 
@@ -137,32 +137,33 @@ typically SFrame rows.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>distance</strong> : list[list]</p>
-<blockquote>
-<div><p>A composite distance function. Composite distance functions are a
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>distance</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[list]</span></dt>
+<dd><p class="first">A composite distance function. Composite distance functions are a
 weighted sum of standard distance functions, each of which applies to
 its own subset of features. Composite distance functions are specified
 as a list of distance components, each of which is itself a list
 containing three items:</p>
-<blockquote>
+<blockquote class="last">
 <div><ol class="arabic simple">
 <li>list or tuple of feature names (strings)</li>
 <li>standard distance name (string)</li>
 <li>scaling factor (int or float)</li>
 </ol>
 </div></blockquote>
-</div></blockquote>
-<p><strong>x, y</strong> : dict</p>
-<blockquote>
-<div><p>Individual observations, typically rows of an SFrame, in dictionary
+</dd>
+<dt><strong>x, y</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Individual observations, typically rows of an SFrame, in dictionary
 form. Must include the features specified by <cite>distance</cite>.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : float</p>
-<blockquote class="last">
-<div><p>The distance between <cite>x</cite> and <cite>y</cite>, as specified by <cite>distance</cite>.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">The distance between <cite>x</cite> and <cite>y</cite>, as specified by <cite>distance</cite>.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -202,7 +203,7 @@ form. Must include the features specified by <cite>distance</cite>.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -220,7 +221,7 @@ form. Must include the features specified by <cite>distance</cite>.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

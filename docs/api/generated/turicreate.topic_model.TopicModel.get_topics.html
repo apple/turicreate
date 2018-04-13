@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.topic_model.TopicModel.get_topics &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.topic_model.TopicModel.get_topics &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -131,40 +131,39 @@ particular topic.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>topic_ids</strong> : list of int, optional</p>
-<blockquote>
-<div><p>The topics to retrieve words. Topic ids are zero-based.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>topic_ids</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of int, optional</span></dt>
+<dd><p class="first last">The topics to retrieve words. Topic ids are zero-based.
 Throws an error if greater than or equal to m[&#8216;num_topics&#8217;], or
 if the requested topic name is not present.</p>
-</div></blockquote>
-<p><strong>num_words</strong> : int, optional</p>
-<blockquote>
-<div><p>The number of words to show.</p>
-</div></blockquote>
-<p><strong>cdf_cutoff</strong> : float, optional</p>
-<blockquote>
-<div><p>Allows one to only show the most probable words whose cumulative
+</dd>
+<dt><strong>num_words</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The number of words to show.</p>
+</dd>
+<dt><strong>cdf_cutoff</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first">Allows one to only show the most probable words whose cumulative
 probability is below this cutoff. For example if there exist
 three words where</p>
 <div class="math">
 \[p(word_1 | topic_k) = .1\]\[p(word_2 | topic_k) = .2\]\[p(word_3 | topic_k) = .05\]</div>
-<p>then setting <span class="math">\(cdf_{cutoff}=.3\)</span> would return only
+<p class="last">then setting <span class="math">\(cdf_{cutoff}=.3\)</span> would return only
 <span class="math">\(word_1\)</span> and <span class="math">\(word_2\)</span> since
 <span class="math">\(p(word_1 | topic_k) + p(word_2 | topic_k) &lt;= cdf_{cutoff}\)</span></p>
-</div></blockquote>
-<p><strong>output_type</strong> : {&#8216;topic_probabilities&#8217; | &#8216;topic_words&#8217;}, optional</p>
-<blockquote>
-<div><p>Determine the type of desired output. See below.</p>
-</div></blockquote>
+</dd>
+<dt><strong>output_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;topic_probabilities&#8217; | &#8216;topic_words&#8217;}, optional</span></dt>
+<dd><p class="first last">Determine the type of desired output. See below.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SFrame</p>
-<blockquote class="last">
-<div><p>If output_type is &#8216;topic_probabilities&#8217;, then the returned value is
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">If output_type is &#8216;topic_probabilities&#8217;, then the returned value is
 an SFrame with a column of words ranked by a column of scores for
 each topic. Otherwise, the returned value is a SArray where
 each element is a list of the most probable words for each topic.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -242,7 +241,7 @@ change the format of the output as follows.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -260,7 +259,7 @@ change the format of the output as follows.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

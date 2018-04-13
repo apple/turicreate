@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.text_analytics.trim_rare_words &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.text_analytics.trim_rare_words &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="text_analytics" href="../turicreate.toolkits.text_analytics.html"/>
         <link rel="next" title="topic_model" href="../turicreate.toolkits.topic_model.html"/>
         <link rel="prev" title="turicreate.text_analytics.tokenize" href="turicreate.text_analytics.tokenize.html"/> 
@@ -153,37 +153,35 @@ key must be of integer type and is considered to be the count of that key.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sa: SArray[str | dict | list]</strong></p>
-<blockquote>
-<div><p>The input text data.</p>
-</div></blockquote>
-<p><strong>threshold</strong> : int, optional</p>
-<blockquote>
-<div><p>The count below which words are removed from the input.</p>
-</div></blockquote>
-<p><strong>stopwords: list[str], optional</strong></p>
-<blockquote>
-<div><p>A manually specified list of stopwords, which are removed regardless
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>sa: SArray[str | dict | list]</strong></dt>
+<dd><p class="first last">The input text data.</p>
+</dd>
+<dt><strong>threshold</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The count below which words are removed from the input.</p>
+</dd>
+<dt><strong>stopwords: list[str], optional</strong></dt>
+<dd><p class="first last">A manually specified list of stopwords, which are removed regardless
 of count.</p>
-</div></blockquote>
-<p><strong>to_lower</strong> : bool, optional</p>
-<blockquote>
-<div><p>Indicates whether to map the input strings to lower case before counting.</p>
-</div></blockquote>
-<p><strong>delimiters: list[string], optional</strong></p>
-<blockquote>
-<div><p>A list of delimiter characters for tokenization. By default, the list
+</dd>
+<dt><strong>to_lower</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">Indicates whether to map the input strings to lower case before counting.</p>
+</dd>
+<dt><strong>delimiters: list[string], optional</strong></dt>
+<dd><p class="first last">A list of delimiter characters for tokenization. By default, the list
 is defined to be the list of space characters. The user can define
 any custom list of single-character delimiters. Alternatively, setting
 <cite>delimiters=None</cite> will use a Penn treebank type tokenization, which
 is better at handling punctuations. (See reference below for details.)</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SArray.</p>
-<blockquote class="last">
-<div><p>An SArray with words below a threshold removed.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray.</span></dt>
+<dd><p class="first last">An SArray with words below a threshold removed.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -255,7 +253,7 @@ is better at handling punctuations. (See reference below for details.)</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -273,7 +271,7 @@ is better at handling punctuations. (See reference below for details.)</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.kcore.create &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.kcore.create &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="graph_analytics" href="../turicreate.toolkits.graph_analytics.html"/>
         <link rel="next" title="turicreate.kcore.KcoreModel" href="turicreate.kcore.KcoreModel.html"/>
         <link rel="prev" title="turicreate.graph_coloring.GraphColoringModel" href="turicreate.graph_coloring.GraphColoringModel.html"/> 
@@ -137,27 +137,28 @@ total number of cores as well as the core id for each vertex in the graph.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>graph</strong> : SGraph</p>
-<blockquote>
-<div><p>The graph on which to compute the k-core decomposition.</p>
-</div></blockquote>
-<p><strong>kmin</strong> : int, optional</p>
-<blockquote>
-<div><p>Minimum core id. Vertices having smaller core id than <cite>kmin</cite> will be
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>graph</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SGraph</span></dt>
+<dd><p class="first last">The graph on which to compute the k-core decomposition.</p>
+</dd>
+<dt><strong>kmin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">Minimum core id. Vertices having smaller core id than <cite>kmin</cite> will be
 assigned with core_id = <cite>kmin</cite>.</p>
-</div></blockquote>
-<p><strong>kmax</strong> : int, optional</p>
-<blockquote>
-<div><p>Maximum core id. Vertices having larger core id than <cite>kmax</cite> will be
+</dd>
+<dt><strong>kmax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">Maximum core id. Vertices having larger core id than <cite>kmax</cite> will be
 assigned with core_id=`kmax`.</p>
-</div></blockquote>
-<p><strong>verbose</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, print progress updates.</p>
-</div></blockquote>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True, print progress updates.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>out</strong> : KcoreModel</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">KcoreModel</span></dt>
+<dd></dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -211,7 +212,7 @@ ordering is preserved through <code class="docutils literal"><span class="pre">c
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -229,7 +230,7 @@ ordering is preserved through <code class="docutils literal"><span class="pre">c
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

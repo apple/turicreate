@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.recommender.item_content_recommender.ItemContentRecommender.recommend &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.recommender.item_content_recommender.ItemContentRecommender.recommend &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -129,9 +129,9 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>users</strong> :  SArray, SFrame, or list, optional</p>
-<blockquote>
-<div><p>Users or observation queries for which to make recommendations.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>users</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray, SFrame, or list, optional</span></dt>
+<dd><p class="first last">Users or observation queries for which to make recommendations.
 For list, SArray, and single-column inputs, this is simply a set
 of user IDs. By default, recommendations are returned for all
 users present when the model was trained. However, if the
@@ -144,14 +144,12 @@ queried using an SFrame with user ID and time columns.  In this
 case, the user ID column must be present, and all column names
 should match those in the <code class="docutils literal"><span class="pre">observation_data</span></code> SFrame passed to
 <code class="docutils literal"><span class="pre">create.</span></code></p>
-</div></blockquote>
-<p><strong>k</strong> : int, optional</p>
-<blockquote>
-<div><p>The number of recommendations to generate for each user.</p>
-</div></blockquote>
-<p><strong>items</strong> : SArray, SFrame, or list, optional</p>
-<blockquote>
-<div><p>Restricts the items from which recommendations can be made. If
+</dd>
+<dt><strong>k</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The number of recommendations to generate for each user.</p>
+</dd>
+<dt><strong>items</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray, SFrame, or list, optional</span></dt>
+<dd><p class="first last">Restricts the items from which recommendations can be made. If
 <code class="docutils literal"><span class="pre">items</span></code> is an SArray, list, or SFrame with a single column,
 only items from the given set will be recommended. This can be
 used, for example, to restrict the recommendations to items
@@ -162,81 +160,75 @@ restriction is specialized to each user. For example, if
 and (U1, I3) &#8211; then the recommendations for user U1 are
 chosen from items I1, I2, and I3. By default, recommendations
 are made from all items present when the model was trained.</p>
-</div></blockquote>
-<p><strong>new_observation_data</strong> : SFrame, optional</p>
-<blockquote>
-<div><p><code class="docutils literal"><span class="pre">new_observation_data</span></code> gives additional observation data
+</dd>
+<dt><strong>new_observation_data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
+<dd><p class="first last"><code class="docutils literal"><span class="pre">new_observation_data</span></code> gives additional observation data
 to the model, which may be used by the models to improve
 score and recommendation accuracy.  Must be in the same
 format as the observation data passed to <code class="docutils literal"><span class="pre">create</span></code>.  How
 this data is used varies by model.</p>
-</div></blockquote>
-<p><strong>new_user_data</strong> : SFrame, optional</p>
-<blockquote>
-<div><p><code class="docutils literal"><span class="pre">new_user_data</span></code> may give additional user data to the
+</dd>
+<dt><strong>new_user_data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
+<dd><p class="first last"><code class="docutils literal"><span class="pre">new_user_data</span></code> may give additional user data to the
 model.  If present, scoring is done with reference to this
 new information.  If there is any overlap with the side
 information present at training time, then this new side
 data is preferred.  Must be in the same format as the user
 data passed to <code class="docutils literal"><span class="pre">create</span></code>.</p>
-</div></blockquote>
-<p><strong>new_item_data</strong> : SFrame, optional</p>
-<blockquote>
-<div><p><code class="docutils literal"><span class="pre">new_item_data</span></code> may give additional item data to the
+</dd>
+<dt><strong>new_item_data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
+<dd><p class="first last"><code class="docutils literal"><span class="pre">new_item_data</span></code> may give additional item data to the
 model.  If present, scoring is done with reference to this
 new information.  If there is any overlap with the side
 information present at training time, then this new side
 data is preferred.  Must be in the same format as the item
 data passed to <code class="docutils literal"><span class="pre">create</span></code>.</p>
-</div></blockquote>
-<p><strong>exclude</strong> : SFrame, optional</p>
-<blockquote>
-<div><p>An <a class="reference internal" href="turicreate.SFrame.html#turicreate.SFrame" title="turicreate.SFrame"><code class="xref py py-class docutils literal"><span class="pre">SFrame</span></code></a> of user / item pairs.  The
+</dd>
+<dt><strong>exclude</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
+<dd><p class="first last">An <a class="reference internal" href="turicreate.SFrame.html#turicreate.SFrame" title="turicreate.SFrame"><code class="xref py py-class docutils literal"><span class="pre">SFrame</span></code></a> of user / item pairs.  The
 column names must be equal to the user and item columns of
 the main data, and it provides the model with user/item
 pairs to exclude from the recommendations.  These
 user-item-pairs are always excluded from the predictions,
 even if exclude_known is False.</p>
-</div></blockquote>
-<p><strong>exclude_known</strong> : bool, optional</p>
-<blockquote>
-<div><p>By default, all user-item interactions previously seen in
+</dd>
+<dt><strong>exclude_known</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">By default, all user-item interactions previously seen in
 the training data, or in any new data provided using
 new_observation_data.., are excluded from the
 recommendations.  Passing in <code class="docutils literal"><span class="pre">exclude_known</span> <span class="pre">=</span> <span class="pre">False</span></code>
 overrides this behavior.</p>
-</div></blockquote>
-<p><strong>diversity</strong> : non-negative float, optional</p>
-<blockquote>
-<div><p>If given, then the recommend function attempts chooses a set
+</dd>
+<dt><strong>diversity</strong> <span class="classifier-delimiter">:</span> <span class="classifier">non-negative float, optional</span></dt>
+<dd><p class="first last">If given, then the recommend function attempts chooses a set
 of <cite>k</cite> items that are both highly scored and different from
 other items in that set. It does this by first retrieving
 <code class="docutils literal"><span class="pre">k*(1+diversity)</span></code> recommended items, then randomly
 choosing a diverse set from these items.  Suggested values
 for diversity are between 1 and 3.</p>
-</div></blockquote>
-<p><strong>random_seed</strong> : int, optional</p>
-<blockquote>
-<div><p>If diversity is larger than 0, then some randomness is used;
+</dd>
+<dt><strong>random_seed</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">If diversity is larger than 0, then some randomness is used;
 this controls the random seed to use for randomization.  If
 None, will be different each time.</p>
-</div></blockquote>
-<p><strong>verbose</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, print the progress of generating recommendation.</p>
-</div></blockquote>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True, print the progress of generating recommendation.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SFrame</p>
-<blockquote class="last">
-<div><p>A SFrame with the top ranked items for each user. The
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">A SFrame with the top ranked items for each user. The
 columns are: <code class="docutils literal"><span class="pre">user_id</span></code>, <code class="docutils literal"><span class="pre">item_id</span></code>, <em>score</em>,
 and <em>rank</em>, where <code class="docutils literal"><span class="pre">user_id</span></code> and <code class="docutils literal"><span class="pre">item_id</span></code>
 match the user and item column names specified at training
 time.  The rank column is between 1 and <code class="docutils literal"><span class="pre">k</span></code> and gives
 the relative score of that item.  The value of score
 depends on the method used for recommendations.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -258,7 +250,7 @@ depends on the method used for recommendations.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -276,7 +268,7 @@ depends on the method used for recommendations.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

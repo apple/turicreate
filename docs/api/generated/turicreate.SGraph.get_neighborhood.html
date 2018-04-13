@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SGraph.get_neighborhood &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SGraph.get_neighborhood &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -131,32 +131,32 @@ time-consuming query for a very large subgraph.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ids</strong> : list [int | float | str]</p>
-<blockquote>
-<div><p>List of target vertex IDs.</p>
-</div></blockquote>
-<p><strong>radius</strong> : int, optional</p>
-<blockquote>
-<div><p>Radius of the neighborhood. Every vertex in the returned subgraph is
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>ids</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list [int | float | str]</span></dt>
+<dd><p class="first last">List of target vertex IDs.</p>
+</dd>
+<dt><strong>radius</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">Radius of the neighborhood. Every vertex in the returned subgraph is
 reachable from at least one of the target vertices on a path of
 length no longer than <code class="docutils literal"><span class="pre">radius</span></code>. Setting radius larger than 2 may
 result in a very large subgraph.</p>
-</div></blockquote>
-<p><strong>full_subgraph</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, return all edges between vertices in the returned
+</dd>
+<dt><strong>full_subgraph</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True, return all edges between vertices in the returned
 neighborhood. The result is also known as the subgraph induced by
 the target nodes&#8217; neighbors, or the egocentric network for the
 target nodes. If False, return only edges on paths of length &lt;=
 <code class="docutils literal"><span class="pre">radius</span></code> from the target node, also known as the reachability
 graph.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : Graph</p>
-<blockquote class="last">
-<div><p>The subgraph with the neighborhoods around the target vertices.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Graph</span></dt>
+<dd><p class="first last">The subgraph with the neighborhoods around the target vertices.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -192,7 +192,7 @@ centrality</a>.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -210,7 +210,7 @@ centrality</a>.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

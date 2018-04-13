@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SGraph &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SGraph &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="Data" href="../turicreate.data_structures.html"/>
         <link rel="next" title="turicreate.Image" href="turicreate.Image.html"/>
         <link rel="prev" title="turicreate.SFrame" href="turicreate.SFrame.html"/> 
@@ -144,30 +144,27 @@ for a more detailed introduction to creating and working with SGraphs.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>vertices</strong> : SFrame, optional</p>
-<blockquote>
-<div><p>Vertex data. Must include an ID column with the name specified by
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>vertices</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
+<dd><p class="first last">Vertex data. Must include an ID column with the name specified by
 the <cite>vid_field</cite> parameter. Additional columns are treated as vertex
 attributes.</p>
-</div></blockquote>
-<p><strong>edges</strong> : SFrame, optional</p>
-<blockquote>
-<div><p>Edge data. Must include source and destination ID columns as specified
+</dd>
+<dt><strong>edges</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
+<dd><p class="first last">Edge data. Must include source and destination ID columns as specified
 by <cite>src_field</cite> and <cite>dst_field</cite> parameters. Additional columns are treated
 as edge attributes.</p>
-</div></blockquote>
-<p><strong>vid_field</strong> : str, optional</p>
-<blockquote>
-<div><p>The name of vertex ID column in the <cite>vertices</cite> SFrame.</p>
-</div></blockquote>
-<p><strong>src_field</strong> : str, optional</p>
-<blockquote>
-<div><p>The name of source ID column in the <cite>edges</cite> SFrame.</p>
-</div></blockquote>
-<p><strong>dst_field</strong> : str, optional</p>
-<blockquote class="last">
-<div><p>The name of destination ID column in the <cite>edges</cite> SFrame.</p>
-</div></blockquote>
+</dd>
+<dt><strong>vid_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The name of vertex ID column in the <cite>vertices</cite> SFrame.</p>
+</dd>
+<dt><strong>src_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The name of source ID column in the <cite>edges</cite> SFrame.</p>
+</dd>
+<dt><strong>dst_field</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The name of destination ID column in the <cite>edges</cite> SFrame.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -277,7 +274,7 @@ graph; the old graph gets garbage collected.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -295,7 +292,7 @@ graph; the old graph gets garbage collected.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

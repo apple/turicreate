@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.export_csv &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SFrame.export_csv &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -129,57 +129,47 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : string</p>
-<blockquote>
-<div><p>The location to save the CSV.</p>
-</div></blockquote>
-<p><strong>delimiter</strong> : string, optional</p>
-<blockquote>
-<div><p>This describes the delimiter used for writing csv files.</p>
-</div></blockquote>
-<p><strong>line_terminator: string, optional</strong></p>
-<blockquote>
-<div><p>The newline character</p>
-</div></blockquote>
-<p><strong>header</strong> : bool, optional</p>
-<blockquote>
-<div><p>If true, the column names are emitted as a header.</p>
-</div></blockquote>
-<p><strong>quote_level: csv.QUOTE_ALL | csv.QUOTE_NONE | csv.QUOTE_NONNUMERIC, optional</strong></p>
-<blockquote>
-<div><p>The quoting level. If csv.QUOTE_ALL, every field is quoted.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">The location to save the CSV.</p>
+</dd>
+<dt><strong>delimiter</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">This describes the delimiter used for writing csv files.</p>
+</dd>
+<dt><strong>line_terminator: string, optional</strong></dt>
+<dd><p class="first last">The newline character</p>
+</dd>
+<dt><strong>header</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If true, the column names are emitted as a header.</p>
+</dd>
+<dt><strong>quote_level: csv.QUOTE_ALL | csv.QUOTE_NONE | csv.QUOTE_NONNUMERIC, optional</strong></dt>
+<dd><p class="first last">The quoting level. If csv.QUOTE_ALL, every field is quoted.
 if csv.quote_NONE, no field is quoted. If csv.QUOTE_NONNUMERIC, only
 non-numeric fileds are quoted. csv.QUOTE_MINIMAL is interpreted as
 csv.QUOTE_NONNUMERIC.</p>
-</div></blockquote>
-<p><strong>double_quote</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, quotes are escaped as two consecutive quotes</p>
-</div></blockquote>
-<p><strong>escape_char</strong> : string, optional</p>
-<blockquote>
-<div><p>Character which begins a C escape sequence</p>
-</div></blockquote>
-<p><strong>quote_char: string, optional</strong></p>
-<blockquote>
-<div><p>Character used to quote fields</p>
-</div></blockquote>
-<p><strong>na_rep: string, optional</strong></p>
-<blockquote>
-<div><p>The value used to denote a missing value.</p>
-</div></blockquote>
-<p><strong>file_header: string, optional</strong></p>
-<blockquote>
-<div><p>A string printed to the start of the file</p>
-</div></blockquote>
-<p><strong>file_footer: string, optional</strong></p>
-<blockquote>
-<div><p>A string printed to the end of the file</p>
-</div></blockquote>
-<p><strong>line_prefix: string, optional</strong></p>
-<blockquote class="last">
-<div><p>A string printed at the start of each value line</p>
-</div></blockquote>
+</dd>
+<dt><strong>double_quote</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True, quotes are escaped as two consecutive quotes</p>
+</dd>
+<dt><strong>escape_char</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">Character which begins a C escape sequence</p>
+</dd>
+<dt><strong>quote_char: string, optional</strong></dt>
+<dd><p class="first last">Character used to quote fields</p>
+</dd>
+<dt><strong>na_rep: string, optional</strong></dt>
+<dd><p class="first last">The value used to denote a missing value.</p>
+</dd>
+<dt><strong>file_header: string, optional</strong></dt>
+<dd><p class="first last">A string printed to the start of the file</p>
+</dd>
+<dt><strong>file_footer: string, optional</strong></dt>
+<dd><p class="first last">A string printed to the end of the file</p>
+</dd>
+<dt><strong>line_prefix: string, optional</strong></dt>
+<dd><p class="first last">A string printed at the start of each value line</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -197,7 +187,7 @@ csv.QUOTE_NONNUMERIC.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -215,7 +205,7 @@ csv.QUOTE_NONNUMERIC.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

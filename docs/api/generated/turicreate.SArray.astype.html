@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SArray.astype &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SArray.astype &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -130,21 +130,22 @@ exception if the types are not castable to the given type.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dtype</strong> : {int, float, str, list, array.array, dict, datetime.datetime}</p>
-<blockquote>
-<div><p>The type to cast the elements to in SArray</p>
-</div></blockquote>
-<p><strong>undefined_on_failure: bool, optional</strong></p>
-<blockquote>
-<div><p>If set to True, runtime cast failures will be emitted as missing
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dtype</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{int, float, str, list, array.array, dict, datetime.datetime}</span></dt>
+<dd><p class="first last">The type to cast the elements to in SArray</p>
+</dd>
+<dt><strong>undefined_on_failure: bool, optional</strong></dt>
+<dd><p class="first last">If set to True, runtime cast failures will be emitted as missing
 values rather than failing.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SArray [dtype]</p>
-<blockquote class="last">
-<div><p>The SArray converted to the type <code class="docutils literal"><span class="pre">dtype</span></code>.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray [dtype]</span></dt>
+<dd><p class="first last">The SArray converted to the type <code class="docutils literal"><span class="pre">dtype</span></code>.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -189,7 +190,7 @@ type:</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -207,7 +208,7 @@ type:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

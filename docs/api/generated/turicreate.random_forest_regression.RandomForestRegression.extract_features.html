@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.random_forest_regression.RandomForestRegression.extract_features &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.random_forest_regression.RandomForestRegression.extract_features &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -136,17 +136,16 @@ an <a class="reference internal" href="turicreate.svm_classifier.SVMClassifier.h
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
-<blockquote>
-<div><p>Dataset of new observations. Must include columns with the same
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">Dataset of new observations. Must include columns with the same
 names as the features used for model training, but does not require
 a target column. Additional columns are ignored.</p>
-</div></blockquote>
-<p><strong>missing_value_action: str, optional</strong></p>
-<blockquote>
-<div><p>Action to perform when missing values are encountered. This can be
+</dd>
+<dt><strong>missing_value_action: str, optional</strong></dt>
+<dd><p class="first">Action to perform when missing values are encountered. This can be
 one of:</p>
-<ul class="simple">
+<ul class="last simple">
 <li>&#8216;auto&#8217;: Choose a model dependent missing value policy.</li>
 <li><dl class="first docutils">
 <dt>&#8216;impute&#8217;: Proceed with evaluation by filling in the missing</dt>
@@ -166,13 +165,15 @@ missing during evaluation.</dd>
 </dl>
 </li>
 </ul>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SArray</p>
-<blockquote class="last">
-<div><p>An SArray of dtype array.array containing extracted features.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray</span></dt>
+<dd><p class="first last">An SArray of dtype array.array containing extracted features.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -203,7 +204,7 @@ missing during evaluation.</dd>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -221,7 +222,7 @@ missing during evaluation.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

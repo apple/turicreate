@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrameBuilder &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SFrameBuilder &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="Data" href="../turicreate.data_structures.html"/>
         <link rel="next" title="turicreate.Sketch" href="turicreate.Sketch.html"/>
         <link rel="prev" title="turicreate.SArrayBuilder" href="turicreate.SArrayBuilder.html"/> 
@@ -137,30 +137,31 @@ rows appended, and a primitive parallel insert interface.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>column_types</strong> : list[type]</p>
-<blockquote>
-<div><p>The column types of the result SFrame. Types must be of the python
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>column_types</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[type]</span></dt>
+<dd><p class="first last">The column types of the result SFrame. Types must be of the python
 types that are supported by SFrame (int, float, str, array.array, list,
 dict, datetime.datetime, image). Column types are strictly enforced
 while appending.</p>
-</div></blockquote>
-<p><strong>column_names</strong> : list[str], optional</p>
-<blockquote>
-<div><p>Column names of the result SFrame. If given, length of the list must
+</dd>
+<dt><strong>column_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[str], optional</span></dt>
+<dd><p class="first last">Column names of the result SFrame. If given, length of the list must
 equal the length of <cite>column_types</cite>. If not given, names are generated.</p>
-</div></blockquote>
-<p><strong>num_segments</strong> : int, optional</p>
-<blockquote>
-<div><p>Number of segments that can be written in parallel.</p>
-</div></blockquote>
-<p><strong>history_size</strong> : int, optional</p>
-<blockquote>
-<div><p>The number of rows to be cached as history. Caches the last
+</dd>
+<dt><strong>num_segments</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">Number of segments that can be written in parallel.</p>
+</dd>
+<dt><strong>history_size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The number of rows to be cached as history. Caches the last
 <cite>history_size</cite> rows added with <cite>append</cite> or <cite>append_multiple</cite>.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>out</strong> : SFrameBuilder</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrameBuilder</span></dt>
+<dd></dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -244,7 +245,7 @@ equal the length of <cite>column_types</cite>. If not given, names are generated
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -262,7 +263,7 @@ equal the length of <cite>column_types</cite>. If not given, names are generated
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.evaluation.accuracy &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.evaluation.accuracy &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="evaluation" href="../turicreate.toolkits.evaluation.html"/>
         <link rel="next" title="turicreate.evaluation.confusion_matrix" href="turicreate.evaluation.confusion_matrix.html"/>
         <link rel="prev" title="turicreate.evaluation.auc" href="turicreate.evaluation.auc.html"/> 
@@ -138,20 +138,18 @@ with 0 being the worst and 1 being the best.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>targets</strong> : SArray</p>
-<blockquote>
-<div><p>An SArray of ground truth class labels. Can be of any type except
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>targets</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray</span></dt>
+<dd><p class="first last">An SArray of ground truth class labels. Can be of any type except
 float.</p>
-</div></blockquote>
-<p><strong>predictions</strong> : SArray</p>
-<blockquote>
-<div><p>The prediction that corresponds to each target value.  This SArray must
+</dd>
+<dt><strong>predictions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray</span></dt>
+<dd><p class="first last">The prediction that corresponds to each target value.  This SArray must
 have the same length as <code class="docutils literal"><span class="pre">targets</span></code> and must be of the same type as the
 <code class="docutils literal"><span class="pre">targets</span></code> SArray.</p>
-</div></blockquote>
-<p><strong>average</strong> : string, [None, &#8216;micro&#8217; (default), &#8216;macro&#8217;]</p>
-<blockquote>
-<div><p>Metric averaging strategies for multiclass classification. Averaging
+</dd>
+<dt><strong>average</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, [None, &#8216;micro&#8217; (default), &#8216;macro&#8217;]</span></dt>
+<dd><p class="first">Metric averaging strategies for multiclass classification. Averaging
 strategies can be one of the following:</p>
 <blockquote>
 <div><ul class="simple">
@@ -163,19 +161,21 @@ positives, false negatives and false positives.</li>
 unweighted mean. This does not take label imbalance into account.</li>
 </ul>
 </div></blockquote>
-<p>For a more precise definition of <cite>micro</cite> and <cite>macro</cite> averaging refer
+<p class="last">For a more precise definition of <cite>micro</cite> and <cite>macro</cite> averaging refer
 to [1] below.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : float (for binary classification) or dict[float] (for multi-class, average=None)</p>
-<blockquote class="last">
-<div><p>Score for the positive class (for binary classification) or an average
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float (for binary classification) or dict[float] (for multi-class, average=None)</span></dt>
+<dd><p class="first last">Score for the positive class (for binary classification) or an average
 score for each class for multi-class classification.  If
 <cite>average=None</cite>, then a dictionary is returned where the key is the
 class label and the value is the score for the corresponding class
 label.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -248,7 +248,7 @@ Management 45.4 (2009): 427-437.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -266,7 +266,7 @@ Management 45.4 (2009): 427-437.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SGraph.get_edges &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SGraph.get_edges &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -131,36 +131,36 @@ neighbors of vertex sets.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>src_ids, dst_ids</strong> : list or SArray, optional</p>
-<blockquote>
-<div><p>Parallel arrays of vertex IDs, with each pair corresponding to an
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>src_ids, dst_ids</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or SArray, optional</span></dt>
+<dd><p class="first last">Parallel arrays of vertex IDs, with each pair corresponding to an
 edge to fetch. Only edges in this list are returned. <code class="docutils literal"><span class="pre">None</span></code> can be
 used to designate a wild card. For instance, <code class="docutils literal"><span class="pre">src_ids=[1,</span> <span class="pre">2,</span>
 <span class="pre">None]</span></code>, <code class="docutils literal"><span class="pre">dst_ids=[3,</span> <span class="pre">None,</span> <span class="pre">5]</span></code> will fetch the edge 1-&gt;3, all
 outgoing edges of 2 and all incoming edges of 5. src_id and dst_id
 may be left empty, which implies an array of all wild cards.</p>
-</div></blockquote>
-<p><strong>fields</strong> : dict, optional</p>
-<blockquote>
-<div><p>Dictionary specifying equality constraints on field values. For
+</dd>
+<dt><strong>fields</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, optional</span></dt>
+<dd><p class="first last">Dictionary specifying equality constraints on field values. For
 example, <code class="docutils literal"><span class="pre">{'relationship':</span> <span class="pre">'following'}</span></code>, returns only edges whose
 &#8216;relationship&#8217; field equals &#8216;following&#8217;. <code class="docutils literal"><span class="pre">None</span></code> can be used as a
 value to designate a wild card. e.g. <code class="docutils literal"><span class="pre">{'relationship':</span> <span class="pre">None}</span></code> will
 find all edges with the field &#8216;relationship&#8217; regardless of the
 value.</p>
-</div></blockquote>
-<p><strong>format</strong> : {&#8216;sframe&#8217;, &#8216;list&#8217;}, optional</p>
-<blockquote>
-<div><p>Output format. The &#8216;sframe&#8217; output (default) contains columns
+</dd>
+<dt><strong>format</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;sframe&#8217;, &#8216;list&#8217;}, optional</span></dt>
+<dd><p class="first last">Output format. The &#8216;sframe&#8217; output (default) contains columns
 __src_id and __dst_id with edge vertex IDs and a column for each
 edge attribute. List output returns a list of Edge objects.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SFrame | list [Edge]</p>
-<blockquote class="last">
-<div><p>An SFrame or list of edges.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame | list [Edge]</span></dt>
+<dd><p class="first last">An SFrame or list of edges.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -217,7 +217,7 @@ edge attribute. List output returns a list of Edge objects.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -235,7 +235,7 @@ edge attribute. List output returns a list of Edge objects.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

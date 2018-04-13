@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.object_detector.create &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.object_detector.create &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="object_detector" href="../turicreate.toolkits.object_detector.html"/>
         <link rel="next" title="turicreate.object_detector.ObjectDetector" href="turicreate.object_detector.ObjectDetector.html"/>
         <link rel="prev" title="turicreate.object_detector.util.unstack_annotations" href="turicreate.object_detector.util.unstack_annotations.html"/> 
@@ -136,14 +136,13 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
-<blockquote>
-<div><p>Input data. The columns named by the <code class="docutils literal"><span class="pre">feature</span></code> and <code class="docutils literal"><span class="pre">annotations</span></code>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">Input data. The columns named by the <code class="docutils literal"><span class="pre">feature</span></code> and <code class="docutils literal"><span class="pre">annotations</span></code>
 parameters will be extracted for training the detector.</p>
-</div></blockquote>
-<p><strong>annotations</strong> : string</p>
-<blockquote>
-<div><p>Name of the column containing the object detection annotations.  This
+</dd>
+<dt><strong>annotations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first">Name of the column containing the object detection annotations.  This
 column should be a list of dictionaries (or a single dictionary), with
 each dictionary representing a bounding box of an object instance. Here
 is an example of the annotations for a single image with two object
@@ -158,46 +157,43 @@ instances:</p>
                   <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">123</span><span class="p">}}]</span>
 </pre></div>
 </div>
-<p>The value for <cite>x</cite> is the horizontal center of the box paired with
+<p class="last">The value for <cite>x</cite> is the horizontal center of the box paired with
 <cite>width</cite> and <cite>y</cite> is the vertical center of the box paired with <cite>height</cite>.
 &#8216;None&#8217; (the default) indicates the only list column in <cite>dataset</cite> should
 be used for the annotations.</p>
-</div></blockquote>
-<p><strong>feature</strong> : string</p>
-<blockquote>
-<div><p>Name of the column containing the input images. &#8216;None&#8217; (the default)
+</dd>
+<dt><strong>feature</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Name of the column containing the input images. &#8216;None&#8217; (the default)
 indicates the only image column in <cite>dataset</cite> should be used as the
 feature.</p>
-</div></blockquote>
-<p><strong>model</strong> : string optional</p>
-<blockquote>
-<div><p>Object detection model to use:</p>
-<blockquote>
+</dd>
+<dt><strong>model</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string optional</span></dt>
+<dd><p class="first">Object detection model to use:</p>
+<blockquote class="last">
 <div><ul class="simple">
 <li>&#8220;darknet-yolo&#8221; : Fast and medium-sized model</li>
 </ul>
 </div></blockquote>
-</div></blockquote>
-<p><strong>classes</strong> : list optional</p>
-<blockquote>
-<div><p>List of strings containing the names of the classes of objects.
+</dd>
+<dt><strong>classes</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list optional</span></dt>
+<dd><p class="first last">List of strings containing the names of the classes of objects.
 Inferred from the data if not provided.</p>
-</div></blockquote>
-<p><strong>max_iterations</strong> : int</p>
-<blockquote>
-<div><p>The number of training iterations. If 0, then it will be automatically
+</dd>
+<dt><strong>max_iterations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">The number of training iterations. If 0, then it will be automatically
 be determined based on the amount of data you provide.</p>
-</div></blockquote>
-<p><strong>verbose</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, print progress updates and model details.</p>
-</div></blockquote>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True, print progress updates and model details.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : ObjectDetector</p>
-<blockquote class="last">
-<div><p>A trained <a class="reference internal" href="turicreate.object_detector.ObjectDetector.html#turicreate.object_detector.ObjectDetector" title="turicreate.object_detector.ObjectDetector"><code class="xref py py-class docutils literal"><span class="pre">ObjectDetector</span></code></a> model.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ObjectDetector</span></dt>
+<dd><p class="first last">A trained <a class="reference internal" href="turicreate.object_detector.ObjectDetector.html#turicreate.object_detector.ObjectDetector" title="turicreate.object_detector.ObjectDetector"><code class="xref py py-class docutils literal"><span class="pre">ObjectDetector</span></code></a> model.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -239,7 +235,7 @@ be determined based on the amount of data you provide.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -257,7 +253,7 @@ be determined based on the amount of data you provide.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

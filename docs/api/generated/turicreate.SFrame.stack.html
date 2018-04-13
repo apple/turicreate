@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.stack &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SFrame.stack &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -139,38 +139,37 @@ columns other than the one that is stacked.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>column_name</strong> : str</p>
-<blockquote>
-<div><p>The column to stack. This column must be of dict/list/array type</p>
-</div></blockquote>
-<p><strong>new_column_name</strong> : str | list of str, optional</p>
-<blockquote>
-<div><p>The new column name(s). If original column is list/array type,
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>column_name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The column to stack. This column must be of dict/list/array type</p>
+</dd>
+<dt><strong>new_column_name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str | list of str, optional</span></dt>
+<dd><p class="first last">The new column name(s). If original column is list/array type,
 new_column_name must a string. If original column is dict type,
 new_column_name must be a list of two strings. If not given, column
 names are generated automatically.</p>
-</div></blockquote>
-<p><strong>drop_na</strong> : boolean, optional</p>
-<blockquote>
-<div><p>If True, missing values and empty list/array/dict are all dropped
+</dd>
+<dt><strong>drop_na</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
+<dd><p class="first last">If True, missing values and empty list/array/dict are all dropped
 from the resulting column(s). If False, missing values are
 maintained in stacked column(s).</p>
-</div></blockquote>
-<p><strong>new_column_type</strong> : type | list of types, optional</p>
-<blockquote>
-<div><p>The new column types. If original column is a list/array type
+</dd>
+<dt><strong>new_column_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">type | list of types, optional</span></dt>
+<dd><p class="first last">The new column types. If original column is a list/array type
 new_column_type must be a single type, or a list of one type. If
 original column is of dict type, new_column_type must be a list of
 two types. If not provided, the types are automatically inferred
 from the first 100 values of the SFrame.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SFrame</p>
-<blockquote class="last">
-<div><p>A new SFrame that contains newly stacked column(s) plus columns in
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">A new SFrame that contains newly stacked column(s) plus columns in
 original SFrame other than the stacked column.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -265,7 +264,7 @@ would create a user/friend list for each user/friend pair:</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -283,7 +282,7 @@ would create a user/friend list for each user/friend pair:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

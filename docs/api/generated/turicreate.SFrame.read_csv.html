@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.read_csv &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SFrame.read_csv &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -130,13 +130,13 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>url</strong> : string</p>
-<blockquote>
-<div><blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>url</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><blockquote class="first">
 <div><p>Location of the CSV file or directory to load. If URL is a directory
 or a &#8220;glob&#8221; pattern, all matching files will be loaded.</p>
 </div></blockquote>
-<dl class="docutils">
+<dl class="last docutils">
 <dt>delimiter <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
 <dd><p class="first last">This describes the delimiter used for parsing csv files.</p>
 </dd>
@@ -192,14 +192,13 @@ should be parsed as an integer, and the rest will be type inferred.</li>
 <dd><p class="first last">A string to be interpreted as the line terminator. Defaults to &#8220;</p>
 </dd>
 </dl>
-</div></blockquote>
-<p><strong>&#8220;</strong></p>
-<blockquote>
-<div><blockquote>
+</dd>
+<dt><strong>&#8220;</strong></dt>
+<dd><blockquote class="first">
 <div><p>which will also correctly match Mac, Linux and Windows line endings
 (&#8220;r&#8221;, &#8220;n&#8221; and &#8220;rn&#8221; respectively)</p>
 </div></blockquote>
-<dl class="docutils">
+<dl class="last docutils">
 <dt>usecols <span class="classifier-delimiter">:</span> <span class="classifier">list of str, optional</span></dt>
 <dd><p class="first last">A subset of column names to output. If unspecified (default),
 all columns will be read. This can provide performance gains if the
@@ -216,10 +215,14 @@ usecols=[&#8216;X1&#8217;,&#8217;X3&#8217;] will read columns 1 and 3.</p>
 <dd><p class="first last">If True, print the progress.</p>
 </dd>
 </dl>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>out</strong> : SFrame</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd></dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -377,7 +380,7 @@ determine types:</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -395,7 +398,7 @@ determine types:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

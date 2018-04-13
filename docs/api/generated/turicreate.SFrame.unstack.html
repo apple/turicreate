@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.unstack &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SFrame.unstack &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -135,23 +135,24 @@ column in the list.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>column_names</strong> : str | [str, str]</p>
-<blockquote>
-<div><p>The column(s) that is(are) to be concatenated.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>column_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str | [str, str]</span></dt>
+<dd><p class="first last">The column(s) that is(are) to be concatenated.
 If str, then collapsed column type is either array or list.
 If [str, str], then collapsed column type is dict</p>
-</div></blockquote>
-<p><strong>new_column_name</strong> : str, optional</p>
-<blockquote>
-<div><p>New column name. If not given, a name is generated automatically.</p>
-</div></blockquote>
+</dd>
+<dt><strong>new_column_name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">New column name. If not given, a name is generated automatically.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SFrame</p>
-<blockquote class="last">
-<div><p>A new SFrame containing the grouped columns as well as the new
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">A new SFrame containing the grouped columns as well as the new
 column.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -216,7 +217,7 @@ of a given key for a particular group, an arbitrary value is selected.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -234,7 +235,7 @@ of a given key for a particular group, an arbitrary value is selected.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

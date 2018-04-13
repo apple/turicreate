@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.load_sgraph &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.load_sgraph &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="Data" href="../turicreate.data_structures.html"/>
         <link rel="next" title="Modelling" href="../turicreate.toolkits.html"/>
         <link rel="prev" title="turicreate.load_sframe" href="turicreate.load_sframe.html"/> 
@@ -134,33 +134,33 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : string</p>
-<blockquote>
-<div><p>Location of the file. Can be a local path or a remote URL.</p>
-</div></blockquote>
-<p><strong>format</strong> : {&#8216;binary&#8217;, &#8216;snap&#8217;, &#8216;csv&#8217;, &#8216;tsv&#8217;}, optional</p>
-<blockquote>
-<div><p>Format to of the file to load.</p>
-<ul class="simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Location of the file. Can be a local path or a remote URL.</p>
+</dd>
+<dt><strong>format</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;binary&#8217;, &#8216;snap&#8217;, &#8216;csv&#8217;, &#8216;tsv&#8217;}, optional</span></dt>
+<dd><p class="first">Format to of the file to load.</p>
+<ul class="last simple">
 <li>&#8216;binary&#8217;: native graph format obtained from <cite>SGraph.save</cite>.</li>
 <li>&#8216;snap&#8217;: tab or space separated edge list format with comments, used in
 the <a class="reference external" href="http://snap.stanford.edu/snap/">Stanford Network Analysis Platform</a>.</li>
 <li>&#8216;csv&#8217;: comma-separated edge list without header or comments.</li>
 <li>&#8216;tsv&#8217;: tab-separated edge list without header or comments.</li>
 </ul>
-</div></blockquote>
-<p><strong>delimiter</strong> : str, optional</p>
-<blockquote>
-<div><p>Specifying the Delimiter used in &#8216;snap&#8217;, &#8216;csv&#8217; or &#8216;tsv&#8217; format. Those
+</dd>
+<dt><strong>delimiter</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">Specifying the Delimiter used in &#8216;snap&#8217;, &#8216;csv&#8217; or &#8216;tsv&#8217; format. Those
 format has default delimiter, but sometimes it is useful to
 overwrite the default delimiter.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SGraph</p>
-<blockquote class="last">
-<div><p>Loaded SGraph.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SGraph</span></dt>
+<dd><p class="first last">Loaded SGraph.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -200,7 +200,7 @@ overwrite the default delimiter.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -218,7 +218,7 @@ overwrite the default delimiter.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

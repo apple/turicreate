@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.config.set_runtime_config &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.config.set_runtime_config &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="Configuration" href="../turicreate.utils.html"/>
         <link rel="next" title="turicreate.config.get_environment_config" href="turicreate.config.get_environment_config.html"/>
         <link rel="prev" title="turicreate.config.set_num_gpus" href="turicreate.config.set_num_gpus.html"/> 
@@ -131,7 +131,7 @@
 <code class="descclassname">turicreate.config.</code><code class="descname">set_runtime_config</code><span class="sig-paren">(</span><em>name</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.config.set_runtime_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Configures system behavior at runtime. These configuration values are also
 read from environment variables at program startup if available. See
-<code class="xref py py-func docutils literal"><span class="pre">turicreate.get_runtime_config()</span></code> to get the current values for
+<a class="reference internal" href="turicreate.config.get_runtime_config.html#turicreate.config.get_runtime_config" title="turicreate.config.get_runtime_config"><code class="xref py py-func docutils literal"><span class="pre">turicreate.config.get_runtime_config()</span></code></a> to get the current values for
 each variable.</p>
 <p>Note that defaults may change across versions and the names
 of performance tuning constants may also change as improved algorithms
@@ -140,21 +140,22 @@ are developed and implemented.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>name</strong> : string</p>
-<blockquote>
-<div><p>A string referring to runtime configuration variable.</p>
-</div></blockquote>
-<p><strong>value</strong></p>
-<blockquote>
-<div><p>The value to set the variable to.</p>
-</div></blockquote>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">A string referring to runtime configuration variable.</p>
+</dd>
+<dt><strong>value</strong></dt>
+<dd><p class="first last">The value to set the variable to.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>RuntimeError</strong></p>
-<blockquote class="last">
-<div><p>If the key does not exist, or if the value cannot be changed to the
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>RuntimeError</strong></dt>
+<dd><p class="first last">If the key does not exist, or if the value cannot be changed to the
 requested value.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -259,7 +260,7 @@ file handle limit with &#8220;ulimit -n&#8221;).  Defaults to 128.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -277,7 +278,7 @@ file handle limit with &#8220;ulimit -n&#8221;).  Defaults to 128.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

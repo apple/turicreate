@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.linear_regression.create &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.linear_regression.create &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="regression" href="../turicreate.toolkits.regression.html"/>
         <link rel="next" title="turicreate.linear_regression.LinearRegression" href="turicreate.linear_regression.LinearRegression.html"/>
         <link rel="prev" title="turicreate.boosted_trees_regression.BoostedTreesRegression" href="turicreate.boosted_trees_regression.BoostedTreesRegression.html"/> 
@@ -143,17 +143,15 @@ default, this model has an l2 regularization weight of 0.01.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
-<blockquote>
-<div><p>The dataset to use for training the model.</p>
-</div></blockquote>
-<p><strong>target</strong> : string</p>
-<blockquote>
-<div><p>Name of the column containing the target variable.</p>
-</div></blockquote>
-<p><strong>features</strong> : list[string], optional</p>
-<blockquote>
-<div><p>Names of the columns containing features. &#8216;None&#8217; (the default) indicates
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">The dataset to use for training the model.</p>
+</dd>
+<dt><strong>target</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Name of the column containing the target variable.</p>
+</dd>
+<dt><strong>features</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[string], optional</span></dt>
+<dd><p class="first">Names of the columns containing features. &#8216;None&#8217; (the default) indicates
 that all columns except the target variable should be used as features.</p>
 <p>The features are columns in the input SFrame that can be of the
 following types:</p>
@@ -167,32 +165,29 @@ Each key of a dictionary is treated as a separate feature and the
 value in the dictionary corresponds to the value of the feature.
 Dictionaries are ideal for representing sparse data.</li>
 </ul>
-<p>Columns of type <em>list</em> are not supported. Convert such feature
+<p class="last">Columns of type <em>list</em> are not supported. Convert such feature
 columns to type array if all entries in the list are of numeric
 types. If the lists contain data of mixed types, separate
 them out into different columns.</p>
-</div></blockquote>
-<p><strong>l2_penalty</strong> : float, optional</p>
-<blockquote>
-<div><p>Weight on the l2-regularizer of the model. The larger this weight, the
+</dd>
+<dt><strong>l2_penalty</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Weight on the l2-regularizer of the model. The larger this weight, the
 more the model coefficients shrink toward 0. This introduces bias into
 the model but decreases variance, potentially leading to better
 predictions. The default value is 0.01; setting this parameter to 0
 corresponds to unregularized linear regression. See the ridge
 regression reference for more detail.</p>
-</div></blockquote>
-<p><strong>l1_penalty</strong> : float, optional</p>
-<blockquote>
-<div><p>Weight on l1 regularization of the model. Like the l2 penalty, the
+</dd>
+<dt><strong>l1_penalty</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Weight on l1 regularization of the model. Like the l2 penalty, the
 higher the l1 penalty, the more the estimated coefficients shrink toward
 0. The l1 penalty, however, completely zeros out sufficiently small
 coefficients, automatically indicating features that are not useful for
 the model. The default weight of 0 prevents any features from being
 discarded. See the LASSO regression reference for more detail.</p>
-</div></blockquote>
-<p><strong>solver</strong> : string, optional</p>
-<blockquote>
-<div><p>Solver to use for training the model. See the references for more detail
+</dd>
+<dt><strong>solver</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first">Solver to use for training the model. See the references for more detail
 on each solver.</p>
 <ul class="simple">
 <li><em>auto (default)</em>: automatically chooses the best solver for the data
@@ -210,21 +205,19 @@ default solver for l1-regularized linear regression.  The solvers are
 all automatically tuned and the default options should function well.
 See the solver options guide for setting additional parameters for each
 of the solvers.</p>
-<p>See the user guide for additional details on how the solver is chosen.</p>
-</div></blockquote>
-<p><strong>feature_rescaling</strong> : boolean, optional</p>
-<blockquote>
-<div><p>Feature rescaling is an important pre-processing step that ensures that
+<p class="last">See the user guide for additional details on how the solver is chosen.</p>
+</dd>
+<dt><strong>feature_rescaling</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional</span></dt>
+<dd><p class="first last">Feature rescaling is an important pre-processing step that ensures that
 all features are on the same scale. An l2-norm rescaling is performed
 to make sure that all features are of the same norm. Categorical
 features are also rescaled by rescaling the dummy variables that are
 used to represent them. The coefficients are returned in original scale
 of the problem. This process is particularly useful when features
 vary widely in their ranges.</p>
-</div></blockquote>
-<p><strong>validation_set</strong> : SFrame, optional</p>
-<blockquote>
-<div><p>A dataset for monitoring the model&#8217;s generalization performance.
+</dd>
+<dt><strong>validation_set</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
+<dd><p class="first last">A dataset for monitoring the model&#8217;s generalization performance.
 For each row of the progress table, the chosen metrics are computed
 for both the provided training dataset and the validation_set. The
 format of this SFrame must be the same as the training set.
@@ -232,50 +225,47 @@ By default this argument is set to &#8216;auto&#8217; and a validation set is
 automatically sampled and used for progress printing. If
 validation_set is set to None, then no additional metrics
 are computed. The default value is &#8216;auto&#8217;.</p>
-</div></blockquote>
-<p><strong>convergence_threshold</strong> : float, optional</p>
-<blockquote>
-<div><p>Convergence is tested using variation in the training objective. The
+</dd>
+<dt><strong>convergence_threshold</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Convergence is tested using variation in the training objective. The
 variation in the training objective is calculated using the difference
 between the objective values between two steps. Consider reducing this
 below the default value (0.01) for a more accurately trained model.
 Beware of overfitting (i.e a model that works well only on the training
 data) if this parameter is set to a very low value.</p>
-</div></blockquote>
-<p><strong>lbfgs_memory_level</strong> : int, optional</p>
-<blockquote>
-<div><p>The L-BFGS algorithm keeps track of gradient information from the
+</dd>
+<dt><strong>lbfgs_memory_level</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The L-BFGS algorithm keeps track of gradient information from the
 previous <code class="docutils literal"><span class="pre">lbfgs_memory_level</span></code> iterations. The storage requirement for
 each of these gradients is the <code class="docutils literal"><span class="pre">num_coefficients</span></code> in the problem.
 Increasing the <code class="docutils literal"><span class="pre">lbfgs_memory_level</span></code> can help improve the quality of
 the model trained. Setting this to more than <code class="docutils literal"><span class="pre">max_iterations</span></code> has the
 same effect as setting it to <code class="docutils literal"><span class="pre">max_iterations</span></code>.</p>
-</div></blockquote>
-<p><strong>max_iterations</strong> : int, optional</p>
-<blockquote>
-<div><p>The maximum number of allowed passes through the data. More passes over
+</dd>
+<dt><strong>max_iterations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The maximum number of allowed passes through the data. More passes over
 the data can result in a more accurately trained model. Consider
 increasing this (the default value is 10) if the training accuracy is
 low and the <em>Grad-Norm</em> in the display is large.</p>
-</div></blockquote>
-<p><strong>step_size</strong> : float, optional (fista only)</p>
-<blockquote>
-<div><p>The starting step size to use for the <code class="docutils literal"><span class="pre">fista</span></code> and <code class="docutils literal"><span class="pre">gd</span></code> solvers. The
+</dd>
+<dt><strong>step_size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional (fista only)</span></dt>
+<dd><p class="first last">The starting step size to use for the <code class="docutils literal"><span class="pre">fista</span></code> and <code class="docutils literal"><span class="pre">gd</span></code> solvers. The
 default is set to 1.0, this is an aggressive setting. If the first
 iteration takes a considerable amount of time, reducing this parameter
 may speed up model training.</p>
-</div></blockquote>
-<p><strong>verbose</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, print progress updates.</p>
-</div></blockquote>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True, print progress updates.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : LinearRegression</p>
-<blockquote class="last">
-<div><p>A trained model of type
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">LinearRegression</span></dt>
+<dd><p class="first last">A trained model of type
 <a class="reference internal" href="turicreate.linear_regression.LinearRegression.html#turicreate.linear_regression.LinearRegression" title="turicreate.linear_regression.LinearRegression"><code class="xref py py-class docutils literal"><span class="pre">LinearRegression</span></code></a>.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -370,7 +360,7 @@ for elastic net, we set both to be higher.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -388,7 +378,7 @@ for elastic net, we set both to be higher.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

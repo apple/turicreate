@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.sort &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SFrame.sort &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -130,26 +130,27 @@ Only columns that are type of str, int and float can be sorted.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>key_column_names</strong> : str | list of str | list of (str, bool) pairs</p>
-<blockquote>
-<div><p>Names of columns to be sorted.  The result will be sorted first by
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>key_column_names</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str | list of str | list of (str, bool) pairs</span></dt>
+<dd><p class="first last">Names of columns to be sorted.  The result will be sorted first by
 first column, followed by second column, and so on. All columns will
 be sorted in the same order as governed by the <cite>ascending</cite>
 parameter. To control the sort ordering for each column
 individually, <cite>key_column_names</cite> must be a list of (str, bool) pairs.
 Given this case, the first value is the column name and the second
 value is a boolean indicating whether the sort order is ascending.</p>
-</div></blockquote>
-<p><strong>ascending</strong> : bool, optional</p>
-<blockquote>
-<div><p>Sort all columns in the given order.</p>
-</div></blockquote>
+</dd>
+<dt><strong>ascending</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">Sort all columns in the given order.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SFrame</p>
-<blockquote class="last">
-<div><p>A new SFrame that is sorted according to given sort criteria</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">A new SFrame that is sorted according to given sort criteria</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -240,7 +241,7 @@ To sort by column &#8216;a&#8217;, ascending</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -258,7 +259,7 @@ To sort by column &#8216;a&#8217;, ascending</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

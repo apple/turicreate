@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.recommender.util.precision_recall_by_user &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.recommender.util.precision_recall_by_user &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="recommender" href="../turicreate.toolkits.recommender.html"/>
         <link rel="next" title="sentence_classifier" href="../turicreate.toolkits.sentence_classifier.html"/>
         <link rel="prev" title="turicreate.recommender.util.random_split_by_user" href="turicreate.recommender.util.random_split_by_user.html"/> 
@@ -150,31 +150,31 @@ precision and recall scores.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>observed_user_items</strong> : SFrame</p>
-<blockquote>
-<div><p>An SFrame containing observed user item pairs, where the first
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>observed_user_items</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">An SFrame containing observed user item pairs, where the first
 column contains user ids and the second column contains item ids.</p>
-</div></blockquote>
-<p><strong>recommendations</strong> : SFrame</p>
-<blockquote>
-<div><p>An SFrame containing columns pertaining to the user id, the item id,
+</dd>
+<dt><strong>recommendations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">An SFrame containing columns pertaining to the user id, the item id,
 the score given to that pair, and the rank of that item among the
 recommendations made for user id. For example, see the output of
 recommend() produced by any turicreate.recommender model.</p>
-</div></blockquote>
-<p><strong>cutoffs</strong> : list[int], optional</p>
-<blockquote>
-<div><p>The cutoffs to use when computing precision and recall.</p>
-</div></blockquote>
+</dd>
+<dt><strong>cutoffs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[int], optional</span></dt>
+<dd><p class="first last">The cutoffs to use when computing precision and recall.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SFrame</p>
-<blockquote class="last">
-<div><p>An SFrame containing columns user id, cutoff, precision, recall, and
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">An SFrame containing columns user id, cutoff, precision, recall, and
 count where  the precision and recall are reported for each user at
 each requested cutoff, and count is the number of observations for
 that user id.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -215,7 +215,7 @@ and item_id:</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -233,7 +233,7 @@ and item_id:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

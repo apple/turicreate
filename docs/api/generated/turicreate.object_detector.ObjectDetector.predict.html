@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.object_detector.ObjectDetector.predict &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.object_detector.ObjectDetector.predict &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -129,29 +129,29 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
-<blockquote>
-<div><p>A dataset that has the same columns that were used during training.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">A dataset that has the same columns that were used during training.
 If the annotations column exists in <code class="docutils literal"><span class="pre">dataset</span></code> it will be ignored
 while making predictions.</p>
-</div></blockquote>
-<p><strong>confidence_threshold</strong> : float</p>
-<blockquote>
-<div><p>Only return predictions above this level of confidence. The
+</dd>
+<dt><strong>confidence_threshold</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Only return predictions above this level of confidence. The
 threshold can range from 0 to 1.</p>
-</div></blockquote>
-<p><strong>verbose</strong> : bool</p>
-<blockquote>
-<div><p>If True, prints prediction progress.</p>
-</div></blockquote>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">If True, prints prediction progress.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : SArray</p>
-<blockquote class="last">
-<div><p>An SArray with model predictions. Each element corresponds to
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray</span></dt>
+<dd><p class="first last">An SArray with model predictions. Each element corresponds to
 an image and contains a list of dictionaries. Each dictionary
 describes an object instances that was found in the image.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -193,7 +193,7 @@ describes an object instances that was found in the image.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -211,7 +211,7 @@ describes an object instances that was found in the image.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

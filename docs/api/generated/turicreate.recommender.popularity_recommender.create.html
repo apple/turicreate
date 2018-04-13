@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.recommender.popularity_recommender.create &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.recommender.popularity_recommender.create &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="recommender" href="../turicreate.toolkits.recommender.html"/>
         <link rel="next" title="turicreate.recommender.popularity_recommender.PopularityRecommender" href="turicreate.recommender.popularity_recommender.PopularityRecommender.html"/>
         <link rel="prev" title="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender" href="turicreate.recommender.ranking_factorization_recommender.RankingFactorizationRecommender.html"/> 
@@ -141,52 +141,47 @@ each item and uses this to rank items for recommendations.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>observation_data</strong> : SFrame</p>
-<blockquote>
-<div><p>The dataset to use for training the model. It must contain a column of
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>observation_data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first">The dataset to use for training the model. It must contain a column of
 user ids and a column of item ids. Each row represents an observed
 interaction between the user and the item.  The (user, item) pairs
 are stored with the model so that they can later be excluded from
 recommendations if desired. It can optionally contain a target ratings
 column. All other columns are interpreted by the underlying model as
 side features for the observations.</p>
-<p>The user id and item id columns must be of type &#8216;int&#8217; or &#8216;str&#8217;. The
+<p class="last">The user id and item id columns must be of type &#8216;int&#8217; or &#8216;str&#8217;. The
 target column must be of type &#8216;int&#8217; or &#8216;float&#8217;.</p>
-</div></blockquote>
-<p><strong>user_id</strong> : string, optional</p>
-<blockquote>
-<div><p>The name of the column in <cite>observation_data</cite> that corresponds to the
+</dd>
+<dt><strong>user_id</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">The name of the column in <cite>observation_data</cite> that corresponds to the
 user id.</p>
-</div></blockquote>
-<p><strong>item_id</strong> : string, optional</p>
-<blockquote>
-<div><p>The name of the column in <cite>observation_data</cite> that corresponds to the
+</dd>
+<dt><strong>item_id</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">The name of the column in <cite>observation_data</cite> that corresponds to the
 item id.</p>
-</div></blockquote>
-<p><strong>target</strong> : string, optional</p>
-<blockquote>
-<div><p>The <cite>observation_data</cite> can optionally contain a column of scores
+</dd>
+<dt><strong>target</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">The <cite>observation_data</cite> can optionally contain a column of scores
 representing ratings given by the users. If present, the name of this
 column may be specified variables <cite>target</cite>.</p>
-</div></blockquote>
-<p><strong>user_data</strong> : SFrame, optional</p>
-<blockquote>
-<div><p>Side information for the users.  This SFrame must have a column with
+</dd>
+<dt><strong>user_data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
+<dd><p class="first last">Side information for the users.  This SFrame must have a column with
 the same name as what is specified by the <cite>user_id</cite> input parameter.
 <cite>user_data</cite> can provide any amount of additional user-specific
 information.</p>
-</div></blockquote>
-<p><strong>item_data</strong> : SFrame, optional</p>
-<blockquote>
-<div><p>Side information for the items.  This SFrame must have a column with
+</dd>
+<dt><strong>item_data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame, optional</span></dt>
+<dd><p class="first last">Side information for the items.  This SFrame must have a column with
 the same name as what is specified by the <cite>item_id</cite> input parameter.
 <cite>item_data</cite> can provide any amount of additional item-specific
 information.</p>
-</div></blockquote>
-<p><strong>verbose</strong> : bool, optional</p>
-<blockquote class="last">
-<div><p>Enables verbose output.</p>
-</div></blockquote>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">Enables verbose output.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -224,7 +219,7 @@ information.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -242,7 +237,7 @@ information.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

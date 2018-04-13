@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.image_similarity.create &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.image_similarity.create &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="image_similarity" href="../turicreate.toolkits.image_similarity.html"/>
         <link rel="next" title="turicreate.image_similarity.ImageSimilarityModel" href="turicreate.image_similarity.ImageSimilarityModel.html"/>
         <link rel="prev" title="turicreate.image_similarity.ImageSimilarityModel" href="turicreate.image_similarity.ImageSimilarityModel.html"/> 
@@ -136,44 +136,42 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
-<blockquote>
-<div><p>Input data. The column named by the &#8216;feature&#8217; parameter will be
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">Input data. The column named by the &#8216;feature&#8217; parameter will be
 extracted for modeling.</p>
-</div></blockquote>
-<p><strong>label</strong> : string</p>
-<blockquote>
-<div><p>Name of the SFrame column with row labels to be used as uuid&#8217;s to
+</dd>
+<dt><strong>label</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Name of the SFrame column with row labels to be used as uuid&#8217;s to
 identify the data. If &#8216;label&#8217; is set to None, row numbers are used to
 identify reference dataset rows when the model is queried.</p>
-</div></blockquote>
-<p><strong>feature</strong> : string</p>
-<blockquote>
-<div><p>indicates that the SFrame has only column of Image type and that will
+</dd>
+<dt><strong>feature</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">indicates that the SFrame has only column of Image type and that will
 Name of the column containing the input images. &#8216;None&#8217; (the default)
 be used for similarity.</p>
-</div></blockquote>
-<p><strong>model: string, optional</strong></p>
-<blockquote>
-<div><p>Uses a pretrained model to bootstrap an image similarity model</p>
+</dd>
+<dt><strong>model: string, optional</strong></dt>
+<dd><p class="first">Uses a pretrained model to bootstrap an image similarity model</p>
 <blockquote>
 <div><ul class="simple">
 <li>&#8220;resnet-50&#8221; : Uses a pretrained resnet model.</li>
 </ul>
 </div></blockquote>
-<p>Models are downloaded from the internet if not available locally. Once
+<p class="last">Models are downloaded from the internet if not available locally. Once
 downloaded, the models are cached for future use.</p>
-</div></blockquote>
-<p><strong>verbose</strong> : bool, optional</p>
-<blockquote>
-<div><p>If True, print progress updates and model details.</p>
-</div></blockquote>
+</dd>
+<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">If True, print progress updates and model details.</p>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : ImageSimilarityModel</p>
-<blockquote class="last">
-<div><p>A trained <a class="reference internal" href="turicreate.image_similarity.ImageSimilarityModel.html#turicreate.image_similarity.ImageSimilarityModel" title="turicreate.image_similarity.ImageSimilarityModel"><code class="xref py py-class docutils literal"><span class="pre">ImageSimilarityModel</span></code></a> model.</p>
-</div></blockquote>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ImageSimilarityModel</span></dt>
+<dd><p class="first last">A trained <a class="reference internal" href="turicreate.image_similarity.ImageSimilarityModel.html#turicreate.image_similarity.ImageSimilarityModel" title="turicreate.image_similarity.ImageSimilarityModel"><code class="xref py py-class docutils literal"><span class="pre">ImageSimilarityModel</span></code></a> model.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -227,7 +225,7 @@ downloaded, the models are cached for future use.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -245,7 +243,7 @@ downloaded, the models are cached for future use.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

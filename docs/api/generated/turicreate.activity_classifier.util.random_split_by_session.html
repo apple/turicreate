@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.activity_classifier.util.random_split_by_session &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.activity_classifier.util.random_split_by_session &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="activity_classifier" href="../turicreate.toolkits.activity_classifier.html"/>
         <link rel="next" title="image_classifier" href="../turicreate.toolkits.image_classifier.html"/>
         <link rel="prev" title="turicreate.activity_classifier.ActivityClassifier" href="turicreate.activity_classifier.ActivityClassifier.html"/> 
@@ -138,25 +138,23 @@ second split contains all data for the rest of the sessions.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
-<blockquote>
-<div><p>Dataset to split. It must contain a column of session ids.</p>
-</div></blockquote>
-<p><strong>session_id</strong> : string, optional</p>
-<blockquote>
-<div><p>The name of the column in <cite>dataset</cite> that corresponds to the
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">Dataset to split. It must contain a column of session ids.</p>
+</dd>
+<dt><strong>session_id</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">The name of the column in <cite>dataset</cite> that corresponds to the
 a unique identifier for each session.</p>
-</div></blockquote>
-<p><strong>fraction</strong> : float, optional</p>
-<blockquote>
-<div><p>Fraction of the sessions to fetch for the first returned SFrame.  Must
+</dd>
+<dt><strong>fraction</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Fraction of the sessions to fetch for the first returned SFrame.  Must
 be between 0 and 1. Once the sessions are split, all data from a single
 session is in the same SFrame.</p>
-</div></blockquote>
-<p><strong>seed</strong> : int, optional</p>
-<blockquote class="last">
-<div><p>Seed for the random number generator used to split.</p>
-</div></blockquote>
+</dd>
+<dt><strong>seed</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">Seed for the random number generator used to split.</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -201,7 +199,7 @@ session is in the same SFrame.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -219,7 +217,7 @@ session is in the same SFrame.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

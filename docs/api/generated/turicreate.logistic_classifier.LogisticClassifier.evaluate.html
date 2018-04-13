@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.logistic_classifier.LogisticClassifier.evaluate &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.logistic_classifier.LogisticClassifier.evaluate &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -130,15 +130,14 @@ these to actual values.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dataset</strong> : SFrame</p>
-<blockquote>
-<div><p>Dataset of new observations. Must include columns with the same
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">Dataset of new observations. Must include columns with the same
 names as the target and features used for model training. Additional
 columns are ignored.</p>
-</div></blockquote>
-<p><strong>metric</strong> : str, optional</p>
-<blockquote>
-<div><p>Name of the evaluation metric.  Possible values are:</p>
+</dd>
+<dt><strong>metric</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first">Name of the evaluation metric.  Possible values are:</p>
 <ul class="simple">
 <li>&#8216;auto&#8217;             : Returns all available metrics.</li>
 <li>&#8216;accuracy&#8217;         : Classification accuracy (micro average).</li>
@@ -150,14 +149,13 @@ columns are ignored.</p>
 <li>&#8216;confusion_matrix&#8217; : An SFrame with counts of possible prediction/true label combinations.</li>
 <li>&#8216;roc_curve&#8217;        : An SFrame containing information needed for an ROC curve</li>
 </ul>
-<p>For more flexibility in calculating evaluation metrics, use the
+<p class="last">For more flexibility in calculating evaluation metrics, use the
 <code class="xref py py-class docutils literal"><span class="pre">evaluation</span></code> module.</p>
-</div></blockquote>
-<p><strong>missing_value_action</strong> : str, optional</p>
-<blockquote>
-<div><p>Action to perform when missing values are encountered. This can be
+</dd>
+<dt><strong>missing_value_action</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first">Action to perform when missing values are encountered. This can be
 one of:</p>
-<ul class="simple">
+<ul class="last simple">
 <li>&#8216;auto&#8217;: Default to &#8216;impute&#8217;</li>
 <li>&#8216;impute&#8217;: Proceed with evaluation by filling in the missing
 values with the mean of the training data. Missing
@@ -166,15 +164,17 @@ missing during evaluation.</li>
 <li>&#8216;error&#8217;: Do not proceed with evaluation and terminate with
 an error message.</li>
 </ul>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : dict</p>
-<blockquote class="last">
-<div><p>Dictionary of evaluation results where the key is the name of the
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Dictionary of evaluation results where the key is the name of the
 evaluation metric (e.g. <cite>accuracy</cite>) and the value is the evaluation
 score.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -206,7 +206,7 @@ score.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -224,7 +224,7 @@ score.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

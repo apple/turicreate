@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.join &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.SFrame.join &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -130,15 +130,14 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>right</strong> : SFrame</p>
-<blockquote>
-<div><p>The SFrame to join.</p>
-</div></blockquote>
-<p><strong>on</strong> : None | str | list | dict, optional</p>
-<blockquote>
-<div><p>The column name(s) representing the set of join keys.  Each row that
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>right</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">The SFrame to join.</p>
+</dd>
+<dt><strong>on</strong> <span class="classifier-delimiter">:</span> <span class="classifier">None | str | list | dict, optional</span></dt>
+<dd><p class="first">The column name(s) representing the set of join keys.  Each row that
 has the same value in this set of columns will be merged together.</p>
-<ul class="simple">
+<ul class="last simple">
 <li>If &#8216;None&#8217; is given, join will use all columns that have the same
 name as the set of join keys.</li>
 <li>If a str is given, this is interpreted as a join using one column,
@@ -151,11 +150,10 @@ left SFrame, and each dict value is taken as the column name in
 right SFrame that will be joined together. e.g.
 {&#8216;left_col_name&#8217;:&#8217;right_col_name&#8217;}.</li>
 </ul>
-</div></blockquote>
-<p><strong>how</strong> : {&#8216;left&#8217;, &#8216;right&#8217;, &#8216;outer&#8217;, &#8216;inner&#8217;}, optional</p>
-<blockquote>
-<div><p>The type of join to perform.  &#8216;inner&#8217; is default.</p>
-<ul class="simple">
+</dd>
+<dt><strong>how</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{&#8216;left&#8217;, &#8216;right&#8217;, &#8216;outer&#8217;, &#8216;inner&#8217;}, optional</span></dt>
+<dd><p class="first">The type of join to perform.  &#8216;inner&#8217; is default.</p>
+<ul class="last simple">
 <li>inner: Equivalent to a SQL inner join.  Result consists of the
 rows from the two frames whose join key values match exactly,
 merged together into one SFrame.</li>
@@ -169,10 +167,14 @@ the right SFrame, merged with missing values.</li>
 the union between the result of a left outer join and a right
 outer join.</li>
 </ul>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>out</strong> : SFrame</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd></dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -243,7 +245,7 @@ outer join.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -261,7 +263,7 @@ outer join.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

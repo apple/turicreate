@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.object_detector.util.unstack_annotations &mdash; Turi Create API 4.2 documentation</title>
+  <title>turicreate.object_detector.util.unstack_annotations &mdash; Turi Create API 4.3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
         <link rel="up" title="object_detector" href="../turicreate.toolkits.object_detector.html"/>
         <link rel="next" title="recommender" href="../turicreate.toolkits.recommender.html"/>
         <link rel="prev" title="turicreate.object_detector.util.stack_annotations" href="turicreate.object_detector.util.stack_annotations.html"/> 
@@ -138,20 +138,23 @@ instances).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>annotations_sframe: SFrame</strong></p>
-<blockquote>
-<div><p>An <cite>SFrame</cite> with stacked predictions, produced by the
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>annotations_sframe: SFrame</strong></dt>
+<dd><p class="first last">An <cite>SFrame</cite> with stacked predictions, produced by the
 <cite>stack_annotations</cite> function.</p>
-</div></blockquote>
-<p><strong>num_rows: int</strong></p>
-<blockquote>
-<div><p>Optionally specify the number of rows in your original dataset, so that
+</dd>
+<dt><strong>num_rows: int</strong></dt>
+<dd><p class="first last">Optionally specify the number of rows in your original dataset, so that
 all get represented in the unstacked format, regardless of whether or
 not they had instances or not.</p>
-</div></blockquote>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">annotations_sarray: An <cite>SArray</cite> with unstacked annotations.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>annotations_sarray: An `SArray` with unstacked annotations.</strong></dt>
+<dd></dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -208,7 +211,7 @@ not they had instances or not.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Mar 05, 2018.
+      Last updated on Apr 13, 2018.
     </p>
   </div>
 </footer>
@@ -226,7 +229,7 @@ not they had instances or not.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.2',
+            VERSION:'4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false
