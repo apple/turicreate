@@ -119,7 +119,7 @@ gl_sarray::gl_sarray(const gl_sarray& other) {
   m_sarray = other.get_proxy();
 }
 gl_sarray::gl_sarray(gl_sarray&& other) {
-  m_sarray = std::move(other.get_proxy());
+  m_sarray = other.get_proxy();
 }
 
 gl_sarray::gl_sarray(const std::string& directory) {
@@ -133,7 +133,7 @@ gl_sarray& gl_sarray::operator=(const gl_sarray& other) {
 }
 
 gl_sarray& gl_sarray::operator=(gl_sarray&& other) {
-  m_sarray = std::move(other.get_proxy());
+  m_sarray = other.get_proxy();
   return *this;
 }
 
@@ -848,8 +848,7 @@ void gl_sarray::ensure_has_sarray_reader() const {
   if (!m_sarray_reader) {
     std::lock_guard<mutex> guard(reader_shared_ptr_lock);
     if (!m_sarray_reader) {
-      m_sarray_reader = 
-          std::move(get_proxy()->get_underlying_sarray()->get_reader());
+      m_sarray_reader = get_proxy()->get_underlying_sarray()->get_reader();
     }
   }
 }
@@ -868,7 +867,7 @@ gl_sarray_range::gl_sarray_range(
           (m_sarray_reader, start, end);
   // load the first value if available
   if (m_sarray_reader_buffer->has_next()) {
-    m_current_value = std::move(m_sarray_reader_buffer->next());
+    m_current_value = m_sarray_reader_buffer->next();
   }
 }
 gl_sarray_range::iterator gl_sarray_range::begin() {
