@@ -78,7 +78,7 @@ std::vector<size_t> calculate_upper_triangular_slice_structure(
     n -= b;
   }
 
-  return std::move(slice_boundaries);
+  return slice_boundaries;
 }
 
 }}

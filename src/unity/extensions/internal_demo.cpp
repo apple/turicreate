@@ -7,6 +7,8 @@
 #include <vector>
 #include <unity/lib/toolkit_function_macros.hpp>
 #include <unity/lib/toolkit_class_macros.hpp>
+#include <unity/lib/extensions/model_base.hpp>
+
 using namespace turi;
 
 int _demo_addone(int param) {
@@ -72,7 +74,7 @@ std::vector<variant_type> _connected_components_parameterized(std::map<std::stri
 
 
 
-class demo_class: public toolkit_class_base {
+class demo_class: public model_base {
   virtual void save_impl(oarchive& oarc) const  {}
 
   virtual void load_version(iarchive& iarc, size_t version) {}
@@ -114,7 +116,7 @@ class demo_class: public toolkit_class_base {
   END_CLASS_MEMBER_REGISTRATION
 };
 
-class demo_vector : public std::vector<std::string>, public toolkit_class_base {
+class demo_vector : public std::vector<std::string>, public model_base {
  public:
   virtual void save_impl(oarchive& oarc) const  {}
 

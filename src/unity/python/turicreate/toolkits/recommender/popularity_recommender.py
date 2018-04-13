@@ -11,6 +11,7 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import turicreate as _turicreate
 from turicreate.toolkits.recommender.util import _Recommender
+from turicreate.cython.cy_server import QuietProgress
 
 def create(observation_data,
            user_id='user_id', item_id='item_id', target=None,
@@ -80,7 +81,7 @@ def create(observation_data,
     """
 
     opts = {'model_name': 'popularity'}
-    response = _turicreate.toolkits._main.run("recsys_init", opts)
+    response = _turicreate.extensions._recsys.init(opts)
     model_proxy = response['model']
 
     if user_data is None:
@@ -98,7 +99,9 @@ def create(observation_data,
             'model': model_proxy,
             'random_seed': 1}
 
-    response = _turicreate.toolkits._main.run('recsys_train', opts, verbose)
+    with QuietProgress(verbose):
+        response = _turicreate.extensions._recsys.train(opts)
+
     return PopularityRecommender(response['model'])
 
 class PopularityRecommender(_Recommender):

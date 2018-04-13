@@ -10,7 +10,6 @@
 #include <unity/lib/variant_converter.hpp>
 #include <unity/lib/simple_model.hpp>
 #include <unity/lib/unity_sarray.hpp>
-#include <unity/lib/api/model_interface.hpp>
 #include <unity/lib/unity_sframe.hpp>
 #include <unity/lib/unity_sgraph.hpp>
 #include <unity/lib/gl_sarray.hpp>
@@ -47,20 +46,20 @@ struct variant_equality_visitor {
     // for completeness. We are not handling the dataframe case
     return false;
   }
-  bool operator()(std::map<std::string, variant_type> a, 
+  bool operator()(std::map<std::string, variant_type> a,
                   std::map<std::string, variant_type> b) const {
     if (a.size() != b.size()) return false;
     bool equal = true;
     for (const auto& val: a) {
       if (b.count(val.first) == 0) return false;
-      equal &= boost::apply_visitor(variant_equality_visitor(), 
-                                    val.second, 
+      equal &= boost::apply_visitor(variant_equality_visitor(),
+                                    val.second,
                                     b.at(val.first));
     }
     return equal;
   }
 
-  bool operator()(std::vector<variant_type> a, 
+  bool operator()(std::vector<variant_type> a,
                   std::vector<variant_type> b) const {
     if (a.size() != b.size()) return false;
     bool equal = true;
@@ -79,7 +78,7 @@ struct unity_toolkit_test {
   // convert it back to flexible_type
   // check flexible_type for equality
   template <typename T>
-  void converter_test(T value) {  
+  void converter_test(T value) {
     static_assert(variant_converter<T>::value, "bad");
     TS_ASSERT(variant_converter<T>::value == true);
     variant_type fval = variant_converter<T>().set(T(value));
@@ -124,12 +123,12 @@ struct unity_toolkit_test {
     converter_test<std::shared_ptr<model_base>>(make_model());
     converter_test<std::vector<variant_type>>({variant_type()});
     converter_test<std::vector<variant_type>>(
-        std::vector<variant_type>{flexible_type("hello"), 
-                                  flexible_type(1.0), 
+        std::vector<variant_type>{flexible_type("hello"),
+                                  flexible_type(1.0),
                                   std::static_pointer_cast<unity_sarray_base>(make_sarray()),
                                   std::static_pointer_cast<model_base>(make_model())});
     converter_test<std::map<std::string, variant_type>>({{"hello world", variant_type()}});
-    
+
     // case 3
     converter_test<variant_type>(variant_type());
 
@@ -149,9 +148,9 @@ struct unity_toolkit_test {
     converter_test<std::vector<std::shared_ptr<unity_sarray>>>({make_sarray(), make_sarray()});
     converter_test<std::vector<std::shared_ptr<unity_sgraph>>>({make_sgraph(), make_sgraph()});
     converter_test<std::vector<variant_vector_type>>(
-        std::vector<variant_vector_type>{{flexible_type("hello")}, 
-                                        {flexible_type(1.0), to_variant(make_sgraph())}, 
-                                        {to_variant(make_sarray())}, 
+        std::vector<variant_vector_type>{{flexible_type("hello")},
+                                        {flexible_type(1.0), to_variant(make_sgraph())},
+                                        {to_variant(make_sarray())},
                                         {to_variant(make_model()), to_variant(make_sframe())}});
     // case 9
     converter_test<std::map<std::string, variant_vector_type>>(
@@ -166,7 +165,7 @@ struct unity_toolkit_test {
     converter_test<std::map<std::string, std::map<std::string, flexible_type>>>
                                                   ({{"hello", {{"world", 123}}},
                                                     {"world", {{"world", 456}}}});
-    // case 10 
+    // case 10
     converter_test<std::unordered_map<std::string, variant_vector_type>>(
         std::unordered_map<std::string, variant_vector_type>{{"hello world", {variant_type()}}});
     converter_test<std::unordered_map<std::string, std::shared_ptr<unity_sarray>>>(

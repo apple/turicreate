@@ -44,24 +44,6 @@ lsh_neighbors::~lsh_neighbors(){
 }
 
 /**
- * Cast the object to a nearest_neighbors_model type
- */
-nearest_neighbors_model* lsh_neighbors::nearest_neighbors_clone() {
-
-  lsh_neighbors* nn = new lsh_neighbors(*this);
-  return (nearest_neighbors_model*) nn;
-}
-
-
-/**
- * Returns the name of the model.
- */
-std::string lsh_neighbors::name() {
-  return "nearest_neighbors_lsh";
-}
-
-
-/**
 * Set options
 */
 void lsh_neighbors::init_options(const std::map<std::string,

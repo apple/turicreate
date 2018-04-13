@@ -403,21 +403,4 @@ void recsys_factorization_model_base::internal_load(turi::iarchive& iarc,
   }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
-std::vector<std::string> recsys_factorization_model_base::list_fields() const {
-  return {"coefficients"};
-}
-
-////////////////////////////////////////////////////////////////////////////
-
-std::map<std::string, variant_type> recsys_factorization_model_base::get(const std::string& v) const {
-
-  std::map<std::string, variant_type> ret;
-  ret["coefficients"] = to_variant(model->get_coefficients());
-  return ret;
-}
-
-
-
 }}

@@ -52,6 +52,12 @@ struct general_fstream_test {
       logstream(LOG_INFO) << "Test on url: " << fname  << std::endl;
       TS_ASSERT_EQUALS(helper_test_basic_read_write(fname), 0);
       TS_ASSERT_EQUALS(helper_test_seek(fname), 0);
+    }
+
+    void test_caching_url() {
+      std::string fname = "cache://" + std::string(tmpname);
+      logstream(LOG_INFO) << "Test on url: " << fname  << std::endl;      TS_ASSERT_EQUALS(helper_test_basic_read_write(fname), 0);
+      TS_ASSERT_EQUALS(helper_test_seek(fname), 0);
 
 
       // fname = "cache://" + std::string(tmpname) + ".gz";
@@ -69,8 +75,7 @@ struct general_fstream_test {
       TS_ASSERT_EQUALS(get_filename("file:///pika.bin"), "pika.bin");
       TS_ASSERT_EQUALS(get_filename("hdfs:///pika.bin"), "pika.bin");
       TS_ASSERT_EQUALS(get_filename("hdfs:///chu/pika.bin"), "pika.bin");
-      TS_ASSERT_EQUALS(get_dirname("/hello"), "");
-      TS_ASSERT_EQUALS(get_dirname("/hello/world.bin"), "/hello");
+      TS_ASSERT_EQUALS(get_dirname("/hello"), "");      TS_ASSERT_EQUALS(get_dirname("/hello/world.bin"), "/hello");
       TS_ASSERT_EQUALS(get_dirname("s3://world/pika.bin"), "s3://world");
       TS_ASSERT_EQUALS(get_dirname("hdfs:///pika.bin"), "hdfs://");
       TS_ASSERT_EQUALS(get_dirname("hdfs:///chu/pika.bin"), "hdfs:///chu");
@@ -81,8 +86,7 @@ struct general_fstream_test {
       TS_ASSERT_EQUALS(make_absolute_path("file:///pika/", "hello"), "file:///pika/hello");
       TS_ASSERT_EQUALS(make_absolute_path("s3://pika/", "hello"), "s3://pika/hello");
       TS_ASSERT_EQUALS(make_absolute_path("hdfs:///pika/", "hello"), "hdfs:///pika/hello");
-      TS_ASSERT_EQUALS(make_absolute_path("hdfs:///", "hello"), "hdfs:///hello");
-      TS_ASSERT_EQUALS(make_absolute_path("hdfs://", "hello"), "hdfs:///hello");
+      TS_ASSERT_EQUALS(make_absolute_path("hdfs:///", "hello"), "hdfs:///hello");      TS_ASSERT_EQUALS(make_absolute_path("hdfs://", "hello"), "hdfs:///hello");
 
       TS_ASSERT_EQUALS(make_relative_path("/", "/hello"), "hello");
       TS_ASSERT_EQUALS(make_relative_path("/pika", "/pika/hello"), "hello");
@@ -120,8 +124,7 @@ struct general_fstream_test {
       TS_ASSERT_EQUALS(remove_protocol("file://peekaboo"), "peekaboo");
       TS_ASSERT_EQUALS(remove_protocol("s3://pikachu"), "pikachu");
       TS_ASSERT_EQUALS(remove_protocol("/pikachu"), "/pikachu");
-      TS_ASSERT_EQUALS(remove_protocol("http://pikachu://pikachu"), "pikachu://pikachu");
-    }
+      TS_ASSERT_EQUALS(remove_protocol("http://pikachu://pikachu"), "pikachu://pikachu");    }
 
     int helper_test_basic_read_write(const std::string& url) {
       std::string s;

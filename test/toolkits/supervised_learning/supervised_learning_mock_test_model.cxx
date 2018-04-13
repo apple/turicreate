@@ -64,14 +64,7 @@ class predict_constant : public supervised_learning_model_base {
    * -------------------------------------------------------------------------
    */
 
-
-  /**
-   * Returns the name of the model.
-   */
-  std::string name(){
-    return "predict_constant";
-  }
-
+  SUPERVISED_LEARNING_METHODS_REGISTRATION("predict_constant", predict_constant)
 
   /**
    * Train a supervised_learning model.
@@ -171,6 +164,9 @@ class predict_constant : public supervised_learning_model_base {
   double get_constant(){
     return constant;
   }
+
+  std::shared_ptr<MLModelWrapper> export_to_coreml() { return std::shared_ptr<MLModelWrapper>(); }
+
 
 
 };
@@ -306,7 +302,7 @@ void run_predict_constant_test(std::map<std::string, flexible_type> opts) {
   TS_ASSERT(_get == 0);
 
   // Check list_fields
-  _list_fields = model->list_keys();
+  _list_fields = model->list_fields();
   for(const auto& f: _list_fields_ans){
     TS_ASSERT(std::find(_list_fields.begin(), _list_fields.end(), f)
                                                     != _list_fields.end());
@@ -382,7 +378,7 @@ void run_predict_constant_test(std::map<std::string, flexible_type> opts) {
   TS_ASSERT(_get == 0);
 
   // Check list_fields
-  _list_fields = loaded_model->list_keys();
+  _list_fields = loaded_model->list_fields();
   for(const auto& f: _list_fields_ans){
     TS_ASSERT(std::find(_list_fields.begin(), _list_fields.end(), f)
                             != _list_fields.end());

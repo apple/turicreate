@@ -18,6 +18,7 @@
 #include <toolkits/supervised_learning/xgboost.hpp>
 #include <toolkits/supervised_learning/supervised_learning.hpp>
 #include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <toolkits/supervised_learning/classifier_evaluations.hpp>
 
 // ML Data
 #include <ml_data/ml_data_iterator.hpp>
@@ -292,14 +293,6 @@ size_t supervised_learning_model_base::num_examples() const{
 }
 
 /**
- * Clone to a model_base object. No longer needed.
- */
-ml_model_base* supervised_learning_model_base::ml_model_base_clone() {
-  return this;
-}
-
-
-/**
  * Get training stats.
  */
 std::map<std::string, flexible_type>
@@ -426,7 +419,7 @@ supervised_learning_model_base::predict(const ml_data& test_data,
   }
 
   // Multi-class error
-  if (name().find("classifier") != std::string::npos) {
+  if (is_classifier()) {
     size_t num_classes = variant_get_value<size_t>(state.at("num_classes"));
     if (((output_type == "margin") || (output_type == "probability"))
                                                   && num_classes > 2){
@@ -483,8 +476,8 @@ supervised_learning_model_base::predict(const ml_data& test_data,
 
 gl_sarray supervised_learning_model_base::fast_predict(
     const std::vector<flexible_type>& rows,
-    const std::string& output_type,
-    const std::string& missing_value_action) {
+    const std::string& missing_value_action,
+    const std::string& output_type) {
 
   // Initialize.
   size_t variables = 0;
@@ -548,13 +541,14 @@ gl_sframe supervised_learning_model_base::fast_classify(
 
   // Class predictions
   gl_sframe sf_class;
-  sf_class.add_column(fast_predict(rows, "class", missing_value_action), "class");
+  sf_class.add_column(fast_predict(rows, missing_value_action, "class"),
+		      "class");
 
   // Binary classification
   if (variant_get_value<size_t>(state.at("num_classes")) == 2){
 
     // Convert P[X=1] to P[X = predicted_class]
-    gl_sarray pred_prob = fast_predict(rows, "probability");
+    gl_sarray pred_prob = fast_predict(rows, "error", "probability");
     auto transform_fn = [](const flexible_type& f)->flexible_type{
       if (f <= 0.5){
         return 1 - f;
@@ -566,7 +560,9 @@ gl_sframe supervised_learning_model_base::fast_classify(
 
   // Multi-class classification
   } else {
-    sf_class.add_column(fast_predict(rows, "max_probability", missing_value_action), "probability");
+    sf_class.add_column(fast_predict(rows, missing_value_action,
+				     "max_probability"),
+			"probability");
   }
   return sf_class;
 }
@@ -933,6 +929,219 @@ std::vector<std::vector<flexible_type>>
   return ret; 
 }
 
+void supervised_learning_model_base::api_train(
+    gl_sframe data, 
+    const std::string& target,
+    gl_sframe validation_data,
+    const std::map<std::string, flexible_type>& options) {
+
+  // TODO: remove this plumbing now that neural nets has been 
+  // moved out. 
+  constexpr bool support_image_type = false;
+
+  gl_sframe f_data = data;
+  f_data.remove_column(target);
+  sframe X = f_data.materialize_to_sframe(); 
+    
+  sframe y = data.select_columns({target}).materialize_to_sframe();
+
+  ml_missing_value_action missing_value_action =
+    this->support_missing_value() ? ml_missing_value_action::USE_NAN
+                                  : ml_missing_value_action::ERROR;
+
+  sframe valid_X, valid_y; 
+
+  if(validation_data.num_columns() != 0) {
+
+    gl_sframe f_v_data = validation_data;
+    f_v_data.remove_column(target);
+    valid_X = f_v_data.materialize_to_sframe(); 
+    
+    valid_y = validation_data.select_columns({target}).materialize_to_sframe();
+    
+    check_feature_column_types(valid_X, support_image_type);
+    check_target_column_type(this->name(), valid_y);
+    check_feature_column_types_match(X, valid_X);
+  }
+
+  this->init(X, y, valid_X, valid_y, missing_value_action);
+
+  // Override any default options set by init above.
+  this->init_options(options);
+
+  this->train();
+}
+
+/**
+ * API interface through the unity server.
+ *
+ * Prediction stuff
+ */
+gl_sarray supervised_learning_model_base::api_predict(
+    gl_sframe data, std::string missing_value_action_str,
+    std::string output_type) {
+
+  ml_missing_value_action missing_value_action =
+      get_missing_value_enum_from_string(missing_value_action_str);
+
+  sframe X = setup_test_data_sframe(
+      data.materialize_to_sframe(),
+      std::dynamic_pointer_cast<supervised_learning_model_base>(shared_from_this()),
+      missing_value_action);
+
+  ml_data m_data = this->construct_ml_data_using_current_metadata(X, missing_value_action);
+  
+  return gl_sarray(this->predict(m_data, output_type));
+}
+
+/**
+ * API interface through the unity server.
+ *
+ * Multiclass prediction stuff
+ */
+gl_sframe supervised_learning_model_base::api_predict_topk(
+    gl_sframe data, std::string missing_value_action_str,
+    std::string output_type, size_t topk) {
+  if (topk == 0) log_and_throw("The parameter 'k' must be positive.");
+
+  ml_missing_value_action missing_value_action =
+      get_missing_value_enum_from_string(missing_value_action_str);
+
+  sframe X = setup_test_data_sframe(
+      data.materialize_to_sframe(),
+      std::dynamic_pointer_cast<supervised_learning_model_base>(
+          shared_from_this()),
+      missing_value_action);
+
+  ml_data m_data =
+      this->construct_ml_data_using_current_metadata(X, missing_value_action);
+
+  return gl_sframe(this->predict_topk(m_data, output_type, topk));
+}
+
+/**
+ * API interface through the unity server.
+ *
+ *  Classification stuff
+ */
+gl_sframe supervised_learning_model_base::api_classify(
+    gl_sframe data, std::string missing_value_action_str,
+    std::string output_type) {
+
+  ml_missing_value_action missing_value_action =
+      get_missing_value_enum_from_string(missing_value_action_str);
+
+  sframe X = setup_test_data_sframe(
+      data.materialize_to_sframe(),
+      std::dynamic_pointer_cast<supervised_learning_model_base>(
+          shared_from_this()),
+      missing_value_action);
+
+  ml_data m_data = this->construct_ml_data_using_current_metadata(
+      X, missing_value_action);
+
+  return gl_sframe(this->classify(m_data, output_type));
+}
+
+/**
+ *  API interface through the unity server.
+ *
+ *  Evaluate the model
+ */
+variant_map_type supervised_learning_model_base::api_evaluate(
+    gl_sframe data, std::string missing_value_action_str, std::string metric) {
+  auto model = std::dynamic_pointer_cast<supervised_learning_model_base>(
+      shared_from_this());
+  ml_missing_value_action missing_value_action =
+      get_missing_value_enum_from_string(missing_value_action_str);
+
+  sframe test_data = data.materialize_to_sframe();
+  sframe X = setup_test_data_sframe(test_data, model, missing_value_action);
+  sframe y = test_data.select_columns({get_target_name()});
+  ml_data m_data = setup_ml_data_for_evaluation(
+      X, y, model, missing_value_action);
+
+
+  if(metric == "report") {
+    if(is_classifier()) {
+      std::string target = variant_get_ref<flexible_type>(state.at("target"));
+      std::string pred_column = target + ".predicted";
+
+
+      gl_sframe out;
+
+      out[target] = data[target];
+      out[pred_column] = api_predict(data, missing_value_action_str, "class");
+
+      variant_map_type ret = evaluate(m_data, "auto");
+
+      ret["confusion_matrix"] = confusion_matrix(out, target, pred_column);
+      ret["report_by_class"] = classifier_report_by_class(out, target, pred_column);
+
+      return ret;
+
+    } else {
+      metric = "auto";
+    }
+  }
+
+  variant_map_type results = evaluate(m_data, metric);
+  return results;
+}
+
+/**
+ *  API interface through the unity server.
+ *
+ *  Extract features!
+ */
+gl_sarray supervised_learning_model_base::api_extract_features(
+    gl_sframe data, std::string missing_value_action_str) {
+  auto model = std::dynamic_pointer_cast<supervised_learning_model_base>(
+      shared_from_this());
+  ml_missing_value_action missing_value_action =
+      get_missing_value_enum_from_string(missing_value_action_str);
+
+  sframe test_data = data.materialize_to_sframe();
+  sframe X = setup_test_data_sframe(test_data, model, missing_value_action);
+
+  return extract_features(X, missing_value_action);
+}
+
+std::shared_ptr<coreml::MLModelWrapper>
+supervised_learning_model_base::api_export_to_coreml(
+    const std::string& filename) {
+  std::shared_ptr<coreml::MLModelWrapper> model = export_to_coreml();
+
+  if (filename != "") {
+    model->save(filename);
+  }
+
+  return model;
+}
+
+/**
+ * Get the missing value enum from the string.
+ *
+ * [in] Missing value action as seen by the user.
+ * \returns Missing value action enum
+ */
+ml_missing_value_action
+supervised_learning_model_base::get_missing_value_enum_from_string(
+    const std::string& missing_value_str) const {
+  if (missing_value_str == "auto" || missing_value_str.empty()) {
+    return support_missing_value() ? ml_missing_value_action::USE_NAN
+                                   : ml_missing_value_action::IMPUTE;
+  } else if (missing_value_str == "error") {
+    return ml_missing_value_action::ERROR;
+  } else if (missing_value_str == "impute") {
+    return ml_missing_value_action::IMPUTE;
+  } else if (missing_value_str == "none") {
+    return ml_missing_value_action::USE_NAN;
+  } else {
+    log_and_throw("Missing value type '" + missing_value_str + "' not supported.");
+  }
+}
+
 /**
  * Compute the width of the data.
  *
@@ -1016,9 +1225,9 @@ std::vector<std::string> _classifier_available_models(size_t num_classes,
 gl_sarray _fast_predict(
     std::shared_ptr<supervised_learning_model_base> model,
     const std::vector<flexible_type>& rows,
-    const std::string& output_type,
-    const std::string& missing_value_action) {
-  return model->fast_predict(rows, output_type, missing_value_action);
+    const std::string& missing_value_action,
+    const std::string& output_type) {
+  return model->fast_predict(rows, missing_value_action, output_type);
 }
 
 /**
@@ -1027,10 +1236,11 @@ gl_sarray _fast_predict(
 gl_sframe _fast_predict_topk(
     std::shared_ptr<supervised_learning_model_base> model,
     const std::vector<flexible_type>& rows,
-    const std::string& output_type,
     const std::string& missing_value_action,
+    const std::string& output_type,
     const size_t topk) {
-  return model->fast_predict_topk(rows, output_type, missing_value_action, topk);
+  return model->fast_predict_topk(rows, missing_value_action, output_type,
+				  topk);
 }
 
 /**
@@ -1050,6 +1260,7 @@ std::vector<std::vector<flexible_type>> _get_metadata_mapping(
     std::shared_ptr<supervised_learning_model_base> model) {
   return model->get_metadata_mapping();
 }
+
 
 } // supervised_learning
 } // turicreate

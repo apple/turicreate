@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <string>
+#include <boost/date_time/local_time/local_time.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <flexible_type/flexible_type.hpp>
 #include <logger/assertions.hpp>
@@ -71,6 +72,45 @@ std::string date_time_to_string(const flex_date_time& i) {
      ptime_from_time_t(i.shifted_posix_timestamp(),
                        i.microsecond()));
 }
+
+date_time_string_reader::date_time_string_reader(std::string format)
+    : format_(std::move(format)) {
+  if (format_.empty()) {
+    format_ = "%Y%m%dT%H%M%S%F%q";
+  }
+
+  auto* facet = new boost::local_time::local_time_input_facet(format_);
+  stream_.imbue(std::locale(stream_.getloc(), facet));
+  stream_.exceptions(std::ios_base::failbit);
+}
+
+flex_date_time date_time_string_reader::read(const flex_string& input) {
+  try {
+    boost::local_time::local_date_time ldt(boost::posix_time::not_a_date_time);
+    stream_.str(input);
+    stream_ >> ldt; // do the parse
+
+    boost::posix_time::ptime p = ldt.utc_time();
+    std::time_t time = ptime_to_time_t(p);
+    int32_t microseconds = ptime_to_fractional_microseconds(p);
+    int32_t timezone_offset = flex_date_time::EMPTY_TIMEZONE;
+    if (ldt.zone()) {
+      timezone_offset =
+        static_cast<int32_t>(ldt.zone()->base_utc_offset().total_seconds()) /
+        flex_date_time::TIMEZONE_RESOLUTION_IN_SECONDS;
+    }
+    return flex_date_time(time, timezone_offset, microseconds);
+  } catch (std::exception& ex) {
+    log_and_throw("Unable to interpret " + input + " as string with " +
+                  format_ + " format");
+  }
+}
+
+flex_date_time get_datetime_visitor::operator()(const flex_string& s) const {
+  date_time_string_reader reader("ISO");
+  return reader.read(s);
+}
+
 flex_string get_string_visitor::operator()(const flex_vec& vec) const {
   std::stringstream strm; strm << "[";
   for (size_t i = 0; i < vec.size(); ++i) {

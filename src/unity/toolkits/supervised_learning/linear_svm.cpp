@@ -16,6 +16,13 @@
 #include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
 #include <toolkits/supervised_learning/linear_svm_opt_interface.hpp>
 
+// CoreML
+#include <unity/toolkits/coreml_export/coreml_export_utils.hpp>
+#include <unity/toolkits/coreml_export/mldata_exporter.hpp>
+#include <unity/toolkits/coreml_export/MLModel/src/transforms/LinearModel.hpp>
+#include <unity/toolkits/coreml_export/MLModel/src/transforms/LogisticModel.hpp>
+
+
 // Solvers
 #include <optimization/utils.hpp>
 #include <optimization/constraints-inl.hpp>
@@ -46,14 +53,6 @@ namespace supervised {
  * Destructor. Make sure bad things don't happen
  */
 linear_svm::~linear_svm(){
-}
-
-
-/**
- * Returns the name of the model.
- */
-std::string linear_svm::name(){
-  return "classifier_svm";
 }
 
 /**
@@ -220,6 +219,12 @@ void linear_svm::train() {
     log_and_throw(msg.str());
   }
 
+  // Save final accuracies
+  if(scaled_logistic_svm_interface->num_validation_examples() > 0) {
+    state["validation_accuracy"] = scaled_logistic_svm_interface->get_validation_accuracy();
+  }
+  state["training_accuracy"] = scaled_logistic_svm_interface->get_training_accuracy();
+
   // Store the coefficients in the model
   // ---------------------------------------------------------------------------
   coefs = stats.solution;
@@ -264,6 +269,7 @@ flexible_type linear_svm::predict_single_example(
       return (margin >= 0.0); 
 
     // Class
+    case prediction_type_enum::NA:
     case prediction_type_enum::CLASS: 
     {
       size_t class_id = (margin >= 0.0);
@@ -273,7 +279,6 @@ flexible_type linear_svm::predict_single_example(
     // Not supported types
     case prediction_type_enum::PROBABILITY:
     case prediction_type_enum::MAX_PROBABILITY:
-    case prediction_type_enum::NA:
     case prediction_type_enum::RANK:
     case prediction_type_enum::PROBABILITY_VECTOR:
       log_and_throw("Output type not supported.");
@@ -298,6 +303,7 @@ flexible_type linear_svm::predict_single_example(
       case prediction_type_enum::CLASS_INDEX:
       return (margin >= 0.0);
     // Class
+    case prediction_type_enum::NA:
     case prediction_type_enum::CLASS: 
     {
       size_t class_id = (margin >= 0.0);
@@ -307,7 +313,6 @@ flexible_type linear_svm::predict_single_example(
     // Not supported
     case prediction_type_enum::PROBABILITY:
     case prediction_type_enum::MAX_PROBABILITY:
-    case prediction_type_enum::NA:
     case prediction_type_enum::RANK:
     case prediction_type_enum::PROBABILITY_VECTOR:
       log_and_throw("Output type not supported.");
@@ -334,7 +339,8 @@ gl_sframe linear_svm::fast_classify(
     const std::string& missing_value_action) {
   // Class predictions
   gl_sframe sf_class;
-  sf_class.add_column(fast_predict(rows, "class", missing_value_action), "class");
+  sf_class.add_column(fast_predict(rows, missing_value_action, "class"),
+		      "class");
   return sf_class;
 }
 
@@ -402,6 +408,81 @@ size_t linear_svm::get_version() const{
   //  4 - Version 1.5
   //  5 - Version 1.7
   return SVM_MODEL_VERSION;  
+}
+  
+std::shared_ptr<coreml::MLModelWrapper> linear_svm::export_to_coreml() {
+
+  std::string prob_column_name = ml_mdata->target_column_name() + "Probability";
+  CoreML::Pipeline  pipeline = CoreML::Pipeline::Classifier(ml_mdata->target_column_name(), prob_column_name, "");
+
+  setup_pipeline_from_mldata(pipeline, ml_mdata);
+
+  //////////////////////////////////////////////////////////////////////
+  // Now set up the actual model.
+  CoreML::LogisticModel model = CoreML::LogisticModel(ml_mdata->target_column_name(),
+                                                                        prob_column_name,
+                                                                        "Linear SVM");
+
+  std::vector<double> one_hot_coefs;
+  supervised::get_one_hot_encoded_coefs(coefs, ml_mdata, one_hot_coefs);
+
+  size_t num_classes = ml_mdata->target_index_size();
+  double offset = one_hot_coefs.back();
+  model.setOffsets({offset});
+  one_hot_coefs.pop_back();
+  model.setWeights({one_hot_coefs});
+
+  auto target_output_data_type = CoreML::FeatureType::Double();
+  auto target_additional_data_type = CoreML::FeatureType::Double();
+  if(ml_mdata->target_column_type() == flex_type_enum::INTEGER) {
+      std::vector<int64_t> classes(num_classes);
+      for(size_t i = 0; i < num_classes; ++i) {
+        classes[i] = ml_mdata->target_indexer()->map_index_to_value(i).get<flex_int>();
+      }
+      model.setClassNames(classes);
+    target_output_data_type = CoreML::FeatureType::Int64();
+    target_additional_data_type = \
+              CoreML::FeatureType::Dictionary(MLDictionaryFeatureTypeKeyType_int64KeyType);
+  } else if(ml_mdata->target_column_type() == flex_type_enum::STRING) {
+      std::vector<std::string> classes(num_classes);
+      for(size_t i = 0; i < num_classes; i++) {
+        classes[i] = ml_mdata->target_indexer()->map_index_to_value(i).get<std::string>();
+      }
+      model.setClassNames(classes);
+      target_output_data_type = CoreML::FeatureType::String();
+      target_additional_data_type = \
+             CoreML::FeatureType::Dictionary(MLDictionaryFeatureTypeKeyType_stringKeyType);
+
+  } else {
+    log_and_throw("Only exporting classifiers with an output class "
+                  "of integer or string is supported.");
+  }
+
+  // Model inputs and output
+  model.addInput("__vectorized_features__",
+              CoreML::FeatureType::Array({ml_mdata->num_dimensions()}));
+  model.addOutput(ml_mdata->target_column_name(), target_output_data_type);
+  model.addOutput(prob_column_name, target_additional_data_type);
+
+  // Pipeline outputs
+  pipeline.add(model);
+  pipeline.addOutput(ml_mdata->target_column_name(), target_output_data_type);
+  pipeline.addOutput(prob_column_name, target_additional_data_type);
+
+  
+  std::map<std::string, flexible_type> context = { 
+    {"model_type", "linear_svm"}, 
+    {"version", std::to_string(get_version())}, 
+    {"class", name()}, 
+    {"short_description", "Linear SVM Model."}};
+
+  // Add metadata
+  add_metadata(pipeline.m_spec, context);
+
+  // Save pipeline
+  auto model_wrapper = std::make_shared<coreml::MLModelWrapper>(std::make_shared<CoreML::Pipeline>(pipeline));
+
+  return model_wrapper;
 }
 
 } // supervised

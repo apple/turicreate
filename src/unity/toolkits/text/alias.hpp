@@ -11,6 +11,7 @@
 #include <unity/toolkits/util/spmat.hpp>
 #include <unity/toolkits/text/topic_model.hpp>
 #include <export.hpp>
+#include <unity/toolkits/text/topic_model.hpp>
 
 /**
 TODO:
@@ -81,11 +82,6 @@ class EXPORT alias_topic_model : public topic_model {
   topic_model* topic_model_clone();
 
   /**
-   * Return the name of the model.
-   */
-  std::string name();
-
-  /**
    * Set the model options. Use the option manager to set these options. The
    * option manager should throw errors if the options do not satisfy the option
    * manager's conditions.
@@ -113,7 +109,7 @@ class EXPORT alias_topic_model : public topic_model {
    * Train the model using the method described in (Li, 2014).
    *
    */
-  void train(std::shared_ptr<sarray<flexible_type>> data, bool verbose);
+  void train(std::shared_ptr<sarray<flexible_type> > data, bool verbose);
 
   /**
    * Use the dataset to create an initial set of topic assignments.
@@ -176,10 +172,15 @@ class EXPORT alias_topic_model : public topic_model {
 
   // Constants
   size_t TARGET_BLOCK_NUM_ELEMENTS = 1000000000/16; // approx 1gb in memory per block
-};
 
+ public: 
 
+  // TODO: convert interface above to use the extensions methods here
+  BEGIN_CLASS_MEMBER_REGISTRATION("alias_topic_model")
+  REGISTER_CLASS_MEMBER_FUNCTION(alias_topic_model::list_fields)
+  END_CLASS_MEMBER_REGISTRATION
 
+}; 
 }
 }
 #endif
