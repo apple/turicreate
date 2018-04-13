@@ -9,7 +9,7 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 from ..data_structures.sarray import SArray
-from .. import load_sarray
+from ..data_structures.sarray import load_sarray
 from ..util.timezone import GMT
 from . import util
 

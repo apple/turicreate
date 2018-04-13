@@ -68,7 +68,7 @@ def load_sarray(filename):
 
     Returns
     -------
-    out : SFrame
+    out : SArray
 
     See Also
     --------
@@ -76,9 +76,9 @@ def load_sarray(filename):
 
     Examples
     --------
-    >>> sa = turicreate.SArray(data=[1,2,3,4,5], dtype=int)
-    >>> sa.save('my_sarray')
-    >>> sa_loaded = turicreate.load_sarray('my_sarray')
+    >>> sa = turicreate.SArray(data=[1,2,3,4,5])
+    >>> sa.save('./my_sarray')
+    >>> sa_loaded = turicreate.load_sarray('./my_sarray')
     """
     sa = SArray(data=filename)
     return sa
