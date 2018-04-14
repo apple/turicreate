@@ -110,7 +110,7 @@ def _make_internal_url(url):
     For hdfs urls:
       Error if hadoop classpath is not set
     For local file urls:
-      conver slashes for windows sanity
+      convert slashes for windows sanity
 
     Parameters
     ----------
