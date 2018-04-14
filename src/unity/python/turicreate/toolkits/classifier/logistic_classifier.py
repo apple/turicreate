@@ -382,7 +382,7 @@ class LogisticClassifier(_Classifier):
 
     """
     def __init__(self, model_proxy):
-        '''__init__(self)'''
+
         self.__proxy__ = model_proxy
         self.__name__ = self.__class__._native_name()
 
