@@ -20,7 +20,7 @@ import coremltools
 import numpy as np
 import platform
 
-def _get_data():
+def _get_data(num_examples = 100):
     from PIL import Image as _PIL_Image
     rs = np.random.RandomState(1234)
     _format = {'JPG': 0, 'PNG': 1, 'RAW': 2, 'UNDEFINED': 3}
@@ -46,7 +46,6 @@ def _get_data():
                 _image_data_size=image_data_size)
         return img
 
-    num_examples = 100
     images = []
     random_labels = [rs.randint(0,5) for i in range(num_examples)]
     for i in range(num_examples):
@@ -64,14 +63,14 @@ def _get_data():
 
 class ImageClassifierTest(unittest.TestCase):
     @classmethod
-    def setUpClass(self, model='resnet-50', input_image_shape=(3, 224, 224), tol=0.02):
+    def setUpClass(self, model='resnet-50', input_image_shape=(3, 224, 224), tol=0.02, num_examples = 100):
         self.feature = 'awesome_image'
         self.target = 'awesome_label'
         self.input_image_shape = input_image_shape
         self.pre_trained_model = model
         self.tolerance = tol
 
-        self.sf = _get_data()
+        self.sf = _get_data(num_examples)
         self.model = tc.image_classifier.create(self.sf, target=self.target,
                                                 model=self.pre_trained_model,
                                                 seed=42)
@@ -245,6 +244,13 @@ class ImageClassifierSqueezeNetTest(ImageClassifierTest):
         super(ImageClassifierSqueezeNetTest, self).setUpClass(model='squeezenet_v1.1',
                                                               input_image_shape=(3, 227, 227),
                                                               tol=0.005)
+
+class ImageClassifierLargerSqueezeNetTest(ImageClassifierTest):
+    @classmethod
+    def setUpClass(self):
+        super(ImageClassifierSqueezeNetTest, self).setUpClass(model='squeezenet_v1.1',
+                                                              input_image_shape=(3, 227, 227),
+                                                              tol=0.005, num_examples = 200)
 
 
 @unittest.skipIf(tc.util._num_available_gpus() == 0, 'Requires GPU')
