@@ -129,6 +129,7 @@ def create(dataset, target, feature = None, model = 'resnet-50',
                                               target=target,
                                               max_iterations=max_iterations,
                                               seed=seed,
+                                              validation_set=None,
                                               verbose=verbose)
 
     # Save the model
