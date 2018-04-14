@@ -200,7 +200,6 @@ class KmeansModel(_Model):
     documentation for the create function.
     """
     def __init__(self, model):
-        '''__init__(self)'''
         self.__proxy__ = model
         self.__name__ = self.__class__._native_name()
 
