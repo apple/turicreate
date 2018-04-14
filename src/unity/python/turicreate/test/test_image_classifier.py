@@ -248,7 +248,7 @@ class ImageClassifierSqueezeNetTest(ImageClassifierTest):
 class ImageClassifierLargerSqueezeNetTest(ImageClassifierTest):
     @classmethod
     def setUpClass(self):
-        super(ImageClassifierSqueezeNetTest, self).setUpClass(model='squeezenet_v1.1',
+        super(ImageClassifierLargerSqueezeNetTest, self).setUpClass(model='squeezenet_v1.1',
                                                               input_image_shape=(3, 227, 227),
                                                               tol=0.005, num_examples = 200)
 
