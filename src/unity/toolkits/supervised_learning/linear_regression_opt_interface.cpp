@@ -141,8 +141,8 @@ std::vector<std::string> linear_regression_opt_interface::get_status(
  * Compute the first order statistics
 */
 void linear_regression_opt_interface::compute_first_order_statistics(const
-    DenseVector& point, DenseVector& gradient, double& function_value, const
-    size_t mbStart, const size_t mbSize) {
+    ml_data& data, const DenseVector& point, DenseVector& gradient, double&
+    function_value, const size_t mbStart, const size_t mbSize) {
   DASSERT_TRUE(mbStart == 0);
   DASSERT_TRUE(mbSize == (size_t)(-1));
 
@@ -218,9 +218,9 @@ void linear_regression_opt_interface::compute_first_order_statistics(const
 /**
  * Compute the second order statistics
 */
-void linear_regression_opt_interface::compute_second_order_statistics(
-    const ml_data& data, const DenseVector& point, DenseMatrix& hessian,
-    DenseVector& gradient, double& function_value) {
+void linear_regression_opt_interface::compute_second_order_statistics( const
+    DenseVector& point, DenseMatrix& hessian, DenseVector& gradient, double&
+    function_value) {
 
   std::vector<DenseMatrix> H(n_threads, 
                         arma::zeros(variables,variables));
@@ -303,19 +303,18 @@ void linear_regression_opt_interface::compute_second_order_statistics(
   }
 }
 
-void linear_regression_opt_interface::compute_second_order_statistics(
-    const DenseVector& point, DenseMatrix& hessian, DenseVector& gradient,
-    double& function_value) {
-  compute_second_order_statistics(
-      data, point, hessian, gradient, function_value);
+void linear_regression_opt_interface::compute_first_order_statistics(const
+    DenseVector& point, DenseVector& gradient, double& function_value, const
+    size_t mbStart, const size_t mbSize) {
+  compute_first_order_statistics(
+      data, point, gradient, function_value, mbStart, mbSize);
 }
 
 void
-linear_regression_opt_interface::compute_validation_second_order_statistics(
-    const DenseVector& point, DenseMatrix& hessian, DenseVector& gradient,
-    double& function_value) {
-  compute_second_order_statistics(
-      valid_data, point, hessian, gradient, function_value);
+linear_regression_opt_interface::compute_validation_first_order_statistics(
+    const DenseVector& point, DenseVector& gradient, double& function_value) {
+  compute_first_order_statistics(
+      valid_data, point, gradient, function_value);
 }
 
 } // supervised
