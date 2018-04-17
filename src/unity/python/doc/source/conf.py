@@ -38,6 +38,7 @@ for m in [
           'label_propagation',
           'linear_regression',
           'logistic_classifier',
+          'load_sarray',
           'load_sframe',
           'load_sgraph',
           'load_model',

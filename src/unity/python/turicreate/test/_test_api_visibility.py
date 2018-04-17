@@ -23,7 +23,7 @@ DATA_MATCHING = ['autotagger', 'deduplication', 'nearest_neighbor_deduplication'
 DATA_STRUCTURES = ['SFrame', 'SArray', 'Graph', 'Vertex', 'Edge']
 GRAPH_ANALYTICS = ['connected_components', 'graph_coloring', 'kcore', 'load_sgraph', 'pagerank',
                    'triangle_counting',  'shortest_path']
-GENERAL = ['load_model', 'load_sframe', 'Model', 'CustomModel']
+GENERAL = ['load_model', 'load_sframe', 'load_sarray', 'Model', 'CustomModel']
 
 class TuriTests(unittest.TestCase):
     def test_top_level(self):

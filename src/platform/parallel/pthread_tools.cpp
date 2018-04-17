@@ -163,6 +163,11 @@ namespace turi {
    * system
    */
   size_t thread::cpu_count() {
+
+    // REVERT ME -- this is a temporary hack to force single threaded mode to get
+    // around the pthread bug.
+    return 1;
+
     char* nthreads = getenv("OMP_NUM_THREADS");
     if (nthreads != NULL) {
       int ncpus = atoi(nthreads);

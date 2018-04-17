@@ -86,6 +86,7 @@ import turicreate.connect.main as glconnect
 
 ## bring load functions to the top level
 from turicreate.data_structures.sframe import load_sframe
+from turicreate.data_structures.sarray import load_sarray
 from turicreate.toolkits._model import load_model, Model
 from .cython import cy_pylambda_workers
 
