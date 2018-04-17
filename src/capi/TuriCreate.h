@@ -1,3 +1,8 @@
+/* Copyright © 2018 Apple Inc. All rights reserved.
+ *
+ * Use of this source code is governed by a BSD-3-clause license that can
+ * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ */
 #ifndef TURI_CAPI_H
 #define TURI_CAPI_H
 
@@ -105,7 +110,7 @@ void tc_setup_log_location(const char* log_file, tc_error** error);
 
       // ...
 
-      tc_error_destroy(&error);
+      tc_release(&error);
    }
 
   *************************/
@@ -121,11 +126,7 @@ const char* tc_error_message(const tc_error* error);
 
 /** Destroys any types.
  *
- *  Must be called on the
- *
- *  Only needs to be called if an error occured.
- *
- *  Sets the pointer to the error struct to NULL.
+ *  Must be called on all allocated struct types.  
  */
 void tc_release(void* v);
 
@@ -815,41 +816,6 @@ tc_variant* tc_model_call_method(const tc_model* model, const char* method,
 tc_variant* tc_function_call(
     const char* function_name, const tc_parameters* arguments,
     tc_error** error);
-
-
-/******************************************************************************/
-/*                                                                            */
-/*    SKETCH                                                                  */
-/*                                                                            */
-/******************************************************************************/
-
-struct tc_sketch_struct;
-typedef struct tc_sketch_struct tc_sketch;
-
-tc_sketch* tc_sketch_create(const tc_sarray*, bool background, const tc_flex_list* keys, tc_error **);
-
-bool tc_sketch_ready(tc_sketch*);
-size_t tc_sketch_num_elements_processed(tc_sketch*);
-double tc_sketch_get_quantile(tc_sketch*, double quantile, tc_error**);
-double tc_sketch_frequency_count(tc_sketch*, const tc_flexible_type* value, tc_error**);
-tc_flex_dict* tc_sketch_frequent_items(tc_sketch*);
-double tc_sketch_num_unique(tc_sketch*);
-tc_sketch* tc_sketch_element_sub_sketch(const tc_sketch*, const tc_flexible_type* key, tc_error**);
-tc_sketch* tc_sketch_element_length_summary(const tc_sketch*, tc_error**);
-tc_sketch* tc_sketch_element_summary(const tc_sketch*, tc_error**);
-tc_sketch* tc_sketch_dict_key_summary(const tc_sketch*, tc_error **error);
-tc_sketch* tc_sketch_dict_value_summary(const tc_sketch*, tc_error **error);
-double tc_sketch_mean(const tc_sketch*, tc_error**);
-double tc_sketch_max(const tc_sketch*, tc_error**);
-double tc_sketch_min(const tc_sketch*, tc_error**);
-double tc_sketch_sum(const tc_sketch*, tc_error**);
-double tc_sketch_variance(const tc_sketch*, tc_error**);
-size_t tc_sketch_size(const tc_sketch*);
-size_t tc_sketch_num_undefined(const tc_sketch*);
-void tc_sketch_cancel(tc_sketch*);
-
-
-
 
 
 #ifdef __cplusplus

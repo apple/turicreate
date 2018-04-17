@@ -1,4 +1,3 @@
-
 project(TuriCreate)
 
 # Internal version
@@ -13,7 +12,6 @@ make_library(_turi_capi_core
     impl/capi_ndarray.cpp
     impl/capi_functions.cpp
     impl/capi_sarray.cpp
-    impl/capi_sketch.cpp
     impl/capi_parameters.cpp
     impl/capi_sframe.cpp
     impl/capi_models.cpp
@@ -43,19 +41,17 @@ make_empty_library(TuriCreate_static
 set(__CAPI_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "")
 
 # A macro that allows building a custom C-API library.
-# TODO: documentation
-
-
-
-
-
-
-
-
-
-
-
-# Define a macro that can be used to build a custom C-API library
+# 
+#  The main variable here is the initializer source file and whether or not to 
+#  build it as a framework. 
+#
+#  To build it with a custom server initialization function, which allows for 
+#  specifying which models are availalable for calling through the C-API, call 
+#
+#  make_capi_library(MyTuriExecutor INITIALIZER_SOURCE_FILE my_turi_model_init.cpp REQUIRES unity)
+#
+#  See default_server_initializer.cpp as a template for this. 
+#
 macro(make_capi_library NAME)
 
   set(options FRAMEWORK)

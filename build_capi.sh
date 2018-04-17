@@ -29,13 +29,13 @@ function unknown_target {
   echo "Unrecognized target: $1"
   echo "To get help, run ./configure --help"
   exit 1
-} # end of unknown option
+} 
 
 function unknown_option {
   echo "Unrecognized option: $1"
   echo "To get help, run ./configure --help"
   exit 1
-} # end of unknown option
+}
 
 if [[ ${OSTYPE} == darwin* ]] ; then
   apple=1
