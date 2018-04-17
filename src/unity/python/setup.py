@@ -140,20 +140,18 @@ if __name__ == '__main__':
                      'mxnet/*.ttf',
 
                      # macOS visualization
-                     'Turi Create Visualization.app/Contents/_CodeSignature/CodeResources',
-                     'Turi Create Visualization.app/Contents/Frameworks/*.dylib',
-                     'Turi Create Visualization.app/Contents/Info.plist',
-                     'Turi Create Visualization.app/Contents/Resources/*.car',
-                     'Turi Create Visualization.app/Contents/Resources/*.css',
-                     'Turi Create Visualization.app/Contents/Resources/*.icns',
-                     'Turi Create Visualization.app/Contents/Resources/*.js',
-                     'Turi Create Visualization.app/Contents/Resources/*.html',
-                     'Turi Create Visualization.app/Contents/Resources/Base.lproj/Main.storyboardc/*.nib',
-                     'Turi Create Visualization.app/Contents/Resources/Base.lproj/Main.storyboardc/Info.plist',
-                     'Turi Create Visualization.app/Contents/Resources/*.dylib',
-                     'Turi Create Visualization.app/Contents/PkgInfo',
-                     'Turi Create Visualization.app/Contents/MacOS/Turi Create Visualization',
-                     
+                    'Turi Create Visualization.app/Contents/*',
+                    'Turi Create Visualization.app/Contents/_CodeSignature/*',
+                    'Turi Create Visualization.app/Contents/MacOS/*',
+                    'Turi Create Visualization.app/Contents/Resources/*',
+                    'Turi Create Visualization.app/Contents/Resources/Base.lproj/*',
+                    'Turi Create Visualization.app/Contents/Resources/Base.lproj/Main.storyboardc/*',
+                    'Turi Create Visualization.app/Contents/Resources/build/*',
+                    'Turi Create Visualization.app/Contents/Resources/build/static/*',
+                    'Turi Create Visualization.app/Contents/Resources/build/static/css/*',
+                    'Turi Create Visualization.app/Contents/Resources/build/static/js/*',
+                    'Turi Create Visualization.app/Contents/Frameworks/*',
+
                      # Linux visualization
         		     'Turi Create Visualization/icudtl.dat',
         		     'Turi Create Visualization/visualization_client',
@@ -177,7 +175,7 @@ if __name__ == '__main__':
         		     'Turi Create Visualization/libcef.so',
         		     'Turi Create Visualization/v8_context_snapshot.bin',
         		     'Turi Create Visualization/cef_extensions.pak',
-                     
+
                      # Plot.save dependencies
                      'visualization/vega_3.2.1.js',
                      'visualization/vg2png',
