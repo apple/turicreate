@@ -447,6 +447,8 @@ EXPORT tc_sframe* tc_sframe_read_json(const char* url, tc_error** error) {
 
   DASSERT_EQ(sf.num_columns(), 1);
 
+  std::cout << sf << std::endl; 
+
   sf = sf.unpack("X1", "");
 
   return new_tc_sframe(sf);

@@ -10,8 +10,8 @@ function print_help {
   echo "  --target-dir, -t                 The target directory to install artifact to."
   echo "                                   default: `pwd`/targets."
   echo
-  echo "  --release,-r                     Build in release mode."
-  echo "  --debug,-d                       Build in debug mode (default)."
+  echo "  --release                        Build in release mode."
+  echo "  --debug                          Build in debug mode (default)."
   echo
   echo "  --jobs,-j                        The number of parallel jobs to run."
   echo
@@ -99,18 +99,17 @@ if [[ ${cleanup} -eq 1 ]]; then
 fi
 
 if [[ ${skip_configure} -eq 0 ]] ; then
-  ./configure ${configure_options} $@ || exit 1
+  ./configure ${configure_options} --with-python || exit 1
 else
   echo "skipping configure script as requested."
 fi
 
-run_configure --with-python
 
 install_dir=${target_dir}/python
 rm -rf ${target_dir}/python
 mkdir -p ${target_dir}/python
 
-bash scripts/make_egg.sh --skip_test --skip_cpp_test --build_number="$build_number" --num_procs=${jobs} --${build_mode} --target-dir="${install_dir}"
+bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number="$build_number" --num_procs=${jobs} --${build_mode} --target-dir="${install_dir}"
 pushd ${build_mode}/src
 
 if [[ $apple -eq 1 ]]; then

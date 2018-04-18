@@ -165,7 +165,7 @@ class predict_constant : public supervised_learning_model_base {
     return constant;
   }
 
-  std::shared_ptr<MLModelWrapper> export_to_coreml() { return std::shared_ptr<MLModelWrapper>(); }
+  std::shared_ptr<coreml::MLModelWrapper> export_to_coreml() { return std::shared_ptr<coreml::MLModelWrapper>(); }
 
 
 

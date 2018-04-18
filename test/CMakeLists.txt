@@ -3,7 +3,6 @@ project(TuriTest)
 enable_testing()
 
 subdirs(
-        capi
         toolkits
         ml_data
         optimization
@@ -33,3 +32,10 @@ subdirs(
         network
         process
   )
+if(${TC_BUILD_CAPI}) 
+  message("Building C API Tests.")
+  subdirs(capi)
+else()
+  message("Skipping build of C APIs Tests.")
+endif()
+

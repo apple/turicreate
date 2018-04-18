@@ -24,9 +24,9 @@ function print_help {
   echo "  --with-ccache (default)           Use ccache, if available."
   echo "  --no-ccache "
   echo  
-  echo "  --with-capi                       Build C API."
+  echo "  --with-capi (default)             Build C API."
   echo "  --with-capi-framework             Build C API as OSX framework (OSX only)"
-  echo "  --no-capi (default)               " 
+  echo "  --no-capi                         Skip building the C API." 
 
   echo "  --with-python (default)           Build python components."
   echo "  --no-python"
