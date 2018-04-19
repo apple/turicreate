@@ -142,7 +142,7 @@ function build_capi_framework {
 
   echo "Installing C API Framework to ${target_dir}."
 
-  rsync -a --delete ${build_dir}/src/capi/TuriCore.framework/ ${target_dir}/TuriCore.framework/ || exit 1
+  rsync -a --delete ${build_dir}/src/capi/TuriCreate.framework/ ${target_dir}/TuriCreate.framework/ || exit 1
 }
 
 
