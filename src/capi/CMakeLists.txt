@@ -23,7 +23,8 @@ make_library(_turi_capi_core
     impl/capi_memory_management.cpp
   REQUIRES
     unity_core
-    numerics)
+    numerics
+  EXTERNAL_VISIBILITY)
 
 make_library(_turi_capi_default_initializer
   SOURCES
