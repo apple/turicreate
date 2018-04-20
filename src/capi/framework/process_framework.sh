@@ -78,7 +78,7 @@ symbol_list=`nm -defined-only -extern-only -just-symbol-name ${lib_file} | sed '
 echo "
 archs:           [ x86_64 ]
 platform:        macosx
-install-name:   '${install_location}/TuriCore.framework/Versions/A/TuriCore'
+install-name:   '${install_location}/TuriCreate.framework/Versions/A/TuriCreate'
 current-version: 1.0.0
 compatibility-version: 0.0.0
 objc-constraint: none
@@ -98,7 +98,7 @@ exports:
 function write_module_map { 
   out_file=$1
 
-  echo "framework module TuriCore [extern_c] {
+  echo "framework module TuriCreate [extern_c] {
     umbrella header \"${name}.h\"
 
     export *

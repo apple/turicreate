@@ -9,7 +9,7 @@
 #include <boost/test/unit_test.hpp>
 #include <unity/lib/gl_sframe.hpp>
 #include <util/test_macros.hpp>
-#include <capi/TuriCore.h>
+#include <capi/TuriCreate.h>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include "capi_utils.hpp"
 
