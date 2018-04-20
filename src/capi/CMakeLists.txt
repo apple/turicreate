@@ -125,4 +125,9 @@ endif()
 
 endmacro()
 
-make_capi_library(TuriCreate)
+if(${TC_BUILD_CAPI_FRAMEWORK})
+  make_capi_library(TuriCreate FRAMEWORK)
+else()
+  make_capi_library(TuriCreate)
+endif()
+
