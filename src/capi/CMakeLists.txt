@@ -1,5 +1,9 @@
 project(TuriCreate)
 
+# Fix the current source directory of the framework stuff so the macro below
+# references everything correctly.
+set(__CAPI_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "")
+
 set(_turi_capi_source_files
   "${__CAPI_SOURCE_DIR}/impl/capi_error_handling.cpp"
   "${__CAPI_SOURCE_DIR}/impl/capi_flexible_type.cpp"
@@ -27,10 +31,6 @@ make_library(TuriCreate_static
     default_server_initializer.cpp
   REQUIRES
     unity unity_core numerics)
-
-# Fix the current source directory of the framework stuff so the macro below
-# references everything correctly.
-set(__CAPI_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "")
 
 # A macro that allows building a custom C-API library.
 # 
