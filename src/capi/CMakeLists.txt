@@ -1,41 +1,32 @@
 project(TuriCreate)
 
-# Internal version
-make_library(_turi_capi_core
-  SOURCES
-    impl/capi_error_handling.cpp
-    impl/capi_flexible_type.cpp
-    impl/capi_datetime.cpp
-    impl/capi_flex_dict.cpp
-    impl/capi_flex_list.cpp
-    impl/capi_flex_image.cpp
-    impl/capi_ndarray.cpp
-    impl/capi_functions.cpp
-    impl/capi_sarray.cpp
-    impl/capi_parameters.cpp
-    impl/capi_sframe.cpp
-    impl/capi_models.cpp
-    impl/capi_functions.cpp
-    impl/capi_initialization.cpp
-    impl/capi_variant.cpp
-    impl/capi_flex_enum_list.cpp
-    impl/capi_wrapper_structs.cpp
-    impl/capi_memory_management.cpp
-  REQUIRES
-    unity_core
-    numerics
-  EXTERNAL_VISIBILITY)
-
-make_library(_turi_capi_default_initializer
-  SOURCES
-    default_server_initializer.cpp
-  REQUIRES
-    unity)
+set(_turi_capi_source_files
+  "${__CAPI_SOURCE_DIR}/impl/capi_error_handling.cpp"
+  "${__CAPI_SOURCE_DIR}/impl/capi_flexible_type.cpp"
+  "${__CAPI_SOURCE_DIR}/impl/capi_datetime.cpp"
+  "${__CAPI_SOURCE_DIR}/impl/capi_flex_dict.cpp"
+  "${__CAPI_SOURCE_DIR}/impl/capi_flex_list.cpp"
+  "${__CAPI_SOURCE_DIR}/impl/capi_flex_image.cpp"
+  "${__CAPI_SOURCE_DIR}/impl/capi_ndarray.cpp"
+  "${__CAPI_SOURCE_DIR}/impl/capi_functions.cpp"
+  "${__CAPI_SOURCE_DIR}/impl/capi_sarray.cpp"
+  "${__CAPI_SOURCE_DIR}/impl/capi_parameters.cpp"
+  "${__CAPI_SOURCE_DIR}/impl/capi_sframe.cpp"
+  "${__CAPI_SOURCE_DIR}/impl/capi_models.cpp"
+  "${__CAPI_SOURCE_DIR}/impl/capi_functions.cpp"
+  "${__CAPI_SOURCE_DIR}/impl/capi_initialization.cpp"
+  "${__CAPI_SOURCE_DIR}/impl/capi_variant.cpp"
+  "${__CAPI_SOURCE_DIR}/impl/capi_flex_enum_list.cpp"
+  "${__CAPI_SOURCE_DIR}/impl/capi_wrapper_structs.cpp"
+  "${__CAPI_SOURCE_DIR}/impl/capi_memory_management.cpp")
 
 # Create a static version of the library that also bundles in the server initializer
-make_empty_library(TuriCreate_static
+make_library(TuriCreate_static
+  SOURCES
+    ${_turi_capi_source_files}
+    default_server_initializer.cpp
   REQUIRES
-  unity _turi_capi_default_initializer _turi_capi_core)
+    unity unity_core numerics)
 
 # Fix the current source directory of the framework stuff so the macro below
 # references everything correctly.
@@ -68,9 +59,10 @@ macro(make_capi_library NAME)
 
     make_library(${NAME}
       SOURCES
+      ${_turi_capi_source_files}
       ${__capi_INITIALIZER_SOURCE_FILE}
        REQUIRES
-       _turi_capi_core
+       unity unity_core numerics
        ${__capi_REQUIRES}
       SHARED_ALL_DEFINED
       SHARED
@@ -111,10 +103,10 @@ else()
     make_library(${NAME}
   SOURCES 
         ${__capi_INITIALIZER_SOURCE_FILE}
-
+        ${_turi_capi_source_files}
    REQUIRES
-         _turi_capi_core
          ${__capi_REQUIRES}
+         unity unity_core numerics
   SHARED_ALL_DEFINED
   SHARED
       EXPORT_LINUX_MAP_FILE "${__CAPI_SOURCE_DIR}/framework/tc_capi_exports_linux.ver"
