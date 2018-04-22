@@ -20,6 +20,7 @@ make_library(supervised_learning
     unity_core
     unity_util
     unity_ml_model
+    minipsutil_static
     ml_data
     optimization
     xgboost

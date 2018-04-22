@@ -10,13 +10,6 @@
 
 /**
  * \ingroup minipsutil
- * Returns the number of (Logical) CPUs.
- * Returns 0 on failure
- */
-int32_t num_cpus();
-
-/**
- * \ingroup minipsutil
  * Returns the total amount of physical memory on the system.
  * Returns 0 on failure.
  */
@@ -27,12 +20,6 @@ uint64_t total_mem();
  * Returns 1 if the pid is running, 0 otherwise. 
  */
 int32_t pid_is_running(int32_t pid);
-
-/**
- * \ingroup minipsutil
- * Kill a process. Returns 1 on success, 0 on failure.
- */
-int32_t kill_process(int32_t pid);
 
 
 #if defined(_WIN32)
@@ -48,61 +35,6 @@ typedef BOOL (WINAPI *LPFN_GLPI)(
     PSYSTEM_LOGICAL_PROCESSOR_INFORMATION, 
     PDWORD);
 
-int32_t num_cpus() {
-    LPFN_GLPI glpi;
-    DWORD rc;
-    PSYSTEM_LOGICAL_PROCESSOR_INFORMATION buffer = NULL;
-    PSYSTEM_LOGICAL_PROCESSOR_INFORMATION ptr = NULL;
-    DWORD length = 0;
-    DWORD offset = 0;
-    int ncpus = 0;
-
-    glpi = (LPFN_GLPI)GetProcAddress(GetModuleHandle(TEXT("kernel32")),
-                                     "GetLogicalProcessorInformation");
-    if (glpi == NULL)
-        goto return_none;
-
-    while (1) {
-        rc = glpi(buffer, &length);
-        if (rc == FALSE) {
-            if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
-                if (buffer)
-                    free(buffer);
-                buffer = (PSYSTEM_LOGICAL_PROCESSOR_INFORMATION)malloc(
-                    length);
-                if (NULL == buffer) {
-                    return 0;
-                }
-            }
-            else {
-                goto return_none;
-            }
-        }
-        else {
-            break;
-        }
-    }
-
-    ptr = buffer;
-    while (offset + sizeof(SYSTEM_LOGICAL_PROCESSOR_INFORMATION) <= length) {
-        if (ptr->Relationship == RelationProcessorCore)
-            ncpus += 1;
-        offset += sizeof(SYSTEM_LOGICAL_PROCESSOR_INFORMATION);
-        ptr++;
-    }
-
-    free(buffer);
-    if (ncpus == 0)
-        goto return_none;
-    else
-        return ncpus;
-
-return_none:
-    // mimic os.cpu_count()
-    if (buffer != NULL)
-        free(buffer);
-    return 0;
-}
 
 /*
  * Return a Python integer indicating the total amount of physical memory
@@ -170,24 +102,6 @@ int32_t pid_is_running(int32_t pid)
 }
 
 
-int32_t kill_process(int32_t pid) {
-    if (pid == 0) return 0;
-
-    HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, pid);
-    if (hProcess == NULL) {
-      return 0;
-    }
-
-    // kill the process
-    if (! TerminateProcess(hProcess, 0)) {
-        CloseHandle(hProcess);
-        return 0;
-    }
-
-    CloseHandle(hProcess);
-    return 1;
-}
-
 #elif defined(__APPLE__)
 /**************************************************************************/
 /*                                                                        */
@@ -199,27 +113,6 @@ int32_t kill_process(int32_t pid) {
 #include <errno.h>
 #include <stdlib.h>
 #include <signal.h>
-
-/*
- * Return the number of logical CPUs in the system.
- * XXX this could be shared with BSD.
- */
-int32_t num_cpus() {
-  int mib[2];
-  int ncpu;
-  size_t len;
-
-  mib[0] = CTL_HW;
-  mib[1] = HW_NCPU;
-  len = sizeof(ncpu);
-
-  if (sysctl(mib, 2, &ncpu, &len, NULL, 0) == -1) {
-    return 0;
-  }
-  else {
-    return ncpu;
-  }
-}
 
 
 uint64_t total_mem() {
@@ -258,11 +151,6 @@ int32_t pid_is_running(int32_t pid) {
 }
 
 
-int32_t kill_process(int32_t pid) {
-    if (kill(pid, SIGKILL) == 0) return 1;
-    else return 0;
-}
-
 #else
 /**************************************************************************/
 /*                                                                        */
@@ -276,35 +164,6 @@ int32_t kill_process(int32_t pid) {
 #include <signal.h>
 #include <string.h>
 
-int32_t num_cpus() {
-  const char* physical_id = "physical id";
-  int physical_id_len = strlen(physical_id);
-
-  FILE* f = fopen("/proc/cpuinfo", "rb");
-  if (f == NULL) return 0;
-
-  char* c = NULL;
-  size_t n = 0;
-  int cpu_count = 0;
-  while(1) {
-    // read /proc/cpuinfo line by line looking for the string "physical id"
-    ssize_t chars_read = getline(&c, &n, f);
-
-    if (chars_read == -1) {
-      // eof
-      fclose(f);
-      free(c);
-      if (cpu_count == 0) return 0;  // fail
-      return cpu_count;
-    } else {
-      // if c begins with the string physical id
-      if (chars_read >= physical_id_len) {
-        c[physical_id_len] = 0;
-        if (strcmp(c, physical_id) == 0) ++cpu_count;
-      }
-    }
-  }
-}
 
 uint64_t total_mem() {
     struct sysinfo info;
@@ -355,9 +214,4 @@ int32_t pid_is_running(int32_t pid) {
     return 0;
 }
 
-int32_t kill_process(int32_t pid) {
-    // In linux kill the negative of the pid will kill the process group
-    if (kill(-pid, SIGKILL) == 0) return 1;
-    else return 0;
-}
 #endif

@@ -11,7 +11,6 @@
 #include <boost/algorithm/string.hpp>
 #include <cppipc/cppipc.hpp>
 #include <cppipc/common/authentication_token_method.hpp>
-#include <minipsutil/minipsutil.h>
 #include <logger/logger.hpp>
 #include <logger/log_rotate.hpp>
 #include <unity/lib/unity_global.hpp>
