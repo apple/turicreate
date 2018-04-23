@@ -241,6 +241,7 @@ struct transformed_dot_product final : public distance_metric {
 /* jaccard distance 
  */
 struct jaccard final : public distance_metric {
+  using distance_metric::distance;
   
   double distance(const DenseVector& a, const DenseVector& b) const {
     DASSERT_EQ(a.size(), b.size());

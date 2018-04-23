@@ -113,7 +113,7 @@ template<typename... A> struct is_string {
 // Is tuple?
 
 template<class T> struct is_tuple : public std::false_type {};
-template <> template<typename... A> struct is_tuple<std::tuple<A...> > : public std::true_type {};
+template<typename... A> struct is_tuple<std::tuple<A...> > : public std::true_type {};
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -128,13 +128,11 @@ template<class T> struct first_nested_type {
   typedef invalid_type type;
 };
 
-template<>
 template<class T, typename... A, template <typename...> class C>
 struct first_nested_type<C<T, A...> > {
   typedef T type;
 };
 
-template<>
 template<class T, template <typename> class C>
 struct first_nested_type<C<T> > {
   typedef T type;
@@ -152,13 +150,11 @@ template<class T> struct second_nested_type {
   typedef invalid_type type;
 };
 
-template<>
 template<class T, class U, typename... A, template <typename...> class C>
 struct second_nested_type<C<T, U, A...> > {
   typedef U type;
 };
 
-template<>
 template<class T, class U, template <typename...> class C>
 struct second_nested_type<C<T, U> > {
   typedef U type;

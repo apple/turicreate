@@ -26,7 +26,7 @@
 namespace xgboost {
 namespace learner {
 class BoostLearner;
-class DMatrix;
+struct DMatrix;
 }
 }
 

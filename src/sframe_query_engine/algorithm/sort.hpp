@@ -15,7 +15,8 @@ class sframe;
 
 namespace query_eval {
 
-class planner_node;
+struct planner_node;
+
 /**
  * \ingroup sframe_query_engine
  * \addtogroup Algorithms Algorithms

@@ -1,5 +1,11 @@
 project(unity_cython)
 
+set(CMAKE_C_FLAGS_DEBUG
+  "${EXTERNAL_CMAKE_C_FLAGS_DEBUG}")
+
+set(CMAKE_CXX_FLAGS_DEBUG
+  "${EXTERNAL_CMAKE_CXX_FLAGS_DEBUG}")
+
 include_directories(${NUMPY_INCLUDE_DIRS})
 
 function(cython_add_turicreate_module _module_name _sources)
