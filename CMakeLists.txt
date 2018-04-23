@@ -159,8 +159,10 @@ message(WARNING "OpenMP Libraries were not found")
 #**************************************************************************/
 if (CLANG)
 set(CPP11_FLAGS "-std=c++11 -stdlib=libc++ -Wno-deprecated-register -Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900" CACHE STRING "C++11 enabling flags")
+set(WERROR_FLAGS "-Werror -Wno-error=tautological-undefined-compare -Wno-error=reorder -Wno-error=exceptions -Wno-error=switch -Wno-error=sometimes-uninitialized -Wno-error=unused-lambda-capture -Wno-error=missing-braces -Wno-error=absolute-value -Wno-error=potentially-evaluated-expression -Wno-error=null-arithmetic -Wno-error=format -Wno-error=pessimizing-move -Wno-error=comment -Wno-error=main -Wno-error=constant-conversion -Wno-error=deprecated-declarations -Wno-error=return-type -Wno-error=inconsistent-missing-override -Wno-error=overloaded-virtual -Wno-error=unused-private-field -Wno-error=unused-variable -Wno-error=unused-local-typedef")
 else()
 set(CPP11_FLAGS "-std=c++11 -Wno-enum-compare -Wno-conversion-null -ftemplate-depth=900" CACHE STRING "C++11 enabling flags")
+set(WERROR_FLAGS "")
 endif()
 # Shared compiler flags used by all builds (debug, profile, release)
 # Allow COMPILER_FLAGS to be used as options from the ./configure without
@@ -285,11 +287,17 @@ endif()
 #endif()
 
 # Set the debug flags
-set(CMAKE_C_FLAGS_DEBUG
+set(EXTERNAL_CMAKE_C_FLAGS_DEBUG
   "${DEBUG_OPTIMIZATION_LEVEL} ${PLATFORM_FLAGS} -Wno-attributes -march=${MARCH} -Winit-self ${PROFILING_FLAGS} ${C_REAL_COMPILER_FLAGS} -fno-inline ${ALTERNATE_LINKER} -DHAVE_PTHREAD=1"
   CACHE STRING "compiler options" FORCE)
-set(CMAKE_CXX_FLAGS_DEBUG
+set(CMAKE_C_FLAGS_DEBUG
+  "${EXTERNAL_CMAKE_C_FLAGS_DEBUG} ${WERROR_FLAGS}"
+  CACHE STRING "compiler options" FORCE)
+set(EXTERNAL_CMAKE_CXX_FLAGS_DEBUG
   "${DEBUG_OPTIMIZATION_LEVEL} ${PLATFORM_FLAGS} ${DISABLE_WARNING_FLAGS} -Wno-attributes -march=${MARCH} -Winit-self ${PROFILING_FLAGS} ${CPP_REAL_COMPILER_FLAGS} ${INT128_FLAGS} ${ALTERNATE_LINKER} -fno-inline -DHAVE_PTHREAD=1"
+  CACHE STRING "compiler options" FORCE)
+set(CMAKE_CXX_FLAGS_DEBUG
+  "${EXTERNAL_CMAKE_CXX_FLAGS_DEBUG} ${WERROR_FLAGS}"
   CACHE STRING "compiler options" FORCE)
 
 set(CMAKE_C_FLAGS_RELEASE
@@ -788,9 +796,9 @@ include(SharedLibraryFromStatic)
 include(MergeStaticLibraries)
 
 
-include_directories(SYSTEM src)
+include_directories(src)
 include_directories(SYSTEM src/external)
-include_directories(SYSTEM src/platform)
+include_directories(src/platform)
 
 # for build-time generated source code
 include_directories(SYSTEM ${CMAKE_BINARY_DIR}/src)

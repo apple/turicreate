@@ -15,7 +15,7 @@ namespace turi {
 class sframe_rows;
 
 namespace fileio {
-class file_ownership_handle;
+struct file_ownership_handle;
 }
 
 namespace lambda {
