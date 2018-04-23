@@ -11,7 +11,7 @@ if [[ -z $1 ]]; then
 fi
 BUILD_TYPE=$1
 BUILD_TYPE=`echo $BUILD_TYPE | tr "[A-Z]" "[a-z]"` # convert to lower case
-if [ $BUILD_TYPE != "debug" ] && [ $BUILD_TYPE != "release" ]; then
+if [ "debug" != $BUILD_TYPE ] && [ "release" != $BUILD_TYPE ]; then
     echo "build type must be either \"debug\" or \"release\". "
     return 1
 fi
