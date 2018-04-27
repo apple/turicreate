@@ -10,6 +10,7 @@ ExternalProject_Add(ex_libpng
   INSTALL_DIR ${CMAKE_SOURCE_DIR}/deps/local
   CONFIGURE_COMMAND env CFLAGS=${CFLAGS} CPPFLAGS=${CFLAGS} <SOURCE_DIR>/configure --enable-shared=no --prefix=<INSTALL_DIR> ${EXTRA_CONFIGURE_FLAGS}
   INSTALL_COMMAND make install
+  BUILD_BYPRODUCTS ${CMAKE_SOURCE_DIR}/deps/local/lib/libpng.a
   BUILD_IN_SOURCE 1)
 
 add_dependencies(ex_libpng libza)
