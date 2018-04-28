@@ -72,6 +72,16 @@ function(make_shared_library_from_static NAME)
 
         set_target_properties(${NAME}_collect PROPERTIES RULE_LAUNCH_LINK "env WORKINGDIR=${CMAKE_CURRENT_BINARY_DIR}/${NAME}_collect_dir BUILD_PREFIX=${CMAKE_BINARY_DIR} bash ${CMAKE_SOURCE_DIR}/scripts/dump_library_list.sh")
 
+        add_custom_command(
+          OUTPUT
+          ${CMAKE_CURRENT_BINARY_DIR}/${NAME}_collect_dir/collect_archives.txt
+          ${CMAKE_CURRENT_BINARY_DIR}/${NAME}_collect_dir/collect_libs.txt
+          COMMAND true
+          COMMENT "Dumping library/archive list for ${NAME}"
+          DEPENDS ${NAME}_collect
+          VERBATIM
+        )
+
         if (${args_DIRECT})
                 # add a custom command after link to override the collected list
                 add_custom_command(TARGET ${NAME}_collect
