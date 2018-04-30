@@ -229,8 +229,8 @@ class Image(object):
                 else:
                     # fall back to pillow .show (jupyter notebook integration disabled or not in jupyter notebook)
                     img.show()
-            except ImportError:
-                # fall back to pillow .show (no jupyter notebook available)
+            except NameError:
+                # fall back to pillow .show (no get_ipython() available)
                 img.show()
         except ImportError:
             print("Install pillow to use the .show() method.")
