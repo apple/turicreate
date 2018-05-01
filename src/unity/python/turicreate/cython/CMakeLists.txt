@@ -18,7 +18,7 @@ function(cython_add_turicreate_module _module_name _sources)
 endfunction()
 
 
-add_custom_target(cython_targets ALL)
+add_custom_target(cython_targets)
 file(GLOB cython_sources RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.pyx")
 foreach(source ${cython_sources})
   set(target "")
