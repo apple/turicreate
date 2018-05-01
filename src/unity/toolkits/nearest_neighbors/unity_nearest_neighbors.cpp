@@ -350,6 +350,7 @@ REGISTER_FUNCTION(list_fields, "params")
 REGISTER_FUNCTION(train, "params")
 REGISTER_FUNCTION(query, "params")
 REGISTER_FUNCTION(similarity_graph, "params")
+REGISTER_FUNCTION(_nn_get_reference_data, "model");
 END_FUNCTION_REGISTRATION
 
 
