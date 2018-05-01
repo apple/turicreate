@@ -9,6 +9,7 @@
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/lib/gl_sarray.hpp>
 #include <capi/TuriCreate.h>
+#include <fileio/fileio_constants.hpp>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <vector>
 #include <iostream>
@@ -34,7 +35,7 @@ std::vector<std::pair<std::string, std::vector<double> > > data
       {"a",    {5.0, 2., 1., 0.5} },
       {"b",    {7.0, 2., 3., 1.5} } };
 
-for(const char* url : {"sf_tmp_1/"} ) {
+std::string url = turi::fileio::get_system_temp_directory() + "/sf_tmp_1/";
 
     tc_error* error = NULL;
 
@@ -53,13 +54,13 @@ for(const char* url : {"sf_tmp_1/"} ) {
       tc_release(sa);
     }
 
-    tc_sframe_save(sf_src, url, &error); 
+    tc_sframe_save(sf_src, url.c_str(), &error);
 
     CAPI_CHECK_ERROR(error);
 
     tc_release(sf_src);
 
-    tc_sframe* sf = tc_sframe_load(url, &error); 
+    tc_sframe* sf = tc_sframe_load(url.c_str(), &error);
 
     CAPI_CHECK_ERROR(error);
 
@@ -82,7 +83,6 @@ for(const char* url : {"sf_tmp_1/"} ) {
 
     tc_release(sf);
   }
-}
 
 
 BOOST_AUTO_TEST_CASE(test_sframe_double) {

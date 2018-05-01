@@ -72,7 +72,11 @@ EXPORT const char* tc_model_name(const tc_model* model, tc_error **error) {
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
-  return model->value->name().c_str();
+  // THIS IS AN UGLY HACK THAT WILL GO AWAY
+  static std::string last_name;
+  last_name =  model->value->name();
+  return last_name.c_str();
+  
   ERROR_HANDLE_END(error, "");
 }
 

@@ -36,6 +36,8 @@ class EXPORT logistic_regression: public supervised_learning_model_base {
 
   protected:
 
+    bool m_simple_mode;
+
   std::shared_ptr<logistic_regression_opt_interface> lr_interface;
   arma::vec  coefs;                 /**< Coefs */
   arma::vec  std_err;

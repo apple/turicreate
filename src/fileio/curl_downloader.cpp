@@ -15,7 +15,10 @@
 #include <fileio/set_curl_options.hpp>
 
 #ifndef TC_NO_CURL
+
+#ifndef TC_NO_CURL
 extern "C" {
+#endif
 #include <curl/curl.h>
 }
 #endif
@@ -34,6 +37,7 @@ size_t download_callback(char *ptr, size_t size, size_t nmemb, void *userdata) {
   }
 
   return ret;
+#ifndef TC_NO_CURL
 }
 
 int download_url(std::string url, std::string output_file) {
@@ -59,6 +63,10 @@ int download_url(std::string url, std::string output_file) {
       logprogress_stream << "Failed to download " << url << ": " << curl_easy_strerror(res);
     }
     /* always cleanup */ 
+#else 
+#error "TC_NO_CURL Defined"
+  log_and_throw("Downloading files not supported when compiled with remote fs turned off.")
+#endif
     curl_easy_cleanup(curl);
     fclose(f);
     return res;
@@ -111,7 +119,11 @@ std::tuple<int, bool, std::string> download_url(std::string url) {
   // failed to download
   // delete the temporary file and return failure
   if (status != 0) {
+#ifndef TC_NO_CURL
     delete_temp_file(tempname);
+#else
+  ASSERT_MSG(false, "Remote FS disabled but functionality called.");
+#endif
     return std::make_tuple(status, false, "");
   } else {
     return std::make_tuple(status, true, tempname);

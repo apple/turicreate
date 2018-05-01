@@ -1369,7 +1369,9 @@ EXPORT tc_sarray* tc_sframe_apply(
     // Invoke the user callback.
     tc_flex_list in;
     in.value = row;  // Converts row to std::vector<flexible_type>
-    tc_flexible_type* out = callback(&in, shared_context.get(), &error);
+
+    tc_flexible_type* out;
+    out = callback(&in, shared_context.get(), &error);
 
     // Propagate errors from user code up to whatever C-API throw-catch block
     // (hopefully) encloses the call that triggered this wrapper's invocation.

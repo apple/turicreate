@@ -27,6 +27,7 @@ make_library(fileio
     sanitize_url.cpp
     file_download_cache.cpp
     fs_utils.cpp
+    curl_downloader.cpp
     file_handle_pool.cpp
     fileio_constants.cpp
     s3_fstream.cpp
@@ -34,9 +35,10 @@ make_library(fileio
     set_curl_options.cpp
     get_s3_endpoint.cpp
     dmlcio/s3_filesys.cc
-    curl_downloader.cpp
   REQUIRES
     curl openssl libxml2 logger pthread z cancel_serverside_ops globals process util soft_hdfs ${PLATFORM_DEPENDENCIES} network random aws-sdk-cpp
   MAC_REQUIRES
     iconv
   )
+    
+

@@ -56,8 +56,11 @@ double get_classifier_accuracy(std::shared_ptr<supervised_learning_model_base> m
 
 
 std::shared_ptr<supervised_learning_model_base> create_automatic_classifier_model(
-    gl_sframe data, const std::string target, gl_sframe validation_data,
+    gl_sframe data, const std::string target, const variant_type& _validation_data,
     const std::map<std::string, flexible_type>& options) {
+
+  gl_sframe validation_data;
+  std::tie(data, validation_data) = create_validation_data(data, _validation_data);  
 
   size_t num_classes = data[target].unique().size();
   std::vector<std::string> possible_models = _classifier_available_models(num_classes, data);
@@ -91,8 +94,11 @@ std::shared_ptr<supervised_learning_model_base> create_automatic_classifier_mode
 }
 
 std::shared_ptr<supervised_learning_model_base> create_automatic_regression_model(
-    gl_sframe data, const std::string target, gl_sframe validation_data,
+    gl_sframe data, const std::string target, const variant_type& _validation_data,
     const std::map<std::string, flexible_type>& options) {
+
+  gl_sframe validation_data;
+  std::tie(data, validation_data) = create_validation_data(data, _validation_data);  
 
   std::string model_name = _regression_model_selector(data);
 
@@ -117,6 +123,37 @@ std::shared_ptr<supervised_learning_model_base> create_automatic_regression_mode
   return m; 
 }
 
+std::pair<gl_sframe, gl_sframe> create_validation_data(gl_sframe data, const variant_type& _validation_data) {
+  
+  
+  if(variant_is<flex_string>(_validation_data)
+      && variant_get_value<flex_string>(_validation_data) == "auto") { 
 
+    if(data.size() >= 200000) {
+      // Aim for 10000 points
+      logprogress_stream << "Automatically generating validation set by "
+                            "sampling about 10000 out of "
+                         << data.size() << " datapoints." << std::endl;
+
+      double p = 10000.0 / data.size(); 
+      return data.random_split(1.0 - p);
+    } else if(data.size() >= 200) { 
+      logprogress_stream << "Automatically generating validation set from 5% of the data." << std::endl;
+      return data.random_split(0.95);
+    } else if(data.size() >= 50) { 
+      logprogress_stream << "Automatically generating validation set from 10% of the data." << std::endl;
+      return data.random_split(0.9);
+    } else {
+      logprogress_stream << "Skipping automatic creation of validation set; training set has fewer than 50 points." << std::endl;
+      return {data, gl_sframe()};
+    }
+
+  } else if (variant_is<gl_sframe>(_validation_data)) {
+    return {data, variant_get_value<gl_sframe>(_validation_data)}; 
+  } else {
+    log_and_throw("Validation data parameter must be either \"auto\", an empty SFrame "
+        "(no validation info is computed), or an SFrame with the same schema as the training data.");
 }
 }
+}  // namespace supervised
+}  // namespace turi

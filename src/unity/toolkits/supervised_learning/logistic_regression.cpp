@@ -152,6 +152,12 @@ void logistic_regression::init_options(const std::map<std::string,
       false);
 
   options.create_boolean_option(
+      "simple_mode",
+      "Show progress printing with very simple options.",
+      false,
+      false);
+
+  options.create_boolean_option(
       "feature_rescaling",
       "Rescale features to have unit L2-Norm",
       true,
@@ -175,6 +181,8 @@ void logistic_regression::init_options(const std::map<std::string,
  */
 void logistic_regression::train() {
 
+  m_simple_mode = options.value("simple_mode");
+
   size_t variables_per_class = this->num_coefficients/ (this->num_classes - 1);
   if(get_option_value("feature_rescaling")){
     lr_interface->init_feature_rescaling();
@@ -197,10 +205,16 @@ void logistic_regression::train() {
   // ---------------------------------------------------------------------------
   DenseVector init_point(this->num_coefficients);
   init_point.zeros();
-  display_classifier_training_summary("Logistic regression");
-  logprogress_stream << "Number of coefficients      : " << this->num_coefficients
-                     << std::endl;
+  if(!m_simple_mode) {
+    display_classifier_training_summary("Logistic regression", m_simple_mode);
+    if(!m_simple_mode) {
+      logprogress_stream << "Number of coefficients      : "
+                         << this->num_coefficients << std::endl;
+    }
 
+  } else { 
+    logprogress_stream << "Beginning model training on processed features. " << std::endl;  
+  }
 
   // Deal with regularizers
   // ---------------------------------------------------------------------------

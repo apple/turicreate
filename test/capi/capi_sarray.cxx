@@ -9,6 +9,7 @@
 
 #include <capi/TuriCreate.h>
 #include <vector>
+#include <fileio/fileio_constants.hpp>
 #include "capi_utils.hpp"
 
 #include <unity/lib/gl_sframe.hpp>
@@ -51,7 +52,7 @@ class capi_test_sarray {
 
  void test_sarray_save_load() {
 
-   for(const char* out_name : {"sa_tmp_1/"}) {
+     std::string out_name = turi::fileio::get_system_temp_directory() + "/sa_tmp_1/";
 
     std::vector<double> v = {1, 2, 4.5, 9, 10000000, -12433, 123123};
 
@@ -63,13 +64,13 @@ class capi_test_sarray {
 
       CAPI_CHECK_ERROR(error);
 
-    tc_sarray_save(sa_sv, out_name, &error); 
+      tc_sarray_save(sa_sv, out_name.c_str(), &error);
     
       CAPI_CHECK_ERROR(error);
 
       tc_release(sa_sv);
 
-    tc_sarray* sa = tc_sarray_load(out_name, &error);
+      tc_sarray* sa = tc_sarray_load(out_name.c_str(), &error);
 
       CAPI_CHECK_ERROR(error);
 
@@ -89,7 +90,6 @@ class capi_test_sarray {
           tc_release(ft);
       }
     }
-  }
 }
 
 

@@ -8,9 +8,14 @@
 #include <timer/timer.hpp>
 #include <sstream>
 #include <util/try_finally.hpp>
+#include <globals/globals.hpp>
 #include <table_printer/table_printer.hpp>
 
 namespace turi {
+
+  EXPORT double MIN_SECONDS_BETWEEN_TICK_PRINTS = 3.0;
+
+  REGISTER_GLOBAL(double, MIN_SECONDS_BETWEEN_TICK_PRINTS, true); 
 
 /** Constructor.  Sets up the columns.
  *

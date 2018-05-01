@@ -48,9 +48,19 @@ EXPORT void _tc_initialize() {
 
   turi::start_server(_get_server_options(), *capi_server_initializer());
   capi_server_initialized = true;
+
+  // Set up the progress logger to log progress to stdout.
+  global_logger().add_observer(LOG_PROGRESS,
+                               [](int, const char* buf, size_t len) {
+                                 for (; len != 0; --len) {
+                                   std::cout << *buf;
+                                   ++buf;
+                                 }
+                                 std::cout << std::flush;
+                               });
 }
 
-}
+}  // namespace turi
 
 // The user facing components of the server initialization
 

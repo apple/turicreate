@@ -12,4 +12,5 @@ subdirs(
   so_utils
   timer
   user_pagefault
+  config
   )

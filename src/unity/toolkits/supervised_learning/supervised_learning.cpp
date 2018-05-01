@@ -19,6 +19,7 @@
 #include <toolkits/supervised_learning/supervised_learning.hpp>
 #include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
 #include <toolkits/supervised_learning/classifier_evaluations.hpp>
+#include <toolkits/supervised_learning/automatic_model_creation.hpp>
 
 // ML Data
 #include <ml_data/ml_data_iterator.hpp>
@@ -146,6 +147,8 @@ void supervised_learning_model_base::init(const sframe& X, const sframe& y,
 
   // Check the number of dimensions in this dataset is small, otherwise warn the
   // user. (see  #3001 for context)
+  /*
+  // Turned off temporarily until we can find a better way to hide for image classification. 
   size_t num_dims = get_number_of_coefficients(this->ml_mdata);
   if(num_dims >= X.num_rows()) {
     std::stringstream ss;
@@ -156,6 +159,7 @@ void supervised_learning_model_base::init(const sframe& X, const sframe& y,
        << std::endl;
     logprogress_stream << ss.str() << std::endl;
   }
+  */
 
   ml_data valid_data;
   if (valid_X.num_rows() > 0) {
@@ -844,12 +848,17 @@ std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
  *
  */
 void supervised_learning_model_base::display_classifier_training_summary(
-                       std::string model_display_name) const {
+                       std::string model_display_name, bool simple_mode) const {
 
   size_t examples = num_examples();
   size_t classes =  variant_get_value<size_t>(state.at("num_classes"));
   size_t features = num_features();
   size_t unpacked_features = num_unpacked_features();
+  if(simple_mode) {
+    logprogress_stream << "Training a classifier on " << examples
+                       << " examples mapping to " << classes << " classes."
+                       << std::endl;
+  } else { 
 
   logprogress_stream << model_display_name << ":" << std::endl;
   logprogress_stream << "--------------------------------------------------------" << std::endl;
@@ -857,7 +866,7 @@ void supervised_learning_model_base::display_classifier_training_summary(
   logprogress_stream << "Number of classes           : " << classes << std::endl;
   logprogress_stream << "Number of feature columns   : " << features << std::endl;
   logprogress_stream << "Number of unpacked features : " << unpacked_features << std::endl;
-
+  }
 }
 
 /**
@@ -932,8 +941,12 @@ std::vector<std::vector<flexible_type>>
 void supervised_learning_model_base::api_train(
     gl_sframe data, 
     const std::string& target,
-    gl_sframe validation_data,
+    const variant_type& _validation_data,
     const std::map<std::string, flexible_type>& options) {
+
+  gl_sframe validation_data;
+  std::tie(data, validation_data) = create_validation_data(data, _validation_data);
+  add_or_update_state({{"validation_data", validation_data}});
 
   // TODO: remove this plumbing now that neural nets has been 
   // moved out. 
@@ -970,6 +983,27 @@ void supervised_learning_model_base::api_train(
   this->init_options(options);
 
   this->train();
+
+  // Add in all the fields for the evaluation into the training statistics.
+  variant_map_type state_update;
+
+  {
+    auto ret = this->api_evaluate(data, "auto", "report");
+
+    for (auto& p : ret) {
+      state_update["training_" + p.first] = p.second;
+    }
+  }
+
+  if(validation_data.size() != 0) {
+    auto ret = this->api_evaluate(validation_data, "auto", "report");
+
+    for (auto& p : ret) {
+      state_update["validation_" + p.first] = p.second;
+    }
+  }
+
+  add_or_update_state(state_update); 
 }
 
 /**
@@ -1064,19 +1098,21 @@ variant_map_type supervised_learning_model_base::api_evaluate(
 
   if(metric == "report") {
     if(is_classifier()) {
-      std::string target = variant_get_ref<flexible_type>(state.at("target"));
-      std::string pred_column = target + ".predicted";
+      std::string target = "class"; 
+      std::string pred_column = "predicted_class";
 
 
       gl_sframe out;
 
-      out[target] = data[target];
-      out[pred_column] = api_predict(data, missing_value_action_str, "class");
+      out["class"] = data[variant_get_ref<flexible_type>(state.at("target")).get<flex_string>()];
+      out["predicted_class"] = api_predict(data, missing_value_action_str, "class");
 
       variant_map_type ret = evaluate(m_data, "auto");
 
       ret["confusion_matrix"] = confusion_matrix(out, target, pred_column);
       ret["report_by_class"] = classifier_report_by_class(out, target, pred_column);
+      ret["accuracy"] =
+          double((out["class"] == out["predicted_class"]).sum()) / out.size();
 
       return ret;
 

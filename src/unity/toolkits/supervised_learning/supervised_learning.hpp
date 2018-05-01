@@ -633,7 +633,7 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
    * \param[in] model_display_name   Name to be displayed
    *
    */
-  void display_classifier_training_summary(std::string model_display_name) const;
+  void display_classifier_training_summary(std::string model_display_name, bool simple_mode = false) const;
 
   /**
    * Methods with no current implementation (or empty implementations)
@@ -660,7 +660,7 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
    *  Train the model 
    */
   void api_train(gl_sframe data, const std::string& target,
-                 gl_sframe validation_data,
+                 const variant_type& validation_data,
                  const std::map<std::string, flexible_type>& options);
 
   /**

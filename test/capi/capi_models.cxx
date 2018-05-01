@@ -6,6 +6,7 @@
 #define BOOST_TEST_MODULE capi_models
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
+#include <fileio/fileio_constants.hpp>
 
 #include <capi/TuriCreate.h>
 #include <algorithm>
@@ -171,8 +172,8 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
 
         // Set the l2 regression
         {
-          tc_flexible_type* ft_name = tc_ft_create_from_cstring(
-              "coreml_export_test_1_tmp.mlmodel", &error);
+          std::string url = turi::fileio::get_system_temp_directory() + "coreml_export_test_1_tmp.mlmodel";
+          tc_flexible_type* ft_name = tc_ft_create_from_cstring(url.c_str(), &error);
           CAPI_CHECK_ERROR(error);
           tc_parameters_add_flexible_type(export_args, "filename", ft_name,
                                           &error);
@@ -189,11 +190,11 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
 
     // Test saving and loading the model.
     {
-      constexpr char MODEL_PATH[] = "save_test_1_tmp";
-      tc_model_save(model, MODEL_PATH, &error);
+      std::string model_path = turi::fileio::get_system_temp_directory() + "/save_test_1_tmp";
+      tc_model_save(model, model_path.c_str(), &error);
       CAPI_CHECK_ERROR(error);
 
-      tc_model* loaded_model = tc_model_load(MODEL_PATH, &error);
+      tc_model* loaded_model = tc_model_load(model_path.c_str(), &error);
       CAPI_CHECK_ERROR(error);
       TS_ASSERT(loaded_model != nullptr);
 
