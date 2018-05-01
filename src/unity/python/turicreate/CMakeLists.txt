@@ -50,7 +50,7 @@ set_property(DIRECTORY PROPERTY INSTALLATION_BINARY_TARGETS "${INSTALLATION_BINA
 set_property(DIRECTORY PROPERTY INSTALLATION_BINARY_FILES "${INSTALLATION_BINARY_FILES}")
 
 add_custom_target(
-  visualization_vega ALL
+  visualization_vega
   DEPENDS visualization_client
   COMMAND cp "${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vega_3.2.1.js" "${CMAKE_CURRENT_BINARY_DIR}"
   COMMAND cp "${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vg2png" "${CMAKE_CURRENT_BINARY_DIR}"
@@ -59,13 +59,13 @@ add_custom_target(
 
 if (APPLE)
   add_custom_target(
-    visualization_client_app ALL
+    visualization_client_app
     DEPENDS visualization_client
     COMMAND cp -a "${CMAKE_BINARY_DIR}/src/visualization/${CMAKE_BUILD_TYPE}/Turi Create Visualization.app" ${CMAKE_CURRENT_BINARY_DIR}
   )
 elseif(LINUX)
   add_custom_target(
-    visualization_client_app ALL
+    visualization_client_app
     DEPENDS visualization_client
     COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/Turi Create Visualization"
     COMMAND cp -a "${CMAKE_BINARY_DIR}/src/visualization/TcViz/*" "${CMAKE_CURRENT_BINARY_DIR}/Turi Create Visualization"
