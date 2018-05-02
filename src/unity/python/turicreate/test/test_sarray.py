@@ -183,7 +183,7 @@ class SArrayTest(unittest.TestCase):
             sa = SArray(self.float_data)
             sa.save(f)
             sa2 = load_sarray(f)
-            self.__test_equal(sa2, self.float_data)
+            self.__test_equal(sa2, self.float_data, float)
 
         # Make sure these files don't exist before testing
         self._remove_sarray_files("intarr")
