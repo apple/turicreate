@@ -16,7 +16,6 @@ subdirs(extensions
           unity_core
           unity_toolkits
           perf
-          minipsutil_static
           numerics
   ) 
 

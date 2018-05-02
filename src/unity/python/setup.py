@@ -136,7 +136,7 @@ if __name__ == '__main__':
                      'toolkits/deeplearning/*.conf',
                      '*.so', '*.so.1', '*.dylib',
                      '*.dll', '*.def',
-                     'deploy/*.jar', '*.exe', 'libminipsutil.*',
+                     'deploy/*.jar', '*.exe',
                      'mxnet/*.ttf',
 
                      # macOS visualization
