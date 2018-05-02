@@ -141,6 +141,7 @@ def binary_classification_integer_target(cls):
         'solver': lambda x: x == cls.opts['solver'],
         'step_size': lambda x: lambda x: x == cls.opts['step_size'],
         'target': lambda x: x == cls.target,
+        'training_accuracy': lambda x: x >= 0 and x <= 1,
         'training_iterations': lambda x: x > 0,
         'training_loss': lambda x: abs(x - cls.loss) < 1e-5,
         'training_solver_status': lambda x: x == "SUCCESS: Optimal solution found.",
