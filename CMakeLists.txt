@@ -736,29 +736,47 @@ macro (make_copy_target NAME)
   CMAKE_PARSE_ARGUMENTS(copy "" "" "${multi_value_args}" ${ARGN})
   ADD_CUSTOM_TARGET(${NAME} ALL)
   set(all_target_locations)
-  foreach(binary ${copy_FILES})
-          # Switched away from cmake -E commands because they don't work right
-          # on Windows. Also Windows doesn't overwrite when copying by default
-          if(WIN32)
+  set(RSYNC_SOURCES ${copy_FILES} ${copy_DIRECTORIES})
+  find_program(RSYNC rsync)
+  if("${RSYNC}" STREQUAL "")
+    # No rsync present; copy the old fashioned way with multiple cp commands
+    foreach(binary ${copy_FILES})
+            # Switched away from cmake -E commands because they don't work right
+            # on Windows. Also Windows doesn't overwrite when copying by default
+            if(WIN32)
+              add_custom_command(TARGET ${NAME} POST_BUILD
+                COMMENT "remove old ${binary}"
+                COMMAND rm -f ${CMAKE_CURRENT_BINARY_DIR}/`basename ${binary}` )
+            endif()
             add_custom_command(TARGET ${NAME} POST_BUILD
-              COMMENT "remove old ${binary}"
-              COMMAND rm -f ${CMAKE_CURRENT_BINARY_DIR}/`basename ${binary}` )
-          endif()
-          add_custom_command(TARGET ${NAME} POST_BUILD
-                  COMMENT "copy ${binary}"
-                  COMMAND cp ${binary} ${CMAKE_CURRENT_BINARY_DIR})
+                    COMMENT "copy ${binary}"
+                    COMMAND cp ${binary} ${CMAKE_CURRENT_BINARY_DIR})
+    endforeach()
+
+    foreach(binary ${copy_DIRECTORIES})
+            # Switched away from cmake -E commands because they don't work right
+            # on Windows. Also Windows doesn't overwrite when copying by default
+            add_custom_command(TARGET ${NAME} POST_BUILD
+                    COMMENT "remove old ${binary}"
+                    COMMAND rm -rf ${CMAKE_CURRENT_BINARY_DIR}/`basename ${binary}` )
+            add_custom_command(TARGET ${NAME} POST_BUILD
+                    COMMENT "copy ${binary}"
+                    COMMAND cp -r ${binary} ${CMAKE_CURRENT_BINARY_DIR})
+    endforeach()
+  else()
+    if((NOT "${copy_FILES}" STREQUAL "") OR (NOT "${copy_DIRECTORIES}" STREQUAL ""))
+      add_custom_command(TARGET ${NAME} POST_BUILD
+        COMMENT "copying ${NAME}"
+        COMMAND ${RSYNC} -a ${RSYNC_SOURCES} ${CMAKE_CURRENT_BINARY_DIR}
+      )
+    endif()
+  endif()
+
+  # Make sure the files and directories get included in all_target_locations
+  foreach(binary ${copy_FILES})
           list(APPEND all_target_locations ${binary})
   endforeach()
-
   foreach(binary ${copy_DIRECTORIES})
-          # Switched away from cmake -E commands because they don't work right
-          # on Windows. Also Windows doesn't overwrite when copying by default
-          add_custom_command(TARGET ${NAME} POST_BUILD
-                  COMMENT "remove old ${binary}"
-                  COMMAND rm -rf ${CMAKE_CURRENT_BINARY_DIR}/`basename ${binary}` )
-          add_custom_command(TARGET ${NAME} POST_BUILD
-                  COMMENT "copy ${binary}"
-                  COMMAND cp -r ${binary} ${CMAKE_CURRENT_BINARY_DIR})
           list(APPEND all_target_locations ${binary})
   endforeach()
 
@@ -776,15 +794,17 @@ macro (make_copy_target NAME)
                   foreach(location ${CUSTOM_LOCATION})
                           add_custom_command(TARGET ${NAME} POST_BUILD
                                   COMMENT "copy ${location}"
+                                  DEPENDS ${target}
                                   COMMAND ${CMAKE_COMMAND} -E
-                                  copy ${location} ${CMAKE_CURRENT_BINARY_DIR})
+                                  copy_if_different ${location} ${CMAKE_CURRENT_BINARY_DIR})
                           list(APPEND all_target_locations ${location})
                   endforeach()
           else()
                   add_custom_command(TARGET ${NAME} POST_BUILD
                           COMMENT "copying target of ${target}"
+                          DEPENDS ${target}
                           COMMAND ${CMAKE_COMMAND} -E
-                          copy $<TARGET_FILE:${target}> ${CMAKE_CURRENT_BINARY_DIR})
+                          copy_if_different $<TARGET_FILE:${target}> ${CMAKE_CURRENT_BINARY_DIR})
                   list(APPEND all_target_locations $<TARGET_FILE:${target}>)
           endif()
   endforeach()

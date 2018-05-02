@@ -9,6 +9,7 @@ ExternalProject_Add(ex_libxml2
   INSTALL_DIR ${CMAKE_SOURCE_DIR}/deps/local
   CONFIGURE_COMMAND CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} CFLAGS=-fPIC CPPFLAGS=-fPIC <SOURCE_DIR>/configure --prefix=<INSTALL_DIR> --enable-shared=no --enable-static=yes --without-lzma --libdir=<INSTALL_DIR>/lib --with-python=./ ${EXTRA_CONFIGURE_FLAGS}
   BUILD_COMMAND cp <SOURCE_DIR>/testchar.c <SOURCE_DIR>/testapi.c && make
+  BUILD_BYPRODUCTS ${CMAKE_SOURCE_DIR}/deps/local/lib/libxml2.a
   )
 # the with-python=./ prevents it from trying to build/install some python stuff
 # which is poorly installed (always ways to stick it in a system directory)

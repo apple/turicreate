@@ -10,6 +10,7 @@ ExternalProject_Add(ex_libssl
   CONFIGURE_COMMAND ./Configure darwin64-x86_64-cc no-idea no-mdc2 no-rc5 -fPIC --prefix=<INSTALL_DIR>
   BUILD_COMMAND make -j1
   INSTALL_COMMAND make -j1 install && cp ./libcrypto.a <INSTALL_DIR>/ssl && cp ./libssl.a <INSTALL_DIR>/ssl
+  BUILD_BYPRODUCTS ${CMAKE_SOURCE_DIR}/deps/local/lib/libssl.a ${CMAKE_SOURCE_DIR}/deps/local/lib/libcrypto.a
   )
 elseif(WIN32)
 ExternalProject_Add(ex_libssl
@@ -30,6 +31,7 @@ ExternalProject_Add(ex_libssl
   CONFIGURE_COMMAND CC=${CMAKE_C_COMPILER} ./config no-idea no-mdc2 no-rc5 -fPIC --prefix=<INSTALL_DIR>
   BUILD_COMMAND make -j1
   INSTALL_COMMAND make -j1 install_sw
+  BUILD_BYPRODUCTS ${CMAKE_SOURCE_DIR}/deps/local/lib/libssl.a ${CMAKE_SOURCE_DIR}/deps/local/lib/libcrypto.a
   )
 endif()
 

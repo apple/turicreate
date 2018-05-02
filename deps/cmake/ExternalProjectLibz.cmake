@@ -17,6 +17,7 @@ ExternalProject_Add(ex_libz
   CONFIGURE_COMMAND CC=${CMAKE_C_COMPILER} CFLAGS=-fPIC ./configure --static --64 --prefix=<INSTALL_DIR>
   BUILD_IN_SOURCE 1
   BUILD_COMMAND CC=${CMAKE_C_COMPILER} CFLAGS=-fPIC make install
+  BUILD_BYPRODUCTS ${CMAKE_SOURCE_DIR}/deps/local/lib/libz.a
   INSTALL_COMMAND "" )
 endif()
 add_library(libza STATIC IMPORTED)
