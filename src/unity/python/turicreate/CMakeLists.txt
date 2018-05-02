@@ -49,25 +49,29 @@ set_property(DIRECTORY PROPERTY INSTALLATION_EXTENSIONS "${INSTALLATION_EXTENSIO
 set_property(DIRECTORY PROPERTY INSTALLATION_BINARY_TARGETS "${INSTALLATION_BINARY_TARGETS}")
 set_property(DIRECTORY PROPERTY INSTALLATION_BINARY_FILES "${INSTALLATION_BINARY_FILES}")
 
-add_custom_target(
-  visualization_vega
-  DEPENDS visualization_client
-  COMMAND cp "${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vega_3.2.1.js" "${CMAKE_CURRENT_BINARY_DIR}"
-  COMMAND cp "${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vg2png" "${CMAKE_CURRENT_BINARY_DIR}"
-  COMMAND cp "${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vg2svg" "${CMAKE_CURRENT_BINARY_DIR}"
-)
-
 if (APPLE)
-  add_custom_target(
-    visualization_client_app
-    DEPENDS visualization_client
-    COMMAND cp -a "${CMAKE_BINARY_DIR}/src/visualization/${CMAKE_BUILD_TYPE}/Turi Create Visualization.app" ${CMAKE_CURRENT_BINARY_DIR}
+  make_copy_target(
+    visualization_client_app ALL
+    FILES
+    ${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vega_3.2.1.js
+    ${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vg2png
+    ${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vg2svg
+    DIRECTORIES
+    "${CMAKE_BINARY_DIR}/src/visualization/${CMAKE_BUILD_TYPE}/Turi Create Visualization.app"
   )
+  add_dependencies(visualization_client_app visualization_client)
 elseif(LINUX)
   add_custom_target(
-    visualization_client_app
+    visualization_client_app ALL
     DEPENDS visualization_client
     COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/Turi Create Visualization"
     COMMAND cp -a "${CMAKE_BINARY_DIR}/src/visualization/TcViz/*" "${CMAKE_CURRENT_BINARY_DIR}/Turi Create Visualization"
+  )
+  add_custom_target(
+    visualization_vega ALL
+    DEPENDS visualization_client
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vega_3.2.1.js" "${CMAKE_CURRENT_BINARY_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vg2png" "${CMAKE_CURRENT_BINARY_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vg2svg" "${CMAKE_CURRENT_BINARY_DIR}"
   )
 endif()
