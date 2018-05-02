@@ -13,10 +13,20 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
   endif()
 
   if(APPLE)
-    add_custom_target(visualization_client
+    set(VISUALIZATION_XCODE_OUTPUT
+      "${CMAKE_CURRENT_BINARY_DIR}/Debug/Turi Create Visualization.app/Contents/_CodeSignature/CodeResources"
+      # TODO - there are probably more files that should go here, but this one might be sufficient.
+      # I'm hoping it reliably changes every build.
+    )
+    file(GLOB_RECURSE VISUALIZATION_XCODE_INPUT "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/")
+    add_custom_command(
+      OUTPUT ${VISUALIZATION_XCODE_OUTPUT}
       COMMAND xcodebuild -project "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization.xcodeproj/" -configuration ${CMAKE_BUILD_TYPE} SYMROOT=${CMAKE_CURRENT_BINARY_DIR}
       COMMENT "Building visualization client via xcodebuild"
+      DEPENDS ${VISUALIZATION_XCODE_INPUT}
     )
+    add_custom_target(visualization_client)
+    add_dependencies(visualization_client ${VISUALIZATION_XCODE_OUTPUT})
   elseif(LINUX)
     include(ExternalProject)
 

@@ -25,7 +25,7 @@ foreach(loop_var ${EXTENSIONS_LIST})
   list(APPEND INSTALLATION_EXTENSIONS ${loop_var})
 endforeach()
 
-make_copy_target(release_binaries ALL
+make_copy_target(release_binaries
         TARGETS
         ${UNITY_ALL_LIBRARIES}
         ${INSTALLATION_BINARY_TARGETS}
@@ -51,7 +51,7 @@ set_property(DIRECTORY PROPERTY INSTALLATION_BINARY_FILES "${INSTALLATION_BINARY
 
 if (APPLE)
   make_copy_target(
-    visualization_client_app ALL
+    visualization_client_app
     FILES
     ${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vega_3.2.1.js
     ${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vg2png

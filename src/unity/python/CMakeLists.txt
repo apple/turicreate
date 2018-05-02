@@ -13,21 +13,16 @@ add_subdirectory(turicreate)
 
 # Overwrite with the proprietary stuff
 
-set(PYTHON_SOURCE_FILES
-  ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt
-  ${CMAKE_CURRENT_SOURCE_DIR}/MANIFEST.in
-  ${CMAKE_CURRENT_SOURCE_DIR}/README.rst
-  ${CMAKE_CURRENT_SOURCE_DIR}/dummy.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/setup.cfg
-  ${CMAKE_CURRENT_SOURCE_DIR}/setup.py
-  ${CMAKE_CURRENT_SOURCE_DIR}/turicreate
-)
-
-add_custom_target(python_source ALL)
-add_custom_command(
-  COMMENT "Copying Python source files"
-  COMMAND rsync -av ${PYTHON_SOURCE_FILES} ${CMAKE_CURRENT_BINARY_DIR}
-  TARGET python_source
+make_copy_target(python_source
+  FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt
+    ${CMAKE_CURRENT_SOURCE_DIR}/MANIFEST.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/README.rst
+    ${CMAKE_CURRENT_SOURCE_DIR}/dummy.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/setup.cfg
+    ${CMAKE_CURRENT_SOURCE_DIR}/setup.py
+  DIRECTORIES
+    ${CMAKE_CURRENT_SOURCE_DIR}/turicreate
 )
 add_dependencies(python_source numpy_integration)
 
