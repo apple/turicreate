@@ -731,6 +731,12 @@ endfunction()
 # Warning: The recursive reference is slightly brittle since it requires the
 # referenced target to exist prior to referencing it.
 # This is potentially fixable with complicated generator expressions. but... urgh.
+#
+# The use of rsync vs. cp is an attempt to improve performance on incremental builds.
+find_program(COPY_COMMAND rsync)
+if ("${COPY_COMMAND}" STREQUAL "")
+  set(COPY_COMMAND "cp")
+endif()
 macro (make_copy_target NAME)
   set(multi_value_args TARGETS FILES DIRECTORIES)
   CMAKE_PARSE_ARGUMENTS(copy "" "" "${multi_value_args}" ${ARGN})
@@ -746,7 +752,7 @@ macro (make_copy_target NAME)
           endif()
           add_custom_command(TARGET ${NAME} POST_BUILD
                   COMMENT "copy ${binary}"
-                  COMMAND cp ${binary} ${CMAKE_CURRENT_BINARY_DIR})
+                  COMMAND ${COPY_COMMAND} ${binary} ${CMAKE_CURRENT_BINARY_DIR})
           list(APPEND all_target_locations ${binary})
   endforeach()
 
@@ -758,7 +764,7 @@ macro (make_copy_target NAME)
                   COMMAND rm -rf ${CMAKE_CURRENT_BINARY_DIR}/`basename ${binary}` )
           add_custom_command(TARGET ${NAME} POST_BUILD
                   COMMENT "copy ${binary}"
-                  COMMAND cp -r ${binary} ${CMAKE_CURRENT_BINARY_DIR})
+                  COMMAND ${COPY_COMMAND} -r ${binary} ${CMAKE_CURRENT_BINARY_DIR})
           list(APPEND all_target_locations ${binary})
   endforeach()
 
@@ -777,14 +783,14 @@ macro (make_copy_target NAME)
                           add_custom_command(TARGET ${NAME} POST_BUILD
                                   COMMENT "copy ${location}"
                                   COMMAND ${CMAKE_COMMAND} -E
-                                  copy ${location} ${CMAKE_CURRENT_BINARY_DIR})
+                                  copy_if_different ${location} ${CMAKE_CURRENT_BINARY_DIR})
                           list(APPEND all_target_locations ${location})
                   endforeach()
           else()
                   add_custom_command(TARGET ${NAME} POST_BUILD
                           COMMENT "copying target of ${target}"
                           COMMAND ${CMAKE_COMMAND} -E
-                          copy $<TARGET_FILE:${target}> ${CMAKE_CURRENT_BINARY_DIR})
+                          copy_if_different $<TARGET_FILE:${target}> ${CMAKE_CURRENT_BINARY_DIR})
                   list(APPEND all_target_locations $<TARGET_FILE:${target}>)
           endif()
   endforeach()
