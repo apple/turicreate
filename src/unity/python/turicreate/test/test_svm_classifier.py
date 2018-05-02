@@ -113,6 +113,7 @@ class SVMClassifierTest(unittest.TestCase):
          'progress': lambda x: isinstance(x, tc.SFrame),
          'solver': lambda x: x == self.opts["solver"],
          'target': lambda x: x == self.target,
+         'training_accuracy': lambda x: x >= 0 and x <= 1,
          'training_iterations': lambda x: x > 0,
          'training_loss': lambda x: x > 0,
          'training_solver_status':\
@@ -215,26 +216,24 @@ class SVMClassifierTest(unittest.TestCase):
         self.model.save(filename)
         self.model = tc.load_model(filename)
 
-        try:
-            self.test_get()
-            print("Get passed")
-            self.test_coefficients()
-            print("Coefficients passed")
-            self.test_summary()
-            print("Summary passed")
-            self.test_repr()
-            print("Repr passed")
-            self.test_predict()
-            print("Predict passed")
-            self.test_classify()
-            print("Classify passed")
-            self.test_evaluate()
-            print("Evaluate passed")
-            self.test__list_fields()
-            print("List fields passed")
-            shutil.rmtree(filename)
-        except:
-            self.assertTrue(False, "Failed during save & load diagnostics")
+        # If this code throws an exception, it'll fail the test.
+        self.test_get()
+        print("Get passed")
+        self.test_coefficients()
+        print("Coefficients passed")
+        self.test_summary()
+        print("Summary passed")
+        self.test_repr()
+        print("Repr passed")
+        self.test_predict()
+        print("Predict passed")
+        self.test_classify()
+        print("Classify passed")
+        self.test_evaluate()
+        print("Evaluate passed")
+        self.test__list_fields()
+        print("List fields passed")
+        shutil.rmtree(filename)
 
 
 class SVMCreateTest(unittest.TestCase):
