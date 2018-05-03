@@ -75,6 +75,8 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
         CONFIGURE_COMMAND ${CMAKE_COMMAND} .
         BUILD_COMMAND "make"
         INSTALL_COMMAND ""
+        BUILD_BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/libcef_dll_wrapper/libcef_dll_wrapper.a
+                         ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/libcef.so
     )
 
 
