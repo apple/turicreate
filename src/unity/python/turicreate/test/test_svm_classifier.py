@@ -119,6 +119,12 @@ class SVMClassifierTest(unittest.TestCase):
          'training_solver_status':\
                  lambda x: x == "SUCCESS: Optimal solution found.",
          'training_time': lambda x: x >= 0,
+         'training_confusion_matrix': lambda x: len(x) > 0,
+         'training_f1_score': lambda x: x > 0,
+         'training_precision': lambda x: x > 0,
+         'training_recall': lambda x: x > 0,
+         'training_report_by_class': lambda x: len(x) > 0,
+         'validation_data': lambda x: isinstance(x, tc.SFrame) and len(x) == 0,
             }
         self.fields_ans = self.get_ans.keys()
 
