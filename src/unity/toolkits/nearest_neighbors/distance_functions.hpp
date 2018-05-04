@@ -97,6 +97,8 @@ void inline all_pairs_transformed_dot_product(const DenseMatrix& A,
 
 struct distance_metric {
 
+  virtual ~distance_metric() = default;
+
   // factory methods
   static inline std::shared_ptr<distance_metric> make_dist_instance(const std::string& dist_name);
 

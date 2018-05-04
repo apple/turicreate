@@ -42,6 +42,8 @@ struct materialize_options;
 class opt_transform {
  public:
 
+  virtual ~opt_transform() = default;
+
   /** A description string that gets logged when the transformation is
    *  applied.
    */

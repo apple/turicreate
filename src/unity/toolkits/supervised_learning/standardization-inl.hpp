@@ -105,12 +105,12 @@ class standardization_interface {
   /**
    * Default destructor.
    */
-  ~standardization_interface() {}
+  virtual ~standardization_interface() = default;
 
   /**
   * Default constructor.
   */
-  standardization_interface(){}
+  standardization_interface() = default;
 
   // Dense Vectors
   // --------------------------------------------------------------------------

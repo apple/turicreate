@@ -48,6 +48,8 @@ namespace sgd {
 class sgd_interface_base {
  public:
 
+  virtual ~sgd_interface_base() = default;
+
   /**  Called at the start of optimization, before any other functions
    *   are called.
    *

@@ -20,7 +20,9 @@ class column_statistics {
 
 public:
 
-  column_statistics() {}
+  column_statistics() = default;
+
+  virtual ~column_statistics() = default;
 
   /**
    * Copy constructor: Don't want to risk making copies of this.

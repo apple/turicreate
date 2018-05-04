@@ -137,6 +137,8 @@ gl_sarray& gl_sarray::operator=(gl_sarray&& other) {
   return *this;
 }
 
+gl_sarray::~gl_sarray() = default;
+
 std::shared_ptr<unity_sarray> gl_sarray::get_proxy() const {
   return m_sarray;
 }
