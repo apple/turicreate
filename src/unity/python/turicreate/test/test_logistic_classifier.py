@@ -146,6 +146,16 @@ def binary_classification_integer_target(cls):
         'training_loss': lambda x: abs(x - cls.loss) < 1e-5,
         'training_solver_status': lambda x: x == "SUCCESS: Optimal solution found.",
         'training_time': lambda x: x >= 0,
+        'simple_mode': lambda x: not x,
+        'training_auc': lambda x: x > 0,
+        'training_confusion_matrix': lambda x: len(x) > 0,
+        'training_f1_score': lambda x: x > 0,
+        'training_log_loss': lambda x: x > 0,
+        'training_precision': lambda x: x > 0,
+        'training_recall': lambda x: x > 0,
+        'training_report_by_class': lambda x: len(x) > 0,
+        'training_roc_curve': lambda x: len(x) > 0,
+        'validation_data': lambda x: isinstance(x, tc.SFrame) and len(x) == 0,
         }
     cls.fields_ans = cls.get_ans.keys()
 
