@@ -1814,26 +1814,30 @@ inline FLEX_ALWAYS_INLINE_FLATTEN void flexible_type::swap(flexible_type& b) {
 
 template <typename T>
 inline FLEX_ALWAYS_INLINE T& flexible_type::mutable_get() {
-  typedef flexible_type_impl::invalid_type_instantiation_assert<true> unused;
+  __attribute__((unused))
+  typedef flexible_type_impl::invalid_type_instantiation_assert<false> unused;
   __builtin_unreachable();
 }
 
 template <typename T>
 inline FLEX_ALWAYS_INLINE const T& flexible_type::get() const {
-  typedef flexible_type_impl::invalid_type_instantiation_assert<true> unused;
+  __attribute__((unused))
+  typedef flexible_type_impl::invalid_type_instantiation_assert<false> unused;
   __builtin_unreachable();
 }
 
 
 template <typename T>
 inline FLEX_ALWAYS_INLINE T& flexible_type::reinterpret_mutable_get() {
-  typedef flexible_type_impl::invalid_type_instantiation_assert<true> unused;
+  __attribute__((unused))
+  typedef flexible_type_impl::invalid_type_instantiation_assert<false> unused;
   __builtin_unreachable();
 }
 
 template <typename T>
 inline FLEX_ALWAYS_INLINE const T& flexible_type::reinterpret_get() const {
-  typedef flexible_type_impl::invalid_type_instantiation_assert<true> unused;
+  __attribute__((unused))
+  typedef flexible_type_impl::invalid_type_instantiation_assert<false> unused;
   __builtin_unreachable();
 }
 

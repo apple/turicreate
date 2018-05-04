@@ -13,7 +13,7 @@ from setuptools.dist import Distribution
 from setuptools.command.install import install
 
 PACKAGE_NAME="turicreate"
-VERSION='4.3a1'#{{VERSION_STRING}}
+VERSION='4.3.2'#{{VERSION_STRING}}
 
 # Prevent distutils from thinking we are a pure python package
 class BinaryDistribution(Distribution):
@@ -136,48 +136,31 @@ if __name__ == '__main__':
                      'toolkits/deeplearning/*.conf',
                      '*.so', '*.so.1', '*.dylib',
                      '*.dll', '*.def',
-                     'deploy/*.jar', '*.exe', 'libminipsutil.*',
+                     'deploy/*.jar', '*.exe',
                      'mxnet/*.ttf',
 
                      # macOS visualization
-                     'Turi Create Visualization.app/Contents/_CodeSignature/CodeResources',
-                     'Turi Create Visualization.app/Contents/Frameworks/*.dylib',
-                     'Turi Create Visualization.app/Contents/Info.plist',
-                     'Turi Create Visualization.app/Contents/Resources/*.car',
-                     'Turi Create Visualization.app/Contents/Resources/*.css',
-                     'Turi Create Visualization.app/Contents/Resources/*.icns',
-                     'Turi Create Visualization.app/Contents/Resources/*.js',
-                     'Turi Create Visualization.app/Contents/Resources/*.html',
-                     'Turi Create Visualization.app/Contents/Resources/Base.lproj/Main.storyboardc/*.nib',
-                     'Turi Create Visualization.app/Contents/Resources/Base.lproj/Main.storyboardc/Info.plist',
-                     'Turi Create Visualization.app/Contents/Resources/*.dylib',
-                     'Turi Create Visualization.app/Contents/PkgInfo',
-                     'Turi Create Visualization.app/Contents/MacOS/Turi Create Visualization',
-                     
+                    'Turi Create Visualization.app/Contents/*',
+                    'Turi Create Visualization.app/Contents/_CodeSignature/*',
+                    'Turi Create Visualization.app/Contents/MacOS/*',
+                    'Turi Create Visualization.app/Contents/Resources/*',
+                    'Turi Create Visualization.app/Contents/Resources/Base.lproj/*',
+                    'Turi Create Visualization.app/Contents/Resources/Base.lproj/Main.storyboardc/*',
+                    'Turi Create Visualization.app/Contents/Resources/build/*',
+                    'Turi Create Visualization.app/Contents/Resources/build/static/*',
+                    'Turi Create Visualization.app/Contents/Resources/build/static/css/*',
+                    'Turi Create Visualization.app/Contents/Resources/build/static/js/*',
+                    'Turi Create Visualization.app/Contents/Frameworks/*',
+
                      # Linux visualization
-        		     'Turi Create Visualization/icudtl.dat',
-        		     'Turi Create Visualization/visualization_client',
-        		     'Turi Create Visualization/snapshot_blob.bin',
-        		     'Turi Create Visualization/cef_100_percent.pak',
-        		     'Turi Create Visualization/locales/*.pak',
-        		     'Turi Create Visualization/locales/*.info',
-        		     'Turi Create Visualization/cef_200_percent.pak',
-        		     'Turi Create Visualization/cef.pak',
-        		     'Turi Create Visualization/devtools_resources.pak',
-        		     'Turi Create Visualization/html/vega.min.js',
-        		     'Turi Create Visualization/html/index.js',
-        		     'Turi Create Visualization/html/vega_viz.html',
-        		     'Turi Create Visualization/html/d3.v4.min.js',
-        		     'Turi Create Visualization/html/vega-lite.min.js',
-        		     'Turi Create Visualization/html/vega-tooltip.min.css',
-        		     'Turi Create Visualization/html/vega-tooltip.min.js',
-        		     'Turi Create Visualization/html/vega-embed.min.js',
-        		     'Turi Create Visualization/html/table_view.css',
-        		     'Turi Create Visualization/natives_blob.bin',
-        		     'Turi Create Visualization/libcef.so',
-        		     'Turi Create Visualization/v8_context_snapshot.bin',
-        		     'Turi Create Visualization/cef_extensions.pak',
-                     
+        		     'Turi Create Visualization/*.*',
+                     'Turi Create Visualization/visualization_client',
+                     'Turi Create Visualization/swiftshader/*',
+                     'Turi Create Visualization/locales/*',
+                     'Turi Create Visualization/html/*.*',
+                     'Turi Create Visualization/html/static/js/*',
+                     'Turi Create Visualization/html/static/css/*',
+
                      # Plot.save dependencies
                      'visualization/vega_3.2.1.js',
                      'visualization/vg2png',

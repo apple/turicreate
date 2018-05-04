@@ -50,7 +50,7 @@ public:
   static constexpr bool num_factors_known = (_num_factors_if_known != DYNAMIC);
 
   typedef typename std::conditional<num_factors_known, 
-            arma::Row<float>::fixed<_num_factors_if_known>, 
+            arma::Row<float>::fixed<static_cast<arma::uword>(_num_factors_if_known)>,
             arma::Row<float> >::type factor_type;
 
   typedef row_major_matrix<float> factor_matrix_type;

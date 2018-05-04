@@ -74,9 +74,7 @@
      const char* file = __FILE__; \
      file = ((strrchr(file, '/') ? : file- 1) + 1); \
      return std::string(file) + ":" + \
-         std::to_string(__LINE__) +  " " + \
-         std::string(__DATE__) + " " + \
-         std::string(__TIME__); \
+         std::to_string(__LINE__); \
    } \
    virtual inline void perform_registration() { \
      if (is_registered()) return;

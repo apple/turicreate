@@ -72,6 +72,16 @@ function(make_shared_library_from_static NAME)
 
         set_target_properties(${NAME}_collect PROPERTIES RULE_LAUNCH_LINK "env WORKINGDIR=${CMAKE_CURRENT_BINARY_DIR}/${NAME}_collect_dir BUILD_PREFIX=${CMAKE_BINARY_DIR} bash ${CMAKE_SOURCE_DIR}/scripts/dump_library_list.sh")
 
+        add_custom_command(
+          OUTPUT
+          ${CMAKE_CURRENT_BINARY_DIR}/${NAME}_collect_dir/collect_archives.txt
+          ${CMAKE_CURRENT_BINARY_DIR}/${NAME}_collect_dir/collect_libs.txt
+          COMMAND true
+          COMMENT "Dumping library/archive list for ${NAME}"
+          DEPENDS ${NAME}_collect
+          VERBATIM
+        )
+
         if (${args_DIRECT})
                 # add a custom command after link to override the collected list
                 add_custom_command(TARGET ${NAME}_collect
@@ -93,10 +103,10 @@ function(make_shared_library_from_static NAME)
                         REQUIRES ${args_REQUIRES})
         endif()
         if(NOT ${args_EXPORT_MAP} STREQUAL "")
-                set_target_properties(${NAME} PROPERTIES RULE_LAUNCH_LINK "env WORKINGDIR=${NAME}_collect_dir BUILD_PREFIX=${CMAKE_BINARY_DIR} EXPORT_MAP=${args_EXPORT_MAP} bash ${CMAKE_SOURCE_DIR}/scripts/collect_archive.sh")
-                set_property(TARGET ${NAME} APPEND PROPERTY LINK_DEPENDS "${args_EXPORT_MAP}")
+          set_target_properties(${NAME} PROPERTIES RULE_LAUNCH_LINK "env WORKINGDIR=${CMAKE_CURRENT_BINARY_DIR}/${NAME}_collect_dir BUILD_PREFIX=${CMAKE_BINARY_DIR} EXPORT_MAP=${args_EXPORT_MAP} bash ${CMAKE_SOURCE_DIR}/scripts/collect_archive.sh")
+          set_property(TARGET ${NAME} APPEND PROPERTY LINK_DEPENDS "${args_EXPORT_MAP}")
         else()
-                set_target_properties(${NAME} PROPERTIES RULE_LAUNCH_LINK "env WORKINGDIR=${NAME}_collect_dir BUILD_PREFIX=${CMAKE_BINARY_DIR} bash ${CMAKE_SOURCE_DIR}/scripts/collect_archive.sh")
+          set_target_properties(${NAME} PROPERTIES RULE_LAUNCH_LINK "env WORKINGDIR=${CMAKE_CURRENT_BINARY_DIR}/${NAME}_collect_dir BUILD_PREFIX=${CMAKE_BINARY_DIR} bash ${CMAKE_SOURCE_DIR}/scripts/collect_archive.sh")
         endif()
         add_dependencies(${NAME} ${NAME}_collect)
 

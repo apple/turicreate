@@ -9,6 +9,7 @@ ExternalProject_Add(ex_libjpeg
   INSTALL_DIR ${CMAKE_SOURCE_DIR}/deps/local
   CONFIGURE_COMMAND CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} CFLAGS=-fPIC CPPFLAGS=-fPIC <SOURCE_DIR>/configure --enable-shared=no --prefix=<INSTALL_DIR> ${EXTRA_CONFIGURE_FLAGS}
   INSTALL_COMMAND make install
+  BUILD_BYPRODUCTS ${CMAKE_SOURCE_DIR}/deps/local/lib/libjpeg.a
   BUILD_IN_SOURCE 1)
 
 add_library(libjpega STATIC IMPORTED)

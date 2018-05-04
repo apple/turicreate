@@ -3,12 +3,20 @@
 ####  Usage ####
 # source python_env.sh [debug | release]
 
-# Check build type
+# Check build type parameter
 if [[ -z $1 ]]; then
         echo "build type must be specified. "
         echo "Usage: $0 [debug | release ]"
-        return
+        return 1
 fi
+BUILD_TYPE=$1
+BUILD_TYPE=`echo $BUILD_TYPE | tr "[A-Z]" "[a-z]"` # convert to lower case
+if [ "debug" != $BUILD_TYPE ] && [ "release" != $BUILD_TYPE ]; then
+    echo "build type must be either \"debug\" or \"release\". "
+    return 1
+fi
+echo BUILD_TYPE=$BUILD_TYPE
+
 if [[ $PYTHON_ENV_SET == 1 ]]; then
         echo "Previous values set. Unsetting some variables..."
         if [ ! -z "$OLD_PYTHON_ENV_PATH" ]; then
@@ -24,9 +32,6 @@ if [[ $PYTHON_ENV_SET == 1 ]]; then
                 PYTHONPATH=""
         fi
 fi
-BUILD_TYPE=$1
-BUILD_TYPE=`echo $BUILD_TYPE | tr "[A-Z]" "[a-z]"` # convert to lower case
-echo BUILD_TYPE=$BUILD_TYPE
 
 if [[ -z $BASH_SOURCE ]]; then
         SCRIPT_DIR=$( cd "$( dirname $0)" && pwd )

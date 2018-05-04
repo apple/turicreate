@@ -250,7 +250,7 @@ make_library(aws-sdk-cpp
     curl openssl uuid
   )
 
-target_include_directories(aws-sdk-cpp 
+target_include_directories(aws-sdk-cpp SYSTEM
   PUBLIC aws-cpp-sdk-core/include
   PUBLIC aws-cpp-sdk-s3/include
   )

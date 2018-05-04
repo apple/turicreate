@@ -175,8 +175,7 @@
         "signal": "ceil(width/40)"
       },
       "title": %4%,
-      "zindex": 1,
-      "format": ".0s"
+      "zindex": 1
     },
     {
       "orient": "top",

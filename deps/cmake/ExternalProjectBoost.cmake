@@ -80,6 +80,18 @@ ExternalProject_Add(ex_boost
   ${EXTRA_CONFIGURE_COMMANDS}
   BUILD_COMMAND ${BOOST_BUILD_COMMAND}
   INSTALL_COMMAND ${BOOST_INSTALL_COMMAND}
+  BUILD_BYPRODUCTS ${CMAKE_SOURCE_DIR}/deps/local/lib/libboost_chrono.a
+                   ${CMAKE_SOURCE_DIR}/deps/local/lib/libboost_context.a
+                   ${CMAKE_SOURCE_DIR}/deps/local/lib/libboost_coroutine.a
+                   ${CMAKE_SOURCE_DIR}/deps/local/lib/libboost_date_time.a
+                   ${CMAKE_SOURCE_DIR}/deps/local/lib/libboost_iostreams.a
+                   ${CMAKE_SOURCE_DIR}/deps/local/lib/libboost_filesystem.a
+                   ${CMAKE_SOURCE_DIR}/deps/local/lib/libboost_program_options.a
+                   ${CMAKE_SOURCE_DIR}/deps/local/lib/libboost_random.a
+                   ${CMAKE_SOURCE_DIR}/deps/local/lib/libboost_regex.a
+                   ${CMAKE_SOURCE_DIR}/deps/local/lib/libboost_system.a
+                   ${CMAKE_SOURCE_DIR}/deps/local/lib/libboost_unit_test_framework.a
+                   ${CMAKE_SOURCE_DIR}/deps/local/lib/libboost_thread.a
   )
 
 set(Boost_LIBRARIES

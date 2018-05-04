@@ -12,23 +12,24 @@ add_subdirectory(turicreate)
 # Copy all the open source python stuff over first
 
 # Overwrite with the proprietary stuff
-ADD_CUSTOM_TARGET (python_source ALL)
-ADD_CUSTOM_COMMAND(
-  COMMENT "build prop python source"
-  COMMAND
-  ${CMAKE_COMMAND} -E
-  copy_directory ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_BINARY_DIR}
 
-  TARGET python_source
+make_copy_target(python_source
+  FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt
+    ${CMAKE_CURRENT_SOURCE_DIR}/MANIFEST.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/README.rst
+    ${CMAKE_CURRENT_SOURCE_DIR}/dummy.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/setup.cfg
+    ${CMAKE_CURRENT_SOURCE_DIR}/setup.py
+  DIRECTORIES
+    ${CMAKE_CURRENT_SOURCE_DIR}/turicreate
 )
 add_dependencies(python_source numpy_integration)
 
-
-ADD_CUSTOM_TARGET (clean_python)
+add_custom_target (clean_python)
 add_dependencies(clean_python clean_turicreate_binaries clean_cython)
 
-ADD_CUSTOM_COMMAND(
+add_custom_command(
   COMMENT "make clean python directory"
   COMMAND
   ${CMAKE_COMMAND} -P
