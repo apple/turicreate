@@ -16,6 +16,7 @@ class summary_view_transformation;
 
 class transformation_output {
   public:
+    virtual ~transformation_output() = default;
     virtual std::string vega_column_data(bool sframe = false) const = 0;
 };
 
@@ -26,6 +27,7 @@ class sframe_transformation_output : public transformation_output {
 
 class transformation_base {
   public:
+    virtual ~transformation_base() = default;
     virtual std::shared_ptr<transformation_output> get() = 0;
     virtual bool eof() const = 0;
     virtual flex_int get_rows_processed() const = 0;

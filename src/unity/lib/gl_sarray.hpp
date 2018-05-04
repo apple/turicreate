@@ -212,6 +212,9 @@ class gl_sarray {
   /// Move Assignment
   gl_sarray& operator=(gl_sarray&&);
 
+  /// Destructor
+  virtual ~gl_sarray();
+
   /**
    * Constructs a gl_sarray from a binary SArray saved previously with 
    * \ref save().
