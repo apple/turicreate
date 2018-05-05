@@ -346,8 +346,8 @@ size_t unity_sframe::column_index(const std::string &name) {
   Dlog_func_entry();
 
   auto it = std::find(m_column_names.begin(), m_column_names.end(), name);
-  if(it == m_column_names.end()) {
-    log_and_throw((std::string("Column '") + name + "' not found.").c_str());
+  if(it == m_column_names.end()) { 
+    log_and_throw(std::string("Column '") + name + "' not found.");;
   }
   return std::distance(m_column_names.begin(), it);
 }

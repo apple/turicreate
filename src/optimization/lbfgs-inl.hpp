@@ -85,13 +85,16 @@ inline solver_return lbfgs(first_order_opt_interface& model,
     // Benchmarking utils. 
     timer t;
     double start_time = t.current_time();
+    bool simple_mode = opts.count("simple_mode") && (opts.at("simple_mode"));
 
+    if (!simple_mode) {
     logprogress_stream << "Starting L-BFGS " << std::endl;
     logprogress_stream 
          << "--------------------------------------------------------" 
          << std::endl;
     std::stringstream ss;
     ss.str("");
+    }
     
     // Step 1: Algorithm init
     // ------------------------------------------------------------------------
@@ -102,8 +105,12 @@ inline solver_return lbfgs(first_order_opt_interface& model,
     int iters = 0;
 
     // Print status 
-    table_printer printer(
-        model.get_status_header({"Iteration", "Passes", "Step size", "Elapsed Time"}));
+    auto header =
+        (simple_mode ? model.get_status_header({"Iteration", "Elapsed Time"})
+                     : model.get_status_header({"Iteration", "Passes",
+                                                "Step size", "Elapsed Time"}));
+
+    table_printer printer(header);
     printer.print_header();
 
     int m = opts["lbfgs_memory_level"];  // Memory level in LBFGS
@@ -317,10 +324,14 @@ inline solver_return lbfgs(first_order_opt_interface& model,
                           << std::endl;
 
       // Print progress
-      auto stat_info = {std::to_string(iters), 
+      auto stat_info =
+          (simple_mode
+               ? std::vector<std::string>{std::to_string(iters),
+                                          std::to_string(t.current_time())}
+               : std::vector<std::string>{std::to_string(iters),
                         std::to_string(stats.num_passes),
                         std::to_string(ls_stats.step_size), 
-                        std::to_string(t.current_time())};
+                                          std::to_string(t.current_time())});
 
       auto row = model.get_status(point, stat_info);
       printer.print_progress_row_strs(iters, row);
@@ -347,7 +358,7 @@ inline solver_return lbfgs(first_order_opt_interface& model,
     stats.progress_table = printer.get_tracked_table();
     
     // Display solver stats
-    log_solver_summary_stats(stats);
+    log_solver_summary_stats(stats, simple_mode);
 
     return stats;
 }

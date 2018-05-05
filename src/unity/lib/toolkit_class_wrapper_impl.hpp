@@ -8,7 +8,7 @@
 #include <unity/lib/toolkit_function_wrapper_impl.hpp>
 
 namespace turi {
-class toolkit_class_base;
+class model_base;
 namespace toolkit_class_wrapper_impl {
 using turi::toolkit_function_wrapper_impl::generate_member_function_wrapper;
 using turi::toolkit_function_wrapper_impl::generate_const_member_function_wrapper;
@@ -34,10 +34,10 @@ using turi::toolkit_function_wrapper_impl::generate_const_member_function_wrappe
  * the inargnames argument as a varargs.
  */
 template <typename T, typename Ret, typename... Args, typename... VarArgs>
-std::function<variant_type(toolkit_class_base*, variant_map_type)> 
+std::function<variant_type(model_base*, variant_map_type)>
 generate_member_function_wrapper_indirect(Ret (T::* fn)(Args...), VarArgs... args) {
   auto newfn = generate_member_function_wrapper<sizeof...(Args), T, Ret, Args...>(fn, {args...});
-  return [newfn](toolkit_class_base* curthis, variant_map_type in)->variant_type {
+  return [newfn](model_base* curthis, variant_map_type in)->variant_type {
     return to_variant(newfn(dynamic_cast<T*>(curthis), in));
   };
 }
@@ -68,10 +68,10 @@ generate_member_function_wrapper_indirect(Ret (T::* fn)(Args...), VarArgs... arg
  * how to templatize around the const.
  */
 template <typename T, typename Ret, typename... Args, typename... VarArgs>
-std::function<variant_type(toolkit_class_base*, variant_map_type)> 
+std::function<variant_type(model_base*, variant_map_type)>
 generate_member_function_wrapper_indirect(Ret (T::* fn)(Args...) const, VarArgs... args) {
   auto newfn = generate_const_member_function_wrapper<sizeof...(Args), T, Ret, Args...>(fn, {args...});
-  return [newfn](toolkit_class_base* curthis, variant_map_type in)->variant_type {
+  return [newfn](model_base* curthis, variant_map_type in)->variant_type {
     return to_variant(newfn(dynamic_cast<T*>(curthis), in));
   };
 }
@@ -89,9 +89,9 @@ generate_member_function_wrapper_indirect(Ret (T::* fn)(Args...) const, VarArgs.
  * \endcode
  */
 template <typename T, typename Ret>
-std::function<variant_type(toolkit_class_base*, variant_map_type)> 
+std::function<variant_type(model_base*, variant_map_type)>
 generate_getter(Ret (T::* fn)()) {
-  return [fn](toolkit_class_base* curthis, variant_map_type in)->variant_type {
+  return [fn](model_base* curthis, variant_map_type in)->variant_type {
     T* t = dynamic_cast<T*>(curthis);
     return to_variant((t->*fn)());
   };
@@ -116,9 +116,9 @@ generate_getter(Ret (T::* fn)()) {
  * how to templatize around the const.
  */
 template <typename T, typename Ret>
-std::function<variant_type(toolkit_class_base*, variant_map_type)> 
+std::function<variant_type(model_base*, variant_map_type)>
 generate_getter(Ret (T::* fn)() const) {
-  return [fn](toolkit_class_base* curthis, variant_map_type in)->variant_type {
+  return [fn](model_base* curthis, variant_map_type in)->variant_type {
     T* t = dynamic_cast<T*>(curthis);
     return to_variant((t->*fn)());
   };
@@ -143,9 +143,9 @@ generate_getter(Ret (T::* fn)() const) {
  * how to templatize around the const.
  */
 template <typename T, typename SetValType>
-std::function<variant_type(toolkit_class_base*, variant_map_type)> 
+std::function<variant_type(model_base*, variant_map_type)>
 generate_setter(void (T::* fn)(SetValType), std::string input_map_elem) {
-  return [fn, input_map_elem](toolkit_class_base* curthis, variant_map_type in)->variant_type {
+  return [fn, input_map_elem](model_base* curthis, variant_map_type in)->variant_type {
     SetValType val = variant_get_value<SetValType>(in[input_map_elem]);
     T* t = dynamic_cast<T*>(curthis);
     (t->* fn)(val);

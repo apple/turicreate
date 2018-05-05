@@ -12,6 +12,7 @@ subdirs(
         logger
         timer
         random
+        # fault
         nanosockets
         fileio
         shmipc
@@ -31,3 +32,10 @@ subdirs(
         network
         process
   )
+if(${TC_BUILD_CAPI}) 
+  message("Building C API Tests.")
+  subdirs(capi)
+else()
+  message("Skipping build of C APIs Tests.")
+endif()
+

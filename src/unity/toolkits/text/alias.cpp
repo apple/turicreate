@@ -30,13 +30,6 @@ namespace turi {
 namespace text {
 
 /**
- * Returns the name of the model.
- */
-std::string alias_topic_model::name() {
-  return "alias_topic_model";
-}
-
-/**
  * Destructor. Make sure bad things don't happen
  */
 alias_topic_model::~alias_topic_model() {

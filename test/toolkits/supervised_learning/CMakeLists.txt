@@ -16,3 +16,5 @@ make_boost_test (linear_svm_tests.cxx
   REQUIRES supervised_learning)
 make_boost_test (xgboost_tests.cxx
   REQUIRES xgboost parallel logger)
+make_boost_test (classifier_evaluation.cxx
+  REQUIRES supervised_learning)

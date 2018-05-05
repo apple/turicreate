@@ -9,9 +9,9 @@
 #include <unity/lib/toolkit_util.hpp>
 #include <unity/lib/toolkit_function_specification.hpp>
 #include <unity/lib/toolkit_class_specification.hpp>
-#include <unity/lib/toolkit_class_base.hpp>
 #include <unity/lib/toolkit_function_wrapper_impl.hpp>
 #include <unity/lib/toolkit_class_wrapper_impl.hpp>
+#include <unity/lib/extensions/model_base.hpp>
 
 /** 
  * \defgroup group_gl_class_ffi Class Extension Interface
@@ -25,11 +25,11 @@
  *
  * Example:
  * \code
- *  // class must inherit from toolkit_class_base
+ *  // class must inherit from model_base
  *  #include <turicreate/sdk/toolkit_class_macros.hpp>
  *  using namespace turi;
  *
- *  class example: public toolkit_class_base {
+ *  class example: public model_base {
  *    std::string hello_world() {
  *      return "hello world";
  *    }
@@ -77,7 +77,7 @@
          std::to_string(__LINE__); \
    } \
    virtual inline void perform_registration() { \
-    if (registered) return;
+     if (is_registered()) return;
 
 /**
  * Registers a single class member function.
@@ -94,7 +94,7 @@
  * Example:
  *
  * \code
- *  class example: public toolkit_class_base {
+ *  class example: public model_base {
  *    std::string hello_world() {
  *      return "hello world";
  *    }
@@ -151,7 +151,7 @@
 //  *
 //  * Example:
 //  * \code
-//  *  class example: public toolkit_class_base {
+//  *  class example: public model_base {
 //  *
 //  *    std::string concat(std::string a, std::string b) {
 //  *      return a + b;
@@ -187,7 +187,7 @@
 //  *
 //  * Example:
 //  * \code
-//  *  class example: public toolkit_class_base {
+//  *  class example: public model_base {
 //  *
 //  *    std::string concat(std::string a, std::string b) {
 //  *      return a + b;
@@ -293,7 +293,7 @@ namespace docstring_macro_impl {
  * The getter_function must return a single value and take no arguments.
  *
  * \code
- *  class example: public toolkit_class_base {
+ *  class example: public model_base {
  *
  *    std::string get_value() {
  *      return value;
@@ -322,7 +322,7 @@ namespace docstring_macro_impl {
  * The setter_function must have a single argument, and return no values.
  *
  * \code
- *  class example: public toolkit_class_base {
+ *  class example: public model_base {
  *
  *    std::string get_value() {
  *      return value;
@@ -349,7 +349,7 @@ namespace docstring_macro_impl {
  * REGISTER_PROPERTY(member_variable)
  *
  * \code
- *  class example: public toolkit_class_base {
+ *  class example: public model_base {
  *    std::string value;
  *
  *    BEGIN_CLASS_MEMBER_REGISTRATION("example")
@@ -359,10 +359,10 @@ namespace docstring_macro_impl {
  *
  */
 #define REGISTER_PROPERTY(propname) \
-  register_getter(#propname, [=](toolkit_class_base* curthis, variant_map_type)->variant_type { \
+  register_getter(#propname, [=](model_base* curthis, variant_map_type)->variant_type { \
                               return to_variant((dynamic_cast<std::decay<decltype(this)>::type>(curthis))->propname); \
                             }); \
-  register_setter(#propname, [=](toolkit_class_base* curthis, variant_map_type in)->variant_type { \
+  register_setter(#propname, [=](model_base* curthis, variant_map_type in)->variant_type { \
                               (dynamic_cast<std::decay<decltype(this)>::type>(curthis))->propname =      \
                                         variant_get_value<decltype(propname)>(in["value"]); \
                               return to_variant(0); \
@@ -390,7 +390,7 @@ namespace docstring_macro_impl {
  * See BEGIN_CLASS_MEMBER_REGISTRATION
  */
 #define END_CLASS_MEMBER_REGISTRATION \
-     registered = true; }
+     set_registered(); }
 
 
 /**

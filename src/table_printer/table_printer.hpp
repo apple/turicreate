@@ -20,7 +20,7 @@
 
 namespace turi {
 
-static constexpr double MIN_SECONDS_BETWEEN_TICK_PRINTS = 1.0;
+extern double MIN_SECONDS_BETWEEN_TICK_PRINTS;
 
 /** A format specifying class telling the table printer to print the
  *  progress time.  See table_printer documentation for use.
@@ -357,11 +357,13 @@ class table_printer {
     size_t ticks_so_far = ++num_ticks_so_far;
     
     if(register_tick(tick, ticks_so_far)) {
-      std::lock_guard<mutex> pl_guard(print_lock);
+      std::unique_lock<mutex> pl_guard(print_lock, std::defer_lock);
+      if(pl_guard.try_lock()) {
       _print_progress_row(columns...); 
     }
+    }
     
-    if(((ticks_so_far - 1) % track_interval) == 0) {
+    if((track_interval != 0) && ((ticks_so_far - 1) % track_interval) == 0) {
       _track_progress(columns...);
     }
   }
@@ -551,22 +553,26 @@ private:
       size_t next_tick = next_tick_to_print;
       
       if(tick < next_tick) {
-        return always_print(ticks_so_far - 1);
+        return always_print(tick);
         
       } else {
 
         DASSERT_GT(tick_interval, 0);
         
-        std::lock_guard<mutex> til_gaurd(tick_interval_lock); 
+        std::unique_lock<mutex> til_guard(tick_interval_lock, std::defer_lock);
 
+        if (til_guard.try_lock()) {
         if(tick < next_tick_to_print) {
-          return always_print(ticks_so_far - 1); 
+            return always_print(tick);
         } else { 
 
           while(next_tick_to_print <= tick)
             next_tick_to_print += tick_interval;
 
           return true;
+        }
+        } else {
+          return false;
         }
       }
 

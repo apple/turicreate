@@ -136,8 +136,7 @@ restart_model_training:
 
   std::vector<model_ptr> all_models =
       {model,
-       model_ptr(new recsys_ranking_factorization_model),
-       model_ptr((recsys::recsys_model_base*)(model->ml_model_base_clone()))};
+       model_ptr(new recsys_ranking_factorization_model)};
 
 
   sframe y_hat_sf_ref = model->predict(model->create_ml_data(train_data));

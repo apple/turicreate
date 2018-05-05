@@ -21,6 +21,7 @@
 
 // Toolkits
 #include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
 
 // Forward delcare
 namespace xgboost {
@@ -51,14 +52,6 @@ class EXPORT xgboost_model : public supervised_learning_model_base {
 
   xgboost_model();
 
-  /**
-   * Methods with no current implementation.
-   * -------------------------------------------------------------------------
-   */
-  /**
-   * Returns the name of the model.
-   */
-  virtual std::string name(void) = 0;
 
   /**
    * Configure booster from options
@@ -122,13 +115,13 @@ class EXPORT xgboost_model : public supervised_learning_model_base {
    * Fast path predictions given a row of flexible_types.
    *
    * \param[in] rows List of rows (each row is a flex_dict)
-   * \param[in] output_type Output type.
    * \param[in] missing_value_action Missing value action string
+   * \param[in] output_type Output type.
    */
   gl_sarray fast_predict(
       const std::vector<flexible_type>& test_data,
-      const std::string& output_type="",
-      const std::string& missing_value_action = "error") override;
+      const std::string& missing_value_action = "error",
+      const std::string& output_type="") override;
 
   std::shared_ptr<sarray<flexible_type>> predict_impl(
       const ::xgboost::learner::DMatrix& dmat,
@@ -143,14 +136,14 @@ class EXPORT xgboost_model : public supervised_learning_model_base {
    * Fast path predictions given a row of flexible_types.
    *
    * \param[in] rows List of rows (each row is a flex_dict)
-   * \param[in] output_type Output type.
    * \param[in] missing_value_action Missing value action string
    * \param[in] output_type Output type.
+   * \param[in] topk Number of classes to return
    */
   gl_sframe fast_predict_topk(
       const std::vector<flexible_type>& rows,
-      const std::string& output_type="",
       const std::string& missing_value_action ="error",
+      const std::string& output_type="",
       const size_t topk = 5) override;
 
   sframe predict_topk_impl(
@@ -200,7 +193,7 @@ class EXPORT xgboost_model : public supervised_learning_model_base {
    */
   std::shared_ptr<sarray<flexible_type>> extract_features(
       const sframe& test_data,
-      const std::map<std::string, flexible_type>& options) override;
+      ml_missing_value_action missing_value_action) override;
 
 
   /**
@@ -312,6 +305,11 @@ protected:
   storage_mode_enum storage_mode_ = storage_mode_enum::AUTO;
 
   size_t num_batches_ = 0;
+  
+  std::shared_ptr<coreml::MLModelWrapper> _export_xgboost_model(bool is_classifier,
+      bool is_random_forest,
+      const std::map<std::string, flexible_type>& context);
+
 };
 
 }  // namespace xgboost

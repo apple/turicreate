@@ -212,6 +212,9 @@ class gl_sarray {
   /// Move Assignment
   gl_sarray& operator=(gl_sarray&&);
 
+  /// Destructor
+  virtual ~gl_sarray();
+
   /**
    * Constructs a gl_sarray from a binary SArray saved previously with 
    * \ref save().
@@ -291,6 +294,15 @@ class gl_sarray {
    * \endcode
    */
   static gl_sarray from_sequence(size_t start, size_t end, bool reverse=false);
+  
+  /**
+   * Constructs an SArray from a json record files.
+   *
+   * A json record file contains an array of dictionaries.
+   * Resultant SArray is of dictionary type.
+   */
+  
+  static gl_sarray read_json(const std::string& url); 
 
   /**
   /**************************************************************************/

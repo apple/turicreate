@@ -311,20 +311,20 @@ extern void __print_back_trace();
 #define ASSERT_FALSE(cond)    EXPECT_FALSE(cond)
 #define ASSERT_STREQ(a, b)    EXPECT_STREQ(a, b)
 
-
-#define ASSERT_MSG(condition, fmt, ...)                                 \
-  do {                                                                  \
-    if (__builtin_expect(!(condition), 0)) {                            \
-      auto throw_error = [&]() GL_GCC_ONLY(GL_COLD_NOINLINE_ERROR) {    \
-      logstream(LOG_ERROR)                                              \
-        << "Check failed: " << #condition << ":\n";                     \
-      logger(LOG_ERROR, fmt, ##__VA_ARGS__);                            \
-      __print_back_trace();                                             \
-      TURI_LOGGER_FAIL_METHOD("assertion failure");                 \
-    };                                                                  \
-    throw_error();                                                      \
-    }                                                                   \
-  } while(0)
+#define ASSERT_MSG(condition, fmt, ...)                                  \
+  do {                                                                   \
+    if (__builtin_expect(!(condition), 0)) {                             \
+      auto throw_error = [&]() GL_GCC_ONLY(GL_COLD_NOINLINE_ERROR) {     \
+        logstream(LOG_ERROR) << "Check failed: " << #condition << ":\n"; \
+        std::ostringstream ss;                                           \
+        ss << "Assertion Failure: " << #condition << ": " << fmt;        \
+        logger(LOG_ERROR, fmt, ##__VA_ARGS__);                           \
+        __print_back_trace();                                            \
+        TURI_LOGGER_FAIL_METHOD(ss.str().c_str());                       \
+      };                                                                 \
+      throw_error();                                                     \
+    }                                                                    \
+  } while (0)
 
 // Used for (libc) functions that return -1 and set errno
 #define __CHECK_ERR(invocation)  __PCHECK((invocation) != -1)

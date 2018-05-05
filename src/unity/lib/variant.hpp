@@ -109,22 +109,28 @@ struct deserialize_impl<iarchive, turi::variant_type, false> {
 
 namespace turi {
 // A list of accessors to help Cython access the variant
+template <typename T>
+GL_COLD_NOINLINE 
+void _throw_variant_error(const variant_type& v) {
+    std::string errormsg =  //
+        std::string("Variant type error: Expecting ") +
+        get_variant_which_name(variant_type(T()).which()) + " but got a " +
+        get_variant_which_name(v.which());
+    log_and_throw(errormsg);
+}
+
 
 /**
  * Gets a reference to a content of a variant.
  * Throws if variant contains an inappropriate type.
  */
 template <typename T>
-inline T& variant_get_ref(variant_type& v) {
+static inline T& variant_get_ref(variant_type& v) {
   try {
-    boost::get<T>(v);
+    return boost::get<T>(v);
   } catch (...) {
-    std::string errormsg = std::string("Expecting ") +
-        get_variant_which_name(variant_type(T()).which()) +
-        " but got a " + get_variant_which_name(v.which());
-    throw(errormsg);
+    _throw_variant_error<T>(v);
   }
-  return boost::get<T>(v);
 }
 
 /**
@@ -132,8 +138,124 @@ inline T& variant_get_ref(variant_type& v) {
  * Throws if variant contains an inappropriate type.
  */
 template <typename T>
-inline const T& variant_get_ref(const variant_type& v) {
+static inline const T& variant_get_ref(const variant_type& v) {
+  try {
   return boost::get<T>(v);
+  } catch (...) {
+    _throw_variant_error<T>(v);
+  }
+}
+
+
+
+
+
+// Convenience functions 
+template <typename T>
+static inline bool variant_is(const variant_type&) { 
+   return false; 
+}
+
+template <>
+inline bool variant_is<flexible_type>(const variant_type& t) {
+   return t.which() == 0;
+}
+
+template <>
+inline bool variant_is<flex_string>(const variant_type& t) {
+   return variant_is<flexible_type>(t) && (variant_get_ref<flexible_type>(t).get_type() == flex_type_enum::STRING);
+}
+
+template <>
+inline bool variant_is<flex_vec>(const variant_type& t) {
+   return variant_is<flexible_type>(t) && (variant_get_ref<flexible_type>(t).get_type() == flex_type_enum::VECTOR);
+}
+
+template <>
+inline bool variant_is<flex_int>(const variant_type& t) {
+   return variant_is<flexible_type>(t) && (variant_get_ref<flexible_type>(t).get_type() == flex_type_enum::INTEGER);
+}
+
+template <>
+inline bool variant_is<flex_float>(const variant_type& t) {
+   return variant_is<flexible_type>(t) && (variant_get_ref<flexible_type>(t).get_type() == flex_type_enum::FLOAT);
+}
+
+template <>
+inline bool variant_is<flex_list>(const variant_type& t) {
+   return variant_is<flexible_type>(t) && (variant_get_ref<flexible_type>(t).get_type() == flex_type_enum::LIST);
+}
+
+template <>
+inline bool variant_is<flex_dict>(const variant_type& t) {
+   return variant_is<flexible_type>(t) && (variant_get_ref<flexible_type>(t).get_type() == flex_type_enum::DICT);
+}
+
+template <>
+inline bool variant_is<flex_image>(const variant_type& t) {
+   return variant_is<flexible_type>(t) && (variant_get_ref<flexible_type>(t).get_type() == flex_type_enum::IMAGE);
+}
+
+template <>
+inline bool variant_is<flex_date_time>(const variant_type& t) {
+   return variant_is<flexible_type>(t) && (variant_get_ref<flexible_type>(t).get_type() == flex_type_enum::DATETIME);
+}
+template <>
+inline bool variant_is<flex_nd_vec>(const variant_type& t) {
+   return variant_is<flexible_type>(t) && (variant_get_ref<flexible_type>(t).get_type() == flex_type_enum::ND_VECTOR);
+}
+template <>
+inline bool variant_is<flex_undefined>(const variant_type& t) {
+   return variant_is<flexible_type>(t) && (variant_get_ref<flexible_type>(t).get_type() == flex_type_enum::UNDEFINED);
+}
+
+template <>
+inline bool variant_is<std::shared_ptr<unity_sgraph_base> >(const variant_type& t) {
+   return t.which() == 1;
+}
+
+template <>
+inline bool variant_is<dataframe_t>(const variant_type& t) {
+   return t.which() == 2;
+}
+
+template <>
+inline bool variant_is<std::shared_ptr<model_base> >(const variant_type& t) {
+   return t.which() == 3;
+}
+
+template <>
+inline bool variant_is<std::shared_ptr<unity_sframe_base> >(const variant_type& t) {
+   return t.which() == 4;
+}
+
+class gl_sframe; 
+
+template <>
+inline bool variant_is<gl_sframe>(const variant_type& t) {
+   return t.which() == 4;
+}
+
+template <>
+inline bool variant_is<std::shared_ptr<unity_sarray_base> >(const variant_type& t) {
+   return t.which() == 5;
+}
+
+class gl_sarray; 
+
+template <>
+inline bool variant_is<gl_sarray>(const variant_type& t) {
+   return t.which() == 5;
+}
+
+template <>
+inline bool variant_is<variant_map_type>(const variant_type& t) {
+   return t.which() == 6;
+}
+
+template <>
+inline bool variant_is<boost::recursive_wrapper<function_closure_info> >(const variant_type& t) {
+   return t.which() == 7;
 }
 
 }
