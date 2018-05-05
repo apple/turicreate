@@ -3,6 +3,7 @@ project(unity_toolkits)
 make_library(unity_clustering
   SOURCES
     kmeans.cpp
+    class_registrations.cpp
     unity_kmeans.cpp
   REQUIRES
     numerics

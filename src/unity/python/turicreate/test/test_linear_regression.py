@@ -120,7 +120,10 @@ class LinearRegressionTest(unittest.TestCase):
                 'training_iterations': lambda x: x > 0,
                 'training_loss': lambda x: abs(x - self.loss) < 1e-5,
                 'training_rmse': lambda x: abs(x - self.rmse) < 1e-5,
-                'training_time': lambda x: x >= 0}
+                'training_time': lambda x: x >= 0,
+                'training_max_error': lambda x: x > 0,
+                'validation_data': lambda x: isinstance(x, tc.SFrame) and len(x) == 0,
+                }
         self.fields_ans = self.get_ans.keys()
     
     def test__list_fields(self):

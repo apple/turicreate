@@ -6,9 +6,12 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
+
+import turicreate as _tc
 from turicreate.data_structures.sgraph import SGraph as _SGraph
 import turicreate.toolkits._main as _main
 from turicreate.toolkits.graph_analytics._model_base import GraphAnalyticsModel as _ModelBase
+from turicreate.cython.cy_server import QuietProgress
 
 class TriangleCountingModel(_ModelBase):
     """
@@ -124,5 +127,7 @@ def create(graph, verbose=True):
     if not isinstance(graph, _SGraph):
         raise TypeError('graph input must be a SGraph object.')
 
-    params = _main.run('triangle_counting', {'graph': graph.__proxy__}, verbose)
+    with QuietProgress(verbose):
+        params = _tc.extensions._toolkits.graph.triangle_counting.create(
+            {'graph': graph.__proxy__})
     return TriangleCountingModel(params['model'])

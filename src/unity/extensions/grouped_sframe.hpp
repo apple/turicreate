@@ -8,6 +8,7 @@
 
 #include <unity/lib/toolkit_class_macros.hpp>
 #include <unity/lib/gl_sframe.hpp>
+#include <unity/lib/extensions/model_base.hpp>
 #include <export.hpp>
 #include <parallel/lambda_omp.hpp>
 
@@ -28,7 +29,7 @@ struct EXPORT GroupKeyHash {
   }
 };
 
-class EXPORT grouped_sframe: public turi::toolkit_class_base {
+class EXPORT grouped_sframe: public model_base {
  public:
   /**
    * Groups an SFrame by the distinct values in one or more columns.

@@ -16,7 +16,6 @@ make_extension(json SOURCES
   json/encoder.cpp
   json/json.cpp
 )
-make_extension(random_sframe_generation SOURCES random_sframe_generation.cpp)
 
 #----------------------------
 make_extension(xgboost_extension SOURCES ../toolkits/supervised_learning/xgboost_extension.cpp)

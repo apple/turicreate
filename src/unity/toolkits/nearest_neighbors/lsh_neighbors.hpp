@@ -49,16 +49,6 @@ class EXPORT lsh_neighbors: public nearest_neighbors_model {
   ~lsh_neighbors();
 
   /**
-   * Clone objects to a nearest_neighbors_model class
-   */
-  nearest_neighbors_model* nearest_neighbors_clone();
-
-  /**
-   * Return the name of the model.
-   */
-  std::string name();
-
-  /**
    * Set the model options. Use the option manager to set these options. The
    * option manager should throw errors if the options do not satisfy the option
    * manager's conditions.
@@ -120,6 +110,11 @@ class EXPORT lsh_neighbors: public nearest_neighbors_model {
    * Turi serialization save
    */
   void load_version(turi::iarchive& iarc, size_t version);
+
+  // TODO: convert interface above to use the extensions methods here
+  BEGIN_CLASS_MEMBER_REGISTRATION("nearest_neighbors_lsh")
+  REGISTER_CLASS_MEMBER_FUNCTION(lsh_neighbors::list_fields)
+  END_CLASS_MEMBER_REGISTRATION
 
  private:
   std::shared_ptr<lsh_family> lsh_model;

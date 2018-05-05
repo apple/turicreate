@@ -5,6 +5,7 @@
  */
 #include <serialization/serialization_includes.hpp>
 #include <fileio/temp_files.hpp>
+#include <unity/lib/toolkit_function_macros.hpp>
 #include <unity/lib/toolkit_function_specification.hpp>
 #include <unity/lib/toolkit_util.hpp>
 #include <unity/lib/unity_base_types.hpp>
@@ -19,6 +20,7 @@
 #include <unity/toolkits/text/unity_text.hpp>
 #include <unity/toolkits/text/topic_model.hpp>
 #include <unity/toolkits/text/cgs.hpp>
+#include <unity/toolkits/text/alias.hpp>
 #include <unity/toolkits/text/perplexity.hpp>
 #include <timer/timer.hpp>
 #include <export.hpp>
@@ -31,33 +33,36 @@ namespace text {
  *
  * Returns a model_base pointer to Python.
  */
-toolkit_function_response_type init(toolkit_function_invocation& invoke) {
+variant_map_type init(variant_map_type& params) {
 
-  toolkit_function_response_type ret_status;
+  variant_map_type ret;
 
   std::shared_ptr<sarray<flexible_type> > dataset =
-      safe_varmap_get<std::shared_ptr<unity_sarray>>(invoke.params, "data")->get_underlying_sarray();
+      safe_varmap_get<std::shared_ptr<unity_sarray>>(params, "data")->get_underlying_sarray();
 
-  flexible_type model_name = safe_varmap_get<flexible_type>(invoke.params, "model_name");
+  flexible_type model_name = safe_varmap_get<flexible_type>(params, "model_name");
 
-  std::shared_ptr<topic_model> model =
-      std::dynamic_pointer_cast<topic_model>(invoke.classes->get_toolkit_class(model_name));
+  std::shared_ptr<topic_model> model;
+  if (model_name == "cgs_topic_model") {
+    model = std::make_shared<cgs_topic_model>();
+  } else if (model_name == "alias_topic_model") {
+    model = std::make_shared<alias_topic_model>();
+  }
 
-  std::map<std::string, flexible_type> opts = varmap_to_flexmap(invoke.params);
+  std::map<std::string, flexible_type> opts = varmap_to_flexmap(params);
   opts.erase("model_name");
   model->init_options(opts);
 
   // If any associations are provided, set them.
   sframe associations =
     *((safe_varmap_get<std::shared_ptr<unity_sframe>>(
-          invoke.params, "associations"))->get_underlying_sframe());
+          params, "associations"))->get_underlying_sframe());
   if (associations.num_rows() > 0) {
     model->set_associations(associations);
   }
 
-  ret_status.params["model"] = to_variant(model);
-  ret_status.success = true;
-  return ret_status;
+  ret["model"] = to_variant(model);
+  return ret;
 }
 
 
@@ -65,13 +70,13 @@ toolkit_function_response_type init(toolkit_function_invocation& invoke) {
 /**
  * Get the current set of options.
  */
-toolkit_function_response_type get_current_options(toolkit_function_invocation& invoke) {
+variant_map_type get_current_options(variant_map_type& params) {
   log_func_entry();
-  toolkit_function_response_type ret_status;
+  variant_map_type ret;
 
   // retrieve the correct model
   std::shared_ptr<topic_model> model
-    = safe_varmap_get<std::shared_ptr<topic_model>>(invoke.params, "model");
+    = safe_varmap_get<std::shared_ptr<topic_model>>(params, "model");
 
   if (model == nullptr) {
     log_and_throw("Provided model is not a topic model.");
@@ -81,55 +86,53 @@ toolkit_function_response_type get_current_options(toolkit_function_invocation& 
 
   // loop through the parameters and record in the return object
   for (const auto& opt : options) {
-    ret_status.params[opt.first] = opt.second;
+    ret[opt.first] = opt.second;
   }
 
   // return stuff
-  ret_status.success = true;
-  return ret_status;
+  return ret;
 }
 
 
 /**
  * Toolkit function that modifies a model to have a new vocabulary and set of topics.
  */
-toolkit_function_response_type set_topics(toolkit_function_invocation& invoke) {
+variant_map_type set_topics(variant_map_type& params) {
 
-  toolkit_function_response_type ret_status;
+  variant_map_type ret;
 
   // Get model and data from Python
   std::shared_ptr<topic_model> model
-    = safe_varmap_get<std::shared_ptr<topic_model>>(invoke.params, "model");
+    = safe_varmap_get<std::shared_ptr<topic_model>>(params, "model");
   std::shared_ptr<sarray<flexible_type> > topics =
-      safe_varmap_get<std::shared_ptr<unity_sarray>>(invoke.params, "topics")->get_underlying_sarray();
+      safe_varmap_get<std::shared_ptr<unity_sarray>>(params, "topics")->get_underlying_sarray();
   std::shared_ptr<sarray<flexible_type> > vocabulary =
-      safe_varmap_get<std::shared_ptr<unity_sarray>>(invoke.params, "vocabulary")->get_underlying_sarray();
-  size_t weight = (safe_varmap_get<flexible_type>(invoke.params, "weight"));
+      safe_varmap_get<std::shared_ptr<unity_sarray>>(params, "vocabulary")->get_underlying_sarray();
+  size_t weight = (safe_varmap_get<flexible_type>(params, "weight"));
 
   model->set_topics(topics, vocabulary, weight);
 
-  ret_status.params["model"] = to_variant(model);
-  ret_status.success = true;
-  return ret_status;
+  ret["model"] = to_variant(model);
+  return ret;
 }
 
 /**
  * Toolkit function that trains a model.
  */
-toolkit_function_response_type train(toolkit_function_invocation& invoke) {
+variant_map_type train(variant_map_type& params) {
 
-  toolkit_function_response_type ret_status;
+  variant_map_type ret;
 
   // Get model and data from Python
   std::shared_ptr<topic_model> model
-    = safe_varmap_get<std::shared_ptr<topic_model>>(invoke.params, "model");
+    = safe_varmap_get<std::shared_ptr<topic_model>>(params, "model");
   std::shared_ptr<sarray<flexible_type> > dataset =
-      safe_varmap_get<std::shared_ptr<unity_sarray>>(invoke.params, "data")->get_underlying_sarray();
+      safe_varmap_get<std::shared_ptr<unity_sarray>>(params, "data")->get_underlying_sarray();
   std::shared_ptr<sarray<flexible_type> > validation_train =
-      safe_varmap_get<std::shared_ptr<unity_sarray>>(invoke.params, "validation_train")->get_underlying_sarray();
+      safe_varmap_get<std::shared_ptr<unity_sarray>>(params, "validation_train")->get_underlying_sarray();
   std::shared_ptr<sarray<flexible_type> > validation_test =
-      safe_varmap_get<std::shared_ptr<unity_sarray>>(invoke.params, "validation_test")->get_underlying_sarray();
-  size_t verbose = safe_varmap_get<flexible_type>(invoke.params, "verbose");
+      safe_varmap_get<std::shared_ptr<unity_sarray>>(params, "validation_test")->get_underlying_sarray();
+  size_t verbose = safe_varmap_get<flexible_type>(params, "verbose");
 
   // Set validation data if it's provided
   if (validation_train->size() > 0) {
@@ -145,9 +148,8 @@ toolkit_function_response_type train(toolkit_function_invocation& invoke) {
   if (!model->is_trained())
     log_and_throw("Model did not successfully complete training. \nIf this was not intended, please report this issue.");
 
-  ret_status.params["model"] = to_variant(model);
-  ret_status.success = true;
-  return ret_status;
+  ret["model"] = to_variant(model);
+  return ret;
 }
 
 /**
@@ -156,16 +158,16 @@ toolkit_function_response_type train(toolkit_function_invocation& invoke) {
  *
  * Returns an SFrame with columns named topic, word, and score.
  */
-toolkit_function_response_type get_topic(toolkit_function_invocation& invoke) {
+variant_map_type get_topic(variant_map_type& params) {
 
-  toolkit_function_response_type ret_status;
+  variant_map_type ret;
 
   // Get data from Python
   std::shared_ptr<topic_model> model
-    = safe_varmap_get<std::shared_ptr<topic_model>>(invoke.params, "model");
-  std::vector<flexible_type> topic_ids = safe_varmap_get<flexible_type>(invoke.params, "topic_ids");
-  flexible_type num_words = safe_varmap_get<flexible_type>(invoke.params, "num_words");
-  flexible_type cdf_cutoff = safe_varmap_get<flexible_type>(invoke.params, "cdf_cutoff");
+    = safe_varmap_get<std::shared_ptr<topic_model>>(params, "model");
+  std::vector<flexible_type> topic_ids = safe_varmap_get<flexible_type>(params, "topic_ids");
+  flexible_type num_words = safe_varmap_get<flexible_type>(params, "num_words");
+  flexible_type cdf_cutoff = safe_varmap_get<flexible_type>(params, "cdf_cutoff");
 
   // Get a list of the most probably words and their score; write to SFrame
   sframe sf;
@@ -187,60 +189,57 @@ toolkit_function_response_type get_topic(toolkit_function_invocation& invoke) {
   // Return top_words to Python
   std::shared_ptr<unity_sframe> top_words_sf(new unity_sframe);
   top_words_sf->construct_from_sframe(sf);
-  ret_status.params["top_words"] =  to_variant(top_words_sf);
+  ret["top_words"] =  to_variant(top_words_sf);
 
-  ret_status.success = true;
-  return ret_status;
+  return ret;
 }
 
 
-toolkit_function_response_type predict(toolkit_function_invocation& invoke) {
+variant_map_type predict(variant_map_type& params) {
 
-  toolkit_function_response_type ret_status;
+  variant_map_type ret;
   std::shared_ptr<topic_model> model
-    = safe_varmap_get<std::shared_ptr<topic_model>>(invoke.params, "model");
+    = safe_varmap_get<std::shared_ptr<topic_model>>(params, "model");
   std::shared_ptr<sarray<flexible_type> > dataset =
-      safe_varmap_get<std::shared_ptr<unity_sarray>>(invoke.params, "data")->get_underlying_sarray();
+      safe_varmap_get<std::shared_ptr<unity_sarray>>(params, "data")->get_underlying_sarray();
 
-  flexible_type num_burnin = safe_varmap_get<flexible_type>(invoke.params, "num_burnin");
+  flexible_type num_burnin = safe_varmap_get<flexible_type>(params, "num_burnin");
 
   auto predictions_sa = model->predict_gibbs(dataset, num_burnin);
   std::shared_ptr<unity_sarray> predictions(new unity_sarray());
   predictions->construct_from_sarray(predictions_sa);
-  ret_status.params["predictions"] = to_variant(predictions);
+  ret["predictions"] = to_variant(predictions);
 
-  ret_status.success = true;
-  return ret_status;
+  return ret;
 }
 
-toolkit_function_response_type get_perplexity(toolkit_function_invocation& invoke) {
+variant_map_type get_perplexity(variant_map_type& params) {
 
-  toolkit_function_response_type ret_status;
+  variant_map_type ret;
   std::shared_ptr<sarray<flexible_type> > test_data =
-      safe_varmap_get<std::shared_ptr<unity_sarray>>(invoke.params, "test_data")->get_underlying_sarray();
+      safe_varmap_get<std::shared_ptr<unity_sarray>>(params, "test_data")->get_underlying_sarray();
   std::shared_ptr<sarray<flexible_type> > predictions =
-      safe_varmap_get<std::shared_ptr<unity_sarray>>(invoke.params, "predictions")->get_underlying_sarray();
+      safe_varmap_get<std::shared_ptr<unity_sarray>>(params, "predictions")->get_underlying_sarray();
   std::shared_ptr<sarray<flexible_type> > topics =
-      safe_varmap_get<std::shared_ptr<unity_sarray>>(invoke.params, "topics")->get_underlying_sarray();
+      safe_varmap_get<std::shared_ptr<unity_sarray>>(params, "topics")->get_underlying_sarray();
   std::shared_ptr<sarray<flexible_type> > vocabulary =
-      safe_varmap_get<std::shared_ptr<unity_sarray>>(invoke.params, "vocabulary")->get_underlying_sarray();
+      safe_varmap_get<std::shared_ptr<unity_sarray>>(params, "vocabulary")->get_underlying_sarray();
 
-  ret_status.params["perplexity"] = perplexity(test_data, predictions, topics, vocabulary);
+  ret["perplexity"] = perplexity(test_data, predictions, topics, vocabulary);
 
-  ret_status.success = true;
-  return ret_status;
+  return ret;
 }
 
 /**
  * Return any value from the model
  */
-toolkit_function_response_type get_value(toolkit_function_invocation& invoke) {
+variant_map_type get_value(variant_map_type& params) {
 
-  toolkit_function_response_type ret_status;
+  variant_map_type ret;
 
   std::shared_ptr<topic_model> model
-    = safe_varmap_get<std::shared_ptr<topic_model>>(invoke.params, "model");
-  flexible_type field = safe_varmap_get<flexible_type>(invoke.params, "field");
+    = safe_varmap_get<std::shared_ptr<topic_model>>(params, "model");
+  flexible_type field = safe_varmap_get<flexible_type>(params, "field");
 
   if (field == "topics") {
     auto probabilities = model->get_topics_matrix();
@@ -252,86 +251,54 @@ toolkit_function_response_type get_value(toolkit_function_invocation& invoke) {
 
     std::shared_ptr<unity_sframe> unity_topics(new unity_sframe());
     unity_topics->construct_from_sframe(topics_sf);
-    ret_status.params["value"] =  to_variant(unity_topics);
+    ret["value"] =  to_variant(unity_topics);
     // model->status["topics"] = unity_topics;
   } else if (field == "vocabulary") {
     auto vocab_sa = model->get_vocabulary();
     std::shared_ptr<unity_sarray> unity_vocab(new unity_sarray());
     unity_vocab->construct_from_sarray(vocab_sa);
-    ret_status.params["value"] =  to_variant(unity_vocab);
+    ret["value"] =  to_variant(unity_vocab);
     // model->status["vocabulary"] = unity_vocab;
   } else {
-    ret_status.params["value"] = model->get_value_from_state(field);
+    ret["value"] = model->get_value_from_state(field);
   }
 
-  ret_status.success = true;
-  return ret_status;
+  return ret;
 }
 
 /**
  * Return all (key, value) pairs used to describe this model.
  */
-toolkit_function_response_type summary(toolkit_function_invocation& invoke) {
+variant_map_type summary(variant_map_type& params) {
 
-  toolkit_function_response_type ret_status;
+  variant_map_type ret;
 
   // Get model from Python
   std::shared_ptr<topic_model> model
-    = safe_varmap_get<std::shared_ptr<topic_model>>(invoke.params, "model");
+    = safe_varmap_get<std::shared_ptr<topic_model>>(params, "model");
 
   // Get status items
   for (auto& kvp : model->get_state()) {
-    ret_status.params[kvp.first] = kvp.second;
+    ret[kvp.first] = kvp.second;
   }
 
-  ret_status.success = true;
-  return ret_status;
+  return ret;
 }
 
-EXPORT std::vector<toolkit_function_specification> get_toolkit_function_registration() {
+/**
+ * Defines get_toolkit_function_registration for the text toolkit
+ */
+BEGIN_FUNCTION_REGISTRATION
+REGISTER_NAMED_FUNCTION("topicmodel_init", init, "params")
+REGISTER_NAMED_FUNCTION("topicmodel_set_topics", set_topics, "params")
+REGISTER_NAMED_FUNCTION("topicmodel_train", train, "params")
+REGISTER_NAMED_FUNCTION("topicmodel_predict", predict, "params")
+REGISTER_NAMED_FUNCTION("topicmodel_get_topic", get_topic, "params")
+REGISTER_NAMED_FUNCTION("topicmodel_get_perplexity", get_perplexity, "params")
+REGISTER_NAMED_FUNCTION("topicmodel_get_value", get_value, "params")
+REGISTER_NAMED_FUNCTION("topicmodel_get_current_options", get_current_options, "params")
+REGISTER_NAMED_FUNCTION("topicmodel_summary", summary, "params")
+END_FUNCTION_REGISTRATION
 
-  std::vector<toolkit_function_specification> specs;
-
-  toolkit_function_specification init_spec;
-  init_spec.name = "text_topicmodel_init";
-  init_spec.toolkit_execute_function = init;
-
-  toolkit_function_specification set_topics_spec;
-  set_topics_spec.name = "text_topicmodel_set_topics";
-  set_topics_spec.toolkit_execute_function = set_topics;
-
-  toolkit_function_specification train_spec;
-  train_spec.name = "text_topicmodel_train";
-  train_spec.toolkit_execute_function = train;
-
-  toolkit_function_specification predict_spec;
-  predict_spec.name = "text_topicmodel_predict";
-  predict_spec.toolkit_execute_function = predict;
-
-  toolkit_function_specification get_topic_spec;
-  get_topic_spec.name = "text_topicmodel_get_topic";
-  get_topic_spec.toolkit_execute_function = get_topic;
-
-  toolkit_function_specification perplexity_spec;
-  perplexity_spec.name = "text_topicmodel_get_perplexity";
-  perplexity_spec.toolkit_execute_function = get_perplexity;
-
-  toolkit_function_specification get_value_spec;
-  get_value_spec.name = "text_topicmodel_get_value";
-  get_value_spec.toolkit_execute_function = get_value;
-
-  toolkit_function_specification get_current_options_spec;
-  get_current_options_spec.name = "text_topicmodel_get_current_options";
-  get_current_options_spec.toolkit_execute_function = get_current_options;
-
-  toolkit_function_specification summary_spec;
-  summary_spec.name = "text_topicmodel_summary";
-  summary_spec.toolkit_execute_function = summary;
-
-  return {init_spec, set_topics_spec, train_spec,
-    get_topic_spec, summary_spec, predict_spec,
-    get_value_spec, perplexity_spec,
-    get_current_options_spec};
-}
 }
 }

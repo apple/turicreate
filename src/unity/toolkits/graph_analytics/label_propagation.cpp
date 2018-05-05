@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <unity/toolkits/graph_analytics/label_propagation.hpp>
+#include <unity/lib/toolkit_function_macros.hpp>
 #include <unity/lib/toolkit_util.hpp>
 #include <unity/lib/simple_model.hpp>
 #include <unity/lib/unity_sgraph.hpp>
@@ -32,20 +33,38 @@ namespace label_propagation {
   int max_iterations = -1;
   const int MAX_CLASSES = 1000;
 
+  const variant_map_type& get_default_options() {
+    static const variant_map_type DEFAULT_OPTIONS {
+      {"threshold", 1E-3},
+      {"weight_field", ""},
+      {"self_weight", 1.0},
+      {"undirected", false},
+      {"max_iterations", -1},
+    };
+    return DEFAULT_OPTIONS;
+  }
+
   /**************************************************************************/
   /*                                                                        */
   /*                   Setup and Teardown functions                         */
   /*                                                                        */
   /**************************************************************************/
-  void setup(toolkit_function_invocation& invoke) {
-    label_field = safe_varmap_get<flexible_type>(invoke.params, "label_field").get<std::string>();
-    weight_field = safe_varmap_get<flexible_type>(invoke.params, "weight_field").get<std::string>();
-    threshold = safe_varmap_get<flexible_type>(invoke.params, "threshold");
-    self_weight = safe_varmap_get<flexible_type>(invoke.params, "self_weight");
-    undirected = safe_varmap_get<flexible_type>(invoke.params, "undirected");
-    max_iterations = safe_varmap_get<flexible_type>(invoke.params, "max_iterations");
-    if (invoke.params.count("single_precision")) {
-      single_precision = safe_varmap_get<flexible_type>(invoke.params, "single_precision");
+  void setup(variant_map_type& params) {
+    for (const auto& opt : get_default_options()) {
+      params.insert(opt);  // Doesn't overwrite keys already in params
+    }
+
+    label_field = safe_varmap_get<flexible_type>(
+        params, "label_field").get<std::string>();
+    weight_field = safe_varmap_get<flexible_type>(
+        params, "weight_field").get<std::string>();
+    threshold = safe_varmap_get<flexible_type>(params, "threshold");
+    self_weight = safe_varmap_get<flexible_type>(params, "self_weight");
+    undirected = safe_varmap_get<flexible_type>(params, "undirected");
+    max_iterations = safe_varmap_get<flexible_type>(params, "max_iterations");
+    if (params.count("single_precision")) {
+      single_precision =
+	  safe_varmap_get<flexible_type>(params, "single_precision");
       if (single_precision) {
         logprogress_stream << "Running label propagation using single precision" << std::endl;
       }
@@ -332,13 +351,13 @@ namespace label_propagation {
   /*                             Main Function                              */
   /*                                                                        */
   /**************************************************************************/
-  toolkit_function_response_type exec(toolkit_function_invocation& invoke) {
+  variant_map_type exec(variant_map_type& params) {
 
     timer mytimer;
-    setup(invoke);
+    setup(params);
 
     std::shared_ptr<unity_sgraph> source_graph =
-        safe_varmap_get<std::shared_ptr<unity_sgraph>>(invoke.params, "graph");
+        safe_varmap_get<std::shared_ptr<unity_sgraph>>(params, "graph");
     ASSERT_TRUE(source_graph != NULL);
     sgraph& source_sgraph = source_graph->get_graph();
 
@@ -364,56 +383,37 @@ namespace label_propagation {
     }
 
     std::shared_ptr<unity_sgraph> result_graph(new unity_sgraph(std::make_shared<sgraph>(g)));
-    variant_map_type params;
-    params["graph"] = to_variant(result_graph);
-    params["labels"] = to_variant(result_graph->get_vertices());
-    params["delta"] = average_l2_delta;
-    params["training_time"] = mytimer.current_time();
-    params["num_iterations"] = num_iter;
-    params["self_weight"] = self_weight;
-    params["weight_field"] = weight_field;
-    params["undirected"] = undirected;
-    params["label_field"] = label_field;
-    params["threshold"] = threshold;
+    variant_map_type model_params;
+    model_params["graph"] = to_variant(result_graph);
+    model_params["labels"] = to_variant(result_graph->get_vertices());
+    model_params["delta"] = average_l2_delta;
+    model_params["training_time"] = mytimer.current_time();
+    model_params["num_iterations"] = num_iter;
+    model_params["self_weight"] = self_weight;
+    model_params["weight_field"] = weight_field;
+    model_params["undirected"] = undirected;
+    model_params["label_field"] = label_field;
+    model_params["threshold"] = threshold;
 
-    toolkit_function_response_type response;
-    response.params["model"]= to_variant(std::make_shared<simple_model>(params));
-    response.success = true;
+    variant_map_type response;
+    response["model"]= to_variant(std::make_shared<simple_model>(model_params));
     return response;
   }
 
-  static const variant_map_type DEFAULT_OPTIONS {
-    {"threshold", 1E-3},
-    {"weight_field", ""},
-    {"self_weight", 1.0},
-    {"undirected", false},
-    {"max_iterations", -1},
-  };
-
-  toolkit_function_response_type get_default_options(toolkit_function_invocation& invoke) {
-    toolkit_function_response_type response;
-    response.success = true;
-    response.params = DEFAULT_OPTIONS;
-    return response;
-  }
-
-  static const variant_map_type MODEL_FIELDS {
-    {"graph", "A new SGraph with the label probability as new vertex property"},
-    {"labels", "An SFrame with label probability for each vertex"},
-    {"delta", "Change of class probability in average L2 norm"},
-    {"training_time", "Total training time of the model"},
-    {"num_iterations", "Number of iterations"},
-    {"threshold", "The convergence threshold in average L2 norm"},
-    {"weight_field", "Edge weight field for weighted propagation"},
-    {"self_weight", "Weight for self edge"},
-    {"undirected", "If true, treat edge as undirected and propagate in both directions"}
-  };
-
-  toolkit_function_response_type get_model_fields(toolkit_function_invocation& invoke) {
-    toolkit_function_response_type response;
-    response.success = true;
-    response.params = MODEL_FIELDS;
-    return response;
+  variant_map_type get_model_fields(variant_map_type& params) {
+    return {
+      {"graph",
+       "A new SGraph with the label probability as new vertex property"},
+      {"labels", "An SFrame with label probability for each vertex"},
+      {"delta", "Change of class probability in average L2 norm"},
+      {"training_time", "Total training time of the model"},
+      {"num_iterations", "Number of iterations"},
+      {"threshold", "The convergence threshold in average L2 norm"},
+      {"weight_field", "Edge weight field for weighted propagation"},
+      {"self_weight", "Weight for self edge"},
+      {"undirected",
+       "If true, treat edge as undirected and propagate in both directions"}
+    };
   }
 
   /**************************************************************************/
@@ -421,20 +421,10 @@ namespace label_propagation {
   /*                          Toolkit Registration                          */
   /*                                                                        */
   /**************************************************************************/
-  EXPORT std::vector<toolkit_function_specification> get_toolkit_function_registration() {
-    toolkit_function_specification main_spec;
-    main_spec.name = "label_propagation";
-    main_spec.toolkit_execute_function = exec;
-    main_spec.default_options = DEFAULT_OPTIONS;
+BEGIN_FUNCTION_REGISTRATION
+REGISTER_NAMED_FUNCTION("create", exec, "params");
+REGISTER_FUNCTION(get_model_fields, "params");
+END_FUNCTION_REGISTRATION
 
-    toolkit_function_specification option_spec;
-    option_spec.name = "label_propagation_default_options";
-    option_spec.toolkit_execute_function = get_default_options;
-
-    toolkit_function_specification model_spec;
-    model_spec.name = "label_propagation_model_fields";
-    model_spec.toolkit_execute_function = get_model_fields;
-    return {main_spec, option_spec, model_spec};
-  }
 } // end of namespace label_propagation
 } // end of namespace turi

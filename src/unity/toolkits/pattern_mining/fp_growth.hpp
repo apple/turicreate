@@ -17,8 +17,8 @@
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/lib/gl_sarray.hpp>
 #include <unity/lib/toolkit_class_macros.hpp>
+#include <unity/lib/extensions/ml_model.hpp>
 
-#include <unity/toolkits/ml_model/sdk_model.hpp>
 #include <unity/toolkits/pattern_mining/fp_tree.hpp>
 #include <unity/toolkits/pattern_mining/fp_results_tree.hpp>
 #include <unity/toolkits/feature_engineering/topk_indexer.hpp>
@@ -33,7 +33,7 @@ namespace pattern_mining {
  * TODO: Add some comments hare about what the base class is supposed to be.
  *
  */
-class EXPORT fp_growth : public sdk_model::sdk_model_base {
+class EXPORT fp_growth : public ml_model_base {
 
   static constexpr size_t FP_GROWTH_VERSION = 0;
 

@@ -135,6 +135,12 @@ void run_linear_regression_test(std::map<std::string, flexible_type> opts) {
   turi::iarchive iarc(archive_read);
   iarc >> *model;
 
+  // Check RMSE has been saved
+  // ----------------------------------------------------------------------
+  variant_type variant_rmse = model->get_value_from_state("training_rmse");
+  double rmse = variant_get_value<flexible_type>(variant_rmse).to<double>();
+  TS_ASSERT(rmse >= 0);
+  TS_ASSERT(rmse <= 1);
 
   // Check coefficients after saving and loading.
   // ----------------------------------------------------------------------

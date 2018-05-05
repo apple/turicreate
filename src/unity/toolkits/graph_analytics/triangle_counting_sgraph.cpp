@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <unity/toolkits/graph_analytics/triangle_counting.hpp>
+#include <unity/lib/toolkit_function_macros.hpp>
 #include <unity/lib/toolkit_util.hpp>
 #include <unity/lib/simple_model.hpp>
 #include <unity/lib/unity_sgraph.hpp>
@@ -318,11 +319,11 @@ size_t compute_triangle_count(sgraph& g) {
 /*                             Main Function                              */
 /*                                                                        */
 /**************************************************************************/
-toolkit_function_response_type exec(toolkit_function_invocation& invoke) {
+variant_map_type exec(variant_map_type& params) {
 
   timer mytimer;
   std::shared_ptr<unity_sgraph> source_graph =
-      safe_varmap_get<std::shared_ptr<unity_sgraph>>(invoke.params, "graph");
+      safe_varmap_get<std::shared_ptr<unity_sgraph>>(params, "graph");
   ASSERT_TRUE(source_graph != NULL);
   sgraph& source_sgraph = source_graph->get_graph();
   // Do not support vertex groups yet.
@@ -337,52 +338,35 @@ toolkit_function_response_type exec(toolkit_function_invocation& invoke) {
 
   std::shared_ptr<unity_sgraph> result_graph(new unity_sgraph(std::make_shared<sgraph>(g)));
 
-  variant_map_type params;
-  params["num_triangles"] = total_counts;
-  params["training_time"]  = mytimer.current_time();
-  params["graph"]  = to_variant(result_graph);
-  params["triangle_count"]  = to_variant(result_graph->get_vertices());
+  variant_map_type model_params;
+  model_params["num_triangles"] = total_counts;
+  model_params["training_time"]  = mytimer.current_time();
+  model_params["graph"]  = to_variant(result_graph);
+  model_params["triangle_count"]  = to_variant(result_graph->get_vertices());
 
-  toolkit_function_response_type response;
-  response.params["model"] = to_variant(std::make_shared<simple_model>(params));
-  response.success = true;
+  variant_map_type response;
+  response["model"] = to_variant(std::make_shared<simple_model>(model_params));
   return response;
 }
 
-toolkit_function_response_type get_default_options(toolkit_function_invocation& invoke) {
-  toolkit_function_response_type response;
-  response.success = true;
+variant_map_type get_default_options(variant_map_type& params) {
+  variant_map_type response;
   return response;
 }
 
-static const variant_map_type MODEL_FIELDS{
-  {"num_triangles", "Total number of triangles in the graph."},
-  {"triangle_count", "An SFrame with the triangle count for each vertex."},
-  {"graph", "A new SGraph with the triangle count as a vertex property."},
-  {"training_time", "Total training time of the model"}
-};
-
-toolkit_function_response_type get_model_fields(toolkit_function_invocation& invoke) {
-  toolkit_function_response_type response;
-  response.success = true;
-  response.params = MODEL_FIELDS;
-  return response;
+variant_map_type get_model_fields(variant_map_type& params) {
+  return {
+    {"num_triangles", "Total number of triangles in the graph."},
+    {"triangle_count", "An SFrame with the triangle count for each vertex."},
+    {"graph", "A new SGraph with the triangle count as a vertex property."},
+    {"training_time", "Total training time of the model"}
+  };
 }
 
-EXPORT std::vector<toolkit_function_specification> get_toolkit_function_registration() {
-  toolkit_function_specification main_spec;
-  main_spec.name = "triangle_counting";
-  main_spec.toolkit_execute_function = exec;
-
-  toolkit_function_specification option_spec;
-  option_spec.name = "triangle_counting_default_options";
-  option_spec.toolkit_execute_function = get_default_options;
-
-  toolkit_function_specification model_spec;
-  model_spec.name = "triangle_counting_model_fields";
-  model_spec.toolkit_execute_function = get_model_fields;
-  return {main_spec, option_spec, model_spec};
-}
+BEGIN_FUNCTION_REGISTRATION
+REGISTER_NAMED_FUNCTION("create", exec, "params");
+REGISTER_FUNCTION(get_model_fields, "params");
+END_FUNCTION_REGISTRATION
 
 } // end of namespace triangle counting 
 } // end of namespace turi

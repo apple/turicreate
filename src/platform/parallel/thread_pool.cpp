@@ -7,6 +7,7 @@
 #include <parallel/thread_pool.hpp>
 #include <logger/assertions.hpp>
 #include <parallel/pthread_tools.hpp>
+#include <platform/config/apple_config.hpp>
 
 namespace turi {
 
@@ -105,6 +106,12 @@ size_t thread_pool::size() const { return pool_size; }
   Creates the thread group
   */
 void thread_pool::spawn_thread_group() {
+
+#ifdef __APPLE__
+  // Ensure the cocoa runtime is set up for multithreaded execution
+  config::init_cocoa_multithreaded_runtime();
+#endif
+
   size_t ncpus = thread::cpu_count();
   // start all the threads if CPU affinity is set
   for (size_t i = 0;i < pool_size; ++i) {

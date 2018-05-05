@@ -96,6 +96,7 @@ class RandomForestRegressionTest(unittest.TestCase):
            'model_checkpoint_interval': lambda x: x == 5,
            'model_checkpoint_path': lambda x: x is None,
            'resume_from_checkpoint': lambda x: x is None,
+           'validation_data': lambda x: isinstance(x, tc.SFrame) and len(x) == len(self.dtest),
            }
         self.metrics = ["rmse", "max_error"]
         self.fields_ans = self.get_ans.keys()
@@ -406,6 +407,21 @@ def binary_classification_integer_target(cls):
             'model_checkpoint_interval': lambda x: x == 5,
             'model_checkpoint_path': lambda x: x is None,
             'resume_from_checkpoint': lambda x: x is None,
+            'training_auc': lambda x: x > 0,
+            'training_confusion_matrix': lambda x: len(x) > 0,
+            'training_f1_score': lambda x: x > 0,
+            'training_precision': lambda x: x > 0,
+            'training_recall': lambda x: x > 0,
+            'training_report_by_class': lambda x: len(x) > 0,
+            'training_roc_curve': lambda x: len(x) > 0,
+            'validation_data': lambda x: isinstance(x, tc.SFrame) and len(x) == len(cls.dtest),
+            'validation_auc': lambda x: x > 0,
+            'validation_confusion_matrix': lambda x: len(x) > 0,
+            'validation_f1_score': lambda x: x > 0,
+            'validation_precision': lambda x: x > 0,
+            'validation_recall': lambda x: x > 0,
+            'validation_report_by_class': lambda x: len(x) > 0,
+            'validation_roc_curve': lambda x: len(x) > 0,
             }
     cls.fields_ans = cls.get_ans.keys()
 

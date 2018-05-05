@@ -155,7 +155,7 @@ std::string translate_solver_status(const OPTIMIZATION_STATUS& status);
  * \param[in] status Status of the solver 
  * \returns Clean output of the optimization summary. 
 */
-void log_solver_summary_stats(const solver_return& stats);
+void log_solver_summary_stats(const solver_return& stats, bool simple_mode = false);
 
 } // Optimization
 

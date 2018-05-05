@@ -6,6 +6,8 @@ make_library(unity_util
     data_generators.cpp
     indexed_sframe_tools.cpp
     sframe_utils.cpp
+    class_registrations.cpp
+    random_sframe_generation.cpp
   REQUIRES
   unity_core
   )

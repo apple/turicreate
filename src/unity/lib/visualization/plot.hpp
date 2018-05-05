@@ -4,12 +4,13 @@
 #include <unity/lib/toolkit_class_macros.hpp>
 #include <unity/lib/toolkit_function_macros.hpp>
 #include <unity/lib/visualization/transformation.hpp>
+#include <unity/lib/extensions/model_base.hpp>
 #include <string>
 
 namespace turi {
   namespace visualization {
 
-    class Plot: public toolkit_class_base {
+    class Plot: public model_base {
 
       public:
         Plot(){};

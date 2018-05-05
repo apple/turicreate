@@ -24,10 +24,10 @@ make_library(fileio
     cache_stream_sink.cpp
     fixed_size_cache_manager.cpp
     temp_files.cpp
-    curl_downloader.cpp
     sanitize_url.cpp
     file_download_cache.cpp
     fs_utils.cpp
+    curl_downloader.cpp
     file_handle_pool.cpp
     fileio_constants.cpp
     s3_fstream.cpp
@@ -40,3 +40,5 @@ make_library(fileio
   MAC_REQUIRES
     iconv
   )
+    
+

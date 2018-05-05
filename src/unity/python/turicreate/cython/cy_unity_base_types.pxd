@@ -31,7 +31,7 @@ cdef extern from "<unity/lib/api/unity_sketch_interface.hpp>" namespace "turi":
     cdef cppclass unity_sketch_base:
         pass
 
-cdef extern from "<unity/lib/api/model_interface.hpp>" namespace "turi":
+cdef extern from "<unity/lib/extensions/model_base.hpp>" namespace "turi":
     cdef cppclass model_base:
         pass
 

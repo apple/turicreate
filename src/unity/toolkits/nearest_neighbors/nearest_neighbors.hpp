@@ -21,7 +21,7 @@
 #include <unity/lib/toolkit_function_specification.hpp>
 #include <unity/lib/variant.hpp>
 #include <unity/lib/unity_base_types.hpp>
-#include <unity/toolkits/ml_model/ml_model.hpp>
+#include <unity/lib/extensions/ml_model.hpp>
 #include <unity/toolkits/util/algorithmic_utils.hpp>
 #include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
 
@@ -306,14 +306,6 @@ class EXPORT nearest_neighbors_model : public ml_model_base {
  public: 
 
   nearest_neighbors_model();
-  /**
-   * Clone objects to a nearest_neighbors_model class
-   *
-   * \returns A new model with the same things in it.
-   *
-   * \ref model_base for details.
-   */
-  virtual nearest_neighbors_model* nearest_neighbors_clone() = 0;
 
   virtual ~nearest_neighbors_model(){}
 
@@ -462,13 +454,6 @@ class EXPORT nearest_neighbors_model : public ml_model_base {
    * -------------------------------------------------------------------------
    */
  public:
-
-  /**
-   * Makes a copy of this model object.
-   *
-   * \ref model_base for details.
-   */
-  ml_model_base* ml_model_base_clone();
 
   /**
    * Get training stats.
