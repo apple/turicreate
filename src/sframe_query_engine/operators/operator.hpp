@@ -92,6 +92,8 @@ struct query_operator_attributes {
 class query_operator {
  public:
 
+  virtual ~query_operator() = default;
+
   virtual planner_node_type type() const = 0;
   
   /**

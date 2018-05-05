@@ -222,12 +222,12 @@ class supervised_evaluation_interface {
   /**
    * Default destructor.
    */
-  ~supervised_evaluation_interface() {}
+  virtual ~supervised_evaluation_interface() = default;
 
   /**
   * Default constructor.
   */
-  supervised_evaluation_interface(){}
+  supervised_evaluation_interface() = default;
 
   /**
    * Name of the evaluator.

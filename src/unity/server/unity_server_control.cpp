@@ -14,8 +14,12 @@
 #include <unity/server/unity_server_options.hpp>
 #include <unity/server/unity_server_init.hpp>
 #include <unity/server/unity_server_control.hpp>
+#include <parallel/mutex.hpp>
+#include <mutex>
 
 namespace turi {
+
+static mutex _server_start_lock;
 
 // Global embeded server and client object
 static unity_server* SERVER = nullptr;
@@ -27,15 +31,18 @@ static unity_server* SERVER = nullptr;
  * \param server_address the inproc address of the server, could be anything like "inproc://test_server"
  * \param log_file local file for logging
  */
-EXPORT void start_server(const unity_server_options& server_options) {
+EXPORT void start_server(const unity_server_options& server_options,
+                         const unity_server_initializer& server_initializer) {
+
+  std::lock_guard<mutex> server_start_lg(_server_start_lock);
+
   namespace fs = boost::filesystem;
   global_logger().set_log_level(LOG_PROGRESS);
   global_logger().set_log_to_console(false);
 
-  unity_server_initializer server_initializer;
-
   if(SERVER) { 
-    stop_server(); 
+    logstream(LOG_ERROR) << "Unity server initialized twice." << std::endl;
+    return;
   }
 
   SERVER = new unity_server(server_options);

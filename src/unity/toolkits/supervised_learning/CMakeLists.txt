@@ -3,7 +3,6 @@ project(unity_toolkits)
 make_library(supervised_learning
   SOURCES
     supervised_learning.cpp
-    unity_supervised_learning.cpp
     linear_regression.cpp
     linear_regression_opt_interface.cpp
     logistic_regression.cpp
@@ -16,10 +15,14 @@ make_library(supervised_learning
     random_forest.cpp
     decision_tree.cpp
     xgboost_error.cpp
+    automatic_model_creation.cpp
+    classifier_evaluations.cpp
+    class_registrations.cpp
   REQUIRES
     unity_core
     unity_util
     unity_ml_model
+    unity_coreml_model_export
     minipsutil_static
     ml_data
     optimization

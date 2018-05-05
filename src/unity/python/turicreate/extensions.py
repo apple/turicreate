@@ -94,14 +94,11 @@ def _wrap_function_return(val):
         return _SArray(_proxy = val)
     elif type(val) is _UnityModel:
         # we need to cast it up to the appropriate type
-        try:
-            if '__uid__' in val.list_fields():
-                uid = val.get('__uid__')
-                if uid in class_uid_to_class:
-                    return class_uid_to_class[uid](_proxy=val)
-        except:
-            pass
-        return val
+        uid = val.get_uid()
+        if uid in class_uid_to_class:
+            return class_uid_to_class[uid](_proxy=val)
+        else:
+            return val
     elif type(val) is list:
         return [_wrap_function_return(i) for i in val]
     elif type(val) is dict:
@@ -232,9 +229,9 @@ class _ToolkitClass:
             self.__dict__['_tkclass'] = _get_unity().create_toolkit_class(tkclass_name)
         try:
             # fill the functions and properties
-            self.__dict__['_functions'] = self._tkclass.get('list_functions')
-            self.__dict__['_get_properties'] = self._tkclass.get('list_get_properties')
-            self.__dict__['_set_properties'] = self._tkclass.get('list_set_properties')
+            self.__dict__['_functions'] = self._tkclass.list_functions()
+            self.__dict__['_get_properties'] = self._tkclass.list_get_properties()
+            self.__dict__['_set_properties'] = self._tkclass.list_set_properties()
             # rewrite the doc string for this class
             try:
                 self.__dict__['__doc__'] = self._tkclass.get('get_docstring', {'__symbol__':'__doc__'})
@@ -275,8 +272,11 @@ class _ToolkitClass:
                 raise TypeError("Got multiple values for keyword argument '" + k + "'")
             argument_dict[k] = kwargs[k]
         # unwrap it
-        argument_dict['__function_name__'] = fnname
-        ret = self._tkclass.get('call_function', argument_dict)
+        try:
+            ret = self._tkclass.call_function(fnname, argument_dict)
+        except RuntimeError as exc:
+            # Expose C++ exceptions using ToolkitError.
+            raise _ToolkitError(exc)
         ret = _wrap_function_return(ret)
         return ret
 
@@ -286,14 +286,13 @@ class _ToolkitClass:
             return self.__dict__['__proxy__']
         elif name in self._get_properties:
             # is it an attribute?
-            arguments = {'__property_name__':name}
-            return _wrap_function_return(self._tkclass.get('get_property', arguments))
+            return _wrap_function_return(self._tkclass.get_property(name))
         elif name in self._functions:
             # is it a function?
             ret = lambda *args, **kwargs: self.__run_class_function(name, args, kwargs)
             ret.__doc__ = "Name: " + name + "\nParameters: " + str(self._functions[name]) + "\n"
             try:
-                ret.__doc__ += self._tkclass.get('get_docstring', {'__symbol__':name})
+                ret.__doc__ += self._tkclass.get_docstring(name)
                 ret.__doc__ += '\n'
             except:
                 pass
@@ -307,8 +306,8 @@ class _ToolkitClass:
             self.__dict__['__proxy__'] = value
         elif name in self._set_properties:
             # is it a setable property?
-            arguments = {'__property_name__':name, 'value':value}
-            return _wrap_function_return(self._tkclass.get('set_property', arguments))
+            arguments = {'value':value}
+            return _wrap_function_return(self._tkclass.set_property(name, arguments))
         else:
             raise AttributeError("no attribute " + name)
 

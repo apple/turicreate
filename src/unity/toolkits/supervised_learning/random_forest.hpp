@@ -8,7 +8,7 @@
 
 // unity xgboost
 #include <toolkits/supervised_learning/xgboost.hpp>
-
+#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
 #include <export.hpp>
 
 namespace turi {
@@ -24,11 +24,6 @@ class EXPORT random_forest_regression: public xgboost_model {
   public:
   
   /**
-   * Returns the name of the model.
-   */
-  std::string name(void) override;
-
-  /**
    * Set one of the options in the algorithm.
    *
    * This values is checked	against the requirements given by the option
@@ -42,6 +37,13 @@ class EXPORT random_forest_regression: public xgboost_model {
    * Configure booster from options 
    */
   void configure(void) override;
+  
+  std::shared_ptr<coreml::MLModelWrapper> export_to_coreml();
+
+  SUPERVISED_LEARNING_METHODS_REGISTRATION(
+      "random_forest_regression", 
+      random_forest_regression)
+
 };
 
 
@@ -52,11 +54,6 @@ class EXPORT random_forest_regression: public xgboost_model {
 class EXPORT random_forest_classifier: public xgboost_model {  
   
   public:
-  
-  /**
-   * Returns the name of the model.
-   */
-  std::string name(void) override;
   
   /**
    * Initialize things that are specific to your model.
@@ -107,10 +104,14 @@ class EXPORT random_forest_classifier: public xgboost_model {
        }); 
   }
 
+  std::shared_ptr<coreml::MLModelWrapper> export_to_coreml() override;
+ 
+  SUPERVISED_LEARNING_METHODS_REGISTRATION(
+      "random_forest_classifier", 
+      random_forest_classifier)
+
 };
-
-
-}  // namespace xgboost
+ }  // namespace xgboost
 }  // namespace supervised
 }  // namespace turi
 #endif

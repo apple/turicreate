@@ -6,10 +6,13 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
+
+import turicreate as _tc
 from turicreate.data_structures.sgraph import SGraph as _SGraph
 import turicreate.toolkits._main as _main
 from turicreate.toolkits.graph_analytics._model_base import GraphAnalyticsModel as _ModelBase
 from turicreate.util import _raise_error_if_not_of_type
+from turicreate.cython.cy_server import QuietProgress
 
 
 class LabelPropagationModel(_ModelBase):
@@ -264,6 +267,8 @@ def create(graph, label_field,
             'single_precision': _single_precision,
             'graph': graph.__proxy__}
 
-    params = _main.run('label_propagation', opts, verbose)
+    with QuietProgress(verbose):
+        params = _tc.extensions._toolkits.graph.label_propagation.create(opts)
+
     model = params['model']
     return LabelPropagationModel(model)

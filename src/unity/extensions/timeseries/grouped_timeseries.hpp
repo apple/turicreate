@@ -7,6 +7,7 @@
 #define TURI_GROUPED_TIMESERIES_HPP
 
 #include <unity/lib/toolkit_class_macros.hpp>
+#include <unity/lib/extensions/model_base.hpp>
 #include <unity/extensions/grouped_sframe.hpp>
 
 namespace turi {
@@ -14,7 +15,7 @@ namespace timeseries {
 
 class gl_timeseries;
 
-class EXPORT gl_grouped_timeseries : public turi::toolkit_class_base {
+class EXPORT gl_grouped_timeseries : public model_base {
  public:
   /**
    * Groups a TimeSeries by the distinct values in one or more columns.

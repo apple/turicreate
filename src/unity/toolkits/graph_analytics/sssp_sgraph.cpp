@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <unity/toolkits/graph_analytics/sssp.hpp>
+#include <unity/lib/toolkit_function_macros.hpp>
 #include <unity/lib/toolkit_util.hpp>
 #include <unity/lib/simple_model.hpp>
 #include <unity/lib/unity_sgraph.hpp>
@@ -36,11 +37,24 @@ std::string EDGE_WEIGHT_COLUMN;
 bool UNIFORM_WEIGHTS;
 
 
-void setup(toolkit_function_invocation& invoke) {
-  SOURCE_VID = safe_varmap_get<flexible_type>(invoke.params, "source_vid");
-  EDGE_WEIGHT_COLUMN = (std::string)safe_varmap_get<flexible_type>(invoke.params, "weight_field");
+const variant_map_type& get_default_options() {
+  static const variant_map_type DEFAULT_OPTIONS {
+    {"weight_field", ""}, {"max_distance", 1e30}
+  };
+  return DEFAULT_OPTIONS;
+}
+
+void setup(variant_map_type& params) {
+  for (const auto& opt : get_default_options()) {
+    params.insert(opt);  // Doesn't overwrite keys already in params
+  }
+
+  SOURCE_VID = safe_varmap_get<flexible_type>(params, "source_vid");
+  EDGE_WEIGHT_COLUMN =
+      (std::string)safe_varmap_get<flexible_type>(params, "weight_field");
   UNIFORM_WEIGHTS = EDGE_WEIGHT_COLUMN == "";
-  flexible_type max_dist = safe_varmap_get<flexible_type>(invoke.params, "max_distance");
+  flexible_type max_dist =
+      safe_varmap_get<flexible_type>(params, "max_distance");
 
   if ((max_dist.get_type() != flex_type_enum::INTEGER &&
        max_dist.get_type() != flex_type_enum::FLOAT) ||
@@ -203,12 +217,12 @@ void compute_sssp(sgraph& g) {
 /*                             Main Function                              */
 /*                                                                        */
 /**************************************************************************/
-toolkit_function_response_type exec(toolkit_function_invocation& invoke) {
+variant_map_type exec(variant_map_type& params) {
 
   timer mytimer;
-  setup(invoke);
+  setup(params);
   std::shared_ptr<unity_sgraph> source_graph =
-        safe_varmap_get<std::shared_ptr<unity_sgraph>>(invoke.params, "graph");
+        safe_varmap_get<std::shared_ptr<unity_sgraph>>(params, "graph");
 
   ASSERT_TRUE(source_graph != NULL);
   sgraph& source_sgraph = source_graph->get_graph();
@@ -229,45 +243,28 @@ toolkit_function_response_type exec(toolkit_function_invocation& invoke) {
 
   std::shared_ptr<unity_sgraph> result_graph(new unity_sgraph(std::make_shared<sgraph>(g)));
 
-  variant_map_type params;
-  params["training_time"] = mytimer.current_time();
-  params["graph"] = to_variant(result_graph);
-  params["distance"] = to_variant(result_graph->get_vertices());
-  params["weight_field"] = EDGE_WEIGHT_COLUMN;
-  params["source_vid"] = SOURCE_VID;
-  params["max_distance"] = MAX_DIST;
+  variant_map_type model_params;
+  model_params["training_time"] = mytimer.current_time();
+  model_params["graph"] = to_variant(result_graph);
+  model_params["distance"] = to_variant(result_graph->get_vertices());
+  model_params["weight_field"] = EDGE_WEIGHT_COLUMN;
+  model_params["source_vid"] = SOURCE_VID;
+  model_params["max_distance"] = MAX_DIST;
 
-  toolkit_function_response_type response;
-  response.params["model"] = to_variant(std::make_shared<simple_model>(params));
-  response.success = true;
+  variant_map_type response;
+  response["model"] = to_variant(std::make_shared<simple_model>(model_params));
   return response;
 }
 
-static const variant_map_type DEFAULT_OPTIONS {
-  {"weight_field", ""}, {"max_distance", 1e30}
-};
-
-toolkit_function_response_type get_default_options(toolkit_function_invocation& invoke) {
-  toolkit_function_response_type response;
-  response.success = true;
-  response.params = DEFAULT_OPTIONS;
-  return response;
-}
-
-static const variant_map_type MODEL_FIELDS{
-  {"graph", "A new SGraph with the distance as a vertex property"},
-  {"distance", "An SFrame with each vertex's distance to the source vertex"},
-  {"training_time", "Total training time of the model"},
-  {"weight_field", "The edge field for weight"},
-  {"source_vid", "The source vertex id"},
-  {"max_distance", "Maximum distance between any two vertices"}
-};
-
-toolkit_function_response_type get_model_fields(toolkit_function_invocation& invoke) {
-  toolkit_function_response_type response;
-  response.success = true;
-  response.params = MODEL_FIELDS;
-  return response;
+variant_map_type get_model_fields(variant_map_type& params) {
+  return {
+    {"graph", "A new SGraph with the distance as a vertex property"},
+    {"distance", "An SFrame with each vertex's distance to the source vertex"},
+    {"training_time", "Total training time of the model"},
+    {"weight_field", "The edge field for weight"},
+    {"source_vid", "The source vertex id"},
+    {"max_distance", "Maximum distance between any two vertices"}
+  };
 }
 
 
@@ -550,49 +547,33 @@ std::vector<flexible_type> _all_shortest_paths(std::shared_ptr<unity_sgraph> sou
 /*                          Toolkit Registration                          */
 /*                                                                        */
 /**************************************************************************/
-EXPORT std::vector<toolkit_function_specification> get_toolkit_function_registration() {
-  std::vector<toolkit_function_specification> specs;
-  toolkit_function_specification main_spec;
-  main_spec.name = "sssp";
-  main_spec.default_options = DEFAULT_OPTIONS;
-  main_spec.toolkit_execute_function = exec;
-  specs.push_back(main_spec);
+BEGIN_FUNCTION_REGISTRATION
 
-  toolkit_function_specification option_spec;
-  option_spec.name = "sssp_default_options";
-  option_spec.toolkit_execute_function = get_default_options;
-  specs.push_back(option_spec);
+REGISTER_NAMED_FUNCTION("create", exec, "params");
+REGISTER_FUNCTION(get_model_fields, "params");
 
-  toolkit_function_specification model_spec;
-  model_spec.name = "sssp_model_fields";
-  model_spec.toolkit_execute_function = get_model_fields;
-  specs.push_back(model_spec);
+REGISTER_NAMED_FUNCTION("shortest_path_traverse_function",
+                        _shortest_path_traverse_function,
+			"src", "edge", "dst", "source_vid", "weight_field");
+REGISTER_DOCSTRING(
+    _shortest_path_traverse_function,
+    "Computes for each vertex, it's parent vertex (i.e. the shortest path "
+    "originating from the source vertex must reach the current via the parent "
+    "vertex.");
 
-  REGISTER_NAMED_FUNCTION("_toolkits.graph.sssp.shortest_path_traverse_function",
-                          _shortest_path_traverse_function, "src", "edge", "dst", "source_vid", "weight_field");
-  REGISTER_DOCSTRING(_shortest_path_traverse_function, 
-                     "Computes for each vertex, it's parent vertex (i.e. the shortest path "
-                     "originating from the source vertex must reach the current vertex "
-                     "via the parent vertex.");
+REGISTER_NAMED_FUNCTION("all_shortest_paths",
+                        _all_shortest_paths,
+			"graph", "sources", "dests", "weight_field");
 
-  REGISTER_NAMED_FUNCTION("_toolkits.graph.sssp.all_shortest_paths",
-                          _all_shortest_paths, "graph", "sources", "dests", "weight_field");
+REGISTER_DOCSTRING(
+    _all_shortest_paths,
+    "Compute the shortest path between a set of vertices A, and a set of "
+    "vertices B. In other words, find the shortest path between any vertex in "
+    "A and any vertex B. Will return all the shortest paths of the same length."
+    "May return duplicates.")
 
-  REGISTER_DOCSTRING(_all_shortest_paths, 
-                 "Compute the shortest path between a set of vertices A, and a set of "
-                 "vertices B. In other words, find the shortest path between any vertex in A "
-                 "and any vertex B. Will return all the shortest paths of the same length."
-                 "may return duplicates.")
-
-  return specs;
-}
+END_FUNCTION_REGISTRATION
 
 
 } // end of namespace sssp
-
-
-
-
-
-
 } // end of namespace turi

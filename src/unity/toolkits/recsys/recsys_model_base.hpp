@@ -12,14 +12,13 @@
 
 #include <unity/lib/toolkit_function_specification.hpp>
 #include <unity/lib/unity_base_types.hpp>
-#include <unity/lib/api/model_interface.hpp>
 #include <unity/toolkits/options/option_manager.hpp>
 #include <unity/toolkits/ml_data_2/ml_data.hpp>
 #include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>
 #include <util/fast_top_k.hpp>
 
 // Interfaces
-#include <unity/toolkits/ml_model/ml_model.hpp>
+#include <unity/lib/extensions/ml_model.hpp>
 #include <export.hpp>
 
 namespace turi {
@@ -50,13 +49,6 @@ class EXPORT recsys_model_base : public ml_model_base {
 
   virtual ~recsys_model_base() {}
 
-  ////////////////////////////////////////////////////////////////////////////////
-  //
-  //  Internal functions that are implemented or can be overridden by
-  //  the subclassed model.
-  //
-  ////////////////////////////////////////////////////////////////////////////////
-
  protected:
 
   /** Train the algorithm.
@@ -78,16 +70,6 @@ class EXPORT recsys_model_base : public ml_model_base {
  public:
   virtual bool use_target_column(bool target_is_present) const = 0;
   virtual bool include_columns_beyond_user_item() const { return false; }
-
-  virtual std::vector<std::string> list_fields() const {
-    return std::vector<std::string>();
-  }
-
-  virtual std::map<std::string, variant_type> get(const std::string& v) const {
-    ASSERT_TRUE(false);
-    return std::map<std::string, variant_type>();
-  }
-
 
  public:
   /** Run predictions on each element in the test data set.  Returns a
@@ -168,8 +150,6 @@ public:
   virtual void set_extra_data(const std::map<std::string, variant_type>& other_data) {}
 
  protected:
-  virtual recsys_model_base* internal_clone() = 0;
-
   virtual size_t internal_get_version() const = 0;
 
   /** Implement serialization (save).  The model subclass should
@@ -189,17 +169,6 @@ public:
    * can effectively replace the training stage.
    */
   virtual void internal_load(turi::iarchive& iarc, size_t version) = 0;
-
-  // Much easier if this is const
-  virtual std::string name() const = 0;
-
-
- public:
-   // Hooks and redirects the base name() method to avoid const
-  // casting.
-
-  std::string name() { return ((const recsys_model_base*)this)->name(); }
-
 
   ////////////////////////////////////////////////////////////////////////////////
   //
@@ -243,11 +212,6 @@ public:
   flex_type_enum item_type() const {
     return metadata->column_type(ITEM_COLUMN_INDEX);
   }
-
- public:
-  /** Clones the model.
-   */
-  ml_model_base* ml_model_base_clone();
 
   ////////////////////////////////////////////////////////////////////////////////
   //

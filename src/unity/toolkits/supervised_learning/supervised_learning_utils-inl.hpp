@@ -39,13 +39,9 @@ namespace supervised {
 inline arma::vec get_stderr_from_hessian(
     const arma::mat& hessian) {
   DASSERT_EQ(hessian.n_rows, hessian.n_cols);
-  try {
-    return arma::sqrt(arma::diagvec(arma::inv_sympd(hessian)));
-  } catch (const std::runtime_error&) {
-    arma::vec v(hessian.n_rows);
-    v.fill(arma::datum::nan);
-    return v;
-  }
+  arma::mat I;
+  I.eye(hessian.n_rows, hessian.n_cols);
+  return arma::sqrt(arma::diagvec(arma::inv_sympd(hessian + 1E-8 * I)));
 }
 
 /**
@@ -238,26 +234,6 @@ inline sframe setup_test_data_sframe(const sframe& sf,
   return ret;
 }
 
-
-/**
- * Get the missing value enum from the string. 
- *
- * [in] Missing value action as seen by the user. 
- * \returns Missing value action enum  
- */
-inline ml_missing_value_action get_missing_value_enum_from_string(
-                            const std::string & missing_value_str) {
-
- if (missing_value_str == "error") {
-   return ml_missing_value_action::ERROR;
- } else if (missing_value_str == "impute") {
-   return ml_missing_value_action::IMPUTE;
- } else if (missing_value_str == "none") {
-   return ml_missing_value_action::USE_NAN;
- } else{
-   log_and_throw("Internal error. Missing value type not supported");
- }
-}
 
 /**
  * Fill the ml_data_row with an EigenVector using reference encoding for 

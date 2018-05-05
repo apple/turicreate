@@ -34,6 +34,10 @@ namespace sgd {
  */
 class sgd_solver_base {
 
+ public:
+
+  virtual ~sgd_solver_base() = default;
+
  protected:
 
   /** The constructor.

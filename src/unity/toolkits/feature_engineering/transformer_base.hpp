@@ -7,7 +7,7 @@
 #define TURI_TRANSFORMER_BASE_H
 
 #include <unity/lib/gl_sframe.hpp>
-#include <unity/toolkits/ml_model/sdk_model.hpp>
+#include <unity/lib/extensions/ml_model.hpp>
 #include <export.hpp>
 
 namespace turi{
@@ -56,7 +56,7 @@ namespace feature_engineering {
  *  
  * *) version: A get version for this model
  */
-class EXPORT transformer_base : public sdk_model_base {
+class EXPORT transformer_base : public ml_model_base {
  public:
 
   static constexpr size_t TRANSFORMER_BASE_VERSION = 0;

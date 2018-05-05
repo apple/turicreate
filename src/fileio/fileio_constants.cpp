@@ -11,11 +11,17 @@
 #include <fileio/fs_utils.hpp>
 #include <fileio/temp_files.hpp>
 #include <fileio/block_cache.hpp>
-#include <fileio/hdfs.hpp>
 #include <globals/globals.hpp>
 #include <random/random.hpp>
+#ifdef TC_HAS_REMOTEFS
+#include <fileio/hdfs.hpp>
+#endif
 #include <iostream>
 #include <export.hpp>
+
+#ifdef __APPLE__
+#include <platform/config/apple_config.hpp>
+#endif
 
 namespace fs = boost::filesystem;
 
@@ -33,11 +39,19 @@ namespace fileio {
  *
  * This will emit one of the following in order of preference. It will return
  * the first directory which exists. exit(1) on failure.:
+ *  - NSTemporaryDirectory() -- APPLE only.
  *  - /var/tmp
  *  - $TMPDIR
  *  - /tmp
  */
 std::string get_system_temp_directory() {
+#ifdef __APPLE__
+  // Proper thing to do is use the temporary directory determined by 
+  // the CF runtime
+  return config::get_apple_system_temporary_directory();  
+
+#else
+
   boost::filesystem::path path;
 #ifndef _WIN32
   char* tmpdir = getenv("TMPDIR");
@@ -55,6 +69,7 @@ std::string get_system_temp_directory() {
     }
   }
   return path.string();
+#endif
 }
 
 static bool check_cache_file_location(std::string val) {
@@ -67,7 +82,7 @@ static bool check_cache_file_location(std::string val) {
 #else
       boost::algorithm::is_any_of(";"));
 #endif
-  if (paths.size() == 0) 
+  if (paths.size() == 0)
     throw std::string("Value cannot be empty");
   for (std::string path: paths) {
     if (!boost::filesystem::is_directory(path))
@@ -76,10 +91,11 @@ static bool check_cache_file_location(std::string val) {
   return true;
 }
 
+#ifdef TC_HAS_REMOTEFS
 static bool check_cache_file_hdfs_location(std::string val) {
   if (get_protocol(val) == "hdfs") {
     if (get_file_status(val) == file_status::DIRECTORY) {
-      // test hdfs write permission by createing a test directory 
+      // test hdfs write permission by createing a test directory
       namespace fs = boost::filesystem;
       std::string host, port, hdfspath;
       std::tie(host, port, hdfspath) = parse_hdfs_url(val);
@@ -98,6 +114,7 @@ static bool check_cache_file_hdfs_location(std::string val) {
   }
   throw std::string("Invalid hdfs path: ") + val;
 }
+#endif
 
 EXPORT const size_t FILEIO_INITIAL_CAPACITY_PER_FILE = 1024;
 EXPORT size_t FILEIO_MAXIMUM_CACHE_CAPACITY_PER_FILE = 128 * 1024 * 1024;
@@ -108,11 +125,11 @@ EXPORT std::string S3_ENDPOINT;
 // TODO: Where is the right place for this? Probably not here...
 EXPORT int64_t NUM_GPUS = -1;
 
-REGISTER_GLOBAL(int64_t, FILEIO_MAXIMUM_CACHE_CAPACITY, true); 
-REGISTER_GLOBAL(int64_t, FILEIO_MAXIMUM_CACHE_CAPACITY_PER_FILE, true) 
+REGISTER_GLOBAL(int64_t, FILEIO_MAXIMUM_CACHE_CAPACITY, true);
+REGISTER_GLOBAL(int64_t, FILEIO_MAXIMUM_CACHE_CAPACITY_PER_FILE, true)
 REGISTER_GLOBAL(int64_t, FILEIO_READER_BUFFER_SIZE, false);
-REGISTER_GLOBAL(int64_t, FILEIO_WRITER_BUFFER_SIZE, false); 
-REGISTER_GLOBAL(std::string, S3_ENDPOINT, true); 
+REGISTER_GLOBAL(int64_t, FILEIO_WRITER_BUFFER_SIZE, false);
+REGISTER_GLOBAL(std::string, S3_ENDPOINT, true);
 REGISTER_GLOBAL(int64_t, NUM_GPUS, true);
 
 
@@ -130,13 +147,15 @@ REGISTER_GLOBAL_WITH_CHECKS(std::string,
                             true,
                             check_cache_file_location);
 
+
+#ifdef TC_HAS_REMOTEFS
 REGISTER_GLOBAL_WITH_CHECKS(std::string,
                             CACHE_FILE_HDFS_LOCATION,
                             true,
                             check_cache_file_hdfs_location);
-
+#endif
 std::string get_cache_file_locations() {
-  return CACHE_FILE_LOCATIONS; 
+  return CACHE_FILE_LOCATIONS;
 }
 
 void set_cache_file_locations(std::string value) {
@@ -180,8 +199,8 @@ static bool set_max_remote_fs_cache_entries(int64_t val) {
 }
 
 EXPORT size_t FILEIO_MAX_REMOTE_FS_CACHE_ENTRIES = 0;
-REGISTER_GLOBAL_WITH_CHECKS(int64_t, 
-                            FILEIO_MAX_REMOTE_FS_CACHE_ENTRIES, 
+REGISTER_GLOBAL_WITH_CHECKS(int64_t,
+                            FILEIO_MAX_REMOTE_FS_CACHE_ENTRIES,
                             true,
                             set_max_remote_fs_cache_entries);
 }
