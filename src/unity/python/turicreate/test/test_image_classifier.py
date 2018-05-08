@@ -10,18 +10,18 @@ import os
 import sys
 import unittest
 import turicreate as tc
-from turicreate.toolkits import _image_feature_extractor
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._internal_utils import _mac_ver
 import tempfile
 from . import util as test_util
 import pytest
 import coremltools
-import numpy as np
 import platform
 
 def _get_data(num_examples = 100):
     from PIL import Image as _PIL_Image
+    import numpy as np
+
     rs = np.random.RandomState(1234)
     _format = {'JPG': 0, 'PNG': 1, 'RAW': 2, 'UNDEFINED': 3}
 
@@ -86,8 +86,7 @@ class ImageClassifierTest(unittest.TestCase):
            'training_time': lambda x: x > 0,
            'input_image_shape': lambda x: x == self.input_image_shape,
            'target': lambda x: x == self.target,
-           'feature_extractor' : lambda x: issubclass(type(x),
-                 _image_feature_extractor.ImageFeatureExtractor),
+           'feature_extractor' : lambda x: callable(x.extract_features),
            'training_loss': lambda x: x > 0,
            'max_iterations': lambda x: x == self.max_iterations,
            'num_features': lambda x: x == self.lm_model.num_features,
@@ -156,11 +155,12 @@ class ImageClassifierTest(unittest.TestCase):
         with self.assertRaises(TypeError):
             predictions = model.classify("more junk")
 
+    @unittest.skipIf(sys.platform == 'darwin', 'test_export_coreml_with_predict(...) covers this functionality and more')
     def test_export_coreml(self):
         filename = tempfile.mkstemp('bingo.mlmodel')[1]
         self.model.export_coreml(filename)
 
-    @unittest.skipIf(sys.platform != 'darwin', 'Only supported on Mac')
+    @unittest.skipIf(sys.platform != 'darwin', 'Core Ml only supported on Mac')
     def test_export_coreml_with_predict(self):
         filename = tempfile.mkstemp('bingo.mlmodel')[1]
         self.model.export_coreml(filename)
@@ -173,12 +173,12 @@ class ImageClassifierTest(unittest.TestCase):
 
         if _mac_ver() >= (10, 13):
             classes = self.model.classifier.classes
-            ret = coreml_model.predict({self.feature: pil_img}, usesCPUOnly = True)
+            ret = coreml_model.predict({self.feature: pil_img})
             coreml_values = [ret[self.target + 'Probability'][l] for l in classes]
 
             self.assertListAlmostEquals(
                coreml_values,
-               list(self.model.predict(self.sf[0:1], output_type = 'probability_vector')[0]),
+               list(self.model.predict(img_fixed, output_type = 'probability_vector')[0]),
                self.tolerance
             )
 
@@ -196,7 +196,7 @@ class ImageClassifierTest(unittest.TestCase):
             preds = model.predict_topk(self.sf.head(), k = 5, output_type = output_type)
             self.assertEqual(len(preds), 5 * len(self.sf.head()))
 
-    def test__list_fields(self):
+    def test_list_fields(self):
         model = self.model
         fields = model._list_fields()
         self.assertEqual(set(fields), set(self.fields_ans))
@@ -234,7 +234,7 @@ class ImageClassifierTest(unittest.TestCase):
             print("Get passed")
             self.test_summary()
             print("Summary passed")
-            self.test__list_fields()
+            self.test_list_fields()
             print("List fields passed")
 
 
@@ -242,13 +242,6 @@ class ImageClassifierSqueezeNetTest(ImageClassifierTest):
     @classmethod
     def setUpClass(self):
         super(ImageClassifierSqueezeNetTest, self).setUpClass(model='squeezenet_v1.1',
-                                                              input_image_shape=(3, 227, 227),
-                                                              tol=0.005)
-
-class ImageClassifierLargerSqueezeNetTest(ImageClassifierTest):
-    @classmethod
-    def setUpClass(self):
-        super(ImageClassifierLargerSqueezeNetTest, self).setUpClass(model='squeezenet_v1.1',
                                                               input_image_shape=(3, 227, 227),
                                                               tol=0.005, num_examples = 200)
 

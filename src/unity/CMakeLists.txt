@@ -4,6 +4,11 @@ subdirs(extensions
   lib
   toolkits)
 
+if(HAS_CORE_ML)
+  set(additional_unity_requirements image_deep_feature_extractor)
+else()
+  set(additional_unity_requirements "")
+endif()
 
   make_library(unity
          SOURCES
@@ -17,6 +22,7 @@ subdirs(extensions
           unity_toolkits
           perf
           numerics
+          ${additional_unity_requirements}
   ) 
 
   # Pull in all the libraries in the extensions directory.

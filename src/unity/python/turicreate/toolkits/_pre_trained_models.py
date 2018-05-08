@@ -76,6 +76,8 @@ class ImageClassifierPreTrainedModel(object):
 
 
 class ResNetImageClassifier(ImageClassifierPreTrainedModel):
+    input_image_shape = (3, 224, 224)
+
     def __init__(self):
         self.name = 'resnet-50'
         self.num_classes = 1000
@@ -85,7 +87,6 @@ class ResNetImageClassifier(ImageClassifierPreTrainedModel):
         self.label_layer = 'softmax_label'
         self.feature_layer = 'flatten0_output'
         self.is_feature_layer_final = False
-        self.input_image_shape = (3, 224, 224)
         epoch = 0
         self.symbols_url = _urlparse.urljoin(MODELS_URL_ROOT, '%s-symbol.json' % self.name)
         self.symbols_md5 = '2989c88d1d6629b777949a3ae695a42e'
@@ -100,6 +101,8 @@ class ResNetImageClassifier(ImageClassifierPreTrainedModel):
         self.mxmodel = _mx.model.load_checkpoint(_os.path.join(path, self.name), epoch)
 
 class SqueezeNetImageClassifierV1_1(ImageClassifierPreTrainedModel):
+    input_image_shape = (3, 227, 227)
+
     def __init__(self):
         self.name = 'squeezenet_v1.1'
         self.num_classes = 1000
@@ -109,7 +112,6 @@ class SqueezeNetImageClassifierV1_1(ImageClassifierPreTrainedModel):
         self.output_layer = 'prob_output'
         self.label_layer = 'prob_label'
         self.feature_layer = 'flatten_output'
-        self.input_image_shape = (3, 227, 227)
         epoch = 0
         self.symbols_url = _urlparse.urljoin(MODELS_URL_ROOT, '%s-symbol.json' % self.name)
         self.symbols_md5 = 'bab4d80f45e9285cf9f4a3f01f07022e'
