@@ -102,6 +102,16 @@ if(WIN32 AND MINGW)
   SET(COMPILER_FLAGS "${COMPILER_FLAGS} -Wa,-mbig-obj")
 endif()
 
+if(TC_BUILD_IOS)
+  EXECUTE_PROCESS(
+    COMMAND xcrun --sdk iphoneos --show-sdk-path
+    OUTPUT_VARIABLE IOS_ISYSROOT
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+  SET(CMAKE_OSX_SYSROOT "${IOS_ISYSROOT}")
+  SET(COMPILER_FLAGS "${COMPILER_FLAGS} -Wno-c++11-narrowing -isysroot ${IOS_ISYSROOT}")
+endif()
+
 set(MINGW_ROOT "/mingw64/bin")
 # Separate variable so that cython's CMakeLists.txt can use it too
 if (WIN32)
@@ -131,6 +141,20 @@ if(WIN32)
   add_definitions(-DWINVER=0x0600)
   add_definitions(-D_WIN32_WINNT=0x0600)
 endif()
+
+if(TC_BUILD_IOS)
+  add_definitions(-DTC_BUILD_IOS)
+  add_definitions(-DTC_NO_CURL)
+  set(TC_ENABLE_REMOTEFS 0)
+endif()
+
+if(${TC_ENABLE_REMOTEFS})
+  add_definitions(-DTC_ENABLE_REMOTEFS)
+  add_definitions(-DCURL_STATICLIB)
+else()
+  add_definitions(-DTC_NO_CURL)
+endif()
+
 add_definitions(-DCURL_STATICLIB)
 add_definitions(-DIN_TURI_SOURCE_TREE)
 add_definitions(-DFUSION_MAX_VECTOR_SIZE=20)
@@ -220,18 +244,27 @@ endif()
 
 
 include(CheckCXXCompilerFlag)
-if (NOT MARCH)
+if (MARCH)
+  set(ARCH_FLAG "-march=${MARCH}")
+elseif (ARCH)
+  set(ARCH_FLAG "-arch ${ARCH}")
+else()
   set(MARCH "x86-64")
+  set(ARCH_FLAG "-march=${MARCH}")
 endif()
 
 # check if MTUNE is set
 if (NOT MTUNE)
   #set to native if supported
   check_cxx_compiler_flag(-mtune=native HAS_MTUNE_NATIVE)
+  check_cxx_compiler_flag(-mtune=${MARCH} HAS_MTUNE_MARCH)
+  check_cxx_compiler_flag(-mtune=${ARCH} HAS_MTUNE_ARCH)
   if(HAS_MTUNE_NATIVE)
-    set(MTUNE "native")
-  else()
-    set(MTUNE "x86-64")
+    set(MTUNE "-mtune=native")
+  elseif(HAS_MTUNE_MARCH)
+    set(MTUNE "-mtune=${MARCH}")
+  elseif(HAS_MTUNE_ARCH)
+    set(MTUNE "-mtune=${ARCH}")
   endif()
 endif()
 
@@ -270,7 +303,12 @@ if(HAS_FTRACER)
 endif()
 
 set(DEBUG_OPTIMIZATION_LEVEL -O0)
-set(RELEASE_OPTIMIZATION_LEVEL -O3)
+
+if(${RELEASE_OPT_FOR_SIZE})
+  set(RELEASE_OPTIMIZATION_LEVEL -Os)
+else()
+  set(RELEASE_OPTIMIZATION_LEVEL -O3)
+endif()
 
 if(WIN32)
         # on windows due to some string table limitations + template
@@ -280,31 +318,31 @@ if(WIN32)
 endif()
 
 # Set mac os minimum version
-# if (APPLE)
-#  set(PLATFORM_FLAGS "-mmacosx-version-min=10.8")
-#else()
-#  set(PLATFORM_FLAGS "")
-#endif()
+if (APPLE AND NOT TC_BUILD_IOS)
+ set(PLATFORM_FLAGS "-mmacosx-version-min=10.12")
+else()
+ set(PLATFORM_FLAGS "")
+endif()
 
 # Set the debug flags
 set(EXTERNAL_CMAKE_C_FLAGS_DEBUG
-  "${DEBUG_OPTIMIZATION_LEVEL} ${PLATFORM_FLAGS} -Wno-attributes -march=${MARCH} -Winit-self ${PROFILING_FLAGS} ${C_REAL_COMPILER_FLAGS} -fno-inline ${ALTERNATE_LINKER} -DHAVE_PTHREAD=1"
+  "${DEBUG_OPTIMIZATION_LEVEL} ${PLATFORM_FLAGS} -Wno-attributes ${ARCH_FLAG} -Winit-self ${PROFILING_FLAGS} ${C_REAL_COMPILER_FLAGS} -fno-inline ${ALTERNATE_LINKER} -DHAVE_PTHREAD=1"
   CACHE STRING "compiler options" FORCE)
 set(CMAKE_C_FLAGS_DEBUG
   "${EXTERNAL_CMAKE_C_FLAGS_DEBUG} ${WERROR_FLAGS}"
   CACHE STRING "compiler options" FORCE)
 set(EXTERNAL_CMAKE_CXX_FLAGS_DEBUG
-  "${DEBUG_OPTIMIZATION_LEVEL} ${PLATFORM_FLAGS} ${DISABLE_WARNING_FLAGS} -Wno-attributes -march=${MARCH} -Winit-self ${PROFILING_FLAGS} ${CPP_REAL_COMPILER_FLAGS} ${INT128_FLAGS} ${ALTERNATE_LINKER} -fno-inline -DHAVE_PTHREAD=1"
+  "${DEBUG_OPTIMIZATION_LEVEL} ${PLATFORM_FLAGS} ${DISABLE_WARNING_FLAGS} -Wno-attributes ${ARCH_FLAG} -Winit-self ${PROFILING_FLAGS} ${CPP_REAL_COMPILER_FLAGS} ${INT128_FLAGS} ${ALTERNATE_LINKER} -fno-inline -DHAVE_PTHREAD=1"
   CACHE STRING "compiler options" FORCE)
 set(CMAKE_CXX_FLAGS_DEBUG
   "${EXTERNAL_CMAKE_CXX_FLAGS_DEBUG} ${WERROR_FLAGS}"
   CACHE STRING "compiler options" FORCE)
 
 set(CMAKE_C_FLAGS_RELEASE
-  "${RELEASE_OPTIMIZATION_LEVEL} ${PLATFORM_FLAGS} -Wno-attributes -march=${MARCH} -mtune=${MTUNE} ${PROFILING_FLAGS} ${C_REAL_COMPILER_FLAGS} -DNDEBUG ${ALTERNATE_LINKER} -DHAVE_PTHREAD=1 -DARMA_NO_DEBUG"
+  "${RELEASE_OPTIMIZATION_LEVEL} ${PLATFORM_FLAGS} -Wno-attributes ${ARCH_FLAG} ${MTUNE} ${PROFILING_FLAGS} ${C_REAL_COMPILER_FLAGS} -DNDEBUG ${ALTERNATE_LINKER} -DHAVE_PTHREAD=1 -DARMA_NO_DEBUG"
   CACHE STRING "compiler options" FORCE)
 set(CMAKE_CXX_FLAGS_RELEASE
-  "${RELEASE_OPTIMIZATION_LEVEL} ${PLATFORM_FLAGS} ${EXTRA_OPTIMIZATION_FLAGS} ${DISABLE_WARNING_FLAGS} ${PROFILING_FLAGS} -Wno-attributes -march=${MARCH} -mtune=${MTUNE} ${CPP_REAL_COMPILER_FLAGS} ${INT128_FLAGS} ${ALTERNATE_LINKER} -DNDEBUG -DHAVE_PTHREAD=1 -DARMA_NO_DEBUG"
+  "${RELEASE_OPTIMIZATION_LEVEL} ${PLATFORM_FLAGS} ${EXTRA_OPTIMIZATION_FLAGS} ${DISABLE_WARNING_FLAGS} ${PROFILING_FLAGS} -Wno-attributes ${ARCH_FLAG} ${MTUNE} ${CPP_REAL_COMPILER_FLAGS} ${INT128_FLAGS} ${ALTERNATE_LINKER} -DNDEBUG -DHAVE_PTHREAD=1 -DARMA_NO_DEBUG"
   CACHE STRING "compiler options" FORCE)
 
 

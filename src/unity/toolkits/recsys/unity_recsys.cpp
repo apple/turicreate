@@ -8,8 +8,10 @@
 #include <unity/lib/toolkit_function_specification.hpp>
 #include <unity/lib/toolkit_util.hpp>
 #include <unity/lib/unity_base_types.hpp>
+#include <unity/lib/unity_global.hpp>
 #include <unity/lib/unity_sarray.hpp>
 #include <unity/lib/unity_sframe.hpp>
+#include <unity/lib/version_number.hpp>
 #include <unity/toolkits/ml_data_2/ml_data.hpp>
 #include <unity/toolkits/ml_data_2/sframe_index_mapping.hpp>
 #include <unity/toolkits/util/indexed_sframe_tools.hpp>
@@ -27,6 +29,7 @@
 #include <boost/iterator/counting_iterator.hpp>
 #include <unity/toolkits/ml_data_2/sframe_index_mapping.hpp>
 #include <export.hpp>
+#include <unity/toolkits/coreml_export/MLModel/src/Format.hpp>
 
 
 namespace turi { namespace recsys {
@@ -509,8 +512,7 @@ variant_map_type get_num_items_per_user(variant_map_type& params) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-variant_map_type get_popularity_baseline(variant_map_type& params) {
-
+variant_map_type get_popularity_baseline(variant_map_type& params) { 
   variant_map_type ret;
 
   // Get model from Python
@@ -538,6 +540,15 @@ EXPORT variant_map_type get_data_schema(variant_map_type& params) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+void export_to_coreml(
+    std::shared_ptr<recsys_model_base> recsys_model,
+    const std::string& filename
+) {
+  recsys_model->export_to_coreml(recsys_model, filename);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 BEGIN_FUNCTION_REGISTRATION
 REGISTER_FUNCTION(init, "params")
 REGISTER_FUNCTION(train, "params")
@@ -558,6 +569,7 @@ REGISTER_FUNCTION(get_num_users_per_item, "params")
 REGISTER_FUNCTION(get_popularity_baseline, "params")
 REGISTER_FUNCTION(get_data_schema, "params")
 REGISTER_FUNCTION(get_item_intersection_info, "params")
+REGISTER_FUNCTION(export_to_coreml, "model", "filename")
 END_FUNCTION_REGISTRATION
 
 }}

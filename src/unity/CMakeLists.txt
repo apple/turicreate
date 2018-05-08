@@ -33,8 +33,12 @@ endif()
     add_dependencies(unity ${loop_var})
   endforeach()
 
+  if(APPLE)
+    set(EXTRA_REQUIRES objcapi)
+  endif()
+
   make_shared_library_from_static(unity_shared
-        REQUIRES unity
+        REQUIRES unity TuriCreate_static ${EXTRA_REQUIRES}
         OUTPUT_NAME unity_shared
         EXPORT_MAP ${CMAKE_SOURCE_DIR}/cmake/stdcxx_reduce_exports.ver)
 

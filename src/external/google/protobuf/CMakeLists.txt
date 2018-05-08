@@ -80,5 +80,5 @@ make_library(protobuf
 
 # Add this in so that the protobuf namespace is globally redefined to __tc_google.
 # This avoids symbol conflicts with other version of protobuf.  
-target_compile_definitions(protobuf PUBLIC google=__tc_google)
+target_compile_definitions(protobuf PUBLIC google=__tc_google HAVE_PTHREAD=1)
 

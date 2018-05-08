@@ -36,15 +36,15 @@ struct neural_network_model_details {
     if(!r.good()) {
       log_and_throw("Could not load model: " + r.message());
     }
-    std::shared_ptr<CoreML::Specification::Model> base_model = model.m_spec;
+    CoreML::Specification::Model& base_model = model.getProto();
 
     // Create a modified model which is just a neuralNetwork, not nerualNetworkClassifier
     CoreML::Specification::Model modified_model = CoreML::Specification::Model();
-    modified_model.set_specificationversion(base_model->specificationversion());
+    modified_model.set_specificationversion(base_model.specificationversion());
     CoreML::Specification::NeuralNetwork* modified_neural_network = modified_model.mutable_neuralnetwork();
 
     // Copy the input
-    const CoreML::Specification::ModelDescription base_desc = base_model->description();
+    const CoreML::Specification::ModelDescription base_desc = base_model.description();
     CoreML::Specification::ModelDescription* modified_desc = modified_model.mutable_description();
     const ::CoreML::Specification::FeatureDescription& input = base_desc.input(0);
     modified_desc->add_input()->CopyFrom(input);
@@ -58,7 +58,7 @@ struct neural_network_model_details {
     // For backwards compatibility, do not copy preprocessing
 
     // Copy the needed layers
-    const CoreML::Specification::NeuralNetworkClassifier base_neural_network = base_model->neuralnetworkclassifier();
+    const CoreML::Specification::NeuralNetworkClassifier base_neural_network = base_model.neuralnetworkclassifier();
     for(int i = 0; i < base_neural_network.layers_size(); i++) {
       CoreML::Specification::NeuralNetworkLayer* dest_layer = modified_neural_network->add_layers();
       const CoreML::Specification::NeuralNetworkLayer source_layer = base_neural_network.layers(i);
@@ -253,7 +253,7 @@ mlmodel_image_feature_extractor::mlmodel_image_feature_extractor(
   if(!r.good()) {
     log_and_throw("Could not load model: " + r.message());
   }
-  m_impl->spec.CopyFrom(*deep_feature_nn.m_spec);
+  m_impl->spec.CopyFrom(deep_feature_nn.getProto());
 }
 
 const CoreML::Specification::Model&

@@ -758,9 +758,23 @@ inline flex_type_enum flex_type_enum_from_name(const std::string& name) {
     {"image", flex_type_enum::IMAGE},
     {"undefined", flex_type_enum::UNDEFINED}
   };
+  
   if (type_map.count(name) == 0) {
-    log_and_throw(std::string("Invalid flexible type name " + name));
+    auto throw_error = [&]() GL_COLD_NOINLINE_ERROR {
+      std::ostringstream ss;
+
+      ss << "Invalid flexible type name '" << name << "'. "
+         << "Valid names are: ";
+
+      for(const auto& p : type_map) { 
+         ss << p.first << ",";
   }
+
+      log_and_throw(ss.str().c_str());
+    };
+    throw_error();
+  } 
+  
   return type_map.at(name);
 }
 

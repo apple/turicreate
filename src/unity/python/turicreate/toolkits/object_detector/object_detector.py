@@ -1292,7 +1292,138 @@ class ObjectDetector(_CustomModel):
         builder.set_input(input_names, input_dims)
         builder.set_output(output_names, output_dims)
         builder.set_pre_processing_parameters(image_input_names=self.feature)
-        mlmodel = coremltools.models.MLModel(builder.spec)
+        model = builder.spec
+
+        if include_non_maximum_suppression:
+            # Non-Maximum Suppression is a post-processing algorithm
+            # responsible for merging all detections that belong to the
+            # same object.
+            #  Core ML schematic   
+            #                        +------------------------------------+
+            #                        | Pipeline                           |
+            #                        |                                    |
+            #                        |  +------------+   +-------------+  |
+            #                        |  | Neural     |   | Non-maximum |  |
+            #                        |  | network    +---> suppression +----->  confidences
+            #               Image  +---->            |   |             |  |
+            #                        |  |            +--->             +----->  coordinates
+            #                        |  |            |   |             |  |
+            # Optional inputs:       |  +------------+   +-^---^-------+  |
+            #                        |                     |   |          |
+            #    IOU threshold     +-----------------------+   |          |
+            #                        |                         |          |
+            # Confidence threshold +---------------------------+          |
+            #                        +------------------------------------+
+
+            model_neural_network = model.neuralNetwork
+            model.specificationVersion = 3
+            model.pipeline.ParseFromString(b'')
+            model.pipeline.models.add()
+            model.pipeline.models[0].neuralNetwork.ParseFromString(b'')
+            model.pipeline.models.add()
+            model.pipeline.models[1].nonMaximumSuppression.ParseFromString(b'')
+            # begin: Neural network  model
+            nn_model = model.pipeline.models[0]
+
+            nn_model.description.ParseFromString(b'')
+            input_image = model.description.input[0]
+            input_image.type.imageType.width = self.input_image_shape[1]
+            input_image.type.imageType.height = self.input_image_shape[2]
+            nn_model.description.input.add()
+            nn_model.description.input[0].ParseFromString(
+                input_image.SerializeToString())
+
+            for i in range(2):
+                del model.description.output[i].type.multiArrayType.shape[:]
+            names = ["raw_confidence", "raw_coordinates"]
+            bounds = [self.num_classes, 4]
+            for i in range(2):
+                output_i = model.description.output[i]
+                output_i.name = names[i]
+                for j in range(2):
+                    ma_type = output_i.type.multiArrayType
+                    ma_type.shapeRange.sizeRanges.add()
+                    ma_type.shapeRange.sizeRanges[j].lowerBound = (
+                        bounds[i] if j == 1 else 0)
+                    ma_type.shapeRange.sizeRanges[j].upperBound = (
+                        bounds[i] if j == 1 else -1)
+                nn_model.description.output.add()
+                nn_model.description.output[i].ParseFromString(
+                    output_i.SerializeToString())
+
+                ma_type = nn_model.description.output[i].type.multiArrayType
+                ma_type.shape.append(num_bounding_boxes)
+                ma_type.shape.append(bounds[i])
+            
+            # Think more about this line
+            nn_model.neuralNetwork.ParseFromString(
+                model_neural_network.SerializeToString())
+            nn_model.specificationVersion = model.specificationVersion
+            # end: Neural network  model
+
+            # begin: Non maximum suppression model
+            nms_model = model.pipeline.models[1]
+            nms_model_nonMaxSup = nms_model.nonMaximumSuppression
+            
+            for i in range(2):
+                output_i = model.description.output[i]
+                nms_model.description.input.add()
+                nms_model.description.input[i].ParseFromString(
+                    output_i.SerializeToString())
+
+                nms_model.description.output.add()
+                nms_model.description.output[i].ParseFromString(
+                    output_i.SerializeToString())
+                nms_model.description.output[i].name = (
+                    'confidence' if i==0 else 'coordinates')
+            
+            nms_model_nonMaxSup.iouThreshold = iou_threshold
+            nms_model_nonMaxSup.confidenceThreshold = confidence_threshold
+            nms_model_nonMaxSup.confidenceInputFeatureName = 'raw_confidence'
+            nms_model_nonMaxSup.coordinatesInputFeatureName = 'raw_coordinates'
+            nms_model_nonMaxSup.confidenceOutputFeatureName = 'confidence'
+            nms_model_nonMaxSup.coordinatesOutputFeatureName = 'coordinates'
+            nms_model.specificationVersion = model.specificationVersion
+            nms_model_nonMaxSup.stringClassLabels.vector.extend(self.classes)
+
+            for i in range(2):
+                nms_model.description.input[i].ParseFromString(
+                    nn_model.description.output[i].SerializeToString()
+                )
+
+            if include_non_maximum_suppression:
+                # Iou Threshold
+                IOU_THRESHOLD_STRING = 'iouThreshold'
+                model.description.input.add()
+                model.description.input[1].type.doubleType.ParseFromString(b'')
+                model.description.input[1].name = IOU_THRESHOLD_STRING
+                nms_model.description.input.add()
+                nms_model.description.input[2].ParseFromString(
+                    model.description.input[1].SerializeToString()
+                )
+                nms_model_nonMaxSup.iouThresholdInputFeatureName = IOU_THRESHOLD_STRING
+                
+                # Confidence Threshold
+                CONFIDENCE_THRESHOLD_STRING = 'confidenceThreshold'
+                model.description.input.add()
+                model.description.input[2].type.doubleType.ParseFromString(b'')
+                model.description.input[2].name = CONFIDENCE_THRESHOLD_STRING
+
+                nms_model.description.input.add()
+                nms_model.description.input[3].ParseFromString(
+                    model.description.input[2].SerializeToString())
+
+                nms_model_nonMaxSup.confidenceThresholdInputFeatureName = \
+                    CONFIDENCE_THRESHOLD_STRING
+                
+            # end: Non maximum suppression model
+            model.description.output[0].name = 'confidence'
+            model.description.output[1].name = 'coordinates'
+
+        iouThresholdString = '(optional) IOU Threshold override (default: {})'
+        confidenceThresholdString = ('(optional)' + 
+            ' Confidence Threshold override (default: {})')
+        mlmodel = coremltools.models.MLModel(model)
         model_type = 'object detector (%s)' % self.model
         mlmodel.short_description = _coreml_utils._mlmodel_short_description(model_type)
         mlmodel.input_description[self.feature] = 'Input image'

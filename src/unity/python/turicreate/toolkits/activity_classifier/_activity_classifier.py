@@ -341,15 +341,16 @@ class ActivityClassifier(_CustomModel):
 
     def export_coreml(self, filename):
         """
-        Save the model in Core ML format.
+        Export the model in Core ML format.
 
-        See Also
-        --------
-        save
+        Parameters
+        ----------
+        filename: str
+          A valid filename where the model can be saved.
 
         Examples
         --------
-        >>> model.export_coreml('myModel.mlmodel')
+        >>> model.export_coreml("MyModel.mlmodel")
         """
         import coremltools as _cmt
         import mxnet as _mx

@@ -25,8 +25,10 @@
 #include <parallel/thread_pool.hpp>
 #include <logger/logger.hpp>
 #include <logger/log_rotate.hpp>
+#ifdef TC_HAS_PYTHON
 #include <lambda/lambda_master.hpp>
 #include <lambda/graph_pylambda_master.hpp>
+#endif
 #include <minipsutil/minipsutil.h>
 
 #include "startup_teardown.hpp"
@@ -248,12 +250,16 @@ void global_teardown::perform_teardown() {
   teardown_performed = true;
   logstream(LOG_INFO) << "Performing teardown" << std::endl;
   try {
+#ifdef TC_HAS_PYTHON
     turi::lambda::lambda_master::shutdown_instance();
     turi::lambda::graph_pylambda_master::shutdown_instance();
+#endif
     MEMORY_RELEASE_THREAD->stop();
     delete MEMORY_RELEASE_THREAD;
     turi::fileio::fixed_size_cache_manager::get_instance().clear();
+#ifdef TC_ENABLE_REMOTEFS
     turi::file_download_cache::get_instance().clear();
+#endif
     turi::block_cache::release_instance();
     turi::reap_current_process_temp_files();
     turi::reap_unused_temp_files();

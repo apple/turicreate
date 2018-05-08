@@ -10,6 +10,7 @@ from turicreate.deps import numpy as np, HAS_NUMPY
 from turicreate.deps import pandas as pd, HAS_PANDAS
 import unittest
 from . import util
+import os
 import sys
 import six
 import turicreate as tc
@@ -28,7 +29,12 @@ from turicreate.toolkits.recommender.ranking_factorization_recommender import Ra
 from turicreate.toolkits.recommender.popularity_recommender import PopularityRecommender
 import array
 from turicreate.util import _assert_sframe_equal as assert_sframe_equal
+from turicreate.toolkits._internal_utils import _mac_ver
+from tempfile import mkstemp as _mkstemp
 from copy import copy
+from subprocess import Popen as _Popen
+from subprocess import PIPE as _PIPE
+import coremltools as _coremltools
 
 
 if not HAS_NUMPY:
@@ -54,155 +60,209 @@ model_names = ['popularity_recommender',
                'ranking_factorization_recommender_ials',
                'ranking_factorization_recommender_no_target']
 
-def _get_trained_model(model_name, data,
-                       user_id='user',
-                       item_id='item',
-                       target=None,
-                       **args):
+def _coreml_to_tc(preds):
+    return {'rank': preds['recommendations'], 'score': preds['probabilities']}
 
-    if model_name == 'default':
-        m = tc.recommender.create(data, user_id, item_id,
-                                  target=target, **args)
-    elif model_name == 'popularity_recommender':
-        m = tc.popularity_recommender.create(data, user_id, item_id, **args)
+class RecommenderTestBase(unittest.TestCase):
+    def _test_coreml_export(self, m, item_ids, ratings = None):
+        temp_file_path = _mkstemp()[1]
+        if m.target and ratings:
+            obs_data_sf = tc.SFrame({
+                m.item_id: tc.SArray(item_ids),
+                m.target: tc.SArray(ratings)
+            })
+            predictions_tc = m.recommend_from_interactions(obs_data_sf, k=5)
+            interactions = {item_ids[i]: ratings[i] for i in range(len(item_ids))}
+        else:
+            predictions_tc = m.recommend_from_interactions(item_ids, k=5)
+            interactions = {item_ids[i]: -1 for i in range(len(item_ids))}
 
-    elif model_name == 'popularity_recommender_with_target':
-        m = tc.popularity_recommender.create(data, user_id, item_id, target=target, **args)
+        # convert TC SFrame into same dict structure as CoreML will return
+        predictions_tc_dict = dict()
+        for field in [u'score', u'rank']:
+            predictions_tc_dict[field] = dict()
+        item_ids_from_preds = predictions_tc[m.item_id]
+        scores_from_preds = predictions_tc['score']
+        ranks_from_preds = predictions_tc['rank']
+        for i in range(len(item_ids_from_preds)):
+            predictions_tc_dict['score'][str(item_ids_from_preds[i])] = scores_from_preds[i]
+            predictions_tc_dict['rank'][str(item_ids_from_preds[i])] = ranks_from_preds[i]
 
-    elif model_name == 'ranking_factorization_recommender':
+        # Do the CoreML export and predict (if on macOS)
+        m.export_coreml(temp_file_path)
+        if _mac_ver() >= (10,14):
+            coremlmodel = _coremltools.models.MLModel(temp_file_path)
+            predictions_coreml = coremlmodel.predict({'interactions': interactions, 'k': 5})
 
-        args.setdefault("max_iterations", 10)
-        m = tc.ranking_factorization_recommender.create(data,
-                user_id=user_id,
-                item_id=item_id,
-                target=target,
-                **args)
+            # compare them
+            self.assertEqual(predictions_tc_dict, _coreml_to_tc(predictions_coreml))
+            os.unlink(temp_file_path)
 
-    elif model_name == 'item_content_recommender':
+    def _get_trained_model(self, model_name, data,
+                        user_id='user',
+                        item_id='item',
+                        target=None,
+                        test_export_to_coreml=True,
+                        **args):
 
-        items = data[item_id].unique()
+        if model_name == 'default':
+            m = tc.recommender.create(data, user_id, item_id,
+                                    target=target, **args)
+        elif model_name == 'popularity_recommender':
+            m = tc.popularity_recommender.create(data, user_id, item_id, **args)
 
-        alt_data = tc.util.generate_random_sframe(len(items), "ccnv")
-        alt_data[item_id] = items
+        elif model_name == 'popularity_recommender_with_target':
+            m = tc.popularity_recommender.create(data, user_id, item_id, target=target, **args)
 
-        m = tc.item_content_recommender.create(alt_data,
-                item_id=item_id,
-                observation_data = data,
-                user_id=user_id,
-                target=target,
-                ** args)
+        elif model_name == 'ranking_factorization_recommender':
 
-    elif model_name == 'ranking_factorization_recommender_ials':
+            args.setdefault("max_iterations", 10)
+            m = tc.ranking_factorization_recommender.create(data,
+                    user_id=user_id,
+                    item_id=item_id,
+                    target=target,
+                    **args)
 
-        args.setdefault("max_iterations", 10)
-        m = tc.ranking_factorization_recommender.create(data,
-                user_id=user_id,
-                item_id=item_id,
-                target=target,
-                solver = 'ials',
-                **args)
+        elif model_name == 'item_content_recommender':
 
-    elif model_name == 'ranking_factorization_recommender_no_target':
+            items = data[item_id].unique()
 
-        args.setdefault("max_iterations", 5)
-        m = tc.ranking_factorization_recommender.create(
-                data[[user_id, item_id]],
-                user_id=user_id,
-                item_id=item_id,
-                **args)
+            alt_data = tc.util.generate_random_sframe(len(items), "ccnv")
+            alt_data[item_id] = items
 
-    elif model_name == 'factorization_recommender':
+            m = tc.item_content_recommender.create(alt_data,
+                    item_id=item_id,
+                    observation_data = data,
+                    user_id=user_id,
+                    target=target,
+                    **args)
 
-        args.setdefault("max_iterations", 10)
-        m = tc.factorization_recommender.create(data,
-                user_id=user_id,
-                item_id=item_id,
-                target=target,
-                **args)
+        elif model_name == 'ranking_factorization_recommender_ials':
 
-    elif model_name == 'factorization_recommender_nmf':
+            args.setdefault("max_iterations", 10)
+            m = tc.ranking_factorization_recommender.create(data,
+                    user_id=user_id,
+                    item_id=item_id,
+                    target=target,
+                    solver = 'ials',
+                    **args)
 
-        args.setdefault("max_iterations", 10)
-        m = tc.recommender.factorization_recommender.create(data,
-                user_id=user_id,
-                item_id=item_id,
-                target=target,
-                nmf=True,
-                side_data_factorization=False,
-                **args)
+        elif model_name == 'ranking_factorization_recommender_no_target':
 
-    elif model_name == 'factorization_recommender_als':
+            args.setdefault("max_iterations", 5)
+            m = tc.ranking_factorization_recommender.create(
+                    data[[user_id, item_id]],
+                    user_id=user_id,
+                    item_id=item_id,
+                    **args)
 
-        args.setdefault("max_iterations", 10)
-        m = tc.recommender.factorization_recommender.create(data,
-                user_id=user_id,
-                item_id=item_id,
-                target=target,
-                solver = 'als',
-                **args)
+        elif model_name == 'factorization_recommender':
 
-    elif model_name == 'factorization_recommender_binary':
+            args.setdefault("max_iterations", 10)
+            m = tc.factorization_recommender.create(data,
+                    user_id=user_id,
+                    item_id=item_id,
+                    target=target,
+                    **args)
 
-        args.setdefault("max_iterations", 10)
-        if target in data.column_names():
-            data[target] = data[target] > .5  # Make it binary
-        m = tc.recommender.ranking_factorization_recommender.create(data,
-                user_id=user_id,
-                item_id=item_id,
-                target=target,
-                **args)
+        elif model_name == 'factorization_recommender_nmf':
 
-    elif model_name == 'item_similarity_recommender':
-        m = tc.recommender.item_similarity_recommender.create(
-            data, user_id, item_id, target=target, **args)
+            args.setdefault("max_iterations", 10)
+            m = tc.recommender.factorization_recommender.create(data,
+                    user_id=user_id,
+                    item_id=item_id,
+                    target=target,
+                    nmf=True,
+                    side_data_factorization=False,
+                    **args)
 
-    elif model_name == 'item_similarity_recommender_cosine':
-        m = tc.recommender.item_similarity_recommender.create(data, user_id, item_id,
-                                                              target=target,
-                                                              similarity_type = "cosine",
-                                                              **args)
+        elif model_name == 'factorization_recommender_als':
 
-    elif model_name == 'item_similarity_recommender_pearson':
-        m = tc.recommender.item_similarity_recommender.create(data,
-                                  user_id,
-                                  item_id,
-                                  target=target,
-                                  similarity_type='pearson',
-                                  **args)
+            args.setdefault("max_iterations", 10)
+            m = tc.recommender.factorization_recommender.create(data,
+                    user_id=user_id,
+                    item_id=item_id,
+                    target=target,
+                    solver = 'als',
+                    **args)
 
-    elif model_name == 'itemcf-user-distance':
-        m = tc.recommender.item_similarity_recommender.create(data,
-                                  user_id,
-                                  item_id,
-                                  target=target,
-                                  similarity_type = "pearson",
-                                  **args)
+        elif model_name == 'factorization_recommender_binary':
 
-        nearest_items = m.get_similar_items()
-        m = tc.recommender.item_similarity_recommender.create(data,
-                                  user_id,
-                                  item_id,
-                                  target=target,
-                                  similarity_type = 'cosine',
-                                  nearest_items=nearest_items,
-                                  **args)
+            args.setdefault("max_iterations", 10)
+            if target in data.column_names():
+                data[target] = data[target] > .5  # Make it binary
+            m = tc.recommender.ranking_factorization_recommender.create(data,
+                    user_id=user_id,
+                    item_id=item_id,
+                    target=target,
+                    **args)
+
+        elif model_name == 'item_similarity_recommender':
+            m = tc.recommender.item_similarity_recommender.create(
+                data, user_id, item_id, target=target, **args)
+
+        elif model_name == 'item_similarity_recommender_cosine':
+            m = tc.recommender.item_similarity_recommender.create(data, user_id, item_id,
+                                                                target=target,
+                                                                similarity_type = "cosine",
+                                                                **args)
+
+        elif model_name == 'item_similarity_recommender_pearson':
+            m = tc.recommender.item_similarity_recommender.create(data,
+                                    user_id,
+                                    item_id,
+                                    target=target,
+                                    similarity_type='pearson',
+                                    **args)
+
+        elif model_name == 'itemcf-user-distance':
+            m = tc.recommender.item_similarity_recommender.create(data,
+                                    user_id,
+                                    item_id,
+                                    target=target,
+                                    similarity_type = "pearson",
+                                    **args)
+
+            nearest_items = m.get_similar_items()
+            m = tc.recommender.item_similarity_recommender.create(data,
+                                    user_id,
+                                    item_id,
+                                    target=target,
+                                    similarity_type = 'cosine',
+                                    nearest_items=nearest_items,
+                                    **args)
 
 
-    elif model_name == 'itemcf-jaccard-topk':
-        m = tc.recommender.item_similarity_recommender.create(data,
-                                  user_id,
-                                  item_id,
-                                  threshold=0.001,
-                                  only_top_k=100,
-                                  **args)
+        elif model_name == 'itemcf-jaccard-topk':
+            m = tc.recommender.item_similarity_recommender.create(data,
+                                    user_id,
+                                    item_id,
+                                    threshold=0.001,
+                                    only_top_k=100,
+                                    **args)
 
-    else:
-        raise NotImplementedError('Unknown model %s requested' % model_name)
-
-    return m
+        else:
+            raise NotImplementedError('Unknown model %s requested' % model_name)
 
 
-class UserDefinedSimilarityTest(unittest.TestCase):
+        from itertools import chain, permutations
+        all_items = data[item_id].unique()
+        for some_items in chain(*list(permutations(all_items, i) for i in range(min(3, len(all_items))))):
+
+            some_items = list(some_items)
+
+            if target:
+                ratings = [random.uniform(0,1) for i in some_items]
+            else:
+                ratings = None
+
+            if test_export_to_coreml:
+                self._test_coreml_export(m, some_items, ratings)
+
+        return m
+
+
+class UserDefinedSimilarityTest(RecommenderTestBase):
 
     def setUp(self):
         sf = tc.SFrame({'user_id': ["0", "0", "0", "1", "1", "2", "2", "2"],
@@ -227,6 +287,16 @@ class UserDefinedSimilarityTest(unittest.TestCase):
         for vy, vz in zip(y["score"], z["score"]):
             self.assertAlmostEqual(vy, vz, 5)
 
+        """
+        TODO: test CoreML export, when we can support serializing user
+              data into CoreML model format.
+
+        if m.target:
+            self._test_coreml_export(m, ['a','b'], [.2,.3])
+        else:
+            self._test_coreml_export(m, ['a','b'])
+        """
+
 
     def tmp_test_bad_input(self):
         x = self.nearest_items
@@ -239,14 +309,12 @@ class UserDefinedSimilarityTest(unittest.TestCase):
                 'Could not initialize using nearest_items argument.')
 
 
-class ImmutableTest(unittest.TestCase):
+class ImmutableTest(RecommenderTestBase):
 
     def setUp(self):
         df_dict = {'user_id': ["0", "0", "0", "1", "1", "2", "2", "2"],
-                           'item_id': ["a", "b", "c", "a", "b", "b", "c", "d"],
-                           'rating': [.2, .3, .4, .1, .3, .3, .5, 0.9]}
-
-
+                   'item_id': ["a", "b", "c", "a", "b", "b", "c", "d"],
+                   'rating': [.2, .3, .4, .1, .3, .3, .5, .9]}
         df = SFrame(df_dict)
         self.df = df
         self.df_dict = df_dict
@@ -261,7 +329,18 @@ class ImmutableTest(unittest.TestCase):
         N, P = self.df.shape
         assert len(yhat) == N
 
-class EdgeCasesTest(unittest.TestCase):
+        """
+        TODO: test CoreML export, when we can support serializing
+              factorization model coefficients into CoreML model format.
+
+        if m.target:
+            self._test_coreml_export(m, ['a','b'], [.2,.3])
+        else:
+            self._test_coreml_export(m, ['a','b'])
+        """
+
+
+class EdgeCasesTest(RecommenderTestBase):
 
     def setUp(self):
 
@@ -289,6 +368,18 @@ class EdgeCasesTest(unittest.TestCase):
             assert '0' not in set(list(recs['user_id']))
             assert recs.num_rows() == 2
 
+            # TODO: test CoreML export, when we can support serializing
+            # factorization or popularity models
+            if isinstance(m, (tc.recommender.factorization_recommender.FactorizationRecommender,
+                              tc.recommender.popularity_recommender.PopularityRecommender)):
+                continue
+
+            # TODO - why is item similarity failing here !?
+            if m.target:
+                self._test_coreml_export(m, ['a','b'], [.2,.3])
+            else:
+                self._test_coreml_export(m, ['a','b'])
+
 
     def test_no_target(self):
         df = SFrame({'user_id': ["0", "0", "0", "1", "1", "2", "2"],
@@ -306,7 +397,7 @@ class EdgeCasesTest(unittest.TestCase):
             print(m)
 
             self.assertRaises(Exception, lambda:
-                    _get_trained_model(m, df,
+                    self._get_trained_model(m, df,
                                        user_id='user_id',
                                        item_id='item_id',
                                        target='rating-that-isnt-really-there-just-like-your-happiness'))
@@ -317,25 +408,25 @@ class EdgeCasesTest(unittest.TestCase):
 
         for m in model_names:
             self.assertRaises(Exception, lambda:
-                    _get_trained_model(m, df,
+                    self._get_trained_model(m, df,
                                        user_id='user_id',
                                        item_id='user_id',
                                        target='rating'))
             self.assertRaises(Exception, lambda:
-                    _get_trained_model(m, df,
+                    self._get_trained_model(m, df,
                                        user_id='user_id',
                                        item_id='item_id',
                                        target='item_id'))
 
             self.assertRaises(Exception, lambda:
-                    _get_trained_model(m, df,
+                    self._get_trained_model(m, df,
                                        user_id='user_id',
                                        item_id='user_id',
                                        target='user_id'))
 
 
 
-class ReturnStatisticsTest(unittest.TestCase):
+class ReturnStatisticsTest(RecommenderTestBase):
 
     def setUp(self):
 
@@ -349,15 +440,21 @@ class ReturnStatisticsTest(unittest.TestCase):
                                'item_similarity_recommender_pearson',
                                'popularity_recommender_with_target']
         for name in models_with_targets:
-            m = _get_trained_model(name, self.df,
+            '''
+            TODO:
+            Test CoreML export, when we have a dirarchiver that doesn't
+            depend on the filesystem
+            '''
+            m = self._get_trained_model(name, self.df,
                                    user_id='user_id',
                                    item_id='item_id',
-                                   target='rating')
+                                   target='rating',
+                                   test_export_to_coreml = False)
 
             assert m.training_rmse is None or m.training_rmse >= 0
 
     def test_get_counts(self):
-        m = _get_trained_model('item_similarity_recommender_pearson',
+        m = self._get_trained_model('item_similarity_recommender_pearson',
                                 self.df,
                                 user_id='user_id',
                                 item_id='item_id',
@@ -377,7 +474,7 @@ class ReturnStatisticsTest(unittest.TestCase):
 
 
 
-class NewUserTest(unittest.TestCase):
+class NewUserTest(RecommenderTestBase):
 
     def setUp(self):
 
@@ -410,10 +507,16 @@ class NewUserTest(unittest.TestCase):
 
         for model_name in model_names:
             print("New Users: Predict:", model_name)
-            m = _get_trained_model(model_name, self.df1,
+            '''
+            TODO:
+            Test CoreML export, when we have a dirarchiver that doesn't
+            depend on the filesystem
+            '''
+            m = self._get_trained_model(model_name, self.df1,
                     user_id='user_id',
                     item_id='item_id',
-                    target='rating')
+                    target='rating',
+                    test_export_to_coreml=False)
 
             for data in [self.df1, self.df2, self.df3]:
 
@@ -424,15 +527,21 @@ class NewUserTest(unittest.TestCase):
 
         for model_name in model_names:
             print("New Users: Recommend:", model_name)
-            m = _get_trained_model(model_name, self.df1,
-                    user_id='user_id', item_id='item_id', target='rating')
+            '''
+            TODO:
+            Test CoreML export, when we have a dirarchiver that doesn't
+            depend on the filesystem
+            '''
+            m = self._get_trained_model(model_name, self.df1,
+                    user_id='user_id', item_id='item_id', target='rating',
+                    test_export_to_coreml=False)
 
             for data in [self.df2, self.df3]:
 
                 recs = m.recommend(new_observation_data=data)
                 assert type(recs) == SFrame
 
-class GetSimilarItemsTest(unittest.TestCase):
+class GetSimilarItemsTest(RecommenderTestBase):
     def setUp(self):
         item_column = 'my_item_column'
         user_column = 'my_user_id'
@@ -446,6 +555,13 @@ class GetSimilarItemsTest(unittest.TestCase):
                     tc.recommender.factorization_recommender,
                     tc.recommender.popularity_recommender]:
             m = mod.create(sf, user_column, item_column, target='rating')
+            '''
+            TODO:
+            Test CoreML export, when we have a dirarchiver that doesn't
+            depend on the filesystem
+            '''
+            if isinstance(m, tc.recommender.item_similarity_recommender.ItemSimilarityRecommender):
+                self._test_coreml_export(m, ['a','b'], [1.,.3])
             models.append(m)
 
         self.sf = sf
@@ -559,6 +675,8 @@ class GetSimilarItemsTest(unittest.TestCase):
             self.assertEqual(ret_sf2[0]["item"], 1000)
             self.assertEqual(ret_sf2[0]["similar"], item)
 
+
+
         test_model(tc.recommender.item_similarity_recommender.create(data, "user", "item", "target"))
         test_model(tc.recommender.popularity_recommender.create(data, "user", "item", "target"))
 
@@ -586,6 +704,7 @@ class GetSimilarItemsTest(unittest.TestCase):
                 .rename({"X1-z" : "user", "X2-Z" : "item"}, inplace=True))
 
         user = data["user"][0]
+        item = data["item"][0]
 
         new_data = data.filter_by([user], "user")
         new_data["user"] = 10000
@@ -604,6 +723,12 @@ class GetSimilarItemsTest(unittest.TestCase):
             ret_sf2 = m.get_similar_users([10000], k = 1)
             self.assertEqual(ret_sf2[0]["user"], 10000)
             self.assertEqual(ret_sf2[0]["similar"], user)
+            '''
+            TODO:
+            Test CoreML export, when we have a dirarchiver that doesn't
+            depend on the filesystem
+            self._test_coreml_export(m, [item])
+            '''
 
         test_model(tc.recommender.factorization_recommender.create(
             data, "user", "item", "target",
@@ -628,7 +753,7 @@ class GetSimilarItemsTest(unittest.TestCase):
             self.run_get_similar_users(m)
 
 
-class ItemSimTest(unittest.TestCase):
+class ItemSimTest(RecommenderTestBase):
 
     def setUp(self):
         df = SFrame({'user_id': ["0", "0", "0", "1", "1", "2", "2", "3", "3"],
@@ -657,7 +782,9 @@ class ItemSimTest(unittest.TestCase):
         finally:
             shutil.rmtree(write_dir)
 
-class PopularityRecommenderTest(unittest.TestCase):
+        self._test_coreml_export(m, ['a','b'], [1.,.3])
+
+class PopularityRecommenderTest(RecommenderTestBase):
 
     def setUp(self):
         self.df = SFrame({'user_id': ["0", "0", "0", "1", "1", "2", "2", "2"],
@@ -675,6 +802,12 @@ class PopularityRecommenderTest(unittest.TestCase):
 
         nn = m.get_similar_items()
         assert nn is not None
+        '''
+        TODO:
+        Test CoreML export, when we have a dirarchiver that doesn't
+        depend on the filesystem
+        self._test_coreml_export(m, ['a','b'], [.2,.3])
+        '''
 
     def test_popularity_model(self):
         # Test that popularity without targets just counts each item's
@@ -683,12 +816,24 @@ class PopularityRecommenderTest(unittest.TestCase):
         actual = m.predict(self.df)
         expected = tc.SArray([2, 3, 2, 2, 3, 3, 2, 1]).astype(float)
         self.sframe_comparer._assert_sarray_equal(actual, expected)
+        '''
+        TODO:
+        Test CoreML export, when we have a dirarchiver that doesn't
+        depend on the filesystem
+        self._test_coreml_export(m, ['a','b'])
+        '''
 
         # Test a popularity model that uses the target column.
         m = tc.popularity_recommender.create(self.train, target='rating')
         yhat = m.predict(self.df)
         N, P = self.df.shape
         assert len(yhat) == N
+        '''
+        TODO:
+        Test CoreML export, when we have a dirarchiver that doesn't
+        depend on the filesystem
+        self._test_coreml_export(m, ['a','b'], [.2,.3])
+        '''
 
         # Check the dimensions of predictions on the training set
         yhat = m.predict(self.train)
@@ -726,6 +871,12 @@ class PopularityRecommenderTest(unittest.TestCase):
 
         assert 'training_rmse' in stats.keys()
         # assert 'validation_rmse' in stats.keys()
+        '''
+        TODO:
+        Test CoreML export, when we have a dirarchiver that doesn't
+        depend on the filesystem
+        self._test_coreml_export(m, ['a','b'], [.2,.3])
+        '''
 
     def test_largescale_recommendations(self):
 
@@ -741,6 +892,12 @@ class PopularityRecommenderTest(unittest.TestCase):
                         "item_id" : [i for u, i in user_item_list],})
 
         m = tc.popularity_recommender.create(sf)
+        '''
+        TODO:
+        Test CoreML export, when we have a dirarchiver that doesn't
+        depend on the filesystem
+        self._test_coreml_export(m, [1,2])
+        '''
 
         res = m.recommend(users = list(range(500)), k = 1)
 
@@ -779,7 +936,6 @@ class PopularityRecommenderTest(unittest.TestCase):
             assert item == user + 1  # The most popular unseen item
             assert score == 498 - user  # how many times it's been seen
 
-
     def test_compare_against_baseline(self):
 
         df_1 = tc.SFrame({'user_id': [1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4],
@@ -803,6 +959,16 @@ class PopularityRecommenderTest(unittest.TestCase):
             self.sframe_comparer._assert_sframe_equal(
                 pop_model.recommend(), base_model.recommend())
 
+            '''
+            TODO:
+            Test CoreML export, when we have a dirarchiver that doesn't
+            depend on the filesystem
+            if m.target:
+                self._test_coreml_export(m, [1,2], [2,3])
+            else:
+                self._test_coreml_export(m, [1,2])
+            '''
+
         ############################################################
 
         base_model = tc.recommender.popularity_recommender.create(df_2, "user_id", "item_id")
@@ -818,10 +984,16 @@ class PopularityRecommenderTest(unittest.TestCase):
             self.sframe_comparer._assert_sframe_equal(
                 pop_model.recommend(), base_model.recommend())
 
+            '''
+            TODO:
+            Test CoreML export, when we have a dirarchiver that doesn't
+            depend on the filesystem
+            self._test_coreml_export(m, [1,2])
+            '''
 
-class RecommendTest(unittest.TestCase):
 
-    @classmethod
+class RecommendTest(RecommenderTestBase):
+
     def setUp(self):
 
         self.sf = tc.SFrame({'user_id': [1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4],
@@ -836,6 +1008,16 @@ class RecommendTest(unittest.TestCase):
         # Test that observation side data was used.
         assert(set(m.observation_data_column_names) ==
                set(['user_id', 'item_id', 'rating', 'time']))
+
+        """
+        TODO: test CoreML export, when we can support having side data, and
+              thus, all factorization models.
+
+        if m.target:
+            self._test_coreml_export(m, [1,2], [2,3])
+        else:
+            self._test_coreml_export(m, [1,2])
+        """
 
         for diversity in [0, 1]:
 
@@ -900,7 +1082,12 @@ class RecommendTest(unittest.TestCase):
         options = [items, new_observation_datas,
                    new_user_datas, new_item_datas, excludes, diversities]
         m = tc.ranking_factorization_recommender.create(self.sf, target='rating')
+        """
+        TODO: test CoreML export, when we can support having side data, and
+              thus, all factorization models.
 
+        self._test_coreml_export(m, [1,2], [2,3])
+        """
         for (item, new_observation_data, new_user_data, new_item_data, exclude, diversity) \
                 in itertools.product(*options):
             r = m.recommend(users=None, k=5, items=item,
@@ -910,7 +1097,6 @@ class RecommendTest(unittest.TestCase):
                             diversity=diversity,
                             exclude=exclude, exclude_known=False)
             assert r is not None
-
 
     def test_side_data_used(self):
 
@@ -927,6 +1113,14 @@ class RecommendTest(unittest.TestCase):
         m1 = tc.ranking_factorization_recommender.create(self.sf, target='rating')
         m2 = tc.ranking_factorization_recommender.create(sf2, target='rating')
 
+        """
+        TODO: test CoreML export, when we can support having side data, and
+              thus, all factorization models.
+
+        for m in [m1,m2]:
+            self._test_coreml_export(m, [1,2], [2,3])
+        """
+        
         r1 = m1.recommend(exclude_known=False)
         r2 = m2.recommend(exclude_known=False)
         assert not all(r1['score'] == r2['score'])
@@ -969,7 +1163,7 @@ class RecommendTest(unittest.TestCase):
         self.assertRaises(ToolkitError, lambda: m2.recommend(users=user_query, exclude_known=False))
         assert not all(r1['score'] == r3['score'][::2])
 
-class ItemIntersectionTest(unittest.TestCase):
+class ItemIntersectionTest(RecommenderTestBase):
 
     def test_with_rating(self):
 
@@ -980,6 +1174,15 @@ class ItemIntersectionTest(unittest.TestCase):
         df = SFrame(df_dict)
 
         m = tc.recommender.popularity_recommender.create(df, "user_id", "item_id", "rating")
+        '''
+        TODO:
+        Test CoreML export, when we have a dirarchiver that doesn't
+        depend on the filesystem
+        if m.target:
+            self._test_coreml_export(m, [0,1], [2,5])
+        else:
+            self._test_coreml_export(m, [0,1])
+        '''
 
         query_items = [(0,0), (0,1), (0,2), (1,2), (1,0), (0, 5)]
         query_sf = tc.SFrame({"item_id_1" : [v1 for v1, v2 in query_items],
@@ -1000,7 +1203,6 @@ class ItemIntersectionTest(unittest.TestCase):
 
         util.SFrameComparer()._assert_sframe_equal(out, true_out)
 
-
     def test_without_rating(self):
 
         df_dict = {'user_id': [0, 1, 2, 0, 1, 3, 3, 4],
@@ -1009,6 +1211,13 @@ class ItemIntersectionTest(unittest.TestCase):
         df = SFrame(df_dict)
 
         m = tc.recommender.popularity_recommender.create(df, "user_id", "item_id")
+
+        '''
+        TODO:
+        Test CoreML export, when we have a dirarchiver that doesn't
+        depend on the filesystem
+        self._test_coreml_export(m, [0,1])
+        '''
 
         query_items = [(0,0), (0,1), (0,2), (1,2), (1,0), (0, 5)]
         query_sf = tc.SFrame({"item_id_1" : [v1 for v1, v2 in query_items],
@@ -1031,9 +1240,8 @@ class ItemIntersectionTest(unittest.TestCase):
         util.SFrameComparer()._assert_sframe_equal(out, true_out)
 
 
-class RecommenderTest(unittest.TestCase):
+class RecommenderTest(RecommenderTestBase):
 
-    @classmethod
     def setUp(self):
 
         ratings_test_data = '''userID,placeID,rating
@@ -1106,11 +1314,17 @@ U1103,135104,0'''
             self.df_improper = SFrame.read_csv(filename, delimiter='|')
             self.models = []
             for model_name in model_names:
-                m = _get_trained_model(model_name,
+                '''
+                TODO:
+                Test CoreML export, when we have a dirarchiver that doesn't
+                depend on the filesystem
+                '''
+                m = self._get_trained_model(model_name,
                                        self.df,
                                        user_id=self.user_id,
                                        item_id=self.item_id,
-                                       target=self.target)
+                                       target=self.target,
+                                       test_export_to_coreml=False)
                 self.models.append(m)
 
         finally:
@@ -1122,45 +1336,66 @@ U1103,135104,0'''
         m4 = tc.recommender.create(implicit, self.user_id, self.item_id, ranking=False)
         assert m4 is not None
 
+        '''
+        TODO:
+        Test CoreML export, when we have a dirarchiver that doesn't
+        depend on the filesystem
+        if m4.target:
+            self._test_coreml_export(m4, ['135085','135038'], [0,1])
+        else:
+            self._test_coreml_export(m4, ['135085','135038'])
+        '''
+
     def test_compare_models(self):
         from turicreate.toolkits.recommender.util import compare_models
 
-        model1 = _get_trained_model('popularity_recommender_with_target',
+        '''
+        TODO:
+        Test CoreML export, when we have a dirarchiver that doesn't
+        depend on the filesystem
+        '''
+
+        model1 = self._get_trained_model('popularity_recommender_with_target',
                                     self.df,
                                     user_id=self.user_id,
                                     item_id=self.item_id,
-                                    target=self.target)
-        model2 = _get_trained_model('item_similarity_recommender',
+                                    target=self.target,
+                                    test_export_to_coreml=False)
+        model2 = self._get_trained_model('item_similarity_recommender',
                                     self.df,
                                     user_id=self.user_id,
                                     item_id=self.item_id,
-                                    target=self.target)
+                                    target=self.target,
+                                    test_export_to_coreml=False)
 
         x = compare_models(self.test, [model1, model2],
                            skip_set=self.train, make_plot=False)
         assert x is not None
 
-        model1 = _get_trained_model('popularity_recommender',
+        model1 = self._get_trained_model('popularity_recommender',
                                     self.df,
                                     user_id=self.user_id,
                                     item_id=self.item_id,
-                                    target=self.target)
-        model2 = _get_trained_model('ranking_factorization_recommender_no_target',
+                                    target=self.target,
+                                    test_export_to_coreml=False)
+        model2 = self._get_trained_model('ranking_factorization_recommender_no_target',
                                     self.df,
                                     user_id=self.user_id,
                                     item_id=self.item_id,
-                                    target=self.target)
+                                    target=self.target,
+                                    test_export_to_coreml=False)
 
         x = compare_models(self.test, [model1, model2],
                            skip_set=self.train, make_plot=False)
         assert x is not None
 
 
-        model2 = _get_trained_model('factorization_recommender',
+        model2 = self._get_trained_model('factorization_recommender',
                                     self.df,
                                     user_id=self.user_id,
                                     item_id=self.item_id,
-                                    target=self.target)
+                                    target=self.target,
+                                    test_export_to_coreml=False)
 
         x = compare_models(self.test, [model1, model2],
                            skip_set=self.train, make_plot=False)
@@ -1194,7 +1429,14 @@ U1103,135104,0'''
 
         for method in methods:
 
-            m = _get_trained_model(method, X1, *X1.column_names())
+            '''
+            TODO:
+            Test CoreML export, when we have a dirarchiver that doesn't
+            depend on the filesystem
+            '''
+
+            m = self._get_trained_model(method, X1, *X1.column_names(), 
+                test_export_to_coreml=False)
 
             # Make sure the predictions are the same.
             preds_1 = m.predict(X2)
@@ -1253,18 +1495,32 @@ U1103,135104,0'''
     def test_reg_value_regression(self):
         for method in ['factorization_recommender', 'ranking_factorization_recommender']:
             for sgd_step_size in [0, 1e-20, 1e20]:
+                '''
+                TODO:
+                Test CoreML export, when we have a dirarchiver that doesn't
+                depend on the filesystem
+                '''
                 args = {'max_iterations': 5,
                         'regularization': 1e-20,
                         'linear_regularization': 1e20,
                         'sgd_step_size': sgd_step_size}
-                m = _get_trained_model(method, self.df, self.user_id, self.item_id, target=self.target, **args)
+                m = self._get_trained_model(method, self.df, self.user_id, 
+                    self.item_id, target=self.target, 
+                    test_export_to_coreml=False, **args)
                 assert m is not None
 
+                '''
+                TODO:
+                Test CoreML export, when we have a dirarchiver that doesn't
+                depend on the filesystem
+                '''
                 args = {'max_iterations': 5,
                         'regularization': 1e20,
                         'linear_regularization': 1e-20,
                         'sgd_step_size': sgd_step_size}
-                m = _get_trained_model(method, self.df, self.user_id, self.item_id, target=self.target, **args)
+                m = self._get_trained_model(method, self.df, self.user_id, 
+                    self.item_id, target=self.target, 
+                    test_export_to_coreml=False, **args)
                 assert m is not None
 
     def test_common_functions(self):
@@ -1414,10 +1670,16 @@ U1103,135104,0'''
         # improperly parsed data
         def _create_recommender(model_name):
 
-            return _get_trained_model(model_name, self.df_improper,
+            '''
+            TODO:
+            Test CoreML export, when we have a dirarchiver that doesn't
+            depend on the filesystem
+            '''
+            return self._get_trained_model(model_name, self.df_improper,
                     user_id=self.user_id,
                     item_id=self.item_id,
-                    target=self.target)
+                    target=self.target,
+                    test_export_to_coreml=False)
 
         for model_name in model_names:
             self.assertRaises(RuntimeError,
@@ -1445,10 +1707,16 @@ U1103,135104,0'''
 
         def _create_recommender(m, args):
 
-            return _get_trained_model(m, self.train,
+            '''
+            TODO:
+            Test CoreML export, when we have a dirarchiver that doesn't
+            depend on the filesystem
+            '''
+            return self._get_trained_model(m, self.train,
                     user_id=self.user_id,
                     item_id=self.item_id,
                     target=self.target,
+                    test_export_to_coreml=False,
                     **args)
 
         for m in model_names:
@@ -1497,7 +1765,15 @@ U1103,135104,0'''
         num_recommendations = 5
         train_users = SArray(list(set(self.train['userID'])))
         test_users = SArray(list(set(self.test['userID'])))
-
+        '''
+        TODO:
+        Test CoreML export, when we have a dirarchiver that doesn't
+        depend on the filesystem
+        if m.target:
+            self._test_coreml_export(m, ['135085','135038'], [0,1])
+        else:
+            self._test_coreml_export(m, ['135085','135038'])
+        '''
         recs = m.recommend(users=train_users, k=num_recommendations)
         assert recs.num_rows() == num_recommendations * 3  # 3 unique users in train
 
@@ -1572,6 +1848,15 @@ U1103,135104,0'''
                                   self.item_id,
                                   target='rating',
                                   verbose=False)
+        '''
+        TODO:
+        Test CoreML export, when we have a dirarchiver that doesn't
+        depend on the filesystem
+        if m.target:
+            self._test_coreml_export(m, ['135085','135038'], [0,1])
+        else:
+            self._test_coreml_export(m, ['135085','135038'])
+        '''
         res = m.evaluate_rmse(sf, m.target)
 
         # Compute real answers
@@ -1659,6 +1944,12 @@ U1103,135104,0'''
                                   user_id,
                                   item_id,
                                   verbose=False)
+        '''
+        TODO:
+        Test CoreML export, when we have a dirarchiver that doesn't
+        depend on the filesystem
+        self._test_coreml_export(m, ['A','B'])
+        '''
         train_preds = m.predict(train)
         assert len(train_preds) == train.num_rows()
 
@@ -1677,7 +1968,6 @@ U1103,135104,0'''
         assert len(test_preds) == test.num_rows()
 
 
-
     def test_precision_recall(self):
 
         train = self.train
@@ -1686,6 +1976,13 @@ U1103,135104,0'''
                                   self.user_id,
                                   self.item_id,
                                   verbose=False)
+        
+        '''
+        TODO:
+        Test CoreML export, when we have a dirarchiver that doesn't
+        depend on the filesystem
+        self._test_coreml_export(m, ['135085','135038'])
+        '''
         users = set(list(test[self.user_id]))
         cutoff = 5
 
@@ -1732,9 +2029,8 @@ U1103,135104,0'''
                 assert abs(r - r2) < DELTA
 
 
-class SideDataTests(unittest.TestCase):
+class SideDataTests(RecommenderTestBase):
 
-    @classmethod
     def setUp(self):
 
         self.sf = tc.SFrame({'userID': ["0", "0", "0", "1", "1", "2", "8", "10"],
@@ -1799,11 +2095,17 @@ class SideDataTests(unittest.TestCase):
                         if model_name == "item_content_recommender":
                             continue
 
-                        m = _get_trained_model(model_name,
+                        '''
+                        TODO:
+                        Test CoreML export, when we have a dirarchiver 
+                        that doesn't depend on the filesystem
+                        '''
+                        m = self._get_trained_model(model_name,
                                                self.sf,
                                                user_id=self.user_id,
                                                item_id=self.item_id,
                                                target=self.target,
+                                               test_export_to_coreml=False,
                                                user_data=u_side,
                                                item_data=i_side)
                         m.save(fn)
@@ -1822,27 +2124,44 @@ class SideDataTests(unittest.TestCase):
         m = tc.recommender.create(sf_w_target,
                                   self.user_id, self.item_id)
         assert isinstance(m, ItemSimilarityRecommender)
+        self._test_coreml_export(m, ['a','b'])
 
         m = tc.recommender.create(sf_no_target,
                                   self.user_id, self.item_id)
         assert isinstance(m, ItemSimilarityRecommender)
+        self._test_coreml_export(m, ['a','b'])
 
         m = tc.recommender.create(sf_w_target,
                                   self.user_id, self.item_id,
                                   self.target)
         assert isinstance(m, RankingFactorizationRecommender)
+        """
+        TODO: test CoreML export, when we can support serializing user
+              data into CoreML model format.
+        self._test_coreml_export(m, ['a','b'], [.2,.3])
+        """
 
         m = tc.recommender.create(sf_w_target,
                                   self.user_id, self.item_id,
                                   self.target,
                                   ranking=False)
         assert isinstance(m, FactorizationRecommender)
+        """
+        TODO: test CoreML export, when we can support serializing user
+              data into CoreML model format.
+        self._test_coreml_export(m, ['a','b'], [.2,.3])
+        """
 
         m = tc.recommender.create(sf_binary_target,
                                   self.user_id, self.item_id,
                                   self.target,
                                   ranking=False)
         assert isinstance(m, FactorizationRecommender)
+        """
+        TODO: test CoreML export, when we can support serializing user
+              data into CoreML model format.
+        self._test_coreml_export(m, ['a','b'], [.2,.3])
+        """
 
         m = tc.recommender.create(sf_w_target,
                                   self.user_id, self.item_id,
@@ -1850,6 +2169,11 @@ class SideDataTests(unittest.TestCase):
                                   ranking=False,
                                   user_data=self.user_side)
         assert isinstance(m, FactorizationRecommender)
+        """
+        TODO: test CoreML export, when we can support serializing user
+              data into CoreML model format.
+        self._test_coreml_export(m, ['a','b'], [.2,.3])
+        """
 
         m = tc.recommender.create(sf_w_target,
                                   self.user_id, self.item_id,
@@ -1857,6 +2181,11 @@ class SideDataTests(unittest.TestCase):
                                   user_data=self.user_side,
                                   item_data=self.item_side)
         assert isinstance(m, RankingFactorizationRecommender)
+        """
+        TODO: test CoreML export, when we can support serializing user
+              data into CoreML model format.
+        self._test_coreml_export(m, ['a','b'], [.2,.3])
+        """
 
         m = tc.recommender.create(sf_no_target,
                                   self.user_id, self.item_id,
@@ -1864,18 +2193,21 @@ class SideDataTests(unittest.TestCase):
                                   user_data=self.user_side,
                                   item_data=self.item_side)
         assert isinstance(m, RankingFactorizationRecommender)
+        """
+        TODO: test CoreML export, when we can support serializing user
+              data into CoreML model format.
+        self._test_coreml_export(m, ['a','b'], [.2,.3])
+        """
 
         m = tc.recommender.create(sf_no_target,
                                   self.user_id, self.item_id,
                                   ranking=False)
         assert isinstance(m, ItemSimilarityRecommender)
+        self._test_coreml_export(m, ['a','b'])
 
 
+class FactorizationTests(RecommenderTestBase):
 
-
-class FactorizationTests(unittest.TestCase):
-
-    @classmethod
     def setUp(self):
         self.model_names = ['default',
                             'factorization_recommender',
@@ -1913,14 +2245,14 @@ class FactorizationTests(unittest.TestCase):
 
                 for model_name in self.model_names:
 
-                    m = _get_trained_model(model_name,
+                    m = self._get_trained_model(model_name,
                                            self.df,
                                            user_id = self.user_id,
                                            item_id = self.item_id,
                                            target = self.target,
+                                           test_export_to_coreml=False,
                                            user_data = u_side,
                                            item_data = i_side)
-
                     self.models.append((model_name, m))
 
 
@@ -2047,7 +2379,7 @@ class FactorizationTests(unittest.TestCase):
         # sometimes segfaults in gl 1.3.0
         m.recommend([10000])
 
-class TestContentRecommender(unittest.TestCase):
+class TestContentRecommender(RecommenderTestBase):
 
     def test_basic(self):
 
@@ -2081,6 +2413,7 @@ class TestContentRecommender(unittest.TestCase):
         self.assertEqual(out_2.column_names()[2], "rank")
 
         self.assertEqual(out_2[0]["my_item_id"], 4)
+        self._test_coreml_export(m, [0,1])
 
 
     def test_weights(self):
@@ -2106,6 +2439,8 @@ class TestContentRecommender(unittest.TestCase):
         m_3 = tc.recommender.item_content_recommender.create(item_data, "my_item_id", weights = {"data_1" : 0, "data_2" : 1})
         out_3 = m_3.recommend_from_interactions([0], k = 1)
         self.assertEqual(out_3[0]["my_item_id"], 2)
+        for m in [m_1, m_2, m_3]:
+            self._test_coreml_export(m, [0,1])
 
 
     def test_basic_string_type(self):
@@ -2140,6 +2475,7 @@ class TestContentRecommender(unittest.TestCase):
         self.assertEqual(out_2.column_names()[2], "rank")
 
         self.assertEqual(out_2[0]["my_item_id"], 4)
+        self._test_coreml_export(m, [0,1])
 
 
     def test_basic_mixed_types(self):
@@ -2162,6 +2498,8 @@ class TestContentRecommender(unittest.TestCase):
         observation_data = tc.SFrame({"users" : list(range(8))*5,
                                       "item_id" : [str(r) for r in list(range(10))*4]})
 
+        self._test_coreml_export(m, ['0','1'])
+
         m = tc.recommender.item_content_recommender.create(
             item_data, "item_id", observation_data, "users")
 
@@ -2181,6 +2519,7 @@ class TestContentRecommender(unittest.TestCase):
         out_3_items = set(out_3["item_id"])
 
         self.assertEqual(len(user_0_items & out_3_items), 0)
+        self._test_coreml_export(m, ['0','1'])
 
     def test_get_similar_items(self):
 
@@ -2203,6 +2542,7 @@ class TestContentRecommender(unittest.TestCase):
 
         for d in sim_items:
             self.assertEqual(int(d["similar"]), int(d["item_id"]) + 25)
+        self._test_coreml_export(m, ['0','1'])
 
 
 

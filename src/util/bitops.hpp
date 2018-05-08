@@ -152,6 +152,8 @@ static inline unsigned int num_bits_on(T v, _ENABLE_IF_UINT(T))
   else if(sizeof(unsigned long long) >= sizeof(T))
     return __builtin_popcountll((unsigned long long)v);
   else if(bitsizeof(unsigned long long) == 64 && bitsizeof(T) == 128)
+  // This errors with error: shift count >= width of type [-Werror,-Wshift-count-overflow]
+  // but, at runtime, we've already checked for that in the else if condition.
     return (__builtin_popcountll((unsigned long long)(v))
             + __builtin_popcountll((unsigned long long)(uint64_t(uint128_t(v) >> 64))));
   else {

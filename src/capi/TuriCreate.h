@@ -408,7 +408,6 @@ tc_sarray* tc_sarray_create_from_const(
 tc_sarray* tc_sarray_create_from_list(
     const tc_flex_list* values, tc_error** error);
 
-
 tc_sarray* tc_sarray_load(const char* url, tc_error** error);
 
 void tc_sarray_save(const tc_sarray* sa, const char* url, tc_error** error);
@@ -840,7 +839,11 @@ tc_model* tc_model_new(const char* model_name, tc_error**);
 
 tc_model* tc_model_load(const char* url, tc_error** error);
 
+tc_model* tc_model_load_from_data(const char* data, size_t data_len, tc_error** error);
+
 void tc_model_save(const tc_model* model, const char* url, tc_error** error);
+
+tc_flexible_type* tc_model_save_to_data(const tc_model* model, tc_error** error);
 
 const char* tc_model_name(const tc_model*, tc_error**);
 
