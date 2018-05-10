@@ -1,8 +1,11 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
- *
- * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
- */
+//
+//  Pipeline.hpp
+//  libmlmodelspec
+//
+//  Created by Hoyt Koepke on 11/17/16.
+//  Copyright © 2016 Apple. All rights reserved.
+//
+
 #ifndef Pipeline_hpp
 #define Pipeline_hpp
 
@@ -16,7 +19,7 @@ namespace Specification {
     class PipelineParameters;
 }
 
-class EXPORT Pipeline : public Model {
+class Pipeline : public Model {
 private:
   Pipeline(const std::string& description);
   Pipeline(const std::string& a, const std::string& b, const std::string& description, bool isClassifier);

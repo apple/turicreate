@@ -6,6 +6,7 @@
 #ifndef MLMODEL_LOGISTIC_MODEL_SPEC_HPP
 #define MLMODEL_LOGISTIC_MODEL_SPEC_HPP
 
+#include "../Export.hpp"
 #include "../Result.hpp"
 #include "../Model.hpp"
 

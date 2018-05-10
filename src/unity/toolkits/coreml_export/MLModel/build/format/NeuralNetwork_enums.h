@@ -1,8 +1,3 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
- *
- * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
- */
 #ifndef __NEURALNETWORK_ENUMS_H
 #define __NEURALNETWORK_ENUMS_H
 #pragma clang diagnostic push
@@ -105,10 +100,13 @@ enum MLNeuralNetworkLayerlayer: int {
     MLNeuralNetworkLayerlayer_concat = 320,
     MLNeuralNetworkLayerlayer_split = 330,
     MLNeuralNetworkLayerlayer_sequenceRepeat = 340,
+    MLNeuralNetworkLayerlayer_reorganizeData = 345,
+    MLNeuralNetworkLayerlayer_slice = 350,
     MLNeuralNetworkLayerlayer_simpleRecurrent = 400,
     MLNeuralNetworkLayerlayer_gru = 410,
     MLNeuralNetworkLayerlayer_uniDirectionalLSTM = 420,
     MLNeuralNetworkLayerlayer_biDirectionalLSTM = 430,
+    MLNeuralNetworkLayerlayer_custom = 500,
     MLNeuralNetworkLayerlayer_NOT_SET = 0,
 };
 
@@ -174,6 +172,10 @@ static const char * MLNeuralNetworkLayerlayer_Name(MLNeuralNetworkLayerlayer x) 
             return "MLNeuralNetworkLayerlayer_split";
         case MLNeuralNetworkLayerlayer_sequenceRepeat:
             return "MLNeuralNetworkLayerlayer_sequenceRepeat";
+        case MLNeuralNetworkLayerlayer_reorganizeData:
+            return "MLNeuralNetworkLayerlayer_reorganizeData";
+        case MLNeuralNetworkLayerlayer_slice:
+            return "MLNeuralNetworkLayerlayer_slice";
         case MLNeuralNetworkLayerlayer_simpleRecurrent:
             return "MLNeuralNetworkLayerlayer_simpleRecurrent";
         case MLNeuralNetworkLayerlayer_gru:
@@ -182,6 +184,8 @@ static const char * MLNeuralNetworkLayerlayer_Name(MLNeuralNetworkLayerlayer x) 
             return "MLNeuralNetworkLayerlayer_uniDirectionalLSTM";
         case MLNeuralNetworkLayerlayer_biDirectionalLSTM:
             return "MLNeuralNetworkLayerlayer_biDirectionalLSTM";
+        case MLNeuralNetworkLayerlayer_custom:
+            return "MLNeuralNetworkLayerlayer_custom";
         case MLNeuralNetworkLayerlayer_NOT_SET:
             return "INVALID";
     }
@@ -191,6 +195,23 @@ enum MLSamePaddingMode: int {
     MLSamePaddingModeBOTTOM_RIGHT_HEAVY = 0,
     MLSamePaddingModeTOP_LEFT_HEAVY = 1,
 };
+
+enum MLQuantizationParamsQuantizationType: int {
+    MLQuantizationParamsQuantizationType_linearQuantization = 101,
+    MLQuantizationParamsQuantizationType_lookupTableQuantization = 102,
+    MLQuantizationParamsQuantizationType_NOT_SET = 0,
+};
+
+static const char * MLQuantizationParamsQuantizationType_Name(MLQuantizationParamsQuantizationType x) {
+    switch (x) {
+        case MLQuantizationParamsQuantizationType_linearQuantization:
+            return "MLQuantizationParamsQuantizationType_linearQuantization";
+        case MLQuantizationParamsQuantizationType_lookupTableQuantization:
+            return "MLQuantizationParamsQuantizationType_lookupTableQuantization";
+        case MLQuantizationParamsQuantizationType_NOT_SET:
+            return "INVALID";
+    }
+}
 
 enum MLConvolutionLayerParamsConvolutionPaddingType: int {
     MLConvolutionLayerParamsConvolutionPaddingType_valid = 50,
@@ -266,6 +287,11 @@ enum MLOperation: int {
     MLOperationTHRESHOLD = 7,
 };
 
+enum MLInterpolationMode: int {
+    MLInterpolationModeNN = 0,
+    MLInterpolationModeBILINEAR = 1,
+};
+
 enum MLFlattenOrder: int {
     MLFlattenOrderCHANNEL_FIRST = 0,
     MLFlattenOrderCHANNEL_LAST = 1,
@@ -276,6 +302,17 @@ enum MLReshapeOrder: int {
     MLReshapeOrderCHANNEL_LAST = 1,
 };
 
+enum MLReorganizationType: int {
+    MLReorganizationTypeSPACE_TO_DEPTH = 0,
+    MLReorganizationTypeDEPTH_TO_SPACE = 1,
+};
+
+enum MLSliceAxis: int {
+    MLSliceAxisCHANNEL_AXIS = 0,
+    MLSliceAxisHEIGHT_AXIS = 1,
+    MLSliceAxisWIDTH_AXIS = 2,
+};
+
 enum MLReduceOperation: int {
     MLReduceOperationSUM = 0,
     MLReduceOperationAVG = 1,
@@ -284,7 +321,44 @@ enum MLReduceOperation: int {
     MLReduceOperationSUMSQUARE = 4,
     MLReduceOperationL1 = 5,
     MLReduceOperationL2 = 6,
+    MLReduceOperationMAX = 7,
+    MLReduceOperationMIN = 8,
+    MLReduceOperationARGMAX = 9,
 };
+
+enum MLReduceAxis: int {
+    MLReduceAxisCHW = 0,
+    MLReduceAxisHW = 1,
+    MLReduceAxisC = 2,
+    MLReduceAxisH = 3,
+    MLReduceAxisW = 4,
+};
+
+enum MLCustomLayerParamValuevalue: int {
+    MLCustomLayerParamValuevalue_doubleValue = 10,
+    MLCustomLayerParamValuevalue_stringValue = 20,
+    MLCustomLayerParamValuevalue_intValue = 30,
+    MLCustomLayerParamValuevalue_longValue = 40,
+    MLCustomLayerParamValuevalue_boolValue = 50,
+    MLCustomLayerParamValuevalue_NOT_SET = 0,
+};
+
+static const char * MLCustomLayerParamValuevalue_Name(MLCustomLayerParamValuevalue x) {
+    switch (x) {
+        case MLCustomLayerParamValuevalue_doubleValue:
+            return "MLCustomLayerParamValuevalue_doubleValue";
+        case MLCustomLayerParamValuevalue_stringValue:
+            return "MLCustomLayerParamValuevalue_stringValue";
+        case MLCustomLayerParamValuevalue_intValue:
+            return "MLCustomLayerParamValuevalue_intValue";
+        case MLCustomLayerParamValuevalue_longValue:
+            return "MLCustomLayerParamValuevalue_longValue";
+        case MLCustomLayerParamValuevalue_boolValue:
+            return "MLCustomLayerParamValuevalue_boolValue";
+        case MLCustomLayerParamValuevalue_NOT_SET:
+            return "INVALID";
+    }
+}
 
 enum MLNeuralNetworkClassifierClassLabels: int {
     MLNeuralNetworkClassifierClassLabels_stringClassLabels = 100,

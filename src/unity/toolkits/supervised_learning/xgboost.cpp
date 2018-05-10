@@ -1828,7 +1828,6 @@ std::shared_ptr<coreml::MLModelWrapper> xgboost_model::_export_xgboost_model(boo
   if(!is_classifier) {
     tree_ensemble.reset(new CoreML::TreeEnsembleRegressor(
         ml_mdata->target_column_name(),
-        "Tree Ensemble",
         "Tree Ensemble"));
 
     num_dimensions = 1;
@@ -1849,7 +1848,6 @@ std::shared_ptr<coreml::MLModelWrapper> xgboost_model::_export_xgboost_model(boo
     auto tc = new CoreML::TreeEnsembleClassifier(
         ml_mdata->target_column_name(),
         ml_mdata->target_column_name() + "Probability",
-        "Tree Ensemble",
         "Tree Ensemble");
 
     target_additional_name = ml_mdata->target_column_name() + "Probability";
@@ -1962,7 +1960,7 @@ std::shared_ptr<coreml::MLModelWrapper> xgboost_model::_export_xgboost_model(boo
 
   // This output is provided by __vectorized_features__.
   tree_ensemble->addInput("__vectorized_features__",
-                          CoreML::FeatureType::Array({ml_mdata->num_dimensions()}));
+                          CoreML::FeatureType::Array({static_cast<int64_t>(ml_mdata->num_dimensions())}));
   tree_ensemble->addOutput(ml_mdata->target_column_name(), target_output_data_type);
   if(is_classifier)
     tree_ensemble->addOutput(target_additional_name, target_additional_data_type);
@@ -1974,7 +1972,7 @@ std::shared_ptr<coreml::MLModelWrapper> xgboost_model::_export_xgboost_model(boo
     pipeline.addOutput(target_additional_name, target_additional_data_type);
 
   // Add ml_metadata
-  add_metadata(pipeline.m_spec, context);
+  add_metadata(pipeline.getProto(), context);
 
   auto model_wrapper = std::make_shared<coreml::MLModelWrapper>(std::make_shared<CoreML::Pipeline>(pipeline));
 

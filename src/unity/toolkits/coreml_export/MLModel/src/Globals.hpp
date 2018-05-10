@@ -1,8 +1,3 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
- *
- * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
- */
 #ifndef MLMODEL_GLOBALS_HPP
 #define MLMODEL_GLOBALS_HPP
 
@@ -11,12 +6,27 @@
 #include <vector>
 
 #include "DataType.hpp"
-#include "Export.hpp"
+
+#define MLMODEL_SPECIFICATION_VERSION MLMODEL_SPECIFICATION_VERSION_IOS12
 
 namespace CoreML {
 
-  typedef std::vector<std::pair<std::string, FeatureType>> SchemaType;
-  static const int32_t MLMODEL_SPECIFICATION_VERSION = 1;
+    typedef std::vector<std::pair<std::string, FeatureType>> SchemaType;
+    // Version 1 shipped as iOS 11.0
+    static const int32_t MLMODEL_SPECIFICATION_VERSION_IOS11 = 1;
+    // Version 2 supports fp16 weights and custom layers in neural network models. Shipped in iOS 11.2
+    static const int32_t MLMODEL_SPECIFICATION_VERSION_IOS11_2 = 2;
+
+    // Version 3 supports:
+    // - custom models
+    // - flexible sizes,
+    // - Categorical sequences (string, int64),
+    // - Word tagger
+    // - Text classifier
+    // - Vision feature print
+    // - <fill in as we develope> ..
+    static const int32_t MLMODEL_SPECIFICATION_VERSION_IOS12 = 3;
+
 }
 
 #endif

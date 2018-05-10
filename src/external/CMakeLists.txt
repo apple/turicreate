@@ -11,7 +11,7 @@ subdirs(
   libjson
   armadillo
   sparsehash
-  protobuf
+  google
   lz4
   aws-sdk-cpp
   uuid_p

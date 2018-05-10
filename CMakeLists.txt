@@ -818,6 +818,7 @@ include(MergeStaticLibraries)
 
 include_directories(src)
 include_directories(SYSTEM src/external)
+include_directories(SYSTEM src/external/google)
 include_directories(src/platform)
 
 if(EXISTS ${CMAKE_SOURCE_DIR}/extensions)
