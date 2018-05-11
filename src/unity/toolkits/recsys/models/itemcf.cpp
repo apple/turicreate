@@ -638,8 +638,26 @@ void recsys_itemcf::internal_load(turi::iarchive& iarc, size_t version) {
     variant_deep_load(data_v, iarc);
     
     auto data = variant_get_value<std::map<std::string, variant_type> >(data_v);
-    
-    __EXTRACT(new_user_seed_items);
+
+    // For some reason, 4.0 and earlier version 2 models had new_user_seed_items
+    // stored as vector<vector<double>> instead of vector<pair<size_t, double>>.
+    // Not sure how this happened, since this code hasn't changed since 4.0,
+    // but let's try to convert it now...
+    try {
+      new_user_seed_items = std::vector<std::pair<size_t, double> >();
+      std::vector<std::vector<double>> vec_new_user_seed_items;
+      variant_get_value<decltype(vec_new_user_seed_items)>(data["new_user_seed_items"]);
+      for (const auto& vec : vec_new_user_seed_items) {
+        DASSERT_EQ(vec.size(), 2);
+        size_t item_id = vec[0];
+        double value = vec[1];
+        new_user_seed_items.push_back(std::make_pair(item_id, value));
+      }
+    } catch (const flexible_type_internals::type_conversion_error& e) {
+      // for normal 4.1+ models, this works
+      __EXTRACT(new_user_seed_items);
+    }
+
     __EXTRACT(item_mean_score);
     __EXTRACT(item_mean_min);
     __EXTRACT(item_mean_max);
