@@ -35,7 +35,8 @@ class SFrameDetectionIter(_mx.io.DataIter):
                  loader_type='augmented',
                  load_labels=True,
                  shuffle=True,
-                 epochs=None):
+                 epochs=None,
+                 iterations=None):
 
         # Some checks (these errors are not well-reported by the threads)
         if sframe[feature_column].dtype != _tc.Image:
@@ -75,7 +76,6 @@ class SFrameDetectionIter(_mx.io.DataIter):
             raise ValueError('Unknown loader_type: {}'.format(loader_type))
 
         self.augmentations = augs
-        self.cur_batch = 0
         self.batch_size = batch_size
         self.input_shape = input_shape
         self.output_shape = output_shape
@@ -88,7 +88,9 @@ class SFrameDetectionIter(_mx.io.DataIter):
         self.shuffle = shuffle
         self.cur_epoch = 0
         self.cur_sample = 0
+        self.cur_iteration = 0
         self.num_epochs = epochs
+        self.num_iterations = iterations
 
         # Make shallow copy, so that temporary columns do not change input
         self.sframe = sframe.copy()
@@ -114,7 +116,7 @@ class SFrameDetectionIter(_mx.io.DataIter):
 
     def reset(self):
         self.cur_sample = 0
-        self.cur_batch = 0
+        self.cur_iteration = 0
 
     def __next__(self):
         return self._next()
@@ -130,6 +132,12 @@ class SFrameDetectionIter(_mx.io.DataIter):
     def provide_label(self):
         return self._provide_label
 
+    @property
+    def has_next(self):
+        return not (self.cur_epoch == self.num_epochs or
+                    self.cur_iteration == self.num_iterations or
+                    len(self.sframe) == 0)
+
     def _next(self):
         images = []
         ymaps = []
@@ -137,7 +145,7 @@ class SFrameDetectionIter(_mx.io.DataIter):
         orig_shapes = []
         bboxes = []
         classes = []
-        if self.cur_epoch == self.num_epochs or len(self.sframe) == 0:
+        if not self.has_next:
             raise StopIteration
 
         pad = None
@@ -240,4 +248,6 @@ class SFrameDetectionIter(_mx.io.DataIter):
         # Attach additional information
         batch.raw_bboxes = bboxes
         batch.raw_classes = classes
+        batch.iteration = self.cur_iteration
+        self.cur_iteration += 1
         return batch

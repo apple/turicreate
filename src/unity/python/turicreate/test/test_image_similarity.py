@@ -226,7 +226,7 @@ class ImageSimilarityTest(unittest.TestCase):
             print("Export coreml passed")
 
 
-@unittest.skipIf(tc.util._num_available_gpus() == 0, 'Requires GPU')
+@unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
 @pytest.mark.gpu
 class ImageSimilarityGPUTest(unittest.TestCase):
     @classmethod

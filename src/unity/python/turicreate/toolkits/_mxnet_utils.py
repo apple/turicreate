@@ -82,8 +82,12 @@ def get_num_gpus_in_use(max_devices=None):
 def assert_valid_num_gpus():
     from turicreate.util import _CUDA_GPU_IDS
     num_gpus = _tc_config.get_num_gpus()
-    if not _CUDA_GPU_IDS and _sys.platform == 'darwin' and num_gpus > 0:
-        raise _ToolkitError('Using GPUs is currently not supported on Mac')
+    if not _CUDA_GPU_IDS and _sys.platform == 'darwin':
+        # GPU acceleration requires macOS 10.14+
+        if num_gpus == 1 and _mac_ver() < (10, 14):
+            raise _ToolkitError('GPU acceleration requires at least macOS 10.14')
+        elif num_gpus >= 2:
+            raise _ToolkitError('Using more than one GPU is currently not supported on Mac')
     _numeric_param_check_range('num_gpus', num_gpus, -1, _six.MAXSIZE)
 
 def load_mxnet_model_from_state(state, data, labels=None, existing_module=None, ctx = None):

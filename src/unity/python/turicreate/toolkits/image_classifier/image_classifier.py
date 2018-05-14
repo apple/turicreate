@@ -99,8 +99,13 @@ def create(dataset, target, feature = None, model = 'resnet-50',
     """
     start_time = _time.time()
 
-    # Check parameters
-    _tkutl._check_categorical_option_type('model', model, _pre_trained_models.MODELS.keys())
+    # Check model parameter
+    allowed_models = list(_pre_trained_models.MODELS.keys())
+    if _mac_ver() >= (10,14):
+        allowed_models.append('sceneVisionFeaturePrint_v1')
+    _tkutl._check_categorical_option_type('model', model, allowed_models)
+
+    # Check dataset parameter
     if len(dataset) == 0:
         raise _ToolkitError('Unable to train on empty dataset')
     if (feature is not None) and (feature not in dataset.column_names()):

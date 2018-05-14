@@ -118,7 +118,7 @@ class YOLOLoss(_mx.gluon.loss.Loss):
         def logical_not(x):
             return 1 - x
 
-        cond_obj = logical_or(logical_and(cond_gt, cond_max), cond_above)
+        cond_obj = logical_and(cond_gt, logical_or(cond_max, cond_above))
 
         kr_obj_ij = F.stop_gradient(cond_obj)
 
@@ -164,15 +164,15 @@ class YOLOLoss(_mx.gluon.loss.Loss):
         loss_conf = scale_conf * F.sum(obj_w * each_loss_conf)
 
         class_scores_flat = F.reshape(class_scores, [-1, num_classes])
-        gt_class_index_flat = F.reshape(gt_class_index, [-1])
+        gt_class_flat = F.reshape(gt_class, [-1, num_classes])
         kr_obj_ij_flat = F.reshape(kr_obj_ij, [-1, 1])
 
         x_loss = _mx.gluon.loss.SoftmaxCrossEntropyLoss(axis=-1,
-                                                        sparse_label=True,
+                                                        sparse_label=False,
                                                         from_logits=False)
 
         weights = lmb_class * F.broadcast_div(kr_obj_ij_flat, eps_count)
-        loss_cls = F.sum(x_loss(class_scores_flat, gt_class_index_flat, weights))
+        loss_cls = F.sum(x_loss(class_scores_flat, gt_class_flat, weights))
 
         loss = loss_xy + loss_wh + loss_conf + loss_cls
         return loss

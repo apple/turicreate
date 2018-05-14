@@ -59,6 +59,11 @@ if (APPLE)
     "${CMAKE_BINARY_DIR}/src/visualization/${CMAKE_BUILD_TYPE}/Turi Create Visualization.app"
   )
   add_dependencies(visualization_client_app visualization_client)
+  add_custom_target(
+    DEPENDS unity_toolkits
+    COMMENT "cp tcmps dylib"
+    COMMAND cp -a "${CMAKE_BINARY_DIR}/src/unity/toolkits/tcmps/${CMAKE_BUILD_TYPE}/libtcmps.dylib" ${CMAKE_CURRENT_BINARY_DIR}
+  )
 elseif(LINUX)
   add_custom_target(
     visualization_client_app ALL

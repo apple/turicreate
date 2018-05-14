@@ -199,7 +199,7 @@ class ObjectDetectorTest(unittest.TestCase):
 
         # Evaluate while the data has extra classes
         ret = model.evaluate(self.sf.head())
-        self.assertEqual(len(ret['average_precision']), 2)
+        self.assertEqual(len(ret['average_precision_50']), 2)
 
     def test_predict(self):
         sf = self.sf.head()
@@ -239,14 +239,14 @@ class ObjectDetectorTest(unittest.TestCase):
         self.assertEqual(set(ret['average_precision'].keys()), set(_CLASSES))
 
         ret = self.model.evaluate(self.sf.head())
-
-        self.assertTrue(set(ret), {'average_precision', 'mean_average_precision'})
-        self.assertTrue(isinstance(ret['mean_average_precision'], float))
+        self.assertEqual(set(ret), {'mean_average_precision_50', 'average_precision_50'})
+        self.assertTrue(isinstance(ret['mean_average_precision_50'], float))
+        self.assertEqual(set(ret['average_precision_50'].keys()), set(_CLASSES))
 
         # Empty dataset should not fail with error (although it should to 0
         # metrics)
         ret = self.model.evaluate(self.sf[:0])
-        self.assertEqual(ret['mean_average_precision'], 0.0)
+        self.assertEqual(ret['mean_average_precision_50'], 0.0)
 
     @pytest.mark.xfail(rases = _ToolkitError)
     def test_evaluate_invalid_metric(self):
@@ -290,12 +290,13 @@ class ObjectDetectorTest(unittest.TestCase):
         model2 = tc.object_detector.create(sf, max_iterations=1)
         model2.export_coreml(filename2)
 
-    @unittest.skipIf(sys.platform != 'darwin', 'Only supported on Mac')
-    def test_no_gpu_mac_support(self):
+    @unittest.skipIf(sys.platform != 'darwin' or _mac_ver() >= (10, 14),
+        "GPU selection should fail on macOS 10.13 or below")
+    def test_no_gpu_support_on_unsupported_macos(self):
         num_gpus = tc.config.get_num_gpus()
         tc.config.set_num_gpus(1)
         with self.assertRaises(_ToolkitError):
-            tc.object_detector.create(self.sf)
+            tc.object_detector.create(self.sf, max_iterations=1)
         tc.config.set_num_gpus(num_gpus)
 
     def test__list_fields(self):

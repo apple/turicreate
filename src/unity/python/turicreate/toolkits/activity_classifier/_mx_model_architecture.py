@@ -14,9 +14,7 @@ _net_params = {
     'dense_h': 128
 }
 
-
-def _define_model(features, target_map, pred_win, seq_len, context):
-    n_classes = len(target_map)
+def _define_model_mxnet(num_classes, pred_win, seq_len, context):
 
     # Vars
     data = _mx.sym.Variable('data')  # NTC
@@ -43,9 +41,9 @@ def _define_model(features, target_map, pred_win, seq_len, context):
     dense = _mx.sym.Dropout(data=dense, p=0.5)
 
     # Output
-    out = _mx.sym.FullyConnected(data=dense, num_hidden=n_classes, name='dense1')
+    out = _mx.sym.FullyConnected(data=dense, num_hidden=num_classes, name='dense1')
     out = _mx.sym.Reshape(data=out,
-                          shape=(-1, seq_len, n_classes))  # NxTC to NTC
+                          shape=(-1, seq_len, num_classes))  # NxTC to NTC
 
     probs = _mx.sym.softmax(data=out, axis=-1, name='softmax')
 
@@ -103,7 +101,7 @@ def _lstm_layer(data, num_hidden, seq_len, dropout):
     return output
 
 
-def _fit_model(model, data_iter, valid_iter, max_iterations, num_gpus, verbose):
+def _fit_model_mxnet(model, data_iter, valid_iter, max_iterations, num_gpus, verbose):
     from time import time as _time
 
     model.bind(data_shapes=data_iter.provide_data,
