@@ -73,6 +73,9 @@ class predict_constant : public supervised_learning_model_base {
     constant = options.value("constant");
   }
 
+  bool is_classifier() const { return false; } 
+
+
   /**
    * Set one of the options in the model. Use the option manager to set
    * these options. If the option does not satisfy the conditions that the

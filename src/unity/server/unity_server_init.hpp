@@ -13,6 +13,8 @@ namespace turi {
 
 class EXPORT unity_server_initializer {
  public:
+
+  virtual ~unity_server_initializer(); 
   /**
    * Fill the registry of internal toolkits
    */

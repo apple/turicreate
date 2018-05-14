@@ -15,8 +15,6 @@ namespace turi {
 /**
  * \ingroup mldata
  * \{
- *
-/**
  * Information relevant to a single entry of ml_data.
  */
 struct ml_data_full_entry {

@@ -352,11 +352,7 @@ std::vector<std::string>
  */
 sframe supervised_learning_model_base::classify(const ml_data& test_data,
                                             const std::string& output_type){
-  DASSERT_TRUE(name() == "classifier_logistic_regression" ||
-               name() == "classifier_svm" ||
-               name() == "random_forest_classifier" ||
-               name() == "decision_tree_classifier" ||
-               name() == "boosted_trees_classifier");
+  DASSERT_TRUE(is_classifier());
 
   // Class predictions
   sframe sf_class;
@@ -537,11 +533,6 @@ gl_sarray supervised_learning_model_base::fast_predict(
 gl_sframe supervised_learning_model_base::fast_classify(
     const std::vector<flexible_type>& rows,
     const std::string& missing_value_action) {
-  DASSERT_TRUE(name() == "classifier_logistic_regression" ||
-               name() == "classifier_svm" ||
-               name() == "random_forest_classifier" ||
-               name() == "decision_tree_classifier" ||
-               name() == "boosted_trees_classifier");
 
   // Class predictions
   gl_sframe sf_class;
@@ -581,7 +572,7 @@ gl_sframe supervised_learning_model_base::fast_classify(
 sframe supervised_learning_model_base::predict_topk(
           const ml_data& test_data, const std::string& output_type,
           const size_t topk){
-  DASSERT_TRUE(name().find("classifier") != std::string::npos);
+  DASSERT_TRUE(is_classifier());
   size_t num_classes = variant_get_value<size_t>(state.at("num_classes"));
   size_t n_threads = turi::thread_pool::get_instance().size();
   size_t variables = 0;

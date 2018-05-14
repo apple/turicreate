@@ -189,59 +189,59 @@ EXPORT tc_variant* tc_variant_create_copy(const tc_variant* tv, tc_error** error
 }
 
 
-EXPORT int tc_variant_is_int64(const tc_variant* ft){
+EXPORT bool tc_variant_is_int64(const tc_variant* ft){
   return turi::variant_get_ref<turi::flexible_type>(ft->value).get_type() == turi::flex_type_enum::INTEGER;
 }
 
-EXPORT int tc_variant_is_double(const tc_variant* ft){
+EXPORT bool tc_variant_is_double(const tc_variant* ft){
   return turi::variant_get_ref<turi::flexible_type>(ft->value).get_type() == turi::flex_type_enum::FLOAT;
 }
 
-EXPORT int tc_variant_is_cstring(const tc_variant* ft){
+EXPORT bool tc_variant_is_cstring(const tc_variant* ft){
   return turi::variant_get_ref<turi::flexible_type>(ft->value).get_type() == turi::flex_type_enum::STRING;
 }
 
-EXPORT int tc_variant_is_string(const tc_variant* ft){
+EXPORT bool tc_variant_is_string(const tc_variant* ft){
   return turi::variant_get_ref<turi::flexible_type>(ft->value).get_type() == turi::flex_type_enum::STRING;
 }
 
-EXPORT int tc_variant_is_double_array(const tc_variant* ft){
+EXPORT bool tc_variant_is_double_array(const tc_variant* ft){
   return  turi::variant_get_ref<turi::flexible_type>(ft->value).get_type() == turi::flex_type_enum::VECTOR;
 }
 
-EXPORT int tc_variant_is_flex_list(const tc_variant* ft){
+EXPORT bool tc_variant_is_flex_list(const tc_variant* ft){
   return turi::variant_get_ref<turi::flexible_type>(ft->value).get_type() == turi::flex_type_enum::LIST;
 }
 
-EXPORT int tc_variant_is_flex_dict(const tc_variant* ft){
+EXPORT bool tc_variant_is_flex_dict(const tc_variant* ft){
   return turi::variant_get_ref<turi::flexible_type>(ft->value).get_type() == turi::flex_type_enum::DICT;
 }
 
-EXPORT int tc_variant_is_datetime(const tc_variant* ft){
+EXPORT bool tc_variant_is_datetime(const tc_variant* ft){
   return turi::variant_get_ref<turi::flexible_type>(ft->value).get_type() == turi::flex_type_enum::DATETIME;
 }
 
-EXPORT int tc_variant_is_image(const tc_variant* ft){
+EXPORT bool tc_variant_is_image(const tc_variant* ft){
   return turi::variant_get_ref<turi::flexible_type>(ft->value).get_type() == turi::flex_type_enum::IMAGE;
 }
 
-EXPORT int tc_variant_is_flexible_type(const tc_variant* ft){
+EXPORT bool tc_variant_is_flexible_type(const tc_variant* ft){
   return (ft->value).which() == 0;
 }
 
-EXPORT int tc_variant_is_sarray(const tc_variant* ft){
+EXPORT bool tc_variant_is_sarray(const tc_variant* ft){
   return (ft->value).which() == 5;
 }
 
-EXPORT int tc_variant_is_sframe(const tc_variant* ft){
+EXPORT bool tc_variant_is_sframe(const tc_variant* ft){
   return (ft->value).which() == 4;
 }
 
-EXPORT int tc_variant_is_parameters(const tc_variant* ft){
+EXPORT bool tc_variant_is_parameters(const tc_variant* ft){
   return (ft->value).which() == 6;
 }
 
-EXPORT int tc_variant_is_model(const tc_variant* ft){
+EXPORT bool tc_variant_is_model(const tc_variant* ft){
   return (ft->value).which() == 3;
 }
 

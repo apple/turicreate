@@ -137,8 +137,6 @@ gl_sarray& gl_sarray::operator=(gl_sarray&& other) {
   return *this;
 }
 
-gl_sarray::~gl_sarray() = default;
-
 std::shared_ptr<unity_sarray> gl_sarray::get_proxy() const {
   return m_sarray;
 }
@@ -198,6 +196,8 @@ gl_sarray::gl_sarray(std::shared_ptr<sarray<flexible_type> > sa)
 {
   m_sarray->construct_from_sarray(sa);
 }
+  
+gl_sarray::~gl_sarray() {}
 
 gl_sarray::operator std::shared_ptr<unity_sarray>() const {
   return get_proxy();
@@ -652,7 +652,7 @@ gl_sarray gl_sarray::sort(bool ascending) const {
 
 gl_sarray gl_sarray::subslice(flexible_type start, 
                               flexible_type stop, 
-                              flexible_type step) {
+                              flexible_type step) const {
   auto dt = dtype();
   if (dt != flex_type_enum::STRING && 
       dt != flex_type_enum::VECTOR &&

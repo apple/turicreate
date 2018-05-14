@@ -3,12 +3,15 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#include <capi/TuriCreate.h>
 #include <unity/server/unity_server_control.hpp>
 #include <unity/server/unity_server_options.hpp>
 #include <unity/server/unity_server.hpp>
 #include <capi/impl/capi_initialization.hpp>
 #include <capi/impl/capi_initialization_internal.hpp>
 #include <capi/impl/capi_error_handling.hpp>
+#include <globals/globals.hpp>
 
 // All the functions related to the initialization of the server.
 namespace turi {
@@ -66,7 +69,7 @@ EXPORT void _tc_initialize() {
 
 extern "C" {
 
-EXPORT void tc_setup_log_location(const char* log_file, tc_error** error) {
+EXPORT void tc_init_set_log_location(const char* log_file, tc_error** error) {
   ERROR_HANDLE_START();
 
   std::lock_guard<std::mutex> lg(turi::_capi_server_initializer_lock);
@@ -80,5 +83,47 @@ EXPORT void tc_setup_log_location(const char* log_file, tc_error** error) {
 
   ERROR_HANDLE_END(error);
 }
+
+EXPORT void tc_init_set_log_callback_function(  //
+    tc_log_level log_level,
+    void (*callback)(tc_log_level, const char*, uint64_t n), tc_error** error) {
+  ERROR_HANDLE_START();
+
+  global_logger().add_observer(
+      static_cast<int>(log_level),
+      [callback](int log_level, const char* buf, uint64_t len) {
+        callback(static_cast<tc_log_level>(log_level), buf, len);
+      });
+
+  ERROR_HANDLE_END(error);
+}
+
+EXPORT void tc_init_set_config_parameter(const char* parameter,
+                                  tc_flexible_type* value, tc_error** error) {
+
+  ERROR_HANDLE_START();
+
+  turi::globals::set_global_error_codes err = turi::globals::set_global(parameter, value->value);
+
+  switch(err) {
+    case turi::globals::set_global_error_codes::SUCCESS:
+      return;
+    case turi::globals::set_global_error_codes::NO_NAME:
+      throw std::invalid_argument(std::string("Unknown config parameter ") + parameter);
+    case turi::globals::set_global_error_codes::NOT_RUNTIME_MODIFIABLE:
+      {
+      set_error(error,
+                "CAPI server is already initialized; call setup functions "
+                "before all other functions.");
+      return;
+      }
+    case turi::globals::set_global_error_codes::INVALID_VAL:
+      throw std::invalid_argument(std::string("Invalid value for config parameter ") + parameter);
+  }
+
+  ERROR_HANDLE_END(error);
+}
+
+
 
 }

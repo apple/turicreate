@@ -46,9 +46,15 @@ namespace turi {
       ASSERT_MSG(!error, "Mutex create error %d", error);
     }
 
-    ~mutex(){
+    ~mutex() noexcept {
       int error = pthread_mutex_destroy( &m_mut );
-      DASSERT_MSG(!error, "Mutex destroy error %d", error);
+      if(error) {
+        try {
+        std::cerr << "Mutex destroy error " << error << std::endl;
+        } catch (...) { 
+        }
+        abort(); 
+      }
     }
 
     // not copyable

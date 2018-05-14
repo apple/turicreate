@@ -521,7 +521,7 @@ class unity_sarray: public unity_sarray_base {
    * The hash function takes a seed value so this can be used for
    * random generation as well.
    */
-  std::shared_ptr<unity_sarray_base> hash(int seed);
+  std::shared_ptr<unity_sarray_base> hash(uint64_t seed);
 
   /**
    * Do a word-count for each element in the SArray and return a SArray of dictionary

@@ -1,15 +1,10 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
- *
- * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
- */
 #define BOOST_TEST_MODULE capi_classifier_evaluations
 
 #include <vector>
 #include <boost/test/unit_test.hpp>
 #include <unity/lib/gl_sframe.hpp>
 #include <util/test_macros.hpp>
-#include <capi/TuriCreate.h>
+#include <capi/TuriCore.h>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include "capi_utils.hpp"
 

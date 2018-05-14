@@ -28,6 +28,8 @@ class EXPORT decision_tree_regression: public xgboost_model {
    */
   void init_options(const std::map<std::string,flexible_type>& _opts) override; 
 
+  bool is_classifier() const override { return false; }
+
   /** 
    * Configure booster from options 
    */
@@ -63,6 +65,8 @@ class EXPORT decision_tree_classifier: public xgboost_model {
    */
   void init_options(const std::map<std::string, flexible_type>& _opts) override;
  
+  bool is_classifier() const override { return true; }
+
   /** 
    * Configure booster from options 
    */

@@ -187,7 +187,6 @@ struct operator_impl<planner_node_type::SARRAY_SOURCE_NODE> : public query_opera
   std::shared_ptr<sarray<flexible_type>> m_source;
   size_t m_begin_index, m_end_index;
   std::shared_ptr<sarray_reader<flexible_type>> m_reader;
-  bool m_to_read_in_native_thread = false;
 };
 
 typedef operator_impl<planner_node_type::SARRAY_SOURCE_NODE> op_sarray_source;

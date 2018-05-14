@@ -153,13 +153,13 @@ static inline unsigned int num_bits_on(T v, _ENABLE_IF_UINT(T))
     return __builtin_popcountll((unsigned long long)v);
   else if(bitsizeof(unsigned long long) == 64 && bitsizeof(T) == 128)
     return (__builtin_popcountll((unsigned long long)(v))
-            + __builtin_popcountll((unsigned long long)(v >> 64)));
+            + __builtin_popcountll((unsigned long long)(uint64_t(uint128_t(v) >> 64))));
   else {
     unsigned int bitcount = 0;
     T vt = v;
     for(size_t i = 0; i < bitsizeof(T); i += bitsizeof(unsigned long long) ) {
       bitcount += __builtin_popcountll( (unsigned long long)(vt) );
-      vt >>= bitsizeof(unsigned long long);
+      vt = T(uint128_t(vt) >> bitsizeof(unsigned long long));
     }
 
     return vt;
