@@ -1498,9 +1498,10 @@ std::shared_ptr<unity_sarray_base> unity_sarray::scalar_operator(flexible_type o
   // most of the time the scalar operators can skip undefined. Except
   //  - certain operators which depend on equality of values.
   //     like == or != or in.
+  //  - or if the binary operator does ternary logic
   //  - Or if the other scalar value is undefined.
-  bool op_is_equality_compare = (op == "==" || op == "!=" || op == "in");
-  if (other.get_type() == flex_type_enum::UNDEFINED || op_is_equality_compare) {
+  bool op_ternary = (op == "==" || op == "!=" || op == "in" || op == "&" || op == "|");
+  if (other.get_type() == flex_type_enum::UNDEFINED || op_ternary) {
     auto transformfn =
         [=](const flexible_type& f)->flexible_type {
           return right_operator ? binaryfn(other, f) : binaryfn(f, other);
@@ -1565,28 +1566,59 @@ std::shared_ptr<unity_sarray_base> unity_sarray::vector_operator(
   auto transformfn =
       unity_sarray_binary_operations::get_binary_operator(dtype(), other->dtype(), op);
 
-  bool op_is_not_equality_compare = (op != "==" && op != "!=");
-  bool op_is_equality = (op == "==");
-  auto transform_fn_with_undefined_checking =
-      [=](const sframe_rows::row& frow,
-          const sframe_rows::row& grow)->flexible_type {
-        const auto& f = frow[0];
-        const auto& g = grow[0];
-        if (f.get_type() == flex_type_enum::UNDEFINED ||
-            g.get_type() == flex_type_enum::UNDEFINED) {
-          if (op_is_not_equality_compare) {
-            // op is not == or !=
-            return FLEX_UNDEFINED;
-          } else if (op_is_equality) {
-            // op is ==
+  query_eval::binary_transform_type transform_fn_with_undefined_checking;
+  if (op == "==") {
+    transform_fn_with_undefined_checking =
+        [=](const sframe_rows::row& frow,
+            const sframe_rows::row& grow)->flexible_type {
+          const auto& f = frow[0];
+          const auto& g = grow[0];
+          if (f.get_type() == flex_type_enum::UNDEFINED ||
+              g.get_type() == flex_type_enum::UNDEFINED) {
+            // this says (UNDEFINED == UNDEFINED) == True
+            // and false in all other cases where an UNDEFINED appears
             return f.get_type() == g.get_type();
-          } else {
-            // op is !=
+          }
+          else return transformfn(f, g);
+        };
+  } else if (op == "!=") {
+    transform_fn_with_undefined_checking =
+        [=](const sframe_rows::row& frow,
+            const sframe_rows::row& grow)->flexible_type {
+          const auto& f = frow[0];
+          const auto& g = grow[0];
+          if (f.get_type() == flex_type_enum::UNDEFINED ||
+              g.get_type() == flex_type_enum::UNDEFINED) {
+            // this says (UNDEFINED != UNDEFINED) == False
+            // and true in all other cases where an UNDEFINED appears
             return f.get_type() != g.get_type();
           }
-        }
-        else return transformfn(f, g);
-      };
+          else return transformfn(f, g);
+        };
+  } else if (op == "&" || op == "|") {
+    // these do ternary logic
+    transform_fn_with_undefined_checking =
+        [=](const sframe_rows::row& frow,
+            const sframe_rows::row& grow)->flexible_type {
+          const auto& f = frow[0];
+          const auto& g = grow[0];
+          return transformfn(f, g);
+        };
+  } else {
+    // all others constant propagate
+    transform_fn_with_undefined_checking =
+        [=](const sframe_rows::row& frow,
+            const sframe_rows::row& grow)->flexible_type {
+          const auto& f = frow[0];
+          const auto& g = grow[0];
+          if (f.get_type() == flex_type_enum::UNDEFINED ||
+              g.get_type() == flex_type_enum::UNDEFINED) {
+            return FLEX_UNDEFINED;
+          }
+          else return transformfn(f, g);
+        };
+  }
+
   auto ret = std::make_shared<unity_sarray>();
   ret->construct_from_planner_node(
       op_binary_transform::make_planner_node(m_planner_node,
