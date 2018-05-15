@@ -1,3 +1,9 @@
+/* Copyright © 2018 Apple Inc. All rights reserved.
+ *
+ * Use of this source code is governed by a BSD-3-clause license that can
+ * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ */
+
 #ifndef TURI_CAPI_H
 #define TURI_CAPI_H
 
@@ -125,6 +131,8 @@ void tc_init_set_config_parameter(const char* parameter,
       tc_release(&error);
    }
 
+   // ...
+   tc_release(ft);
   *************************/
 
 /** Retrieves the error message on an active error.
@@ -137,12 +145,6 @@ const char* tc_error_message(const tc_error* error);
 
 
 /** Destroys any types.
- *
- *  Must be called on the
- *
- *  Only needs to be called if an error occured.
- *
- *  Sets the pointer to the error struct to NULL.
  */
 void tc_release(void* v);
 
