@@ -106,15 +106,6 @@ class EXPORT topic_model : public ml_model_base{
   virtual topic_model* topic_model_clone() = 0;
 
   /**
-   * Returns the name of the model.
-   *
-   * \returns Name of the model.
-   *
-   * \ref model_base for details.
-   */
-  virtual std::string name() = 0;
-
-  /**
    * Set the model options. Use the option manager to set these options. The
    * option manager should throw errors if the options do not satisfy the option
    * manager's conditions.

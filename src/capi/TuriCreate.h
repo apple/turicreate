@@ -3,6 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
 #ifndef TURI_CAPI_H
 #define TURI_CAPI_H
 
@@ -87,8 +88,25 @@ typedef struct tc_flex_enum_list_struct tc_flex_enum_list;
  *  Call these before calling any non-setup function.
  *
  */
-void tc_setup_log_location(const char* log_file, tc_error** error);
+void tc_init_set_log_location(const char* log_file, tc_error** error);
 
+typedef enum {
+  TURI_LOG_EVERYTHING = 0,
+  TURI_LOG_DEBUG = 1,
+  TURI_LOG_INFO = 2,
+  TURI_LOC_EMPH = 4,
+  TURI_LOG_PROGRESS = 4,
+  TURI_LOG_WARNING = 5,
+  TURI_LOG_ERROR = 6,
+  TURI_LOG_FATAL = 7,
+  TURI_LOG_NONE = 8} tc_log_level;
+
+void tc_init_set_log_callback_function(  //
+    tc_log_level log_level,
+    void (*callback)(tc_log_level, const char*, uint64_t), tc_error**);
+
+void tc_init_set_config_parameter(const char* parameter,
+                                  tc_flexible_type* value, tc_error**);
 
 /******************************************************************************/
 /*                                                                            */
@@ -103,7 +121,7 @@ void tc_setup_log_location(const char* log_file, tc_error** error);
 
    tc_error *error = NULL;
 
-   tc_create_flexible_type_str("hello", &error);
+   tc_flexible_type* ft = tc_ft_create_from_string("hello", &error);
 
    if(error) {
       const char* msg = tc_error_message(error);
@@ -113,20 +131,20 @@ void tc_setup_log_location(const char* log_file, tc_error** error);
       tc_release(&error);
    }
 
+   // ...
+   tc_release(ft);
   *************************/
 
 /** Retrieves the error message on an active error.
  *
  *  Return object is a null-terminated c-style message string.
  *
- *  The char buffer returned is invalidated by calling tc_error_destroy.
+ *  The char buffer returned is invalidated by calling tc_release.
  */
 const char* tc_error_message(const tc_error* error);
 
 
 /** Destroys any types.
- *
- *  Must be called on all allocated struct types.  
  */
 void tc_release(void* v);
 
@@ -177,17 +195,18 @@ typedef enum {
 
 tc_ft_type_enum tc_ft_type(const tc_flexible_type*);
 
-int tc_ft_is_double(const tc_flexible_type*);
-int tc_ft_is_int64(const tc_flexible_type*);
-int tc_ft_is_string(const tc_flexible_type*);
-int tc_ft_is_array(const tc_flexible_type*);
-int tc_ft_is_list(const tc_flexible_type*);
-int tc_ft_is_dict(const tc_flexible_type*);
-int tc_ft_is_datetime(const tc_flexible_type*);
-int tc_ft_is_undefined(const tc_flexible_type*);
-int tc_ft_is_image(const tc_flexible_type*);
-int tc_ft_is_datetime(const tc_flexible_type*);
-int tc_ft_is_ndarray(const tc_flexible_type*);
+bool tc_ft_is_double(const tc_flexible_type*);
+bool tc_ft_is_int64(const tc_flexible_type*);
+bool tc_ft_is_string(const tc_flexible_type*);
+bool tc_ft_is_array(const tc_flexible_type*);
+bool tc_ft_is_list(const tc_flexible_type*);
+bool tc_ft_is_dict(const tc_flexible_type*);
+bool tc_ft_is_datetime(const tc_flexible_type*);
+bool tc_ft_is_undefined(const tc_flexible_type*);
+bool tc_ft_is_image(const tc_flexible_type*);
+bool tc_ft_is_datetime(const tc_flexible_type*);
+bool tc_ft_is_ndarray(const tc_flexible_type*);
+bool tc_ft_is_type(const tc_flexible_type*, tc_ft_type_enum);
 
 /*****************************************************/
 /* Extracting values from flexible type              */
@@ -215,8 +234,8 @@ tc_ndarray* tc_ft_ndarray(const tc_flexible_type*, tc_error**);
 
 // Cast any type to a string.  Sets the error and returns NULL if it's not possible.
 // Casting to string can be used to print the value.
-tc_flexible_type* tc_ft_as_string(const tc_flexible_type*, tc_error** error);
-
+tc_flexible_type* tc_ft_to_string(const tc_flexible_type*, tc_error** error);
+tc_flexible_type* tc_ft_to_type(const tc_flexible_type*, tc_ft_type_enum t, tc_error** error);
 
 /******************************************************************************/
 /*                                                                            */
@@ -253,10 +272,14 @@ tc_flex_dict* tc_flex_dict_create(tc_error**);
 uint64_t tc_flex_dict_size(const tc_flex_dict* fd);
 
 // Adds a key to the dictionary, returning the entry index..
-uint64_t tc_flex_dict_add_element(tc_flex_dict* ft, const tc_flexible_type* first, const tc_flexible_type* second, tc_error**);
+uint64_t tc_flex_dict_add_element(tc_flex_dict* ft,
+                                  const tc_flexible_type* first,
+                                  const tc_flexible_type* second, tc_error**);
 
 // Extract the (key, value) pair corresponding to the entry at entry_index.
-void tc_flex_dict_extract_entry(const tc_flex_dict* ft, uint64_t entry_index, tc_flexible_type* key_dest, tc_flexible_type* value_dest, tc_error**);
+void tc_flex_dict_extract_entry(const tc_flex_dict* ft, uint64_t entry_index,
+                                tc_flexible_type* key_dest,
+                                tc_flexible_type* value_dest, tc_error**);
 
 // Destroy the dictionary.
 
@@ -282,7 +305,8 @@ tc_datetime* tc_datetime_create_from_posix_highres_timestamp(double posix_timest
 tc_datetime* tc_datetime_create_from_string(const char* datetime_str, const char* format, tc_error**);
 
 // Set and get the time zone.  The time zone has 15 min resolution.
-void tc_datetime_set_time_zone_offset(tc_datetime* dt, int64_t n_tz_hour_offset, int64_t n_tz_15min_offsets, tc_error**);
+void tc_datetime_set_time_zone_offset(tc_datetime* dt, int64_t n_tz_hour_offset,
+                                      int64_t n_tz_15min_offsets, tc_error**);
 int64_t tc_datetime_get_time_zone_offset_minutes(const tc_datetime* dt, tc_error**);
 
 // Set and get the microsecond part of the time zone.
@@ -298,10 +322,10 @@ void tc_datetime_set_highres_timestamp(tc_datetime* dt, double d, tc_error**);
 double tc_datetime_get_highres_timestamp(tc_datetime* dt, tc_error**);
 
 // Returns nonzero if the time dt1 is before the time dt2
-int tc_datetime_less_than(const tc_datetime* dt1, const tc_datetime* dt2, tc_error**);
+bool tc_datetime_less_than(const tc_datetime* dt1, const tc_datetime* dt2, tc_error**);
 
 // Returns nonzero if the time dt1 is equal to the time dt2
-int tc_datetime_equal(const tc_datetime* dt1, const tc_datetime* dt2, tc_error**);
+bool tc_datetime_equal(const tc_datetime* dt1, const tc_datetime* dt2, tc_error**);
 
 
 
@@ -345,6 +369,8 @@ const uint64_t* tc_ndarray_shape(const tc_ndarray*, tc_error**);
 const int64_t* tc_ndarray_strides(const tc_ndarray*, tc_error**);
 const double* tc_ndarray_data(const tc_ndarray*, tc_error**);
 
+// Warning -- the following may invalidate the stride information above
+double* tc_ndarray_writable_data(tc_ndarray*, tc_error**);
 
 /******************************************************************************/
 /*                                                                            */
@@ -357,7 +383,8 @@ const double* tc_ndarray_data(const tc_ndarray*, tc_error**);
 
 tc_flex_enum_list* tc_flex_enum_list_create(tc_error**);
 tc_flex_enum_list* tc_flex_enum_list_create_with_capacity(uint64_t capacity, tc_error**);
-uint64_t tc_flex_enum_list_add_element(tc_flex_enum_list* fl, const tc_ft_type_enum ft, tc_error**);
+uint64_t tc_flex_enum_list_add_element(tc_flex_enum_list* fl,
+                                       const tc_ft_type_enum ft, tc_error**);
 tc_ft_type_enum tc_flex_enum_list_extract_element(
     const tc_flex_enum_list* fl, uint64_t index, tc_error **error);
 uint64_t tc_flex_enum_list_size(const tc_flex_enum_list* fl);
@@ -381,10 +408,6 @@ tc_sarray* tc_sarray_create_from_const(
 tc_sarray* tc_sarray_create_from_list(
     const tc_flex_list* values, tc_error** error);
 
-// DEPRECATED : For temporary backwards compatibility.
-static tc_sarray* tc_sarray_create(const tc_flex_list* data, tc_error** error) {
-   return tc_sarray_create_from_list(data, error);
-}
 
 tc_sarray* tc_sarray_load(const char* url, tc_error** error);
 
@@ -404,38 +427,12 @@ uint64_t tc_sarray_size(const tc_sarray*);
 // Gets the type of the sarray.
 tc_ft_type_enum tc_sarray_type(const tc_sarray*);
 
-// Gets the type of the sarray.
-tc_sarray* tc_op_sarray_plus_sarray(const tc_sarray*, const tc_sarray*, tc_error**);
-tc_sarray* tc_op_sarray_minus_sarray(const tc_sarray*, const tc_sarray*, tc_error**);
-tc_sarray* tc_op_sarray_div_sarray(const tc_sarray*, const tc_sarray*, tc_error**);
-tc_sarray* tc_op_sarray_mult_sarray(const tc_sarray*, const tc_sarray*, tc_error**);
-tc_sarray* tc_op_sarray_plus_ft(const tc_sarray*, const tc_flexible_type*, tc_error**);
-tc_sarray* tc_op_sarray_minus_ft(const tc_sarray*, const tc_flexible_type*, tc_error**);
-tc_sarray* tc_op_sarray_div_ft(const tc_sarray*, const tc_flexible_type*, tc_error**);
-tc_sarray* tc_op_sarray_mult_ft(const tc_sarray*, const tc_flexible_type*, tc_error**);
-
-// TC operations
-tc_sarray* tc_op_sarray_lt_sarray(const tc_sarray*, const tc_sarray*, tc_error**);
-tc_sarray* tc_op_sarray_gt_sarray(const tc_sarray*, const tc_sarray*, tc_error**);
-tc_sarray* tc_op_sarray_le_sarray(const tc_sarray*, const tc_sarray*, tc_error**);
-tc_sarray* tc_op_sarray_ge_sarray(const tc_sarray*, const tc_sarray*, tc_error**);
-tc_sarray* tc_op_sarray_eq_sarray(const tc_sarray*, const tc_sarray*, tc_error**);
-
-tc_sarray* tc_op_sarray_lt_ft(const tc_sarray*, const tc_flexible_type*, tc_error**);
-tc_sarray* tc_op_sarray_gt_ft(const tc_sarray*, const tc_flexible_type*, tc_error**);
-tc_sarray* tc_op_sarray_ge_ft(const tc_sarray*, const tc_flexible_type*, tc_error**);
-tc_sarray* tc_op_sarray_le_ft(const tc_sarray*, const tc_flexible_type*, tc_error**);
-tc_sarray* tc_op_sarray_eq_ft(const tc_sarray*, const tc_flexible_type*, tc_error**);
-
-tc_sarray* tc_op_sarray_logical_and_sarray(const tc_sarray*, const tc_sarray*, tc_error**);
-tc_sarray* tc_op_sarray_bitwise_and_sarray(const tc_sarray*, const tc_sarray*, tc_error**);
-tc_sarray* tc_op_sarray_logical_or_sarray(const tc_sarray*, const tc_sarray*, tc_error**);
-tc_sarray* tc_op_sarray_bitwise_or_sarray(const tc_sarray*, const tc_sarray*, tc_error**);
-
+// Mask
 tc_sarray* tc_sarray_apply_mask(const tc_sarray*, const tc_sarray*, tc_error**);
 
-int tc_sarray_all_nonzero(const tc_sarray*, tc_error**);
-int tc_sarray_any_nonzero(const tc_sarray*, tc_error**);
+
+bool tc_sarray_all_nonzero(const tc_sarray*, tc_error**);
+bool tc_sarray_any_nonzero(const tc_sarray*, tc_error**);
 
 void tc_sarray_materialize(tc_sarray*, tc_error**);
 
@@ -444,13 +441,27 @@ tc_sarray* tc_sarray_tail(const tc_sarray*, uint64_t, tc_error**);
 
 tc_sarray* tc_sarray_count_words(const tc_sarray*, int, tc_error**);
 
-tc_sarray* tc_sarray_count_words_with_delimiters(const tc_sarray*, int, tc_flex_list*, tc_error**);
-tc_sarray* tc_sarray_count_word_ngrams(const tc_sarray*, uint64_t, bool, tc_error**);
-tc_sarray* tc_sarray_count_character_ngrams(const tc_sarray*, size_t, bool, bool, tc_error**);
+tc_sarray* tc_sarray_count_words_with_delimiters(const tc_sarray*, int,
+                                                 tc_flex_list*, tc_error**);
 
-tc_sarray* tc_sarray_dict_trim_by_keys(const tc_sarray*, const tc_flex_list*, int, tc_error**);
-tc_sarray* tc_sarray_dict_trim_by_value_range(const tc_sarray*, const tc_flexible_type*, const tc_flexible_type*, tc_error**);
+tc_sarray* tc_sarray_count_word_ngrams(const tc_sarray*, uint64_t, bool,
+                                       tc_error**);
 
+tc_sarray* tc_sarray_count_character_ngrams(const tc_sarray*, size_t, bool,
+                                            bool, tc_error**);
+
+tc_sarray* tc_sarray_dict_trim_by_keys(const tc_sarray*, const tc_flex_list*,
+                                       int, tc_error**);
+
+tc_sarray* tc_sarray_dict_trim_by_value_range(const tc_sarray*,
+                                              const tc_flexible_type*,
+                                              const tc_flexible_type*,
+                                              tc_error**);
+
+// Reduction operations: pass in op as string.  E.g. min, max, sum, mean, std, var, etc.
+tc_flexible_type* tc_sarray_reduce(const tc_sarray*, const char* op, tc_error**);
+
+// DEPRECATED -- for temporary backwards compatilibily
 tc_flexible_type* tc_sarray_max(const tc_sarray*, tc_error**);
 tc_flexible_type* tc_sarray_min(const tc_sarray*, tc_error**);
 tc_flexible_type* tc_sarray_sum(const tc_sarray*, tc_error**);
@@ -460,28 +471,38 @@ uint64_t tc_sarray_nnz(const tc_sarray*, tc_error**);
 size_t tc_sarray_num_missing(const tc_sarray*, tc_error**);
 tc_sarray* tc_sarray_dict_keys(const tc_sarray* src, tc_error**);
 
-tc_sarray* tc_sarray_dict_has_any_keys(const tc_sarray* src, const tc_flex_list* keys, tc_error**);
-tc_sarray* tc_sarray_dict_has_all_keys(const tc_sarray* src, const tc_flex_list* keys, tc_error**);
-tc_sarray* tc_sarray_sample(const tc_sarray* src, double fraction, uint64_t seed, tc_error**);
-tc_sarray* tc_sarray_datetime_to_str_with_format(const tc_sarray* src, const char* format, tc_error**);
+tc_sarray* tc_sarray_dict_has_any_keys(const tc_sarray* src,
+                                       const tc_flex_list* keys, tc_error**);
+tc_sarray* tc_sarray_dict_has_all_keys(const tc_sarray* src,
+                                       const tc_flex_list* keys, tc_error**);
+tc_sarray* tc_sarray_sample(const tc_sarray* src, double fraction,
+                            uint64_t seed, tc_error**);
+tc_sarray* tc_sarray_datetime_to_str_with_format(const tc_sarray* src,
+                                                 const char* format,
+                                                 tc_error**);
 tc_sarray* tc_sarray_datetime_to_str(const tc_sarray* src, tc_error**);
 tc_sarray* tc_sarray_str_to_datetime(const tc_sarray* src, const char* format, tc_error**);
 
-//tc_sarray* tc_sarray_astype(const tc_sarray* src, flex_type_enum dtype, int undefined_on_failure, tc_error**);
+tc_sarray* tc_sarray_to_type(const tc_sarray* src, tc_ft_type_enum dtype, bool undefined_on_failure, tc_error**);
 
-tc_sarray* tc_sarray_clip(const tc_sarray* src, tc_flexible_type* lower, tc_flexible_type* upper, tc_error**);
-tc_sarray* tc_sarray_drop_nan(const tc_sarray* src, tc_error**);
-tc_sarray* tc_sarray_replace_nan(const tc_sarray* src, tc_flexible_type* value, tc_error**);
-tc_sarray* tc_sarray_topk_index(const tc_sarray* src, size_t topk, int reverse, tc_error**);
+tc_sarray* tc_sarray_clip(const tc_sarray* src, const tc_flexible_type* lower,
+                          const tc_flexible_type* upper, tc_error**);
+tc_sarray* tc_sarray_drop_na(const tc_sarray* src, tc_error**);
+tc_sarray* tc_sarray_replace_na(const tc_sarray* src, const tc_flexible_type* value, tc_error**);
+tc_sarray* tc_sarray_topk_index(const tc_sarray* src, size_t topk, bool reverse, tc_error**);
 tc_sarray* tc_sarray_append(const tc_sarray* src, const tc_sarray* other, tc_error**);
 tc_sarray* tc_sarray_unique(const tc_sarray* src, tc_error**);
-int tc_sarray_is_materialized(const tc_sarray* src, tc_error**);
+tc_sarray* tc_sarray_sort(const tc_sarray* sa, bool ascending, tc_error** error);
+bool tc_sarray_is_materialized(const tc_sarray* src, tc_error**);
+bool tc_sarray_size_is_known(const tc_sarray* src, tc_error**);
+tc_sarray* tc_sarray_hash(const tc_sarray* src, uint64_t salt, tc_error**);
+tc_sarray* tc_sarray_slice(const tc_sarray* sf, const int64_t start, const int64_t end, const int64_t stride, tc_error**);
+tc_sarray* tc_sarray_to_const(const tc_sarray* sf, const tc_flexible_type* value, tc_ft_type_enum out_type,  tc_error**);
+tc_sarray* tc_sarray_which(const tc_sarray* mask, const tc_sarray* true_sa,
+                           const tc_sarray* false_sa, tc_error**);
 
 // Returns 1 if all elements are equal and 0 otherwise.
-int tc_sarray_equals(const tc_sarray*, const tc_sarray*, tc_error**);
-
-// Call sum on the tc_sarray
-tc_flexible_type* tc_sarray_sum(const tc_sarray*, tc_error**);
+bool tc_sarray_equals(const tc_sarray*, const tc_sarray*, tc_error**);
 
 // Wrap the printing.  Returns a string flexible type.
 tc_flexible_type* tc_sarray_text_summary(const tc_sarray* sf, tc_error**);
@@ -497,8 +518,31 @@ tc_sarray* tc_sarray_apply(
     bool skip_undefined,
     tc_error** error);
 
-// Destructor
 
+/*******************************************************************************/
+/*                                                                             */
+/*  Operators                                                                  */
+/*                                                                             */
+/*******************************************************************************/
+
+// Binary operators.  Available operations are:
+// ==, !=, <=, <, >=, >, &, |, +, -, /, *, pow.
+tc_sarray* tc_binary_op_ss(const tc_sarray*, const char* op, const tc_sarray*,
+                           tc_error**);
+
+tc_sarray* tc_binary_op_sf(const tc_sarray*, const char* op,
+                           const tc_flexible_type*, tc_error**);
+
+tc_sarray* tc_binary_op_fs(const tc_flexible_type*, const char* op,
+                           const tc_sarray*, tc_error**);
+
+tc_flexible_type* tc_binary_op_ff(const tc_flexible_type*, const char* op,
+                                  const tc_flexible_type*, tc_error**);
+
+// Unary operators -- a collection of predefined unary operators that perform
+// optimized one-to-one unary operations on the models.
+tc_flexible_type* tc_ft_unary_op(const tc_flexible_type*, const char* op, tc_error**);
+tc_sarray* tc_sarray_unary_op(const tc_sarray*, const char* op, tc_error**);
 
 
 /******************************************************************************/
@@ -509,13 +553,11 @@ tc_sarray* tc_sarray_apply(
 
 tc_sframe* tc_sframe_create_empty(tc_error**);
 
-tc_sframe* tc_sframe_create_copy(tc_sframe*, tc_error**);
+tc_sframe* tc_sframe_create_copy(const tc_sframe*, tc_error**);
 
 tc_sframe* tc_sframe_load(const char* url, tc_error** error);
 
 void tc_sframe_save(const tc_sframe* sf, const char* url, tc_error** error);
-
-void tc_sframe_save_as_csv(const tc_sframe* sf, const char* url, tc_error** error);
 
 // Adds the column to the sframe.
 void tc_sframe_add_column(tc_sframe* sf, const char* column_name,
@@ -525,7 +567,7 @@ void tc_sframe_add_column(tc_sframe* sf, const char* column_name,
 void tc_sframe_remove_column(tc_sframe* sf, const char* column_name, tc_error**);
 
 tc_sarray* tc_sframe_extract_column_by_name(
-    tc_sframe* sf, const char* column_name, tc_error**);
+    const tc_sframe* sf, const char* column_name, tc_error**);
 
 // Wrap the printing.  Returns a string flexible type.
 tc_flexible_type* tc_sframe_text_summary(const tc_sframe* sf, tc_error**);
@@ -552,11 +594,8 @@ tc_sframe* tc_sframe_read_csv(const char *url, const tc_parameters *params, tc_e
 tc_sframe* tc_sframe_read_json(const char *url, tc_error**);
 tc_sframe* tc_sframe_read_json_lines(const char *url, tc_error **error);
 
-// Write csv
-void tc_sframe_write_csv(const tc_sframe* sf, const char *url, tc_error **error);
-
-// Write other format
-void tc_sframe_write(const tc_sframe* sf, const char *url, const char *format, tc_error **error);
+// Write csv etc.
+void tc_sframe_export(const tc_sframe* sf, const char *url, const char* format, const tc_parameters*, tc_error **error);
 
 // Head
 tc_sframe* tc_sframe_head(const tc_sframe* sf, size_t n, tc_error **error);
@@ -565,11 +604,11 @@ tc_sframe* tc_sframe_head(const tc_sframe* sf, size_t n, tc_error **error);
 tc_sframe* tc_sframe_tail(const tc_sframe* sf, size_t n, tc_error **error);
 
 // Random split.
-void tc_sframe_random_split(const tc_sframe* sf, double proportion, size_t seed, tc_sframe** left, tc_sframe** right, tc_error**);
+void tc_sframe_random_split(const tc_sframe* sf, double proportion, size_t seed, const tc_sframe** left, const tc_sframe** right, tc_error**);
 
-int tc_sframe_is_materialized(const tc_sframe* src, tc_error**);
+bool tc_sframe_is_materialized(const tc_sframe* src, tc_error**);
 void tc_sframe_materialize(tc_sframe* src, tc_error**);
-int tc_sframe_size_is_known(const tc_sframe* src, tc_error**);
+bool tc_sframe_size_is_known(const tc_sframe* src, tc_error**);
 void tc_sframe_save_reference(const tc_sframe*, const char* path, tc_error**);
 bool tc_sframe_contains_column(const tc_sframe*, const char* col_name, tc_error**);
 tc_sframe* tc_sframe_sample(const tc_sframe*, double fraction, uint64_t seed, tc_error**);
@@ -581,7 +620,7 @@ void tc_sframe_swap_columns(tc_sframe* sf, const char* column_1, const char* col
 void tc_sframe_rename_column(tc_sframe* sf, const char* old_name, const char* new_name, tc_error**);
 void tc_sframe_rename_columns(tc_sframe* sf, const tc_flex_dict* name_mapping, tc_error**);
 
-tc_sframe* tc_sframe_fillna(const tc_sframe* data, const char* column, const tc_flexible_type* value, tc_error**);
+tc_sframe* tc_sframe_replace_na(const tc_sframe* data, const char* column, const tc_flexible_type* value, tc_error**);
 tc_sframe* tc_sframe_filter_by(const tc_sframe* sf, const tc_sarray* values, const char* column_name, bool exclude, tc_error**);
 tc_sframe* tc_sframe_pack_columns_vector(const tc_sframe* sf, const tc_flex_list* columns, const char* column_name, tc_ft_type_enum type, tc_flexible_type* value, tc_error**);
 tc_sframe* tc_sframe_pack_columns_string(const tc_sframe* sf, const char* column_prefix, const char* column_name, tc_ft_type_enum type, tc_flexible_type* value, tc_error**);
@@ -595,12 +634,12 @@ tc_sframe* tc_sframe_unstack_vector(const tc_sframe* sf, const tc_flex_list* col
 tc_sframe* tc_sframe_unique(const tc_sframe* sf, tc_error**);
 tc_sframe* tc_sframe_sort_single_column(const tc_sframe* sf, const char* column, bool ascending, tc_error**);
 tc_sframe* tc_sframe_sort_multiple_columns(const tc_sframe* sf, const tc_flex_list* columns, bool ascending, tc_error**);
-tc_sframe* tc_sframe_dropna(const tc_sframe* sf, const tc_flex_list* columns, const char* how, tc_error**);
-tc_sframe* tc_sframe_slice(const tc_sframe* sf, const uint64_t start, const uint64_t end, tc_error**);
-tc_sframe* tc_sframe_slice_stride(const tc_sframe* sf, const uint64_t start, const uint64_t end, const uint64_t stride, tc_error**);
+tc_sframe* tc_sframe_drop_na(const tc_sframe* sf, const tc_flex_list* columns, const char* how, tc_error**);
+tc_sframe* tc_sframe_slice(const tc_sframe* sf, const int64_t start, const int64_t end, const int64_t stride, tc_error**);
 
 tc_flex_list* tc_sframe_extract_row(const tc_sframe* sf, uint64_t row_index, tc_error**);
 
+tc_sframe* tc_sframe_apply_mask(const tc_sframe*, const tc_sarray* mask, tc_error**);
 
 // Whizbangery
 //
@@ -613,31 +652,32 @@ tc_sframe* tc_sframe_join_on_single_column(
     const char* column,
     const char* how, tc_error**);
 
+tc_sframe* tc_sframe_join_on_multiple_columns(
+    tc_sframe* left, tc_sframe* right,
+    tc_flex_list* join_columns,
+    const char* how, tc_error**);
+
 
 // Append one sframe onto another.
-tc_sframe* tc_sframe_append(tc_sframe* top, tc_sframe* bottom, tc_error **error);
-
+tc_sframe* tc_sframe_append(const tc_sframe* top, const tc_sframe* bottom, tc_error **error);
 
 // groupby stuff!
 tc_groupby_aggregator* tc_groupby_aggregator_create(tc_error**);
-void tc_groupby_aggregator_add_count(tc_groupby_aggregator* gb, const char* dest_column, tc_error**);
-void tc_groupby_aggregator_add_sum(tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
-void tc_groupby_aggregator_add_max(tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
-void tc_groupby_aggregator_add_min(tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
-void tc_groupby_aggregator_add_mean(tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
-void tc_groupby_aggregator_add_avg(tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
-void tc_groupby_aggregator_add_var(tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
-void tc_groupby_aggregator_add_variance(tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
-void tc_groupby_aggregator_add_std(tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
-void tc_groupby_aggregator_add_stdv(tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
-void tc_groupby_aggregator_add_select_one(tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
-void tc_groupby_aggregator_add_count_distinct(tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
-void tc_groupby_aggregator_add_concat_one_column(tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, tc_error**);
+
+// Available aggregators:
+// "count" (src_column is ignored)
+// "sum", "max", "min", "mean", "variance", "std", "select_one", "count_distinct", "concat"
+void tc_groupby_aggregator_add_simple_aggregator(tc_groupby_aggregator* gb, const char* agg_type, const char* dest_column, const char* src_column, tc_error**);
+void tc_groupby_aggregator_add_parameterized_aggregator(tc_groupby_aggregator* gb, const char* dest_column, const tc_parameters* param, tc_error**);
+
+
 void tc_groupby_aggregator_add_concat_two_columns(tc_groupby_aggregator* gb, const char* dest_column, const char* key, const char* val, tc_error**);
-void tc_groupby_aggregator_add_quantile(tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, const double quantile, tc_error**);
-void tc_groupby_aggregator_add_quantiles(tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, const tc_flex_list* quantiles, tc_error**);
+
 void tc_groupby_aggregator_add_argmax(tc_groupby_aggregator* gb, const char* dest_column, const char* agg, const char* out, tc_error**);
 void tc_groupby_aggregator_add_argmin(tc_groupby_aggregator* gb, const char* dest_column, const char* agg, const char* out, tc_error**);
+
+void tc_groupby_aggregator_add_quantile(tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, const double quantile, tc_error**);
+void tc_groupby_aggregator_add_quantiles(tc_groupby_aggregator* gb, const char* dest_column, const char* src_column, const tc_flex_list* quantiles, tc_error**);
 
 tc_sframe* tc_sframe_group_by(const tc_sframe *sf, const tc_flex_list* column_list, const tc_groupby_aggregator* gb, tc_error **);
 
@@ -689,20 +729,20 @@ tc_variant* tc_variant_create_from_parameters(const tc_parameters*, tc_error** e
 tc_variant* tc_variant_create_from_model(const tc_model*, tc_error** error);
 tc_variant* tc_variant_create_copy(const tc_variant*, tc_error** error);
 
-int tc_variant_is_int64(const tc_variant*);
-int tc_variant_is_double(const tc_variant*);
-int tc_variant_is_cstring(const tc_variant*);
-int tc_variant_is_string(const tc_variant*);
-int tc_variant_is_double_array(const tc_variant*);
-int tc_variant_is_flex_list(const tc_variant*);
-int tc_variant_is_flex_dict(const tc_variant*);
-int tc_variant_is_datetime(const tc_variant*);
-int tc_variant_is_image(const tc_variant*);
-int tc_variant_is_flexible_type(const tc_variant*);
-int tc_variant_is_sarray(const tc_variant*);
-int tc_variant_is_sframe(const tc_variant*);
-int tc_variant_is_parameters(const tc_variant*);
-int tc_variant_is_model(const tc_variant*);
+bool tc_variant_is_int64(const tc_variant*);
+bool tc_variant_is_double(const tc_variant*);
+bool tc_variant_is_cstring(const tc_variant*);
+bool tc_variant_is_string(const tc_variant*);
+bool tc_variant_is_double_array(const tc_variant*);
+bool tc_variant_is_flex_list(const tc_variant*);
+bool tc_variant_is_flex_dict(const tc_variant*);
+bool tc_variant_is_datetime(const tc_variant*);
+bool tc_variant_is_image(const tc_variant*);
+bool tc_variant_is_flexible_type(const tc_variant*);
+bool tc_variant_is_sarray(const tc_variant*);
+bool tc_variant_is_sframe(const tc_variant*);
+bool tc_variant_is_parameters(const tc_variant*);
+bool tc_variant_is_model(const tc_variant*);
 
 
 int64_t tc_variant_int64(const tc_variant* ft, tc_error** error);

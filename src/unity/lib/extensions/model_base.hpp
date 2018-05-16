@@ -62,7 +62,7 @@ class EXPORT model_base: public cppipc::ipc_object_base {
    * Note: this function is typically overridden using the
    * BEGIN_CLASS_MEMBER_REGISTRATION macro.
    */
-  virtual std::string name() = 0;
+  virtual const char* name() = 0;
 
   /**
    * Returns a unique identifier for the toolkit class. It can be *any* unique
@@ -72,7 +72,7 @@ class EXPORT model_base: public cppipc::ipc_object_base {
    * Note: this function is typically overridden using the
    * BEGIN_CLASS_MEMBER_REGISTRATION macro.
    */
-  virtual std::string uid() = 0; 
+  virtual const std::string& uid() = 0;
 
   void save(oarchive& oarc) const {
     oarc << get_version();
@@ -255,14 +255,14 @@ class model_proxy : public model_base {
   }
 
   virtual size_t get_version() const {
-    throw("Calling Unreachable Function");
+    std_log_and_throw(std::runtime_error,"Calling Unreachable Function");
   }
 
-  std::string uid() override {
-    throw("Calling Unreachable Function");
+  const std::string& uid() {
+    std_log_and_throw(std::runtime_error, "Calling Unreachable Function");
   }
-  void perform_registration() override {
-    throw("Calling Unreachable Function");
+  void perform_registration() {
+    std_log_and_throw(std::runtime_error,"Calling Unreachable Function");
   }
 
   /**
@@ -270,7 +270,7 @@ class model_proxy : public model_base {
    * matching that of get_version()
    */
   virtual void save_impl(oarchive& oarc) const {
-    throw("Calling Unreachable Function");
+    std_log_and_throw(std::runtime_error, "Calling Unreachable Function");
   }
 
   /**
@@ -278,12 +278,12 @@ class model_proxy : public model_base {
    * Should raise an exception on failure.
    */
   void load_version(iarchive& iarc, size_t version) {
-    throw("Calling Unreachable Function");
+    std_log_and_throw(std::runtime_error, "Calling Unreachable Function");
   }
 
   BOOST_PP_SEQ_FOR_EACH(__GENERATE_PROXY_CALLS__, model_base, 
                         __ADD_PARENS__(
-                            (std::string, name, )
+                            (const char*, name, )
                             ))
 };
 #endif

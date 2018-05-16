@@ -65,15 +65,6 @@ class EXPORT transformer_base : public ml_model_base {
 
   virtual ~transformer_base() {}
 
-
-  /**
-   * Returns the name of the model.
-   *
-   * \returns Name of the model.
-   * \ref model_base for details.
-   */
-  virtual std::string name() = 0;
-
   /**
    * Returns the current model version
    */
@@ -138,12 +129,6 @@ class EXPORT transformer_base : public ml_model_base {
    */
   virtual gl_sframe transform(gl_sframe data) = 0; 
 
-  /**
-   * Function implemented by BEGIN_CLASS_MEMBER_REGISTRATION
-   */ 
-  virtual void perform_registration() = 0;
-  virtual std::string uid() = 0; 
-  
   /**
    * Fit and transform the given data. Intended as an optimization because
    * fit and transform are usually always called together. The default 

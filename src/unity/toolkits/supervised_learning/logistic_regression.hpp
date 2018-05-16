@@ -89,6 +89,8 @@ class EXPORT logistic_regression: public supervised_learning_model_base {
    */
   void model_specific_init(const ml_data& data, const ml_data& valid_data);
   
+  bool is_classifier() const override { return true; }
+
   /**
    * Initialize the options.
    *

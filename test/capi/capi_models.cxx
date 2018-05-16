@@ -1,17 +1,18 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
+/* Copyright © 2018 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
 #define BOOST_TEST_MODULE capi_models
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
-#include <fileio/fileio_constants.hpp>
 
 #include <capi/TuriCreate.h>
 #include <algorithm>
 #include <image/image_type.hpp>
 #include <vector>
+#include <fileio/fileio_constants.hpp>
 #include "capi_utils.hpp"
 
 BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
@@ -190,7 +191,8 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
 
     // Test saving and loading the model.
     {
-      std::string model_path = turi::fileio::get_system_temp_directory() + "/save_test_1_tmp";
+      std::string model_path = turi::fileio::get_system_temp_directory() + "save_test_1_tmp_model";
+
       tc_model_save(model, model_path.c_str(), &error);
       CAPI_CHECK_ERROR(error);
 

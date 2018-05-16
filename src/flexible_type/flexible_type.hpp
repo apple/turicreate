@@ -1632,7 +1632,7 @@ template <typename T>
 inline FLEX_ALWAYS_INLINE_FLATTEN flexible_type::flexible_type(std::initializer_list<T>&& list) :flexible_type() {
   reset(flex_type_enum::VECTOR);
   // always unique after a reset
-  val.vecval->second = std::move(flex_vec(list));
+  val.vecval->second = flex_vec(list);
 }
 
 inline FLEX_ALWAYS_INLINE_FLATTEN flexible_type::~flexible_type() {

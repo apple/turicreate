@@ -195,25 +195,12 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
    * -------------------------------------------------------------------------
    */
 
-  /**
-   * Returns the name of the model.
-   *
-   * \returns Name of the model.
-   * \ref model_base for details.
-   */
-  virtual std::string name() = 0;
-  
 
   /**
    * Train a supervised_learning model.
    */
   virtual void train() = 0;
   
-
-  /**
-   * Gets the model version number
-   */
-  virtual size_t get_version() const = 0;
 
   /**
    * Save the object using Turi's oarc.
@@ -598,9 +585,7 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
   /**
    * Returns true if the model is a classifier.
    */
-  bool is_classifier() {
-    return name().find("classifier") != std::string::npos;
-  }
+  virtual bool is_classifier() const = 0;
 
   /**
    * Returns true if the model is a classifier.

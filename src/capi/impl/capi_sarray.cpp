@@ -8,6 +8,7 @@
 #include <capi/impl/capi_error_handling.hpp>
 #include <capi/impl/capi_initialization_internal.hpp>
 #include <flexible_type/flexible_type.hpp>
+#include <unity/lib/unity_sarray.hpp>
 #include <export.hpp>
 #include <sstream>
 
@@ -152,327 +153,6 @@ EXPORT tc_ft_type_enum tc_sarray_type(const tc_sarray* sa) {
 }
 
 /*******************************************************************************/
-
-// Gets the type of the sarray.
-EXPORT tc_sarray* tc_op_sarray_plus_sarray(
-    const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error) {
-
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
-  CHECK_NOT_NULL(error, sa2, "SArray 2", NULL);
-
-  return new_tc_sarray(sa1->value + sa2->value);
-
-  ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT tc_sarray* tc_op_sarray_minus_sarray(
-    const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
-
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
-  CHECK_NOT_NULL(error, sa2, "SArray 2", NULL);
-
-  return new_tc_sarray(sa1->value - sa2->value);
-
-  ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT tc_sarray* tc_op_sarray_div_sarray(
-    const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
-
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
-  CHECK_NOT_NULL(error, sa2, "SArray 2", NULL);
-
-  return new_tc_sarray(sa1->value / sa2->value);
-
-  ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT tc_sarray* tc_op_sarray_mult_sarray(
-    const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
-
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
-  CHECK_NOT_NULL(error, sa2, "SArray 2", NULL);
-
-  return new_tc_sarray(sa1->value * sa2->value);
-
-  ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT tc_sarray* tc_op_sarray_plus_ft(
-    const tc_sarray* sa1, const tc_flexible_type* ft2, tc_error** error){
-
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, sa1, "sarray", NULL);
-
-  CHECK_NOT_NULL(error, ft2, "flexible_type", NULL);
-
-  return new_tc_sarray(sa1->value + ft2->value);
-
-  ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT tc_sarray* tc_op_sarray_minus_ft(
-    const tc_sarray* sa1, const tc_flexible_type* ft2, tc_error** error){
-
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, sa1, "sarray", NULL);
-
-  CHECK_NOT_NULL(error, ft2, "flexible_type", NULL);
-
-  return new_tc_sarray(sa1->value - ft2->value);
-
-  ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT tc_sarray* tc_op_sarray_div_ft(
-    const tc_sarray* sa1, const tc_flexible_type* ft2, tc_error** error){
-
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, sa1, "sarray", NULL);
-
-  CHECK_NOT_NULL(error, ft2, "flexible_type", NULL);
-
-  return new_tc_sarray(sa1->value / ft2->value);
-
-  ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT tc_sarray* tc_op_sarray_mult_ft(
-    const tc_sarray* sa1, const tc_flexible_type* ft2, tc_error** error){
-
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, sa1, "sarray", NULL);
-
-  CHECK_NOT_NULL(error, ft2, "flexible_type", NULL);
-
-  return new_tc_sarray(sa1->value * ft2->value);
-
-  ERROR_HANDLE_END(error, NULL);
-}
-
-
-EXPORT tc_sarray* tc_op_sarray_lt_sarray(
-    const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
-
-    ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-    CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
-
-    CHECK_NOT_NULL(error, sa2, "SArray 2", NULL);
-
-    return new_tc_sarray(sa1->value < sa2->value);
-
-    ERROR_HANDLE_END(error, NULL);
-
-}
-
-EXPORT tc_sarray* tc_op_sarray_gt_sarray(
-    const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
-
-    ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-    CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
-
-    CHECK_NOT_NULL(error, sa2, "SArray 2", NULL);
-
-    return new_tc_sarray(sa1->value > sa2->value);
-
-    ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT tc_sarray* tc_op_sarray_le_sarray(
-    const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
-
-    ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-    CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
-
-    CHECK_NOT_NULL(error, sa2, "SArray 2", NULL);
-
-    return new_tc_sarray(sa1->value <= sa2->value);
-
-    ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT tc_sarray* tc_op_sarray_ge_sarray(
-    const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
-
-    ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-    CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
-
-    CHECK_NOT_NULL(error, sa2, "SArray 2", NULL);
-
-    return new_tc_sarray(sa1->value >= sa2->value);
-
-    ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT tc_sarray* tc_op_sarray_eq_sarray(
-    const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
-
-    ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-    CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
-
-    CHECK_NOT_NULL(error, sa2, "SArray 2", NULL);
-
-    return new_tc_sarray(sa1->value == sa2->value);
-
-    ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT tc_sarray* tc_op_sarray_lt_ft(
-    const tc_sarray* sa1, const tc_flexible_type* ft2, tc_error** error){
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, sa1, "sarray", NULL);
-
-  CHECK_NOT_NULL(error, ft2, "flexible_type", NULL);
-
-  return new_tc_sarray(sa1->value < ft2->value);
-
-  ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT tc_sarray* tc_op_sarray_gt_ft(
-    const tc_sarray* sa1, const tc_flexible_type* ft2, tc_error** error){
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, sa1, "sarray", NULL);
-
-  CHECK_NOT_NULL(error, ft2, "flexible_type", NULL);
-
-  return new_tc_sarray(sa1->value > ft2->value);
-
-  ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT tc_sarray* tc_op_sarray_ge_ft(
-    const tc_sarray* sa1, const tc_flexible_type* ft2, tc_error** error){
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, sa1, "sarray", NULL);
-
-  CHECK_NOT_NULL(error, ft2, "flexible_type", NULL);
-
-  return new_tc_sarray(sa1->value >= ft2->value);
-
-  ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT tc_sarray* tc_op_sarray_le_ft(
-    const tc_sarray* sa1, const tc_flexible_type* ft2, tc_error** error){
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, sa1, "sarray", NULL);
-
-  CHECK_NOT_NULL(error, ft2, "flexible_type", NULL);
-
-  return new_tc_sarray(sa1->value <= ft2->value);
-
-  ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT tc_sarray* tc_op_sarray_eq_ft(
-    const tc_sarray* sa1, const tc_flexible_type* ft2, tc_error** error){
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, sa1, "sarray", NULL);
-
-  CHECK_NOT_NULL(error, ft2, "flexible_type", NULL);
-
-  return new_tc_sarray(sa1->value == ft2->value);
-
-  ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT tc_sarray* tc_op_sarray_logical_and_sarray(
-    const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
-
-  CHECK_NOT_NULL(error, sa2, "SArray 2", NULL);
-
-  return new_tc_sarray(sa1->value && sa2->value);
-
-  ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT tc_sarray* tc_op_sarray_bitwise_and_sarray(
-    const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
-
-  CHECK_NOT_NULL(error, sa2, "SArray 2", NULL);
-
-  return new_tc_sarray(sa1->value & sa2->value);
-
-  ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT tc_sarray* tc_op_sarray_logical_or_sarray(
-    const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
-
-  CHECK_NOT_NULL(error, sa2, "SArray 2", NULL);
-
-  return new_tc_sarray(sa1->value || sa2->value);
-
-  ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT tc_sarray* tc_op_sarray_bitwise_or_sarray(
-    const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error){
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, sa1, "SArray 1", NULL);
-
-  CHECK_NOT_NULL(error, sa2, "SArray 2", NULL);
-
-  return new_tc_sarray(sa1->value | sa2->value);
-
-  ERROR_HANDLE_END(error, NULL);
-}
-
 EXPORT tc_sarray* tc_sarray_apply_mask(
     const tc_sarray* sa1, const tc_sarray* mask, tc_error** error){
   ERROR_HANDLE_START();
@@ -487,7 +167,7 @@ EXPORT tc_sarray* tc_sarray_apply_mask(
   ERROR_HANDLE_END(error, NULL);
 }
 
-EXPORT int tc_sarray_all_nonzero(const tc_sarray* sa1, tc_error** error){
+EXPORT bool tc_sarray_all_nonzero(const tc_sarray* sa1, tc_error** error){
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
@@ -498,7 +178,7 @@ EXPORT int tc_sarray_all_nonzero(const tc_sarray* sa1, tc_error** error){
   ERROR_HANDLE_END(error, NULL);
 }
 
-EXPORT int tc_sarray_any_nonzero(const tc_sarray* sa1, tc_error** error){
+EXPORT bool tc_sarray_any_nonzero(const tc_sarray* sa1, tc_error** error){
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
@@ -767,7 +447,7 @@ EXPORT tc_sarray* tc_sarray_str_to_datetime(const tc_sarray* src, const char* fo
   ERROR_HANDLE_END(error, NULL);
 }
 
-EXPORT tc_sarray* tc_sarray_clip(const tc_sarray* src, tc_flexible_type* lower, tc_flexible_type* upper, tc_error** error){
+EXPORT tc_sarray* tc_sarray_clip(const tc_sarray* src, const tc_flexible_type* lower, const tc_flexible_type* upper, tc_error** error){
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
@@ -781,7 +461,7 @@ EXPORT tc_sarray* tc_sarray_clip(const tc_sarray* src, tc_flexible_type* lower, 
   ERROR_HANDLE_END(error, NULL);
 }
 
-EXPORT tc_sarray* tc_sarray_drop_nan(const tc_sarray* src, tc_error** error){
+EXPORT tc_sarray* tc_sarray_drop_na(const tc_sarray* src, tc_error** error){
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
@@ -792,11 +472,20 @@ EXPORT tc_sarray* tc_sarray_drop_nan(const tc_sarray* src, tc_error** error){
   ERROR_HANDLE_END(error, NULL);
 }
 
-EXPORT tc_sarray* tc_sarray_replace_nan(const tc_sarray* src, tc_flexible_type* value, tc_error** error){
+EXPORT tc_sarray* tc_sarray_to_type(const tc_sarray* src, tc_ft_type_enum dtype, bool undefined_on_failure, tc_error** error) {
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
-  CHECK_NOT_NULL(error, value, "flexible_type", NULL);
+  CHECK_NOT_NULL(error, src, "sarray", NULL);
+
+  return new_tc_sarray(src->value.astype(static_cast<turi::flex_type_enum>(dtype), undefined_on_failure));
+
+  ERROR_HANDLE_END(error, NULL);
+}
+
+EXPORT tc_sarray* tc_sarray_replace_na(const tc_sarray* src, const tc_flexible_type* value, tc_error** error){
+  ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, src, "sarray", NULL);
 
@@ -806,7 +495,7 @@ EXPORT tc_sarray* tc_sarray_replace_nan(const tc_sarray* src, tc_flexible_type* 
 }
 
 
-EXPORT tc_sarray* tc_sarray_topk_index(const tc_sarray* src, size_t topk, int reverse, tc_error** error){
+EXPORT tc_sarray* tc_sarray_topk_index(const tc_sarray* src, size_t topk, bool reverse, tc_error** error){
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
@@ -841,7 +530,7 @@ EXPORT tc_sarray* tc_sarray_unique(const tc_sarray* src, tc_error** error){
   ERROR_HANDLE_END(error, NULL);
 }
 
-EXPORT int tc_sarray_is_materialized(const tc_sarray* src, tc_error** error){
+EXPORT bool tc_sarray_is_materialized(const tc_sarray* src, tc_error** error){
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
@@ -850,6 +539,17 @@ EXPORT int tc_sarray_is_materialized(const tc_sarray* src, tc_error** error){
   return src->value.is_materialized();
 
   ERROR_HANDLE_END(error, NULL);
+}
+
+EXPORT bool tc_sarray_size_is_known(const tc_sarray* src, tc_error** error){
+  ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
+
+  CHECK_NOT_NULL(error, src, "sarray", NULL);
+
+  return src->value.get_proxy()->has_size();
+
+  ERROR_HANDLE_END(error, false);
 }
 
 // Call sum on the tc_sarray
@@ -866,7 +566,7 @@ EXPORT tc_flexible_type* tc_sarray_sum(const tc_sarray* sa, tc_error** error) {
 }
 
 
-EXPORT int tc_sarray_equals(const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error) {
+EXPORT bool tc_sarray_equals(const tc_sarray* sa1, const tc_sarray* sa2, tc_error** error) {
 
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
@@ -948,6 +648,123 @@ EXPORT tc_sarray* tc_sarray_apply(
 
   return new_tc_sarray(sa->value.apply(
       std::move(wrapper), turi::flex_type_enum(type), skip_undefined));
+
+  ERROR_HANDLE_END(error, NULL);
+}
+
+
+// Reduction operations: pass in op as string.  E.g. min, max, sum, mean, std, etc.
+EXPORT tc_flexible_type* tc_sarray_reduce(const tc_sarray* sa, const char* op, tc_error** error) {
+
+  ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
+
+  CHECK_NOT_NULL(error, sa, "tc_sarray", NULL);
+
+  enum class reduce_op {
+    OP_MIN = 0,
+    OP_MAX = 1,
+    OP_SUM = 2,
+    OP_MEAN = 3,
+    OP_STD = 4
+  };
+
+  static std::map<std::string, reduce_op> _op_map =  //
+      {{"min", reduce_op::OP_MIN},
+       {"max", reduce_op::OP_MAX},
+       {"sum", reduce_op::OP_SUM},
+       {"mean", reduce_op::OP_MEAN},
+       {"std", reduce_op::OP_STD}};
+
+  auto it = _op_map.find(op);
+
+  if(it == _op_map.end()) {
+    std::ostringstream ss;
+    ss << "Reduction operator " << op << " not recognized. "
+       << "Available operators are ";
+    for(const auto& p : _op_map) {
+      ss << p.first << " ";
+    }
+    ss << ".";
+
+    throw std::invalid_argument(ss.str());
+  }
+
+  switch (it->second) {
+    case reduce_op::OP_MIN:
+      return new_tc_flexible_type(sa->value.min());
+    case reduce_op::OP_MAX:
+      return new_tc_flexible_type(sa->value.max());
+    case reduce_op::OP_SUM:
+      return new_tc_flexible_type(sa->value.sum());
+    case reduce_op::OP_MEAN:
+      return new_tc_flexible_type(sa->value.mean());
+    case reduce_op::OP_STD:
+      return new_tc_flexible_type(sa->value.std());
+  }
+  return NULL;
+
+  ERROR_HANDLE_END(error, NULL);
+}
+
+EXPORT tc_sarray* tc_sarray_hash(const tc_sarray* sa, uint64_t salt, tc_error** error) {
+  ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
+
+  CHECK_NOT_NULL(error, sa, "tc_sarray", NULL);
+
+  return new_tc_sarray(turi::gl_sarray(sa->value.get_proxy()->hash(salt)));
+
+  ERROR_HANDLE_END(error, NULL);
+}
+
+EXPORT tc_sarray* tc_sarray_slice(const tc_sarray* sf, const int64_t start, const int64_t end, const int64_t stride, tc_error** error) {
+  ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
+
+  return new_tc_sarray(sf->value.subslice(start, end, stride));
+
+  ERROR_HANDLE_END(error, NULL);
+}
+
+EXPORT tc_sarray* tc_sarray_to_const(const tc_sarray* sa, const tc_flexible_type* value, tc_ft_type_enum out_type, tc_error** error) {
+  ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
+
+  CHECK_NOT_NULL(error, sa, "tc_sarray", NULL);
+  CHECK_NOT_NULL(error, value, "tc_flexible_type", NULL);
+
+  return new_tc_sarray(turi::gl_sarray(sa->value.get_proxy()->to_const(value->value, static_cast<turi::flex_type_enum>(out_type))));
+
+  ERROR_HANDLE_END(error, NULL);
+}
+
+EXPORT tc_sarray* tc_sarray_which(const tc_sarray* mask,
+                                  const tc_sarray* true_sa,
+                                  const tc_sarray* false_sa, tc_error** error) {
+
+  ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
+
+  CHECK_NOT_NULL(error, mask, "tc_sarray", NULL);
+  CHECK_NOT_NULL(error, true_sa, "tc_sarray", NULL);
+  CHECK_NOT_NULL(error, false_sa, "tc_sarray", NULL);
+
+  return new_tc_sarray(
+      turi::gl_sarray(mask->value.get_proxy()->ternary_operator(
+          true_sa->value.get_proxy(), false_sa->value.get_proxy())));
+
+  ERROR_HANDLE_END(error, NULL);
+
+}
+
+EXPORT tc_sarray* tc_sarray_sort(const tc_sarray* sa, bool ascending, tc_error** error) {
+  ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
+
+  CHECK_NOT_NULL(error, sa, "tc_sarray", NULL);
+
+  return new_tc_sarray(sa->value.sort(ascending));
 
   ERROR_HANDLE_END(error, NULL);
 }

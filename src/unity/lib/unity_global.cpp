@@ -15,11 +15,13 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/searching/boyer_moore.hpp>
+#include <boost/filesystem/path.hpp>
 #include <parallel/lambda_omp.hpp>
 #include <fileio/temp_files.hpp>
-#include <fileio/curl_downloader.hpp>
 #include <fileio/fs_utils.hpp>
+#ifdef TC_HAS_PYTHON
 #include <lambda/lambda_master.hpp>
+#endif
 #include <unity/lib/version.hpp>
 #include <unity/lib/unity_global.hpp>
 #include <perf/memory_info.hpp>
@@ -92,7 +94,7 @@ namespace turi {
      case 3:
        {
          auto model_ptr = boost::get<std::shared_ptr<model_base>>(v);
-         oarc << model_ptr->name();
+         oarc << std::string(model_ptr->name());
          oarc << (*model_ptr);
        }
        break;
@@ -299,7 +301,7 @@ namespace turi {
       // write to the archive. write a header, then the model name, then the map
       oarchive oarc(dir);
       oarc.write(CLASS_MAGIC_HEADER, strlen(CLASS_MAGIC_HEADER));
-      oarc << model->name();
+      oarc << std::string(model->name());
       model_variant_deep_save(to_variant(stored_map), oarc);
 
       if (dir.get_output_stream()->fail()) {
@@ -416,28 +418,37 @@ namespace turi {
 
   flexible_type unity_global::eval_lambda(const std::string& string, const flexible_type& arg) {
     log_func_entry();
+#ifdef TC_HAS_PYTHON
     lambda::lambda_master& evaluator = lambda::lambda_master::get_instance();
     auto lambda_hash = evaluator.make_lambda(string);
     std::vector<flexible_type> return_val;
     evaluator.bulk_eval(lambda_hash, {arg}, return_val, false, 0);
     evaluator.release_lambda(lambda_hash);
     return return_val[0];
+#else
+    log_and_throw("Python lambdas not supported");
+#endif
   }
 
   flexible_type unity_global::eval_dict_lambda(const std::string& lambda_string,
                             const std::vector<std::string>& keys,
                             const std::vector<flexible_type>& values) {
     log_func_entry();
+#ifdef TC_HAS_PYTHON
     lambda::lambda_master& evaluator = lambda::lambda_master::get_instance();
     auto lambda_hash = evaluator.make_lambda(lambda_string);
     std::vector<flexible_type> return_val;
     evaluator.bulk_eval(lambda_hash, keys, {values}, return_val, false, 0);
     evaluator.release_lambda(lambda_hash);
     return return_val[0];
+#else
+    log_and_throw("Python lambdas not supported");
+#endif
   }
 
   std::vector<flexible_type> unity_global::parallel_eval_lambda(const std::string& string, const std::vector<flexible_type>& arg) {
     log_func_entry();
+#ifdef TC_HAS_PYTHON
     lambda::lambda_master& evaluator = lambda::lambda_master::get_instance();
     auto lambda_hash = evaluator.make_lambda(string);
 
@@ -451,6 +462,9 @@ namespace turi {
 
     evaluator.release_lambda(lambda_hash);
     return ret;
+#else
+    log_and_throw("Python lambdas not supported");
+#endif
   }
 
   std::string unity_global::__read__(const std::string& url) {

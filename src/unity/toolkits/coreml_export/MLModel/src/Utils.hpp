@@ -61,7 +61,7 @@ namespace CoreML {
         google::protobuf::io::IstreamInputStream rawInput(&in);
         google::protobuf::io::CodedInputStream codedInput(&rawInput);
 
-        codedInput.SetTotalBytesLimit((2048 * 1024 * 1024) - 1, -1);
+        codedInput.SetTotalBytesLimit(std::numeric_limits<int>::max(), -1);
 
         if (!formatObj.ParseFromCodedStream(&codedInput)) {
             return Result(ResultType::FAILED_TO_DESERIALIZE,

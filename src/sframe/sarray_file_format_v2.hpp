@@ -82,7 +82,7 @@ class sarray_format_reader_v2: public sarray_format_reader<T> {
       m_segment_list.push_back(columnaddr);
       size_t nblocks = m_manager.num_blocks_in_column(columnaddr);
 
-      size_t segment_id, column_id, block_id;
+      size_t segment_id, column_id;
       std::tie(segment_id, column_id) = columnaddr;
 
       const std::vector<std::vector<v2_block_impl::block_info>>& segment_blocks = m_manager.get_all_block_info(segment_id);
