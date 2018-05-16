@@ -83,7 +83,7 @@ logistic_regression_opt_interface::logistic_regression_opt_interface(
   auto ml_metadata = smodel.get_ml_metadata();
   classes = ml_metadata->target_index_size();
   variables = get_number_of_coefficients(ml_metadata);
-  is_dense = (variables <= 3 * features) ? true : false;
+  is_dense = (variables <= 3 * data.max_row_size()) ? true : false;
   variables *= (classes - 1);
 
 
