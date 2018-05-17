@@ -3,8 +3,8 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#ifndef IMAGE_UTIL_HPP
-#define IMAGE_UTIL_HPP
+#ifndef IMAGE_FN_EXPORT_HPP
+#define IMAGE_FN_EXPORT_HPP
 
 #include <unity/lib/toolkit_function_specification.hpp>
 
@@ -17,6 +17,6 @@ std::vector<toolkit_function_specification>
 
 
 } // end of image_util
-} // end of turicreate
+} // end of turi
 
-#endif /* IMAGE_UTIL_HPP*/
+#endif //  IMAGE_FN_EXPORT_HPP

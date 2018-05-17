@@ -15,7 +15,9 @@
 
 #include <unity/lib/extensions/ml_model.hpp>
 
+#if(TC_BUILD_VISUALIZATION_CLIENT)
 #include <unity/lib/visualization/show.hpp>
+#endif 
 
 #include <unity/toolkits/activity_classification/class_registrations.hpp>
 
@@ -47,7 +49,9 @@ namespace turi {
 
 void register_functions(toolkit_function_registry& registry) {
   registry.register_toolkit_function(image_util::get_toolkit_function_registration());
+#if(TC_BUILD_VISUALIZATION_CLIENT)
   registry.register_toolkit_function(visualization::get_toolkit_function_registration());
+#endif
 
   // Register proprietary toolkits
   registry.register_toolkit_function(turi::kmeans::get_toolkit_function_registration(), "_kmeans");

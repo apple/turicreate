@@ -73,6 +73,7 @@ class EXPORT linear_regression: public supervised_learning_model_base {
    */
   size_t get_version() const;
 
+  bool is_classifier() const override { return false; }
 
   /**
    * Train a regression model.

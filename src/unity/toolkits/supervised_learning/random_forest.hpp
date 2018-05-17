@@ -33,6 +33,8 @@ class EXPORT random_forest_regression: public xgboost_model {
    */
   void init_options(const std::map<std::string,flexible_type>& _opts) override; 
 
+  bool is_classifier() const override { return false; }
+
   /** 
    * Configure booster from options 
    */
@@ -73,6 +75,8 @@ class EXPORT random_forest_classifier: public xgboost_model {
    * \param[in] opts Options to set
    */
   void init_options(const std::map<std::string, flexible_type>& _opts) override; 
+
+  bool is_classifier() const override { return true; }
 
   /** 
    * Configure booster from options 

@@ -1,20 +1,21 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
+/* Copyright © 2018 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/lib/gl_sarray.hpp>
 #include <capi/TuriCreate.h>
-#include <fileio/fileio_constants.hpp>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <vector>
 #include <iostream>
 #include <ctime>
 #include <unity/toolkits/util/random_sframe_generation.hpp>
+#include <fileio/fileio_constants.hpp>
 #include "capi_utils.hpp"
 
 BOOST_AUTO_TEST_CASE(test_sframe_allocation) {
@@ -820,7 +821,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_rename_column_test) {
   tc_release(sf);
 }
 
-BOOST_AUTO_TEST_CASE(test_sframe_fillna_test) {
+BOOST_AUTO_TEST_CASE(test_sframe_replace_na_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   CAPI_CHECK_ERROR(error);
@@ -859,7 +860,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_fillna_test) {
 
   turi::flexible_type f_float(43.0);
 
-  tc_sframe* sampled_frame = tc_sframe_fillna(sf, "col1", ft, &error);
+  tc_sframe* sampled_frame = tc_sframe_replace_na(sf, "col1", ft, &error);
   CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sampled_gl_sframe = sf_gl.fillna("col1", f_float);
@@ -1334,7 +1335,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_dropna_test) {
   std::vector<std::string> columns_transform;
   columns_transform.push_back("col1");
 
-  tc_sframe* pre_sampled_frame = tc_sframe_dropna(sf, flex_lst, "any", &error);
+  tc_sframe* pre_sampled_frame = tc_sframe_drop_na(sf, flex_lst, "any", &error);
   CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe pre_sampled_gl_sframe = sf_gl.dropna(columns_transform, "any");
@@ -1382,7 +1383,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_slice_test) {
     tc_release(sa);
   }
 
-  tc_sframe* pre_sampled_frame = tc_sframe_slice(sf, 1, 3, &error);
+  tc_sframe* pre_sampled_frame = tc_sframe_slice(sf, 1, 3, 1, &error);
   CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe pre_sampled_gl_sframe = sf_gl[{1,3}];
@@ -1476,7 +1477,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_slice_stride_test) {
     tc_release(sa);
   }
 
-  tc_sframe* pre_sampled_frame = tc_sframe_slice_stride(sf, 1, 5, 2, &error);
+  tc_sframe* pre_sampled_frame = tc_sframe_slice(sf, 1, 5, 2, &error);
   CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe pre_sampled_gl_sframe = sf_gl[{1, 5, 2}];
@@ -1569,7 +1570,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_manual_sframe) {
   tc_flex_list_add_element(column_list, user_id_ft, &error);
   CAPI_CHECK_ERROR(error);
 
-  tc_groupby_aggregator_add_count(gb_manual, "count", &error);
+  tc_groupby_aggregator_add_simple_aggregator(gb_manual, "count", "count", "", &error);
   CAPI_CHECK_ERROR(error);
 
   tc_sframe* sampled_frame = tc_sframe_group_by(sf, column_list, gb_manual, &error);
@@ -1622,39 +1623,39 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_most_aggregates) {
   TS_ASSERT(check_equality_gl_sframe(sf1->value, sf_gl1));
 
   // C interface
-  tc_groupby_aggregator_add_sum(gb1, "a_sum", zeroth_column.c_str(), &error);
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "sum", "a_sum", zeroth_column.c_str(), &error);
   CAPI_CHECK_ERROR(error);
-  tc_groupby_aggregator_add_max(gb1, "a_max", zeroth_column.c_str(), &error);
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "max", "a_max", zeroth_column.c_str(), &error);
   CAPI_CHECK_ERROR(error);
-  tc_groupby_aggregator_add_min(gb1, "a_min", zeroth_column.c_str(), &error);
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "min", "a_min", zeroth_column.c_str(), &error);
   CAPI_CHECK_ERROR(error);
-  tc_groupby_aggregator_add_mean(gb1, "a_mean", zeroth_column.c_str(), &error);
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "avg", "a_mean", zeroth_column.c_str(), &error);
   CAPI_CHECK_ERROR(error);
-  tc_groupby_aggregator_add_avg(gb1, "a_avg", zeroth_column.c_str(), &error);
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "avg", "a_avg", zeroth_column.c_str(), &error);
   CAPI_CHECK_ERROR(error);
-  tc_groupby_aggregator_add_var(gb1, "a_var", zeroth_column.c_str(), &error);
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "var", "a_var", zeroth_column.c_str(), &error);
   CAPI_CHECK_ERROR(error);
-  tc_groupby_aggregator_add_variance(gb1, "a_variance", zeroth_column.c_str(),
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "var", "a_variance", zeroth_column.c_str(),
     &error);
   CAPI_CHECK_ERROR(error);
-  tc_groupby_aggregator_add_std(gb1, "a_std", zeroth_column.c_str(), &error);
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "std", "a_std", zeroth_column.c_str(), &error);
   CAPI_CHECK_ERROR(error);
-  tc_groupby_aggregator_add_stdv(gb1, "a_stdv", zeroth_column.c_str(), &error);
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "stdv", "a_stdv", zeroth_column.c_str(), &error);
   CAPI_CHECK_ERROR(error);
-  tc_groupby_aggregator_add_select_one(gb1, "a_select_one",
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "select_one", "a_select_one",
     sf_gl1.column_name(50).c_str(), &error);
   CAPI_CHECK_ERROR(error);
-  tc_groupby_aggregator_add_count_distinct(gb1, "a_count_distinct",
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "count_distinct", "a_count_distinct",
     sf_gl1.column_name(75).c_str(), &error);
   CAPI_CHECK_ERROR(error);
-  tc_groupby_aggregator_add_concat_one_column(gb1, "a_concat_one_column",
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "concat", "a_concat_one_column",
     sf_gl1.column_name(25).c_str(), &error);
   CAPI_CHECK_ERROR(error);
   tc_groupby_aggregator_add_concat_two_columns(gb1, "a_concat_two_columns",
     sf_gl1.column_name(20).c_str(), sf_gl1.column_name(80).c_str(), &error);
   CAPI_CHECK_ERROR(error);
 
-  tc_groupby_aggregator_add_count(gb1, "a_count", &error);
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "count", "a_count", "", &error);
   CAPI_CHECK_ERROR(error);
 
   tc_flexible_type* last_ft = tc_ft_create_from_cstring(last_column.c_str(),

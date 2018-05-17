@@ -70,15 +70,6 @@ class EXPORT ml_model_base: public model_base {
   inline virtual ~ml_model_base() { }
 
   /**
-   * Returns the name of the model.
-   *
-   * \returns Name of the model.
-   * \ref model_base for details.
-   */
-  virtual std::string name() = 0;
-
-
-  /**
    * Returns the current model version
    */
   virtual size_t get_version() const = 0;

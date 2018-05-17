@@ -598,7 +598,7 @@ gl_sframe logistic_regression::fast_predict_topk(
           const std::string& output_type,
           const size_t topk){
 
-  DASSERT_TRUE(name().find("classifier") != std::string::npos);
+  DASSERT_TRUE(is_classifier());
   DASSERT_TRUE(state.count("num_coefficients") > 0);
 
   // Get a copy of the variables in the state.

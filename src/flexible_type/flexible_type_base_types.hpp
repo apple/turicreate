@@ -96,7 +96,7 @@ struct flex_date_time {
   static constexpr double TIMEZONE_RESOLUTION_IN_HOURS = 0.25;
   static constexpr int32_t _LEGACY_TIMEZONE_SHIFT = 25;
 
-  inline flex_date_time():m_posix_timestamp_high(0), m_posix_timestamp_low(0),
+  inline flex_date_time(): m_posix_timestamp_low(0), m_posix_timestamp_high(0),
     m_tz_15min_offset(EMPTY_TIMEZONE + _LEGACY_TIMEZONE_SHIFT), m_microsecond(0) { }
   flex_date_time(const flex_date_time&) = default;
   flex_date_time(flex_date_time&&) = default;
@@ -200,8 +200,7 @@ struct flex_date_time {
     // see load(iarchive) for explanations of this oddity.
     if (m_tz_15min_offset < 0) {
       return m_tz_15min_offset + _LEGACY_TIMEZONE_SHIFT;
-    }
-    if (m_tz_15min_offset >= 0) {
+    } else { 
       return m_tz_15min_offset - _LEGACY_TIMEZONE_SHIFT;
     }
   }
@@ -217,8 +216,7 @@ struct flex_date_time {
     // see load(iarchive) for explanations of this oddity.
     if (tz_15min_offset < 0) {
       m_tz_15min_offset = tz_15min_offset - _LEGACY_TIMEZONE_SHIFT;
-    }
-    if (tz_15min_offset >= 0) {
+    } else { 
       m_tz_15min_offset = tz_15min_offset + _LEGACY_TIMEZONE_SHIFT;
     }
   }

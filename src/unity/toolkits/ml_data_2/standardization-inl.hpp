@@ -100,7 +100,7 @@ class standardization_interface {
   /**
    * Default destructor.
    */
-  ~standardization_interface() {}
+  virtual ~standardization_interface() {}
 
   /**
   * Default constructor.
@@ -210,7 +210,7 @@ class l2_rescaling: public standardization_interface {
   /**
    * Default destructor.
    */
-  ~l2_rescaling() {};
+  virtual ~l2_rescaling() {};
 
   /**
    * Default constructor.

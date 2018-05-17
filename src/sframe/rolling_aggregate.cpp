@@ -68,7 +68,7 @@ std::shared_ptr<sarray<flexible_type>> rolling_apply(
   // sarray_reader as shared_ptr so we can use sarray_reader_buffer. Segments
   // are not used to actually iterate, just to evenly split up the array.
   std::shared_ptr<sarray_reader<flexible_type>> reader(
-      std::move(input.get_reader(num_segments)));
+      input.get_reader(num_segments));
   auto ret_sarray = std::make_shared<sarray<flexible_type>>();
   ret_sarray->open_for_write(num_segments);
 

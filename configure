@@ -100,7 +100,7 @@ with_python=1
 with_system_cmake=1
 with_ccache=1
 
-with_capi=0
+with_capi=1
 with_capi_framework=0
 with_ccache=1
 with_visualization=1
