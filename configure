@@ -6,8 +6,6 @@ DEBUG_DIR=debug
 TURI_HOME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 DEPS_PREFIX=$PWD/deps/local
 
-set -e
-
 function print_help {
   echo "Configures the build with the specified toolchain. "
   echo
@@ -26,6 +24,10 @@ function print_help {
   echo "  --with-ccache (default)           Use ccache, if available."
   echo "  --no-ccache "
   echo  
+  echo "  --with-capi (default)             Build C API."
+  echo "  --with-capi-framework             Build C API as OSX framework (OSX only)"
+  echo "  --no-capi                         Skip building the C API." 
+
   echo "  --with-python (default)           Build python components."
   echo "  --no-python"
   echo 
@@ -98,6 +100,8 @@ with_python=1
 with_system_cmake=1
 with_ccache=1
 
+with_capi=1
+with_capi_framework=0
 with_ccache=1
 with_visualization=1
 
@@ -121,6 +125,10 @@ while [ $# -gt 0 ]
     --with-ccache)          with_ccache=1;;
     --no-ccache)            with_ccache=0;;
     
+    --with-capi)            with_capi=1;;
+    --with-capi-framework)  with_capi=1; with_capi_framework=1;;
+    --no-capi)              with_capi=0;; 
+
     --with-python)          with_python=1;;
     --no-python)            with_python=0;;
 
@@ -180,6 +188,16 @@ if [[ $with_python == 1 ]]; then
   CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_PYTHON=1"
 else
   CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_PYTHON=0"
+fi
+
+# If we need to build python, we also need to install the python toolchain
+if [[ $with_capi == 1 ]]; then
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_CAPI=1"
+  if [[ $with_capi_framework == 1 ]]; then
+    CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_CAPI_FRAMEWORK=1"
+  fi
+else
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_CAPI=0"
 fi
 
 # If we need to build python, we also need to install the python toolchain

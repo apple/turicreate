@@ -9,43 +9,12 @@ from __future__ import absolute_import as _
 import sys
 import os
 from os.path import split, abspath, join
-from glob import glob
-from itertools import chain
 
 def get_main_dir():
     script_path = abspath(sys.modules[__name__].__file__)
     main_dir = split(split(script_path)[0])[0]
 
     return main_dir
-
-def get_installation_flavor():
-
-    module = split(get_main_dir())[1]
-
-    if module == "sframe":
-        return "sframe"
-    elif module == "turicreate":
-        return "turicreate"
-    else:
-        raise ImportError("Installation module does not appear to be sframe or turicreate; main dir = %s"
-                          % get_main_dir())
-
-
-def load_isolated_gl_module(subdir, name):
-
-    if subdir:
-        path = join(get_main_dir(), subdir)
-    else:
-        path = get_main_dir()
-
-    fp, pathname, description = imp.find_module(name, [path])
-
-    try:
-        return imp.load_module(name, fp, pathname, description)
-    finally:
-        # Since we may exit via an exception, close fp explicitly.
-        if fp:
-            fp.close()
 
 
 def setup_environment(info_log_function = None, error_log_function = None):
@@ -190,10 +159,7 @@ if __name__ == "__main__":
     # Load in the cython lambda workers.  On import, this will resolve
     # the proper symbols.
     
-    if get_installation_flavor() == "sframe":
-        from sframe.cython.cy_pylambda_workers import run_pylambda_worker
-    else:
-        from turicreate.cython.cy_pylambda_workers import run_pylambda_worker
+    from turicreate.cython.cy_pylambda_workers import run_pylambda_worker
     
     main_dir = get_main_dir()
 

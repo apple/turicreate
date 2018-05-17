@@ -16,6 +16,7 @@ import sys
 from libcpp.string cimport string
 from cy_cpp_utils cimport str_to_cpp, cpp_to_str
 from .python_printer_callback import print_callback
+from .. import connect as _connect
 
 cdef extern from "<unity/server/unity_server_control.hpp>" namespace "turi":
     cdef cppclass unity_server_options:
@@ -126,3 +127,16 @@ class EmbeddedServer(GraphLabServer):
             set_log_progress_callback(print_status)
         else:
             set_log_progress(False)
+
+class QuietProgress(object):
+    """
+    Context manager facilitating the temporary suppression of progress logging.
+    """
+
+    def __init__(self, verbose):
+        self.verbose = verbose
+    def __enter__(self):
+        if not self.verbose:
+            _connect.main.get_server().set_log_progress(False)
+    def __exit__(self, type, value, traceback):
+        _connect.main.get_server().set_log_progress(False)

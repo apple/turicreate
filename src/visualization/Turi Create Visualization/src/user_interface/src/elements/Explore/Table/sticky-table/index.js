@@ -60,6 +60,12 @@ class StickyTable extends PureComponent {
   componentDidUpdate() {
     this.scrollToValue();
     this.onResize();
+      
+    var header_elements = document.getElementsByClassName("header_element");
+    
+    for(var v = 0; v < header_elements.length; v++){
+        header_elements[v].style.height = this.getModeHeights() + "px";
+    }
   }
 
   componentWillUnmount() {
@@ -86,8 +92,8 @@ class StickyTable extends PureComponent {
             break;
         }
     }
-
-    this.scroll = true;
+      
+    this.props.reset_scroll(this.props.parent_context);
   }
 
   addScrollBarEventHandlers() {
@@ -162,59 +168,55 @@ class StickyTable extends PureComponent {
   }
 
   handleScroll = () => {
-
     if (this.props.onScroll) {
       this.props.onScroll(this.scrollData);
     }
-    var scroll_up = this.getScrollBottom();
-    var scroll_down = this.getScrollTop();
-
-    if(scroll_up == 1){
+    
+    var scroll_down = this.getScrollBottom();
+    var scroll_up = this.getScrollTop();
+      
+    if(scroll_down == 1){
       this.updateScrollDown();
     }
 
-    if(scroll_down == 0){
+    if(scroll_up == 0){
       this.updateScrollUp();
     }
   }
-
+    
   updateScrollDown = () => {
     if(this.props.set_higher*this.props.step_size >= this.props.size){
       return "Max value reached";
-    }else if(this.scroll){
-      this.props.set_lower += 1;
-      this.props.set_higher+= 1;
-
-      var lower_value = (this.props.set_lower >= 0)?(this.props.set_lower*this.props.step_size):0;
-      var upper_value = (this.props.set_higher*this.props.step_size > this.props.size)?this.props.size:(this.props.set_higher*this.props.step_size);
-
+    }else if(this.props.scroll_state){
       var element = document.getElementsByClassName("header_element");
-
       if(element.length > 0){
-        this.scrollVal = element[element.length - 1].innerText - 8;
+          
+        var element_to_jump = element[element.length - 1].innerText;
+        
+        for(var v = 0; v < element.length; v++){
+            var bounding_rectangle = element[v].getBoundingClientRect();
+            if(bounding_rectangle.top > 0){
+                element_to_jump = element[v].innerText;
+                break;
+            }
+        };
+        
+        this.scrollVal = element_to_jump;
+        this.props.scroll_callback(this.scrollVal, this.props.parent_context, 1);
       }
-
-      this.getRows(lower_value, upper_value);
     }
   }
 
   updateScrollUp = () => {
     if(this.props.set_lower*this.props.step_size <= 0){
       return "Min value reached";
-    }else if(this.scroll){
-      this.props.set_lower -= 1;
-      this.props.set_higher -= 1;
-
-      var lower_value = (this.props.set_lower >= 0)?(this.props.set_lower*this.props.step_size):0;
-      var upper_value = (this.props.set_higher*this.props.step_size > this.props.size)?this.props.size:(this.props.set_higher*this.props.step_size);
-
+    }else if(this.props.scroll_state){
       var element = document.getElementsByClassName("header_element");
 
       if(element.length > 0){
-        this.scrollVal = element[0].innerText;
+        this.scrollVal = parseInt(element[0].innerText, 10);
+        this.props.scroll_callback(this.scrollVal, this.props.parent_context, -1);
       }
-
-      this.getRows(lower_value, upper_value);
     }
   }
 
@@ -228,13 +230,8 @@ class StickyTable extends PureComponent {
 
   getRows = (start_index, end_index) => {
     this.scroll = false;
-    if(window.navigator.platform == 'MacIntel'){
-      window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'getRows', start: start_index, end: end_index});
-    }else{
-      window.postMessageToNativeClient('{"method":"get_rows", "start":' + start_index + ', "end": ' + end_index + '}');
-    }
   }
-
+    
   onResize = () => {
     this.setScrollBarDims();
     this.setScrollBarWrapperDims();
@@ -292,7 +289,8 @@ class StickyTable extends PureComponent {
       return +mode;
     }
 
-    var heights = []
+    var heights = [];
+      
     if (this.props.stickyColumnCount) {
       for (var r = 0; r < this.rowCount; r++) {
         heights.push(this.getSize(this.realTable.childNodes[r].childNodes[0]).height)
@@ -309,7 +307,7 @@ class StickyTable extends PureComponent {
     var column_offset_top = 0;
       
     if (this.props.stickyColumnCount) {
-      for (r = 1; r < this.rowCount-1; r++) {
+      for (r = 1; r < this.rowCount; r++) {
         cellToCopy = this.realTable.childNodes[r].firstChild;
         if (cellToCopy) {
           this.realTable.childNodes[r].childNodes[1].style.height = this.getModeHeights() + "px";
@@ -400,6 +398,7 @@ class StickyTable extends PureComponent {
               case window.flex_type_enum.dict:
               case window.flex_type_enum.vector:
               case window.flex_type_enum.list:
+              case window.flex_type_enum.nd_vector:
                 data_entries.push(<JSONPretty className="json-pretty" json={this.props.data.data}></JSONPretty>);
                 break;
               default:

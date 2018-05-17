@@ -114,7 +114,7 @@ template<typename T>
 template<typename OutIterator>
 void hash_bucket<T>::sort_and_write(OutIterator out) {
   DASSERT_EQ(buffer.size(), 0);
-  std::shared_ptr<sarray<std::string>::reader_type> reader = std::move(sink->get_reader());
+  std::shared_ptr<sarray<std::string>::reader_type> reader = sink->get_reader();
   // prepare the begin row and end row for each chunk.
   size_t segment_start = 0;
   for (size_t i = 0; i < segmentid; ++i) {

@@ -54,6 +54,36 @@ def _create_sequential_sarray(size, start=0, reverse=False):
     with cython_context():
         return SArray(_proxy=glconnect.get_unity().create_sequential_sarray(size, start, reverse))
 
+def load_sarray(filename):
+    """
+    Load an SArray. The filename extension is used to determine the format
+    automatically. This function is particurly useful for SArrays previously
+    saved in binary format. If the SArray is in binary format, ``filename`` is
+    actually a directory, created when the SArray is saved.
+
+    Paramaters
+    ----------
+    filename : string
+        Location of the file to load. Can be a local path or a remote URL.
+
+    Returns
+    -------
+    out : SArray
+
+    See Also
+    --------
+    SArray.save
+
+    Examples
+    --------
+    >>> sa = turicreate.SArray(data=[1,2,3,4,5])
+    >>> sa.save('./my_sarray')
+    >>> sa_loaded = turicreate.load_sarray('./my_sarray')
+    """
+    sa = SArray(data=filename)
+    return sa
+
+
 class SArray(object):
     """
     An immutable, homogeneously typed array object backed by persistent storage.
@@ -735,7 +765,7 @@ class SArray(object):
                 headln = unicode(headln.decode('string_escape'),'utf-8',errors='replace').encode('utf-8')
             else:
                 headln = str(list(self.head(100)))
-        if (self.__proxy__.has_size() == False or len(self) > 100):
+        if (self.__proxy__.has_size() is False or len(self) > 100):
             # cut the last close bracket
             # and replace it with ...
             headln = headln[0:-1] + ", ... ]"
@@ -2907,12 +2937,53 @@ class SArray(object):
         >>> sa.show(title="My Plot Title", xlabel="My X Axis", ylabel="My Y Axis")
         """
 
-        returned_plot = self.__plot(title, xlabel, ylabel)
+        returned_plot = self.plot(title, xlabel, ylabel)
 
         returned_plot.show()
 
-    def __plot(self, title=None, xlabel=None, ylabel=None):
+    def plot(self, title=None, xlabel=None, ylabel=None):
+        """
+        Create a Plot object representing the SArray.
 
+        Notes
+        -----
+        - The plot will render either inline in a Jupyter Notebook, or in a
+          native GUI window, depending on the value provided in
+          `turicreate.visualization.set_target` (defaults to 'auto').
+
+        Parameters
+        ----------
+        title : str
+            The plot title to show for the resulting visualization. Defaults to None.
+            If the title is None, a default title will be provided.
+
+        xlabel : str
+            The X axis label to show for the resulting visualization. Defaults to None.
+            If the xlabel is None, a default X axis label will be provided.
+
+        ylabel : str
+            The Y axis label to show for the resulting visualization. Defaults to None.
+            If the ylabel is None, a default Y axis label will be provided.
+
+        Returns
+        -------
+        out : Plot
+        A :class: Plot object that is the visualization of the SArray.
+
+        Examples
+        --------
+        Suppose 'sa' is an SArray, we can create a plot of it using:
+
+        >>> plt = sa.plot()
+
+        To override the default plot title and axis labels:
+
+        >>> plt = sa.plot(title="My Plot Title", xlabel="My X Axis", ylabel="My Y Axis")
+
+        We can then visualize the plot using:
+
+        >>> plt.show()
+        """
         path_to_client = _get_client_app_path()
 
         if title == "":

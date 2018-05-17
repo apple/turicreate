@@ -1353,18 +1353,6 @@ void recsys_model_base::load_version(turi::iarchive& iarc, size_t version) {
   internal_load(iarc, internal_version);
 }
 
-// other functions required by model_base interface.
-
-ml_model_base* recsys_model_base::ml_model_base_clone() {
-  recsys_model_base* rm = internal_clone();
-
-  rm->options            = options;
-  rm->metadata           = metadata;
-  rm->trained_user_items = trained_user_items;
-
-  return rm;
-}
-
   /** Some of the models, such as popularity, can be built entirely
    *  from data already contained in the model.  This method allows us
    *  to create a new model while bypassing the typical

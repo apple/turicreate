@@ -102,7 +102,7 @@ class TcPlot extends Component {
                                 .run();
         this.setState({ initializedVega: true });
         this.vegaLoading = false;
-        vegaTooltip.vega(this.vegaView);
+        vegaTooltip.vega(this.vegaView, this.bubbleOpts);
         
         if(window.navigator.platform === 'MacIntel'){
             window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'ready'});

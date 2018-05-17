@@ -97,7 +97,7 @@ cdef class UnityGlobalProxy:
     cpdef save_model(self, model, _url, sidedata={}):
         cdef string url = str_to_cpp(_url)
         proxy = model.__proxy__
-        cdef model_base_ptr m = ((<UnityModel?>(proxy))._base_ptr)
+        cdef model_base_ptr m = ((<UnityModel?>(proxy.__proxy__))._base_ptr)
         cdef variant_map_type varmap_sidedata = variant_map_from_dict(sidedata)
         with nogil:
             self.thisptr.save_model(m, varmap_sidedata, url)

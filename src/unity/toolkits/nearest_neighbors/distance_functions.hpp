@@ -97,6 +97,8 @@ void inline all_pairs_transformed_dot_product(const DenseMatrix& A,
 
 struct distance_metric {
 
+  virtual ~distance_metric() = default;
+
   // factory methods
   static inline std::shared_ptr<distance_metric> make_dist_instance(const std::string& dist_name);
 
@@ -241,6 +243,7 @@ struct transformed_dot_product final : public distance_metric {
 /* jaccard distance 
  */
 struct jaccard final : public distance_metric {
+  using distance_metric::distance;
   
   double distance(const DenseVector& a, const DenseVector& b) const {
     DASSERT_EQ(a.size(), b.size());

@@ -8,12 +8,13 @@
 
 #include <unity/lib/toolkit_class_registry.hpp>
 #include <unity/lib/toolkit_function_registry.hpp>
-#include <unity/lib/api/model_interface.hpp>
 
 namespace turi {
 
 class EXPORT unity_server_initializer {
  public:
+
+  virtual ~unity_server_initializer(); 
   /**
    * Fill the registry of internal toolkits
    */

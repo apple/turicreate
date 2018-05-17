@@ -13,10 +13,54 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
   endif()
 
   if(APPLE)
-    add_custom_target(visualization_client
+    set(VISUALIZATION_XCODE_OUTPUT
+      "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/Turi Create Visualization.app/Contents/_CodeSignature/CodeResources"
+      # TODO - there are probably more files that should go here, but this one might be sufficient.
+      # I'm hoping it reliably changes every build.
+    )
+    set(VISUALIZATION_XCODE_INPUT
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization.xcodeproj/project.pbxproj"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/Base.lproj/Main.storyboard"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/Info.plist"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/Debugging.swift"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/Pipe.swift"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/AppDelegate.swift"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/JSON.swift"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/VegaContainer.swift"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/ViewController.swift"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/NSWindowWorkaround.swift"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/Error.swift"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/AppData.swift"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface/public/index.html"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface/public/index.js"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface/public/index.css"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface/package.json"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface/src/index.js"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface/src/index.css"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface/src/elements/Plot/Chart/index.js"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface/src/elements/Plot/Chart/index.css"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface/src/elements/Plot/Summary/index.js"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface/src/elements/Plot/Summary/index.css"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface/src/elements/Explore/Table/sticky-table/index.js"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface/src/elements/Explore/Table/sticky-table/index.css"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface/src/elements/Explore/Table/sticky-table/Cell/index.js"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface/src/elements/Explore/Table/sticky-table/Cell/index.css"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface/src/elements/Explore/Table/sticky-table/Table/index.js"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface/src/elements/Explore/Table/sticky-table/Table/index.css"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface/src/elements/Explore/Table/sticky-table/Row/index.js"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface/src/elements/Explore/Table/sticky-table/Row/index.css"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface/src/elements/Explore/Table/index.js"
+      "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization/src/user_interface/src/elements/Explore/Table/index.css"
+    )
+    message(WARNING "VISUALIZATION_XCODE_INPUT is ${VISUALIZATION_XCODE_INPUT}")
+    add_custom_command(
+      OUTPUT "${VISUALIZATION_XCODE_OUTPUT}"
       COMMAND xcodebuild -project "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization.xcodeproj/" -configuration ${CMAKE_BUILD_TYPE} SYMROOT=${CMAKE_CURRENT_BINARY_DIR}
       COMMENT "Building visualization client via xcodebuild"
+      DEPENDS ${VISUALIZATION_XCODE_INPUT}
+      VERBATIM
     )
+    add_custom_target(visualization_client DEPENDS "${VISUALIZATION_XCODE_OUTPUT}")
   elseif(LINUX)
     include(ExternalProject)
 
@@ -31,6 +75,8 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
         CONFIGURE_COMMAND ${CMAKE_COMMAND} .
         BUILD_COMMAND "make"
         INSTALL_COMMAND ""
+        BUILD_BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/libcef_dll_wrapper/libcef_dll_wrapper.a
+                         ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/Release/libcef.so
     )
 
 

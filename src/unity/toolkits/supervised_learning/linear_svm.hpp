@@ -12,6 +12,7 @@
 
 // Toolkits
 #include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
 
 // Optimization Interface
 #include <optimization/optimization_interface.hpp>
@@ -46,12 +47,7 @@ class EXPORT linear_svm: public supervised_learning_model_base {
   /**
    * Destructor. Make sure bad things don't happen
    */
-  ~linear_svm();
-
-  /**
-   * Returns the name of the model.
-   */
-  std::string name();
+  virtual ~linear_svm();
   
   /**
    * Set the default evaluation metric during model evaluation..
@@ -85,6 +81,8 @@ class EXPORT linear_svm: public supervised_learning_model_base {
   void model_specific_init(const ml_data& data, 
                            const ml_data& valid_data);
 
+  bool is_classifier() const override { return true; }
+
   /**
    * Train a svm model.
    */
@@ -95,7 +93,7 @@ class EXPORT linear_svm: public supervised_learning_model_base {
    *
    * \param[in] opts Options to set
    */
-  void init_options(const std::map<std::string,flexible_type>& _opts);
+  void init_options(const std::map<std::string,flexible_type>& _opts) override;
 
 
   /**
@@ -172,11 +170,13 @@ class EXPORT linear_svm: public supervised_learning_model_base {
     _coefs.resize(coefs.size());
     _coefs = coefs;
   }
+  
+  std::shared_ptr<coreml::MLModelWrapper> export_to_coreml() override;
 
-
+  SUPERVISED_LEARNING_METHODS_REGISTRATION(
+      "classifier_svm", linear_svm); 
+ 
 };
-
-
 
 } // supervised
 } // turicreate

@@ -73,13 +73,13 @@ shared_ptr to a node in a lazy evaluation graph (\ref turi::lazy_eval_future),
 which in turn evaluates to a unity_sgraph_impl object, where all the graph 
 manipulation logic really lives.
 
-\li \ref turi::toolkit_class_base The model object describes the interface for the
-return type of all toolkit executions. The interface is described in
-turi::model_base. This object breaks convention in that it can have numerous
-server-side implementations, as long as it implements the described interface.
-The interface is highly generic (essentially representing a generalized key-value
-map) to suit the purposes of almost all toolkits. This is what the SDK (\ref
-  turicreate_extension_interface) uses to export functionality to Python.
+\li \ref turi::model_base The model object describes the interface for the
+return type of all toolkit executions. This object breaks convention in that it
+can have numerous server-side implementations, as long as it implements the
+described interface.  The interface is highly generic (essentially representing
+a generalized key-value map) to suit the purposes of almost all toolkits. This
+is what the SDK (\ref turicreate_extension_interface) uses to export
+functionality to Python.
 
 \section unity_architecture_exposing_new_types Exposing New Types to Python
 While The Extension interface (\ref turicreate_extension_interface) should be

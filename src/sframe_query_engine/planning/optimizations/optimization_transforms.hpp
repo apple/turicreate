@@ -12,8 +12,8 @@
 namespace turi {
 namespace query_eval {
 
-class optimization_transform_registry;
-class materialize_options;
+struct optimization_transform_registry;
+struct materialize_options;
 
 /**
  *  Optimization transforms are successively applied until no more
@@ -41,6 +41,8 @@ class materialize_options;
  */
 class opt_transform {
  public:
+
+  virtual ~opt_transform() = default;
 
   /** A description string that gets logged when the transformation is
    *  applied.

@@ -394,14 +394,6 @@ sframe nearest_neighbors_model::similarity_graph(const size_t k,
  */
 nearest_neighbors_model::nearest_neighbors_model() {}
 
-/**
-* Make a copy of the model object.
-*/
-ml_model_base* nearest_neighbors_model::ml_model_base_clone() {
-  nearest_neighbors_model* nnm = nearest_neighbors_clone();
-  return nnm;
-}
-
 
 /**
  * Get training stats.

@@ -24,7 +24,7 @@ class sframe_reader;
 class sframe_iterator;
 
 namespace query_eval {
-class planner_node;
+struct planner_node;
 } // query_eval
 
 

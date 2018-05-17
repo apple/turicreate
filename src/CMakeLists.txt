@@ -33,3 +33,10 @@ subdirs(
   visualization
   )
 
+if(${TC_BUILD_CAPI}) 
+  message("Building C API.")
+  subdirs(capi)
+else()
+  message("Skipping build of C APIs.")
+endif()
+

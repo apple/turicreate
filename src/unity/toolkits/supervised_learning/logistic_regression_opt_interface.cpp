@@ -183,6 +183,33 @@ logistic_regression_opt_interface::get_status_header(const std::vector<std::stri
   return header;
 }
 
+double logistic_regression_opt_interface::get_validation_accuracy() {
+  DASSERT_TRUE(valid_data.num_rows() > 0);
+
+  auto eval_results = smodel.evaluate(valid_data, "train");
+  auto results = eval_results.find("accuracy");
+  if(results == eval_results.end()) {
+    log_and_throw("No Validation Accuracy.");
+  }
+
+  variant_type variant_accuracy = results->second;
+  double accuracy = variant_get_value<flexible_type>(variant_accuracy).to<double>();
+  return accuracy;
+}
+
+double logistic_regression_opt_interface::get_training_accuracy() {
+  auto eval_results = smodel.evaluate(data, "train");
+  auto results = eval_results.find("accuracy");
+
+  if(results == eval_results.end()) {
+    log_and_throw("No Validation Accuracy.");
+  }
+  variant_type variant_accuracy = results->second;
+  double accuracy = variant_get_value<flexible_type>(variant_accuracy).to<double>();
+
+  return accuracy;
+}
+
 /**
  * Get strings needed to print a row of the progress table.
  */
@@ -195,15 +222,15 @@ std::vector<std::string> logistic_regression_opt_interface::get_status(
   smodel.set_coefs(coefs_tmp); 
 
   auto ret = make_progress_row_string(smodel, data, valid_data, stats);
-  return ret; 
+  return ret;
 }
 
 /**
  * Compute the first order statistics
 */
-void logistic_regression_opt_interface::compute_first_order_statistics(const
-    DenseVector& point, DenseVector& gradient, double& function_value, const
-    size_t mbStart, const size_t mbSize) {
+void logistic_regression_opt_interface::compute_first_order_statistics(
+    const ml_data& data, const DenseVector& point, DenseVector& gradient,
+    double& function_value, const size_t mbStart, const size_t mbSize) {
   DASSERT_TRUE(mbStart == 0);
   DASSERT_TRUE(mbSize == (size_t)(-1));
 
@@ -304,8 +331,8 @@ void logistic_regression_opt_interface::compute_first_order_statistics(const
  * Compute the second order statistics
 */
 void logistic_regression_opt_interface::compute_second_order_statistics(
-    const ml_data& data, const DenseVector& point, DenseMatrix& hessian,
-    DenseVector& gradient, double& function_value) {
+    const DenseVector& point, DenseMatrix& hessian, DenseVector& gradient,
+    double& function_value) {
     
   timer t;
   double start_time = t.current_time();
@@ -438,19 +465,18 @@ void logistic_regression_opt_interface::compute_second_order_statistics(
                       << (t.current_time() - start_time) << "s" << std::endl; 
 }
 
-void logistic_regression_opt_interface::compute_second_order_statistics(
-    const DenseVector& point, DenseMatrix& hessian, DenseVector& gradient,
-    double& function_value) {
-  compute_second_order_statistics(
-      data, point, hessian, gradient, function_value);
+void logistic_regression_opt_interface::compute_first_order_statistics(const
+    DenseVector& point, DenseVector& gradient, double& function_value, const
+    size_t mbStart, const size_t mbSize) {
+  compute_first_order_statistics(
+      data, point, gradient, function_value, mbStart, mbSize);
 }
 
 void
-logistic_regression_opt_interface::compute_validation_second_order_statistics(
-    const DenseVector& point, DenseMatrix& hessian, DenseVector& gradient,
-    double& function_value) {
-  compute_second_order_statistics(
-      valid_data, point, hessian, gradient, function_value);
+logistic_regression_opt_interface::compute_validation_first_order_statistics(
+    const DenseVector& point, DenseVector& gradient, double& function_value) {
+  compute_first_order_statistics(
+      valid_data, point, gradient, function_value);
 }
 
 

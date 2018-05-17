@@ -30,13 +30,6 @@ namespace text {
 
 
 /**
- * Returns the name of the model.
- */
-std::string cgs_topic_model::name() {
-  return "cgs_topic_model";
-}
-
-/**
  * Destructor. Make sure bad things don't happen
  */
 cgs_topic_model::~cgs_topic_model() {
@@ -569,6 +562,5 @@ void cgs_topic_model::load_version(turi::iarchive& iarc, size_t version) {
   turi::deserialize(iarc, topic_word_counts.memptr(), topic_word_counts.n_elem*sizeof(int));
 
 }
-
 }
 }

@@ -22,7 +22,7 @@
 #include <unity/toolkits/ml_data_2/metadata.hpp>
 
 // Interfaces
-#include <unity/toolkits/ml_model/ml_model.hpp>
+#include <unity/lib/extensions/ml_model.hpp>
 
 // External
 #include <numerics/armadillo.hpp>
@@ -106,15 +106,6 @@ class EXPORT topic_model : public ml_model_base{
   virtual topic_model* topic_model_clone() = 0;
 
   /**
-   * Returns the name of the model.
-   *
-   * \returns Name of the model.
-   *
-   * \ref model_base for details.
-   */
-  virtual std::string name() = 0;
-
-  /**
    * Set the model options. Use the option manager to set these options. The
    * option manager should throw errors if the options do not satisfy the option
    * manager's conditions.
@@ -152,21 +143,13 @@ class EXPORT topic_model : public ml_model_base{
    * \ref model_base for details.
    *
    */
-  std::vector<std::string> list_keys();
+  std::vector<std::string> list_fields();
 
   /**
    * Methods with meaningful default implementations.
    * -------------------------------------------------------------------------
    */
   public:
-
-  /**
-   * Makes a copy of this model object.
-   *
-   * \ref model_base for details.
-   */
-  ml_model_base* ml_model_base_clone();
-
 
   /**
    * Helper function for creating the appropriate ml_data from an sarray of

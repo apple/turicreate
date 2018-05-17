@@ -14,6 +14,8 @@ from __future__ import absolute_import as _
 import turicreate as _turicreate
 from turicreate import SFrame as _SFrame
 from turicreate.toolkits.recommender.util import _Recommender
+from turicreate.cython.cy_server import QuietProgress
+from array import array as _array
 
 
 def create(item_data, item_id,
@@ -170,7 +172,6 @@ def create(item_data, item_id,
     # Translate any string columns to actually work in nearest
     # neighbors by making it a categorical list.  Also translate lists
     # into dicts, and normalize numeric columns.
-    normalization_columns = []
     gaussian_kernel_metrics = set()
 
     for c in item_columns:
@@ -188,7 +189,7 @@ def create(item_data, item_id,
     method = 'item_content_recommender'
 
     opts = {'model_name': method}
-    response = _turicreate.toolkits._main.run("recsys_init", opts)
+    response = _turicreate.extensions._recsys.init(opts)
     model_proxy = response['model']
 
     # The user_id is implicit if none is given.
@@ -253,7 +254,9 @@ def create(item_data, item_id,
             'similarity_type' : "cosine",
             'max_item_neighborhood_size' : max_item_neighborhood_size}
 
-    response = _turicreate.toolkits._main.run('recsys_train', opts, verbose)
+    with QuietProgress(verbose):
+        response = _turicreate.extensions._recsys.train(opts)
+
     out_model = ItemContentRecommender(response['model'])
 
     return out_model

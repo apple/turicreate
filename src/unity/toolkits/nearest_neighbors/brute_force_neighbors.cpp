@@ -50,24 +50,6 @@ brute_force_neighbors::~brute_force_neighbors(){
 
 
 /**
- * Cast the object to a nearest_neighbors_model type
- */
-nearest_neighbors_model* brute_force_neighbors::nearest_neighbors_clone() {
-
-  brute_force_neighbors* nn = new brute_force_neighbors(*this);
-  return (nearest_neighbors_model*) nn;
-}
-
-
-/**
- * Returns the name of the model.
- */
-std::string brute_force_neighbors::name() {
-  return "nearest_neighbors_brute_force";
-}
-
-
-/**
 * Set options
 */
 void brute_force_neighbors::init_options(const std::map<std::string,

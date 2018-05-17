@@ -6,6 +6,7 @@
 #include "histogram.hpp"
 
 #include <parallel/lambda_omp.hpp>
+#include <unity/lib/visualization/escape.hpp>
 
 #include <string>
 #include <cmath>
@@ -309,20 +310,6 @@ std::string histogram_result::vega_column_data(bool) const {
   return ss.str();
 }
 
-static std::string escape_float(flex_float value) {
-  if (std::isnan(value)) {
-    return "\"nan\"";
-  }
-  if (std::isinf(value)) {
-    if (value > 0) {
-      return "\"inf\"";
-    } else {
-      return "\"-inf\"";
-    }
-  }
-  return std::to_string(value);
-}
-
 std::string histogram_result::vega_summary_data() const {
   std::stringstream ss;
 
@@ -347,8 +334,8 @@ std::string histogram_result::vega_summary_data() const {
 
 }
 
-std::shared_ptr<Plot> plot_histogram(const std::string& path_to_client, 
-  gl_sarray& sa, std::string xlabel, std::string ylabel, 
+std::shared_ptr<Plot> plot_histogram(const std::string& path_to_client,
+  gl_sarray& sa, std::string xlabel, std::string ylabel,
   std::string title) {
     using namespace turi;
     using namespace turi::visualization;

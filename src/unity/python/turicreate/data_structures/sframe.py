@@ -35,9 +35,6 @@ import datetime
 import time
 import itertools
 import logging as _logging
-import subprocess
-import uuid
-import platform
 import numbers
 import sys
 import six
@@ -3599,7 +3596,7 @@ class SFrame(object):
                     tmpname = '__' + '-'.join(self.column_names())
                 try:
                     self.add_column(sa_value, tmpname, inplace=True)
-                except Exception as e:
+                except Exception:
                     if (single_column):
                         self.add_column(saved_column, key, inplace=True)
                     raise
@@ -4452,11 +4449,36 @@ class SFrame(object):
         >>> sf.show()
         """
 
-        returned_plot = self.__plot()
+        returned_plot = self.plot()
 
         returned_plot.show()
 
-    def __plot(self):
+    def plot(self):
+        """
+        Create a Plot object that contains a summary of each column 
+        in an SFrame. 
+
+        Notes
+        -----
+        - The plot will render either inline in a Jupyter Notebook, or in a
+          native GUI window, depending on the value provided in
+          `turicreate.visualization.set_target` (defaults to 'auto').
+
+        Returns
+        -------
+        out : Plot
+        A :class: Plot object that is the columnwise summary of the sframe.
+
+        Examples
+        --------
+        Suppose 'sf' is an SFrame, we can make a plot object as:
+
+        >>> plt = sf.plot()
+
+        We can then visualize the plot using:
+
+        >>> plt.show()
+        """
         path_to_client = _get_client_app_path()
 
         return Plot(self.__proxy__.plot(path_to_client))
@@ -4556,42 +4578,42 @@ class SFrame(object):
         To pack all category columns into a list:
 
         >>> sf.pack_columns(column_name_prefix='category')
-        +----------+--------------------+
-        | business |         X2         |
-        +----------+--------------------+
-        |    1     |  [1, 1, None, 1]   |
-        |    2     |  [None, 1, 1, 1]   |
-        |    3     | [1, None, 1, None] |
-        |    4     | [None, 1, None, 1] |
-        +----------+--------------------+
+        +----------+-----------------------+
+        | business |        category       |
+        +----------+-----------------------+
+        |    1     |    [1, 1, None, 1]    |
+        |    2     |    [1, None, 1, 1]    |
+        |    3     |   [None, 1, 1, None]  |
+        |    4     | [None, None, None, 1] |
+        +----------+-----------------------+
         [4 rows x 2 columns]
 
         To pack all category columns into a dictionary, with new column name:
 
         >>> sf.pack_columns(column_name_prefix='category', dtype=dict,
-        ...                 new_column_name='category')
-        +----------+--------------------------------+
-        | business |            category            |
-        +----------+--------------------------------+
-        |    1     | {'food': 1, 'shop': 1, 're ... |
-        |    2     | {'food': 1, 'shop': 1, 'se ... |
-        |    3     |  {'retail': 1, 'service': 1}   |
-        |    4     |     {'food': 1, 'shop': 1}     |
-        +----------+--------------------------------+
+        ...                 new_column_name='new name')
+        +----------+-------------------------------+
+        | business |            new name           |
+        +----------+-------------------------------+
+        |    1     | {'food': 1, 'shop': 1, 're... |
+        |    2     | {'food': 1, 'shop': 1, 'se... |
+        |    3     |  {'retail': 1, 'service': 1}  |
+        |    4     |          {'shop': 1}          |
+        +----------+-------------------------------+
         [4 rows x 2 columns]
 
         To keep column prefix in the resulting dict key:
 
         >>> sf.pack_columns(column_name_prefix='category', dtype=dict,
                             remove_prefix=False)
-        +----------+--------------------------------+
-        | business |               X2               |
-        +----------+--------------------------------+
-        |    1     | {'category.retail': 1, 'ca ... |
-        |    2     | {'category.food': 1, 'cate ... |
-        |    3     | {'category.retail': 1, 'ca ... |
-        |    4     | {'category.food': 1, 'cate ... |
-        +----------+--------------------------------+
+        +----------+-------------------------------+
+        | business |            category           |
+        +----------+-------------------------------+
+        |    1     | {'category.retail': 1, 'ca... |
+        |    2     | {'category.food': 1, 'cate... |
+        |    3     | {'category.retail': 1, 'ca... |
+        |    4     |      {'category.shop': 1}     |
+        +----------+-------------------------------+
         [4 rows x 2 columns]
 
         To explicitly pack a set of columns:
@@ -4612,16 +4634,17 @@ class SFrame(object):
         To pack all columns with name starting with 'category' into an array
         type, and with missing value replaced with 0:
 
+        >>> import array
         >>> sf.pack_columns(column_name_prefix="category", dtype=array.array,
         ...                 fill_na=0)
-        +----------+--------------------------------+
-        | business |               X2               |
-        +----------+--------------------------------+
-        |    1     | array('d', [1.0, 1.0, 0.0, ... |
-        |    2     | array('d', [0.0, 1.0, 1.0, ... |
-        |    3     | array('d', [1.0, 0.0, 1.0, ... |
-        |    4     | array('d', [0.0, 1.0, 0.0, ... |
-        +----------+--------------------------------+
+        +----------+----------------------+
+        | business |       category       |
+        +----------+----------------------+
+        |    1     | [1.0, 1.0, 0.0, 1.0] |
+        |    2     | [1.0, 0.0, 1.0, 1.0] |
+        |    3     | [0.0, 1.0, 1.0, 0.0] |
+        |    4     | [0.0, 0.0, 0.0, 1.0] |
+        +----------+----------------------+
         [4 rows x 2 columns]
         """
 
@@ -4880,18 +4903,19 @@ class SFrame(object):
 
         To unpack an array column:
 
+        >>> import array
         >>> sf = turicreate.SFrame({'id': [1,2,3],
         ...                       'friends': [array.array('d', [1.0, 2.0, 3.0]),
         ...                                   array.array('d', [2.0, 3.0, 4.0]),
         ...                                   array.array('d', [3.0, 4.0, 5.0])]})
         >>> sf
-        +----+-----------------------------+
-        | id |            friends          |
-        +----+-----------------------------+
-        | 1  | array('d', [1.0, 2.0, 3.0]) |
-        | 2  | array('d', [2.0, 3.0, 4.0]) |
-        | 3  | array('d', [3.0, 4.0, 5.0]) |
-        +----+-----------------------------+
+        +-----------------+----+
+        |     friends     | id |
+        +-----------------+----+
+        | [1.0, 2.0, 3.0] | 1  |
+        | [2.0, 3.0, 4.0] | 2  |
+        | [3.0, 4.0, 5.0] | 3  |
+        +-----------------+----+
         [3 rows x 2 columns]
 
         >>> sf.unpack('friends')
@@ -5032,20 +5056,21 @@ class SFrame(object):
         [3 rows x 2 columns]
 
         >>> sf.stack('friends', new_column_name='friend')
-        +------+--------+
-        | user | friend |
-        +------+--------+
-        |  1   |  2     |
-        |  1   |  3     |
-        |  1   |  4     |
-        |  2   |  5     |
-        |  2   |  6     |
-        |  3   |  4     |
-        |  3   |  5     |
-        |  3   |  10    |
-        |  3   |  None  |
-        +------+--------+
+        +-------+--------+
+        | topic | friend |
+        +-------+--------+
+        |   1   |   2    |
+        |   1   |   3    |
+        |   1   |   4    |
+        |   2   |   5    |
+        |   2   |   6    |
+        |   3   |   4    |
+        |   3   |   5    |
+        |   3   |   10   |
+        |   3   |  None  |
+        +-------+--------+
         [9 rows x 2 columns]
+
         """
         # validate column_name
         column_name = str(column_name)
@@ -5179,20 +5204,19 @@ class SFrame(object):
 
         >>> sf = turicreate.SFrame({'friend': [2, 3, 4, 5, 6, 4, 5, 2, 3],
         ...                      'user': [1, 1, 1, 2, 2, 2, 3, 4, 4]})
-        >>> sf.unstack('friend', new_column_name='friends')
-        +------+-----------------------------+
-        | user |           friends           |
-        +------+-----------------------------+
-        |  3   |      array('d', [5.0])      |
-        |  1   | array('d', [2.0, 4.0, 3.0]) |
-        |  2   | array('d', [5.0, 6.0, 4.0]) |
-        |  4   |    array('d', [2.0, 3.0])   |
-        +------+-----------------------------+
+        >>> sf.unstack('friend', new_column_name='new name')
+        +------+-----------+
+        | user |  new name |
+        +------+-----------+
+        |  3   |    [5]    |
+        |  1   | [2, 3, 4] |
+        |  2   | [6, 4, 5] |
+        |  4   |   [2, 3]  |
+        +------+-----------+
         [4 rows x 2 columns]
         """
         if (type(column_names) != str and len(column_names) != 2):
             raise TypeError("'column_names' parameter has to be either a string or a list of two strings.")
-
 
         with cython_context():
             if type(column_names) == str:

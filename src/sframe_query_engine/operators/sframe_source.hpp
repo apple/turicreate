@@ -193,7 +193,6 @@ struct operator_impl<planner_node_type::SFRAME_SOURCE_NODE> : public query_opera
   sframe m_source;
   size_t m_begin_index, m_end_index;
   std::shared_ptr<sframe_reader> m_reader;
-  bool m_to_read_in_native_thread = false;
 };
 
 typedef operator_impl<planner_node_type::SFRAME_SOURCE_NODE> op_sframe_source;

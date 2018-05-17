@@ -6,10 +6,6 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-try:
-    from io import BytesIO as _StringIO
-except ImportError:
-    from StringIO import StringIO as _StringIO
 
 from ..deps import numpy as _np
 import array as _array
@@ -216,9 +212,26 @@ class Image(object):
         >>> img.show()
 
         """
+        from ..visualization._plot import _target
         try:
             img = self._to_pil_image()
-            img.show()
+            try:
+                # output into jupyter notebook if possible
+                if _target == 'auto' and \
+                    get_ipython().__class__.__name__ == "ZMQInteractiveShell":
+                    from io import BytesIO
+                    from IPython import display
+                    b = BytesIO()
+                    img.save(b, format='png')
+                    data = b.getvalue()
+                    ip_img = display.Image(data=data, format='png', embed=True)
+                    display.display(ip_img)
+                else:
+                    # fall back to pillow .show (jupyter notebook integration disabled or not in jupyter notebook)
+                    img.show()
+            except NameError:
+                # fall back to pillow .show (no get_ipython() available)
+                img.show()
         except ImportError:
             print("Install pillow to use the .show() method.")
 

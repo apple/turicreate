@@ -237,6 +237,8 @@ class gl_sarray {
   gl_sarray(const std::vector<flexible_type>& values, 
             flex_type_enum dtype = flex_type_enum::UNDEFINED);
 
+  virtual ~gl_sarray(); 
+
   void construct_from_vector(const std::vector<flexible_type>& values,
             flex_type_enum dtype = flex_type_enum::UNDEFINED);
 
@@ -291,8 +293,15 @@ class gl_sarray {
    * \endcode
    */
   static gl_sarray from_sequence(size_t start, size_t end, bool reverse=false);
-
+  
   /**
+   * Constructs an SArray from a json record files.
+   *
+   * A json record file contains an array of dictionaries.
+   * Resultant SArray is of dictionary type.
+   */
+  static gl_sarray read_json(const std::string& url); 
+
   /**************************************************************************/
   /*                                                                        */
   /*                        Implicit Type Converters                        */
@@ -1712,7 +1721,7 @@ class gl_sarray {
    */
   gl_sarray subslice(flexible_type start = FLEX_UNDEFINED, 
                      flexible_type stop = FLEX_UNDEFINED, 
-                     flexible_type step = FLEX_UNDEFINED);
+                     flexible_type step = FLEX_UNDEFINED) const;
   
 /**
  *

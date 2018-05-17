@@ -43,7 +43,7 @@ void encoded_block_range::coroutine_launch() {
   auto coro_m_shared = m_shared;
   auto coro_m_block = m_block;
   coroutine_started = true;
-  source = std::move(
+  source = 
       coroutine_type(
           // the coroutine function
           [coro_m_shared, coro_m_block]
@@ -72,7 +72,7 @@ void encoded_block_range::coroutine_launch() {
                                            }
                                          });
             return;
-      }));
+      });
 }
 
 void encoded_block_range::call_source() {
@@ -107,7 +107,7 @@ void encoded_block_range::release() {
     m_shared->terminate = true;
     source();
   }
-  source = std::move(coroutine_type());
+  source = coroutine_type();
   m_shared.reset();
   m_block.m_data.reset();
 }

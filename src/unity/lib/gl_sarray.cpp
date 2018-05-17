@@ -119,7 +119,7 @@ gl_sarray::gl_sarray(const gl_sarray& other) {
   m_sarray = other.get_proxy();
 }
 gl_sarray::gl_sarray(gl_sarray&& other) {
-  m_sarray = std::move(other.get_proxy());
+  m_sarray = other.get_proxy();
 }
 
 gl_sarray::gl_sarray(const std::string& directory) {
@@ -133,7 +133,7 @@ gl_sarray& gl_sarray::operator=(const gl_sarray& other) {
 }
 
 gl_sarray& gl_sarray::operator=(gl_sarray&& other) {
-  m_sarray = std::move(other.get_proxy());
+  m_sarray = other.get_proxy();
   return *this;
 }
 
@@ -164,6 +164,12 @@ gl_sarray gl_sarray::from_const(const flexible_type& value, size_t size) {
   return ret;
 }
 
+gl_sarray gl_sarray::read_json(const std::string& url) {
+  gl_sarray ret;
+  ret.get_proxy()->construct_from_json_record_files(url);
+  return ret;
+}
+
 gl_sarray gl_sarray::from_sequence(size_t start, size_t end, bool reverse) {
   if (end < start) throw std::string("End must be greater than start");
   return unity_sarray::create_sequential_sarray(end - start, 
@@ -190,6 +196,8 @@ gl_sarray::gl_sarray(std::shared_ptr<sarray<flexible_type> > sa)
 {
   m_sarray->construct_from_sarray(sa);
 }
+  
+gl_sarray::~gl_sarray() {}
 
 gl_sarray::operator std::shared_ptr<unity_sarray>() const {
   return get_proxy();
@@ -338,15 +346,26 @@ gl_sarray_range gl_sarray::range_iterator(size_t start, size_t end) const {
 /*                                                                        */
 /**************************************************************************/
 
-void gl_sarray::save(const std::string& directory, const std::string& format) const {
+void gl_sarray::save(const std::string& path, const std::string& _format) const {
+  
+  std::string format = _format;
+
+  if (format == "") {
+    if (boost::algorithm::ends_with(path, ".csv") || boost::algorithm::ends_with(path, ".csv.gz")) {
+      format = "csv";
+    } else {
+      format = "binary";
+    }
+  }
+
   if (format == "binary") {
-    get_proxy()->save_array(directory);
+    get_proxy()->save_array(path);
   } else if (format == "text" || format == "csv") {
     gl_sframe sf;
     sf["X1"] = (*this);
-    sf.save(directory, "csv");
+    sf.save(path, "csv");
   } else {
-    throw std::string("Unknown format");
+    throw std::string("Invalid format. Supported formats are \'csv\', \'text\', and \'binary\'");
   }
 }
 
@@ -633,7 +652,7 @@ gl_sarray gl_sarray::sort(bool ascending) const {
 
 gl_sarray gl_sarray::subslice(flexible_type start, 
                               flexible_type stop, 
-                              flexible_type step) {
+                              flexible_type step) const {
   auto dt = dtype();
   if (dt != flex_type_enum::STRING && 
       dt != flex_type_enum::VECTOR &&
@@ -831,8 +850,7 @@ void gl_sarray::ensure_has_sarray_reader() const {
   if (!m_sarray_reader) {
     std::lock_guard<mutex> guard(reader_shared_ptr_lock);
     if (!m_sarray_reader) {
-      m_sarray_reader = 
-          std::move(get_proxy()->get_underlying_sarray()->get_reader());
+      m_sarray_reader = get_proxy()->get_underlying_sarray()->get_reader();
     }
   }
 }
@@ -851,7 +869,7 @@ gl_sarray_range::gl_sarray_range(
           (m_sarray_reader, start, end);
   // load the first value if available
   if (m_sarray_reader_buffer->has_next()) {
-    m_current_value = std::move(m_sarray_reader_buffer->next());
+    m_current_value = m_sarray_reader_buffer->next();
   }
 }
 gl_sarray_range::iterator gl_sarray_range::begin() {

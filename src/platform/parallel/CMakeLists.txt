@@ -6,6 +6,7 @@ make_library(parallel
     thread_pool.cpp
     execute_task_in_native_thread.cpp
   REQUIRES
+    platform_config
     logger
     EXTERNAL_VISIBILITY
 )

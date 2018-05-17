@@ -18,17 +18,13 @@ from sklearn import linear_model
 import statsmodels.formula.api as sm
 import shutil
 
-# Check answers
-import pandas as pd
 import numpy as np
 from turicreate.toolkits._main import ToolkitError
 from turicreate.toolkits.regression.linear_regression import _DEFAULT_SOLVER_OPTIONS
 
-import sys
 if sys.version_info.major == 3:
     from functools import reduce
 
-import os as _os
 
 class LinearRegressionTest(unittest.TestCase):
     """
@@ -124,7 +120,10 @@ class LinearRegressionTest(unittest.TestCase):
                 'training_iterations': lambda x: x > 0,
                 'training_loss': lambda x: abs(x - self.loss) < 1e-5,
                 'training_rmse': lambda x: abs(x - self.rmse) < 1e-5,
-                'training_time': lambda x: x >= 0}
+                'training_time': lambda x: x >= 0,
+                'training_max_error': lambda x: x > 0,
+                'validation_data': lambda x: isinstance(x, tc.SFrame) and len(x) == 0,
+                }
         self.fields_ans = self.get_ans.keys()
     
     def test__list_fields(self):

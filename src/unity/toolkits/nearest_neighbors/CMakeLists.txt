@@ -8,6 +8,7 @@ make_library(unity_nearest_neighbors
   ball_tree_neighbors.cpp
   lsh_family.cpp
   lsh_neighbors.cpp
+  class_registrations.cpp
   REQUIRES
     numerics
     unity_core

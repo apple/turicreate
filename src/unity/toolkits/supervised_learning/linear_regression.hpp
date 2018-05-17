@@ -9,15 +9,15 @@
 // ML-Data Utils
 #include <ml_data/metadata.hpp>
 
+
 // Toolkits
 #include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
 
 // Optimization Interface
 #include <optimization/optimization_interface.hpp>
 
 #include <export.hpp>
-// TODO: List of todo's for this file
-//------------------------------------------------------------------------------
 
 namespace turi {
 namespace supervised {
@@ -28,6 +28,7 @@ class linear_regression_opt_interface;
  * Linear Regression Model
  * ****************************************************************************
  */
+
 
 /**
  * Linear regression model class definition.
@@ -53,11 +54,6 @@ class EXPORT linear_regression: public supervised_learning_model_base {
 
 
   /**
-   * Returns the name of the model.
-   */
-  std::string name();
-
-  /**
    * Initialize things that are specific to your model.
    *
    * \param[in] data ML-Data object created by the init function.
@@ -70,13 +66,14 @@ class EXPORT linear_regression: public supervised_learning_model_base {
    *
    * \param[in] _options Options to set
    */
-  void init_options(const std::map<std::string,flexible_type>& _options);
+  void init_options(const std::map<std::string,flexible_type>& _options) override;
   
   /**
    * Gets the model version number
    */
   size_t get_version() const;
 
+  bool is_classifier() const override { return false; }
 
   /**
    * Train a regression model.
@@ -130,9 +127,12 @@ class EXPORT linear_regression: public supervised_learning_model_base {
     _coefs = coefs;
   }
 
+  std::shared_ptr<coreml::MLModelWrapper> export_to_coreml() override;
 
+  SUPERVISED_LEARNING_METHODS_REGISTRATION(
+      "regression_linear_regression", linear_regression); 
+      
 };
-
 
 } // supervised
 } // turicreate

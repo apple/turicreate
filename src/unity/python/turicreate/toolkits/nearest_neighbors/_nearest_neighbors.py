@@ -19,12 +19,12 @@ from turicreate.toolkits._private_utils import _validate_row_label
 from turicreate.toolkits._private_utils import _validate_lists
 from turicreate.toolkits._private_utils import _robust_column_name
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
-from turicreate.toolkits._private_utils import _validate_lists
 
 from turicreate.toolkits.distances._util import _convert_distance_names_to_functions
 from turicreate.toolkits.distances._util import _validate_composite_distance
 from turicreate.toolkits.distances._util import _scrub_composite_distance_features
 from turicreate.toolkits.distances._util import _get_composite_distance_features
+from turicreate.cython.cy_server import QuietProgress
 
 import array
 import copy as _copy
@@ -575,12 +575,8 @@ def create(dataset, label=None, features=None, distance=None, method='auto',
         'composite_params': distance})
 
     ## Construct the nearest neighbors model
-    if not verbose:
-        _turicreate.connect.main.get_server().set_log_progress(False)
-
-    result = _turicreate.extensions._nearest_neighbors.train(opts)
-
-    _turicreate.connect.main.get_server().set_log_progress(True)
+    with QuietProgress(verbose):
+        result = _turicreate.extensions._nearest_neighbors.train(opts)
 
     model_proxy = result['model']
     model = NearestNeighborsModel(model_proxy)
@@ -687,8 +683,7 @@ class NearestNeighborsModel(_Model):
             List of fields queryable with the ``get`` method.
         """
         opts = {'model': self.__proxy__, 'model_name': self.__name__}
-        response = _turicreate.toolkits._main.run('_nearest_neighbors.list_keys',
-                                               opts)
+        response = _turicreate.extensions._nearest_neighbors.list_fields(opts)
 
         return sorted(response.keys())
 
@@ -740,8 +735,7 @@ class NearestNeighborsModel(_Model):
         opts = {'model': self.__proxy__,
                 'model_name': self.__name__,
                 'field': field}
-        response = _turicreate.toolkits._main.run('_nearest_neighbors.get_value',
-                                                opts)
+        response = _turicreate.extensions._nearest_neighbors.get_value(opts)
         return response['value']
 
     def _training_stats(self):
@@ -778,8 +772,7 @@ class NearestNeighborsModel(_Model):
         """
 
         opts = {'model': self.__proxy__, 'model_name': self.__name__}
-        return _turicreate.toolkits._main.run("_nearest_neighbors.training_stats",
-                opts)
+        return _turicreate.extensions._nearest_neighbors.training_stats(opts)
 
     def query(self, dataset, label=None, k=5, radius=None, verbose=True):
         """
@@ -936,9 +929,10 @@ class NearestNeighborsModel(_Model):
                 'k': k,
                 'radius': radius}
 
-        result = _turicreate.toolkits._main.run('_nearest_neighbors.query', opts,
-                                             verbose)
-        return _SFrame(None, _proxy=result['neighbors'])
+        with QuietProgress(verbose):
+            result = _turicreate.extensions._nearest_neighbors.query(opts)
+
+        return result['neighbors']
 
     def similarity_graph(self, k=5, radius=None, include_self_edges=False,
                          output_type='SGraph', verbose=True):
@@ -1052,10 +1046,10 @@ class NearestNeighborsModel(_Model):
                 'radius': radius,
                 'include_self_edges': include_self_edges}
 
-        result = _turicreate.toolkits._main.run('_nearest_neighbors.similarity_graph',
-                                              opts, verbose)
+        with QuietProgress(verbose):
+            result = _turicreate.extensions._nearest_neighbors.similarity_graph(opts)
 
-        knn = _SFrame(None, _proxy=result['neighbors'])
+        knn = result['neighbors']
 
         if output_type == "SFrame":
             return knn

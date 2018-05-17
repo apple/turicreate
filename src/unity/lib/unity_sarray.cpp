@@ -15,7 +15,6 @@
 #include <unity/lib/unity_global_singleton.hpp>
 #include <unity/lib/variant.hpp>
 #include <fileio/temp_files.hpp>
-#include <fileio/curl_downloader.hpp>
 #include <fileio/sanitize_url.hpp>
 #include <fileio/fs_utils.hpp>
 #include <util/file_line_count_estimator.hpp>
@@ -432,7 +431,7 @@ std::shared_ptr<unity_sarray_base> unity_sarray::transform(const std::string& la
                                                            bool skip_undefined,
                                                            int seed) {
   log_func_entry();
-
+#ifdef TC_HAS_PYTHON
   // create a le_transform operator to lazily evaluate this
   auto lambda_node =
       query_eval::op_lambda_transform::
@@ -445,6 +444,9 @@ std::shared_ptr<unity_sarray_base> unity_sarray::transform(const std::string& la
   auto ret_unity_sarray = std::make_shared<unity_sarray>();
   ret_unity_sarray->construct_from_planner_node(lambda_node);
   return ret_unity_sarray;
+#else
+  log_and_throw("Python functions not supported");
+#endif
 }
 
 
@@ -1719,7 +1721,7 @@ std::shared_ptr<unity_sarray_base> unity_sarray::sample(float percent,
 }
 
 
-std::shared_ptr<unity_sarray_base> unity_sarray::hash(int random_seed) {
+std::shared_ptr<unity_sarray_base> unity_sarray::hash(uint64_t random_seed) {
   flex_int seed_hash = flexible_type((flex_int)(random_seed)).hash();
   auto filter_fn = [seed_hash](const flexible_type& val)->flexible_type {
         return hash64(val.hash() ^ seed_hash);

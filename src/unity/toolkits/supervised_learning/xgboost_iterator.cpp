@@ -42,7 +42,7 @@ class MLDataBatchIterator : public utils::IIterator<RowBatch> {
     // Initialize thread buffer
     tl_row_buffer_.resize(nthreads_);
     for (size_t i = 0; i < nthreads_; ++i) {
-      tl_iter_.push_back(std::move(ml_data_.get_iterator()));
+      tl_iter_.push_back(ml_data_.get_iterator());
     }
 
     // Zero the output

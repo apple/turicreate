@@ -42,24 +42,6 @@ ball_tree_neighbors::~ball_tree_neighbors(){
 
 
 /**
- * Cast the object to a nearest_neighbors_model type
- */
-nearest_neighbors_model* ball_tree_neighbors::nearest_neighbors_clone() {
-
-  ball_tree_neighbors* nn = new ball_tree_neighbors(*this);
-  return (nearest_neighbors_model*) nn;
-}
-
-
-/**
- * Returns the name of the model.
- */
-std::string ball_tree_neighbors::name() {
-  return "nearest_neighbors_ball_tree";
-}
-
-       
-/**
 * Set options
 */ 
 void ball_tree_neighbors::init_options(
@@ -761,7 +743,6 @@ bool ball_tree_neighbors::activate_query_node(size_t k, double radius,
 
   return activate;
 }
-
 
 }  // namespace nearest_neighbors
 }  // namespace turi

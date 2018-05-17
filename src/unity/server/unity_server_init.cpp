@@ -17,6 +17,7 @@
 #include <unity/lib/simple_model.hpp>
 #
 namespace turi {
+unity_server_initializer::~unity_server_initializer() {} 
 
 void unity_server_initializer::init_toolkits(toolkit_function_registry& registry) const {
   register_functions(registry);

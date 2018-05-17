@@ -11,6 +11,7 @@
 
 // Toolkits
 #include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
 
 // Optimization Interface
 #include <optimization/optimization_interface.hpp>
@@ -35,6 +36,8 @@ class EXPORT logistic_regression: public supervised_learning_model_base {
 
   protected:
 
+    bool m_simple_mode;
+
   std::shared_ptr<logistic_regression_opt_interface> lr_interface;
   arma::vec  coefs;                 /**< Coefs */
   arma::vec  std_err;
@@ -52,11 +55,6 @@ class EXPORT logistic_regression: public supervised_learning_model_base {
    */
   ~logistic_regression();
 
-
-  /**
-   * Returns the name of the model.
-   */
-  std::string name();
   
   /**
    * Set the default evaluation metric during model evaluation..
@@ -91,12 +89,14 @@ class EXPORT logistic_regression: public supervised_learning_model_base {
    */
   void model_specific_init(const ml_data& data, const ml_data& valid_data);
   
+  bool is_classifier() const override { return true; }
+
   /**
    * Initialize the options.
    *
    * \param[in] _options Options to set
    */
-  void init_options(const std::map<std::string,flexible_type>& _options);
+  void init_options(const std::map<std::string,flexible_type>& _options) override;
   
   /**
    * Gets the model version number
@@ -144,8 +144,8 @@ class EXPORT logistic_regression: public supervised_learning_model_base {
    */
   gl_sframe fast_predict_topk(
       const std::vector<flexible_type>& rows,
-      const std::string& output_type="", 
       const std::string& missing_value_action ="error",
+      const std::string& output_type="",
       const size_t topk = 5) override;
   
   /**
@@ -167,11 +167,13 @@ class EXPORT logistic_regression: public supervised_learning_model_base {
     _coefs.resize(coefs.size());
     _coefs = coefs;
   }
+  
+  std::shared_ptr<coreml::MLModelWrapper> export_to_coreml() override;
+
+  SUPERVISED_LEARNING_METHODS_REGISTRATION(
+      "classifier_logistic_regression", logistic_regression);
 
 };
-
-
-
 } // supervised
 } // turicreate
 

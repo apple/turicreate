@@ -13,8 +13,6 @@ import ctypes
 import glob as _glob
 import subprocess as _subprocess
 from ._scripts import _pylambda_worker
-from copy import copy
-from .util import sys_info as _sys_info
 
 if sys.version_info.major == 2:
     import ConfigParser as _ConfigParser
@@ -65,7 +63,8 @@ def make_unity_server_env():
 
     # Set mxnet envvars
     if 'MXNET_CPU_WORKER_NTHREADS' not in env:
-        num_workers = min(2, int(env.get('OMP_NUM_THREADS', _sys_info.NUM_CPUS)))
+        from multiprocessing import cpu_count
+        num_workers = min(2, int(env.get('OMP_NUM_THREADS', cpu_count())))
         env['MXNET_CPU_WORKER_NTHREADS'] = str(num_workers)
 
     ## set local to be c standard so that unity_server will run ##

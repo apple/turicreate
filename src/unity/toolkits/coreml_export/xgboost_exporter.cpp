@@ -22,7 +22,7 @@ static std::string float_to_hexadecimal(float value) {
   bool is_little_endian = true;
   {
     int test = 1;
-    is_little_endian = ((unsigned char*)(&test))[0] != NULL;
+    is_little_endian = ((unsigned char*)(&test))[0] != 0;
   }
   if (is_little_endian) {
     snprintf(ret, 9, "%02X%02X%02X%02X", p[0],p[1],p[2],p[3]);
@@ -42,7 +42,7 @@ static double hexadecimal_to_float(std::string hex) {
   bool is_little_endian = true;
   {
     int test = 1;
-    is_little_endian = ((unsigned char*)(&test))[0] != NULL;
+    is_little_endian = ((unsigned char*)(&test))[0] != 0;
   }
 
   { 

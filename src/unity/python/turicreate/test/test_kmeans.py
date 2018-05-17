@@ -6,7 +6,6 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-import itertools
 import tempfile
 import unittest
 import copy
@@ -21,7 +20,6 @@ from turicreate.util import _assert_sframe_equal as assert_sframe_equal
 
 from turicreate.connect.main import get_unity
 from turicreate.toolkits._main import ToolkitError
-from turicreate.data_structures.sframe import SFrame
 
 import sys
 if sys.version_info.major == 3:

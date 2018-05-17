@@ -70,6 +70,8 @@ template <typename T> class sarray;
 class sparse_similarity_lookup {
  public:
 
+  virtual ~sparse_similarity_lookup() = default;
+
   /** Returns the name of the similarity this version uses.
    */
   virtual std::string similarity_name() const = 0;
