@@ -15,6 +15,7 @@
 #include <sframe/sframe_constants.hpp>
 #include <sframe/sframe_config.hpp>
 #include <sframe/sframe_saving.hpp>
+#include <sframe/sframe_compact.hpp>
 #include <exceptions/error_types.hpp>
 namespace turi {
 
@@ -63,6 +64,7 @@ sframe::sframe(const dataframe_t& data) {
 
   // create the sframe
   open_for_write(column_names, column_types, "", 1);
+  group_writer->set_options("disable_padding", 1);
 
   auto output_iter = get_output_iterator(0);
   std::vector<flexible_type> buf(column_names.size());
@@ -326,7 +328,12 @@ sframe sframe::append(const sframe& other) const {
         (ret.columns[i]->append(*other.columns[i]));
   }
   ret.index_info.nrows += other.index_info.nrows;
+  ret.try_compact();
   return ret;
+}
+
+void sframe::try_compact() {
+  for (auto& col : columns) col->try_compact();
 }
 
 std::unique_ptr<sframe::reader_type> sframe::get_reader() const {

@@ -600,6 +600,13 @@ class sarray_group_format_writer_v2: public sarray_group_format_writer<T> {
   }
 
   /**
+   * Sets write options. See \ref v2_block_impl::block_writer::set_options
+   */
+  void set_options(const std::string& option, int64_t value) {
+    m_writer.set_options(option, value);
+  }
+
+  /**
    * Gets a modifiable reference to the index file information which will 
    * be written to the index file. 
    */

@@ -68,6 +68,11 @@ void block_writer::open_segment(size_t segmentid, std::string filename) {
 
 }
 
+void block_writer::set_options(const std::string& option, int64_t value) {
+  if (option == "disable_padding") {
+    m_disable_padding = value;
+  }
+}
 
 static char padding_bytes[4096] = {0};
 
@@ -104,6 +109,7 @@ size_t block_writer::write_block(size_t segment_id,
   }
 
   size_t padding = ((buffer_to_write_len + 4095) / 4096) * 4096 - buffer_to_write_len;
+  if (m_disable_padding) padding = 0;
   ASSERT_LT(padding, 4096);
   // write!
   m_output_file_locks[segment_id].lock();

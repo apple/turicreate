@@ -33,6 +33,8 @@ EXPORT size_t SFRAME_IO_READ_LOCK = false;
 EXPORT size_t SFRAME_SORT_PIVOT_ESTIMATION_SAMPLE_SIZE = 2000000;
 EXPORT size_t SFRAME_SORT_MAX_SEGMENTS = 128;
 EXPORT const size_t SFRAME_IO_LOCK_FILE_SIZE_THRESHOLD = 4 * 1024 * 1024;
+EXPORT size_t SFRAME_COMPACTION_THRESHOLD = 256;
+EXPORT size_t FAST_COMPACT_BLOCKS_IN_SMALL_SEGMENT = 8;
 
 
 REGISTER_GLOBAL_WITH_CHECKS(int64_t, 
@@ -104,4 +106,14 @@ REGISTER_GLOBAL_WITH_CHECKS(int64_t,
                             true,
                             +[](int64_t val){ return val > 1; });
 
+
+REGISTER_GLOBAL_WITH_CHECKS(int64_t, 
+                            FAST_COMPACT_BLOCKS_IN_SMALL_SEGMENT,
+                            true,
+                            +[](int64_t val){ return val >= 1; });
+
+
+REGISTER_GLOBAL(int64_t, 
+                SFRAME_COMPACTION_THRESHOLD,
+                true);
 } // namespace turi

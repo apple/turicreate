@@ -96,7 +96,7 @@ void unity_sarray::construct_from_vector(const std::vector<flexible_type>& vec,
 
   auto sarray_ptr = std::make_shared<sarray<flexible_type>>();
 
-  sarray_ptr->open_for_write(1);
+  sarray_ptr->open_for_write(1, true /*disable padding*/);
   sarray_ptr->set_type(type);
 
   // ok. copy into the writer.
