@@ -22,6 +22,7 @@
 
 #include <capi/TuriCreate.h>
 #include <capi/impl/capi_wrapper_structs.hpp>
+#include "boost_utils.hpp"
 
 using namespace turi;
 using namespace flexible_type_impl;
