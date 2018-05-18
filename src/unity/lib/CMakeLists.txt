@@ -31,6 +31,7 @@ make_library(unity_core
     ../extensions/additional_sframe_utilities.cpp
     unity_sarray_builder.cpp
     unity_sframe_builder.cpp
+    visualization/columnwise_summary.cpp
     ${VISUALIZATION_SOURCES}
   REQUIRES
     flexible_type
