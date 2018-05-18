@@ -185,13 +185,6 @@ class ObjectDetectorTest(unittest.TestCase):
         annotated_img = tc.object_detector.util.draw_bounding_boxes(sf_copy[self.feature],
                 sf_copy[self.annotations])
 
-    def test_invalid_num_gpus(self):
-        num_gpus = tc.config.get_num_gpus()
-        tc.config.set_num_gpus(-2)
-        with self.assertRaises(_ToolkitError):
-            tc.object_detector.create(self.sf)
-        tc.config.set_num_gpus(num_gpus)
-
     def test_extra_classes(self):
         # Create while the data has extra classes
         model = tc.object_detector.create(self.sf, classes=_CLASSES[:2], max_iterations=1)

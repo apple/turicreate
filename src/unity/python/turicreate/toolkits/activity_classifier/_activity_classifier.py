@@ -107,7 +107,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
         ... })
 
         # Create an activity classifier
-        >>> model = tc.activity_classifier.create(train,
+        >>> model = tc.activity_classifier.create(data,
         ...     session_id='session_id', target='activity',
         ...     features=['accelerometer_x', 'accelerometer_y', 'accelerometer_z'])
 

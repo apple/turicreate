@@ -318,6 +318,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         # Set number of iterations through a heuristic
         num_iterations_raw = 5000 * _np.sqrt(num_instances) / batch_size
         num_iterations = 1000 * max(1, int(round(num_iterations_raw / 1000)))
+        if verbose:
+            print("Setting 'max_iterations' to {}".format(num_iterations))
     else:
         num_iterations = max_iterations
 
@@ -465,13 +467,25 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         cur_time = _time.time()
         if verbose and (cur_time > progress['last_time'] + 10 or
                         iteration_base1 == max_iterations):
-            print('{now:%Y-%m-%d %H:%M:%S}  Training {cur_iter:{width}d}/{num_iterations:{width}d}  Loss {loss:6.3f}'.format(
-                now=_datetime.now(), cur_iter=iteration_base1, num_iterations=num_iterations,
-                loss=progress['smoothed_loss'], width=len(str(num_iterations))))
+            # Print progress table row
+            elapsed_time = cur_time - start_time
+            print("| {cur_iter:<{width}}| {loss:<{width}.3f}| {time:<{width}.1f}|".format(
+                cur_iter=iteration_base1, loss=progress['smoothed_loss'],
+                time=elapsed_time , width=column_width-1))
             progress['last_time'] = cur_time
 
     request_queue = _Queue()
     response_queue = _Queue()
+
+    if verbose:
+        # Print progress table header
+        column_names = ['Iteration', 'Loss', 'Elapsed Time']
+        num_columns = len(column_names)
+        column_width = max(map(lambda x: len(x), column_names)) + 2
+        hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
+        print(hr)
+        print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
+        print(hr)
 
     iteration = 0
     if not use_io_threads:
@@ -517,6 +531,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
 
 
     training_time = _time.time() - start_time
+    if verbose:
+        print(hr)   # progress table footer
 
     # Save the model
     training_iterations = iteration + 1
@@ -1098,7 +1114,7 @@ class ObjectDetector(_CustomModel):
         mode = None
         builder = neural_network.NeuralNetworkBuilder(input_features, output_features, mode)
         _mxnet_converter.convert(mod, mode=None,
-                                 input_shape={self.feature: image_shape},
+                                 input_shape=[(self.feature, image_shape)],
                                  builder=builder, verbose=False)
 
         prefix = '__tc__internal__'

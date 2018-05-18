@@ -192,6 +192,6 @@ class MXFeatureExtractor(ImageFeatureExtractor):
 
         preprocessor_args = {'image_input_names': [self.data_layer]}
         return _mxnet_converter.convert(model, mode = 'classifier',
-                input_shape={self.data_layer: (1, ) + self.image_shape},
+                input_shape=[(self.data_layer, (1, ) + self.image_shape)],
                 class_labels = list(map(str, range(self.ptModel.num_classes))),
                 preprocessor_args = preprocessor_args, verbose = False)

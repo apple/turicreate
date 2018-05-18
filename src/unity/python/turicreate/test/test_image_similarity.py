@@ -119,13 +119,6 @@ class ImageSimilarityTest(unittest.TestCase):
         with self.assertRaises(_ToolkitError):
             tc.image_similarity.create(self.sf[:0])
 
-    def test_invalid_num_gpus(self):
-        num_gpus = tc.config.get_num_gpus()
-        tc.config.set_num_gpus(-2)
-        with self.assertRaises(_ToolkitError):
-            tc.image_similarity.create(self.sf)
-        tc.config.set_num_gpus(num_gpus)
-
     def test_query(self):
         model = self.model
         preds = model.query(self.sf)
