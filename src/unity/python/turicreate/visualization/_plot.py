@@ -112,7 +112,7 @@ class Plot(object):
                 if sys.platform != 'darwin' and sys.platform != 'linux2' and sys.platform != 'linux':
                      raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
 
-                self.__proxy__.get('call_function', {'__function_name__': 'show'})
+                self.__proxy__.call_function('show')
 
     def save(self, filepath):
         """
@@ -221,19 +221,19 @@ class Plot(object):
                 " .json, .svg, or .png")
 
     def _get_data(self):
-        return _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_data'}))
+        return _json.loads(self.__proxy__.call_function('get_data'))
 
     def _get_vega(self, include_data=True):
         if(include_data):
-            spec = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_spec'}))["vega_spec"]
-            data = _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_data'}))["data_spec"]
+            spec = _json.loads(self.__proxy__.call_function('get_spec'))["vega_spec"]
+            data = _json.loads(self.__proxy__.call_function('get_data'))["data_spec"]
             for x in range(len(spec["data"])):
                 if(spec["data"][x]["name"] == "source_2"):
                     spec["data"][x] = data
                     break
             return spec
         else:
-            return _json.loads(self.__proxy__.get('call_function', {'__function_name__': 'get_spec'}))["vega_spec"]
+            return _json.loads(self.__proxy__.call_function('get_spec'))["vega_spec"]
 
     def _repr_javascript_(self):
         from IPython.core.display import display, HTML
