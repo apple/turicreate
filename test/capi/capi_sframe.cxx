@@ -17,6 +17,7 @@
 #include <unity/toolkits/util/random_sframe_generation.hpp>
 #include <fileio/fileio_constants.hpp>
 #include "capi_utils.hpp"
+#include "boost_utils.hpp"
 
 BOOST_AUTO_TEST_CASE(test_sframe_allocation) {
     tc_error* error = NULL;
