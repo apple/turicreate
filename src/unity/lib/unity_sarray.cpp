@@ -1276,8 +1276,13 @@ std::shared_ptr<unity_sarray_base> unity_sarray::lazy_astype(flex_type_enum dtyp
   // Special path for converting strings to image
   if (current_type == flex_type_enum::STRING &&
       dtype == flex_type_enum::IMAGE) {
-    return transform_lambda([](const flexible_type& f)->flexible_type {
-                                  return image_util::load_image(f.to<flex_string>(), "");
+    return transform_lambda([=](const flexible_type& f)->flexible_type {
+                                  try {
+                                    return image_util::load_image(f.to<flex_string>(), "");
+                                  } catch (...) {
+                                    if (undefined_on_failure) return FLEX_UNDEFINED;
+                                    else throw;
+                                  }
                                 },
                                 dtype,
                                 true /*skip undefined*/,
