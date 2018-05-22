@@ -1614,9 +1614,8 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
 
   std::shared_ptr<unity_sframe_base> self = this->select_columns(this->column_names());
 
-  logprogress_stream << "Materializing SFrame..." << std::endl;
+  logprogress_stream << "Materializing SFrame" << std::endl;
   this->materialize();
-  logprogress_stream << "Done." << std::endl;
 
   if(self->size() == 0){
     log_and_throw("Nothing to explore; SFrame is empty.");
