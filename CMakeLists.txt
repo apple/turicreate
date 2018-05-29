@@ -42,7 +42,7 @@ if(${TC_BUILD_PYTHON})
   endif()
 
   include(UseCython)
-
+  add_definitions(-DTC_HAS_PYTHON)
 else()
   message("Skipping python libraries.")
 endif()

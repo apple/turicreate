@@ -1254,9 +1254,8 @@ std::shared_ptr<unity_sarray_base> unity_sarray::datetime_to_str(const std::stri
 std::shared_ptr<unity_sarray_base> unity_sarray::astype(flex_type_enum dtype,
                                                         bool undefined_on_failure) {
   auto ret = lazy_astype(dtype, undefined_on_failure);
-  if (undefined_on_failure == false &&
-      this->dtype() == flex_type_enum::STRING && dtype != flex_type_enum::STRING) {
-    // if we are parsing, materialize
+  if (undefined_on_failure == false && this->dtype() == flex_type_enum::STRING) {
+    // if we are parsing, or image loading, materialize
     ret->materialize();
   }
   return ret;
@@ -1274,6 +1273,22 @@ std::shared_ptr<unity_sarray_base> unity_sarray::lazy_astype(flex_type_enum dtyp
           undefined_on_failure);
   }
 
+  // Special path for converting strings to image
+  if (current_type == flex_type_enum::STRING &&
+      dtype == flex_type_enum::IMAGE) {
+    return transform_lambda([=](const flexible_type& f)->flexible_type {
+                                  try {
+                                    return image_util::load_image(f.to<flex_string>(), "");
+                                  } catch (...) {
+                                    if (undefined_on_failure) return FLEX_UNDEFINED;
+                                    else throw;
+                                  }
+                                },
+                                dtype,
+                                true /*skip undefined*/,
+                                0 /*random seed*/);
+  };
+
   // if no changes. just keep the identity function
   if (dtype == current_type) {
     return std::static_pointer_cast<unity_sarray>(shared_from_this());
@@ -1285,7 +1300,7 @@ std::shared_ptr<unity_sarray_base> unity_sarray::lazy_astype(flex_type_enum dtyp
         (current_type == flex_type_enum::STRING && dtype == flex_type_enum::VECTOR) ||
         (current_type == flex_type_enum::STRING && dtype == flex_type_enum::LIST) ||
         (current_type == flex_type_enum::STRING && dtype == flex_type_enum::DICT) ||
-        (current_type == flex_type_enum::LIST&& dtype == flex_type_enum::VECTOR)
+        (current_type == flex_type_enum::LIST && dtype == flex_type_enum::VECTOR)
        )) {
     log_and_throw("Not able to cast to given type");
   }
@@ -2887,9 +2902,8 @@ std::shared_ptr<model_base> unity_sarray::plot(const std::string& path_to_client
   using namespace turi;
   using namespace turi::visualization;
 
-  logprogress_stream << "Materializing SArray..." << std::endl;
+  logprogress_stream << "Materializing SArray" << std::endl;
   this->materialize();
-  logprogress_stream << "Done." << std::endl;
 
   if (this->size() == 0) {
     log_and_throw("Nothing to show; SArray is empty.");

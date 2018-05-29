@@ -139,9 +139,8 @@ namespace turi {
         using namespace turi;
         using namespace turi::visualization;
 
-        logprogress_stream << "Materializing SArray..." << std::endl;
+        logprogress_stream << "Materializing SArray" << std::endl;
         sa.materialize();
-        logprogress_stream << "Done." << std::endl;
 
         if (sa.size() == 0) {
           log_and_throw("Nothing to show; SArray is empty.");

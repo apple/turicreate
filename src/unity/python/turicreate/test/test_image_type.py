@@ -168,6 +168,24 @@ class ImageClassTest(unittest.TestCase):
         image_analysis.load_images(image_url_dir, 'JPG', ignore_failure=True)
         image_analysis.load_images(image_url_dir, 'PNG', ignore_failure=True)
 
+    def test_astype_image(self):
+        import glob
+        imagelist = glob.glob(current_file_dir + '/images/*/**')
+        imageurls = SArray(imagelist)
+        images = imageurls.astype(image.Image)
+        self.assertEqual(images.dtype, image.Image)
+        # check that we actually loaded something.
+        for i in images:
+            self.assertGreater(i.height, 0)
+            self.assertGreater(i.width, 0)
+
+        # try a bad image
+        imageurls = SArray(["no_image_here", "go_away"])
+        self.assertRaises(Exception, lambda: imageurls.astype(image.Image))
+        ret = imageurls.astype(image.Image, undefined_on_failure=True)
+        self.assertEqual(ret[0], None)
+        self.assertEqual(ret[1], None)
+
     def test_casting(self):
         image_url_dir = current_file_dir + '/images/nested'
         sf = image_analysis.load_images(image_url_dir, "auto", True, True)
