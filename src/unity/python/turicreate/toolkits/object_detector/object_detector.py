@@ -1018,7 +1018,10 @@ class ObjectDetector(_CustomModel):
 
         return ret
 
-    def export_coreml(self, filename):
+    def export_coreml(self, filename, 
+            include_non_maximum_suppression = True,
+            iou_threshold = None,
+            confidence_threshold = None):
         """
         Save the model in Core ML format. The Core ML model takes an image of
         fixed size as input and produces two output arrays: `confidence` and
@@ -1050,6 +1053,29 @@ class ObjectDetector(_CustomModel):
         --------
         save
 
+        Parameters
+        ----------
+        filename : string
+            The path of the file where we want to save the Core ML model.
+       
+        include_non_maximum_suppression : bool
+            Non-maximum suppression is only available in iOS 12+.
+            A boolean parameter to indicate whether the Core ML model should be
+            saved with built-in non-maximum suppression or not. 
+            This parameter is set to True by default.
+
+        iou_threshold : float
+            Threshold value for non-maximum suppression. Non-maximum suppression
+            prevents multiple bounding boxes appearing over a single object. 
+            This threshold, set between 0 and 1, controls how aggressive this 
+            suppression is. A value of 1 means no maximum suppression will 
+            occur, while a value of 0 will maximally suppress neighboring 
+            boxes around a prediction.
+
+        confidence_threshold : float
+            Only return predictions above this level of confidence. The
+            threshold can range from 0 to 1. 
+
         Examples
         --------
         >>> model.export_coreml('detector.mlmodel')
@@ -1058,6 +1084,9 @@ class ObjectDetector(_CustomModel):
         from .._mxnet_to_coreml import _mxnet_converter
         import coremltools
         from coremltools.models import datatypes, neural_network
+
+        if not iou_threshold: iou_threshold = self.non_maximum_suppression_threshold
+        if not confidence_threshold: confidence_threshold = 0.25
 
         preds_per_box = 5 + self.num_classes
         num_anchors = len(self.anchors)
@@ -1101,13 +1130,18 @@ class ObjectDetector(_CustomModel):
         input_features = list(zip(input_names, input_types))
 
         num_spatial = self._grid_shape[0] * self._grid_shape[1]
+        num_bounding_boxes = num_anchors * num_spatial
+        CONFIDENCE_STR = ("raw_confidence" if include_non_maximum_suppression 
+            else "confidence")
+        COORDINATES_STR = ("raw_coordinates" if include_non_maximum_suppression 
+            else "coordinates")
         output_names = [
-            'confidence',
-            'coordinates',
+            CONFIDENCE_STR,
+            COORDINATES_STR
         ]
         output_dims = [
-            (num_anchors * num_spatial, num_classes),
-            (num_anchors * num_spatial, 4),
+            (num_bounding_boxes, num_classes),
+            (num_bounding_boxes, 4),
         ]
         output_types = [datatypes.Array(*dim) for dim in output_dims]
         output_features = list(zip(output_names, output_types))
@@ -1150,7 +1184,7 @@ class ObjectDetector(_CustomModel):
 
         # (1, 2, B*H*W, 1)
         builder.add_reshape(name=prefix + 'rel_xy',
-                            target_shape=[batch_size, 2, num_anchors * num_spatial, 1],
+                            target_shape=[batch_size, 2, num_bounding_boxes, 1],
                             mode=0,
                             input_name=prefix + 'rel_xy_sp',
                             output_name=prefix + 'rel_xy')
@@ -1214,7 +1248,7 @@ class ObjectDetector(_CustomModel):
 
         # (1, 2, B*H*W, 1)
         builder.add_reshape(name=prefix + 'wh',
-                            target_shape=[1, 2, num_anchors * num_spatial, 1],
+                            target_shape=[1, 2, num_bounding_boxes, 1],
                             mode=0,
                             input_name=prefix + 'wh_pre',
                             output_name=prefix + 'wh')
@@ -1231,18 +1265,18 @@ class ObjectDetector(_CustomModel):
                             input_name=prefix + 'boxes_out_transposed',
                             output_name=prefix + 'boxes_out')
 
-        scale = _np.zeros((num_anchors * num_spatial, 4, 1))
+        scale = _np.zeros((num_bounding_boxes, 4, 1))
         scale[:, 0::2] = 1.0 / self._grid_shape[1]
         scale[:, 1::2] = 1.0 / self._grid_shape[0]
 
         # (1, B*H*W, 4, 1)
-        builder.add_scale(name='coordinates',
+        builder.add_scale(name=COORDINATES_STR,
                           W=scale,
                           b=0,
                           has_bias=False,
-                          shape_scale=(num_anchors * num_spatial, 4, 1),
+                          shape_scale=(num_bounding_boxes, 4, 1),
                           input_name=prefix + 'boxes_out',
-                          output_name='coordinates')
+                          output_name=COORDINATES_STR)
 
         # CLASS PROBABILITIES AND OBJECT CONFIDENCE
 
@@ -1280,7 +1314,7 @@ class ObjectDetector(_CustomModel):
             conf = prefix + 'conf_tiled_sp'
             builder.add_elementwise(name=prefix + 'conf_tiled_sp',
                                     mode='CONCAT',
-                                    input_names=[prefix + 'conf_sp'] * num_classes,
+                                    input_names=[prefix+'conf_sp']*num_classes,
                                     output_name=conf)
         else:
             conf = prefix + 'conf_sp'
@@ -1293,18 +1327,19 @@ class ObjectDetector(_CustomModel):
 
         # (1, C, B*H*W, 1)
         builder.add_reshape(name=prefix + 'confprobs_transposed',
-                            target_shape=[1, num_classes, num_anchors * num_spatial, 1],
+                            target_shape=[1, num_classes, num_bounding_boxes, 1],
                             mode=0,
                             input_name=prefix + 'confprobs_sp',
                             output_name=prefix + 'confprobs_transposed')
 
         # (1, B*H*W, C, 1)
-        builder.add_permute(name='confidence',
+        builder.add_permute(name=CONFIDENCE_STR,
                             dim=[0, 2, 1, 3],
                             input_name=prefix + 'confprobs_transposed',
-                            output_name='confidence')
+                            output_name=CONFIDENCE_STR)
 
-        _mxnet_converter._set_input_output_layers(builder, input_names, output_names)
+        _mxnet_converter._set_input_output_layers(
+            builder, input_names, output_names)
         builder.set_input(input_names, input_dims)
         builder.set_output(output_names, output_dims)
         builder.set_pre_processing_parameters(image_input_names=self.feature)
@@ -1441,8 +1476,17 @@ class ObjectDetector(_CustomModel):
             ' Confidence Threshold override (default: {})')
         mlmodel = coremltools.models.MLModel(model)
         model_type = 'object detector (%s)' % self.model
-        mlmodel.short_description = _coreml_utils._mlmodel_short_description(model_type)
+        mlmodel.short_description = _coreml_utils._mlmodel_short_description(
+            model_type)
         mlmodel.input_description[self.feature] = 'Input image'
+        if include_non_maximum_suppression:
+            iouThresholdString = '(optional) IOU Threshold override (default: {})'
+            mlmodel.input_description['iouThreshold'] = \
+                iouThresholdString.format(iou_threshold)
+            confidenceThresholdString = ('(optional)' + 
+                ' Confidence Threshold override (default: {})')
+            mlmodel.input_description['confidenceThreshold'] = \
+                confidenceThresholdString.format(confidence_threshold)
         mlmodel.output_description['confidence'] = \
                 u'Boxes \xd7 Class confidence (see user-defined metadata "classes")'
         mlmodel.output_description['coordinates'] = \
@@ -1451,7 +1495,12 @@ class ObjectDetector(_CustomModel):
                 'model': self.model,
                 'max_iterations': str(self.max_iterations),
                 'training_iterations': str(self.training_iterations),
-                'non_maximum_suppression_threshold': str(self.non_maximum_suppression_threshold),
+                'include_non_maximum_suppression': str(
+                    include_non_maximum_suppression),
+                'non_maximum_suppression_threshold': str(
+                    iou_threshold),
+                'confidence_threshold': str(confidence_threshold),
+                'iou_threshold': str(iou_threshold),
                 'feature': self.feature,
                 'annotations': self.annotations,
                 'classes': ','.join(self.classes),
