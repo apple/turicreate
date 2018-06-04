@@ -220,13 +220,11 @@ std::vector<std::string> get_directory_files(std::string url, bool recursive) {
   path_status_vec_t path_status_vec = fileio::get_directory_listing(url);
   std::vector<std::string> ret;
   for (const auto& path_status : path_status_vec) {
-    if (path_status.first[0] != '.') {
-      if (recursive && path_status.second == fileio::file_status::DIRECTORY) {
-        auto tmp = get_directory_files(path_status.first, recursive);
-        ret.insert(ret.end(), tmp.begin(), tmp.end());
-      } else if (path_status.second == fileio::file_status::REGULAR_FILE){
-        ret.push_back(path_status.first);
-      }
+    if (recursive && path_status.second == fileio::file_status::DIRECTORY) {
+      auto tmp = get_directory_files(path_status.first, recursive);
+      ret.insert(ret.end(), tmp.begin(), tmp.end());
+    } else if (path_status.second == fileio::file_status::REGULAR_FILE){
+      ret.push_back(path_status.first);
     }
   }
   return ret;
@@ -340,25 +338,19 @@ flexible_type resize_image(const flexible_type& input, size_t resized_width,
     std::string error = "Cannot resize non-image type";
     log_and_throw(error);
   }
-  const flex_image& src_image = image.get<flex_image>();
-  // is this resize a no opt?
-  if (src_image.m_width == resized_width && src_image.m_height == resized_height && src_image.m_channels == resized_channels && src_image.is_decoded() == decode) {
-    return image;
+  flex_image image = input.get<flex_image>();
+  auto has_desired_size = [&] {
+    return image.m_width == resized_width && image.m_height == resized_height && image.m_channels == resized_channels;
+  };
+
+  // Is this resize a no-op?
+  if (has_desired_size() && image.is_decoded() == decode) {
+    return input;
   }
-  char* resized_data;
-  if (src_image.is_decoded()) {
-    // skip decoding
-    image_util_detail::resize_image_impl((const char*)src_image.get_image_data(),
-        src_image.m_width, src_image.m_height, src_image.m_channels, resized_width,
-        resized_height, resized_channels, &resized_data);
-  } else {
-    // make a copy and decode
-    flexible_type tmp = image;
-    flex_image& decoded_image = tmp.mutable_get<flex_image>();
-    image_util_detail::decode_image_impl(decoded_image);
-    image_util_detail::resize_image_impl((const char*)decoded_image.get_image_data(),
-        decoded_image.m_width, decoded_image.m_height, decoded_image.m_channels, resized_width,
-        resized_height, resized_channels, &resized_data);
+
+  // Decode if necessary.
+  if (!image.is_decoded()) {
+    image_util_detail::decode_image_impl(image);
   }
 
   // Resize if necessary.
@@ -379,9 +371,10 @@ flexible_type resize_image(const flexible_type& input, size_t resized_width,
 
   // Encode if necessary.
   if (!decode) {
-    image_util_detail::encode_image_impl(dst_img);
+    image_util_detail::encode_image_impl(image);
   }
-  return dst_img;
+
+  return image;
 };
 
 

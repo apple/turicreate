@@ -63,6 +63,11 @@ class GraphLabServer(object):
         """ Return the logger object. """
         raise NotImplementedError
 
+    def log_progress_enabled(self):
+        """ Return True if progress is enabled else False. """
+        raise NotImplementedError
+
+
 cdef void print_status(const string& status_string) nogil:
     with gil:
         print_callback(cpp_to_str(status_string).rstrip())
@@ -83,6 +88,7 @@ class EmbeddedServer(GraphLabServer):
         root_path = os.path.abspath(os.path.join(root_path, os.pardir))  # sframe/
         self.root_path = root_path
         self.started = False
+        self._log_progress_enabled = False
 
         if not self.unity_log:
             self.unity_log = default_local_conf.get_unity_log()
@@ -122,11 +128,17 @@ class EmbeddedServer(GraphLabServer):
     def get_logger(self):
         return self.logger
 
+    def log_progress_enabled(self):
+        """ Return True if progress is enabled else False. """
+        raise NotImplementedError
+
     def set_log_progress(self, enable):
         if enable:
             set_log_progress_callback(print_status)
+            self._log_progress_enabled = True
         else:
             set_log_progress(False)
+            self._log_progress_enabled = False
 
 class QuietProgress(object):
     """
@@ -136,7 +148,10 @@ class QuietProgress(object):
     def __init__(self, verbose):
         self.verbose = verbose
     def __enter__(self):
+        server = _connect.main.get_server()
+        self.log_progress_enabled = server.log_progress_enabled
         if not self.verbose:
-            _connect.main.get_server().set_log_progress(False)
+            server.set_log_progress(False)
+
     def __exit__(self, type, value, traceback):
-        _connect.main.get_server().set_log_progress(False)
+        _connect.main.get_server().set_log_progress(self.log_progress_enabled)

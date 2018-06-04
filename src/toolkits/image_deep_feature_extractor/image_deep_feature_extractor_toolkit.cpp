@@ -25,8 +25,8 @@ void image_deep_feature_extractor_toolkit::init_options(const std::map<std::stri
 
 gl_sarray image_deep_feature_extractor_toolkit::extract_features(gl_sframe data,
                                                                  const std::string& column_name,
-                                                                 bool verbose) const {
-  return m_feature_extractor->extract_features(data[column_name]);
+                                                                 bool verbose, size_t batch_size) const {
+  return m_feature_extractor->extract_features(data[column_name], verbose, batch_size);
 }
 
 }  // image_deep_feature_extractor

@@ -56,7 +56,7 @@ namespace turi {
     struct vector_serialize_impl<OutArcType, ValueType, true > {
       static void exec(OutArcType& oarc, const std::vector<ValueType>& vec) {
         oarc << size_t(vec.size());
-        serialize(oarc, &(vec[0]),sizeof(ValueType)*vec.size());
+        serialize(oarc, vec.data(),sizeof(ValueType)*vec.size());
       }
     };
 
@@ -80,7 +80,7 @@ namespace turi {
         size_t len;
         iarc >> len;
         vec.clear(); vec.resize(len);
-        deserialize(iarc, &(vec[0]), sizeof(ValueType)*vec.size());
+        deserialize(iarc, vec.data(), sizeof(ValueType)*vec.size());
       }
     };
 

@@ -590,13 +590,24 @@ class TcTable extends Component {
         rows.push(<Row key={"spacer2"} spacers={true}>
                     {empty_cells_2}
                   </Row>);
+          
+        var empty_cells_3 = [];
+        empty_cells_3.push(<Cell className={"header_element accordion_helper"} key={"0_"+r+"spacer3"}>&nbsp;</Cell>);
+          
+        for(var x = 1; x < cells.length;x++){
+            empty_cells_3.push(<Cell className={"elements accordion_helper"} key={x+"_"+r+"spacer3"}>&nbsp;</Cell>);
+        }
+          
+        rows.push(<Row key={"spacer3"} spacers={true}>
+                    {empty_cells_3}
+                  </Row>);
       }
     }
 
       
     var n = Math.floor(Math.min(...row_ids)/this.step_size);
       
-    this.set_higher = n + 2;
+    this.set_higher = n + 3;
     this.set_lower = n;
       
     var parent_context = this;

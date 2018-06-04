@@ -13,21 +13,25 @@ import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits import _coreml_utils
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
 from .. import _mxnet_utils
-from ._model import Transformer as _Transformer
-from ._model import Vgg16 as _Vgg16
-from ._model import gram_matrix as _gram_matrix
 from ._utils import _seconds_as_string
 from .. import _pre_trained_models
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
-from mxnet import gluon as _gluon
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 import turicreate as _tc
 import numpy as _np
-import mxnet as _mx
 import math as _math
 import six as _six
 
+
+def _vgg16_data_prep(batch):
+    """
+    Takes images scaled to [0, 1] and returns them appropriately scaled and
+    mean-subtracted for VGG-16
+    """
+    from mxnet import nd
+    mean = nd.array([123.68, 116.779, 103.939], ctx=batch.context)
+    return nd.broadcast_sub(255 * batch, mean.reshape((-1, 1, 1)))
 
 def create(style_dataset, content_dataset, style_feature=None,
         content_feature=None, max_iterations=None, model='resnet-16',
@@ -40,20 +44,25 @@ def create(style_dataset, content_dataset, style_feature=None,
     style_dataset: SFrame
         Input style images. The columns named by the ``style_feature`` parameters will
         be extracted for training the model.
+
     content_dataset : SFrame
         Input content images. The columns named by the ``content_feature`` parameters will
         be extracted for training the model.
+
     style_feature: string
         Name of the column containing the input images in style SFrame.
         'None' (the default) indicates the only image column in the style SFrame
         should be used as the feature.
+
     content_feature: string
         Name of the column containing the input images in content SFrame.
         'None' (the default) indicates the only image column in the content
         SFrame should be used as the feature.
+
     max_iterations : int
         The number of training iterations. If 'None' (the default), then it will
         be automatically determined based on the amount of data you provide.
+
     model : string optional
         Style transfer model to use:
 
@@ -82,6 +91,10 @@ def create(style_dataset, content_dataset, style_feature=None,
     --------
     .. sourcecode:: python
 
+        # Create datasets
+        >>> content_dataset = turicreate.image_analysis.load_images('content_images/')
+        >>> style_dataset = turicreate.image_analysis.load_images('style_images/')
+
         # Train a style transfer model
         >>> model = turicreate.style_transfer.create(content_dataset, style_dataset)
 
@@ -90,7 +103,6 @@ def create(style_dataset, content_dataset, style_feature=None,
 
         # Visualize the stylized images
         >>> stylized_images.explore()
-
 
     """
     if len(style_dataset) == 0:
@@ -120,11 +132,12 @@ def create(style_dataset, content_dataset, style_feature=None,
         'lr': 0.001,
         'content_loss_mult': 1.0,
         'style_loss_mult': [1e-4, 1e-4, 1e-4, 1e-4],  # conv 1-4 layers
-        'fine_tune_all_params': False,
+        'finetune_all_params': False,
         'print_loss_breakdown': False,
         'input_shape': (256, 256),
         'training_content_loader_type': 'stretch',
         'use_augmentation': False,
+        'sequential_image_processing': False,
         # Only used if use_augmentaion is True
         'aug_resize': 0,
         'aug_rand_crop': 0.9,
@@ -175,25 +188,29 @@ def create(style_dataset, content_dataset, style_feature=None,
     content_images_loader = _SFrameSTIter(content_dataset, batch_size, shuffle=True,
                                   feature_column=content_feature, input_shape=input_shape,
                                   num_epochs=max_iterations,
-                                  loader_type='stretch', aug_params=params)
-    style_images_loader = _SFrameSTIter(style_dataset, batch_size, shuffle=False,
-                                  feature_column=style_feature, input_shape=input_shape,
-                                  loader_type='stretch')
+                                  loader_type='stretch', aug_params=params,
+                                  sequential=params['sequential_image_processing'])
     ctx = _mxnet_utils.get_mxnet_context(max_devices=params['batch_size'])
 
     num_styles = len(style_dataset)
 
     # TRANSFORMER MODEL
+    from ._model import Transformer as _Transformer
     transformer_model_path = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS[model]().get_model_path()
-    transformer = _Transformer(num_styles)
+    transformer = _Transformer(num_styles, batch_size_each)
     transformer.collect_params().initialize(ctx=ctx)
     transformer.load_params(transformer_model_path, ctx, allow_missing=True)
+    # For some reason, the transformer fails to hybridize for training, so we
+    # avoid this until resolved
+    # transformer.hybridize()
 
     # VGG MODEL
+    from ._model import Vgg16 as _Vgg16
     vgg_model_path = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['Vgg16']().get_model_path()
     vgg_model = _Vgg16()
     vgg_model.collect_params().initialize(ctx=ctx)
     vgg_model.load_params(vgg_model_path, ctx=ctx, ignore_extra=True)
+    vgg_model.hybridize()
 
     # TRAINER
     from mxnet import gluon as _gluon
@@ -219,60 +236,102 @@ def create(style_dataset, content_dataset, style_feature=None,
         else:
             print('Using CPU to create model')
 
-        # Print progress table header
-        column_names = ['Iteration', 'Loss', 'Elapsed Time']
-        num_columns = len(column_names)
-        column_width = max(map(lambda x: len(x), column_names)) + 2
-        hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
-        print(hr)
-        print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
-        print(hr)
+    #
+    # Pre-compute gram matrices for style images
+    #
+    if verbose:
+        print('Analyzing visual features of the style images')
 
+    style_images_loader = _SFrameSTIter(style_dataset, batch_size, shuffle=False, num_epochs=1,
+                                        feature_column=style_feature, input_shape=input_shape,
+                                        loader_type='stretch',
+                                        sequential=params['sequential_image_processing'])
+    num_layers = len(params['style_loss_mult'])
+    gram_chunks = [[] for _ in range(num_layers)]
+    for s_batch in style_images_loader:
+        s_data = _gluon.utils.split_and_load(s_batch.data[0], ctx_list=ctx, batch_axis=0)
+        results = []
+        for s in s_data:
+            vgg16_s = _vgg16_data_prep(s)
+            ret = vgg_model(vgg16_s)
+            grams = [_gram_matrix(x) for x in ret]
+            for i, gram in enumerate(grams):
+                if gram.context != _mx.cpu(0):
+                    gram = gram.as_in_context(_mx.cpu(0))
+                gram_chunks[i].append(gram)
+    del style_images_loader
+
+    grams = [
+        # The concatenated styles may be padded, so we slice overflow
+        _mx.nd.concat(*chunks, dim=0)[:num_styles]
+        for chunks in gram_chunks
+    ]
+
+    # A context->grams look-up table, where all the gram matrices have been
+    # distributed
+    ctx_grams = {}
+    if ctx[0] == _mx.cpu(0):
+        ctx_grams[_mx.cpu(0)] = grams
+    else:
+        for ctx0 in ctx:
+            ctx_grams[ctx0] = [gram.as_in_context(ctx0) for gram in grams]
+
+    #
+    # Training loop
+    #
+
+    vgg_content_loss_layer = params['vgg16_content_loss_layer']
+    rs = _np.random.RandomState(1234)
     while iterations < max_iterations:
         content_images_loader.reset()
         for c_batch in content_images_loader:
-            s_batch = style_images_loader.next()
             c_data = _gluon.utils.split_and_load(c_batch.data[0], ctx_list=ctx, batch_axis=0)
-            s_data = _gluon.utils.split_and_load(s_batch.data[0], ctx_list=ctx, batch_axis=0)
-            indices_data = _gluon.utils.split_and_load(_mx.nd.array(s_batch.indices, dtype=_np.int64),
-                                                       ctx_list=[_mx.cpu(0)]*len(ctx), batch_axis=0)
 
             Ls = []
             curr_content_loss = []
             curr_style_loss = []
             with _mx.autograd.record():
-                for c, s, indices in zip(c_data, s_data, indices_data):
-                    stylized = transformer(c, indices.asnumpy())
+                for c in c_data:
+                    # Randomize styles to train
+                    indices = _mx.nd.array(rs.randint(num_styles, size=batch_size_each),
+                                           dtype=_np.int64, ctx=c.context)
+
+                    # Generate pastiche
+                    p = transformer(c, indices)
 
                     # mean subtraction
-                    s = _mxnet_utils.subtract_imagenet_mean(s)
-                    stylized = _mxnet_utils.subtract_imagenet_mean(stylized)
-                    c = _mxnet_utils.subtract_imagenet_mean(c)
+                    vgg16_p = _vgg16_data_prep(p)
+                    vgg16_c = _vgg16_data_prep(c)
 
                     # vgg forward
-                    style_vgg_outputs = vgg_model(s)
-                    stylized_vgg_outputs = vgg_model(stylized)
-                    content_vgg_outputs = vgg_model(c)
+                    p_vgg_outputs = vgg_model(vgg16_p)
+
+                    c_vgg_outputs = vgg_model(vgg16_c)
+                    c_content_layer = c_vgg_outputs[vgg_content_loss_layer]
+                    p_content_layer = p_vgg_outputs[vgg_content_loss_layer]
 
                     # Calculate Loss
                     # Style Loss between style image and stylized image
                     # Ls = sum of L2 norm of gram matrix of vgg16's conv layers
-                    style_loss = 0.0
-                    for style_vgg_output, stylized_vgg_output, style_loss_mult in zip(style_vgg_outputs, stylized_vgg_outputs, _style_loss_mult):
-                        gram_style_vgg = _gram_matrix(style_vgg_output)
-                        gram_stylized_vgg = _gram_matrix(stylized_vgg_output)
+                    style_losses = []
+                    for gram, p_vgg_output, style_loss_mult in zip(ctx_grams[c.context], p_vgg_outputs, _style_loss_mult):
+                        gram_s_vgg = gram[indices]
+                        gram_p_vgg = _gram_matrix(p_vgg_output)
 
-                        style_loss = style_loss + style_loss_mult * mse_loss(gram_style_vgg, gram_stylized_vgg)
+                        style_losses.append(style_loss_mult * mse_loss(gram_s_vgg, gram_p_vgg))
+
+                    style_loss = _mx.nd.add_n(*style_losses)
 
                     # Content Loss between content image and stylized image
-                    # Lc = L2 norm of vgg16's 3rd conv layer
-                    vgg_content_loss_layer = params['vgg16_content_loss_layer']
-                    content_loss = _content_loss_mult * mse_loss(content_vgg_outputs[vgg_content_loss_layer],
-                                                                 stylized_vgg_outputs[vgg_content_loss_layer])
+                    # Lc = L2 norm at a single layer in vgg16
+                    content_loss = _content_loss_mult * mse_loss(c_content_layer,
+                                                                 p_content_layer)
 
                     curr_content_loss.append(content_loss)
                     curr_style_loss.append(style_loss)
-                    total_loss = content_loss + style_loss
+                    # Divide loss by large number to get into a more legible
+                    # range
+                    total_loss = (content_loss + style_loss) / 10000.0
                     Ls.append(total_loss)
                 for L in Ls:
                     L.backward()
@@ -285,8 +344,19 @@ def create(style_dataset, content_dataset, style_feature=None,
                 smoothed_loss = 0.9 * smoothed_loss + 0.1 * cur_loss
             iterations += 1
             trainer.step(batch_size)
+
+            if verbose and iterations == 1:
+                # Print progress table header
+                column_names = ['Iteration', 'Loss', 'Elapsed Time']
+                num_columns = len(column_names)
+                column_width = max(map(lambda x: len(x), column_names)) + 2
+                hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
+                print(hr)
+                print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
+                print(hr)
+
             cur_time = _time.time()
-            if verbose and cur_time > last_time + 10:
+            if verbose and (cur_time > last_time + 10 or iterations == max_iterations):
                 # Print progress table row
                 elapsed_time = cur_time - start_time
                 print("| {cur_iter:<{width}}| {loss:<{width}.3f}| {time:<{width}.1f}|".format(
@@ -295,15 +365,13 @@ def create(style_dataset, content_dataset, style_feature=None,
                 if params['print_loss_breakdown']:
                     print_content_loss = _np.mean([L.asnumpy()[0] for L in curr_content_loss])
                     print_style_loss = _np.mean([L.asnumpy()[0] for L in curr_style_loss])
-                    print('Total Loss: {:6.3f}| Content Loss: {:6.3f} | Style Loss: {:6.3f}'.format(cur_loss, print_content_loss, print_style_loss))
+                    print('Total Loss: {:6.3f} | Content Loss: {:6.3f} | Style Loss: {:6.3f}'.format(cur_loss, print_content_loss, print_style_loss))
                 last_time = cur_time
             if iterations == max_iterations:
+                print(hr)
                 break
 
     training_time = _time.time() - start_time
-    if verbose:
-        print(hr)
-
     style_sa = style_dataset[style_feature]
     idx_column = _tc.SArray(range(0, style_sa.shape[0]))
     style_sframe = _tc.SFrame({"style": idx_column, style_feature: style_sa})
@@ -369,9 +437,10 @@ class StyleTransfer(_CustomModel):
 
     @classmethod
     def _load_version(cls, state, version):
+        from ._model import Transformer as _Transformer
         _tkutl._model_version_check(version, cls._PYTHON_STYLE_TRANSFER_VERSION)
 
-        net = _Transformer(state['num_styles'])
+        net = _Transformer(state['num_styles'], state['batch_size'])
         ctx = _mxnet_utils.get_mxnet_context(max_devices=state['batch_size'])
 
         net_params = net.collect_params()
@@ -587,6 +656,9 @@ class StyleTransfer(_CustomModel):
             # for smaller images
             loader_type = 'pad'
 
+        self._model.batch_size = batch_size_each
+        self._model.hybridize()
+
         ctx = _mxnet_utils.get_mxnet_context(max_devices=batch_size_each)
         batch_size = max(num_mxnet_gpus, 1) * batch_size_each
         last_time = 0
@@ -609,6 +681,10 @@ class StyleTransfer(_CustomModel):
         if input_shape[1] > max_w:
             input_shape = (input_shape[0], max_w)
 
+        # If we find large images, let's switch to sequential iterator
+        # pre-processing, to prevent memory issues.
+        sequential = max(max_h, max_w) > 2000
+
         if verbose and output_size != 1:
             print('Stylizing {} image(s) using {} style(s)'.format(dataset_size, len(style)))
             if oversized_count > 0:
@@ -620,7 +696,8 @@ class StyleTransfer(_CustomModel):
                                               input_shape=input_shape,
                                               num_epochs=1,
                                               loader_type=loader_type,
-                                              repeat_each_image=len(style))
+                                              repeat_each_image=len(style),
+                                              sequential=sequential)
 
         sb = _tc.SFrameBuilder([int, int, _tc.Image],
                                column_names=['row_id', 'style', 'stylized_{}'.format(self.content_feature)])
@@ -632,10 +709,11 @@ class StyleTransfer(_CustomModel):
             else:
                 c_data = _gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0)
             indices_data = _gluon.utils.split_and_load(_mx.nd.array(batch.repeat_indices, dtype=_np.int64),
-                                                       ctx_list=[_mx.cpu(0)]*len(ctx), batch_axis=0)
+                                                       ctx_list=ctx, batch_axis=0)
             outputs = []
             for b_img, b_indices in zip(c_data, indices_data):
-                b_batch_styles = [style[idx] for idx in b_indices.asnumpy()]
+                mx_style = _mx.nd.array(style, dtype=_np.int64, ctx=b_indices.context)
+                b_batch_styles = mx_style[b_indices]
                 output = self._model(b_img, b_batch_styles)
                 outputs.append(output)
 
@@ -715,7 +793,12 @@ class StyleTransfer(_CustomModel):
         c_image = _mx.sym.Variable('image', shape=image_shape,
                                          dtype=_np.float32)
 
+        # signal that we want the transformer to prepare for coreml export
+        # using a zero batch size
+        transformer.batch_size = 0
+        transformer.scale255 = True
         sym_out = transformer(c_image, index)
+
         mod = _mx.mod.Module(symbol=sym_out, data_names=["image", "index"],
                                     label_names=None)
         mod.bind(data_shapes=zip(["image", "index"], [image_shape, (1,)]), for_training=False,
@@ -732,10 +815,10 @@ class StyleTransfer(_CustomModel):
 
         mod.set_params(sym_weight_dict, sym_weight_dict)
         index_dim = (1, self.num_styles)
+        coreml_model = _mxnet_converter.convert(mod, input_shape=[(self.content_feature, image_shape), ('index', index_dim)],
+                        mode=None, preprocessor_args=None, builder=None, verbose=False)
 
-        coreml_model = _mxnet_converter.convert(mod, input_shape=[('image', image_shape), ('index', index_dim)],
-                        mode=None, preprocessor_args=None, builder=None, verbose=True)
-
+        transformer.scale255 = False
         spec = coreml_model.get_spec()
         image_input = spec.description.input[0]
         image_output = spec.description.output[0]

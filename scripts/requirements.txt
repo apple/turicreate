@@ -1,4 +1,4 @@
-coremltools==0.8
+coremltools==2.0b1
 scipy==0.19.1
 numpy==1.11.1
 cython==0.24
@@ -16,4 +16,4 @@ scikit-learn==0.17.1
 six==1.10.0
 statsmodels==0.8.0
 wheel==0.29.0
-mxnet==0.11
+mxnet==1.1.0

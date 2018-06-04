@@ -52,9 +52,6 @@ union_fstream::union_fstream(std::string url,
 #ifdef TC_ENABLE_REMOTEFS
   } else if(boost::starts_with(url, "hdfs://")) {
     // HDFS file type
-#ifdef TC_BUILD_CAPI_IOS
-    log_and_throw("hdfs:// URLs not supported.");
-#else
     type = HDFS;
     std::string host, port, path;
     std::tie(host, port, path) = fileio::parse_hdfs_url(url);
@@ -78,9 +75,6 @@ union_fstream::union_fstream(std::string url,
   } else if (boost::starts_with(url, "s3://")) {
     // the S3 file type currently works by download/uploading a local file
     // i.e. the s3_stream simply remaps a local file stream
-#ifdef TC_BUILD_CAPI_IOS
-    log_and_throw_io_failure("Not implemented: compiled without support for s3:// URLs.");
-#else
     type = STD;
     if (is_output_stream) {
       output_stream = std::make_shared<s3_fstream>(url, true);
