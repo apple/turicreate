@@ -113,13 +113,6 @@ class ImageClassifierTest(unittest.TestCase):
         with self.assertRaises(_ToolkitError):
             tc.image_classifier.create(self.sf[:0], target = self.target)
 
-    def test_invalid_num_gpus(self):
-        num_gpus = tc.config.get_num_gpus()
-        tc.config.set_num_gpus(-2)
-        with self.assertRaises(_ToolkitError):
-            tc.image_classifier.create(self.sf, target=self.target)
-        tc.config.set_num_gpus(num_gpus)
-
     def test_predict(self):
         model = self.model
         for output_type in ['class', 'probability_vector']:

@@ -78,16 +78,20 @@ flexible_type encode_image(const flexible_type& data);
 /*                                                                        */
 /**************************************************************************/
 
-/** Reisze an sarray of flex_images with the new size.
+/** Resize an sarray of flex_images with the new size. The sampling method
+ * is specified as the polynomial order of the resampling kernel, with 0
+ * (nearest neighbor) and 1 (bilinear) supported.
  */
 flexible_type resize_image(const flexible_type& image, size_t resized_width,
-    size_t resized_height, size_t resized_channel, bool decode = false);
+    size_t resized_height, size_t resized_channel, bool decode = false,
+    int resample_method = 0);
 
 /** Resize an sarray of flex_image with the new size.
  */
 std::shared_ptr<unity_sarray> resize_image_sarray(
     std::shared_ptr<unity_sarray> image_sarray, size_t resized_width, 
-    size_t resized_height, size_t resized_channels, bool decode = false);
+    size_t resized_height, size_t resized_channels, bool decode = false,
+    int resample_method = 0);
 
 
 

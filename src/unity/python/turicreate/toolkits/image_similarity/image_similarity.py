@@ -498,7 +498,7 @@ class ImageSimilarityModel(_CustomModel):
         )
         batch_input_shape = (1, ) + self.input_image_shape
         _mxnet_converter.convert(mx_feature_extractor, mode=None,
-                                 input_shape={input_name: batch_input_shape},
+                                 input_shape=[(input_name, batch_input_shape)],
                                  builder=builder, verbose=False)
 
         # To add the nearest neighbors model we add calculation of the euclidean 

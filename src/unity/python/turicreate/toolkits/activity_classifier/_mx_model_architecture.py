@@ -111,6 +111,19 @@ def _fit_model_mxnet(model, data_iter, valid_iter, max_iterations, num_gpus, ver
                          optimizer_params={'learning_rate': 1e-3,
                                            'rescale_grad': 1.0})
 
+    if verbose:
+        # Print progress table header
+        column_names = ['Iteration', 'Train Accuracy', 'Train Loss']
+        if valid_iter:
+            column_names += ['Validation Accuracy', 'Validation Loss']
+        column_names.append('Elapsed Time')
+        num_columns = len(column_names)
+        column_width = max(map(lambda x: len(x), column_names)) + 2
+        hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
+        print(hr)
+        print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
+        print(hr)
+
     begin = _time()
     for iteration in range(max_iterations):
         log = {
@@ -128,11 +141,6 @@ def _fit_model_mxnet(model, data_iter, valid_iter, max_iterations, num_gpus, ver
             log['train_acc'] += _mx.nd.sum(acc).asscalar() / train_batches
             model.update()
 
-        if verbose:
-            print('Iteration: %04d' % (iteration + 1))
-            print('\tTrain loss    : {:.9f}'.format(log['train_loss']), end=' ')
-            print('\tTrain accuracy: {:.9f}'.format(log['train_acc']))
-
         # Validation iteration
         if valid_iter is not None:
             valid_num_seq = valid_iter.num_rows
@@ -144,11 +152,23 @@ def _fit_model_mxnet(model, data_iter, valid_iter, max_iterations, num_gpus, ver
             log['valid_loss'] = sum(valid_loss) / valid_num_seq
             log['valid_acc'] = sum(valid_acc) / valid_num_seq
 
-            if verbose:
-                print('\tValid loss    : {:.9f}'.format(log['valid_loss']), end=' ')
-                print('\tValid accuracy: {:.9f}'.format(log['valid_acc']))
+        if verbose:
+            elapsed_time = _time() - begin
+            if valid_iter is None:
+                # print progress row without validation info
+                print("| {cur_iter:<{width}}| {train_acc:<{width}.3f}| {train_loss:<{width}.3f}| {time:<{width}.1f}|".format(
+                          cur_iter = iteration + 1, train_acc = log['train_acc'], train_loss = log['train_loss'],
+                          time = elapsed_time, width = column_width-1))
+            else:
+                # print progress row with validation info
+                print("| {cur_iter:<{width}}| {train_acc:<{width}.3f}| {train_loss:<{width}.3f}"
+                      "| {valid_acc:<{width}.3f}| {valid_loss:<{width}.3f}| {time:<{width}.1f}| ".format(
+                          cur_iter = iteration + 1, train_acc = log['train_acc'], train_loss = log['train_loss'],
+                          valid_acc = log['valid_acc'], valid_loss = log['valid_loss'], time = elapsed_time,
+                          width = column_width-1))
 
     if verbose:
+        print(hr)
         print('Training complete')
         end = _time()
         print('Total Time Spent: %gs' % (end - begin))

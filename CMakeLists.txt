@@ -740,14 +740,22 @@ endfunction()
 
 # Core ML is only present on macOS 10.13 or higher
 if(APPLE)
-  EXEC_PROGRAM(sw_vers ARGS -productVersion OUTPUT_VARIABLE mac_version)
-  if(mac_version GREATER_EQUAL 10.13)
+  EXEC_PROGRAM(xcrun ARGS --show-sdk-version OUTPUT_VARIABLE mac_version RETURN_VALUE _xcrun_ret)
+
+  if(NOT ${_xcrun_ret} EQUAL 0)
+    message(ERROR, "xcrun command failed with return code ${_xcrun_ret}.")
+  endif()
+
+  # Core ML is only present on macOS 10.13 or higher.
+  # Logic reversed to get around what seems to be a CMake bug.
+  if(NOT mac_version VERSION_LESS 10.13)
     add_definitions(-DHAS_CORE_ML)
     set(HAS_CORE_ML TRUE)
   endif()
 
-  if(mac_version GREATER_EQUAL 10.14)
-    # Core ML only supports batch inference on macOS 10.14 or higher
+  # Core ML only supports batch inference on macOS 10.14 or higher
+  # Logic reversed to get around what seems to be a CMake bug.
+  if(NOT mac_version VERSION_LESS 10.14)
     add_definitions(-DHAS_CORE_ML_BATCH_INFERENCE)
 
     # GPU-accelerated training with MPS backend requires macOS 10.14 or higher
