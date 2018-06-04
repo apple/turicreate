@@ -6,65 +6,77 @@
 
 #include <algorithm>
 
-#include <protobuf/stubs/common.h>
-#include <protobuf/stubs/port.h>
-#include <protobuf/stubs/once.h>
-#include <protobuf/io/coded_stream.h>
-#include <protobuf/wire_format_lite_inl.h>
-#include <protobuf/io/zero_copy_stream_impl_lite.h>
+#include <google/protobuf/stubs/common.h>
+#include <google/protobuf/stubs/port.h>
+#include <google/protobuf/stubs/once.h>
+#include <google/protobuf/io/coded_stream.h>
+#include <google/protobuf/wire_format_lite_inl.h>
+#include <google/protobuf/io/zero_copy_stream_impl_lite.h>
 // @@protoc_insertion_point(includes)
 
 namespace CoreML {
 namespace Specification {
+class CategoricalMappingDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<CategoricalMapping> {
+  public:
+  const ::CoreML::Specification::StringToInt64Map* stringtoint64map_;
+  const ::CoreML::Specification::Int64ToStringMap* int64tostringmap_;
+  ::google::protobuf::internal::ArenaStringPtr strvalue_;
+  ::google::protobuf::int64 int64value_;
+} _CategoricalMapping_default_instance_;
 
-void protobuf_ShutdownFile_CategoricalMapping_2eproto() {
-  CategoricalMapping_default_instance_.Shutdown();
+namespace protobuf_CategoricalMapping_2eproto {
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTableField
+    const TableStruct::entries[] = {
+  {0, 0, 0, ::google::protobuf::internal::kInvalidMask, 0, 0},
+};
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::AuxillaryParseTableField
+    const TableStruct::aux[] = {
+  ::google::protobuf::internal::AuxillaryParseTableField(),
+};
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTable const
+    TableStruct::schema[] = {
+  { NULL, NULL, 0, -1, -1, false },
+};
+
+
+void TableStruct::Shutdown() {
+  _CategoricalMapping_default_instance_.Shutdown();
 }
 
-void protobuf_InitDefaults_CategoricalMapping_2eproto_impl() {
+void TableStruct::InitDefaultsImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  ::CoreML::Specification::protobuf_InitDefaults_DataStructures_2eproto();
-  ::google::protobuf::internal::GetEmptyString();
-  CategoricalMapping_default_instance_.DefaultConstruct();
-  CategoricalMapping_default_instance_.get_mutable()->InitAsDefaultInstance();
+  ::google::protobuf::internal::InitProtobufDefaults();
+  ::CoreML::Specification::protobuf_DataStructures_2eproto::InitDefaults();
+  _CategoricalMapping_default_instance_.DefaultConstruct();
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_InitDefaults_CategoricalMapping_2eproto_once_);
-void protobuf_InitDefaults_CategoricalMapping_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_InitDefaults_CategoricalMapping_2eproto_once_,
-                 &protobuf_InitDefaults_CategoricalMapping_2eproto_impl);
+void InitDefaults() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &TableStruct::InitDefaultsImpl);
 }
-void protobuf_AddDesc_CategoricalMapping_2eproto_impl() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  protobuf_InitDefaults_CategoricalMapping_2eproto();
-  ::CoreML::Specification::protobuf_AddDesc_DataStructures_2eproto();
-  ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_CategoricalMapping_2eproto);
+void AddDescriptorsImpl() {
+  InitDefaults();
+  ::CoreML::Specification::protobuf_DataStructures_2eproto::AddDescriptors();
+  ::google::protobuf::internal::OnShutdown(&TableStruct::Shutdown);
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_AddDesc_CategoricalMapping_2eproto_once_);
-void protobuf_AddDesc_CategoricalMapping_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_AddDesc_CategoricalMapping_2eproto_once_,
-                 &protobuf_AddDesc_CategoricalMapping_2eproto_impl);
+void AddDescriptors() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &AddDescriptorsImpl);
 }
 #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 // Force AddDescriptors() to be called at static initialization time.
-struct StaticDescriptorInitializer_CategoricalMapping_2eproto {
-  StaticDescriptorInitializer_CategoricalMapping_2eproto() {
-    protobuf_AddDesc_CategoricalMapping_2eproto();
+struct StaticDescriptorInitializer {
+  StaticDescriptorInitializer() {
+    AddDescriptors();
   }
-} static_descriptor_initializer_CategoricalMapping_2eproto_;
+} static_descriptor_initializer;
 #endif  // GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 
-namespace {
-
-static void MergeFromFail(int line) GOOGLE_ATTRIBUTE_COLD GOOGLE_ATTRIBUTE_NORETURN;
-static void MergeFromFail(int line) {
-  ::google::protobuf::internal::MergeFromFail(__FILE__, line);
-}
-
-}  // namespace
+}  // namespace protobuf_CategoricalMapping_2eproto
 
 
 // ===================================================================
@@ -77,20 +89,46 @@ const int CategoricalMapping::kInt64ValueFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 CategoricalMapping::CategoricalMapping()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_CategoricalMapping_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_CategoricalMapping_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.CategoricalMapping)
 }
-
-void CategoricalMapping::InitAsDefaultInstance() {
-}
-
 CategoricalMapping::CategoricalMapping(const CategoricalMapping& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  clear_has_MappingType();
+  switch (from.MappingType_case()) {
+    case kStringToInt64Map: {
+      mutable_stringtoint64map()->::CoreML::Specification::StringToInt64Map::MergeFrom(from.stringtoint64map());
+      break;
+    }
+    case kInt64ToStringMap: {
+      mutable_int64tostringmap()->::CoreML::Specification::Int64ToStringMap::MergeFrom(from.int64tostringmap());
+      break;
+    }
+    case MAPPINGTYPE_NOT_SET: {
+      break;
+    }
+  }
+  clear_has_ValueOnUnknown();
+  switch (from.ValueOnUnknown_case()) {
+    case kStrValue: {
+      set_strvalue(from.strvalue());
+      break;
+    }
+    case kInt64Value: {
+      set_int64value(from.int64value());
+      break;
+    }
+    case VALUEONUNKNOWN_NOT_SET: {
+      break;
+    }
+  }
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.CategoricalMapping)
 }
 
@@ -120,11 +158,9 @@ void CategoricalMapping::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const CategoricalMapping& CategoricalMapping::default_instance() {
-  protobuf_InitDefaults_CategoricalMapping_2eproto();
+  protobuf_CategoricalMapping_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<CategoricalMapping> CategoricalMapping_default_instance_;
 
 CategoricalMapping* CategoricalMapping::New(::google::protobuf::Arena* arena) const {
   CategoricalMapping* n = new CategoricalMapping;
@@ -183,39 +219,38 @@ bool CategoricalMapping::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.CategoricalMapping)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(16383);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(16383u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional .CoreML.Specification.StringToInt64Map stringToInt64Map = 1;
+      // .CoreML.Specification.StringToInt64Map stringToInt64Map = 1;
       case 1: {
-        if (tag == 10) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_stringtoint64map()));
         } else {
           goto handle_unusual;
         }
-        goto after_int64tostringmap;
         break;
       }
 
-      // optional .CoreML.Specification.Int64ToStringMap int64ToStringMap = 2;
+      // .CoreML.Specification.Int64ToStringMap int64ToStringMap = 2;
       case 2: {
-        if (tag == 18) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_int64tostringmap()));
         } else {
           goto handle_unusual;
         }
-       after_int64tostringmap:
-        if (input->ExpectTag(810)) goto parse_strValue;
         break;
       }
 
-      // optional string strValue = 101;
+      // string strValue = 101;
       case 101: {
-        if (tag == 810) {
-         parse_strValue:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(810u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_strvalue()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
@@ -225,13 +260,13 @@ bool CategoricalMapping::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        goto after_int64value;
         break;
       }
 
-      // optional int64 int64Value = 102;
+      // int64 int64Value = 102;
       case 102: {
-        if (tag == 816) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(816u)) {
           clear_ValueOnUnknown();
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
@@ -240,8 +275,6 @@ bool CategoricalMapping::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-       after_int64value:
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -269,19 +302,22 @@ failure:
 void CategoricalMapping::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.CategoricalMapping)
-  // optional .CoreML.Specification.StringToInt64Map stringToInt64Map = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .CoreML.Specification.StringToInt64Map stringToInt64Map = 1;
   if (has_stringtoint64map()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       1, *MappingType_.stringtoint64map_, output);
   }
 
-  // optional .CoreML.Specification.Int64ToStringMap int64ToStringMap = 2;
+  // .CoreML.Specification.Int64ToStringMap int64ToStringMap = 2;
   if (has_int64tostringmap()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       2, *MappingType_.int64tostringmap_, output);
   }
 
-  // optional string strValue = 101;
+  // string strValue = 101;
   if (has_strvalue()) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->strvalue().data(), this->strvalue().length(),
@@ -291,7 +327,7 @@ void CategoricalMapping::SerializeWithCachedSizes(
       101, this->strvalue(), output);
   }
 
-  // optional int64 int64Value = 102;
+  // int64 int64Value = 102;
   if (has_int64value()) {
     ::google::protobuf::internal::WireFormatLite::WriteInt64(102, this->int64value(), output);
   }
@@ -304,14 +340,14 @@ size_t CategoricalMapping::ByteSizeLong() const {
   size_t total_size = 0;
 
   switch (MappingType_case()) {
-    // optional .CoreML.Specification.StringToInt64Map stringToInt64Map = 1;
+    // .CoreML.Specification.StringToInt64Map stringToInt64Map = 1;
     case kStringToInt64Map: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *MappingType_.stringtoint64map_);
       break;
     }
-    // optional .CoreML.Specification.Int64ToStringMap int64ToStringMap = 2;
+    // .CoreML.Specification.Int64ToStringMap int64ToStringMap = 2;
     case kInt64ToStringMap: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -323,14 +359,14 @@ size_t CategoricalMapping::ByteSizeLong() const {
     }
   }
   switch (ValueOnUnknown_case()) {
-    // optional string strValue = 101;
+    // string strValue = 101;
     case kStrValue: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
           this->strvalue());
       break;
     }
-    // optional int64 int64Value = 102;
+    // int64 int64Value = 102;
     case kInt64Value: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::Int64Size(
@@ -355,15 +391,11 @@ void CategoricalMapping::CheckTypeAndMergeFrom(
 
 void CategoricalMapping::MergeFrom(const CategoricalMapping& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.CategoricalMapping)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void CategoricalMapping::UnsafeMergeFrom(const CategoricalMapping& from) {
-  GOOGLE_DCHECK(&from != this);
   switch (from.MappingType_case()) {
     case kStringToInt64Map: {
       mutable_stringtoint64map()->::CoreML::Specification::StringToInt64Map::MergeFrom(from.stringtoint64map());
@@ -396,11 +428,10 @@ void CategoricalMapping::CopyFrom(const CategoricalMapping& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.CategoricalMapping)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool CategoricalMapping::IsInitialized() const {
-
   return true;
 }
 
@@ -413,7 +444,6 @@ void CategoricalMapping::InternalSwap(CategoricalMapping* other) {
   std::swap(_oneof_case_[0], other->_oneof_case_[0]);
   std::swap(ValueOnUnknown_, other->ValueOnUnknown_);
   std::swap(_oneof_case_[1], other->_oneof_case_[1]);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -424,7 +454,7 @@ void CategoricalMapping::InternalSwap(CategoricalMapping* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // CategoricalMapping
 
-// optional .CoreML.Specification.StringToInt64Map stringToInt64Map = 1;
+// .CoreML.Specification.StringToInt64Map stringToInt64Map = 1;
 bool CategoricalMapping::has_stringtoint64map() const {
   return MappingType_case() == kStringToInt64Map;
 }
@@ -472,7 +502,7 @@ void CategoricalMapping::set_allocated_stringtoint64map(::CoreML::Specification:
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.CategoricalMapping.stringToInt64Map)
 }
 
-// optional .CoreML.Specification.Int64ToStringMap int64ToStringMap = 2;
+// .CoreML.Specification.Int64ToStringMap int64ToStringMap = 2;
 bool CategoricalMapping::has_int64tostringmap() const {
   return MappingType_case() == kInt64ToStringMap;
 }
@@ -520,7 +550,7 @@ void CategoricalMapping::set_allocated_int64tostringmap(::CoreML::Specification:
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.CategoricalMapping.int64ToStringMap)
 }
 
-// optional string strValue = 101;
+// string strValue = 101;
 bool CategoricalMapping::has_strvalue() const {
   return ValueOnUnknown_case() == kStrValue;
 }
@@ -536,7 +566,7 @@ void CategoricalMapping::clear_strvalue() {
 const ::std::string& CategoricalMapping::strvalue() const {
   // @@protoc_insertion_point(field_get:CoreML.Specification.CategoricalMapping.strValue)
   if (has_strvalue()) {
-    return ValueOnUnknown_.strvalue_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return ValueOnUnknown_.strvalue_.GetNoArena();
   }
   return *&::google::protobuf::internal::GetEmptyStringAlreadyInited();
 }
@@ -550,7 +580,21 @@ void CategoricalMapping::set_strvalue(const ::std::string& value) {
   ValueOnUnknown_.strvalue_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.CategoricalMapping.strValue)
 }
+#if LANG_CXX11
+void CategoricalMapping::set_strvalue(::std::string&& value) {
+  // @@protoc_insertion_point(field_set:CoreML.Specification.CategoricalMapping.strValue)
+  if (!has_strvalue()) {
+    clear_ValueOnUnknown();
+    set_has_strvalue();
+    ValueOnUnknown_.strvalue_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  ValueOnUnknown_.strvalue_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.CategoricalMapping.strValue)
+}
+#endif
 void CategoricalMapping::set_strvalue(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
   if (!has_strvalue()) {
     clear_ValueOnUnknown();
     set_has_strvalue();
@@ -601,7 +645,7 @@ void CategoricalMapping::set_allocated_strvalue(::std::string* strvalue) {
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.CategoricalMapping.strValue)
 }
 
-// optional int64 int64Value = 102;
+// int64 int64Value = 102;
 bool CategoricalMapping::has_int64value() const {
   return ValueOnUnknown_case() == kInt64Value;
 }
@@ -647,9 +691,6 @@ CategoricalMapping::MappingTypeCase CategoricalMapping::MappingType_case() const
 }
 CategoricalMapping::ValueOnUnknownCase CategoricalMapping::ValueOnUnknown_case() const {
   return CategoricalMapping::ValueOnUnknownCase(_oneof_case_[1]);
-}
-inline const CategoricalMapping* CategoricalMapping::internal_default_instance() {
-  return &CategoricalMapping_default_instance_.get();
 }
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 

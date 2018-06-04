@@ -6,7 +6,38 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
+
 from . import _mxnet_utils
+
+
+def _create_feature_extractor(model_name):
+    import os
+    from platform import system
+    from ._internal_utils import _mac_ver
+    from ._pre_trained_models import MODELS, _get_model_cache_dir
+    from turicreate.config import get_runtime_config
+    from turicreate import extensions
+
+    # If we don't have Core ML, use an MxNet model.
+    if system() != 'Darwin' or _mac_ver() < (10, 13):
+        ptModel = MODELS[model_name]()
+        return MXFeatureExtractor(ptModel)
+
+    download_path = _get_model_cache_dir()
+    if not os.path.exists(download_path):
+        os.makedirs(download_path)
+
+    if(model_name == 'resnet-50'):
+        # TODO: save converted model on developer.apple.com
+        from turicreate.toolkits import _pre_trained_models
+        mxnetResNet = _pre_trained_models.ResNetImageClassifier()
+        feature_extractor = MXFeatureExtractor(mxnetResNet)
+        mlModel = feature_extractor.get_coreml_model()
+        mlModel.save(download_path + "/Resnet50.mlmodel")
+
+    result = extensions.__dict__["image_deep_feature_extractor"]()
+    result.init_options({'model_name': model_name, 'download_path': download_path})
+    return result
 
 
 class ImageFeatureExtractor(object):
@@ -161,6 +192,6 @@ class MXFeatureExtractor(ImageFeatureExtractor):
 
         preprocessor_args = {'image_input_names': [self.data_layer]}
         return _mxnet_converter.convert(model, mode = 'classifier',
-                input_shape={self.data_layer: (1, ) + self.image_shape},
+                input_shape=[(self.data_layer, (1, ) + self.image_shape)],
                 class_labels = list(map(str, range(self.ptModel.num_classes))),
                 preprocessor_args = preprocessor_args, verbose = False)

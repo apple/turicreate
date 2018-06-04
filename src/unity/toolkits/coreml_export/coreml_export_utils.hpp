@@ -17,7 +17,7 @@ namespace turi {
  * \param[in] model CoreML specification model
  * \param[in] context Dictionary of context passed from python.
  */
-void add_metadata(std::shared_ptr<CoreML::Specification::Model> model_spec,
+void add_metadata(CoreML::Specification::Model& model_spec,
                   const std::map<std::string, flexible_type>& context);
 
 

@@ -116,7 +116,6 @@ void export_xgboost_model(const std::string& filename,
   if(!is_classifier) {
     tree_ensemble.reset(new CoreML::TreeEnsembleRegressor(
         metadata->target_column_name(),
-        "Tree Ensemble",
         "Tree Ensemble"));
 
     num_dimensions = 1;
@@ -137,7 +136,6 @@ void export_xgboost_model(const std::string& filename,
     auto tc = new CoreML::TreeEnsembleClassifier(
         metadata->target_column_name(),
         metadata->target_column_name() + "Probability",
-        "Tree Ensemble",
         "Tree Ensemble");
 
     target_additional_name = metadata->target_column_name() + "Probability";
@@ -249,7 +247,7 @@ void export_xgboost_model(const std::string& filename,
 
   // This output is provided by __vectorized_features__.
   tree_ensemble->addInput("__vectorized_features__",
-                          CoreML::FeatureType::Array({metadata->num_dimensions()}));
+                          CoreML::FeatureType::Array({static_cast<int64_t>(metadata->num_dimensions())}));
   tree_ensemble->addOutput(metadata->target_column_name(), target_output_data_type);
   if(is_classifier)
     tree_ensemble->addOutput(target_additional_name, target_additional_data_type);
@@ -261,7 +259,7 @@ void export_xgboost_model(const std::string& filename,
     pipeline.addOutput(target_additional_name, target_additional_data_type);
 
   // Add metadata
-  add_metadata(pipeline.m_spec, context);
+  add_metadata(pipeline.getProto(), context);
 
   CoreML::Result r = pipeline.save(filename);
   if(!r.good()) {

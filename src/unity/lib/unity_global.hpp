@@ -36,11 +36,12 @@ class unity_global: public unity_global_base {
   };
   // map of soname to registration
   std::map<std::string, so_registration_list> dynamic_loaded_toolkits;
-
-  const char* OLD_CLASS_MAGIC_HEADER = "GLMODELX";
-  const char* CLASS_MAGIC_HEADER = "TCMODEL0";
+  variant_map_type load_model_impl(turi::iarchive& iarc, bool include_data);
 
  public:
+  static constexpr char const * const OLD_CLASS_MAGIC_HEADER = "GLMODELX";
+  static constexpr char const * const CLASS_MAGIC_HEADER = "TCMODEL0";
+
   /**
    * Constructor
    * \param reg Pointer to Toolkit registry. Since Unity Global manaages
@@ -90,7 +91,10 @@ class unity_global: public unity_global_base {
    * Throws an exception if there is an error reading the url or serializing to
    * a proper toolkit class object.
    */
+  // serialized to a file path
   variant_map_type load_model(const std::string& url);
+  // in-memory data (NOTE: only works for models that don't use anything except objects.bin)
+  variant_map_type load_model_from_data(std::istream& data);
 
   /**
    * Save a toolkit class to file.
@@ -101,6 +105,8 @@ class unity_global: public unity_global_base {
    */
   void save_model(std::shared_ptr<model_base> tkclass,
                   const variant_map_type& sidedata, const std::string& url);
+
+  void save_model_to_data(std::shared_ptr<model_base> tkclass, std::ostream& out);
 
   /**
    * Saves a model using an alternative model saving method where a model class

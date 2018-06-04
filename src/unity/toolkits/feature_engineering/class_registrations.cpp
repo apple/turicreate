@@ -11,7 +11,6 @@
 #include <unity/lib/toolkit_function_macros.hpp>
 
 #include <unity/toolkits/feature_engineering/sample_transformer.hpp>
-#include <unity/toolkits/feature_engineering/feature_hasher.hpp>
 #include <unity/toolkits/feature_engineering/dimension_reduction.hpp>
 #include <unity/toolkits/feature_engineering/quadratic_features.hpp>
 #include <unity/toolkits/feature_engineering/one_hot_encoder.hpp>
@@ -34,7 +33,6 @@ namespace feature_engineering {
 
 BEGIN_CLASS_REGISTRATION
 REGISTER_CLASS(sample_transformer)
-REGISTER_CLASS(feature_hasher)
 REGISTER_CLASS(random_projection)
 REGISTER_CLASS(quadratic_features)
 REGISTER_CLASS(one_hot_encoder)

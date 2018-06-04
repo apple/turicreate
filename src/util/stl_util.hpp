@@ -172,13 +172,14 @@ namespace turi {
     out << left;
 
     for(auto it = c.begin();;) {
+      if(it == c.end())
+        break;
+
       out << *it;
 
       ++it;
 
-      if(it == c.end())
-        break;
-      else
+      if(it != c.end())
         out << sep;
     }
     out << right << std::endl;

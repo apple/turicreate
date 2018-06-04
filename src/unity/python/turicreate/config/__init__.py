@@ -125,6 +125,8 @@ def set_num_gpus(num_gpus):
       >> turicreate.config.set_num_gpus(1)
       >> turicreate.image_classifier.create(data, target='label')
     """
+    if(num_gpus < -1):
+        raise ValueError("'num_gpus' must be greater than or equal to -1")
     set_runtime_config('TURI_NUM_GPUS', num_gpus)
 
 

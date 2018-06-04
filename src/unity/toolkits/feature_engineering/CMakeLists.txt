@@ -8,7 +8,6 @@ make_library(unity_feature_engineering
     one_hot_encoder.cpp
     feature_binner.cpp
     sample_transformer.cpp
-    feature_hasher.cpp
     dimension_reduction.cpp
     quadratic_features.cpp
     topk_indexer.cpp

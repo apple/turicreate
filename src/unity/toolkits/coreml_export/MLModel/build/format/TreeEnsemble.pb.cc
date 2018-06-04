@@ -6,91 +6,99 @@
 
 #include <algorithm>
 
-#include <protobuf/stubs/common.h>
-#include <protobuf/stubs/port.h>
-#include <protobuf/stubs/once.h>
-#include <protobuf/io/coded_stream.h>
-#include <protobuf/wire_format_lite_inl.h>
-#include <protobuf/io/zero_copy_stream_impl_lite.h>
+#include <google/protobuf/stubs/common.h>
+#include <google/protobuf/stubs/port.h>
+#include <google/protobuf/stubs/once.h>
+#include <google/protobuf/io/coded_stream.h>
+#include <google/protobuf/wire_format_lite_inl.h>
+#include <google/protobuf/io/zero_copy_stream_impl_lite.h>
 // @@protoc_insertion_point(includes)
 
 namespace CoreML {
 namespace Specification {
+class TreeEnsembleParameters_TreeNode_EvaluationInfoDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<TreeEnsembleParameters_TreeNode_EvaluationInfo> {
+} _TreeEnsembleParameters_TreeNode_EvaluationInfo_default_instance_;
+class TreeEnsembleParameters_TreeNodeDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<TreeEnsembleParameters_TreeNode> {
+} _TreeEnsembleParameters_TreeNode_default_instance_;
+class TreeEnsembleParametersDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<TreeEnsembleParameters> {
+} _TreeEnsembleParameters_default_instance_;
+class TreeEnsembleClassifierDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<TreeEnsembleClassifier> {
+  public:
+  const ::CoreML::Specification::StringVector* stringclasslabels_;
+  const ::CoreML::Specification::Int64Vector* int64classlabels_;
+} _TreeEnsembleClassifier_default_instance_;
+class TreeEnsembleRegressorDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<TreeEnsembleRegressor> {
+} _TreeEnsembleRegressor_default_instance_;
 
-void protobuf_ShutdownFile_TreeEnsemble_2eproto() {
-  TreeEnsembleParameters_default_instance_.Shutdown();
-  TreeEnsembleParameters_TreeNode_default_instance_.Shutdown();
-  TreeEnsembleParameters_TreeNode_EvaluationInfo_default_instance_.Shutdown();
-  TreeEnsembleClassifier_default_instance_.Shutdown();
-  TreeEnsembleRegressor_default_instance_.Shutdown();
+namespace protobuf_TreeEnsemble_2eproto {
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTableField
+    const TableStruct::entries[] = {
+  {0, 0, 0, ::google::protobuf::internal::kInvalidMask, 0, 0},
+};
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::AuxillaryParseTableField
+    const TableStruct::aux[] = {
+  ::google::protobuf::internal::AuxillaryParseTableField(),
+};
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTable const
+    TableStruct::schema[] = {
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+};
+
+
+void TableStruct::Shutdown() {
+  _TreeEnsembleParameters_TreeNode_EvaluationInfo_default_instance_.Shutdown();
+  _TreeEnsembleParameters_TreeNode_default_instance_.Shutdown();
+  _TreeEnsembleParameters_default_instance_.Shutdown();
+  _TreeEnsembleClassifier_default_instance_.Shutdown();
+  _TreeEnsembleRegressor_default_instance_.Shutdown();
 }
 
-void protobuf_InitDefaults_TreeEnsemble_2eproto_impl() {
+void TableStruct::InitDefaultsImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  ::CoreML::Specification::protobuf_InitDefaults_DataStructures_2eproto();
-  TreeEnsembleParameters_default_instance_.DefaultConstruct();
-  TreeEnsembleParameters_TreeNode_default_instance_.DefaultConstruct();
-  TreeEnsembleParameters_TreeNode_EvaluationInfo_default_instance_.DefaultConstruct();
-  TreeEnsembleClassifier_default_instance_.DefaultConstruct();
-  TreeEnsembleRegressor_default_instance_.DefaultConstruct();
-  TreeEnsembleParameters_default_instance_.get_mutable()->InitAsDefaultInstance();
-  TreeEnsembleParameters_TreeNode_default_instance_.get_mutable()->InitAsDefaultInstance();
-  TreeEnsembleParameters_TreeNode_EvaluationInfo_default_instance_.get_mutable()->InitAsDefaultInstance();
-  TreeEnsembleClassifier_default_instance_.get_mutable()->InitAsDefaultInstance();
-  TreeEnsembleRegressor_default_instance_.get_mutable()->InitAsDefaultInstance();
+  ::google::protobuf::internal::InitProtobufDefaults();
+  ::CoreML::Specification::protobuf_DataStructures_2eproto::InitDefaults();
+  _TreeEnsembleParameters_TreeNode_EvaluationInfo_default_instance_.DefaultConstruct();
+  _TreeEnsembleParameters_TreeNode_default_instance_.DefaultConstruct();
+  _TreeEnsembleParameters_default_instance_.DefaultConstruct();
+  _TreeEnsembleClassifier_default_instance_.DefaultConstruct();
+  _TreeEnsembleRegressor_default_instance_.DefaultConstruct();
+  _TreeEnsembleClassifier_default_instance_.get_mutable()->treeensemble_ = const_cast< ::CoreML::Specification::TreeEnsembleParameters*>(
+      ::CoreML::Specification::TreeEnsembleParameters::internal_default_instance());
+  _TreeEnsembleRegressor_default_instance_.get_mutable()->treeensemble_ = const_cast< ::CoreML::Specification::TreeEnsembleParameters*>(
+      ::CoreML::Specification::TreeEnsembleParameters::internal_default_instance());
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_InitDefaults_TreeEnsemble_2eproto_once_);
-void protobuf_InitDefaults_TreeEnsemble_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_InitDefaults_TreeEnsemble_2eproto_once_,
-                 &protobuf_InitDefaults_TreeEnsemble_2eproto_impl);
+void InitDefaults() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &TableStruct::InitDefaultsImpl);
 }
-void protobuf_AddDesc_TreeEnsemble_2eproto_impl() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  protobuf_InitDefaults_TreeEnsemble_2eproto();
-  ::CoreML::Specification::protobuf_AddDesc_DataStructures_2eproto();
-  ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_TreeEnsemble_2eproto);
+void AddDescriptorsImpl() {
+  InitDefaults();
+  ::CoreML::Specification::protobuf_DataStructures_2eproto::AddDescriptors();
+  ::google::protobuf::internal::OnShutdown(&TableStruct::Shutdown);
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_AddDesc_TreeEnsemble_2eproto_once_);
-void protobuf_AddDesc_TreeEnsemble_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_AddDesc_TreeEnsemble_2eproto_once_,
-                 &protobuf_AddDesc_TreeEnsemble_2eproto_impl);
+void AddDescriptors() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &AddDescriptorsImpl);
 }
 #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 // Force AddDescriptors() to be called at static initialization time.
-struct StaticDescriptorInitializer_TreeEnsemble_2eproto {
-  StaticDescriptorInitializer_TreeEnsemble_2eproto() {
-    protobuf_AddDesc_TreeEnsemble_2eproto();
+struct StaticDescriptorInitializer {
+  StaticDescriptorInitializer() {
+    AddDescriptors();
   }
-} static_descriptor_initializer_TreeEnsemble_2eproto_;
+} static_descriptor_initializer;
 #endif  // GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
-bool TreeEnsemblePostEvaluationTransform_IsValid(int value) {
-  switch (value) {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-      return true;
-    default:
-      return false;
-  }
-}
 
-
-namespace {
-
-static void MergeFromFail(int line) GOOGLE_ATTRIBUTE_COLD GOOGLE_ATTRIBUTE_NORETURN;
-static void MergeFromFail(int line) {
-  ::google::protobuf::internal::MergeFromFail(__FILE__, line);
-}
-
-}  // namespace
-
-
-// ===================================================================
+}  // namespace protobuf_TreeEnsemble_2eproto
 
 bool TreeEnsembleParameters_TreeNode_TreeNodeBehavior_IsValid(int value) {
   switch (value) {
@@ -119,26 +127,42 @@ const TreeEnsembleParameters_TreeNode_TreeNodeBehavior TreeEnsembleParameters_Tr
 const TreeEnsembleParameters_TreeNode_TreeNodeBehavior TreeEnsembleParameters_TreeNode::TreeNodeBehavior_MAX;
 const int TreeEnsembleParameters_TreeNode::TreeNodeBehavior_ARRAYSIZE;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+bool TreeEnsemblePostEvaluationTransform_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+      return true;
+    default:
+      return false;
+  }
+}
+
+
+// ===================================================================
+
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int TreeEnsembleParameters_TreeNode_EvaluationInfo::kEvaluationIndexFieldNumber;
 const int TreeEnsembleParameters_TreeNode_EvaluationInfo::kEvaluationValueFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 TreeEnsembleParameters_TreeNode_EvaluationInfo::TreeEnsembleParameters_TreeNode_EvaluationInfo()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_TreeEnsemble_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_TreeEnsemble_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.TreeEnsembleParameters.TreeNode.EvaluationInfo)
 }
-
-void TreeEnsembleParameters_TreeNode_EvaluationInfo::InitAsDefaultInstance() {
-}
-
 TreeEnsembleParameters_TreeNode_EvaluationInfo::TreeEnsembleParameters_TreeNode_EvaluationInfo(const TreeEnsembleParameters_TreeNode_EvaluationInfo& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::memcpy(&evaluationindex_, &from.evaluationindex_,
+    reinterpret_cast<char*>(&evaluationvalue_) -
+    reinterpret_cast<char*>(&evaluationindex_) + sizeof(evaluationvalue_));
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.TreeEnsembleParameters.TreeNode.EvaluationInfo)
 }
 
@@ -162,11 +186,9 @@ void TreeEnsembleParameters_TreeNode_EvaluationInfo::SetCachedSize(int size) con
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const TreeEnsembleParameters_TreeNode_EvaluationInfo& TreeEnsembleParameters_TreeNode_EvaluationInfo::default_instance() {
-  protobuf_InitDefaults_TreeEnsemble_2eproto();
+  protobuf_TreeEnsemble_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<TreeEnsembleParameters_TreeNode_EvaluationInfo> TreeEnsembleParameters_TreeNode_EvaluationInfo_default_instance_;
 
 TreeEnsembleParameters_TreeNode_EvaluationInfo* TreeEnsembleParameters_TreeNode_EvaluationInfo::New(::google::protobuf::Arena* arena) const {
   TreeEnsembleParameters_TreeNode_EvaluationInfo* n = new TreeEnsembleParameters_TreeNode_EvaluationInfo;
@@ -178,27 +200,8 @@ TreeEnsembleParameters_TreeNode_EvaluationInfo* TreeEnsembleParameters_TreeNode_
 
 void TreeEnsembleParameters_TreeNode_EvaluationInfo::Clear() {
 // @@protoc_insertion_point(message_clear_start:CoreML.Specification.TreeEnsembleParameters.TreeNode.EvaluationInfo)
-#if defined(__clang__)
-#define ZR_HELPER_(f) \
-  _Pragma("clang diagnostic push") \
-  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
-  __builtin_offsetof(TreeEnsembleParameters_TreeNode_EvaluationInfo, f) \
-  _Pragma("clang diagnostic pop")
-#else
-#define ZR_HELPER_(f) reinterpret_cast<char*>(\
-  &reinterpret_cast<TreeEnsembleParameters_TreeNode_EvaluationInfo*>(16)->f)
-#endif
-
-#define ZR_(first, last) do {\
-  ::memset(&(first), 0,\
-           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
-} while (0)
-
-  ZR_(evaluationindex_, evaluationvalue_);
-
-#undef ZR_HELPER_
-#undef ZR_
-
+  ::memset(&evaluationindex_, 0, reinterpret_cast<char*>(&evaluationvalue_) -
+    reinterpret_cast<char*>(&evaluationindex_) + sizeof(evaluationvalue_));
 }
 
 bool TreeEnsembleParameters_TreeNode_EvaluationInfo::MergePartialFromCodedStream(
@@ -207,13 +210,14 @@ bool TreeEnsembleParameters_TreeNode_EvaluationInfo::MergePartialFromCodedStream
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.TreeEnsembleParameters.TreeNode.EvaluationInfo)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional uint64 evaluationIndex = 1;
+      // uint64 evaluationIndex = 1;
       case 1: {
-        if (tag == 8) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(8u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
@@ -221,14 +225,13 @@ bool TreeEnsembleParameters_TreeNode_EvaluationInfo::MergePartialFromCodedStream
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(17)) goto parse_evaluationValue;
         break;
       }
 
-      // optional double evaluationValue = 2;
+      // double evaluationValue = 2;
       case 2: {
-        if (tag == 17) {
-         parse_evaluationValue:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(17u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
@@ -236,7 +239,6 @@ bool TreeEnsembleParameters_TreeNode_EvaluationInfo::MergePartialFromCodedStream
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -264,12 +266,15 @@ failure:
 void TreeEnsembleParameters_TreeNode_EvaluationInfo::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.TreeEnsembleParameters.TreeNode.EvaluationInfo)
-  // optional uint64 evaluationIndex = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint64 evaluationIndex = 1;
   if (this->evaluationindex() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt64(1, this->evaluationindex(), output);
   }
 
-  // optional double evaluationValue = 2;
+  // double evaluationValue = 2;
   if (this->evaluationvalue() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteDouble(2, this->evaluationvalue(), output);
   }
@@ -281,14 +286,14 @@ size_t TreeEnsembleParameters_TreeNode_EvaluationInfo::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.TreeEnsembleParameters.TreeNode.EvaluationInfo)
   size_t total_size = 0;
 
-  // optional uint64 evaluationIndex = 1;
+  // uint64 evaluationIndex = 1;
   if (this->evaluationindex() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::UInt64Size(
         this->evaluationindex());
   }
 
-  // optional double evaluationValue = 2;
+  // double evaluationValue = 2;
   if (this->evaluationvalue() != 0) {
     total_size += 1 + 8;
   }
@@ -307,15 +312,11 @@ void TreeEnsembleParameters_TreeNode_EvaluationInfo::CheckTypeAndMergeFrom(
 
 void TreeEnsembleParameters_TreeNode_EvaluationInfo::MergeFrom(const TreeEnsembleParameters_TreeNode_EvaluationInfo& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.TreeEnsembleParameters.TreeNode.EvaluationInfo)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void TreeEnsembleParameters_TreeNode_EvaluationInfo::UnsafeMergeFrom(const TreeEnsembleParameters_TreeNode_EvaluationInfo& from) {
-  GOOGLE_DCHECK(&from != this);
   if (from.evaluationindex() != 0) {
     set_evaluationindex(from.evaluationindex());
   }
@@ -328,11 +329,10 @@ void TreeEnsembleParameters_TreeNode_EvaluationInfo::CopyFrom(const TreeEnsemble
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.TreeEnsembleParameters.TreeNode.EvaluationInfo)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool TreeEnsembleParameters_TreeNode_EvaluationInfo::IsInitialized() const {
-
   return true;
 }
 
@@ -343,7 +343,6 @@ void TreeEnsembleParameters_TreeNode_EvaluationInfo::Swap(TreeEnsembleParameters
 void TreeEnsembleParameters_TreeNode_EvaluationInfo::InternalSwap(TreeEnsembleParameters_TreeNode_EvaluationInfo* other) {
   std::swap(evaluationindex_, other->evaluationindex_);
   std::swap(evaluationvalue_, other->evaluationvalue_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -351,8 +350,40 @@ void TreeEnsembleParameters_TreeNode_EvaluationInfo::InternalSwap(TreeEnsemblePa
   return "CoreML.Specification.TreeEnsembleParameters.TreeNode.EvaluationInfo";
 }
 
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// TreeEnsembleParameters_TreeNode_EvaluationInfo
 
-// -------------------------------------------------------------------
+// uint64 evaluationIndex = 1;
+void TreeEnsembleParameters_TreeNode_EvaluationInfo::clear_evaluationindex() {
+  evaluationindex_ = GOOGLE_ULONGLONG(0);
+}
+::google::protobuf::uint64 TreeEnsembleParameters_TreeNode_EvaluationInfo::evaluationindex() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.TreeEnsembleParameters.TreeNode.EvaluationInfo.evaluationIndex)
+  return evaluationindex_;
+}
+void TreeEnsembleParameters_TreeNode_EvaluationInfo::set_evaluationindex(::google::protobuf::uint64 value) {
+  
+  evaluationindex_ = value;
+  // @@protoc_insertion_point(field_set:CoreML.Specification.TreeEnsembleParameters.TreeNode.EvaluationInfo.evaluationIndex)
+}
+
+// double evaluationValue = 2;
+void TreeEnsembleParameters_TreeNode_EvaluationInfo::clear_evaluationvalue() {
+  evaluationvalue_ = 0;
+}
+double TreeEnsembleParameters_TreeNode_EvaluationInfo::evaluationvalue() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.TreeEnsembleParameters.TreeNode.EvaluationInfo.evaluationValue)
+  return evaluationvalue_;
+}
+void TreeEnsembleParameters_TreeNode_EvaluationInfo::set_evaluationvalue(double value) {
+  
+  evaluationvalue_ = value;
+  // @@protoc_insertion_point(field_set:CoreML.Specification.TreeEnsembleParameters.TreeNode.EvaluationInfo.evaluationValue)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int TreeEnsembleParameters_TreeNode::kTreeIdFieldNumber;
@@ -368,20 +399,22 @@ const int TreeEnsembleParameters_TreeNode::kRelativeHitRateFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 TreeEnsembleParameters_TreeNode::TreeEnsembleParameters_TreeNode()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_TreeEnsemble_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_TreeEnsemble_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.TreeEnsembleParameters.TreeNode)
 }
-
-void TreeEnsembleParameters_TreeNode::InitAsDefaultInstance() {
-}
-
 TreeEnsembleParameters_TreeNode::TreeEnsembleParameters_TreeNode(const TreeEnsembleParameters_TreeNode& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      evaluationinfo_(from.evaluationinfo_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::memcpy(&treeid_, &from.treeid_,
+    reinterpret_cast<char*>(&relativehitrate_) -
+    reinterpret_cast<char*>(&treeid_) + sizeof(relativehitrate_));
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.TreeEnsembleParameters.TreeNode)
 }
 
@@ -405,11 +438,9 @@ void TreeEnsembleParameters_TreeNode::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const TreeEnsembleParameters_TreeNode& TreeEnsembleParameters_TreeNode::default_instance() {
-  protobuf_InitDefaults_TreeEnsemble_2eproto();
+  protobuf_TreeEnsemble_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<TreeEnsembleParameters_TreeNode> TreeEnsembleParameters_TreeNode_default_instance_;
 
 TreeEnsembleParameters_TreeNode* TreeEnsembleParameters_TreeNode::New(::google::protobuf::Arena* arena) const {
   TreeEnsembleParameters_TreeNode* n = new TreeEnsembleParameters_TreeNode;
@@ -421,29 +452,9 @@ TreeEnsembleParameters_TreeNode* TreeEnsembleParameters_TreeNode::New(::google::
 
 void TreeEnsembleParameters_TreeNode::Clear() {
 // @@protoc_insertion_point(message_clear_start:CoreML.Specification.TreeEnsembleParameters.TreeNode)
-#if defined(__clang__)
-#define ZR_HELPER_(f) \
-  _Pragma("clang diagnostic push") \
-  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
-  __builtin_offsetof(TreeEnsembleParameters_TreeNode, f) \
-  _Pragma("clang diagnostic pop")
-#else
-#define ZR_HELPER_(f) reinterpret_cast<char*>(\
-  &reinterpret_cast<TreeEnsembleParameters_TreeNode*>(16)->f)
-#endif
-
-#define ZR_(first, last) do {\
-  ::memset(&(first), 0,\
-           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
-} while (0)
-
-  ZR_(treeid_, falsechildnodeid_);
-  relativehitrate_ = 0;
-
-#undef ZR_HELPER_
-#undef ZR_
-
   evaluationinfo_.Clear();
+  ::memset(&treeid_, 0, reinterpret_cast<char*>(&relativehitrate_) -
+    reinterpret_cast<char*>(&treeid_) + sizeof(relativehitrate_));
 }
 
 bool TreeEnsembleParameters_TreeNode::MergePartialFromCodedStream(
@@ -452,13 +463,14 @@ bool TreeEnsembleParameters_TreeNode::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.TreeEnsembleParameters.TreeNode)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(16383);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(16383u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional uint64 treeId = 1;
+      // uint64 treeId = 1;
       case 1: {
-        if (tag == 8) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(8u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
@@ -466,14 +478,13 @@ bool TreeEnsembleParameters_TreeNode::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(16)) goto parse_nodeId;
         break;
       }
 
-      // optional uint64 nodeId = 2;
+      // uint64 nodeId = 2;
       case 2: {
-        if (tag == 16) {
-         parse_nodeId:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(16u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
@@ -481,14 +492,13 @@ bool TreeEnsembleParameters_TreeNode::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(24)) goto parse_nodeBehavior;
         break;
       }
 
-      // optional .CoreML.Specification.TreeEnsembleParameters.TreeNode.TreeNodeBehavior nodeBehavior = 3;
+      // .CoreML.Specification.TreeEnsembleParameters.TreeNode.TreeNodeBehavior nodeBehavior = 3;
       case 3: {
-        if (tag == 24) {
-         parse_nodeBehavior:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(24u)) {
           int value;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
@@ -497,14 +507,13 @@ bool TreeEnsembleParameters_TreeNode::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(80)) goto parse_branchFeatureIndex;
         break;
       }
 
-      // optional uint64 branchFeatureIndex = 10;
+      // uint64 branchFeatureIndex = 10;
       case 10: {
-        if (tag == 80) {
-         parse_branchFeatureIndex:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(80u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
@@ -512,14 +521,13 @@ bool TreeEnsembleParameters_TreeNode::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(89)) goto parse_branchFeatureValue;
         break;
       }
 
-      // optional double branchFeatureValue = 11;
+      // double branchFeatureValue = 11;
       case 11: {
-        if (tag == 89) {
-         parse_branchFeatureValue:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(89u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
@@ -527,14 +535,13 @@ bool TreeEnsembleParameters_TreeNode::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(96)) goto parse_trueChildNodeId;
         break;
       }
 
-      // optional uint64 trueChildNodeId = 12;
+      // uint64 trueChildNodeId = 12;
       case 12: {
-        if (tag == 96) {
-         parse_trueChildNodeId:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(96u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
@@ -542,14 +549,13 @@ bool TreeEnsembleParameters_TreeNode::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(104)) goto parse_falseChildNodeId;
         break;
       }
 
-      // optional uint64 falseChildNodeId = 13;
+      // uint64 falseChildNodeId = 13;
       case 13: {
-        if (tag == 104) {
-         parse_falseChildNodeId:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(104u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
@@ -557,14 +563,13 @@ bool TreeEnsembleParameters_TreeNode::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(112)) goto parse_missingValueTracksTrueChild;
         break;
       }
 
-      // optional bool missingValueTracksTrueChild = 14;
+      // bool missingValueTracksTrueChild = 14;
       case 14: {
-        if (tag == 112) {
-         parse_missingValueTracksTrueChild:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(112u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
@@ -572,31 +577,25 @@ bool TreeEnsembleParameters_TreeNode::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(162)) goto parse_evaluationInfo;
         break;
       }
 
       // repeated .CoreML.Specification.TreeEnsembleParameters.TreeNode.EvaluationInfo evaluationInfo = 20;
       case 20: {
-        if (tag == 162) {
-         parse_evaluationInfo:
-          DO_(input->IncrementRecursionDepth());
-         parse_loop_evaluationInfo:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(162u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                 input, add_evaluationinfo()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(162)) goto parse_loop_evaluationInfo;
-        input->UnsafeDecrementRecursionDepth();
-        if (input->ExpectTag(241)) goto parse_relativeHitRate;
         break;
       }
 
-      // optional double relativeHitRate = 30;
+      // double relativeHitRate = 30;
       case 30: {
-        if (tag == 241) {
-         parse_relativeHitRate:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(241u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
@@ -604,7 +603,6 @@ bool TreeEnsembleParameters_TreeNode::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -632,43 +630,46 @@ failure:
 void TreeEnsembleParameters_TreeNode::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.TreeEnsembleParameters.TreeNode)
-  // optional uint64 treeId = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint64 treeId = 1;
   if (this->treeid() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt64(1, this->treeid(), output);
   }
 
-  // optional uint64 nodeId = 2;
+  // uint64 nodeId = 2;
   if (this->nodeid() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt64(2, this->nodeid(), output);
   }
 
-  // optional .CoreML.Specification.TreeEnsembleParameters.TreeNode.TreeNodeBehavior nodeBehavior = 3;
+  // .CoreML.Specification.TreeEnsembleParameters.TreeNode.TreeNodeBehavior nodeBehavior = 3;
   if (this->nodebehavior() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       3, this->nodebehavior(), output);
   }
 
-  // optional uint64 branchFeatureIndex = 10;
+  // uint64 branchFeatureIndex = 10;
   if (this->branchfeatureindex() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt64(10, this->branchfeatureindex(), output);
   }
 
-  // optional double branchFeatureValue = 11;
+  // double branchFeatureValue = 11;
   if (this->branchfeaturevalue() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteDouble(11, this->branchfeaturevalue(), output);
   }
 
-  // optional uint64 trueChildNodeId = 12;
+  // uint64 trueChildNodeId = 12;
   if (this->truechildnodeid() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt64(12, this->truechildnodeid(), output);
   }
 
-  // optional uint64 falseChildNodeId = 13;
+  // uint64 falseChildNodeId = 13;
   if (this->falsechildnodeid() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt64(13, this->falsechildnodeid(), output);
   }
 
-  // optional bool missingValueTracksTrueChild = 14;
+  // bool missingValueTracksTrueChild = 14;
   if (this->missingvaluetrackstruechild() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(14, this->missingvaluetrackstruechild(), output);
   }
@@ -679,7 +680,7 @@ void TreeEnsembleParameters_TreeNode::SerializeWithCachedSizes(
       20, this->evaluationinfo(i), output);
   }
 
-  // optional double relativeHitRate = 30;
+  // double relativeHitRate = 30;
   if (this->relativehitrate() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteDouble(30, this->relativehitrate(), output);
   }
@@ -691,62 +692,6 @@ size_t TreeEnsembleParameters_TreeNode::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.TreeEnsembleParameters.TreeNode)
   size_t total_size = 0;
 
-  // optional uint64 treeId = 1;
-  if (this->treeid() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::UInt64Size(
-        this->treeid());
-  }
-
-  // optional uint64 nodeId = 2;
-  if (this->nodeid() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::UInt64Size(
-        this->nodeid());
-  }
-
-  // optional .CoreML.Specification.TreeEnsembleParameters.TreeNode.TreeNodeBehavior nodeBehavior = 3;
-  if (this->nodebehavior() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->nodebehavior());
-  }
-
-  // optional uint64 branchFeatureIndex = 10;
-  if (this->branchfeatureindex() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::UInt64Size(
-        this->branchfeatureindex());
-  }
-
-  // optional double branchFeatureValue = 11;
-  if (this->branchfeaturevalue() != 0) {
-    total_size += 1 + 8;
-  }
-
-  // optional uint64 trueChildNodeId = 12;
-  if (this->truechildnodeid() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::UInt64Size(
-        this->truechildnodeid());
-  }
-
-  // optional uint64 falseChildNodeId = 13;
-  if (this->falsechildnodeid() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::UInt64Size(
-        this->falsechildnodeid());
-  }
-
-  // optional bool missingValueTracksTrueChild = 14;
-  if (this->missingvaluetrackstruechild() != 0) {
-    total_size += 1 + 1;
-  }
-
-  // optional double relativeHitRate = 30;
-  if (this->relativehitrate() != 0) {
-    total_size += 2 + 8;
-  }
-
   // repeated .CoreML.Specification.TreeEnsembleParameters.TreeNode.EvaluationInfo evaluationInfo = 20;
   {
     unsigned int count = this->evaluationinfo_size();
@@ -756,6 +701,62 @@ size_t TreeEnsembleParameters_TreeNode::ByteSizeLong() const {
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           this->evaluationinfo(i));
     }
+  }
+
+  // uint64 treeId = 1;
+  if (this->treeid() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt64Size(
+        this->treeid());
+  }
+
+  // uint64 nodeId = 2;
+  if (this->nodeid() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt64Size(
+        this->nodeid());
+  }
+
+  // .CoreML.Specification.TreeEnsembleParameters.TreeNode.TreeNodeBehavior nodeBehavior = 3;
+  if (this->nodebehavior() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->nodebehavior());
+  }
+
+  // bool missingValueTracksTrueChild = 14;
+  if (this->missingvaluetrackstruechild() != 0) {
+    total_size += 1 + 1;
+  }
+
+  // uint64 branchFeatureIndex = 10;
+  if (this->branchfeatureindex() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt64Size(
+        this->branchfeatureindex());
+  }
+
+  // double branchFeatureValue = 11;
+  if (this->branchfeaturevalue() != 0) {
+    total_size += 1 + 8;
+  }
+
+  // uint64 trueChildNodeId = 12;
+  if (this->truechildnodeid() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt64Size(
+        this->truechildnodeid());
+  }
+
+  // uint64 falseChildNodeId = 13;
+  if (this->falsechildnodeid() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt64Size(
+        this->falsechildnodeid());
+  }
+
+  // double relativeHitRate = 30;
+  if (this->relativehitrate() != 0) {
+    total_size += 2 + 8;
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -772,15 +773,11 @@ void TreeEnsembleParameters_TreeNode::CheckTypeAndMergeFrom(
 
 void TreeEnsembleParameters_TreeNode::MergeFrom(const TreeEnsembleParameters_TreeNode& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.TreeEnsembleParameters.TreeNode)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void TreeEnsembleParameters_TreeNode::UnsafeMergeFrom(const TreeEnsembleParameters_TreeNode& from) {
-  GOOGLE_DCHECK(&from != this);
   evaluationinfo_.MergeFrom(from.evaluationinfo_);
   if (from.treeid() != 0) {
     set_treeid(from.treeid());
@@ -790,6 +787,9 @@ void TreeEnsembleParameters_TreeNode::UnsafeMergeFrom(const TreeEnsembleParamete
   }
   if (from.nodebehavior() != 0) {
     set_nodebehavior(from.nodebehavior());
+  }
+  if (from.missingvaluetrackstruechild() != 0) {
+    set_missingvaluetrackstruechild(from.missingvaluetrackstruechild());
   }
   if (from.branchfeatureindex() != 0) {
     set_branchfeatureindex(from.branchfeatureindex());
@@ -803,9 +803,6 @@ void TreeEnsembleParameters_TreeNode::UnsafeMergeFrom(const TreeEnsembleParamete
   if (from.falsechildnodeid() != 0) {
     set_falsechildnodeid(from.falsechildnodeid());
   }
-  if (from.missingvaluetrackstruechild() != 0) {
-    set_missingvaluetrackstruechild(from.missingvaluetrackstruechild());
-  }
   if (from.relativehitrate() != 0) {
     set_relativehitrate(from.relativehitrate());
   }
@@ -815,11 +812,10 @@ void TreeEnsembleParameters_TreeNode::CopyFrom(const TreeEnsembleParameters_Tree
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.TreeEnsembleParameters.TreeNode)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool TreeEnsembleParameters_TreeNode::IsInitialized() const {
-
   return true;
 }
 
@@ -828,17 +824,16 @@ void TreeEnsembleParameters_TreeNode::Swap(TreeEnsembleParameters_TreeNode* othe
   InternalSwap(other);
 }
 void TreeEnsembleParameters_TreeNode::InternalSwap(TreeEnsembleParameters_TreeNode* other) {
+  evaluationinfo_.InternalSwap(&other->evaluationinfo_);
   std::swap(treeid_, other->treeid_);
   std::swap(nodeid_, other->nodeid_);
   std::swap(nodebehavior_, other->nodebehavior_);
+  std::swap(missingvaluetrackstruechild_, other->missingvaluetrackstruechild_);
   std::swap(branchfeatureindex_, other->branchfeatureindex_);
   std::swap(branchfeaturevalue_, other->branchfeaturevalue_);
   std::swap(truechildnodeid_, other->truechildnodeid_);
   std::swap(falsechildnodeid_, other->falsechildnodeid_);
-  std::swap(missingvaluetrackstruechild_, other->missingvaluetrackstruechild_);
-  evaluationinfo_.UnsafeArenaSwap(&other->evaluationinfo_);
   std::swap(relativehitrate_, other->relativehitrate_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -846,315 +841,10 @@ void TreeEnsembleParameters_TreeNode::InternalSwap(TreeEnsembleParameters_TreeNo
   return "CoreML.Specification.TreeEnsembleParameters.TreeNode";
 }
 
-
-// -------------------------------------------------------------------
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int TreeEnsembleParameters::kNodesFieldNumber;
-const int TreeEnsembleParameters::kNumPredictionDimensionsFieldNumber;
-const int TreeEnsembleParameters::kBasePredictionValueFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-TreeEnsembleParameters::TreeEnsembleParameters()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_TreeEnsemble_2eproto();
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:CoreML.Specification.TreeEnsembleParameters)
-}
-
-void TreeEnsembleParameters::InitAsDefaultInstance() {
-}
-
-TreeEnsembleParameters::TreeEnsembleParameters(const TreeEnsembleParameters& from)
-  : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:CoreML.Specification.TreeEnsembleParameters)
-}
-
-void TreeEnsembleParameters::SharedCtor() {
-  numpredictiondimensions_ = GOOGLE_ULONGLONG(0);
-  _cached_size_ = 0;
-}
-
-TreeEnsembleParameters::~TreeEnsembleParameters() {
-  // @@protoc_insertion_point(destructor:CoreML.Specification.TreeEnsembleParameters)
-  SharedDtor();
-}
-
-void TreeEnsembleParameters::SharedDtor() {
-}
-
-void TreeEnsembleParameters::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const TreeEnsembleParameters& TreeEnsembleParameters::default_instance() {
-  protobuf_InitDefaults_TreeEnsemble_2eproto();
-  return *internal_default_instance();
-}
-
-::google::protobuf::internal::ExplicitlyConstructed<TreeEnsembleParameters> TreeEnsembleParameters_default_instance_;
-
-TreeEnsembleParameters* TreeEnsembleParameters::New(::google::protobuf::Arena* arena) const {
-  TreeEnsembleParameters* n = new TreeEnsembleParameters;
-  if (arena != NULL) {
-    arena->Own(n);
-  }
-  return n;
-}
-
-void TreeEnsembleParameters::Clear() {
-// @@protoc_insertion_point(message_clear_start:CoreML.Specification.TreeEnsembleParameters)
-  numpredictiondimensions_ = GOOGLE_ULONGLONG(0);
-  nodes_.Clear();
-  basepredictionvalue_.Clear();
-}
-
-bool TreeEnsembleParameters::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:CoreML.Specification.TreeEnsembleParameters)
-  for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated .CoreML.Specification.TreeEnsembleParameters.TreeNode nodes = 1;
-      case 1: {
-        if (tag == 10) {
-          DO_(input->IncrementRecursionDepth());
-         parse_loop_nodes:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
-                input, add_nodes()));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(10)) goto parse_loop_nodes;
-        input->UnsafeDecrementRecursionDepth();
-        if (input->ExpectTag(16)) goto parse_numPredictionDimensions;
-        break;
-      }
-
-      // optional uint64 numPredictionDimensions = 2;
-      case 2: {
-        if (tag == 16) {
-         parse_numPredictionDimensions:
-
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
-                 input, &numpredictiondimensions_)));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(26)) goto parse_basePredictionValue;
-        break;
-      }
-
-      // repeated double basePredictionValue = 3;
-      case 3: {
-        if (tag == 26) {
-         parse_basePredictionValue:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
-                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 input, this->mutable_basepredictionvalue())));
-        } else if (tag == 25) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
-                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 1, 26, input, this->mutable_basepredictionvalue())));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectAtEnd()) goto success;
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0 ||
-            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:CoreML.Specification.TreeEnsembleParameters)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:CoreML.Specification.TreeEnsembleParameters)
-  return false;
-#undef DO_
-}
-
-void TreeEnsembleParameters::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:CoreML.Specification.TreeEnsembleParameters)
-  // repeated .CoreML.Specification.TreeEnsembleParameters.TreeNode nodes = 1;
-  for (unsigned int i = 0, n = this->nodes_size(); i < n; i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessage(
-      1, this->nodes(i), output);
-  }
-
-  // optional uint64 numPredictionDimensions = 2;
-  if (this->numpredictiondimensions() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt64(2, this->numpredictiondimensions(), output);
-  }
-
-  // repeated double basePredictionValue = 3;
-  if (this->basepredictionvalue_size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteTag(3, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
-    output->WriteVarint32(_basepredictionvalue_cached_byte_size_);
-  }
-  for (int i = 0; i < this->basepredictionvalue_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteDoubleNoTag(
-      this->basepredictionvalue(i), output);
-  }
-
-  // @@protoc_insertion_point(serialize_end:CoreML.Specification.TreeEnsembleParameters)
-}
-
-size_t TreeEnsembleParameters::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.TreeEnsembleParameters)
-  size_t total_size = 0;
-
-  // optional uint64 numPredictionDimensions = 2;
-  if (this->numpredictiondimensions() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::UInt64Size(
-        this->numpredictiondimensions());
-  }
-
-  // repeated .CoreML.Specification.TreeEnsembleParameters.TreeNode nodes = 1;
-  {
-    unsigned int count = this->nodes_size();
-    total_size += 1UL * count;
-    for (unsigned int i = 0; i < count; i++) {
-      total_size +=
-        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          this->nodes(i));
-    }
-  }
-
-  // repeated double basePredictionValue = 3;
-  {
-    size_t data_size = 0;
-    unsigned int count = this->basepredictionvalue_size();
-    data_size = 8UL * count;
-    if (data_size > 0) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
-    }
-    int cached_size = ::google::protobuf::internal::ToCachedSize(data_size);
-    GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-    _basepredictionvalue_cached_byte_size_ = cached_size;
-    GOOGLE_SAFE_CONCURRENT_WRITES_END();
-    total_size += data_size;
-  }
-
-  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = cached_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void TreeEnsembleParameters::CheckTypeAndMergeFrom(
-    const ::google::protobuf::MessageLite& from) {
-  MergeFrom(*::google::protobuf::down_cast<const TreeEnsembleParameters*>(&from));
-}
-
-void TreeEnsembleParameters::MergeFrom(const TreeEnsembleParameters& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.TreeEnsembleParameters)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
-
-void TreeEnsembleParameters::UnsafeMergeFrom(const TreeEnsembleParameters& from) {
-  GOOGLE_DCHECK(&from != this);
-  nodes_.MergeFrom(from.nodes_);
-  basepredictionvalue_.UnsafeMergeFrom(from.basepredictionvalue_);
-  if (from.numpredictiondimensions() != 0) {
-    set_numpredictiondimensions(from.numpredictiondimensions());
-  }
-}
-
-void TreeEnsembleParameters::CopyFrom(const TreeEnsembleParameters& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.TreeEnsembleParameters)
-  if (&from == this) return;
-  Clear();
-  UnsafeMergeFrom(from);
-}
-
-bool TreeEnsembleParameters::IsInitialized() const {
-
-  return true;
-}
-
-void TreeEnsembleParameters::Swap(TreeEnsembleParameters* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void TreeEnsembleParameters::InternalSwap(TreeEnsembleParameters* other) {
-  nodes_.UnsafeArenaSwap(&other->nodes_);
-  std::swap(numpredictiondimensions_, other->numpredictiondimensions_);
-  basepredictionvalue_.UnsafeArenaSwap(&other->basepredictionvalue_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
-  std::swap(_cached_size_, other->_cached_size_);
-}
-
-::std::string TreeEnsembleParameters::GetTypeName() const {
-  return "CoreML.Specification.TreeEnsembleParameters";
-}
-
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
-// TreeEnsembleParameters_TreeNode_EvaluationInfo
-
-// optional uint64 evaluationIndex = 1;
-void TreeEnsembleParameters_TreeNode_EvaluationInfo::clear_evaluationindex() {
-  evaluationindex_ = GOOGLE_ULONGLONG(0);
-}
-::google::protobuf::uint64 TreeEnsembleParameters_TreeNode_EvaluationInfo::evaluationindex() const {
-  // @@protoc_insertion_point(field_get:CoreML.Specification.TreeEnsembleParameters.TreeNode.EvaluationInfo.evaluationIndex)
-  return evaluationindex_;
-}
-void TreeEnsembleParameters_TreeNode_EvaluationInfo::set_evaluationindex(::google::protobuf::uint64 value) {
-  
-  evaluationindex_ = value;
-  // @@protoc_insertion_point(field_set:CoreML.Specification.TreeEnsembleParameters.TreeNode.EvaluationInfo.evaluationIndex)
-}
-
-// optional double evaluationValue = 2;
-void TreeEnsembleParameters_TreeNode_EvaluationInfo::clear_evaluationvalue() {
-  evaluationvalue_ = 0;
-}
-double TreeEnsembleParameters_TreeNode_EvaluationInfo::evaluationvalue() const {
-  // @@protoc_insertion_point(field_get:CoreML.Specification.TreeEnsembleParameters.TreeNode.EvaluationInfo.evaluationValue)
-  return evaluationvalue_;
-}
-void TreeEnsembleParameters_TreeNode_EvaluationInfo::set_evaluationvalue(double value) {
-  
-  evaluationvalue_ = value;
-  // @@protoc_insertion_point(field_set:CoreML.Specification.TreeEnsembleParameters.TreeNode.EvaluationInfo.evaluationValue)
-}
-
-inline const TreeEnsembleParameters_TreeNode_EvaluationInfo* TreeEnsembleParameters_TreeNode_EvaluationInfo::internal_default_instance() {
-  return &TreeEnsembleParameters_TreeNode_EvaluationInfo_default_instance_.get();
-}
-// -------------------------------------------------------------------
-
 // TreeEnsembleParameters_TreeNode
 
-// optional uint64 treeId = 1;
+// uint64 treeId = 1;
 void TreeEnsembleParameters_TreeNode::clear_treeid() {
   treeid_ = GOOGLE_ULONGLONG(0);
 }
@@ -1168,7 +858,7 @@ void TreeEnsembleParameters_TreeNode::set_treeid(::google::protobuf::uint64 valu
   // @@protoc_insertion_point(field_set:CoreML.Specification.TreeEnsembleParameters.TreeNode.treeId)
 }
 
-// optional uint64 nodeId = 2;
+// uint64 nodeId = 2;
 void TreeEnsembleParameters_TreeNode::clear_nodeid() {
   nodeid_ = GOOGLE_ULONGLONG(0);
 }
@@ -1182,7 +872,7 @@ void TreeEnsembleParameters_TreeNode::set_nodeid(::google::protobuf::uint64 valu
   // @@protoc_insertion_point(field_set:CoreML.Specification.TreeEnsembleParameters.TreeNode.nodeId)
 }
 
-// optional .CoreML.Specification.TreeEnsembleParameters.TreeNode.TreeNodeBehavior nodeBehavior = 3;
+// .CoreML.Specification.TreeEnsembleParameters.TreeNode.TreeNodeBehavior nodeBehavior = 3;
 void TreeEnsembleParameters_TreeNode::clear_nodebehavior() {
   nodebehavior_ = 0;
 }
@@ -1196,7 +886,7 @@ void TreeEnsembleParameters_TreeNode::set_nodebehavior(::CoreML::Specification::
   // @@protoc_insertion_point(field_set:CoreML.Specification.TreeEnsembleParameters.TreeNode.nodeBehavior)
 }
 
-// optional uint64 branchFeatureIndex = 10;
+// uint64 branchFeatureIndex = 10;
 void TreeEnsembleParameters_TreeNode::clear_branchfeatureindex() {
   branchfeatureindex_ = GOOGLE_ULONGLONG(0);
 }
@@ -1210,7 +900,7 @@ void TreeEnsembleParameters_TreeNode::set_branchfeatureindex(::google::protobuf:
   // @@protoc_insertion_point(field_set:CoreML.Specification.TreeEnsembleParameters.TreeNode.branchFeatureIndex)
 }
 
-// optional double branchFeatureValue = 11;
+// double branchFeatureValue = 11;
 void TreeEnsembleParameters_TreeNode::clear_branchfeaturevalue() {
   branchfeaturevalue_ = 0;
 }
@@ -1224,7 +914,7 @@ void TreeEnsembleParameters_TreeNode::set_branchfeaturevalue(double value) {
   // @@protoc_insertion_point(field_set:CoreML.Specification.TreeEnsembleParameters.TreeNode.branchFeatureValue)
 }
 
-// optional uint64 trueChildNodeId = 12;
+// uint64 trueChildNodeId = 12;
 void TreeEnsembleParameters_TreeNode::clear_truechildnodeid() {
   truechildnodeid_ = GOOGLE_ULONGLONG(0);
 }
@@ -1238,7 +928,7 @@ void TreeEnsembleParameters_TreeNode::set_truechildnodeid(::google::protobuf::ui
   // @@protoc_insertion_point(field_set:CoreML.Specification.TreeEnsembleParameters.TreeNode.trueChildNodeId)
 }
 
-// optional uint64 falseChildNodeId = 13;
+// uint64 falseChildNodeId = 13;
 void TreeEnsembleParameters_TreeNode::clear_falsechildnodeid() {
   falsechildnodeid_ = GOOGLE_ULONGLONG(0);
 }
@@ -1252,7 +942,7 @@ void TreeEnsembleParameters_TreeNode::set_falsechildnodeid(::google::protobuf::u
   // @@protoc_insertion_point(field_set:CoreML.Specification.TreeEnsembleParameters.TreeNode.falseChildNodeId)
 }
 
-// optional bool missingValueTracksTrueChild = 14;
+// bool missingValueTracksTrueChild = 14;
 void TreeEnsembleParameters_TreeNode::clear_missingvaluetrackstruechild() {
   missingvaluetrackstruechild_ = false;
 }
@@ -1296,7 +986,7 @@ TreeEnsembleParameters_TreeNode::evaluationinfo() const {
   return evaluationinfo_;
 }
 
-// optional double relativeHitRate = 30;
+// double relativeHitRate = 30;
 void TreeEnsembleParameters_TreeNode::clear_relativehitrate() {
   relativehitrate_ = 0;
 }
@@ -1310,11 +1000,266 @@ void TreeEnsembleParameters_TreeNode::set_relativehitrate(double value) {
   // @@protoc_insertion_point(field_set:CoreML.Specification.TreeEnsembleParameters.TreeNode.relativeHitRate)
 }
 
-inline const TreeEnsembleParameters_TreeNode* TreeEnsembleParameters_TreeNode::internal_default_instance() {
-  return &TreeEnsembleParameters_TreeNode_default_instance_.get();
-}
-// -------------------------------------------------------------------
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int TreeEnsembleParameters::kNodesFieldNumber;
+const int TreeEnsembleParameters::kNumPredictionDimensionsFieldNumber;
+const int TreeEnsembleParameters::kBasePredictionValueFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+TreeEnsembleParameters::TreeEnsembleParameters()
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_TreeEnsemble_2eproto::InitDefaults();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:CoreML.Specification.TreeEnsembleParameters)
+}
+TreeEnsembleParameters::TreeEnsembleParameters(const TreeEnsembleParameters& from)
+  : ::google::protobuf::MessageLite(),
+      _internal_metadata_(NULL),
+      nodes_(from.nodes_),
+      basepredictionvalue_(from.basepredictionvalue_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  numpredictiondimensions_ = from.numpredictiondimensions_;
+  // @@protoc_insertion_point(copy_constructor:CoreML.Specification.TreeEnsembleParameters)
+}
+
+void TreeEnsembleParameters::SharedCtor() {
+  numpredictiondimensions_ = GOOGLE_ULONGLONG(0);
+  _cached_size_ = 0;
+}
+
+TreeEnsembleParameters::~TreeEnsembleParameters() {
+  // @@protoc_insertion_point(destructor:CoreML.Specification.TreeEnsembleParameters)
+  SharedDtor();
+}
+
+void TreeEnsembleParameters::SharedDtor() {
+}
+
+void TreeEnsembleParameters::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const TreeEnsembleParameters& TreeEnsembleParameters::default_instance() {
+  protobuf_TreeEnsemble_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+TreeEnsembleParameters* TreeEnsembleParameters::New(::google::protobuf::Arena* arena) const {
+  TreeEnsembleParameters* n = new TreeEnsembleParameters;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void TreeEnsembleParameters::Clear() {
+// @@protoc_insertion_point(message_clear_start:CoreML.Specification.TreeEnsembleParameters)
+  nodes_.Clear();
+  basepredictionvalue_.Clear();
+  numpredictiondimensions_ = GOOGLE_ULONGLONG(0);
+}
+
+bool TreeEnsembleParameters::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:CoreML.Specification.TreeEnsembleParameters)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated .CoreML.Specification.TreeEnsembleParameters.TreeNode nodes = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+                input, add_nodes()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // uint64 numPredictionDimensions = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(16u)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
+                 input, &numpredictiondimensions_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // repeated double basePredictionValue = 3;
+      case 3: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(26u)) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, this->mutable_basepredictionvalue())));
+        } else if (static_cast< ::google::protobuf::uint8>(tag) ==
+                   static_cast< ::google::protobuf::uint8>(25u)) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 1, 26u, input, this->mutable_basepredictionvalue())));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:CoreML.Specification.TreeEnsembleParameters)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:CoreML.Specification.TreeEnsembleParameters)
+  return false;
+#undef DO_
+}
+
+void TreeEnsembleParameters::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:CoreML.Specification.TreeEnsembleParameters)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .CoreML.Specification.TreeEnsembleParameters.TreeNode nodes = 1;
+  for (unsigned int i = 0, n = this->nodes_size(); i < n; i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      1, this->nodes(i), output);
+  }
+
+  // uint64 numPredictionDimensions = 2;
+  if (this->numpredictiondimensions() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(2, this->numpredictiondimensions(), output);
+  }
+
+  // repeated double basePredictionValue = 3;
+  if (this->basepredictionvalue_size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteTag(3, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
+    output->WriteVarint32(_basepredictionvalue_cached_byte_size_);
+    ::google::protobuf::internal::WireFormatLite::WriteDoubleArray(
+      this->basepredictionvalue().data(), this->basepredictionvalue_size(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:CoreML.Specification.TreeEnsembleParameters)
+}
+
+size_t TreeEnsembleParameters::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.TreeEnsembleParameters)
+  size_t total_size = 0;
+
+  // repeated .CoreML.Specification.TreeEnsembleParameters.TreeNode nodes = 1;
+  {
+    unsigned int count = this->nodes_size();
+    total_size += 1UL * count;
+    for (unsigned int i = 0; i < count; i++) {
+      total_size +=
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->nodes(i));
+    }
+  }
+
+  // repeated double basePredictionValue = 3;
+  {
+    unsigned int count = this->basepredictionvalue_size();
+    size_t data_size = 8UL * count;
+    if (data_size > 0) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
+    }
+    int cached_size = ::google::protobuf::internal::ToCachedSize(data_size);
+    GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+    _basepredictionvalue_cached_byte_size_ = cached_size;
+    GOOGLE_SAFE_CONCURRENT_WRITES_END();
+    total_size += data_size;
+  }
+
+  // uint64 numPredictionDimensions = 2;
+  if (this->numpredictiondimensions() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt64Size(
+        this->numpredictiondimensions());
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void TreeEnsembleParameters::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const TreeEnsembleParameters*>(&from));
+}
+
+void TreeEnsembleParameters::MergeFrom(const TreeEnsembleParameters& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.TreeEnsembleParameters)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  nodes_.MergeFrom(from.nodes_);
+  basepredictionvalue_.MergeFrom(from.basepredictionvalue_);
+  if (from.numpredictiondimensions() != 0) {
+    set_numpredictiondimensions(from.numpredictiondimensions());
+  }
+}
+
+void TreeEnsembleParameters::CopyFrom(const TreeEnsembleParameters& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.TreeEnsembleParameters)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool TreeEnsembleParameters::IsInitialized() const {
+  return true;
+}
+
+void TreeEnsembleParameters::Swap(TreeEnsembleParameters* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void TreeEnsembleParameters::InternalSwap(TreeEnsembleParameters* other) {
+  nodes_.InternalSwap(&other->nodes_);
+  basepredictionvalue_.InternalSwap(&other->basepredictionvalue_);
+  std::swap(numpredictiondimensions_, other->numpredictiondimensions_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::std::string TreeEnsembleParameters::GetTypeName() const {
+  return "CoreML.Specification.TreeEnsembleParameters";
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
 // TreeEnsembleParameters
 
 // repeated .CoreML.Specification.TreeEnsembleParameters.TreeNode nodes = 1;
@@ -1347,7 +1292,7 @@ TreeEnsembleParameters::nodes() const {
   return nodes_;
 }
 
-// optional uint64 numPredictionDimensions = 2;
+// uint64 numPredictionDimensions = 2;
 void TreeEnsembleParameters::clear_numpredictiondimensions() {
   numpredictiondimensions_ = GOOGLE_ULONGLONG(0);
 }
@@ -1391,9 +1336,6 @@ TreeEnsembleParameters::mutable_basepredictionvalue() {
   return &basepredictionvalue_;
 }
 
-inline const TreeEnsembleParameters* TreeEnsembleParameters::internal_default_instance() {
-  return &TreeEnsembleParameters_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -1406,28 +1348,44 @@ const int TreeEnsembleClassifier::kInt64ClassLabelsFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 TreeEnsembleClassifier::TreeEnsembleClassifier()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_TreeEnsemble_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_TreeEnsemble_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.TreeEnsembleClassifier)
 }
-
-void TreeEnsembleClassifier::InitAsDefaultInstance() {
-  treeensemble_ = const_cast< ::CoreML::Specification::TreeEnsembleParameters*>(
-      ::CoreML::Specification::TreeEnsembleParameters::internal_default_instance());
-}
-
 TreeEnsembleClassifier::TreeEnsembleClassifier(const TreeEnsembleClassifier& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  if (from.has_treeensemble()) {
+    treeensemble_ = new ::CoreML::Specification::TreeEnsembleParameters(*from.treeensemble_);
+  } else {
+    treeensemble_ = NULL;
+  }
+  postevaluationtransform_ = from.postevaluationtransform_;
+  clear_has_ClassLabels();
+  switch (from.ClassLabels_case()) {
+    case kStringClassLabels: {
+      mutable_stringclasslabels()->::CoreML::Specification::StringVector::MergeFrom(from.stringclasslabels());
+      break;
+    }
+    case kInt64ClassLabels: {
+      mutable_int64classlabels()->::CoreML::Specification::Int64Vector::MergeFrom(from.int64classlabels());
+      break;
+    }
+    case CLASSLABELS_NOT_SET: {
+      break;
+    }
+  }
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.TreeEnsembleClassifier)
 }
 
 void TreeEnsembleClassifier::SharedCtor() {
-  treeensemble_ = NULL;
-  postevaluationtransform_ = 0;
+  ::memset(&treeensemble_, 0, reinterpret_cast<char*>(&postevaluationtransform_) -
+    reinterpret_cast<char*>(&treeensemble_) + sizeof(postevaluationtransform_));
   clear_has_ClassLabels();
   _cached_size_ = 0;
 }
@@ -1438,11 +1396,11 @@ TreeEnsembleClassifier::~TreeEnsembleClassifier() {
 }
 
 void TreeEnsembleClassifier::SharedDtor() {
+  if (this != internal_default_instance()) {
+    delete treeensemble_;
+  }
   if (has_ClassLabels()) {
     clear_ClassLabels();
-  }
-  if (this != &TreeEnsembleClassifier_default_instance_.get()) {
-    delete treeensemble_;
   }
 }
 
@@ -1452,11 +1410,9 @@ void TreeEnsembleClassifier::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const TreeEnsembleClassifier& TreeEnsembleClassifier::default_instance() {
-  protobuf_InitDefaults_TreeEnsemble_2eproto();
+  protobuf_TreeEnsemble_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<TreeEnsembleClassifier> TreeEnsembleClassifier_default_instance_;
 
 TreeEnsembleClassifier* TreeEnsembleClassifier::New(::google::protobuf::Arena* arena) const {
   TreeEnsembleClassifier* n = new TreeEnsembleClassifier;
@@ -1487,7 +1443,9 @@ void TreeEnsembleClassifier::clear_ClassLabels() {
 
 void TreeEnsembleClassifier::Clear() {
 // @@protoc_insertion_point(message_clear_start:CoreML.Specification.TreeEnsembleClassifier)
-  if (GetArenaNoVirtual() == NULL && treeensemble_ != NULL) delete treeensemble_;
+  if (GetArenaNoVirtual() == NULL && treeensemble_ != NULL) {
+    delete treeensemble_;
+  }
   treeensemble_ = NULL;
   postevaluationtransform_ = 0;
   clear_ClassLabels();
@@ -1499,26 +1457,26 @@ bool TreeEnsembleClassifier::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.TreeEnsembleClassifier)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(16383);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(16383u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional .CoreML.Specification.TreeEnsembleParameters treeEnsemble = 1;
+      // .CoreML.Specification.TreeEnsembleParameters treeEnsemble = 1;
       case 1: {
-        if (tag == 10) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_treeensemble()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(16)) goto parse_postEvaluationTransform;
         break;
       }
 
-      // optional .CoreML.Specification.TreeEnsemblePostEvaluationTransform postEvaluationTransform = 2;
+      // .CoreML.Specification.TreeEnsemblePostEvaluationTransform postEvaluationTransform = 2;
       case 2: {
-        if (tag == 16) {
-         parse_postEvaluationTransform:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(16u)) {
           int value;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
@@ -1527,33 +1485,30 @@ bool TreeEnsembleClassifier::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(802)) goto parse_stringClassLabels;
         break;
       }
 
-      // optional .CoreML.Specification.StringVector stringClassLabels = 100;
+      // .CoreML.Specification.StringVector stringClassLabels = 100;
       case 100: {
-        if (tag == 802) {
-         parse_stringClassLabels:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(802u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_stringclasslabels()));
         } else {
           goto handle_unusual;
         }
-        goto after_int64classlabels;
         break;
       }
 
-      // optional .CoreML.Specification.Int64Vector int64ClassLabels = 101;
+      // .CoreML.Specification.Int64Vector int64ClassLabels = 101;
       case 101: {
-        if (tag == 810) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(810u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_int64classlabels()));
         } else {
           goto handle_unusual;
         }
-       after_int64classlabels:
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -1581,25 +1536,28 @@ failure:
 void TreeEnsembleClassifier::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.TreeEnsembleClassifier)
-  // optional .CoreML.Specification.TreeEnsembleParameters treeEnsemble = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .CoreML.Specification.TreeEnsembleParameters treeEnsemble = 1;
   if (this->has_treeensemble()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       1, *this->treeensemble_, output);
   }
 
-  // optional .CoreML.Specification.TreeEnsemblePostEvaluationTransform postEvaluationTransform = 2;
+  // .CoreML.Specification.TreeEnsemblePostEvaluationTransform postEvaluationTransform = 2;
   if (this->postevaluationtransform() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       2, this->postevaluationtransform(), output);
   }
 
-  // optional .CoreML.Specification.StringVector stringClassLabels = 100;
+  // .CoreML.Specification.StringVector stringClassLabels = 100;
   if (has_stringclasslabels()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       100, *ClassLabels_.stringclasslabels_, output);
   }
 
-  // optional .CoreML.Specification.Int64Vector int64ClassLabels = 101;
+  // .CoreML.Specification.Int64Vector int64ClassLabels = 101;
   if (has_int64classlabels()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       101, *ClassLabels_.int64classlabels_, output);
@@ -1612,28 +1570,28 @@ size_t TreeEnsembleClassifier::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.TreeEnsembleClassifier)
   size_t total_size = 0;
 
-  // optional .CoreML.Specification.TreeEnsembleParameters treeEnsemble = 1;
+  // .CoreML.Specification.TreeEnsembleParameters treeEnsemble = 1;
   if (this->has_treeensemble()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
         *this->treeensemble_);
   }
 
-  // optional .CoreML.Specification.TreeEnsemblePostEvaluationTransform postEvaluationTransform = 2;
+  // .CoreML.Specification.TreeEnsemblePostEvaluationTransform postEvaluationTransform = 2;
   if (this->postevaluationtransform() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::EnumSize(this->postevaluationtransform());
   }
 
   switch (ClassLabels_case()) {
-    // optional .CoreML.Specification.StringVector stringClassLabels = 100;
+    // .CoreML.Specification.StringVector stringClassLabels = 100;
     case kStringClassLabels: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *ClassLabels_.stringclasslabels_);
       break;
     }
-    // optional .CoreML.Specification.Int64Vector int64ClassLabels = 101;
+    // .CoreML.Specification.Int64Vector int64ClassLabels = 101;
     case kInt64ClassLabels: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -1658,15 +1616,17 @@ void TreeEnsembleClassifier::CheckTypeAndMergeFrom(
 
 void TreeEnsembleClassifier::MergeFrom(const TreeEnsembleClassifier& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.TreeEnsembleClassifier)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void TreeEnsembleClassifier::UnsafeMergeFrom(const TreeEnsembleClassifier& from) {
-  GOOGLE_DCHECK(&from != this);
+  if (from.has_treeensemble()) {
+    mutable_treeensemble()->::CoreML::Specification::TreeEnsembleParameters::MergeFrom(from.treeensemble());
+  }
+  if (from.postevaluationtransform() != 0) {
+    set_postevaluationtransform(from.postevaluationtransform());
+  }
   switch (from.ClassLabels_case()) {
     case kStringClassLabels: {
       mutable_stringclasslabels()->::CoreML::Specification::StringVector::MergeFrom(from.stringclasslabels());
@@ -1680,23 +1640,16 @@ void TreeEnsembleClassifier::UnsafeMergeFrom(const TreeEnsembleClassifier& from)
       break;
     }
   }
-  if (from.has_treeensemble()) {
-    mutable_treeensemble()->::CoreML::Specification::TreeEnsembleParameters::MergeFrom(from.treeensemble());
-  }
-  if (from.postevaluationtransform() != 0) {
-    set_postevaluationtransform(from.postevaluationtransform());
-  }
 }
 
 void TreeEnsembleClassifier::CopyFrom(const TreeEnsembleClassifier& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.TreeEnsembleClassifier)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool TreeEnsembleClassifier::IsInitialized() const {
-
   return true;
 }
 
@@ -1709,7 +1662,6 @@ void TreeEnsembleClassifier::InternalSwap(TreeEnsembleClassifier* other) {
   std::swap(postevaluationtransform_, other->postevaluationtransform_);
   std::swap(ClassLabels_, other->ClassLabels_);
   std::swap(_oneof_case_[0], other->_oneof_case_[0]);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -1720,7 +1672,7 @@ void TreeEnsembleClassifier::InternalSwap(TreeEnsembleClassifier* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // TreeEnsembleClassifier
 
-// optional .CoreML.Specification.TreeEnsembleParameters treeEnsemble = 1;
+// .CoreML.Specification.TreeEnsembleParameters treeEnsemble = 1;
 bool TreeEnsembleClassifier::has_treeensemble() const {
   return this != internal_default_instance() && treeensemble_ != NULL;
 }
@@ -1759,7 +1711,7 @@ void TreeEnsembleClassifier::set_allocated_treeensemble(::CoreML::Specification:
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.TreeEnsembleClassifier.treeEnsemble)
 }
 
-// optional .CoreML.Specification.TreeEnsemblePostEvaluationTransform postEvaluationTransform = 2;
+// .CoreML.Specification.TreeEnsemblePostEvaluationTransform postEvaluationTransform = 2;
 void TreeEnsembleClassifier::clear_postevaluationtransform() {
   postevaluationtransform_ = 0;
 }
@@ -1773,7 +1725,7 @@ void TreeEnsembleClassifier::set_postevaluationtransform(::CoreML::Specification
   // @@protoc_insertion_point(field_set:CoreML.Specification.TreeEnsembleClassifier.postEvaluationTransform)
 }
 
-// optional .CoreML.Specification.StringVector stringClassLabels = 100;
+// .CoreML.Specification.StringVector stringClassLabels = 100;
 bool TreeEnsembleClassifier::has_stringclasslabels() const {
   return ClassLabels_case() == kStringClassLabels;
 }
@@ -1821,7 +1773,7 @@ void TreeEnsembleClassifier::set_allocated_stringclasslabels(::CoreML::Specifica
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.TreeEnsembleClassifier.stringClassLabels)
 }
 
-// optional .CoreML.Specification.Int64Vector int64ClassLabels = 101;
+// .CoreML.Specification.Int64Vector int64ClassLabels = 101;
 bool TreeEnsembleClassifier::has_int64classlabels() const {
   return ClassLabels_case() == kInt64ClassLabels;
 }
@@ -1878,9 +1830,6 @@ void TreeEnsembleClassifier::clear_has_ClassLabels() {
 TreeEnsembleClassifier::ClassLabelsCase TreeEnsembleClassifier::ClassLabels_case() const {
   return TreeEnsembleClassifier::ClassLabelsCase(_oneof_case_[0]);
 }
-inline const TreeEnsembleClassifier* TreeEnsembleClassifier::internal_default_instance() {
-  return &TreeEnsembleClassifier_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -1891,28 +1840,30 @@ const int TreeEnsembleRegressor::kPostEvaluationTransformFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 TreeEnsembleRegressor::TreeEnsembleRegressor()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_TreeEnsemble_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_TreeEnsemble_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.TreeEnsembleRegressor)
 }
-
-void TreeEnsembleRegressor::InitAsDefaultInstance() {
-  treeensemble_ = const_cast< ::CoreML::Specification::TreeEnsembleParameters*>(
-      ::CoreML::Specification::TreeEnsembleParameters::internal_default_instance());
-}
-
 TreeEnsembleRegressor::TreeEnsembleRegressor(const TreeEnsembleRegressor& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  if (from.has_treeensemble()) {
+    treeensemble_ = new ::CoreML::Specification::TreeEnsembleParameters(*from.treeensemble_);
+  } else {
+    treeensemble_ = NULL;
+  }
+  postevaluationtransform_ = from.postevaluationtransform_;
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.TreeEnsembleRegressor)
 }
 
 void TreeEnsembleRegressor::SharedCtor() {
-  treeensemble_ = NULL;
-  postevaluationtransform_ = 0;
+  ::memset(&treeensemble_, 0, reinterpret_cast<char*>(&postevaluationtransform_) -
+    reinterpret_cast<char*>(&treeensemble_) + sizeof(postevaluationtransform_));
   _cached_size_ = 0;
 }
 
@@ -1922,7 +1873,7 @@ TreeEnsembleRegressor::~TreeEnsembleRegressor() {
 }
 
 void TreeEnsembleRegressor::SharedDtor() {
-  if (this != &TreeEnsembleRegressor_default_instance_.get()) {
+  if (this != internal_default_instance()) {
     delete treeensemble_;
   }
 }
@@ -1933,11 +1884,9 @@ void TreeEnsembleRegressor::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const TreeEnsembleRegressor& TreeEnsembleRegressor::default_instance() {
-  protobuf_InitDefaults_TreeEnsemble_2eproto();
+  protobuf_TreeEnsemble_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<TreeEnsembleRegressor> TreeEnsembleRegressor_default_instance_;
 
 TreeEnsembleRegressor* TreeEnsembleRegressor::New(::google::protobuf::Arena* arena) const {
   TreeEnsembleRegressor* n = new TreeEnsembleRegressor;
@@ -1949,7 +1898,9 @@ TreeEnsembleRegressor* TreeEnsembleRegressor::New(::google::protobuf::Arena* are
 
 void TreeEnsembleRegressor::Clear() {
 // @@protoc_insertion_point(message_clear_start:CoreML.Specification.TreeEnsembleRegressor)
-  if (GetArenaNoVirtual() == NULL && treeensemble_ != NULL) delete treeensemble_;
+  if (GetArenaNoVirtual() == NULL && treeensemble_ != NULL) {
+    delete treeensemble_;
+  }
   treeensemble_ = NULL;
   postevaluationtransform_ = 0;
 }
@@ -1960,26 +1911,26 @@ bool TreeEnsembleRegressor::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.TreeEnsembleRegressor)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional .CoreML.Specification.TreeEnsembleParameters treeEnsemble = 1;
+      // .CoreML.Specification.TreeEnsembleParameters treeEnsemble = 1;
       case 1: {
-        if (tag == 10) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_treeensemble()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(16)) goto parse_postEvaluationTransform;
         break;
       }
 
-      // optional .CoreML.Specification.TreeEnsemblePostEvaluationTransform postEvaluationTransform = 2;
+      // .CoreML.Specification.TreeEnsemblePostEvaluationTransform postEvaluationTransform = 2;
       case 2: {
-        if (tag == 16) {
-         parse_postEvaluationTransform:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(16u)) {
           int value;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
@@ -1988,7 +1939,6 @@ bool TreeEnsembleRegressor::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -2016,13 +1966,16 @@ failure:
 void TreeEnsembleRegressor::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.TreeEnsembleRegressor)
-  // optional .CoreML.Specification.TreeEnsembleParameters treeEnsemble = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .CoreML.Specification.TreeEnsembleParameters treeEnsemble = 1;
   if (this->has_treeensemble()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       1, *this->treeensemble_, output);
   }
 
-  // optional .CoreML.Specification.TreeEnsemblePostEvaluationTransform postEvaluationTransform = 2;
+  // .CoreML.Specification.TreeEnsemblePostEvaluationTransform postEvaluationTransform = 2;
   if (this->postevaluationtransform() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       2, this->postevaluationtransform(), output);
@@ -2035,14 +1988,14 @@ size_t TreeEnsembleRegressor::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.TreeEnsembleRegressor)
   size_t total_size = 0;
 
-  // optional .CoreML.Specification.TreeEnsembleParameters treeEnsemble = 1;
+  // .CoreML.Specification.TreeEnsembleParameters treeEnsemble = 1;
   if (this->has_treeensemble()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
         *this->treeensemble_);
   }
 
-  // optional .CoreML.Specification.TreeEnsemblePostEvaluationTransform postEvaluationTransform = 2;
+  // .CoreML.Specification.TreeEnsemblePostEvaluationTransform postEvaluationTransform = 2;
   if (this->postevaluationtransform() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::EnumSize(this->postevaluationtransform());
@@ -2062,15 +2015,11 @@ void TreeEnsembleRegressor::CheckTypeAndMergeFrom(
 
 void TreeEnsembleRegressor::MergeFrom(const TreeEnsembleRegressor& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.TreeEnsembleRegressor)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void TreeEnsembleRegressor::UnsafeMergeFrom(const TreeEnsembleRegressor& from) {
-  GOOGLE_DCHECK(&from != this);
   if (from.has_treeensemble()) {
     mutable_treeensemble()->::CoreML::Specification::TreeEnsembleParameters::MergeFrom(from.treeensemble());
   }
@@ -2083,11 +2032,10 @@ void TreeEnsembleRegressor::CopyFrom(const TreeEnsembleRegressor& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.TreeEnsembleRegressor)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool TreeEnsembleRegressor::IsInitialized() const {
-
   return true;
 }
 
@@ -2098,7 +2046,6 @@ void TreeEnsembleRegressor::Swap(TreeEnsembleRegressor* other) {
 void TreeEnsembleRegressor::InternalSwap(TreeEnsembleRegressor* other) {
   std::swap(treeensemble_, other->treeensemble_);
   std::swap(postevaluationtransform_, other->postevaluationtransform_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -2109,7 +2056,7 @@ void TreeEnsembleRegressor::InternalSwap(TreeEnsembleRegressor* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // TreeEnsembleRegressor
 
-// optional .CoreML.Specification.TreeEnsembleParameters treeEnsemble = 1;
+// .CoreML.Specification.TreeEnsembleParameters treeEnsemble = 1;
 bool TreeEnsembleRegressor::has_treeensemble() const {
   return this != internal_default_instance() && treeensemble_ != NULL;
 }
@@ -2148,7 +2095,7 @@ void TreeEnsembleRegressor::set_allocated_treeensemble(::CoreML::Specification::
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.TreeEnsembleRegressor.treeEnsemble)
 }
 
-// optional .CoreML.Specification.TreeEnsemblePostEvaluationTransform postEvaluationTransform = 2;
+// .CoreML.Specification.TreeEnsemblePostEvaluationTransform postEvaluationTransform = 2;
 void TreeEnsembleRegressor::clear_postevaluationtransform() {
   postevaluationtransform_ = 0;
 }
@@ -2162,9 +2109,6 @@ void TreeEnsembleRegressor::set_postevaluationtransform(::CoreML::Specification:
   // @@protoc_insertion_point(field_set:CoreML.Specification.TreeEnsembleRegressor.postEvaluationTransform)
 }
 
-inline const TreeEnsembleRegressor* TreeEnsembleRegressor::internal_default_instance() {
-  return &TreeEnsembleRegressor_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // @@protoc_insertion_point(namespace_scope)

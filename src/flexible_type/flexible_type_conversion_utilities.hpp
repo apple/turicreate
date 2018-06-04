@@ -19,13 +19,13 @@ namespace turi {
 
 namespace flexible_type_internals {
 
-static void throw_type_conversion_error(const flexible_type& val, const char *type) {
-  std::ostringstream ss;
-  ss << "Type conversion failure in flexible_type converter: expected "
-     << type << "; got " << flex_type_enum_to_name(val.get_type());
+class type_conversion_error : public std::runtime_error {
+  public:
+    explicit type_conversion_error(const std::string& message);
+    explicit type_conversion_error(const char* message);
+};
 
-  throw ss.str();
-}
+void throw_type_conversion_error(const flexible_type& val, const char *type);
 
 template <typename Arg>
 static void __unpack_args(std::ostringstream& ss, Arg a) {
@@ -45,7 +45,7 @@ static void throw_type_conversion_error(const flexible_type& val, const char* ty
   __unpack_args(ss, args...);
   ss << "; got " << flex_type_enum_to_name(val.get_type());
 
-  throw ss.str();
+  throw type_conversion_error(ss.str());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

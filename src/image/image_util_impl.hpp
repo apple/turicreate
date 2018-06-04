@@ -14,7 +14,7 @@ namespace image_util_detail {
 
 void resize_image_impl(const char* data, size_t width, size_t height, 
                        size_t channels, size_t resized_width, size_t resized_height, 
-                       size_t resized_channels, char** resized_data);
+                       size_t resized_channels, char** resized_data, int resample_method);
 
 void decode_image_impl(image_type& image);
 

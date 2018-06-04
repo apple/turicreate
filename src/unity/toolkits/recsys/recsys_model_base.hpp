@@ -298,6 +298,14 @@ public:
                    double diversity_factor = 0,
                    size_t random_seed = 0) const;
 
+  std::shared_ptr<unity_sframe_base> recommend_extension_wrapper(
+    std::shared_ptr<unity_sframe_base> reference_data,
+    std::shared_ptr<unity_sframe_base> new_observation_data,
+    flex_int top_k) const;
+
+  virtual void export_to_coreml(
+    std::shared_ptr<recsys_model_base> recsys_model,
+    const std::string& filename);
 
   /**
    * Compute the precision and recall for a (potentially held out) set of
@@ -339,7 +347,7 @@ public:
   }
 
   /// Serialization -- save
-  void save_impl(turi::oarchive& oarc) const;
+  virtual void save_impl(turi::oarchive& oarc) const override;
 
   /// Serialization -- load
   void load_version(turi::iarchive& iarc, size_t version);

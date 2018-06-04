@@ -27,6 +27,8 @@ from . import _layers
 import coremltools as _coremltools
 import coremltools.models.datatypes as _datatypes
 from coremltools.models import neural_network as _neural_network
+from coremltools.proto import FeatureTypes_pb2 as _FeatureTypes_pb2
+from coremltools.models import MLModel as _MLModel
 
 import json as _json
 import mxnet as _mxnet
@@ -55,6 +57,12 @@ _MXNET_LAYER_REGISTRY  = {
     'slice_axis'     : _layers.convert_slice_axis,
     'softmax'        : _layers.convert_softmax,
     'sigmoid'        : _layers.convert_sigmoid,
+    'InstanceNorm'   : _layers.convert_instancenorm,
+    'Embedding'      : _layers.convert_embedding,
+    '_plus_scalar'   : _layers.convert_scalar_add,
+    '_ones'          : _layers.convert_skip, 
+    '_zeros'         : _layers.convert_skip,
+    'UpSampling'     : _layers.convert_upsample,
 }
 
 _MXNET_SKIP_LAYERS = [
@@ -115,7 +123,7 @@ def _get_layer_converter_fn(layer):
         raise TypeError("MXNet layer of type %s is not supported." % layer)
 
 
-def convert(model, input_shape, order=None, class_labels=None, mode=None,
+def convert(model, input_shape, class_labels=None, mode=None,
             preprocessor_args=None, builder=None, verbose=True):
     """Convert an MXNet model to the protobuf spec.
 
@@ -124,7 +132,9 @@ def convert(model, input_shape, order=None, class_labels=None, mode=None,
     model: MXNet model
         A trained MXNet neural network model.
 
-    order: Order of inputs
+    input_shape: list of tuples
+        A list of (name, shape) tuples, defining the input names and their
+        shapes. The list also serves to define the desired order of the inputs.
 
     class_labels: A string or list of strings.
         As a string it represents the name of the file which contains the classification labels (one per line).
@@ -156,25 +166,19 @@ def convert(model, input_shape, order=None, class_labels=None, mode=None,
     -------
     model: A coreml model.
     """
-    if not isinstance(input_shape, dict):
-         raise TypeError("Must provide a dictionary for input shape. e.g input_shape={'data':(3,224,224)}")
+    if not isinstance(input_shape, list):
+         raise TypeError("Must provide a list for input shape. e.g input_shape=[('data', (3,224,224))]")
 
     def remove_batch(dim):
         return dim[1:]
 
-    if order is None:
-        input_names = input_shape.keys()
-        input_dims  = map(remove_batch, input_shape.values())
-    else:
-        names = input_shape.keys()
-        shapes = map(remove_batch, input_shape.values())
-        input_names = [names[i] for i in order]
-        input_dims = [shapes[i] for i in order]
+    input_names, input_dims = zip(*input_shape)
+    input_dims = list(map(remove_batch, input_dims))
 
     net = model.symbol
 
     # Infer shapes and store in a dictionary
-    shapes = net.infer_shape(**input_shape)
+    shapes = net.infer_shape(**dict(input_shape))
     arg_names = net.list_arguments()
     output_names = net.list_outputs()
     aux_names = net.list_auxiliary_states()
@@ -185,11 +189,11 @@ def convert(model, input_shape, order=None, class_labels=None, mode=None,
         shape_dict[op] = shapes[1][idx]
     for idx, op in enumerate(aux_names):
         shape_dict[op] = shapes[2][idx]
-
+    
     # Get the inputs and outputs
     output_dims = shapes[1]
     if mode is None:
-        output_dims = map(remove_batch, output_dims)
+        output_dims = list(map(remove_batch, output_dims))
     input_types = [_datatypes.Array(*dim) for dim in input_dims]
     output_types = [_datatypes.Array(*dim) for dim in output_dims]
 

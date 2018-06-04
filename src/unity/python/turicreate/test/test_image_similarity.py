@@ -9,7 +9,6 @@ from __future__ import absolute_import as _
 import unittest
 import pytest
 import turicreate as tc
-from turicreate.toolkits import _image_feature_extractor
 from turicreate.toolkits._internal_utils import _mac_ver
 import tempfile
 from . import util as test_util
@@ -20,7 +19,8 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 
 def _get_data():
     from PIL import Image as _PIL_Image
-    import random
+
+    random = np.random.RandomState(100)
     _format = {'JPG': 0, 'PNG': 1, 'RAW': 2, 'UNDEFINED': 3}
 
     def from_pil_image(pil_img):
@@ -95,8 +95,7 @@ class ImageSimilarityTest(unittest.TestCase):
            'training_time': lambda x: x > 0,
            'input_image_shape': lambda x: x == self.input_image_shape,
            'label': lambda x: x == self.label,
-           'feature_extractor' : lambda x: issubclass(type(x),
-                 _image_feature_extractor.ImageFeatureExtractor),
+           'feature_extractor' : lambda x: callable(x.extract_features),
            'num_features': lambda x: x == self.lm_model.num_features,
            'num_examples': lambda x: x == self.lm_model.num_examples,
            'model': lambda x: x == self.pre_trained_model,
@@ -120,13 +119,6 @@ class ImageSimilarityTest(unittest.TestCase):
         with self.assertRaises(_ToolkitError):
             tc.image_similarity.create(self.sf[:0])
 
-    def test_invalid_num_gpus(self):
-        num_gpus = tc.config.get_num_gpus()
-        tc.config.set_num_gpus(-2)
-        with self.assertRaises(_ToolkitError):
-            tc.image_similarity.create(self.sf)
-        tc.config.set_num_gpus(num_gpus)
-
     def test_query(self):
         model = self.model
         preds = model.query(self.sf)
@@ -140,7 +132,7 @@ class ImageSimilarityTest(unittest.TestCase):
         preds = model.similarity_graph(output_type = 'SFrame')
         self.assertEqual(len(preds), len(self.sf) * 5)
 
-    def test__list_fields(self):
+    def test_list_fields(self):
         model = self.model
         fields = model._list_fields()
         self.assertEqual(set(fields), set(self.fields_ans))
@@ -193,19 +185,19 @@ class ImageSimilarityTest(unittest.TestCase):
         coreml_model = coremltools.models.MLModel(filename)
 
         # Get model distances for comparison
-        tc_ret = self.model.query(self.sf[:1], k=self.sf.num_rows())
+        img = self.sf[0:1][self.feature][0]
+        img_fixed = tc.image_analysis.resize(img, *reversed(self.input_image_shape))
+        tc_ret = self.model.query(img_fixed, k=self.sf.num_rows())
 
         if _mac_ver() >= (10, 13):
             from PIL import Image as _PIL_Image
-
-            ref_img = self.sf[0]['awesome_image'].pixel_data
-            pil_img = _PIL_Image.fromarray(ref_img)
-            coreml_ret = coreml_model.predict({'awesome_image': pil_img}, useCPUOnly=True)
+            pil_img = _PIL_Image.fromarray(img_fixed.pixel_data)
+            coreml_ret = coreml_model.predict({'awesome_image': pil_img})
 
             # Compare distances
             coreml_distances = np.array(sorted(coreml_ret['distance']))
             tc_distances = tc_ret['distance'].to_numpy()
-            np.testing.assert_array_almost_equal(tc_distances, coreml_distances, decimal=2)
+            self.assertListAlmostEquals(tc_distances, coreml_distances, 0.02)
 
     def test_save_and_load(self):
         with test_util.TempDirectory() as filename:
@@ -221,13 +213,13 @@ class ImageSimilarityTest(unittest.TestCase):
             print("Get passed")
             self.test_summary()
             print("Summary passed")
-            self.test__list_fields()
+            self.test_list_fields()
             print("List fields passed")
             self.test_export_coreml()
             print("Export coreml passed")
 
 
-@unittest.skipIf(tc.util._num_available_gpus() == 0, 'Requires GPU')
+@unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
 @pytest.mark.gpu
 class ImageSimilarityGPUTest(unittest.TestCase):
     @classmethod

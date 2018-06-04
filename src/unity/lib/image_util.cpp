@@ -333,8 +333,10 @@ std::shared_ptr<unity_sarray> decode_image_sarray(std::shared_ptr<unity_sarray> 
 /**
  * Reisze an sarray of flex_images with the new size.
  */
-flexible_type resize_image(const flexible_type& image, size_t resized_width, size_t resized_height, size_t resized_channels, bool decode) {
-  if (image.get_type() != flex_type_enum::IMAGE){
+flexible_type resize_image(const flexible_type& input, size_t resized_width,
+			   size_t resized_height, size_t resized_channels,
+			   bool decode, int resample_method) {
+  if (input.get_type() != flex_type_enum::IMAGE){
     std::string error = "Cannot resize non-image type";
     log_and_throw(error);
   }
@@ -358,13 +360,24 @@ flexible_type resize_image(const flexible_type& image, size_t resized_width, siz
         decoded_image.m_width, decoded_image.m_height, decoded_image.m_channels, resized_width,
         resized_height, resized_channels, &resized_data);
   }
-  flex_image dst_img;
-  dst_img.m_width = resized_width;
-  dst_img.m_height = resized_height;
-  dst_img.m_channels = resized_channels;
-  dst_img.m_format = Format::RAW_ARRAY;
-  dst_img.m_image_data_size = resized_height * resized_width * resized_channels;
-  dst_img.m_image_data.reset(resized_data);
+
+  // Resize if necessary.
+  if (!has_desired_size()) {
+    char* resized_data;
+    image_util_detail::resize_image_impl(
+        reinterpret_cast<const char*>(image.get_image_data()),
+	image.m_width, image.m_height, image.m_channels,
+	resized_width, resized_height, resized_channels,
+	&resized_data, resample_method);
+    image.m_width = resized_width;
+    image.m_height = resized_height;
+    image.m_channels = resized_channels;
+    image.m_format = Format::RAW_ARRAY;
+    image.m_image_data_size = resized_height * resized_width * resized_channels;
+    image.m_image_data.reset(resized_data);
+  }
+
+  // Encode if necessary.
   if (!decode) {
     image_util_detail::encode_image_impl(dst_img);
   }
@@ -380,10 +393,11 @@ std::shared_ptr<unity_sarray> resize_image_sarray(
     size_t resized_width, 
     size_t resized_height, 
     size_t resized_channels,
-    bool decode) {
+    bool decode,
+    int resample_method) {
   log_func_entry();
   auto fn = [=](const flexible_type& f)->flexible_type {
-      return flexible_type(resize_image(f, resized_width, resized_height, resized_channels, decode));
+      return flexible_type(resize_image(f, resized_width, resized_height, resized_channels, decode, resample_method));
     };
   auto ret = image_sarray->transform_lambda(fn, flex_type_enum::IMAGE, true, 0);
   return std::static_pointer_cast<unity_sarray>(ret);

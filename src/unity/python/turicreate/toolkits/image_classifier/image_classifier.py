@@ -18,7 +18,6 @@ import turicreate.toolkits._internal_utils as _tkutl
 import turicreate.toolkits._private_utils as _pvtutl
 from turicreate.toolkits import _coreml_utils
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
-from turicreate.toolkits._model import ExposeAttributesFromProxy as _ExposeAttributesFromProxy
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate import config as _tc_config
 from .. import _mxnet_utils
@@ -100,8 +99,13 @@ def create(dataset, target, feature = None, model = 'resnet-50',
     """
     start_time = _time.time()
 
-    # Check parameters
-    _tkutl._check_categorical_option_type('model', model, _pre_trained_models.MODELS.keys())
+    # Check model parameter
+    allowed_models = list(_pre_trained_models.MODELS.keys())
+    if _mac_ver() >= (10,14):
+        allowed_models.append('sceneVisionFeaturePrint_v1')
+    _tkutl._check_categorical_option_type('model', model, allowed_models)
+
+    # Check dataset parameter
     if len(dataset) == 0:
         raise _ToolkitError('Unable to train on empty dataset')
     if (feature is not None) and (feature not in dataset.column_names()):
@@ -112,9 +116,7 @@ def create(dataset, target, feature = None, model = 'resnet-50',
     if feature is None:
         feature = _tkutl._find_only_image_column(dataset)
 
-    # Load pre-trained model & feature extractor
-    ptModel = _pre_trained_models.MODELS[model]()
-    feature_extractor = _image_feature_extractor.MXFeatureExtractor(ptModel)
+    feature_extractor = _image_feature_extractor._create_feature_extractor(model)
 
     # Extract features
     extracted_features = _tc.SFrame({
@@ -131,13 +133,15 @@ def create(dataset, target, feature = None, model = 'resnet-50',
                                               seed=seed,
                                               verbose=verbose)
 
+    input_image_shape = _pre_trained_models.MODELS[model].input_image_shape
+
     # Save the model
     state = {
         'classifier': lr_model,
         'model': model,
         'max_iterations': max_iterations,
         'feature_extractor': feature_extractor,
-        'input_image_shape': ptModel.input_image_shape,
+        'input_image_shape': input_image_shape,
         'target': target,
         'feature': feature,
         'num_features': 1,
@@ -193,9 +197,7 @@ class ImageClassifier(_CustomModel):
         state['classes'] = state['classifier'].classes
 
         # Load pre-trained model & feature extractor
-        ptModel = _pre_trained_models.MODELS[state['model']]()
-        feature_extractor = _image_feature_extractor.MXFeatureExtractor(ptModel)
-        state['feature_extractor'] = feature_extractor
+        state['feature_extractor'] = _image_feature_extractor._create_feature_extractor(state['model'])
         state['input_image_shape'] = tuple([int(i) for i in state['input_image_shape']])
         return ImageClassifier(state)
 
@@ -494,7 +496,10 @@ class ImageClassifier(_CustomModel):
         --------
         >>> model.export_coreml('myModel.mlmodel')
         """
-        coreml_model = self.feature_extractor.get_coreml_model()
+        ptModel = _pre_trained_models.MODELS[self.model]()
+        feature_extractor = _image_feature_extractor.MXFeatureExtractor(ptModel)
+
+        coreml_model = feature_extractor.get_coreml_model()
         spec = coreml_model.get_spec()
         nn_spec = spec.neuralNetworkClassifier
         num_classes = self.num_classes

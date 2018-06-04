@@ -4,6 +4,11 @@ subdirs(extensions
   lib
   toolkits)
 
+if(HAS_CORE_ML)
+  set(additional_unity_requirements image_deep_feature_extractor)
+else()
+  set(additional_unity_requirements "")
+endif()
 
   make_library(unity
          SOURCES
@@ -17,6 +22,7 @@ subdirs(extensions
           unity_toolkits
           perf
           numerics
+          ${additional_unity_requirements}
   ) 
 
   # Pull in all the libraries in the extensions directory.
@@ -27,8 +33,12 @@ subdirs(extensions
     add_dependencies(unity ${loop_var})
   endforeach()
 
+  if(APPLE)
+    set(EXTRA_REQUIRES objcapi)
+  endif()
+
   make_shared_library_from_static(unity_shared
-        REQUIRES unity
+        REQUIRES unity TuriCreate_static ${EXTRA_REQUIRES}
         OUTPUT_NAME unity_shared
         EXPORT_MAP ${CMAKE_SOURCE_DIR}/cmake/stdcxx_reduce_exports.ver)
 

@@ -6,62 +6,70 @@
 
 #include <algorithm>
 
-#include <protobuf/stubs/common.h>
-#include <protobuf/stubs/port.h>
-#include <protobuf/stubs/once.h>
-#include <protobuf/io/coded_stream.h>
-#include <protobuf/wire_format_lite_inl.h>
-#include <protobuf/io/zero_copy_stream_impl_lite.h>
+#include <google/protobuf/stubs/common.h>
+#include <google/protobuf/stubs/port.h>
+#include <google/protobuf/stubs/once.h>
+#include <google/protobuf/io/coded_stream.h>
+#include <google/protobuf/wire_format_lite_inl.h>
+#include <google/protobuf/io/zero_copy_stream_impl_lite.h>
 // @@protoc_insertion_point(includes)
 
 namespace CoreML {
 namespace Specification {
+class ArrayFeatureExtractorDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<ArrayFeatureExtractor> {
+} _ArrayFeatureExtractor_default_instance_;
 
-void protobuf_ShutdownFile_ArrayFeatureExtractor_2eproto() {
-  ArrayFeatureExtractor_default_instance_.Shutdown();
+namespace protobuf_ArrayFeatureExtractor_2eproto {
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTableField
+    const TableStruct::entries[] = {
+  {0, 0, 0, ::google::protobuf::internal::kInvalidMask, 0, 0},
+};
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::AuxillaryParseTableField
+    const TableStruct::aux[] = {
+  ::google::protobuf::internal::AuxillaryParseTableField(),
+};
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTable const
+    TableStruct::schema[] = {
+  { NULL, NULL, 0, -1, -1, false },
+};
+
+
+void TableStruct::Shutdown() {
+  _ArrayFeatureExtractor_default_instance_.Shutdown();
 }
 
-void protobuf_InitDefaults_ArrayFeatureExtractor_2eproto_impl() {
+void TableStruct::InitDefaultsImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  ArrayFeatureExtractor_default_instance_.DefaultConstruct();
-  ArrayFeatureExtractor_default_instance_.get_mutable()->InitAsDefaultInstance();
+  ::google::protobuf::internal::InitProtobufDefaults();
+  _ArrayFeatureExtractor_default_instance_.DefaultConstruct();
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_InitDefaults_ArrayFeatureExtractor_2eproto_once_);
-void protobuf_InitDefaults_ArrayFeatureExtractor_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_InitDefaults_ArrayFeatureExtractor_2eproto_once_,
-                 &protobuf_InitDefaults_ArrayFeatureExtractor_2eproto_impl);
+void InitDefaults() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &TableStruct::InitDefaultsImpl);
 }
-void protobuf_AddDesc_ArrayFeatureExtractor_2eproto_impl() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  protobuf_InitDefaults_ArrayFeatureExtractor_2eproto();
-  ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_ArrayFeatureExtractor_2eproto);
+void AddDescriptorsImpl() {
+  InitDefaults();
+  ::google::protobuf::internal::OnShutdown(&TableStruct::Shutdown);
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_AddDesc_ArrayFeatureExtractor_2eproto_once_);
-void protobuf_AddDesc_ArrayFeatureExtractor_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_AddDesc_ArrayFeatureExtractor_2eproto_once_,
-                 &protobuf_AddDesc_ArrayFeatureExtractor_2eproto_impl);
+void AddDescriptors() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &AddDescriptorsImpl);
 }
 #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 // Force AddDescriptors() to be called at static initialization time.
-struct StaticDescriptorInitializer_ArrayFeatureExtractor_2eproto {
-  StaticDescriptorInitializer_ArrayFeatureExtractor_2eproto() {
-    protobuf_AddDesc_ArrayFeatureExtractor_2eproto();
+struct StaticDescriptorInitializer {
+  StaticDescriptorInitializer() {
+    AddDescriptors();
   }
-} static_descriptor_initializer_ArrayFeatureExtractor_2eproto_;
+} static_descriptor_initializer;
 #endif  // GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 
-namespace {
-
-static void MergeFromFail(int line) GOOGLE_ATTRIBUTE_COLD GOOGLE_ATTRIBUTE_NORETURN;
-static void MergeFromFail(int line) {
-  ::google::protobuf::internal::MergeFromFail(__FILE__, line);
-}
-
-}  // namespace
+}  // namespace protobuf_ArrayFeatureExtractor_2eproto
 
 
 // ===================================================================
@@ -71,20 +79,19 @@ const int ArrayFeatureExtractor::kExtractIndexFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ArrayFeatureExtractor::ArrayFeatureExtractor()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_ArrayFeatureExtractor_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_ArrayFeatureExtractor_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.ArrayFeatureExtractor)
 }
-
-void ArrayFeatureExtractor::InitAsDefaultInstance() {
-}
-
 ArrayFeatureExtractor::ArrayFeatureExtractor(const ArrayFeatureExtractor& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      extractindex_(from.extractindex_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.ArrayFeatureExtractor)
 }
 
@@ -106,11 +113,9 @@ void ArrayFeatureExtractor::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const ArrayFeatureExtractor& ArrayFeatureExtractor::default_instance() {
-  protobuf_InitDefaults_ArrayFeatureExtractor_2eproto();
+  protobuf_ArrayFeatureExtractor_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<ArrayFeatureExtractor> ArrayFeatureExtractor_default_instance_;
 
 ArrayFeatureExtractor* ArrayFeatureExtractor::New(::google::protobuf::Arena* arena) const {
   ArrayFeatureExtractor* n = new ArrayFeatureExtractor;
@@ -131,24 +136,25 @@ bool ArrayFeatureExtractor::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.ArrayFeatureExtractor)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // repeated uint64 extractIndex = 1;
       case 1: {
-        if (tag == 10) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
                  input, this->mutable_extractindex())));
-        } else if (tag == 8) {
+        } else if (static_cast< ::google::protobuf::uint8>(tag) ==
+                   static_cast< ::google::protobuf::uint8>(8u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
-                 1, 10, input, this->mutable_extractindex())));
+                 1, 10u, input, this->mutable_extractindex())));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -176,12 +182,15 @@ failure:
 void ArrayFeatureExtractor::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.ArrayFeatureExtractor)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
   // repeated uint64 extractIndex = 1;
   if (this->extractindex_size() > 0) {
     ::google::protobuf::internal::WireFormatLite::WriteTag(1, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
     output->WriteVarint32(_extractindex_cached_byte_size_);
   }
-  for (int i = 0; i < this->extractindex_size(); i++) {
+  for (int i = 0, n = this->extractindex_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt64NoTag(
       this->extractindex(i), output);
   }
@@ -195,12 +204,8 @@ size_t ArrayFeatureExtractor::ByteSizeLong() const {
 
   // repeated uint64 extractIndex = 1;
   {
-    size_t data_size = 0;
-    unsigned int count = this->extractindex_size();
-    for (unsigned int i = 0; i < count; i++) {
-      data_size += ::google::protobuf::internal::WireFormatLite::
-        UInt64Size(this->extractindex(i));
-    }
+    size_t data_size = ::google::protobuf::internal::WireFormatLite::
+      UInt64Size(this->extractindex_);
     if (data_size > 0) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
@@ -226,27 +231,22 @@ void ArrayFeatureExtractor::CheckTypeAndMergeFrom(
 
 void ArrayFeatureExtractor::MergeFrom(const ArrayFeatureExtractor& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.ArrayFeatureExtractor)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void ArrayFeatureExtractor::UnsafeMergeFrom(const ArrayFeatureExtractor& from) {
-  GOOGLE_DCHECK(&from != this);
-  extractindex_.UnsafeMergeFrom(from.extractindex_);
+  extractindex_.MergeFrom(from.extractindex_);
 }
 
 void ArrayFeatureExtractor::CopyFrom(const ArrayFeatureExtractor& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.ArrayFeatureExtractor)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool ArrayFeatureExtractor::IsInitialized() const {
-
   return true;
 }
 
@@ -255,8 +255,7 @@ void ArrayFeatureExtractor::Swap(ArrayFeatureExtractor* other) {
   InternalSwap(other);
 }
 void ArrayFeatureExtractor::InternalSwap(ArrayFeatureExtractor* other) {
-  extractindex_.UnsafeArenaSwap(&other->extractindex_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
+  extractindex_.InternalSwap(&other->extractindex_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -297,9 +296,6 @@ ArrayFeatureExtractor::mutable_extractindex() {
   return &extractindex_;
 }
 
-inline const ArrayFeatureExtractor* ArrayFeatureExtractor::internal_default_instance() {
-  return &ArrayFeatureExtractor_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // @@protoc_insertion_point(namespace_scope)

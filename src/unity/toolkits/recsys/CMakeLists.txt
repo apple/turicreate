@@ -20,5 +20,6 @@ make_library(unity_recsys
     unity_options
     unity_nearest_neighbors
     # unity_evaluation
+    unity_coreml_model_export
     unity_factorization
     unity_core)
