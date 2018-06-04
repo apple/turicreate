@@ -707,6 +707,14 @@ if(APPLE)
     add_definitions(-DHAS_CORE_ML)
     set(HAS_CORE_ML TRUE)
   endif()
+
+  if(mac_version GREATER_EQUAL 10.14)
+    # Core ML only supports batch inference on macOS 10.14 or higher
+    add_definitions(-DHAS_CORE_ML_BATCH_INFERENCE)
+
+    # GPU-accelerated training with MPS backend requires macOS 10.14 or higher
+    set(HAS_MPS TRUE)
+  endif()
 endif()
 
 

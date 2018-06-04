@@ -246,7 +246,7 @@ class ImageClassifierSqueezeNetTest(ImageClassifierTest):
                                                               tol=0.005, num_examples = 200)
 
 
-@unittest.skipIf(tc.util._num_available_gpus() == 0, 'Requires GPU')
+@unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
 @pytest.mark.gpu
 class ImageClassifierGPUTest(unittest.TestCase):
     @classmethod
@@ -275,7 +275,7 @@ class ImageClassifierGPUTest(unittest.TestCase):
         tc.config.set_num_gpus(old_num_gpus)
 
 
-@unittest.skipIf(tc.util._num_available_gpus() == 0, 'Requires GPU')
+@unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
 @pytest.mark.gpu
 class ImageClassifierSqueezeNetGPUTest(unittest.TestCase):
     @classmethod

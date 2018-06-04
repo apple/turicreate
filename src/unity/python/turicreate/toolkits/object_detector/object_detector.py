@@ -16,6 +16,8 @@ from datetime import datetime as _datetime
 import six as _six
 import turicreate as _tc
 import numpy as _np
+from threading import Thread as _Thread
+from six.moves.queue import Queue as _Queue
 
 from turicreate.toolkits._model import CustomModel as _CustomModel
 import turicreate.toolkits._internal_utils as _tkutl
@@ -27,10 +29,39 @@ from turicreate import config as _tc_config
 from .. import _mxnet_utils
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from .. import _pre_trained_models
-
 from ._evaluation import average_precision as _average_precision
+from .._mps_utils import (use_mps as _use_mps,
+                          mps_device_name as _mps_device_name,
+                          MpsGraphAPI as _MpsGraphAPI,
+                          MpsGraphNetworkType as _MpsGraphNetworkType,
+                          MpsGraphMode as _MpsGraphMode,
+                          mps_to_mxnet as _mps_to_mxnet,
+                          mxnet_to_mps as _mxnet_to_mps,
+                          mxnet_network_to_mps_params as _mxnet_network_to_mps_params)
+
 
 _MXNET_MODEL_FILENAME = "mxnet_model.params"
+
+
+def _get_mps_od_net(input_image_shape, batch_size, output_size, anchors,
+                    config, weights={}):
+    """
+    Initializes an MpsGraphAPI for object detection.
+    """
+    network = _MpsGraphAPI(network_id=_MpsGraphNetworkType.kODGraphNet)
+
+    c_in, h_in, w_in =  input_image_shape
+    c_out = output_size
+    h_out = h_in // 32
+    w_out = w_in // 32
+
+    c_view = c_in
+    h_view = h_in
+    w_view = w_in
+
+    network.init(batch_size, c_in, h_in, w_in, c_out, h_out, w_out,
+                 weights=weights, config=config)
+    return network
 
 
 # Standard lib functions would be great here, but the formatting options of
@@ -211,8 +242,12 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         'non_maximum_suppression_threshold': 0.45,
         'rescore': True,
         'clip_gradients': 0.025,
+        'weight_decay': 0.0005,
+        'sgd_momentum': 0.9,
         'learning_rate': 1.0e-3,
         'shuffle': True,
+        'mps_loss_mult': 8,
+        'use_io_threads': True,
     }
 
     if '_advanced_parameters' in kwargs:
@@ -228,10 +263,28 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     anchors = params['anchors']
     num_anchors = len(anchors)
 
-    num_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=params['batch_size'])
-    batch_size_each = params['batch_size'] // max(num_gpus, 1)
+    num_mxnet_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=params['batch_size'])
+    batch_size_each = params['batch_size'] // max(num_mxnet_gpus, 1)
     # Note, this may slightly alter the batch size to fit evenly on the GPUs
-    batch_size = max(num_gpus, 1) * batch_size_each
+    batch_size = max(num_mxnet_gpus, 1) * batch_size_each
+    use_mps = _use_mps() and num_mxnet_gpus == 0
+
+
+    # The IO thread also handles MXNet-powered data augmentation. This seems
+    # to be problematic to run independently of a MXNet-powered neural network
+    # in a separate thread. For this reason, we restrict IO threads to when
+    # the neural network backend is MPS.
+    use_io_threads = use_mps and params['use_io_threads']
+
+    if verbose:
+        if use_mps:
+            print('Using GPU to create model ({})'.format(_mps_device_name()))
+        elif num_mxnet_gpus == 1:
+            print('Using GPU to create model (CUDA)')
+        elif num_mxnet_gpus > 1:
+            print('Using {} GPUs to create model (CUDA)'.format(num_mxnet_gpus))
+        else:
+            print('Using CPU to create model')
 
     grid_shape = params['grid_shape']
     input_image_shape = (3,
@@ -261,6 +314,13 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     class_to_index = {name: index for index, name in enumerate(classes)}
     num_classes = len(classes)
 
+    if max_iterations == 0:
+        # Set number of iterations through a heuristic
+        num_iterations_raw = 5000 * _np.sqrt(num_instances) / batch_size
+        num_iterations = 1000 * max(1, int(round(num_iterations_raw / 1000)))
+    else:
+        num_iterations = max_iterations
+
     # Create data loader
     loader = _SFrameDetectionIter(dataset,
                                   batch_size=batch_size,
@@ -272,7 +332,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                                   shuffle=params['shuffle'],
                                   loader_type='augmented',
                                   feature_column=feature,
-                                  annotations_column=annotations)
+                                  annotations_column=annotations,
+                                  iterations=num_iterations)
 
     # Predictions per anchor box: x/y + w/h + object confidence + class probs
     preds_per_box = 5 + num_classes
@@ -289,13 +350,6 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                      parameters=params)
 
     base_lr = params['learning_rate']
-    if max_iterations == 0:
-        # Set number of iterations through a heuristic
-        num_iterations_raw = 5000 * _np.sqrt(num_instances) / batch_size
-        num_iterations = 1000 * max(1, int(round(num_iterations_raw / 1000)))
-    else:
-        num_iterations = max_iterations
-
     steps = [num_iterations // 2, 3 * num_iterations // 4, num_iterations]
     steps_and_factors = [(step, 10**(-i)) for i, step in enumerate(steps)]
 
@@ -320,24 +374,75 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     # easily hide bugs caused by names getting out of sync.
     ref_model.available_parameters_subset(net_params).load(ref_model.model_path, ctx)
 
-    options = {'learning_rate': base_lr, 'lr_scheduler': lr_scheduler,
-               'momentum': 0.9, 'wd': 0.00005, 'rescale_grad': 1.0}
-    clip_grad = params.get('clip_gradients')
-    if clip_grad:
-        options['clip_gradient'] = clip_grad
+    if use_mps:
+        net.forward(_mx.nd.uniform(0, 1, (batch_size_each,) + input_image_shape))
+        mps_net_params = {}
+        keys = list(net_params)
+        for k in keys:
+            mps_net_params[k] = _mxnet_to_mps(net_params[k].data().asnumpy())
 
-    trainer = _mx.gluon.Trainer(net.collect_params(), 'sgd', options)
+        # Multiplies the loss to move the fp16 gradients away from subnormals
+        # and gradual underflow. The learning rate is correspondingly divided
+        # by the same multiple to make training mathematically equivalent. The
+        # update is done in fp32, which is why this trick works. Does not
+        # affect how loss is presented to the user.
+        mps_loss_mult = params['mps_loss_mult']
 
-    iteration = 0
-    smoothed_loss = None
-    last_time = 0
-    while iteration < num_iterations:
-        loader.reset()
-        for batch in loader:
+        mps_config = {
+            'mode': _MpsGraphMode.Train,
+            'use_sgd': True,
+            'learning_rate': base_lr / params['mps_loss_mult'],
+            'gradient_clipping': params.get('clip_gradients', 0.0) * mps_loss_mult,
+            'weight_decay': params['weight_decay'],
+            'od_include_network': True,
+            'od_include_loss': True,
+            'od_scale_xy': params['lmb_coord_xy'] * mps_loss_mult,
+            'od_scale_wh': params['lmb_coord_wh'] * mps_loss_mult,
+            'od_scale_no_object': params['lmb_noobj'] * mps_loss_mult,
+            'od_scale_object': params['lmb_obj'] * mps_loss_mult,
+            'od_scale_class': params['lmb_class'] * mps_loss_mult,
+            'od_max_iou_for_no_object': 0.3,
+            'od_min_iou_for_object': 0.7,
+            'od_rescore': params['rescore'],
+        }
+
+        mps_net = _get_mps_od_net(input_image_shape=input_image_shape,
+                                  batch_size=batch_size,
+                                  output_size=output_size,
+                                  anchors=anchors,
+                                  config=mps_config,
+                                  weights=mps_net_params)
+    else:
+        options = {'learning_rate': base_lr, 'lr_scheduler': lr_scheduler,
+                   'momentum': params['sgd_momentum'], 'wd': params['weight_decay'], 'rescale_grad': 1.0}
+        clip_grad = params.get('clip_gradients')
+        if clip_grad:
+            options['clip_gradient'] = clip_grad
+        trainer = _mx.gluon.Trainer(net.collect_params(), 'sgd', options)
+
+    progress = {'smoothed_loss': None, 'last_time': 0}
+
+    def handle_request(batch):
+        if use_mps:
+            for x, y in zip(batch.data, batch.label):
+                input_data = _mxnet_to_mps(x.asnumpy())
+                label_data = y.asnumpy().reshape(y.shape[:-2] + (-1,))
+
+                if batch.iteration in steps:
+                    ii = steps.index(batch.iteration) + 1
+                    new_lr = factors[ii] * base_lr
+                    mps_net.set_learning_rate(new_lr / mps_loss_mult)
+
+                mps_net.set_input(input_data)
+                mps_net.set_label(label_data)
+                cur_loss = mps_net.run_graph().sum() / mps_loss_mult
+        else:
             data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0)
             label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0)
 
             Ls = []
+            Zs = []
+
             with _mx.autograd.record():
                 for x, y in zip(data, label):
                     z = net(x)
@@ -347,25 +452,74 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                 for L in Ls:
                     L.backward()
 
-            cur_loss = _np.mean([L.asnumpy()[0] for L in Ls])
-            if smoothed_loss is None:
-                smoothed_loss = cur_loss
-            else:
-                smoothed_loss = 0.9 * smoothed_loss + 0.1 * cur_loss
             trainer.step(1)
-            iteration += 1
-            cur_time = _time.time()
-            if verbose and cur_time > last_time + 10:
-                print('{now:%Y-%m-%d %H:%M:%S}  Training {cur_iter:{width}d}/{num_iterations:{width}d}  Loss {loss:6.3f}'.format(
-                    now=_datetime.now(), cur_iter=iteration, num_iterations=num_iterations,
-                    loss=smoothed_loss, width=len(str(num_iterations))))
-                last_time = cur_time
-            if iteration == num_iterations:
-                break
+            cur_loss = _np.mean([L.asnumpy()[0] for L in Ls])
+        return cur_loss
+
+    def consume_response(cur_loss, iteration):
+        iteration_base1 = iteration + 1
+        if progress['smoothed_loss'] is None:
+            progress['smoothed_loss'] = cur_loss
+        else:
+            progress['smoothed_loss'] = 0.9 * progress['smoothed_loss'] + 0.1 * cur_loss
+        cur_time = _time.time()
+        if verbose and (cur_time > progress['last_time'] + 10 or
+                        iteration_base1 == max_iterations):
+            print('{now:%Y-%m-%d %H:%M:%S}  Training {cur_iter:{width}d}/{num_iterations:{width}d}  Loss {loss:6.3f}'.format(
+                now=_datetime.now(), cur_iter=iteration_base1, num_iterations=num_iterations,
+                loss=progress['smoothed_loss'], width=len(str(num_iterations))))
+            progress['last_time'] = cur_time
+
+    request_queue = _Queue()
+    response_queue = _Queue()
+
+    iteration = 0
+    if not use_io_threads:
+        for batch in loader:
+            cur_loss = handle_request(batch)
+            consume_response(cur_loss, batch.iteration)
+            iteration = batch.iteration
+    else:
+        def model_worker():
+            while True:
+                batch = request_queue.get()  # Consume request
+                if batch is None:
+                    # No more work remains. Allow the thread to finish.
+                    return
+                response_queue.put((handle_request(batch), batch.iteration))  # Produce response
+        model_worker_thread = _Thread(target=model_worker)
+        model_worker_thread.start()
+
+        try:
+            # Attempt to have two requests in progress at any one time (double
+            # buffering), so that the iterator is creating one batch while MXNet
+            # performs inference on the other.
+            if loader.has_next:
+                request_queue.put(next(loader))
+                while loader.has_next:
+                    request_queue.put(next(loader))
+                    consume_response(*response_queue.get())
+                consume_response(*response_queue.get())
+
+        finally:
+            # Tell the worker thread to shut down.
+            request_queue.put(None)
+
+        model_worker_thread.join()
+
+    # If mps was used, load model back into mxnet
+    if use_mps:
+        mps_net_params = mps_net.export()
+        keys = mps_net_params.keys()
+        for k in keys:
+            if k in net_params:
+                net_params[k].set_data(_mps_to_mxnet(mps_net_params[k]))
+
 
     training_time = _time.time() - start_time
 
     # Save the model
+    training_iterations = iteration + 1
     state = {
         '_model': net,
         '_class_to_index': class_to_index,
@@ -384,9 +538,9 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         'num_bounding_boxes': num_instances,
         'training_time': training_time,
         'training_epochs': loader.cur_epoch,
-        'training_iterations': iteration,
+        'training_iterations': training_iterations,
         'max_iterations': max_iterations,
-        'training_loss': smoothed_loss,
+        'training_loss': progress['smoothed_loss'],
     }
     return ObjectDetector(state)
 
@@ -524,6 +678,8 @@ class ObjectDetector(_CustomModel):
                                       annotations_column=self.annotations)
 
         num_anchors = len(self.anchors)
+        preds_per_box = 5 + len(self.classes)
+        output_size = preds_per_box * num_anchors
 
         # If prediction is done with ground truth, two sframes of the same
         # structure are returned, the second one containing ground truth labels
@@ -535,6 +691,24 @@ class ObjectDetector(_CustomModel):
                                             'x', 'y', 'width', 'height'])
             for _ in range(num_returns)
         ]
+
+        num_mxnet_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=self.batch_size)
+        use_mps = _use_mps() and num_mxnet_gpus == 0
+        if use_mps:
+            if not hasattr(self, '_mps_inference_net') or self._mps_inference_net is None:
+                mps_net_params = _mxnet_network_to_mps_params(self._model.collect_params())
+                mps_config = {
+                    'mode': _MpsGraphMode.Inference,
+                    'od_include_network': True,
+                    'od_include_loss': False,
+                }
+                mps_net = _get_mps_od_net(input_image_shape=self.input_image_shape,
+                                          batch_size=self.batch_size,
+                                          output_size=output_size,
+                                          anchors=self.anchors,
+                                          config=mps_config,
+                                          weights=mps_net_params)
+                self._mps_inference_net = mps_net
 
         dataset_size = len(dataset)
         ctx = _mxnet_utils.get_mxnet_context()
@@ -563,7 +737,19 @@ class ObjectDetector(_CustomModel):
             split_oshapes = _mx.gluon.utils.split_data(b_oshapes, num_slice=len(ctx0), even_split=False)
 
             for data, indices, oshapes in zip(split_data, split_indices, split_oshapes):
-                z = self._model(data).asnumpy()
+                if use_mps:
+                    mps_data = _mxnet_to_mps(data.asnumpy())
+                    n_samples = mps_data.shape[0]
+                    if mps_data.shape[0] != self.batch_size:
+                        mps_data_padded = _np.zeros((self.batch_size,) + mps_data.shape[1:],
+                                                    dtype=mps_data.dtype)
+                        mps_data_padded[:mps_data.shape[0]] = mps_data
+                        mps_data = mps_data_padded
+                    self._mps_inference_net.set_input(mps_data)
+                    mps_z = self._mps_inference_net.run_graph()[:n_samples]
+                    z = _mps_to_mxnet(mps_z)
+                else:
+                    z = self._model(data).asnumpy()
                 if not postprocess:
                     raw_results.append(z)
                     continue
@@ -725,15 +911,15 @@ class ObjectDetector(_CustomModel):
 
             - 'auto'                      : Returns all primary metrics.
             - 'all'                       : Returns all available metrics.
-            - 'average_precision'         : Average precision per class calculated over multiple
-                                            intersection-over-union thresholds
-                                            (at 50%, 55%, ..., 95%) and averaged.
             - 'average_precision_50'      : Average precision per class with
                                             intersection-over-union threshold at
                                             50% (PASCAL VOC metric).
-            - 'mean_average_precision'    : Mean over all classes (for ``'average_precision'``)
-                                            This is the primary single-value metric.
+            - 'average_precision'         : Average precision per class calculated over multiple
+                                            intersection-over-union thresholds
+                                            (at 50%, 55%, ..., 95%) and averaged.
             - 'mean_average_precision_50' : Mean over all classes (for ``'average_precision_50'``).
+                                            This is the primary single-value metric.
+            - 'mean_average_precision'    : Mean over all classes (for ``'average_precision'``)
 
         output_type : str
             Type of output:
@@ -774,7 +960,7 @@ class ObjectDetector(_CustomModel):
         elif metric == 'all':
             metrics = ALL_METRICS
         elif metric == 'auto':
-            metrics = {AP, MAP}
+            metrics = {AP50, MAP50}
         elif metric in ALL_METRICS:
             metrics = {metric}
         else:
