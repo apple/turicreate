@@ -141,7 +141,6 @@ function build_capi {
     echo "Stripping local and debug symbols."
     strip -S -x ${install_dir}/lib*.* || echo "Non-fatal error stripping symbols."
   fi
-
 }
 
 function build_capi_framework {
@@ -149,7 +148,7 @@ function build_capi_framework {
   echo "Building C-API as macOS/iOS Framework"
   echo
 
-  run_configure --with-capi-framework ${ios_flag} --no-python --no-visualization -D TC_CAPI_FRAMEWORK_PATH=\"${framework_path}\" || exit 1
+  run_configure --with-capi-framework ${ios_flag} --no-python --no-visualization -D TC_CAPI_FRAMEWORK_PATH=\"${framework_path}\" --release-opt-for-size || exit 1
   mkdir -p ${target_dir}
   cd ${build_dir}/src/capi || exit 1
   make -j ${jobs} || exit 1

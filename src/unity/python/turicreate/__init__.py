@@ -79,6 +79,8 @@ import turicreate.toolkits.object_detector as object_detector
 import turicreate.toolkits.style_transfer as style_transfer
 import turicreate.toolkits.activity_classifier as activity_classifier
 
+from turicreate.toolkits.image_analysis.image_analysis import load_images
+
 from turicreate.toolkits import evaluation
 
 # internal util

@@ -17,13 +17,11 @@ class InstanceNorm(HybridBlock):
     """
     Conditional Instance Norm
     """
-    def __init__(self, epsilon=1e-5, center=True, scale=True,
-                 beta_initializer='zeros', gamma_initializer='ones',
-                 in_channels=0, num_styles=0,  **kwargs):
+    def __init__(self, in_channels, num_styles, batch_size, epsilon=1e-5,
+                 center=True, scale=True, beta_initializer='zeros',
+                 gamma_initializer='ones', **kwargs):
         super(InstanceNorm, self).__init__(**kwargs)
         self._kwargs = {'eps': epsilon}
-        if in_channels != 0:
-            self.in_channels = in_channels
         self.gamma = self.params.get('gamma', grad_req='write' if scale else 'null',
                                      shape=(num_styles, in_channels, ), init=gamma_initializer,
                                      allow_deferred_init=True)
@@ -32,19 +30,33 @@ class InstanceNorm(HybridBlock):
                                     allow_deferred_init=True)
         self.num_styles = num_styles
         self.in_channels = in_channels
-
+        self.batch_size = batch_size
 
     def hybrid_forward(self, F, X, style_idx, gamma, beta):
-        if F == _mx.sym:  # for coreml
+        if F == _mx.sym and self.batch_size == 0:  # for coreml
             gamma = _mx.sym.Embedding(data=style_idx, input_dim=self.num_styles, output_dim=self.in_channels)
             beta = _mx.sym.Embedding(data=style_idx, input_dim=self.num_styles, output_dim=self.in_channels)
             return F.InstanceNorm(X, gamma, beta, name='_fwd', **self._kwargs)
 
-        res = []
-        for idx, style in enumerate(style_idx):
-            res.append(F.InstanceNorm(X[idx:idx+1], gamma[int(style)], beta[int(style)], name='_fwd', **self._kwargs))
+        em_gamma = F.take(gamma, indices=style_idx, axis=0)
+        em_beta = F.take(beta, indices=style_idx, axis=0)
 
-        return _mx.nd.concat(*res, dim=0)
+        sp_gammas = F.split(em_gamma, axis=0, num_outputs=self.batch_size, squeeze_axis=True)
+        sp_betas = F.split(em_beta, axis=0, num_outputs=self.batch_size, squeeze_axis=True)
+
+        if self.batch_size == 1:
+            return F.InstanceNorm(X, sp_gammas, sp_betas, name='_fwd', **self._kwargs)
+        else:
+            Xs = F.split(X, axis=0, num_outputs=self.batch_size)
+
+            res = []
+            for idx in range(self.batch_size):
+                gamma0 = sp_gammas[idx]
+                beta0 = sp_betas[idx]
+                X_slice = Xs[idx]
+                res.append(F.InstanceNorm(X_slice, gamma0, beta0, name='_fwd', **self._kwargs))
+
+            return F.concat(*res, dim=0)
 
 
 class ResidualBlock(HybridBlock):
@@ -52,14 +64,26 @@ class ResidualBlock(HybridBlock):
     Residual network
     """
 
-    def __init__(self, num_styles):
+    def __init__(self, num_styles, batch_size):
         super(ResidualBlock, self).__init__()
 
         with self.name_scope():
             self.conv1 = _nn.Conv2D(128, 3, 1, 1, in_channels=128, use_bias=False)
-            self.inst_norm1 = InstanceNorm(in_channels=128, num_styles=num_styles)
+            self.inst_norm1 = InstanceNorm(in_channels=128, num_styles=num_styles, batch_size=batch_size)
             self.conv2 = _nn.Conv2D(128, 3, 1, 1, in_channels=128, use_bias=False)
-            self.inst_norm2 = InstanceNorm(in_channels=128, num_styles=num_styles)
+            self.inst_norm2 = InstanceNorm(in_channels=128, num_styles=num_styles, batch_size=batch_size)
+
+        self._batch_size = batch_size
+
+    @property
+    def batch_size(self):
+        return self._batch_size
+
+    @batch_size.setter
+    def batch_size(self, batch_size):
+        self.inst_norm1.batch_size = batch_size
+        self.inst_norm2.batch_size = batch_size
+        self._batch_size = batch_size
 
     def hybrid_forward(self, F, x, style_idx):
         h1 = self.conv1(x)
@@ -80,35 +104,51 @@ def gram_matrix(y):
 
 
 class Transformer(HybridBlock):
-    def __init__(self, num_styles):
+    def __init__(self, num_styles, batch_size):
         super(Transformer, self).__init__(prefix='transformer_')
         self.num_styles = num_styles
         block = ResidualBlock
+        self.scale255 = False
 
         with self.name_scope():
             self.conv1 = _nn.Conv2D(32, 9, 1, 4, in_channels=3, use_bias=False)
-            self.inst_norm1 = InstanceNorm(in_channels=32, num_styles=num_styles)
+            self.inst_norm1 = InstanceNorm(in_channels=32, num_styles=num_styles, batch_size=batch_size)
 
             self.conv2 = _nn.Conv2D(64, 3, 2, 1, in_channels=32, use_bias=False)
-            self.inst_norm2 = InstanceNorm(in_channels=64, num_styles=num_styles)
+            self.inst_norm2 = InstanceNorm(in_channels=64, num_styles=num_styles, batch_size=batch_size)
 
             self.conv3 = _nn.Conv2D(128, 3, 2, 1, in_channels=64, use_bias=False)
-            self.inst_norm3 = InstanceNorm(in_channels=128, num_styles=num_styles)
+            self.inst_norm3 = InstanceNorm(in_channels=128, num_styles=num_styles, batch_size=batch_size)
 
-            self.residual1 = block(num_styles)
-            self.residual2 = block(num_styles)
-            self.residual3 = block(num_styles)
-            self.residual4 = block(num_styles)
-            self.residual5 = block(num_styles)
+            self.residual1 = block(num_styles, batch_size=batch_size)
+            self.residual2 = block(num_styles, batch_size=batch_size)
+            self.residual3 = block(num_styles, batch_size=batch_size)
+            self.residual4 = block(num_styles, batch_size=batch_size)
+            self.residual5 = block(num_styles, batch_size=batch_size)
 
             self.decoder_conv1 = _nn.Conv2D(64, 3, 1, 1, in_channels=128, use_bias=False)
-            self.inst_norm4 = InstanceNorm(in_channels=64, num_styles=num_styles)
+            self.inst_norm4 = InstanceNorm(in_channels=64, num_styles=num_styles, batch_size=batch_size)
 
             self.decoder_conv2 = _nn.Conv2D(32, 3, 1, 1, in_channels=64, use_bias=False)
-            self.inst_norm5 = InstanceNorm(in_channels=32, num_styles=num_styles)
+            self.inst_norm5 = InstanceNorm(in_channels=32, num_styles=num_styles, batch_size=batch_size)
 
             self.decoder_conv3 = _nn.Conv2D(3, 9, 1, 4, in_channels=32, use_bias=False)
-            self.inst_norm6 = InstanceNorm(in_channels=3, num_styles=num_styles)
+            self.inst_norm6 = InstanceNorm(in_channels=3, num_styles=num_styles, batch_size=batch_size)
+
+    @property
+    def batch_size(self):
+        return self._batch_size
+
+    @batch_size.setter
+    def batch_size(self, batch_size):
+        inst_norm_layers = [
+            self.inst_norm1, self.inst_norm2, self.inst_norm3,
+            self.inst_norm4, self.inst_norm5, self.inst_norm6,
+            self.residual1, self.residual2, self.residual3,
+            self.residual4, self.residual5,
+        ]
+        for layer in inst_norm_layers:
+            layer.batch_size = batch_size
 
     def hybrid_forward(self, F, X, style_idx):
         h1 = self.conv1(X)
@@ -141,10 +181,12 @@ class Transformer(HybridBlock):
 
         d3 = self.decoder_conv3(d2)
         d3 = self.inst_norm6(d3, style_idx)
-        if F == _mx.sym:
-            return F.Activation(d3, 'sigmoid') * 255.0
 
-        return F.Activation(d3, 'sigmoid')
+        z = F.Activation(d3, 'sigmoid')
+        if self.scale255:
+            return z * 255
+        else:
+            return z
 
 
 class Vgg16(HybridBlock):
@@ -165,7 +207,6 @@ class Vgg16(HybridBlock):
             self.conv4_1 = _nn.Conv2D(in_channels=256, channels=512, kernel_size=3, padding=1)
             self.conv4_2 = _nn.Conv2D(in_channels=512, channels=512, kernel_size=3, padding=1)
             self.conv4_3 = _nn.Conv2D(in_channels=512, channels=512, kernel_size=3, padding=1)
-
 
     def hybrid_forward(self, F, X):
         h = F.Activation(self.conv1_1(X), act_type='relu')

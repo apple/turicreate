@@ -2902,7 +2902,6 @@ std::shared_ptr<model_base> unity_sarray::plot(const std::string& path_to_client
   using namespace turi;
   using namespace turi::visualization;
 
-  logprogress_stream << "Materializing SArray" << std::endl;
   this->materialize();
 
   if (this->size() == 0) {

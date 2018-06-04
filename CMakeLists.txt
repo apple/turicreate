@@ -43,6 +43,7 @@ if(${TC_BUILD_PYTHON})
 
   include(UseCython)
   add_definitions(-DTC_HAS_PYTHON)
+  add_definitions(-DTC_BUILD_VISUALIZATION_CLIENT)
 else()
   message("Skipping python libraries.")
 endif()
@@ -183,7 +184,7 @@ message(WARNING "OpenMP Libraries were not found")
 #**************************************************************************/
 if (CLANG)
 set(CPP11_FLAGS "-std=c++11 -stdlib=libc++ -Wno-deprecated-register -Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900" CACHE STRING "C++11 enabling flags")
-set(WERROR_FLAGS "-Werror -Wno-error=tautological-undefined-compare -Wno-error=reorder -Wno-error=exceptions -Wno-error=switch -Wno-error=sometimes-uninitialized -Wno-error=unused-lambda-capture -Wno-error=missing-braces -Wno-error=absolute-value -Wno-error=potentially-evaluated-expression -Wno-error=null-arithmetic -Wno-error=format -Wno-error=pessimizing-move -Wno-error=comment -Wno-error=main -Wno-error=constant-conversion -Wno-error=deprecated-declarations -Wno-error=return-type -Wno-error=inconsistent-missing-override -Wno-error=overloaded-virtual -Wno-error=unused-private-field -Wno-error=unused-variable -Wno-error=unused-local-typedef")
+set(WERROR_FLAGS "-Werror -Wno-error=tautological-undefined-compare -Wno-error=reorder -Wno-error=exceptions -Wno-error=switch -Wno-error=sometimes-uninitialized -Wno-error=unused-lambda-capture -Wno-error=missing-braces -Wno-error=absolute-value -Wno-error=potentially-evaluated-expression -Wno-error=null-arithmetic -Wno-error=format -Wno-error=pessimizing-move -Wno-error=comment -Wno-error=main -Wno-error=constant-conversion -Wno-error=deprecated-declarations -Wno-error=return-type -Wno-error=inconsistent-missing-override -Wno-error=overloaded-virtual -Wno-error=unused-private-field -Wno-error=unused-variable -Wno-error=unused-local-typedef -Wno-error=unguarded-availability-new")
 else()
 set(CPP11_FLAGS "-std=c++11 -Wno-enum-compare -Wno-conversion-null -ftemplate-depth=900" CACHE STRING "C++11 enabling flags")
 set(WERROR_FLAGS "")
@@ -411,21 +412,6 @@ include(copy_file)
 include(CMakeParseArguments)
 include(eval)
 
-add_custom_target(external_dependencies)
-
-include(ExternalProject)
-file(GLOB packages "${DEPS_CMAKE}/ExternalProject*.cmake")
-foreach(package ${packages})
-        message(STATUS "We found local package: ${package}")
-        get_filename_component(packagename "${package}" NAME_WE)
-        #package is of the form ExternalProjectXXX"
-        include(${package})
-        STRING(SUBSTRING "${packagename}" 15 -1 depname)
-        message(STATUS "We found local package definition: ${depname}")
-        string(TOLOWER ${depname} depname)
-        set(package_${depname} requires_${depname} CACHE STRING "Package map")
-        add_dependencies(external_dependencies ex_${depname})
-endforeach()
 
 # This is an internal function and should not be used
 # Usage:
@@ -738,7 +724,6 @@ function (make_boost_test NAME)
 endfunction()
 
 
-# Core ML is only present on macOS 10.13 or higher
 if(APPLE)
   EXEC_PROGRAM(xcrun ARGS --show-sdk-version OUTPUT_VARIABLE mac_version RETURN_VALUE _xcrun_ret)
 
@@ -878,6 +863,21 @@ endmacro()
 include(SharedLibraryFromStatic)
 include(MergeStaticLibraries)
 
+add_custom_target(external_dependencies)
+
+include(ExternalProject)
+file(GLOB packages "${DEPS_CMAKE}/ExternalProject*.cmake")
+foreach(package ${packages})
+        message(STATUS "We found local package: ${package}")
+        get_filename_component(packagename "${package}" NAME_WE)
+        #package is of the form ExternalProjectXXX"
+        include(${package})
+        STRING(SUBSTRING "${packagename}" 15 -1 depname)
+        message(STATUS "We found local package definition: ${depname}")
+        string(TOLOWER ${depname} depname)
+        set(package_${depname} requires_${depname} CACHE STRING "Package map")
+        add_dependencies(external_dependencies ex_${depname})
+endforeach()
 
 include_directories(src)
 include_directories(SYSTEM src/external)

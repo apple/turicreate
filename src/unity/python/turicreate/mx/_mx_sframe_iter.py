@@ -23,15 +23,15 @@ from turicreate import SFrame, SArray, Image
 from turicreate import extensions as sf_extension
 
 
-def _copy_from_sframe(sf, buf, start, end, field_length, bias=0):
+def _copy_from_sframe(sf, buf, start, end, shape, bias=0):
     assert isinstance(sf, SFrame)
-    sf_extension.sframe_load_to_numpy(sf, buf.ctypes.data + buf.strides[0] * bias, buf.strides, field_length, start, end)
+    sf_extension.sframe_load_to_numpy(sf, buf.ctypes.data + buf.strides[0] * bias, buf.strides, shape, start, end)
 
 
-def _copy_from_sarray(sa, buf, start, end, field_length, bias=0):
+def _copy_from_sarray(sa, buf, start, end, shape, bias=0):
     assert isinstance(sa, SArray)
     sf = SFrame({'__tmp__': sa})
-    _copy_from_sframe(sf, buf, start, end, [field_length], bias)
+    _copy_from_sframe(sf, buf, start, end, shape, bias)
 
 
 def _init_data(data, allow_empty, default_name):
@@ -115,12 +115,10 @@ class SFrameIter(DataIter):
             self.label_sframe = sframe[label_field]
 
         # allocate ndarray
-        inferred_shape = self.infer_shape()
-        data_shape = list(inferred_shape["final_shape"])
+        data_shape = list(self.infer_shape())
         data_shape.insert(0, batch_size)
         self.data_shape = tuple(data_shape)
         self.label_shape = (batch_size, )
-        self.field_length = inferred_shape["field_length"]
         self.data_ndarray = np.zeros(self.data_shape, dtype=np.float32)
         self.label_ndarray = np.zeros(self.label_shape, dtype=np.float32)
         self.data_mx_ndarray = None
@@ -176,7 +174,7 @@ class SFrameIter(DataIter):
             return (first_image.channels, first_image.height, first_image.width)
 
     def infer_shape(self):
-        ret = {"field_length": [], "final_shape": None}
+        ret = None
         features = self.data_sframe.column_names()
         assert len(features) > 0
         if len(features) > 1:
@@ -187,22 +185,16 @@ class SFrameIter(DataIter):
                 if len(colshape) != 1:
                     raise ValueError('Only one column is allowed if input is image typed')
                 shape += colshape[0]
-                ret["field_length"].append(colshape[0])
-            ret["final_shape"] = (shape,)
+            ret = (shape,)
         else:
-            col_shape = self._infer_column_shape(self.data_sframe[features[0]])
-            ret["final_shape"] = col_shape
-            length = 1
-            for x in col_shape:
-                length = length * x
-            ret["field_length"].append(length)
+            ret = self._infer_column_shape(self.data_sframe[features[0]])
         return ret
 
     def _copy(self, start, end, bias=0):
-        _copy_from_sframe(self.data_sframe, self.data_ndarray, start, end, self.field_length, bias)
+        _copy_from_sframe(self.data_sframe, self.data_ndarray, start, end, self.data_shape, bias)
         self.data_mx_ndarray = None
         if self.label_field is not None:
-            _copy_from_sarray(self.label_sframe, self.label_ndarray, start, end, 1, bias)
+            _copy_from_sarray(self.label_sframe, self.label_ndarray, start, end, (self.batch_size, 1), bias)
             self.label_mx_ndarray = None
 
     def iter_next(self):
@@ -256,6 +248,8 @@ class SFrameImageIter(SFrameIter):
         label field in SFrame
     batch_size : int, optional
         batch size
+    image_shape : tuple, optional
+        if specified, each image will be resized to this (channel, height, width)
     mean_r : float, optional
         normalize the image by subtracting the mean value of r channel, or the first channel for
     mean_g : float, optional
@@ -284,10 +278,11 @@ class SFrameImageIter(SFrameIter):
 
     Notes
     -----
-    - Image column must contain images of the same size.
+    - Image column must contain images of the same size if image_shape is not provided.
     """
 
     def __init__(self, sframe, data_field, label_field=None, batch_size=1,
+                 image_shape=None,
                  data_name='data', label_name='softmax_label',
                  mean_r=0.0,
                  mean_g=0.0,
@@ -296,6 +291,10 @@ class SFrameImageIter(SFrameIter):
                  scale=1.0,
                  random_flip=False,
                  **kwargs):
+        if image_shape is not None and len(image_shape) != 3:
+            raise ValueError('image_shape must be a (channels, height, width) tuple')
+        self.image_shape = image_shape
+
         super(SFrameImageIter, self).__init__(sframe, data_field, label_field, batch_size,
                                               data_name, label_name)
 
@@ -339,6 +338,9 @@ class SFrameImageIter(SFrameIter):
         dtype = sarray.dtype
         if not dtype is Image:
             raise TypeError('Data column must be image type')
+
+        if self.image_shape is not None:
+            return self.image_shape
 
         first_image = sarray.head(1)[0]
         if first_image is None:
