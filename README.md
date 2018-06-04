@@ -22,6 +22,7 @@ With Turi Create, you can accomplish many common ML tasks:
 | [Recommender](https://apple.github.io/turicreate/docs/userguide/recommender/)             | Personalize choices for users    |
 | [Image Classification](https://apple.github.io/turicreate/docs/userguide/image_classifier/)    | Label images                     |
 | [Object Detection](https://apple.github.io/turicreate/docs/userguide/object_detection/)        | Recognize objects within images  |
+| [Style Transfer](https://apple.github.io/turicreate/docs/userguide/style_transfer/)        | Stylize images |
 | [Activity Classification](https://apple.github.io/turicreate/docs/userguide/activity_classifier/) | Detect an activity using sensors |
 | [Image Similarity](https://apple.github.io/turicreate/docs/userguide/image_similarity/)        | Find similar images              |
 | [Classifiers](https://apple.github.io/turicreate/docs/userguide/supervised-learning/classifier.html)             | Predict yes/no values           |
