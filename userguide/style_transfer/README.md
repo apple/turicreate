@@ -49,7 +49,7 @@ Museum](https://www.metmuseum.org/art/) and others. Here are a few style
 images from [istock](https://www.istockphoto.com/) that contain unique
 stylistic elements that can create interesting effects.
 
-#####Style Images
+##### Style Images
 ![Examples of style images](images/styles.png)
 
 In addition to style images, we also require some content images. These
@@ -58,7 +58,7 @@ might see in your application. As an example, if your application
 involves a lot of selfies, then using selfies as content images, in the
 training process, can result in better models.
 
-#####Content Image
+##### Content Image
 ![Example of a content image](images/cat.png)
 
 
