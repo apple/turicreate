@@ -1,8 +1,8 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
- *
- * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
- */
+//
+//  StandardScalarValidator
+//  libmlmodelspec
+//
+
 #include "Result.hpp"
 #include "Validators.hpp"
 #include "ValidatorUtils-inl.hpp"
@@ -14,13 +14,14 @@ namespace CoreML {
     Result validate<MLModelType_scaler>(const Specification::Model& format) {
         const auto& description = format.description();
         
-        // Convenience typedefs
+            // Convenience typedefs
         typedef Specification::FeatureType FT;
+        typedef Specification::Imputer::ReplaceValueCase RVC;
         
         Result result;
 
         // Validate its a MLModel type.
-        result = validateModelDescription(description);
+        result = validateModelDescription(description, format.specificationversion());
         if (!result.good()) {
             return result;
         }
@@ -58,7 +59,7 @@ namespace CoreML {
                           "Type of input feature does not match the output type feature.");
         }
         
-        // If it's an array, we need to test sizes.
+            // If it's an array, we need to test sizes.
         if(input.type().Type_case() == FT::kMultiArrayType) {
             if(input.type().multiarraytype().shape_size() != 1) {
                 return Result(ResultType::INVALID_MODEL_PARAMETERS,
@@ -72,7 +73,7 @@ namespace CoreML {
             }
             
             // Now, make sure that the repeated values make sense.
-            size_t shift_size = format.scaler().shiftvalue_size();
+            int64_t shift_size = static_cast<int64_t>(format.scaler().shiftvalue_size());
             
             if(!(shift_size == 0 || shift_size == 1
                  || shift_size == input.type().multiarraytype().shape(0))) {
@@ -81,8 +82,8 @@ namespace CoreML {
                               "For input type array, specified shift values must be empty, a scalar, or a vector of the matching length.");
             }
             
-            // Now, make sure that the repeated values make sense.
-            size_t scale_size = format.scaler().scalevalue_size();
+                // Now, make sure that the repeated values make sense.
+            int64_t scale_size = static_cast<int64_t>(format.scaler().scalevalue_size());
             
             if(!(scale_size == 0 || scale_size == 1
                  || scale_size == input.type().multiarraytype().shape(0))) {
@@ -91,8 +92,8 @@ namespace CoreML {
                               "For input type array, specified scale values must be empty, a scalar, or a vector of the matching length.");
             }
         } else {
-            // Now, make sure that the repeated values make sense.
-            size_t shift_size = format.scaler().shiftvalue_size();
+                // Now, make sure that the repeated values make sense.
+            size_t shift_size = static_cast<size_t>(format.scaler().shiftvalue_size());
             
             if(!(shift_size == 0 || shift_size == 1)) {
                 
@@ -100,8 +101,8 @@ namespace CoreML {
                               "For a scalar imput type, specified shift value must be empty or a scalar.");
             }
             
-            // Now, make sure that the repeated values make sense.
-            size_t scale_size = format.scaler().scalevalue_size();
+                // Now, make sure that the repeated values make sense.
+            size_t scale_size = static_cast<size_t>(format.scaler().scalevalue_size());
             
             if(!(scale_size == 0 || scale_size == 1)) {
                 

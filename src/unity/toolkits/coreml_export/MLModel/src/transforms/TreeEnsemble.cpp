@@ -1,8 +1,11 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
- *
- * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
- */
+//
+//  MLTreeEnsembleSpecification.cpp
+//  CoreML
+//
+//  Created by Hoyt Koepke on 10/21/16.
+//  Copyright Â© 2016 Apple Inc. All rights reserved.
+//
+
 #include "TreeEnsemble.hpp"
 #include "../Format.hpp"
 #include "../TreeEnsembleCommon.hpp"
@@ -21,7 +24,7 @@ namespace CoreML {
     TreeEnsembleClassifier::TreeEnsembleClassifier
     (const std::string& predictedClassOutputName,
      const std::string& classProbabilityOutputName,
-     const std::string& name, const std::string& description)
+     const std::string& description)
     : TreeEnsembleBase(Model(description), true /* isClassifier */),
       tree_classifier_parameters(m_spec->mutable_treeensembleclassifier())
     {
@@ -31,7 +34,7 @@ namespace CoreML {
 
     TreeEnsembleRegressor::TreeEnsembleRegressor
     (const std::string& predictedValueOutput,
-     const std::string& name, const std::string& description)
+     const std::string& description)
     : TreeEnsembleBase(Model(description), false /* isClassifier */)
     , tree_regressor_parameters(m_spec->mutable_treeensembleregressor())
     {
