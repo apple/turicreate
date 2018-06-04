@@ -155,14 +155,10 @@ EXPORT file_status get_file_status(const std::string& path) {
       return file_status::MISSING;
     }
   } else if (boost::starts_with(path, "s3://")) {
-#ifdef TC_BUILD_CAPI_IOS
-    log_and_throw("s3:// URLs not supported.");
-#else
     std::pair<bool, bool> ret = is_directory(path);
     if (ret.first == false) return file_status::MISSING;
     else if (ret.second == false) return file_status::REGULAR_FILE;
     else if (ret.second == true) return file_status::DIRECTORY;
-#endif
   } else if (is_web_protocol(get_protocol(path))) {
     return file_status::REGULAR_FILE;
     // some other web protocol?
@@ -208,9 +204,6 @@ get_directory_listing(const std::string& path) {
       // failure for some reason. return with nothing
     }
   } else if (boost::starts_with(path, "s3://")) {
-#ifdef TC_BUILD_CAPI_IOS
-    log_and_throw("s3:// URLs not supported.");
-#else
     list_objects_response response = list_directory(path);
     for (auto dir: response.directories) {
       ret.push_back({dir, file_status::DIRECTORY});
@@ -253,9 +246,6 @@ EXPORT bool create_directory(const std::string& path) {
 #ifdef TC_ENABLE_REMOTEFS
   } else if(boost::starts_with(path, "hdfs://")) {
     // hdfs
-#ifdef TC_BUILD_CAPI_IOS
-    log_and_throw("hdfs:// URLs not supported.");
-#else
     std::string host, port, hdfspath;
     std::tie(host, port, hdfspath) = parse_hdfs_url(path);
     try {
@@ -342,9 +332,6 @@ bool delete_path_impl(const std::string& path,
       return false;
     }
   } else if (boost::starts_with(path, "s3://")) {
-#ifdef TC_BUILD_CAPI_IOS
-    log_and_throw("s3:// URLs not supported.");
-#else
     return delete_object(path).empty();
 #endif
   } else {
@@ -373,9 +360,6 @@ EXPORT bool delete_path_recursive(const std::string& path) {
 #ifdef TC_ENABLE_REMOTEFS
   } else if(boost::starts_with(path, "hdfs://")) {
     // hdfs
-#ifdef TC_BUILD_CAPI_IOS
-    log_and_throw("hdfs:// URLs not supported.");
-#else
     std::string host, port, hdfspath;
     std::tie(host, port, hdfspath) = parse_hdfs_url(path);
     try {
@@ -387,11 +371,7 @@ EXPORT bool delete_path_recursive(const std::string& path) {
       // failure for some reason. return with nothing
       return false;
     }
-#endif
   } else if(boost::starts_with(path, "s3://")) {
-#ifdef TC_BUILD_CAPI_IOS
-    log_and_throw("s3:// URLs not supported.");
-#else
     return delete_prefix(path).empty();
 #endif
   } else {
@@ -683,9 +663,6 @@ bool change_file_mode(const std::string path, short mode) {
   }
 
   if(boost::starts_with(path, "hdfs://")) {
-#ifdef TC_BUILD_CAPI_IOS
-    log_and_throw("hdfs:// URLs not supported.");
-#else
 #ifdef HAS_HADOOP
     // hdfs
     std::string host, port, hdfspath;
@@ -701,7 +678,6 @@ bool change_file_mode(const std::string path, short mode) {
     }
 #else
       return false;
-#endif
 #endif
   } else if (boost::starts_with(path, fileio::get_cache_prefix())) {
     // this is a cache file. There is no filesystem.

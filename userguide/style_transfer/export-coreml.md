@@ -39,7 +39,7 @@ Now, you can stylize your images using:
 let mlModel = MyStyleTransferModel()
 let visionModel = try VNCoreMLModel(for: mlModel)
 
-let styleTranser = VNCoreMLRequest(model: visionModel, completionHandler: { (request, error) in
+let styleTransfer = VNCoreMLRequest(model: visionModel, completionHandler: { (request, error) in
         guard let results = request.results else { return }
 
     for case let styleTransferedImage as VNPixelBufferObservation in results {

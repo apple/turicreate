@@ -87,6 +87,12 @@ extern std::string S3_ENDPOINT;
 
 /**
  * \ingroup fileio
+ * The number of GPUs.
+ */
+extern int64_t NUM_GPUS;
+
+/**
+ * \ingroup fileio
  * Gets the alternative ssl certificate file and directory.
  */
 const std::string& get_alternative_ssl_cert_dir();

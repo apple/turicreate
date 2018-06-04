@@ -127,19 +127,3 @@ def load_net_params_from_state(net_params, state, ctx = None):
         #net_params[k].set_data(net_params_dict[k])
         net_params[k]._load_init(net_params_dict[k], ctx)
     return net_params
-
-
-# mean subtraction
-def subtract_imagenet_mean(batch):
-    """Subtract ImageNet mean from RGB image"""
-    from mxnet import nd
-    batch = batch * 255.0
-    batch = nd.swapaxes(batch,0, 1)
-    (r, g, b) = nd.split(batch, num_outputs=3, axis=0)
-    mean_values = [123.68, 116.779, 103.939]
-    r = r - mean_values[0]
-    g = g - mean_values[1]
-    b = b - mean_values[2]
-    batch = nd.concat(r, g, b, dim=0)
-    batch = nd.swapaxes(batch,0, 1)
-    return batch

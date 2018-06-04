@@ -43,7 +43,7 @@ class SFrameSTIter(_mx.io.DataIter):
 
     def __init__(self, sframe, batch_size, shuffle, feature_column,
                  input_shape, num_epochs=None, repeat_each_image=1,
-                 loader_type='stretch', aug_params={}):
+                 loader_type='stretch', aug_params={}, sequential=True):
 
         if sframe[feature_column].dtype != _tc.Image:
             raise _ToolkitError('Feature column must be of type Image')
@@ -92,7 +92,13 @@ class SFrameSTIter(_mx.io.DataIter):
         self.sframe = sframe.copy()
 
         # Convert images to raw to eliminate overhead of decoding
-        self.sframe[_TMP_COL_PREP_IMAGE] = self.sframe[self.feature_column].apply(img_prep_fn)
+        if sequential:
+            builder = _tc.SArrayBuilder(_tc.Image)
+            for img in self.sframe[self.feature_column]:
+                builder.append(img_prep_fn(img))
+            self.sframe[_TMP_COL_PREP_IMAGE] = builder.close()
+        else:
+            self.sframe[_TMP_COL_PREP_IMAGE] = self.sframe[self.feature_column].apply(img_prep_fn)
 
         self._provide_data = [
             _mx.io.DataDesc(name='image',

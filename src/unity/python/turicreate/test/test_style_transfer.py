@@ -71,12 +71,13 @@ class StyleTransferTest(unittest.TestCase):
         self.pre_trained_model = 'resnet-16'
         ## Create the model
         # Model
-        self.style_sf = _get_data(feature=self.feature, num_examples=_NUM_STYLES)
-        self.content_sf = _get_data(feature=self.feature)
+        self.style_sf = _get_data(feature=self.style_feature, num_examples=_NUM_STYLES)
+        self.content_sf = _get_data(feature=self.content_feature)
         self.num_styles = _NUM_STYLES
         self.model = tc.style_transfer.create(self.style_sf,
                                               self.content_sf,
-                                              feature=self.feature,
+                                              style_feature=self.style_feature,
+                                              content_feature=self.content_feature,
                                               max_iterations=0,
                                               model=self.pre_trained_model)
 
@@ -144,7 +145,13 @@ class StyleTransferTest(unittest.TestCase):
 
             # Check the structure of the output
             _raise_error_if_not_sframe(stylized_out)
-            self.assertEqual(len(stylized_out), len(sf))
+            if style is None:
+                num_styles = self.num_styles
+            elif isinstance(style, list):
+                num_styles = len(style)
+            else:
+                num_styles = 1
+            self.assertEqual(len(stylized_out), len(sf)*num_styles)
 
             # Check if input and output image have the same shape
             input_size = (sf[self.content_feature][0].width, sf[self.content_feature][0].height)
@@ -199,8 +206,8 @@ class StyleTransferTest(unittest.TestCase):
         if _mac_ver() >= (10, 13):
             index_data = np.zeros(self.num_styles)
             index_data[0] = 1
-            coreml_output = coreml_model.predict({self.feature: pil_img, 'index':index_data}, usesCPUOnly = True)
-            img = coreml_output[coreml_output.keys()[0]]
+            coreml_output = coreml_model.predict({self.content_feature: pil_img, 'index':index_data}, usesCPUOnly = True)
+            img = next(iter(coreml_output.values()))
             img = np.asarray(img)
             img = img[..., 0:3]
 
@@ -214,14 +221,6 @@ class StyleTransferTest(unittest.TestCase):
 
         model2 = tc.style_transfer.create(self.style_sf, self.content_sf, max_iterations=1)
         model2.export_coreml(filename2)
-
-    @unittest.skipIf(sys.platform != 'darwin', 'Only supported on Mac')
-    def test_no_gpu_mac_support(self):
-        num_gpus = tc.config.get_num_gpus()
-        tc.config.set_num_gpus(1)
-        with self.assertRaises(_ToolkitError):
-            tc.style_transfer.create(self.style_sf, self.content_sf, max_iterations=1)
-        tc.config.set_num_gpus(num_gpus)
 
     def test_repr(self):
         model = self.model
@@ -239,14 +238,14 @@ class StyleTransferTest(unittest.TestCase):
             print("Get styles passed")
 
 
-@unittest.skipIf(tc.util._num_available_gpus() == 0, 'Requires GPU')
+@unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
 @pytest.mark.gpu
 class StyleTransferGPUTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
-        self.feature = 'image'
-        self.style_sf = _get_data(feature=self.feature)
-        self.content_sf = _get_data(feature=self.feature)
+        self.style_feature = self.content_feature = 'image'
+        self.style_sf = _get_data(feature=self.style_feature)
+        self.content_sf = _get_data(feature=self.content_feature)
 
 
     def test_gpu_save_load_export(self):

@@ -30,7 +30,7 @@ public:
   // free to perform this computation in a more optimized fashion. The input
   // SArray may also contain flex_string values, in which case each string is
   // interpreted as a URL from which the image can be loaded.
-  virtual gl_sarray extract_features(gl_sarray images) const = 0;
+  virtual gl_sarray extract_features(gl_sarray images, bool verbose, size_t batch_size) const = 0;
 };
 
 }  // image_deep_feature_extractor
