@@ -1,6 +1,6 @@
 project(unity)
 
-if(APPLE)
+if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
   make_copy_target(
     tcmps_copy
     TARGETS

@@ -1,6 +1,6 @@
 project(unity_toolkits)
 
-if(APPLE AND HAS_MPS)
+if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
     make_library(tcmps
         SOURCES
         mps_graph_trainer.mm

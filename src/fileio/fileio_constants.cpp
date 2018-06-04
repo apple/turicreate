@@ -13,7 +13,7 @@
 #include <fileio/block_cache.hpp>
 #include <globals/globals.hpp>
 #include <random/random.hpp>
-#ifdef TC_HAS_REMOTEFS
+#ifdef TC_ENABLE_REMOTEFS
 #include <fileio/hdfs.hpp>
 #endif
 #include <iostream>
@@ -91,9 +91,12 @@ static bool check_cache_file_location(std::string val) {
   return true;
 }
 
-#ifdef TC_HAS_REMOTEFS
+#ifdef TC_ENABLE_REMOTEFS
 static bool check_cache_file_hdfs_location(std::string val) {
   if (get_protocol(val) == "hdfs") {
+#ifdef TC_BUILD_IOS
+    log_and_throw("hdfs:// URLs not supported.");
+#else
     if (get_file_status(val) == file_status::DIRECTORY) {
       // test hdfs write permission by createing a test directory
       namespace fs = boost::filesystem;
@@ -111,6 +114,7 @@ static bool check_cache_file_hdfs_location(std::string val) {
     } else {
       throw std::string("Directory: ") + val + " does not exist";
     }
+#endif
   }
   throw std::string("Invalid hdfs path: ") + val;
 }
@@ -148,7 +152,7 @@ REGISTER_GLOBAL_WITH_CHECKS(std::string,
                             check_cache_file_location);
 
 
-#ifdef TC_HAS_REMOTEFS
+#ifdef TC_ENABLE_REMOTEFS
 REGISTER_GLOBAL_WITH_CHECKS(std::string,
                             CACHE_FILE_HDFS_LOCATION,
                             true,

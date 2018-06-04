@@ -5,13 +5,13 @@
  */
 #ifndef CPPIPC_MAGIC_MACROS_HPP
 #define CPPIPC_MAGIC_MACROS_HPP
+#include <cppipc/ipc_object_base.hpp>
+#include <cppipc/registration_macros.hpp>
 #ifndef DISABLE_TURI_CPPIPC_PROXY_GENERATION
+#include <cppipc/server/comm_server.hpp>
 #include <cppipc/client/object_proxy.hpp>
 #include <cppipc/cppipc.hpp>
 #endif
-#include <cppipc/server/comm_server.hpp>
-#include <cppipc/ipc_object_base.hpp>
-#include <cppipc/registration_macros.hpp>
 #include <cppipc/common/ipc_deserializer.hpp>
 #include <serialization/serialization_includes.hpp>
 #include <boost/preprocessor.hpp>

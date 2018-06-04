@@ -1830,3 +1830,19 @@ class _Recommender(_Model):
 
         response = _turicreate.extensions._recsys.get_item_intersection_info(opts)
         return response['item_intersections']
+
+    def export_coreml(self, filename):
+        """
+        Export the model in Core ML format.
+
+        Parameters
+        ----------
+        filename: str
+          A valid filename where the model can be saved.
+
+        Examples
+        --------
+        >>> model.export_coreml('myModel.mlmodel')
+        """
+        import turicreate as tc
+        tc.extensions._recsys.export_to_coreml(self.__proxy__, filename)

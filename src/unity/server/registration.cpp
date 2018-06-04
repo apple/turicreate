@@ -51,6 +51,11 @@
 namespace turi {
 
 void register_functions(toolkit_function_registry& registry) {
+
+  registry.register_toolkit_function(turi::evaluation::get_toolkit_function_registration());
+  registry.register_toolkit_function(turi::supervised::get_toolkit_function_registration());
+  registry.register_toolkit_function(turi::sdk_model::activity_classification::get_toolkit_function_registration());
+
   registry.register_toolkit_function(image_util::get_toolkit_function_registration());
 #if(TC_BUILD_VISUALIZATION_CLIENT)
   registry.register_toolkit_function(visualization::get_toolkit_function_registration());

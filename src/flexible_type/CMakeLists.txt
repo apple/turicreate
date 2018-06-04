@@ -10,6 +10,7 @@ make_library(flexible_type
   SOURCES
     flexible_type.cpp
     string_escape.cpp
+    flexible_type_conversion_utilities.cpp
     flexible_type_spirit_parser.cpp
   REQUIRES
     logger
