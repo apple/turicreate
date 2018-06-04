@@ -2,10 +2,10 @@
 
 Style Transfer is a task wherein the stylistic elements of a style image
 are imitated onto a new image while preserving the content of the new
-image. As an example, a style transfer model that captures this [style
-image](#style-images) when applied to this [content
-image](#content-image) results in ![this stylized
-image](#style-images)](images/cat-stylized.png).
+image. As an example, a style transfer model that uses these [style
+images](#style-images) when applied to this [content image](#content-image) 
+results in
+![stylized images](images/cat-stylized.png).
 
 The training procedure for style transfer requires the following data:
 - Content images: A set of representative images in your application
@@ -96,7 +96,8 @@ For a model with 8 styles, the output looks like this:
 [8 rows x 3 columns]
 ```
 
-The resulting images look like ![this](images/stylized_sframe.png)
+The resulting images look like 
+![stylized_sframe](images/stylized_sframe.png)
 
 By default `stylize` will stylize a test image with all the styles used
 in the training.  You can also stylize on selected styles by passing
