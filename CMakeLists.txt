@@ -700,6 +700,15 @@ function (make_boost_test NAME)
 endfunction()
 
 
+# Core ML is only present on macOS 10.13 or higher
+if(APPLE)
+  EXEC_PROGRAM(sw_vers ARGS -productVersion OUTPUT_VARIABLE mac_version)
+  if(mac_version GREATER_EQUAL 10.13)
+    add_definitions(-DHAS_CORE_ML)
+    set(HAS_CORE_ML TRUE)
+  endif()
+endif()
+
 
 # This is an external function
 # Usage:
