@@ -668,6 +668,12 @@ class sframe : public swriter_base<sframe_output_iterator> {
   void save(oarchive& oarc) const;
 
    
+  /**
+   * Attempts to compact if the number of segments in the SArray 
+   * exceeds SFRAME_COMPACTION_THRESHOLD.
+   */
+  void try_compact();
+
   /** 
    * SFrame deserializer. iarc must be associated with a directory.
    * Loads from the next prefix inside the directory.

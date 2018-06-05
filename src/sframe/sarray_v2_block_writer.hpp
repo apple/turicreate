@@ -74,6 +74,12 @@ class block_writer {
                     std::string filename);
 
   /**
+   * Sets write options. The only option available now is
+   * "disable_padding". If set to non-zero, disables 4K padding of blocks.
+   */
+  void set_options(const std::string& option, int64_t value);
+
+  /**
    * Writes a block of data into a segment.
    *
    * \param segmentid The segment to write to
@@ -164,6 +170,9 @@ class block_writer {
 
   /// Writes the file footer
   void emit_footer(size_t segment_id);
+
+  /// Disables 4K padding if enabled
+  bool m_disable_padding = false;
 };
 
 } // namespace v2_block_impl
