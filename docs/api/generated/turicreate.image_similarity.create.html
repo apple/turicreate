@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.image_similarity.create &mdash; Turi Create API 4.3 documentation</title>
+  <title>turicreate.image_similarity.create &mdash; Turi Create API 5.0b1 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 5.0b1 documentation" href="../index.html"/>
         <link rel="up" title="image_similarity" href="../turicreate.toolkits.image_similarity.html"/>
         <link rel="next" title="turicreate.image_similarity.ImageSimilarityModel" href="turicreate.image_similarity.ImageSimilarityModel.html"/>
         <link rel="prev" title="turicreate.image_similarity.ImageSimilarityModel" href="turicreate.image_similarity.ImageSimilarityModel.html"/> 
@@ -130,7 +130,7 @@
 <h1>turicreate.image_similarity.create<a class="headerlink" href="#turicreate-image-similarity-create" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="turicreate.image_similarity.create">
-<code class="descclassname">turicreate.image_similarity.</code><code class="descname">create</code><span class="sig-paren">(</span><em>dataset</em>, <em>label=None</em>, <em>feature=None</em>, <em>model='resnet-50'</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.image_similarity.create" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">turicreate.image_similarity.</code><code class="descname">create</code><span class="sig-paren">(</span><em>dataset</em>, <em>label=None</em>, <em>feature=None</em>, <em>model='resnet-50'</em>, <em>verbose=True</em>, <em>batch_size=64</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.image_similarity.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a <a class="reference internal" href="turicreate.image_similarity.ImageSimilarityModel.html#turicreate.image_similarity.ImageSimilarityModel" title="turicreate.image_similarity.ImageSimilarityModel"><code class="xref py py-class docutils literal"><span class="pre">ImageSimilarityModel</span></code></a> model.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -156,6 +156,7 @@ be used for similarity.</p>
 <blockquote>
 <div><ul class="simple">
 <li>&#8220;resnet-50&#8221; : Uses a pretrained resnet model.</li>
+<li>&#8220;squeezenet_v1.1&#8221; : Uses a pretrained squeezenet model.</li>
 </ul>
 </div></blockquote>
 <p class="last">Models are downloaded from the internet if not available locally. Once
@@ -163,6 +164,10 @@ downloaded, the models are cached for future use.</p>
 </dd>
 <dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">If True, print progress updates and model details.</p>
+</dd>
+<dt><strong>batch_size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">If you are getting memory errors, try decreasing this value. If you
+have a powerful computer, increasing this value may improve performance.</p>
 </dd>
 </dl>
 </td>
@@ -225,7 +230,7 @@ downloaded, the models are cached for future use.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Apr 13, 2018.
+      Last updated on Jun 04, 2018.
     </p>
   </div>
 </footer>
@@ -243,7 +248,7 @@ downloaded, the models are cached for future use.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.3',
+            VERSION:'5.0b1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

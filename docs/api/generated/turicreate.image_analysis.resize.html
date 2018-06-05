@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.image_analysis.resize &mdash; Turi Create API 4.3 documentation</title>
+  <title>turicreate.image_analysis.resize &mdash; Turi Create API 5.0b1 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 5.0b1 documentation" href="../index.html"/>
         <link rel="up" title="image_analysis" href="../turicreate.toolkits.image_analysis.html"/>
         <link rel="next" title="nearest_neighbors" href="../turicreate.toolkits.nearest_neighbors.html"/>
         <link rel="prev" title="turicreate.image_analysis.load_images" href="turicreate.image_analysis.load_images.html"/> 
@@ -130,7 +130,7 @@
 <h1>turicreate.image_analysis.resize<a class="headerlink" href="#turicreate-image-analysis-resize" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="turicreate.image_analysis.resize">
-<code class="descclassname">turicreate.image_analysis.</code><code class="descname">resize</code><span class="sig-paren">(</span><em>image</em>, <em>width</em>, <em>height</em>, <em>channels=None</em>, <em>decode=False</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.image_analysis.resize" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">turicreate.image_analysis.</code><code class="descname">resize</code><span class="sig-paren">(</span><em>image</em>, <em>width</em>, <em>height</em>, <em>channels=None</em>, <em>decode=False</em>, <em>resample='nearest'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.image_analysis.resize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resizes the image or SArray of Images to a specific width, height, and
 number of channels.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -155,6 +155,15 @@ channels corresponds to RGBA images.</p>
 <dt><strong>decode</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
 <dd><p class="first last">Whether to store the resized image in decoded format. Decoded takes
 more space, but makes the resize and future operations on the image faster.</p>
+</dd>
+<dt><strong>resample</strong> <span class="classifier-delimiter">:</span> <span class="classifier">&#8216;nearest&#8217; or &#8216;bilinear&#8217;</span></dt>
+<dd><p class="first">Specify the resampling filter:</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">'nearest'</span></code>: Nearest neigbhor, extremely fast</li>
+<li><code class="docutils literal"><span class="pre">'bilinear'</span></code>: Bilinear, fast and with less aliasing artifacts</li>
+</ul>
+</div></blockquote>
 </dd>
 </dl>
 </td>
@@ -210,7 +219,7 @@ and Blue values.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Apr 13, 2018.
+      Last updated on Jun 04, 2018.
     </p>
   </div>
 </footer>
@@ -228,7 +237,7 @@ and Blue values.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.3',
+            VERSION:'5.0b1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

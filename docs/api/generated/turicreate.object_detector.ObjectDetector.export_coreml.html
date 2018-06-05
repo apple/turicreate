@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.object_detector.ObjectDetector.export_coreml &mdash; Turi Create API 4.3 documentation</title>
+  <title>turicreate.object_detector.ObjectDetector.export_coreml &mdash; Turi Create API 5.0b1 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 5.0b1 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +123,7 @@
 <h1>turicreate.object_detector.ObjectDetector.export_coreml<a class="headerlink" href="#turicreate-object-detector-objectdetector-export-coreml" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.object_detector.ObjectDetector.export_coreml">
-<code class="descclassname">ObjectDetector.</code><code class="descname">export_coreml</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.object_detector.ObjectDetector.export_coreml" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ObjectDetector.</code><code class="descname">export_coreml</code><span class="sig-paren">(</span><em>filename</em>, <em>include_non_maximum_suppression=True</em>, <em>iou_threshold=None</em>, <em>confidence_threshold=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.object_detector.ObjectDetector.export_coreml" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save the model in Core ML format. The Core ML model takes an image of
 fixed size as input and produces two output arrays: <cite>confidence</cite> and
 <cite>coordinates</cite>.</p>
@@ -147,6 +147,37 @@ coordinates, so (0.5, 0.5) represents the center of the image and (1,
 1) the bottom right corner. You will need to multiply the relative
 values with the original image size before you resized it to the fixed
 input size to get pixel-value coordinates similar to <cite>predict</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">The path of the file where we want to save the Core ML model.</p>
+</dd>
+<dt><strong>include_non_maximum_suppression</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">Non-maximum suppression is only available in iOS 12+.
+A boolean parameter to indicate whether the Core ML model should be
+saved with built-in non-maximum suppression or not. 
+This parameter is set to True by default.</p>
+</dd>
+<dt><strong>iou_threshold</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Threshold value for non-maximum suppression. Non-maximum suppression
+prevents multiple bounding boxes appearing over a single object. 
+This threshold, set between 0 and 1, controls how aggressive this 
+suppression is. A value of 1 means no maximum suppression will 
+occur, while a value of 0 will maximally suppress neighboring 
+boxes around a prediction.</p>
+</dd>
+<dt><strong>confidence_threshold</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Only return predictions above this level of confidence. The
+threshold can range from 0 to 1.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="turicreate.object_detector.ObjectDetector.save.html#turicreate.object_detector.ObjectDetector.save" title="turicreate.object_detector.ObjectDetector.save"><code class="xref py py-obj docutils literal"><span class="pre">save</span></code></a></p>
@@ -168,7 +199,7 @@ input size to get pixel-value coordinates similar to <cite>predict</cite>.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Apr 13, 2018.
+      Last updated on Jun 04, 2018.
     </p>
   </div>
 </footer>
@@ -186,7 +217,7 @@ input size to get pixel-value coordinates similar to <cite>predict</cite>.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.3',
+            VERSION:'5.0b1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

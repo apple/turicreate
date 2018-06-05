@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.object_detector.ObjectDetector.evaluate &mdash; Turi Create API 4.3 documentation</title>
+  <title>turicreate.object_detector.ObjectDetector.evaluate &mdash; Turi Create API 5.0b1 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 5.0b1 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -147,13 +147,6 @@ being perfect). Possible values are:</p>
 <li><p class="first">&#8216;all&#8217;                       : Returns all available metrics.</p>
 </li>
 <li><dl class="first docutils">
-<dt>&#8216;average_precision&#8217; <span class="classifier-delimiter">:</span> <span class="classifier">Average precision per class calculated over multiple</span></dt>
-<dd><p class="first last">intersection-over-union thresholds
-(at 50%, 55%, ..., 95%) and averaged.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
 <dt>&#8216;average_precision_50&#8217; <span class="classifier-delimiter">:</span> <span class="classifier">Average precision per class with</span></dt>
 <dd><p class="first last">intersection-over-union threshold at
 50% (PASCAL VOC metric).</p>
@@ -161,12 +154,19 @@ being perfect). Possible values are:</p>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt>&#8216;mean_average_precision&#8217; <span class="classifier-delimiter">:</span> <span class="classifier">Mean over all classes (for <code class="docutils literal"><span class="pre">'average_precision'</span></code>)</span></dt>
+<dt>&#8216;average_precision&#8217; <span class="classifier-delimiter">:</span> <span class="classifier">Average precision per class calculated over multiple</span></dt>
+<dd><p class="first last">intersection-over-union thresholds
+(at 50%, 55%, ..., 95%) and averaged.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>&#8216;mean_average_precision_50&#8217; <span class="classifier-delimiter">:</span> <span class="classifier">Mean over all classes (for <code class="docutils literal"><span class="pre">'average_precision_50'</span></code>).</span></dt>
 <dd><p class="first last">This is the primary single-value metric.</p>
 </dd>
 </dl>
 </li>
-<li><p class="first">&#8216;mean_average_precision_50&#8217; : Mean over all classes (for <code class="docutils literal"><span class="pre">'average_precision_50'</span></code>).</p>
+<li><p class="first">&#8216;mean_average_precision&#8217;    : Mean over all classes (for <code class="docutils literal"><span class="pre">'average_precision'</span></code>)</p>
 </li>
 </ul>
 </dd>
@@ -228,7 +228,7 @@ However, these are easily computed from the <cite>SFrame</cite> (e.g.
 
   <div role="contentinfo">
     <p>
-      Last updated on Apr 13, 2018.
+      Last updated on Jun 04, 2018.
     </p>
   </div>
 </footer>
@@ -246,7 +246,7 @@ However, these are easily computed from the <cite>SFrame</cite> (e.g.
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.3',
+            VERSION:'5.0b1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

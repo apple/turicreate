@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.image_similarity.ImageSimilarityModel.query &mdash; Turi Create API 4.3 documentation</title>
+  <title>turicreate.image_similarity.ImageSimilarityModel.query &mdash; Turi Create API 5.0b1 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 5.0b1 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -123,7 +123,7 @@
 <h1>turicreate.image_similarity.ImageSimilarityModel.query<a class="headerlink" href="#turicreate-image-similarity-imagesimilaritymodel-query" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.image_similarity.ImageSimilarityModel.query">
-<code class="descclassname">ImageSimilarityModel.</code><code class="descname">query</code><span class="sig-paren">(</span><em>dataset</em>, <em>label=None</em>, <em>k=5</em>, <em>radius=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.image_similarity.ImageSimilarityModel.query" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ImageSimilarityModel.</code><code class="descname">query</code><span class="sig-paren">(</span><em>dataset</em>, <em>label=None</em>, <em>k=5</em>, <em>radius=None</em>, <em>verbose=True</em>, <em>batch_size=64</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.image_similarity.ImageSimilarityModel.query" title="Permalink to this definition">¶</a></dt>
 <dd><p>For each image, retrieve the nearest neighbors from the model&#8217;s stored
 data. In general, the query dataset does not need to be the same as
 the reference data stored in the model.</p>
@@ -157,6 +157,10 @@ regardless of distance.</p>
 </dd>
 <dt><strong>verbose: bool, optional</strong></dt>
 <dd><p class="first last">If True, print progress updates and model details.</p>
+</dd>
+<dt><strong>batch_size</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">If you are getting memory errors, try decreasing this value. If you
+have a powerful computer, increasing this value may improve performance.</p>
 </dd>
 </dl>
 </td>
@@ -213,7 +217,7 @@ is an SFrame with <span class="math">\(nm\)</span> rows.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Apr 13, 2018.
+      Last updated on Jun 04, 2018.
     </p>
   </div>
 </footer>
@@ -231,7 +235,7 @@ is an SFrame with <span class="math">\(nm\)</span> rows.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.3',
+            VERSION:'5.0b1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.stack &mdash; Turi Create API 4.3 documentation</title>
+  <title>turicreate.SFrame.stack &mdash; Turi Create API 5.0b1 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 5.0b1 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -235,19 +235,19 @@ would create a user/friend list for each user/friend pair:</p>
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="n">new_column_name</span><span class="o">=</span><span class="s1">&#39;friend&#39;</span><span class="p">)</span>
-<span class="go">+------+--------+</span>
-<span class="go">| user | friend |</span>
-<span class="go">+------+--------+</span>
-<span class="go">|  1   |  2     |</span>
-<span class="go">|  1   |  3     |</span>
-<span class="go">|  1   |  4     |</span>
-<span class="go">|  2   |  5     |</span>
-<span class="go">|  2   |  6     |</span>
-<span class="go">|  3   |  4     |</span>
-<span class="go">|  3   |  5     |</span>
-<span class="go">|  3   |  10    |</span>
-<span class="go">|  3   |  None  |</span>
-<span class="go">+------+--------+</span>
+<span class="go">+-------+--------+</span>
+<span class="go">| topic | friend |</span>
+<span class="go">+-------+--------+</span>
+<span class="go">|   1   |   2    |</span>
+<span class="go">|   1   |   3    |</span>
+<span class="go">|   1   |   4    |</span>
+<span class="go">|   2   |   5    |</span>
+<span class="go">|   2   |   6    |</span>
+<span class="go">|   3   |   4    |</span>
+<span class="go">|   3   |   5    |</span>
+<span class="go">|   3   |   10   |</span>
+<span class="go">|   3   |  None  |</span>
+<span class="go">+-------+--------+</span>
 <span class="go">[9 rows x 2 columns]</span>
 </pre></div>
 </div>
@@ -264,7 +264,7 @@ would create a user/friend list for each user/friend pair:</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Apr 13, 2018.
+      Last updated on Jun 04, 2018.
     </p>
   </div>
 </footer>
@@ -282,7 +282,7 @@ would create a user/friend list for each user/friend pair:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.3',
+            VERSION:'5.0b1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

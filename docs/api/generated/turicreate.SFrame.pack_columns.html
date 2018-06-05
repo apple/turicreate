@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.pack_columns &mdash; Turi Create API 4.3 documentation</title>
+  <title>turicreate.SFrame.pack_columns &mdash; Turi Create API 5.0b1 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 4.3 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 5.0b1 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -222,42 +222,42 @@ information:</p>
 </div>
 <p>To pack all category columns into a list:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">pack_columns</span><span class="p">(</span><span class="n">column_name_prefix</span><span class="o">=</span><span class="s1">&#39;category&#39;</span><span class="p">)</span>
-<span class="go">+----------+--------------------+</span>
-<span class="go">| business |         X2         |</span>
-<span class="go">+----------+--------------------+</span>
-<span class="go">|    1     |  [1, 1, None, 1]   |</span>
-<span class="go">|    2     |  [None, 1, 1, 1]   |</span>
-<span class="go">|    3     | [1, None, 1, None] |</span>
-<span class="go">|    4     | [None, 1, None, 1] |</span>
-<span class="go">+----------+--------------------+</span>
+<span class="go">+----------+-----------------------+</span>
+<span class="go">| business |        category       |</span>
+<span class="go">+----------+-----------------------+</span>
+<span class="go">|    1     |    [1, 1, None, 1]    |</span>
+<span class="go">|    2     |    [1, None, 1, 1]    |</span>
+<span class="go">|    3     |   [None, 1, 1, None]  |</span>
+<span class="go">|    4     | [None, None, None, 1] |</span>
+<span class="go">+----------+-----------------------+</span>
 <span class="go">[4 rows x 2 columns]</span>
 </pre></div>
 </div>
 <p>To pack all category columns into a dictionary, with new column name:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">pack_columns</span><span class="p">(</span><span class="n">column_name_prefix</span><span class="o">=</span><span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
-<span class="gp">... </span>                <span class="n">new_column_name</span><span class="o">=</span><span class="s1">&#39;category&#39;</span><span class="p">)</span>
-<span class="go">+----------+--------------------------------+</span>
-<span class="go">| business |            category            |</span>
-<span class="go">+----------+--------------------------------+</span>
-<span class="go">|    1     | {&#39;food&#39;: 1, &#39;shop&#39;: 1, &#39;re ... |</span>
-<span class="go">|    2     | {&#39;food&#39;: 1, &#39;shop&#39;: 1, &#39;se ... |</span>
-<span class="go">|    3     |  {&#39;retail&#39;: 1, &#39;service&#39;: 1}   |</span>
-<span class="go">|    4     |     {&#39;food&#39;: 1, &#39;shop&#39;: 1}     |</span>
-<span class="go">+----------+--------------------------------+</span>
+<span class="gp">... </span>                <span class="n">new_column_name</span><span class="o">=</span><span class="s1">&#39;new name&#39;</span><span class="p">)</span>
+<span class="go">+----------+-------------------------------+</span>
+<span class="go">| business |            new name           |</span>
+<span class="go">+----------+-------------------------------+</span>
+<span class="go">|    1     | {&#39;food&#39;: 1, &#39;shop&#39;: 1, &#39;re... |</span>
+<span class="go">|    2     | {&#39;food&#39;: 1, &#39;shop&#39;: 1, &#39;se... |</span>
+<span class="go">|    3     |  {&#39;retail&#39;: 1, &#39;service&#39;: 1}  |</span>
+<span class="go">|    4     |          {&#39;shop&#39;: 1}          |</span>
+<span class="go">+----------+-------------------------------+</span>
 <span class="go">[4 rows x 2 columns]</span>
 </pre></div>
 </div>
 <p>To keep column prefix in the resulting dict key:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">pack_columns</span><span class="p">(</span><span class="n">column_name_prefix</span><span class="o">=</span><span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
 <span class="go">                    remove_prefix=False)</span>
-<span class="go">+----------+--------------------------------+</span>
-<span class="go">| business |               X2               |</span>
-<span class="go">+----------+--------------------------------+</span>
-<span class="go">|    1     | {&#39;category.retail&#39;: 1, &#39;ca ... |</span>
-<span class="go">|    2     | {&#39;category.food&#39;: 1, &#39;cate ... |</span>
-<span class="go">|    3     | {&#39;category.retail&#39;: 1, &#39;ca ... |</span>
-<span class="go">|    4     | {&#39;category.food&#39;: 1, &#39;cate ... |</span>
-<span class="go">+----------+--------------------------------+</span>
+<span class="go">+----------+-------------------------------+</span>
+<span class="go">| business |            category           |</span>
+<span class="go">+----------+-------------------------------+</span>
+<span class="go">|    1     | {&#39;category.retail&#39;: 1, &#39;ca... |</span>
+<span class="go">|    2     | {&#39;category.food&#39;: 1, &#39;cate... |</span>
+<span class="go">|    3     | {&#39;category.retail&#39;: 1, &#39;ca... |</span>
+<span class="go">|    4     |      {&#39;category.shop&#39;: 1}     |</span>
+<span class="go">+----------+-------------------------------+</span>
 <span class="go">[4 rows x 2 columns]</span>
 </pre></div>
 </div>
@@ -278,16 +278,17 @@ information:</p>
 </div>
 <p>To pack all columns with name starting with &#8216;category&#8217; into an array
 type, and with missing value replaced with 0:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">pack_columns</span><span class="p">(</span><span class="n">column_name_prefix</span><span class="o">=</span><span class="s2">&quot;category&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">array</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span><span class="o">.</span><span class="n">pack_columns</span><span class="p">(</span><span class="n">column_name_prefix</span><span class="o">=</span><span class="s2">&quot;category&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
 <span class="gp">... </span>                <span class="n">fill_na</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">+----------+--------------------------------+</span>
-<span class="go">| business |               X2               |</span>
-<span class="go">+----------+--------------------------------+</span>
-<span class="go">|    1     | array(&#39;d&#39;, [1.0, 1.0, 0.0, ... |</span>
-<span class="go">|    2     | array(&#39;d&#39;, [0.0, 1.0, 1.0, ... |</span>
-<span class="go">|    3     | array(&#39;d&#39;, [1.0, 0.0, 1.0, ... |</span>
-<span class="go">|    4     | array(&#39;d&#39;, [0.0, 1.0, 0.0, ... |</span>
-<span class="go">+----------+--------------------------------+</span>
+<span class="go">+----------+----------------------+</span>
+<span class="go">| business |       category       |</span>
+<span class="go">+----------+----------------------+</span>
+<span class="go">|    1     | [1.0, 1.0, 0.0, 1.0] |</span>
+<span class="go">|    2     | [1.0, 0.0, 1.0, 1.0] |</span>
+<span class="go">|    3     | [0.0, 1.0, 1.0, 0.0] |</span>
+<span class="go">|    4     | [0.0, 0.0, 0.0, 1.0] |</span>
+<span class="go">+----------+----------------------+</span>
 <span class="go">[4 rows x 2 columns]</span>
 </pre></div>
 </div>
@@ -304,7 +305,7 @@ type, and with missing value replaced with 0:</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Apr 13, 2018.
+      Last updated on Jun 04, 2018.
     </p>
   </div>
 </footer>
@@ -322,7 +323,7 @@ type, and with missing value replaced with 0:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'4.3',
+            VERSION:'5.0b1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false
