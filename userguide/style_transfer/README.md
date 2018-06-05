@@ -6,7 +6,7 @@ image. As an example, a style transfer model that uses these [style
 images](#style-images) when applied to this [content image](#content-image) 
 results in:
 
-![Photo of cat in different styles](#style-images)](images/cat-stylized.png)
+![Photo of cat in different styles](images/cat-stylized.png)
 
 The training procedure for style transfer requires the following data:
 - Content images: A set of representative images in your application
