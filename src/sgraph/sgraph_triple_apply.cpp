@@ -785,7 +785,7 @@ namespace {
     std::vector<size_t> m_mutated_edge_field_ids;
   }; // end of batch edge triple apply visitor
 
-
+#ifdef TC_HAS_PYTHON
   /**************************************************************************/
   /*                                                                        */
   /*                 Implementation of lambda triple apply                  */
@@ -981,6 +981,8 @@ namespace {
     sgraph_synchronize m_graph_sync;
   }; // end of lambda_triple_apply_edge_visitor
   
+#endif
+
   }// end of empty namespace 
 
   /**
@@ -1025,6 +1027,7 @@ namespace {
     compute.run(visitor);
   }
 
+#ifdef TC_HAS_PYTHON
   /**
    * The actual triple apply API with python lambda.
    */
@@ -1039,6 +1042,7 @@ namespace {
     lambda_triple_apply_visitor visitor(lambda_str, lock_array, srcid_column, dstid_column);
     compute.run(visitor);
   }
+#endif
 
 } // end of sgraph_compute
 } // end of grahlab

@@ -128,7 +128,7 @@ namespace turi {
     inline void direct_assign(const T& t) {
       if (out == NULL) {
         expand_buf(sizeof(T));
-        (*reinterpret_cast<T*>(buf + off)) = t;
+        std::memcpy(buf + off, &t, sizeof(T));
         off += sizeof(T);
       }
       else {

@@ -25,7 +25,7 @@ function print_help {
   echo "  --no-ccache "
   echo  
   echo "  --with-capi (default)             Build C API."
-  echo "  --with-capi-framework             Build C API as OSX framework (OSX only)"
+  echo "  --with-capi-framework             Build C API as macOS framework (macOS only)"
   echo "  --no-capi                         Skip building the C API." 
 
   echo "  --with-python (default)           Build python components."
@@ -33,6 +33,12 @@ function print_help {
   echo 
   echo "  --with-visualization (default)    Build Turi Create visualization client."
   echo "  --no-visualization"
+  echo
+  echo "  --release-opt-for-size            Optimize for size."
+  echo "  --target-ios                      Build for iOS (macOS only)"
+  echo
+  echo "  --with-remotefs (default)         Include capabilities for remote file access."
+  echo "  --no-remotefs                     Disable remote file access."
   echo
   echo "  --python2.7                       Use Python 2.7 (default)."
   echo "  --python3.5                       Use Python 3.5, default is Python 2.7."
@@ -102,8 +108,11 @@ with_ccache=1
 
 with_capi=1
 with_capi_framework=0
+with_ios=0
 with_ccache=1
 with_visualization=1
+with_remotefs=1
+release_opt_for_size=0
 
 python27=0
 python35=0
@@ -119,6 +128,9 @@ while [ $# -gt 0 ]
     
     --install-python-toolchain) python_only=1;;
     
+    --release-opt-for-size) release_opt_for_size=1;;
+    --target-ios)           with_ios=1; with_python=0; with_capi=1; release_opt_for_size=1;; 
+
     --with-system-cmake)    with_system_cmake=1;;
     --no-system-cmake)      with_system_cmake=0;;
 
@@ -134,6 +146,9 @@ while [ $# -gt 0 ]
 
     --with-visualization)   with_visualization=1;;
     --no-visualization)     with_visualization=0;;
+
+    --with-remotefs)        with_remotefs=1;;
+    --no-remotefs)          with_remotefs=0;;
 
     --yes)                  default_yes=1;;
 
@@ -190,23 +205,37 @@ else
   CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_PYTHON=0"
 fi
 
-# If we need to build python, we also need to install the python toolchain
+if [[ $release_opt_for_size == 1 ]]; then
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DRELEASE_OPT_FOR_SIZE=1"
+fi
+
+# Check what is needed with the remote_fs stuff
 if [[ $with_capi == 1 ]]; then
   CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_CAPI=1"
   if [[ $with_capi_framework == 1 ]]; then
     CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_CAPI_FRAMEWORK=1"
   fi
+  if [[ $with_ios == 1 ]]; then
+    CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DARCH=arm64 -DTC_BUILD_IOS=1"
+  fi
 else
   CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_CAPI=0"
 fi
 
-# If we need to build python, we also need to install the python toolchain
+# Do we need to build the visualization toolkit?
 if [[ $with_visualization == 1 ]]; then
   CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_VISUALIZATION_CLIENT=1"
 else
   CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_VISUALIZATION_CLIENT=0"
 fi
 
+
+# If we need to build python, we also need to install the python toolchain
+if [[ $with_remotefs == 1 ]]; then
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_ENABLE_REMOTEFS=1"
+else
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_ENABLE_REMOTEFS=0 -DTC_NO_CURL=1"
+fi
 
 
 ##################################################################3
@@ -223,10 +252,8 @@ uname -v
 
 
 if [[ $OSTYPE == darwin* ]]; then
-  if [[ -z $CC ]] && [[ -z $CXX ]]; then
-    CC=clang
-    CXX=clang++
-  fi
+  CC=clang
+  CXX=clang++
 fi
 
 # all other cases

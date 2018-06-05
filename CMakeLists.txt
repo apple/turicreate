@@ -43,6 +43,7 @@ if(${TC_BUILD_PYTHON})
 
   include(UseCython)
   add_definitions(-DTC_HAS_PYTHON)
+  add_definitions(-DTC_BUILD_VISUALIZATION_CLIENT)
 else()
   message("Skipping python libraries.")
 endif()
@@ -102,6 +103,16 @@ if(WIN32 AND MINGW)
   SET(COMPILER_FLAGS "${COMPILER_FLAGS} -Wa,-mbig-obj")
 endif()
 
+if(TC_BUILD_IOS)
+  EXECUTE_PROCESS(
+    COMMAND xcrun --sdk iphoneos --show-sdk-path
+    OUTPUT_VARIABLE IOS_ISYSROOT
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+  SET(CMAKE_OSX_SYSROOT "${IOS_ISYSROOT}")
+  SET(COMPILER_FLAGS "${COMPILER_FLAGS} -Wno-c++11-narrowing -isysroot ${IOS_ISYSROOT}")
+endif()
+
 set(MINGW_ROOT "/mingw64/bin")
 # Separate variable so that cython's CMakeLists.txt can use it too
 if (WIN32)
@@ -131,6 +142,20 @@ if(WIN32)
   add_definitions(-DWINVER=0x0600)
   add_definitions(-D_WIN32_WINNT=0x0600)
 endif()
+
+if(TC_BUILD_IOS)
+  add_definitions(-DTC_BUILD_IOS)
+  add_definitions(-DTC_NO_CURL)
+  set(TC_ENABLE_REMOTEFS 0)
+endif()
+
+if(${TC_ENABLE_REMOTEFS})
+  add_definitions(-DTC_ENABLE_REMOTEFS)
+  add_definitions(-DCURL_STATICLIB)
+else()
+  add_definitions(-DTC_NO_CURL)
+endif()
+
 add_definitions(-DCURL_STATICLIB)
 add_definitions(-DIN_TURI_SOURCE_TREE)
 add_definitions(-DFUSION_MAX_VECTOR_SIZE=20)
@@ -159,7 +184,7 @@ message(WARNING "OpenMP Libraries were not found")
 #**************************************************************************/
 if (CLANG)
 set(CPP11_FLAGS "-std=c++11 -stdlib=libc++ -Wno-deprecated-register -Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900" CACHE STRING "C++11 enabling flags")
-set(WERROR_FLAGS "-Werror -Wno-error=tautological-undefined-compare -Wno-error=reorder -Wno-error=exceptions -Wno-error=switch -Wno-error=sometimes-uninitialized -Wno-error=unused-lambda-capture -Wno-error=missing-braces -Wno-error=absolute-value -Wno-error=potentially-evaluated-expression -Wno-error=null-arithmetic -Wno-error=format -Wno-error=pessimizing-move -Wno-error=comment -Wno-error=main -Wno-error=constant-conversion -Wno-error=deprecated-declarations -Wno-error=return-type -Wno-error=inconsistent-missing-override -Wno-error=overloaded-virtual -Wno-error=unused-private-field -Wno-error=unused-variable -Wno-error=unused-local-typedef")
+set(WERROR_FLAGS "-Werror -Wno-error=tautological-undefined-compare -Wno-error=reorder -Wno-error=exceptions -Wno-error=switch -Wno-error=sometimes-uninitialized -Wno-error=unused-lambda-capture -Wno-error=missing-braces -Wno-error=absolute-value -Wno-error=potentially-evaluated-expression -Wno-error=null-arithmetic -Wno-error=format -Wno-error=pessimizing-move -Wno-error=comment -Wno-error=main -Wno-error=constant-conversion -Wno-error=deprecated-declarations -Wno-error=return-type -Wno-error=inconsistent-missing-override -Wno-error=overloaded-virtual -Wno-error=unused-private-field -Wno-error=unused-variable -Wno-error=unused-local-typedef -Wno-error=unguarded-availability-new")
 else()
 set(CPP11_FLAGS "-std=c++11 -Wno-enum-compare -Wno-conversion-null -ftemplate-depth=900" CACHE STRING "C++11 enabling flags")
 set(WERROR_FLAGS "")
@@ -220,18 +245,27 @@ endif()
 
 
 include(CheckCXXCompilerFlag)
-if (NOT MARCH)
+if (MARCH)
+  set(ARCH_FLAG "-march=${MARCH}")
+elseif (ARCH)
+  set(ARCH_FLAG "-arch ${ARCH}")
+else()
   set(MARCH "x86-64")
+  set(ARCH_FLAG "-march=${MARCH}")
 endif()
 
 # check if MTUNE is set
 if (NOT MTUNE)
   #set to native if supported
   check_cxx_compiler_flag(-mtune=native HAS_MTUNE_NATIVE)
+  check_cxx_compiler_flag(-mtune=${MARCH} HAS_MTUNE_MARCH)
+  check_cxx_compiler_flag(-mtune=${ARCH} HAS_MTUNE_ARCH)
   if(HAS_MTUNE_NATIVE)
-    set(MTUNE "native")
-  else()
-    set(MTUNE "x86-64")
+    set(MTUNE "-mtune=native")
+  elseif(HAS_MTUNE_MARCH)
+    set(MTUNE "-mtune=${MARCH}")
+  elseif(HAS_MTUNE_ARCH)
+    set(MTUNE "-mtune=${ARCH}")
   endif()
 endif()
 
@@ -270,7 +304,12 @@ if(HAS_FTRACER)
 endif()
 
 set(DEBUG_OPTIMIZATION_LEVEL -O0)
-set(RELEASE_OPTIMIZATION_LEVEL -O3)
+
+if(${RELEASE_OPT_FOR_SIZE})
+  set(RELEASE_OPTIMIZATION_LEVEL -Os)
+else()
+  set(RELEASE_OPTIMIZATION_LEVEL -O3)
+endif()
 
 if(WIN32)
         # on windows due to some string table limitations + template
@@ -280,31 +319,31 @@ if(WIN32)
 endif()
 
 # Set mac os minimum version
-# if (APPLE)
-#  set(PLATFORM_FLAGS "-mmacosx-version-min=10.8")
-#else()
-#  set(PLATFORM_FLAGS "")
-#endif()
+if (APPLE AND NOT TC_BUILD_IOS)
+ set(PLATFORM_FLAGS "-mmacosx-version-min=10.12")
+else()
+ set(PLATFORM_FLAGS "")
+endif()
 
 # Set the debug flags
 set(EXTERNAL_CMAKE_C_FLAGS_DEBUG
-  "${DEBUG_OPTIMIZATION_LEVEL} ${PLATFORM_FLAGS} -Wno-attributes -march=${MARCH} -Winit-self ${PROFILING_FLAGS} ${C_REAL_COMPILER_FLAGS} -fno-inline ${ALTERNATE_LINKER} -DHAVE_PTHREAD=1"
+  "${DEBUG_OPTIMIZATION_LEVEL} ${PLATFORM_FLAGS} -Wno-attributes ${ARCH_FLAG} -Winit-self ${PROFILING_FLAGS} ${C_REAL_COMPILER_FLAGS} -fno-inline ${ALTERNATE_LINKER} -DHAVE_PTHREAD=1"
   CACHE STRING "compiler options" FORCE)
 set(CMAKE_C_FLAGS_DEBUG
   "${EXTERNAL_CMAKE_C_FLAGS_DEBUG} ${WERROR_FLAGS}"
   CACHE STRING "compiler options" FORCE)
 set(EXTERNAL_CMAKE_CXX_FLAGS_DEBUG
-  "${DEBUG_OPTIMIZATION_LEVEL} ${PLATFORM_FLAGS} ${DISABLE_WARNING_FLAGS} -Wno-attributes -march=${MARCH} -Winit-self ${PROFILING_FLAGS} ${CPP_REAL_COMPILER_FLAGS} ${INT128_FLAGS} ${ALTERNATE_LINKER} -fno-inline -DHAVE_PTHREAD=1"
+  "${DEBUG_OPTIMIZATION_LEVEL} ${PLATFORM_FLAGS} ${DISABLE_WARNING_FLAGS} -Wno-attributes ${ARCH_FLAG} -Winit-self ${PROFILING_FLAGS} ${CPP_REAL_COMPILER_FLAGS} ${INT128_FLAGS} ${ALTERNATE_LINKER} -fno-inline -DHAVE_PTHREAD=1"
   CACHE STRING "compiler options" FORCE)
 set(CMAKE_CXX_FLAGS_DEBUG
   "${EXTERNAL_CMAKE_CXX_FLAGS_DEBUG} ${WERROR_FLAGS}"
   CACHE STRING "compiler options" FORCE)
 
 set(CMAKE_C_FLAGS_RELEASE
-  "${RELEASE_OPTIMIZATION_LEVEL} ${PLATFORM_FLAGS} -Wno-attributes -march=${MARCH} -mtune=${MTUNE} ${PROFILING_FLAGS} ${C_REAL_COMPILER_FLAGS} -DNDEBUG ${ALTERNATE_LINKER} -DHAVE_PTHREAD=1 -DARMA_NO_DEBUG"
+  "${RELEASE_OPTIMIZATION_LEVEL} ${PLATFORM_FLAGS} -Wno-attributes ${ARCH_FLAG} ${MTUNE} ${PROFILING_FLAGS} ${C_REAL_COMPILER_FLAGS} -DNDEBUG ${ALTERNATE_LINKER} -DHAVE_PTHREAD=1 -DARMA_NO_DEBUG"
   CACHE STRING "compiler options" FORCE)
 set(CMAKE_CXX_FLAGS_RELEASE
-  "${RELEASE_OPTIMIZATION_LEVEL} ${PLATFORM_FLAGS} ${EXTRA_OPTIMIZATION_FLAGS} ${DISABLE_WARNING_FLAGS} ${PROFILING_FLAGS} -Wno-attributes -march=${MARCH} -mtune=${MTUNE} ${CPP_REAL_COMPILER_FLAGS} ${INT128_FLAGS} ${ALTERNATE_LINKER} -DNDEBUG -DHAVE_PTHREAD=1 -DARMA_NO_DEBUG"
+  "${RELEASE_OPTIMIZATION_LEVEL} ${PLATFORM_FLAGS} ${EXTRA_OPTIMIZATION_FLAGS} ${DISABLE_WARNING_FLAGS} ${PROFILING_FLAGS} -Wno-attributes ${ARCH_FLAG} ${MTUNE} ${CPP_REAL_COMPILER_FLAGS} ${INT128_FLAGS} ${ALTERNATE_LINKER} -DNDEBUG -DHAVE_PTHREAD=1 -DARMA_NO_DEBUG"
   CACHE STRING "compiler options" FORCE)
 
 
@@ -373,21 +412,6 @@ include(copy_file)
 include(CMakeParseArguments)
 include(eval)
 
-add_custom_target(external_dependencies)
-
-include(ExternalProject)
-file(GLOB packages "${DEPS_CMAKE}/ExternalProject*.cmake")
-foreach(package ${packages})
-        message(STATUS "We found local package: ${package}")
-        get_filename_component(packagename "${package}" NAME_WE)
-        #package is of the form ExternalProjectXXX"
-        include(${package})
-        STRING(SUBSTRING "${packagename}" 15 -1 depname)
-        message(STATUS "We found local package definition: ${depname}")
-        string(TOLOWER ${depname} depname)
-        set(package_${depname} requires_${depname} CACHE STRING "Package map")
-        add_dependencies(external_dependencies ex_${depname})
-endforeach()
 
 # This is an internal function and should not be used
 # Usage:
@@ -700,12 +724,27 @@ function (make_boost_test NAME)
 endfunction()
 
 
-# Core ML is only present on macOS 10.13 or higher
 if(APPLE)
-  EXEC_PROGRAM(sw_vers ARGS -productVersion OUTPUT_VARIABLE mac_version)
-  if(mac_version GREATER_EQUAL 10.13)
+  EXEC_PROGRAM(xcrun ARGS --show-sdk-version OUTPUT_VARIABLE mac_version RETURN_VALUE _xcrun_ret)
+
+  if(NOT ${_xcrun_ret} EQUAL 0)
+    message(ERROR, "xcrun command failed with return code ${_xcrun_ret}.")
+  endif()
+
+  # Core ML is only present on macOS 10.13 or higher.
+  # Logic reversed to get around what seems to be a CMake bug.
+  if(NOT mac_version VERSION_LESS 10.13)
     add_definitions(-DHAS_CORE_ML)
     set(HAS_CORE_ML TRUE)
+  endif()
+
+  # Core ML only supports batch inference on macOS 10.14 or higher
+  # Logic reversed to get around what seems to be a CMake bug.
+  if(NOT mac_version VERSION_LESS 10.14)
+    add_definitions(-DHAS_CORE_ML_BATCH_INFERENCE)
+
+    # GPU-accelerated training with MPS backend requires macOS 10.14 or higher
+    set(HAS_MPS TRUE)
   endif()
 endif()
 
@@ -824,6 +863,21 @@ endmacro()
 include(SharedLibraryFromStatic)
 include(MergeStaticLibraries)
 
+add_custom_target(external_dependencies)
+
+include(ExternalProject)
+file(GLOB packages "${DEPS_CMAKE}/ExternalProject*.cmake")
+foreach(package ${packages})
+        message(STATUS "We found local package: ${package}")
+        get_filename_component(packagename "${package}" NAME_WE)
+        #package is of the form ExternalProjectXXX"
+        include(${package})
+        STRING(SUBSTRING "${packagename}" 15 -1 depname)
+        message(STATUS "We found local package definition: ${depname}")
+        string(TOLOWER ${depname} depname)
+        set(package_${depname} requires_${depname} CACHE STRING "Package map")
+        add_dependencies(external_dependencies ex_${depname})
+endforeach()
 
 include_directories(src)
 include_directories(SYSTEM src/external)

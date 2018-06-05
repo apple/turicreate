@@ -23,7 +23,8 @@ from turicreate.toolkits._internal_utils import (_raise_error_if_not_sframe,
                                                  _numeric_param_check_range)
 
 
-def create(dataset, label = None, feature = None, model = 'resnet-50', verbose = True):
+def create(dataset, label = None, feature = None, model = 'resnet-50', verbose = True,
+           batch_size = 64):
     """
     Create a :class:`ImageSimilarityModel` model.
 
@@ -47,12 +48,17 @@ def create(dataset, label = None, feature = None, model = 'resnet-50', verbose =
         Uses a pretrained model to bootstrap an image similarity model
 
            - "resnet-50" : Uses a pretrained resnet model.
+           - "squeezenet_v1.1" : Uses a pretrained squeezenet model.
 
         Models are downloaded from the internet if not available locally. Once
         downloaded, the models are cached for future use.
 
     verbose : bool, optional
         If True, print progress updates and model details.
+
+    batch_size : int, optional
+        If you are getting memory errors, try decreasing this value. If you
+        have a powerful computer, increasing this value may improve performance.
 
     Returns
     -------
@@ -98,6 +104,8 @@ def create(dataset, label = None, feature = None, model = 'resnet-50', verbose =
         raise _ToolkitError("Row label column '%s' does not exist" % label)
     if (feature is not None) and (feature not in dataset.column_names()):
         raise _ToolkitError("Image feature column '%s' does not exist" % feature)
+    if(batch_size < 1):
+        raise ValueError("'batch_size' must be greater than or equal to 1")
 
     # Set defaults
     if feature is None:
@@ -107,7 +115,8 @@ def create(dataset, label = None, feature = None, model = 'resnet-50', verbose =
 
     # Extract features
     extracted_features = _tc.SFrame({
-        '__image_features__': feature_extractor.extract_features(dataset, feature, verbose=verbose),
+        '__image_features__': feature_extractor.extract_features(dataset, feature, verbose=verbose,
+                                                                 batch_size=batch_size),
         })
 
     # Train a similarity model using the extracted features
@@ -249,12 +258,13 @@ class ImageSimilarityModel(_CustomModel):
         section_titles = ['Schema', 'Training summary']
         return([model_fields, training_fields], section_titles)
 
-    def _extract_features(self, dataset, verbose):
+    def _extract_features(self, dataset, verbose, batch_size = 64):
         return _tc.SFrame({
-            '__image_features__': self.feature_extractor.extract_features(dataset, self.feature, verbose=verbose)
+            '__image_features__': self.feature_extractor.extract_features(dataset, self.feature, verbose=verbose,
+                                                                          batch_size=batch_size)
             })
 
-    def query(self, dataset, label=None, k=5, radius=None, verbose=True):
+    def query(self, dataset, label=None, k=5, radius=None, verbose=True, batch_size=64):
         """
         For each image, retrieve the nearest neighbors from the model's stored
         data. In general, the query dataset does not need to be the same as
@@ -287,6 +297,10 @@ class ImageSimilarityModel(_CustomModel):
 
         verbose: bool, optional
             If True, print progress updates and model details.
+
+        batch_size : int, optional
+            If you are getting memory errors, try decreasing this value. If you
+            have a powerful computer, increasing this value may improve performance.
 
         Returns
         -------
@@ -325,13 +339,15 @@ class ImageSimilarityModel(_CustomModel):
         """
         if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image)):
             raise TypeError('dataset must be either an SFrame, SArray or turicreate.Image')
+        if(batch_size < 1):
+            raise ValueError("'batch_size' must be greater than or equal to 1")
 
         if isinstance(dataset, _tc.SArray):
             dataset = _tc.SFrame({self.feature: dataset})
         elif isinstance(dataset, _tc.Image):
             dataset = _tc.SFrame({self.feature: [dataset]})
 
-        extracted_features = self._extract_features(dataset, verbose=verbose)
+        extracted_features = self._extract_features(dataset, verbose=verbose, batch_size=batch_size)
         if label is not None:
             extracted_features[label] = dataset[label]
         return self.similarity_model.query(extracted_features, label, k, radius, verbose)
@@ -498,7 +514,7 @@ class ImageSimilarityModel(_CustomModel):
         )
         batch_input_shape = (1, ) + self.input_image_shape
         _mxnet_converter.convert(mx_feature_extractor, mode=None,
-                                 input_shape={input_name: batch_input_shape},
+                                 input_shape=[(input_name, batch_input_shape)],
                                  builder=builder, verbose=False)
 
         # To add the nearest neighbors model we add calculation of the euclidean 

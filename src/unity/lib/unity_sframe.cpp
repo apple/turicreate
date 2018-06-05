@@ -32,7 +32,6 @@
 #include <sframe_query_engine/algorithm/ec_sort.hpp>
 #include <sframe_query_engine/algorithm/groupby_aggregate.hpp>
 #include <sframe_query_engine/operators/operator_properties.hpp>
-#include <lambda/pylambda_function.hpp>
 #include <exceptions/error_types.hpp>
 
 #if(TC_BUILD_VISUALIZATION_CLIENT)
@@ -57,6 +56,9 @@
 #include <boost/archive/iterators/transform_width.hpp>
 #include <logger/logger.hpp>
 
+#ifdef TC_HAS_PYTHON
+#include <lambda/pylambda_function.hpp>
+#endif
 namespace turi {
 
 using namespace turi::query_eval;
@@ -598,6 +600,7 @@ std::shared_ptr<unity_sarray_base> unity_sframe::transform(const std::string& la
                                            bool skip_undefined, // unused
                                            int random_seed) {
   log_func_entry();
+#ifdef TC_HAS_PYTHON
   auto new_planner_node = op_lambda_transform::make_planner_node(
       this->get_planner_node(), lambda, type,
       this->column_names(),
@@ -606,6 +609,9 @@ std::shared_ptr<unity_sarray_base> unity_sframe::transform(const std::string& la
   std::shared_ptr<unity_sarray> ret(new unity_sarray());
   ret->construct_from_planner_node(new_planner_node);
   return ret;
+#else
+  log_and_throw("Python functions not supported");
+#endif
 }
 
 std::shared_ptr<unity_sarray_base> unity_sframe::transform_native(const function_closure_info& toolkit_fn_name,
@@ -656,6 +662,7 @@ std::shared_ptr<unity_sframe_base> unity_sframe::flat_map(
     std::vector<flex_type_enum> column_types,
     bool skip_undefined,
     int seed) {
+#ifdef TC_HAS_PYTHON
   log_func_entry();
   DASSERT_EQ(column_names.size(), column_types.size());
   DASSERT_TRUE(!column_names.empty());
@@ -703,6 +710,9 @@ std::shared_ptr<unity_sframe_base> unity_sframe::flat_map(
   auto ret = std::make_shared<unity_sframe>();
   ret->construct_from_sframe(out_sf);
   return ret;
+#else
+  log_and_throw("Python lambda functions not supported");
+#endif
 }
 
 

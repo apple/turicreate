@@ -17,7 +17,7 @@ import numpy as np
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 
 
-def _get_data():
+def _get_data(image_length):
     from PIL import Image as _PIL_Image
 
     random = np.random.RandomState(100)
@@ -45,7 +45,7 @@ def _get_data():
         return img
 
     num_examples = 100
-    dims = (224, 224)
+    dims = (image_length, image_length)
     total_dims = dims[0] * dims[1]
     images = []
     for i in range(num_examples):
@@ -64,13 +64,13 @@ def _get_data():
 class ImageSimilarityTest(unittest.TestCase):
 
     @classmethod
-    def setUpClass(self, model = 'resnet-50'):
+    def setUpClass(self, input_image_shape = (3,224,224), model = 'resnet-50'):
         """
         The setup class method for the basic test case with all default values.
         """
         self.feature = 'awesome_image'
         self.label = None
-        self.input_image_shape = (3, 224, 224)
+        self.input_image_shape = input_image_shape
         self.pre_trained_model = model
 
         ## Create the model
@@ -80,7 +80,7 @@ class ImageSimilarityTest(unittest.TestCase):
         }
 
         # Model
-        self.sf = _get_data()
+        self.sf = _get_data(self.input_image_shape[2])
         self.model = tc.image_similarity.create(self.sf, feature=self.feature,
                                                 label=None, model=self.pre_trained_model)
         self.nn_model = self.model.feature_extractor
@@ -118,13 +118,6 @@ class ImageSimilarityTest(unittest.TestCase):
     def test_create_with_empty_dataset(self):
         with self.assertRaises(_ToolkitError):
             tc.image_similarity.create(self.sf[:0])
-
-    def test_invalid_num_gpus(self):
-        num_gpus = tc.config.get_num_gpus()
-        tc.config.set_num_gpus(-2)
-        with self.assertRaises(_ToolkitError):
-            tc.image_similarity.create(self.sf)
-        tc.config.set_num_gpus(num_gpus)
 
     def test_query(self):
         model = self.model
@@ -204,7 +197,7 @@ class ImageSimilarityTest(unittest.TestCase):
             # Compare distances
             coreml_distances = np.array(sorted(coreml_ret['distance']))
             tc_distances = tc_ret['distance'].to_numpy()
-            self.assertListAlmostEquals(tc_distances, coreml_distances, 0.02)
+            self.assertListAlmostEquals(tc_distances, coreml_distances, 0.025)
 
     def test_save_and_load(self):
         with test_util.TempDirectory() as filename:
@@ -225,8 +218,13 @@ class ImageSimilarityTest(unittest.TestCase):
             self.test_export_coreml()
             print("Export coreml passed")
 
+class ImageSimilaritySqueezeNetTest(ImageSimilarityTest):
+    @classmethod
+    def setUpClass(self):
+        super(ImageSimilaritySqueezeNetTest, self).setUpClass(model='squeezenet_v1.1',
+                                                              input_image_shape=(3, 227, 227))
 
-@unittest.skipIf(tc.util._num_available_gpus() == 0, 'Requires GPU')
+@unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
 @pytest.mark.gpu
 class ImageSimilarityGPUTest(unittest.TestCase):
     @classmethod

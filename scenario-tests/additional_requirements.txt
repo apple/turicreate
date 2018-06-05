@@ -1,6 +1,5 @@
 beautifulsoup4
 certifi==2015.04.28
-gensim==0.12.2
 nltk==3.2
 pyscreenshot==0.4
 python-swiftclient

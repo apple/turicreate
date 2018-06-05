@@ -727,5 +727,18 @@ def _get_cuda_gpus():
         return []
 _CUDA_GPU_IDS = _get_cuda_gpus()
 
-def _num_available_gpus():
+
+def _num_available_cuda_gpus():
     return len(_CUDA_GPU_IDS)
+
+
+def _num_available_gpus():
+    num_cuda = _num_available_cuda_gpus()
+    if num_cuda > 0:
+        return num_cuda
+
+    from turicreate.toolkits._mps_utils import has_fast_mps_support
+    if has_fast_mps_support():
+        return 1
+
+    return 0

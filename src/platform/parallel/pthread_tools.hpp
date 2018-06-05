@@ -507,7 +507,11 @@ namespace turi {
 #define atomic_inc(P) __sync_add_and_fetch((P), 1)
 #define atomic_add(P, V) __sync_add_and_fetch((P), (V))
 #define atomic_set_bit(P, V) __sync_or_and_fetch((P), 1<<(V))
+#ifdef __arm64
+#define cpu_relax() asm volatile("yield\n": : :"memory")
+#else
 #define cpu_relax() asm volatile("pause\n": : :"memory")
+#endif
 
   /**
    * \class spinrwlock

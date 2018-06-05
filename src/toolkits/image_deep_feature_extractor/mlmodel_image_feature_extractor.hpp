@@ -27,7 +27,7 @@ public:
 
   // image_feature_extractor interface
   const CoreML::Specification::Model& coreml_spec() const override;
-  gl_sarray extract_features(gl_sarray images) const override;
+  gl_sarray extract_features(gl_sarray images, bool verbose, size_t batch_size) const override;
 
 private:
   // Use PIMPL pattern to hide Objective C from this C++ header.

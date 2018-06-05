@@ -20,6 +20,7 @@ from turicreate.toolkits import _coreml_utils
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate import config as _tc_config
+from .._internal_utils import _mac_ver
 from .. import _mxnet_utils
 from .. import _pre_trained_models
 from .. import _image_feature_extractor
@@ -27,7 +28,8 @@ from turicreate.toolkits._internal_utils import (_raise_error_if_not_sframe,
                                                  _numeric_param_check_range)
 
 def create(dataset, target, feature = None, model = 'resnet-50',
-           max_iterations=10, verbose=True, seed=None):
+           validation_set='auto', max_iterations = 10, verbose = True,
+           seed = None, batch_size=64):
     """
     Create a :class:`ImageClassifier` model.
 
@@ -53,13 +55,29 @@ def create(dataset, target, feature = None, model = 'resnet-50',
         feature.
 
     model : string optional
-        Uses a pretrained model to bootstrap an image classifier
+        Uses a pretrained model to bootstrap an image classifier:
 
            - "resnet-50" : Uses a pretrained resnet model.
+                           Exported Core ML model will be ~90M.
+
            - "squeezenet_v1.1" : Uses a pretrained squeezenet model.
+                                 Exported Core ML model will be ~4.7M.
+
+           - "VisionFeaturePrint_Screen": Uses an OS internal feature extractor.
+                                          Only on available on iOS,tvOS 12.0+,
+                                          macOS 10.14+.
+                                          Exported Core ML model will be ~41K.
 
         Models are downloaded from the internet if not available locally. Once
         downloaded, the models are cached for future use.
+
+    validation_set : SFrame, optional
+        A dataset for monitoring the model's generalization performance.
+        The format of this SFrame must be the same as the training set.
+        By default this argument is set to 'auto' and a validation set is
+        automatically sampled and used for progress printing. If
+        validation_set is set to None, then no additional metrics
+        are computed. The default value is 'auto'.
 
     max_iterations : float, optional
         The maximum number of allowed passes through the data. More passes over
@@ -73,6 +91,10 @@ def create(dataset, target, feature = None, model = 'resnet-50',
     seed : int, optional
         Seed for random number generation. Set this value to ensure that the
         same model is created every time.
+
+    batch_size : int, optional
+        If you are getting memory errors, try decreasing this value. If you
+        have a powerful computer, increasing this value may improve performance.
 
     Returns
     -------
@@ -99,14 +121,25 @@ def create(dataset, target, feature = None, model = 'resnet-50',
     """
     start_time = _time.time()
 
-    # Check parameters
-    _tkutl._check_categorical_option_type('model', model, _pre_trained_models.MODELS.keys())
+    # Check model parameter
+    allowed_models = list(_pre_trained_models.MODELS.keys())
+    if _mac_ver() >= (10,14):
+        allowed_models.append('VisionFeaturePrint_Screen')
+    _tkutl._check_categorical_option_type('model', model, allowed_models)
+
+    # Check dataset parameter
     if len(dataset) == 0:
         raise _ToolkitError('Unable to train on empty dataset')
     if (feature is not None) and (feature not in dataset.column_names()):
         raise _ToolkitError("Image feature column '%s' does not exist" % feature)
     if target not in dataset.column_names():
         raise _ToolkitError("Target column '%s' does not exist" % target)
+
+    if(batch_size < 1):
+        raise ValueError("'batch_size' must be greater than or equal to 1")
+
+    if not (isinstance(validation_set, _tc.SFrame) or validation_set == 'auto' or validation_set is None):
+        raise TypeError("Unrecognized value for 'validation_set'.")
 
     if feature is None:
         feature = _tkutl._find_only_image_column(dataset)
@@ -116,8 +149,15 @@ def create(dataset, target, feature = None, model = 'resnet-50',
     # Extract features
     extracted_features = _tc.SFrame({
         target: dataset[target],
-        '__image_features__': feature_extractor.extract_features(dataset, feature, verbose=verbose),
+        '__image_features__': feature_extractor.extract_features(dataset, feature, verbose=verbose, batch_size=batch_size),
         })
+    if isinstance(validation_set, _tc.SFrame):
+        extracted_features_validation = _tc.SFrame({
+            target: validation_set[target],
+            '__image_features__': feature_extractor.extract_features(validation_set, feature, verbose=verbose, batch_size=batch_size),
+        })
+    else:
+        extracted_features_validation = validation_set
 
     # Train a classifier using the extracted features
     extracted_features[target] = dataset[target]
@@ -125,10 +165,15 @@ def create(dataset, target, feature = None, model = 'resnet-50',
                                               features=['__image_features__'],
                                               target=target,
                                               max_iterations=max_iterations,
+                                              validation_set=extracted_features_validation,
                                               seed=seed,
                                               verbose=verbose)
 
-    input_image_shape = _pre_trained_models.MODELS[model].input_image_shape
+    # set input image shape
+    if model in _pre_trained_models.MODELS:
+        input_image_shape = _pre_trained_models.MODELS[model].input_image_shape
+    else:    # model == VisionFeaturePrint_Screen
+        input_image_shape = (3, 299, 299)
 
     # Save the model
     state = {
@@ -192,7 +237,11 @@ class ImageClassifier(_CustomModel):
         state['classes'] = state['classifier'].classes
 
         # Load pre-trained model & feature extractor
-        state['feature_extractor'] = _image_feature_extractor._create_feature_extractor(state['model'])
+        model_name = state['model']
+        if model_name == "VisionFeaturePrint_Screen" and _mac_ver() < (10,14):
+            raise ToolkitError("Can not load model on this operating system. This model uses VisionFeaturePrint_Screen, " \
+                               "which is only supported on macOS 10.14 and higher.")
+        state['feature_extractor'] = _image_feature_extractor._create_feature_extractor(model_name)
         state['input_image_shape'] = tuple([int(i) for i in state['input_image_shape']])
         return ImageClassifier(state)
 
@@ -251,7 +300,7 @@ class ImageClassifier(_CustomModel):
         section_titles = ['Schema', 'Training summary']
         return([model_fields, training_fields], section_titles)
 
-    def predict(self, dataset, output_type='class'):
+    def predict(self, dataset, output_type='class', batch_size=64):
         """
         Return predictions for ``dataset``, using the trained logistic
         regression model. Predictions can be generated as class labels,
@@ -288,6 +337,10 @@ class ImageClassifier(_CustomModel):
             - 'class': Class prediction. For multi-class classification, this
               returns the class with maximum probability.
 
+        batch_size : int, optional
+            If you are getting memory errors, try decreasing this value. If you
+            have a powerful computer, increasing this value may improve performance.
+
         Returns
         -------
         out : SArray
@@ -306,16 +359,18 @@ class ImageClassifier(_CustomModel):
         """
         if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image)):
             raise TypeError('dataset must be either an SFrame, SArray or turicreate.Image')
+        if(batch_size < 1):
+            raise ValueError("'batch_size' must be greater than or equal to 1")
 
         if isinstance(dataset, _tc.SArray):
             dataset = _tc.SFrame({self.feature: dataset})
         elif isinstance(dataset, _tc.Image):
             dataset = _tc.SFrame({self.feature: [dataset]})
 
-        extracted_features = self._extract_features(dataset)
+        extracted_features = self._extract_features(dataset, batch_size=batch_size)
         return self.classifier.predict(extracted_features, output_type=output_type)
 
-    def classify(self, dataset):
+    def classify(self, dataset, batch_size=64):
         """
         Return a classification, for each example in the ``dataset``, using the
         trained logistic regression model. The output SFrame contains predictions
@@ -329,6 +384,10 @@ class ImageClassifier(_CustomModel):
             If dataset is an SFrame, it must include columns with the same
             names as the features used for model training, but does not require
             a target column. Additional columns are ignored.
+
+        batch_size : int, optional
+            If you are getting memory errors, try decreasing this value. If you
+            have a powerful computer, increasing this value may improve performance.
 
         Returns
         -------
@@ -346,16 +405,18 @@ class ImageClassifier(_CustomModel):
         """
         if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image)):
             raise TypeError('dataset must be either an SFrame, SArray or turicreate.Image')
+        if(batch_size < 1):
+            raise ValueError("'batch_size' must be greater than or equal to 1")
 
         if isinstance(dataset, _tc.SArray):
             dataset = _tc.SFrame({self.feature: dataset})
         elif isinstance(dataset, _tc.Image):
             dataset = _tc.SFrame({self.feature: [dataset]})
 
-        extracted_features = self._extract_features(dataset)
+        extracted_features = self._extract_features(dataset, batch_size=batch_size)
         return self.classifier.classify(extracted_features)
 
-    def predict_topk(self, dataset, output_type="probability", k=3):
+    def predict_topk(self, dataset, output_type="probability", k=3, batch_size=64):
         """
         Return top-k predictions for the ``dataset``, using the trained model.
         Predictions are returned as an SFrame with three columns: `id`,
@@ -412,6 +473,8 @@ class ImageClassifier(_CustomModel):
         """
         if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image)):
             raise TypeError('dataset must be either an SFrame, SArray or turicreate.Image')
+        if(batch_size < 1):
+            raise ValueError("'batch_size' must be greater than or equal to 1")
 
         if isinstance(dataset, _tc.SArray):
             dataset = _tc.SFrame({self.feature: dataset})
@@ -421,7 +484,7 @@ class ImageClassifier(_CustomModel):
         extracted_features = self._extract_features(dataset)
         return self.classifier.predict_topk(extracted_features, output_type = output_type, k = k)
 
-    def evaluate(self, dataset, metric='auto', verbose=True):
+    def evaluate(self, dataset, metric='auto', verbose=True, batch_size=64):
         """
         Evaluate the model by making predictions of target values and comparing
         these to actual values.
@@ -452,6 +515,10 @@ class ImageClassifier(_CustomModel):
         verbose : bool, optional
             If True, prints progress updates and model details.
 
+        batch_size : int, optional
+            If you are getting memory errors, try decreasing this value. If you
+            have a powerful computer, increasing this value may improve performance.
+
         Returns
         -------
         out : dict
@@ -470,13 +537,16 @@ class ImageClassifier(_CustomModel):
           >>> results = model.evaluate(data)
           >>> print results['accuracy']
         """
-        extracted_features = self._extract_features(dataset, verbose=verbose)
+        if(batch_size < 1):
+            raise ValueError("'batch_size' must be greater than or equal to 1")
+
+        extracted_features = self._extract_features(dataset, verbose=verbose, batch_size=batch_size)
         extracted_features[self.target] = dataset[self.target]
         return self.classifier.evaluate(extracted_features, metric = metric)
 
-    def _extract_features(self, dataset, verbose=False):
+    def _extract_features(self, dataset, verbose=False, batch_size=64):
         return _tc.SFrame({
-            '__image_features__': self.feature_extractor.extract_features(dataset, self.feature, verbose=verbose)
+            '__image_features__': self.feature_extractor.extract_features(dataset, self.feature, verbose=verbose, batch_size=batch_size)
             })
 
     def export_coreml(self, filename):
@@ -491,79 +561,191 @@ class ImageClassifier(_CustomModel):
         --------
         >>> model.export_coreml('myModel.mlmodel')
         """
-        ptModel = _pre_trained_models.MODELS[self.model]()
-        feature_extractor = _image_feature_extractor.MXFeatureExtractor(ptModel)
-
-        coreml_model = feature_extractor.get_coreml_model()
-        spec = coreml_model.get_spec()
-        nn_spec = spec.neuralNetworkClassifier
-        num_classes = self.num_classes
-
-        # Replace the softmax layer with new coeffients
-        fc_layer = nn_spec.layers[-2]
-        fc_layer_params = fc_layer.innerProduct
-        fc_layer_params.outputChannels = self.classifier.num_classes
-        inputChannels = fc_layer_params.inputChannels
-        fc_layer_params.hasBias = True
-
-        coefs = self.classifier.coefficients
-        weights = fc_layer_params.weights
-        bias = fc_layer_params.bias
-        del weights.floatValue[:]
-        del bias.floatValue[:]
-
-        import numpy as np
-        W = np.array(coefs[coefs['index'] != None]['value'], ndmin = 2).reshape(
-                                          inputChannels, num_classes - 1, order = 'F')
-        b =  coefs[coefs['index'] == None]['value']
-        Wa = np.hstack((np.zeros((inputChannels, 1)), W))
-        weights.floatValue.extend(Wa.flatten(order = 'F'))
-        bias.floatValue.extend([0.0] + list(b))
-
-        # Replace the classifier with the new classes
-        class_labels = self.classifier.classes
-
-        probOutput = spec.description.output[0]
-        classLabel = spec.description.output[1]
-        probOutput.type.dictionaryType.MergeFromString(b'')
-        if type(class_labels[0]) == int:
-            nn_spec.ClearField('int64ClassLabels')
-            probOutput.type.dictionaryType.int64KeyType.MergeFromString(b'')
-            classLabel.type.int64Type.MergeFromString(b'')
-            del nn_spec.int64ClassLabels.vector[:]
-            for c in class_labels:
-                nn_spec.int64ClassLabels.vector.append(c)
-        else:
-            nn_spec.ClearField('stringClassLabels')
-            probOutput.type.dictionaryType.stringKeyType.MergeFromString(b'')
-            classLabel.type.stringType.MergeFromString(b'')
-            del nn_spec.stringClassLabels.vector[:]
-            for c in class_labels:
-                nn_spec.stringClassLabels.vector.append(c)
-
         import coremltools
-        prob_name = self.target + 'Probability'
-        label_name = self.target
-        old_output_name = spec.neuralNetworkClassifier.layers[-1].name
-        coremltools.models.utils.rename_feature(spec, 'classLabel', label_name)
-        coremltools.models.utils.rename_feature(spec, old_output_name, prob_name)
-        if spec.neuralNetworkClassifier.layers[-1].name == old_output_name:
-            spec.neuralNetworkClassifier.layers[-1].name = prob_name
-        if spec.neuralNetworkClassifier.labelProbabilityLayerName == old_output_name:
-            spec.neuralNetworkClassifier.labelProbabilityLayerName = prob_name
-        coremltools.models.utils.rename_feature(spec, 'data', self.feature)
-        spec.neuralNetworkClassifier.preprocessing[0].featureName = self.feature
+        # First define three internal helper functions
 
-        mlmodel = coremltools.models.MLModel(spec)
-        model_type = 'image classifier (%s)' % self.model
-        mlmodel.short_description = _coreml_utils._mlmodel_short_description(model_type)
-        mlmodel.input_description[self.feature] = u'Input image'
-        mlmodel.output_description[prob_name] = 'Prediction probabilities'
-        mlmodel.output_description[label_name] = 'Class label of top prediction'
-        _coreml_utils._set_model_metadata(mlmodel, self.__class__.__name__, {
+
+        # Internal helper function
+        def _create_vision_feature_print_screen():
+            prob_name = self.target + 'Probability'
+
+            #
+            # Setup the top level (pipeline classifier) spec
+            #
+            top_spec = coremltools.proto.Model_pb2.Model()
+            top_spec.specificationVersion = 3
+
+            desc = top_spec.description
+            desc.output.add().name = prob_name
+            desc.output.add().name = self.target
+
+            desc.predictedFeatureName = self.target
+            desc.predictedProbabilitiesName = prob_name
+
+            input = desc.input.add()
+            input.name = self.feature
+            input.type.imageType.width = 299
+            input.type.imageType.height = 299
+            BGR_VALUE = coremltools.proto.FeatureTypes_pb2.ImageFeatureType.ColorSpace.Value('BGR')
+            input.type.imageType.colorSpace = BGR_VALUE
+
+            #
+            # Scene print feature extractor
+            #
+            pipelineClassifier = top_spec.pipelineClassifier
+            scene_print = pipelineClassifier.pipeline.models.add()
+            scene_print.specificationVersion = 3
+            scene_print.visionFeaturePrint.scene.version = 1
+
+            input = scene_print.description.input.add()
+            input.name = self.feature
+            input.type.imageType.width = 299
+            input.type.imageType.height = 299
+            input.type.imageType.colorSpace = BGR_VALUE
+
+            output = scene_print.description.output.add()
+            output.name = "output_name"
+            DOUBLE_ARRAY_VALUE = coremltools.proto.FeatureTypes_pb2.ArrayFeatureType.ArrayDataType.Value('DOUBLE')
+            output.type.multiArrayType.dataType = DOUBLE_ARRAY_VALUE
+            output.type.multiArrayType.shape.append(2048)
+
+            #
+            # Neural Network Classifier, which is just logistic regression, in order to use GPUs
+            #
+            temp = top_spec.pipelineClassifier.pipeline.models.add()
+            temp.specificationVersion = 3
+
+            # Empty inner product layer
+            nn_spec = temp.neuralNetworkClassifier
+            feature_layer = nn_spec.layers.add()
+            feature_layer.name = "feature_layer"
+            feature_layer.input.append("output_name")
+            feature_layer.output.append("softmax_input")
+            fc_layer_params = feature_layer.innerProduct
+            fc_layer_params.inputChannels = 2048
+
+            # Softmax layer
+            softmax = nn_spec.layers.add()
+            softmax.name = "softmax"
+            softmax.softmax.MergeFromString(b'')
+            softmax.input.append("softmax_input")
+            softmax.output.append(prob_name)
+
+            input = temp.description.input.add()
+            input.name = "output_name"
+            input.type.multiArrayType.dataType = DOUBLE_ARRAY_VALUE
+            input.type.multiArrayType.shape.append(2048)
+
+            # Set outputs
+            desc = temp.description
+            prob_output = desc.output.add()
+            prob_output.name = prob_name
+            label_output = desc.output.add()
+            label_output.name = self.target
+
+            if type(self.classifier.classes[0]) == int:
+                prob_output.type.dictionaryType.int64KeyType.MergeFromString(b'')
+                label_output.type.int64Type.MergeFromString(b'')
+            else:
+                prob_output.type.dictionaryType.stringKeyType.MergeFromString(b'')
+                label_output.type.stringType.MergeFromString(b'')
+
+            temp.description.predictedFeatureName = self.target
+            temp.description.predictedProbabilitiesName = prob_name
+
+            return top_spec
+
+
+        # Internal helper function
+        def _update_last_two_layers(nn_spec):
+            # Replace the softmax layer with new coeffients
+            num_classes = self.num_classes
+            fc_layer = nn_spec.layers[-2]
+            fc_layer_params = fc_layer.innerProduct
+            fc_layer_params.outputChannels = self.classifier.num_classes
+            inputChannels = fc_layer_params.inputChannels
+            fc_layer_params.hasBias = True
+
+            coefs = self.classifier.coefficients
+            weights = fc_layer_params.weights
+            bias = fc_layer_params.bias
+            del weights.floatValue[:]
+            del bias.floatValue[:]
+
+            import numpy as np
+            W = np.array(coefs[coefs['index'] != None]['value'], ndmin = 2).reshape(
+                                          inputChannels, num_classes - 1, order = 'F')
+            b =  coefs[coefs['index'] == None]['value']
+            Wa = np.hstack((np.zeros((inputChannels, 1)), W))
+            weights.floatValue.extend(Wa.flatten(order = 'F'))
+            bias.floatValue.extend([0.0] + list(b))
+
+        # Internal helper function
+        def _set_inputs_outputs_and_metadata(spec, nn_spec):
+            # Replace the classifier with the new classes
+            class_labels = self.classifier.classes
+
+            probOutput = spec.description.output[0]
+            classLabel = spec.description.output[1]
+            probOutput.type.dictionaryType.MergeFromString(b'')
+            if type(class_labels[0]) == int:
+                nn_spec.ClearField('int64ClassLabels')
+                probOutput.type.dictionaryType.int64KeyType.MergeFromString(b'')
+                classLabel.type.int64Type.MergeFromString(b'')
+                del nn_spec.int64ClassLabels.vector[:]
+                for c in class_labels:
+                    nn_spec.int64ClassLabels.vector.append(c)
+            else:
+                nn_spec.ClearField('stringClassLabels')
+                probOutput.type.dictionaryType.stringKeyType.MergeFromString(b'')
+                classLabel.type.stringType.MergeFromString(b'')
+                del nn_spec.stringClassLabels.vector[:]
+                for c in class_labels:
+                    nn_spec.stringClassLabels.vector.append(c)
+
+            prob_name = self.target + 'Probability'
+            label_name = self.target
+            old_output_name = nn_spec.layers[-1].name
+            coremltools.models.utils.rename_feature(spec, 'classLabel', label_name)
+            coremltools.models.utils.rename_feature(spec, old_output_name, prob_name)
+            if nn_spec.layers[-1].name == old_output_name:
+                nn_spec.layers[-1].name = prob_name
+            if nn_spec.labelProbabilityLayerName == old_output_name:
+                nn_spec.labelProbabilityLayerName = prob_name
+            coremltools.models.utils.rename_feature(spec, 'data', self.feature)
+            if len(nn_spec.preprocessing) > 0:
+                nn_spec.preprocessing[0].featureName = self.feature
+
+            mlmodel = coremltools.models.MLModel(spec)
+            model_type = 'image classifier (%s)' % self.model
+            mlmodel.short_description = _coreml_utils._mlmodel_short_description(model_type)
+            mlmodel.input_description[self.feature] = u'Input image'
+            mlmodel.output_description[prob_name] = 'Prediction probabilities'
+            mlmodel.output_description[label_name] = 'Class label of top prediction'
+            _coreml_utils._set_model_metadata(mlmodel, self.__class__.__name__, {
                 'model': self.model,
                 'target': self.target,
                 'features': self.feature,
                 'max_iterations': str(self.max_iterations),
             }, version=ImageClassifier._PYTHON_IMAGE_CLASSIFIER_VERSION)
+
+            return mlmodel
+
+
+        # main part of the export_coreml function
+        if self.model in _pre_trained_models.MODELS:
+            ptModel = _pre_trained_models.MODELS[self.model]()
+            feature_extractor = _image_feature_extractor.MXFeatureExtractor(ptModel)
+
+            coreml_model = feature_extractor.get_coreml_model()
+            spec = coreml_model.get_spec()
+            nn_spec = spec.neuralNetworkClassifier
+        else:     # model == VisionFeaturePrint_Screen
+            spec = _create_vision_feature_print_screen()
+            nn_spec = spec.pipelineClassifier.pipeline.models[1].neuralNetworkClassifier
+
+        _update_last_two_layers(nn_spec)
+        mlmodel = _set_inputs_outputs_and_metadata(spec, nn_spec)
         mlmodel.save(filename)
+
+

@@ -16,6 +16,8 @@ from datetime import datetime as _datetime
 import six as _six
 import turicreate as _tc
 import numpy as _np
+from threading import Thread as _Thread
+from six.moves.queue import Queue as _Queue
 
 from turicreate.toolkits._model import CustomModel as _CustomModel
 import turicreate.toolkits._internal_utils as _tkutl
@@ -27,10 +29,39 @@ from turicreate import config as _tc_config
 from .. import _mxnet_utils
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from .. import _pre_trained_models
-
 from ._evaluation import average_precision as _average_precision
+from .._mps_utils import (use_mps as _use_mps,
+                          mps_device_name as _mps_device_name,
+                          MpsGraphAPI as _MpsGraphAPI,
+                          MpsGraphNetworkType as _MpsGraphNetworkType,
+                          MpsGraphMode as _MpsGraphMode,
+                          mps_to_mxnet as _mps_to_mxnet,
+                          mxnet_to_mps as _mxnet_to_mps,
+                          mxnet_network_to_mps_params as _mxnet_network_to_mps_params)
+
 
 _MXNET_MODEL_FILENAME = "mxnet_model.params"
+
+
+def _get_mps_od_net(input_image_shape, batch_size, output_size, anchors,
+                    config, weights={}):
+    """
+    Initializes an MpsGraphAPI for object detection.
+    """
+    network = _MpsGraphAPI(network_id=_MpsGraphNetworkType.kODGraphNet)
+
+    c_in, h_in, w_in =  input_image_shape
+    c_out = output_size
+    h_out = h_in // 32
+    w_out = w_in // 32
+
+    c_view = c_in
+    h_view = h_in
+    w_view = w_in
+
+    network.init(batch_size, c_in, h_in, w_in, c_out, h_out, w_out,
+                 weights=weights, config=config)
+    return network
 
 
 # Standard lib functions would be great here, but the formatting options of
@@ -211,8 +242,12 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         'non_maximum_suppression_threshold': 0.45,
         'rescore': True,
         'clip_gradients': 0.025,
+        'weight_decay': 0.0005,
+        'sgd_momentum': 0.9,
         'learning_rate': 1.0e-3,
         'shuffle': True,
+        'mps_loss_mult': 8,
+        'use_io_threads': True,
     }
 
     if '_advanced_parameters' in kwargs:
@@ -228,10 +263,28 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     anchors = params['anchors']
     num_anchors = len(anchors)
 
-    num_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=params['batch_size'])
-    batch_size_each = params['batch_size'] // max(num_gpus, 1)
+    num_mxnet_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=params['batch_size'])
+    batch_size_each = params['batch_size'] // max(num_mxnet_gpus, 1)
     # Note, this may slightly alter the batch size to fit evenly on the GPUs
-    batch_size = max(num_gpus, 1) * batch_size_each
+    batch_size = max(num_mxnet_gpus, 1) * batch_size_each
+    use_mps = _use_mps() and num_mxnet_gpus == 0
+
+
+    # The IO thread also handles MXNet-powered data augmentation. This seems
+    # to be problematic to run independently of a MXNet-powered neural network
+    # in a separate thread. For this reason, we restrict IO threads to when
+    # the neural network backend is MPS.
+    use_io_threads = use_mps and params['use_io_threads']
+
+    if verbose:
+        if use_mps:
+            print('Using GPU to create model ({})'.format(_mps_device_name()))
+        elif num_mxnet_gpus == 1:
+            print('Using GPU to create model (CUDA)')
+        elif num_mxnet_gpus > 1:
+            print('Using {} GPUs to create model (CUDA)'.format(num_mxnet_gpus))
+        else:
+            print('Using CPU to create model')
 
     grid_shape = params['grid_shape']
     input_image_shape = (3,
@@ -261,6 +314,15 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     class_to_index = {name: index for index, name in enumerate(classes)}
     num_classes = len(classes)
 
+    if max_iterations == 0:
+        # Set number of iterations through a heuristic
+        num_iterations_raw = 5000 * _np.sqrt(num_instances) / batch_size
+        num_iterations = 1000 * max(1, int(round(num_iterations_raw / 1000)))
+        if verbose:
+            print("Setting 'max_iterations' to {}".format(num_iterations))
+    else:
+        num_iterations = max_iterations
+
     # Create data loader
     loader = _SFrameDetectionIter(dataset,
                                   batch_size=batch_size,
@@ -272,7 +334,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                                   shuffle=params['shuffle'],
                                   loader_type='augmented',
                                   feature_column=feature,
-                                  annotations_column=annotations)
+                                  annotations_column=annotations,
+                                  iterations=num_iterations)
 
     # Predictions per anchor box: x/y + w/h + object confidence + class probs
     preds_per_box = 5 + num_classes
@@ -289,13 +352,6 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                      parameters=params)
 
     base_lr = params['learning_rate']
-    if max_iterations == 0:
-        # Set number of iterations through a heuristic
-        num_iterations_raw = 5000 * _np.sqrt(num_instances) / batch_size
-        num_iterations = 1000 * max(1, int(round(num_iterations_raw / 1000)))
-    else:
-        num_iterations = max_iterations
-
     steps = [num_iterations // 2, 3 * num_iterations // 4, num_iterations]
     steps_and_factors = [(step, 10**(-i)) for i, step in enumerate(steps)]
 
@@ -320,24 +376,75 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     # easily hide bugs caused by names getting out of sync.
     ref_model.available_parameters_subset(net_params).load(ref_model.model_path, ctx)
 
-    options = {'learning_rate': base_lr, 'lr_scheduler': lr_scheduler,
-               'momentum': 0.9, 'wd': 0.00005, 'rescale_grad': 1.0}
-    clip_grad = params.get('clip_gradients')
-    if clip_grad:
-        options['clip_gradient'] = clip_grad
+    if use_mps:
+        net.forward(_mx.nd.uniform(0, 1, (batch_size_each,) + input_image_shape))
+        mps_net_params = {}
+        keys = list(net_params)
+        for k in keys:
+            mps_net_params[k] = _mxnet_to_mps(net_params[k].data().asnumpy())
 
-    trainer = _mx.gluon.Trainer(net.collect_params(), 'sgd', options)
+        # Multiplies the loss to move the fp16 gradients away from subnormals
+        # and gradual underflow. The learning rate is correspondingly divided
+        # by the same multiple to make training mathematically equivalent. The
+        # update is done in fp32, which is why this trick works. Does not
+        # affect how loss is presented to the user.
+        mps_loss_mult = params['mps_loss_mult']
 
-    iteration = 0
-    smoothed_loss = None
-    last_time = 0
-    while iteration < num_iterations:
-        loader.reset()
-        for batch in loader:
+        mps_config = {
+            'mode': _MpsGraphMode.Train,
+            'use_sgd': True,
+            'learning_rate': base_lr / params['mps_loss_mult'],
+            'gradient_clipping': params.get('clip_gradients', 0.0) * mps_loss_mult,
+            'weight_decay': params['weight_decay'],
+            'od_include_network': True,
+            'od_include_loss': True,
+            'od_scale_xy': params['lmb_coord_xy'] * mps_loss_mult,
+            'od_scale_wh': params['lmb_coord_wh'] * mps_loss_mult,
+            'od_scale_no_object': params['lmb_noobj'] * mps_loss_mult,
+            'od_scale_object': params['lmb_obj'] * mps_loss_mult,
+            'od_scale_class': params['lmb_class'] * mps_loss_mult,
+            'od_max_iou_for_no_object': 0.3,
+            'od_min_iou_for_object': 0.7,
+            'od_rescore': params['rescore'],
+        }
+
+        mps_net = _get_mps_od_net(input_image_shape=input_image_shape,
+                                  batch_size=batch_size,
+                                  output_size=output_size,
+                                  anchors=anchors,
+                                  config=mps_config,
+                                  weights=mps_net_params)
+    else:
+        options = {'learning_rate': base_lr, 'lr_scheduler': lr_scheduler,
+                   'momentum': params['sgd_momentum'], 'wd': params['weight_decay'], 'rescale_grad': 1.0}
+        clip_grad = params.get('clip_gradients')
+        if clip_grad:
+            options['clip_gradient'] = clip_grad
+        trainer = _mx.gluon.Trainer(net.collect_params(), 'sgd', options)
+
+    progress = {'smoothed_loss': None, 'last_time': 0}
+
+    def handle_request(batch):
+        if use_mps:
+            for x, y in zip(batch.data, batch.label):
+                input_data = _mxnet_to_mps(x.asnumpy())
+                label_data = y.asnumpy().reshape(y.shape[:-2] + (-1,))
+
+                if batch.iteration in steps:
+                    ii = steps.index(batch.iteration) + 1
+                    new_lr = factors[ii] * base_lr
+                    mps_net.set_learning_rate(new_lr / mps_loss_mult)
+
+                mps_net.set_input(input_data)
+                mps_net.set_label(label_data)
+                cur_loss = mps_net.run_graph().sum() / mps_loss_mult
+        else:
             data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0)
             label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0)
 
             Ls = []
+            Zs = []
+
             with _mx.autograd.record():
                 for x, y in zip(data, label):
                     z = net(x)
@@ -347,25 +454,88 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                 for L in Ls:
                     L.backward()
 
-            cur_loss = _np.mean([L.asnumpy()[0] for L in Ls])
-            if smoothed_loss is None:
-                smoothed_loss = cur_loss
-            else:
-                smoothed_loss = 0.9 * smoothed_loss + 0.1 * cur_loss
             trainer.step(1)
-            iteration += 1
-            cur_time = _time.time()
-            if verbose and cur_time > last_time + 10:
-                print('{now:%Y-%m-%d %H:%M:%S}  Training {cur_iter:{width}d}/{num_iterations:{width}d}  Loss {loss:6.3f}'.format(
-                    now=_datetime.now(), cur_iter=iteration, num_iterations=num_iterations,
-                    loss=smoothed_loss, width=len(str(num_iterations))))
-                last_time = cur_time
-            if iteration == num_iterations:
-                break
+            cur_loss = _np.mean([L.asnumpy()[0] for L in Ls])
+        return cur_loss
+
+    def consume_response(cur_loss, iteration):
+        iteration_base1 = iteration + 1
+        if progress['smoothed_loss'] is None:
+            progress['smoothed_loss'] = cur_loss
+        else:
+            progress['smoothed_loss'] = 0.9 * progress['smoothed_loss'] + 0.1 * cur_loss
+        cur_time = _time.time()
+        if verbose and (cur_time > progress['last_time'] + 10 or
+                        iteration_base1 == max_iterations):
+            # Print progress table row
+            elapsed_time = cur_time - start_time
+            print("| {cur_iter:<{width}}| {loss:<{width}.3f}| {time:<{width}.1f}|".format(
+                cur_iter=iteration_base1, loss=progress['smoothed_loss'],
+                time=elapsed_time , width=column_width-1))
+            progress['last_time'] = cur_time
+
+    request_queue = _Queue()
+    response_queue = _Queue()
+
+    if verbose:
+        # Print progress table header
+        column_names = ['Iteration', 'Loss', 'Elapsed Time']
+        num_columns = len(column_names)
+        column_width = max(map(lambda x: len(x), column_names)) + 2
+        hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
+        print(hr)
+        print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
+        print(hr)
+
+    iteration = 0
+    if not use_io_threads:
+        for batch in loader:
+            cur_loss = handle_request(batch)
+            consume_response(cur_loss, batch.iteration)
+            iteration = batch.iteration
+    else:
+        def model_worker():
+            while True:
+                batch = request_queue.get()  # Consume request
+                if batch is None:
+                    # No more work remains. Allow the thread to finish.
+                    return
+                response_queue.put((handle_request(batch), batch.iteration))  # Produce response
+        model_worker_thread = _Thread(target=model_worker)
+        model_worker_thread.start()
+
+        try:
+            # Attempt to have two requests in progress at any one time (double
+            # buffering), so that the iterator is creating one batch while MXNet
+            # performs inference on the other.
+            if loader.has_next:
+                request_queue.put(next(loader))
+                while loader.has_next:
+                    request_queue.put(next(loader))
+                    consume_response(*response_queue.get())
+                consume_response(*response_queue.get())
+
+        finally:
+            # Tell the worker thread to shut down.
+            request_queue.put(None)
+
+        model_worker_thread.join()
+
+    # If mps was used, load model back into mxnet
+    if use_mps:
+        mps_net_params = mps_net.export()
+        keys = mps_net_params.keys()
+        for k in keys:
+            if k in net_params:
+                net_params[k].set_data(_mps_to_mxnet(mps_net_params[k]))
+
 
     training_time = _time.time() - start_time
+    if verbose:
+        print(hr)   # progress table footer
 
     # Save the model
+    training_iterations = iteration + 1
     state = {
         '_model': net,
         '_class_to_index': class_to_index,
@@ -384,9 +554,9 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         'num_bounding_boxes': num_instances,
         'training_time': training_time,
         'training_epochs': loader.cur_epoch,
-        'training_iterations': iteration,
+        'training_iterations': training_iterations,
         'max_iterations': max_iterations,
-        'training_loss': smoothed_loss,
+        'training_loss': progress['smoothed_loss'],
     }
     return ObjectDetector(state)
 
@@ -524,6 +694,8 @@ class ObjectDetector(_CustomModel):
                                       annotations_column=self.annotations)
 
         num_anchors = len(self.anchors)
+        preds_per_box = 5 + len(self.classes)
+        output_size = preds_per_box * num_anchors
 
         # If prediction is done with ground truth, two sframes of the same
         # structure are returned, the second one containing ground truth labels
@@ -535,6 +707,24 @@ class ObjectDetector(_CustomModel):
                                             'x', 'y', 'width', 'height'])
             for _ in range(num_returns)
         ]
+
+        num_mxnet_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=self.batch_size)
+        use_mps = _use_mps() and num_mxnet_gpus == 0
+        if use_mps:
+            if not hasattr(self, '_mps_inference_net') or self._mps_inference_net is None:
+                mps_net_params = _mxnet_network_to_mps_params(self._model.collect_params())
+                mps_config = {
+                    'mode': _MpsGraphMode.Inference,
+                    'od_include_network': True,
+                    'od_include_loss': False,
+                }
+                mps_net = _get_mps_od_net(input_image_shape=self.input_image_shape,
+                                          batch_size=self.batch_size,
+                                          output_size=output_size,
+                                          anchors=self.anchors,
+                                          config=mps_config,
+                                          weights=mps_net_params)
+                self._mps_inference_net = mps_net
 
         dataset_size = len(dataset)
         ctx = _mxnet_utils.get_mxnet_context()
@@ -563,7 +753,19 @@ class ObjectDetector(_CustomModel):
             split_oshapes = _mx.gluon.utils.split_data(b_oshapes, num_slice=len(ctx0), even_split=False)
 
             for data, indices, oshapes in zip(split_data, split_indices, split_oshapes):
-                z = self._model(data).asnumpy()
+                if use_mps:
+                    mps_data = _mxnet_to_mps(data.asnumpy())
+                    n_samples = mps_data.shape[0]
+                    if mps_data.shape[0] != self.batch_size:
+                        mps_data_padded = _np.zeros((self.batch_size,) + mps_data.shape[1:],
+                                                    dtype=mps_data.dtype)
+                        mps_data_padded[:mps_data.shape[0]] = mps_data
+                        mps_data = mps_data_padded
+                    self._mps_inference_net.set_input(mps_data)
+                    mps_z = self._mps_inference_net.run_graph()[:n_samples]
+                    z = _mps_to_mxnet(mps_z)
+                else:
+                    z = self._model(data).asnumpy()
                 if not postprocess:
                     raw_results.append(z)
                     continue
@@ -725,15 +927,15 @@ class ObjectDetector(_CustomModel):
 
             - 'auto'                      : Returns all primary metrics.
             - 'all'                       : Returns all available metrics.
-            - 'average_precision'         : Average precision per class calculated over multiple
-                                            intersection-over-union thresholds
-                                            (at 50%, 55%, ..., 95%) and averaged.
             - 'average_precision_50'      : Average precision per class with
                                             intersection-over-union threshold at
                                             50% (PASCAL VOC metric).
-            - 'mean_average_precision'    : Mean over all classes (for ``'average_precision'``)
-                                            This is the primary single-value metric.
+            - 'average_precision'         : Average precision per class calculated over multiple
+                                            intersection-over-union thresholds
+                                            (at 50%, 55%, ..., 95%) and averaged.
             - 'mean_average_precision_50' : Mean over all classes (for ``'average_precision_50'``).
+                                            This is the primary single-value metric.
+            - 'mean_average_precision'    : Mean over all classes (for ``'average_precision'``)
 
         output_type : str
             Type of output:
@@ -774,7 +976,7 @@ class ObjectDetector(_CustomModel):
         elif metric == 'all':
             metrics = ALL_METRICS
         elif metric == 'auto':
-            metrics = {AP, MAP}
+            metrics = {AP50, MAP50}
         elif metric in ALL_METRICS:
             metrics = {metric}
         else:
@@ -816,7 +1018,10 @@ class ObjectDetector(_CustomModel):
 
         return ret
 
-    def export_coreml(self, filename):
+    def export_coreml(self, filename, 
+            include_non_maximum_suppression = True,
+            iou_threshold = None,
+            confidence_threshold = None):
         """
         Save the model in Core ML format. The Core ML model takes an image of
         fixed size as input and produces two output arrays: `confidence` and
@@ -848,6 +1053,29 @@ class ObjectDetector(_CustomModel):
         --------
         save
 
+        Parameters
+        ----------
+        filename : string
+            The path of the file where we want to save the Core ML model.
+       
+        include_non_maximum_suppression : bool
+            Non-maximum suppression is only available in iOS 12+.
+            A boolean parameter to indicate whether the Core ML model should be
+            saved with built-in non-maximum suppression or not. 
+            This parameter is set to True by default.
+
+        iou_threshold : float
+            Threshold value for non-maximum suppression. Non-maximum suppression
+            prevents multiple bounding boxes appearing over a single object. 
+            This threshold, set between 0 and 1, controls how aggressive this 
+            suppression is. A value of 1 means no maximum suppression will 
+            occur, while a value of 0 will maximally suppress neighboring 
+            boxes around a prediction.
+
+        confidence_threshold : float
+            Only return predictions above this level of confidence. The
+            threshold can range from 0 to 1. 
+
         Examples
         --------
         >>> model.export_coreml('detector.mlmodel')
@@ -856,6 +1084,9 @@ class ObjectDetector(_CustomModel):
         from .._mxnet_to_coreml import _mxnet_converter
         import coremltools
         from coremltools.models import datatypes, neural_network
+
+        if not iou_threshold: iou_threshold = self.non_maximum_suppression_threshold
+        if not confidence_threshold: confidence_threshold = 0.25
 
         preds_per_box = 5 + self.num_classes
         num_anchors = len(self.anchors)
@@ -899,20 +1130,25 @@ class ObjectDetector(_CustomModel):
         input_features = list(zip(input_names, input_types))
 
         num_spatial = self._grid_shape[0] * self._grid_shape[1]
+        num_bounding_boxes = num_anchors * num_spatial
+        CONFIDENCE_STR = ("raw_confidence" if include_non_maximum_suppression 
+            else "confidence")
+        COORDINATES_STR = ("raw_coordinates" if include_non_maximum_suppression 
+            else "coordinates")
         output_names = [
-            'confidence',
-            'coordinates',
+            CONFIDENCE_STR,
+            COORDINATES_STR
         ]
         output_dims = [
-            (num_anchors * num_spatial, num_classes),
-            (num_anchors * num_spatial, 4),
+            (num_bounding_boxes, num_classes),
+            (num_bounding_boxes, 4),
         ]
         output_types = [datatypes.Array(*dim) for dim in output_dims]
         output_features = list(zip(output_names, output_types))
         mode = None
         builder = neural_network.NeuralNetworkBuilder(input_features, output_features, mode)
         _mxnet_converter.convert(mod, mode=None,
-                                 input_shape={self.feature: image_shape},
+                                 input_shape=[(self.feature, image_shape)],
                                  builder=builder, verbose=False)
 
         prefix = '__tc__internal__'
@@ -948,7 +1184,7 @@ class ObjectDetector(_CustomModel):
 
         # (1, 2, B*H*W, 1)
         builder.add_reshape(name=prefix + 'rel_xy',
-                            target_shape=[batch_size, 2, num_anchors * num_spatial, 1],
+                            target_shape=[batch_size, 2, num_bounding_boxes, 1],
                             mode=0,
                             input_name=prefix + 'rel_xy_sp',
                             output_name=prefix + 'rel_xy')
@@ -1012,7 +1248,7 @@ class ObjectDetector(_CustomModel):
 
         # (1, 2, B*H*W, 1)
         builder.add_reshape(name=prefix + 'wh',
-                            target_shape=[1, 2, num_anchors * num_spatial, 1],
+                            target_shape=[1, 2, num_bounding_boxes, 1],
                             mode=0,
                             input_name=prefix + 'wh_pre',
                             output_name=prefix + 'wh')
@@ -1029,18 +1265,18 @@ class ObjectDetector(_CustomModel):
                             input_name=prefix + 'boxes_out_transposed',
                             output_name=prefix + 'boxes_out')
 
-        scale = _np.zeros((num_anchors * num_spatial, 4, 1))
+        scale = _np.zeros((num_bounding_boxes, 4, 1))
         scale[:, 0::2] = 1.0 / self._grid_shape[1]
         scale[:, 1::2] = 1.0 / self._grid_shape[0]
 
         # (1, B*H*W, 4, 1)
-        builder.add_scale(name='coordinates',
+        builder.add_scale(name=COORDINATES_STR,
                           W=scale,
                           b=0,
                           has_bias=False,
-                          shape_scale=(num_anchors * num_spatial, 4, 1),
+                          shape_scale=(num_bounding_boxes, 4, 1),
                           input_name=prefix + 'boxes_out',
-                          output_name='coordinates')
+                          output_name=COORDINATES_STR)
 
         # CLASS PROBABILITIES AND OBJECT CONFIDENCE
 
@@ -1078,7 +1314,7 @@ class ObjectDetector(_CustomModel):
             conf = prefix + 'conf_tiled_sp'
             builder.add_elementwise(name=prefix + 'conf_tiled_sp',
                                     mode='CONCAT',
-                                    input_names=[prefix + 'conf_sp'] * num_classes,
+                                    input_names=[prefix+'conf_sp']*num_classes,
                                     output_name=conf)
         else:
             conf = prefix + 'conf_sp'
@@ -1091,25 +1327,166 @@ class ObjectDetector(_CustomModel):
 
         # (1, C, B*H*W, 1)
         builder.add_reshape(name=prefix + 'confprobs_transposed',
-                            target_shape=[1, num_classes, num_anchors * num_spatial, 1],
+                            target_shape=[1, num_classes, num_bounding_boxes, 1],
                             mode=0,
                             input_name=prefix + 'confprobs_sp',
                             output_name=prefix + 'confprobs_transposed')
 
         # (1, B*H*W, C, 1)
-        builder.add_permute(name='confidence',
+        builder.add_permute(name=CONFIDENCE_STR,
                             dim=[0, 2, 1, 3],
                             input_name=prefix + 'confprobs_transposed',
-                            output_name='confidence')
+                            output_name=CONFIDENCE_STR)
 
-        _mxnet_converter._set_input_output_layers(builder, input_names, output_names)
+        _mxnet_converter._set_input_output_layers(
+            builder, input_names, output_names)
         builder.set_input(input_names, input_dims)
         builder.set_output(output_names, output_dims)
         builder.set_pre_processing_parameters(image_input_names=self.feature)
-        mlmodel = coremltools.models.MLModel(builder.spec)
+        model = builder.spec
+
+        if include_non_maximum_suppression:
+            # Non-Maximum Suppression is a post-processing algorithm
+            # responsible for merging all detections that belong to the
+            # same object.
+            #  Core ML schematic   
+            #                        +------------------------------------+
+            #                        | Pipeline                           |
+            #                        |                                    |
+            #                        |  +------------+   +-------------+  |
+            #                        |  | Neural     |   | Non-maximum |  |
+            #                        |  | network    +---> suppression +----->  confidences
+            #               Image  +---->            |   |             |  |
+            #                        |  |            +--->             +----->  coordinates
+            #                        |  |            |   |             |  |
+            # Optional inputs:       |  +------------+   +-^---^-------+  |
+            #                        |                     |   |          |
+            #    IOU threshold     +-----------------------+   |          |
+            #                        |                         |          |
+            # Confidence threshold +---------------------------+          |
+            #                        +------------------------------------+
+
+            model_neural_network = model.neuralNetwork
+            model.specificationVersion = 3
+            model.pipeline.ParseFromString(b'')
+            model.pipeline.models.add()
+            model.pipeline.models[0].neuralNetwork.ParseFromString(b'')
+            model.pipeline.models.add()
+            model.pipeline.models[1].nonMaximumSuppression.ParseFromString(b'')
+            # begin: Neural network  model
+            nn_model = model.pipeline.models[0]
+
+            nn_model.description.ParseFromString(b'')
+            input_image = model.description.input[0]
+            input_image.type.imageType.width = self.input_image_shape[1]
+            input_image.type.imageType.height = self.input_image_shape[2]
+            nn_model.description.input.add()
+            nn_model.description.input[0].ParseFromString(
+                input_image.SerializeToString())
+
+            for i in range(2):
+                del model.description.output[i].type.multiArrayType.shape[:]
+            names = ["raw_confidence", "raw_coordinates"]
+            bounds = [self.num_classes, 4]
+            for i in range(2):
+                output_i = model.description.output[i]
+                output_i.name = names[i]
+                for j in range(2):
+                    ma_type = output_i.type.multiArrayType
+                    ma_type.shapeRange.sizeRanges.add()
+                    ma_type.shapeRange.sizeRanges[j].lowerBound = (
+                        bounds[i] if j == 1 else 0)
+                    ma_type.shapeRange.sizeRanges[j].upperBound = (
+                        bounds[i] if j == 1 else -1)
+                nn_model.description.output.add()
+                nn_model.description.output[i].ParseFromString(
+                    output_i.SerializeToString())
+
+                ma_type = nn_model.description.output[i].type.multiArrayType
+                ma_type.shape.append(num_bounding_boxes)
+                ma_type.shape.append(bounds[i])
+            
+            # Think more about this line
+            nn_model.neuralNetwork.ParseFromString(
+                model_neural_network.SerializeToString())
+            nn_model.specificationVersion = model.specificationVersion
+            # end: Neural network  model
+
+            # begin: Non maximum suppression model
+            nms_model = model.pipeline.models[1]
+            nms_model_nonMaxSup = nms_model.nonMaximumSuppression
+            
+            for i in range(2):
+                output_i = model.description.output[i]
+                nms_model.description.input.add()
+                nms_model.description.input[i].ParseFromString(
+                    output_i.SerializeToString())
+
+                nms_model.description.output.add()
+                nms_model.description.output[i].ParseFromString(
+                    output_i.SerializeToString())
+                nms_model.description.output[i].name = (
+                    'confidence' if i==0 else 'coordinates')
+            
+            nms_model_nonMaxSup.iouThreshold = iou_threshold
+            nms_model_nonMaxSup.confidenceThreshold = confidence_threshold
+            nms_model_nonMaxSup.confidenceInputFeatureName = 'raw_confidence'
+            nms_model_nonMaxSup.coordinatesInputFeatureName = 'raw_coordinates'
+            nms_model_nonMaxSup.confidenceOutputFeatureName = 'confidence'
+            nms_model_nonMaxSup.coordinatesOutputFeatureName = 'coordinates'
+            nms_model.specificationVersion = model.specificationVersion
+            nms_model_nonMaxSup.stringClassLabels.vector.extend(self.classes)
+
+            for i in range(2):
+                nms_model.description.input[i].ParseFromString(
+                    nn_model.description.output[i].SerializeToString()
+                )
+
+            if include_non_maximum_suppression:
+                # Iou Threshold
+                IOU_THRESHOLD_STRING = 'iouThreshold'
+                model.description.input.add()
+                model.description.input[1].type.doubleType.ParseFromString(b'')
+                model.description.input[1].name = IOU_THRESHOLD_STRING
+                nms_model.description.input.add()
+                nms_model.description.input[2].ParseFromString(
+                    model.description.input[1].SerializeToString()
+                )
+                nms_model_nonMaxSup.iouThresholdInputFeatureName = IOU_THRESHOLD_STRING
+                
+                # Confidence Threshold
+                CONFIDENCE_THRESHOLD_STRING = 'confidenceThreshold'
+                model.description.input.add()
+                model.description.input[2].type.doubleType.ParseFromString(b'')
+                model.description.input[2].name = CONFIDENCE_THRESHOLD_STRING
+
+                nms_model.description.input.add()
+                nms_model.description.input[3].ParseFromString(
+                    model.description.input[2].SerializeToString())
+
+                nms_model_nonMaxSup.confidenceThresholdInputFeatureName = \
+                    CONFIDENCE_THRESHOLD_STRING
+                
+            # end: Non maximum suppression model
+            model.description.output[0].name = 'confidence'
+            model.description.output[1].name = 'coordinates'
+
+        iouThresholdString = '(optional) IOU Threshold override (default: {})'
+        confidenceThresholdString = ('(optional)' + 
+            ' Confidence Threshold override (default: {})')
+        mlmodel = coremltools.models.MLModel(model)
         model_type = 'object detector (%s)' % self.model
-        mlmodel.short_description = _coreml_utils._mlmodel_short_description(model_type)
+        mlmodel.short_description = _coreml_utils._mlmodel_short_description(
+            model_type)
         mlmodel.input_description[self.feature] = 'Input image'
+        if include_non_maximum_suppression:
+            iouThresholdString = '(optional) IOU Threshold override (default: {})'
+            mlmodel.input_description['iouThreshold'] = \
+                iouThresholdString.format(iou_threshold)
+            confidenceThresholdString = ('(optional)' + 
+                ' Confidence Threshold override (default: {})')
+            mlmodel.input_description['confidenceThreshold'] = \
+                confidenceThresholdString.format(confidence_threshold)
         mlmodel.output_description['confidence'] = \
                 u'Boxes \xd7 Class confidence (see user-defined metadata "classes")'
         mlmodel.output_description['coordinates'] = \
@@ -1118,7 +1495,12 @@ class ObjectDetector(_CustomModel):
                 'model': self.model,
                 'max_iterations': str(self.max_iterations),
                 'training_iterations': str(self.training_iterations),
-                'non_maximum_suppression_threshold': str(self.non_maximum_suppression_threshold),
+                'include_non_maximum_suppression': str(
+                    include_non_maximum_suppression),
+                'non_maximum_suppression_threshold': str(
+                    iou_threshold),
+                'confidence_threshold': str(confidence_threshold),
+                'iou_threshold': str(iou_threshold),
                 'feature': self.feature,
                 'annotations': self.annotations,
                 'classes': ','.join(self.classes),

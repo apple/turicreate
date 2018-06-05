@@ -18,9 +18,11 @@ import pytest
 import coremltools
 import platform
 
-def _get_data(num_examples = 100):
+def _get_data(num_examples = 100, label_type = int):
     from PIL import Image as _PIL_Image
     import numpy as np
+
+    assert(label_type in [str, int])
 
     rs = np.random.RandomState(1234)
     _format = {'JPG': 0, 'PNG': 1, 'RAW': 2, 'UNDEFINED': 3}
@@ -47,12 +49,20 @@ def _get_data(num_examples = 100):
         return img
 
     images = []
-    random_labels = [rs.randint(0,5) for i in range(num_examples)]
+    if label_type == int:
+        random_labels = [rs.randint(0,5) for _ in range(num_examples)]
+    else:
+        random_labels = [rs.choice(['a', 'b', 'c', 'd', 'e']) for _ in range(num_examples)]
     for i in range(num_examples):
         img_shape = tuple(rs.randint(100, 1000, size=2)) + (3,)
         img = rs.randint(255, size=img_shape)
-        label = random_labels[i]
+
         # Give a slight color hint about the label
+        if label_type == int:
+            label = int(random_labels[i])
+        else:
+            label = ord(random_labels[i]) - ord('a')
+
         img = (img + [label * 3, 0, -label * 3]).clip(0, 255)
         pil_img = _PIL_Image.fromarray(img, mode='RGB')
         images.append(from_pil_image(pil_img))
@@ -63,14 +73,15 @@ def _get_data(num_examples = 100):
 
 class ImageClassifierTest(unittest.TestCase):
     @classmethod
-    def setUpClass(self, model='resnet-50', input_image_shape=(3, 224, 224), tol=0.02, num_examples = 100):
+    def setUpClass(self, model = 'resnet-50', input_image_shape = (3, 224, 224), tol=0.02,
+                   num_examples = 100, label_type = int):
         self.feature = 'awesome_image'
         self.target = 'awesome_label'
         self.input_image_shape = input_image_shape
         self.pre_trained_model = model
         self.tolerance = tol
 
-        self.sf = _get_data(num_examples)
+        self.sf = _get_data(num_examples = num_examples, label_type = label_type)
         self.model = tc.image_classifier.create(self.sf, target=self.target,
                                                 model=self.pre_trained_model,
                                                 seed=42)
@@ -112,13 +123,6 @@ class ImageClassifierTest(unittest.TestCase):
     def test_create_with_empty_dataset(self):
         with self.assertRaises(_ToolkitError):
             tc.image_classifier.create(self.sf[:0], target = self.target)
-
-    def test_invalid_num_gpus(self):
-        num_gpus = tc.config.get_num_gpus()
-        tc.config.set_num_gpus(-2)
-        with self.assertRaises(_ToolkitError):
-            tc.image_classifier.create(self.sf, target=self.target)
-        tc.config.set_num_gpus(num_gpus)
 
     def test_predict(self):
         model = self.model
@@ -168,8 +172,8 @@ class ImageClassifierTest(unittest.TestCase):
         coreml_model = coremltools.models.MLModel(filename)
         img = self.sf[0:1][self.feature][0]
         img_fixed = tc.image_analysis.resize(img, *reversed(self.input_image_shape))
-        import PIL
-        pil_img = PIL.Image.fromarray(img_fixed.pixel_data)
+        from PIL import Image
+        pil_img = Image.fromarray(img_fixed.pixel_data)
 
         if _mac_ver() >= (10, 13):
             classes = self.model.classifier.classes
@@ -245,8 +249,18 @@ class ImageClassifierSqueezeNetTest(ImageClassifierTest):
                                                               input_image_shape=(3, 227, 227),
                                                               tol=0.005, num_examples = 200)
 
+# TODO: if on skip OS, test negative case
+@unittest.skipIf(_mac_ver() < (10,14), 'VisionFeaturePrint_Screen only supported on macOS 10.14+')
+class VisionFeaturePrintScreenTest(ImageClassifierTest):
+    @classmethod
+    def setUpClass(self):
+        super(VisionFeaturePrintScreenTest, self).setUpClass(model='VisionFeaturePrint_Screen',
+                                                              input_image_shape=(3, 299, 299),
+                                                              tol=0.005, num_examples = 100,
+                                                              label_type = str)
 
-@unittest.skipIf(tc.util._num_available_gpus() == 0, 'Requires GPU')
+
+@unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
 @pytest.mark.gpu
 class ImageClassifierGPUTest(unittest.TestCase):
     @classmethod
@@ -275,7 +289,7 @@ class ImageClassifierGPUTest(unittest.TestCase):
         tc.config.set_num_gpus(old_num_gpus)
 
 
-@unittest.skipIf(tc.util._num_available_gpus() == 0, 'Requires GPU')
+@unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
 @pytest.mark.gpu
 class ImageClassifierSqueezeNetGPUTest(unittest.TestCase):
     @classmethod

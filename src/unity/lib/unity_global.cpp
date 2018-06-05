@@ -217,10 +217,62 @@ namespace turi {
     }
   }
 
+  variant_map_type unity_global::load_model_impl(turi::iarchive& iarc, bool include_data) {
+    char buf[256] = "";
+    size_t magic_header_size = strlen(CLASS_MAGIC_HEADER);
+    iarc.read(buf, magic_header_size);
+    if (strcmp(buf, OLD_CLASS_MAGIC_HEADER) == 0) {
+      // legacy loader
+      std::string model_name;
+      std::string model_wrapper;
+      iarc >> model_name;
+      logstream(LOG_INFO) << "Model name: " << model_name << std::endl;
+      iarc >> model_wrapper;
+      std::shared_ptr<model_base> model_ptr = classes->get_toolkit_class(model_name);
+      iarc  >> *(model_ptr);
+      if (iarc.fail()) {
+        std::string message = "Fail to read.";
+        log_and_throw_io_failure(message);
+      }
+
+      // fill the return values
+      variant_map_type ret;
+      variant_set_value<flexible_type>(ret["archive_version"], 0);
+      variant_set_value<std::shared_ptr<model_base>>(ret["model_base"], model_ptr);
+      flexible_type flex_model_wrapper = (flexible_type)model_wrapper;
+      variant_set_value<flexible_type>(ret["model_wrapper"], flex_model_wrapper);
+      variant_set_value<flexible_type>(ret["model_name"], flexible_type(model_name));
+      return ret;
+    } else if (strcmp(buf, CLASS_MAGIC_HEADER) == 0) {
+      // new loader
+      std::string model_name;
+      iarc >> model_name;
+      variant_type var;
+      model_variant_deep_load(var, iarc);
+      variant_map_type ret;
+      if (include_data) {
+        DASSERT_TRUE(variant_is<variant_map_type>(var));
+        ret = variant_get_value<variant_map_type>(var);
+      } else {
+        DASSERT_TRUE(variant_is<std::shared_ptr<model_base> >(var));
+        ret["model"] = var;
+      }
+      variant_set_value<flexible_type>(ret["archive_version"], 1);
+      variant_set_value<flexible_type>(ret["model_name"], flexible_type(model_name));
+      if (iarc.fail()) {
+        std::string message = "Fail to read.";
+        log_and_throw_io_failure(message);
+      }
+      return ret;
+    } else {
+      log_and_throw(std::string("Invalid model file."));
+    }
+
+  }
+
   variant_map_type unity_global::load_model(const std::string& url) {
     logstream(LOG_INFO) << "Load model from " << sanitize_url(url) << std::endl;
     try {
-
       dir_archive dir;
       dir.open_directory_for_read(url);
       std::string contents;
@@ -228,51 +280,7 @@ namespace turi {
         log_and_throw(std::string("Archive does not contain a model."));
       }
       iarchive iarc(dir);
-
-      char buf[256] = "";
-      size_t magic_header_size = strlen(CLASS_MAGIC_HEADER);
-      iarc.read(buf, magic_header_size);
-      if (strcmp(buf, OLD_CLASS_MAGIC_HEADER) == 0) {
-        // legacy loader
-        std::string model_name;
-        std::string model_wrapper;
-        iarc >> model_name;
-        logstream(LOG_INFO) << "Model name: " << model_name << std::endl;
-        iarc >> model_wrapper;
-        std::shared_ptr<model_base> model_ptr = classes->get_toolkit_class(model_name);
-        iarc  >> *(model_ptr);
-        if (dir.get_input_stream()->fail()) {
-          std::string message = "Fail to read.";
-          log_and_throw_io_failure(message);
-        }
-        dir.close();
-
-        // fill the return values
-        variant_map_type ret;
-        variant_set_value<flexible_type>(ret["archive_version"], 0);
-        variant_set_value<std::shared_ptr<model_base>>(ret["model_base"], model_ptr);
-        flexible_type flex_model_wrapper = (flexible_type)model_wrapper;
-        variant_set_value<flexible_type>(ret["model_wrapper"], flex_model_wrapper);
-        variant_set_value<flexible_type>(ret["model_name"], flexible_type(model_name));
-        return ret;
-      } else if (strcmp(buf, CLASS_MAGIC_HEADER) == 0) {
-        // new loader
-        std::string model_name;
-        iarc >> model_name;
-        variant_type var;
-        model_variant_deep_load(var, iarc);
-        variant_map_type ret = variant_get_value<variant_map_type>(var);
-        variant_set_value<flexible_type>(ret["archive_version"], 1);
-        variant_set_value<flexible_type>(ret["model_name"], flexible_type(model_name));
-        if (dir.get_input_stream()->fail()) {
-          std::string message = "Fail to read.";
-          log_and_throw_io_failure(message);
-        }
-        dir.close();
-        return ret;
-      } else {
-        log_and_throw(std::string("Invalid model file."));
-      }
+      return load_model_impl(iarc, true /* include_data */);
     } catch (std::ios_base::failure& e) {
       std::string message = "Unable to load model from " + sanitize_url(url) + ": " + e.what();
       log_and_throw_io_failure(message);
@@ -282,6 +290,26 @@ namespace turi {
       log_and_throw(std::string("Unable to load model from ") + sanitize_url(url) + ": " + e.what());
     } catch (...) {
       log_and_throw(std::string("Unknown Error: Unable to load model from ") + sanitize_url(url));
+    }
+  }
+
+  variant_map_type unity_global::load_model_from_data(std::istream& data) {
+    logstream(LOG_INFO) << "Load model from data" << std::endl;
+    try {
+      iarchive iarc(data);
+      // include_data is false, because data (SFrame/SArray) can't be serialized
+      // as data (bytes). Requires a dir_archive with real filesystem.
+      return load_model_impl(iarc, false /* include_data */);
+    } catch (std::ios_base::failure& e) {
+      std::string message = "Unable to load model from data: ";
+      message += e.what();
+      log_and_throw_io_failure(message);
+    } catch (std::string& e) {
+      log_and_throw(std::string("Unable to load model from data: ") + e);
+    } catch (const std::exception& e) {
+      log_and_throw(std::string("Unable to load model from data: ") + e.what());
+    } catch (...) {
+      log_and_throw(std::string("Unknown Error: Unable to load model from data."));
     }
   }
 
@@ -316,6 +344,30 @@ namespace turi {
       log_and_throw(std::string("Unable to save model to ") + sanitize_url(url) + ": " + e);
     } catch (...) {
       log_and_throw(std::string("Unknown Error: Unable to save model to ") + sanitize_url(url));
+    }
+  }
+
+  void unity_global::save_model_to_data(std::shared_ptr<model_base> model, std::ostream& out) {
+    logstream(LOG_INFO) << "Save model to data" << std::endl;
+    logstream(LOG_INFO) << "Model name: " << model->name() << std::endl;
+    try {
+      oarchive oarc(out);
+      // write to the archive. write a header, then the model name, then the map
+      oarc.write(CLASS_MAGIC_HEADER, strlen(CLASS_MAGIC_HEADER));
+      oarc << std::string(model->name());
+      model_variant_deep_save(to_variant(model), oarc);
+
+      if (oarc.fail()) {
+        std::string message = "Fail to write.";
+        log_and_throw_io_failure(message);
+      }
+    } catch (std::ios_base::failure& e) {
+      std::string message = std::string("Unable to save model to data: ") + e.what();
+      log_and_throw_io_failure(message);
+    } catch (std::string& e) {
+      log_and_throw(std::string("Unable to save model to data: ") + e);
+    } catch (...) {
+      log_and_throw(std::string("Unknown Error: Unable to save model to data"));
     }
   }
 

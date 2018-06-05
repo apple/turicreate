@@ -76,7 +76,10 @@ import turicreate.toolkits.sentence_classifier as sentence_classifier
 import turicreate.toolkits.image_classifier as image_classifier
 import turicreate.toolkits.image_similarity as image_similarity
 import turicreate.toolkits.object_detector as object_detector
+import turicreate.toolkits.style_transfer as style_transfer
 import turicreate.toolkits.activity_classifier as activity_classifier
+
+from turicreate.toolkits.image_analysis.image_analysis import load_images
 
 from turicreate.toolkits import evaluation
 
