@@ -11,35 +11,22 @@ The technique used in Turi Create is based on [*"A Learned
 Representation For Artistic
 Style"*](https://arxiv.org/pdf/1610.07629.pdf). The model is compact and
 fast and hence can run on mobile devices like an iPhone. The model
-consists of 3 convolutional layers, 5 residual layers (2 convolutonal
+consists of 3 convolutional layers, 5 residual layers (2 convolutional
 layers in each) and 3 upsampling layers each followed by a convolutional
-layer.  There are totally 16 convolutional layers.
+layer.  There are a total of 16 convolutional layers.
 
-There are three aspects about this techinque that are worth noting:
-- It trades off training time (which can be larger) to make sure the
-  inference time is fast enough for use on a mobile device.
+There are three aspects about this technique that are worth noting:
+- It is designed to be incredibly fast at stylizing images, allowing deployment
+  on device. As a trade off, the model creation takes longer.
 - A single model can incorporate a large number of styles without any
   significant increase in the size of the model.
-- During inference, the model can take in any-sized input image and out
-  the stlyized image of the same size.
+- The model can take input of any size and output a stylized image of
+  the same size.
 
 During training, we employ [Transfer
 Learning](../image_classifier/how-it-works.md#transfer-learning). The 
-model uses  VGG-16 as a reference network to compute the losses. We 
-fine-tune only the instance norm parameters of the styles and not the 
-entire network.
-
-#### Advanced parameters
-
-We provide a few advanced training parameters that might be useful to
-you as you develop more intuition for the model. You may specifiy these
-parameters by specifying _advanced_parameters in
-[style_transfer.create()](https://apple.github.io/turicreate/docs/api/generated/turicreate.style_transfer.create.html#turicreate.style_transfer.create).
-Note that this may not result in a better model than the default
-parameters (which are chosen automatically based on your data):
-
-* `finetune_all_params`: Setting this to True will allow the fine-tune
-  all the parameters of resnet-16.
-* `print_loss_breakdown`: Setting this parameter to True will print the
-  content loss and style loss separately.Higher the style loss, lesser
-style elements will be captured in the content images.
+model uses the visual semantics of an already trained VGG-16 network to
+understand and mimic stylistic elements. It also updates only a small set of
+the parameters of the stylization network; the rest of the parameters were
+already trained and remain unchanged. This allows you to achieve great results
+with little data and shorter training time.
