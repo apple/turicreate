@@ -47,6 +47,7 @@ var namespaceturi =
       [ "city_hash128_visitor", "structturi_1_1flexible__type__impl_1_1city__hash128__visitor.html", null ],
       [ "city_hash_visitor", "structturi_1_1flexible__type__impl_1_1city__hash__visitor.html", null ],
       [ "const_visitor_wrapper", "structturi_1_1flexible__type__impl_1_1const__visitor__wrapper.html", null ],
+      [ "date_time_string_reader", "classturi_1_1flexible__type__impl_1_1date__time__string__reader.html", "classturi_1_1flexible__type__impl_1_1date__time__string__reader" ],
       [ "decrement_operator", "structturi_1_1flexible__type__impl_1_1decrement__operator.html", null ],
       [ "deserializer", "structturi_1_1flexible__type__impl_1_1deserializer.html", null ],
       [ "divide_equal_operator", "structturi_1_1flexible__type__impl_1_1divide__equal__operator.html", null ],
@@ -196,8 +197,7 @@ var namespaceturi =
         [ "random_projection", "classturi_1_1sdk__model_1_1feature__engineering_1_1random__projection.html", "classturi_1_1sdk__model_1_1feature__engineering_1_1random__projection" ],
         [ "sample_transformer", "classturi_1_1sdk__model_1_1feature__engineering_1_1sample__transformer.html", "classturi_1_1sdk__model_1_1feature__engineering_1_1sample__transformer" ],
         [ "transformer_base", "classturi_1_1sdk__model_1_1feature__engineering_1_1transformer__base.html", "classturi_1_1sdk__model_1_1feature__engineering_1_1transformer__base" ]
-      ] ],
-      [ "sdk_model_base", "classturi_1_1sdk__model_1_1sdk__model__base.html", "classturi_1_1sdk__model_1_1sdk__model__base" ]
+      ] ]
     ] ],
     [ "sframe_impl", null, [
       [ "is_sarray_like", "structturi_1_1sframe__impl_1_1is__sarray__like.html", null ],
@@ -248,14 +248,8 @@ var namespaceturi =
       [ "supervised_learning_model_base", "classturi_1_1supervised_1_1supervised__learning__model__base.html", "classturi_1_1supervised_1_1supervised__learning__model__base" ]
     ] ],
     [ "table_internal", null, [
-      [ "table_printer_element< std::atomic< T >, typename std::enable_if< std::is_integral< T >::value >::type >", "structturi_1_1table__internal_1_1table__printer__element_3_01std_1_1atomic_3_01T_01_4_00_01typen85582b21315a97822ac4952b8f25ca90.html", null ],
-      [ "table_printer_element< T, typename std::enable_if< std::is_convertible< T, std::string >::value &&!std::is_same< T, flexible_type >::value >::type >", "structturi_1_1table__internal_1_1table__printer__element_3_01T_00_01typename_01std_1_1enable__if70d035e77899842702e69d352ce48a38.html", null ],
       [ "table_printer_element< T, typename std::enable_if< std::is_floating_point< T >::value >::type >", "structturi_1_1table__internal_1_1table__printer__element_3_01T_00_01typename_01std_1_1enable__if7fdffbb44a6020cc370a405248ab6a0f.html", null ],
-      [ "table_printer_element< T, typename std::enable_if< std::is_same< T, bool >::value >::type >", "structturi_1_1table__internal_1_1table__printer__element_3_01T_00_01typename_01std_1_1enable__if6823353dbf51d860e701302035dbec75.html", null ],
-      [ "table_printer_element< T, typename std::enable_if< std::is_same< T, flexible_type >::value >::type >", "structturi_1_1table__internal_1_1table__printer__element_3_01T_00_01typename_01std_1_1enable__if4cbfbfb740ac31c560e15bd771e55d82.html", null ],
-      [ "table_printer_element< T, typename std::enable_if< std::is_same< T, progress_time >::value >::type >", "structturi_1_1table__internal_1_1table__printer__element_3_01T_00_01typename_01std_1_1enable__if99440e42c4a567515a759f552b49f8c4.html", null ],
-      [ "table_printer_element< T, typename std::enable_if<(std::is_integral< T >::value &&(!std::is_same< T, bool >::value))>::type >", "structturi_1_1table__internal_1_1table__printer__element_3_01T_00_01typename_01std_1_1enable__if0d43a5538cfdc2715bdcb1b60f0665d8.html", null ],
-      [ "table_printer_element< turi::atomic< T >, typename std::enable_if< std::is_integral< T >::value >::type >", "structturi_1_1table__internal_1_1table__printer__element_3_01turi_1_1atomic_3_01T_01_4_00_01type9a751e9c92616e81b60408b4b24e2360.html", null ]
+      [ "table_printer_element< T, typename std::enable_if< std::is_same< T, bool >::value >::type >", "structturi_1_1table__internal_1_1table__printer__element_3_01T_00_01typename_01std_1_1enable__if6823353dbf51d860e701302035dbec75.html", null ]
     ] ],
     [ "text", null, [
       [ "alias_topic_model", "classturi_1_1text_1_1alias__topic__model.html", "classturi_1_1text_1_1alias__topic__model" ],
@@ -315,7 +309,6 @@ var namespaceturi =
       [ "key_value", "classturi_1_1zookeeper__util_1_1key__value.html", "classturi_1_1zookeeper__util_1_1key__value" ]
     ] ],
     [ "all_flexible_type_convertible", "structturi_1_1all__flexible__type__convertible.html", null ],
-    [ "all_variant_convertible", "structturi_1_1all__variant__convertible.html", null ],
     [ "any", "classturi_1_1any.html", "classturi_1_1any" ],
     [ "auto_close_sarrays", "classturi_1_1auto__close__sarrays.html", null ],
     [ "bad_alloc", "classturi_1_1bad__alloc.html", null ],
@@ -395,7 +388,6 @@ var namespaceturi =
     [ "is_flexible_type_convertible", "structturi_1_1is__flexible__type__convertible.html", null ],
     [ "IS_POD_TYPE", "structturi_1_1IS__POD__TYPE.html", null ],
     [ "is_valid_flex_type", "structturi_1_1is__valid__flex__type.html", null ],
-    [ "is_variant_convertible", "structturi_1_1is__variant__convertible.html", null ],
     [ "l2_rescaling", "classturi_1_1l2__rescaling.html", "classturi_1_1l2__rescaling" ],
     [ "lazy_eval_future", "classturi_1_1lazy__eval__future.html", "classturi_1_1lazy__eval__future" ],
     [ "lazy_eval_operation_base", "structturi_1_1lazy__eval__operation__base.html", "structturi_1_1lazy__eval__operation__base" ],
@@ -473,7 +465,6 @@ var namespaceturi =
     [ "thread_group", "classturi_1_1thread__group.html", "classturi_1_1thread__group" ],
     [ "thread_pool", "classturi_1_1thread__pool.html", "classturi_1_1thread__pool" ],
     [ "timer", "classturi_1_1timer.html", "classturi_1_1timer" ],
-    [ "toolkit_class_base", "classturi_1_1toolkit__class__base.html", "classturi_1_1toolkit__class__base" ],
     [ "toolkit_class_registry", "classturi_1_1toolkit__class__registry.html", "classturi_1_1toolkit__class__registry" ],
     [ "toolkit_class_specification", "structturi_1_1toolkit__class__specification.html", "structturi_1_1toolkit__class__specification" ],
     [ "toolkit_function_invocation", "structturi_1_1toolkit__function__invocation.html", "structturi_1_1toolkit__function__invocation" ],
@@ -497,20 +488,6 @@ var namespaceturi =
     [ "unsupported_serialize", "structturi_1_1unsupported__serialize.html", null ],
     [ "value_container_mapper", "classturi_1_1value__container__mapper.html", "classturi_1_1value__container__mapper" ],
     [ "variant_converter", "structturi_1_1variant__converter.html", null ],
-    [ "variant_converter< gl_sarray, void >", "structturi_1_1variant__converter_3_01gl__sarray_00_01void_01_4.html", null ],
-    [ "variant_converter< std::function< S(Args...)>, typename std::enable_if< is_variant_convertible< S >::value &&all_variant_convertible< Args... >::value >::type >", "structturi_1_1variant__converter_3_01std_1_1function_3_01S_07Args_8_8_8_08_4_00_01typename_01stde8ef53dd70f8facd6cc5d3b899a7e76b.html", null ],
-    [ "variant_converter< std::map< std::string, T >, typename std::enable_if<!is_flexible_type_convertible< T >::value &&is_variant_convertible< T >::value &&!is_variant_member< std::map< std::string, T > >::value >::type >", "structturi_1_1variant__converter_3_01std_1_1map_3_01std_1_1string_00_01T_01_4_00_01typename_01steb921e526939df4b6787a299e9eca002.html", null ],
-    [ "variant_converter< std::pair< S, T >, typename std::enable_if<!is_flexible_type_convertible< T >::value &&is_variant_convertible< T >::value >::type >", "structturi_1_1variant__converter_3_01std_1_1pair_3_01S_00_01T_01_4_00_01typename_01std_1_1enablefdd6abc72e9114774ec15ac64509ca94.html", null ],
-    [ "variant_converter< std::shared_ptr< T >, typename std::enable_if< is_model_descendent< T >::value &&!std::is_same< T, model_base >::value &&!is_toolkit_builtin< T >::value >::type >", "structturi_1_1variant__converter_3_01std_1_1shared__ptr_3_01T_01_4_00_01typename_01std_1_1enablec167e880c64e2086540b988c9a289ebc.html", null ],
-    [ "variant_converter< std::shared_ptr< unity_sarray >, void >", "structturi_1_1variant__converter_3_01std_1_1shared__ptr_3_01unity__sarray_01_4_00_01void_01_4.html", null ],
-    [ "variant_converter< std::shared_ptr< unity_sframe >, void >", "structturi_1_1variant__converter_3_01std_1_1shared__ptr_3_01unity__sframe_01_4_00_01void_01_4.html", null ],
-    [ "variant_converter< std::shared_ptr< unity_sgraph >, void >", "structturi_1_1variant__converter_3_01std_1_1shared__ptr_3_01unity__sgraph_01_4_00_01void_01_4.html", null ],
-    [ "variant_converter< std::tuple< Args... >, typename std::enable_if<!all_flexible_type_convertible< Args... >::value &&all_variant_convertible< Args... >::value >::type >", "structturi_1_1variant__converter_3_01std_1_1tuple_3_01Args_8_8_8_01_4_00_01typename_01std_1_1ena13843fb9454a9c1cd7101708ae18f754.html", null ],
-    [ "variant_converter< std::unordered_map< std::string, T >, typename std::enable_if<!is_flexible_type_convertible< T >::value &&is_variant_convertible< T >::value >::type >", "structturi_1_1variant__converter_3_01std_1_1unordered__map_3_01std_1_1string_00_01T_01_4_00_01ty155fba366a4b0f7dca1f388fff36c55e.html", null ],
-    [ "variant_converter< std::vector< T >, typename std::enable_if<!is_flexible_type_convertible< std::vector< T > >::value &&is_variant_convertible< T >::value &&!is_variant_member< std::vector< T > >::value >::type >", "structturi_1_1variant__converter_3_01std_1_1vector_3_01T_01_4_00_01typename_01std_1_1enable__if_c36eb3cbbd74e09f7620a3a22937e975.html", null ],
     [ "variant_converter< T, typename std::enable_if< is_flexible_type_convertible< T >::value >::type >", "structturi_1_1variant__converter_3_01T_00_01typename_01std_1_1enable__if_3_01is__flexible__type_191eb27affec302a827e3b97f00b9707.html", null ],
-    [ "variant_converter< T, typename std::enable_if< is_model_descendent< T >::value &&!std::is_same< T, model_base >::value &&!is_toolkit_builtin< T >::value >::type >", "structturi_1_1variant__converter_3_01T_00_01typename_01std_1_1enable__if_3_01is__model__descendea6851f5c424a968d631dcf076c4d9d36.html", null ],
-    [ "variant_converter< T, typename std::enable_if<(is_variant_member< T >::value &&!std::is_same< T, flexible_type >::value)||std::is_same< T, variant_type >::value >::type >", "structturi_1_1variant__converter_3_01T_00_01typename_01std_1_1enable__if_3_07is__variant__member510a7bcad77b051f5283003e44761ce7.html", null ],
-    [ "variant_converter< variant_type, void >", "structturi_1_1variant__converter_3_01variant__type_00_01void_01_4.html", null ],
     [ "vector_index_mapper", "classturi_1_1vector__index__mapper.html", "classturi_1_1vector__index__mapper" ]
 ];

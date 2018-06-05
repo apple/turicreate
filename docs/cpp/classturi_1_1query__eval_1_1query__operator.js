@@ -4,6 +4,6 @@ var classturi_1_1query__eval_1_1query__operator =
     [ "clone", "classturi_1_1query__eval_1_1query__operator.html#ab1af25c63a7ef3ad7020fd41b6c998b0", null ],
     [ "execute", "classturi_1_1query__eval_1_1query__operator.html#a9a3f6d205581f342ef6963be34fad427", null ],
     [ "from_planner_node", "classturi_1_1query__eval_1_1query__operator.html#a4ec540ff9564ce2eade38faf82e43214", null ],
-    [ "name", "classturi_1_1query__eval_1_1query__operator.html#a7125093301782cc05825f6148e9a1822", null ],
-    [ "print", "classturi_1_1query__eval_1_1query__operator.html#a286688110d4e8a499bce6af457790035", null ]
+    [ "name", "classturi_1_1query__eval_1_1query__operator.html#a0e8f3ed48d2c8f99c81dfea87c80efd0", null ],
+    [ "print", "classturi_1_1query__eval_1_1query__operator.html#ab9251e36d4142daa67e9f02f13a6a896", null ]
 ];

@@ -2,6 +2,7 @@ var searchData=
 [
   ['dataframe_5frow_5fiterator',['dataframe_row_iterator',['../classturi_1_1dataframe__row__iterator.html',1,'turi']]],
   ['dataframe_5ft',['dataframe_t',['../structturi_1_1dataframe__t.html',1,'turi']]],
+  ['date_5ftime_5fstring_5freader',['date_time_string_reader',['../classturi_1_1flexible__type__impl_1_1date__time__string__reader.html',1,'turi::flexible_type_impl']]],
   ['decrement_5foperator',['decrement_operator',['../structturi_1_1flexible__type__impl_1_1decrement__operator.html',1,'turi::flexible_type_impl']]],
   ['deferred_5frwlock',['deferred_rwlock',['../classturi_1_1deferred__rwlock.html',1,'turi']]],
   ['dense_5fbitset',['dense_bitset',['../classturi_1_1dense__bitset.html',1,'turi']]],

@@ -1,6 +1,9 @@
 var dir_2ee79934ba7dc9a84028b918a3eebfa4 =
 [
+    [ "automatic_model_creation.hpp", "automatic__model__creation_8hpp_source.html", null ],
     [ "boosted_trees.hpp", "boosted__trees_8hpp_source.html", null ],
+    [ "class_registrations.hpp", "unity_2toolkits_2supervised__learning_2class__registrations_8hpp_source.html", null ],
+    [ "classifier_evaluations.hpp", "classifier__evaluations_8hpp_source.html", null ],
     [ "decision_tree.hpp", "decision__tree_8hpp_source.html", null ],
     [ "linear_regression.hpp", "linear__regression_8hpp_source.html", null ],
     [ "linear_regression_opt_interface.hpp", "linear__regression__opt__interface_8hpp_source.html", null ],
@@ -12,7 +15,6 @@ var dir_2ee79934ba7dc9a84028b918a3eebfa4 =
     [ "standardization-inl.hpp", "supervised__learning_2standardization-inl_8hpp_source.html", null ],
     [ "supervised_learning.hpp", "supervised__learning_8hpp_source.html", null ],
     [ "supervised_learning_utils-inl.hpp", "supervised__learning__utils-inl_8hpp_source.html", null ],
-    [ "unity_supervised_learning.hpp", "unity__supervised__learning_8hpp_source.html", null ],
     [ "xgboost.hpp", "xgboost_8hpp_source.html", null ],
     [ "xgboost_iterator.hpp", "xgboost__iterator_8hpp_source.html", null ]
 ];

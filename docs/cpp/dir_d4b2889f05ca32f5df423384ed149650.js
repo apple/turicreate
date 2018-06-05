@@ -1,6 +1,7 @@
 var dir_d4b2889f05ca32f5df423384ed149650 =
 [
     [ "api", "dir_16891dd155177391abb848a8f0e5800f.html", "dir_16891dd155177391abb848a8f0e5800f" ],
+    [ "extensions", "dir_53794ab826a467332a2865d7f15db9d7.html", "dir_53794ab826a467332a2865d7f15db9d7" ],
     [ "visualization", "dir_d56491e8d5b35b61b56ddf41bf8f0fad.html", "dir_d56491e8d5b35b61b56ddf41bf8f0fad" ],
     [ "auto_close_sarray.hpp", "auto__close__sarray_8hpp_source.html", null ],
     [ "flex_dict_view.hpp", "flex__dict__view_8hpp_source.html", null ],
@@ -13,7 +14,6 @@ var dir_d4b2889f05ca32f5df423384ed149650 =
     [ "sdk_registration_function_types.hpp", "sdk__registration__function__types_8hpp_source.html", null ],
     [ "sgraph_triple_apply_typedefs.hpp", "sgraph__triple__apply__typedefs_8hpp_source.html", null ],
     [ "simple_model.hpp", "simple__model_8hpp_source.html", null ],
-    [ "toolkit_class_base.hpp", "toolkit__class__base_8hpp_source.html", null ],
     [ "toolkit_class_macros.hpp", "toolkit__class__macros_8hpp_source.html", null ],
     [ "toolkit_class_registry.hpp", "toolkit__class__registry_8hpp_source.html", null ],
     [ "toolkit_class_specification.hpp", "toolkit__class__specification_8hpp_source.html", null ],

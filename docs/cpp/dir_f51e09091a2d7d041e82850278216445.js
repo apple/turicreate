@@ -5,5 +5,6 @@ var dir_f51e09091a2d7d041e82850278216445 =
     [ "linear_models_exporter.hpp", "linear__models__exporter_8hpp_source.html", null ],
     [ "mldata_exporter.hpp", "mldata__exporter_8hpp_source.html", null ],
     [ "mlmodel_include.hpp", "mlmodel__include_8hpp_source.html", null ],
+    [ "mlmodel_wrapper.hpp", "mlmodel__wrapper_8hpp_source.html", null ],
     [ "xgboost_exporter.hpp", "xgboost__exporter_8hpp_source.html", null ]
 ];

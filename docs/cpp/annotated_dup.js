@@ -39,6 +39,7 @@ var annotated_dup =
       [ "LinearModel", "classCoreML_1_1LinearModel.html", "classCoreML_1_1LinearModel" ],
       [ "LogisticModel", "classCoreML_1_1LogisticModel.html", "classCoreML_1_1LogisticModel" ],
       [ "Model", "classCoreML_1_1Model.html", "classCoreML_1_1Model" ],
+      [ "ShapeConstraint", "classCoreML_1_1ShapeConstraint.html", null ],
       [ "TreeEnsembleClassifier", "classCoreML_1_1TreeEnsembleClassifier.html", "classCoreML_1_1TreeEnsembleClassifier" ]
     ] ],
     [ "libfault", null, [

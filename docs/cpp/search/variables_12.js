@@ -35,7 +35,7 @@ var searchData=
   ['skip_5frows',['skip_rows',['../structturi_1_1csv__file__handling__options.html#a257ac25f7f0a0146b3a4f048c97a2d71',1,'turi::csv_file_handling_options']]],
   ['solution',['solution',['../structturi_1_1optimization_1_1__solver__return.html#a01a16ca5f0394c0d6f6f06570b7c033c',1,'turi::optimization::_solver_return']]],
   ['solve_5ftime',['solve_time',['../structturi_1_1optimization_1_1__solver__return.html#a0decc4018c61469232069ea8b916720e',1,'turi::optimization::_solver_return']]],
-  ['state',['state',['../classturi_1_1ml__model__base.html#a6f247683fa7362282797f5aebc780d70',1,'turi::ml_model_base::state()'],['../classturi_1_1sdk__model_1_1sdk__model__base.html#ac9784e8dd1ceb6cbf4fdb616d56d8cba',1,'turi::sdk_model::sdk_model_base::state()']]],
+  ['state',['state',['../classturi_1_1ml__model__base.html#a6f247683fa7362282797f5aebc780d70',1,'turi::ml_model_base']]],
   ['status',['status',['../structturi_1_1optimization_1_1__solver__return.html#abfc7b4703c39b004988f74ec07d976e7',1,'turi::optimization::_solver_return::status()'],['../structturi_1_1optimization_1_1__ls__return.html#a5e3626fdf961f70c72aa5c3871c0f810',1,'turi::optimization::_ls_return::status()']]],
   ['step_5fsize',['step_size',['../structturi_1_1optimization_1_1__ls__return.html#a193a4107362048705538b3575ddd5041',1,'turi::optimization::_ls_return']]],
   ['store_5ferrors',['store_errors',['../structturi_1_1csv__file__handling__options.html#ab1795754c078f81e504935dbb410f112',1,'turi::csv_file_handling_options']]],

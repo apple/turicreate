@@ -12,6 +12,7 @@ var searchData=
   ['num_5fclasses',['num_classes',['../classturi_1_1supervised_1_1logistic__regression.html#a62c0c303e8eb2e72348824088d6ce1ea',1,'turi::supervised::logistic_regression']]],
   ['num_5fcoefficients',['num_coefficients',['../classturi_1_1supervised_1_1logistic__regression.html#a3d77eec2e60d1a9315660f9b7e6b0159',1,'turi::supervised::logistic_regression']]],
   ['num_5fdimensions',['num_dimensions',['../classturi_1_1v2_1_1ml__data__iterator__base.html#adbdb2fcd73387f805210558163ab65f2',1,'turi::v2::ml_data_iterator_base']]],
+  ['num_5fgpus',['NUM_GPUS',['../group__fileio.html#ga30c6f7618937944a323b6a79c39bb207',1,'turi::fileio']]],
   ['num_5finputs',['num_inputs',['../structturi_1_1query__eval_1_1query__operator__attributes.html#a3d48c2475dc15581842fbbfb0e6ae8ec',1,'turi::query_eval::query_operator_attributes']]],
   ['num_5flarge_5fpages',['num_large_pages',['../structturi_1_1user__pagefault_1_1userpf__page__set.html#ab18430c5f2fc9342af2f19a7d34b361a',1,'turi::user_pagefault::userpf_page_set']]],
   ['num_5fpasses',['num_passes',['../structturi_1_1optimization_1_1__solver__return.html#a0447da1afededff7645e2c9953364673',1,'turi::optimization::_solver_return::num_passes()'],['../structturi_1_1optimization_1_1__ls__return.html#a7013f7953feeaf6c75bd4f83e90ed966',1,'turi::optimization::_ls_return::num_passes()']]],

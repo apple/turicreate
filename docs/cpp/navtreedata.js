@@ -1,33 +1,10 @@
-/*
-@ @licstart  The following is the entire license notice for the
-JavaScript code in this file.
-
-Copyright (C) 1997-2017 by Dimitri van Heesch
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-@licend  The above is the entire license notice
-for the JavaScript code in this file
-*/
 var NAVTREE =
 [
   [ "Turi Create", "index.html", [
     [ "Unity Library", "unity_lib.html", "unity_lib" ],
     [ "Modules", "modules.html", "modules" ],
-    [ "Namespaces", "namespaces.html", [
-      [ "Namespace List", "namespaces.html", "namespaces_dup" ],
+    [ "Namespaces", null, [
+      [ "Namespace List", "namespaces.html", "namespaces" ],
       [ "Namespace Members", "namespacemembers.html", [
         [ "All", "namespacemembers.html", "namespacemembers_dup" ],
         [ "Functions", "namespacemembers_func.html", "namespacemembers_func" ],
@@ -50,8 +27,8 @@ var NAVTREE =
         [ "Related Functions", "functions_rela.html", null ]
       ] ]
     ] ],
-    [ "Files", "files.html", [
-      [ "File List", "files.html", "files_dup" ],
+    [ "Files", null, [
+      [ "File List", "files.html", "files" ],
       [ "File Members", "globals.html", [
         [ "All", "globals.html", null ],
         [ "Functions", "globals_func.html", null ],
@@ -65,33 +42,34 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"classlibfault_1_1socket__receive__pollset.html#a085e0adecb97d6dd6000390fc002e57e",
-"classturi_1_1cuckoo__map.html",
-"classturi_1_1factorization_1_1factorization__sgd__interface.html#a603ad0bd99e48e162d6e0b0940dcc69e",
-"classturi_1_1flexible__type.html#a6235d0d52a801d179134e4a808b17c87",
-"classturi_1_1gl__sarray.html#aea8cda97069e2e002c28313803a76980",
-"classturi_1_1groupby__operators_1_1argmin.html#aee01a3a64a8f63e03b09b212637af2d0",
-"classturi_1_1hopscotch__table.html#a823d6a09a193f8d74a676538ab563be9",
-"classturi_1_1ml__metadata.html#ac538f7d504bdc4dcc3c42891a538f39f",
-"classturi_1_1parallel__sframe__iterator.html#a87fa59d5aff20025e12c9979dcc5a008",
-"classturi_1_1random_1_1generator.html#a9166f78c8b55aab05ec6beba11bdafb1",
-"classturi_1_1safe__circular__char__buffer.html#a69038fd2a3fb26397593c8e5cbda2e55",
-"classturi_1_1sdk__model_1_1feature__engineering_1_1random__projection.html#af0f2053c2ab5c4d1b90f23086ee0b153",
-"classturi_1_1sgd_1_1sgd__solver__base.html#a85ee0534581451cab439fef53a7707c0",
-"classturi_1_1standardization__interface.html#a129ee95c76dc52b6c6a7f5396dfa91ed",
-"classturi_1_1supervised_1_1logistic__regression.html#a837011764f368abe1eea3c1b5559234a",
-"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#aaec69f69022048180ab1ec8c4f97f0e0",
-"classturi_1_1swriter__base.html#aa5fd6c371b5acf5218b019181560e489",
-"classturi_1_1unity__global__base.html",
-"classturi_1_1v2_1_1ml__data__internal_1_1basic__column__statistics.html#a62ead1712d0bd0535bb276ea8b1d9ee2",
-"convolve_8hpp.html#ae8984fd5d4ee09281650359ab32be92c",
-"functions_vars_f.html",
-"group__group__serialization.html",
-"group__sgraph__main.html#ga7621d1f2b3e2bfec3fc2dd6f97c1efcc",
-"namespacemembers_func_p.html",
-"sssp_8hpp_source.html",
-"structturi_1_1list__objects__response.html#a6793b0a8073a547dac56ba7f94e254be",
-"structturi_1_1trace__count.html#a64a0c4b2872c04610c5fa2e5534eca7d"
+"classlibfault_1_1reply__socket.html#a8eb3662e6d97452320968786324e4f96",
+"classturi_1_1csv__writer.html#a17cba20a62cd83fdae0bac8c814c3d3e",
+"classturi_1_1factorization_1_1factorization__model.html#a650a966e0438eb21800d9195e52e1418",
+"classturi_1_1flexible__type.html#a4c893e29fef3aafaa4c4d65a39d72920",
+"classturi_1_1gl__sarray.html#a8d65bdaab3f108e0fb8b65a7fb15f5b0",
+"classturi_1_1groupby__operators_1_1argmax.html#a89733b6d67696b0a44218c33a14a7e22",
+"classturi_1_1hash__value.html#aa8b9d8ad0c5f6f1c61f26463715cf55b",
+"classturi_1_1ml__metadata.html",
+"classturi_1_1optimization_1_1regularizer__interface.html#acfe52dc08e8ac2276743aed4d15c8c2a",
+"classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1LOGICAL__FILTER__NODE_01_4.html#addd6b7f0250e064ee2aecb958741514a",
+"classturi_1_1recsys_1_1recsys__model__base.html#a071523ca5c32f79bc2857b847ee645fc",
+"classturi_1_1sarray__reader.html#a56f7adb1539a2199730391c0b3934512",
+"classturi_1_1sframe.html#add491107626a72b7e3bd1e7b951c6b83",
+"classturi_1_1sketches_1_1hyperloglog.html#a1e0ef76e9e38027e48a1860aa490a844",
+"classturi_1_1supervised_1_1linear__regression__opt__interface.html#ac4d77d3bc10b5fcdf613a3455cf01c94",
+"classturi_1_1supervised_1_1supervised__learning__model__base.html#a47dbdc3e645b4ec1d86b87624575c2fc",
+"classturi_1_1supervised_1_1xgboost_1_1random__forest__classifier.html#a01a68e5f2ce277e23d19e8dd537765cd",
+"classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#ab7906735178919afac6c6f260957c1df",
+"classturi_1_1unity__global.html#a1c6d2d47bfae8a5f91da3d40b5295082",
+"classturi_1_1v2_1_1ml__data__block__iterator.html#a2c4466bf2fd262b03354148e7391f523",
+"classturi_1_1vector__index__mapper.html#ac2d19424c4c56f886d0211e7e739d78d",
+"functions_func_l.html",
+"group__fileio.html#gafc09f445f1d03adfe77768722a423730",
+"group__sframe__main.html#ga62082f167c51467e2e6842214d89070a",
+"ml__data__2_2standardization-inl_8hpp_source.html",
+"sgd__solver__base_8hpp_source.html",
+"structturi_1_1groupby__aggregate__impl_1_1groupby__element.html#a1b2945604b2b54eef1592dd53a357954",
+"structturi_1_1sparse__sim_1_1unused__value__type.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
