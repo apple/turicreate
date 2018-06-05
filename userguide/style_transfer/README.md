@@ -4,8 +4,9 @@ Style Transfer is a task wherein the stylistic elements of a style image
 are imitated onto a new image while preserving the content of the new
 image. As an example, a style transfer model that uses these [style
 images](#style-images) when applied to this [content image](#content-image) 
-results in
-![stylized images](images/cat-stylized.png).
+results in:
+
+![Photo of cat in different styles](#style-images)](images/cat-stylized.png)
 
 The training procedure for style transfer requires the following data:
 - Content images: A set of representative images in your application
@@ -14,7 +15,7 @@ The training procedure for style transfer requires the following data:
 
 #### Introductory Example
 
-Here is a simple example end to end example of using style transfer.
+Here is a simple end-to-end example of using style transfer.
 
 ```python
 import turicreate as tc
@@ -96,32 +97,33 @@ For a model with 8 styles, the output looks like this:
 [8 rows x 3 columns]
 ```
 
-The resulting images look like 
-![stylized_sframe](images/stylized_sframe.png)
+We can visually explore these results using `stylized_images.explore()`:
 
-By default `stylize` will stylize a test image with all the styles used
-in the training.  You can also stylize on selected styles by passing
-`style` parameter into `stylize` method. Here are some examples:
+![View of SFrame with stylized images](images/stylized_sframe.png)
+
+By default `stylize` will apply all the styles of the model to each of the
+input images. You can also stylize using selected styles by setting the
+`style` parameter. Here are some examples:
 
 ```python
 # Only the first style
-stylized_image = model.stylize(test_images, style = 0)
+stylized_image = model.stylize(test_images, style=0)
 
 # A subset of styles
-stylized_images = model.stylize(test_images, style = [1, 2])
+stylized_images = model.stylize(test_images, style=[1, 2])
 ```
 
 By default, images with any one side larger than 800px are scaled down
 (preserving aspect ratio) so that the largest side of an image is less
-than 800px. You can adjust that using the `max_size` parameter:
+than 800px. You can adjust this using the `max_size` parameter:
 
 ```python
-stylized_images = model.stylize(test_images, max_size = 1024)
+stylized_images = model.stylize(test_images, max_size=1024)
 ```
 
 It is not always the case that stylizing your images at the highest
 possible resolution will produce the desired effect on your image so we
-recommend you chose this based on your styles and the desired effect
+recommend you choose this based on your styles and the desired effect
 you'd like it to have. The larger the size, the more computationally
 expensive it is to stylize (without resizing). Please refer to the [api
 docs](https://apple.github.io/turicreate/docs/api/generated/turicreate.style_transfer.StyleTransfer.stylize.html#turicreate.style_transfer.StyleTransfer.stylize)
