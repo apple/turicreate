@@ -25,7 +25,7 @@ With Turi Create, you can accomplish many common ML tasks:
 | [Style Transfer](https://apple.github.io/turicreate/docs/userguide/style_transfer/)        | Stylize images |
 | [Activity Classification](https://apple.github.io/turicreate/docs/userguide/activity_classifier/) | Detect an activity using sensors |
 | [Image Similarity](https://apple.github.io/turicreate/docs/userguide/image_similarity/)        | Find similar images              |
-| [Classifiers](https://apple.github.io/turicreate/docs/userguide/supervised-learning/classifier.html)             | Predict yes/no values           |
+| [Classifiers](https://apple.github.io/turicreate/docs/userguide/supervised-learning/classifier.html)             | Predict a label           |
 | [Regression](https://apple.github.io/turicreate/docs/userguide/supervised-learning/regression.html)              | Predict numeric values           |
 | [Clustering](https://apple.github.io/turicreate/docs/userguide/clustering/)              | Group similar datapoints together|
 | [Text Classifier](https://apple.github.io/turicreate/docs/userguide/text_classifier/)         | Analyze sentiment of messages    |
@@ -136,6 +136,7 @@ Turi Create automatically utilizes Mac GPUs for the following tasks (requires ma
 * Image Classification
 * Object Detection
 * Activity Classification
+* Image Similarity
 
 For linux GPU support, see [LinuxGPU.md](LinuxGPU.md)
 
