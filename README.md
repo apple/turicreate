@@ -110,7 +110,7 @@ Version 5.0 (Beta)
 -----------
 
 Turi Create 5.0 -- now in beta -- includes:
-* GPU Acceleration on Macs
+* GPU Acceleration on Macs (10.14+)
 * New Task: Style Transfer
 * Recommender model deployment
 * Vision Feature Print model deployment
