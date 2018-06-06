@@ -32,6 +32,7 @@
 #import <vector>
 #import "mps_utils.h"
 
+API_AVAILABLE(macos(10.14))
 @interface RandomWeights : NSObject <MPSCNNConvolutionDataSource> {
 @private
   NSUInteger _outputFeatureChannels;
@@ -117,6 +118,7 @@ updateWithCommandBuffer:(__nonnull id<MTLCommandBuffer>)commandBuffer
 - (void)checkpointWithCommandQueue:(nonnull id<MTLCommandQueue>)commandQueue;
 @end /* RandomWeights */
 
+API_AVAILABLE(macos(10.14))
 @interface BNData : NSObject <MPSCNNBatchNormalizationDataSource> {
 @private
   NSUInteger _channels;
