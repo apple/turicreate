@@ -137,6 +137,10 @@ static inline T bit_mask(size_t index_begin, unsigned int index_end, _ENABLE_IF_
   return bit_mask<T>(index_begin) ^ bit_mask<T>(index_end);
 }
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wshift-count-overflow"
+#endif
 /**
  * Counts the number of bits on in x.
  *
@@ -168,6 +172,9 @@ static inline unsigned int num_bits_on(T v, _ENABLE_IF_UINT(T))
   }
 }
 
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 template <int n, typename T>
 static inline void __n_trailing_zeros_disect(
     T& v, int& c, _ENABLE_IF_BITSIZE_GT(T, n)) {
