@@ -299,7 +299,8 @@ class MpsGraphAPI(object):
             assert x.shape == self._ishape
         else:
             assert x.shape == self._oshape
-        x = x.astype(_np.float32)
+        if x.dtype != _np.float32:
+            x = x.astype(_np.float32)
         if not x.flags.c_contiguous:
             x = x.copy()
         assert x.flags.c_contiguous, "Input image must be row-major"
@@ -313,7 +314,8 @@ class MpsGraphAPI(object):
     def prepare_label(self, t):
         assert t.shape == self._oshape
         assert self._is_train, "Pure inference graph does not expect label input"
-        t = t.astype(_np.float32)
+        if t.dtype != _np.float32:
+            t = t.astype(_np.float32)
         if not t.flags.c_contiguous:
             t = t.copy()
         assert t.flags.c_contiguous, "Input label must be row-major"
