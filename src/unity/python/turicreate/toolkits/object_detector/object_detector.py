@@ -435,9 +435,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                     new_lr = factors[ii] * base_lr
                     mps_net.set_learning_rate(new_lr / mps_loss_mult)
 
-                mps_net.set_input(input_data)
-                mps_net.set_label(label_data)
-                cur_loss = mps_net.run_graph().sum() / mps_loss_mult
+                mps_net.start_batch(input_data, label=label_data)
+                cur_loss = mps_net.wait_for_batch().sum() / mps_loss_mult
         else:
             data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0)
             label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0)
@@ -761,8 +760,8 @@ class ObjectDetector(_CustomModel):
                                                     dtype=mps_data.dtype)
                         mps_data_padded[:mps_data.shape[0]] = mps_data
                         mps_data = mps_data_padded
-                    self._mps_inference_net.set_input(mps_data)
-                    mps_z = self._mps_inference_net.run_graph()[:n_samples]
+                    self._mps_inference_net.start_batch(mps_data)
+                    mps_z = self._mps_inference_net.wait_for_batch()[:n_samples]
                     z = _mps_to_mxnet(mps_z)
                 else:
                     z = self._model(data).asnumpy()
