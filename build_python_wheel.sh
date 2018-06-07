@@ -110,14 +110,5 @@ rm -rf ${target_dir}/python
 mkdir -p ${target_dir}/python
 
 bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number="$build_number" --num_procs=${jobs} --${build_mode} --target-dir="${install_dir}"
-pushd ${build_mode}/src
-
-if [[ $apple -eq 1 ]]; then
-  find . -type f -name '*.dylib' -o -name '*.so' | xargs strip -x -
-else
-  find . -type f -name '*.so' | xargs strip -s
-fi
-
-find . -type f -name '*.dylib' -o -name '*.so' | xargs tar cvzf ${install_dir}/shared_objects.tar.gz
 
 

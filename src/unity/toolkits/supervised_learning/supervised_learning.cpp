@@ -145,21 +145,24 @@ void supervised_learning_model_base::init(const sframe& X, const sframe& y,
   this->state["num_features"] = feature_column_names.size();
   this->state["num_unpacked_features"] = feature_names.size();
 
+  // Turned off temporarily until we can find a better way to hide for image classification
+  bool simple_mode = true;
+
+
   // Check the number of dimensions in this dataset is small, otherwise warn the
   // user. (see  #3001 for context)
-  /*
-  // Turned off temporarily until we can find a better way to hide for image classification. 
-  size_t num_dims = get_number_of_coefficients(this->ml_mdata);
-  if(num_dims >= X.num_rows()) {
-    std::stringstream ss;
-    ss << "WARNING: The number of feature dimensions in this problem is "
-       << "very large in comparison with the number of examples. Unless "
-       << "an appropriate regularization value is set, this model "
-       << "may not provide accurate predictions for a validation/test set."
-       << std::endl;
-    logprogress_stream << ss.str() << std::endl;
+  if (not simple_mode) {
+      size_t num_dims = get_number_of_coefficients(this->ml_mdata);
+      if(num_dims >= X.num_rows()) {
+        std::stringstream ss;
+        ss << "WARNING: The number of feature dimensions in this problem is "
+           << "very large in comparison with the number of examples. Unless "
+           << "an appropriate regularization value is set, this model "
+           << "may not provide accurate predictions for a validation/test set."
+           << std::endl;
+        logprogress_stream << ss.str() << std::endl;
+      }
   }
-  */
 
   ml_data valid_data;
   if (valid_X.num_rows() > 0) {
@@ -175,8 +178,9 @@ void supervised_learning_model_base::init(const sframe& X, const sframe& y,
   // Finally call the model-specific init function.
   model_specific_init(data, valid_data);
 
-  // Raise error if mean and variance are not finite.
-  check_feature_means_and_variances(this->ml_mdata, show_extra_warnings);
+  // Raise error if mean and variance are not finite
+  check_feature_means_and_variances(this->ml_mdata,
+             show_extra_warnings && (not simple_mode));
 
   // One class classification error message.
   if(this->is_classifier()) {
@@ -352,11 +356,7 @@ std::vector<std::string>
  */
 sframe supervised_learning_model_base::classify(const ml_data& test_data,
                                             const std::string& output_type){
-  DASSERT_TRUE(name() == "classifier_logistic_regression" ||
-               name() == "classifier_svm" ||
-               name() == "random_forest_classifier" ||
-               name() == "decision_tree_classifier" ||
-               name() == "boosted_trees_classifier");
+  DASSERT_TRUE(is_classifier());
 
   // Class predictions
   sframe sf_class;
@@ -537,11 +537,6 @@ gl_sarray supervised_learning_model_base::fast_predict(
 gl_sframe supervised_learning_model_base::fast_classify(
     const std::vector<flexible_type>& rows,
     const std::string& missing_value_action) {
-  DASSERT_TRUE(name() == "classifier_logistic_regression" ||
-               name() == "classifier_svm" ||
-               name() == "random_forest_classifier" ||
-               name() == "decision_tree_classifier" ||
-               name() == "boosted_trees_classifier");
 
   // Class predictions
   gl_sframe sf_class;
@@ -581,7 +576,7 @@ gl_sframe supervised_learning_model_base::fast_classify(
 sframe supervised_learning_model_base::predict_topk(
           const ml_data& test_data, const std::string& output_type,
           const size_t topk){
-  DASSERT_TRUE(name().find("classifier") != std::string::npos);
+  DASSERT_TRUE(is_classifier());
   size_t num_classes = variant_get_value<size_t>(state.at("num_classes"));
   size_t n_threads = turi::thread_pool::get_instance().size();
   size_t variables = 0;

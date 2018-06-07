@@ -114,7 +114,12 @@ popd
 # and replace the first of them with the replace_command. i.e.
 #
 # g++ pika.a -Wl,-whole-archive collect.a -Wl,-no-whole-archive cow.a -lalpha -lbeta
-replace_command=`find ${workingdir} -name "*.o" -or -name "*.obj"`
+if [[ $OSTYPE == darwin* ]]; then
+        find ${workingdir} -name "*.o" -or -name "*.obj" > ${workingdir}/collect_objects.txt
+        replace_command="-filelist ${workingdir}/collect_objects.txt"
+else
+        replace_command=`find ${workingdir} -name "*.o" -or -name "*.obj"`
+fi
 
 if [[ $OSTYPE == linux* ]]; then
         if [ -z "$exportmap" ]; then

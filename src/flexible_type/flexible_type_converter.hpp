@@ -265,7 +265,7 @@ template <> struct ft_converter<CVTR__INTEGER> {
 template <> struct ft_converter<CVTR__FLEX_STRING_CONVERTIBLE> {
 
   template <typename T> static constexpr bool matches() {
-    return is_string<T>::value;
+    return is_string<T>::value || std::is_same<T, const char*>::value;
   }
 
   template <typename String>
@@ -279,9 +279,21 @@ template <> struct ft_converter<CVTR__FLEX_STRING_CONVERTIBLE> {
     }
   }
 
+  static void get(const char*& dest, const flexible_type& src) {
+    if(src.get_type() == flex_type_enum::STRING) {
+      dest = src.get<flex_string>().c_str();
+    } else {
+      throw_type_conversion_error(src, "const char* (reference to temporary).");
+    }
+  }
+
   template <typename String>
   static void set(flexible_type& dest, const String& src) {
     dest = flex_string(src.begin(), src.end());
+  }
+
+  static void set(flexible_type& dest, const char* src) {
+    dest = flex_string(src);
   }
 };
 

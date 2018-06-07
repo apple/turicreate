@@ -1,8 +1,11 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
- *
- * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
- */
+//
+//  Comparison.hpp
+//  libmlmodelspec
+//
+//  Created by Zachary Nation on 3/22/17.
+//  Copyright © 2017 Apple. All rights reserved.
+//
+
 #include "Format.hpp"
 
 #ifndef Comparison_h
@@ -78,7 +81,10 @@ namespace CoreML {
                         const NeuralNetworkImageScaler& b);
         bool operator==(const NeuralNetworkMeanImage& a,
                         const NeuralNetworkMeanImage& b);
-        
+
+        bool operator==(const BayesianProbitRegressor& a,
+                        const BayesianProbitRegressor& b);
+
         // classifiers
         bool operator==(const GLMClassifier& a,
                         const GLMClassifier& b);
@@ -95,6 +101,16 @@ namespace CoreML {
         // generic models
         bool operator==(const NeuralNetwork& a,
                         const NeuralNetwork& b);
+        bool operator==(const CustomModel& a,
+                        const CustomModel& b);
+        
+        // Apple provided models
+        bool operator==(const CoreMLModels::WordTagger& a,
+                        const CoreMLModels::WordTagger& b);
+        bool operator==(const CoreMLModels::TextClassifier& a,
+                        const CoreMLModels::TextClassifier& b);
+        bool operator==(const CoreMLModels::VisionFeaturePrint& a,
+                        const CoreMLModels::VisionFeaturePrint& b);
         
         // feature engineering
         bool operator==(const OneHotEncoder& a,
@@ -109,6 +125,8 @@ namespace CoreML {
                         const DictVectorizer& b);
         bool operator==(const Scaler& a,
                         const Scaler& b);
+        bool operator==(const NonMaximumSuppression& a,
+                        const NonMaximumSuppression& b);
         bool operator==(const CategoricalMapping& a,
                         const CategoricalMapping& b);
         bool operator==(const Normalizer& a,

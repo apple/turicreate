@@ -15,4 +15,5 @@
 /format/*.hpp
 
 # test binary
-/test_runner
+/mlmodel_test_runner
+/enumgen

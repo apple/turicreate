@@ -1,28 +1,30 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
- *
- * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
- */
+//
+//  NeuralNetwork.hpp
+//  mlmodelspec
+//
+//  Created by Zachary Nation on 4/12/17.
+//  Copyright © 2017 Apple. All rights reserved.
+//
+
 #ifndef NeuralNetwork_hpp
 #define NeuralNetwork_hpp
 
 #include "../Model.hpp"
-#include "../Format.hpp"
 
 #include <unordered_set>
 #include <vector>
 
 namespace CoreML {
-    class EXPORT NeuralNetwork : public Model {
+    class NeuralNetwork : public Model {
     public:
         // This should only return the names of NN blobs which are to be outputs. This does not
         // require them to be dangling blobs.
         template<typename T>
-        static std::vector<std::string> outputNames(const Specification::Model& spec, const T& nn);
+        static std::vector<std::string> outputNames(const Specification::Model& spec, const T&);
     };
     
     template<typename T>
-    std::vector<std::string> NeuralNetwork::outputNames(const Specification::Model& spec, const T& nn) {
+    std::vector<std::string> NeuralNetwork::outputNames(const Specification::Model& spec, const T&) {
         // We won't do correctness checking here, that's for the validator.
         std::unordered_set<std::string> layerOutputs;
         for (const auto& output : spec.description().output()) {

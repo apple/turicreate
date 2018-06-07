@@ -138,6 +138,8 @@ def yolo_boxes_to_yolo_map(gt_mxboxes, input_shape, output_shape,
     ymap_shape = tuple(output_shape) + (num_anchors, 5 + num_classes)
     ymap = _np.zeros(ymap_shape, dtype=_np.float32)
 
+    ymap[..., 5:] = 1 / num_classes
+
     for gt_mxbox, gt_cls in zip(gt_mxboxes[:, 1:], gt_mxboxes[:, 0]):
         gt_cls = int(gt_cls)
         if gt_cls < 0:
@@ -162,7 +164,8 @@ def yolo_boxes_to_yolo_map(gt_mxboxes, input_shape, output_shape,
             ymap[iy, ix, :, 1] = y - _np.floor(y)
             ymap[iy, ix, :, 2] = w
             ymap[iy, ix, :, 3] = h
-            ymap[iy, ix, :, 4] = 1.0
+            ymap[iy, ix, :, 4] = 1
+            ymap[iy, ix, :, 5:] = 0
             ymap[iy, ix, :, 5+gt_cls] = 1
 
     return ymap

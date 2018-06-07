@@ -8,6 +8,8 @@
 
 #include <unity/lib/toolkit_function_specification.hpp>
 #include <unity/lib/variant.hpp>
+#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <unity/toolkits/recsys/recsys_model_base.hpp>
 
 namespace turi {
 
@@ -136,6 +138,12 @@ variant_map_type get_popularity_baseline(variant_map_type& params);
  */
 variant_map_type get_item_intersection_info(variant_map_type& params);
 
+/** Exports a recommender model to Core ML format
+ *
+ */
+void export_to_coreml(
+    std::shared_ptr<recsys_model_base> model,
+    const std::string& filename);
 
 std::vector<toolkit_function_specification> get_toolkit_function_registration();
 

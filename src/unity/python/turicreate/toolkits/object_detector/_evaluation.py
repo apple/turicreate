@@ -47,14 +47,15 @@ def average_precision(predictions,
                 gt_area = gts['width'] * gts['height']
 
                 iou = inter_area / (pred_area + gt_area - inter_area)
-                best_gt_index = _np.argmax(iou)
+                best_gt_index = iou.idxmax()
                 best_iou = iou[best_gt_index]
             else:
                 best_iou = 0.0
 
             for th_index, iou_threshold in enumerate(iou_thresholds):
-                if best_iou > iou_threshold and not gts.ix[best_gt_index, 'correct_%d' % th_index]:
-                    gts.ix[best_gt_index, 'correct_%d' % th_index] = True
+                col_index = gts.columns.get_loc('correct_%d' % th_index)
+                if best_iou > iou_threshold and not gts.iloc[best_gt_index, col_index]:
+                    gts.iloc[best_gt_index, col_index] = True
                     tp[th_index, index] = 1
                 else:
                     fp[th_index, index] = 1

@@ -15,7 +15,9 @@
 
 #include <unity/lib/extensions/ml_model.hpp>
 
+#if(TC_BUILD_VISUALIZATION_CLIENT)
 #include <unity/lib/visualization/show.hpp>
+#endif 
 
 #include <unity/toolkits/activity_classification/class_registrations.hpp>
 
@@ -43,11 +45,21 @@
 #include <unity/toolkits/clustering/class_registrations.hpp>
 #include <unity/toolkits/util/class_registrations.hpp>
 
+#include <toolkits/image_deep_feature_extractor/class_registrations.hpp>
+
+
 namespace turi {
 
 void register_functions(toolkit_function_registry& registry) {
+
+  registry.register_toolkit_function(turi::evaluation::get_toolkit_function_registration());
+  registry.register_toolkit_function(turi::supervised::get_toolkit_function_registration());
+  registry.register_toolkit_function(turi::sdk_model::activity_classification::get_toolkit_function_registration());
+
   registry.register_toolkit_function(image_util::get_toolkit_function_registration());
+#if(TC_BUILD_VISUALIZATION_CLIENT)
   registry.register_toolkit_function(visualization::get_toolkit_function_registration());
+#endif
 
   // Register proprietary toolkits
   registry.register_toolkit_function(turi::kmeans::get_toolkit_function_registration(), "_kmeans");
@@ -106,16 +118,19 @@ void register_models(toolkit_class_registry& registry) {
   // Text models
   registry.register_toolkit_class(turi::text::get_toolkit_class_registration());
 
-
   // Clustering
   registry.register_toolkit_class(turi::kmeans::get_toolkit_class_registration());
 
-
- // Feature Transformations
+  // Feature Transformations
   registry.register_toolkit_class(turi::sdk_model::feature_engineering::get_toolkit_class_registration());
 
   // Pattern Mining
   registry.register_toolkit_class(turi::pattern_mining::get_toolkit_class_registration());
+
+#if HAS_CORE_ML
+  // Image Deep Feature Extractor
+  registry.register_toolkit_class(turi::image_deep_feature_extractor::get_toolkit_class_registration());
+#endif
 
 }
 

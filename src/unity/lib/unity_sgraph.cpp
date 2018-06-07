@@ -472,6 +472,7 @@ unity_sgraph::select_edge_fields(const std::vector<std::string>& fields,
 std::shared_ptr<unity_sgraph_base>
 unity_sgraph::lambda_triple_apply(const std::string& lambda_str,
                                   const std::vector<std::string>& mutated_fields) {
+#ifdef TC_HAS_PYTHON
   log_func_entry();
   if (mutated_fields.empty()) {
     log_and_throw("mutated_fields cannot be empty");
@@ -498,6 +499,9 @@ unity_sgraph::lambda_triple_apply(const std::string& lambda_str,
   sgraph_compute::triple_apply(*g, lambda_str, mutated_vertex_fields, mutated_edge_fields);
   std::shared_ptr<unity_sgraph> ret(new unity_sgraph(g));
   return ret;
+#else
+  log_and_throw("Python functions not supported");
+#endif
 }
 
 

@@ -6,114 +6,186 @@
 
 #include <algorithm>
 
-#include <protobuf/stubs/common.h>
-#include <protobuf/stubs/port.h>
-#include <protobuf/stubs/once.h>
-#include <protobuf/io/coded_stream.h>
-#include <protobuf/wire_format_lite_inl.h>
-#include <protobuf/io/zero_copy_stream_impl_lite.h>
+#include <google/protobuf/stubs/common.h>
+#include <google/protobuf/stubs/port.h>
+#include <google/protobuf/stubs/once.h>
+#include <google/protobuf/io/coded_stream.h>
+#include <google/protobuf/wire_format_lite_inl.h>
+#include <google/protobuf/io/zero_copy_stream_impl_lite.h>
 // @@protoc_insertion_point(includes)
 
 namespace CoreML {
 namespace Specification {
+class PipelineDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<Pipeline> {
+} _Pipeline_default_instance_;
+class PipelineClassifierDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<PipelineClassifier> {
+} _PipelineClassifier_default_instance_;
+class PipelineRegressorDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<PipelineRegressor> {
+} _PipelineRegressor_default_instance_;
+class FeatureDescriptionDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<FeatureDescription> {
+} _FeatureDescription_default_instance_;
+class Metadata_UserDefinedEntryDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<Metadata::Metadata_UserDefinedEntry> {
+} _Metadata_UserDefinedEntry_default_instance_;
+class MetadataDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<Metadata> {
+} _Metadata_default_instance_;
+class ModelDescriptionDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<ModelDescription> {
+} _ModelDescription_default_instance_;
+class ModelDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<Model> {
+  public:
+  const ::CoreML::Specification::PipelineClassifier* pipelineclassifier_;
+  const ::CoreML::Specification::PipelineRegressor* pipelineregressor_;
+  const ::CoreML::Specification::Pipeline* pipeline_;
+  const ::CoreML::Specification::GLMRegressor* glmregressor_;
+  const ::CoreML::Specification::SupportVectorRegressor* supportvectorregressor_;
+  const ::CoreML::Specification::TreeEnsembleRegressor* treeensembleregressor_;
+  const ::CoreML::Specification::NeuralNetworkRegressor* neuralnetworkregressor_;
+  const ::CoreML::Specification::BayesianProbitRegressor* bayesianprobitregressor_;
+  const ::CoreML::Specification::GLMClassifier* glmclassifier_;
+  const ::CoreML::Specification::SupportVectorClassifier* supportvectorclassifier_;
+  const ::CoreML::Specification::TreeEnsembleClassifier* treeensembleclassifier_;
+  const ::CoreML::Specification::NeuralNetworkClassifier* neuralnetworkclassifier_;
+  const ::CoreML::Specification::NeuralNetwork* neuralnetwork_;
+  const ::CoreML::Specification::CustomModel* custommodel_;
+  const ::CoreML::Specification::OneHotEncoder* onehotencoder_;
+  const ::CoreML::Specification::Imputer* imputer_;
+  const ::CoreML::Specification::FeatureVectorizer* featurevectorizer_;
+  const ::CoreML::Specification::DictVectorizer* dictvectorizer_;
+  const ::CoreML::Specification::Scaler* scaler_;
+  const ::CoreML::Specification::CategoricalMapping* categoricalmapping_;
+  const ::CoreML::Specification::Normalizer* normalizer_;
+  const ::CoreML::Specification::ArrayFeatureExtractor* arrayfeatureextractor_;
+  const ::CoreML::Specification::NonMaximumSuppression* nonmaximumsuppression_;
+  const ::CoreML::Specification::Identity* identity_;
+  const ::CoreML::Specification::CoreMLModels::TextClassifier* textclassifier_;
+  const ::CoreML::Specification::CoreMLModels::WordTagger* wordtagger_;
+  const ::CoreML::Specification::CoreMLModels::VisionFeaturePrint* visionfeatureprint_;
+} _Model_default_instance_;
 
-void protobuf_ShutdownFile_Model_2eproto() {
-  Pipeline_default_instance_.Shutdown();
-  PipelineClassifier_default_instance_.Shutdown();
-  PipelineRegressor_default_instance_.Shutdown();
-  FeatureDescription_default_instance_.Shutdown();
-  Metadata_default_instance_.Shutdown();
-  ModelDescription_default_instance_.Shutdown();
-  Model_default_instance_.Shutdown();
+namespace protobuf_Model_2eproto {
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTableField
+    const TableStruct::entries[] = {
+  {0, 0, 0, ::google::protobuf::internal::kInvalidMask, 0, 0},
+};
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::AuxillaryParseTableField
+    const TableStruct::aux[] = {
+  ::google::protobuf::internal::AuxillaryParseTableField(),
+};
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTable const
+    TableStruct::schema[] = {
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+};
+
+
+void TableStruct::Shutdown() {
+  _Pipeline_default_instance_.Shutdown();
+  _PipelineClassifier_default_instance_.Shutdown();
+  _PipelineRegressor_default_instance_.Shutdown();
+  _FeatureDescription_default_instance_.Shutdown();
+  _Metadata_default_instance_.Shutdown();
+  _ModelDescription_default_instance_.Shutdown();
+  _Model_default_instance_.Shutdown();
 }
 
-void protobuf_InitDefaults_Model_2eproto_impl() {
+void TableStruct::InitDefaultsImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  ::CoreML::Specification::protobuf_InitDefaults_ArrayFeatureExtractor_2eproto();
-  ::CoreML::Specification::protobuf_InitDefaults_CategoricalMapping_2eproto();
-  ::CoreML::Specification::protobuf_InitDefaults_DictVectorizer_2eproto();
-  ::CoreML::Specification::protobuf_InitDefaults_FeatureTypes_2eproto();
-  ::CoreML::Specification::protobuf_InitDefaults_FeatureVectorizer_2eproto();
-  ::CoreML::Specification::protobuf_InitDefaults_GLMRegressor_2eproto();
-  ::CoreML::Specification::protobuf_InitDefaults_GLMClassifier_2eproto();
-  ::CoreML::Specification::protobuf_InitDefaults_Identity_2eproto();
-  ::CoreML::Specification::protobuf_InitDefaults_Imputer_2eproto();
-  ::CoreML::Specification::protobuf_InitDefaults_NeuralNetwork_2eproto();
-  ::CoreML::Specification::protobuf_InitDefaults_Normalizer_2eproto();
-  ::CoreML::Specification::protobuf_InitDefaults_OneHotEncoder_2eproto();
-  ::CoreML::Specification::protobuf_InitDefaults_Scaler_2eproto();
-  ::CoreML::Specification::protobuf_InitDefaults_SVM_2eproto();
-  ::CoreML::Specification::protobuf_InitDefaults_TreeEnsemble_2eproto();
-  Pipeline_default_instance_.DefaultConstruct();
-  PipelineClassifier_default_instance_.DefaultConstruct();
-  PipelineRegressor_default_instance_.DefaultConstruct();
-  ::google::protobuf::internal::GetEmptyString();
-  FeatureDescription_default_instance_.DefaultConstruct();
-  ::google::protobuf::internal::GetEmptyString();
-  Metadata_default_instance_.DefaultConstruct();
-  ::google::protobuf::internal::GetEmptyString();
-  ::google::protobuf::internal::GetEmptyString();
-  ModelDescription_default_instance_.DefaultConstruct();
-  Model_default_instance_.DefaultConstruct();
-  Pipeline_default_instance_.get_mutable()->InitAsDefaultInstance();
-  PipelineClassifier_default_instance_.get_mutable()->InitAsDefaultInstance();
-  PipelineRegressor_default_instance_.get_mutable()->InitAsDefaultInstance();
-  FeatureDescription_default_instance_.get_mutable()->InitAsDefaultInstance();
-  Metadata_default_instance_.get_mutable()->InitAsDefaultInstance();
-  ModelDescription_default_instance_.get_mutable()->InitAsDefaultInstance();
-  Model_default_instance_.get_mutable()->InitAsDefaultInstance();
+  ::google::protobuf::internal::InitProtobufDefaults();
+  ::CoreML::Specification::CoreMLModels::protobuf_VisionFeaturePrint_2eproto::InitDefaults();
+  ::CoreML::Specification::CoreMLModels::protobuf_TextClassifier_2eproto::InitDefaults();
+  ::CoreML::Specification::CoreMLModels::protobuf_WordTagger_2eproto::InitDefaults();
+  ::CoreML::Specification::protobuf_ArrayFeatureExtractor_2eproto::InitDefaults();
+  ::CoreML::Specification::protobuf_BayesianProbitRegressor_2eproto::InitDefaults();
+  ::CoreML::Specification::protobuf_CategoricalMapping_2eproto::InitDefaults();
+  ::CoreML::Specification::protobuf_CustomModel_2eproto::InitDefaults();
+  ::CoreML::Specification::protobuf_DictVectorizer_2eproto::InitDefaults();
+  ::CoreML::Specification::protobuf_FeatureTypes_2eproto::InitDefaults();
+  ::CoreML::Specification::protobuf_FeatureVectorizer_2eproto::InitDefaults();
+  ::CoreML::Specification::protobuf_GLMRegressor_2eproto::InitDefaults();
+  ::CoreML::Specification::protobuf_GLMClassifier_2eproto::InitDefaults();
+  ::CoreML::Specification::protobuf_Identity_2eproto::InitDefaults();
+  ::CoreML::Specification::protobuf_Imputer_2eproto::InitDefaults();
+  ::CoreML::Specification::protobuf_NeuralNetwork_2eproto::InitDefaults();
+  ::CoreML::Specification::protobuf_Normalizer_2eproto::InitDefaults();
+  ::CoreML::Specification::protobuf_OneHotEncoder_2eproto::InitDefaults();
+  ::CoreML::Specification::protobuf_Scaler_2eproto::InitDefaults();
+  ::CoreML::Specification::protobuf_NonMaximumSuppression_2eproto::InitDefaults();
+  ::CoreML::Specification::protobuf_SVM_2eproto::InitDefaults();
+  ::CoreML::Specification::protobuf_TreeEnsemble_2eproto::InitDefaults();
+  _Pipeline_default_instance_.DefaultConstruct();
+  _PipelineClassifier_default_instance_.DefaultConstruct();
+  _PipelineRegressor_default_instance_.DefaultConstruct();
+  _FeatureDescription_default_instance_.DefaultConstruct();
+  _Metadata_UserDefinedEntry_default_instance_.DefaultConstruct();
+  _Metadata_default_instance_.DefaultConstruct();
+  _ModelDescription_default_instance_.DefaultConstruct();
+  _Model_default_instance_.DefaultConstruct();
+  _PipelineClassifier_default_instance_.get_mutable()->pipeline_ = const_cast< ::CoreML::Specification::Pipeline*>(
+      ::CoreML::Specification::Pipeline::internal_default_instance());
+  _PipelineRegressor_default_instance_.get_mutable()->pipeline_ = const_cast< ::CoreML::Specification::Pipeline*>(
+      ::CoreML::Specification::Pipeline::internal_default_instance());
+  _FeatureDescription_default_instance_.get_mutable()->type_ = const_cast< ::CoreML::Specification::FeatureType*>(
+      ::CoreML::Specification::FeatureType::internal_default_instance());
+  _Metadata_UserDefinedEntry_default_instance_.get_mutable()->set_default_instance(_Metadata_UserDefinedEntry_default_instance_.get_mutable());
+  _Metadata_UserDefinedEntry_default_instance_.get_mutable()->InitAsDefaultInstance();
+  _ModelDescription_default_instance_.get_mutable()->metadata_ = const_cast< ::CoreML::Specification::Metadata*>(
+      ::CoreML::Specification::Metadata::internal_default_instance());
+  _Model_default_instance_.get_mutable()->description_ = const_cast< ::CoreML::Specification::ModelDescription*>(
+      ::CoreML::Specification::ModelDescription::internal_default_instance());
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_InitDefaults_Model_2eproto_once_);
-void protobuf_InitDefaults_Model_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_InitDefaults_Model_2eproto_once_,
-                 &protobuf_InitDefaults_Model_2eproto_impl);
+void InitDefaults() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &TableStruct::InitDefaultsImpl);
 }
-void protobuf_AddDesc_Model_2eproto_impl() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  protobuf_InitDefaults_Model_2eproto();
-  ::CoreML::Specification::protobuf_AddDesc_ArrayFeatureExtractor_2eproto();
-  ::CoreML::Specification::protobuf_AddDesc_CategoricalMapping_2eproto();
-  ::CoreML::Specification::protobuf_AddDesc_DictVectorizer_2eproto();
-  ::CoreML::Specification::protobuf_AddDesc_FeatureTypes_2eproto();
-  ::CoreML::Specification::protobuf_AddDesc_FeatureVectorizer_2eproto();
-  ::CoreML::Specification::protobuf_AddDesc_GLMRegressor_2eproto();
-  ::CoreML::Specification::protobuf_AddDesc_GLMClassifier_2eproto();
-  ::CoreML::Specification::protobuf_AddDesc_Identity_2eproto();
-  ::CoreML::Specification::protobuf_AddDesc_Imputer_2eproto();
-  ::CoreML::Specification::protobuf_AddDesc_NeuralNetwork_2eproto();
-  ::CoreML::Specification::protobuf_AddDesc_Normalizer_2eproto();
-  ::CoreML::Specification::protobuf_AddDesc_OneHotEncoder_2eproto();
-  ::CoreML::Specification::protobuf_AddDesc_Scaler_2eproto();
-  ::CoreML::Specification::protobuf_AddDesc_SVM_2eproto();
-  ::CoreML::Specification::protobuf_AddDesc_TreeEnsemble_2eproto();
-  ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_Model_2eproto);
+void AddDescriptorsImpl() {
+  InitDefaults();
+  ::CoreML::Specification::CoreMLModels::protobuf_VisionFeaturePrint_2eproto::AddDescriptors();
+  ::CoreML::Specification::CoreMLModels::protobuf_TextClassifier_2eproto::AddDescriptors();
+  ::CoreML::Specification::CoreMLModels::protobuf_WordTagger_2eproto::AddDescriptors();
+  ::CoreML::Specification::protobuf_ArrayFeatureExtractor_2eproto::AddDescriptors();
+  ::CoreML::Specification::protobuf_BayesianProbitRegressor_2eproto::AddDescriptors();
+  ::CoreML::Specification::protobuf_CategoricalMapping_2eproto::AddDescriptors();
+  ::CoreML::Specification::protobuf_CustomModel_2eproto::AddDescriptors();
+  ::CoreML::Specification::protobuf_DictVectorizer_2eproto::AddDescriptors();
+  ::CoreML::Specification::protobuf_FeatureTypes_2eproto::AddDescriptors();
+  ::CoreML::Specification::protobuf_FeatureVectorizer_2eproto::AddDescriptors();
+  ::CoreML::Specification::protobuf_GLMRegressor_2eproto::AddDescriptors();
+  ::CoreML::Specification::protobuf_GLMClassifier_2eproto::AddDescriptors();
+  ::CoreML::Specification::protobuf_Identity_2eproto::AddDescriptors();
+  ::CoreML::Specification::protobuf_Imputer_2eproto::AddDescriptors();
+  ::CoreML::Specification::protobuf_NeuralNetwork_2eproto::AddDescriptors();
+  ::CoreML::Specification::protobuf_Normalizer_2eproto::AddDescriptors();
+  ::CoreML::Specification::protobuf_OneHotEncoder_2eproto::AddDescriptors();
+  ::CoreML::Specification::protobuf_Scaler_2eproto::AddDescriptors();
+  ::CoreML::Specification::protobuf_NonMaximumSuppression_2eproto::AddDescriptors();
+  ::CoreML::Specification::protobuf_SVM_2eproto::AddDescriptors();
+  ::CoreML::Specification::protobuf_TreeEnsemble_2eproto::AddDescriptors();
+  ::google::protobuf::internal::OnShutdown(&TableStruct::Shutdown);
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_AddDesc_Model_2eproto_once_);
-void protobuf_AddDesc_Model_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_AddDesc_Model_2eproto_once_,
-                 &protobuf_AddDesc_Model_2eproto_impl);
+void AddDescriptors() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &AddDescriptorsImpl);
 }
 #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 // Force AddDescriptors() to be called at static initialization time.
-struct StaticDescriptorInitializer_Model_2eproto {
-  StaticDescriptorInitializer_Model_2eproto() {
-    protobuf_AddDesc_Model_2eproto();
+struct StaticDescriptorInitializer {
+  StaticDescriptorInitializer() {
+    AddDescriptors();
   }
-} static_descriptor_initializer_Model_2eproto_;
+} static_descriptor_initializer;
 #endif  // GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 
-namespace {
-
-static void MergeFromFail(int line) GOOGLE_ATTRIBUTE_COLD GOOGLE_ATTRIBUTE_NORETURN;
-static void MergeFromFail(int line) {
-  ::google::protobuf::internal::MergeFromFail(__FILE__, line);
-}
-
-}  // namespace
+}  // namespace protobuf_Model_2eproto
 
 
 // ===================================================================
@@ -123,20 +195,19 @@ const int Pipeline::kModelsFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Pipeline::Pipeline()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_Model_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_Model_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.Pipeline)
 }
-
-void Pipeline::InitAsDefaultInstance() {
-}
-
 Pipeline::Pipeline(const Pipeline& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      models_(from.models_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.Pipeline)
 }
 
@@ -158,11 +229,9 @@ void Pipeline::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const Pipeline& Pipeline::default_instance() {
-  protobuf_InitDefaults_Model_2eproto();
+  protobuf_Model_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<Pipeline> Pipeline_default_instance_;
 
 Pipeline* Pipeline::New(::google::protobuf::Arena* arena) const {
   Pipeline* n = new Pipeline;
@@ -183,23 +252,19 @@ bool Pipeline::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.Pipeline)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // repeated .CoreML.Specification.Model models = 1;
       case 1: {
-        if (tag == 10) {
-          DO_(input->IncrementRecursionDepth());
-         parse_loop_models:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                 input, add_models()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(10)) goto parse_loop_models;
-        input->UnsafeDecrementRecursionDepth();
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -227,6 +292,9 @@ failure:
 void Pipeline::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.Pipeline)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
   // repeated .CoreML.Specification.Model models = 1;
   for (unsigned int i = 0, n = this->models_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
@@ -265,15 +333,11 @@ void Pipeline::CheckTypeAndMergeFrom(
 
 void Pipeline::MergeFrom(const Pipeline& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.Pipeline)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void Pipeline::UnsafeMergeFrom(const Pipeline& from) {
-  GOOGLE_DCHECK(&from != this);
   models_.MergeFrom(from.models_);
 }
 
@@ -281,11 +345,10 @@ void Pipeline::CopyFrom(const Pipeline& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.Pipeline)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool Pipeline::IsInitialized() const {
-
   return true;
 }
 
@@ -294,8 +357,7 @@ void Pipeline::Swap(Pipeline* other) {
   InternalSwap(other);
 }
 void Pipeline::InternalSwap(Pipeline* other) {
-  models_.UnsafeArenaSwap(&other->models_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
+  models_.InternalSwap(&other->models_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -336,42 +398,37 @@ Pipeline::models() const {
   return models_;
 }
 
-inline const Pipeline* Pipeline::internal_default_instance() {
-  return &Pipeline_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int PipelineClassifier::kPipelineFieldNumber;
-const int PipelineClassifier::kStringClassLabelsFieldNumber;
-const int PipelineClassifier::kInt64ClassLabelsFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 PipelineClassifier::PipelineClassifier()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_Model_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_Model_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.PipelineClassifier)
 }
-
-void PipelineClassifier::InitAsDefaultInstance() {
-  pipeline_ = const_cast< ::CoreML::Specification::Pipeline*>(
-      ::CoreML::Specification::Pipeline::internal_default_instance());
-}
-
 PipelineClassifier::PipelineClassifier(const PipelineClassifier& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  if (from.has_pipeline()) {
+    pipeline_ = new ::CoreML::Specification::Pipeline(*from.pipeline_);
+  } else {
+    pipeline_ = NULL;
+  }
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.PipelineClassifier)
 }
 
 void PipelineClassifier::SharedCtor() {
   pipeline_ = NULL;
-  clear_has_ClassLabels();
   _cached_size_ = 0;
 }
 
@@ -381,10 +438,7 @@ PipelineClassifier::~PipelineClassifier() {
 }
 
 void PipelineClassifier::SharedDtor() {
-  if (has_ClassLabels()) {
-    clear_ClassLabels();
-  }
-  if (this != &PipelineClassifier_default_instance_.get()) {
+  if (this != internal_default_instance()) {
     delete pipeline_;
   }
 }
@@ -395,11 +449,9 @@ void PipelineClassifier::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const PipelineClassifier& PipelineClassifier::default_instance() {
-  protobuf_InitDefaults_Model_2eproto();
+  protobuf_Model_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<PipelineClassifier> PipelineClassifier_default_instance_;
 
 PipelineClassifier* PipelineClassifier::New(::google::protobuf::Arena* arena) const {
   PipelineClassifier* n = new PipelineClassifier;
@@ -409,30 +461,12 @@ PipelineClassifier* PipelineClassifier::New(::google::protobuf::Arena* arena) co
   return n;
 }
 
-void PipelineClassifier::clear_ClassLabels() {
-// @@protoc_insertion_point(one_of_clear_start:CoreML.Specification.PipelineClassifier)
-  switch (ClassLabels_case()) {
-    case kStringClassLabels: {
-      delete ClassLabels_.stringclasslabels_;
-      break;
-    }
-    case kInt64ClassLabels: {
-      delete ClassLabels_.int64classlabels_;
-      break;
-    }
-    case CLASSLABELS_NOT_SET: {
-      break;
-    }
-  }
-  _oneof_case_[0] = CLASSLABELS_NOT_SET;
-}
-
-
 void PipelineClassifier::Clear() {
 // @@protoc_insertion_point(message_clear_start:CoreML.Specification.PipelineClassifier)
-  if (GetArenaNoVirtual() == NULL && pipeline_ != NULL) delete pipeline_;
+  if (GetArenaNoVirtual() == NULL && pipeline_ != NULL) {
+    delete pipeline_;
+  }
   pipeline_ = NULL;
-  clear_ClassLabels();
 }
 
 bool PipelineClassifier::MergePartialFromCodedStream(
@@ -441,45 +475,19 @@ bool PipelineClassifier::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.PipelineClassifier)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(16383);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional .CoreML.Specification.Pipeline pipeline = 1;
+      // .CoreML.Specification.Pipeline pipeline = 1;
       case 1: {
-        if (tag == 10) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_pipeline()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(802)) goto parse_stringClassLabels;
-        break;
-      }
-
-      // optional .CoreML.Specification.StringVector stringClassLabels = 100;
-      case 100: {
-        if (tag == 802) {
-         parse_stringClassLabels:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
-               input, mutable_stringclasslabels()));
-        } else {
-          goto handle_unusual;
-        }
-        goto after_int64classlabels;
-        break;
-      }
-
-      // optional .CoreML.Specification.Int64Vector int64ClassLabels = 101;
-      case 101: {
-        if (tag == 810) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
-               input, mutable_int64classlabels()));
-        } else {
-          goto handle_unusual;
-        }
-       after_int64classlabels:
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -507,22 +515,13 @@ failure:
 void PipelineClassifier::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.PipelineClassifier)
-  // optional .CoreML.Specification.Pipeline pipeline = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .CoreML.Specification.Pipeline pipeline = 1;
   if (this->has_pipeline()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       1, *this->pipeline_, output);
-  }
-
-  // optional .CoreML.Specification.StringVector stringClassLabels = 100;
-  if (has_stringclasslabels()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessage(
-      100, *ClassLabels_.stringclasslabels_, output);
-  }
-
-  // optional .CoreML.Specification.Int64Vector int64ClassLabels = 101;
-  if (has_int64classlabels()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessage(
-      101, *ClassLabels_.int64classlabels_, output);
   }
 
   // @@protoc_insertion_point(serialize_end:CoreML.Specification.PipelineClassifier)
@@ -532,32 +531,13 @@ size_t PipelineClassifier::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.PipelineClassifier)
   size_t total_size = 0;
 
-  // optional .CoreML.Specification.Pipeline pipeline = 1;
+  // .CoreML.Specification.Pipeline pipeline = 1;
   if (this->has_pipeline()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
         *this->pipeline_);
   }
 
-  switch (ClassLabels_case()) {
-    // optional .CoreML.Specification.StringVector stringClassLabels = 100;
-    case kStringClassLabels: {
-      total_size += 2 +
-        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          *ClassLabels_.stringclasslabels_);
-      break;
-    }
-    // optional .CoreML.Specification.Int64Vector int64ClassLabels = 101;
-    case kInt64ClassLabels: {
-      total_size += 2 +
-        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          *ClassLabels_.int64classlabels_);
-      break;
-    }
-    case CLASSLABELS_NOT_SET: {
-      break;
-    }
-  }
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = cached_size;
@@ -572,28 +552,11 @@ void PipelineClassifier::CheckTypeAndMergeFrom(
 
 void PipelineClassifier::MergeFrom(const PipelineClassifier& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.PipelineClassifier)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void PipelineClassifier::UnsafeMergeFrom(const PipelineClassifier& from) {
-  GOOGLE_DCHECK(&from != this);
-  switch (from.ClassLabels_case()) {
-    case kStringClassLabels: {
-      mutable_stringclasslabels()->::CoreML::Specification::StringVector::MergeFrom(from.stringclasslabels());
-      break;
-    }
-    case kInt64ClassLabels: {
-      mutable_int64classlabels()->::CoreML::Specification::Int64Vector::MergeFrom(from.int64classlabels());
-      break;
-    }
-    case CLASSLABELS_NOT_SET: {
-      break;
-    }
-  }
   if (from.has_pipeline()) {
     mutable_pipeline()->::CoreML::Specification::Pipeline::MergeFrom(from.pipeline());
   }
@@ -603,11 +566,10 @@ void PipelineClassifier::CopyFrom(const PipelineClassifier& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.PipelineClassifier)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool PipelineClassifier::IsInitialized() const {
-
   return true;
 }
 
@@ -617,9 +579,6 @@ void PipelineClassifier::Swap(PipelineClassifier* other) {
 }
 void PipelineClassifier::InternalSwap(PipelineClassifier* other) {
   std::swap(pipeline_, other->pipeline_);
-  std::swap(ClassLabels_, other->ClassLabels_);
-  std::swap(_oneof_case_[0], other->_oneof_case_[0]);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -630,7 +589,7 @@ void PipelineClassifier::InternalSwap(PipelineClassifier* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // PipelineClassifier
 
-// optional .CoreML.Specification.Pipeline pipeline = 1;
+// .CoreML.Specification.Pipeline pipeline = 1;
 bool PipelineClassifier::has_pipeline() const {
   return this != internal_default_instance() && pipeline_ != NULL;
 }
@@ -669,114 +628,6 @@ void PipelineClassifier::set_allocated_pipeline(::CoreML::Specification::Pipelin
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.PipelineClassifier.pipeline)
 }
 
-// optional .CoreML.Specification.StringVector stringClassLabels = 100;
-bool PipelineClassifier::has_stringclasslabels() const {
-  return ClassLabels_case() == kStringClassLabels;
-}
-void PipelineClassifier::set_has_stringclasslabels() {
-  _oneof_case_[0] = kStringClassLabels;
-}
-void PipelineClassifier::clear_stringclasslabels() {
-  if (has_stringclasslabels()) {
-    delete ClassLabels_.stringclasslabels_;
-    clear_has_ClassLabels();
-  }
-}
- const ::CoreML::Specification::StringVector& PipelineClassifier::stringclasslabels() const {
-  // @@protoc_insertion_point(field_get:CoreML.Specification.PipelineClassifier.stringClassLabels)
-  return has_stringclasslabels()
-      ? *ClassLabels_.stringclasslabels_
-      : ::CoreML::Specification::StringVector::default_instance();
-}
-::CoreML::Specification::StringVector* PipelineClassifier::mutable_stringclasslabels() {
-  if (!has_stringclasslabels()) {
-    clear_ClassLabels();
-    set_has_stringclasslabels();
-    ClassLabels_.stringclasslabels_ = new ::CoreML::Specification::StringVector;
-  }
-  // @@protoc_insertion_point(field_mutable:CoreML.Specification.PipelineClassifier.stringClassLabels)
-  return ClassLabels_.stringclasslabels_;
-}
-::CoreML::Specification::StringVector* PipelineClassifier::release_stringclasslabels() {
-  // @@protoc_insertion_point(field_release:CoreML.Specification.PipelineClassifier.stringClassLabels)
-  if (has_stringclasslabels()) {
-    clear_has_ClassLabels();
-    ::CoreML::Specification::StringVector* temp = ClassLabels_.stringclasslabels_;
-    ClassLabels_.stringclasslabels_ = NULL;
-    return temp;
-  } else {
-    return NULL;
-  }
-}
-void PipelineClassifier::set_allocated_stringclasslabels(::CoreML::Specification::StringVector* stringclasslabels) {
-  clear_ClassLabels();
-  if (stringclasslabels) {
-    set_has_stringclasslabels();
-    ClassLabels_.stringclasslabels_ = stringclasslabels;
-  }
-  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.PipelineClassifier.stringClassLabels)
-}
-
-// optional .CoreML.Specification.Int64Vector int64ClassLabels = 101;
-bool PipelineClassifier::has_int64classlabels() const {
-  return ClassLabels_case() == kInt64ClassLabels;
-}
-void PipelineClassifier::set_has_int64classlabels() {
-  _oneof_case_[0] = kInt64ClassLabels;
-}
-void PipelineClassifier::clear_int64classlabels() {
-  if (has_int64classlabels()) {
-    delete ClassLabels_.int64classlabels_;
-    clear_has_ClassLabels();
-  }
-}
- const ::CoreML::Specification::Int64Vector& PipelineClassifier::int64classlabels() const {
-  // @@protoc_insertion_point(field_get:CoreML.Specification.PipelineClassifier.int64ClassLabels)
-  return has_int64classlabels()
-      ? *ClassLabels_.int64classlabels_
-      : ::CoreML::Specification::Int64Vector::default_instance();
-}
-::CoreML::Specification::Int64Vector* PipelineClassifier::mutable_int64classlabels() {
-  if (!has_int64classlabels()) {
-    clear_ClassLabels();
-    set_has_int64classlabels();
-    ClassLabels_.int64classlabels_ = new ::CoreML::Specification::Int64Vector;
-  }
-  // @@protoc_insertion_point(field_mutable:CoreML.Specification.PipelineClassifier.int64ClassLabels)
-  return ClassLabels_.int64classlabels_;
-}
-::CoreML::Specification::Int64Vector* PipelineClassifier::release_int64classlabels() {
-  // @@protoc_insertion_point(field_release:CoreML.Specification.PipelineClassifier.int64ClassLabels)
-  if (has_int64classlabels()) {
-    clear_has_ClassLabels();
-    ::CoreML::Specification::Int64Vector* temp = ClassLabels_.int64classlabels_;
-    ClassLabels_.int64classlabels_ = NULL;
-    return temp;
-  } else {
-    return NULL;
-  }
-}
-void PipelineClassifier::set_allocated_int64classlabels(::CoreML::Specification::Int64Vector* int64classlabels) {
-  clear_ClassLabels();
-  if (int64classlabels) {
-    set_has_int64classlabels();
-    ClassLabels_.int64classlabels_ = int64classlabels;
-  }
-  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.PipelineClassifier.int64ClassLabels)
-}
-
-bool PipelineClassifier::has_ClassLabels() const {
-  return ClassLabels_case() != CLASSLABELS_NOT_SET;
-}
-void PipelineClassifier::clear_has_ClassLabels() {
-  _oneof_case_[0] = CLASSLABELS_NOT_SET;
-}
-PipelineClassifier::ClassLabelsCase PipelineClassifier::ClassLabels_case() const {
-  return PipelineClassifier::ClassLabelsCase(_oneof_case_[0]);
-}
-inline const PipelineClassifier* PipelineClassifier::internal_default_instance() {
-  return &PipelineClassifier_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -786,22 +637,23 @@ const int PipelineRegressor::kPipelineFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 PipelineRegressor::PipelineRegressor()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_Model_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_Model_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.PipelineRegressor)
 }
-
-void PipelineRegressor::InitAsDefaultInstance() {
-  pipeline_ = const_cast< ::CoreML::Specification::Pipeline*>(
-      ::CoreML::Specification::Pipeline::internal_default_instance());
-}
-
 PipelineRegressor::PipelineRegressor(const PipelineRegressor& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  if (from.has_pipeline()) {
+    pipeline_ = new ::CoreML::Specification::Pipeline(*from.pipeline_);
+  } else {
+    pipeline_ = NULL;
+  }
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.PipelineRegressor)
 }
 
@@ -816,7 +668,7 @@ PipelineRegressor::~PipelineRegressor() {
 }
 
 void PipelineRegressor::SharedDtor() {
-  if (this != &PipelineRegressor_default_instance_.get()) {
+  if (this != internal_default_instance()) {
     delete pipeline_;
   }
 }
@@ -827,11 +679,9 @@ void PipelineRegressor::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const PipelineRegressor& PipelineRegressor::default_instance() {
-  protobuf_InitDefaults_Model_2eproto();
+  protobuf_Model_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<PipelineRegressor> PipelineRegressor_default_instance_;
 
 PipelineRegressor* PipelineRegressor::New(::google::protobuf::Arena* arena) const {
   PipelineRegressor* n = new PipelineRegressor;
@@ -843,7 +693,9 @@ PipelineRegressor* PipelineRegressor::New(::google::protobuf::Arena* arena) cons
 
 void PipelineRegressor::Clear() {
 // @@protoc_insertion_point(message_clear_start:CoreML.Specification.PipelineRegressor)
-  if (GetArenaNoVirtual() == NULL && pipeline_ != NULL) delete pipeline_;
+  if (GetArenaNoVirtual() == NULL && pipeline_ != NULL) {
+    delete pipeline_;
+  }
   pipeline_ = NULL;
 }
 
@@ -853,19 +705,19 @@ bool PipelineRegressor::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.PipelineRegressor)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional .CoreML.Specification.Pipeline pipeline = 1;
+      // .CoreML.Specification.Pipeline pipeline = 1;
       case 1: {
-        if (tag == 10) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_pipeline()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -893,7 +745,10 @@ failure:
 void PipelineRegressor::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.PipelineRegressor)
-  // optional .CoreML.Specification.Pipeline pipeline = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .CoreML.Specification.Pipeline pipeline = 1;
   if (this->has_pipeline()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       1, *this->pipeline_, output);
@@ -906,7 +761,7 @@ size_t PipelineRegressor::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.PipelineRegressor)
   size_t total_size = 0;
 
-  // optional .CoreML.Specification.Pipeline pipeline = 1;
+  // .CoreML.Specification.Pipeline pipeline = 1;
   if (this->has_pipeline()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -927,15 +782,11 @@ void PipelineRegressor::CheckTypeAndMergeFrom(
 
 void PipelineRegressor::MergeFrom(const PipelineRegressor& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.PipelineRegressor)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void PipelineRegressor::UnsafeMergeFrom(const PipelineRegressor& from) {
-  GOOGLE_DCHECK(&from != this);
   if (from.has_pipeline()) {
     mutable_pipeline()->::CoreML::Specification::Pipeline::MergeFrom(from.pipeline());
   }
@@ -945,11 +796,10 @@ void PipelineRegressor::CopyFrom(const PipelineRegressor& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.PipelineRegressor)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool PipelineRegressor::IsInitialized() const {
-
   return true;
 }
 
@@ -959,7 +809,6 @@ void PipelineRegressor::Swap(PipelineRegressor* other) {
 }
 void PipelineRegressor::InternalSwap(PipelineRegressor* other) {
   std::swap(pipeline_, other->pipeline_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -970,7 +819,7 @@ void PipelineRegressor::InternalSwap(PipelineRegressor* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // PipelineRegressor
 
-// optional .CoreML.Specification.Pipeline pipeline = 1;
+// .CoreML.Specification.Pipeline pipeline = 1;
 bool PipelineRegressor::has_pipeline() const {
   return this != internal_default_instance() && pipeline_ != NULL;
 }
@@ -1009,9 +858,6 @@ void PipelineRegressor::set_allocated_pipeline(::CoreML::Specification::Pipeline
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.PipelineRegressor.pipeline)
 }
 
-inline const PipelineRegressor* PipelineRegressor::internal_default_instance() {
-  return &PipelineRegressor_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -1023,22 +869,31 @@ const int FeatureDescription::kTypeFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 FeatureDescription::FeatureDescription()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_Model_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_Model_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.FeatureDescription)
 }
-
-void FeatureDescription::InitAsDefaultInstance() {
-  type_ = const_cast< ::CoreML::Specification::FeatureType*>(
-      ::CoreML::Specification::FeatureType::internal_default_instance());
-}
-
 FeatureDescription::FeatureDescription(const FeatureDescription& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.name().size() > 0) {
+    name_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.name_);
+  }
+  shortdescription_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.shortdescription().size() > 0) {
+    shortdescription_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.shortdescription_);
+  }
+  if (from.has_type()) {
+    type_ = new ::CoreML::Specification::FeatureType(*from.type_);
+  } else {
+    type_ = NULL;
+  }
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.FeatureDescription)
 }
 
@@ -1057,7 +912,7 @@ FeatureDescription::~FeatureDescription() {
 void FeatureDescription::SharedDtor() {
   name_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   shortdescription_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (this != &FeatureDescription_default_instance_.get()) {
+  if (this != internal_default_instance()) {
     delete type_;
   }
 }
@@ -1068,11 +923,9 @@ void FeatureDescription::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const FeatureDescription& FeatureDescription::default_instance() {
-  protobuf_InitDefaults_Model_2eproto();
+  protobuf_Model_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<FeatureDescription> FeatureDescription_default_instance_;
 
 FeatureDescription* FeatureDescription::New(::google::protobuf::Arena* arena) const {
   FeatureDescription* n = new FeatureDescription;
@@ -1086,7 +939,9 @@ void FeatureDescription::Clear() {
 // @@protoc_insertion_point(message_clear_start:CoreML.Specification.FeatureDescription)
   name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   shortdescription_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (GetArenaNoVirtual() == NULL && type_ != NULL) delete type_;
+  if (GetArenaNoVirtual() == NULL && type_ != NULL) {
+    delete type_;
+  }
   type_ = NULL;
 }
 
@@ -1096,13 +951,14 @@ bool FeatureDescription::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.FeatureDescription)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional string name = 1;
+      // string name = 1;
       case 1: {
-        if (tag == 10) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_name()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
@@ -1112,14 +968,13 @@ bool FeatureDescription::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(18)) goto parse_shortDescription;
         break;
       }
 
-      // optional string shortDescription = 2;
+      // string shortDescription = 2;
       case 2: {
-        if (tag == 18) {
-         parse_shortDescription:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_shortdescription()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
@@ -1129,20 +984,18 @@ bool FeatureDescription::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(26)) goto parse_type;
         break;
       }
 
-      // optional .CoreML.Specification.FeatureType type = 3;
+      // .CoreML.Specification.FeatureType type = 3;
       case 3: {
-        if (tag == 26) {
-         parse_type:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(26u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_type()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -1170,7 +1023,10 @@ failure:
 void FeatureDescription::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.FeatureDescription)
-  // optional string name = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string name = 1;
   if (this->name().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->name().data(), this->name().length(),
@@ -1180,7 +1036,7 @@ void FeatureDescription::SerializeWithCachedSizes(
       1, this->name(), output);
   }
 
-  // optional string shortDescription = 2;
+  // string shortDescription = 2;
   if (this->shortdescription().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->shortdescription().data(), this->shortdescription().length(),
@@ -1190,7 +1046,7 @@ void FeatureDescription::SerializeWithCachedSizes(
       2, this->shortdescription(), output);
   }
 
-  // optional .CoreML.Specification.FeatureType type = 3;
+  // .CoreML.Specification.FeatureType type = 3;
   if (this->has_type()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       3, *this->type_, output);
@@ -1203,21 +1059,21 @@ size_t FeatureDescription::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.FeatureDescription)
   size_t total_size = 0;
 
-  // optional string name = 1;
+  // string name = 1;
   if (this->name().size() > 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
         this->name());
   }
 
-  // optional string shortDescription = 2;
+  // string shortDescription = 2;
   if (this->shortdescription().size() > 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
         this->shortdescription());
   }
 
-  // optional .CoreML.Specification.FeatureType type = 3;
+  // .CoreML.Specification.FeatureType type = 3;
   if (this->has_type()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -1238,15 +1094,11 @@ void FeatureDescription::CheckTypeAndMergeFrom(
 
 void FeatureDescription::MergeFrom(const FeatureDescription& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.FeatureDescription)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void FeatureDescription::UnsafeMergeFrom(const FeatureDescription& from) {
-  GOOGLE_DCHECK(&from != this);
   if (from.name().size() > 0) {
 
     name_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.name_);
@@ -1264,11 +1116,10 @@ void FeatureDescription::CopyFrom(const FeatureDescription& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.FeatureDescription)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool FeatureDescription::IsInitialized() const {
-
   return true;
 }
 
@@ -1280,7 +1131,6 @@ void FeatureDescription::InternalSwap(FeatureDescription* other) {
   name_.Swap(&other->name_);
   shortdescription_.Swap(&other->shortdescription_);
   std::swap(type_, other->type_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -1291,20 +1141,29 @@ void FeatureDescription::InternalSwap(FeatureDescription* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // FeatureDescription
 
-// optional string name = 1;
+// string name = 1;
 void FeatureDescription::clear_name() {
   name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 const ::std::string& FeatureDescription::name() const {
   // @@protoc_insertion_point(field_get:CoreML.Specification.FeatureDescription.name)
-  return name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return name_.GetNoArena();
 }
 void FeatureDescription::set_name(const ::std::string& value) {
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.FeatureDescription.name)
 }
+#if LANG_CXX11
+void FeatureDescription::set_name(::std::string&& value) {
+  
+  name_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.FeatureDescription.name)
+}
+#endif
 void FeatureDescription::set_name(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.FeatureDescription.name)
@@ -1335,20 +1194,29 @@ void FeatureDescription::set_allocated_name(::std::string* name) {
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.FeatureDescription.name)
 }
 
-// optional string shortDescription = 2;
+// string shortDescription = 2;
 void FeatureDescription::clear_shortdescription() {
   shortdescription_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 const ::std::string& FeatureDescription::shortdescription() const {
   // @@protoc_insertion_point(field_get:CoreML.Specification.FeatureDescription.shortDescription)
-  return shortdescription_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return shortdescription_.GetNoArena();
 }
 void FeatureDescription::set_shortdescription(const ::std::string& value) {
   
   shortdescription_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.FeatureDescription.shortDescription)
 }
+#if LANG_CXX11
+void FeatureDescription::set_shortdescription(::std::string&& value) {
+  
+  shortdescription_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.FeatureDescription.shortDescription)
+}
+#endif
 void FeatureDescription::set_shortdescription(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
   
   shortdescription_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.FeatureDescription.shortDescription)
@@ -1379,7 +1247,7 @@ void FeatureDescription::set_allocated_shortdescription(::std::string* shortdesc
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.FeatureDescription.shortDescription)
 }
 
-// optional .CoreML.Specification.FeatureType type = 3;
+// .CoreML.Specification.FeatureType type = 3;
 bool FeatureDescription::has_type() const {
   return this != internal_default_instance() && type_ != NULL;
 }
@@ -1418,9 +1286,11 @@ void FeatureDescription::set_allocated_type(::CoreML::Specification::FeatureType
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.FeatureDescription.type)
 }
 
-inline const FeatureDescription* FeatureDescription::internal_default_instance() {
-  return &FeatureDescription_default_instance_.get();
-}
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -1434,20 +1304,35 @@ const int Metadata::kUserDefinedFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Metadata::Metadata()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_Model_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_Model_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.Metadata)
 }
-
-void Metadata::InitAsDefaultInstance() {
-}
-
 Metadata::Metadata(const Metadata& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  userdefined_.MergeFrom(from.userdefined_);
+  shortdescription_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.shortdescription().size() > 0) {
+    shortdescription_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.shortdescription_);
+  }
+  versionstring_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.versionstring().size() > 0) {
+    versionstring_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.versionstring_);
+  }
+  author_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.author().size() > 0) {
+    author_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.author_);
+  }
+  license_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.license().size() > 0) {
+    license_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.license_);
+  }
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.Metadata)
 }
 
@@ -1477,11 +1362,9 @@ void Metadata::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const Metadata& Metadata::default_instance() {
-  protobuf_InitDefaults_Model_2eproto();
+  protobuf_Model_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<Metadata> Metadata_default_instance_;
 
 Metadata* Metadata::New(::google::protobuf::Arena* arena) const {
   Metadata* n = new Metadata;
@@ -1493,11 +1376,11 @@ Metadata* Metadata::New(::google::protobuf::Arena* arena) const {
 
 void Metadata::Clear() {
 // @@protoc_insertion_point(message_clear_start:CoreML.Specification.Metadata)
+  userdefined_.Clear();
   shortdescription_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   versionstring_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   author_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   license_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  userdefined_.Clear();
 }
 
 bool Metadata::MergePartialFromCodedStream(
@@ -1506,13 +1389,14 @@ bool Metadata::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.Metadata)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(16383);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(16383u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional string shortDescription = 1;
+      // string shortDescription = 1;
       case 1: {
-        if (tag == 10) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_shortdescription()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
@@ -1522,14 +1406,13 @@ bool Metadata::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(18)) goto parse_versionString;
         break;
       }
 
-      // optional string versionString = 2;
+      // string versionString = 2;
       case 2: {
-        if (tag == 18) {
-         parse_versionString:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_versionstring()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
@@ -1539,14 +1422,13 @@ bool Metadata::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(26)) goto parse_author;
         break;
       }
 
-      // optional string author = 3;
+      // string author = 3;
       case 3: {
-        if (tag == 26) {
-         parse_author:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(26u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_author()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
@@ -1556,14 +1438,13 @@ bool Metadata::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(34)) goto parse_license;
         break;
       }
 
-      // optional string license = 4;
+      // string license = 4;
       case 4: {
-        if (tag == 34) {
-         parse_license:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(34u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_license()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
@@ -1573,17 +1454,15 @@ bool Metadata::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(802)) goto parse_userDefined;
         break;
       }
 
       // map<string, string> userDefined = 100;
       case 100: {
-        if (tag == 802) {
-         parse_userDefined:
-          DO_(input->IncrementRecursionDepth());
-         parse_loop_userDefined:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(802u)) {
           Metadata_UserDefinedEntry::Parser< ::google::protobuf::internal::MapFieldLite<
+              Metadata_UserDefinedEntry,
               ::std::string, ::std::string,
               ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
               ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
@@ -1602,9 +1481,6 @@ bool Metadata::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(802)) goto parse_loop_userDefined;
-        input->UnsafeDecrementRecursionDepth();
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -1632,7 +1508,10 @@ failure:
 void Metadata::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.Metadata)
-  // optional string shortDescription = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string shortDescription = 1;
   if (this->shortdescription().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->shortdescription().data(), this->shortdescription().length(),
@@ -1642,7 +1521,7 @@ void Metadata::SerializeWithCachedSizes(
       1, this->shortdescription(), output);
   }
 
-  // optional string versionString = 2;
+  // string versionString = 2;
   if (this->versionstring().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->versionstring().data(), this->versionstring().length(),
@@ -1652,7 +1531,7 @@ void Metadata::SerializeWithCachedSizes(
       2, this->versionstring(), output);
   }
 
-  // optional string author = 3;
+  // string author = 3;
   if (this->author().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->author().data(), this->author().length(),
@@ -1662,7 +1541,7 @@ void Metadata::SerializeWithCachedSizes(
       3, this->author(), output);
   }
 
-  // optional string license = 4;
+  // string license = 4;
   if (this->license().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->license().data(), this->license().length(),
@@ -1691,7 +1570,7 @@ void Metadata::SerializeWithCachedSizes(
       }
     };
 
-    if (output->IsSerializationDeterminstic() &&
+    if (output->IsSerializationDeterministic() &&
         this->userdefined().size() > 1) {
       ::google::protobuf::scoped_array<SortItem> items(
           new SortItem[this->userdefined().size()]);
@@ -1732,34 +1611,6 @@ size_t Metadata::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.Metadata)
   size_t total_size = 0;
 
-  // optional string shortDescription = 1;
-  if (this->shortdescription().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->shortdescription());
-  }
-
-  // optional string versionString = 2;
-  if (this->versionstring().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->versionstring());
-  }
-
-  // optional string author = 3;
-  if (this->author().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->author());
-  }
-
-  // optional string license = 4;
-  if (this->license().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->license());
-  }
-
   // map<string, string> userDefined = 100;
   total_size += 2 *
       ::google::protobuf::internal::FromIntSize(this->userdefined_size());
@@ -1772,6 +1623,34 @@ size_t Metadata::ByteSizeLong() const {
       total_size += ::google::protobuf::internal::WireFormatLite::
           MessageSizeNoVirtual(*entry);
     }
+  }
+
+  // string shortDescription = 1;
+  if (this->shortdescription().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->shortdescription());
+  }
+
+  // string versionString = 2;
+  if (this->versionstring().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->versionstring());
+  }
+
+  // string author = 3;
+  if (this->author().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->author());
+  }
+
+  // string license = 4;
+  if (this->license().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->license());
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -1788,15 +1667,11 @@ void Metadata::CheckTypeAndMergeFrom(
 
 void Metadata::MergeFrom(const Metadata& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.Metadata)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void Metadata::UnsafeMergeFrom(const Metadata& from) {
-  GOOGLE_DCHECK(&from != this);
   userdefined_.MergeFrom(from.userdefined_);
   if (from.shortdescription().size() > 0) {
 
@@ -1820,11 +1695,10 @@ void Metadata::CopyFrom(const Metadata& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.Metadata)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool Metadata::IsInitialized() const {
-
   return true;
 }
 
@@ -1833,12 +1707,11 @@ void Metadata::Swap(Metadata* other) {
   InternalSwap(other);
 }
 void Metadata::InternalSwap(Metadata* other) {
+  userdefined_.Swap(&other->userdefined_);
   shortdescription_.Swap(&other->shortdescription_);
   versionstring_.Swap(&other->versionstring_);
   author_.Swap(&other->author_);
   license_.Swap(&other->license_);
-  userdefined_.Swap(&other->userdefined_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -1849,20 +1722,29 @@ void Metadata::InternalSwap(Metadata* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // Metadata
 
-// optional string shortDescription = 1;
+// string shortDescription = 1;
 void Metadata::clear_shortdescription() {
   shortdescription_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 const ::std::string& Metadata::shortdescription() const {
   // @@protoc_insertion_point(field_get:CoreML.Specification.Metadata.shortDescription)
-  return shortdescription_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return shortdescription_.GetNoArena();
 }
 void Metadata::set_shortdescription(const ::std::string& value) {
   
   shortdescription_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.Metadata.shortDescription)
 }
+#if LANG_CXX11
+void Metadata::set_shortdescription(::std::string&& value) {
+  
+  shortdescription_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.Metadata.shortDescription)
+}
+#endif
 void Metadata::set_shortdescription(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
   
   shortdescription_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.Metadata.shortDescription)
@@ -1893,20 +1775,29 @@ void Metadata::set_allocated_shortdescription(::std::string* shortdescription) {
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Metadata.shortDescription)
 }
 
-// optional string versionString = 2;
+// string versionString = 2;
 void Metadata::clear_versionstring() {
   versionstring_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 const ::std::string& Metadata::versionstring() const {
   // @@protoc_insertion_point(field_get:CoreML.Specification.Metadata.versionString)
-  return versionstring_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return versionstring_.GetNoArena();
 }
 void Metadata::set_versionstring(const ::std::string& value) {
   
   versionstring_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.Metadata.versionString)
 }
+#if LANG_CXX11
+void Metadata::set_versionstring(::std::string&& value) {
+  
+  versionstring_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.Metadata.versionString)
+}
+#endif
 void Metadata::set_versionstring(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
   
   versionstring_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.Metadata.versionString)
@@ -1937,20 +1828,29 @@ void Metadata::set_allocated_versionstring(::std::string* versionstring) {
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Metadata.versionString)
 }
 
-// optional string author = 3;
+// string author = 3;
 void Metadata::clear_author() {
   author_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 const ::std::string& Metadata::author() const {
   // @@protoc_insertion_point(field_get:CoreML.Specification.Metadata.author)
-  return author_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return author_.GetNoArena();
 }
 void Metadata::set_author(const ::std::string& value) {
   
   author_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.Metadata.author)
 }
+#if LANG_CXX11
+void Metadata::set_author(::std::string&& value) {
+  
+  author_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.Metadata.author)
+}
+#endif
 void Metadata::set_author(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
   
   author_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.Metadata.author)
@@ -1981,20 +1881,29 @@ void Metadata::set_allocated_author(::std::string* author) {
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Metadata.author)
 }
 
-// optional string license = 4;
+// string license = 4;
 void Metadata::clear_license() {
   license_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 const ::std::string& Metadata::license() const {
   // @@protoc_insertion_point(field_get:CoreML.Specification.Metadata.license)
-  return license_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return license_.GetNoArena();
 }
 void Metadata::set_license(const ::std::string& value) {
   
   license_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.Metadata.license)
 }
+#if LANG_CXX11
+void Metadata::set_license(::std::string&& value) {
+  
+  license_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.Metadata.license)
+}
+#endif
 void Metadata::set_license(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
   
   license_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.Metadata.license)
@@ -2043,9 +1952,6 @@ Metadata::mutable_userdefined() {
   return userdefined_.MutableMap();
 }
 
-inline const Metadata* Metadata::internal_default_instance() {
-  return &Metadata_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -2059,22 +1965,33 @@ const int ModelDescription::kMetadataFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ModelDescription::ModelDescription()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_Model_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_Model_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.ModelDescription)
 }
-
-void ModelDescription::InitAsDefaultInstance() {
-  metadata_ = const_cast< ::CoreML::Specification::Metadata*>(
-      ::CoreML::Specification::Metadata::internal_default_instance());
-}
-
 ModelDescription::ModelDescription(const ModelDescription& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      input_(from.input_),
+      output_(from.output_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  predictedfeaturename_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.predictedfeaturename().size() > 0) {
+    predictedfeaturename_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.predictedfeaturename_);
+  }
+  predictedprobabilitiesname_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.predictedprobabilitiesname().size() > 0) {
+    predictedprobabilitiesname_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.predictedprobabilitiesname_);
+  }
+  if (from.has_metadata()) {
+    metadata_ = new ::CoreML::Specification::Metadata(*from.metadata_);
+  } else {
+    metadata_ = NULL;
+  }
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.ModelDescription)
 }
 
@@ -2093,7 +2010,7 @@ ModelDescription::~ModelDescription() {
 void ModelDescription::SharedDtor() {
   predictedfeaturename_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   predictedprobabilitiesname_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (this != &ModelDescription_default_instance_.get()) {
+  if (this != internal_default_instance()) {
     delete metadata_;
   }
 }
@@ -2104,11 +2021,9 @@ void ModelDescription::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const ModelDescription& ModelDescription::default_instance() {
-  protobuf_InitDefaults_Model_2eproto();
+  protobuf_Model_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<ModelDescription> ModelDescription_default_instance_;
 
 ModelDescription* ModelDescription::New(::google::protobuf::Arena* arena) const {
   ModelDescription* n = new ModelDescription;
@@ -2120,12 +2035,14 @@ ModelDescription* ModelDescription::New(::google::protobuf::Arena* arena) const 
 
 void ModelDescription::Clear() {
 // @@protoc_insertion_point(message_clear_start:CoreML.Specification.ModelDescription)
-  predictedfeaturename_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  predictedprobabilitiesname_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (GetArenaNoVirtual() == NULL && metadata_ != NULL) delete metadata_;
-  metadata_ = NULL;
   input_.Clear();
   output_.Clear();
+  predictedfeaturename_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  predictedprobabilitiesname_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (GetArenaNoVirtual() == NULL && metadata_ != NULL) {
+    delete metadata_;
+  }
+  metadata_ = NULL;
 }
 
 bool ModelDescription::MergePartialFromCodedStream(
@@ -2134,46 +2051,38 @@ bool ModelDescription::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.ModelDescription)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(16383);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(16383u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // repeated .CoreML.Specification.FeatureDescription input = 1;
       case 1: {
-        if (tag == 10) {
-          DO_(input->IncrementRecursionDepth());
-         parse_loop_input:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                 input, add_input()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(10)) goto parse_loop_input;
-        if (input->ExpectTag(82)) goto parse_loop_output;
-        input->UnsafeDecrementRecursionDepth();
         break;
       }
 
       // repeated .CoreML.Specification.FeatureDescription output = 10;
       case 10: {
-        if (tag == 82) {
-          DO_(input->IncrementRecursionDepth());
-         parse_loop_output:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(82u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                 input, add_output()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(82)) goto parse_loop_output;
-        input->UnsafeDecrementRecursionDepth();
-        if (input->ExpectTag(90)) goto parse_predictedFeatureName;
         break;
       }
 
-      // optional string predictedFeatureName = 11;
+      // string predictedFeatureName = 11;
       case 11: {
-        if (tag == 90) {
-         parse_predictedFeatureName:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(90u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_predictedfeaturename()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
@@ -2183,14 +2092,13 @@ bool ModelDescription::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(98)) goto parse_predictedProbabilitiesName;
         break;
       }
 
-      // optional string predictedProbabilitiesName = 12;
+      // string predictedProbabilitiesName = 12;
       case 12: {
-        if (tag == 98) {
-         parse_predictedProbabilitiesName:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(98u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_predictedprobabilitiesname()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
@@ -2200,20 +2108,18 @@ bool ModelDescription::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(802)) goto parse_metadata;
         break;
       }
 
-      // optional .CoreML.Specification.Metadata metadata = 100;
+      // .CoreML.Specification.Metadata metadata = 100;
       case 100: {
-        if (tag == 802) {
-         parse_metadata:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(802u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_metadata()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -2241,6 +2147,9 @@ failure:
 void ModelDescription::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.ModelDescription)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
   // repeated .CoreML.Specification.FeatureDescription input = 1;
   for (unsigned int i = 0, n = this->input_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
@@ -2253,7 +2162,7 @@ void ModelDescription::SerializeWithCachedSizes(
       10, this->output(i), output);
   }
 
-  // optional string predictedFeatureName = 11;
+  // string predictedFeatureName = 11;
   if (this->predictedfeaturename().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->predictedfeaturename().data(), this->predictedfeaturename().length(),
@@ -2263,7 +2172,7 @@ void ModelDescription::SerializeWithCachedSizes(
       11, this->predictedfeaturename(), output);
   }
 
-  // optional string predictedProbabilitiesName = 12;
+  // string predictedProbabilitiesName = 12;
   if (this->predictedprobabilitiesname().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->predictedprobabilitiesname().data(), this->predictedprobabilitiesname().length(),
@@ -2273,7 +2182,7 @@ void ModelDescription::SerializeWithCachedSizes(
       12, this->predictedprobabilitiesname(), output);
   }
 
-  // optional .CoreML.Specification.Metadata metadata = 100;
+  // .CoreML.Specification.Metadata metadata = 100;
   if (this->has_metadata()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       100, *this->metadata_, output);
@@ -2285,27 +2194,6 @@ void ModelDescription::SerializeWithCachedSizes(
 size_t ModelDescription::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.ModelDescription)
   size_t total_size = 0;
-
-  // optional string predictedFeatureName = 11;
-  if (this->predictedfeaturename().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->predictedfeaturename());
-  }
-
-  // optional string predictedProbabilitiesName = 12;
-  if (this->predictedprobabilitiesname().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->predictedprobabilitiesname());
-  }
-
-  // optional .CoreML.Specification.Metadata metadata = 100;
-  if (this->has_metadata()) {
-    total_size += 2 +
-      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-        *this->metadata_);
-  }
 
   // repeated .CoreML.Specification.FeatureDescription input = 1;
   {
@@ -2329,6 +2217,27 @@ size_t ModelDescription::ByteSizeLong() const {
     }
   }
 
+  // string predictedFeatureName = 11;
+  if (this->predictedfeaturename().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->predictedfeaturename());
+  }
+
+  // string predictedProbabilitiesName = 12;
+  if (this->predictedprobabilitiesname().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->predictedprobabilitiesname());
+  }
+
+  // .CoreML.Specification.Metadata metadata = 100;
+  if (this->has_metadata()) {
+    total_size += 2 +
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        *this->metadata_);
+  }
+
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = cached_size;
@@ -2343,15 +2252,11 @@ void ModelDescription::CheckTypeAndMergeFrom(
 
 void ModelDescription::MergeFrom(const ModelDescription& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.ModelDescription)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void ModelDescription::UnsafeMergeFrom(const ModelDescription& from) {
-  GOOGLE_DCHECK(&from != this);
   input_.MergeFrom(from.input_);
   output_.MergeFrom(from.output_);
   if (from.predictedfeaturename().size() > 0) {
@@ -2371,11 +2276,10 @@ void ModelDescription::CopyFrom(const ModelDescription& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.ModelDescription)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool ModelDescription::IsInitialized() const {
-
   return true;
 }
 
@@ -2384,12 +2288,11 @@ void ModelDescription::Swap(ModelDescription* other) {
   InternalSwap(other);
 }
 void ModelDescription::InternalSwap(ModelDescription* other) {
-  input_.UnsafeArenaSwap(&other->input_);
-  output_.UnsafeArenaSwap(&other->output_);
+  input_.InternalSwap(&other->input_);
+  output_.InternalSwap(&other->output_);
   predictedfeaturename_.Swap(&other->predictedfeaturename_);
   predictedprobabilitiesname_.Swap(&other->predictedprobabilitiesname_);
   std::swap(metadata_, other->metadata_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -2460,20 +2363,29 @@ ModelDescription::output() const {
   return output_;
 }
 
-// optional string predictedFeatureName = 11;
+// string predictedFeatureName = 11;
 void ModelDescription::clear_predictedfeaturename() {
   predictedfeaturename_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 const ::std::string& ModelDescription::predictedfeaturename() const {
   // @@protoc_insertion_point(field_get:CoreML.Specification.ModelDescription.predictedFeatureName)
-  return predictedfeaturename_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return predictedfeaturename_.GetNoArena();
 }
 void ModelDescription::set_predictedfeaturename(const ::std::string& value) {
   
   predictedfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.ModelDescription.predictedFeatureName)
 }
+#if LANG_CXX11
+void ModelDescription::set_predictedfeaturename(::std::string&& value) {
+  
+  predictedfeaturename_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.ModelDescription.predictedFeatureName)
+}
+#endif
 void ModelDescription::set_predictedfeaturename(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
   
   predictedfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.ModelDescription.predictedFeatureName)
@@ -2504,20 +2416,29 @@ void ModelDescription::set_allocated_predictedfeaturename(::std::string* predict
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.ModelDescription.predictedFeatureName)
 }
 
-// optional string predictedProbabilitiesName = 12;
+// string predictedProbabilitiesName = 12;
 void ModelDescription::clear_predictedprobabilitiesname() {
   predictedprobabilitiesname_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 const ::std::string& ModelDescription::predictedprobabilitiesname() const {
   // @@protoc_insertion_point(field_get:CoreML.Specification.ModelDescription.predictedProbabilitiesName)
-  return predictedprobabilitiesname_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return predictedprobabilitiesname_.GetNoArena();
 }
 void ModelDescription::set_predictedprobabilitiesname(const ::std::string& value) {
   
   predictedprobabilitiesname_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.ModelDescription.predictedProbabilitiesName)
 }
+#if LANG_CXX11
+void ModelDescription::set_predictedprobabilitiesname(::std::string&& value) {
+  
+  predictedprobabilitiesname_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.ModelDescription.predictedProbabilitiesName)
+}
+#endif
 void ModelDescription::set_predictedprobabilitiesname(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
   
   predictedprobabilitiesname_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.ModelDescription.predictedProbabilitiesName)
@@ -2548,7 +2469,7 @@ void ModelDescription::set_allocated_predictedprobabilitiesname(::std::string* p
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.ModelDescription.predictedProbabilitiesName)
 }
 
-// optional .CoreML.Specification.Metadata metadata = 100;
+// .CoreML.Specification.Metadata metadata = 100;
 bool ModelDescription::has_metadata() const {
   return this != internal_default_instance() && metadata_ != NULL;
 }
@@ -2587,9 +2508,6 @@ void ModelDescription::set_allocated_metadata(::CoreML::Specification::Metadata*
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.ModelDescription.metadata)
 }
 
-inline const ModelDescription* ModelDescription::internal_default_instance() {
-  return &ModelDescription_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -2604,11 +2522,13 @@ const int Model::kGlmRegressorFieldNumber;
 const int Model::kSupportVectorRegressorFieldNumber;
 const int Model::kTreeEnsembleRegressorFieldNumber;
 const int Model::kNeuralNetworkRegressorFieldNumber;
+const int Model::kBayesianProbitRegressorFieldNumber;
 const int Model::kGlmClassifierFieldNumber;
 const int Model::kSupportVectorClassifierFieldNumber;
 const int Model::kTreeEnsembleClassifierFieldNumber;
 const int Model::kNeuralNetworkClassifierFieldNumber;
 const int Model::kNeuralNetworkFieldNumber;
+const int Model::kCustomModelFieldNumber;
 const int Model::kOneHotEncoderFieldNumber;
 const int Model::kImputerFieldNumber;
 const int Model::kFeatureVectorizerFieldNumber;
@@ -2617,32 +2537,152 @@ const int Model::kScalerFieldNumber;
 const int Model::kCategoricalMappingFieldNumber;
 const int Model::kNormalizerFieldNumber;
 const int Model::kArrayFeatureExtractorFieldNumber;
+const int Model::kNonMaximumSuppressionFieldNumber;
 const int Model::kIdentityFieldNumber;
+const int Model::kTextClassifierFieldNumber;
+const int Model::kWordTaggerFieldNumber;
+const int Model::kVisionFeaturePrintFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Model::Model()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_Model_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_Model_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.Model)
 }
-
-void Model::InitAsDefaultInstance() {
-  description_ = const_cast< ::CoreML::Specification::ModelDescription*>(
-      ::CoreML::Specification::ModelDescription::internal_default_instance());
-}
-
 Model::Model(const Model& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  if (from.has_description()) {
+    description_ = new ::CoreML::Specification::ModelDescription(*from.description_);
+  } else {
+    description_ = NULL;
+  }
+  specificationversion_ = from.specificationversion_;
+  clear_has_Type();
+  switch (from.Type_case()) {
+    case kPipelineClassifier: {
+      mutable_pipelineclassifier()->::CoreML::Specification::PipelineClassifier::MergeFrom(from.pipelineclassifier());
+      break;
+    }
+    case kPipelineRegressor: {
+      mutable_pipelineregressor()->::CoreML::Specification::PipelineRegressor::MergeFrom(from.pipelineregressor());
+      break;
+    }
+    case kPipeline: {
+      mutable_pipeline()->::CoreML::Specification::Pipeline::MergeFrom(from.pipeline());
+      break;
+    }
+    case kGlmRegressor: {
+      mutable_glmregressor()->::CoreML::Specification::GLMRegressor::MergeFrom(from.glmregressor());
+      break;
+    }
+    case kSupportVectorRegressor: {
+      mutable_supportvectorregressor()->::CoreML::Specification::SupportVectorRegressor::MergeFrom(from.supportvectorregressor());
+      break;
+    }
+    case kTreeEnsembleRegressor: {
+      mutable_treeensembleregressor()->::CoreML::Specification::TreeEnsembleRegressor::MergeFrom(from.treeensembleregressor());
+      break;
+    }
+    case kNeuralNetworkRegressor: {
+      mutable_neuralnetworkregressor()->::CoreML::Specification::NeuralNetworkRegressor::MergeFrom(from.neuralnetworkregressor());
+      break;
+    }
+    case kBayesianProbitRegressor: {
+      mutable_bayesianprobitregressor()->::CoreML::Specification::BayesianProbitRegressor::MergeFrom(from.bayesianprobitregressor());
+      break;
+    }
+    case kGlmClassifier: {
+      mutable_glmclassifier()->::CoreML::Specification::GLMClassifier::MergeFrom(from.glmclassifier());
+      break;
+    }
+    case kSupportVectorClassifier: {
+      mutable_supportvectorclassifier()->::CoreML::Specification::SupportVectorClassifier::MergeFrom(from.supportvectorclassifier());
+      break;
+    }
+    case kTreeEnsembleClassifier: {
+      mutable_treeensembleclassifier()->::CoreML::Specification::TreeEnsembleClassifier::MergeFrom(from.treeensembleclassifier());
+      break;
+    }
+    case kNeuralNetworkClassifier: {
+      mutable_neuralnetworkclassifier()->::CoreML::Specification::NeuralNetworkClassifier::MergeFrom(from.neuralnetworkclassifier());
+      break;
+    }
+    case kNeuralNetwork: {
+      mutable_neuralnetwork()->::CoreML::Specification::NeuralNetwork::MergeFrom(from.neuralnetwork());
+      break;
+    }
+    case kCustomModel: {
+      mutable_custommodel()->::CoreML::Specification::CustomModel::MergeFrom(from.custommodel());
+      break;
+    }
+    case kOneHotEncoder: {
+      mutable_onehotencoder()->::CoreML::Specification::OneHotEncoder::MergeFrom(from.onehotencoder());
+      break;
+    }
+    case kImputer: {
+      mutable_imputer()->::CoreML::Specification::Imputer::MergeFrom(from.imputer());
+      break;
+    }
+    case kFeatureVectorizer: {
+      mutable_featurevectorizer()->::CoreML::Specification::FeatureVectorizer::MergeFrom(from.featurevectorizer());
+      break;
+    }
+    case kDictVectorizer: {
+      mutable_dictvectorizer()->::CoreML::Specification::DictVectorizer::MergeFrom(from.dictvectorizer());
+      break;
+    }
+    case kScaler: {
+      mutable_scaler()->::CoreML::Specification::Scaler::MergeFrom(from.scaler());
+      break;
+    }
+    case kCategoricalMapping: {
+      mutable_categoricalmapping()->::CoreML::Specification::CategoricalMapping::MergeFrom(from.categoricalmapping());
+      break;
+    }
+    case kNormalizer: {
+      mutable_normalizer()->::CoreML::Specification::Normalizer::MergeFrom(from.normalizer());
+      break;
+    }
+    case kArrayFeatureExtractor: {
+      mutable_arrayfeatureextractor()->::CoreML::Specification::ArrayFeatureExtractor::MergeFrom(from.arrayfeatureextractor());
+      break;
+    }
+    case kNonMaximumSuppression: {
+      mutable_nonmaximumsuppression()->::CoreML::Specification::NonMaximumSuppression::MergeFrom(from.nonmaximumsuppression());
+      break;
+    }
+    case kIdentity: {
+      mutable_identity()->::CoreML::Specification::Identity::MergeFrom(from.identity());
+      break;
+    }
+    case kTextClassifier: {
+      mutable_textclassifier()->::CoreML::Specification::CoreMLModels::TextClassifier::MergeFrom(from.textclassifier());
+      break;
+    }
+    case kWordTagger: {
+      mutable_wordtagger()->::CoreML::Specification::CoreMLModels::WordTagger::MergeFrom(from.wordtagger());
+      break;
+    }
+    case kVisionFeaturePrint: {
+      mutable_visionfeatureprint()->::CoreML::Specification::CoreMLModels::VisionFeaturePrint::MergeFrom(from.visionfeatureprint());
+      break;
+    }
+    case TYPE_NOT_SET: {
+      break;
+    }
+  }
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.Model)
 }
 
 void Model::SharedCtor() {
-  description_ = NULL;
-  specificationversion_ = 0;
+  ::memset(&description_, 0, reinterpret_cast<char*>(&specificationversion_) -
+    reinterpret_cast<char*>(&description_) + sizeof(specificationversion_));
   clear_has_Type();
   _cached_size_ = 0;
 }
@@ -2653,11 +2693,11 @@ Model::~Model() {
 }
 
 void Model::SharedDtor() {
+  if (this != internal_default_instance()) {
+    delete description_;
+  }
   if (has_Type()) {
     clear_Type();
-  }
-  if (this != &Model_default_instance_.get()) {
-    delete description_;
   }
 }
 
@@ -2667,11 +2707,9 @@ void Model::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const Model& Model::default_instance() {
-  protobuf_InitDefaults_Model_2eproto();
+  protobuf_Model_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<Model> Model_default_instance_;
 
 Model* Model::New(::google::protobuf::Arena* arena) const {
   Model* n = new Model;
@@ -2712,6 +2750,10 @@ void Model::clear_Type() {
       delete Type_.neuralnetworkregressor_;
       break;
     }
+    case kBayesianProbitRegressor: {
+      delete Type_.bayesianprobitregressor_;
+      break;
+    }
     case kGlmClassifier: {
       delete Type_.glmclassifier_;
       break;
@@ -2730,6 +2772,10 @@ void Model::clear_Type() {
     }
     case kNeuralNetwork: {
       delete Type_.neuralnetwork_;
+      break;
+    }
+    case kCustomModel: {
+      delete Type_.custommodel_;
       break;
     }
     case kOneHotEncoder: {
@@ -2764,8 +2810,24 @@ void Model::clear_Type() {
       delete Type_.arrayfeatureextractor_;
       break;
     }
+    case kNonMaximumSuppression: {
+      delete Type_.nonmaximumsuppression_;
+      break;
+    }
     case kIdentity: {
       delete Type_.identity_;
+      break;
+    }
+    case kTextClassifier: {
+      delete Type_.textclassifier_;
+      break;
+    }
+    case kWordTagger: {
+      delete Type_.wordtagger_;
+      break;
+    }
+    case kVisionFeaturePrint: {
+      delete Type_.visionfeatureprint_;
       break;
     }
     case TYPE_NOT_SET: {
@@ -2778,9 +2840,11 @@ void Model::clear_Type() {
 
 void Model::Clear() {
 // @@protoc_insertion_point(message_clear_start:CoreML.Specification.Model)
-  specificationversion_ = 0;
-  if (GetArenaNoVirtual() == NULL && description_ != NULL) delete description_;
+  if (GetArenaNoVirtual() == NULL && description_ != NULL) {
+    delete description_;
+  }
   description_ = NULL;
+  specificationversion_ = 0;
   clear_Type();
 }
 
@@ -2790,13 +2854,14 @@ bool Model::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.Model)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(16383);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(16383u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional int32 specificationVersion = 1;
+      // int32 specificationVersion = 1;
       case 1: {
-        if (tag == 8) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(8u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
@@ -2804,275 +2869,342 @@ bool Model::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(18)) goto parse_description;
         break;
       }
 
-      // optional .CoreML.Specification.ModelDescription description = 2;
+      // .CoreML.Specification.ModelDescription description = 2;
       case 2: {
-        if (tag == 18) {
-         parse_description:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_description()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(1602)) goto parse_pipelineClassifier;
         break;
       }
 
-      // optional .CoreML.Specification.PipelineClassifier pipelineClassifier = 200;
+      // .CoreML.Specification.PipelineClassifier pipelineClassifier = 200;
       case 200: {
-        if (tag == 1602) {
-         parse_pipelineClassifier:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(1602u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_pipelineclassifier()));
         } else {
           goto handle_unusual;
         }
-        goto after_identity;
         break;
       }
 
-      // optional .CoreML.Specification.PipelineRegressor pipelineRegressor = 201;
+      // .CoreML.Specification.PipelineRegressor pipelineRegressor = 201;
       case 201: {
-        if (tag == 1610) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(1610u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_pipelineregressor()));
         } else {
           goto handle_unusual;
         }
-        goto after_identity;
         break;
       }
 
-      // optional .CoreML.Specification.Pipeline pipeline = 202;
+      // .CoreML.Specification.Pipeline pipeline = 202;
       case 202: {
-        if (tag == 1618) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(1618u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_pipeline()));
         } else {
           goto handle_unusual;
         }
-        goto after_identity;
         break;
       }
 
-      // optional .CoreML.Specification.GLMRegressor glmRegressor = 300;
+      // .CoreML.Specification.GLMRegressor glmRegressor = 300;
       case 300: {
-        if (tag == 2402) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(2402u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_glmregressor()));
         } else {
           goto handle_unusual;
         }
-        goto after_identity;
         break;
       }
 
-      // optional .CoreML.Specification.SupportVectorRegressor supportVectorRegressor = 301;
+      // .CoreML.Specification.SupportVectorRegressor supportVectorRegressor = 301;
       case 301: {
-        if (tag == 2410) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(2410u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_supportvectorregressor()));
         } else {
           goto handle_unusual;
         }
-        goto after_identity;
         break;
       }
 
-      // optional .CoreML.Specification.TreeEnsembleRegressor treeEnsembleRegressor = 302;
+      // .CoreML.Specification.TreeEnsembleRegressor treeEnsembleRegressor = 302;
       case 302: {
-        if (tag == 2418) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(2418u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_treeensembleregressor()));
         } else {
           goto handle_unusual;
         }
-        goto after_identity;
         break;
       }
 
-      // optional .CoreML.Specification.NeuralNetworkRegressor neuralNetworkRegressor = 303;
+      // .CoreML.Specification.NeuralNetworkRegressor neuralNetworkRegressor = 303;
       case 303: {
-        if (tag == 2426) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(2426u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_neuralnetworkregressor()));
         } else {
           goto handle_unusual;
         }
-        goto after_identity;
         break;
       }
 
-      // optional .CoreML.Specification.GLMClassifier glmClassifier = 400;
+      // .CoreML.Specification.BayesianProbitRegressor bayesianProbitRegressor = 304;
+      case 304: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(2434u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_bayesianprobitregressor()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .CoreML.Specification.GLMClassifier glmClassifier = 400;
       case 400: {
-        if (tag == 3202) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(3202u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_glmclassifier()));
         } else {
           goto handle_unusual;
         }
-        goto after_identity;
         break;
       }
 
-      // optional .CoreML.Specification.SupportVectorClassifier supportVectorClassifier = 401;
+      // .CoreML.Specification.SupportVectorClassifier supportVectorClassifier = 401;
       case 401: {
-        if (tag == 3210) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(3210u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_supportvectorclassifier()));
         } else {
           goto handle_unusual;
         }
-        goto after_identity;
         break;
       }
 
-      // optional .CoreML.Specification.TreeEnsembleClassifier treeEnsembleClassifier = 402;
+      // .CoreML.Specification.TreeEnsembleClassifier treeEnsembleClassifier = 402;
       case 402: {
-        if (tag == 3218) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(3218u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_treeensembleclassifier()));
         } else {
           goto handle_unusual;
         }
-        goto after_identity;
         break;
       }
 
-      // optional .CoreML.Specification.NeuralNetworkClassifier neuralNetworkClassifier = 403;
+      // .CoreML.Specification.NeuralNetworkClassifier neuralNetworkClassifier = 403;
       case 403: {
-        if (tag == 3226) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(3226u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_neuralnetworkclassifier()));
         } else {
           goto handle_unusual;
         }
-        goto after_identity;
         break;
       }
 
-      // optional .CoreML.Specification.NeuralNetwork neuralNetwork = 500;
+      // .CoreML.Specification.NeuralNetwork neuralNetwork = 500;
       case 500: {
-        if (tag == 4002) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(4002u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_neuralnetwork()));
         } else {
           goto handle_unusual;
         }
-        goto after_identity;
         break;
       }
 
-      // optional .CoreML.Specification.OneHotEncoder oneHotEncoder = 600;
+      // .CoreML.Specification.CustomModel customModel = 555;
+      case 555: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(4442u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_custommodel()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .CoreML.Specification.OneHotEncoder oneHotEncoder = 600;
       case 600: {
-        if (tag == 4802) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(4802u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_onehotencoder()));
         } else {
           goto handle_unusual;
         }
-        goto after_identity;
         break;
       }
 
-      // optional .CoreML.Specification.Imputer imputer = 601;
+      // .CoreML.Specification.Imputer imputer = 601;
       case 601: {
-        if (tag == 4810) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(4810u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_imputer()));
         } else {
           goto handle_unusual;
         }
-        goto after_identity;
         break;
       }
 
-      // optional .CoreML.Specification.FeatureVectorizer featureVectorizer = 602;
+      // .CoreML.Specification.FeatureVectorizer featureVectorizer = 602;
       case 602: {
-        if (tag == 4818) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(4818u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_featurevectorizer()));
         } else {
           goto handle_unusual;
         }
-        goto after_identity;
         break;
       }
 
-      // optional .CoreML.Specification.DictVectorizer dictVectorizer = 603;
+      // .CoreML.Specification.DictVectorizer dictVectorizer = 603;
       case 603: {
-        if (tag == 4826) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(4826u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_dictvectorizer()));
         } else {
           goto handle_unusual;
         }
-        goto after_identity;
         break;
       }
 
-      // optional .CoreML.Specification.Scaler scaler = 604;
+      // .CoreML.Specification.Scaler scaler = 604;
       case 604: {
-        if (tag == 4834) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(4834u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_scaler()));
         } else {
           goto handle_unusual;
         }
-        goto after_identity;
         break;
       }
 
-      // optional .CoreML.Specification.CategoricalMapping categoricalMapping = 606;
+      // .CoreML.Specification.CategoricalMapping categoricalMapping = 606;
       case 606: {
-        if (tag == 4850) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(4850u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_categoricalmapping()));
         } else {
           goto handle_unusual;
         }
-        goto after_identity;
         break;
       }
 
-      // optional .CoreML.Specification.Normalizer normalizer = 607;
+      // .CoreML.Specification.Normalizer normalizer = 607;
       case 607: {
-        if (tag == 4858) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(4858u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_normalizer()));
         } else {
           goto handle_unusual;
         }
-        goto after_identity;
         break;
       }
 
-      // optional .CoreML.Specification.ArrayFeatureExtractor arrayFeatureExtractor = 609;
+      // .CoreML.Specification.ArrayFeatureExtractor arrayFeatureExtractor = 609;
       case 609: {
-        if (tag == 4874) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(4874u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_arrayfeatureextractor()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(7202)) goto parse_identity;
         break;
       }
 
-      // optional .CoreML.Specification.Identity identity = 900;
+      // .CoreML.Specification.NonMaximumSuppression nonMaximumSuppression = 610;
+      case 610: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(4882u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_nonmaximumsuppression()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .CoreML.Specification.Identity identity = 900;
       case 900: {
-        if (tag == 7202) {
-         parse_identity:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(7202u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_identity()));
         } else {
           goto handle_unusual;
         }
-       after_identity:
-        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      // .CoreML.Specification.CoreMLModels.TextClassifier textClassifier = 2000;
+      case 2000: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(16002u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_textclassifier()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .CoreML.Specification.CoreMLModels.WordTagger wordTagger = 2001;
+      case 2001: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(16010u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_wordtagger()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .CoreML.Specification.CoreMLModels.VisionFeaturePrint visionFeaturePrint = 2002;
+      case 2002: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(16018u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_visionfeatureprint()));
+        } else {
+          goto handle_unusual;
+        }
         break;
       }
 
@@ -3100,141 +3232,180 @@ failure:
 void Model::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.Model)
-  // optional int32 specificationVersion = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // int32 specificationVersion = 1;
   if (this->specificationversion() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->specificationversion(), output);
   }
 
-  // optional .CoreML.Specification.ModelDescription description = 2;
+  // .CoreML.Specification.ModelDescription description = 2;
   if (this->has_description()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       2, *this->description_, output);
   }
 
-  // optional .CoreML.Specification.PipelineClassifier pipelineClassifier = 200;
+  // .CoreML.Specification.PipelineClassifier pipelineClassifier = 200;
   if (has_pipelineclassifier()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       200, *Type_.pipelineclassifier_, output);
   }
 
-  // optional .CoreML.Specification.PipelineRegressor pipelineRegressor = 201;
+  // .CoreML.Specification.PipelineRegressor pipelineRegressor = 201;
   if (has_pipelineregressor()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       201, *Type_.pipelineregressor_, output);
   }
 
-  // optional .CoreML.Specification.Pipeline pipeline = 202;
+  // .CoreML.Specification.Pipeline pipeline = 202;
   if (has_pipeline()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       202, *Type_.pipeline_, output);
   }
 
-  // optional .CoreML.Specification.GLMRegressor glmRegressor = 300;
+  // .CoreML.Specification.GLMRegressor glmRegressor = 300;
   if (has_glmregressor()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       300, *Type_.glmregressor_, output);
   }
 
-  // optional .CoreML.Specification.SupportVectorRegressor supportVectorRegressor = 301;
+  // .CoreML.Specification.SupportVectorRegressor supportVectorRegressor = 301;
   if (has_supportvectorregressor()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       301, *Type_.supportvectorregressor_, output);
   }
 
-  // optional .CoreML.Specification.TreeEnsembleRegressor treeEnsembleRegressor = 302;
+  // .CoreML.Specification.TreeEnsembleRegressor treeEnsembleRegressor = 302;
   if (has_treeensembleregressor()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       302, *Type_.treeensembleregressor_, output);
   }
 
-  // optional .CoreML.Specification.NeuralNetworkRegressor neuralNetworkRegressor = 303;
+  // .CoreML.Specification.NeuralNetworkRegressor neuralNetworkRegressor = 303;
   if (has_neuralnetworkregressor()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       303, *Type_.neuralnetworkregressor_, output);
   }
 
-  // optional .CoreML.Specification.GLMClassifier glmClassifier = 400;
+  // .CoreML.Specification.BayesianProbitRegressor bayesianProbitRegressor = 304;
+  if (has_bayesianprobitregressor()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      304, *Type_.bayesianprobitregressor_, output);
+  }
+
+  // .CoreML.Specification.GLMClassifier glmClassifier = 400;
   if (has_glmclassifier()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       400, *Type_.glmclassifier_, output);
   }
 
-  // optional .CoreML.Specification.SupportVectorClassifier supportVectorClassifier = 401;
+  // .CoreML.Specification.SupportVectorClassifier supportVectorClassifier = 401;
   if (has_supportvectorclassifier()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       401, *Type_.supportvectorclassifier_, output);
   }
 
-  // optional .CoreML.Specification.TreeEnsembleClassifier treeEnsembleClassifier = 402;
+  // .CoreML.Specification.TreeEnsembleClassifier treeEnsembleClassifier = 402;
   if (has_treeensembleclassifier()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       402, *Type_.treeensembleclassifier_, output);
   }
 
-  // optional .CoreML.Specification.NeuralNetworkClassifier neuralNetworkClassifier = 403;
+  // .CoreML.Specification.NeuralNetworkClassifier neuralNetworkClassifier = 403;
   if (has_neuralnetworkclassifier()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       403, *Type_.neuralnetworkclassifier_, output);
   }
 
-  // optional .CoreML.Specification.NeuralNetwork neuralNetwork = 500;
+  // .CoreML.Specification.NeuralNetwork neuralNetwork = 500;
   if (has_neuralnetwork()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       500, *Type_.neuralnetwork_, output);
   }
 
-  // optional .CoreML.Specification.OneHotEncoder oneHotEncoder = 600;
+  // .CoreML.Specification.CustomModel customModel = 555;
+  if (has_custommodel()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      555, *Type_.custommodel_, output);
+  }
+
+  // .CoreML.Specification.OneHotEncoder oneHotEncoder = 600;
   if (has_onehotencoder()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       600, *Type_.onehotencoder_, output);
   }
 
-  // optional .CoreML.Specification.Imputer imputer = 601;
+  // .CoreML.Specification.Imputer imputer = 601;
   if (has_imputer()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       601, *Type_.imputer_, output);
   }
 
-  // optional .CoreML.Specification.FeatureVectorizer featureVectorizer = 602;
+  // .CoreML.Specification.FeatureVectorizer featureVectorizer = 602;
   if (has_featurevectorizer()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       602, *Type_.featurevectorizer_, output);
   }
 
-  // optional .CoreML.Specification.DictVectorizer dictVectorizer = 603;
+  // .CoreML.Specification.DictVectorizer dictVectorizer = 603;
   if (has_dictvectorizer()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       603, *Type_.dictvectorizer_, output);
   }
 
-  // optional .CoreML.Specification.Scaler scaler = 604;
+  // .CoreML.Specification.Scaler scaler = 604;
   if (has_scaler()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       604, *Type_.scaler_, output);
   }
 
-  // optional .CoreML.Specification.CategoricalMapping categoricalMapping = 606;
+  // .CoreML.Specification.CategoricalMapping categoricalMapping = 606;
   if (has_categoricalmapping()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       606, *Type_.categoricalmapping_, output);
   }
 
-  // optional .CoreML.Specification.Normalizer normalizer = 607;
+  // .CoreML.Specification.Normalizer normalizer = 607;
   if (has_normalizer()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       607, *Type_.normalizer_, output);
   }
 
-  // optional .CoreML.Specification.ArrayFeatureExtractor arrayFeatureExtractor = 609;
+  // .CoreML.Specification.ArrayFeatureExtractor arrayFeatureExtractor = 609;
   if (has_arrayfeatureextractor()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       609, *Type_.arrayfeatureextractor_, output);
   }
 
-  // optional .CoreML.Specification.Identity identity = 900;
+  // .CoreML.Specification.NonMaximumSuppression nonMaximumSuppression = 610;
+  if (has_nonmaximumsuppression()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      610, *Type_.nonmaximumsuppression_, output);
+  }
+
+  // .CoreML.Specification.Identity identity = 900;
   if (has_identity()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       900, *Type_.identity_, output);
+  }
+
+  // .CoreML.Specification.CoreMLModels.TextClassifier textClassifier = 2000;
+  if (has_textclassifier()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      2000, *Type_.textclassifier_, output);
+  }
+
+  // .CoreML.Specification.CoreMLModels.WordTagger wordTagger = 2001;
+  if (has_wordtagger()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      2001, *Type_.wordtagger_, output);
+  }
+
+  // .CoreML.Specification.CoreMLModels.VisionFeaturePrint visionFeaturePrint = 2002;
+  if (has_visionfeatureprint()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      2002, *Type_.visionfeatureprint_, output);
   }
 
   // @@protoc_insertion_point(serialize_end:CoreML.Specification.Model)
@@ -3244,166 +3415,208 @@ size_t Model::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.Model)
   size_t total_size = 0;
 
-  // optional int32 specificationVersion = 1;
-  if (this->specificationversion() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int32Size(
-        this->specificationversion());
-  }
-
-  // optional .CoreML.Specification.ModelDescription description = 2;
+  // .CoreML.Specification.ModelDescription description = 2;
   if (this->has_description()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
         *this->description_);
   }
 
+  // int32 specificationVersion = 1;
+  if (this->specificationversion() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
+        this->specificationversion());
+  }
+
   switch (Type_case()) {
-    // optional .CoreML.Specification.PipelineClassifier pipelineClassifier = 200;
+    // .CoreML.Specification.PipelineClassifier pipelineClassifier = 200;
     case kPipelineClassifier: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.pipelineclassifier_);
       break;
     }
-    // optional .CoreML.Specification.PipelineRegressor pipelineRegressor = 201;
+    // .CoreML.Specification.PipelineRegressor pipelineRegressor = 201;
     case kPipelineRegressor: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.pipelineregressor_);
       break;
     }
-    // optional .CoreML.Specification.Pipeline pipeline = 202;
+    // .CoreML.Specification.Pipeline pipeline = 202;
     case kPipeline: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.pipeline_);
       break;
     }
-    // optional .CoreML.Specification.GLMRegressor glmRegressor = 300;
+    // .CoreML.Specification.GLMRegressor glmRegressor = 300;
     case kGlmRegressor: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.glmregressor_);
       break;
     }
-    // optional .CoreML.Specification.SupportVectorRegressor supportVectorRegressor = 301;
+    // .CoreML.Specification.SupportVectorRegressor supportVectorRegressor = 301;
     case kSupportVectorRegressor: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.supportvectorregressor_);
       break;
     }
-    // optional .CoreML.Specification.TreeEnsembleRegressor treeEnsembleRegressor = 302;
+    // .CoreML.Specification.TreeEnsembleRegressor treeEnsembleRegressor = 302;
     case kTreeEnsembleRegressor: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.treeensembleregressor_);
       break;
     }
-    // optional .CoreML.Specification.NeuralNetworkRegressor neuralNetworkRegressor = 303;
+    // .CoreML.Specification.NeuralNetworkRegressor neuralNetworkRegressor = 303;
     case kNeuralNetworkRegressor: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.neuralnetworkregressor_);
       break;
     }
-    // optional .CoreML.Specification.GLMClassifier glmClassifier = 400;
+    // .CoreML.Specification.BayesianProbitRegressor bayesianProbitRegressor = 304;
+    case kBayesianProbitRegressor: {
+      total_size += 2 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *Type_.bayesianprobitregressor_);
+      break;
+    }
+    // .CoreML.Specification.GLMClassifier glmClassifier = 400;
     case kGlmClassifier: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.glmclassifier_);
       break;
     }
-    // optional .CoreML.Specification.SupportVectorClassifier supportVectorClassifier = 401;
+    // .CoreML.Specification.SupportVectorClassifier supportVectorClassifier = 401;
     case kSupportVectorClassifier: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.supportvectorclassifier_);
       break;
     }
-    // optional .CoreML.Specification.TreeEnsembleClassifier treeEnsembleClassifier = 402;
+    // .CoreML.Specification.TreeEnsembleClassifier treeEnsembleClassifier = 402;
     case kTreeEnsembleClassifier: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.treeensembleclassifier_);
       break;
     }
-    // optional .CoreML.Specification.NeuralNetworkClassifier neuralNetworkClassifier = 403;
+    // .CoreML.Specification.NeuralNetworkClassifier neuralNetworkClassifier = 403;
     case kNeuralNetworkClassifier: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.neuralnetworkclassifier_);
       break;
     }
-    // optional .CoreML.Specification.NeuralNetwork neuralNetwork = 500;
+    // .CoreML.Specification.NeuralNetwork neuralNetwork = 500;
     case kNeuralNetwork: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.neuralnetwork_);
       break;
     }
-    // optional .CoreML.Specification.OneHotEncoder oneHotEncoder = 600;
+    // .CoreML.Specification.CustomModel customModel = 555;
+    case kCustomModel: {
+      total_size += 2 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *Type_.custommodel_);
+      break;
+    }
+    // .CoreML.Specification.OneHotEncoder oneHotEncoder = 600;
     case kOneHotEncoder: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.onehotencoder_);
       break;
     }
-    // optional .CoreML.Specification.Imputer imputer = 601;
+    // .CoreML.Specification.Imputer imputer = 601;
     case kImputer: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.imputer_);
       break;
     }
-    // optional .CoreML.Specification.FeatureVectorizer featureVectorizer = 602;
+    // .CoreML.Specification.FeatureVectorizer featureVectorizer = 602;
     case kFeatureVectorizer: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.featurevectorizer_);
       break;
     }
-    // optional .CoreML.Specification.DictVectorizer dictVectorizer = 603;
+    // .CoreML.Specification.DictVectorizer dictVectorizer = 603;
     case kDictVectorizer: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.dictvectorizer_);
       break;
     }
-    // optional .CoreML.Specification.Scaler scaler = 604;
+    // .CoreML.Specification.Scaler scaler = 604;
     case kScaler: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.scaler_);
       break;
     }
-    // optional .CoreML.Specification.CategoricalMapping categoricalMapping = 606;
+    // .CoreML.Specification.CategoricalMapping categoricalMapping = 606;
     case kCategoricalMapping: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.categoricalmapping_);
       break;
     }
-    // optional .CoreML.Specification.Normalizer normalizer = 607;
+    // .CoreML.Specification.Normalizer normalizer = 607;
     case kNormalizer: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.normalizer_);
       break;
     }
-    // optional .CoreML.Specification.ArrayFeatureExtractor arrayFeatureExtractor = 609;
+    // .CoreML.Specification.ArrayFeatureExtractor arrayFeatureExtractor = 609;
     case kArrayFeatureExtractor: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.arrayfeatureextractor_);
       break;
     }
-    // optional .CoreML.Specification.Identity identity = 900;
+    // .CoreML.Specification.NonMaximumSuppression nonMaximumSuppression = 610;
+    case kNonMaximumSuppression: {
+      total_size += 2 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *Type_.nonmaximumsuppression_);
+      break;
+    }
+    // .CoreML.Specification.Identity identity = 900;
     case kIdentity: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.identity_);
+      break;
+    }
+    // .CoreML.Specification.CoreMLModels.TextClassifier textClassifier = 2000;
+    case kTextClassifier: {
+      total_size += 2 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *Type_.textclassifier_);
+      break;
+    }
+    // .CoreML.Specification.CoreMLModels.WordTagger wordTagger = 2001;
+    case kWordTagger: {
+      total_size += 2 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *Type_.wordtagger_);
+      break;
+    }
+    // .CoreML.Specification.CoreMLModels.VisionFeaturePrint visionFeaturePrint = 2002;
+    case kVisionFeaturePrint: {
+      total_size += 2 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *Type_.visionfeatureprint_);
       break;
     }
     case TYPE_NOT_SET: {
@@ -3424,15 +3637,17 @@ void Model::CheckTypeAndMergeFrom(
 
 void Model::MergeFrom(const Model& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.Model)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void Model::UnsafeMergeFrom(const Model& from) {
-  GOOGLE_DCHECK(&from != this);
+  if (from.has_description()) {
+    mutable_description()->::CoreML::Specification::ModelDescription::MergeFrom(from.description());
+  }
+  if (from.specificationversion() != 0) {
+    set_specificationversion(from.specificationversion());
+  }
   switch (from.Type_case()) {
     case kPipelineClassifier: {
       mutable_pipelineclassifier()->::CoreML::Specification::PipelineClassifier::MergeFrom(from.pipelineclassifier());
@@ -3462,6 +3677,10 @@ void Model::UnsafeMergeFrom(const Model& from) {
       mutable_neuralnetworkregressor()->::CoreML::Specification::NeuralNetworkRegressor::MergeFrom(from.neuralnetworkregressor());
       break;
     }
+    case kBayesianProbitRegressor: {
+      mutable_bayesianprobitregressor()->::CoreML::Specification::BayesianProbitRegressor::MergeFrom(from.bayesianprobitregressor());
+      break;
+    }
     case kGlmClassifier: {
       mutable_glmclassifier()->::CoreML::Specification::GLMClassifier::MergeFrom(from.glmclassifier());
       break;
@@ -3480,6 +3699,10 @@ void Model::UnsafeMergeFrom(const Model& from) {
     }
     case kNeuralNetwork: {
       mutable_neuralnetwork()->::CoreML::Specification::NeuralNetwork::MergeFrom(from.neuralnetwork());
+      break;
+    }
+    case kCustomModel: {
+      mutable_custommodel()->::CoreML::Specification::CustomModel::MergeFrom(from.custommodel());
       break;
     }
     case kOneHotEncoder: {
@@ -3514,19 +3737,29 @@ void Model::UnsafeMergeFrom(const Model& from) {
       mutable_arrayfeatureextractor()->::CoreML::Specification::ArrayFeatureExtractor::MergeFrom(from.arrayfeatureextractor());
       break;
     }
+    case kNonMaximumSuppression: {
+      mutable_nonmaximumsuppression()->::CoreML::Specification::NonMaximumSuppression::MergeFrom(from.nonmaximumsuppression());
+      break;
+    }
     case kIdentity: {
       mutable_identity()->::CoreML::Specification::Identity::MergeFrom(from.identity());
+      break;
+    }
+    case kTextClassifier: {
+      mutable_textclassifier()->::CoreML::Specification::CoreMLModels::TextClassifier::MergeFrom(from.textclassifier());
+      break;
+    }
+    case kWordTagger: {
+      mutable_wordtagger()->::CoreML::Specification::CoreMLModels::WordTagger::MergeFrom(from.wordtagger());
+      break;
+    }
+    case kVisionFeaturePrint: {
+      mutable_visionfeatureprint()->::CoreML::Specification::CoreMLModels::VisionFeaturePrint::MergeFrom(from.visionfeatureprint());
       break;
     }
     case TYPE_NOT_SET: {
       break;
     }
-  }
-  if (from.specificationversion() != 0) {
-    set_specificationversion(from.specificationversion());
-  }
-  if (from.has_description()) {
-    mutable_description()->::CoreML::Specification::ModelDescription::MergeFrom(from.description());
   }
 }
 
@@ -3534,11 +3767,10 @@ void Model::CopyFrom(const Model& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.Model)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool Model::IsInitialized() const {
-
   return true;
 }
 
@@ -3547,11 +3779,10 @@ void Model::Swap(Model* other) {
   InternalSwap(other);
 }
 void Model::InternalSwap(Model* other) {
-  std::swap(specificationversion_, other->specificationversion_);
   std::swap(description_, other->description_);
+  std::swap(specificationversion_, other->specificationversion_);
   std::swap(Type_, other->Type_);
   std::swap(_oneof_case_[0], other->_oneof_case_[0]);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -3562,7 +3793,7 @@ void Model::InternalSwap(Model* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // Model
 
-// optional int32 specificationVersion = 1;
+// int32 specificationVersion = 1;
 void Model::clear_specificationversion() {
   specificationversion_ = 0;
 }
@@ -3576,7 +3807,7 @@ void Model::set_specificationversion(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:CoreML.Specification.Model.specificationVersion)
 }
 
-// optional .CoreML.Specification.ModelDescription description = 2;
+// .CoreML.Specification.ModelDescription description = 2;
 bool Model::has_description() const {
   return this != internal_default_instance() && description_ != NULL;
 }
@@ -3615,7 +3846,7 @@ void Model::set_allocated_description(::CoreML::Specification::ModelDescription*
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.description)
 }
 
-// optional .CoreML.Specification.PipelineClassifier pipelineClassifier = 200;
+// .CoreML.Specification.PipelineClassifier pipelineClassifier = 200;
 bool Model::has_pipelineclassifier() const {
   return Type_case() == kPipelineClassifier;
 }
@@ -3663,7 +3894,7 @@ void Model::set_allocated_pipelineclassifier(::CoreML::Specification::PipelineCl
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.pipelineClassifier)
 }
 
-// optional .CoreML.Specification.PipelineRegressor pipelineRegressor = 201;
+// .CoreML.Specification.PipelineRegressor pipelineRegressor = 201;
 bool Model::has_pipelineregressor() const {
   return Type_case() == kPipelineRegressor;
 }
@@ -3711,7 +3942,7 @@ void Model::set_allocated_pipelineregressor(::CoreML::Specification::PipelineReg
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.pipelineRegressor)
 }
 
-// optional .CoreML.Specification.Pipeline pipeline = 202;
+// .CoreML.Specification.Pipeline pipeline = 202;
 bool Model::has_pipeline() const {
   return Type_case() == kPipeline;
 }
@@ -3759,7 +3990,7 @@ void Model::set_allocated_pipeline(::CoreML::Specification::Pipeline* pipeline) 
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.pipeline)
 }
 
-// optional .CoreML.Specification.GLMRegressor glmRegressor = 300;
+// .CoreML.Specification.GLMRegressor glmRegressor = 300;
 bool Model::has_glmregressor() const {
   return Type_case() == kGlmRegressor;
 }
@@ -3807,7 +4038,7 @@ void Model::set_allocated_glmregressor(::CoreML::Specification::GLMRegressor* gl
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.glmRegressor)
 }
 
-// optional .CoreML.Specification.SupportVectorRegressor supportVectorRegressor = 301;
+// .CoreML.Specification.SupportVectorRegressor supportVectorRegressor = 301;
 bool Model::has_supportvectorregressor() const {
   return Type_case() == kSupportVectorRegressor;
 }
@@ -3855,7 +4086,7 @@ void Model::set_allocated_supportvectorregressor(::CoreML::Specification::Suppor
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.supportVectorRegressor)
 }
 
-// optional .CoreML.Specification.TreeEnsembleRegressor treeEnsembleRegressor = 302;
+// .CoreML.Specification.TreeEnsembleRegressor treeEnsembleRegressor = 302;
 bool Model::has_treeensembleregressor() const {
   return Type_case() == kTreeEnsembleRegressor;
 }
@@ -3903,7 +4134,7 @@ void Model::set_allocated_treeensembleregressor(::CoreML::Specification::TreeEns
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.treeEnsembleRegressor)
 }
 
-// optional .CoreML.Specification.NeuralNetworkRegressor neuralNetworkRegressor = 303;
+// .CoreML.Specification.NeuralNetworkRegressor neuralNetworkRegressor = 303;
 bool Model::has_neuralnetworkregressor() const {
   return Type_case() == kNeuralNetworkRegressor;
 }
@@ -3951,7 +4182,55 @@ void Model::set_allocated_neuralnetworkregressor(::CoreML::Specification::Neural
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.neuralNetworkRegressor)
 }
 
-// optional .CoreML.Specification.GLMClassifier glmClassifier = 400;
+// .CoreML.Specification.BayesianProbitRegressor bayesianProbitRegressor = 304;
+bool Model::has_bayesianprobitregressor() const {
+  return Type_case() == kBayesianProbitRegressor;
+}
+void Model::set_has_bayesianprobitregressor() {
+  _oneof_case_[0] = kBayesianProbitRegressor;
+}
+void Model::clear_bayesianprobitregressor() {
+  if (has_bayesianprobitregressor()) {
+    delete Type_.bayesianprobitregressor_;
+    clear_has_Type();
+  }
+}
+ const ::CoreML::Specification::BayesianProbitRegressor& Model::bayesianprobitregressor() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.Model.bayesianProbitRegressor)
+  return has_bayesianprobitregressor()
+      ? *Type_.bayesianprobitregressor_
+      : ::CoreML::Specification::BayesianProbitRegressor::default_instance();
+}
+::CoreML::Specification::BayesianProbitRegressor* Model::mutable_bayesianprobitregressor() {
+  if (!has_bayesianprobitregressor()) {
+    clear_Type();
+    set_has_bayesianprobitregressor();
+    Type_.bayesianprobitregressor_ = new ::CoreML::Specification::BayesianProbitRegressor;
+  }
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.Model.bayesianProbitRegressor)
+  return Type_.bayesianprobitregressor_;
+}
+::CoreML::Specification::BayesianProbitRegressor* Model::release_bayesianprobitregressor() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.Model.bayesianProbitRegressor)
+  if (has_bayesianprobitregressor()) {
+    clear_has_Type();
+    ::CoreML::Specification::BayesianProbitRegressor* temp = Type_.bayesianprobitregressor_;
+    Type_.bayesianprobitregressor_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void Model::set_allocated_bayesianprobitregressor(::CoreML::Specification::BayesianProbitRegressor* bayesianprobitregressor) {
+  clear_Type();
+  if (bayesianprobitregressor) {
+    set_has_bayesianprobitregressor();
+    Type_.bayesianprobitregressor_ = bayesianprobitregressor;
+  }
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.bayesianProbitRegressor)
+}
+
+// .CoreML.Specification.GLMClassifier glmClassifier = 400;
 bool Model::has_glmclassifier() const {
   return Type_case() == kGlmClassifier;
 }
@@ -3999,7 +4278,7 @@ void Model::set_allocated_glmclassifier(::CoreML::Specification::GLMClassifier* 
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.glmClassifier)
 }
 
-// optional .CoreML.Specification.SupportVectorClassifier supportVectorClassifier = 401;
+// .CoreML.Specification.SupportVectorClassifier supportVectorClassifier = 401;
 bool Model::has_supportvectorclassifier() const {
   return Type_case() == kSupportVectorClassifier;
 }
@@ -4047,7 +4326,7 @@ void Model::set_allocated_supportvectorclassifier(::CoreML::Specification::Suppo
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.supportVectorClassifier)
 }
 
-// optional .CoreML.Specification.TreeEnsembleClassifier treeEnsembleClassifier = 402;
+// .CoreML.Specification.TreeEnsembleClassifier treeEnsembleClassifier = 402;
 bool Model::has_treeensembleclassifier() const {
   return Type_case() == kTreeEnsembleClassifier;
 }
@@ -4095,7 +4374,7 @@ void Model::set_allocated_treeensembleclassifier(::CoreML::Specification::TreeEn
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.treeEnsembleClassifier)
 }
 
-// optional .CoreML.Specification.NeuralNetworkClassifier neuralNetworkClassifier = 403;
+// .CoreML.Specification.NeuralNetworkClassifier neuralNetworkClassifier = 403;
 bool Model::has_neuralnetworkclassifier() const {
   return Type_case() == kNeuralNetworkClassifier;
 }
@@ -4143,7 +4422,7 @@ void Model::set_allocated_neuralnetworkclassifier(::CoreML::Specification::Neura
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.neuralNetworkClassifier)
 }
 
-// optional .CoreML.Specification.NeuralNetwork neuralNetwork = 500;
+// .CoreML.Specification.NeuralNetwork neuralNetwork = 500;
 bool Model::has_neuralnetwork() const {
   return Type_case() == kNeuralNetwork;
 }
@@ -4191,7 +4470,55 @@ void Model::set_allocated_neuralnetwork(::CoreML::Specification::NeuralNetwork* 
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.neuralNetwork)
 }
 
-// optional .CoreML.Specification.OneHotEncoder oneHotEncoder = 600;
+// .CoreML.Specification.CustomModel customModel = 555;
+bool Model::has_custommodel() const {
+  return Type_case() == kCustomModel;
+}
+void Model::set_has_custommodel() {
+  _oneof_case_[0] = kCustomModel;
+}
+void Model::clear_custommodel() {
+  if (has_custommodel()) {
+    delete Type_.custommodel_;
+    clear_has_Type();
+  }
+}
+ const ::CoreML::Specification::CustomModel& Model::custommodel() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.Model.customModel)
+  return has_custommodel()
+      ? *Type_.custommodel_
+      : ::CoreML::Specification::CustomModel::default_instance();
+}
+::CoreML::Specification::CustomModel* Model::mutable_custommodel() {
+  if (!has_custommodel()) {
+    clear_Type();
+    set_has_custommodel();
+    Type_.custommodel_ = new ::CoreML::Specification::CustomModel;
+  }
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.Model.customModel)
+  return Type_.custommodel_;
+}
+::CoreML::Specification::CustomModel* Model::release_custommodel() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.Model.customModel)
+  if (has_custommodel()) {
+    clear_has_Type();
+    ::CoreML::Specification::CustomModel* temp = Type_.custommodel_;
+    Type_.custommodel_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void Model::set_allocated_custommodel(::CoreML::Specification::CustomModel* custommodel) {
+  clear_Type();
+  if (custommodel) {
+    set_has_custommodel();
+    Type_.custommodel_ = custommodel;
+  }
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.customModel)
+}
+
+// .CoreML.Specification.OneHotEncoder oneHotEncoder = 600;
 bool Model::has_onehotencoder() const {
   return Type_case() == kOneHotEncoder;
 }
@@ -4239,7 +4566,7 @@ void Model::set_allocated_onehotencoder(::CoreML::Specification::OneHotEncoder* 
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.oneHotEncoder)
 }
 
-// optional .CoreML.Specification.Imputer imputer = 601;
+// .CoreML.Specification.Imputer imputer = 601;
 bool Model::has_imputer() const {
   return Type_case() == kImputer;
 }
@@ -4287,7 +4614,7 @@ void Model::set_allocated_imputer(::CoreML::Specification::Imputer* imputer) {
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.imputer)
 }
 
-// optional .CoreML.Specification.FeatureVectorizer featureVectorizer = 602;
+// .CoreML.Specification.FeatureVectorizer featureVectorizer = 602;
 bool Model::has_featurevectorizer() const {
   return Type_case() == kFeatureVectorizer;
 }
@@ -4335,7 +4662,7 @@ void Model::set_allocated_featurevectorizer(::CoreML::Specification::FeatureVect
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.featureVectorizer)
 }
 
-// optional .CoreML.Specification.DictVectorizer dictVectorizer = 603;
+// .CoreML.Specification.DictVectorizer dictVectorizer = 603;
 bool Model::has_dictvectorizer() const {
   return Type_case() == kDictVectorizer;
 }
@@ -4383,7 +4710,7 @@ void Model::set_allocated_dictvectorizer(::CoreML::Specification::DictVectorizer
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.dictVectorizer)
 }
 
-// optional .CoreML.Specification.Scaler scaler = 604;
+// .CoreML.Specification.Scaler scaler = 604;
 bool Model::has_scaler() const {
   return Type_case() == kScaler;
 }
@@ -4431,7 +4758,7 @@ void Model::set_allocated_scaler(::CoreML::Specification::Scaler* scaler) {
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.scaler)
 }
 
-// optional .CoreML.Specification.CategoricalMapping categoricalMapping = 606;
+// .CoreML.Specification.CategoricalMapping categoricalMapping = 606;
 bool Model::has_categoricalmapping() const {
   return Type_case() == kCategoricalMapping;
 }
@@ -4479,7 +4806,7 @@ void Model::set_allocated_categoricalmapping(::CoreML::Specification::Categorica
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.categoricalMapping)
 }
 
-// optional .CoreML.Specification.Normalizer normalizer = 607;
+// .CoreML.Specification.Normalizer normalizer = 607;
 bool Model::has_normalizer() const {
   return Type_case() == kNormalizer;
 }
@@ -4527,7 +4854,7 @@ void Model::set_allocated_normalizer(::CoreML::Specification::Normalizer* normal
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.normalizer)
 }
 
-// optional .CoreML.Specification.ArrayFeatureExtractor arrayFeatureExtractor = 609;
+// .CoreML.Specification.ArrayFeatureExtractor arrayFeatureExtractor = 609;
 bool Model::has_arrayfeatureextractor() const {
   return Type_case() == kArrayFeatureExtractor;
 }
@@ -4575,7 +4902,55 @@ void Model::set_allocated_arrayfeatureextractor(::CoreML::Specification::ArrayFe
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.arrayFeatureExtractor)
 }
 
-// optional .CoreML.Specification.Identity identity = 900;
+// .CoreML.Specification.NonMaximumSuppression nonMaximumSuppression = 610;
+bool Model::has_nonmaximumsuppression() const {
+  return Type_case() == kNonMaximumSuppression;
+}
+void Model::set_has_nonmaximumsuppression() {
+  _oneof_case_[0] = kNonMaximumSuppression;
+}
+void Model::clear_nonmaximumsuppression() {
+  if (has_nonmaximumsuppression()) {
+    delete Type_.nonmaximumsuppression_;
+    clear_has_Type();
+  }
+}
+ const ::CoreML::Specification::NonMaximumSuppression& Model::nonmaximumsuppression() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.Model.nonMaximumSuppression)
+  return has_nonmaximumsuppression()
+      ? *Type_.nonmaximumsuppression_
+      : ::CoreML::Specification::NonMaximumSuppression::default_instance();
+}
+::CoreML::Specification::NonMaximumSuppression* Model::mutable_nonmaximumsuppression() {
+  if (!has_nonmaximumsuppression()) {
+    clear_Type();
+    set_has_nonmaximumsuppression();
+    Type_.nonmaximumsuppression_ = new ::CoreML::Specification::NonMaximumSuppression;
+  }
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.Model.nonMaximumSuppression)
+  return Type_.nonmaximumsuppression_;
+}
+::CoreML::Specification::NonMaximumSuppression* Model::release_nonmaximumsuppression() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.Model.nonMaximumSuppression)
+  if (has_nonmaximumsuppression()) {
+    clear_has_Type();
+    ::CoreML::Specification::NonMaximumSuppression* temp = Type_.nonmaximumsuppression_;
+    Type_.nonmaximumsuppression_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void Model::set_allocated_nonmaximumsuppression(::CoreML::Specification::NonMaximumSuppression* nonmaximumsuppression) {
+  clear_Type();
+  if (nonmaximumsuppression) {
+    set_has_nonmaximumsuppression();
+    Type_.nonmaximumsuppression_ = nonmaximumsuppression;
+  }
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.nonMaximumSuppression)
+}
+
+// .CoreML.Specification.Identity identity = 900;
 bool Model::has_identity() const {
   return Type_case() == kIdentity;
 }
@@ -4623,6 +4998,150 @@ void Model::set_allocated_identity(::CoreML::Specification::Identity* identity) 
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.identity)
 }
 
+// .CoreML.Specification.CoreMLModels.TextClassifier textClassifier = 2000;
+bool Model::has_textclassifier() const {
+  return Type_case() == kTextClassifier;
+}
+void Model::set_has_textclassifier() {
+  _oneof_case_[0] = kTextClassifier;
+}
+void Model::clear_textclassifier() {
+  if (has_textclassifier()) {
+    delete Type_.textclassifier_;
+    clear_has_Type();
+  }
+}
+ const ::CoreML::Specification::CoreMLModels::TextClassifier& Model::textclassifier() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.Model.textClassifier)
+  return has_textclassifier()
+      ? *Type_.textclassifier_
+      : ::CoreML::Specification::CoreMLModels::TextClassifier::default_instance();
+}
+::CoreML::Specification::CoreMLModels::TextClassifier* Model::mutable_textclassifier() {
+  if (!has_textclassifier()) {
+    clear_Type();
+    set_has_textclassifier();
+    Type_.textclassifier_ = new ::CoreML::Specification::CoreMLModels::TextClassifier;
+  }
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.Model.textClassifier)
+  return Type_.textclassifier_;
+}
+::CoreML::Specification::CoreMLModels::TextClassifier* Model::release_textclassifier() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.Model.textClassifier)
+  if (has_textclassifier()) {
+    clear_has_Type();
+    ::CoreML::Specification::CoreMLModels::TextClassifier* temp = Type_.textclassifier_;
+    Type_.textclassifier_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void Model::set_allocated_textclassifier(::CoreML::Specification::CoreMLModels::TextClassifier* textclassifier) {
+  clear_Type();
+  if (textclassifier) {
+    set_has_textclassifier();
+    Type_.textclassifier_ = textclassifier;
+  }
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.textClassifier)
+}
+
+// .CoreML.Specification.CoreMLModels.WordTagger wordTagger = 2001;
+bool Model::has_wordtagger() const {
+  return Type_case() == kWordTagger;
+}
+void Model::set_has_wordtagger() {
+  _oneof_case_[0] = kWordTagger;
+}
+void Model::clear_wordtagger() {
+  if (has_wordtagger()) {
+    delete Type_.wordtagger_;
+    clear_has_Type();
+  }
+}
+ const ::CoreML::Specification::CoreMLModels::WordTagger& Model::wordtagger() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.Model.wordTagger)
+  return has_wordtagger()
+      ? *Type_.wordtagger_
+      : ::CoreML::Specification::CoreMLModels::WordTagger::default_instance();
+}
+::CoreML::Specification::CoreMLModels::WordTagger* Model::mutable_wordtagger() {
+  if (!has_wordtagger()) {
+    clear_Type();
+    set_has_wordtagger();
+    Type_.wordtagger_ = new ::CoreML::Specification::CoreMLModels::WordTagger;
+  }
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.Model.wordTagger)
+  return Type_.wordtagger_;
+}
+::CoreML::Specification::CoreMLModels::WordTagger* Model::release_wordtagger() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.Model.wordTagger)
+  if (has_wordtagger()) {
+    clear_has_Type();
+    ::CoreML::Specification::CoreMLModels::WordTagger* temp = Type_.wordtagger_;
+    Type_.wordtagger_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void Model::set_allocated_wordtagger(::CoreML::Specification::CoreMLModels::WordTagger* wordtagger) {
+  clear_Type();
+  if (wordtagger) {
+    set_has_wordtagger();
+    Type_.wordtagger_ = wordtagger;
+  }
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.wordTagger)
+}
+
+// .CoreML.Specification.CoreMLModels.VisionFeaturePrint visionFeaturePrint = 2002;
+bool Model::has_visionfeatureprint() const {
+  return Type_case() == kVisionFeaturePrint;
+}
+void Model::set_has_visionfeatureprint() {
+  _oneof_case_[0] = kVisionFeaturePrint;
+}
+void Model::clear_visionfeatureprint() {
+  if (has_visionfeatureprint()) {
+    delete Type_.visionfeatureprint_;
+    clear_has_Type();
+  }
+}
+ const ::CoreML::Specification::CoreMLModels::VisionFeaturePrint& Model::visionfeatureprint() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.Model.visionFeaturePrint)
+  return has_visionfeatureprint()
+      ? *Type_.visionfeatureprint_
+      : ::CoreML::Specification::CoreMLModels::VisionFeaturePrint::default_instance();
+}
+::CoreML::Specification::CoreMLModels::VisionFeaturePrint* Model::mutable_visionfeatureprint() {
+  if (!has_visionfeatureprint()) {
+    clear_Type();
+    set_has_visionfeatureprint();
+    Type_.visionfeatureprint_ = new ::CoreML::Specification::CoreMLModels::VisionFeaturePrint;
+  }
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.Model.visionFeaturePrint)
+  return Type_.visionfeatureprint_;
+}
+::CoreML::Specification::CoreMLModels::VisionFeaturePrint* Model::release_visionfeatureprint() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.Model.visionFeaturePrint)
+  if (has_visionfeatureprint()) {
+    clear_has_Type();
+    ::CoreML::Specification::CoreMLModels::VisionFeaturePrint* temp = Type_.visionfeatureprint_;
+    Type_.visionfeatureprint_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void Model::set_allocated_visionfeatureprint(::CoreML::Specification::CoreMLModels::VisionFeaturePrint* visionfeatureprint) {
+  clear_Type();
+  if (visionfeatureprint) {
+    set_has_visionfeatureprint();
+    Type_.visionfeatureprint_ = visionfeatureprint;
+  }
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.visionFeaturePrint)
+}
+
 bool Model::has_Type() const {
   return Type_case() != TYPE_NOT_SET;
 }
@@ -4631,9 +5150,6 @@ void Model::clear_has_Type() {
 }
 Model::TypeCase Model::Type_case() const {
   return Model::TypeCase(_oneof_case_[0]);
-}
-inline const Model* Model::internal_default_instance() {
-  return &Model_default_instance_.get();
 }
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 

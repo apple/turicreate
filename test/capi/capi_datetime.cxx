@@ -1,8 +1,9 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
+/* Copyright © 2018 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
 #define BOOST_TEST_MODULE capi_datetime
 
 #include <boost/test/unit_test.hpp>
@@ -10,6 +11,7 @@
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <flexible_type/flexible_type.hpp>
 #include <util/test_macros.hpp>
+#include "boost_utils.hpp"
 
 BOOST_AUTO_TEST_CASE(test_tc_datetime_create_empty) {
   tc_error* error = nullptr;

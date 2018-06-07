@@ -102,6 +102,11 @@ class recsys_factorization_model : public recsys_factorization_model_base {
    // TODO: convert interface above to use the extensions methods here
   BEGIN_CLASS_MEMBER_REGISTRATION("factorization_recommender")
   REGISTER_CLASS_MEMBER_FUNCTION(recsys_factorization_model::list_fields)
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+      "get_value", recsys_factorization_model::get_value_from_state, "field");
+  REGISTER_CLASS_MEMBER_FUNCTION(
+    recsys_factorization_model::recommend_extension_wrapper, 
+    "reference_data", "new_observation_data", "top_k")
   END_CLASS_MEMBER_REGISTRATION
 };
 
@@ -119,6 +124,11 @@ class recsys_ranking_factorization_model : public recsys_factorization_model_bas
    // TODO: convert interface above to use the extensions methods here
   BEGIN_CLASS_MEMBER_REGISTRATION("ranking_factorization_recommender")
   REGISTER_CLASS_MEMBER_FUNCTION(recsys_ranking_factorization_model::list_fields)
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+      "get_value", recsys_ranking_factorization_model::get_value_from_state, "field");
+  REGISTER_CLASS_MEMBER_FUNCTION(
+    recsys_ranking_factorization_model::recommend_extension_wrapper, 
+    "reference_data", "new_observation_data", "top_k")
   END_CLASS_MEMBER_REGISTRATION
 
 };

@@ -172,6 +172,13 @@ class sarray_group_format_writer {
                     size_t columns_to_create) = 0;
 
   /**
+   * Set write options.
+   * Available options are 
+   * "disable_padding" = true or false
+   */
+  virtual void set_options(const std::string& option, int64_t value) = 0;
+
+  /**
    * Gets a modifiable reference to the index file information which will 
    * be written to the index file. Can only be called after close()
    */

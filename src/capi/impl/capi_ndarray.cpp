@@ -106,7 +106,7 @@ EXPORT const uint64_t* tc_ndarray_shape(const tc_ndarray* ndv, tc_error** error)
 
   CHECK_NOT_NULL(error, ndv, "tc_ndarray", NULL);
 
-  static_assert(sizeof(size_t) == sizeof(uint64_t));
+  static_assert(sizeof(size_t) == sizeof(uint64_t), "Size mismatch; size_t is not 64 bits.");
 
   return reinterpret_cast<const uint64_t*>(ndv->value.shape().data());
 
@@ -135,6 +135,23 @@ EXPORT const double* tc_ndarray_data(const tc_ndarray* ndv, tc_error** error) {
   if(ndv->value.empty()) {
     return nullptr;
   } else {
+    return &(ndv->value.at(0));
+  }
+
+  ERROR_HANDLE_END(error, NULL);
+}
+
+EXPORT double* tc_ndarray_writable_data(tc_ndarray* ndv, tc_error** error) {
+
+  ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
+
+  CHECK_NOT_NULL(error, ndv, "tc_ndarray", NULL);
+
+  if(ndv->value.empty()) {
+    return nullptr;
+  } else {
+    ndv->value.ensure_unique();
     return &(ndv->value.at(0));
   }
 

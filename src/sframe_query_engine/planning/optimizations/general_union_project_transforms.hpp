@@ -239,6 +239,8 @@ class opt_project_add_direct_source_tags : public opt_transform {
     new_pnode->any_operator_parameters["direct_source_mapping"] = input_mapping;
     
     opt_manager->replace_node(n, new_pnode);
+
+    return true; 
   }
 };
 

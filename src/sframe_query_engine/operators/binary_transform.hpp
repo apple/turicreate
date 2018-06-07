@@ -47,7 +47,6 @@ class operator_impl<planner_node_type::BINARY_TRANSFORM_NODE> : public query_ope
   inline operator_impl(const binary_transform_type& f,
                        flex_type_enum output_type)
       : m_transform_fn(f)
-      , m_output_type(output_type)
   { }
 
   inline std::shared_ptr<query_operator> clone() const {
@@ -119,7 +118,6 @@ class operator_impl<planner_node_type::BINARY_TRANSFORM_NODE> : public query_ope
   
  private:
    binary_transform_type m_transform_fn;
-   flex_type_enum m_output_type;
 };
 
 typedef operator_impl<planner_node_type::BINARY_TRANSFORM_NODE> op_binary_transform;

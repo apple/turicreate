@@ -173,7 +173,7 @@ EXPORT double tc_datetime_get_highres_timestamp(
 }
 
 // Returns nonzero if the time dt1 is before the time dt2
-EXPORT int tc_datetime_less_than(
+EXPORT bool tc_datetime_less_than(
       const tc_datetime* dt1, const tc_datetime* dt2, tc_error** error) {
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
@@ -187,7 +187,7 @@ EXPORT int tc_datetime_less_than(
 }
 
 // Returns nonzero if the time dt1 is equal to the time dt2
-EXPORT int tc_datetime_equal(
+EXPORT bool tc_datetime_equal(
       const tc_datetime* dt1, const tc_datetime* dt2, tc_error** error) {
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();

@@ -29,7 +29,7 @@ def _BOW_FEATURE_EXTRACTOR(sf, target=None):
             out[f] = _tc.text_analytics.count_words(out[f])
     return out
 
-def create(dataset, target, features=None, method='auto', validation_set='auto'):
+def create(dataset, target, features=None, method='auto', validation_set='auto', max_iterations=10):
     """
     Create a model that trains a classifier to classify sentences from a
     collection of documents. The model is a
@@ -63,6 +63,12 @@ def create(dataset, target, features=None, method='auto', validation_set='auto')
       automatically sampled and used for progress printing. If
       validation_set is set to None, then no additional metrics
       are computed. The default value is 'auto'.
+
+    max_iterations : int, optional
+      The maximum number of allowed passes through the data. More passes over
+      the data can result in a more accurately trained model. Consider
+      increasing this (the default value is 10) if the training accuracy is
+      low and the *Grad-Norm* in the display is large.
 
     Returns
     -------
@@ -108,6 +114,7 @@ def create(dataset, target, features=None, method='auto', validation_set='auto')
                                        target=target,
                                        features=features,
                                        l2_penalty=.2,
+                                       max_iterations=max_iterations,
                                        validation_set=validation_set)
     num_examples = len(dataset)
     model = SentenceClassifier()

@@ -6,68 +6,75 @@
 
 #include <algorithm>
 
-#include <protobuf/stubs/common.h>
-#include <protobuf/stubs/port.h>
-#include <protobuf/stubs/once.h>
-#include <protobuf/io/coded_stream.h>
-#include <protobuf/wire_format_lite_inl.h>
-#include <protobuf/io/zero_copy_stream_impl_lite.h>
+#include <google/protobuf/stubs/common.h>
+#include <google/protobuf/stubs/port.h>
+#include <google/protobuf/stubs/once.h>
+#include <google/protobuf/io/coded_stream.h>
+#include <google/protobuf/wire_format_lite_inl.h>
+#include <google/protobuf/io/zero_copy_stream_impl_lite.h>
 // @@protoc_insertion_point(includes)
 
 namespace CoreML {
 namespace Specification {
+class GLMRegressor_DoubleArrayDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<GLMRegressor_DoubleArray> {
+} _GLMRegressor_DoubleArray_default_instance_;
+class GLMRegressorDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<GLMRegressor> {
+} _GLMRegressor_default_instance_;
 
-void protobuf_ShutdownFile_GLMRegressor_2eproto() {
-  GLMRegressor_default_instance_.Shutdown();
-  GLMRegressor_DoubleArray_default_instance_.Shutdown();
+namespace protobuf_GLMRegressor_2eproto {
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTableField
+    const TableStruct::entries[] = {
+  {0, 0, 0, ::google::protobuf::internal::kInvalidMask, 0, 0},
+};
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::AuxillaryParseTableField
+    const TableStruct::aux[] = {
+  ::google::protobuf::internal::AuxillaryParseTableField(),
+};
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTable const
+    TableStruct::schema[] = {
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+};
+
+
+void TableStruct::Shutdown() {
+  _GLMRegressor_DoubleArray_default_instance_.Shutdown();
+  _GLMRegressor_default_instance_.Shutdown();
 }
 
-void protobuf_InitDefaults_GLMRegressor_2eproto_impl() {
+void TableStruct::InitDefaultsImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  GLMRegressor_default_instance_.DefaultConstruct();
-  GLMRegressor_DoubleArray_default_instance_.DefaultConstruct();
-  GLMRegressor_default_instance_.get_mutable()->InitAsDefaultInstance();
-  GLMRegressor_DoubleArray_default_instance_.get_mutable()->InitAsDefaultInstance();
+  ::google::protobuf::internal::InitProtobufDefaults();
+  _GLMRegressor_DoubleArray_default_instance_.DefaultConstruct();
+  _GLMRegressor_default_instance_.DefaultConstruct();
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_InitDefaults_GLMRegressor_2eproto_once_);
-void protobuf_InitDefaults_GLMRegressor_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_InitDefaults_GLMRegressor_2eproto_once_,
-                 &protobuf_InitDefaults_GLMRegressor_2eproto_impl);
+void InitDefaults() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &TableStruct::InitDefaultsImpl);
 }
-void protobuf_AddDesc_GLMRegressor_2eproto_impl() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  protobuf_InitDefaults_GLMRegressor_2eproto();
-  ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_GLMRegressor_2eproto);
+void AddDescriptorsImpl() {
+  InitDefaults();
+  ::google::protobuf::internal::OnShutdown(&TableStruct::Shutdown);
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_AddDesc_GLMRegressor_2eproto_once_);
-void protobuf_AddDesc_GLMRegressor_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_AddDesc_GLMRegressor_2eproto_once_,
-                 &protobuf_AddDesc_GLMRegressor_2eproto_impl);
+void AddDescriptors() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &AddDescriptorsImpl);
 }
 #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 // Force AddDescriptors() to be called at static initialization time.
-struct StaticDescriptorInitializer_GLMRegressor_2eproto {
-  StaticDescriptorInitializer_GLMRegressor_2eproto() {
-    protobuf_AddDesc_GLMRegressor_2eproto();
+struct StaticDescriptorInitializer {
+  StaticDescriptorInitializer() {
+    AddDescriptors();
   }
-} static_descriptor_initializer_GLMRegressor_2eproto_;
+} static_descriptor_initializer;
 #endif  // GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 
-namespace {
-
-static void MergeFromFail(int line) GOOGLE_ATTRIBUTE_COLD GOOGLE_ATTRIBUTE_NORETURN;
-static void MergeFromFail(int line) {
-  ::google::protobuf::internal::MergeFromFail(__FILE__, line);
-}
-
-}  // namespace
-
-
-// ===================================================================
+}  // namespace protobuf_GLMRegressor_2eproto
 
 bool GLMRegressor_PostEvaluationTransform_IsValid(int value) {
   switch (value) {
@@ -88,25 +95,27 @@ const GLMRegressor_PostEvaluationTransform GLMRegressor::PostEvaluationTransform
 const GLMRegressor_PostEvaluationTransform GLMRegressor::PostEvaluationTransform_MAX;
 const int GLMRegressor::PostEvaluationTransform_ARRAYSIZE;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+// ===================================================================
+
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int GLMRegressor_DoubleArray::kValueFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 GLMRegressor_DoubleArray::GLMRegressor_DoubleArray()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_GLMRegressor_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_GLMRegressor_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.GLMRegressor.DoubleArray)
 }
-
-void GLMRegressor_DoubleArray::InitAsDefaultInstance() {
-}
-
 GLMRegressor_DoubleArray::GLMRegressor_DoubleArray(const GLMRegressor_DoubleArray& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      value_(from.value_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.GLMRegressor.DoubleArray)
 }
 
@@ -128,11 +137,9 @@ void GLMRegressor_DoubleArray::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const GLMRegressor_DoubleArray& GLMRegressor_DoubleArray::default_instance() {
-  protobuf_InitDefaults_GLMRegressor_2eproto();
+  protobuf_GLMRegressor_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<GLMRegressor_DoubleArray> GLMRegressor_DoubleArray_default_instance_;
 
 GLMRegressor_DoubleArray* GLMRegressor_DoubleArray::New(::google::protobuf::Arena* arena) const {
   GLMRegressor_DoubleArray* n = new GLMRegressor_DoubleArray;
@@ -153,24 +160,25 @@ bool GLMRegressor_DoubleArray::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.GLMRegressor.DoubleArray)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // repeated double value = 1;
       case 1: {
-        if (tag == 10) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
                  input, this->mutable_value())));
-        } else if (tag == 9) {
+        } else if (static_cast< ::google::protobuf::uint8>(tag) ==
+                   static_cast< ::google::protobuf::uint8>(9u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 1, 10, input, this->mutable_value())));
+                 1, 10u, input, this->mutable_value())));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -198,14 +206,15 @@ failure:
 void GLMRegressor_DoubleArray::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.GLMRegressor.DoubleArray)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
   // repeated double value = 1;
   if (this->value_size() > 0) {
     ::google::protobuf::internal::WireFormatLite::WriteTag(1, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
     output->WriteVarint32(_value_cached_byte_size_);
-  }
-  for (int i = 0; i < this->value_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteDoubleNoTag(
-      this->value(i), output);
+    ::google::protobuf::internal::WireFormatLite::WriteDoubleArray(
+      this->value().data(), this->value_size(), output);
   }
 
   // @@protoc_insertion_point(serialize_end:CoreML.Specification.GLMRegressor.DoubleArray)
@@ -217,9 +226,8 @@ size_t GLMRegressor_DoubleArray::ByteSizeLong() const {
 
   // repeated double value = 1;
   {
-    size_t data_size = 0;
     unsigned int count = this->value_size();
-    data_size = 8UL * count;
+    size_t data_size = 8UL * count;
     if (data_size > 0) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
@@ -245,27 +253,22 @@ void GLMRegressor_DoubleArray::CheckTypeAndMergeFrom(
 
 void GLMRegressor_DoubleArray::MergeFrom(const GLMRegressor_DoubleArray& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.GLMRegressor.DoubleArray)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void GLMRegressor_DoubleArray::UnsafeMergeFrom(const GLMRegressor_DoubleArray& from) {
-  GOOGLE_DCHECK(&from != this);
-  value_.UnsafeMergeFrom(from.value_);
+  value_.MergeFrom(from.value_);
 }
 
 void GLMRegressor_DoubleArray::CopyFrom(const GLMRegressor_DoubleArray& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.GLMRegressor.DoubleArray)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool GLMRegressor_DoubleArray::IsInitialized() const {
-
   return true;
 }
 
@@ -274,284 +277,12 @@ void GLMRegressor_DoubleArray::Swap(GLMRegressor_DoubleArray* other) {
   InternalSwap(other);
 }
 void GLMRegressor_DoubleArray::InternalSwap(GLMRegressor_DoubleArray* other) {
-  value_.UnsafeArenaSwap(&other->value_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
+  value_.InternalSwap(&other->value_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
 ::std::string GLMRegressor_DoubleArray::GetTypeName() const {
   return "CoreML.Specification.GLMRegressor.DoubleArray";
-}
-
-
-// -------------------------------------------------------------------
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int GLMRegressor::kWeightsFieldNumber;
-const int GLMRegressor::kOffsetFieldNumber;
-const int GLMRegressor::kPostEvaluationTransformFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-GLMRegressor::GLMRegressor()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_GLMRegressor_2eproto();
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:CoreML.Specification.GLMRegressor)
-}
-
-void GLMRegressor::InitAsDefaultInstance() {
-}
-
-GLMRegressor::GLMRegressor(const GLMRegressor& from)
-  : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:CoreML.Specification.GLMRegressor)
-}
-
-void GLMRegressor::SharedCtor() {
-  postevaluationtransform_ = 0;
-  _cached_size_ = 0;
-}
-
-GLMRegressor::~GLMRegressor() {
-  // @@protoc_insertion_point(destructor:CoreML.Specification.GLMRegressor)
-  SharedDtor();
-}
-
-void GLMRegressor::SharedDtor() {
-}
-
-void GLMRegressor::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const GLMRegressor& GLMRegressor::default_instance() {
-  protobuf_InitDefaults_GLMRegressor_2eproto();
-  return *internal_default_instance();
-}
-
-::google::protobuf::internal::ExplicitlyConstructed<GLMRegressor> GLMRegressor_default_instance_;
-
-GLMRegressor* GLMRegressor::New(::google::protobuf::Arena* arena) const {
-  GLMRegressor* n = new GLMRegressor;
-  if (arena != NULL) {
-    arena->Own(n);
-  }
-  return n;
-}
-
-void GLMRegressor::Clear() {
-// @@protoc_insertion_point(message_clear_start:CoreML.Specification.GLMRegressor)
-  postevaluationtransform_ = 0;
-  weights_.Clear();
-  offset_.Clear();
-}
-
-bool GLMRegressor::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:CoreML.Specification.GLMRegressor)
-  for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated .CoreML.Specification.GLMRegressor.DoubleArray weights = 1;
-      case 1: {
-        if (tag == 10) {
-          DO_(input->IncrementRecursionDepth());
-         parse_loop_weights:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
-                input, add_weights()));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(10)) goto parse_loop_weights;
-        input->UnsafeDecrementRecursionDepth();
-        if (input->ExpectTag(18)) goto parse_offset;
-        break;
-      }
-
-      // repeated double offset = 2;
-      case 2: {
-        if (tag == 18) {
-         parse_offset:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
-                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 input, this->mutable_offset())));
-        } else if (tag == 17) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
-                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 1, 18, input, this->mutable_offset())));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(24)) goto parse_postEvaluationTransform;
-        break;
-      }
-
-      // optional .CoreML.Specification.GLMRegressor.PostEvaluationTransform postEvaluationTransform = 3;
-      case 3: {
-        if (tag == 24) {
-         parse_postEvaluationTransform:
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          set_postevaluationtransform(static_cast< ::CoreML::Specification::GLMRegressor_PostEvaluationTransform >(value));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectAtEnd()) goto success;
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0 ||
-            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:CoreML.Specification.GLMRegressor)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:CoreML.Specification.GLMRegressor)
-  return false;
-#undef DO_
-}
-
-void GLMRegressor::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:CoreML.Specification.GLMRegressor)
-  // repeated .CoreML.Specification.GLMRegressor.DoubleArray weights = 1;
-  for (unsigned int i = 0, n = this->weights_size(); i < n; i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessage(
-      1, this->weights(i), output);
-  }
-
-  // repeated double offset = 2;
-  if (this->offset_size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteTag(2, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
-    output->WriteVarint32(_offset_cached_byte_size_);
-  }
-  for (int i = 0; i < this->offset_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteDoubleNoTag(
-      this->offset(i), output);
-  }
-
-  // optional .CoreML.Specification.GLMRegressor.PostEvaluationTransform postEvaluationTransform = 3;
-  if (this->postevaluationtransform() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      3, this->postevaluationtransform(), output);
-  }
-
-  // @@protoc_insertion_point(serialize_end:CoreML.Specification.GLMRegressor)
-}
-
-size_t GLMRegressor::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.GLMRegressor)
-  size_t total_size = 0;
-
-  // optional .CoreML.Specification.GLMRegressor.PostEvaluationTransform postEvaluationTransform = 3;
-  if (this->postevaluationtransform() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->postevaluationtransform());
-  }
-
-  // repeated .CoreML.Specification.GLMRegressor.DoubleArray weights = 1;
-  {
-    unsigned int count = this->weights_size();
-    total_size += 1UL * count;
-    for (unsigned int i = 0; i < count; i++) {
-      total_size +=
-        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          this->weights(i));
-    }
-  }
-
-  // repeated double offset = 2;
-  {
-    size_t data_size = 0;
-    unsigned int count = this->offset_size();
-    data_size = 8UL * count;
-    if (data_size > 0) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
-    }
-    int cached_size = ::google::protobuf::internal::ToCachedSize(data_size);
-    GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-    _offset_cached_byte_size_ = cached_size;
-    GOOGLE_SAFE_CONCURRENT_WRITES_END();
-    total_size += data_size;
-  }
-
-  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = cached_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void GLMRegressor::CheckTypeAndMergeFrom(
-    const ::google::protobuf::MessageLite& from) {
-  MergeFrom(*::google::protobuf::down_cast<const GLMRegressor*>(&from));
-}
-
-void GLMRegressor::MergeFrom(const GLMRegressor& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.GLMRegressor)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
-
-void GLMRegressor::UnsafeMergeFrom(const GLMRegressor& from) {
-  GOOGLE_DCHECK(&from != this);
-  weights_.MergeFrom(from.weights_);
-  offset_.UnsafeMergeFrom(from.offset_);
-  if (from.postevaluationtransform() != 0) {
-    set_postevaluationtransform(from.postevaluationtransform());
-  }
-}
-
-void GLMRegressor::CopyFrom(const GLMRegressor& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.GLMRegressor)
-  if (&from == this) return;
-  Clear();
-  UnsafeMergeFrom(from);
-}
-
-bool GLMRegressor::IsInitialized() const {
-
-  return true;
-}
-
-void GLMRegressor::Swap(GLMRegressor* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void GLMRegressor::InternalSwap(GLMRegressor* other) {
-  weights_.UnsafeArenaSwap(&other->weights_);
-  offset_.UnsafeArenaSwap(&other->offset_);
-  std::swap(postevaluationtransform_, other->postevaluationtransform_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
-  std::swap(_cached_size_, other->_cached_size_);
-}
-
-::std::string GLMRegressor::GetTypeName() const {
-  return "CoreML.Specification.GLMRegressor";
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -587,11 +318,267 @@ GLMRegressor_DoubleArray::mutable_value() {
   return &value_;
 }
 
-inline const GLMRegressor_DoubleArray* GLMRegressor_DoubleArray::internal_default_instance() {
-  return &GLMRegressor_DoubleArray_default_instance_.get();
-}
-// -------------------------------------------------------------------
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int GLMRegressor::kWeightsFieldNumber;
+const int GLMRegressor::kOffsetFieldNumber;
+const int GLMRegressor::kPostEvaluationTransformFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+GLMRegressor::GLMRegressor()
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_GLMRegressor_2eproto::InitDefaults();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:CoreML.Specification.GLMRegressor)
+}
+GLMRegressor::GLMRegressor(const GLMRegressor& from)
+  : ::google::protobuf::MessageLite(),
+      _internal_metadata_(NULL),
+      weights_(from.weights_),
+      offset_(from.offset_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  postevaluationtransform_ = from.postevaluationtransform_;
+  // @@protoc_insertion_point(copy_constructor:CoreML.Specification.GLMRegressor)
+}
+
+void GLMRegressor::SharedCtor() {
+  postevaluationtransform_ = 0;
+  _cached_size_ = 0;
+}
+
+GLMRegressor::~GLMRegressor() {
+  // @@protoc_insertion_point(destructor:CoreML.Specification.GLMRegressor)
+  SharedDtor();
+}
+
+void GLMRegressor::SharedDtor() {
+}
+
+void GLMRegressor::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const GLMRegressor& GLMRegressor::default_instance() {
+  protobuf_GLMRegressor_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+GLMRegressor* GLMRegressor::New(::google::protobuf::Arena* arena) const {
+  GLMRegressor* n = new GLMRegressor;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void GLMRegressor::Clear() {
+// @@protoc_insertion_point(message_clear_start:CoreML.Specification.GLMRegressor)
+  weights_.Clear();
+  offset_.Clear();
+  postevaluationtransform_ = 0;
+}
+
+bool GLMRegressor::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:CoreML.Specification.GLMRegressor)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated .CoreML.Specification.GLMRegressor.DoubleArray weights = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+                input, add_weights()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // repeated double offset = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u)) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, this->mutable_offset())));
+        } else if (static_cast< ::google::protobuf::uint8>(tag) ==
+                   static_cast< ::google::protobuf::uint8>(17u)) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 1, 18u, input, this->mutable_offset())));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .CoreML.Specification.GLMRegressor.PostEvaluationTransform postEvaluationTransform = 3;
+      case 3: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(24u)) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          set_postevaluationtransform(static_cast< ::CoreML::Specification::GLMRegressor_PostEvaluationTransform >(value));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:CoreML.Specification.GLMRegressor)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:CoreML.Specification.GLMRegressor)
+  return false;
+#undef DO_
+}
+
+void GLMRegressor::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:CoreML.Specification.GLMRegressor)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .CoreML.Specification.GLMRegressor.DoubleArray weights = 1;
+  for (unsigned int i = 0, n = this->weights_size(); i < n; i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      1, this->weights(i), output);
+  }
+
+  // repeated double offset = 2;
+  if (this->offset_size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteTag(2, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
+    output->WriteVarint32(_offset_cached_byte_size_);
+    ::google::protobuf::internal::WireFormatLite::WriteDoubleArray(
+      this->offset().data(), this->offset_size(), output);
+  }
+
+  // .CoreML.Specification.GLMRegressor.PostEvaluationTransform postEvaluationTransform = 3;
+  if (this->postevaluationtransform() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      3, this->postevaluationtransform(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:CoreML.Specification.GLMRegressor)
+}
+
+size_t GLMRegressor::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.GLMRegressor)
+  size_t total_size = 0;
+
+  // repeated .CoreML.Specification.GLMRegressor.DoubleArray weights = 1;
+  {
+    unsigned int count = this->weights_size();
+    total_size += 1UL * count;
+    for (unsigned int i = 0; i < count; i++) {
+      total_size +=
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->weights(i));
+    }
+  }
+
+  // repeated double offset = 2;
+  {
+    unsigned int count = this->offset_size();
+    size_t data_size = 8UL * count;
+    if (data_size > 0) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
+    }
+    int cached_size = ::google::protobuf::internal::ToCachedSize(data_size);
+    GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+    _offset_cached_byte_size_ = cached_size;
+    GOOGLE_SAFE_CONCURRENT_WRITES_END();
+    total_size += data_size;
+  }
+
+  // .CoreML.Specification.GLMRegressor.PostEvaluationTransform postEvaluationTransform = 3;
+  if (this->postevaluationtransform() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->postevaluationtransform());
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void GLMRegressor::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const GLMRegressor*>(&from));
+}
+
+void GLMRegressor::MergeFrom(const GLMRegressor& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.GLMRegressor)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  weights_.MergeFrom(from.weights_);
+  offset_.MergeFrom(from.offset_);
+  if (from.postevaluationtransform() != 0) {
+    set_postevaluationtransform(from.postevaluationtransform());
+  }
+}
+
+void GLMRegressor::CopyFrom(const GLMRegressor& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.GLMRegressor)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool GLMRegressor::IsInitialized() const {
+  return true;
+}
+
+void GLMRegressor::Swap(GLMRegressor* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void GLMRegressor::InternalSwap(GLMRegressor* other) {
+  weights_.InternalSwap(&other->weights_);
+  offset_.InternalSwap(&other->offset_);
+  std::swap(postevaluationtransform_, other->postevaluationtransform_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::std::string GLMRegressor::GetTypeName() const {
+  return "CoreML.Specification.GLMRegressor";
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
 // GLMRegressor
 
 // repeated .CoreML.Specification.GLMRegressor.DoubleArray weights = 1;
@@ -654,7 +641,7 @@ GLMRegressor::mutable_offset() {
   return &offset_;
 }
 
-// optional .CoreML.Specification.GLMRegressor.PostEvaluationTransform postEvaluationTransform = 3;
+// .CoreML.Specification.GLMRegressor.PostEvaluationTransform postEvaluationTransform = 3;
 void GLMRegressor::clear_postevaluationtransform() {
   postevaluationtransform_ = 0;
 }
@@ -668,9 +655,6 @@ void GLMRegressor::set_postevaluationtransform(::CoreML::Specification::GLMRegre
   // @@protoc_insertion_point(field_set:CoreML.Specification.GLMRegressor.postEvaluationTransform)
 }
 
-inline const GLMRegressor* GLMRegressor::internal_default_instance() {
-  return &GLMRegressor_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // @@protoc_insertion_point(namespace_scope)

@@ -1,4 +1,4 @@
-# How does this work?
+# How Does this Work?
 
 **Deep learning** is a phrase being thrown around everywhere in the
 world of machine learning. It seems to be helping make tremendous
@@ -36,13 +36,13 @@ something that has already been solved. Take, for example, the task of
 distinguishing cats from dogs. The famous ImageNet Challenge, for which
 CNN’s are the state-of-the-art, asks the trained model to categorize
 input into one of 1000 classes. Shouldn't features that distinguish
-between categories like lions and wolves should also be useful for
+between categories like lions and wolves also be useful for
 discriminating between cats and dogs?
 
 The answer is a definitive yes. It is accomplished by simply removing
 the output layer of the Deep Neural Network for 1000 categories, and
 taking the signals that would have been propagating to the output layer
-and feeding them as features to any classifier for our new cats vs dogs
+and feeding them as features to a classifier for our new cats vs dogs
 task.
 
 So, when you run the Turi Create image classifier, it breaks things down
@@ -62,7 +62,7 @@ task.
   your own task.
 
 At first glance, this seems even more complicated than just training the
-deep learning model . However, Stage 1 is re-usable for many different
+deep learning model. However, Stage 1 is reusable for many different
 problems, and once done, it doesn't have to be changed often.
 
 In the end, this pipeline results in not needing to adjust
@@ -93,6 +93,7 @@ roughly 102.6 MB in size.
 * Keras Implementation: François Chollet
 * Citations: Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun. "Deep Residual Learning for Image Recognition." Paper <https://arxiv.org/abs/1512.03385>
 * License: MIT License
+* Core ML exported models are usually at least 90MB
 
 #### Squeezenet
 
@@ -109,6 +110,15 @@ of accuracy as AlexNet but with 50 times fewer parameters.
 <https://arxiv.org/abs/1602.07360>
 * Caffe Implementation: http://deepscale.ai
 * License: BSD License
+* Core ML exported models are usually less than 5MB
+
+#### VisionFeaturePrint_Screen
+
+Only available on macOS 10.14 and higher. This model is included in the
+operating system, so the exported model size is very small.
+
+* Core ML exported models are about 40KB
+
 
 ## Performance
 
@@ -116,20 +126,20 @@ It’s always important to make sure any machine learning technique is
 consistent in its usefulness, and that its success is not a fluke. In
 order to do that, we've tested it on several datasets. For each dataset,
 the experiment was identical. We trained a model on a dataset of just a
-few images, and then evaluated the accuracy on a completely different
-dataset of roughly 1800 images per category.
+small number of images, and then evaluated the accuracy on a completely
+different dataset of roughly 1800 images per category.
 
 Here is a short summary of results:
 
 #### Resnet
 
-Performance on 50 datasets with 5 categories with 25 training examples
+Performance on 50 datasets with 5 categories, 25 training examples
 per category
 - Median accuracy: 0.994667
 - Max accuracy: 1.000000
 - Min accuracy: 0.978667
 
-Performance on 50 datasets with 5 categories with 50 training examples
+Performance on 50 datasets with 5 categories, 50 training examples
 per category
 - Median accuracy: 0.996000
 - Max accuracy: 1.000000
@@ -137,17 +147,31 @@ per category
 
 #### Squeezenet
 
-Performance on same 50 datasets with 5 categories with 25 training
-examples per category
+Performance on 50 datasets with 5 categories, 25 training examples
+per category
 - Median accuracy: 0.961333
 - Max accuracy: 0.981333
 - Min accuracy: 0.912000
 
-Performance on the same 5 categories with 50 training examples per
+Performance on 50 datasets with 5 categories, 50 training examples per
 category
 - Median accuracy: 0.970000
 - Max accuracy: 0.988000
 - Min accuracy: 0.876000
+
+#### VisionFeaturePrint_Screen
+
+Performance on 50 datasets with 5 categories, 25 training examples
+per category
+- Median accuracy: 0.970309
+- Max accuracy: 0.992788
+- Min accuracy: 0.846873
+
+Performance on 50 datasets with 5 categories, 50 training examples per
+category
+- Median accuracy: 0.976342
+- Max accuracy: 0.988342
+- Min accuracy: 0.944571
 
 To give you some perspective, a [user
 study](https://arxiv.org/abs/1409.0575) was made on a dataset with 1000

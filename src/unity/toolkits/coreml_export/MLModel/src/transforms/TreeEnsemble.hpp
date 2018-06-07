@@ -1,8 +1,3 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
- *
- * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
- */
 #ifndef MLMODEL_TREE_ENSEMBLE_SPEC_HPP
 #define MLMODEL_TREE_ENSEMBLE_SPEC_HPP
 
@@ -23,7 +18,7 @@ namespace CoreML {
         class TreeEnsembleRegressor;
     }
 
-    class EXPORT TreeEnsembleBase : public Model {
+    class TreeEnsembleBase : public Model {
     protected:
 
         // Init from one of the parent classes.
@@ -156,11 +151,10 @@ namespace CoreML {
      * specification that is gauranteed to load in an TreeEnsembleSpec class.
      *
      */
-    class EXPORT TreeEnsembleClassifier : public TreeEnsembleBase {
+    class TreeEnsembleClassifier : public TreeEnsembleBase {
     public:
         TreeEnsembleClassifier(const std::string& predictedClassOutputName,
                                const std::string& classProbabilityOutputName,
-                               const std::string& name = "",
                                const std::string& description = "");
 
         virtual ~TreeEnsembleClassifier();
@@ -180,14 +174,13 @@ namespace CoreML {
     };
 
 
-    class EXPORT TreeEnsembleRegressor : public TreeEnsembleBase {
+    class TreeEnsembleRegressor : public TreeEnsembleBase {
     public:
         /** Initialize the TreeEnsembleSpec in regression mode.
          *
          *  The dimension
          */
         TreeEnsembleRegressor(const std::string& predictedValueOutput,
-                              const std::string& name = "",
                               const std::string& description = "");
         
         void setPostEvaluationTransform(PostEvaluationTransform transform);

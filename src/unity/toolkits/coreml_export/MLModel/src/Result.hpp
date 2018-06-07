@@ -1,8 +1,3 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
- *
- * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
- */
 #ifndef MLMODEL_RESULT_HPP
 #define MLMODEL_RESULT_HPP
 
@@ -27,6 +22,7 @@ enum class ResultType {
     FAILED_TO_DESERIALIZE,
     
     // Invalid protobuf file (internally inconsistent)
+    INVALID_COMPATIBILITY_VERSION,
     UNSUPPORTED_COMPATIBILITY_VERSION,
     UNSUPPORTED_FEATURE_TYPE_FOR_MODEL_TYPE,
     TOO_MANY_FEATURES_FOR_MODEL_TYPE,
@@ -36,9 +32,12 @@ enum class ResultType {
 
     // Invalid protobuf model parameters
     INVALID_MODEL_PARAMETERS,
+
+    // NN shaper failure, not necessarily an error
+    POTENTIALLY_INVALID_NEURAL_NETWORK_SHAPES
 };
 
-class EXPORT Result {
+class Result {
 
   private:
     ResultType m_type = ResultType::NO_ERROR;

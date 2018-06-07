@@ -6,64 +6,75 @@
 
 #include <algorithm>
 
-#include <protobuf/stubs/common.h>
-#include <protobuf/stubs/port.h>
-#include <protobuf/stubs/once.h>
-#include <protobuf/io/coded_stream.h>
-#include <protobuf/wire_format_lite_inl.h>
-#include <protobuf/io/zero_copy_stream_impl_lite.h>
+#include <google/protobuf/stubs/common.h>
+#include <google/protobuf/stubs/port.h>
+#include <google/protobuf/stubs/once.h>
+#include <google/protobuf/io/coded_stream.h>
+#include <google/protobuf/wire_format_lite_inl.h>
+#include <google/protobuf/io/zero_copy_stream_impl_lite.h>
 // @@protoc_insertion_point(includes)
 
 namespace CoreML {
 namespace Specification {
+class DictVectorizerDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<DictVectorizer> {
+  public:
+  const ::CoreML::Specification::StringVector* stringtoindex_;
+  const ::CoreML::Specification::Int64Vector* int64toindex_;
+} _DictVectorizer_default_instance_;
 
-void protobuf_ShutdownFile_DictVectorizer_2eproto() {
-  DictVectorizer_default_instance_.Shutdown();
+namespace protobuf_DictVectorizer_2eproto {
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTableField
+    const TableStruct::entries[] = {
+  {0, 0, 0, ::google::protobuf::internal::kInvalidMask, 0, 0},
+};
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::AuxillaryParseTableField
+    const TableStruct::aux[] = {
+  ::google::protobuf::internal::AuxillaryParseTableField(),
+};
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTable const
+    TableStruct::schema[] = {
+  { NULL, NULL, 0, -1, -1, false },
+};
+
+
+void TableStruct::Shutdown() {
+  _DictVectorizer_default_instance_.Shutdown();
 }
 
-void protobuf_InitDefaults_DictVectorizer_2eproto_impl() {
+void TableStruct::InitDefaultsImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  ::CoreML::Specification::protobuf_InitDefaults_DataStructures_2eproto();
-  DictVectorizer_default_instance_.DefaultConstruct();
-  DictVectorizer_default_instance_.get_mutable()->InitAsDefaultInstance();
+  ::google::protobuf::internal::InitProtobufDefaults();
+  ::CoreML::Specification::protobuf_DataStructures_2eproto::InitDefaults();
+  _DictVectorizer_default_instance_.DefaultConstruct();
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_InitDefaults_DictVectorizer_2eproto_once_);
-void protobuf_InitDefaults_DictVectorizer_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_InitDefaults_DictVectorizer_2eproto_once_,
-                 &protobuf_InitDefaults_DictVectorizer_2eproto_impl);
+void InitDefaults() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &TableStruct::InitDefaultsImpl);
 }
-void protobuf_AddDesc_DictVectorizer_2eproto_impl() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  protobuf_InitDefaults_DictVectorizer_2eproto();
-  ::CoreML::Specification::protobuf_AddDesc_DataStructures_2eproto();
-  ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_DictVectorizer_2eproto);
+void AddDescriptorsImpl() {
+  InitDefaults();
+  ::CoreML::Specification::protobuf_DataStructures_2eproto::AddDescriptors();
+  ::google::protobuf::internal::OnShutdown(&TableStruct::Shutdown);
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_AddDesc_DictVectorizer_2eproto_once_);
-void protobuf_AddDesc_DictVectorizer_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_AddDesc_DictVectorizer_2eproto_once_,
-                 &protobuf_AddDesc_DictVectorizer_2eproto_impl);
+void AddDescriptors() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &AddDescriptorsImpl);
 }
 #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 // Force AddDescriptors() to be called at static initialization time.
-struct StaticDescriptorInitializer_DictVectorizer_2eproto {
-  StaticDescriptorInitializer_DictVectorizer_2eproto() {
-    protobuf_AddDesc_DictVectorizer_2eproto();
+struct StaticDescriptorInitializer {
+  StaticDescriptorInitializer() {
+    AddDescriptors();
   }
-} static_descriptor_initializer_DictVectorizer_2eproto_;
+} static_descriptor_initializer;
 #endif  // GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 
-namespace {
-
-static void MergeFromFail(int line) GOOGLE_ATTRIBUTE_COLD GOOGLE_ATTRIBUTE_NORETURN;
-static void MergeFromFail(int line) {
-  ::google::protobuf::internal::MergeFromFail(__FILE__, line);
-}
-
-}  // namespace
+}  // namespace protobuf_DictVectorizer_2eproto
 
 
 // ===================================================================
@@ -74,20 +85,32 @@ const int DictVectorizer::kInt64ToIndexFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 DictVectorizer::DictVectorizer()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_DictVectorizer_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_DictVectorizer_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.DictVectorizer)
 }
-
-void DictVectorizer::InitAsDefaultInstance() {
-}
-
 DictVectorizer::DictVectorizer(const DictVectorizer& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  clear_has_Map();
+  switch (from.Map_case()) {
+    case kStringToIndex: {
+      mutable_stringtoindex()->::CoreML::Specification::StringVector::MergeFrom(from.stringtoindex());
+      break;
+    }
+    case kInt64ToIndex: {
+      mutable_int64toindex()->::CoreML::Specification::Int64Vector::MergeFrom(from.int64toindex());
+      break;
+    }
+    case MAP_NOT_SET: {
+      break;
+    }
+  }
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.DictVectorizer)
 }
 
@@ -113,11 +136,9 @@ void DictVectorizer::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const DictVectorizer& DictVectorizer::default_instance() {
-  protobuf_InitDefaults_DictVectorizer_2eproto();
+  protobuf_DictVectorizer_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<DictVectorizer> DictVectorizer_default_instance_;
 
 DictVectorizer* DictVectorizer::New(::google::protobuf::Arena* arena) const {
   DictVectorizer* n = new DictVectorizer;
@@ -157,32 +178,31 @@ bool DictVectorizer::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.DictVectorizer)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional .CoreML.Specification.StringVector stringToIndex = 1;
+      // .CoreML.Specification.StringVector stringToIndex = 1;
       case 1: {
-        if (tag == 10) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_stringtoindex()));
         } else {
           goto handle_unusual;
         }
-        goto after_int64toindex;
         break;
       }
 
-      // optional .CoreML.Specification.Int64Vector int64ToIndex = 2;
+      // .CoreML.Specification.Int64Vector int64ToIndex = 2;
       case 2: {
-        if (tag == 18) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_int64toindex()));
         } else {
           goto handle_unusual;
         }
-       after_int64toindex:
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -210,13 +230,16 @@ failure:
 void DictVectorizer::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.DictVectorizer)
-  // optional .CoreML.Specification.StringVector stringToIndex = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .CoreML.Specification.StringVector stringToIndex = 1;
   if (has_stringtoindex()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       1, *Map_.stringtoindex_, output);
   }
 
-  // optional .CoreML.Specification.Int64Vector int64ToIndex = 2;
+  // .CoreML.Specification.Int64Vector int64ToIndex = 2;
   if (has_int64toindex()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       2, *Map_.int64toindex_, output);
@@ -230,14 +253,14 @@ size_t DictVectorizer::ByteSizeLong() const {
   size_t total_size = 0;
 
   switch (Map_case()) {
-    // optional .CoreML.Specification.StringVector stringToIndex = 1;
+    // .CoreML.Specification.StringVector stringToIndex = 1;
     case kStringToIndex: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Map_.stringtoindex_);
       break;
     }
-    // optional .CoreML.Specification.Int64Vector int64ToIndex = 2;
+    // .CoreML.Specification.Int64Vector int64ToIndex = 2;
     case kInt64ToIndex: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -262,15 +285,11 @@ void DictVectorizer::CheckTypeAndMergeFrom(
 
 void DictVectorizer::MergeFrom(const DictVectorizer& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.DictVectorizer)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void DictVectorizer::UnsafeMergeFrom(const DictVectorizer& from) {
-  GOOGLE_DCHECK(&from != this);
   switch (from.Map_case()) {
     case kStringToIndex: {
       mutable_stringtoindex()->::CoreML::Specification::StringVector::MergeFrom(from.stringtoindex());
@@ -290,11 +309,10 @@ void DictVectorizer::CopyFrom(const DictVectorizer& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.DictVectorizer)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool DictVectorizer::IsInitialized() const {
-
   return true;
 }
 
@@ -305,7 +323,6 @@ void DictVectorizer::Swap(DictVectorizer* other) {
 void DictVectorizer::InternalSwap(DictVectorizer* other) {
   std::swap(Map_, other->Map_);
   std::swap(_oneof_case_[0], other->_oneof_case_[0]);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -316,7 +333,7 @@ void DictVectorizer::InternalSwap(DictVectorizer* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // DictVectorizer
 
-// optional .CoreML.Specification.StringVector stringToIndex = 1;
+// .CoreML.Specification.StringVector stringToIndex = 1;
 bool DictVectorizer::has_stringtoindex() const {
   return Map_case() == kStringToIndex;
 }
@@ -364,7 +381,7 @@ void DictVectorizer::set_allocated_stringtoindex(::CoreML::Specification::String
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.DictVectorizer.stringToIndex)
 }
 
-// optional .CoreML.Specification.Int64Vector int64ToIndex = 2;
+// .CoreML.Specification.Int64Vector int64ToIndex = 2;
 bool DictVectorizer::has_int64toindex() const {
   return Map_case() == kInt64ToIndex;
 }
@@ -420,9 +437,6 @@ void DictVectorizer::clear_has_Map() {
 }
 DictVectorizer::MapCase DictVectorizer::Map_case() const {
   return DictVectorizer::MapCase(_oneof_case_[0]);
-}
-inline const DictVectorizer* DictVectorizer::internal_default_instance() {
-  return &DictVectorizer_default_instance_.get();
 }
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 

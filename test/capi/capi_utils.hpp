@@ -1,8 +1,9 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
+/* Copyright © 2018 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
 #ifndef CAPI_TEST_UTILS
 #define CAPI_TEST_UTILS
 
@@ -28,8 +29,10 @@
   } while (false)
 
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-function"
 
-
+__attribute__((__unused__))
 static tc_flex_list* make_flex_list_double(const std::vector<double>& v) {
 
   tc_error* error = NULL;
@@ -78,6 +81,7 @@ static tc_flex_list* make_flex_list_double(const std::vector<double>& v) {
   return fl;
 }
 
+__attribute__((__unused__))
 static tc_flex_list* make_flex_list_string(const std::vector<std::string>& v) {
 
   tc_error* error = NULL;
@@ -110,6 +114,7 @@ static tc_flex_list* make_flex_list_string(const std::vector<std::string>& v) {
   return fl;
 }
 
+__attribute__((__unused__))
 static tc_sarray* make_sarray_double(const std::vector<double>& v) {
 
   tc_error* error = NULL;
@@ -140,6 +145,7 @@ static tc_sarray* make_sarray_double(const std::vector<double>& v) {
   return sa;
 }
 
+__attribute__((__unused__))
 static tc_sframe* make_sframe_double(const std::vector<std::pair<std::string, std::vector<double> > >& data ) {
 
     tc_error* error = NULL;
@@ -178,7 +184,8 @@ static tc_sframe* make_sframe_double(const std::vector<std::pair<std::string, st
     return sf;
   }
 
-static bool check_equality_gl_sframe(
+__attribute__((__unused__))
+  static bool check_equality_gl_sframe(
   const turi::gl_sframe& sf_gl, const turi::gl_sframe& ref_gl) {
 
   size_t num_columns_sf = sf_gl.num_columns();
@@ -226,5 +233,7 @@ static bool check_equality_gl_sframe(
   }
   return false;
 }
+
+#pragma clang diagnostic pop
 
 #endif

@@ -1,17 +1,10 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
- *
- * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
- */
 #include "Comparison.hpp"
 #include "Format.hpp"
 #include "Model.hpp"
 #include "Utils.hpp"
 
-#include <protobuf/util/message_differencer.h>
 #include <fstream>
 #include <unordered_map>
-#include <iostream>
 
 namespace CoreML {
     
@@ -22,6 +15,8 @@ namespace CoreML {
     
     Model::Model(const Specification::Model& proto) {
         m_spec = std::make_shared<Specification::Model>(proto);
+        // We need to check this here because the proto could be overly strict
+        downgradeSpecificationVersion();
     }
     
     Model::Model(const std::string& description)
@@ -36,7 +31,7 @@ namespace CoreML {
     Result Model::validateGeneric(const Specification::Model& model) {
         // make sure compat version fields are filled in
         if (model.specificationversion() == 0) {
-            return Result(ResultType::UNSUPPORTED_COMPATIBILITY_VERSION,
+            return Result(ResultType::INVALID_COMPATIBILITY_VERSION,
                           "Model specification version field missing or corrupt.");
         }
 
@@ -44,9 +39,9 @@ namespace CoreML {
         // note: this one should always be backward compatible, so use > here
         if (model.specificationversion() > MLMODEL_SPECIFICATION_VERSION) {
             std::stringstream msg;
-            msg << "Model specification version "
+            msg << "The .mlmodel supplied is of version "
                 << model.specificationversion()
-                << " not supported by this version of CoreML framework. Expected version "
+                << ", intended for a newer version of Xcode. This version of Xcode supports model version "
                 << MLMODEL_SPECIFICATION_VERSION
                 << " or earlier.";
             return Result(ResultType::UNSUPPORTED_COMPATIBILITY_VERSION,
@@ -54,7 +49,7 @@ namespace CoreML {
         }
 
         // validate model interface
-        Result r = validateModelDescription(model.description());
+        Result r = validateModelDescription(model.description(), model.specificationversion());
         if (!r.good()) {
             return r;
         }
@@ -92,9 +87,15 @@ namespace CoreML {
                 VALIDATE_MODEL_TYPE(imputer);
                 VALIDATE_MODEL_TYPE(dictVectorizer);
                 VALIDATE_MODEL_TYPE(scaler);
+                VALIDATE_MODEL_TYPE(nonMaximumSuppression);
                 VALIDATE_MODEL_TYPE(categoricalMapping);
                 VALIDATE_MODEL_TYPE(normalizer);
                 VALIDATE_MODEL_TYPE(identity);
+                VALIDATE_MODEL_TYPE(customModel);
+                VALIDATE_MODEL_TYPE(bayesianProbitRegressor);
+                VALIDATE_MODEL_TYPE(wordTagger);
+                VALIDATE_MODEL_TYPE(textClassifier);
+                VALIDATE_MODEL_TYPE(visionFeaturePrint);
             case MLModelType_NOT_SET:
                 return Result(ResultType::INVALID_MODEL_INTERFACE, "Model did not specify a valid model-parameter type.");
         }
@@ -124,35 +125,39 @@ namespace CoreML {
         return load(in, out);
     }
     
+    // We will only reduce the given specification version if possible. We never increase it here. 
+    void Model::downgradeSpecificationVersion() {
+
+        if (m_spec->specificationversion() == MLMODEL_SPECIFICATION_VERSION_IOS12 && !hasIOS12Features(*m_spec)) {
+            m_spec->set_specificationversion(MLMODEL_SPECIFICATION_VERSION_IOS11_2);
+        }
+        
+        if (m_spec->specificationversion() == MLMODEL_SPECIFICATION_VERSION_IOS11_2 && !(hasCustomLayer(*m_spec) || hasfp16Weights(*m_spec))) {
+            m_spec->set_specificationversion(MLMODEL_SPECIFICATION_VERSION_IOS11);
+        }
+        
+    }
+    
     Result Model::save(std::ostream& out) {
         if (!out.good()) {
             return Result(ResultType::UNABLE_TO_OPEN_FILE,
                           "unable to open file for write");
         }
 
+        downgradeSpecificationVersion();
+
         // validate on save
         Result r = validate();
         if (!r.good()) {
             return r;
         }
-
+        
         return saveSpecification(*m_spec, out);
     }
     
     Result Model::save(const std::string& path) {
-
-
         std::ofstream out(path, std::ios::binary);
-        Result r = save(out);
-
-
-        if(r.good()) {
-          std::cout << "Saving valid model to path " << path << std::endl; 
-        } else {
-          std::cout << "Error in saving model to path " << path << std::endl; 
-        }
-
-        return r; 
+        return save(out);
     }
 
     const std::string& Model::shortDescription() const {
@@ -163,7 +168,8 @@ namespace CoreML {
         SchemaType inputs;
         const Specification::ModelDescription& interface = m_spec->description();
         int size = interface.input_size();
-        inputs.reserve(size);
+        assert(size >= 0);
+        inputs.reserve(static_cast<size_t>(size));
         for (int i = 0; i < size; i++) {
             const Specification::FeatureDescription &desc = interface.input(i);
             inputs.push_back(std::make_pair(desc.name(), desc.type()));
@@ -175,7 +181,8 @@ namespace CoreML {
         SchemaType outputs;
         const Specification::ModelDescription& interface = m_spec->description();
         int size = interface.output_size();
-        outputs.reserve(size);
+        assert(size >= 0);
+        outputs.reserve(static_cast<size_t>(size));
         for (int i = 0; i < size; i++) {
             const Specification::FeatureDescription &desc = interface.output(i);
             outputs.push_back(std::make_pair(desc.name(), desc.type()));

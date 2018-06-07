@@ -13,7 +13,7 @@ void MLModelWrapper::save(const std::string& path_to_save_file) {
 
 void MLModelWrapper::add_metadata(
     const std::map<std::string, flexible_type>& context_metadata) {
-  ::turi::add_metadata(m_model->m_spec, context_metadata);
+  ::turi::add_metadata(m_model->getProto(), context_metadata);
 }
 
 BEGIN_CLASS_REGISTRATION

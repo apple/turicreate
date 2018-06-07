@@ -215,7 +215,7 @@ class l2_rescaling: public standardization_interface {
   /**
    * Default destructor.
    */
-  ~l2_rescaling() {};
+  virtual ~l2_rescaling() {}
 
   /**
    * Default constructor.

@@ -32,9 +32,10 @@
 #include <sframe_query_engine/algorithm/ec_sort.hpp>
 #include <sframe_query_engine/algorithm/groupby_aggregate.hpp>
 #include <sframe_query_engine/operators/operator_properties.hpp>
-#include <unity/lib/visualization/plot.hpp>
-#include <lambda/pylambda_function.hpp>
 #include <exceptions/error_types.hpp>
+
+#if(TC_BUILD_VISUALIZATION_CLIENT)
+#include <unity/lib/visualization/plot.hpp>
 #include <unity/lib/visualization/process_wrapper.hpp>
 #include <unity/lib/visualization/histogram.hpp>
 #include <unity/lib/visualization/escape.hpp>
@@ -45,6 +46,8 @@
 #include <unity/lib/visualization/summary_view.hpp>
 #include <unity/lib/visualization/vega_data.hpp>
 #include <unity/lib/visualization/vega_spec.hpp>
+#endif
+
 #include <unity/lib/image_util.hpp>
 #include <unity/lib/unity_sketch.hpp>
 #include <algorithm>
@@ -53,6 +56,9 @@
 #include <boost/archive/iterators/transform_width.hpp>
 #include <logger/logger.hpp>
 
+#ifdef TC_HAS_PYTHON
+#include <lambda/pylambda_function.hpp>
+#endif
 namespace turi {
 
 using namespace turi::query_eval;
@@ -594,6 +600,7 @@ std::shared_ptr<unity_sarray_base> unity_sframe::transform(const std::string& la
                                            bool skip_undefined, // unused
                                            int random_seed) {
   log_func_entry();
+#ifdef TC_HAS_PYTHON
   auto new_planner_node = op_lambda_transform::make_planner_node(
       this->get_planner_node(), lambda, type,
       this->column_names(),
@@ -602,6 +609,9 @@ std::shared_ptr<unity_sarray_base> unity_sframe::transform(const std::string& la
   std::shared_ptr<unity_sarray> ret(new unity_sarray());
   ret->construct_from_planner_node(new_planner_node);
   return ret;
+#else
+  log_and_throw("Python functions not supported");
+#endif
 }
 
 std::shared_ptr<unity_sarray_base> unity_sframe::transform_native(const function_closure_info& toolkit_fn_name,
@@ -652,6 +662,7 @@ std::shared_ptr<unity_sframe_base> unity_sframe::flat_map(
     std::vector<flex_type_enum> column_types,
     bool skip_undefined,
     int seed) {
+#ifdef TC_HAS_PYTHON
   log_func_entry();
   DASSERT_EQ(column_names.size(), column_types.size());
   DASSERT_TRUE(!column_names.empty());
@@ -699,6 +710,9 @@ std::shared_ptr<unity_sframe_base> unity_sframe::flat_map(
   auto ret = std::make_shared<unity_sframe>();
   ret->construct_from_sframe(out_sf);
   return ret;
+#else
+  log_and_throw("Python lambda functions not supported");
+#endif
 }
 
 
@@ -1576,6 +1590,7 @@ std::string unity_sframe::generate_next_column_name() {
 }
 
 void unity_sframe::show(const std::string& path_to_client) {
+#if(TC_BUILD_VISUALIZATION_CLIENT)
   using namespace turi;
   using namespace turi::visualization;
 
@@ -1584,26 +1599,33 @@ void unity_sframe::show(const std::string& path_to_client) {
   if(plt != nullptr){
     plt->show();
   }
+#else
+  std_log_and_throw(std::runtime_error, "Turi Create compiled with visualizations disabled.");
+#endif
 }
 
 std::shared_ptr<model_base> unity_sframe::plot(const std::string& path_to_client){
+#if(TC_BUILD_VISUALIZATION_CLIENT)
   using namespace turi;
   using namespace turi::visualization;
 
   std::shared_ptr<unity_sframe_base> self = this->select_columns(this->column_names());
 
   return plot_columnwise_summary(path_to_client, self);
+#else
+  std_log_and_throw(std::runtime_error, "Turi Create compiled with visualizations disabled.");
+#endif
 }
 
 void unity_sframe::explore(const std::string& path_to_client, const std::string& title) {
+#if(TC_BUILD_VISUALIZATION_CLIENT)
   using namespace turi;
   using namespace turi::visualization;
 
   std::shared_ptr<unity_sframe_base> self = this->select_columns(this->column_names());
 
-  logprogress_stream << "Materializing SFrame..." << std::endl;
+  logprogress_stream << "Materializing SFrame" << std::endl;
   this->materialize();
-  logprogress_stream << "Done." << std::endl;
 
   if(self->size() == 0){
     log_and_throw("Nothing to explore; SFrame is empty.");
@@ -1968,6 +1990,9 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
       }
     }
   });
+#else
+  std_log_and_throw(std::runtime_error, "Turi Create compiled with visualizations disabled.");
+#endif
 
 }
 

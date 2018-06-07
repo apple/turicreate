@@ -598,7 +598,7 @@ gl_sframe logistic_regression::fast_predict_topk(
           const std::string& output_type,
           const size_t topk){
 
-  DASSERT_TRUE(name().find("classifier") != std::string::npos);
+  DASSERT_TRUE(is_classifier());
   DASSERT_TRUE(state.count("num_coefficients") > 0);
 
   // Get a copy of the variables in the state.
@@ -821,7 +821,7 @@ std::shared_ptr<coreml::MLModelWrapper> logistic_regression::export_to_coreml() 
 
   // Model inputs and output
   model.addInput("__vectorized_features__",
-              CoreML::FeatureType::Array({ml_mdata->num_dimensions()}));
+              CoreML::FeatureType::Array({static_cast<int64_t>(ml_mdata->num_dimensions())}));
   model.addOutput(ml_mdata->target_column_name(), target_output_data_type);
   model.addOutput(prob_column_name, target_additional_data_type);
 
@@ -838,7 +838,7 @@ std::shared_ptr<coreml::MLModelWrapper> logistic_regression::export_to_coreml() 
 
 
   // Add metadata
-  add_metadata(pipeline.m_spec, context_metadata);
+  add_metadata(pipeline.getProto(), context_metadata);
 
   // Save pipeline
   auto model_wrapper = std::make_shared<coreml::MLModelWrapper>(std::make_shared<CoreML::Pipeline>(pipeline));

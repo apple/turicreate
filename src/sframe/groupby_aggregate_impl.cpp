@@ -370,7 +370,7 @@ void group_aggregate_container::group_and_write(sframe& out) {
   for (size_t i = 0 ;i < segments.size(); ++i) flush_segment(i);
 
   intermediate_buffer.close();
-  std::shared_ptr<sarray<std::string>::reader_type> reader = std::move(intermediate_buffer.get_reader());
+  std::shared_ptr<sarray<std::string>::reader_type> reader = intermediate_buffer.get_reader();
 
   logstream(LOG_INFO) << "Groupby output segment balance: ";
   for (size_t i = 0; i < reader->num_segments() ; ++i) {
@@ -420,7 +420,7 @@ void group_aggregate_container::group_and_write_segment(sframe& out,
   for (size_t i = 0; i < chunks.size(); ++i) {
     if (chunks[i].has_next()) {
       std::pair<groupby_element, size_t> pqelem;
-      pqelem.first = std::move(groupby_element(chunks[i].next(), group_descriptors));
+      pqelem.first = groupby_element(chunks[i].next(), group_descriptors);
       pqelem.second = i;
       pq.push_back(std::move(pqelem));
     }
@@ -441,7 +441,7 @@ void group_aggregate_container::group_and_write_segment(sframe& out,
     // refill
     if (chunks[id].has_next()) {
       std::pair<groupby_element, size_t> pqelem;
-      pqelem.first = std::move(groupby_element(chunks[id].next(), group_descriptors));
+      pqelem.first = groupby_element(chunks[id].next(), group_descriptors);
       pqelem.second = id;
       pq.push_back(std::move(pqelem));
       std::push_heap(pq.begin(), pq.end(), std::greater<pq_value_type>());
@@ -457,7 +457,7 @@ void group_aggregate_container::group_and_write_segment(sframe& out,
       // refill
       if (chunks[id].has_next()) {
         std::pair<groupby_element, size_t> pqelem;
-        pqelem.first = std::move(groupby_element(chunks[id].next(), group_descriptors));
+        pqelem.first = groupby_element(chunks[id].next(), group_descriptors);
         pqelem.second = id;
         pq.push_back(std::move(pqelem));
         std::push_heap(pq.begin(), pq.end(), std::greater<pq_value_type>());

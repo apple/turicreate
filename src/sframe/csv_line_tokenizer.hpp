@@ -12,6 +12,7 @@
 #include <memory>
 #include <flexible_type/flexible_type.hpp>
 #include <parallel/mutex.hpp>
+#include <iostream>
 
 namespace turi {
 
@@ -322,4 +323,31 @@ struct csv_line_tokenizer {
 };
 /// \}
 } // namespace turi
+
+namespace std {
+static inline ostream& operator<<(ostream& os, const turi::csv_line_tokenizer& t) {
+  os << "Tokenizer("
+     << "preseve_quoting=" << t.preserve_quoting << ", "
+     << "escape_char='" << t.escape_char << "', "
+     << "skip_initial_space=" << t.skip_initial_space << ", "
+     << "delimiter=\"" << t.delimiter << "\", "
+     << "line_terminator=\"" << t.line_terminator << "\", "
+     << "comment_char=\'" << t.comment_char << "', "
+     << "has_comment_char=" << t.has_comment_char << ","
+     << "double_quote=" << t.double_quote << ","
+     << "quote_char=\'" << t.quote_char << "\'"
+     << "na_values=";
+
+  for (size_t i = 0; i < t.na_values.size(); ++i) {
+    os << t.na_values[i];
+    if (i + 1 != t.na_values.size()) {
+      os << ",";
+    }
+  }
+  os << ")";
+
+  return os;
+}
+}  // namespace std
+
 #endif

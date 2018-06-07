@@ -124,6 +124,7 @@ void triple_apply(sgraph& g,
                   bool requires_vertex_id = true);
 
 
+#ifdef TC_HAS_PYTHON
 /**
  * Overload. Uses python lambda function.
  */
@@ -131,7 +132,7 @@ void triple_apply(sgraph& g, const std::string& lambda_str,
                   const std::vector<std::string>& mutated_vertex_fields,
                   const std::vector<std::string>& mutated_edge_fields = {});
 
-
+#endif
 
 
 /**************************************************************************/
