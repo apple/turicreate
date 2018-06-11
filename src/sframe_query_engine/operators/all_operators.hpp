@@ -19,7 +19,9 @@
 #include <sframe_query_engine/operators/union.hpp>
 #include <sframe_query_engine/operators/generalized_union_project.hpp>
 #include <sframe_query_engine/operators/reduce.hpp>
+#ifdef TC_HAS_PYTHON
 #include <sframe_query_engine/operators/lambda_transform.hpp>
+#endif
 #include <sframe_query_engine/operators/optonly_identity_operator.hpp>
 #include <sframe_query_engine/operators/ternary_operator.hpp>
 

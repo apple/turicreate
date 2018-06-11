@@ -52,9 +52,10 @@ def tiny_darknet(output_size=125, token_op=False):
                            prefix='conv%d_' % (idx - 1),
                            padding=(1, 1)))
         net.add(_nn.BatchNorm(axis=c_axis,
-            prefix='batchnorm%d_' % (idx - 1)))
-        net.add(_nn.LeakyReLU(0.1,
-            prefix='leakyrelu%d_' % (idx - 1)))
+                              prefix='batchnorm%d_' % (idx - 1),
+                              momentum=0.9,
+                              epsilon=1e-5))
+        net.add(_nn.LeakyReLU(0.1, prefix='leakyrelu%d_' % (idx - 1)))
 
         if idx < 6:
             strides = (2, 2)
@@ -77,8 +78,8 @@ def tiny_darknet(output_size=125, token_op=False):
 
     if output_size is not None:
         net.add(_nn.Conv2D(channels=output_size,
-                                    kernel_size=(1, 1),
-                                    prefix='conv8_',
-                                    layout=layout))
+                           kernel_size=(1, 1),
+                           prefix='conv8_',
+                           layout=layout))
 
     return net

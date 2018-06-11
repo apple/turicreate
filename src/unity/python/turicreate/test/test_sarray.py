@@ -1043,6 +1043,17 @@ class SArrayTest(unittest.TestCase):
         self.__test_equal(t & t2, list(((s & s2) > 0).astype(int)), int)
         self.__test_equal(t | t2, list(((s | s2) > 0).astype(int)), int)
 
+    def test_logical_ops_missing_value_propagation(self):
+        s=[0,    0,0,None, None, None,1,1,   1]
+        s2=[0,None,1,0,    None, 1,   0,None,1]
+        t = SArray(s, int)
+        t2 = SArray(s2, int)
+
+        and_result = [0,0,0,0,None,None,0,None,1]
+        or_result = [0,None,1,None,None,1,1,1,1]
+        self.__test_equal(t & t2, and_result, int)
+        self.__test_equal(t | t2, or_result, int)
+
     def test_string_operators(self):
         s=["a","b","c","d","e","f","g","h","i","j"]
         s2=["e","d","c","b","a","j","i","h","g","f"]

@@ -6,88 +6,132 @@
 
 #include <algorithm>
 
-#include <protobuf/stubs/common.h>
-#include <protobuf/stubs/port.h>
-#include <protobuf/stubs/once.h>
-#include <protobuf/io/coded_stream.h>
-#include <protobuf/wire_format_lite_inl.h>
-#include <protobuf/io/zero_copy_stream_impl_lite.h>
+#include <google/protobuf/stubs/common.h>
+#include <google/protobuf/stubs/port.h>
+#include <google/protobuf/stubs/once.h>
+#include <google/protobuf/io/coded_stream.h>
+#include <google/protobuf/wire_format_lite_inl.h>
+#include <google/protobuf/io/zero_copy_stream_impl_lite.h>
 // @@protoc_insertion_point(includes)
 
 namespace CoreML {
 namespace Specification {
+class StringToInt64Map_MapEntryDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<StringToInt64Map::StringToInt64Map_MapEntry> {
+} _StringToInt64Map_MapEntry_default_instance_;
+class StringToInt64MapDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<StringToInt64Map> {
+} _StringToInt64Map_default_instance_;
+class Int64ToStringMap_MapEntryDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<Int64ToStringMap::Int64ToStringMap_MapEntry> {
+} _Int64ToStringMap_MapEntry_default_instance_;
+class Int64ToStringMapDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<Int64ToStringMap> {
+} _Int64ToStringMap_default_instance_;
+class StringToDoubleMap_MapEntryDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<StringToDoubleMap::StringToDoubleMap_MapEntry> {
+} _StringToDoubleMap_MapEntry_default_instance_;
+class StringToDoubleMapDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<StringToDoubleMap> {
+} _StringToDoubleMap_default_instance_;
+class Int64ToDoubleMap_MapEntryDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<Int64ToDoubleMap::Int64ToDoubleMap_MapEntry> {
+} _Int64ToDoubleMap_MapEntry_default_instance_;
+class Int64ToDoubleMapDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<Int64ToDoubleMap> {
+} _Int64ToDoubleMap_default_instance_;
+class StringVectorDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<StringVector> {
+} _StringVector_default_instance_;
+class Int64VectorDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<Int64Vector> {
+} _Int64Vector_default_instance_;
+class DoubleVectorDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<DoubleVector> {
+} _DoubleVector_default_instance_;
 
-void protobuf_ShutdownFile_DataStructures_2eproto() {
-  StringToInt64Map_default_instance_.Shutdown();
-  Int64ToStringMap_default_instance_.Shutdown();
-  StringToDoubleMap_default_instance_.Shutdown();
-  Int64ToDoubleMap_default_instance_.Shutdown();
-  StringVector_default_instance_.Shutdown();
-  Int64Vector_default_instance_.Shutdown();
-  DoubleVector_default_instance_.Shutdown();
+namespace protobuf_DataStructures_2eproto {
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTableField
+    const TableStruct::entries[] = {
+  {0, 0, 0, ::google::protobuf::internal::kInvalidMask, 0, 0},
+};
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::AuxillaryParseTableField
+    const TableStruct::aux[] = {
+  ::google::protobuf::internal::AuxillaryParseTableField(),
+};
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTable const
+    TableStruct::schema[] = {
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+};
+
+
+void TableStruct::Shutdown() {
+  _StringToInt64Map_default_instance_.Shutdown();
+  _Int64ToStringMap_default_instance_.Shutdown();
+  _StringToDoubleMap_default_instance_.Shutdown();
+  _Int64ToDoubleMap_default_instance_.Shutdown();
+  _StringVector_default_instance_.Shutdown();
+  _Int64Vector_default_instance_.Shutdown();
+  _DoubleVector_default_instance_.Shutdown();
 }
 
-void protobuf_InitDefaults_DataStructures_2eproto_impl() {
+void TableStruct::InitDefaultsImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  ::CoreML::Specification::protobuf_InitDefaults_FeatureTypes_2eproto();
-  ::google::protobuf::internal::GetEmptyString();
-  StringToInt64Map_default_instance_.DefaultConstruct();
-  ::google::protobuf::internal::GetEmptyString();
-  Int64ToStringMap_default_instance_.DefaultConstruct();
-  ::google::protobuf::internal::GetEmptyString();
-  ::google::protobuf::internal::GetEmptyString();
-  StringToDoubleMap_default_instance_.DefaultConstruct();
-  Int64ToDoubleMap_default_instance_.DefaultConstruct();
-  ::google::protobuf::internal::GetEmptyString();
-  StringVector_default_instance_.DefaultConstruct();
-  Int64Vector_default_instance_.DefaultConstruct();
-  DoubleVector_default_instance_.DefaultConstruct();
-  StringToInt64Map_default_instance_.get_mutable()->InitAsDefaultInstance();
-  Int64ToStringMap_default_instance_.get_mutable()->InitAsDefaultInstance();
-  StringToDoubleMap_default_instance_.get_mutable()->InitAsDefaultInstance();
-  Int64ToDoubleMap_default_instance_.get_mutable()->InitAsDefaultInstance();
-  StringVector_default_instance_.get_mutable()->InitAsDefaultInstance();
-  Int64Vector_default_instance_.get_mutable()->InitAsDefaultInstance();
-  DoubleVector_default_instance_.get_mutable()->InitAsDefaultInstance();
+  ::google::protobuf::internal::InitProtobufDefaults();
+  ::CoreML::Specification::protobuf_FeatureTypes_2eproto::InitDefaults();
+  _StringToInt64Map_MapEntry_default_instance_.DefaultConstruct();
+  _StringToInt64Map_default_instance_.DefaultConstruct();
+  _Int64ToStringMap_MapEntry_default_instance_.DefaultConstruct();
+  _Int64ToStringMap_default_instance_.DefaultConstruct();
+  _StringToDoubleMap_MapEntry_default_instance_.DefaultConstruct();
+  _StringToDoubleMap_default_instance_.DefaultConstruct();
+  _Int64ToDoubleMap_MapEntry_default_instance_.DefaultConstruct();
+  _Int64ToDoubleMap_default_instance_.DefaultConstruct();
+  _StringVector_default_instance_.DefaultConstruct();
+  _Int64Vector_default_instance_.DefaultConstruct();
+  _DoubleVector_default_instance_.DefaultConstruct();
+  _StringToInt64Map_MapEntry_default_instance_.get_mutable()->set_default_instance(_StringToInt64Map_MapEntry_default_instance_.get_mutable());
+  _StringToInt64Map_MapEntry_default_instance_.get_mutable()->InitAsDefaultInstance();
+  _Int64ToStringMap_MapEntry_default_instance_.get_mutable()->set_default_instance(_Int64ToStringMap_MapEntry_default_instance_.get_mutable());
+  _Int64ToStringMap_MapEntry_default_instance_.get_mutable()->InitAsDefaultInstance();
+  _StringToDoubleMap_MapEntry_default_instance_.get_mutable()->set_default_instance(_StringToDoubleMap_MapEntry_default_instance_.get_mutable());
+  _StringToDoubleMap_MapEntry_default_instance_.get_mutable()->InitAsDefaultInstance();
+  _Int64ToDoubleMap_MapEntry_default_instance_.get_mutable()->set_default_instance(_Int64ToDoubleMap_MapEntry_default_instance_.get_mutable());
+  _Int64ToDoubleMap_MapEntry_default_instance_.get_mutable()->InitAsDefaultInstance();
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_InitDefaults_DataStructures_2eproto_once_);
-void protobuf_InitDefaults_DataStructures_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_InitDefaults_DataStructures_2eproto_once_,
-                 &protobuf_InitDefaults_DataStructures_2eproto_impl);
+void InitDefaults() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &TableStruct::InitDefaultsImpl);
 }
-void protobuf_AddDesc_DataStructures_2eproto_impl() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  protobuf_InitDefaults_DataStructures_2eproto();
-  ::CoreML::Specification::protobuf_AddDesc_FeatureTypes_2eproto();
-  ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_DataStructures_2eproto);
+void AddDescriptorsImpl() {
+  InitDefaults();
+  ::CoreML::Specification::protobuf_FeatureTypes_2eproto::AddDescriptors();
+  ::google::protobuf::internal::OnShutdown(&TableStruct::Shutdown);
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_AddDesc_DataStructures_2eproto_once_);
-void protobuf_AddDesc_DataStructures_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_AddDesc_DataStructures_2eproto_once_,
-                 &protobuf_AddDesc_DataStructures_2eproto_impl);
+void AddDescriptors() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &AddDescriptorsImpl);
 }
 #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 // Force AddDescriptors() to be called at static initialization time.
-struct StaticDescriptorInitializer_DataStructures_2eproto {
-  StaticDescriptorInitializer_DataStructures_2eproto() {
-    protobuf_AddDesc_DataStructures_2eproto();
+struct StaticDescriptorInitializer {
+  StaticDescriptorInitializer() {
+    AddDescriptors();
   }
-} static_descriptor_initializer_DataStructures_2eproto_;
+} static_descriptor_initializer;
 #endif  // GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 
-namespace {
+}  // namespace protobuf_DataStructures_2eproto
 
-static void MergeFromFail(int line) GOOGLE_ATTRIBUTE_COLD GOOGLE_ATTRIBUTE_NORETURN;
-static void MergeFromFail(int line) {
-  ::google::protobuf::internal::MergeFromFail(__FILE__, line);
-}
 
-}  // namespace
+// ===================================================================
 
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
 
@@ -96,20 +140,19 @@ const int StringToInt64Map::kMapFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 StringToInt64Map::StringToInt64Map()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_DataStructures_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_DataStructures_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.StringToInt64Map)
 }
-
-void StringToInt64Map::InitAsDefaultInstance() {
-}
-
 StringToInt64Map::StringToInt64Map(const StringToInt64Map& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  map_.MergeFrom(from.map_);
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.StringToInt64Map)
 }
 
@@ -131,11 +174,9 @@ void StringToInt64Map::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const StringToInt64Map& StringToInt64Map::default_instance() {
-  protobuf_InitDefaults_DataStructures_2eproto();
+  protobuf_DataStructures_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<StringToInt64Map> StringToInt64Map_default_instance_;
 
 StringToInt64Map* StringToInt64Map::New(::google::protobuf::Arena* arena) const {
   StringToInt64Map* n = new StringToInt64Map;
@@ -156,16 +197,16 @@ bool StringToInt64Map::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.StringToInt64Map)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // map<string, int64> map = 1;
       case 1: {
-        if (tag == 10) {
-          DO_(input->IncrementRecursionDepth());
-         parse_loop_map:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           StringToInt64Map_MapEntry::Parser< ::google::protobuf::internal::MapFieldLite<
+              StringToInt64Map_MapEntry,
               ::std::string, ::google::protobuf::int64,
               ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
               ::google::protobuf::internal::WireFormatLite::TYPE_INT64,
@@ -180,9 +221,6 @@ bool StringToInt64Map::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(10)) goto parse_loop_map;
-        input->UnsafeDecrementRecursionDepth();
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -210,6 +248,9 @@ failure:
 void StringToInt64Map::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.StringToInt64Map)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
   // map<string, int64> map = 1;
   if (!this->map().empty()) {
     typedef ::google::protobuf::Map< ::std::string, ::google::protobuf::int64 >::const_pointer
@@ -225,7 +266,7 @@ void StringToInt64Map::SerializeWithCachedSizes(
       }
     };
 
-    if (output->IsSerializationDeterminstic() &&
+    if (output->IsSerializationDeterministic() &&
         this->map().size() > 1) {
       ::google::protobuf::scoped_array<SortItem> items(
           new SortItem[this->map().size()]);
@@ -294,15 +335,11 @@ void StringToInt64Map::CheckTypeAndMergeFrom(
 
 void StringToInt64Map::MergeFrom(const StringToInt64Map& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.StringToInt64Map)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void StringToInt64Map::UnsafeMergeFrom(const StringToInt64Map& from) {
-  GOOGLE_DCHECK(&from != this);
   map_.MergeFrom(from.map_);
 }
 
@@ -310,11 +347,10 @@ void StringToInt64Map::CopyFrom(const StringToInt64Map& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.StringToInt64Map)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool StringToInt64Map::IsInitialized() const {
-
   return true;
 }
 
@@ -324,7 +360,6 @@ void StringToInt64Map::Swap(StringToInt64Map* other) {
 }
 void StringToInt64Map::InternalSwap(StringToInt64Map* other) {
   map_.Swap(&other->map_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -353,9 +388,11 @@ StringToInt64Map::mutable_map() {
   return map_.MutableMap();
 }
 
-inline const StringToInt64Map* StringToInt64Map::internal_default_instance() {
-  return &StringToInt64Map_default_instance_.get();
-}
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -365,20 +402,19 @@ const int Int64ToStringMap::kMapFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Int64ToStringMap::Int64ToStringMap()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_DataStructures_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_DataStructures_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.Int64ToStringMap)
 }
-
-void Int64ToStringMap::InitAsDefaultInstance() {
-}
-
 Int64ToStringMap::Int64ToStringMap(const Int64ToStringMap& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  map_.MergeFrom(from.map_);
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.Int64ToStringMap)
 }
 
@@ -400,11 +436,9 @@ void Int64ToStringMap::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const Int64ToStringMap& Int64ToStringMap::default_instance() {
-  protobuf_InitDefaults_DataStructures_2eproto();
+  protobuf_DataStructures_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<Int64ToStringMap> Int64ToStringMap_default_instance_;
 
 Int64ToStringMap* Int64ToStringMap::New(::google::protobuf::Arena* arena) const {
   Int64ToStringMap* n = new Int64ToStringMap;
@@ -425,16 +459,16 @@ bool Int64ToStringMap::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.Int64ToStringMap)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // map<int64, string> map = 1;
       case 1: {
-        if (tag == 10) {
-          DO_(input->IncrementRecursionDepth());
-         parse_loop_map:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           Int64ToStringMap_MapEntry::Parser< ::google::protobuf::internal::MapFieldLite<
+              Int64ToStringMap_MapEntry,
               ::google::protobuf::int64, ::std::string,
               ::google::protobuf::internal::WireFormatLite::TYPE_INT64,
               ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
@@ -449,9 +483,6 @@ bool Int64ToStringMap::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(10)) goto parse_loop_map;
-        input->UnsafeDecrementRecursionDepth();
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -479,6 +510,9 @@ failure:
 void Int64ToStringMap::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.Int64ToStringMap)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
   // map<int64, string> map = 1;
   if (!this->map().empty()) {
     typedef ::google::protobuf::Map< ::google::protobuf::int64, ::std::string >::const_pointer
@@ -494,7 +528,7 @@ void Int64ToStringMap::SerializeWithCachedSizes(
       }
     };
 
-    if (output->IsSerializationDeterminstic() &&
+    if (output->IsSerializationDeterministic() &&
         this->map().size() > 1) {
       ::google::protobuf::scoped_array<SortItem> items(
           new SortItem[this->map().size()]);
@@ -563,15 +597,11 @@ void Int64ToStringMap::CheckTypeAndMergeFrom(
 
 void Int64ToStringMap::MergeFrom(const Int64ToStringMap& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.Int64ToStringMap)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void Int64ToStringMap::UnsafeMergeFrom(const Int64ToStringMap& from) {
-  GOOGLE_DCHECK(&from != this);
   map_.MergeFrom(from.map_);
 }
 
@@ -579,11 +609,10 @@ void Int64ToStringMap::CopyFrom(const Int64ToStringMap& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.Int64ToStringMap)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool Int64ToStringMap::IsInitialized() const {
-
   return true;
 }
 
@@ -593,7 +622,6 @@ void Int64ToStringMap::Swap(Int64ToStringMap* other) {
 }
 void Int64ToStringMap::InternalSwap(Int64ToStringMap* other) {
   map_.Swap(&other->map_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -622,9 +650,11 @@ Int64ToStringMap::mutable_map() {
   return map_.MutableMap();
 }
 
-inline const Int64ToStringMap* Int64ToStringMap::internal_default_instance() {
-  return &Int64ToStringMap_default_instance_.get();
-}
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -634,20 +664,19 @@ const int StringToDoubleMap::kMapFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 StringToDoubleMap::StringToDoubleMap()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_DataStructures_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_DataStructures_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.StringToDoubleMap)
 }
-
-void StringToDoubleMap::InitAsDefaultInstance() {
-}
-
 StringToDoubleMap::StringToDoubleMap(const StringToDoubleMap& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  map_.MergeFrom(from.map_);
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.StringToDoubleMap)
 }
 
@@ -669,11 +698,9 @@ void StringToDoubleMap::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const StringToDoubleMap& StringToDoubleMap::default_instance() {
-  protobuf_InitDefaults_DataStructures_2eproto();
+  protobuf_DataStructures_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<StringToDoubleMap> StringToDoubleMap_default_instance_;
 
 StringToDoubleMap* StringToDoubleMap::New(::google::protobuf::Arena* arena) const {
   StringToDoubleMap* n = new StringToDoubleMap;
@@ -694,16 +721,16 @@ bool StringToDoubleMap::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.StringToDoubleMap)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // map<string, double> map = 1;
       case 1: {
-        if (tag == 10) {
-          DO_(input->IncrementRecursionDepth());
-         parse_loop_map:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           StringToDoubleMap_MapEntry::Parser< ::google::protobuf::internal::MapFieldLite<
+              StringToDoubleMap_MapEntry,
               ::std::string, double,
               ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
               ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE,
@@ -718,9 +745,6 @@ bool StringToDoubleMap::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(10)) goto parse_loop_map;
-        input->UnsafeDecrementRecursionDepth();
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -748,6 +772,9 @@ failure:
 void StringToDoubleMap::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.StringToDoubleMap)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
   // map<string, double> map = 1;
   if (!this->map().empty()) {
     typedef ::google::protobuf::Map< ::std::string, double >::const_pointer
@@ -763,7 +790,7 @@ void StringToDoubleMap::SerializeWithCachedSizes(
       }
     };
 
-    if (output->IsSerializationDeterminstic() &&
+    if (output->IsSerializationDeterministic() &&
         this->map().size() > 1) {
       ::google::protobuf::scoped_array<SortItem> items(
           new SortItem[this->map().size()]);
@@ -832,15 +859,11 @@ void StringToDoubleMap::CheckTypeAndMergeFrom(
 
 void StringToDoubleMap::MergeFrom(const StringToDoubleMap& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.StringToDoubleMap)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void StringToDoubleMap::UnsafeMergeFrom(const StringToDoubleMap& from) {
-  GOOGLE_DCHECK(&from != this);
   map_.MergeFrom(from.map_);
 }
 
@@ -848,11 +871,10 @@ void StringToDoubleMap::CopyFrom(const StringToDoubleMap& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.StringToDoubleMap)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool StringToDoubleMap::IsInitialized() const {
-
   return true;
 }
 
@@ -862,7 +884,6 @@ void StringToDoubleMap::Swap(StringToDoubleMap* other) {
 }
 void StringToDoubleMap::InternalSwap(StringToDoubleMap* other) {
   map_.Swap(&other->map_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -891,9 +912,11 @@ StringToDoubleMap::mutable_map() {
   return map_.MutableMap();
 }
 
-inline const StringToDoubleMap* StringToDoubleMap::internal_default_instance() {
-  return &StringToDoubleMap_default_instance_.get();
-}
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -903,20 +926,19 @@ const int Int64ToDoubleMap::kMapFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Int64ToDoubleMap::Int64ToDoubleMap()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_DataStructures_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_DataStructures_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.Int64ToDoubleMap)
 }
-
-void Int64ToDoubleMap::InitAsDefaultInstance() {
-}
-
 Int64ToDoubleMap::Int64ToDoubleMap(const Int64ToDoubleMap& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  map_.MergeFrom(from.map_);
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.Int64ToDoubleMap)
 }
 
@@ -938,11 +960,9 @@ void Int64ToDoubleMap::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const Int64ToDoubleMap& Int64ToDoubleMap::default_instance() {
-  protobuf_InitDefaults_DataStructures_2eproto();
+  protobuf_DataStructures_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<Int64ToDoubleMap> Int64ToDoubleMap_default_instance_;
 
 Int64ToDoubleMap* Int64ToDoubleMap::New(::google::protobuf::Arena* arena) const {
   Int64ToDoubleMap* n = new Int64ToDoubleMap;
@@ -963,16 +983,16 @@ bool Int64ToDoubleMap::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.Int64ToDoubleMap)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // map<int64, double> map = 1;
       case 1: {
-        if (tag == 10) {
-          DO_(input->IncrementRecursionDepth());
-         parse_loop_map:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           Int64ToDoubleMap_MapEntry::Parser< ::google::protobuf::internal::MapFieldLite<
+              Int64ToDoubleMap_MapEntry,
               ::google::protobuf::int64, double,
               ::google::protobuf::internal::WireFormatLite::TYPE_INT64,
               ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE,
@@ -983,9 +1003,6 @@ bool Int64ToDoubleMap::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(10)) goto parse_loop_map;
-        input->UnsafeDecrementRecursionDepth();
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -1013,6 +1030,9 @@ failure:
 void Int64ToDoubleMap::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.Int64ToDoubleMap)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
   // map<int64, double> map = 1;
   if (!this->map().empty()) {
     typedef ::google::protobuf::Map< ::google::protobuf::int64, double >::const_pointer
@@ -1020,7 +1040,7 @@ void Int64ToDoubleMap::SerializeWithCachedSizes(
     typedef ::google::protobuf::internal::SortItem< ::google::protobuf::int64, ConstPtr > SortItem;
     typedef ::google::protobuf::internal::CompareByFirstField<SortItem> Less;
 
-    if (output->IsSerializationDeterminstic() &&
+    if (output->IsSerializationDeterministic() &&
         this->map().size() > 1) {
       ::google::protobuf::scoped_array<SortItem> items(
           new SortItem[this->map().size()]);
@@ -1087,15 +1107,11 @@ void Int64ToDoubleMap::CheckTypeAndMergeFrom(
 
 void Int64ToDoubleMap::MergeFrom(const Int64ToDoubleMap& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.Int64ToDoubleMap)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void Int64ToDoubleMap::UnsafeMergeFrom(const Int64ToDoubleMap& from) {
-  GOOGLE_DCHECK(&from != this);
   map_.MergeFrom(from.map_);
 }
 
@@ -1103,11 +1119,10 @@ void Int64ToDoubleMap::CopyFrom(const Int64ToDoubleMap& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.Int64ToDoubleMap)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool Int64ToDoubleMap::IsInitialized() const {
-
   return true;
 }
 
@@ -1117,7 +1132,6 @@ void Int64ToDoubleMap::Swap(Int64ToDoubleMap* other) {
 }
 void Int64ToDoubleMap::InternalSwap(Int64ToDoubleMap* other) {
   map_.Swap(&other->map_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -1146,9 +1160,6 @@ Int64ToDoubleMap::mutable_map() {
   return map_.MutableMap();
 }
 
-inline const Int64ToDoubleMap* Int64ToDoubleMap::internal_default_instance() {
-  return &Int64ToDoubleMap_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -1158,20 +1169,19 @@ const int StringVector::kVectorFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 StringVector::StringVector()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_DataStructures_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_DataStructures_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.StringVector)
 }
-
-void StringVector::InitAsDefaultInstance() {
-}
-
 StringVector::StringVector(const StringVector& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      vector_(from.vector_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.StringVector)
 }
 
@@ -1193,11 +1203,9 @@ void StringVector::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const StringVector& StringVector::default_instance() {
-  protobuf_InitDefaults_DataStructures_2eproto();
+  protobuf_DataStructures_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<StringVector> StringVector_default_instance_;
 
 StringVector* StringVector::New(::google::protobuf::Arena* arena) const {
   StringVector* n = new StringVector;
@@ -1218,14 +1226,14 @@ bool StringVector::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.StringVector)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // repeated string vector = 1;
       case 1: {
-        if (tag == 10) {
-         parse_vector:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->add_vector()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
@@ -1236,8 +1244,6 @@ bool StringVector::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(10)) goto parse_vector;
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -1265,8 +1271,11 @@ failure:
 void StringVector::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.StringVector)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
   // repeated string vector = 1;
-  for (int i = 0; i < this->vector_size(); i++) {
+  for (int i = 0, n = this->vector_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->vector(i).data(), this->vector(i).length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
@@ -1285,7 +1294,7 @@ size_t StringVector::ByteSizeLong() const {
   // repeated string vector = 1;
   total_size += 1 *
       ::google::protobuf::internal::FromIntSize(this->vector_size());
-  for (int i = 0; i < this->vector_size(); i++) {
+  for (int i = 0, n = this->vector_size(); i < n; i++) {
     total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
       this->vector(i));
   }
@@ -1304,27 +1313,22 @@ void StringVector::CheckTypeAndMergeFrom(
 
 void StringVector::MergeFrom(const StringVector& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.StringVector)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void StringVector::UnsafeMergeFrom(const StringVector& from) {
-  GOOGLE_DCHECK(&from != this);
-  vector_.UnsafeMergeFrom(from.vector_);
+  vector_.MergeFrom(from.vector_);
 }
 
 void StringVector::CopyFrom(const StringVector& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.StringVector)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool StringVector::IsInitialized() const {
-
   return true;
 }
 
@@ -1333,8 +1337,7 @@ void StringVector::Swap(StringVector* other) {
   InternalSwap(other);
 }
 void StringVector::InternalSwap(StringVector* other) {
-  vector_.UnsafeArenaSwap(&other->vector_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
+  vector_.InternalSwap(&other->vector_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -1364,7 +1367,14 @@ void StringVector::set_vector(int index, const ::std::string& value) {
   // @@protoc_insertion_point(field_set:CoreML.Specification.StringVector.vector)
   vector_.Mutable(index)->assign(value);
 }
+#if LANG_CXX11
+void StringVector::set_vector(int index, ::std::string&& value) {
+  // @@protoc_insertion_point(field_set:CoreML.Specification.StringVector.vector)
+  vector_.Mutable(index)->assign(std::move(value));
+}
+#endif
 void StringVector::set_vector(int index, const char* value) {
+  GOOGLE_DCHECK(value != NULL);
   vector_.Mutable(index)->assign(value);
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.StringVector.vector)
 }
@@ -1381,7 +1391,14 @@ void StringVector::add_vector(const ::std::string& value) {
   vector_.Add()->assign(value);
   // @@protoc_insertion_point(field_add:CoreML.Specification.StringVector.vector)
 }
+#if LANG_CXX11
+void StringVector::add_vector(::std::string&& value) {
+  vector_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:CoreML.Specification.StringVector.vector)
+}
+#endif
 void StringVector::add_vector(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
   vector_.Add()->assign(value);
   // @@protoc_insertion_point(field_add_char:CoreML.Specification.StringVector.vector)
 }
@@ -1400,9 +1417,6 @@ StringVector::mutable_vector() {
   return &vector_;
 }
 
-inline const StringVector* StringVector::internal_default_instance() {
-  return &StringVector_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -1412,20 +1426,19 @@ const int Int64Vector::kVectorFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Int64Vector::Int64Vector()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_DataStructures_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_DataStructures_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.Int64Vector)
 }
-
-void Int64Vector::InitAsDefaultInstance() {
-}
-
 Int64Vector::Int64Vector(const Int64Vector& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      vector_(from.vector_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.Int64Vector)
 }
 
@@ -1447,11 +1460,9 @@ void Int64Vector::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const Int64Vector& Int64Vector::default_instance() {
-  protobuf_InitDefaults_DataStructures_2eproto();
+  protobuf_DataStructures_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<Int64Vector> Int64Vector_default_instance_;
 
 Int64Vector* Int64Vector::New(::google::protobuf::Arena* arena) const {
   Int64Vector* n = new Int64Vector;
@@ -1472,24 +1483,25 @@ bool Int64Vector::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.Int64Vector)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // repeated int64 vector = 1;
       case 1: {
-        if (tag == 10) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
                    ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
                  input, this->mutable_vector())));
-        } else if (tag == 8) {
+        } else if (static_cast< ::google::protobuf::uint8>(tag) ==
+                   static_cast< ::google::protobuf::uint8>(8u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
                    ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
-                 1, 10, input, this->mutable_vector())));
+                 1, 10u, input, this->mutable_vector())));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -1517,12 +1529,15 @@ failure:
 void Int64Vector::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.Int64Vector)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
   // repeated int64 vector = 1;
   if (this->vector_size() > 0) {
     ::google::protobuf::internal::WireFormatLite::WriteTag(1, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
     output->WriteVarint32(_vector_cached_byte_size_);
   }
-  for (int i = 0; i < this->vector_size(); i++) {
+  for (int i = 0, n = this->vector_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteInt64NoTag(
       this->vector(i), output);
   }
@@ -1536,12 +1551,8 @@ size_t Int64Vector::ByteSizeLong() const {
 
   // repeated int64 vector = 1;
   {
-    size_t data_size = 0;
-    unsigned int count = this->vector_size();
-    for (unsigned int i = 0; i < count; i++) {
-      data_size += ::google::protobuf::internal::WireFormatLite::
-        Int64Size(this->vector(i));
-    }
+    size_t data_size = ::google::protobuf::internal::WireFormatLite::
+      Int64Size(this->vector_);
     if (data_size > 0) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
@@ -1567,27 +1578,22 @@ void Int64Vector::CheckTypeAndMergeFrom(
 
 void Int64Vector::MergeFrom(const Int64Vector& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.Int64Vector)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void Int64Vector::UnsafeMergeFrom(const Int64Vector& from) {
-  GOOGLE_DCHECK(&from != this);
-  vector_.UnsafeMergeFrom(from.vector_);
+  vector_.MergeFrom(from.vector_);
 }
 
 void Int64Vector::CopyFrom(const Int64Vector& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.Int64Vector)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool Int64Vector::IsInitialized() const {
-
   return true;
 }
 
@@ -1596,8 +1602,7 @@ void Int64Vector::Swap(Int64Vector* other) {
   InternalSwap(other);
 }
 void Int64Vector::InternalSwap(Int64Vector* other) {
-  vector_.UnsafeArenaSwap(&other->vector_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
+  vector_.InternalSwap(&other->vector_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -1638,9 +1643,6 @@ Int64Vector::mutable_vector() {
   return &vector_;
 }
 
-inline const Int64Vector* Int64Vector::internal_default_instance() {
-  return &Int64Vector_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -1650,20 +1652,19 @@ const int DoubleVector::kVectorFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 DoubleVector::DoubleVector()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_DataStructures_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_DataStructures_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.DoubleVector)
 }
-
-void DoubleVector::InitAsDefaultInstance() {
-}
-
 DoubleVector::DoubleVector(const DoubleVector& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      vector_(from.vector_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.DoubleVector)
 }
 
@@ -1685,11 +1686,9 @@ void DoubleVector::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const DoubleVector& DoubleVector::default_instance() {
-  protobuf_InitDefaults_DataStructures_2eproto();
+  protobuf_DataStructures_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<DoubleVector> DoubleVector_default_instance_;
 
 DoubleVector* DoubleVector::New(::google::protobuf::Arena* arena) const {
   DoubleVector* n = new DoubleVector;
@@ -1710,24 +1709,25 @@ bool DoubleVector::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.DoubleVector)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // repeated double vector = 1;
       case 1: {
-        if (tag == 10) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
                  input, this->mutable_vector())));
-        } else if (tag == 9) {
+        } else if (static_cast< ::google::protobuf::uint8>(tag) ==
+                   static_cast< ::google::protobuf::uint8>(9u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 1, 10, input, this->mutable_vector())));
+                 1, 10u, input, this->mutable_vector())));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -1755,14 +1755,15 @@ failure:
 void DoubleVector::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.DoubleVector)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
   // repeated double vector = 1;
   if (this->vector_size() > 0) {
     ::google::protobuf::internal::WireFormatLite::WriteTag(1, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
     output->WriteVarint32(_vector_cached_byte_size_);
-  }
-  for (int i = 0; i < this->vector_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteDoubleNoTag(
-      this->vector(i), output);
+    ::google::protobuf::internal::WireFormatLite::WriteDoubleArray(
+      this->vector().data(), this->vector_size(), output);
   }
 
   // @@protoc_insertion_point(serialize_end:CoreML.Specification.DoubleVector)
@@ -1774,9 +1775,8 @@ size_t DoubleVector::ByteSizeLong() const {
 
   // repeated double vector = 1;
   {
-    size_t data_size = 0;
     unsigned int count = this->vector_size();
-    data_size = 8UL * count;
+    size_t data_size = 8UL * count;
     if (data_size > 0) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
@@ -1802,27 +1802,22 @@ void DoubleVector::CheckTypeAndMergeFrom(
 
 void DoubleVector::MergeFrom(const DoubleVector& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.DoubleVector)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void DoubleVector::UnsafeMergeFrom(const DoubleVector& from) {
-  GOOGLE_DCHECK(&from != this);
-  vector_.UnsafeMergeFrom(from.vector_);
+  vector_.MergeFrom(from.vector_);
 }
 
 void DoubleVector::CopyFrom(const DoubleVector& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.DoubleVector)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool DoubleVector::IsInitialized() const {
-
   return true;
 }
 
@@ -1831,8 +1826,7 @@ void DoubleVector::Swap(DoubleVector* other) {
   InternalSwap(other);
 }
 void DoubleVector::InternalSwap(DoubleVector* other) {
-  vector_.UnsafeArenaSwap(&other->vector_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
+  vector_.InternalSwap(&other->vector_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -1873,9 +1867,6 @@ DoubleVector::mutable_vector() {
   return &vector_;
 }
 
-inline const DoubleVector* DoubleVector::internal_default_instance() {
-  return &DoubleVector_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // @@protoc_insertion_point(namespace_scope)

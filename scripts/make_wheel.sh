@@ -271,7 +271,15 @@ package_wheel() {
     # Change the platform tag embedded in the file name
     temp=`echo $WHEEL_PATH | perl -ne 'print m/(^.*-).*$/'`
     temp=${temp/-cpdarwin-/-cp35m-}
-    platform_tag="macosx_10_12_intel.macosx_10_12_x86_64"
+
+    platform_tag="macosx_10_12_intel.macosx_10_12_x86_64.macosx_10_13_intel.macosx_10_13_x86_64.macosx_10_14_intel.macosx_10_14_x86_64"
+    #  sdk_version=`xcrun --show-sdk-version`
+    #  if [[ $sdk_version =~ ^10\.13 ]]; then
+    #      platform_tag="macosx_10_13_intel.macosx_10_12_x86_64"
+    #  elif [[ $sdk_version =~ ^10\.12 ]]; then
+    #      platform_tag="macosx_10_12_intel.macosx_10_12_x86_64"
+    #  fi
+
     NEW_WHEEL_PATH=${temp}${platform_tag}".whl"
     mv ${WHEEL_PATH} ${NEW_WHEEL_PATH}
     WHEEL_PATH=${NEW_WHEEL_PATH}

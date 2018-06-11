@@ -23,15 +23,23 @@ set(_turi_capi_source_files
   "${__CAPI_SOURCE_DIR}/impl/capi_operators.cpp"
   "${__CAPI_SOURCE_DIR}/impl/capi_flex_enum_list.cpp"
   "${__CAPI_SOURCE_DIR}/impl/capi_wrapper_structs.cpp"
-  "${__CAPI_SOURCE_DIR}/impl/capi_memory_management.cpp")
+  "${__CAPI_SOURCE_DIR}/impl/capi_memory_management.cpp"
+)
+
+make_library(capi
+  SOURCES
+    ${_turi_capi_source_files}
+  REQUIRES
+    unity unity_core numerics
+)
 
 # Create a static version of the library that also bundles in the server initializer
 make_library(TuriCreate_static
   SOURCES
-    ${_turi_capi_source_files}
     default_server_initializer.cpp
   REQUIRES
-    unity unity_core numerics)
+    capi
+)
 
 # A macro that allows building a custom C-API library.
 # 
@@ -56,14 +64,20 @@ macro(make_capi_library NAME)
     set(__capi_INITIALIZER_SOURCE_FILE "${__CAPI_SOURCE_DIR}/default_server_initializer.cpp")
   endif()
 
+  if(TC_BUILD_IOS)
+    set(ios_option "--iOS")
+  endif()
+
   if(${__capi_FRAMEWORK})
+
+    set(FRAMEWORK_PUBLIC_HEADER "TuriCreate.h")
 
     make_library(${NAME}
       SOURCES
-      ${_turi_capi_source_files}
       ${__capi_INITIALIZER_SOURCE_FILE}
        REQUIRES
-       unity unity_core numerics
+       capi
+       ${EXTRA_REQUIRES}
        ${__capi_REQUIRES}
       SHARED_ALL_DEFINED
       SHARED
@@ -72,16 +86,16 @@ macro(make_capi_library NAME)
       DEAD_STRIP
     )
 
-    set_target_properties(TuriCreate PROPERTIES
+    set_target_properties(${NAME} PROPERTIES
       FRAMEWORK TRUE
       FRAMEWORK_VERSION A
       MACOSX_FRAMEWORK_IDENTIFIER "${__capi_FRAMEWORK_IDENTIFIER}"
       MACOSX_FRAMEWORK_INFO_PLIST "${__CAPI_SOURCE_DIR}/framework/Info.plist"
-      PUBLIC_HEADER TuriCreate.h
+      PUBLIC_HEADER ${FRAMEWORK_PUBLIC_HEADER}
       MACOSX_RPATH TRUE
     )
 
-    add_custom_command(TARGET TuriCreate
+    add_custom_command(TARGET ${NAME}
     POST_BUILD
       COMMAND "${__CAPI_SOURCE_DIR}/framework/process_framework.sh"
       --name ${NAME}
@@ -89,6 +103,7 @@ macro(make_capi_library NAME)
       --framework "${CMAKE_CURRENT_BINARY_DIR}/${NAME}.framework"
       --install-location "@rpath"
       --create-tbd-file
+      ${ios_option}
     BYPRODUCTS
       "${CMAKE_CURRENT_BINARY_DIR}/${NAME}.framework/Versions/Current/Header/TuriCreate.h"
       "${CMAKE_CURRENT_BINARY_DIR}/${NAME}.framework/Versions/Current/TuriCreate.tbd"
@@ -99,28 +114,31 @@ macro(make_capi_library NAME)
     add_dependencies(${NAME} "${__CAPI_SOURCE_DIR}/framework/tc_capi_exports_osx.ver")
     add_dependencies(${NAME} "${__CAPI_SOURCE_DIR}/framework/tc_capi_exports_linux.ver")
 
-else()
-  #build out as a regular library
+  else()
+    #build out as a regular library
     make_library(${NAME}
-  SOURCES 
-        ${__capi_INITIALIZER_SOURCE_FILE}
-        ${_turi_capi_source_files}
-   REQUIRES
-         ${__capi_REQUIRES}
-         unity unity_core numerics
-  SHARED_ALL_DEFINED
-  SHARED
-      EXPORT_LINUX_MAP_FILE "${__CAPI_SOURCE_DIR}/framework/tc_capi_exports_linux.ver"
-      EXPORT_OSX_MAP_FILE "${__CAPI_SOURCE_DIR}/framework/tc_capi_exports_osx.ver"
-  DEAD_STRIP
-)
+      SOURCES 
+            ${__capi_INITIALIZER_SOURCE_FILE}
+       REQUIRES
+            capi
+            ${EXTRA_REQUIRES}
+            ${__capi_REQUIRES}
+      SHARED_ALL_DEFINED
+      SHARED
+          EXPORT_LINUX_MAP_FILE "${__CAPI_SOURCE_DIR}/framework/tc_capi_exports_linux.ver"
+          EXPORT_OSX_MAP_FILE "${__CAPI_SOURCE_DIR}/framework/tc_capi_exports_osx.ver"
+      DEAD_STRIP
+    )
 
-endif()
+  endif()
 
 endmacro()
 
 if(${TC_BUILD_CAPI_FRAMEWORK})
-  make_capi_library(TuriCreate FRAMEWORK)
+  make_capi_library(TuriCreate
+    FRAMEWORK
+    FRAMEWORK_IDENTIFIER TuriCreate
+  )
 else()
   make_capi_library(TuriCreate)
 endif()

@@ -1,11 +1,11 @@
-# Image classification
+# Image Classification
 
 Given an image, the goal of an image classifier is to assign it to one
 of a pre-determined number of labels.  Deep learning methods have
 recently been shown to give incredible results on this challenging
 problem. Yet this comes at the cost of extreme sensitivity to model
 hyper-parameters and long training time. This means that one can spend
-months  testing different model configurations, much too long to be
+months testing different model configurations, much too long to be
 worth the effort. However, the image classifier in Turi Create is
 designed to minimize these pains, and making it possible to easily
 create a high quality image classifier model.
@@ -44,8 +44,7 @@ data =  tc.SFrame('cats-dogs.sframe')
 # Make a train-test split
 train_data, test_data = data.random_split(0.8)
 
-# Automatically pick the right model based on your data.
-# Note: Because the dataset is large, model creation may take hours.
+# Create the model
 model = tc.image_classifier.create(train_data, target='label')
 
 # Save predictions to an SArray
@@ -74,7 +73,7 @@ new_cats_dogs['predictions'] = model.predict(new_cats_dogs)
 
 Refer to the following chapters for:
 * [Advanced](advanced-usage.md) usage options including the use of GPUs and deployment to device.
-* [Technical details](how-it-works.md) on how the image classifier works
+* [Technical details](how-it-works.md) on how the image classifier works.
 
 In addition, the following chapters contain more information on how to use classifiers:
 

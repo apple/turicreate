@@ -6,70 +6,80 @@
 
 #include <algorithm>
 
-#include <protobuf/stubs/common.h>
-#include <protobuf/stubs/port.h>
-#include <protobuf/stubs/once.h>
-#include <protobuf/io/coded_stream.h>
-#include <protobuf/wire_format_lite_inl.h>
-#include <protobuf/io/zero_copy_stream_impl_lite.h>
+#include <google/protobuf/stubs/common.h>
+#include <google/protobuf/stubs/port.h>
+#include <google/protobuf/stubs/once.h>
+#include <google/protobuf/io/coded_stream.h>
+#include <google/protobuf/wire_format_lite_inl.h>
+#include <google/protobuf/io/zero_copy_stream_impl_lite.h>
 // @@protoc_insertion_point(includes)
 
 namespace CoreML {
 namespace Specification {
+class GLMClassifier_DoubleArrayDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<GLMClassifier_DoubleArray> {
+} _GLMClassifier_DoubleArray_default_instance_;
+class GLMClassifierDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<GLMClassifier> {
+  public:
+  const ::CoreML::Specification::StringVector* stringclasslabels_;
+  const ::CoreML::Specification::Int64Vector* int64classlabels_;
+} _GLMClassifier_default_instance_;
 
-void protobuf_ShutdownFile_GLMClassifier_2eproto() {
-  GLMClassifier_default_instance_.Shutdown();
-  GLMClassifier_DoubleArray_default_instance_.Shutdown();
+namespace protobuf_GLMClassifier_2eproto {
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTableField
+    const TableStruct::entries[] = {
+  {0, 0, 0, ::google::protobuf::internal::kInvalidMask, 0, 0},
+};
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::AuxillaryParseTableField
+    const TableStruct::aux[] = {
+  ::google::protobuf::internal::AuxillaryParseTableField(),
+};
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTable const
+    TableStruct::schema[] = {
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+};
+
+
+void TableStruct::Shutdown() {
+  _GLMClassifier_DoubleArray_default_instance_.Shutdown();
+  _GLMClassifier_default_instance_.Shutdown();
 }
 
-void protobuf_InitDefaults_GLMClassifier_2eproto_impl() {
+void TableStruct::InitDefaultsImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  ::CoreML::Specification::protobuf_InitDefaults_DataStructures_2eproto();
-  GLMClassifier_default_instance_.DefaultConstruct();
-  GLMClassifier_DoubleArray_default_instance_.DefaultConstruct();
-  GLMClassifier_default_instance_.get_mutable()->InitAsDefaultInstance();
-  GLMClassifier_DoubleArray_default_instance_.get_mutable()->InitAsDefaultInstance();
+  ::google::protobuf::internal::InitProtobufDefaults();
+  ::CoreML::Specification::protobuf_DataStructures_2eproto::InitDefaults();
+  _GLMClassifier_DoubleArray_default_instance_.DefaultConstruct();
+  _GLMClassifier_default_instance_.DefaultConstruct();
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_InitDefaults_GLMClassifier_2eproto_once_);
-void protobuf_InitDefaults_GLMClassifier_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_InitDefaults_GLMClassifier_2eproto_once_,
-                 &protobuf_InitDefaults_GLMClassifier_2eproto_impl);
+void InitDefaults() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &TableStruct::InitDefaultsImpl);
 }
-void protobuf_AddDesc_GLMClassifier_2eproto_impl() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  protobuf_InitDefaults_GLMClassifier_2eproto();
-  ::CoreML::Specification::protobuf_AddDesc_DataStructures_2eproto();
-  ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_GLMClassifier_2eproto);
+void AddDescriptorsImpl() {
+  InitDefaults();
+  ::CoreML::Specification::protobuf_DataStructures_2eproto::AddDescriptors();
+  ::google::protobuf::internal::OnShutdown(&TableStruct::Shutdown);
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_AddDesc_GLMClassifier_2eproto_once_);
-void protobuf_AddDesc_GLMClassifier_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_AddDesc_GLMClassifier_2eproto_once_,
-                 &protobuf_AddDesc_GLMClassifier_2eproto_impl);
+void AddDescriptors() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &AddDescriptorsImpl);
 }
 #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 // Force AddDescriptors() to be called at static initialization time.
-struct StaticDescriptorInitializer_GLMClassifier_2eproto {
-  StaticDescriptorInitializer_GLMClassifier_2eproto() {
-    protobuf_AddDesc_GLMClassifier_2eproto();
+struct StaticDescriptorInitializer {
+  StaticDescriptorInitializer() {
+    AddDescriptors();
   }
-} static_descriptor_initializer_GLMClassifier_2eproto_;
+} static_descriptor_initializer;
 #endif  // GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 
-namespace {
-
-static void MergeFromFail(int line) GOOGLE_ATTRIBUTE_COLD GOOGLE_ATTRIBUTE_NORETURN;
-static void MergeFromFail(int line) {
-  ::google::protobuf::internal::MergeFromFail(__FILE__, line);
-}
-
-}  // namespace
-
-
-// ===================================================================
+}  // namespace protobuf_GLMClassifier_2eproto
 
 bool GLMClassifier_PostEvaluationTransform_IsValid(int value) {
   switch (value) {
@@ -105,25 +115,27 @@ const GLMClassifier_ClassEncoding GLMClassifier::ClassEncoding_MIN;
 const GLMClassifier_ClassEncoding GLMClassifier::ClassEncoding_MAX;
 const int GLMClassifier::ClassEncoding_ARRAYSIZE;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+// ===================================================================
+
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int GLMClassifier_DoubleArray::kValueFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 GLMClassifier_DoubleArray::GLMClassifier_DoubleArray()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_GLMClassifier_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_GLMClassifier_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.GLMClassifier.DoubleArray)
 }
-
-void GLMClassifier_DoubleArray::InitAsDefaultInstance() {
-}
-
 GLMClassifier_DoubleArray::GLMClassifier_DoubleArray(const GLMClassifier_DoubleArray& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      value_(from.value_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.GLMClassifier.DoubleArray)
 }
 
@@ -145,11 +157,9 @@ void GLMClassifier_DoubleArray::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const GLMClassifier_DoubleArray& GLMClassifier_DoubleArray::default_instance() {
-  protobuf_InitDefaults_GLMClassifier_2eproto();
+  protobuf_GLMClassifier_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<GLMClassifier_DoubleArray> GLMClassifier_DoubleArray_default_instance_;
 
 GLMClassifier_DoubleArray* GLMClassifier_DoubleArray::New(::google::protobuf::Arena* arena) const {
   GLMClassifier_DoubleArray* n = new GLMClassifier_DoubleArray;
@@ -170,24 +180,25 @@ bool GLMClassifier_DoubleArray::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.GLMClassifier.DoubleArray)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // repeated double value = 1;
       case 1: {
-        if (tag == 10) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
                  input, this->mutable_value())));
-        } else if (tag == 9) {
+        } else if (static_cast< ::google::protobuf::uint8>(tag) ==
+                   static_cast< ::google::protobuf::uint8>(9u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 1, 10, input, this->mutable_value())));
+                 1, 10u, input, this->mutable_value())));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -215,14 +226,15 @@ failure:
 void GLMClassifier_DoubleArray::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.GLMClassifier.DoubleArray)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
   // repeated double value = 1;
   if (this->value_size() > 0) {
     ::google::protobuf::internal::WireFormatLite::WriteTag(1, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
     output->WriteVarint32(_value_cached_byte_size_);
-  }
-  for (int i = 0; i < this->value_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteDoubleNoTag(
-      this->value(i), output);
+    ::google::protobuf::internal::WireFormatLite::WriteDoubleArray(
+      this->value().data(), this->value_size(), output);
   }
 
   // @@protoc_insertion_point(serialize_end:CoreML.Specification.GLMClassifier.DoubleArray)
@@ -234,9 +246,8 @@ size_t GLMClassifier_DoubleArray::ByteSizeLong() const {
 
   // repeated double value = 1;
   {
-    size_t data_size = 0;
     unsigned int count = this->value_size();
-    data_size = 8UL * count;
+    size_t data_size = 8UL * count;
     if (data_size > 0) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
@@ -262,27 +273,22 @@ void GLMClassifier_DoubleArray::CheckTypeAndMergeFrom(
 
 void GLMClassifier_DoubleArray::MergeFrom(const GLMClassifier_DoubleArray& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.GLMClassifier.DoubleArray)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void GLMClassifier_DoubleArray::UnsafeMergeFrom(const GLMClassifier_DoubleArray& from) {
-  GOOGLE_DCHECK(&from != this);
-  value_.UnsafeMergeFrom(from.value_);
+  value_.MergeFrom(from.value_);
 }
 
 void GLMClassifier_DoubleArray::CopyFrom(const GLMClassifier_DoubleArray& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.GLMClassifier.DoubleArray)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool GLMClassifier_DoubleArray::IsInitialized() const {
-
   return true;
 }
 
@@ -291,436 +297,12 @@ void GLMClassifier_DoubleArray::Swap(GLMClassifier_DoubleArray* other) {
   InternalSwap(other);
 }
 void GLMClassifier_DoubleArray::InternalSwap(GLMClassifier_DoubleArray* other) {
-  value_.UnsafeArenaSwap(&other->value_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
+  value_.InternalSwap(&other->value_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
 ::std::string GLMClassifier_DoubleArray::GetTypeName() const {
   return "CoreML.Specification.GLMClassifier.DoubleArray";
-}
-
-
-// -------------------------------------------------------------------
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int GLMClassifier::kWeightsFieldNumber;
-const int GLMClassifier::kOffsetFieldNumber;
-const int GLMClassifier::kPostEvaluationTransformFieldNumber;
-const int GLMClassifier::kClassEncodingFieldNumber;
-const int GLMClassifier::kStringClassLabelsFieldNumber;
-const int GLMClassifier::kInt64ClassLabelsFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-GLMClassifier::GLMClassifier()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_GLMClassifier_2eproto();
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:CoreML.Specification.GLMClassifier)
-}
-
-void GLMClassifier::InitAsDefaultInstance() {
-}
-
-GLMClassifier::GLMClassifier(const GLMClassifier& from)
-  : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:CoreML.Specification.GLMClassifier)
-}
-
-void GLMClassifier::SharedCtor() {
-  ::memset(&postevaluationtransform_, 0, reinterpret_cast<char*>(&classencoding_) -
-    reinterpret_cast<char*>(&postevaluationtransform_) + sizeof(classencoding_));
-  clear_has_ClassLabels();
-  _cached_size_ = 0;
-}
-
-GLMClassifier::~GLMClassifier() {
-  // @@protoc_insertion_point(destructor:CoreML.Specification.GLMClassifier)
-  SharedDtor();
-}
-
-void GLMClassifier::SharedDtor() {
-  if (has_ClassLabels()) {
-    clear_ClassLabels();
-  }
-}
-
-void GLMClassifier::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const GLMClassifier& GLMClassifier::default_instance() {
-  protobuf_InitDefaults_GLMClassifier_2eproto();
-  return *internal_default_instance();
-}
-
-::google::protobuf::internal::ExplicitlyConstructed<GLMClassifier> GLMClassifier_default_instance_;
-
-GLMClassifier* GLMClassifier::New(::google::protobuf::Arena* arena) const {
-  GLMClassifier* n = new GLMClassifier;
-  if (arena != NULL) {
-    arena->Own(n);
-  }
-  return n;
-}
-
-void GLMClassifier::clear_ClassLabels() {
-// @@protoc_insertion_point(one_of_clear_start:CoreML.Specification.GLMClassifier)
-  switch (ClassLabels_case()) {
-    case kStringClassLabels: {
-      delete ClassLabels_.stringclasslabels_;
-      break;
-    }
-    case kInt64ClassLabels: {
-      delete ClassLabels_.int64classlabels_;
-      break;
-    }
-    case CLASSLABELS_NOT_SET: {
-      break;
-    }
-  }
-  _oneof_case_[0] = CLASSLABELS_NOT_SET;
-}
-
-
-void GLMClassifier::Clear() {
-// @@protoc_insertion_point(message_clear_start:CoreML.Specification.GLMClassifier)
-#if defined(__clang__)
-#define ZR_HELPER_(f) \
-  _Pragma("clang diagnostic push") \
-  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
-  __builtin_offsetof(GLMClassifier, f) \
-  _Pragma("clang diagnostic pop")
-#else
-#define ZR_HELPER_(f) reinterpret_cast<char*>(\
-  &reinterpret_cast<GLMClassifier*>(16)->f)
-#endif
-
-#define ZR_(first, last) do {\
-  ::memset(&(first), 0,\
-           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
-} while (0)
-
-  ZR_(postevaluationtransform_, classencoding_);
-
-#undef ZR_HELPER_
-#undef ZR_
-
-  weights_.Clear();
-  offset_.Clear();
-  clear_ClassLabels();
-}
-
-bool GLMClassifier::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:CoreML.Specification.GLMClassifier)
-  for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(16383);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated .CoreML.Specification.GLMClassifier.DoubleArray weights = 1;
-      case 1: {
-        if (tag == 10) {
-          DO_(input->IncrementRecursionDepth());
-         parse_loop_weights:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
-                input, add_weights()));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(10)) goto parse_loop_weights;
-        input->UnsafeDecrementRecursionDepth();
-        if (input->ExpectTag(18)) goto parse_offset;
-        break;
-      }
-
-      // repeated double offset = 2;
-      case 2: {
-        if (tag == 18) {
-         parse_offset:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
-                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 input, this->mutable_offset())));
-        } else if (tag == 17) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
-                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 1, 18, input, this->mutable_offset())));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(24)) goto parse_postEvaluationTransform;
-        break;
-      }
-
-      // optional .CoreML.Specification.GLMClassifier.PostEvaluationTransform postEvaluationTransform = 3;
-      case 3: {
-        if (tag == 24) {
-         parse_postEvaluationTransform:
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          set_postevaluationtransform(static_cast< ::CoreML::Specification::GLMClassifier_PostEvaluationTransform >(value));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(32)) goto parse_classEncoding;
-        break;
-      }
-
-      // optional .CoreML.Specification.GLMClassifier.ClassEncoding classEncoding = 4;
-      case 4: {
-        if (tag == 32) {
-         parse_classEncoding:
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          set_classencoding(static_cast< ::CoreML::Specification::GLMClassifier_ClassEncoding >(value));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(802)) goto parse_stringClassLabels;
-        break;
-      }
-
-      // optional .CoreML.Specification.StringVector stringClassLabels = 100;
-      case 100: {
-        if (tag == 802) {
-         parse_stringClassLabels:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
-               input, mutable_stringclasslabels()));
-        } else {
-          goto handle_unusual;
-        }
-        goto after_int64classlabels;
-        break;
-      }
-
-      // optional .CoreML.Specification.Int64Vector int64ClassLabels = 101;
-      case 101: {
-        if (tag == 810) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
-               input, mutable_int64classlabels()));
-        } else {
-          goto handle_unusual;
-        }
-       after_int64classlabels:
-        if (input->ExpectAtEnd()) goto success;
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0 ||
-            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:CoreML.Specification.GLMClassifier)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:CoreML.Specification.GLMClassifier)
-  return false;
-#undef DO_
-}
-
-void GLMClassifier::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:CoreML.Specification.GLMClassifier)
-  // repeated .CoreML.Specification.GLMClassifier.DoubleArray weights = 1;
-  for (unsigned int i = 0, n = this->weights_size(); i < n; i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessage(
-      1, this->weights(i), output);
-  }
-
-  // repeated double offset = 2;
-  if (this->offset_size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteTag(2, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
-    output->WriteVarint32(_offset_cached_byte_size_);
-  }
-  for (int i = 0; i < this->offset_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteDoubleNoTag(
-      this->offset(i), output);
-  }
-
-  // optional .CoreML.Specification.GLMClassifier.PostEvaluationTransform postEvaluationTransform = 3;
-  if (this->postevaluationtransform() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      3, this->postevaluationtransform(), output);
-  }
-
-  // optional .CoreML.Specification.GLMClassifier.ClassEncoding classEncoding = 4;
-  if (this->classencoding() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      4, this->classencoding(), output);
-  }
-
-  // optional .CoreML.Specification.StringVector stringClassLabels = 100;
-  if (has_stringclasslabels()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessage(
-      100, *ClassLabels_.stringclasslabels_, output);
-  }
-
-  // optional .CoreML.Specification.Int64Vector int64ClassLabels = 101;
-  if (has_int64classlabels()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessage(
-      101, *ClassLabels_.int64classlabels_, output);
-  }
-
-  // @@protoc_insertion_point(serialize_end:CoreML.Specification.GLMClassifier)
-}
-
-size_t GLMClassifier::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.GLMClassifier)
-  size_t total_size = 0;
-
-  // optional .CoreML.Specification.GLMClassifier.PostEvaluationTransform postEvaluationTransform = 3;
-  if (this->postevaluationtransform() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->postevaluationtransform());
-  }
-
-  // optional .CoreML.Specification.GLMClassifier.ClassEncoding classEncoding = 4;
-  if (this->classencoding() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->classencoding());
-  }
-
-  // repeated .CoreML.Specification.GLMClassifier.DoubleArray weights = 1;
-  {
-    unsigned int count = this->weights_size();
-    total_size += 1UL * count;
-    for (unsigned int i = 0; i < count; i++) {
-      total_size +=
-        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          this->weights(i));
-    }
-  }
-
-  // repeated double offset = 2;
-  {
-    size_t data_size = 0;
-    unsigned int count = this->offset_size();
-    data_size = 8UL * count;
-    if (data_size > 0) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
-    }
-    int cached_size = ::google::protobuf::internal::ToCachedSize(data_size);
-    GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-    _offset_cached_byte_size_ = cached_size;
-    GOOGLE_SAFE_CONCURRENT_WRITES_END();
-    total_size += data_size;
-  }
-
-  switch (ClassLabels_case()) {
-    // optional .CoreML.Specification.StringVector stringClassLabels = 100;
-    case kStringClassLabels: {
-      total_size += 2 +
-        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          *ClassLabels_.stringclasslabels_);
-      break;
-    }
-    // optional .CoreML.Specification.Int64Vector int64ClassLabels = 101;
-    case kInt64ClassLabels: {
-      total_size += 2 +
-        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          *ClassLabels_.int64classlabels_);
-      break;
-    }
-    case CLASSLABELS_NOT_SET: {
-      break;
-    }
-  }
-  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = cached_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void GLMClassifier::CheckTypeAndMergeFrom(
-    const ::google::protobuf::MessageLite& from) {
-  MergeFrom(*::google::protobuf::down_cast<const GLMClassifier*>(&from));
-}
-
-void GLMClassifier::MergeFrom(const GLMClassifier& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.GLMClassifier)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
-
-void GLMClassifier::UnsafeMergeFrom(const GLMClassifier& from) {
-  GOOGLE_DCHECK(&from != this);
-  weights_.MergeFrom(from.weights_);
-  offset_.UnsafeMergeFrom(from.offset_);
-  switch (from.ClassLabels_case()) {
-    case kStringClassLabels: {
-      mutable_stringclasslabels()->::CoreML::Specification::StringVector::MergeFrom(from.stringclasslabels());
-      break;
-    }
-    case kInt64ClassLabels: {
-      mutable_int64classlabels()->::CoreML::Specification::Int64Vector::MergeFrom(from.int64classlabels());
-      break;
-    }
-    case CLASSLABELS_NOT_SET: {
-      break;
-    }
-  }
-  if (from.postevaluationtransform() != 0) {
-    set_postevaluationtransform(from.postevaluationtransform());
-  }
-  if (from.classencoding() != 0) {
-    set_classencoding(from.classencoding());
-  }
-}
-
-void GLMClassifier::CopyFrom(const GLMClassifier& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.GLMClassifier)
-  if (&from == this) return;
-  Clear();
-  UnsafeMergeFrom(from);
-}
-
-bool GLMClassifier::IsInitialized() const {
-
-  return true;
-}
-
-void GLMClassifier::Swap(GLMClassifier* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void GLMClassifier::InternalSwap(GLMClassifier* other) {
-  weights_.UnsafeArenaSwap(&other->weights_);
-  offset_.UnsafeArenaSwap(&other->offset_);
-  std::swap(postevaluationtransform_, other->postevaluationtransform_);
-  std::swap(classencoding_, other->classencoding_);
-  std::swap(ClassLabels_, other->ClassLabels_);
-  std::swap(_oneof_case_[0], other->_oneof_case_[0]);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
-  std::swap(_cached_size_, other->_cached_size_);
-}
-
-::std::string GLMClassifier::GetTypeName() const {
-  return "CoreML.Specification.GLMClassifier";
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -756,11 +338,413 @@ GLMClassifier_DoubleArray::mutable_value() {
   return &value_;
 }
 
-inline const GLMClassifier_DoubleArray* GLMClassifier_DoubleArray::internal_default_instance() {
-  return &GLMClassifier_DoubleArray_default_instance_.get();
-}
-// -------------------------------------------------------------------
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int GLMClassifier::kWeightsFieldNumber;
+const int GLMClassifier::kOffsetFieldNumber;
+const int GLMClassifier::kPostEvaluationTransformFieldNumber;
+const int GLMClassifier::kClassEncodingFieldNumber;
+const int GLMClassifier::kStringClassLabelsFieldNumber;
+const int GLMClassifier::kInt64ClassLabelsFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+GLMClassifier::GLMClassifier()
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_GLMClassifier_2eproto::InitDefaults();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:CoreML.Specification.GLMClassifier)
+}
+GLMClassifier::GLMClassifier(const GLMClassifier& from)
+  : ::google::protobuf::MessageLite(),
+      _internal_metadata_(NULL),
+      weights_(from.weights_),
+      offset_(from.offset_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::memcpy(&postevaluationtransform_, &from.postevaluationtransform_,
+    reinterpret_cast<char*>(&classencoding_) -
+    reinterpret_cast<char*>(&postevaluationtransform_) + sizeof(classencoding_));
+  clear_has_ClassLabels();
+  switch (from.ClassLabels_case()) {
+    case kStringClassLabels: {
+      mutable_stringclasslabels()->::CoreML::Specification::StringVector::MergeFrom(from.stringclasslabels());
+      break;
+    }
+    case kInt64ClassLabels: {
+      mutable_int64classlabels()->::CoreML::Specification::Int64Vector::MergeFrom(from.int64classlabels());
+      break;
+    }
+    case CLASSLABELS_NOT_SET: {
+      break;
+    }
+  }
+  // @@protoc_insertion_point(copy_constructor:CoreML.Specification.GLMClassifier)
+}
+
+void GLMClassifier::SharedCtor() {
+  ::memset(&postevaluationtransform_, 0, reinterpret_cast<char*>(&classencoding_) -
+    reinterpret_cast<char*>(&postevaluationtransform_) + sizeof(classencoding_));
+  clear_has_ClassLabels();
+  _cached_size_ = 0;
+}
+
+GLMClassifier::~GLMClassifier() {
+  // @@protoc_insertion_point(destructor:CoreML.Specification.GLMClassifier)
+  SharedDtor();
+}
+
+void GLMClassifier::SharedDtor() {
+  if (has_ClassLabels()) {
+    clear_ClassLabels();
+  }
+}
+
+void GLMClassifier::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const GLMClassifier& GLMClassifier::default_instance() {
+  protobuf_GLMClassifier_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+GLMClassifier* GLMClassifier::New(::google::protobuf::Arena* arena) const {
+  GLMClassifier* n = new GLMClassifier;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void GLMClassifier::clear_ClassLabels() {
+// @@protoc_insertion_point(one_of_clear_start:CoreML.Specification.GLMClassifier)
+  switch (ClassLabels_case()) {
+    case kStringClassLabels: {
+      delete ClassLabels_.stringclasslabels_;
+      break;
+    }
+    case kInt64ClassLabels: {
+      delete ClassLabels_.int64classlabels_;
+      break;
+    }
+    case CLASSLABELS_NOT_SET: {
+      break;
+    }
+  }
+  _oneof_case_[0] = CLASSLABELS_NOT_SET;
+}
+
+
+void GLMClassifier::Clear() {
+// @@protoc_insertion_point(message_clear_start:CoreML.Specification.GLMClassifier)
+  weights_.Clear();
+  offset_.Clear();
+  ::memset(&postevaluationtransform_, 0, reinterpret_cast<char*>(&classencoding_) -
+    reinterpret_cast<char*>(&postevaluationtransform_) + sizeof(classencoding_));
+  clear_ClassLabels();
+}
+
+bool GLMClassifier::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:CoreML.Specification.GLMClassifier)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(16383u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated .CoreML.Specification.GLMClassifier.DoubleArray weights = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+                input, add_weights()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // repeated double offset = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u)) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, this->mutable_offset())));
+        } else if (static_cast< ::google::protobuf::uint8>(tag) ==
+                   static_cast< ::google::protobuf::uint8>(17u)) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 1, 18u, input, this->mutable_offset())));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .CoreML.Specification.GLMClassifier.PostEvaluationTransform postEvaluationTransform = 3;
+      case 3: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(24u)) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          set_postevaluationtransform(static_cast< ::CoreML::Specification::GLMClassifier_PostEvaluationTransform >(value));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .CoreML.Specification.GLMClassifier.ClassEncoding classEncoding = 4;
+      case 4: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(32u)) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          set_classencoding(static_cast< ::CoreML::Specification::GLMClassifier_ClassEncoding >(value));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .CoreML.Specification.StringVector stringClassLabels = 100;
+      case 100: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(802u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_stringclasslabels()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .CoreML.Specification.Int64Vector int64ClassLabels = 101;
+      case 101: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(810u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_int64classlabels()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:CoreML.Specification.GLMClassifier)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:CoreML.Specification.GLMClassifier)
+  return false;
+#undef DO_
+}
+
+void GLMClassifier::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:CoreML.Specification.GLMClassifier)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .CoreML.Specification.GLMClassifier.DoubleArray weights = 1;
+  for (unsigned int i = 0, n = this->weights_size(); i < n; i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      1, this->weights(i), output);
+  }
+
+  // repeated double offset = 2;
+  if (this->offset_size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteTag(2, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
+    output->WriteVarint32(_offset_cached_byte_size_);
+    ::google::protobuf::internal::WireFormatLite::WriteDoubleArray(
+      this->offset().data(), this->offset_size(), output);
+  }
+
+  // .CoreML.Specification.GLMClassifier.PostEvaluationTransform postEvaluationTransform = 3;
+  if (this->postevaluationtransform() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      3, this->postevaluationtransform(), output);
+  }
+
+  // .CoreML.Specification.GLMClassifier.ClassEncoding classEncoding = 4;
+  if (this->classencoding() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      4, this->classencoding(), output);
+  }
+
+  // .CoreML.Specification.StringVector stringClassLabels = 100;
+  if (has_stringclasslabels()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      100, *ClassLabels_.stringclasslabels_, output);
+  }
+
+  // .CoreML.Specification.Int64Vector int64ClassLabels = 101;
+  if (has_int64classlabels()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      101, *ClassLabels_.int64classlabels_, output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:CoreML.Specification.GLMClassifier)
+}
+
+size_t GLMClassifier::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.GLMClassifier)
+  size_t total_size = 0;
+
+  // repeated .CoreML.Specification.GLMClassifier.DoubleArray weights = 1;
+  {
+    unsigned int count = this->weights_size();
+    total_size += 1UL * count;
+    for (unsigned int i = 0; i < count; i++) {
+      total_size +=
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->weights(i));
+    }
+  }
+
+  // repeated double offset = 2;
+  {
+    unsigned int count = this->offset_size();
+    size_t data_size = 8UL * count;
+    if (data_size > 0) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
+    }
+    int cached_size = ::google::protobuf::internal::ToCachedSize(data_size);
+    GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+    _offset_cached_byte_size_ = cached_size;
+    GOOGLE_SAFE_CONCURRENT_WRITES_END();
+    total_size += data_size;
+  }
+
+  // .CoreML.Specification.GLMClassifier.PostEvaluationTransform postEvaluationTransform = 3;
+  if (this->postevaluationtransform() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->postevaluationtransform());
+  }
+
+  // .CoreML.Specification.GLMClassifier.ClassEncoding classEncoding = 4;
+  if (this->classencoding() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->classencoding());
+  }
+
+  switch (ClassLabels_case()) {
+    // .CoreML.Specification.StringVector stringClassLabels = 100;
+    case kStringClassLabels: {
+      total_size += 2 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *ClassLabels_.stringclasslabels_);
+      break;
+    }
+    // .CoreML.Specification.Int64Vector int64ClassLabels = 101;
+    case kInt64ClassLabels: {
+      total_size += 2 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *ClassLabels_.int64classlabels_);
+      break;
+    }
+    case CLASSLABELS_NOT_SET: {
+      break;
+    }
+  }
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void GLMClassifier::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const GLMClassifier*>(&from));
+}
+
+void GLMClassifier::MergeFrom(const GLMClassifier& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.GLMClassifier)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  weights_.MergeFrom(from.weights_);
+  offset_.MergeFrom(from.offset_);
+  if (from.postevaluationtransform() != 0) {
+    set_postevaluationtransform(from.postevaluationtransform());
+  }
+  if (from.classencoding() != 0) {
+    set_classencoding(from.classencoding());
+  }
+  switch (from.ClassLabels_case()) {
+    case kStringClassLabels: {
+      mutable_stringclasslabels()->::CoreML::Specification::StringVector::MergeFrom(from.stringclasslabels());
+      break;
+    }
+    case kInt64ClassLabels: {
+      mutable_int64classlabels()->::CoreML::Specification::Int64Vector::MergeFrom(from.int64classlabels());
+      break;
+    }
+    case CLASSLABELS_NOT_SET: {
+      break;
+    }
+  }
+}
+
+void GLMClassifier::CopyFrom(const GLMClassifier& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.GLMClassifier)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool GLMClassifier::IsInitialized() const {
+  return true;
+}
+
+void GLMClassifier::Swap(GLMClassifier* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void GLMClassifier::InternalSwap(GLMClassifier* other) {
+  weights_.InternalSwap(&other->weights_);
+  offset_.InternalSwap(&other->offset_);
+  std::swap(postevaluationtransform_, other->postevaluationtransform_);
+  std::swap(classencoding_, other->classencoding_);
+  std::swap(ClassLabels_, other->ClassLabels_);
+  std::swap(_oneof_case_[0], other->_oneof_case_[0]);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::std::string GLMClassifier::GetTypeName() const {
+  return "CoreML.Specification.GLMClassifier";
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
 // GLMClassifier
 
 // repeated .CoreML.Specification.GLMClassifier.DoubleArray weights = 1;
@@ -823,7 +807,7 @@ GLMClassifier::mutable_offset() {
   return &offset_;
 }
 
-// optional .CoreML.Specification.GLMClassifier.PostEvaluationTransform postEvaluationTransform = 3;
+// .CoreML.Specification.GLMClassifier.PostEvaluationTransform postEvaluationTransform = 3;
 void GLMClassifier::clear_postevaluationtransform() {
   postevaluationtransform_ = 0;
 }
@@ -837,7 +821,7 @@ void GLMClassifier::set_postevaluationtransform(::CoreML::Specification::GLMClas
   // @@protoc_insertion_point(field_set:CoreML.Specification.GLMClassifier.postEvaluationTransform)
 }
 
-// optional .CoreML.Specification.GLMClassifier.ClassEncoding classEncoding = 4;
+// .CoreML.Specification.GLMClassifier.ClassEncoding classEncoding = 4;
 void GLMClassifier::clear_classencoding() {
   classencoding_ = 0;
 }
@@ -851,7 +835,7 @@ void GLMClassifier::set_classencoding(::CoreML::Specification::GLMClassifier_Cla
   // @@protoc_insertion_point(field_set:CoreML.Specification.GLMClassifier.classEncoding)
 }
 
-// optional .CoreML.Specification.StringVector stringClassLabels = 100;
+// .CoreML.Specification.StringVector stringClassLabels = 100;
 bool GLMClassifier::has_stringclasslabels() const {
   return ClassLabels_case() == kStringClassLabels;
 }
@@ -899,7 +883,7 @@ void GLMClassifier::set_allocated_stringclasslabels(::CoreML::Specification::Str
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.GLMClassifier.stringClassLabels)
 }
 
-// optional .CoreML.Specification.Int64Vector int64ClassLabels = 101;
+// .CoreML.Specification.Int64Vector int64ClassLabels = 101;
 bool GLMClassifier::has_int64classlabels() const {
   return ClassLabels_case() == kInt64ClassLabels;
 }
@@ -955,9 +939,6 @@ void GLMClassifier::clear_has_ClassLabels() {
 }
 GLMClassifier::ClassLabelsCase GLMClassifier::ClassLabels_case() const {
   return GLMClassifier::ClassLabelsCase(_oneof_case_[0]);
-}
-inline const GLMClassifier* GLMClassifier::internal_default_instance() {
-  return &GLMClassifier_default_instance_.get();
 }
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 

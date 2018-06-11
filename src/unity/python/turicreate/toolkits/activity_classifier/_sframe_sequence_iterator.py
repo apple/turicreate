@@ -16,6 +16,12 @@ import numpy as _np
 
 from turicreate import extensions as _extensions
 
+class AcBatchData(object):
+    def __init__(self, data, labels=None, weights=None, pad=0):
+        self.data = data
+        self.labels = labels
+        self.weights = weights
+        self.pad = pad
 
 def prep_data(data, features, session_id, prediction_window, predictions_in_chunk, target=None, verbose=True):
     """
@@ -45,17 +51,20 @@ def _load_into_numpy(sf, np_array, start, end, strides=None, shape=None):
     np_array[:] = 0.0
     np_array_2d = np_array.reshape((np_array.shape[0], np_array.shape[1] * np_array.shape[2]))
     _extensions.sframe_load_to_numpy(sf, np_array.ctypes.data,
-                                     np_array_2d.strides, np_array_2d.shape[1:], start, end)
+                                     np_array_2d.strides, np_array_2d.shape,
+                                     start, end)
 
 
 class SFrameSequenceIter(_mx.io.DataIter):
     def __init__(self, chunked_dataset, features_size, prediction_window,
-                 predictions_in_chunk, batch_size, use_target=False, use_pad=False):
+                 predictions_in_chunk, batch_size,
+                 use_target=False, use_pad=False, mx_output=True):
 
         self.dataset = chunked_dataset
         self.use_target = use_target
         self.batch_size = batch_size
         self.use_pad = use_pad
+        self.mx_style_output = mx_output
 
         self.num_rows = len(self.dataset)
         self.num_batches = _ceil_dev(len(self.dataset), self.batch_size)
@@ -107,7 +116,6 @@ class SFrameSequenceIter(_mx.io.DataIter):
         if self.batch_idx < self.num_batches:
 
             np_features , np_targets , np_weights = self.fetch_curr_batch_as_numpy()
-            features = _mx.nd.array(np_features)
 
             if self.use_pad and (self.batch_idx == self.num_batches - 1):
                 pad = self.batch_size - self.num_rows % self.batch_size
@@ -115,13 +123,16 @@ class SFrameSequenceIter(_mx.io.DataIter):
                 pad = 0
 
             self.batch_idx += 1
-
-            if not self.use_target:
-                return _mx.io.DataBatch([features], label=None, pad=pad)
+            if self.mx_style_output:
+                features = _mx.nd.array(np_features)
+                if not self.use_target:
+                    return _mx.io.DataBatch([features], label=None, pad=pad)
+                else:
+                    targets = _mx.nd.array(np_targets)
+                    weights = _mx.nd.array(np_weights)
+                    return _mx.io.DataBatch(
+                        [features], [targets, weights], pad=pad)
             else:
-                targets = _mx.nd.array(np_targets)
-                weights = _mx.nd.array(np_weights)
-                return _mx.io.DataBatch(
-                    [features], [targets, weights], pad=pad)
+                return AcBatchData(np_features, np_targets, np_weights, pad)
         else:
             raise StopIteration

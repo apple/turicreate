@@ -329,7 +329,7 @@ class StickyTable extends PureComponent {
     
       
         if(document.getElementById("data_container")){
-            document.getElementById("data_container").style.height =  this.getModeHeights()*3 - 30 + "px"
+            document.getElementById("data_container").style.height =  this.getModeHeights()*4 - 30 + "px"
             document.getElementById("data_container").style.width = (this.xScrollbar.clientWidth - 30) + "px";
             document.getElementById("data_container").style.left = 15 + "px";
             document.getElementById("data_container").style.top = column_offset_top + this.getModeHeights() + 15 + "px";

@@ -3,6 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+#include <sframe/sframe_compact.hpp>
 #include <sframe/sframe.hpp>
 #include <sframe/sframe_index_file.hpp>
 #include <sframe/sarray_index_file.hpp>
@@ -213,6 +214,7 @@ void sframe_save(const sframe& sf_source,
   if (has_legacy_sframe) {
     sframe_save_naive(sf_source, index_file); 
   } else {
+    sframe_fast_compact(sf_source);
     sframe_save_blockwise(sf_source, index_file);
   }
 }

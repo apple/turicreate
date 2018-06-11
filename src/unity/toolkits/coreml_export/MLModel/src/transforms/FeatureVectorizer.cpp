@@ -1,8 +1,11 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
- *
- * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
- */
+//
+//  FeatureVectorizer.cpp
+//  libmlmodelspec
+//
+//  Created by Hoyt Koepke on 11/24/16.
+//  Copyright © 2016 Apple. All rights reserved.
+//
+
 #include "FeatureVectorizer.hpp"
 #include "../Format.hpp"
 
@@ -38,10 +41,10 @@ namespace CoreML {
     auto p = m_spec->featurevectorizer();
     auto container = p.inputlist();
   
-    std::vector<std::pair<std::string, size_t> > out(container.size());
+    std::vector<std::pair<std::string, size_t> > out(static_cast<size_t>(container.size()));
     
     for(int i = 0; i < container.size(); ++i) {
-      out[i] = {container[i].inputcolumn(), container[i].inputdimensions()};
+      out[static_cast<size_t>(i)] = {container[i].inputcolumn(), container[i].inputdimensions()};
     }
     
     return out;

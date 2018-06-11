@@ -22,7 +22,9 @@ from .. import _image_feature_extractor
 from turicreate.toolkits._internal_utils import (_raise_error_if_not_sframe,
                                                  _numeric_param_check_range)
 
-def create(dataset, label = None, feature = None, model = 'resnet-50', verbose = True):
+
+def create(dataset, label = None, feature = None, model = 'resnet-50', verbose = True,
+           batch_size = 64):
     """
     Create a :class:`ImageSimilarityModel` model.
 
@@ -46,12 +48,17 @@ def create(dataset, label = None, feature = None, model = 'resnet-50', verbose =
         Uses a pretrained model to bootstrap an image similarity model
 
            - "resnet-50" : Uses a pretrained resnet model.
+           - "squeezenet_v1.1" : Uses a pretrained squeezenet model.
 
         Models are downloaded from the internet if not available locally. Once
         downloaded, the models are cached for future use.
 
     verbose : bool, optional
         If True, print progress updates and model details.
+
+    batch_size : int, optional
+        If you are getting memory errors, try decreasing this value. If you
+        have a powerful computer, increasing this value may improve performance.
 
     Returns
     -------
@@ -97,18 +104,19 @@ def create(dataset, label = None, feature = None, model = 'resnet-50', verbose =
         raise _ToolkitError("Row label column '%s' does not exist" % label)
     if (feature is not None) and (feature not in dataset.column_names()):
         raise _ToolkitError("Image feature column '%s' does not exist" % feature)
+    if(batch_size < 1):
+        raise ValueError("'batch_size' must be greater than or equal to 1")
 
     # Set defaults
     if feature is None:
         feature = _tkutl._find_only_image_column(dataset)
 
-    # Load pre-trained model & feature extractor
-    ptModel = _pre_trained_models.MODELS[model]()
-    feature_extractor = _image_feature_extractor.MXFeatureExtractor(ptModel)
+    feature_extractor = _image_feature_extractor._create_feature_extractor(model)
 
     # Extract features
     extracted_features = _tc.SFrame({
-        '__image_features__': feature_extractor.extract_features(dataset, feature, verbose=verbose),
+        '__image_features__': feature_extractor.extract_features(dataset, feature, verbose=verbose,
+                                                                 batch_size=batch_size),
         })
 
     # Train a similarity model using the extracted features
@@ -117,12 +125,14 @@ def create(dataset, label = None, feature = None, model = 'resnet-50', verbose =
     nn_model = _tc.nearest_neighbors.create(extracted_features, label = label,
             features = ['__image_features__'], verbose = verbose)
 
+    input_image_shape = _pre_trained_models.MODELS[model].input_image_shape
+
     # Save the model
     state = {
         'similarity_model': nn_model,
         'model': model,
         'feature_extractor': feature_extractor,
-        'input_image_shape': ptModel.input_image_shape,
+        'input_image_shape': input_image_shape,
         'label': label,
         'feature': feature,
         'num_features': 1,
@@ -191,10 +201,7 @@ class ImageSimilarityModel(_CustomModel):
         _tkutl._model_version_check(version, cls._PYTHON_IMAGE_SIMILARITY_VERSION)
         from turicreate.toolkits.nearest_neighbors import NearestNeighborsModel
         state['similarity_model'] = NearestNeighborsModel(state['similarity_model'])
-        # Load pre-trained model & feature extractor
-        ptModel = _pre_trained_models.MODELS[state['model']]()
-        feature_extractor = _image_feature_extractor.MXFeatureExtractor(ptModel)
-        state['feature_extractor'] = feature_extractor
+        state['feature_extractor'] = _image_feature_extractor._create_feature_extractor(state['model'])
         state['input_image_shape'] = tuple([int(i) for i in state['input_image_shape']])
         return ImageSimilarityModel(state)
 
@@ -251,12 +258,13 @@ class ImageSimilarityModel(_CustomModel):
         section_titles = ['Schema', 'Training summary']
         return([model_fields, training_fields], section_titles)
 
-    def _extract_features(self, dataset):
+    def _extract_features(self, dataset, verbose, batch_size = 64):
         return _tc.SFrame({
-            '__image_features__': self.feature_extractor.extract_features(dataset, self.feature)
+            '__image_features__': self.feature_extractor.extract_features(dataset, self.feature, verbose=verbose,
+                                                                          batch_size=batch_size)
             })
 
-    def query(self, dataset, label=None, k=5, radius=None, verbose=True):
+    def query(self, dataset, label=None, k=5, radius=None, verbose=True, batch_size=64):
         """
         For each image, retrieve the nearest neighbors from the model's stored
         data. In general, the query dataset does not need to be the same as
@@ -289,6 +297,10 @@ class ImageSimilarityModel(_CustomModel):
 
         verbose: bool, optional
             If True, print progress updates and model details.
+
+        batch_size : int, optional
+            If you are getting memory errors, try decreasing this value. If you
+            have a powerful computer, increasing this value may improve performance.
 
         Returns
         -------
@@ -327,13 +339,15 @@ class ImageSimilarityModel(_CustomModel):
         """
         if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image)):
             raise TypeError('dataset must be either an SFrame, SArray or turicreate.Image')
+        if(batch_size < 1):
+            raise ValueError("'batch_size' must be greater than or equal to 1")
 
         if isinstance(dataset, _tc.SArray):
             dataset = _tc.SFrame({self.feature: dataset})
         elif isinstance(dataset, _tc.Image):
             dataset = _tc.SFrame({self.feature: [dataset]})
 
-        extracted_features = self._extract_features(dataset)
+        extracted_features = self._extract_features(dataset, verbose=verbose, batch_size=batch_size)
         if label is not None:
             extracted_features[label] = dataset[label]
         return self.similarity_model.query(extracted_features, label, k, radius, verbose)
@@ -477,8 +491,11 @@ class ImageSimilarityModel(_CustomModel):
         reference_data = _np.array(_tc.extensions._nearest_neighbors._nn_get_reference_data(proxy))
         num_examples, embedding_size = reference_data.shape
 
+        ptModel = _pre_trained_models.MODELS[self.model]()
+        feature_extractor = _image_feature_extractor.MXFeatureExtractor(ptModel)
+
         # Get the input and output names
-        input_name = self.feature_extractor.data_layer
+        input_name = feature_extractor.data_layer
         output_name = 'distance'
         input_features = [(input_name, _datatypes.Array(*(self.input_image_shape)))]
         output_features = [(output_name, _datatypes.Array(num_examples))]
@@ -488,16 +505,16 @@ class ImageSimilarityModel(_CustomModel):
             input_features, output_features, mode=None)
 
         # Convert the feature extraction network
-        mx_feature_extractor = self.feature_extractor._get_mx_module(
-            self.feature_extractor.ptModel.mxmodel,
-            self.feature_extractor.data_layer,
-            self.feature_extractor.feature_layer,
-            self.feature_extractor.context,
+        mx_feature_extractor = feature_extractor._get_mx_module(
+            feature_extractor.ptModel.mxmodel,
+            feature_extractor.data_layer,
+            feature_extractor.feature_layer,
+            feature_extractor.context,
             self.input_image_shape
         )
         batch_input_shape = (1, ) + self.input_image_shape
         _mxnet_converter.convert(mx_feature_extractor, mode=None,
-                                 input_shape={input_name: batch_input_shape},
+                                 input_shape=[(input_name, batch_input_shape)],
                                  builder=builder, verbose=False)
 
         # To add the nearest neighbors model we add calculation of the euclidean 
@@ -507,7 +524,7 @@ class ImageSimilarityModel(_CustomModel):
         V = reference_data
         v_squared = (V * V).sum(axis=1)
 
-        feature_layer = self.feature_extractor.feature_layer
+        feature_layer = feature_extractor.feature_layer
         builder.add_inner_product('v^2-2vu', W=-2 * V, b=v_squared, has_bias=True,
                                   input_channels=embedding_size, output_channels=num_examples,
                                   input_name=feature_layer, output_name='v^2-2vu')

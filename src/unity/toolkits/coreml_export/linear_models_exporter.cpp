@@ -42,14 +42,14 @@ void export_linear_regression_as_model_asset(
   lr.setWeights({one_hot_coefs});
 
   lr.addInput("__vectorized_features__",
-              CoreML::FeatureType::Array({metadata->num_dimensions()}));
+              CoreML::FeatureType::Array({static_cast<int64_t>(metadata->num_dimensions())}));
   lr.addOutput(metadata->target_column_name(), CoreML::FeatureType::Double());
 
   pipeline.add(lr);
   pipeline.addOutput(metadata->target_column_name(), CoreML::FeatureType::Double());
 
   // Add metadata
-  add_metadata(pipeline.m_spec, context);
+  add_metadata(pipeline.getProto(), context);
 
   CoreML::Result r = pipeline.save(filename);
   if(!r.good()) {
@@ -115,7 +115,7 @@ void export_linear_svm_as_model_asset(
 
   // Model inputs and output
   model.addInput("__vectorized_features__",
-              CoreML::FeatureType::Array({metadata->num_dimensions()}));
+              CoreML::FeatureType::Array({static_cast<int64_t>(metadata->num_dimensions())}));
   model.addOutput(metadata->target_column_name(), target_output_data_type);
   model.addOutput(prob_column_name, target_additional_data_type);
 
@@ -125,7 +125,7 @@ void export_linear_svm_as_model_asset(
   pipeline.addOutput(prob_column_name, target_additional_data_type);
 
   // Add metadata
-  add_metadata(pipeline.m_spec, context);
+  add_metadata(pipeline.getProto(), context);
 
   // Save pipeline
   CoreML::Result r = pipeline.save(filename);
@@ -210,7 +210,7 @@ void export_logistic_model_as_model_asset(
 
   // Model inputs and output
   model.addInput("__vectorized_features__",
-              CoreML::FeatureType::Array({metadata->num_dimensions()}));
+              CoreML::FeatureType::Array({static_cast<int64_t>(metadata->num_dimensions())}));
   model.addOutput(metadata->target_column_name(), target_output_data_type);
   model.addOutput(prob_column_name, target_additional_data_type);
 
@@ -220,7 +220,7 @@ void export_logistic_model_as_model_asset(
   pipeline.addOutput(prob_column_name, target_additional_data_type);
 
   // Add metadata
-  add_metadata(pipeline.m_spec, context);
+  add_metadata(pipeline.getProto(), context);
 
   // Save pipeline
   CoreML::Result r = pipeline.save(filename);

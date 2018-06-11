@@ -6,13 +6,16 @@
 #include <logger/logger.hpp>
 #include <fileio/union_fstream.hpp>
 #include <fileio/cache_stream.hpp>
+
+#ifdef TC_ENABLE_REMOTEFS
 #include <fileio/s3_fstream.hpp>
 #include <fileio/curl_downloader.hpp>
 #include <fileio/file_download_cache.hpp>
+#include <fileio/hdfs.hpp>
+#endif
 #include <fileio/sanitize_url.hpp>
 #include <boost/algorithm/string.hpp>
 #include <fileio/fs_utils.hpp>
-#include <fileio/hdfs.hpp>
 namespace turi {
 /**
  * A simple union of std::fstream and turi::hdfs::fstream, and turi::fileio::cache_stream.
@@ -34,7 +37,20 @@ union_fstream::union_fstream(std::string url,
 
   bool is_output_stream = (mode & std::ios_base::out);
 
-  if(boost::starts_with(url, "hdfs://")) {
+  if (boost::starts_with(url, fileio::get_cache_prefix())) {
+    // Cache file type
+    type = CACHE;
+    if (is_output_stream) {
+      output_stream.reset(new fileio::ocache_stream(url));
+    } else {
+      auto cachestream = std::make_shared<fileio::icache_stream>(url);
+      input_stream = (*cachestream)->get_underlying_stream();
+      if (input_stream == nullptr) input_stream = cachestream;
+      m_file_size = (*cachestream)->file_size();
+      original_input_stream_handle = std::static_pointer_cast<std::istream>(cachestream);
+    }
+#ifdef TC_ENABLE_REMOTEFS
+  } else if(boost::starts_with(url, "hdfs://")) {
     // HDFS file type
     type = HDFS;
     std::string host, port, path;
@@ -56,18 +72,6 @@ union_fstream::union_fstream(std::string url,
     } catch(...) {
       log_and_throw_io_failure("Unable to open " + url);
     }
-  } else if (boost::starts_with(url, fileio::get_cache_prefix())) {
-    // Cache file type
-    type = CACHE;
-    if (is_output_stream) {
-      output_stream.reset(new fileio::ocache_stream(url));
-    } else {
-      auto cachestream = std::make_shared<fileio::icache_stream>(url);
-      input_stream = (*cachestream)->get_underlying_stream();
-      if (input_stream == nullptr) input_stream = cachestream;
-      m_file_size = (*cachestream)->file_size();
-      original_input_stream_handle = std::static_pointer_cast<std::istream>(cachestream);
-    }
   } else if (boost::starts_with(url, "s3://")) {
     // the S3 file type currently works by download/uploading a local file
     // i.e. the s3_stream simply remaps a local file stream
@@ -81,6 +85,7 @@ union_fstream::union_fstream(std::string url,
       m_file_size = (*s3stream)->file_size();
       original_input_stream_handle = std::static_pointer_cast<std::istream>(s3stream);
     }
+#endif
   } else {
     // Remove the preceeding file:// if it's a local URL.
     if(boost::algorithm::starts_with(url, "file://")) {
@@ -96,6 +101,7 @@ union_fstream::union_fstream(std::string url,
         log_and_throw_io_failure("Cannot open " + url + " for writing");
       }
     } else {
+#ifdef TC_ENABLE_REMOTEFS
       url = file_download_cache::get_instance().get_file(url);
       input_stream.reset(new std::ifstream(url, std::ifstream::binary));
       if (!input_stream->good()) {
@@ -111,6 +117,9 @@ union_fstream::union_fstream(std::string url,
           m_file_size = fin.tellg();
         }
       }
+#else
+      log_and_throw_io_failure("Cannot open " + url + " for reading");
+#endif
     }
   }
 

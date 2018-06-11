@@ -6,9 +6,8 @@ namespace turi {
     std::shared_ptr<Plot> plot_columnwise_summary(
       const std::string& path_to_client, std::shared_ptr<unity_sframe_base> sf) {
 
-      logprogress_stream << "Materializing SFrame..." << std::endl;
+      logprogress_stream << "Materializing SFrame" << std::endl;
       sf->materialize();
-      logprogress_stream << "Done." << std::endl;
 
       if (sf->size() == 0) {
         log_and_throw("Nothing to show; SFrame is empty.");

@@ -443,7 +443,7 @@ std::shared_ptr<coreml::MLModelWrapper> linear_regression::export_to_coreml() {
   lr.setWeights({one_hot_coefs});
 
   lr.addInput("__vectorized_features__",
-              CoreML::FeatureType::Array({ml_mdata->num_dimensions()}));
+              CoreML::FeatureType::Array({static_cast<int64_t>(ml_mdata->num_dimensions())}));
   lr.addOutput(ml_mdata->target_column_name(), CoreML::FeatureType::Double());
 
   pipeline.add(lr);
@@ -455,7 +455,7 @@ std::shared_ptr<coreml::MLModelWrapper> linear_regression::export_to_coreml() {
     {"version", std::to_string(get_version())},
     {"short_description", "Linear regression model."}};
 
-  add_metadata(pipeline.m_spec, context_metadata);
+  add_metadata(pipeline.getProto(), context_metadata);
 
   auto model_wrapper = std::make_shared<coreml::MLModelWrapper>(std::make_shared<CoreML::Pipeline>(pipeline));
 

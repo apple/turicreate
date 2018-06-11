@@ -6,65 +6,83 @@
 
 #include <algorithm>
 
-#include <protobuf/stubs/common.h>
-#include <protobuf/stubs/port.h>
-#include <protobuf/stubs/once.h>
-#include <protobuf/io/coded_stream.h>
-#include <protobuf/wire_format_lite_inl.h>
-#include <protobuf/io/zero_copy_stream_impl_lite.h>
+#include <google/protobuf/stubs/common.h>
+#include <google/protobuf/stubs/port.h>
+#include <google/protobuf/stubs/once.h>
+#include <google/protobuf/io/coded_stream.h>
+#include <google/protobuf/wire_format_lite_inl.h>
+#include <google/protobuf/io/zero_copy_stream_impl_lite.h>
 // @@protoc_insertion_point(includes)
 
 namespace CoreML {
 namespace Specification {
+class ImputerDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<Imputer> {
+  public:
+  double imputeddoublevalue_;
+  ::google::protobuf::int64 imputedint64value_;
+  ::google::protobuf::internal::ArenaStringPtr imputedstringvalue_;
+  const ::CoreML::Specification::DoubleVector* imputeddoublearray_;
+  const ::CoreML::Specification::Int64Vector* imputedint64array_;
+  const ::CoreML::Specification::StringToDoubleMap* imputedstringdictionary_;
+  const ::CoreML::Specification::Int64ToDoubleMap* imputedint64dictionary_;
+  double replacedoublevalue_;
+  ::google::protobuf::int64 replaceint64value_;
+  ::google::protobuf::internal::ArenaStringPtr replacestringvalue_;
+} _Imputer_default_instance_;
 
-void protobuf_ShutdownFile_Imputer_2eproto() {
-  Imputer_default_instance_.Shutdown();
+namespace protobuf_Imputer_2eproto {
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTableField
+    const TableStruct::entries[] = {
+  {0, 0, 0, ::google::protobuf::internal::kInvalidMask, 0, 0},
+};
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::AuxillaryParseTableField
+    const TableStruct::aux[] = {
+  ::google::protobuf::internal::AuxillaryParseTableField(),
+};
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTable const
+    TableStruct::schema[] = {
+  { NULL, NULL, 0, -1, -1, false },
+};
+
+
+void TableStruct::Shutdown() {
+  _Imputer_default_instance_.Shutdown();
 }
 
-void protobuf_InitDefaults_Imputer_2eproto_impl() {
+void TableStruct::InitDefaultsImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  ::CoreML::Specification::protobuf_InitDefaults_DataStructures_2eproto();
-  ::google::protobuf::internal::GetEmptyString();
-  Imputer_default_instance_.DefaultConstruct();
-  Imputer_default_instance_.get_mutable()->InitAsDefaultInstance();
+  ::google::protobuf::internal::InitProtobufDefaults();
+  ::CoreML::Specification::protobuf_DataStructures_2eproto::InitDefaults();
+  _Imputer_default_instance_.DefaultConstruct();
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_InitDefaults_Imputer_2eproto_once_);
-void protobuf_InitDefaults_Imputer_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_InitDefaults_Imputer_2eproto_once_,
-                 &protobuf_InitDefaults_Imputer_2eproto_impl);
+void InitDefaults() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &TableStruct::InitDefaultsImpl);
 }
-void protobuf_AddDesc_Imputer_2eproto_impl() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  protobuf_InitDefaults_Imputer_2eproto();
-  ::CoreML::Specification::protobuf_AddDesc_DataStructures_2eproto();
-  ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_Imputer_2eproto);
+void AddDescriptorsImpl() {
+  InitDefaults();
+  ::CoreML::Specification::protobuf_DataStructures_2eproto::AddDescriptors();
+  ::google::protobuf::internal::OnShutdown(&TableStruct::Shutdown);
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_AddDesc_Imputer_2eproto_once_);
-void protobuf_AddDesc_Imputer_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_AddDesc_Imputer_2eproto_once_,
-                 &protobuf_AddDesc_Imputer_2eproto_impl);
+void AddDescriptors() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &AddDescriptorsImpl);
 }
 #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 // Force AddDescriptors() to be called at static initialization time.
-struct StaticDescriptorInitializer_Imputer_2eproto {
-  StaticDescriptorInitializer_Imputer_2eproto() {
-    protobuf_AddDesc_Imputer_2eproto();
+struct StaticDescriptorInitializer {
+  StaticDescriptorInitializer() {
+    AddDescriptors();
   }
-} static_descriptor_initializer_Imputer_2eproto_;
+} static_descriptor_initializer;
 #endif  // GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 
-namespace {
-
-static void MergeFromFail(int line) GOOGLE_ATTRIBUTE_COLD GOOGLE_ATTRIBUTE_NORETURN;
-static void MergeFromFail(int line) {
-  ::google::protobuf::internal::MergeFromFail(__FILE__, line);
-}
-
-}  // namespace
+}  // namespace protobuf_Imputer_2eproto
 
 
 // ===================================================================
@@ -83,20 +101,70 @@ const int Imputer::kReplaceStringValueFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Imputer::Imputer()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_Imputer_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_Imputer_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.Imputer)
 }
-
-void Imputer::InitAsDefaultInstance() {
-}
-
 Imputer::Imputer(const Imputer& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  clear_has_ImputedValue();
+  switch (from.ImputedValue_case()) {
+    case kImputedDoubleValue: {
+      set_imputeddoublevalue(from.imputeddoublevalue());
+      break;
+    }
+    case kImputedInt64Value: {
+      set_imputedint64value(from.imputedint64value());
+      break;
+    }
+    case kImputedStringValue: {
+      set_imputedstringvalue(from.imputedstringvalue());
+      break;
+    }
+    case kImputedDoubleArray: {
+      mutable_imputeddoublearray()->::CoreML::Specification::DoubleVector::MergeFrom(from.imputeddoublearray());
+      break;
+    }
+    case kImputedInt64Array: {
+      mutable_imputedint64array()->::CoreML::Specification::Int64Vector::MergeFrom(from.imputedint64array());
+      break;
+    }
+    case kImputedStringDictionary: {
+      mutable_imputedstringdictionary()->::CoreML::Specification::StringToDoubleMap::MergeFrom(from.imputedstringdictionary());
+      break;
+    }
+    case kImputedInt64Dictionary: {
+      mutable_imputedint64dictionary()->::CoreML::Specification::Int64ToDoubleMap::MergeFrom(from.imputedint64dictionary());
+      break;
+    }
+    case IMPUTEDVALUE_NOT_SET: {
+      break;
+    }
+  }
+  clear_has_ReplaceValue();
+  switch (from.ReplaceValue_case()) {
+    case kReplaceDoubleValue: {
+      set_replacedoublevalue(from.replacedoublevalue());
+      break;
+    }
+    case kReplaceInt64Value: {
+      set_replaceint64value(from.replaceint64value());
+      break;
+    }
+    case kReplaceStringValue: {
+      set_replacestringvalue(from.replacestringvalue());
+      break;
+    }
+    case REPLACEVALUE_NOT_SET: {
+      break;
+    }
+  }
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.Imputer)
 }
 
@@ -126,11 +194,9 @@ void Imputer::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const Imputer& Imputer::default_instance() {
-  protobuf_InitDefaults_Imputer_2eproto();
+  protobuf_Imputer_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<Imputer> Imputer_default_instance_;
 
 Imputer* Imputer::New(::google::protobuf::Arena* arena) const {
   Imputer* n = new Imputer;
@@ -213,13 +279,14 @@ bool Imputer::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.Imputer)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional double imputedDoubleValue = 1;
+      // double imputedDoubleValue = 1;
       case 1: {
-        if (tag == 9) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(9u)) {
           clear_ImputedValue();
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
@@ -228,13 +295,13 @@ bool Imputer::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        goto after_imputedint64dictionary;
         break;
       }
 
-      // optional int64 imputedInt64Value = 2;
+      // int64 imputedInt64Value = 2;
       case 2: {
-        if (tag == 16) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(16u)) {
           clear_ImputedValue();
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
@@ -243,13 +310,13 @@ bool Imputer::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        goto after_imputedint64dictionary;
         break;
       }
 
-      // optional string imputedStringValue = 3;
+      // string imputedStringValue = 3;
       case 3: {
-        if (tag == 26) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(26u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_imputedstringvalue()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
@@ -259,64 +326,61 @@ bool Imputer::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        goto after_imputedint64dictionary;
         break;
       }
 
-      // optional .CoreML.Specification.DoubleVector imputedDoubleArray = 4;
+      // .CoreML.Specification.DoubleVector imputedDoubleArray = 4;
       case 4: {
-        if (tag == 34) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(34u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_imputeddoublearray()));
         } else {
           goto handle_unusual;
         }
-        goto after_imputedint64dictionary;
         break;
       }
 
-      // optional .CoreML.Specification.Int64Vector imputedInt64Array = 5;
+      // .CoreML.Specification.Int64Vector imputedInt64Array = 5;
       case 5: {
-        if (tag == 42) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(42u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_imputedint64array()));
         } else {
           goto handle_unusual;
         }
-        goto after_imputedint64dictionary;
         break;
       }
 
-      // optional .CoreML.Specification.StringToDoubleMap imputedStringDictionary = 6;
+      // .CoreML.Specification.StringToDoubleMap imputedStringDictionary = 6;
       case 6: {
-        if (tag == 50) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(50u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_imputedstringdictionary()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(58)) goto parse_imputedInt64Dictionary;
         break;
       }
 
-      // optional .CoreML.Specification.Int64ToDoubleMap imputedInt64Dictionary = 7;
+      // .CoreML.Specification.Int64ToDoubleMap imputedInt64Dictionary = 7;
       case 7: {
-        if (tag == 58) {
-         parse_imputedInt64Dictionary:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(58u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_imputedint64dictionary()));
         } else {
           goto handle_unusual;
         }
-       after_imputedint64dictionary:
-        if (input->ExpectTag(89)) goto parse_replaceDoubleValue;
         break;
       }
 
-      // optional double replaceDoubleValue = 11;
+      // double replaceDoubleValue = 11;
       case 11: {
-        if (tag == 89) {
-         parse_replaceDoubleValue:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(89u)) {
           clear_ReplaceValue();
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
@@ -325,13 +389,13 @@ bool Imputer::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        goto after_replacestringvalue;
         break;
       }
 
-      // optional int64 replaceInt64Value = 12;
+      // int64 replaceInt64Value = 12;
       case 12: {
-        if (tag == 96) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(96u)) {
           clear_ReplaceValue();
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
@@ -340,14 +404,13 @@ bool Imputer::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(106)) goto parse_replaceStringValue;
         break;
       }
 
-      // optional string replaceStringValue = 13;
+      // string replaceStringValue = 13;
       case 13: {
-        if (tag == 106) {
-         parse_replaceStringValue:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(106u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_replacestringvalue()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
@@ -357,8 +420,6 @@ bool Imputer::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-       after_replacestringvalue:
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -386,17 +447,20 @@ failure:
 void Imputer::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.Imputer)
-  // optional double imputedDoubleValue = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // double imputedDoubleValue = 1;
   if (has_imputeddoublevalue()) {
     ::google::protobuf::internal::WireFormatLite::WriteDouble(1, this->imputeddoublevalue(), output);
   }
 
-  // optional int64 imputedInt64Value = 2;
+  // int64 imputedInt64Value = 2;
   if (has_imputedint64value()) {
     ::google::protobuf::internal::WireFormatLite::WriteInt64(2, this->imputedint64value(), output);
   }
 
-  // optional string imputedStringValue = 3;
+  // string imputedStringValue = 3;
   if (has_imputedstringvalue()) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->imputedstringvalue().data(), this->imputedstringvalue().length(),
@@ -406,41 +470,41 @@ void Imputer::SerializeWithCachedSizes(
       3, this->imputedstringvalue(), output);
   }
 
-  // optional .CoreML.Specification.DoubleVector imputedDoubleArray = 4;
+  // .CoreML.Specification.DoubleVector imputedDoubleArray = 4;
   if (has_imputeddoublearray()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       4, *ImputedValue_.imputeddoublearray_, output);
   }
 
-  // optional .CoreML.Specification.Int64Vector imputedInt64Array = 5;
+  // .CoreML.Specification.Int64Vector imputedInt64Array = 5;
   if (has_imputedint64array()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       5, *ImputedValue_.imputedint64array_, output);
   }
 
-  // optional .CoreML.Specification.StringToDoubleMap imputedStringDictionary = 6;
+  // .CoreML.Specification.StringToDoubleMap imputedStringDictionary = 6;
   if (has_imputedstringdictionary()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       6, *ImputedValue_.imputedstringdictionary_, output);
   }
 
-  // optional .CoreML.Specification.Int64ToDoubleMap imputedInt64Dictionary = 7;
+  // .CoreML.Specification.Int64ToDoubleMap imputedInt64Dictionary = 7;
   if (has_imputedint64dictionary()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       7, *ImputedValue_.imputedint64dictionary_, output);
   }
 
-  // optional double replaceDoubleValue = 11;
+  // double replaceDoubleValue = 11;
   if (has_replacedoublevalue()) {
     ::google::protobuf::internal::WireFormatLite::WriteDouble(11, this->replacedoublevalue(), output);
   }
 
-  // optional int64 replaceInt64Value = 12;
+  // int64 replaceInt64Value = 12;
   if (has_replaceint64value()) {
     ::google::protobuf::internal::WireFormatLite::WriteInt64(12, this->replaceint64value(), output);
   }
 
-  // optional string replaceStringValue = 13;
+  // string replaceStringValue = 13;
   if (has_replacestringvalue()) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->replacestringvalue().data(), this->replacestringvalue().length(),
@@ -458,47 +522,47 @@ size_t Imputer::ByteSizeLong() const {
   size_t total_size = 0;
 
   switch (ImputedValue_case()) {
-    // optional double imputedDoubleValue = 1;
+    // double imputedDoubleValue = 1;
     case kImputedDoubleValue: {
       total_size += 1 + 8;
       break;
     }
-    // optional int64 imputedInt64Value = 2;
+    // int64 imputedInt64Value = 2;
     case kImputedInt64Value: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int64Size(
           this->imputedint64value());
       break;
     }
-    // optional string imputedStringValue = 3;
+    // string imputedStringValue = 3;
     case kImputedStringValue: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
           this->imputedstringvalue());
       break;
     }
-    // optional .CoreML.Specification.DoubleVector imputedDoubleArray = 4;
+    // .CoreML.Specification.DoubleVector imputedDoubleArray = 4;
     case kImputedDoubleArray: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *ImputedValue_.imputeddoublearray_);
       break;
     }
-    // optional .CoreML.Specification.Int64Vector imputedInt64Array = 5;
+    // .CoreML.Specification.Int64Vector imputedInt64Array = 5;
     case kImputedInt64Array: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *ImputedValue_.imputedint64array_);
       break;
     }
-    // optional .CoreML.Specification.StringToDoubleMap imputedStringDictionary = 6;
+    // .CoreML.Specification.StringToDoubleMap imputedStringDictionary = 6;
     case kImputedStringDictionary: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *ImputedValue_.imputedstringdictionary_);
       break;
     }
-    // optional .CoreML.Specification.Int64ToDoubleMap imputedInt64Dictionary = 7;
+    // .CoreML.Specification.Int64ToDoubleMap imputedInt64Dictionary = 7;
     case kImputedInt64Dictionary: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -510,19 +574,19 @@ size_t Imputer::ByteSizeLong() const {
     }
   }
   switch (ReplaceValue_case()) {
-    // optional double replaceDoubleValue = 11;
+    // double replaceDoubleValue = 11;
     case kReplaceDoubleValue: {
       total_size += 1 + 8;
       break;
     }
-    // optional int64 replaceInt64Value = 12;
+    // int64 replaceInt64Value = 12;
     case kReplaceInt64Value: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int64Size(
           this->replaceint64value());
       break;
     }
-    // optional string replaceStringValue = 13;
+    // string replaceStringValue = 13;
     case kReplaceStringValue: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
@@ -547,15 +611,11 @@ void Imputer::CheckTypeAndMergeFrom(
 
 void Imputer::MergeFrom(const Imputer& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.Imputer)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void Imputer::UnsafeMergeFrom(const Imputer& from) {
-  GOOGLE_DCHECK(&from != this);
   switch (from.ImputedValue_case()) {
     case kImputedDoubleValue: {
       set_imputeddoublevalue(from.imputeddoublevalue());
@@ -612,11 +672,10 @@ void Imputer::CopyFrom(const Imputer& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.Imputer)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool Imputer::IsInitialized() const {
-
   return true;
 }
 
@@ -629,7 +688,6 @@ void Imputer::InternalSwap(Imputer* other) {
   std::swap(_oneof_case_[0], other->_oneof_case_[0]);
   std::swap(ReplaceValue_, other->ReplaceValue_);
   std::swap(_oneof_case_[1], other->_oneof_case_[1]);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -640,7 +698,7 @@ void Imputer::InternalSwap(Imputer* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // Imputer
 
-// optional double imputedDoubleValue = 1;
+// double imputedDoubleValue = 1;
 bool Imputer::has_imputeddoublevalue() const {
   return ImputedValue_case() == kImputedDoubleValue;
 }
@@ -669,7 +727,7 @@ void Imputer::set_imputeddoublevalue(double value) {
   // @@protoc_insertion_point(field_set:CoreML.Specification.Imputer.imputedDoubleValue)
 }
 
-// optional int64 imputedInt64Value = 2;
+// int64 imputedInt64Value = 2;
 bool Imputer::has_imputedint64value() const {
   return ImputedValue_case() == kImputedInt64Value;
 }
@@ -698,7 +756,7 @@ void Imputer::set_imputedint64value(::google::protobuf::int64 value) {
   // @@protoc_insertion_point(field_set:CoreML.Specification.Imputer.imputedInt64Value)
 }
 
-// optional string imputedStringValue = 3;
+// string imputedStringValue = 3;
 bool Imputer::has_imputedstringvalue() const {
   return ImputedValue_case() == kImputedStringValue;
 }
@@ -714,7 +772,7 @@ void Imputer::clear_imputedstringvalue() {
 const ::std::string& Imputer::imputedstringvalue() const {
   // @@protoc_insertion_point(field_get:CoreML.Specification.Imputer.imputedStringValue)
   if (has_imputedstringvalue()) {
-    return ImputedValue_.imputedstringvalue_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return ImputedValue_.imputedstringvalue_.GetNoArena();
   }
   return *&::google::protobuf::internal::GetEmptyStringAlreadyInited();
 }
@@ -728,7 +786,21 @@ void Imputer::set_imputedstringvalue(const ::std::string& value) {
   ImputedValue_.imputedstringvalue_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.Imputer.imputedStringValue)
 }
+#if LANG_CXX11
+void Imputer::set_imputedstringvalue(::std::string&& value) {
+  // @@protoc_insertion_point(field_set:CoreML.Specification.Imputer.imputedStringValue)
+  if (!has_imputedstringvalue()) {
+    clear_ImputedValue();
+    set_has_imputedstringvalue();
+    ImputedValue_.imputedstringvalue_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  ImputedValue_.imputedstringvalue_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.Imputer.imputedStringValue)
+}
+#endif
 void Imputer::set_imputedstringvalue(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
   if (!has_imputedstringvalue()) {
     clear_ImputedValue();
     set_has_imputedstringvalue();
@@ -779,7 +851,7 @@ void Imputer::set_allocated_imputedstringvalue(::std::string* imputedstringvalue
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Imputer.imputedStringValue)
 }
 
-// optional .CoreML.Specification.DoubleVector imputedDoubleArray = 4;
+// .CoreML.Specification.DoubleVector imputedDoubleArray = 4;
 bool Imputer::has_imputeddoublearray() const {
   return ImputedValue_case() == kImputedDoubleArray;
 }
@@ -827,7 +899,7 @@ void Imputer::set_allocated_imputeddoublearray(::CoreML::Specification::DoubleVe
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Imputer.imputedDoubleArray)
 }
 
-// optional .CoreML.Specification.Int64Vector imputedInt64Array = 5;
+// .CoreML.Specification.Int64Vector imputedInt64Array = 5;
 bool Imputer::has_imputedint64array() const {
   return ImputedValue_case() == kImputedInt64Array;
 }
@@ -875,7 +947,7 @@ void Imputer::set_allocated_imputedint64array(::CoreML::Specification::Int64Vect
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Imputer.imputedInt64Array)
 }
 
-// optional .CoreML.Specification.StringToDoubleMap imputedStringDictionary = 6;
+// .CoreML.Specification.StringToDoubleMap imputedStringDictionary = 6;
 bool Imputer::has_imputedstringdictionary() const {
   return ImputedValue_case() == kImputedStringDictionary;
 }
@@ -923,7 +995,7 @@ void Imputer::set_allocated_imputedstringdictionary(::CoreML::Specification::Str
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Imputer.imputedStringDictionary)
 }
 
-// optional .CoreML.Specification.Int64ToDoubleMap imputedInt64Dictionary = 7;
+// .CoreML.Specification.Int64ToDoubleMap imputedInt64Dictionary = 7;
 bool Imputer::has_imputedint64dictionary() const {
   return ImputedValue_case() == kImputedInt64Dictionary;
 }
@@ -971,7 +1043,7 @@ void Imputer::set_allocated_imputedint64dictionary(::CoreML::Specification::Int6
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Imputer.imputedInt64Dictionary)
 }
 
-// optional double replaceDoubleValue = 11;
+// double replaceDoubleValue = 11;
 bool Imputer::has_replacedoublevalue() const {
   return ReplaceValue_case() == kReplaceDoubleValue;
 }
@@ -1000,7 +1072,7 @@ void Imputer::set_replacedoublevalue(double value) {
   // @@protoc_insertion_point(field_set:CoreML.Specification.Imputer.replaceDoubleValue)
 }
 
-// optional int64 replaceInt64Value = 12;
+// int64 replaceInt64Value = 12;
 bool Imputer::has_replaceint64value() const {
   return ReplaceValue_case() == kReplaceInt64Value;
 }
@@ -1029,7 +1101,7 @@ void Imputer::set_replaceint64value(::google::protobuf::int64 value) {
   // @@protoc_insertion_point(field_set:CoreML.Specification.Imputer.replaceInt64Value)
 }
 
-// optional string replaceStringValue = 13;
+// string replaceStringValue = 13;
 bool Imputer::has_replacestringvalue() const {
   return ReplaceValue_case() == kReplaceStringValue;
 }
@@ -1045,7 +1117,7 @@ void Imputer::clear_replacestringvalue() {
 const ::std::string& Imputer::replacestringvalue() const {
   // @@protoc_insertion_point(field_get:CoreML.Specification.Imputer.replaceStringValue)
   if (has_replacestringvalue()) {
-    return ReplaceValue_.replacestringvalue_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return ReplaceValue_.replacestringvalue_.GetNoArena();
   }
   return *&::google::protobuf::internal::GetEmptyStringAlreadyInited();
 }
@@ -1059,7 +1131,21 @@ void Imputer::set_replacestringvalue(const ::std::string& value) {
   ReplaceValue_.replacestringvalue_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.Imputer.replaceStringValue)
 }
+#if LANG_CXX11
+void Imputer::set_replacestringvalue(::std::string&& value) {
+  // @@protoc_insertion_point(field_set:CoreML.Specification.Imputer.replaceStringValue)
+  if (!has_replacestringvalue()) {
+    clear_ReplaceValue();
+    set_has_replacestringvalue();
+    ReplaceValue_.replacestringvalue_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  ReplaceValue_.replacestringvalue_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.Imputer.replaceStringValue)
+}
+#endif
 void Imputer::set_replacestringvalue(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
   if (!has_replacestringvalue()) {
     clear_ReplaceValue();
     set_has_replacestringvalue();
@@ -1127,9 +1213,6 @@ Imputer::ImputedValueCase Imputer::ImputedValue_case() const {
 }
 Imputer::ReplaceValueCase Imputer::ReplaceValue_case() const {
   return Imputer::ReplaceValueCase(_oneof_case_[1]);
-}
-inline const Imputer* Imputer::internal_default_instance() {
-  return &Imputer_default_instance_.get();
 }
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 

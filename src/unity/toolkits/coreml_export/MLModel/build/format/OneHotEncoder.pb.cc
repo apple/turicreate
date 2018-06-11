@@ -6,67 +6,75 @@
 
 #include <algorithm>
 
-#include <protobuf/stubs/common.h>
-#include <protobuf/stubs/port.h>
-#include <protobuf/stubs/once.h>
-#include <protobuf/io/coded_stream.h>
-#include <protobuf/wire_format_lite_inl.h>
-#include <protobuf/io/zero_copy_stream_impl_lite.h>
+#include <google/protobuf/stubs/common.h>
+#include <google/protobuf/stubs/port.h>
+#include <google/protobuf/stubs/once.h>
+#include <google/protobuf/io/coded_stream.h>
+#include <google/protobuf/wire_format_lite_inl.h>
+#include <google/protobuf/io/zero_copy_stream_impl_lite.h>
 // @@protoc_insertion_point(includes)
 
 namespace CoreML {
 namespace Specification {
+class OneHotEncoderDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<OneHotEncoder> {
+  public:
+  const ::CoreML::Specification::StringVector* stringcategories_;
+  const ::CoreML::Specification::Int64Vector* int64categories_;
+} _OneHotEncoder_default_instance_;
 
-void protobuf_ShutdownFile_OneHotEncoder_2eproto() {
-  OneHotEncoder_default_instance_.Shutdown();
+namespace protobuf_OneHotEncoder_2eproto {
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTableField
+    const TableStruct::entries[] = {
+  {0, 0, 0, ::google::protobuf::internal::kInvalidMask, 0, 0},
+};
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::AuxillaryParseTableField
+    const TableStruct::aux[] = {
+  ::google::protobuf::internal::AuxillaryParseTableField(),
+};
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTable const
+    TableStruct::schema[] = {
+  { NULL, NULL, 0, -1, -1, false },
+};
+
+
+void TableStruct::Shutdown() {
+  _OneHotEncoder_default_instance_.Shutdown();
 }
 
-void protobuf_InitDefaults_OneHotEncoder_2eproto_impl() {
+void TableStruct::InitDefaultsImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  ::CoreML::Specification::protobuf_InitDefaults_DataStructures_2eproto();
-  OneHotEncoder_default_instance_.DefaultConstruct();
-  OneHotEncoder_default_instance_.get_mutable()->InitAsDefaultInstance();
+  ::google::protobuf::internal::InitProtobufDefaults();
+  ::CoreML::Specification::protobuf_DataStructures_2eproto::InitDefaults();
+  _OneHotEncoder_default_instance_.DefaultConstruct();
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_InitDefaults_OneHotEncoder_2eproto_once_);
-void protobuf_InitDefaults_OneHotEncoder_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_InitDefaults_OneHotEncoder_2eproto_once_,
-                 &protobuf_InitDefaults_OneHotEncoder_2eproto_impl);
+void InitDefaults() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &TableStruct::InitDefaultsImpl);
 }
-void protobuf_AddDesc_OneHotEncoder_2eproto_impl() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  protobuf_InitDefaults_OneHotEncoder_2eproto();
-  ::CoreML::Specification::protobuf_AddDesc_DataStructures_2eproto();
-  ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_OneHotEncoder_2eproto);
+void AddDescriptorsImpl() {
+  InitDefaults();
+  ::CoreML::Specification::protobuf_DataStructures_2eproto::AddDescriptors();
+  ::google::protobuf::internal::OnShutdown(&TableStruct::Shutdown);
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_AddDesc_OneHotEncoder_2eproto_once_);
-void protobuf_AddDesc_OneHotEncoder_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_AddDesc_OneHotEncoder_2eproto_once_,
-                 &protobuf_AddDesc_OneHotEncoder_2eproto_impl);
+void AddDescriptors() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &AddDescriptorsImpl);
 }
 #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 // Force AddDescriptors() to be called at static initialization time.
-struct StaticDescriptorInitializer_OneHotEncoder_2eproto {
-  StaticDescriptorInitializer_OneHotEncoder_2eproto() {
-    protobuf_AddDesc_OneHotEncoder_2eproto();
+struct StaticDescriptorInitializer {
+  StaticDescriptorInitializer() {
+    AddDescriptors();
   }
-} static_descriptor_initializer_OneHotEncoder_2eproto_;
+} static_descriptor_initializer;
 #endif  // GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 
-namespace {
-
-static void MergeFromFail(int line) GOOGLE_ATTRIBUTE_COLD GOOGLE_ATTRIBUTE_NORETURN;
-static void MergeFromFail(int line) {
-  ::google::protobuf::internal::MergeFromFail(__FILE__, line);
-}
-
-}  // namespace
-
-
-// ===================================================================
+}  // namespace protobuf_OneHotEncoder_2eproto
 
 bool OneHotEncoder_HandleUnknown_IsValid(int value) {
   switch (value) {
@@ -85,6 +93,9 @@ const OneHotEncoder_HandleUnknown OneHotEncoder::HandleUnknown_MIN;
 const OneHotEncoder_HandleUnknown OneHotEncoder::HandleUnknown_MAX;
 const int OneHotEncoder::HandleUnknown_ARRAYSIZE;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+// ===================================================================
+
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int OneHotEncoder::kStringCategoriesFieldNumber;
 const int OneHotEncoder::kInt64CategoriesFieldNumber;
@@ -93,20 +104,35 @@ const int OneHotEncoder::kHandleUnknownFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 OneHotEncoder::OneHotEncoder()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_OneHotEncoder_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_OneHotEncoder_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.OneHotEncoder)
 }
-
-void OneHotEncoder::InitAsDefaultInstance() {
-}
-
 OneHotEncoder::OneHotEncoder(const OneHotEncoder& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::memcpy(&outputsparse_, &from.outputsparse_,
+    reinterpret_cast<char*>(&handleunknown_) -
+    reinterpret_cast<char*>(&outputsparse_) + sizeof(handleunknown_));
+  clear_has_CategoryType();
+  switch (from.CategoryType_case()) {
+    case kStringCategories: {
+      mutable_stringcategories()->::CoreML::Specification::StringVector::MergeFrom(from.stringcategories());
+      break;
+    }
+    case kInt64Categories: {
+      mutable_int64categories()->::CoreML::Specification::Int64Vector::MergeFrom(from.int64categories());
+      break;
+    }
+    case CATEGORYTYPE_NOT_SET: {
+      break;
+    }
+  }
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.OneHotEncoder)
 }
 
@@ -134,11 +160,9 @@ void OneHotEncoder::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const OneHotEncoder& OneHotEncoder::default_instance() {
-  protobuf_InitDefaults_OneHotEncoder_2eproto();
+  protobuf_OneHotEncoder_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<OneHotEncoder> OneHotEncoder_default_instance_;
 
 OneHotEncoder* OneHotEncoder::New(::google::protobuf::Arena* arena) const {
   OneHotEncoder* n = new OneHotEncoder;
@@ -169,27 +193,8 @@ void OneHotEncoder::clear_CategoryType() {
 
 void OneHotEncoder::Clear() {
 // @@protoc_insertion_point(message_clear_start:CoreML.Specification.OneHotEncoder)
-#if defined(__clang__)
-#define ZR_HELPER_(f) \
-  _Pragma("clang diagnostic push") \
-  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
-  __builtin_offsetof(OneHotEncoder, f) \
-  _Pragma("clang diagnostic pop")
-#else
-#define ZR_HELPER_(f) reinterpret_cast<char*>(\
-  &reinterpret_cast<OneHotEncoder*>(16)->f)
-#endif
-
-#define ZR_(first, last) do {\
-  ::memset(&(first), 0,\
-           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
-} while (0)
-
-  ZR_(outputsparse_, handleunknown_);
-
-#undef ZR_HELPER_
-#undef ZR_
-
+  ::memset(&outputsparse_, 0, reinterpret_cast<char*>(&handleunknown_) -
+    reinterpret_cast<char*>(&outputsparse_) + sizeof(handleunknown_));
   clear_CategoryType();
 }
 
@@ -199,39 +204,38 @@ bool OneHotEncoder::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.OneHotEncoder)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional .CoreML.Specification.StringVector stringCategories = 1;
+      // .CoreML.Specification.StringVector stringCategories = 1;
       case 1: {
-        if (tag == 10) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_stringcategories()));
         } else {
           goto handle_unusual;
         }
-        goto after_int64categories;
         break;
       }
 
-      // optional .CoreML.Specification.Int64Vector int64Categories = 2;
+      // .CoreML.Specification.Int64Vector int64Categories = 2;
       case 2: {
-        if (tag == 18) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_int64categories()));
         } else {
           goto handle_unusual;
         }
-       after_int64categories:
-        if (input->ExpectTag(80)) goto parse_outputSparse;
         break;
       }
 
-      // optional bool outputSparse = 10;
+      // bool outputSparse = 10;
       case 10: {
-        if (tag == 80) {
-         parse_outputSparse:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(80u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
@@ -239,14 +243,13 @@ bool OneHotEncoder::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(88)) goto parse_handleUnknown;
         break;
       }
 
-      // optional .CoreML.Specification.OneHotEncoder.HandleUnknown handleUnknown = 11;
+      // .CoreML.Specification.OneHotEncoder.HandleUnknown handleUnknown = 11;
       case 11: {
-        if (tag == 88) {
-         parse_handleUnknown:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(88u)) {
           int value;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
@@ -255,7 +258,6 @@ bool OneHotEncoder::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -283,24 +285,27 @@ failure:
 void OneHotEncoder::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.OneHotEncoder)
-  // optional .CoreML.Specification.StringVector stringCategories = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .CoreML.Specification.StringVector stringCategories = 1;
   if (has_stringcategories()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       1, *CategoryType_.stringcategories_, output);
   }
 
-  // optional .CoreML.Specification.Int64Vector int64Categories = 2;
+  // .CoreML.Specification.Int64Vector int64Categories = 2;
   if (has_int64categories()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       2, *CategoryType_.int64categories_, output);
   }
 
-  // optional bool outputSparse = 10;
+  // bool outputSparse = 10;
   if (this->outputsparse() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(10, this->outputsparse(), output);
   }
 
-  // optional .CoreML.Specification.OneHotEncoder.HandleUnknown handleUnknown = 11;
+  // .CoreML.Specification.OneHotEncoder.HandleUnknown handleUnknown = 11;
   if (this->handleunknown() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       11, this->handleunknown(), output);
@@ -313,26 +318,26 @@ size_t OneHotEncoder::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.OneHotEncoder)
   size_t total_size = 0;
 
-  // optional bool outputSparse = 10;
+  // bool outputSparse = 10;
   if (this->outputsparse() != 0) {
     total_size += 1 + 1;
   }
 
-  // optional .CoreML.Specification.OneHotEncoder.HandleUnknown handleUnknown = 11;
+  // .CoreML.Specification.OneHotEncoder.HandleUnknown handleUnknown = 11;
   if (this->handleunknown() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::EnumSize(this->handleunknown());
   }
 
   switch (CategoryType_case()) {
-    // optional .CoreML.Specification.StringVector stringCategories = 1;
+    // .CoreML.Specification.StringVector stringCategories = 1;
     case kStringCategories: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *CategoryType_.stringcategories_);
       break;
     }
-    // optional .CoreML.Specification.Int64Vector int64Categories = 2;
+    // .CoreML.Specification.Int64Vector int64Categories = 2;
     case kInt64Categories: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -357,15 +362,17 @@ void OneHotEncoder::CheckTypeAndMergeFrom(
 
 void OneHotEncoder::MergeFrom(const OneHotEncoder& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.OneHotEncoder)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void OneHotEncoder::UnsafeMergeFrom(const OneHotEncoder& from) {
-  GOOGLE_DCHECK(&from != this);
+  if (from.outputsparse() != 0) {
+    set_outputsparse(from.outputsparse());
+  }
+  if (from.handleunknown() != 0) {
+    set_handleunknown(from.handleunknown());
+  }
   switch (from.CategoryType_case()) {
     case kStringCategories: {
       mutable_stringcategories()->::CoreML::Specification::StringVector::MergeFrom(from.stringcategories());
@@ -379,23 +386,16 @@ void OneHotEncoder::UnsafeMergeFrom(const OneHotEncoder& from) {
       break;
     }
   }
-  if (from.outputsparse() != 0) {
-    set_outputsparse(from.outputsparse());
-  }
-  if (from.handleunknown() != 0) {
-    set_handleunknown(from.handleunknown());
-  }
 }
 
 void OneHotEncoder::CopyFrom(const OneHotEncoder& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.OneHotEncoder)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool OneHotEncoder::IsInitialized() const {
-
   return true;
 }
 
@@ -408,7 +408,6 @@ void OneHotEncoder::InternalSwap(OneHotEncoder* other) {
   std::swap(handleunknown_, other->handleunknown_);
   std::swap(CategoryType_, other->CategoryType_);
   std::swap(_oneof_case_[0], other->_oneof_case_[0]);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -419,7 +418,7 @@ void OneHotEncoder::InternalSwap(OneHotEncoder* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // OneHotEncoder
 
-// optional .CoreML.Specification.StringVector stringCategories = 1;
+// .CoreML.Specification.StringVector stringCategories = 1;
 bool OneHotEncoder::has_stringcategories() const {
   return CategoryType_case() == kStringCategories;
 }
@@ -467,7 +466,7 @@ void OneHotEncoder::set_allocated_stringcategories(::CoreML::Specification::Stri
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.OneHotEncoder.stringCategories)
 }
 
-// optional .CoreML.Specification.Int64Vector int64Categories = 2;
+// .CoreML.Specification.Int64Vector int64Categories = 2;
 bool OneHotEncoder::has_int64categories() const {
   return CategoryType_case() == kInt64Categories;
 }
@@ -515,7 +514,7 @@ void OneHotEncoder::set_allocated_int64categories(::CoreML::Specification::Int64
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.OneHotEncoder.int64Categories)
 }
 
-// optional bool outputSparse = 10;
+// bool outputSparse = 10;
 void OneHotEncoder::clear_outputsparse() {
   outputsparse_ = false;
 }
@@ -529,7 +528,7 @@ void OneHotEncoder::set_outputsparse(bool value) {
   // @@protoc_insertion_point(field_set:CoreML.Specification.OneHotEncoder.outputSparse)
 }
 
-// optional .CoreML.Specification.OneHotEncoder.HandleUnknown handleUnknown = 11;
+// .CoreML.Specification.OneHotEncoder.HandleUnknown handleUnknown = 11;
 void OneHotEncoder::clear_handleunknown() {
   handleunknown_ = 0;
 }
@@ -551,9 +550,6 @@ void OneHotEncoder::clear_has_CategoryType() {
 }
 OneHotEncoder::CategoryTypeCase OneHotEncoder::CategoryType_case() const {
   return OneHotEncoder::CategoryTypeCase(_oneof_case_[0]);
-}
-inline const OneHotEncoder* OneHotEncoder::internal_default_instance() {
-  return &OneHotEncoder_default_instance_.get();
 }
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 

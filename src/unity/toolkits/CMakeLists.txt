@@ -18,6 +18,7 @@ subdirs(ml_model
         pattern_mining
         feature_engineering
         text
+        tcmps
         image)
 
 
@@ -37,3 +38,5 @@ make_empty_library(unity_toolkits
     unity_image_export
     unity_activity_classification
     )
+
+add_dependencies(unity_toolkits tcmps)

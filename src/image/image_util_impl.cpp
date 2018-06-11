@@ -24,7 +24,7 @@ namespace image_util_detail {
 using namespace boost::gil;
 
 template<typename current_pixel_type, typename new_pixel_type>
-void resize_image_detail(const char* data, size_t width, size_t height, size_t channels, size_t resized_width, size_t resized_height, size_t resized_channels, char** resized_data){
+void resize_image_detail(const char* data, size_t width, size_t height, size_t channels, size_t resized_width, size_t resized_height, size_t resized_channels, char** resized_data, int resample_method){
   if (data == NULL){
     log_and_throw("Trying to resize image with NULL data pointer");
   }
@@ -37,7 +37,13 @@ void resize_image_detail(const char* data, size_t width, size_t height, size_t c
     auto view = interleaved_view(width, height, (current_pixel_type*)data, width * channels * sizeof(char));
     auto resized_view = interleaved_view(resized_width, resized_height, (new_pixel_type*)buf,
                                          resized_width * resized_channels * sizeof(char));
-    resize_view(color_converted_view<new_pixel_type>(view), (resized_view), nearest_neighbor_sampler());
+    if (resample_method == 0) {
+      resize_view(color_converted_view<new_pixel_type>(view), (resized_view), nearest_neighbor_sampler());
+    } else if (resample_method == 1) {
+      resize_view(color_converted_view<new_pixel_type>(view), (resized_view), bilinear_sampler());
+    } else {
+      log_and_throw("Unknown resampling method");
+    }
   }
   *resized_data = buf;
 }
@@ -46,21 +52,24 @@ void resize_image_detail(const char* data, size_t width, size_t height, size_t c
 /**
  * Resize the image, and set resized_data to resized image data.
  */
-void resize_image_impl(const char* data, size_t width, size_t height, size_t channels, size_t resized_width, size_t resized_height, size_t resized_channels, char** resized_data) {
+void resize_image_impl(const char* data, size_t width, size_t height, size_t channels, size_t resized_width, size_t resized_height, size_t resized_channels, char** resized_data, int resample_method) {
   // This code should be simplified
   if (channels == 1) {
     if (resized_channels == 1){
       resize_image_detail<gray8_pixel_t, gray8_pixel_t>(data, width, height, channels,
                                                       resized_width, resized_height,
-                                                      resized_channels, resized_data);
+                                                      resized_channels, resized_data,
+                                                      resample_method);
     } else if (resized_channels == 3){
       resize_image_detail<gray8_pixel_t, rgb8_pixel_t>(data, width, height, channels,
                                                      resized_width, resized_height,
-                                                     resized_channels, resized_data);
+                                                     resized_channels, resized_data,
+                                                     resample_method);
     } else if (resized_channels == 4){
       resize_image_detail<gray8_pixel_t, rgba8_pixel_t>(data, width, height, channels,
                                                       resized_width, resized_height,
-                                                      resized_channels, resized_data);
+                                                      resized_channels, resized_data,
+                                                      resample_method);
     } else {
       log_and_throw (std::string("Unsupported channel size ") + std::to_string(channels));
     }
@@ -68,15 +77,18 @@ void resize_image_impl(const char* data, size_t width, size_t height, size_t cha
     if (resized_channels == 1){
       resize_image_detail<rgb8_pixel_t, gray8_pixel_t>(data, width, height, channels,
                                                       resized_width, resized_height,
-                                                      resized_channels, resized_data);
+                                                      resized_channels, resized_data,
+                                                      resample_method);
     } else if (resized_channels == 3){
       resize_image_detail<rgb8_pixel_t, rgb8_pixel_t>(data, width, height, channels,
                                                      resized_width, resized_height,
-                                                     resized_channels, resized_data);
+                                                     resized_channels, resized_data,
+                                                     resample_method);
     } else if (resized_channels == 4){
       resize_image_detail<rgb8_pixel_t, rgba8_pixel_t>(data, width, height, channels,
                                                       resized_width, resized_height,
-                                                      resized_channels, resized_data);
+                                                      resized_channels, resized_data,
+                                                      resample_method);
     } else {
       log_and_throw (std::string("Unsupported channel size ") + std::to_string(channels));
     }
@@ -84,15 +96,18 @@ void resize_image_impl(const char* data, size_t width, size_t height, size_t cha
     if (resized_channels == 1){
       resize_image_detail<rgba8_pixel_t, gray8_pixel_t>(data, width, height, channels,
                                                       resized_width, resized_height,
-                                                      resized_channels, resized_data);
+                                                      resized_channels, resized_data,
+                                                      resample_method);
     } else if (resized_channels == 3){
       resize_image_detail<rgba8_pixel_t, rgb8_pixel_t>(data, width, height, channels,
                                                      resized_width, resized_height,
-                                                     resized_channels, resized_data);
+                                                     resized_channels, resized_data,
+                                                     resample_method);
     } else if (resized_channels == 4){
       resize_image_detail<rgba8_pixel_t, rgba8_pixel_t>(data, width, height, channels,
                                                       resized_width, resized_height,
-                                                      resized_channels, resized_data);
+                                                      resized_channels, resized_data,
+                                                      resample_method);
     } else {
       log_and_throw (std::string("Unsupported channel size ") + std::to_string(channels));
     }

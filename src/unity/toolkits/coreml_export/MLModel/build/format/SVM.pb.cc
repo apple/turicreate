@@ -6,100 +6,151 @@
 
 #include <algorithm>
 
-#include <protobuf/stubs/common.h>
-#include <protobuf/stubs/port.h>
-#include <protobuf/stubs/once.h>
-#include <protobuf/io/coded_stream.h>
-#include <protobuf/wire_format_lite_inl.h>
-#include <protobuf/io/zero_copy_stream_impl_lite.h>
+#include <google/protobuf/stubs/common.h>
+#include <google/protobuf/stubs/port.h>
+#include <google/protobuf/stubs/once.h>
+#include <google/protobuf/io/coded_stream.h>
+#include <google/protobuf/wire_format_lite_inl.h>
+#include <google/protobuf/io/zero_copy_stream_impl_lite.h>
 // @@protoc_insertion_point(includes)
 
 namespace CoreML {
 namespace Specification {
+class LinearKernelDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<LinearKernel> {
+} _LinearKernel_default_instance_;
+class RBFKernelDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<RBFKernel> {
+} _RBFKernel_default_instance_;
+class PolyKernelDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<PolyKernel> {
+} _PolyKernel_default_instance_;
+class SigmoidKernelDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<SigmoidKernel> {
+} _SigmoidKernel_default_instance_;
+class KernelDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<Kernel> {
+  public:
+  const ::CoreML::Specification::LinearKernel* linearkernel_;
+  const ::CoreML::Specification::RBFKernel* rbfkernel_;
+  const ::CoreML::Specification::PolyKernel* polykernel_;
+  const ::CoreML::Specification::SigmoidKernel* sigmoidkernel_;
+} _Kernel_default_instance_;
+class SparseNodeDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<SparseNode> {
+} _SparseNode_default_instance_;
+class SparseVectorDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<SparseVector> {
+} _SparseVector_default_instance_;
+class SparseSupportVectorsDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<SparseSupportVectors> {
+} _SparseSupportVectors_default_instance_;
+class DenseVectorDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<DenseVector> {
+} _DenseVector_default_instance_;
+class DenseSupportVectorsDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<DenseSupportVectors> {
+} _DenseSupportVectors_default_instance_;
+class CoefficientsDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<Coefficients> {
+} _Coefficients_default_instance_;
+class SupportVectorRegressorDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<SupportVectorRegressor> {
+  public:
+  const ::CoreML::Specification::SparseSupportVectors* sparsesupportvectors_;
+  const ::CoreML::Specification::DenseSupportVectors* densesupportvectors_;
+} _SupportVectorRegressor_default_instance_;
+class SupportVectorClassifierDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<SupportVectorClassifier> {
+  public:
+  const ::CoreML::Specification::SparseSupportVectors* sparsesupportvectors_;
+  const ::CoreML::Specification::DenseSupportVectors* densesupportvectors_;
+  const ::CoreML::Specification::StringVector* stringclasslabels_;
+  const ::CoreML::Specification::Int64Vector* int64classlabels_;
+} _SupportVectorClassifier_default_instance_;
 
-void protobuf_ShutdownFile_SVM_2eproto() {
-  LinearKernel_default_instance_.Shutdown();
-  RBFKernel_default_instance_.Shutdown();
-  PolyKernel_default_instance_.Shutdown();
-  SigmoidKernel_default_instance_.Shutdown();
-  Kernel_default_instance_.Shutdown();
-  SparseNode_default_instance_.Shutdown();
-  SparseVector_default_instance_.Shutdown();
-  SparseSupportVectors_default_instance_.Shutdown();
-  DenseVector_default_instance_.Shutdown();
-  DenseSupportVectors_default_instance_.Shutdown();
-  Coefficients_default_instance_.Shutdown();
-  SupportVectorRegressor_default_instance_.Shutdown();
-  SupportVectorClassifier_default_instance_.Shutdown();
+namespace protobuf_SVM_2eproto {
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTableField
+    const TableStruct::entries[] = {
+  {0, 0, 0, ::google::protobuf::internal::kInvalidMask, 0, 0},
+};
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::AuxillaryParseTableField
+    const TableStruct::aux[] = {
+  ::google::protobuf::internal::AuxillaryParseTableField(),
+};
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTable const
+    TableStruct::schema[] = {
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+};
+
+
+void TableStruct::Shutdown() {
+  _LinearKernel_default_instance_.Shutdown();
+  _RBFKernel_default_instance_.Shutdown();
+  _PolyKernel_default_instance_.Shutdown();
+  _SigmoidKernel_default_instance_.Shutdown();
+  _Kernel_default_instance_.Shutdown();
+  _SparseNode_default_instance_.Shutdown();
+  _SparseVector_default_instance_.Shutdown();
+  _SparseSupportVectors_default_instance_.Shutdown();
+  _DenseVector_default_instance_.Shutdown();
+  _DenseSupportVectors_default_instance_.Shutdown();
+  _Coefficients_default_instance_.Shutdown();
+  _SupportVectorRegressor_default_instance_.Shutdown();
+  _SupportVectorClassifier_default_instance_.Shutdown();
 }
 
-void protobuf_InitDefaults_SVM_2eproto_impl() {
+void TableStruct::InitDefaultsImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  ::CoreML::Specification::protobuf_InitDefaults_DataStructures_2eproto();
-  LinearKernel_default_instance_.DefaultConstruct();
-  RBFKernel_default_instance_.DefaultConstruct();
-  PolyKernel_default_instance_.DefaultConstruct();
-  SigmoidKernel_default_instance_.DefaultConstruct();
-  Kernel_default_instance_.DefaultConstruct();
-  SparseNode_default_instance_.DefaultConstruct();
-  SparseVector_default_instance_.DefaultConstruct();
-  SparseSupportVectors_default_instance_.DefaultConstruct();
-  DenseVector_default_instance_.DefaultConstruct();
-  DenseSupportVectors_default_instance_.DefaultConstruct();
-  Coefficients_default_instance_.DefaultConstruct();
-  SupportVectorRegressor_default_instance_.DefaultConstruct();
-  SupportVectorClassifier_default_instance_.DefaultConstruct();
-  LinearKernel_default_instance_.get_mutable()->InitAsDefaultInstance();
-  RBFKernel_default_instance_.get_mutable()->InitAsDefaultInstance();
-  PolyKernel_default_instance_.get_mutable()->InitAsDefaultInstance();
-  SigmoidKernel_default_instance_.get_mutable()->InitAsDefaultInstance();
-  Kernel_default_instance_.get_mutable()->InitAsDefaultInstance();
-  SparseNode_default_instance_.get_mutable()->InitAsDefaultInstance();
-  SparseVector_default_instance_.get_mutable()->InitAsDefaultInstance();
-  SparseSupportVectors_default_instance_.get_mutable()->InitAsDefaultInstance();
-  DenseVector_default_instance_.get_mutable()->InitAsDefaultInstance();
-  DenseSupportVectors_default_instance_.get_mutable()->InitAsDefaultInstance();
-  Coefficients_default_instance_.get_mutable()->InitAsDefaultInstance();
-  SupportVectorRegressor_default_instance_.get_mutable()->InitAsDefaultInstance();
-  SupportVectorClassifier_default_instance_.get_mutable()->InitAsDefaultInstance();
+  ::google::protobuf::internal::InitProtobufDefaults();
+  ::CoreML::Specification::protobuf_DataStructures_2eproto::InitDefaults();
+  _LinearKernel_default_instance_.DefaultConstruct();
+  _RBFKernel_default_instance_.DefaultConstruct();
+  _PolyKernel_default_instance_.DefaultConstruct();
+  _SigmoidKernel_default_instance_.DefaultConstruct();
+  _Kernel_default_instance_.DefaultConstruct();
+  _SparseNode_default_instance_.DefaultConstruct();
+  _SparseVector_default_instance_.DefaultConstruct();
+  _SparseSupportVectors_default_instance_.DefaultConstruct();
+  _DenseVector_default_instance_.DefaultConstruct();
+  _DenseSupportVectors_default_instance_.DefaultConstruct();
+  _Coefficients_default_instance_.DefaultConstruct();
+  _SupportVectorRegressor_default_instance_.DefaultConstruct();
+  _SupportVectorClassifier_default_instance_.DefaultConstruct();
+  _SupportVectorRegressor_default_instance_.get_mutable()->kernel_ = const_cast< ::CoreML::Specification::Kernel*>(
+      ::CoreML::Specification::Kernel::internal_default_instance());
+  _SupportVectorRegressor_default_instance_.get_mutable()->coefficients_ = const_cast< ::CoreML::Specification::Coefficients*>(
+      ::CoreML::Specification::Coefficients::internal_default_instance());
+  _SupportVectorClassifier_default_instance_.get_mutable()->kernel_ = const_cast< ::CoreML::Specification::Kernel*>(
+      ::CoreML::Specification::Kernel::internal_default_instance());
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_InitDefaults_SVM_2eproto_once_);
-void protobuf_InitDefaults_SVM_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_InitDefaults_SVM_2eproto_once_,
-                 &protobuf_InitDefaults_SVM_2eproto_impl);
+void InitDefaults() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &TableStruct::InitDefaultsImpl);
 }
-void protobuf_AddDesc_SVM_2eproto_impl() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  protobuf_InitDefaults_SVM_2eproto();
-  ::CoreML::Specification::protobuf_AddDesc_DataStructures_2eproto();
-  ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_SVM_2eproto);
+void AddDescriptorsImpl() {
+  InitDefaults();
+  ::CoreML::Specification::protobuf_DataStructures_2eproto::AddDescriptors();
+  ::google::protobuf::internal::OnShutdown(&TableStruct::Shutdown);
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_AddDesc_SVM_2eproto_once_);
-void protobuf_AddDesc_SVM_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_AddDesc_SVM_2eproto_once_,
-                 &protobuf_AddDesc_SVM_2eproto_impl);
+void AddDescriptors() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &AddDescriptorsImpl);
 }
 #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 // Force AddDescriptors() to be called at static initialization time.
-struct StaticDescriptorInitializer_SVM_2eproto {
-  StaticDescriptorInitializer_SVM_2eproto() {
-    protobuf_AddDesc_SVM_2eproto();
+struct StaticDescriptorInitializer {
+  StaticDescriptorInitializer() {
+    AddDescriptors();
   }
-} static_descriptor_initializer_SVM_2eproto_;
+} static_descriptor_initializer;
 #endif  // GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 
-namespace {
-
-static void MergeFromFail(int line) GOOGLE_ATTRIBUTE_COLD GOOGLE_ATTRIBUTE_NORETURN;
-static void MergeFromFail(int line) {
-  ::google::protobuf::internal::MergeFromFail(__FILE__, line);
-}
-
-}  // namespace
+}  // namespace protobuf_SVM_2eproto
 
 
 // ===================================================================
@@ -108,20 +159,18 @@ static void MergeFromFail(int line) {
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 LinearKernel::LinearKernel()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_SVM_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_SVM_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.LinearKernel)
 }
-
-void LinearKernel::InitAsDefaultInstance() {
-}
-
 LinearKernel::LinearKernel(const LinearKernel& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.LinearKernel)
 }
 
@@ -143,11 +192,9 @@ void LinearKernel::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const LinearKernel& LinearKernel::default_instance() {
-  protobuf_InitDefaults_SVM_2eproto();
+  protobuf_SVM_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<LinearKernel> LinearKernel_default_instance_;
 
 LinearKernel* LinearKernel::New(::google::protobuf::Arena* arena) const {
   LinearKernel* n = new LinearKernel;
@@ -167,7 +214,7 @@ bool LinearKernel::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.LinearKernel)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
   handle_unusual:
@@ -190,6 +237,9 @@ failure:
 void LinearKernel::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.LinearKernel)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
   // @@protoc_insertion_point(serialize_end:CoreML.Specification.LinearKernel)
 }
 
@@ -211,26 +261,21 @@ void LinearKernel::CheckTypeAndMergeFrom(
 
 void LinearKernel::MergeFrom(const LinearKernel& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.LinearKernel)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void LinearKernel::UnsafeMergeFrom(const LinearKernel& from) {
-  GOOGLE_DCHECK(&from != this);
 }
 
 void LinearKernel::CopyFrom(const LinearKernel& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.LinearKernel)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool LinearKernel::IsInitialized() const {
-
   return true;
 }
 
@@ -239,7 +284,6 @@ void LinearKernel::Swap(LinearKernel* other) {
   InternalSwap(other);
 }
 void LinearKernel::InternalSwap(LinearKernel* other) {
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -250,9 +294,6 @@ void LinearKernel::InternalSwap(LinearKernel* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // LinearKernel
 
-inline const LinearKernel* LinearKernel::internal_default_instance() {
-  return &LinearKernel_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -262,20 +303,19 @@ const int RBFKernel::kGammaFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 RBFKernel::RBFKernel()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_SVM_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_SVM_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.RBFKernel)
 }
-
-void RBFKernel::InitAsDefaultInstance() {
-}
-
 RBFKernel::RBFKernel(const RBFKernel& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  gamma_ = from.gamma_;
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.RBFKernel)
 }
 
@@ -298,11 +338,9 @@ void RBFKernel::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const RBFKernel& RBFKernel::default_instance() {
-  protobuf_InitDefaults_SVM_2eproto();
+  protobuf_SVM_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<RBFKernel> RBFKernel_default_instance_;
 
 RBFKernel* RBFKernel::New(::google::protobuf::Arena* arena) const {
   RBFKernel* n = new RBFKernel;
@@ -323,13 +361,14 @@ bool RBFKernel::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.RBFKernel)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional double gamma = 1;
+      // double gamma = 1;
       case 1: {
-        if (tag == 9) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(9u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
@@ -337,7 +376,6 @@ bool RBFKernel::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -365,7 +403,10 @@ failure:
 void RBFKernel::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.RBFKernel)
-  // optional double gamma = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // double gamma = 1;
   if (this->gamma() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteDouble(1, this->gamma(), output);
   }
@@ -377,7 +418,7 @@ size_t RBFKernel::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.RBFKernel)
   size_t total_size = 0;
 
-  // optional double gamma = 1;
+  // double gamma = 1;
   if (this->gamma() != 0) {
     total_size += 1 + 8;
   }
@@ -396,15 +437,11 @@ void RBFKernel::CheckTypeAndMergeFrom(
 
 void RBFKernel::MergeFrom(const RBFKernel& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.RBFKernel)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void RBFKernel::UnsafeMergeFrom(const RBFKernel& from) {
-  GOOGLE_DCHECK(&from != this);
   if (from.gamma() != 0) {
     set_gamma(from.gamma());
   }
@@ -414,11 +451,10 @@ void RBFKernel::CopyFrom(const RBFKernel& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.RBFKernel)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool RBFKernel::IsInitialized() const {
-
   return true;
 }
 
@@ -428,7 +464,6 @@ void RBFKernel::Swap(RBFKernel* other) {
 }
 void RBFKernel::InternalSwap(RBFKernel* other) {
   std::swap(gamma_, other->gamma_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -439,7 +474,7 @@ void RBFKernel::InternalSwap(RBFKernel* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // RBFKernel
 
-// optional double gamma = 1;
+// double gamma = 1;
 void RBFKernel::clear_gamma() {
   gamma_ = 0;
 }
@@ -453,9 +488,6 @@ void RBFKernel::set_gamma(double value) {
   // @@protoc_insertion_point(field_set:CoreML.Specification.RBFKernel.gamma)
 }
 
-inline const RBFKernel* RBFKernel::internal_default_instance() {
-  return &RBFKernel_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -467,20 +499,21 @@ const int PolyKernel::kGammaFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 PolyKernel::PolyKernel()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_SVM_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_SVM_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.PolyKernel)
 }
-
-void PolyKernel::InitAsDefaultInstance() {
-}
-
 PolyKernel::PolyKernel(const PolyKernel& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::memcpy(&c_, &from.c_,
+    reinterpret_cast<char*>(&degree_) -
+    reinterpret_cast<char*>(&c_) + sizeof(degree_));
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.PolyKernel)
 }
 
@@ -504,11 +537,9 @@ void PolyKernel::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const PolyKernel& PolyKernel::default_instance() {
-  protobuf_InitDefaults_SVM_2eproto();
+  protobuf_SVM_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<PolyKernel> PolyKernel_default_instance_;
 
 PolyKernel* PolyKernel::New(::google::protobuf::Arena* arena) const {
   PolyKernel* n = new PolyKernel;
@@ -520,27 +551,8 @@ PolyKernel* PolyKernel::New(::google::protobuf::Arena* arena) const {
 
 void PolyKernel::Clear() {
 // @@protoc_insertion_point(message_clear_start:CoreML.Specification.PolyKernel)
-#if defined(__clang__)
-#define ZR_HELPER_(f) \
-  _Pragma("clang diagnostic push") \
-  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
-  __builtin_offsetof(PolyKernel, f) \
-  _Pragma("clang diagnostic pop")
-#else
-#define ZR_HELPER_(f) reinterpret_cast<char*>(\
-  &reinterpret_cast<PolyKernel*>(16)->f)
-#endif
-
-#define ZR_(first, last) do {\
-  ::memset(&(first), 0,\
-           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
-} while (0)
-
-  ZR_(c_, degree_);
-
-#undef ZR_HELPER_
-#undef ZR_
-
+  ::memset(&c_, 0, reinterpret_cast<char*>(&degree_) -
+    reinterpret_cast<char*>(&c_) + sizeof(degree_));
 }
 
 bool PolyKernel::MergePartialFromCodedStream(
@@ -549,13 +561,14 @@ bool PolyKernel::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.PolyKernel)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional int32 degree = 1;
+      // int32 degree = 1;
       case 1: {
-        if (tag == 8) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(8u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
@@ -563,14 +576,13 @@ bool PolyKernel::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(17)) goto parse_c;
         break;
       }
 
-      // optional double c = 2;
+      // double c = 2;
       case 2: {
-        if (tag == 17) {
-         parse_c:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(17u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
@@ -578,14 +590,13 @@ bool PolyKernel::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(25)) goto parse_gamma;
         break;
       }
 
-      // optional double gamma = 3;
+      // double gamma = 3;
       case 3: {
-        if (tag == 25) {
-         parse_gamma:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(25u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
@@ -593,7 +604,6 @@ bool PolyKernel::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -621,17 +631,20 @@ failure:
 void PolyKernel::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.PolyKernel)
-  // optional int32 degree = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // int32 degree = 1;
   if (this->degree() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->degree(), output);
   }
 
-  // optional double c = 2;
+  // double c = 2;
   if (this->c() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteDouble(2, this->c(), output);
   }
 
-  // optional double gamma = 3;
+  // double gamma = 3;
   if (this->gamma() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteDouble(3, this->gamma(), output);
   }
@@ -643,21 +656,21 @@ size_t PolyKernel::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.PolyKernel)
   size_t total_size = 0;
 
-  // optional int32 degree = 1;
-  if (this->degree() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int32Size(
-        this->degree());
-  }
-
-  // optional double c = 2;
+  // double c = 2;
   if (this->c() != 0) {
     total_size += 1 + 8;
   }
 
-  // optional double gamma = 3;
+  // double gamma = 3;
   if (this->gamma() != 0) {
     total_size += 1 + 8;
+  }
+
+  // int32 degree = 1;
+  if (this->degree() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
+        this->degree());
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -674,23 +687,19 @@ void PolyKernel::CheckTypeAndMergeFrom(
 
 void PolyKernel::MergeFrom(const PolyKernel& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.PolyKernel)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void PolyKernel::UnsafeMergeFrom(const PolyKernel& from) {
-  GOOGLE_DCHECK(&from != this);
-  if (from.degree() != 0) {
-    set_degree(from.degree());
-  }
   if (from.c() != 0) {
     set_c(from.c());
   }
   if (from.gamma() != 0) {
     set_gamma(from.gamma());
+  }
+  if (from.degree() != 0) {
+    set_degree(from.degree());
   }
 }
 
@@ -698,11 +707,10 @@ void PolyKernel::CopyFrom(const PolyKernel& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.PolyKernel)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool PolyKernel::IsInitialized() const {
-
   return true;
 }
 
@@ -711,10 +719,9 @@ void PolyKernel::Swap(PolyKernel* other) {
   InternalSwap(other);
 }
 void PolyKernel::InternalSwap(PolyKernel* other) {
-  std::swap(degree_, other->degree_);
   std::swap(c_, other->c_);
   std::swap(gamma_, other->gamma_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
+  std::swap(degree_, other->degree_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -725,7 +732,7 @@ void PolyKernel::InternalSwap(PolyKernel* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // PolyKernel
 
-// optional int32 degree = 1;
+// int32 degree = 1;
 void PolyKernel::clear_degree() {
   degree_ = 0;
 }
@@ -739,7 +746,7 @@ void PolyKernel::set_degree(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:CoreML.Specification.PolyKernel.degree)
 }
 
-// optional double c = 2;
+// double c = 2;
 void PolyKernel::clear_c() {
   c_ = 0;
 }
@@ -753,7 +760,7 @@ void PolyKernel::set_c(double value) {
   // @@protoc_insertion_point(field_set:CoreML.Specification.PolyKernel.c)
 }
 
-// optional double gamma = 3;
+// double gamma = 3;
 void PolyKernel::clear_gamma() {
   gamma_ = 0;
 }
@@ -767,9 +774,6 @@ void PolyKernel::set_gamma(double value) {
   // @@protoc_insertion_point(field_set:CoreML.Specification.PolyKernel.gamma)
 }
 
-inline const PolyKernel* PolyKernel::internal_default_instance() {
-  return &PolyKernel_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -780,20 +784,21 @@ const int SigmoidKernel::kCFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 SigmoidKernel::SigmoidKernel()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_SVM_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_SVM_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.SigmoidKernel)
 }
-
-void SigmoidKernel::InitAsDefaultInstance() {
-}
-
 SigmoidKernel::SigmoidKernel(const SigmoidKernel& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::memcpy(&gamma_, &from.gamma_,
+    reinterpret_cast<char*>(&c_) -
+    reinterpret_cast<char*>(&gamma_) + sizeof(c_));
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.SigmoidKernel)
 }
 
@@ -817,11 +822,9 @@ void SigmoidKernel::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const SigmoidKernel& SigmoidKernel::default_instance() {
-  protobuf_InitDefaults_SVM_2eproto();
+  protobuf_SVM_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<SigmoidKernel> SigmoidKernel_default_instance_;
 
 SigmoidKernel* SigmoidKernel::New(::google::protobuf::Arena* arena) const {
   SigmoidKernel* n = new SigmoidKernel;
@@ -833,27 +836,8 @@ SigmoidKernel* SigmoidKernel::New(::google::protobuf::Arena* arena) const {
 
 void SigmoidKernel::Clear() {
 // @@protoc_insertion_point(message_clear_start:CoreML.Specification.SigmoidKernel)
-#if defined(__clang__)
-#define ZR_HELPER_(f) \
-  _Pragma("clang diagnostic push") \
-  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
-  __builtin_offsetof(SigmoidKernel, f) \
-  _Pragma("clang diagnostic pop")
-#else
-#define ZR_HELPER_(f) reinterpret_cast<char*>(\
-  &reinterpret_cast<SigmoidKernel*>(16)->f)
-#endif
-
-#define ZR_(first, last) do {\
-  ::memset(&(first), 0,\
-           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
-} while (0)
-
-  ZR_(gamma_, c_);
-
-#undef ZR_HELPER_
-#undef ZR_
-
+  ::memset(&gamma_, 0, reinterpret_cast<char*>(&c_) -
+    reinterpret_cast<char*>(&gamma_) + sizeof(c_));
 }
 
 bool SigmoidKernel::MergePartialFromCodedStream(
@@ -862,13 +846,14 @@ bool SigmoidKernel::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.SigmoidKernel)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional double gamma = 1;
+      // double gamma = 1;
       case 1: {
-        if (tag == 9) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(9u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
@@ -876,14 +861,13 @@ bool SigmoidKernel::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(17)) goto parse_c;
         break;
       }
 
-      // optional double c = 2;
+      // double c = 2;
       case 2: {
-        if (tag == 17) {
-         parse_c:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(17u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
@@ -891,7 +875,6 @@ bool SigmoidKernel::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -919,12 +902,15 @@ failure:
 void SigmoidKernel::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.SigmoidKernel)
-  // optional double gamma = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // double gamma = 1;
   if (this->gamma() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteDouble(1, this->gamma(), output);
   }
 
-  // optional double c = 2;
+  // double c = 2;
   if (this->c() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteDouble(2, this->c(), output);
   }
@@ -936,12 +922,12 @@ size_t SigmoidKernel::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.SigmoidKernel)
   size_t total_size = 0;
 
-  // optional double gamma = 1;
+  // double gamma = 1;
   if (this->gamma() != 0) {
     total_size += 1 + 8;
   }
 
-  // optional double c = 2;
+  // double c = 2;
   if (this->c() != 0) {
     total_size += 1 + 8;
   }
@@ -960,15 +946,11 @@ void SigmoidKernel::CheckTypeAndMergeFrom(
 
 void SigmoidKernel::MergeFrom(const SigmoidKernel& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.SigmoidKernel)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void SigmoidKernel::UnsafeMergeFrom(const SigmoidKernel& from) {
-  GOOGLE_DCHECK(&from != this);
   if (from.gamma() != 0) {
     set_gamma(from.gamma());
   }
@@ -981,11 +963,10 @@ void SigmoidKernel::CopyFrom(const SigmoidKernel& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.SigmoidKernel)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool SigmoidKernel::IsInitialized() const {
-
   return true;
 }
 
@@ -996,7 +977,6 @@ void SigmoidKernel::Swap(SigmoidKernel* other) {
 void SigmoidKernel::InternalSwap(SigmoidKernel* other) {
   std::swap(gamma_, other->gamma_);
   std::swap(c_, other->c_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -1007,7 +987,7 @@ void SigmoidKernel::InternalSwap(SigmoidKernel* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // SigmoidKernel
 
-// optional double gamma = 1;
+// double gamma = 1;
 void SigmoidKernel::clear_gamma() {
   gamma_ = 0;
 }
@@ -1021,7 +1001,7 @@ void SigmoidKernel::set_gamma(double value) {
   // @@protoc_insertion_point(field_set:CoreML.Specification.SigmoidKernel.gamma)
 }
 
-// optional double c = 2;
+// double c = 2;
 void SigmoidKernel::clear_c() {
   c_ = 0;
 }
@@ -1035,9 +1015,6 @@ void SigmoidKernel::set_c(double value) {
   // @@protoc_insertion_point(field_set:CoreML.Specification.SigmoidKernel.c)
 }
 
-inline const SigmoidKernel* SigmoidKernel::internal_default_instance() {
-  return &SigmoidKernel_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -1050,20 +1027,40 @@ const int Kernel::kSigmoidKernelFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Kernel::Kernel()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_SVM_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_SVM_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.Kernel)
 }
-
-void Kernel::InitAsDefaultInstance() {
-}
-
 Kernel::Kernel(const Kernel& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  clear_has_kernel();
+  switch (from.kernel_case()) {
+    case kLinearKernel: {
+      mutable_linearkernel()->::CoreML::Specification::LinearKernel::MergeFrom(from.linearkernel());
+      break;
+    }
+    case kRbfKernel: {
+      mutable_rbfkernel()->::CoreML::Specification::RBFKernel::MergeFrom(from.rbfkernel());
+      break;
+    }
+    case kPolyKernel: {
+      mutable_polykernel()->::CoreML::Specification::PolyKernel::MergeFrom(from.polykernel());
+      break;
+    }
+    case kSigmoidKernel: {
+      mutable_sigmoidkernel()->::CoreML::Specification::SigmoidKernel::MergeFrom(from.sigmoidkernel());
+      break;
+    }
+    case KERNEL_NOT_SET: {
+      break;
+    }
+  }
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.Kernel)
 }
 
@@ -1089,11 +1086,9 @@ void Kernel::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const Kernel& Kernel::default_instance() {
-  protobuf_InitDefaults_SVM_2eproto();
+  protobuf_SVM_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<Kernel> Kernel_default_instance_;
 
 Kernel* Kernel::New(::google::protobuf::Arena* arena) const {
   Kernel* n = new Kernel;
@@ -1141,57 +1136,55 @@ bool Kernel::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.Kernel)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional .CoreML.Specification.LinearKernel linearKernel = 1;
+      // .CoreML.Specification.LinearKernel linearKernel = 1;
       case 1: {
-        if (tag == 10) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_linearkernel()));
         } else {
           goto handle_unusual;
         }
-        goto after_sigmoidkernel;
         break;
       }
 
-      // optional .CoreML.Specification.RBFKernel rbfKernel = 2;
+      // .CoreML.Specification.RBFKernel rbfKernel = 2;
       case 2: {
-        if (tag == 18) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_rbfkernel()));
         } else {
           goto handle_unusual;
         }
-        goto after_sigmoidkernel;
         break;
       }
 
-      // optional .CoreML.Specification.PolyKernel polyKernel = 3;
+      // .CoreML.Specification.PolyKernel polyKernel = 3;
       case 3: {
-        if (tag == 26) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(26u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_polykernel()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(34)) goto parse_sigmoidKernel;
         break;
       }
 
-      // optional .CoreML.Specification.SigmoidKernel sigmoidKernel = 4;
+      // .CoreML.Specification.SigmoidKernel sigmoidKernel = 4;
       case 4: {
-        if (tag == 34) {
-         parse_sigmoidKernel:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(34u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_sigmoidkernel()));
         } else {
           goto handle_unusual;
         }
-       after_sigmoidkernel:
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -1219,25 +1212,28 @@ failure:
 void Kernel::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.Kernel)
-  // optional .CoreML.Specification.LinearKernel linearKernel = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .CoreML.Specification.LinearKernel linearKernel = 1;
   if (has_linearkernel()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       1, *kernel_.linearkernel_, output);
   }
 
-  // optional .CoreML.Specification.RBFKernel rbfKernel = 2;
+  // .CoreML.Specification.RBFKernel rbfKernel = 2;
   if (has_rbfkernel()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       2, *kernel_.rbfkernel_, output);
   }
 
-  // optional .CoreML.Specification.PolyKernel polyKernel = 3;
+  // .CoreML.Specification.PolyKernel polyKernel = 3;
   if (has_polykernel()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       3, *kernel_.polykernel_, output);
   }
 
-  // optional .CoreML.Specification.SigmoidKernel sigmoidKernel = 4;
+  // .CoreML.Specification.SigmoidKernel sigmoidKernel = 4;
   if (has_sigmoidkernel()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       4, *kernel_.sigmoidkernel_, output);
@@ -1251,28 +1247,28 @@ size_t Kernel::ByteSizeLong() const {
   size_t total_size = 0;
 
   switch (kernel_case()) {
-    // optional .CoreML.Specification.LinearKernel linearKernel = 1;
+    // .CoreML.Specification.LinearKernel linearKernel = 1;
     case kLinearKernel: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *kernel_.linearkernel_);
       break;
     }
-    // optional .CoreML.Specification.RBFKernel rbfKernel = 2;
+    // .CoreML.Specification.RBFKernel rbfKernel = 2;
     case kRbfKernel: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *kernel_.rbfkernel_);
       break;
     }
-    // optional .CoreML.Specification.PolyKernel polyKernel = 3;
+    // .CoreML.Specification.PolyKernel polyKernel = 3;
     case kPolyKernel: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *kernel_.polykernel_);
       break;
     }
-    // optional .CoreML.Specification.SigmoidKernel sigmoidKernel = 4;
+    // .CoreML.Specification.SigmoidKernel sigmoidKernel = 4;
     case kSigmoidKernel: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -1297,15 +1293,11 @@ void Kernel::CheckTypeAndMergeFrom(
 
 void Kernel::MergeFrom(const Kernel& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.Kernel)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void Kernel::UnsafeMergeFrom(const Kernel& from) {
-  GOOGLE_DCHECK(&from != this);
   switch (from.kernel_case()) {
     case kLinearKernel: {
       mutable_linearkernel()->::CoreML::Specification::LinearKernel::MergeFrom(from.linearkernel());
@@ -1333,11 +1325,10 @@ void Kernel::CopyFrom(const Kernel& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.Kernel)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool Kernel::IsInitialized() const {
-
   return true;
 }
 
@@ -1348,7 +1339,6 @@ void Kernel::Swap(Kernel* other) {
 void Kernel::InternalSwap(Kernel* other) {
   std::swap(kernel_, other->kernel_);
   std::swap(_oneof_case_[0], other->_oneof_case_[0]);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -1359,7 +1349,7 @@ void Kernel::InternalSwap(Kernel* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // Kernel
 
-// optional .CoreML.Specification.LinearKernel linearKernel = 1;
+// .CoreML.Specification.LinearKernel linearKernel = 1;
 bool Kernel::has_linearkernel() const {
   return kernel_case() == kLinearKernel;
 }
@@ -1407,7 +1397,7 @@ void Kernel::set_allocated_linearkernel(::CoreML::Specification::LinearKernel* l
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Kernel.linearKernel)
 }
 
-// optional .CoreML.Specification.RBFKernel rbfKernel = 2;
+// .CoreML.Specification.RBFKernel rbfKernel = 2;
 bool Kernel::has_rbfkernel() const {
   return kernel_case() == kRbfKernel;
 }
@@ -1455,7 +1445,7 @@ void Kernel::set_allocated_rbfkernel(::CoreML::Specification::RBFKernel* rbfkern
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Kernel.rbfKernel)
 }
 
-// optional .CoreML.Specification.PolyKernel polyKernel = 3;
+// .CoreML.Specification.PolyKernel polyKernel = 3;
 bool Kernel::has_polykernel() const {
   return kernel_case() == kPolyKernel;
 }
@@ -1503,7 +1493,7 @@ void Kernel::set_allocated_polykernel(::CoreML::Specification::PolyKernel* polyk
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Kernel.polyKernel)
 }
 
-// optional .CoreML.Specification.SigmoidKernel sigmoidKernel = 4;
+// .CoreML.Specification.SigmoidKernel sigmoidKernel = 4;
 bool Kernel::has_sigmoidkernel() const {
   return kernel_case() == kSigmoidKernel;
 }
@@ -1560,9 +1550,6 @@ void Kernel::clear_has_kernel() {
 Kernel::KernelCase Kernel::kernel_case() const {
   return Kernel::KernelCase(_oneof_case_[0]);
 }
-inline const Kernel* Kernel::internal_default_instance() {
-  return &Kernel_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -1573,20 +1560,21 @@ const int SparseNode::kValueFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 SparseNode::SparseNode()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_SVM_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_SVM_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.SparseNode)
 }
-
-void SparseNode::InitAsDefaultInstance() {
-}
-
 SparseNode::SparseNode(const SparseNode& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::memcpy(&value_, &from.value_,
+    reinterpret_cast<char*>(&index_) -
+    reinterpret_cast<char*>(&value_) + sizeof(index_));
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.SparseNode)
 }
 
@@ -1610,11 +1598,9 @@ void SparseNode::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const SparseNode& SparseNode::default_instance() {
-  protobuf_InitDefaults_SVM_2eproto();
+  protobuf_SVM_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<SparseNode> SparseNode_default_instance_;
 
 SparseNode* SparseNode::New(::google::protobuf::Arena* arena) const {
   SparseNode* n = new SparseNode;
@@ -1626,27 +1612,8 @@ SparseNode* SparseNode::New(::google::protobuf::Arena* arena) const {
 
 void SparseNode::Clear() {
 // @@protoc_insertion_point(message_clear_start:CoreML.Specification.SparseNode)
-#if defined(__clang__)
-#define ZR_HELPER_(f) \
-  _Pragma("clang diagnostic push") \
-  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
-  __builtin_offsetof(SparseNode, f) \
-  _Pragma("clang diagnostic pop")
-#else
-#define ZR_HELPER_(f) reinterpret_cast<char*>(\
-  &reinterpret_cast<SparseNode*>(16)->f)
-#endif
-
-#define ZR_(first, last) do {\
-  ::memset(&(first), 0,\
-           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
-} while (0)
-
-  ZR_(value_, index_);
-
-#undef ZR_HELPER_
-#undef ZR_
-
+  ::memset(&value_, 0, reinterpret_cast<char*>(&index_) -
+    reinterpret_cast<char*>(&value_) + sizeof(index_));
 }
 
 bool SparseNode::MergePartialFromCodedStream(
@@ -1655,13 +1622,14 @@ bool SparseNode::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.SparseNode)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional int32 index = 1;
+      // int32 index = 1;
       case 1: {
-        if (tag == 8) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(8u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
@@ -1669,14 +1637,13 @@ bool SparseNode::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(17)) goto parse_value;
         break;
       }
 
-      // optional double value = 2;
+      // double value = 2;
       case 2: {
-        if (tag == 17) {
-         parse_value:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(17u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
@@ -1684,7 +1651,6 @@ bool SparseNode::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -1712,12 +1678,15 @@ failure:
 void SparseNode::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.SparseNode)
-  // optional int32 index = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // int32 index = 1;
   if (this->index() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->index(), output);
   }
 
-  // optional double value = 2;
+  // double value = 2;
   if (this->value() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteDouble(2, this->value(), output);
   }
@@ -1729,16 +1698,16 @@ size_t SparseNode::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.SparseNode)
   size_t total_size = 0;
 
-  // optional int32 index = 1;
+  // double value = 2;
+  if (this->value() != 0) {
+    total_size += 1 + 8;
+  }
+
+  // int32 index = 1;
   if (this->index() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::Int32Size(
         this->index());
-  }
-
-  // optional double value = 2;
-  if (this->value() != 0) {
-    total_size += 1 + 8;
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -1755,20 +1724,16 @@ void SparseNode::CheckTypeAndMergeFrom(
 
 void SparseNode::MergeFrom(const SparseNode& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.SparseNode)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void SparseNode::UnsafeMergeFrom(const SparseNode& from) {
-  GOOGLE_DCHECK(&from != this);
-  if (from.index() != 0) {
-    set_index(from.index());
-  }
   if (from.value() != 0) {
     set_value(from.value());
+  }
+  if (from.index() != 0) {
+    set_index(from.index());
   }
 }
 
@@ -1776,11 +1741,10 @@ void SparseNode::CopyFrom(const SparseNode& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.SparseNode)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool SparseNode::IsInitialized() const {
-
   return true;
 }
 
@@ -1789,9 +1753,8 @@ void SparseNode::Swap(SparseNode* other) {
   InternalSwap(other);
 }
 void SparseNode::InternalSwap(SparseNode* other) {
-  std::swap(index_, other->index_);
   std::swap(value_, other->value_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
+  std::swap(index_, other->index_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -1802,7 +1765,7 @@ void SparseNode::InternalSwap(SparseNode* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // SparseNode
 
-// optional int32 index = 1;
+// int32 index = 1;
 void SparseNode::clear_index() {
   index_ = 0;
 }
@@ -1816,7 +1779,7 @@ void SparseNode::set_index(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:CoreML.Specification.SparseNode.index)
 }
 
-// optional double value = 2;
+// double value = 2;
 void SparseNode::clear_value() {
   value_ = 0;
 }
@@ -1830,9 +1793,6 @@ void SparseNode::set_value(double value) {
   // @@protoc_insertion_point(field_set:CoreML.Specification.SparseNode.value)
 }
 
-inline const SparseNode* SparseNode::internal_default_instance() {
-  return &SparseNode_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -1842,20 +1802,19 @@ const int SparseVector::kNodesFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 SparseVector::SparseVector()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_SVM_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_SVM_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.SparseVector)
 }
-
-void SparseVector::InitAsDefaultInstance() {
-}
-
 SparseVector::SparseVector(const SparseVector& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      nodes_(from.nodes_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.SparseVector)
 }
 
@@ -1877,11 +1836,9 @@ void SparseVector::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const SparseVector& SparseVector::default_instance() {
-  protobuf_InitDefaults_SVM_2eproto();
+  protobuf_SVM_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<SparseVector> SparseVector_default_instance_;
 
 SparseVector* SparseVector::New(::google::protobuf::Arena* arena) const {
   SparseVector* n = new SparseVector;
@@ -1902,23 +1859,19 @@ bool SparseVector::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.SparseVector)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // repeated .CoreML.Specification.SparseNode nodes = 1;
       case 1: {
-        if (tag == 10) {
-          DO_(input->IncrementRecursionDepth());
-         parse_loop_nodes:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                 input, add_nodes()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(10)) goto parse_loop_nodes;
-        input->UnsafeDecrementRecursionDepth();
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -1946,6 +1899,9 @@ failure:
 void SparseVector::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.SparseVector)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
   // repeated .CoreML.Specification.SparseNode nodes = 1;
   for (unsigned int i = 0, n = this->nodes_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
@@ -1984,15 +1940,11 @@ void SparseVector::CheckTypeAndMergeFrom(
 
 void SparseVector::MergeFrom(const SparseVector& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.SparseVector)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void SparseVector::UnsafeMergeFrom(const SparseVector& from) {
-  GOOGLE_DCHECK(&from != this);
   nodes_.MergeFrom(from.nodes_);
 }
 
@@ -2000,11 +1952,10 @@ void SparseVector::CopyFrom(const SparseVector& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.SparseVector)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool SparseVector::IsInitialized() const {
-
   return true;
 }
 
@@ -2013,8 +1964,7 @@ void SparseVector::Swap(SparseVector* other) {
   InternalSwap(other);
 }
 void SparseVector::InternalSwap(SparseVector* other) {
-  nodes_.UnsafeArenaSwap(&other->nodes_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
+  nodes_.InternalSwap(&other->nodes_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -2055,9 +2005,6 @@ SparseVector::nodes() const {
   return nodes_;
 }
 
-inline const SparseVector* SparseVector::internal_default_instance() {
-  return &SparseVector_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -2067,20 +2014,19 @@ const int SparseSupportVectors::kVectorsFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 SparseSupportVectors::SparseSupportVectors()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_SVM_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_SVM_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.SparseSupportVectors)
 }
-
-void SparseSupportVectors::InitAsDefaultInstance() {
-}
-
 SparseSupportVectors::SparseSupportVectors(const SparseSupportVectors& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      vectors_(from.vectors_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.SparseSupportVectors)
 }
 
@@ -2102,11 +2048,9 @@ void SparseSupportVectors::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const SparseSupportVectors& SparseSupportVectors::default_instance() {
-  protobuf_InitDefaults_SVM_2eproto();
+  protobuf_SVM_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<SparseSupportVectors> SparseSupportVectors_default_instance_;
 
 SparseSupportVectors* SparseSupportVectors::New(::google::protobuf::Arena* arena) const {
   SparseSupportVectors* n = new SparseSupportVectors;
@@ -2127,23 +2071,19 @@ bool SparseSupportVectors::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.SparseSupportVectors)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // repeated .CoreML.Specification.SparseVector vectors = 1;
       case 1: {
-        if (tag == 10) {
-          DO_(input->IncrementRecursionDepth());
-         parse_loop_vectors:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                 input, add_vectors()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(10)) goto parse_loop_vectors;
-        input->UnsafeDecrementRecursionDepth();
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -2171,6 +2111,9 @@ failure:
 void SparseSupportVectors::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.SparseSupportVectors)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
   // repeated .CoreML.Specification.SparseVector vectors = 1;
   for (unsigned int i = 0, n = this->vectors_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
@@ -2209,15 +2152,11 @@ void SparseSupportVectors::CheckTypeAndMergeFrom(
 
 void SparseSupportVectors::MergeFrom(const SparseSupportVectors& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.SparseSupportVectors)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void SparseSupportVectors::UnsafeMergeFrom(const SparseSupportVectors& from) {
-  GOOGLE_DCHECK(&from != this);
   vectors_.MergeFrom(from.vectors_);
 }
 
@@ -2225,11 +2164,10 @@ void SparseSupportVectors::CopyFrom(const SparseSupportVectors& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.SparseSupportVectors)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool SparseSupportVectors::IsInitialized() const {
-
   return true;
 }
 
@@ -2238,8 +2176,7 @@ void SparseSupportVectors::Swap(SparseSupportVectors* other) {
   InternalSwap(other);
 }
 void SparseSupportVectors::InternalSwap(SparseSupportVectors* other) {
-  vectors_.UnsafeArenaSwap(&other->vectors_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
+  vectors_.InternalSwap(&other->vectors_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -2280,9 +2217,6 @@ SparseSupportVectors::vectors() const {
   return vectors_;
 }
 
-inline const SparseSupportVectors* SparseSupportVectors::internal_default_instance() {
-  return &SparseSupportVectors_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -2292,20 +2226,19 @@ const int DenseVector::kValuesFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 DenseVector::DenseVector()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_SVM_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_SVM_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.DenseVector)
 }
-
-void DenseVector::InitAsDefaultInstance() {
-}
-
 DenseVector::DenseVector(const DenseVector& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      values_(from.values_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.DenseVector)
 }
 
@@ -2327,11 +2260,9 @@ void DenseVector::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const DenseVector& DenseVector::default_instance() {
-  protobuf_InitDefaults_SVM_2eproto();
+  protobuf_SVM_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<DenseVector> DenseVector_default_instance_;
 
 DenseVector* DenseVector::New(::google::protobuf::Arena* arena) const {
   DenseVector* n = new DenseVector;
@@ -2352,24 +2283,25 @@ bool DenseVector::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.DenseVector)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // repeated double values = 1;
       case 1: {
-        if (tag == 10) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
                  input, this->mutable_values())));
-        } else if (tag == 9) {
+        } else if (static_cast< ::google::protobuf::uint8>(tag) ==
+                   static_cast< ::google::protobuf::uint8>(9u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 1, 10, input, this->mutable_values())));
+                 1, 10u, input, this->mutable_values())));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -2397,14 +2329,15 @@ failure:
 void DenseVector::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.DenseVector)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
   // repeated double values = 1;
   if (this->values_size() > 0) {
     ::google::protobuf::internal::WireFormatLite::WriteTag(1, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
     output->WriteVarint32(_values_cached_byte_size_);
-  }
-  for (int i = 0; i < this->values_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteDoubleNoTag(
-      this->values(i), output);
+    ::google::protobuf::internal::WireFormatLite::WriteDoubleArray(
+      this->values().data(), this->values_size(), output);
   }
 
   // @@protoc_insertion_point(serialize_end:CoreML.Specification.DenseVector)
@@ -2416,9 +2349,8 @@ size_t DenseVector::ByteSizeLong() const {
 
   // repeated double values = 1;
   {
-    size_t data_size = 0;
     unsigned int count = this->values_size();
-    data_size = 8UL * count;
+    size_t data_size = 8UL * count;
     if (data_size > 0) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
@@ -2444,27 +2376,22 @@ void DenseVector::CheckTypeAndMergeFrom(
 
 void DenseVector::MergeFrom(const DenseVector& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.DenseVector)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void DenseVector::UnsafeMergeFrom(const DenseVector& from) {
-  GOOGLE_DCHECK(&from != this);
-  values_.UnsafeMergeFrom(from.values_);
+  values_.MergeFrom(from.values_);
 }
 
 void DenseVector::CopyFrom(const DenseVector& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.DenseVector)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool DenseVector::IsInitialized() const {
-
   return true;
 }
 
@@ -2473,8 +2400,7 @@ void DenseVector::Swap(DenseVector* other) {
   InternalSwap(other);
 }
 void DenseVector::InternalSwap(DenseVector* other) {
-  values_.UnsafeArenaSwap(&other->values_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
+  values_.InternalSwap(&other->values_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -2515,9 +2441,6 @@ DenseVector::mutable_values() {
   return &values_;
 }
 
-inline const DenseVector* DenseVector::internal_default_instance() {
-  return &DenseVector_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -2527,20 +2450,19 @@ const int DenseSupportVectors::kVectorsFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 DenseSupportVectors::DenseSupportVectors()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_SVM_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_SVM_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.DenseSupportVectors)
 }
-
-void DenseSupportVectors::InitAsDefaultInstance() {
-}
-
 DenseSupportVectors::DenseSupportVectors(const DenseSupportVectors& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      vectors_(from.vectors_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.DenseSupportVectors)
 }
 
@@ -2562,11 +2484,9 @@ void DenseSupportVectors::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const DenseSupportVectors& DenseSupportVectors::default_instance() {
-  protobuf_InitDefaults_SVM_2eproto();
+  protobuf_SVM_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<DenseSupportVectors> DenseSupportVectors_default_instance_;
 
 DenseSupportVectors* DenseSupportVectors::New(::google::protobuf::Arena* arena) const {
   DenseSupportVectors* n = new DenseSupportVectors;
@@ -2587,23 +2507,19 @@ bool DenseSupportVectors::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.DenseSupportVectors)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // repeated .CoreML.Specification.DenseVector vectors = 1;
       case 1: {
-        if (tag == 10) {
-          DO_(input->IncrementRecursionDepth());
-         parse_loop_vectors:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                 input, add_vectors()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(10)) goto parse_loop_vectors;
-        input->UnsafeDecrementRecursionDepth();
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -2631,6 +2547,9 @@ failure:
 void DenseSupportVectors::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.DenseSupportVectors)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
   // repeated .CoreML.Specification.DenseVector vectors = 1;
   for (unsigned int i = 0, n = this->vectors_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
@@ -2669,15 +2588,11 @@ void DenseSupportVectors::CheckTypeAndMergeFrom(
 
 void DenseSupportVectors::MergeFrom(const DenseSupportVectors& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.DenseSupportVectors)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void DenseSupportVectors::UnsafeMergeFrom(const DenseSupportVectors& from) {
-  GOOGLE_DCHECK(&from != this);
   vectors_.MergeFrom(from.vectors_);
 }
 
@@ -2685,11 +2600,10 @@ void DenseSupportVectors::CopyFrom(const DenseSupportVectors& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.DenseSupportVectors)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool DenseSupportVectors::IsInitialized() const {
-
   return true;
 }
 
@@ -2698,8 +2612,7 @@ void DenseSupportVectors::Swap(DenseSupportVectors* other) {
   InternalSwap(other);
 }
 void DenseSupportVectors::InternalSwap(DenseSupportVectors* other) {
-  vectors_.UnsafeArenaSwap(&other->vectors_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
+  vectors_.InternalSwap(&other->vectors_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -2740,9 +2653,6 @@ DenseSupportVectors::vectors() const {
   return vectors_;
 }
 
-inline const DenseSupportVectors* DenseSupportVectors::internal_default_instance() {
-  return &DenseSupportVectors_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -2752,20 +2662,19 @@ const int Coefficients::kAlphaFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Coefficients::Coefficients()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_SVM_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_SVM_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.Coefficients)
 }
-
-void Coefficients::InitAsDefaultInstance() {
-}
-
 Coefficients::Coefficients(const Coefficients& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      alpha_(from.alpha_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.Coefficients)
 }
 
@@ -2787,11 +2696,9 @@ void Coefficients::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const Coefficients& Coefficients::default_instance() {
-  protobuf_InitDefaults_SVM_2eproto();
+  protobuf_SVM_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<Coefficients> Coefficients_default_instance_;
 
 Coefficients* Coefficients::New(::google::protobuf::Arena* arena) const {
   Coefficients* n = new Coefficients;
@@ -2812,24 +2719,25 @@ bool Coefficients::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.Coefficients)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // repeated double alpha = 1;
       case 1: {
-        if (tag == 10) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
                  input, this->mutable_alpha())));
-        } else if (tag == 9) {
+        } else if (static_cast< ::google::protobuf::uint8>(tag) ==
+                   static_cast< ::google::protobuf::uint8>(9u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 1, 10, input, this->mutable_alpha())));
+                 1, 10u, input, this->mutable_alpha())));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -2857,14 +2765,15 @@ failure:
 void Coefficients::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.Coefficients)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
   // repeated double alpha = 1;
   if (this->alpha_size() > 0) {
     ::google::protobuf::internal::WireFormatLite::WriteTag(1, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
     output->WriteVarint32(_alpha_cached_byte_size_);
-  }
-  for (int i = 0; i < this->alpha_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteDoubleNoTag(
-      this->alpha(i), output);
+    ::google::protobuf::internal::WireFormatLite::WriteDoubleArray(
+      this->alpha().data(), this->alpha_size(), output);
   }
 
   // @@protoc_insertion_point(serialize_end:CoreML.Specification.Coefficients)
@@ -2876,9 +2785,8 @@ size_t Coefficients::ByteSizeLong() const {
 
   // repeated double alpha = 1;
   {
-    size_t data_size = 0;
     unsigned int count = this->alpha_size();
-    data_size = 8UL * count;
+    size_t data_size = 8UL * count;
     if (data_size > 0) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
@@ -2904,27 +2812,22 @@ void Coefficients::CheckTypeAndMergeFrom(
 
 void Coefficients::MergeFrom(const Coefficients& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.Coefficients)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void Coefficients::UnsafeMergeFrom(const Coefficients& from) {
-  GOOGLE_DCHECK(&from != this);
-  alpha_.UnsafeMergeFrom(from.alpha_);
+  alpha_.MergeFrom(from.alpha_);
 }
 
 void Coefficients::CopyFrom(const Coefficients& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.Coefficients)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool Coefficients::IsInitialized() const {
-
   return true;
 }
 
@@ -2933,8 +2836,7 @@ void Coefficients::Swap(Coefficients* other) {
   InternalSwap(other);
 }
 void Coefficients::InternalSwap(Coefficients* other) {
-  alpha_.UnsafeArenaSwap(&other->alpha_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
+  alpha_.InternalSwap(&other->alpha_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -2975,9 +2877,6 @@ Coefficients::mutable_alpha() {
   return &alpha_;
 }
 
-inline const Coefficients* Coefficients::internal_default_instance() {
-  return &Coefficients_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -2991,31 +2890,49 @@ const int SupportVectorRegressor::kRhoFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 SupportVectorRegressor::SupportVectorRegressor()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_SVM_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_SVM_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.SupportVectorRegressor)
 }
-
-void SupportVectorRegressor::InitAsDefaultInstance() {
-  kernel_ = const_cast< ::CoreML::Specification::Kernel*>(
-      ::CoreML::Specification::Kernel::internal_default_instance());
-  coefficients_ = const_cast< ::CoreML::Specification::Coefficients*>(
-      ::CoreML::Specification::Coefficients::internal_default_instance());
-}
-
 SupportVectorRegressor::SupportVectorRegressor(const SupportVectorRegressor& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  if (from.has_kernel()) {
+    kernel_ = new ::CoreML::Specification::Kernel(*from.kernel_);
+  } else {
+    kernel_ = NULL;
+  }
+  if (from.has_coefficients()) {
+    coefficients_ = new ::CoreML::Specification::Coefficients(*from.coefficients_);
+  } else {
+    coefficients_ = NULL;
+  }
+  rho_ = from.rho_;
+  clear_has_supportVectors();
+  switch (from.supportVectors_case()) {
+    case kSparseSupportVectors: {
+      mutable_sparsesupportvectors()->::CoreML::Specification::SparseSupportVectors::MergeFrom(from.sparsesupportvectors());
+      break;
+    }
+    case kDenseSupportVectors: {
+      mutable_densesupportvectors()->::CoreML::Specification::DenseSupportVectors::MergeFrom(from.densesupportvectors());
+      break;
+    }
+    case SUPPORTVECTORS_NOT_SET: {
+      break;
+    }
+  }
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.SupportVectorRegressor)
 }
 
 void SupportVectorRegressor::SharedCtor() {
-  kernel_ = NULL;
-  coefficients_ = NULL;
-  rho_ = 0;
+  ::memset(&kernel_, 0, reinterpret_cast<char*>(&rho_) -
+    reinterpret_cast<char*>(&kernel_) + sizeof(rho_));
   clear_has_supportVectors();
   _cached_size_ = 0;
 }
@@ -3026,12 +2943,14 @@ SupportVectorRegressor::~SupportVectorRegressor() {
 }
 
 void SupportVectorRegressor::SharedDtor() {
+  if (this != internal_default_instance()) {
+    delete kernel_;
+  }
+  if (this != internal_default_instance()) {
+    delete coefficients_;
+  }
   if (has_supportVectors()) {
     clear_supportVectors();
-  }
-  if (this != &SupportVectorRegressor_default_instance_.get()) {
-    delete kernel_;
-    delete coefficients_;
   }
 }
 
@@ -3041,11 +2960,9 @@ void SupportVectorRegressor::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const SupportVectorRegressor& SupportVectorRegressor::default_instance() {
-  protobuf_InitDefaults_SVM_2eproto();
+  protobuf_SVM_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<SupportVectorRegressor> SupportVectorRegressor_default_instance_;
 
 SupportVectorRegressor* SupportVectorRegressor::New(::google::protobuf::Arena* arena) const {
   SupportVectorRegressor* n = new SupportVectorRegressor;
@@ -3076,9 +2993,13 @@ void SupportVectorRegressor::clear_supportVectors() {
 
 void SupportVectorRegressor::Clear() {
 // @@protoc_insertion_point(message_clear_start:CoreML.Specification.SupportVectorRegressor)
-  if (GetArenaNoVirtual() == NULL && kernel_ != NULL) delete kernel_;
+  if (GetArenaNoVirtual() == NULL && kernel_ != NULL) {
+    delete kernel_;
+  }
   kernel_ = NULL;
-  if (GetArenaNoVirtual() == NULL && coefficients_ != NULL) delete coefficients_;
+  if (GetArenaNoVirtual() == NULL && coefficients_ != NULL) {
+    delete coefficients_;
+  }
   coefficients_ = NULL;
   rho_ = 0;
   clear_supportVectors();
@@ -3090,65 +3011,62 @@ bool SupportVectorRegressor::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.SupportVectorRegressor)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional .CoreML.Specification.Kernel kernel = 1;
+      // .CoreML.Specification.Kernel kernel = 1;
       case 1: {
-        if (tag == 10) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_kernel()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(18)) goto parse_sparseSupportVectors;
         break;
       }
 
-      // optional .CoreML.Specification.SparseSupportVectors sparseSupportVectors = 2;
+      // .CoreML.Specification.SparseSupportVectors sparseSupportVectors = 2;
       case 2: {
-        if (tag == 18) {
-         parse_sparseSupportVectors:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_sparsesupportvectors()));
         } else {
           goto handle_unusual;
         }
-        goto after_densesupportvectors;
         break;
       }
 
-      // optional .CoreML.Specification.DenseSupportVectors denseSupportVectors = 3;
+      // .CoreML.Specification.DenseSupportVectors denseSupportVectors = 3;
       case 3: {
-        if (tag == 26) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(26u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_densesupportvectors()));
         } else {
           goto handle_unusual;
         }
-       after_densesupportvectors:
-        if (input->ExpectTag(34)) goto parse_coefficients;
         break;
       }
 
-      // optional .CoreML.Specification.Coefficients coefficients = 4;
+      // .CoreML.Specification.Coefficients coefficients = 4;
       case 4: {
-        if (tag == 34) {
-         parse_coefficients:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(34u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_coefficients()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(41)) goto parse_rho;
         break;
       }
 
-      // optional double rho = 5;
+      // double rho = 5;
       case 5: {
-        if (tag == 41) {
-         parse_rho:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(41u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
@@ -3156,7 +3074,6 @@ bool SupportVectorRegressor::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -3184,31 +3101,34 @@ failure:
 void SupportVectorRegressor::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.SupportVectorRegressor)
-  // optional .CoreML.Specification.Kernel kernel = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .CoreML.Specification.Kernel kernel = 1;
   if (this->has_kernel()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       1, *this->kernel_, output);
   }
 
-  // optional .CoreML.Specification.SparseSupportVectors sparseSupportVectors = 2;
+  // .CoreML.Specification.SparseSupportVectors sparseSupportVectors = 2;
   if (has_sparsesupportvectors()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       2, *supportVectors_.sparsesupportvectors_, output);
   }
 
-  // optional .CoreML.Specification.DenseSupportVectors denseSupportVectors = 3;
+  // .CoreML.Specification.DenseSupportVectors denseSupportVectors = 3;
   if (has_densesupportvectors()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       3, *supportVectors_.densesupportvectors_, output);
   }
 
-  // optional .CoreML.Specification.Coefficients coefficients = 4;
+  // .CoreML.Specification.Coefficients coefficients = 4;
   if (this->has_coefficients()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       4, *this->coefficients_, output);
   }
 
-  // optional double rho = 5;
+  // double rho = 5;
   if (this->rho() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteDouble(5, this->rho(), output);
   }
@@ -3220,34 +3140,34 @@ size_t SupportVectorRegressor::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.SupportVectorRegressor)
   size_t total_size = 0;
 
-  // optional .CoreML.Specification.Kernel kernel = 1;
+  // .CoreML.Specification.Kernel kernel = 1;
   if (this->has_kernel()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
         *this->kernel_);
   }
 
-  // optional .CoreML.Specification.Coefficients coefficients = 4;
+  // .CoreML.Specification.Coefficients coefficients = 4;
   if (this->has_coefficients()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
         *this->coefficients_);
   }
 
-  // optional double rho = 5;
+  // double rho = 5;
   if (this->rho() != 0) {
     total_size += 1 + 8;
   }
 
   switch (supportVectors_case()) {
-    // optional .CoreML.Specification.SparseSupportVectors sparseSupportVectors = 2;
+    // .CoreML.Specification.SparseSupportVectors sparseSupportVectors = 2;
     case kSparseSupportVectors: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *supportVectors_.sparsesupportvectors_);
       break;
     }
-    // optional .CoreML.Specification.DenseSupportVectors denseSupportVectors = 3;
+    // .CoreML.Specification.DenseSupportVectors denseSupportVectors = 3;
     case kDenseSupportVectors: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -3272,15 +3192,20 @@ void SupportVectorRegressor::CheckTypeAndMergeFrom(
 
 void SupportVectorRegressor::MergeFrom(const SupportVectorRegressor& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.SupportVectorRegressor)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void SupportVectorRegressor::UnsafeMergeFrom(const SupportVectorRegressor& from) {
-  GOOGLE_DCHECK(&from != this);
+  if (from.has_kernel()) {
+    mutable_kernel()->::CoreML::Specification::Kernel::MergeFrom(from.kernel());
+  }
+  if (from.has_coefficients()) {
+    mutable_coefficients()->::CoreML::Specification::Coefficients::MergeFrom(from.coefficients());
+  }
+  if (from.rho() != 0) {
+    set_rho(from.rho());
+  }
   switch (from.supportVectors_case()) {
     case kSparseSupportVectors: {
       mutable_sparsesupportvectors()->::CoreML::Specification::SparseSupportVectors::MergeFrom(from.sparsesupportvectors());
@@ -3294,26 +3219,16 @@ void SupportVectorRegressor::UnsafeMergeFrom(const SupportVectorRegressor& from)
       break;
     }
   }
-  if (from.has_kernel()) {
-    mutable_kernel()->::CoreML::Specification::Kernel::MergeFrom(from.kernel());
-  }
-  if (from.has_coefficients()) {
-    mutable_coefficients()->::CoreML::Specification::Coefficients::MergeFrom(from.coefficients());
-  }
-  if (from.rho() != 0) {
-    set_rho(from.rho());
-  }
 }
 
 void SupportVectorRegressor::CopyFrom(const SupportVectorRegressor& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.SupportVectorRegressor)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool SupportVectorRegressor::IsInitialized() const {
-
   return true;
 }
 
@@ -3327,7 +3242,6 @@ void SupportVectorRegressor::InternalSwap(SupportVectorRegressor* other) {
   std::swap(rho_, other->rho_);
   std::swap(supportVectors_, other->supportVectors_);
   std::swap(_oneof_case_[0], other->_oneof_case_[0]);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -3338,7 +3252,7 @@ void SupportVectorRegressor::InternalSwap(SupportVectorRegressor* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // SupportVectorRegressor
 
-// optional .CoreML.Specification.Kernel kernel = 1;
+// .CoreML.Specification.Kernel kernel = 1;
 bool SupportVectorRegressor::has_kernel() const {
   return this != internal_default_instance() && kernel_ != NULL;
 }
@@ -3377,7 +3291,7 @@ void SupportVectorRegressor::set_allocated_kernel(::CoreML::Specification::Kerne
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.SupportVectorRegressor.kernel)
 }
 
-// optional .CoreML.Specification.SparseSupportVectors sparseSupportVectors = 2;
+// .CoreML.Specification.SparseSupportVectors sparseSupportVectors = 2;
 bool SupportVectorRegressor::has_sparsesupportvectors() const {
   return supportVectors_case() == kSparseSupportVectors;
 }
@@ -3425,7 +3339,7 @@ void SupportVectorRegressor::set_allocated_sparsesupportvectors(::CoreML::Specif
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.SupportVectorRegressor.sparseSupportVectors)
 }
 
-// optional .CoreML.Specification.DenseSupportVectors denseSupportVectors = 3;
+// .CoreML.Specification.DenseSupportVectors denseSupportVectors = 3;
 bool SupportVectorRegressor::has_densesupportvectors() const {
   return supportVectors_case() == kDenseSupportVectors;
 }
@@ -3473,7 +3387,7 @@ void SupportVectorRegressor::set_allocated_densesupportvectors(::CoreML::Specifi
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.SupportVectorRegressor.denseSupportVectors)
 }
 
-// optional .CoreML.Specification.Coefficients coefficients = 4;
+// .CoreML.Specification.Coefficients coefficients = 4;
 bool SupportVectorRegressor::has_coefficients() const {
   return this != internal_default_instance() && coefficients_ != NULL;
 }
@@ -3512,7 +3426,7 @@ void SupportVectorRegressor::set_allocated_coefficients(::CoreML::Specification:
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.SupportVectorRegressor.coefficients)
 }
 
-// optional double rho = 5;
+// double rho = 5;
 void SupportVectorRegressor::clear_rho() {
   rho_ = 0;
 }
@@ -3535,9 +3449,6 @@ void SupportVectorRegressor::clear_has_supportVectors() {
 SupportVectorRegressor::SupportVectorsCase SupportVectorRegressor::supportVectors_case() const {
   return SupportVectorRegressor::SupportVectorsCase(_oneof_case_[0]);
 }
-inline const SupportVectorRegressor* SupportVectorRegressor::internal_default_instance() {
-  return &SupportVectorRegressor_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -3556,22 +3467,56 @@ const int SupportVectorClassifier::kInt64ClassLabelsFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 SupportVectorClassifier::SupportVectorClassifier()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_SVM_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_SVM_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.SupportVectorClassifier)
 }
-
-void SupportVectorClassifier::InitAsDefaultInstance() {
-  kernel_ = const_cast< ::CoreML::Specification::Kernel*>(
-      ::CoreML::Specification::Kernel::internal_default_instance());
-}
-
 SupportVectorClassifier::SupportVectorClassifier(const SupportVectorClassifier& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      numberofsupportvectorsperclass_(from.numberofsupportvectorsperclass_),
+      coefficients_(from.coefficients_),
+      rho_(from.rho_),
+      proba_(from.proba_),
+      probb_(from.probb_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  if (from.has_kernel()) {
+    kernel_ = new ::CoreML::Specification::Kernel(*from.kernel_);
+  } else {
+    kernel_ = NULL;
+  }
+  clear_has_supportVectors();
+  switch (from.supportVectors_case()) {
+    case kSparseSupportVectors: {
+      mutable_sparsesupportvectors()->::CoreML::Specification::SparseSupportVectors::MergeFrom(from.sparsesupportvectors());
+      break;
+    }
+    case kDenseSupportVectors: {
+      mutable_densesupportvectors()->::CoreML::Specification::DenseSupportVectors::MergeFrom(from.densesupportvectors());
+      break;
+    }
+    case SUPPORTVECTORS_NOT_SET: {
+      break;
+    }
+  }
+  clear_has_ClassLabels();
+  switch (from.ClassLabels_case()) {
+    case kStringClassLabels: {
+      mutable_stringclasslabels()->::CoreML::Specification::StringVector::MergeFrom(from.stringclasslabels());
+      break;
+    }
+    case kInt64ClassLabels: {
+      mutable_int64classlabels()->::CoreML::Specification::Int64Vector::MergeFrom(from.int64classlabels());
+      break;
+    }
+    case CLASSLABELS_NOT_SET: {
+      break;
+    }
+  }
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.SupportVectorClassifier)
 }
 
@@ -3588,14 +3533,14 @@ SupportVectorClassifier::~SupportVectorClassifier() {
 }
 
 void SupportVectorClassifier::SharedDtor() {
+  if (this != internal_default_instance()) {
+    delete kernel_;
+  }
   if (has_supportVectors()) {
     clear_supportVectors();
   }
   if (has_ClassLabels()) {
     clear_ClassLabels();
-  }
-  if (this != &SupportVectorClassifier_default_instance_.get()) {
-    delete kernel_;
   }
 }
 
@@ -3605,11 +3550,9 @@ void SupportVectorClassifier::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const SupportVectorClassifier& SupportVectorClassifier::default_instance() {
-  protobuf_InitDefaults_SVM_2eproto();
+  protobuf_SVM_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<SupportVectorClassifier> SupportVectorClassifier_default_instance_;
 
 SupportVectorClassifier* SupportVectorClassifier::New(::google::protobuf::Arena* arena) const {
   SupportVectorClassifier* n = new SupportVectorClassifier;
@@ -3658,13 +3601,15 @@ void SupportVectorClassifier::clear_ClassLabels() {
 
 void SupportVectorClassifier::Clear() {
 // @@protoc_insertion_point(message_clear_start:CoreML.Specification.SupportVectorClassifier)
-  if (GetArenaNoVirtual() == NULL && kernel_ != NULL) delete kernel_;
-  kernel_ = NULL;
   numberofsupportvectorsperclass_.Clear();
   coefficients_.Clear();
   rho_.Clear();
   proba_.Clear();
   probb_.Clear();
+  if (GetArenaNoVirtual() == NULL && kernel_ != NULL) {
+    delete kernel_;
+  }
+  kernel_ = NULL;
   clear_supportVectors();
   clear_ClassLabels();
 }
@@ -3675,160 +3620,151 @@ bool SupportVectorClassifier::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.SupportVectorClassifier)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(16383);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(16383u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional .CoreML.Specification.Kernel kernel = 1;
+      // .CoreML.Specification.Kernel kernel = 1;
       case 1: {
-        if (tag == 10) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_kernel()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(18)) goto parse_numberOfSupportVectorsPerClass;
         break;
       }
 
       // repeated int32 numberOfSupportVectorsPerClass = 2;
       case 2: {
-        if (tag == 18) {
-         parse_numberOfSupportVectorsPerClass:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, this->mutable_numberofsupportvectorsperclass())));
-        } else if (tag == 16) {
+        } else if (static_cast< ::google::protobuf::uint8>(tag) ==
+                   static_cast< ::google::protobuf::uint8>(16u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 1, 18, input, this->mutable_numberofsupportvectorsperclass())));
+                 1, 18u, input, this->mutable_numberofsupportvectorsperclass())));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(26)) goto parse_sparseSupportVectors;
         break;
       }
 
-      // optional .CoreML.Specification.SparseSupportVectors sparseSupportVectors = 3;
+      // .CoreML.Specification.SparseSupportVectors sparseSupportVectors = 3;
       case 3: {
-        if (tag == 26) {
-         parse_sparseSupportVectors:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(26u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_sparsesupportvectors()));
         } else {
           goto handle_unusual;
         }
-        goto after_densesupportvectors;
         break;
       }
 
-      // optional .CoreML.Specification.DenseSupportVectors denseSupportVectors = 4;
+      // .CoreML.Specification.DenseSupportVectors denseSupportVectors = 4;
       case 4: {
-        if (tag == 34) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(34u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_densesupportvectors()));
         } else {
           goto handle_unusual;
         }
-       after_densesupportvectors:
-        if (input->ExpectTag(42)) goto parse_coefficients;
         break;
       }
 
       // repeated .CoreML.Specification.Coefficients coefficients = 5;
       case 5: {
-        if (tag == 42) {
-         parse_coefficients:
-          DO_(input->IncrementRecursionDepth());
-         parse_loop_coefficients:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(42u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                 input, add_coefficients()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(42)) goto parse_loop_coefficients;
-        input->UnsafeDecrementRecursionDepth();
-        if (input->ExpectTag(50)) goto parse_rho;
         break;
       }
 
       // repeated double rho = 6;
       case 6: {
-        if (tag == 50) {
-         parse_rho:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(50u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
                  input, this->mutable_rho())));
-        } else if (tag == 49) {
+        } else if (static_cast< ::google::protobuf::uint8>(tag) ==
+                   static_cast< ::google::protobuf::uint8>(49u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 1, 50, input, this->mutable_rho())));
+                 1, 50u, input, this->mutable_rho())));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(58)) goto parse_probA;
         break;
       }
 
       // repeated double probA = 7;
       case 7: {
-        if (tag == 58) {
-         parse_probA:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(58u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
                  input, this->mutable_proba())));
-        } else if (tag == 57) {
+        } else if (static_cast< ::google::protobuf::uint8>(tag) ==
+                   static_cast< ::google::protobuf::uint8>(57u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 1, 58, input, this->mutable_proba())));
+                 1, 58u, input, this->mutable_proba())));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(66)) goto parse_probB;
         break;
       }
 
       // repeated double probB = 8;
       case 8: {
-        if (tag == 66) {
-         parse_probB:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(66u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
                  input, this->mutable_probb())));
-        } else if (tag == 65) {
+        } else if (static_cast< ::google::protobuf::uint8>(tag) ==
+                   static_cast< ::google::protobuf::uint8>(65u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 1, 66, input, this->mutable_probb())));
+                 1, 66u, input, this->mutable_probb())));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(802)) goto parse_stringClassLabels;
         break;
       }
 
-      // optional .CoreML.Specification.StringVector stringClassLabels = 100;
+      // .CoreML.Specification.StringVector stringClassLabels = 100;
       case 100: {
-        if (tag == 802) {
-         parse_stringClassLabels:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(802u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_stringclasslabels()));
         } else {
           goto handle_unusual;
         }
-        goto after_int64classlabels;
         break;
       }
 
-      // optional .CoreML.Specification.Int64Vector int64ClassLabels = 101;
+      // .CoreML.Specification.Int64Vector int64ClassLabels = 101;
       case 101: {
-        if (tag == 810) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(810u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_int64classlabels()));
         } else {
           goto handle_unusual;
         }
-       after_int64classlabels:
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -3856,7 +3792,10 @@ failure:
 void SupportVectorClassifier::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.SupportVectorClassifier)
-  // optional .CoreML.Specification.Kernel kernel = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .CoreML.Specification.Kernel kernel = 1;
   if (this->has_kernel()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       1, *this->kernel_, output);
@@ -3867,18 +3806,18 @@ void SupportVectorClassifier::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteTag(2, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
     output->WriteVarint32(_numberofsupportvectorsperclass_cached_byte_size_);
   }
-  for (int i = 0; i < this->numberofsupportvectorsperclass_size(); i++) {
+  for (int i = 0, n = this->numberofsupportvectorsperclass_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteInt32NoTag(
       this->numberofsupportvectorsperclass(i), output);
   }
 
-  // optional .CoreML.Specification.SparseSupportVectors sparseSupportVectors = 3;
+  // .CoreML.Specification.SparseSupportVectors sparseSupportVectors = 3;
   if (has_sparsesupportvectors()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       3, *supportVectors_.sparsesupportvectors_, output);
   }
 
-  // optional .CoreML.Specification.DenseSupportVectors denseSupportVectors = 4;
+  // .CoreML.Specification.DenseSupportVectors denseSupportVectors = 4;
   if (has_densesupportvectors()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       4, *supportVectors_.densesupportvectors_, output);
@@ -3894,39 +3833,33 @@ void SupportVectorClassifier::SerializeWithCachedSizes(
   if (this->rho_size() > 0) {
     ::google::protobuf::internal::WireFormatLite::WriteTag(6, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
     output->WriteVarint32(_rho_cached_byte_size_);
-  }
-  for (int i = 0; i < this->rho_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteDoubleNoTag(
-      this->rho(i), output);
+    ::google::protobuf::internal::WireFormatLite::WriteDoubleArray(
+      this->rho().data(), this->rho_size(), output);
   }
 
   // repeated double probA = 7;
   if (this->proba_size() > 0) {
     ::google::protobuf::internal::WireFormatLite::WriteTag(7, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
     output->WriteVarint32(_proba_cached_byte_size_);
-  }
-  for (int i = 0; i < this->proba_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteDoubleNoTag(
-      this->proba(i), output);
+    ::google::protobuf::internal::WireFormatLite::WriteDoubleArray(
+      this->proba().data(), this->proba_size(), output);
   }
 
   // repeated double probB = 8;
   if (this->probb_size() > 0) {
     ::google::protobuf::internal::WireFormatLite::WriteTag(8, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
     output->WriteVarint32(_probb_cached_byte_size_);
-  }
-  for (int i = 0; i < this->probb_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteDoubleNoTag(
-      this->probb(i), output);
+    ::google::protobuf::internal::WireFormatLite::WriteDoubleArray(
+      this->probb().data(), this->probb_size(), output);
   }
 
-  // optional .CoreML.Specification.StringVector stringClassLabels = 100;
+  // .CoreML.Specification.StringVector stringClassLabels = 100;
   if (has_stringclasslabels()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       100, *ClassLabels_.stringclasslabels_, output);
   }
 
-  // optional .CoreML.Specification.Int64Vector int64ClassLabels = 101;
+  // .CoreML.Specification.Int64Vector int64ClassLabels = 101;
   if (has_int64classlabels()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       101, *ClassLabels_.int64classlabels_, output);
@@ -3939,21 +3872,10 @@ size_t SupportVectorClassifier::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.SupportVectorClassifier)
   size_t total_size = 0;
 
-  // optional .CoreML.Specification.Kernel kernel = 1;
-  if (this->has_kernel()) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-        *this->kernel_);
-  }
-
   // repeated int32 numberOfSupportVectorsPerClass = 2;
   {
-    size_t data_size = 0;
-    unsigned int count = this->numberofsupportvectorsperclass_size();
-    for (unsigned int i = 0; i < count; i++) {
-      data_size += ::google::protobuf::internal::WireFormatLite::
-        Int32Size(this->numberofsupportvectorsperclass(i));
-    }
+    size_t data_size = ::google::protobuf::internal::WireFormatLite::
+      Int32Size(this->numberofsupportvectorsperclass_);
     if (data_size > 0) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
@@ -3978,9 +3900,8 @@ size_t SupportVectorClassifier::ByteSizeLong() const {
 
   // repeated double rho = 6;
   {
-    size_t data_size = 0;
     unsigned int count = this->rho_size();
-    data_size = 8UL * count;
+    size_t data_size = 8UL * count;
     if (data_size > 0) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
@@ -3994,9 +3915,8 @@ size_t SupportVectorClassifier::ByteSizeLong() const {
 
   // repeated double probA = 7;
   {
-    size_t data_size = 0;
     unsigned int count = this->proba_size();
-    data_size = 8UL * count;
+    size_t data_size = 8UL * count;
     if (data_size > 0) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
@@ -4010,9 +3930,8 @@ size_t SupportVectorClassifier::ByteSizeLong() const {
 
   // repeated double probB = 8;
   {
-    size_t data_size = 0;
     unsigned int count = this->probb_size();
-    data_size = 8UL * count;
+    size_t data_size = 8UL * count;
     if (data_size > 0) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
@@ -4024,15 +3943,22 @@ size_t SupportVectorClassifier::ByteSizeLong() const {
     total_size += data_size;
   }
 
+  // .CoreML.Specification.Kernel kernel = 1;
+  if (this->has_kernel()) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        *this->kernel_);
+  }
+
   switch (supportVectors_case()) {
-    // optional .CoreML.Specification.SparseSupportVectors sparseSupportVectors = 3;
+    // .CoreML.Specification.SparseSupportVectors sparseSupportVectors = 3;
     case kSparseSupportVectors: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *supportVectors_.sparsesupportvectors_);
       break;
     }
-    // optional .CoreML.Specification.DenseSupportVectors denseSupportVectors = 4;
+    // .CoreML.Specification.DenseSupportVectors denseSupportVectors = 4;
     case kDenseSupportVectors: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -4044,14 +3970,14 @@ size_t SupportVectorClassifier::ByteSizeLong() const {
     }
   }
   switch (ClassLabels_case()) {
-    // optional .CoreML.Specification.StringVector stringClassLabels = 100;
+    // .CoreML.Specification.StringVector stringClassLabels = 100;
     case kStringClassLabels: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *ClassLabels_.stringclasslabels_);
       break;
     }
-    // optional .CoreML.Specification.Int64Vector int64ClassLabels = 101;
+    // .CoreML.Specification.Int64Vector int64ClassLabels = 101;
     case kInt64ClassLabels: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -4076,20 +4002,19 @@ void SupportVectorClassifier::CheckTypeAndMergeFrom(
 
 void SupportVectorClassifier::MergeFrom(const SupportVectorClassifier& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.SupportVectorClassifier)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void SupportVectorClassifier::UnsafeMergeFrom(const SupportVectorClassifier& from) {
-  GOOGLE_DCHECK(&from != this);
-  numberofsupportvectorsperclass_.UnsafeMergeFrom(from.numberofsupportvectorsperclass_);
+  numberofsupportvectorsperclass_.MergeFrom(from.numberofsupportvectorsperclass_);
   coefficients_.MergeFrom(from.coefficients_);
-  rho_.UnsafeMergeFrom(from.rho_);
-  proba_.UnsafeMergeFrom(from.proba_);
-  probb_.UnsafeMergeFrom(from.probb_);
+  rho_.MergeFrom(from.rho_);
+  proba_.MergeFrom(from.proba_);
+  probb_.MergeFrom(from.probb_);
+  if (from.has_kernel()) {
+    mutable_kernel()->::CoreML::Specification::Kernel::MergeFrom(from.kernel());
+  }
   switch (from.supportVectors_case()) {
     case kSparseSupportVectors: {
       mutable_sparsesupportvectors()->::CoreML::Specification::SparseSupportVectors::MergeFrom(from.sparsesupportvectors());
@@ -4116,20 +4041,16 @@ void SupportVectorClassifier::UnsafeMergeFrom(const SupportVectorClassifier& fro
       break;
     }
   }
-  if (from.has_kernel()) {
-    mutable_kernel()->::CoreML::Specification::Kernel::MergeFrom(from.kernel());
-  }
 }
 
 void SupportVectorClassifier::CopyFrom(const SupportVectorClassifier& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.SupportVectorClassifier)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool SupportVectorClassifier::IsInitialized() const {
-
   return true;
 }
 
@@ -4138,17 +4059,16 @@ void SupportVectorClassifier::Swap(SupportVectorClassifier* other) {
   InternalSwap(other);
 }
 void SupportVectorClassifier::InternalSwap(SupportVectorClassifier* other) {
+  numberofsupportvectorsperclass_.InternalSwap(&other->numberofsupportvectorsperclass_);
+  coefficients_.InternalSwap(&other->coefficients_);
+  rho_.InternalSwap(&other->rho_);
+  proba_.InternalSwap(&other->proba_);
+  probb_.InternalSwap(&other->probb_);
   std::swap(kernel_, other->kernel_);
-  numberofsupportvectorsperclass_.UnsafeArenaSwap(&other->numberofsupportvectorsperclass_);
-  coefficients_.UnsafeArenaSwap(&other->coefficients_);
-  rho_.UnsafeArenaSwap(&other->rho_);
-  proba_.UnsafeArenaSwap(&other->proba_);
-  probb_.UnsafeArenaSwap(&other->probb_);
   std::swap(supportVectors_, other->supportVectors_);
   std::swap(_oneof_case_[0], other->_oneof_case_[0]);
   std::swap(ClassLabels_, other->ClassLabels_);
   std::swap(_oneof_case_[1], other->_oneof_case_[1]);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -4159,7 +4079,7 @@ void SupportVectorClassifier::InternalSwap(SupportVectorClassifier* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // SupportVectorClassifier
 
-// optional .CoreML.Specification.Kernel kernel = 1;
+// .CoreML.Specification.Kernel kernel = 1;
 bool SupportVectorClassifier::has_kernel() const {
   return this != internal_default_instance() && kernel_ != NULL;
 }
@@ -4228,7 +4148,7 @@ SupportVectorClassifier::mutable_numberofsupportvectorsperclass() {
   return &numberofsupportvectorsperclass_;
 }
 
-// optional .CoreML.Specification.SparseSupportVectors sparseSupportVectors = 3;
+// .CoreML.Specification.SparseSupportVectors sparseSupportVectors = 3;
 bool SupportVectorClassifier::has_sparsesupportvectors() const {
   return supportVectors_case() == kSparseSupportVectors;
 }
@@ -4276,7 +4196,7 @@ void SupportVectorClassifier::set_allocated_sparsesupportvectors(::CoreML::Speci
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.SupportVectorClassifier.sparseSupportVectors)
 }
 
-// optional .CoreML.Specification.DenseSupportVectors denseSupportVectors = 4;
+// .CoreML.Specification.DenseSupportVectors denseSupportVectors = 4;
 bool SupportVectorClassifier::has_densesupportvectors() const {
   return supportVectors_case() == kDenseSupportVectors;
 }
@@ -4444,7 +4364,7 @@ SupportVectorClassifier::mutable_probb() {
   return &probb_;
 }
 
-// optional .CoreML.Specification.StringVector stringClassLabels = 100;
+// .CoreML.Specification.StringVector stringClassLabels = 100;
 bool SupportVectorClassifier::has_stringclasslabels() const {
   return ClassLabels_case() == kStringClassLabels;
 }
@@ -4492,7 +4412,7 @@ void SupportVectorClassifier::set_allocated_stringclasslabels(::CoreML::Specific
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.SupportVectorClassifier.stringClassLabels)
 }
 
-// optional .CoreML.Specification.Int64Vector int64ClassLabels = 101;
+// .CoreML.Specification.Int64Vector int64ClassLabels = 101;
 bool SupportVectorClassifier::has_int64classlabels() const {
   return ClassLabels_case() == kInt64ClassLabels;
 }
@@ -4557,9 +4477,6 @@ SupportVectorClassifier::SupportVectorsCase SupportVectorClassifier::supportVect
 }
 SupportVectorClassifier::ClassLabelsCase SupportVectorClassifier::ClassLabels_case() const {
   return SupportVectorClassifier::ClassLabelsCase(_oneof_case_[1]);
-}
-inline const SupportVectorClassifier* SupportVectorClassifier::internal_default_instance() {
-  return &SupportVectorClassifier_default_instance_.get();
 }
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 

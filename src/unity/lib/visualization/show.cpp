@@ -32,11 +32,10 @@ namespace turi {
               const std::string& ylabel,
               const std::string& title) {
 
-        logprogress_stream << "Materializing X axis SArray..." << std::endl;
+        logprogress_stream << "Materializing X axis SArray" << std::endl;
         x.materialize();
-        logprogress_stream << "Materializing Y axis SArray..." << std::endl;
+        logprogress_stream << "Materializing Y axis SArray" << std::endl;
         y.materialize();
-        logprogress_stream << "Done." << std::endl;
 
         const size_t size = x.size();
 

@@ -8,6 +8,7 @@
 #include <unity/toolkits/ml_data_2/ml_data.hpp>
 #include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>
 #include <unity/lib/toolkit_util.hpp>
+#include <unity/lib/version_number.hpp>
 #include <random/random.hpp>
 #include <memory>
 #include <perf/memory_info.hpp>
@@ -18,6 +19,7 @@
 #include <unity/toolkits/util/indexed_sframe_tools.hpp>
 #include <unity/toolkits/ml_data_2/sframe_index_mapping.hpp>
 #include <unity/lib/unity_base_types.hpp>
+#include <unity/lib/unity_global.hpp>
 #include <unity/lib/unity_sframe.hpp>
 #include <unity/lib/variant.hpp>
 #include <unity/lib/variant_deep_serialize.hpp>
@@ -638,8 +640,26 @@ void recsys_itemcf::internal_load(turi::iarchive& iarc, size_t version) {
     variant_deep_load(data_v, iarc);
     
     auto data = variant_get_value<std::map<std::string, variant_type> >(data_v);
-    
-    __EXTRACT(new_user_seed_items);
+
+    // For some reason, 4.0 and earlier version 2 models had new_user_seed_items
+    // stored as vector<vector<double>> instead of vector<pair<size_t, double>>.
+    // Not sure how this happened, since this code hasn't changed since 4.0,
+    // but let's try to convert it now...
+    try {
+      new_user_seed_items = std::vector<std::pair<size_t, double> >();
+      std::vector<std::vector<double>> vec_new_user_seed_items;
+      variant_get_value<decltype(vec_new_user_seed_items)>(data["new_user_seed_items"]);
+      for (const auto& vec : vec_new_user_seed_items) {
+        DASSERT_EQ(vec.size(), 2);
+        size_t item_id = vec[0];
+        double value = vec[1];
+        new_user_seed_items.push_back(std::make_pair(item_id, value));
+      }
+    } catch (const flexible_type_internals::type_conversion_error& e) {
+      // for normal 4.1+ models, this works
+      __EXTRACT(new_user_seed_items);
+    }
+
     __EXTRACT(item_mean_score);
     __EXTRACT(item_mean_min);
     __EXTRACT(item_mean_max);
@@ -760,5 +780,108 @@ sframe recsys_itemcf::get_similar_items(
 
   return ret;
 }
+
+
+void recsys_itemcf::export_to_coreml(
+    std::shared_ptr<recsys_model_base> recsys_model,
+    const std::string& filename) {
+
+  std::shared_ptr<CoreML::Model> coreml_model = std::make_shared<CoreML::Model>(
+      std::string("Item Similarity Recommender Model exported from Turi Create ") + __UNITY_VERSION__);
+
+  auto& proto = coreml_model->getProto();
+  auto* desc = proto.mutable_description();
+  auto* interactions_feature = desc->add_input();
+
+  std::string target_column = recsys_model->get_option_value("target");
+  bool target_is_present = (target_column != "");
+
+  interactions_feature->set_name("interactions");
+  std::string short_desc_with_ratings = std::string("The user's interactions, represented as a dictionary, where the keys are the item IDs, and the values are the respective ratings.");
+  std::string short_desc_no_ratings = std::string("The user's interactions, represented as a dictionary, where the keys are the item IDs, and the values are sentinel values.");
+  if (target_is_present) {
+    interactions_feature->set_shortdescription(short_desc_with_ratings);
+  } else {
+    interactions_feature->set_shortdescription(short_desc_no_ratings);
+  }
+
+  auto* interactions_feature_type = interactions_feature->mutable_type();
+
+  // TODO - what if it has values > 32 bit? MLMultiArray only supports 32-bit ints.
+  // TODO - what if it's string? how to tell? can it be anything else?
+  // in that case, possible to use CoreML feature transforms to get the inputs to make sense?
+  switch (recsys_model->item_type()) {
+    case (turi::flex_type_enum::INTEGER): {
+      interactions_feature_type->mutable_dictionarytype()->mutable_int64keytype();
+      break;
+    }
+    case (turi::flex_type_enum::STRING): {
+      interactions_feature_type->mutable_dictionarytype()->mutable_stringkeytype(); 
+      break;
+    }
+  }
+
+  // Top k input
+  auto* top_k_input = desc->add_input();
+  top_k_input->set_name("k");
+  top_k_input->set_shortdescription("Return the top k recommendations.");
+  auto* top_k_input_type = top_k_input->mutable_type();
+  // TODO BUG? Custom model doesn't seem to allow optional outputs
+  //top_k_input_type->set_isoptional(true); // Should not be required. Defaults to 5?
+  top_k_input_type->mutable_int64type();
+
+  // Set up outputs
+  auto* rank_output = desc->add_output();
+  rank_output->set_name("recommendations");
+  rank_output->set_shortdescription("Top k recommendations.");
+  auto* rank_output_type = rank_output->mutable_type();
+  switch (recsys_model->item_type()) {
+    case (turi::flex_type_enum::INTEGER): {
+      rank_output_type->mutable_dictionarytype()->mutable_int64keytype();
+      break;
+    }
+    case (turi::flex_type_enum::STRING): {
+      rank_output_type->mutable_dictionarytype()->mutable_stringkeytype();
+      break;
+    }
+  }
+  
+
+  auto* probability_output = desc->add_output();
+  probability_output->set_name("probabilities");
+  probability_output->set_shortdescription("The probability for each recommendation in the top k.");
+  auto* probability_output_type = probability_output->mutable_type();
+  switch (recsys_model->item_type()) {
+    case (turi::flex_type_enum::INTEGER): {
+      probability_output_type->mutable_dictionarytype()->mutable_int64keytype();
+      break;
+    }
+    case (turi::flex_type_enum::STRING): {
+      probability_output_type->mutable_dictionarytype()->mutable_stringkeytype();
+      break;
+    }
+  }
+
+  // Set up model parameters
+  auto* custom_model = proto.mutable_custommodel();
+  custom_model->set_classname("TCRecommender");
+  custom_model->set_description("Turi Create Recommender support for Core ML");
+  auto* custom_model_parameters = custom_model->mutable_parameters();
+  auto bytes_value = CoreML::Specification::CustomModel::CustomModelParamValue();
+
+  std::stringstream ss;
+  turi::get_unity_global_singleton()->save_model_to_data(recsys_model, ss);
+  bytes_value.set_bytesvalue(ss.str());
+  (*custom_model_parameters)["turi_create_model"] = bytes_value;
+
+  if (filename != "") {
+    CoreML::Result r = coreml_model->save(filename);
+    if (!r.good()) {
+      log_and_throw(r.message());
+    }
+  }
+
+}
+
 
 }} // namespace 

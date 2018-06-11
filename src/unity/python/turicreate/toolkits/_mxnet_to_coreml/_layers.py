@@ -26,6 +26,8 @@ from __future__ import division as _
 from . import _add_pooling
 from ast import literal_eval
 
+ONE_HOT_ENCODE_HACK = True
+
 def _get_attr(node):
     if 'attr' in node:
         return node['attr']
@@ -52,6 +54,9 @@ def _get_node_name(net, node_id):
 def _get_node_shape(net, node_id):
     return net['nodes'][node_id]['shape']
 
+def _get_node_channels(net, node_id):
+    param = _get_attr(net["nodes"][node_id])
+    return int(param["num_filter"])
 
 def convert_reshape(net, node, module, builder):
     """Converts a reshape layer from mxnet to coreml.
@@ -74,7 +79,7 @@ def convert_reshape(net, node, module, builder):
     """
     input_name, output_name = _get_input_output_name(net, node)
     name = node['name']
-    param = node['attr']
+    param = _get_attr(node)
     target_shape = literal_eval(param['shape'])
 
     if any(item <= 0 for item in target_shape):
@@ -676,6 +681,43 @@ def convert_deconvolution(net, node, module, builder):
         )
 
 
+def convert_upsample(net, node, module, builder):
+    """Convert a UpSampling layer from mxnet to coreml.
+
+    Parameters
+    ----------
+    network: net
+        A mxnet network object.
+
+    layer: node
+        Node to convert.
+
+    module: module
+        An module for MXNet
+
+    builder: NeuralNetworkBuilder
+        A neural network builder object.
+    """
+    input_name, output_name = _get_input_output_name(net, node)
+    name = node['name']
+    param = _get_attr(node)
+    inputs = node['inputs']
+    args, _ = module.get_params()
+
+    scale = literal_eval(param['scale'])
+
+    #method
+    if 'sample_type' in param.keys():
+        method = param['sample_type']
+        if method == 'nearest':
+            mode = 'NN'
+        elif method == '':
+            mode = 'BILINEAR'
+
+    builder.add_upsample(name, scaling_factor_h=scale, scaling_factor_w=scale,
+                         input_name=input_name, output_name=output_name, mode=mode)
+
+
 def convert_slice_axis(net, node, module, builder):
     input_name, output_name = _get_input_output_name(net, node)
     name = node['name']
@@ -749,3 +791,203 @@ def convert_custom(net, node, module, builder):
         )
     else:
         raise TypeError("MXNet layer of type Custom is not supported.")
+
+def convert_embedding(net, node, model, builder):
+    """Convert a flatten layer from mxnet to coreml.
+
+    Parameters
+    ----------
+    network: net
+        A mxnet network object.
+
+    layer: node
+        Node to convert.
+
+    model: model
+        An model for MXNet
+
+    builder: NeuralNetworkBuilder
+        A neural network builder object.
+    """
+    input_name, output_name = _get_input_output_name(net, node)
+    name = node['name']
+    inputs = node['inputs']
+    outputs = node['outputs']
+    arg_params, aux_params = model.get_params()
+    W = arg_params[_get_node_name(net, inputs[1][0])].asnumpy()
+    if not ONE_HOT_ENCODE_HACK: 
+        nC, nB = W.shape
+        W = W.T
+        builder.add_embedding(name = name,
+                              W = W,
+                              b = None,
+                              input_dim = nC,
+                              output_channels = nB,
+                              has_bias = False,
+                              input_name = input_name,
+                              output_name = output_name)
+    else: 
+        W = W.T
+        nC, nB = W.shape
+        builder.add_inner_product(name = name,
+                W = W,
+                b = None,
+                input_channels = nB,
+                output_channels = nC,
+                has_bias = False,
+                input_name = input_name,
+                output_name = output_name)
+
+def convert_elementwise_add(net, node, model, builder):
+    """Convert an elementwise add layer from mxnet to coreml.
+
+        Parameters
+        ----------
+        network: net
+        A mxnet network object.
+
+        layer: node
+        Node to convert.
+
+        model: model
+        An model for MXNet
+
+        builder: NeuralNetworkBuilder
+        A neural network builder object.
+        """
+    input_names, output_name = _get_input_output_name(net, node,[0,1])
+    name = node['name']
+
+    builder.add_elementwise(name, input_names, output_name, 'ADD')
+
+def convert_scalar_add(net, node, model, builder):
+    """Convert a transpose layer from mxnet to coreml.
+
+    Parameters
+    ----------
+    network: net
+        A mxnet network object.
+
+    layer: node
+        Node to convert.
+
+    model: model
+        An model for MXNet
+
+    builder: NeuralNetworkBuilder
+        A neural network builder object.
+    """
+    import numpy as _np
+    input_name, output_name = _get_input_output_name(net, node)
+    name = node['name']
+    param = _get_attr(node)
+    mode = 'ADD'
+    alpha = _np.array([float(param['scalar'])])
+    builder.add_scale(name = name, input_name = input_name,
+            output_name = output_name, W = _np.array([1.0]), b = alpha, has_bias=True)
+
+
+def convert_scalar_multiply(net, node, model, builder):
+    """Convert a transpose layer from mxnet to coreml.
+
+    Parameters
+    ----------
+    network: net
+        A mxnet network object.
+
+    layer: node
+        Node to convert.
+
+    model: model
+        An model for MXNet
+
+    builder: NeuralNetworkBuilder
+        A neural network builder object.
+    """
+    import numpy as _np
+    input_name, output_name = _get_input_output_name(net, node)
+    name = node['name']
+    param = _get_attr(node)
+    alpha = _np.array([float(param['scalar'])])
+    builder.add_scale(name = name, input_name = input_name,
+            output_name = output_name, W = alpha, has_bias=False, b=None)
+
+def convert_scalar_divide(net, node, model, builder):
+    """Convert a transpose layer from mxnet to coreml.
+
+    Parameters
+    ----------
+    network: net
+        A mxnet network object.
+
+    layer: node
+        Node to convert.
+
+    model: model
+        An model for MXNet
+
+    builder: NeuralNetworkBuilder
+        A neural network builder object.
+    """
+    import numpy as _np
+    input_name, output_name = _get_input_output_name(net, node)
+    name = node['name']
+    param = _get_attr(node)
+    alpha = _np.array([1.0 / float(param['scalar'])])
+    builder.add_scale(name = name, input_name = input_name,
+            output_name = output_name, W = alpha, has_bias=False, b=None)
+
+def convert_instancenorm(net, node, model, builder):
+    """Convert a transpose layer from mxnet to coreml.
+
+    Parameters
+    ----------
+    network: net
+        A mxnet network object.
+
+    layer: node
+        Node to convert.
+
+    model: model
+        An model for MXNet
+
+    builder: NeuralNetworkBuilder
+        A neural network builder object.
+    """
+    import numpy as _np
+    input_name, output_name = _get_input_output_name(net, node)
+
+    name = node['name']
+    inputs = node['inputs']
+    outputs = node['outputs']
+
+    
+    data_blob_name = _get_node_name(net, inputs[0][0])
+    gamma_blob_name = _get_node_name(net, inputs[1][0])
+    beta_blob_name = _get_node_name(net, inputs[2][0])
+    channels = _get_node_channels(net, inputs[0][0])
+    
+    bn_output_name = output_name + '_bn_'
+    
+    builder.add_batchnorm(
+        name = name + '_normalize',
+        channels = channels,
+        gamma = _np.ones((channels, )),
+        beta = _np.zeros((channels, )),
+        mean = None,
+        variance = None,
+        input_name = input_name,
+        output_name = bn_output_name,
+        compute_mean_var = True,
+        instance_normalization = True)
+
+    gamma_input_names = [bn_output_name, gamma_blob_name]
+    gamma_output_name = output_name + '_mult_gamma'
+    builder.add_elementwise(name=name+'_mult_gamma', input_names=gamma_input_names,
+        output_name = gamma_output_name, mode='MULTIPLY', alpha = None)
+    beta_input_names = [gamma_output_name, beta_blob_name]
+    builder.add_elementwise(name=name+'_add_beta', input_names=beta_input_names,
+        output_name = output_name, mode='ADD', alpha=None)
+
+def convert_skip(net, node, model, builder):
+    pass

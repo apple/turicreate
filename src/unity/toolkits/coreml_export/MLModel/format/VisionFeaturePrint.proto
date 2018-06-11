@@ -1,0 +1,37 @@
+// Copyright (c) 2018, Apple Inc. All rights reserved.
+//
+// Use of this source code is governed by a BSD-3-clause license that can be
+// found in LICENSE.txt or at https://opensource.org/licenses/BSD-3-Clause
+
+syntax = "proto3";
+option optimize_for = LITE_RUNTIME;
+
+package CoreML.Specification.CoreMLModels;
+
+/**
+* A model which takes an input image and outputs an array of features
+* according to the specified feature types
+*/
+message VisionFeaturePrint {
+
+    // Specific vision feature print types
+   
+    // Scene extracts features useful for identifying contents of natural images
+    // in both indoor and outdoor environments
+    message Scene {
+        enum SceneVersion {
+            SCENE_VERSION_INVALID = 0;
+            // VERSION_1 is available on iOS,tvOS 12.0+, macOS 10.14+
+            // It uses a 299x299 input image and yields a 2048 float feature vector
+            SCENE_VERSION_1 = 1;
+        }
+        
+        SceneVersion version = 1;
+    }
+
+    // Vision feature print type
+    oneof VisionFeaturePrintType {
+        Scene scene = 20;
+    }
+
+}

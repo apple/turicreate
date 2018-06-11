@@ -192,8 +192,8 @@ EXPORT tc_sframe* tc_sframe_read_csv(const char* url,
   turi::ensure_server_initialized();
 
   tc_sframe* ret = new_tc_sframe();
-  turi::csv_parsing_config_map config;
-  turi::str_flex_type_map column_type_hints;
+  std::map<std::string, turi::flexible_type> config;
+  std::map<std::string, turi::flex_type_enum> column_type_hints; 
 
   turi::variant_map_type params_copy;
 
@@ -207,7 +207,7 @@ EXPORT tc_sframe* tc_sframe_read_csv(const char* url,
     if (it != params_copy.end()) {
       int64_t header = turi::variant_get_ref<turi::flexible_type>(it->second)
                            .to<turi::flex_int>();
-      config.insert({"header", header});
+      config.insert({"use_header", header});
       params_copy.erase(it);
     }
 
@@ -255,9 +255,8 @@ EXPORT tc_sframe* tc_sframe_read_csv(const char* url,
     it = params_copy.find("error_bad_lines");
     if (it != params_copy.end()) {
       int64_t error_bad_lines =
-          turi::variant_get_ref<turi::flexible_type>(it->second)
-              .to<turi::flex_int>();
-      config.insert({"error_bad_lines", error_bad_lines});
+          !(turi::variant_get_ref<turi::flexible_type>(it->second).is_zero());
+      config.insert({"continue_on_failure", !error_bad_lines});
       params_copy.erase(it);
     }
 
@@ -283,23 +282,33 @@ EXPORT tc_sframe* tc_sframe_read_csv(const char* url,
 
     // column_type_hints: flex_dict<string, flexible_type>
     it = params_copy.find("column_type_hints");
+
     if (it != params_copy.end()) {
-      std::vector<std::pair<turi::flexible_type, turi::flexible_type> >
-          ft_column_type_hints =
-              turi::variant_get_ref<turi::flexible_type>(it->second)
-                  .to<turi::flex_dict>();
-      for (auto iter = ft_column_type_hints.begin();
-           iter != ft_column_type_hints.end(); ++iter) {
-        std::pair<turi::flexible_type, turi::flexible_type> entry = *iter;
-        if ((entry.first).get_type() != turi::flex_type_enum::STRING ||
-            (entry.second).get_type() != turi::flex_type_enum::STRING) {
+      turi::flex_dict ft_column_type_hints =
+          turi::variant_get_value<turi::flex_dict>(it->second);
+
+      for (const auto& entry : ft_column_type_hints) {
+        if (entry.first.get_type() != turi::flex_type_enum::STRING) {
           log_and_throw(
-              "Invalid input to column_type_hints optional parameter: requires "
-              "a flex_dict of strings");
-          return NULL;
+              "Invalid input to column_type_hints optional parameter: "
+              "Keys must be a column names. ");
+        }
+
+        if (entry.second.get_type() == turi::flex_type_enum::STRING) {
+          column_type_hints[entry.first] = turi::flex_type_enum_from_name(
+              entry.second.get<turi::flex_string>());
+        } else if (entry.second.get_type() == turi::flex_type_enum::INTEGER) {
+          column_type_hints[entry.first] = static_cast<turi::flex_type_enum>(
+              entry.second.get<turi::flex_int>());
+        } else {
+          log_and_throw(
+              "Invalid input to column_type_hints optional parameter: "
+              "requires "
+              "a dictionary of column names to strings/enums giving column "
+              "types.");
         }
       }
-      config.insert({"column_type_hints", ft_column_type_hints});
+
       params_copy.erase(it);
     }
 
@@ -333,7 +342,7 @@ EXPORT tc_sframe* tc_sframe_read_csv(const char* url,
     }
 
     // usecols: flex_list<string>
-    it = params_copy.find("usecols");
+    it = params_copy.find("output_columns");
     if (it != params_copy.end()) {
       std::vector<turi::flexible_type> ft_usecols =
           turi::variant_get_ref<turi::flexible_type>(it->second)
@@ -346,25 +355,25 @@ EXPORT tc_sframe* tc_sframe_read_csv(const char* url,
           return NULL;
         }
       }
-      config.insert({"usecols", ft_usecols});
+      config.insert({"output_columns", ft_usecols});
       params_copy.erase(it);
     }
 
     // nrows: int
-    it = params_copy.find("nrows");
+    it = params_copy.find("row_limit");
     if (it != params_copy.end()) {
       int64_t nrows = turi::variant_get_ref<turi::flexible_type>(it->second)
                           .to<turi::flex_int>();
-      config.insert({"nrows", nrows});
+      config.insert({"row_limit", nrows});
       params_copy.erase(it);
     }
 
     // skiprows: int
-    it = params_copy.find("skiprows");
+    it = params_copy.find("skip_rows");
     if (it != params_copy.end()) {
       int64_t skiprows = turi::variant_get_ref<turi::flexible_type>(it->second)
                              .to<turi::flex_int>();
-      config.insert({"skiprows", skiprows});
+      config.insert({"skip_rows", skiprows});
       params_copy.erase(it);
     }
 
@@ -400,6 +409,7 @@ EXPORT tc_sframe* tc_sframe_read_csv(const char* url,
     }
   }
 
+  std::cout << "column_type_hints = " << column_type_hints << std::endl; 
   ret->value.construct_from_csvs(url, config, column_type_hints);
 
   return ret;

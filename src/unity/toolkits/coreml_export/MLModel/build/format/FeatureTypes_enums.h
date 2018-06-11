@@ -1,8 +1,3 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
- *
- * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
- */
 #ifndef __FEATURETYPES_ENUMS_H
 #define __FEATURETYPES_ENUMS_H
 #pragma clang diagnostic push
@@ -14,12 +9,46 @@ enum MLColorSpace: int {
     MLColorSpaceBGR = 30,
 };
 
+enum MLImageFeatureTypeSizeFlexibility: int {
+    MLImageFeatureTypeSizeFlexibility_enumeratedSizes = 21,
+    MLImageFeatureTypeSizeFlexibility_imageSizeRange = 31,
+    MLImageFeatureTypeSizeFlexibility_NOT_SET = 0,
+};
+
+static const char * MLImageFeatureTypeSizeFlexibility_Name(MLImageFeatureTypeSizeFlexibility x) {
+    switch (x) {
+        case MLImageFeatureTypeSizeFlexibility_enumeratedSizes:
+            return "MLImageFeatureTypeSizeFlexibility_enumeratedSizes";
+        case MLImageFeatureTypeSizeFlexibility_imageSizeRange:
+            return "MLImageFeatureTypeSizeFlexibility_imageSizeRange";
+        case MLImageFeatureTypeSizeFlexibility_NOT_SET:
+            return "INVALID";
+    }
+}
+
 enum MLArrayDataType: int {
     MLArrayDataTypeINVALID_ARRAY_DATA_TYPE = 0,
     MLArrayDataTypeFLOAT32 = 65568,
     MLArrayDataTypeDOUBLE = 65600,
     MLArrayDataTypeINT32 = 131104,
 };
+
+enum MLArrayFeatureTypeShapeFlexibility: int {
+    MLArrayFeatureTypeShapeFlexibility_enumeratedShapes = 21,
+    MLArrayFeatureTypeShapeFlexibility_shapeRange = 31,
+    MLArrayFeatureTypeShapeFlexibility_NOT_SET = 0,
+};
+
+static const char * MLArrayFeatureTypeShapeFlexibility_Name(MLArrayFeatureTypeShapeFlexibility x) {
+    switch (x) {
+        case MLArrayFeatureTypeShapeFlexibility_enumeratedShapes:
+            return "MLArrayFeatureTypeShapeFlexibility_enumeratedShapes";
+        case MLArrayFeatureTypeShapeFlexibility_shapeRange:
+            return "MLArrayFeatureTypeShapeFlexibility_shapeRange";
+        case MLArrayFeatureTypeShapeFlexibility_NOT_SET:
+            return "INVALID";
+    }
+}
 
 enum MLDictionaryFeatureTypeKeyType: int {
     MLDictionaryFeatureTypeKeyType_int64KeyType = 1,
@@ -38,6 +67,23 @@ static const char * MLDictionaryFeatureTypeKeyType_Name(MLDictionaryFeatureTypeK
     }
 }
 
+enum MLSequenceFeatureTypeType: int {
+    MLSequenceFeatureTypeType_int64Type = 1,
+    MLSequenceFeatureTypeType_stringType = 3,
+    MLSequenceFeatureTypeType_NOT_SET = 0,
+};
+
+static const char * MLSequenceFeatureTypeType_Name(MLSequenceFeatureTypeType x) {
+    switch (x) {
+        case MLSequenceFeatureTypeType_int64Type:
+            return "MLSequenceFeatureTypeType_int64Type";
+        case MLSequenceFeatureTypeType_stringType:
+            return "MLSequenceFeatureTypeType_stringType";
+        case MLSequenceFeatureTypeType_NOT_SET:
+            return "INVALID";
+    }
+}
+
 enum MLFeatureTypeType: int {
     MLFeatureTypeType_int64Type = 1,
     MLFeatureTypeType_doubleType = 2,
@@ -45,6 +91,7 @@ enum MLFeatureTypeType: int {
     MLFeatureTypeType_imageType = 4,
     MLFeatureTypeType_multiArrayType = 5,
     MLFeatureTypeType_dictionaryType = 6,
+    MLFeatureTypeType_sequenceType = 7,
     MLFeatureTypeType_NOT_SET = 0,
 };
 
@@ -62,6 +109,8 @@ static const char * MLFeatureTypeType_Name(MLFeatureTypeType x) {
             return "MLFeatureTypeType_multiArrayType";
         case MLFeatureTypeType_dictionaryType:
             return "MLFeatureTypeType_dictionaryType";
+        case MLFeatureTypeType_sequenceType:
+            return "MLFeatureTypeType_sequenceType";
         case MLFeatureTypeType_NOT_SET:
             return "INVALID";
     }
