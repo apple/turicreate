@@ -21,6 +21,29 @@ def _convert_image_to_raw(image):
     return _tc.image_analysis.resize(image, image.width, image.height, 3, decode=True)
 
 
+def _is_rectangle_annotation(ann):
+    return 'type' not in ann or ann['type'] == 'rectangle'
+
+
+def _is_valid_annotation(ann):
+    if not isinstance(ann, dict):
+        return False
+    if not _is_rectangle_annotation(ann):
+        # Not necessarily valid, but we bypass stricter checks (we simply do
+        # not care about non-rectangle types)
+        return True
+    return ('coordinates' in ann and
+            isinstance(ann['coordinates'], dict) and
+            set(ann['coordinates'].keys()) == {'x', 'y', 'width', 'height'} and
+            ann['coordinates']['width'] > 0 and
+            ann['coordinates']['height'] > 0 and
+            'label' in ann)
+
+
+def _is_valid_annotations_list(anns):
+    return all([_is_valid_annotation(ann) for ann in anns])
+
+
 class SFrameDetectionIter(_mx.io.DataIter):
     def __init__(self,
                  sframe,
@@ -95,6 +118,42 @@ class SFrameDetectionIter(_mx.io.DataIter):
         # Make shallow copy, so that temporary columns do not change input
         self.sframe = sframe.copy()
 
+        if self.load_labels:
+            is_annotations_list = sframe[annotations_column].dtype == list
+            # Check that all annotations are valid
+            if is_annotations_list:
+                valids = self.sframe[annotations_column].apply(_is_valid_annotations_list)
+            else:
+                valids = self.sframe[annotations_column].apply(_is_valid_annotation)
+                # Deal with Nones, which are valid (pure negatives)
+                valids = valids.fillna(1)
+
+            if valids.nnz() != len(self.sframe):
+                # Fetch invalid row ids
+                invalid_ids = _tc.SFrame({'valid': valids}).add_row_number()[valids == 0]['id']
+                count = len(invalid_ids)
+                num_examples = 5
+
+                s = ""
+                for row_id in invalid_ids[:num_examples]:
+                    # Find which annotations were invalid in the list
+                    s += "\n\nRow ID {}:".format(row_id)
+                    anns = self.sframe[row_id][annotations_column]
+                    if not isinstance(anns, list):
+                        anns = [anns]
+                    for ann in anns:
+                        if not _is_valid_annotation(ann):
+                            s += "\n" + str(ann)
+
+                if count > num_examples:
+                    s += "\n\n... ({} row(s) omitted)".format(count - num_examples)
+
+                # There were invalid rows
+                raise _ToolkitError("Invalid object annotations discovered.\n\n"
+                    "A valid annotation is a dictionary that defines 'label' and 'coordinates',\n"
+                    "the latter being a dictionary that defines 'x', 'y', 'width', and 'height'.\n"
+                    "The following row(s) did not conform to this format:" + s)
+
         # Convert images to raw to eliminate overhead of decoding
         self.sframe[_TMP_COL_RAW_IMAGE] = self.sframe[self.feature_column].apply(_convert_image_to_raw)
 
@@ -148,6 +207,11 @@ class SFrameDetectionIter(_mx.io.DataIter):
         if not self.has_next:
             raise StopIteration
 
+        # Since we pre-screened the annotations, at this point we just want to
+        # check that it's the right type (rectangle) and the class is included
+        def is_valid(ann):
+            return _is_rectangle_annotation(ann) and ann['label'] in self.class_to_index
+
         pad = None
         for b in range(self.batch_size):
             row = self.sframe[self.cur_sample]
@@ -161,21 +225,6 @@ class SFrameDetectionIter(_mx.io.DataIter):
                     label = []
                 elif type(label) == dict:
                     label = [label]
-
-                def is_valid(ann):
-                    is_rect = ('type' not in ann or ann['type'] == 'rectangle')
-                    if not is_rect:
-                        # Not valid, but we bypass stricter checks (we simply
-                        # do not care about non rectangle types)
-                        return False
-                    ok_required = ('coordinates' in ann and
-                                   isinstance(ann['coordinates'], dict) and
-                                   set(ann['coordinates'].keys()) == {'x', 'y', 'width', 'height'} and
-                                   'label' in ann)
-                    if not ok_required:
-                        raise _ToolkitError("Detected an bounding box annotation with improper format: {}".format(ann))
-                    ok_optional = ann['label'] in self.class_to_index
-                    return ok_optional
 
                 # Unchanged boxes, for evaluation
                 raw_bbox = _np.array([[
