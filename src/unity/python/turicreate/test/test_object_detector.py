@@ -64,8 +64,8 @@ def _get_data(feature, annotations):
             x = (left + right) / 2
             y = (top + bottom) / 2
 
-            width = right - left
-            height = bottom - top
+            width = max(right - left, 1)
+            height = max(bottom - top, 1)
 
             label = {
                 'coordinates': {
