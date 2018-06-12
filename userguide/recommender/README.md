@@ -93,4 +93,6 @@ The following sections provide more information about the recommender model:
 - [Choosing a model](choosing-a-model.md)
   * data you might encounter (implicit or explicit)
   * types of models worth considering (item-based similarity, factorization-based models, and so on).
+- [Custom Recommender Model for iOS Applications](custom-model-ios.md)
+  * export to Core ML, drag and drop in an iOS application
 - [API Docs](https://apple.github.io/turicreate/docs/api/turicreate.toolkits.recommender.html)
