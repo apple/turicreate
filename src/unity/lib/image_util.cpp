@@ -11,8 +11,6 @@
 #include <fileio/sanitize_url.hpp>
 #include <sframe_query_engine/util/aggregates.hpp>
 #include <unity/lib/toolkit_function_macros.hpp>
-#include <cstdlib>
-#include <cstdio>
 
 #define PATH_IS_ABSOLUTE(s) ((s.length() > 1) && (s[0] == '/'))
 #ifdef _WIN32
