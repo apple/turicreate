@@ -102,7 +102,7 @@ build_wheel_mac_10_14_python27:
     - macos10.14
   stage: build
   script:
-    - export VIRTUALENV="virtualenv --python=/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
+    - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - source gitlab_scripts/use_ccache.sh
     - date
     - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --python2.7
@@ -223,7 +223,7 @@ build_cpp_tests_mac:
     - macos10.14
   stage: build
   script:
-    - export VIRTUALENV="virtualenv --python=/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
+    - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - source gitlab_scripts/use_ccache.sh
     - date
     - (test -d debug && test -d release) || ./configure --python2.7
@@ -279,7 +279,7 @@ test_cpp_mac_10_13:
     - build_wheel_mac_10_14_python27
     - build_cpp_tests_mac
   script:
-    - export VIRTUALENV="virtualenv --python=/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
+    - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - date
     - (test -d debug && test -d release) || ./configure --python2.7
     - date
@@ -309,7 +309,7 @@ test_cpp_mac_10_14:
     - build_wheel_mac_10_14_python27
     - build_cpp_tests_mac
   script:
-    - export VIRTUALENV="virtualenv --python=/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
+    - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - date
     - (test -d debug && test -d release) || ./configure --python2.7
     - date
@@ -389,7 +389,7 @@ test_python_mac_python27_10_13:
   dependencies:
     - build_wheel_mac_10_14_python27
   script:
-    - export VIRTUALENV="virtualenv --python=/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
+    - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - bash gitlab_scripts/test_python.sh release python2.7
   artifacts:
     when: always
@@ -407,7 +407,7 @@ test_python_mac_python27_10_14:
   dependencies:
     - build_wheel_mac_10_14_python27
   script:
-    - export VIRTUALENV="virtualenv --python=/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
+    - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - bash gitlab_scripts/test_python.sh release python2.7
   artifacts:
     when: always
@@ -497,7 +497,7 @@ scenario_tests_mac_python27_10_13:
   dependencies:
     - build_wheel_mac_10_14_python27
   script:
-    - export VIRTUALENV="virtualenv --python=/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
+    - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - cd scenario-tests
     - ./run_scenario_tests.sh ../target/turicreate-*.whl
 
@@ -511,6 +511,6 @@ scenario_tests_mac_python27_10_14:
   dependencies:
     - build_wheel_mac_10_14_python27
   script:
-    - export VIRTUALENV="virtualenv --python=/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
+    - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - cd scenario-tests
     - ./run_scenario_tests.sh ../target/turicreate-*.whl
