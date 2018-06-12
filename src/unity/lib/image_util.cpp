@@ -11,7 +11,14 @@
 #include <fileio/sanitize_url.hpp>
 #include <sframe_query_engine/util/aggregates.hpp>
 #include <unity/lib/toolkit_function_macros.hpp>
+#include <cstdlib>
+#include <cstdio>
 
+#define PATH_IS_ABSOLUTE(s) ((s.length() > 1) && (s[0] == '/'))
+#ifdef _WIN32
+#include <windows.h>
+#define PATH_IS_ABSOLUTE(s) (!PathIsRelative(s))
+#endif
 
 namespace turi{
 
@@ -230,13 +237,41 @@ std::vector<std::string> get_directory_files(std::string url, bool recursive) {
   return ret;
 }
 
+
+bool has_ending (std::string fullString, std::string ending) {
+    if (fullString.length() >= ending.length()) {
+        return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
+    } else {
+        return false;
+    }
+}
+
 /**
  * Construct an sframe of flex_images, with url pointing to directory where images reside. 
  */
 std::shared_ptr<unity_sframe> load_images(std::string url, std::string format, bool with_path, bool recursive,
                                           bool ignore_failure, bool random_order) {
     log_func_entry();
-    std::vector<std::string> all_files = get_directory_files(url, recursive);
+
+    std::vector<std::string> all_files;
+    if (has_ending(url, std::string(".jpg")) 
+      || has_ending(url, std::string(".png"))) {
+      typedef std::vector<std::pair<std::string, fileio::file_status>> path_status_vec_t;
+      path_status_vec_t path_status_vec;
+      if (PATH_IS_ABSOLUTE(url)) {
+          all_files.push_back(url);
+      } else {
+          path_status_vec = fileio::get_directory_listing(".");
+          for (const auto& path_status : path_status_vec) {
+            if (has_ending(path_status.first, url) 
+              && path_status.second == fileio::file_status::REGULAR_FILE){
+              all_files.push_back(path_status.first);
+            }
+          }
+      }
+    } else {
+      all_files = get_directory_files(url, recursive);
+    }
 
     std::vector<std::string> column_names;
     std::vector<flex_type_enum> column_types;
