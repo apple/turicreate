@@ -167,6 +167,17 @@ extern size_t SFRAME_SORT_PIVOT_ESTIMATION_SAMPLE_SIZE;
  */
 extern size_t SFRAME_SORT_MAX_SEGMENTS;
 
+/**
+ * The maximum number of segments an SFrame can have after which compaction
+ * will be attempted
+ */
+extern size_t SFRAME_COMPACTION_THRESHOLD;
+
+/**
+ * If a segment contains less than this number of blocks, it is 
+ * considered a small segment.
+ */
+extern size_t FAST_COMPACT_BLOCKS_IN_SMALL_SEGMENT;
 /// \} 
 } // namespace turi
 #endif

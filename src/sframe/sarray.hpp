@@ -28,6 +28,7 @@
 #include <exceptions/error_types.hpp>
 #include <sframe/sframe_constants.hpp>
 #include <sframe/sarray_saving.hpp>
+#include <sframe/sframe_compact.hpp>
 
 
 namespace turi {
@@ -276,7 +277,8 @@ class sarray : public swriter_base<swriter_impl::output_iterator<T> > {
    *
    * \param num_segments The number of segments in the array
    */
-  void open_for_write(size_t num_segments = SFRAME_DEFAULT_NUM_SEGMENTS) {
+  void open_for_write(size_t num_segments = SFRAME_DEFAULT_NUM_SEGMENTS, 
+                      bool disable_padding = false) {
     ASSERT_MSG(!inited, "Attempting to init an SArray "
                "which has already been inited");
     std::string sidx_file = fileio::fixed_size_cache_manager::get_instance().get_temp_cache_id(".sidx");
@@ -284,6 +286,7 @@ class sarray : public swriter_base<swriter_impl::output_iterator<T> > {
     writer = new sarray_group_format_writer_v2<T>;
     ASSERT_TRUE(writer != NULL);
     if (writer) writer->open(sidx_file, num_segments, 1);
+    if (disable_padding) writer->set_options("disable_padding", 1);
     inited = true;
     writing = true;
     index_info = writer->get_index_info().columns[0];
@@ -476,17 +479,21 @@ class sarray : public swriter_base<swriter_impl::output_iterator<T> > {
               std::inserter(ret.index_info.segment_files, ret.index_info.segment_files.end()));
     std::copy(other.files_managed.begin(), other.files_managed.end(),
               std::inserter(ret.files_managed, ret.files_managed.end()));
+    ret.try_compact();
     return ret;
   }
   /**
    * Return a new sarray that contains a copy of the data in the current array.
    */
-  sarray* clone() const {
-    sarray* ret = new sarray();
-    ret->open_for_write(num_segments());
+  std::shared_ptr<sarray> clone(size_t nsegments = 0) const {
+    if (nsegments == 0) {
+      nsegments = num_segments();
+    }
+    auto ret = std::make_shared<sarray>();
+    ret->open_for_write(nsegments);
     ret->set_type(get_type());
-    auto reader = get_reader();
-    parallel_for(0, num_segments(), [&](size_t segment_id) {
+    auto reader = get_reader(nsegments);
+    parallel_for(0, nsegments, [&](size_t segment_id) {
         auto iter = reader->begin(segment_id);
         auto end = reader->end(segment_id);
         auto out = ret->get_output_iterator(segment_id);
@@ -516,6 +523,17 @@ class sarray : public swriter_base<swriter_impl::output_iterator<T> > {
   void load(iarchive& iarc) {
     std::string prefix = iarc.get_prefix();
     open_for_read(prefix + ".sidx");
+  }
+
+  /**
+   * Attempts to compact if the number of segments in the SArray 
+   * exceeds SFRAME_COMPACTION_THRESHOLD.
+   */
+  void try_compact() {
+    if (SFRAME_COMPACTION_THRESHOLD > 0 && 
+        index_info.segment_files.size() > SFRAME_COMPACTION_THRESHOLD) {
+      sarray_compact(*this, SFRAME_COMPACTION_THRESHOLD);
+    }
   }
 
 /**************************************************************************/
@@ -807,6 +825,7 @@ inline sarray<flexible_type>::get_output_iterator(size_t segmentid) {
 } // namespace turi
 
 #include <sframe/sarray_reader.hpp>
+#include <sframe/sframe_compact_impl.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Implement serialization for
