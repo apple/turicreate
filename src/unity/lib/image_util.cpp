@@ -15,7 +15,8 @@
 #define PATH_IS_ABSOLUTE(s) ((s.length() > 1) && (s[0] == '/'))
 #ifdef _WIN32
 #include <windows.h>
-#define PATH_IS_ABSOLUTE(s) (!PathIsRelative(s))
+#include "Shlwapi.h"
+#define PATH_IS_ABSOLUTE(s) (!(PathIsRelative(s)))
 #endif
 
 namespace turi{
@@ -236,12 +237,15 @@ std::vector<std::string> get_directory_files(std::string url, bool recursive) {
 }
 
 
-bool has_ending (std::string fullString, std::string ending) {
-    if (fullString.length() >= ending.length()) {
-        return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
-    } else {
-        return false;
-    }
+bool endswith(std::string full_string, std::string ending) {
+    return (
+      (full_string.length() >= ending.length()) 
+      && (0 == full_string.compare(
+        full_string.length() - ending.length(), 
+        ending.length(), 
+        ending)
+        )
+      );
 }
 
 /**
@@ -252,8 +256,9 @@ std::shared_ptr<unity_sframe> load_images(std::string url, std::string format, b
     log_func_entry();
 
     std::vector<std::string> all_files;
-    if (has_ending(url, std::string(".jpg")) 
-      || has_ending(url, std::string(".png"))) {
+    if (endswith(url, std::string(".jpg")) 
+      || endswith(url, std::string(".png"))
+      || endswith(url, std::string(".jpeg"))) {
       typedef std::vector<std::pair<std::string, fileio::file_status>> path_status_vec_t;
       path_status_vec_t path_status_vec;
       if (PATH_IS_ABSOLUTE(url)) {
@@ -261,7 +266,7 @@ std::shared_ptr<unity_sframe> load_images(std::string url, std::string format, b
       } else {
           path_status_vec = fileio::get_directory_listing(".");
           for (const auto& path_status : path_status_vec) {
-            if (has_ending(path_status.first, url) 
+            if (endswith(path_status.first, url) 
               && path_status.second == fileio::file_status::REGULAR_FILE){
               all_files.push_back(path_status.first);
             }
