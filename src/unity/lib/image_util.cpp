@@ -11,13 +11,8 @@
 #include <fileio/sanitize_url.hpp>
 #include <sframe_query_engine/util/aggregates.hpp>
 #include <unity/lib/toolkit_function_macros.hpp>
-
-#define PATH_IS_ABSOLUTE(s) ((s.length() > 1) && (s[0] == '/'))
-#ifdef _WIN32
-#include <windows.h>
-#include "Shlwapi.h"
-#define PATH_IS_ABSOLUTE(s) (!(PathIsRelative(s)))
-#endif
+#include <boost/algorithm/string.hpp>
+#include <boost/filesystem/path.hpp>
 
 namespace turi{
 
@@ -237,14 +232,14 @@ std::vector<std::string> get_directory_files(std::string url, bool recursive) {
 }
 
 
-bool endswith(std::string full_string, std::string ending) {
+static bool endswith(std::string full_string, std::string ending, 
+    bool case_sensitive) {
+    if (!case_sensitive) {
+      boost::algorithm::to_lower(full_string);
+      boost::algorithm::to_lower(ending);
+    }
     return (
-      (full_string.length() >= ending.length()) 
-      && (0 == full_string.compare(
-        full_string.length() - ending.length(), 
-        ending.length(), 
-        ending)
-        )
+      full_string.rfind(ending) == full_string.length() - ending.length()
       );
 }
 
@@ -256,23 +251,27 @@ std::shared_ptr<unity_sframe> load_images(std::string url, std::string format, b
     log_func_entry();
 
     std::vector<std::string> all_files;
-    if (endswith(url, std::string(".jpg")) 
-      || endswith(url, std::string(".png"))
-      || endswith(url, std::string(".jpeg"))) {
+    if (endswith(url, std::string(".jpg"), false) 
+      || endswith(url, std::string(".png"), false)
+      || endswith(url, std::string(".jpeg"), false)) {
+      // URL is a single file
       typedef std::vector<std::pair<std::string, fileio::file_status>> path_status_vec_t;
       path_status_vec_t path_status_vec;
-      if (PATH_IS_ABSOLUTE(url)) {
+      boost::filesystem::path p = url;
+      if (p.is_absolute()) {
           all_files.push_back(url);
       } else {
+          // relative path
           path_status_vec = fileio::get_directory_listing(".");
           for (const auto& path_status : path_status_vec) {
-            if (endswith(path_status.first, url) 
+            if (endswith(path_status.first, url, true) 
               && path_status.second == fileio::file_status::REGULAR_FILE){
               all_files.push_back(path_status.first);
             }
           }
       }
     } else {
+      // URL is a directory
       all_files = get_directory_files(url, recursive);
     }
 
