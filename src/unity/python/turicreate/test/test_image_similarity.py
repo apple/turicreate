@@ -177,6 +177,11 @@ class ImageSimilarityTest(unittest.TestCase):
         Check the export_coreml() function.
         """
 
+        def get_psnr(x, y):
+            # See: https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio
+            # The higher the number the better.
+            return 20 * np.log10(max(x.max(), y.max())) - 10 * np.log10(np.square(x-y).mean())
+
         # Save the model as a CoreML model file
         filename = tempfile.mkstemp('ImageSimilarity.mlmodel')[1]
         self.model.export_coreml(filename)
@@ -195,9 +200,10 @@ class ImageSimilarityTest(unittest.TestCase):
             coreml_ret = coreml_model.predict({'awesome_image': pil_img})
 
             # Compare distances
-            coreml_distances = np.array(sorted(coreml_ret['distance']))
-            tc_distances = tc_ret['distance'].to_numpy()
-            self.assertListAlmostEquals(tc_distances, coreml_distances, 0.025)
+            coreml_distances = np.array(coreml_ret['distance'])
+            tc_distances = tc_ret.sort('reference_label')['distance'].to_numpy()
+            psnr_value = get_psnr(coreml_distances, tc_distances)
+            self.assertTrue(psnr_value > 50)
 
     def test_save_and_load(self):
         with test_util.TempDirectory() as filename:
