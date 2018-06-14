@@ -335,6 +335,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                                   loader_type='augmented',
                                   feature_column=feature,
                                   annotations_column=annotations,
+                                  use_io_threads=use_io_threads,
                                   iterations=num_iterations)
 
     # Predictions per anchor box: x/y + w/h + object confidence + class probs
@@ -593,7 +594,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         'num_examples': num_images,
         'num_bounding_boxes': num_instances,
         'training_time': training_time,
-        'training_epochs': loader.cur_epoch,
+        'training_epochs': training_iterations * batch_size // num_images,
         'training_iterations': training_iterations,
         'max_iterations': max_iterations,
         'training_loss': progress['smoothed_loss'],
