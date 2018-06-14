@@ -33,7 +33,7 @@ This is the User Guide for Turi Create
     * [Activity classification](activity_classifier/README.md)
         * [Data Preparation](activity_classifier/data-preparation.md)
         * [Advanced Usage](activity_classifier/advanced-usage.md)
-        * [Deployment to Core ML](activity_classifier/export-coreml.md)
+        * [Deployment to Core ML](activity_classifier/export_coreml.md)
         * [How it works](activity_classifier/how-it-works.md)
     * [Text classifier](text_classifier/README.md)
 * [Machine learning essentials](modeling-data/README.md)
