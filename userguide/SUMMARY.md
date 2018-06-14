@@ -16,6 +16,7 @@ This is the User Guide for Turi Create
     * [Recommender systems](recommender/README.md)
         * [Using models](recommender/using-trained-models.md)
         * [Choosing a model](recommender/choosing-a-model.md)
+        * [Deployment to Core ML](recommender/coreml-deployment.md)
     * [Image classification](image_classifier/README.md)
         * [Advanced Usage](image_classifier/advanced-usage.md)
         * [How it works](image_classifier/how-it-works.md)
