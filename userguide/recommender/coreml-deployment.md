@@ -29,7 +29,7 @@ starting with Turi Create 5.0b1.
 When you drag and drop the `.dylib`, you must copy all items and create folder 
 references. Here is a screenshot of what your selections on the dialog box 
 should look like.
-![Copy .dylib shot](copy-dylib-shot.png)
+![libRecommender drag and drop](libRecommender-drag-and-drop.png)
 
 Now, you are ready to start writing app code to use the recommender model you
 created in Turi Create (and exported to Core ML) in your iOS app. 
