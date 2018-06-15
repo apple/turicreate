@@ -4,17 +4,9 @@
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 #
-# Turi Create Visualization allows you to create Plot objects and 
-# manipulate them using various functionalities, including
-# saving them (.save) and viewing them (.show). Moreover, Turi Create 
-# Visualization also allows the user to call `show` on data sources like 
-# SFrames and SArrays, and provides functionality to create independent plots 
-# like scatter plots, categorical heatmaps, box plots, heatmaps, columnwise 
-# summaries, and item frequency plots.
+# Turi Create Visualization allows you to create, view, and save Plot objects.
 #
-# ==========
 # class Plot
-# ==========
 #
 # 	An immutable object representation of a visualization.
 #
@@ -39,17 +31,13 @@
 #   >>> plt.save('test.png')
 #   >>> plt.save('test.svg')
 #
-# ====
 # show
-# ====
 # 
 # 	A method for displaying the Plot object. The plot will render either inline
 # 	in a Jupyter Notebook, or in a native GUI window, depending on the value 
 # 	provided in `turicreate.visualization.set_target` (defaults to 'auto').
 # 
-# ====
 # save
-# ====
 #
 # 	A method for saving the Plot object in a vega representation
 #
@@ -60,9 +48,13 @@
 #   The extension of this filepath determines what format the plot will
 #   be saved as. Currently supported formats are JSON, PNG, and SVG.
 # 
-# ====
+# Moreover, Turi Create Visualization also allows you to call `show` 
+# on data sources like SFrames and SArrays, and provides functionality to 
+# create independent plots like scatter plots, categorical heatmaps, box plots, 
+# heatmaps, columnwise summaries, and item frequency plots.
+#
+#
 # show
-# ====
 # 
 # 	Plots the data in `x` on the X axis and the data in `y` on the Y axis
 # 	in a 2d visualization, and shows the resulting visualization.
