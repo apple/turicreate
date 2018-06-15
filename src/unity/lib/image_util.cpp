@@ -11,7 +11,8 @@
 #include <fileio/sanitize_url.hpp>
 #include <sframe_query_engine/util/aggregates.hpp>
 #include <unity/lib/toolkit_function_macros.hpp>
-
+#include <boost/algorithm/string.hpp>
+#include <boost/filesystem/path.hpp>
 
 namespace turi{
 
@@ -230,13 +231,49 @@ std::vector<std::string> get_directory_files(std::string url, bool recursive) {
   return ret;
 }
 
+
+static bool endswith(std::string full_string, std::string ending, 
+    bool case_sensitive) {
+    if (!case_sensitive) {
+      boost::algorithm::to_lower(full_string);
+      boost::algorithm::to_lower(ending);
+    }
+    return (
+      full_string.rfind(ending) == full_string.length() - ending.length()
+      );
+}
+
 /**
  * Construct an sframe of flex_images, with url pointing to directory where images reside. 
  */
 std::shared_ptr<unity_sframe> load_images(std::string url, std::string format, bool with_path, bool recursive,
                                           bool ignore_failure, bool random_order) {
     log_func_entry();
-    std::vector<std::string> all_files = get_directory_files(url, recursive);
+
+    std::vector<std::string> all_files;
+    if (endswith(url, std::string(".jpg"), false) 
+      || endswith(url, std::string(".png"), false)
+      || endswith(url, std::string(".jpeg"), false)) {
+      // URL is a single file
+      typedef std::vector<std::pair<std::string, fileio::file_status>> path_status_vec_t;
+      path_status_vec_t path_status_vec;
+      boost::filesystem::path p = url;
+      if (p.is_absolute()) {
+          all_files.push_back(url);
+      } else {
+          // relative path
+          path_status_vec = fileio::get_directory_listing(".");
+          for (const auto& path_status : path_status_vec) {
+            if (endswith(path_status.first, url, true) 
+              && path_status.second == fileio::file_status::REGULAR_FILE){
+              all_files.push_back(path_status.first);
+            }
+          }
+      }
+    } else {
+      // URL is a directory
+      all_files = get_directory_files(url, recursive);
+    }
 
     std::vector<std::string> column_names;
     std::vector<flex_type_enum> column_types;

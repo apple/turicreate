@@ -155,6 +155,11 @@ class ImageClassTest(unittest.TestCase):
         self.assertEqual(sf4.num_columns(), 1)
         self.assertEqual(sf4.num_rows(), 2)
 
+        # Confirm that load_images works with a single image as well
+        sf5 = image_analysis.load_images(image_url_dir + '/sample.jpg', "auto", False, False)
+        self.assertEqual(sf5.num_columns(), 1)
+        self.assertEqual(sf5.num_rows(), 1)
+
         # Expect error when trying to load PNG image as JPG
         with self.assertRaises(RuntimeError):
             image_analysis.load_images(image_url_dir, "JPG", ignore_failure=False)
