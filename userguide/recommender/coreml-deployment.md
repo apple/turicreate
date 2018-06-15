@@ -26,6 +26,10 @@ If you are writing an iOS app for the iPhone/iPad, you would want
 All the relevant `.dylib` files are available on the 
 [Github releases page](https://github.com/apple/turicreate/releases) 
 starting with Turi Create 5.0b1.
+When you drag and drop the `.dylib`, you must copy all items and create folder 
+references. Here is a screenshot of what your selections on the dialog box 
+should look like.
+![Copy .dylib shot](copy-dylib-shot.png)
 
 Now, you are ready to start writing app code to use the recommender model you
 created in Turi Create (and exported to Core ML) in your iOS app. 
