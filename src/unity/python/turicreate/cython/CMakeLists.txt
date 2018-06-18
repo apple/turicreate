@@ -28,8 +28,6 @@ foreach(source ${cython_sources})
   add_dependencies(cython_targets ${target})
 endforeach()
 
-target_link_libraries(cy_server unity)
-
 
 ADD_CUSTOM_TARGET (clean_cython)
 ADD_CUSTOM_COMMAND(
