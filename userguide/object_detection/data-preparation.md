@@ -16,7 +16,7 @@ is, you should have the following data structure:
 
 ```
 ~/Downloads/ig02/
-    bike/
+    bikes/
         bike_001.image.png
         bike_001.mask.0.png
         bike_001.mask.1.png
@@ -43,7 +43,7 @@ import turicreate as tc
 import os
 
 # Change if applicable
-ig02_path = '~/Desktop/ig02'
+ig02_path = '~/Downloads/ig02'
 
 # Load all images in random order
 raw_sf = tc.image_analysis.load_images(ig02_path, recursive=True,
