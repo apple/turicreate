@@ -115,8 +115,8 @@ shows the largest positive and negative coefficients. After a model is
 created, we can access the coefficients as follows:
 
 ```python
-coefs = model['coefficients']
-print(coefs)
+coefs = model.coefficients
+coefs
 ```
 ```no-highlight
 +-----------------------+-------+-------------------+-------------------+
