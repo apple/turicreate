@@ -194,6 +194,10 @@ class Image(object):
         from PIL import Image as _PIL_Image
         return _PIL_Image.fromarray(self.pixel_data)
 
+    def save(self, filename):
+        from PIL import Image as _PIL_Image
+        _PIL_Image.fromarray(self.pixel_data).save(filename)
+
     def show(self):
         """
         Displays the image. Requires PIL/Pillow.
