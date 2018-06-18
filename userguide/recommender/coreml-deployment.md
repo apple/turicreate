@@ -16,7 +16,7 @@ my_recommender.export_coreml("MyRecommender.mlmodel")
 ```
 
 After you drag and drop the exported Core ML model in your iOS app, it will look something like this:
-![Core ML Model Screenshot in Xcode](xcode-shot.png)
+![Core ML Model Screenshot in Xcode](xcode-mlmodel-shot.png)
 
 Before you can go ahead and use the recommender model in your app, you must
 drag and drop the relevant `.dylib` into your app. If you are writing an app 
@@ -29,7 +29,7 @@ starting with Turi Create 5.0b1.
 When you drag and drop the `.dylib`, you must copy all items and create folder 
 references. Here is a screenshot of what your selections on the dialog box 
 should look like.
-![libRecommender drag and drop](libRecommender-drag-and-drop.png)
+![libRecommender drag and drop](libRecommender-drag-drop-shot.png)
 
 Now, you are ready to start writing app code to use the recommender model you
 created in Turi Create (and exported to Core ML) in your iOS app. 
