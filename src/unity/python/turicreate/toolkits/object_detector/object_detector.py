@@ -247,7 +247,9 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         'learning_rate': 1.0e-3,
         'shuffle': True,
         'mps_loss_mult': 8,
-        'use_io_threads': True,
+        # This large buffer size (8 batches) is an attempt to mitigate against
+        # the SFrame shuffle operation that can occur after each epoch.
+        'io_thread_buffer_size': 8,
     }
 
     if '_advanced_parameters' in kwargs:
@@ -274,7 +276,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     # to be problematic to run independently of a MXNet-powered neural network
     # in a separate thread. For this reason, we restrict IO threads to when
     # the neural network backend is MPS.
-    use_io_threads = use_mps and params['use_io_threads']
+    io_thread_buffer_size = params['io_thread_buffer_size'] if use_mps else 0
 
     if verbose:
         if use_mps:
@@ -335,7 +337,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                                   loader_type='augmented',
                                   feature_column=feature,
                                   annotations_column=annotations,
-                                  use_io_threads=use_io_threads,
+                                  io_thread_buffer_size=io_thread_buffer_size,
                                   iterations=num_iterations)
 
     # Predictions per anchor box: x/y + w/h + object confidence + class probs

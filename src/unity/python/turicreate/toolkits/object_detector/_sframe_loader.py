@@ -206,7 +206,7 @@ class SFrameDetectionIter(_mx.io.DataIter):
                  loader_type='augmented',
                  load_labels=True,
                  shuffle=True,
-                 use_io_threads=False,
+                 io_thread_buffer_size=0,
                  epochs=None,
                  iterations=None):
 
@@ -301,17 +301,14 @@ class SFrameDetectionIter(_mx.io.DataIter):
         if epochs is not None:
             sample_limits.append(epochs * len(sframe))
         samples = min(sample_limits) if len(sample_limits) > 0 else None
-        if use_io_threads:
+        if io_thread_buffer_size > 0:
             # Delegate SFrame operations to a background thread, leaving this
             # thread to Python-based work of copying to MxNet and scheduling
             # augmentation work in the MXNet backend.
-            #
-            # Note that the large buffer size is an attempt to mitigate against
-            # the SFrame shuffle operation that can occur after each epoch.
             self.data_source = _SFrameAsyncDataSource(
                 sframe, feature_column, annotations_column,
                 load_labels=load_labels, shuffle=shuffle, samples=samples,
-                buffer_size=batch_size*8)
+                buffer_size=io_thread_buffer_size * batch_size)
         else:
             self.data_source = _SFrameDataSource(
                 sframe, feature_column, annotations_column,
