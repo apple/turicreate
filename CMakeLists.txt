@@ -103,16 +103,6 @@ if(WIN32 AND MINGW)
   SET(COMPILER_FLAGS "${COMPILER_FLAGS} -Wa,-mbig-obj")
 endif()
 
-if(TC_BUILD_IOS)
-  EXECUTE_PROCESS(
-    COMMAND xcrun --sdk iphoneos --show-sdk-path
-    OUTPUT_VARIABLE IOS_ISYSROOT
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-  )
-  SET(CMAKE_OSX_SYSROOT "${IOS_ISYSROOT}")
-  SET(COMPILER_FLAGS "${COMPILER_FLAGS} -Wno-c++11-narrowing -isysroot ${IOS_ISYSROOT}")
-endif()
-
 set(MINGW_ROOT "/mingw64/bin")
 # Separate variable so that cython's CMakeLists.txt can use it too
 if (WIN32)
@@ -721,22 +711,35 @@ endfunction()
 
 
 if(APPLE)
-  EXEC_PROGRAM(xcrun ARGS --show-sdk-version OUTPUT_VARIABLE mac_version RETURN_VALUE _xcrun_ret)
+  SET(TC_BASE_SDK macosx)
+  if(TC_BUILD_IOS)
+    SET(TC_BASE_SDK iphoneos)
+    SET(COMPILER_FLAGS "${COMPILER_FLAGS} -Wno-c++11-narrowing")
+  endif()
 
+  EXEC_PROGRAM(xcrun ARGS --sdk ${TC_BASE_SDK} --show-sdk-version OUTPUT_VARIABLE TC_BASE_SDK_VERSION RETURN_VALUE _xcrun_ret)
   if(NOT ${_xcrun_ret} EQUAL 0)
     message(ERROR, "xcrun command failed with return code ${_xcrun_ret}.")
   endif()
 
+  EXEC_PROGRAM(xcrun ARGS --sdk ${TC_BASE_SDK} --show-sdk-path OUTPUT_VARIABLE TC_BASE_SDK_PATH RETURN_VALUE _xcrun_ret)
+  if(NOT ${_xcrun_ret} EQUAL 0)
+    message(ERROR, "xcrun command failed with return code ${_xcrun_ret}.")
+  endif()
+
+  SET(CMAKE_OSX_SYSROOT "${TC_BASE_SDK_PATH}")
+  SET(COMPILER_FLAGS "${COMPILER_FLAGS} -isysroot ${TC_BASE_SDK_PATH}")
+
   # Core ML is only present on macOS 10.13 or higher.
   # Logic reversed to get around what seems to be a CMake bug.
-  if(NOT mac_version VERSION_LESS 10.13)
+  if(NOT TC_BASE_SDK_VERSION VERSION_LESS 10.13)
     add_definitions(-DHAS_CORE_ML)
     set(HAS_CORE_ML TRUE)
   endif()
 
   # Core ML only supports batch inference on macOS 10.14 or higher
   # Logic reversed to get around what seems to be a CMake bug.
-  if(NOT mac_version VERSION_LESS 10.14)
+  if(NOT TC_BASE_SDK_VERSION VERSION_LESS 10.14)
     add_definitions(-DHAS_CORE_ML_BATCH_INFERENCE)
 
     # GPU-accelerated training with MPS backend requires macOS 10.14 or higher
