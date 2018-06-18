@@ -984,7 +984,7 @@ EXPORT tc_sframe* tc_sframe_sort_multiple_columns(const tc_sframe* sf,
 }
 
 EXPORT tc_sframe* tc_sframe_slice(const tc_sframe* sf, const int64_t start,
-                                  const int64_t end, const int64_t stride,
+                                  const int64_t slice, const int64_t end,
                                   tc_error** error) {
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
@@ -992,8 +992,8 @@ EXPORT tc_sframe* tc_sframe_slice(const tc_sframe* sf, const int64_t start,
   CHECK_NOT_NULL(error, sf, "sframe", NULL);
 
   return new_tc_sframe(
-      sf->value[{static_cast<long long>(start), static_cast<long long>(end),
-                 static_cast<long long>(stride)}]);
+      sf->value[{static_cast<long long>(start), static_cast<long long>(slice),
+                 static_cast<long long>(end)}]);
 
   ERROR_HANDLE_END(error, NULL);
 }
