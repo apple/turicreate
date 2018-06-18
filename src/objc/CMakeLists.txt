@@ -1,6 +1,6 @@
 project(TuriCreateObjC)
 
-if(APPLE)
+if(APPLE AND HAS_MLCUSTOMMODEL)
   set(_SDK_NAME "macosx")
   if(TC_BUILD_IOS)
     set(_SDK_NAME "iphoneos")

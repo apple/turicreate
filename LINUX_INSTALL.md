@@ -96,7 +96,7 @@ sudo make install
 ```
 
 
-Every time you open a new bash session, you should run the following commands.You could put them in ~/.bashrc for convenience.
+Every time you open a new bash session, you should run the following commands. You could put them in `~/.bashrc` for convenience.
 
 ```shell
 export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
@@ -143,10 +143,10 @@ wget ftp://ftp.pbone.net/mirror/li.nux.ro/download/nux/dextop/el6/x86_64/chrome-
 sudo rpm -i --badreloc --noscripts --relocate /opt/google/chrome=$HOME chrome-deps-stable-3.11-1.x86_64.rpm
 ```
 
-This will install libstdc++.so into $HOME/lib. 
+This will install `libstdc++.so` into `$HOME/lib`. 
 Alternatively, you can compile gcc >= 5.4 from source.
 
-Every time you open a new bash session, you should run the following commands.You could put them in ~/.bashrc for convenience.
+Every time you open a new bash session, you should run the following commands. You could put them in `~/.bashrc` for convenience.
 
 ```shell
 export LD_LIBRARY_PATH=$HOME/lib:$LD_LIBRARY_PATH
@@ -217,7 +217,7 @@ wget ftp://ftp.pbone.net/mirror/li.nux.ro/download/nux/dextop/el6/x86_64/chrome-
 sudo rpm -i --badreloc --noscripts --relocate /opt/google/chrome=$HOME chrome-deps-stable-3.11-1.x86_64.rpm
 ```
 
-This will install libstdc++.so into $HOME/lib. 
+This will install `libstdc++.so` into `$HOME/lib`. 
 Alternatively, you can compile gcc >= 5.4 from source.
 
 #### Installing the other dependencies
@@ -228,7 +228,7 @@ sudo yum install -y blas lapack
 
 #### Setting up your environment
 
-Every time you open a new bash session, you should run the following commands.You could put them in ~/.bashrc for convenience.
+Every time you open a new bash session, you should run the following commands. You could put them in `~/.bashrc` for convenience.
 
 ```shell
 export LD_LIBRARY_PATH=$HOME/lib:$LD_LIBRARY_PATH

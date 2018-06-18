@@ -33,7 +33,7 @@ endif()
     add_dependencies(unity ${loop_var})
   endforeach()
 
-  if(APPLE)
+  if(APPLE AND HAS_MLCUSTOMMODEL)
     set(EXTRA_REQUIRES objcapi)
   endif()
 
