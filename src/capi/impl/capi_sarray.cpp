@@ -723,11 +723,22 @@ EXPORT tc_sarray* tc_sarray_hash(const tc_sarray* sa, uint64_t salt, tc_error** 
   ERROR_HANDLE_END(error, NULL);
 }
 
-EXPORT tc_sarray* tc_sarray_slice(const tc_sarray* sf, const int64_t start, const int64_t end, const int64_t stride, tc_error** error) {
+EXPORT tc_sarray* tc_sarray_slice(const tc_sarray* sf, const int64_t start, const int64_t slice, const int64_t end, tc_error** error) {
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
-  return new_tc_sarray(sf->value.subslice(start, end, stride));
+  return new_tc_sarray(
+      sf->value[{static_cast<long long>(start), static_cast<long long>(slice),
+                 static_cast<long long>(end)}]);
+
+  ERROR_HANDLE_END(error, NULL);
+}
+
+EXPORT tc_sarray* tc_sarray_subslice(const tc_sarray* sf, const int64_t start, const int64_t slice, const int64_t end, tc_error** error) {
+  ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
+
+  return new_tc_sarray(sf->value.subslice(start, slice, end));
 
   ERROR_HANDLE_END(error, NULL);
 }
