@@ -195,8 +195,7 @@ class Image(object):
         return _PIL_Image.fromarray(self.pixel_data)
 
     def save(self, filename):
-        from PIL import Image as _PIL_Image
-        _PIL_Image.fromarray(self.pixel_data).save(filename)
+        self._to_pil_image().save(filename)
 
     def show(self):
         """
