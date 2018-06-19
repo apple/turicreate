@@ -11,6 +11,7 @@ from turicreate.util import _raise_error_if_not_of_type
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._internal_utils import _numeric_param_check_range
 
+MIN_NUM_SESSIONS_FOR_SPLIT = 100
 
 def random_split_by_session(dataset, session_id, fraction=0.9, seed=None):
     """
@@ -68,6 +69,10 @@ def random_split_by_session(dataset, session_id, fraction=0.9, seed=None):
             'Input "dataset" must contain a column called %s.' % session_id)
 
     unique_sessions = _SFrame({'session': dataset[session_id].unique()})
+    if len(unique_sessions) < MIN_NUM_SESSIONS_FOR_SPLIT:
+        print ("The dataset has less than the minimum of", MIN_NUM_SESSIONS_FOR_SPLIT, "sessions required for train-validation split. Continuing without validation set")
+        return dataset, None
+
     chosen, not_chosen = unique_sessions.random_split(fraction, seed)
     train = dataset.filter_by(chosen['session'], session_id)
     valid = dataset.filter_by(not_chosen['session'], session_id)
