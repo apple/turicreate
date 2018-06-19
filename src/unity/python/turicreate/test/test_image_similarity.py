@@ -73,7 +73,7 @@ class ImageSimilarityTest(unittest.TestCase):
         self.input_image_shape = input_image_shape
         self.pre_trained_model = model
 
-        ## Create the model
+        # Create the model
         self.def_opts= {
            'model': 'resnet-50',
            'verbose': True,
@@ -146,7 +146,7 @@ class ImageSimilarityTest(unittest.TestCase):
         for field in self.fields_ans:
             ans = model._get(field)
             self.assertTrue(self.get_ans[field](ans),
-                    '''Get failed in field {}. Output was {}.'''.format(field, ans))
+                    "Get failed in field {}. Output was {}.".format(field, ans))
 
     def test_query_input(self):
         model = self.model
@@ -177,6 +177,11 @@ class ImageSimilarityTest(unittest.TestCase):
         Check the export_coreml() function.
         """
 
+        def get_psnr(x, y):
+            # See: https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio
+            # The higher the number the better.
+            return 20 * np.log10(max(x.max(), y.max())) - 10 * np.log10(np.square(x-y).mean())
+
         # Save the model as a CoreML model file
         filename = tempfile.mkstemp('ImageSimilarity.mlmodel')[1]
         self.model.export_coreml(filename)
@@ -195,9 +200,10 @@ class ImageSimilarityTest(unittest.TestCase):
             coreml_ret = coreml_model.predict({'awesome_image': pil_img})
 
             # Compare distances
-            coreml_distances = np.array(sorted(coreml_ret['distance']))
-            tc_distances = tc_ret['distance'].to_numpy()
-            self.assertListAlmostEquals(tc_distances, coreml_distances, 0.025)
+            coreml_distances = np.array(coreml_ret['distance'])
+            tc_distances = tc_ret.sort('reference_label')['distance'].to_numpy()
+            psnr_value = get_psnr(coreml_distances, tc_distances)
+            self.assertTrue(psnr_value > 50)
 
     def test_save_and_load(self):
         with test_util.TempDirectory() as filename:
@@ -223,6 +229,13 @@ class ImageSimilaritySqueezeNetTest(ImageSimilarityTest):
     def setUpClass(self):
         super(ImageSimilaritySqueezeNetTest, self).setUpClass(model='squeezenet_v1.1',
                                                               input_image_shape=(3, 227, 227))
+
+@unittest.skipIf(_mac_ver() < (10,14), 'VisionFeaturePrint_Screen only supported on macOS 10.14+')
+class ImageSimilarityVisionFeaturePrintScreenTest(ImageSimilarityTest):
+    @classmethod
+    def setUpClass(self):
+        super(ImageSimilarityVisionFeaturePrintScreenTest, self).setUpClass(model='VisionFeaturePrint_Screen',
+                                                                            input_image_shape=(3, 299, 299))
 
 @unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
 @pytest.mark.gpu
