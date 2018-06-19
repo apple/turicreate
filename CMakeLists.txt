@@ -78,10 +78,14 @@ endif()
 #*                                                                        *
 #**************************************************************************
 if(APPLE)
-  SET(TC_BASE_SDK macosx)
   if(TC_BUILD_IOS)
     SET(TC_BASE_SDK iphoneos)
-    SET(COMPILER_FLAGS "${COMPILER_FLAGS} -Wno-c++11-narrowing")
+    SET(COMPILER_FLAGS "${COMPILER_FLAGS} -miphoneos-version-min=12.0 -Wno-c++11-narrowing")
+  else()
+    SET(TC_BASE_SDK macosx)
+
+    # Sets -mmacosx-version-min
+    SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.12")
   endif()
 
   EXEC_PROGRAM(xcrun ARGS --sdk ${TC_BASE_SDK} --show-sdk-version OUTPUT_VARIABLE TC_BASE_SDK_VERSION RETURN_VALUE _xcrun_ret)
@@ -348,9 +352,6 @@ if(WIN32)
         # like that.
         set(DEBUG_OPTIMIZATION_LEVEL -O2)
 endif()
-
-# Set mac os minimum version
-set(CMAKE_OSX_DEPLOYMENT_TARGET "10.12")
 
 # Set the debug flags
 set(EXTERNAL_CMAKE_C_FLAGS_DEBUG
