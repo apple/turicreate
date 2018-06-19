@@ -495,7 +495,8 @@ tc_sarray* tc_sarray_sort(const tc_sarray* sa, bool ascending, tc_error** error)
 bool tc_sarray_is_materialized(const tc_sarray* src, tc_error**);
 bool tc_sarray_size_is_known(const tc_sarray* src, tc_error**);
 tc_sarray* tc_sarray_hash(const tc_sarray* src, uint64_t salt, tc_error**);
-tc_sarray* tc_sarray_slice(const tc_sarray* sf, const int64_t start, const int64_t end, const int64_t stride, tc_error**);
+tc_sarray* tc_sarray_slice(const tc_sarray* sf, const int64_t start, const int64_t stride, const int64_t end, tc_error**);
+tc_sarray* tc_sarray_subslice(const tc_sarray* sf, const int64_t start, const int64_t stride, const int64_t end, tc_error**);
 tc_sarray* tc_sarray_to_const(const tc_sarray* sf, const tc_flexible_type* value, tc_ft_type_enum out_type,  tc_error**);
 tc_sarray* tc_sarray_which(const tc_sarray* mask, const tc_sarray* true_sa,
                            const tc_sarray* false_sa, tc_error**);
@@ -634,7 +635,7 @@ tc_sframe* tc_sframe_unique(const tc_sframe* sf, tc_error**);
 tc_sframe* tc_sframe_sort_single_column(const tc_sframe* sf, const char* column, bool ascending, tc_error**);
 tc_sframe* tc_sframe_sort_multiple_columns(const tc_sframe* sf, const tc_flex_list* columns, bool ascending, tc_error**);
 tc_sframe* tc_sframe_drop_na(const tc_sframe* sf, const tc_flex_list* columns, const char* how, tc_error**);
-tc_sframe* tc_sframe_slice(const tc_sframe* sf, const int64_t start, const int64_t end, const int64_t stride, tc_error**);
+tc_sframe* tc_sframe_slice(const tc_sframe* sf, const int64_t start, const int64_t stride, const int64_t end, tc_error**);
 
 tc_flex_list* tc_sframe_extract_row(const tc_sframe* sf, uint64_t row_index, tc_error**);
 
