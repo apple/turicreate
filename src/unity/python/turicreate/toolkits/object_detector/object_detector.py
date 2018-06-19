@@ -247,7 +247,9 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         'learning_rate': 1.0e-3,
         'shuffle': True,
         'mps_loss_mult': 8,
-        'use_io_threads': True,
+        # This large buffer size (8 batches) is an attempt to mitigate against
+        # the SFrame shuffle operation that can occur after each epoch.
+        'io_thread_buffer_size': 8,
     }
 
     if '_advanced_parameters' in kwargs:
@@ -274,7 +276,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     # to be problematic to run independently of a MXNet-powered neural network
     # in a separate thread. For this reason, we restrict IO threads to when
     # the neural network backend is MPS.
-    use_io_threads = use_mps and params['use_io_threads']
+    io_thread_buffer_size = params['io_thread_buffer_size'] if use_mps else 0
 
     if verbose:
         if use_mps:
@@ -335,6 +337,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                                   loader_type='augmented',
                                   feature_column=feature,
                                   annotations_column=annotations,
+                                  io_thread_buffer_size=io_thread_buffer_size,
                                   iterations=num_iterations)
 
     # Predictions per anchor box: x/y + w/h + object confidence + class probs
@@ -376,6 +379,35 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     # easily hide bugs caused by names getting out of sync.
     ref_model.available_parameters_subset(net_params).load(ref_model.model_path, ctx)
 
+    if verbose:
+        # Print progress table header
+        column_names = ['Iteration', 'Loss', 'Elapsed Time']
+        num_columns = len(column_names)
+        column_width = max(map(lambda x: len(x), column_names)) + 2
+        hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
+        print(hr)
+        print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
+        print(hr)
+
+    progress = {'smoothed_loss': None, 'last_time': 0}
+    iteration = 0
+
+    def update_progress(cur_loss, iteration):
+        iteration_base1 = iteration + 1
+        if progress['smoothed_loss'] is None:
+            progress['smoothed_loss'] = cur_loss
+        else:
+            progress['smoothed_loss'] = 0.9 * progress['smoothed_loss'] + 0.1 * cur_loss
+        cur_time = _time.time()
+        if verbose and (cur_time > progress['last_time'] + 10 or
+                        iteration_base1 == max_iterations):
+            # Print progress table row
+            elapsed_time = cur_time - start_time
+            print("| {cur_iter:<{width}}| {loss:<{width}.3f}| {time:<{width}.1f}|".format(
+                cur_iter=iteration_base1, loss=progress['smoothed_loss'],
+                time=elapsed_time , width=column_width-1))
+            progress['last_time'] = cur_time
+
     if use_mps:
         net.forward(_mx.nd.uniform(0, 1, (batch_size_each,) + input_image_shape))
         mps_net_params = {}
@@ -414,7 +446,104 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                                   anchors=anchors,
                                   config=mps_config,
                                   weights=mps_net_params)
-    else:
+
+        # Use worker threads to isolate different points of synchronization
+        # and/or waiting for non-Python tasks to finish. The
+        # sframe_worker_thread will spend most of its time waiting for SFrame
+        # operations, largely image I/O and decoding, along with scheduling
+        # MXNet data augmentation. The numpy_worker_thread will spend most of
+        # its time waiting for MXNet data augmentation to complete, along with
+        # copying the results into NumPy arrays. Finally, the main thread will
+        # spend most of its time copying NumPy data into MPS and waiting for the
+        # results. Note that using three threads here only makes sense because
+        # each thread spends time waiting for non-Python code to finish (so that
+        # no thread hogs the global interpreter lock).
+        mxnet_batch_queue = _Queue(1)
+        numpy_batch_queue = _Queue(1)
+        def sframe_worker():
+            # Once a batch is loaded into NumPy, pass it immediately to the
+            # numpy_worker so that we can start I/O and decoding for the next
+            # batch.
+            for batch in loader:
+                mxnet_batch_queue.put(batch)
+            mxnet_batch_queue.put(None)
+        def numpy_worker():
+            while True:
+                batch = mxnet_batch_queue.get()
+                if batch is None:
+                    break
+
+                for x, y in zip(batch.data, batch.label):
+                    # Convert to NumPy arrays with required shapes. Note that
+                    # asnumpy waits for any pending MXNet operations to finish.
+                    input_data = _mxnet_to_mps(x.asnumpy())
+                    label_data = y.asnumpy().reshape(y.shape[:-2] + (-1,))
+
+                    # Convert to packed 32-bit arrays.
+                    input_data = input_data.astype(_np.float32)
+                    if not input_data.flags.c_contiguous:
+                        input_data = input_data.copy()
+                    label_data = label_data.astype(_np.float32)
+                    if not label_data.flags.c_contiguous:
+                        label_data = label_data.copy()
+
+                    # Push this batch to the main thread.
+                    numpy_batch_queue.put({'input'     : input_data,
+                                           'label'     : label_data,
+                                           'iteration' : batch.iteration})
+            # Tell the main thread there's no more data.
+            numpy_batch_queue.put(None)
+        sframe_worker_thread = _Thread(target=sframe_worker)
+        sframe_worker_thread.start()
+        numpy_worker_thread = _Thread(target=numpy_worker)
+        numpy_worker_thread.start()
+
+        batches_started = 0
+        batches_finished = 0
+        while True:
+            batch = numpy_batch_queue.get()
+            if batch is None:
+                break
+
+            # Adjust learning rate according to our schedule.
+            if batch['iteration'] in steps:
+                ii = steps.index(batch['iteration']) + 1
+                new_lr = factors[ii] * base_lr
+                mps_net.set_learning_rate(new_lr / mps_loss_mult)
+
+            # Submit this match to MPS.
+            mps_net.start_batch(batch['input'], label=batch['label'])
+            batches_started += 1
+
+            # If we have two batches in flight, wait for the first one.
+            if batches_started - batches_finished > 1:
+                batches_finished += 1
+                cur_loss = mps_net.wait_for_batch().sum() / mps_loss_mult
+
+                # If we just submitted the first batch of an iteration, update
+                # progress for the iteration completed by the last batch we just
+                # waited for.
+                if batch['iteration'] > iteration:
+                    update_progress(cur_loss, iteration)
+            iteration = batch['iteration']
+
+        # Wait for any pending batches and finalize our progress updates.
+        while batches_finished < batches_started:
+            batches_finished += 1
+            cur_loss = mps_net.wait_for_batch().sum() / mps_loss_mult
+        update_progress(cur_loss, iteration)
+
+        sframe_worker_thread.join()
+        numpy_worker_thread.join()
+
+        # Load back into mxnet
+        mps_net_params = mps_net.export()
+        keys = mps_net_params.keys()
+        for k in keys:
+            if k in net_params:
+                net_params[k].set_data(_mps_to_mxnet(mps_net_params[k]))
+
+    else:  # Use MxNet
         options = {'learning_rate': base_lr, 'lr_scheduler': lr_scheduler,
                    'momentum': params['sgd_momentum'], 'wd': params['weight_decay'], 'rescale_grad': 1.0}
         clip_grad = params.get('clip_gradients')
@@ -422,23 +551,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
             options['clip_gradient'] = clip_grad
         trainer = _mx.gluon.Trainer(net.collect_params(), 'sgd', options)
 
-    progress = {'smoothed_loss': None, 'last_time': 0}
-
-    def handle_request(batch):
-        if use_mps:
-            for x, y in zip(batch.data, batch.label):
-                input_data = _mxnet_to_mps(x.asnumpy())
-                label_data = y.asnumpy().reshape(y.shape[:-2] + (-1,))
-
-                if batch.iteration in steps:
-                    ii = steps.index(batch.iteration) + 1
-                    new_lr = factors[ii] * base_lr
-                    mps_net.set_learning_rate(new_lr / mps_loss_mult)
-
-                mps_net.set_input(input_data)
-                mps_net.set_label(label_data)
-                cur_loss = mps_net.run_graph().sum() / mps_loss_mult
-        else:
+        for batch in loader:
             data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0)
             label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0)
 
@@ -456,79 +569,9 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
 
             trainer.step(1)
             cur_loss = _np.mean([L.asnumpy()[0] for L in Ls])
-        return cur_loss
 
-    def consume_response(cur_loss, iteration):
-        iteration_base1 = iteration + 1
-        if progress['smoothed_loss'] is None:
-            progress['smoothed_loss'] = cur_loss
-        else:
-            progress['smoothed_loss'] = 0.9 * progress['smoothed_loss'] + 0.1 * cur_loss
-        cur_time = _time.time()
-        if verbose and (cur_time > progress['last_time'] + 10 or
-                        iteration_base1 == max_iterations):
-            # Print progress table row
-            elapsed_time = cur_time - start_time
-            print("| {cur_iter:<{width}}| {loss:<{width}.3f}| {time:<{width}.1f}|".format(
-                cur_iter=iteration_base1, loss=progress['smoothed_loss'],
-                time=elapsed_time , width=column_width-1))
-            progress['last_time'] = cur_time
-
-    request_queue = _Queue()
-    response_queue = _Queue()
-
-    if verbose:
-        # Print progress table header
-        column_names = ['Iteration', 'Loss', 'Elapsed Time']
-        num_columns = len(column_names)
-        column_width = max(map(lambda x: len(x), column_names)) + 2
-        hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
-        print(hr)
-        print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
-        print(hr)
-
-    iteration = 0
-    if not use_io_threads:
-        for batch in loader:
-            cur_loss = handle_request(batch)
-            consume_response(cur_loss, batch.iteration)
+            update_progress(cur_loss, batch.iteration)
             iteration = batch.iteration
-    else:
-        def model_worker():
-            while True:
-                batch = request_queue.get()  # Consume request
-                if batch is None:
-                    # No more work remains. Allow the thread to finish.
-                    return
-                response_queue.put((handle_request(batch), batch.iteration))  # Produce response
-        model_worker_thread = _Thread(target=model_worker)
-        model_worker_thread.start()
-
-        try:
-            # Attempt to have two requests in progress at any one time (double
-            # buffering), so that the iterator is creating one batch while MXNet
-            # performs inference on the other.
-            if loader.has_next:
-                request_queue.put(next(loader))
-                while loader.has_next:
-                    request_queue.put(next(loader))
-                    consume_response(*response_queue.get())
-                consume_response(*response_queue.get())
-
-        finally:
-            # Tell the worker thread to shut down.
-            request_queue.put(None)
-
-        model_worker_thread.join()
-
-    # If mps was used, load model back into mxnet
-    if use_mps:
-        mps_net_params = mps_net.export()
-        keys = mps_net_params.keys()
-        for k in keys:
-            if k in net_params:
-                net_params[k].set_data(_mps_to_mxnet(mps_net_params[k]))
-
 
     training_time = _time.time() - start_time
     if verbose:
@@ -553,7 +596,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         'num_examples': num_images,
         'num_bounding_boxes': num_instances,
         'training_time': training_time,
-        'training_epochs': loader.cur_epoch,
+        'training_epochs': training_iterations * batch_size // num_images,
         'training_iterations': training_iterations,
         'max_iterations': max_iterations,
         'training_loss': progress['smoothed_loss'],
@@ -761,8 +804,8 @@ class ObjectDetector(_CustomModel):
                                                     dtype=mps_data.dtype)
                         mps_data_padded[:mps_data.shape[0]] = mps_data
                         mps_data = mps_data_padded
-                    self._mps_inference_net.set_input(mps_data)
-                    mps_z = self._mps_inference_net.run_graph()[:n_samples]
+                    self._mps_inference_net.start_batch(mps_data)
+                    mps_z = self._mps_inference_net.wait_for_batch()[:n_samples]
                     z = _mps_to_mxnet(mps_z)
                 else:
                     z = self._model(data).asnumpy()

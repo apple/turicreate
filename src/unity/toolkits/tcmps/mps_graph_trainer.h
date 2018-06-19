@@ -32,11 +32,18 @@ EXPORT int MetalDeviceName(char *name, int max_len);
 EXPORT int CreateMPSGraph(MPSHandle *handle);
 EXPORT int DeleteMPSGraph(MPSHandle handle);
 
-EXPORT int SetInputGraph(MPSHandle handle, void *ptr, int64_t sz, int64_t *shape, int dim, int flag);
-EXPORT int SetLossStateGraph(MPSHandle handle, void *ptr);
+EXPORT int StartTrainingBatchGraph(MPSHandle handle, void *ptr, int64_t sz,
+                                   int64_t *shape, int dim, float *labels_ptr);
+EXPORT int WaitForTrainingBatchGraph(MPSHandle handle, float *loss);
 
-EXPORT int RunGraph(MPSHandle handle, float *out, float *loss);
-EXPORT int WaitUntilCompletedGraph(MPSHandle handle);
+EXPORT int StartInferenceBatchGraph(MPSHandle handle, void *ptr, int64_t sz,
+                                    int64_t *shape, int dim);
+EXPORT int WaitForInferenceBatchGraph(MPSHandle handle, float *out_ptr);
+
+EXPORT int StartTrainReturnGradBatchGraph(
+    MPSHandle handle, void *ptr, int64_t sz, int64_t *shape, int dim,
+    void *grad_ptr, int64_t grad_sz, int64_t *grad_shape, int grad_dim);
+EXPORT int WaitForTrainReturnGradBatchGraph(MPSHandle handle, float *out_ptr);
 
 EXPORT int InitGraph(MPSHandle handle, int network_id, int n, int c_in, int h_in, int w_in,
                      int c_out, int h_out, int w_out,

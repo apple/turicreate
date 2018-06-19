@@ -49,9 +49,9 @@ struct MPSGraphNetwork {
 };
 
 // Factory function to create a network
-MPSGraphNetwork *_Nonnull createNetworkGraph(GraphNetworkType network_id,
-                                             const std::vector<int> &params,
-                                             const FloatArrayMap &config);
+std::unique_ptr<MPSGraphNetwork> createNetworkGraph(
+    GraphNetworkType network_id, const std::vector<int> &params,
+    const FloatArrayMap &config);
 
 // Various networks
 // ---------------------------------------------------------------------------------------------

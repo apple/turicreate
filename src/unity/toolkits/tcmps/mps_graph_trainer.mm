@@ -37,33 +37,51 @@ int DeleteMPSGraph(MPSHandle handle) {
   API_END();
 }
 
-int SetInputGraph(MPSHandle handle, void *ptr, int64_t sz, int64_t *shape, int dim,
-             int flag) {
+int StartTrainingBatchGraph(MPSHandle handle, void *ptr, int64_t sz,
+                            int64_t *shape, int dim, float *labels_ptr) {
   API_BEGIN();
   MPSGraphModule *obj = (MPSGraphModule *)handle;
-  obj->SetInput(ptr, sz, shape, dim, flag);
+  obj->StartTrainingBatch(ptr, sz, shape, dim, labels_ptr);
   API_END();
 }
 
-int SetLossStateGraph(MPSHandle handle, void *ptr) {
+int WaitForTrainingBatchGraph(MPSHandle handle, float *loss) {
   API_BEGIN();
   MPSGraphModule *obj = (MPSGraphModule *)handle;
-  obj->SetLossState((float *)ptr);
+  obj->WaitForTrainingBatch(loss);
   API_END();
 }
 
-int RunGraph(MPSHandle handle, float *out, float *loss) {
+int StartInferenceBatchGraph(MPSHandle handle, void *ptr, int64_t sz,
+                             int64_t *shape, int dim) {
   API_BEGIN();
   MPSGraphModule *obj = (MPSGraphModule *)handle;
-  obj->RunGraph(out, loss);
+  obj->StartInferenceBatch(ptr, sz, shape, dim);
   API_END();
 }
 
-int WaitUntilCompletedGraph(MPSHandle handle) {
-    API_BEGIN();
-    MPSGraphModule *obj = (MPSGraphModule *)handle;
-    obj->WaitUntilCompleted();
-    API_END();
+int WaitForInferenceBatchGraph(MPSHandle handle, float *out_ptr) {
+  API_BEGIN();
+  MPSGraphModule *obj = (MPSGraphModule *)handle;
+  obj->WaitForInferenceBatch(out_ptr);
+  API_END();
+}
+
+int StartTrainReturnGradBatchGraph(
+    MPSHandle handle, void *ptr, int64_t sz, int64_t *shape, int dim,
+    void *grad_ptr, int64_t grad_sz, int64_t *grad_shape, int grad_dim) {
+  API_BEGIN();
+  MPSGraphModule *obj = (MPSGraphModule *)handle;
+  obj->StartTrainReturnGradBatch(ptr, sz, shape, dim,
+                                 grad_ptr, grad_sz, grad_shape, grad_dim);
+  API_END();
+}
+
+int WaitForTrainReturnGradBatchGraph(MPSHandle handle, float *out_ptr) {
+  API_BEGIN();
+  MPSGraphModule *obj = (MPSGraphModule *)handle;
+  obj->WaitForTrainReturnGradBatch(out_ptr);
+  API_END();
 }
 
 int InitGraph(MPSHandle handle, int network_id, int n, int c_in, int h_in, int w_in,
