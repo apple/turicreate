@@ -1409,7 +1409,7 @@ class ObjectDetector(_CustomModel):
             # Confidence threshold +---------------------------+          |
             #                        +------------------------------------+
 
-            # from turicreate.toolkits._internal_utils import _mac_ver
+            from turicreate.toolkits._internal_utils import _mac_ver
             if _mac_ver() < (10, 14):
                 raise _ToolkitError(
                     "Non-maximum suppression is not supported for " + 
