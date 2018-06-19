@@ -77,6 +77,47 @@ endif()
 #*                       Platform Specific Stuff                          *
 #*                                                                        *
 #**************************************************************************
+if(APPLE)
+  SET(TC_BASE_SDK macosx)
+  if(TC_BUILD_IOS)
+    SET(TC_BASE_SDK iphoneos)
+    SET(COMPILER_FLAGS "${COMPILER_FLAGS} -Wno-c++11-narrowing")
+  endif()
+
+  EXEC_PROGRAM(xcrun ARGS --sdk ${TC_BASE_SDK} --show-sdk-version OUTPUT_VARIABLE TC_BASE_SDK_VERSION RETURN_VALUE _xcrun_ret)
+  if(NOT ${_xcrun_ret} EQUAL 0)
+    message(ERROR, "xcrun command failed with return code ${_xcrun_ret}.")
+  endif()
+
+  EXEC_PROGRAM(xcrun ARGS --sdk ${TC_BASE_SDK} --show-sdk-path OUTPUT_VARIABLE TC_BASE_SDK_PATH RETURN_VALUE _xcrun_ret)
+  if(NOT ${_xcrun_ret} EQUAL 0)
+    message(ERROR, "xcrun command failed with return code ${_xcrun_ret}.")
+  endif()
+
+  SET(CMAKE_OSX_SYSROOT "${TC_BASE_SDK_PATH}")
+  SET(COMPILER_FLAGS "${COMPILER_FLAGS} -isysroot ${TC_BASE_SDK_PATH}")
+
+  # Core ML is only present on macOS 10.13 or higher.
+  # Logic reversed to get around what seems to be a CMake bug.
+  if(NOT TC_BASE_SDK_VERSION VERSION_LESS 10.13)
+    add_definitions(-DHAS_CORE_ML)
+    set(HAS_CORE_ML TRUE)
+  endif()
+
+  # Core ML only supports batch inference on macOS 10.14 or higher
+  # Logic reversed to get around what seems to be a CMake bug.
+  if(NOT TC_BASE_SDK_VERSION VERSION_LESS 10.14)
+    add_definitions(-DHAS_CORE_ML_BATCH_INFERENCE)
+
+    # GPU-accelerated training with MPS backend requires macOS 10.14 or higher
+    set(HAS_MPS TRUE)
+
+    # CoreML MLCustomModel requires macOS 10.14 or higher
+    set(HAS_MLCUSTOMMODEL TRUE)
+  endif()
+endif()
+
+
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   set(CLANG false)
 elseif(WIN32)
@@ -708,47 +749,6 @@ function (make_boost_test NAME)
 
   add_test(${NAME} ${NAME}test)
 endfunction()
-
-
-if(APPLE)
-  SET(TC_BASE_SDK macosx)
-  if(TC_BUILD_IOS)
-    SET(TC_BASE_SDK iphoneos)
-    SET(COMPILER_FLAGS "${COMPILER_FLAGS} -Wno-c++11-narrowing")
-  endif()
-
-  EXEC_PROGRAM(xcrun ARGS --sdk ${TC_BASE_SDK} --show-sdk-version OUTPUT_VARIABLE TC_BASE_SDK_VERSION RETURN_VALUE _xcrun_ret)
-  if(NOT ${_xcrun_ret} EQUAL 0)
-    message(ERROR, "xcrun command failed with return code ${_xcrun_ret}.")
-  endif()
-
-  EXEC_PROGRAM(xcrun ARGS --sdk ${TC_BASE_SDK} --show-sdk-path OUTPUT_VARIABLE TC_BASE_SDK_PATH RETURN_VALUE _xcrun_ret)
-  if(NOT ${_xcrun_ret} EQUAL 0)
-    message(ERROR, "xcrun command failed with return code ${_xcrun_ret}.")
-  endif()
-
-  SET(CMAKE_OSX_SYSROOT "${TC_BASE_SDK_PATH}")
-  SET(COMPILER_FLAGS "${COMPILER_FLAGS} -isysroot ${TC_BASE_SDK_PATH}")
-
-  # Core ML is only present on macOS 10.13 or higher.
-  # Logic reversed to get around what seems to be a CMake bug.
-  if(NOT TC_BASE_SDK_VERSION VERSION_LESS 10.13)
-    add_definitions(-DHAS_CORE_ML)
-    set(HAS_CORE_ML TRUE)
-  endif()
-
-  # Core ML only supports batch inference on macOS 10.14 or higher
-  # Logic reversed to get around what seems to be a CMake bug.
-  if(NOT TC_BASE_SDK_VERSION VERSION_LESS 10.14)
-    add_definitions(-DHAS_CORE_ML_BATCH_INFERENCE)
-
-    # GPU-accelerated training with MPS backend requires macOS 10.14 or higher
-    set(HAS_MPS TRUE)
-
-    # CoreML MLCustomModel requires macOS 10.14 or higher
-    set(HAS_MLCUSTOMMODEL TRUE)
-  endif()
-endif()
 
 
 # This is an external function
