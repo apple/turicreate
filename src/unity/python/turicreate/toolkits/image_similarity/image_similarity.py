@@ -53,8 +53,8 @@ def create(dataset, label = None, feature = None, model = 'resnet-50', verbose =
            - "squeezenet_v1.1" : Uses a pretrained squeezenet model.
 
            - "VisionFeaturePrint_Screen": Uses an OS internal feature extractor.
-                                          Only on available on iOS,tvOS 12.0+,
-                                          macOS 10.14+.
+                                          Only on available on iOS 12.0+,
+                                          macOS 10.14+ and tvOS 12.0+.
 
         Models are downloaded from the internet if not available locally. Once
         downloaded, the models are cached for future use.
@@ -215,7 +215,7 @@ class ImageSimilarityModel(_CustomModel):
         from turicreate.toolkits.nearest_neighbors import NearestNeighborsModel
         state['similarity_model'] = NearestNeighborsModel(state['similarity_model'])
         if state['model'] == "VisionFeaturePrint_Screen" and _mac_ver() < (10,14):
-            raise ToolkitError("Can not load model on this operating system. This model uses VisionFeaturePrint_Screen, " \
+            raise ToolkitError("Can not load model on this operating system. This model uses VisionFeaturePrint_Screen, "
                                "which is only supported on macOS 10.14 and higher.")
         state['feature_extractor'] = _image_feature_extractor._create_feature_extractor(state['model'])
         state['input_image_shape'] = tuple([int(i) for i in state['input_image_shape']])
@@ -541,6 +541,7 @@ class ImageSimilarityModel(_CustomModel):
             # neural network.
             BGR_VALUE = _cmt.proto.FeatureTypes_pb2.ImageFeatureType.ColorSpace.Value('BGR')
             DOUBLE_ARRAY_VALUE = _cmt.proto.FeatureTypes_pb2.ArrayFeatureType.ArrayDataType.Value('DOUBLE')
+            INPUT_IMAGE_SHAPE = 299
 
             top_spec = _cmt.proto.Model_pb2.Model()
             top_spec.specificationVersion = 3
@@ -548,8 +549,8 @@ class ImageSimilarityModel(_CustomModel):
 
             input = desc.input.add()
             input.name = self.feature
-            input.type.imageType.width = 299
-            input.type.imageType.height = 299
+            input.type.imageType.width = INPUT_IMAGE_SHAPE
+            input.type.imageType.height = INPUT_IMAGE_SHAPE
             input.type.imageType.colorSpace = BGR_VALUE
 
             output = desc.output.add()

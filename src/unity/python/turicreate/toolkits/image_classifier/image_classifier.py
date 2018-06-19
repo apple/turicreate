@@ -64,8 +64,8 @@ def create(dataset, target, feature = None, model = 'resnet-50',
                                  Exported Core ML model will be ~4.7M.
 
            - "VisionFeaturePrint_Screen": Uses an OS internal feature extractor.
-                                          Only on available on iOS,tvOS 12.0+,
-                                          macOS 10.14+.
+                                          Only on available on iOS 12.0+,
+                                          macOS 10.14+ and tvOS 12.0+.
                                           Exported Core ML model will be ~41K.
 
         Models are downloaded from the internet if not available locally. Once
@@ -239,7 +239,7 @@ class ImageClassifier(_CustomModel):
         # Load pre-trained model & feature extractor
         model_name = state['model']
         if model_name == "VisionFeaturePrint_Screen" and _mac_ver() < (10,14):
-            raise ToolkitError("Can not load model on this operating system. This model uses VisionFeaturePrint_Screen, " \
+            raise ToolkitError("Can not load model on this operating system. This model uses VisionFeaturePrint_Screen, "
                                "which is only supported on macOS 10.14 and higher.")
         state['feature_extractor'] = _image_feature_extractor._create_feature_extractor(model_name)
         state['input_image_shape'] = tuple([int(i) for i in state['input_image_shape']])
