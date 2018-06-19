@@ -15,21 +15,33 @@ namespace turi {
 
 void add_metadata(CoreML::Specification::Model& model_spec,
                   const std::map<std::string, flexible_type>& context) {
-  DASSERT_TRUE(context.count("short_description"));
-  DASSERT_TRUE(context.count("version"));
-  DASSERT_TRUE(context.count("class"));
-  DASSERT_TRUE(!context.count("model_fields") || context.at("model_fields").get_type() == flex_type_enum::DICT);
 
-  CoreML::Specification::Metadata* metadata = model_spec.mutable_description()->mutable_metadata();
-  metadata->set_shortdescription(context.at("short_description").to<flex_string>());
-  auto user_defined = metadata->mutable_userdefined();
-  if (context.count("model_fields")) {
-    for (const auto& kv: context.at("model_fields").get<flex_dict>()) {
-      (*user_defined)[kv.first] = kv.second.to<flex_string>();
+    CoreML::Specification::Metadata* metadata = model_spec.mutable_description()->mutable_metadata();
+
+    if (context.count("author")) {
+      metadata->set_author(context.at("author").to<flex_string>());
+    }
+
+    if (context.count("short_description")) {
+      metadata->set_shortdescription(context.at("short_description").to<flex_string>());
+    }
+
+    if (context.count("version_string")) {
+      metadata->set_versionstring(context.at("version_string").to<flex_string>());
+    }
+
+    if (context.count("license")) {
+      metadata->set_license(context.at("license").to<flex_string>());
+    }
+
+    if (context.count("user_defined")) {
+      DASSERT_TRUE(context.at("user_defined").get_type() == flex_type_enum::DICT);
+
+      auto user_defined = metadata->mutable_userdefined();
+      for (const auto& kv: context.at("user_defined").get<flex_dict>()) {
+        (*user_defined)[kv.first] = kv.second.to<flex_string>();
+      }
     }
   }
-  (*user_defined)["version"] = context.at("version").to<flex_string>();
-  (*user_defined)["class"] = context.at("class").to<flex_string>();
 }
 
-}

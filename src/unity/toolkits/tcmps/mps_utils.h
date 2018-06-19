@@ -42,7 +42,8 @@ struct OptimizerOptions {
   float adamBeta1;
   float adamBeta2;
   float adamEpsilon;
-  
+
+  API_AVAILABLE(macos(10.14))
   MPSNNOptimizerDescriptor * _Nonnull mpsDescriptor() {
     
     MPSNNRegularizationType regType;
@@ -109,7 +110,12 @@ enum LowLevelMode {
 //
 
 // Sum image along all dimensions
+API_AVAILABLE(macos(10.14))
 float sumImage(MPSImage * _Nonnull image);
+
+// The API_AVAILABLE macro does not play well with C++ function templates.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunguarded-availability-new"
 
 template<typename T>
 float sumSingleImage(MPSImage * _Nonnull image){
@@ -125,5 +131,7 @@ float sumSingleImage(MPSImage * _Nonnull image){
   }
   return sum;
 }
+
+#pragma clang diagnostic pop
 
 #endif /* mps_utils_h */

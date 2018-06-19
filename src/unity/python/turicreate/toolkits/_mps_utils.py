@@ -250,8 +250,6 @@ class MpsGraphAPI(object):
         self.network_id = network_id
         # current state, for reloading weights
         self._cur_config = {}
-        self._cur_inputs = {}
-        self._cur_label = None
         self._cur_learning_rate = None
 
     def __del__(self):
@@ -296,53 +294,76 @@ class MpsGraphAPI(object):
         self._ishape = (n, h_in, w_in, c_in)
         self._oshape = (n, h_out, w_out, c_out)
 
-    def set_input(self, x, flag=0):
+    def prepare_input(self, x, flag=0):
         if flag == 0:
             assert x.shape == self._ishape
         else:
             assert x.shape == self._oshape
-        x = x.astype(_np.float32)
+        if x.dtype != _np.float32:
+            x = x.astype(_np.float32)
         if not x.flags.c_contiguous:
             x = x.copy()
         assert x.flags.c_contiguous, "Input image must be row-major"
-        self._cur_inputs[flag] = x.copy()
         ptr = x.ctypes.data_as(_ctypes.POINTER(_ctypes.c_void_p))
         sz = _ctypes.c_int64(x.size)
         s = _np.array(x.shape).astype(_np.int64)
         shape = s.ctypes.data_as(_ctypes.POINTER(_ctypes.c_int64))
         dim = _ctypes.c_int32(x.ndim)
-        self._LIB.SetInputGraph(self.handle, ptr, sz, shape,
-                          dim, flag)
+        return {'_input' : x, '_shape' : s, 'args' : [ptr, sz, shape, dim]}
 
-    def set_label(self, t):
+    def prepare_label(self, t):
         assert t.shape == self._oshape
         assert self._is_train, "Pure inference graph does not expect label input"
-        t = t.astype(_np.float32)
+        if t.dtype != _np.float32:
+            t = t.astype(_np.float32)
         if not t.flags.c_contiguous:
             t = t.copy()
         assert t.flags.c_contiguous, "Input label must be row-major"
-        self._cur_label = t.copy()
         ptr = t.ctypes.data_as(_ctypes.POINTER(_ctypes.c_void_p))
-        self._LIB.SetLossStateGraph(self.handle, ptr)
+        return {'_label' : t, 'args' : [ptr]}
 
-    def run_graph(self):
+    # Submits an input batch to the model. The model will process the input
+    # asynchronously. This call must be matched with a corresponding call to
+    # wait_for_batch. Label data is required for models initialized with
+    # MpsGraphMode.Train; grad data is required for models initialized with
+    # MpsGraphMode.TrainReturnGrad.
+    def start_batch(self, input, label=None, grad=None):
         if self._mode == MpsGraphMode.Train:
-            self._LIB.RunGraph(self.handle, 0, _ctypes.byref(self._buf_loss))
+            input_args = self.prepare_input(input, 0)
+            label_args = self.prepare_label(label)
+            args = input_args['args'] + label_args['args']
+            self._LIB.StartTrainingBatchGraph(self.handle, *args)
+        elif self._mode == MpsGraphMode.TrainReturnGrad:
+            input_args = self.prepare_input(input, 0)
+            grad_args = self.prepare_input(grad, 1)
+            args = input_args['args'] + grad_args['args']
+            self._LIB.StartTrainReturnGradBatchGraph(self.handle, *args)
+        else:
+            input_args = self.prepare_input(input, 0)
+            args = input_args['args']
+            self._LIB.StartInferenceBatchGraph(self.handle, *args)
+
+    # Waits for a previously submitted batch to complete and returns the output.
+    # For models initialized with MpsGraphMode.Train, the return value is the
+    # loss. For models initialized with MpsGraphMode.Inference, the return value
+    # is the model predictions. For models initialized with
+    # MpsGraphMode.TrainReturnGrad, the return value is the gradient for the
+    # input layer.
+    def wait_for_batch(self):
+        if self._mode == MpsGraphMode.Train:
+            self._LIB.WaitForTrainingBatchGraph(self.handle, _ctypes.byref(self._buf_loss))
             loss = _np.frombuffer(self._buf_loss, dtype=_np.float32).copy()
             return loss
         elif self._mode == MpsGraphMode.TrainReturnGrad:
-            self._LIB.RunGraph(self.handle, _ctypes.byref(self._buf_out_fp16), 0)
+            self._LIB.WaitForTrainReturnGradBatchGraph(self.handle, _ctypes.byref(self._buf_out_fp16))
             raw_out = _np.frombuffer(self._buf_out_fp16, dtype=_np.float16)
             out = raw_out.reshape(self._ishape).astype(_np.float32).copy()
             return out
         else:
-            self._LIB.RunGraph(self.handle, _ctypes.byref(self._buf_out_fp16), 0)
+            self._LIB.WaitForInferenceBatchGraph(self.handle, _ctypes.byref(self._buf_out_fp16))
             raw_out = _np.frombuffer(self._buf_out_fp16, dtype=_np.float16)
             out = raw_out.reshape(self._oshape).astype(_np.float32).copy()
             return out
-
-    def wait_until_completed(self):
-        self._LIB.WaitUntilCompletedGraph(self.handle)
 
     def set_learning_rate(self, new_lr):
         self._cur_learning_rate = new_lr
@@ -358,10 +379,6 @@ class MpsGraphAPI(object):
         self.init(n, c_in, h_in, w_in, c_out, h_out, w_out,
                   config=self._cur_config, weights=weights)
         # Reload state
-        for k, v in self._cur_inputs.items():
-            self.set_input(v, flag=k)
-        if self._cur_label is not None:
-            self.set_label(self._cur_label)
         if self._cur_learning_rate:
             self.set_learning_rate(self._cur_learning_rate)
 

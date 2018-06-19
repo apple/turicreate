@@ -53,7 +53,7 @@ void MPSCNNModule::Init(int network_id, int n, int c_in, int h_in, int w_in,
   LowLevelMode network_mode = (LowLevelMode) get_array_map_scalar(config, "mode", kLowLevelModeTrain);
 
   if (kLowLevelModeTest == network_mode){
-      MPSImageDescriptor *output_desc = [MPSImageDescriptor
+      output_desc_ = [MPSImageDescriptor
           imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
                                      width:w_out
                                     height:h_out

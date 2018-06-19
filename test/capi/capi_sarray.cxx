@@ -701,13 +701,36 @@ class capi_test_sarray {
     turi::gl_sarray combined_gl_output = (g1 | g2);
 
     TS_ASSERT((combined_gl_output == combined_output->value).all());
-    TS_ASSERT((combined_gl_output == combined_output->value).all());
 
     tc_release(fl1);
     tc_release(fl2);
 
     tc_release(sa1);
     tc_release(sa2);
+
+    CAPI_CHECK_ERROR(error);
+  };
+
+  void test_tc_sarray_apply_slice(){
+    tc_error* error = NULL;
+
+    std::vector<double> v1 = {1, 2, 4.5, 9, 389, 23};
+
+    tc_flex_list* fl1 = make_flex_list_double(v1);
+    tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    CAPI_CHECK_ERROR(error);
+
+    turi::gl_sarray g1(fl1->value);
+    tc_release(fl1);
+
+    tc_sarray* combined_output = tc_sarray_slice(sa1, 2,2,5, &error);
+    CAPI_CHECK_ERROR(error);
+
+    turi::gl_sarray combined_gl_output = (g1[{2,2,5}]);
+
+    TS_ASSERT((combined_gl_output == combined_output->value).all());
+
+    tc_release(sa1);
 
     CAPI_CHECK_ERROR(error);
   };

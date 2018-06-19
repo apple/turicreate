@@ -449,7 +449,6 @@ void BNLayer::Load(const FloatArrayMap &weights) {
   std::string beta_key = name + "_beta";
   std::string var_key = name + "_running_var";
   std::string mean_key = name + "_running_mean";
-  int num_channel = ishape[3];
 
   if (weights.count(gamma_key) > 0){
     const FloatArray &arr = weights.at(gamma_key);
@@ -702,7 +701,6 @@ void SmceLossLayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_
                          const FloatArrayMap &config, bool is_train, LowLevelMode net_mode, bool is_output_layer) {
 
   assert(iparams.size() >= 1);
-  int batch_size = iparams[0];
 
   MPSCNNLossDescriptor *lossDesc = [MPSCNNLossDescriptor
       cnnLossDescriptorWithType:MPSCNNLossTypeSoftMaxCrossEntropy

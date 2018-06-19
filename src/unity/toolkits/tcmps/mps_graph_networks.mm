@@ -11,23 +11,30 @@
 + (BOOL)supportsSecureCoding;
 @end
 
-MPSGraphNetwork *_Nonnull createNetworkGraph(GraphNetworkType network_id,
-                                             const std::vector<int> &params,
-                                             const FloatArrayMap &config) {
+std::unique_ptr<MPSGraphNetwork> createNetworkGraph(
+    GraphNetworkType network_id, const std::vector<int> &params,
+    const FloatArrayMap &config) {
+  std::unique_ptr<MPSGraphNetwork> result;
   switch (network_id) {
   case kSingleReLUGraphNet:
-    return new SingleReLUNetworkGraph(params, config);
+    result.reset(new SingleReLUNetworkGraph(params, config));
+    break;
   case kSingleConvGraphNet:
-    return new SingleConvNetworkGraph(params, config);
+    result.reset(new SingleConvNetworkGraph(params, config));
+    break;
   case kSingleMPGraphNet:
-    return new SingleMPNetworkGraph(params, config);
+    result.reset(new SingleMPNetworkGraph(params, config));
+    break;
   case kSingleBNGraphNet:
-    return new SingleBNNetworkGraph(params, config);
+    result.reset(new SingleBNNetworkGraph(params, config));
+    break;
   case kODGraphNet:
-    return new ODNetworkGraph(params, config);
+    result.reset(new ODNetworkGraph(params, config));
+    break;
   default:
     throw std::invalid_argument("Undefined network.");
   }
+  return result;
 }
 
 // MPS Network base class
