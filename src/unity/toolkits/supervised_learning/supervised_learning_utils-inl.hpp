@@ -337,6 +337,7 @@ inline void check_feature_means_and_variances(
       if (!std::isfinite(stats->mean(i))) {
         error_columns.push_back(col);
         column_with_nan = true;
+        break;
       }
     }
   }
