@@ -10,14 +10,9 @@ visualization and has the following methods:
 - `show`: A method for displaying the Plot object.
 - `save`: A method for saving the Plot object in a vega representation.
 
-Turi Create Visualization also allows you to call `show` 
-on data sources like SFrames and SArrays:
-
-- `show`: Plots the data in `x` on the X axis and the data in `y` on the Y axis
-          in a 2d visualization, and shows the resulting visualization.
-          Uses a heuristic to choose the visualization, described in the API 
-          documentation. 
-          This show method supports SArrays of dtypes: int, float, str.
+The `show` method, available on data structures in Turi Create as well as at 
+the top level in the namespace, streamlines the process of creating and 
+subsequently calling `show` on an automatically-selected Plot object.
 
 Furthermore, Turi Create provides functionality to create independent plots 
 like scatter plots, categorical heatmaps, box plots, heatmaps, 
@@ -31,7 +26,8 @@ columnwise summaries, and item frequency plots using the following API:
 - histogram(sa, xlabel, ylabel, title)
 - item_frequency(sa, xlabel, ylabel, title)
 
-To know more, please see the API docs at https://apple.github.io/turicreate/docs/api/
+For more detailed information, please refer to the docstrings for each of 
+those classes/methods.
 
 """
 
