@@ -116,7 +116,7 @@ created, we can access the coefficients as follows:
 
 ```python
 coefs = model.coefficients
-coefs
+print(coefs)
 ```
 ```no-highlight
 +-----------------------+-------+-------------------+-------------------+
