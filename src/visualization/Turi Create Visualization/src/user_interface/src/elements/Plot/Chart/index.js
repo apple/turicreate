@@ -2,15 +2,35 @@ import React, { Component } from 'react';
 
 import vegaEmbed from 'vega-embed';
 
+import 'javascript-detect-element-resize';
+
 import './index.css';
 
 var vega = require('vega');
 var vegaTooltip = require('vega-tooltip');
 
 class TcPlot extends Component {
+    constructor(props) {
+        super(props);
+        this.vega_container;
+        this.resize_container;
+    }
 
     componentDidMount(){
         this.addSpec(this.props.vega_spec);
+        this.vega_container = document.getElementById("vega_container");
+        this.resize_container = function() {
+            var padding_width = 150;
+            var padding_height = 100;
+            if(window.navigator.platform === 'MacIntel'){
+                window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'resize', width: parseInt(padding_width + document.getElementById("vega_container").getBoundingClientRect().width, 10), height: parseInt(padding_height + document.getElementById("vega_container").getBoundingClientRect().height, 10) });
+            }
+        };
+        window.addResizeListener(this.vega_container, this.resize_container);
+    }
+    
+    componentWillUnmount(){
+        window.removeResizeListener(this.vega_container, this.resize_container);
     }
 
     checkLoadedFlag(data, $this) {
@@ -61,8 +81,8 @@ class TcPlot extends Component {
             changeSet = changeSet.insert(newData);
             $this.vega_container.classList.remove("uninitialized");
             $this.vegaView.change("source_2", changeSet).runAfter(function(viewInstance) {
-
-                                                                  });
+                    
+            });
 
             $this.vegaView.toCanvas().then(function(result){
                                            $this.hidden_container.innerHTML = '';
@@ -148,7 +168,7 @@ class TcPlot extends Component {
     render() {
         return (
                 <div>
-                <div className={["vega_container", "uninitialized"].join(' ')} ref={(vega_container) => { this.vega_container = vega_container; }}>
+                <div id={"vega_container"} className={["vega_container", "uninitialized"].join(' ')} ref={(vega_container) => { this.vega_container = vega_container; }}>
                 </div>
                 <div className={["hidden_cont"].join(' ')} ref={(hidden_container) => { this.hidden_container = hidden_container; }}>
                 </div>
