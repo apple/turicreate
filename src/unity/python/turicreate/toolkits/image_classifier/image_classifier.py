@@ -590,7 +590,7 @@ class ImageClassifier(_CustomModel):
             input.type.imageType.colorSpace = BGR_VALUE
 
             #
-            # Scene print feature extractor
+            # VisionFeaturePrint extractor
             #
             pipelineClassifier = top_spec.pipelineClassifier
             scene_print = pipelineClassifier.pipeline.models.add()

@@ -73,7 +73,7 @@ class ImageSimilarityTest(unittest.TestCase):
         self.input_image_shape = input_image_shape
         self.pre_trained_model = model
 
-        ## Create the model
+        # Create the model
         self.def_opts= {
            'model': 'resnet-50',
            'verbose': True,
@@ -146,7 +146,7 @@ class ImageSimilarityTest(unittest.TestCase):
         for field in self.fields_ans:
             ans = model._get(field)
             self.assertTrue(self.get_ans[field](ans),
-                    '''Get failed in field {}. Output was {}.'''.format(field, ans))
+                    "Get failed in field {}. Output was {}.".format(field, ans))
 
     def test_query_input(self):
         model = self.model
@@ -229,6 +229,13 @@ class ImageSimilaritySqueezeNetTest(ImageSimilarityTest):
     def setUpClass(self):
         super(ImageSimilaritySqueezeNetTest, self).setUpClass(model='squeezenet_v1.1',
                                                               input_image_shape=(3, 227, 227))
+
+@unittest.skipIf(_mac_ver() < (10,14), 'VisionFeaturePrint_Screen only supported on macOS 10.14+')
+class ImageSimilarityVisionFeaturePrintScreenTest(ImageSimilarityTest):
+    @classmethod
+    def setUpClass(self):
+        super(ImageSimilarityVisionFeaturePrintScreenTest, self).setUpClass(model='VisionFeaturePrint_Screen',
+                                                                            input_image_shape=(3, 299, 299))
 
 @unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
 @pytest.mark.gpu
