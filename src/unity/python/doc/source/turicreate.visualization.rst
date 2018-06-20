@@ -24,4 +24,5 @@ Visualize data in various forms including scatter plots, heat maps, categorical 
  visualization.columnwise_summary
  visualization.histogram
  visualization.item_frequency
+ visualization.set_target
 

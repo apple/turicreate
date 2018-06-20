@@ -1,25 +1,10 @@
 project(TuriCreateObjC)
 
 if(APPLE AND HAS_MLCUSTOMMODEL)
-  set(_SDK_NAME "macosx")
-  if(TC_BUILD_IOS)
-    set(_SDK_NAME "iphoneos")
-  endif()
-
-  execute_process(
-    COMMAND bash -c "xcrun --sdk ${_SDK_NAME} --show-sdk-path" 
-    OUTPUT_VARIABLE _SDK_PATH 
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-  )
-
-  set(_FRAMEWORK_SEARCH_PATH "${_SDK_PATH}/System/Library/Frameworks/;/System/Library/Frameworks/")
-
-  find_library(FOUNDATION NAMES Foundation
-    REQUIRED PATHS ${_FRAMEWORK_SEARCH_PATH} NO_DEFAULT_PATH)
+  find_library(FOUNDATION NAMES Foundation)
   message("Foundation found at ${FOUNDATION}.")
 
-  find_library(CORE_ML NAMES CoreML
-    REQUIRED PATHS ${_FRAMEWORK_SEARCH_PATH} NO_DEFAULT_PATH)
+  find_library(CORE_ML NAMES CoreML)
   message("CoreML found at ${CORE_ML}.")
 
   make_library(Recommender
