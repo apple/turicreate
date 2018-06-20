@@ -84,8 +84,9 @@ if(APPLE)
   else()
     SET(TC_BASE_SDK macosx)
 
-    # Sets -mmacosx-version-min
-    SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.12")
+    # Modify COMPILER_FLAGS instead of setting CMAKE_OSX_DEPLOYMENT_TARGET so
+    # that this setting propagates to external dependencies.
+    SET(COMPILER_FLAGS "${COMPILER_FLAGS} -mmacosx-version-min=10.12")
   endif()
 
   EXEC_PROGRAM(xcrun ARGS --sdk ${TC_BASE_SDK} --show-sdk-version OUTPUT_VARIABLE TC_BASE_SDK_VERSION RETURN_VALUE _xcrun_ret)
