@@ -85,14 +85,7 @@ new_graph = turicreate.load_sgraph('james_bond.sgraph')
 
 #### Inspecting SGraphs
 
-Small graphs can be explored very efficiently with the `SGraph.show` method,
-which displays a plot of the graph. The vertex labels can be IDs or any vertex
-attribute.
-
-![Bond graph](images/bond_basic.png)
-
-For large graphs visual displays are difficult, but graph exploration
-can still be done with the `SGraph.summary`---which prints the number of
+Graphs can be explored with `SGraph.summary`---which prints the number of
 vertices and edges---or by retrieving and plotting subsets of edges and
 vertices.
 
@@ -151,10 +144,11 @@ a neighbor.
 ```python
 targets = ['James Bond', 'Moneypenny']
 subgraph = g.get_neighborhood(ids=targets, radius=1, full_subgraph=True)
+print(subgraph)
 ```
-![Bond neighborhood](images/bond_neighborhood.png)
-
-
+```no-highlight
+SGraph({'num_edges': 15, 'num_vertices': 8})
+```
 
 #### Modifying SGraphs
 
