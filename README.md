@@ -110,7 +110,11 @@ Version 5.0 (Beta)
 -----------
 
 Turi Create 5.0 -- now in beta -- includes:
-* GPU Acceleration on Macs for Image Similarity (10.13+), Image Classification (10.13+), Object Detection (10.14+), and Activity Classification (10.14+).
+* GPU Acceleration on Macs for:
+  * Image Classification (macOS 10.13+)
+  * Image Similarity (macOS 10.13+)
+  * Object Detection (macOS 10.14+)
+  * Activity Classification (macOS 10.14+)
 * New Task: Style Transfer
 * Recommender model deployment
 * Vision Feature Print model deployment
@@ -133,10 +137,10 @@ GPU Support
 Turi Create **does not require a GPU**, but certain models can be accelerated 9-13x when utilizing a GPU. 
 
 Turi Create automatically utilizes Mac GPUs for the following tasks:
-* Image Classification (requires macOS 10.13+)
-* Image Similarity (requires macOS 10.13+)
-* Object Detection (requires macOS 10.14+)
-* Activity Classification (requires macOS 10.14+)
+* Image Classification (macOS 10.13+)
+* Image Similarity (macOS 10.13+)
+* Object Detection (macOS 10.14+)
+* Activity Classification (macOS 10.14+)
 
 For linux GPU support, see [LinuxGPU.md](LinuxGPU.md).
 
