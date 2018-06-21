@@ -53,6 +53,10 @@ function download_file {
 
 $python_scripts/$PIP install --upgrade "pip>=8.1"
 $python_scripts/$PIP install -r scripts/requirements.txt
+if [[ $OSTYPE == darwin* ]]; then
+  # macOS only test dependency
+  $python_scripts/$PIP install pyobjc==4.2.2
+fi
 
 mkdir -p deps/local/lib
 mkdir -p deps/local/include
