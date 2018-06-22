@@ -317,10 +317,10 @@ void ConvLayer::GpuUpdate(id<MTLCommandBuffer> _Nonnull cb){
     [weight updateWithCommandBuffer:cb gradientState:cnn_state];
     
     [op_forward reloadWeightsAndBiasesWithCommandBuffer:cb
-                                                  state:weight->convWtsAndBias];
+                                                  state:weight.state];
     if (op_backward){
         [op_backward reloadWeightsAndBiasesWithCommandBuffer:cb
-                                                      state:weight->convWtsAndBias];
+                                                      state:weight.state];
     }
 }
 void ConvLayer::Update(MPSUpdater *_Nonnull updater, int lid) {
@@ -512,10 +512,10 @@ void BNLayer::GpuUpdate(id<MTLCommandBuffer> _Nonnull cb){
     [data updateGammaAndBetaWithCommandBuffer:cb batchNormalizationState:bn_state];
 
     [op_forward reloadGammaAndBetaWithCommandBuffer:cb
-                                  gammaAndBetaState:data->gammaBetaState];
+                                  gammaAndBetaState:data.gammaBetaState];
     
     [op_forward reloadMeanAndVarianceWithCommandBuffer:cb
-                                  meanAndVarianceState:data->meanVarianceState];
+                                  meanAndVarianceState:data.meanVarianceState];
 }
 
 

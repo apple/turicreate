@@ -45,24 +45,13 @@ API_AVAILABLE(macos(10.14))
   size_t sizeBias, sizeWeights;
   unsigned _seed;
   turi::mps::OptimizerOptions _optimizerOptions;
-  float t;
 
   id<MTLBuffer> weightMomentumBuffer, biasMomentumBuffer, weightVelocityBuffer,
       biasVelocityBuffer, weightBuffer, biasBuffer;
-  MPSVector *weightMomentumVector, *biasMomentumVector, *weightVelocityVector,
-      *biasVelocityVector, *weightVector, *biasVector;
-
-  MPSNNOptimizerAdam *adamWeights, *adamBias;
-  MPSNNOptimizerStochasticGradientDescent *sgdWeights, *sgdBias;
-
-  MPSVectorDescriptor *vDescWeights;
-  MPSVectorDescriptor *vDescBiases;
 
   id<MTLCommandQueue> cq;
-
-@public
-  MPSCNNConvolutionWeightsAndBiasesState *convWtsAndBias;
 }
+
 - (nonnull instancetype)initWithKernelWidth:(NSUInteger)kernelWidth
                                kernelHeight:(NSUInteger)kernelHeight
                        inputFeatureChannels:(NSUInteger)inputFeatureChannels
@@ -93,6 +82,8 @@ API_AVAILABLE(macos(10.14))
                             init_weight_ptr:(float* __nullable) w_ptr
                               init_bias_ptr:(float* __nullable) b_ptr
                            optimizerOptions:(turi::mps::OptimizerOptions)optimizerOptions;
+
+@property (nonatomic, readonly, nonnull) MPSCNNConvolutionWeightsAndBiasesState *state;
 
 - (MPSDataType)dataType;
 - (MPSCNNConvolutionDescriptor *__nonnull)descriptor;
@@ -142,15 +133,12 @@ API_AVAILABLE(macos(10.14))
   id<MTLBuffer> gammaMomentumBuffer, betaMomentumBuffer, gammaVelocityBuffer,
       betaVelocityBuffer, gammaBuffer, betaBuffer, movingVarianceBuffer,
       movingMeanBuffer;
-  MPSVector *gammaMomentumVector, *betaMomentumVector, *gammaVelocityVector,
-      *betaVelocityVector, *gammaVector, *betaVector, *movingVarianceVector,
-      *movingMeanVector;
 
   NSString *_label;
-@public
-  MPSCNNNormalizationGammaAndBetaState *gammaBetaState;
-  MPSCNNNormalizationMeanAndVarianceState *meanVarianceState;
 }
+
+@property(readonly, nonatomic, nonnull) MPSCNNNormalizationGammaAndBetaState *gammaBetaState;
+@property(readonly, nonatomic, nonnull) MPSCNNNormalizationMeanAndVarianceState *meanVarianceState;
 
 @property(readwrite, retain, nonatomic, nonnull) NSString *internalLabel;
 
