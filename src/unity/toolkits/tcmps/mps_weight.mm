@@ -301,6 +301,15 @@ updateWithCommandBuffer:(__nonnull id<MTLCommandBuffer>)commandBuffer
                resultValuesVector:biasVector];
   }
 
+  // TODO: Adopt the convenience MPSNNOptimizer API that handles more of these
+  // fiddly details.
+  if (gradientState.isTemporary) {
+    gradientState.readCount -= 1;
+  }
+  if (sourceState.isTemporary) {
+    sourceState.readCount -= 1;
+  }
+
   return convWtsAndBias;
 }
 

@@ -165,7 +165,7 @@ def _predict_mps(pred_model, data_iter):
         input_data = batch.data
         pad = batch.pad
 
-        output = pred_model.forward(input_data)
+        output = pred_model.forward(input_data, is_train=False)
         trimmed_output = output[0:output.shape[0]-pad].copy()
         output_list.append(trimmed_output)
 

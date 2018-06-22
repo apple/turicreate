@@ -286,6 +286,14 @@ void MPSCNNModule::TrainingWithLoss(
                 for (NSUInteger i = 0; i < [bottom_grad count]; ++i) {
                     [bottom_grad[i] synchronizeOnCommandBuffer:commandBuffer];
                 }
+            } else {
+                // No one reads the result images from the backward pass.
+                // Decrement the read count now so that MPS can deallocate them,
+                // and to prevent assertion failures with Metal API validation
+                // enabled.
+                // TODO: Images intended for clients to (optionally) read should
+                // be non-temporary.
+                MPSImageBatchIncrementReadCount(bottom_grad, -1);
             }
         }
         

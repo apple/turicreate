@@ -933,6 +933,9 @@ void LstmLayer::CopyImageBatchToBuffer(MPSImageBatch *imgBatch, id <MTLBuffer> b
         image_to_matrix_kernel_.destinationMatrixOrigin = MTLOriginMake(i, 0, 0);
         [image_to_matrix_kernel_ encodeToCommandBuffer:cb sourceImage:img destinationMatrix:matrix];
     }
+
+    // Release the image memory back to MPS.
+    MPSImageBatchIncrementReadCount(imgBatch, -1);
 }
 
 MPSImageBatch *LstmLayer::CopyImageBatchFromBuffer(id <MTLBuffer> buffer,
