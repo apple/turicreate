@@ -110,15 +110,16 @@ class TcPlot extends Component {
     }
 
     getSpec(){
+        var vegaResult = this.vega_json
         var previousData = this.vegaView.data("source_2");
 
-        for(var x = 0; x < this.vegaResult.data.length; x++){
-            if(this.vegaResult.data[x]["name"] === "source_2"){
-                this.vegaResult.data[x]["values"] = previousData;
+        for(var x = 0; x < vegaResult.data.length; x++){
+            if(vegaResult.data[x]["name"] === "source_2"){
+                vegaResult.data[x]["values"] = previousData;
             }
         }
-
-        return JSON.stringify(this.vegaResult);
+         
+        return JSON.stringify(vegaResult);
     }
 
     getData(){
