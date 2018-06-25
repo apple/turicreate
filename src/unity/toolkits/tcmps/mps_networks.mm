@@ -68,8 +68,10 @@ MPSImageBatch *_Nonnull MPSNetwork::Forward(MPSImageBatch *_Nonnull src,
     // BN layer uses each image twice - once for calculating batch statistics,
     // and again for the BN kernel itself. So it would need 4 reads altogether,
     // including backward pass.
-    int num_remaining_reads = (layers[i]->type == kBN)? 3 : 1;
-    MPSImageBatchIncrementReadCount(input, num_remaining_reads);
+    if (is_train) {
+      int num_remaining_reads = (layers[i]->type == kBN) ? 3 : 1;
+      MPSImageBatchIncrementReadCount(input, num_remaining_reads);
+    }
       
     layers[i]->Forward(input, cb, is_train);
     input = layers[i]->fwd_output;
