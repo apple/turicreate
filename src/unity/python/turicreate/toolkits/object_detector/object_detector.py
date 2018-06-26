@@ -1517,35 +1517,40 @@ class ObjectDetector(_CustomModel):
         iouThresholdString = '(optional) IOU Threshold override (default: {})'
         confidenceThresholdString = ('(optional)' + 
             ' Confidence Threshold override (default: {})')
-        mlmodel = coremltools.models.MLModel(model)
         model_type = 'object detector (%s)' % self.model
-        mlmodel.short_description = _coreml_utils._mlmodel_short_description(
-            model_type)
-        mlmodel.input_description[self.feature] = 'Input image'
+        model.description.metadata.shortDescription = \
+            _coreml_utils._mlmodel_short_description(model_type)
+        model.description.input[0].shortDescription = 'Input image'
         if include_non_maximum_suppression:
             iouThresholdString = '(optional) IOU Threshold override (default: {})'
-            mlmodel.input_description['iouThreshold'] = \
+            model.description.input[1].shortDescription = \
                 iouThresholdString.format(iou_threshold)
             confidenceThresholdString = ('(optional)' + 
                 ' Confidence Threshold override (default: {})')
-            mlmodel.input_description['confidenceThreshold'] = \
+            model.description.input[2].shortDescription = \
                 confidenceThresholdString.format(confidence_threshold)
-        mlmodel.output_description['confidence'] = \
-                u'Boxes \xd7 Class confidence (see user-defined metadata "classes")'
-        mlmodel.output_description['coordinates'] = \
-                u'Boxes \xd7 [x, y, width, height] (relative to image size)'
-        _coreml_utils._set_model_metadata(mlmodel, self.__class__.__name__, {
-                'model': self.model,
-                'max_iterations': str(self.max_iterations),
-                'training_iterations': str(self.training_iterations),
-                'include_non_maximum_suppression': str(
-                    include_non_maximum_suppression),
-                'non_maximum_suppression_threshold': str(
-                    iou_threshold),
-                'confidence_threshold': str(confidence_threshold),
-                'iou_threshold': str(iou_threshold),
-                'feature': self.feature,
-                'annotations': self.annotations,
-                'classes': ','.join(self.classes),
-            }, version=ObjectDetector._PYTHON_OBJECT_DETECTOR_VERSION)
-        mlmodel.save(filename)
+        model.description.output[0].shortDescription = \
+            u'Boxes \xd7 Class confidence (see user-defined metadata "classes")'
+        model.description.output[1].shortDescription = \
+            u'Boxes \xd7 [x, y, width, height] (relative to image size)'
+        from turicreate import __version__
+        user_defined_metadata = {
+            'turicreate_version': __version__,
+            'type': self.__class__.__name__,
+            'version': str(ObjectDetector._PYTHON_OBJECT_DETECTOR_VERSION),
+            'model': self.model,
+            'max_iterations': str(self.max_iterations),
+            'training_iterations': str(self.training_iterations),
+            'include_non_maximum_suppression': str(
+                include_non_maximum_suppression),
+            'non_maximum_suppression_threshold': str(
+                iou_threshold),
+            'confidence_threshold': str(confidence_threshold),
+            'iou_threshold': str(iou_threshold),
+            'feature': self.feature,
+            'annotations': self.annotations,
+            'classes': ','.join(self.classes)
+        }
+        model.description.metadata.userDefined.update(user_defined_metadata)
+        from coremltools.models.utils import save_spec as _save_spec
+        _save_spec(model, filename)
