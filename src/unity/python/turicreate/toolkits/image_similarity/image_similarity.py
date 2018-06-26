@@ -428,12 +428,10 @@ class ImageSimilarityModel(_CustomModel):
 
         Examples
         --------
-        Unlike the ``query`` method, there is no need for a second dataset with
-        ``similarity_graph``.
 
         >>> graph = model.similarity_graph(k=1)  # an SGraph
-
-        # Most similar image for each image in the input dataset
+        >>>
+        >>> # Most similar image for each image in the input dataset
         >>> graph.edges
         +----------+----------+----------------+------+
         | __src_id | __dst_id |    distance    | rank |
@@ -458,10 +456,10 @@ class ImageSimilarityModel(_CustomModel):
 
         Examples
         --------
-        # Train an image similarity model
+        >>> # Train an image similarity model
         >>> model = turicreate.image_similarity.create(data)
-
-        # Query the model for similar images
+        >>>
+        >>> # Query the model for similar images
         >>> similar_images = model.query(data)
         +-------------+-----------------+---------------+------+
         | query_label | reference_label |    distance   | rank |
@@ -477,24 +475,23 @@ class ImageSimilarityModel(_CustomModel):
         |      2      |        0        | 24.9664942809 |  3   |
         +-------------+-----------------+---------------+------+
         [9 rows x 4 columns]
-
-        # Export the model to Core ML format
+        >>>
+        >>> # Export the model to Core ML format
         >>> model.export_coreml('myModel.mlmodel')
-
-        # Load the Core ML model
+        >>>
+        >>> # Load the Core ML model
         >>> import coremltools
         >>> ml_model = coremltools.models.MLModel('myModel.mlmodel')
-
-        # Prepare the first image of reference data for consumption
-        # by the Core ML model
+        >>>
+        >>> # Prepare the first image of reference data for consumption
+        >>> # by the Core ML model
         >>> import PIL
-        >>> image = tc.image_analysis.resize(
-                data['image'][0], *reversed(model.input_image_shape))
+        >>> image = tc.image_analysis.resize(data['image'][0], *reversed(model.input_image_shape))
         >>> image = PIL.Image.fromarray(image.pixel_data)
-
-        # Calculate distances using the Core ML model
+        >>>
+        >>> # Calculate distances using the Core ML model
         >>> ml_model.predict(data={'image': image})
-        {'distance': array([ 0.      , 28.453125, 24.96875 ])}
+        {'distance': array([ 0., 28.453125, 24.96875 ])}
         """
         import numpy as _np
         import coremltools as _cmt
