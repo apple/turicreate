@@ -14,4 +14,7 @@ make_library(unity_nearest_neighbors
     unity_core
     unity_ml_model
     unity_ml_data_2
+  COMPILE_FLAGS_EXTRA_GCC
+    -Wno-unknown-pragmas  # NOTE: used for auto-generated protobuf source files
+    -Wno-unused-function  # NOTE: used for auto-generated protobuf source files
   )

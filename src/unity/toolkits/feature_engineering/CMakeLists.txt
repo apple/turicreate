@@ -28,4 +28,7 @@ make_library(unity_feature_engineering
     unity_clustering
     unity_graph_analytics
     unity_ml_model
+  COMPILE_FLAGS_EXTRA_GCC
+    -Wno-unknown-pragmas  # NOTE: used for auto-generated protobuf source files
+    -Wno-unused-function  # NOTE: used for auto-generated protobuf source files
     )

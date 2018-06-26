@@ -65,14 +65,14 @@
  * END_CLASS_MEMBER_REGISTRATION
  * \endcode
  */
-#define BEGIN_CLASS_MEMBER_REGISTRATION(python_facing_classname)        \
- public:                                                                \
-  virtual inline const char* name() { return python_facing_classname; } \
-  virtual inline const std::string& uid() {                             \
-    static std::string _uid = ("__LINE__," __FILE__);                   \
-    return _uid;                                                        \
-  }                                                                     \
-  virtual inline void perform_registration() {                          \
+#define BEGIN_CLASS_MEMBER_REGISTRATION(python_facing_classname)                 \
+ public:                                                                         \
+  virtual inline const char* name() override { return python_facing_classname; } \
+  virtual inline const std::string& uid() override {                             \
+    static std::string _uid = ("__LINE__," __FILE__);                            \
+    return _uid;                                                                 \
+  }                                                                              \
+  virtual inline void perform_registration() override {                          \
     if (is_registered()) return;
 
 /**

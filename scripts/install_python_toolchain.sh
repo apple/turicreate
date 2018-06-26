@@ -16,7 +16,7 @@ if [[ "${PYTHON_VERSION}" == "python2.7" ]]; then
   PYTHON_FULL_NAME=python2.7
 fi
 
-$VIRTUALENV ${PWD}/deps/env
+$VIRTUALENV -p ${PYTHON_VERSION} ${PWD}/deps/env
 source ${PWD}/deps/env/bin/activate
 
 python_scripts=deps/env/bin

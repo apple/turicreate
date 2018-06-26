@@ -134,7 +134,6 @@ inline std::shared_ptr<factorization::factorization_model> als(
 
   // Problem definition
   size_t num_users = training_data_by_user.metadata()->column_size(0);
-  size_t num_items = training_data_by_user.metadata()->column_size(1);
   size_t num_factors = model->num_factors();
   size_t num_ratings = training_data_by_user.num_rows();
   double lambda = std::max<double>(1e-6, 
@@ -152,7 +151,6 @@ inline std::shared_ptr<factorization::factorization_model> als(
   // Global variables needed
   // auto eye = arma::diagmat(arma::ones<arma::fvec>(num_factors)); 
   double rmse, best_rmse = 1e20;
-  bool reset_model = false;
 
   // Setup the table printer
   table_printer table({
@@ -271,7 +269,6 @@ inline std::shared_ptr<factorization::factorization_model> als(
       reset_fraction *= reset_fraction_reduction_rate;
       model->reset_state(rand(), reset_fraction);
       model->w.zeros();
-      reset_model = false;
       continue;
     }
   }
@@ -363,7 +360,6 @@ inline std::shared_ptr<factorization::factorization_model> implicit_als(
 
   // Global variables needed
   double rmse, best_rmse = 1e20;
-  bool reset_model = false;
   std::vector<double>rmse_per_thread
           (turi::thread_pool::get_instance().size(), 0.0);
 
@@ -525,7 +521,6 @@ inline std::shared_ptr<factorization::factorization_model> implicit_als(
       model->reset_state(rand(), reset_fraction);
       model->w.zeros();
       model->w0 = 0;
-      reset_model = false;
       continue;
     }
   }

@@ -343,6 +343,7 @@ gl_sframe count_featurizer::transform(gl_sframe raw) {
           DASSERT_TRUE(val.get_type() == flex_type_enum::VECTOR);
           const auto& count = val.get<flex_vec>();
           DASSERT_EQ(count.size(), num_classes); 
+          static_cast<void>(num_classes); // Avoid warning (num_classes unused in release mode).
           double sum = 0;
           for (const auto& val: count) sum += std::max<double>(val, 0.0);
           if (sum < 1.0) sum = 1.0;

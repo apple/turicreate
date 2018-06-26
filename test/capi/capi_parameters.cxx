@@ -94,7 +94,6 @@ struct capi_test_parameters {
    tc_parameters* p = tc_parameters_create_empty(&error);
    CAPI_CHECK_ERROR(error);
 
-   typedef std::pair<std::string, std::vector<double> > p_t; 
    tc_sframe* sf = make_sframe_double(
        { {"col1", {1.0, 2.0, 4.0}}, 
          {"col2", {2.0, 3.0, 0.0}}

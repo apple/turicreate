@@ -90,6 +90,7 @@ std::streampos s3_device::seek(std::streamoff off,
     return m_read_stream->Tell();
   } else {
     ASSERT_MSG(false, "Unable to seek!");
+    ASSERT_UNREACHABLE();
   }
 }
 

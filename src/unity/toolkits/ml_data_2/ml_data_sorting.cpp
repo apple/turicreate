@@ -8,12 +8,9 @@
 #include <unity/toolkits/ml_data_2/iterators/ml_data_iterator.hpp>
 #include <unity/toolkits/ml_data_2/side_features.hpp>
 #include <unity/toolkits/ml_data_2/data_storage/util.hpp>
+#include <util/basic_types.hpp>
 
 using namespace turi::v2::ml_data_internal;
-
-static inline size_t ceil_divide(size_t n, size_t m) {
-  return (n + (m-1) ) / m;
-}
 
 namespace turi { namespace v2 {
 

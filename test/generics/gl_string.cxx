@@ -360,8 +360,10 @@ void stress_test(size_t n_tests) {
   // Assignment by move equality
   operations.push_back([&]() {
       std::string ev = {gen_element(), gen_element(), gen_element()};
-      v = std::move(gl_string(ev.begin(), ev.end()));
-      v_ref = std::move(std::string(ev.begin(), ev.end()));
+      gl_string v_tmp(ev.begin(), ev.end());
+      v = std::move(v_tmp);
+      std::string v_tmp_ref(ev.begin(), ev.end());
+      v_ref = std::move(v_tmp_ref);
     });
 
   // pop_back

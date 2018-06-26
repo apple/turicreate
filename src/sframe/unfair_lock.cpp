@@ -51,7 +51,7 @@ static pthread_key_t get_priority_tls_key_id() {
   static thread_keys keys;
   return keys.UNFAIR_LOCK_PRIORITY;
 }
-static pthread_key_t __unused_init_keys__(get_priority_tls_key_id());
+static TURI_ATTRIBUTE_UNUSED pthread_key_t __unused_init_keys__(get_priority_tls_key_id());
 
 
 /**

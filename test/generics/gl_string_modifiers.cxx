@@ -625,7 +625,7 @@ struct test_string_modifiers  {
   
   void test_string_erase_erase_iter_db1() {
     gl_string l1("123");
-    gl_string::const_iterator i = l1.end();
+    TURI_ATTRIBUTE_UNUSED_NDEBUG gl_string::const_iterator i = l1.end();
 #ifndef NDEBUG
     TS_ASSERT_THROWS_ANYTHING(l1.erase(i));
 #endif 
@@ -634,7 +634,7 @@ struct test_string_modifiers  {
   void test_string_erase_erase_iter_db2() {
     gl_string l1("123");
     gl_string l2("123");
-    gl_string::const_iterator i = l2.begin();
+    TURI_ATTRIBUTE_UNUSED_NDEBUG gl_string::const_iterator i = l2.begin();
 #ifndef NDEBUG
     TS_ASSERT_THROWS_ANYTHING(l1.erase(i));
 #endif 

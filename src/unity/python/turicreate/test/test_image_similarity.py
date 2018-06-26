@@ -246,7 +246,7 @@ class ImageSimilarityGPUTest(unittest.TestCase):
         self.label = None
         self.input_image_shape = (3, 224, 224)
         self.pre_trained_model = model
-        self.sf = _get_data()
+        self.sf = _get_data(self.input_image_shape[2])
 
     def test_gpu_save_load_export(self):
         old_num_gpus = tc.config.get_num_gpus()

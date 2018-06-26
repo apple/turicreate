@@ -9,16 +9,12 @@
 #include <ml_data/data_storage/ml_data_row_translation.hpp>
 #include <ml_data/data_storage/ml_data_block_manager.hpp>
 #include <ml_data/data_storage/util.hpp>
+#include <util/basic_types.hpp>
 #include <util/try_finally.hpp>
 
 using namespace turi::ml_data_internal;
 
 namespace turi {
-
-// For integer values, returns ceil(n / m);
-static inline size_t ceil_divide(size_t n, size_t m) {
-  return (n + (m-1) ) / m;
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 //

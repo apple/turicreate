@@ -26,6 +26,14 @@ make_library(protobuf
     stubs/structurally_valid.cc
     stubs/strutil.cc
     wire_format_lite.cc
+  COMPILE_FLAGS_EXTRA
+    -Wno-sign-compare
+    -Wno-unused-function
+  COMPILE_FLAGS_EXTRA_CLANG
+    -Wno-uninitialized
+    -Wno-unused-const-variable
+  COMPILE_FLAGS_EXTRA_GCC
+    -Wno-maybe-uninitialized
   )
 
 # Add this in so that the protobuf namespace is globally redefined to __tc_google.

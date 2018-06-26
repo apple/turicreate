@@ -22,8 +22,9 @@ int64_t COROUTINE_STACK_SIZE =
 
 REGISTER_GLOBAL_WITH_CHECKS(int64_t, COROUTINE_STACK_SIZE, false,
             +[](int64_t i){ 
-              return stack_traits::minimum_size() <= i && 
-                  i <= stack_traits::maximum_size() 
+              return (i > 0 &&
+                      stack_traits::minimum_size() <= static_cast<size_t>(i) &&
+                      static_cast<size_t>(i) <= stack_traits::maximum_size());
             ;});
 
 execution_node::execution_node(const std::shared_ptr<query_operator>& op,

@@ -481,6 +481,8 @@ get_binary_operator(flex_type_enum left, flex_type_enum right, std::string op) {
             return 0;
           }
         };
+      } else {
+        throw std::string("Invalid operands for flexible_type binary operator");
       }
 /**************************************************************************/
 /*                                                                        */

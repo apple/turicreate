@@ -79,7 +79,7 @@ class EXPORT alias_topic_model : public topic_model {
   /**
    * Clone objects to a topic_model class
    */
-  topic_model* topic_model_clone();
+  topic_model* topic_model_clone() override;
 
   /**
    * Set the model options. Use the option manager to set these options. The
@@ -88,28 +88,28 @@ class EXPORT alias_topic_model : public topic_model {
    *
    * \param[in] opts Options to set
    */
-  void init_options(const std::map<std::string,flexible_type>& _opts);
+  void init_options(const std::map<std::string,flexible_type>& _opts) override;
 
-  inline size_t get_version() const {
+  inline size_t get_version() const override {
     return ALIAS_TOPIC_MODEL_VERSION;
   }
 
   /**
   * Turi serialization save
   */
-  void save_impl(turi::oarchive& oarc) const;
+  void save_impl(turi::oarchive& oarc) const override;
 
   /**
   * Turi serialization save
   */
-  void load_version(turi::iarchive& iarc, size_t version);
+  void load_version(turi::iarchive& iarc, size_t version) override;
 
 
   /**
    * Train the model using the method described in (Li, 2014).
    *
    */
-  void train(std::shared_ptr<sarray<flexible_type> > data, bool verbose);
+  void train(std::shared_ptr<sarray<flexible_type> > data, bool verbose) override;
 
   /**
    * Use the dataset to create an initial set of topic assignments.

@@ -1516,7 +1516,9 @@ struct sframe_test  {
        parallel_vals.push_back(val->new_instance());
      }
      for (size_t i = 0;i < 4; ++i) {
-       TS_ASSERT(typeid(*parallel_vals[i]) == typeid(*val));
+       auto parallel_vals_i_raw = parallel_vals[i];
+       auto val_raw = val.get();
+       TS_ASSERT(typeid(*parallel_vals_i_raw) == typeid(*val_raw));
      }
      // perform the partial aggregation
      for (size_t i = 0; i < vals.size(); ++i) {

@@ -135,7 +135,7 @@ class sgraph_engine {
                                 size_t central_group = 0,
                                 std::unordered_set<size_t> sgraph_compute_group = {0},
                                 size_t parallel_limit = (size_t)(-1)) {
-    if (parallel_limit == -1) {
+    if (parallel_limit == static_cast<size_t>(-1)) {
       parallel_limit = thread::cpu_count();
     }
     init_data_structures(graph, central_group, initial_value);
@@ -223,7 +223,7 @@ class sgraph_engine {
                                 flex_type_enum ret_type,
                                 size_t groupa = 0, size_t groupb = 0,
                                 size_t parallel_limit = (size_t)(-1)) {
-    if (parallel_limit == -1) {
+    if (parallel_limit == static_cast<size_t>(-1)) {
       parallel_limit = thread::cpu_count();
     }
     vertex_data.clear();

@@ -32,13 +32,14 @@ static const size_t n = 17;
 // Actually using arrays to make sure full + no-opt + no-opt-naive are all the same
 
 struct node {
+  using history_item = std::array<std::shared_ptr<planner_node>, 2>;
   std::array<std::shared_ptr<planner_node>, 8> v;
-  std::set< std::array<std::shared_ptr<planner_node>, 2> > history;
+  std::set<history_item> history;
   
   void pull_history(const std::vector<node>& nv) {
     for(const node& n : nv) {
       history.insert(n.history.begin(), n.history.end());
-      history.insert({n.v[0], n.v[3]});
+      history.insert(history_item{{n.v[0], n.v[3]}});
     }
   }
 }; 
@@ -84,7 +85,7 @@ static node source_sarray() {
 
   add_sliced_info(ret, n);
 
-  ret.history.insert({ret.v[0], ret.v[3]});
+  ret.history.insert(node::history_item{{ret.v[0], ret.v[3]}});
 
   return ret;
 }
@@ -100,7 +101,7 @@ static node empty_sarray() {
   for(auto& n : ret.v)
     n = op_sarray_source::make_planner_node(sa);
 
-  ret.history.insert({ret.v[0], ret.v[3]});
+  ret.history.insert(node::history_item{{ret.v[0], ret.v[3]}});
 
   add_sliced_info(ret, 0);
   
@@ -137,7 +138,7 @@ static node zero_source_sarray() {
 
   add_sliced_info(ret, data.size());
 
-  ret.history.insert({ret.v[0], ret.v[3]});
+  ret.history.insert(node::history_item{{ret.v[0], ret.v[3]}});
   
   return ret;
 }
@@ -172,7 +173,7 @@ static node binary_source_sarray() {
 
   add_sliced_info(ret, data.size());
 
-  ret.history.insert({ret.v[0], ret.v[3]});
+  ret.history.insert(node::history_item{{ret.v[0], ret.v[3]}});
   
   return ret;
 }
@@ -223,7 +224,7 @@ static node source_sframe(size_t n_columns) {
 
   add_sliced_info(ret, data.size());
 
-  ret.history.insert({ret.v[0], ret.v[3]});
+  ret.history.insert(node::history_item{{ret.v[0], ret.v[3]}});
 
   return ret;
 }
@@ -273,7 +274,7 @@ static node shifted_source_sframe(size_t n_columns) {
 
   add_sliced_info(ret, n);
 
-  ret.history.insert({ret.v[0], ret.v[3]});
+  ret.history.insert(node::history_item{{ret.v[0], ret.v[3]}});
 
   return ret;
 }
@@ -298,7 +299,7 @@ static node empty_sframe(size_t n_columns) {
 
   add_sliced_info(ret, 0);
 
-  ret.history.insert({ret.v[0], ret.v[3]});
+  ret.history.insert(node::history_item{{ret.v[0], ret.v[3]}});
   
   return ret;
 }

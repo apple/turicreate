@@ -50,7 +50,7 @@ struct basic_end_to_end {
     res.select_column(0)->get_reader()->read_rows(0, res.size(), all_rows);
 
     TS_ASSERT_EQUALS(all_rows.size(), TEST_LENGTH);
-    for (flex_int i = 0;i < TEST_LENGTH; ++i) {
+    for (flex_int i = 0;i < truncate_check<int64_t>(TEST_LENGTH); ++i) {
       flex_int j = (flex_int)(all_rows[i]);
       TS_ASSERT_EQUALS(2*i+1, j);
     }
@@ -84,7 +84,7 @@ struct basic_end_to_end {
     res.select_column(0)->get_reader()->read_rows(0, res.size(), all_rows);
 
     TS_ASSERT_EQUALS(all_rows.size(), TEST_LENGTH / 2);
-    for (flex_int i = 0;i < TEST_LENGTH / 2; ++i) {
+    for (flex_int i = 0;i < truncate_check<int64_t>(TEST_LENGTH) / 2; ++i) {
       TS_ASSERT_EQUALS(2*i, all_rows[i]);
     }
   }
@@ -127,7 +127,7 @@ struct basic_end_to_end {
     res.select_column(0)->get_reader()->read_rows(0, res.size(), all_rows);
 
     TS_ASSERT_EQUALS(all_rows.size(), TEST_LENGTH / 2);
-    for (flex_int i = 0;i < TEST_LENGTH / 2; ++i) {
+    for (flex_int i = 0;i < truncate_check<int64_t>(TEST_LENGTH) / 2; ++i) {
       TS_ASSERT_EQUALS(2*i + 1, all_rows[i]);
     }
   }
@@ -177,7 +177,7 @@ struct basic_end_to_end {
       std::vector<flexible_type> all_rows;
       res.select_column(0)->get_reader()->read_rows(0, res.size(), all_rows);
       TS_ASSERT_EQUALS(all_rows.size(), SLICE_LENGTH);
-      for (flex_int i = 0; i < SLICE_LENGTH; ++i) {
+      for (flex_int i = 0; i < truncate_check<int64_t>(SLICE_LENGTH); ++i) {
         flex_int j = (flex_int)(all_rows[i]);
         TS_ASSERT_EQUALS(i + begin, j);
       }
@@ -202,7 +202,7 @@ struct basic_end_to_end {
       std::vector<flexible_type> all_rows;
       res.select_column(0)->get_reader()->read_rows(0, res.size(), all_rows);
       TS_ASSERT_EQUALS(all_rows.size(), SLICE_LENGTH);
-      for (flex_int i = 0; i < SLICE_LENGTH; ++i) {
+      for (flex_int i = 0; i < truncate_check<int64_t>(SLICE_LENGTH); ++i) {
         flex_int j = (flex_int)(all_rows[i]);
         TS_ASSERT_EQUALS(1 + i + begin, j);
       }
@@ -229,7 +229,7 @@ struct basic_end_to_end {
       std::vector<flexible_type> all_rows;
       res.select_column(0)->get_reader()->read_rows(0, res.size(), all_rows);
       TS_ASSERT_EQUALS(all_rows.size(), SLICE_LENGTH);
-      for (flex_int i = 0; i < SLICE_LENGTH; ++i) {
+      for (flex_int i = 0; i < truncate_check<int64_t>(SLICE_LENGTH); ++i) {
         flex_int j = (flex_int)(all_rows[i]);
         TS_ASSERT_EQUALS((i + begin) * 2, j);
       }
@@ -254,7 +254,7 @@ struct basic_end_to_end {
       std::vector<flexible_type> all_rows;
       res.select_column(0)->get_reader()->read_rows(0, res.size(), all_rows);
       TS_ASSERT_EQUALS(all_rows.size(), SLICE_LENGTH);
-      for (flex_int i = 0; i < SLICE_LENGTH; ++i) {
+      for (flex_int i = 0; i < truncate_check<int64_t>(SLICE_LENGTH); ++i) {
         flex_int j = (flex_int)(all_rows[i]);
         TS_ASSERT_EQUALS(i + 1, j);
       }
@@ -263,7 +263,7 @@ struct basic_end_to_end {
       res = planner().materialize(sliced);
       res.select_column(0)->get_reader()->read_rows(0, res.size(), all_rows);
       TS_ASSERT_EQUALS(all_rows.size(), SLICE_LENGTH);
-      for (flex_int i = 0; i < SLICE_LENGTH; ++i) {
+      for (flex_int i = 0; i < truncate_check<int64_t>(SLICE_LENGTH); ++i) {
         flex_int j = (flex_int)(all_rows[i]);
         TS_ASSERT_EQUALS(i + 1, j);
       }

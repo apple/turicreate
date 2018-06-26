@@ -315,7 +315,7 @@ sframe sgraph::get_edges(const std::vector<flexible_type>& source_vids,
           pairs_to_load.begin(), pairs_to_load.end());
       parallel_for(0, pairs_to_load_vec.size(), [&](size_t i) {
         auto coord = pairs_to_load_vec[i];
-        partition_vid_cache[coord] = std::move(get_vertex_ids(coord.first, coord.second));
+        partition_vid_cache[coord] = get_vertex_ids(coord.first, coord.second);
       });
     };
 

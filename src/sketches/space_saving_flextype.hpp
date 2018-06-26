@@ -44,6 +44,7 @@ class space_saving_flextype {
     ss_general.reset(new space_saving<flexible_type>(*(ss.ss_general)));
     is_combined = ss.is_combined;
     m_epsilon = ss.m_epsilon;
+    return *this;
   }
   
   /**

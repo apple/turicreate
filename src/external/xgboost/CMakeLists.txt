@@ -10,6 +10,15 @@ make_library(xgboost
   REQUIRES
     libjson
   EXTERNAL_VISIBILITY
+  COMPILE_FLAGS_EXTRA_GCC
+    -Wno-comment
+    -Wno-pointer-arith
+    -Wno-sign-compare
+    -Wno-unknown-pragmas
+  COMPILE_FLAGS_EXTRA_CLANG
+    -Wno-null-arithmetic
+  COMPILE_FLAGS_EXTRA
+    -Wno-unused-command-line-argument
 )
 
 # TODO this doesn't seem to take effect at all

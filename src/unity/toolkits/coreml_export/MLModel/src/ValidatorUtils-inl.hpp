@@ -12,7 +12,9 @@
 #include "Comparison.hpp"
 #include "Format.hpp"
 #include "Result.hpp"
-#include "../build/format/FeatureTypes_enums.h"
+
+#include "unity/toolkits/coreml_export/protobuf_include_internal.hpp"
+
 #include <sstream>
 
 namespace CoreML {

@@ -75,9 +75,9 @@ std::vector<variant_type> _connected_components_parameterized(std::map<std::stri
 
 
 class demo_class: public model_base {
-  virtual void save_impl(oarchive& oarc) const  {}
+  virtual void save_impl(oarchive& oarc) const override {}
 
-  virtual void load_version(iarchive& iarc, size_t version) {}
+  virtual void load_version(iarchive& iarc, size_t version) override {}
 
   // Simple Functions
   std::string concat() {
@@ -118,9 +118,9 @@ class demo_class: public model_base {
 
 class demo_vector : public std::vector<std::string>, public model_base {
  public:
-  virtual void save_impl(oarchive& oarc) const  {}
+  virtual void save_impl(oarchive& oarc) const override {}
 
-  virtual void load_version(iarchive& iarc, size_t version) {}
+  virtual void load_version(iarchive& iarc, size_t version) override {}
 
   std::string __str__() {
     std::stringstream strm;
@@ -151,10 +151,10 @@ class demo_vector : public std::vector<std::string>, public model_base {
   }
   BEGIN_CLASS_MEMBER_REGISTRATION("demo_vector")
 
-  typedef void (demo_vector::*push_back_type)(const std::string&);
+  // typedef void (demo_vector::*push_back_type)(const std::string&);
   // REGISTER_OVERLOADED_CLASS_MEMBER_FUNCTION(push_back_type, demo_vector::push_back, "param");
 
-  typedef std::string& (demo_vector::*at_type)(size_t);
+  // typedef std::string& (demo_vector::*at_type)(size_t);
   // REGISTER_OVERLOADED_NAMED_CLASS_MEMBER_FUNCTION("__getitem__", at_type, demo_vector::at, "param");
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("__len__", demo_vector::size);

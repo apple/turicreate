@@ -335,25 +335,29 @@ std::vector<int> lsh_jaccard::hash_vector_to_codes(const SparseVector& vec,
   
 // this function is used to fill the empty bins in the hash codes
 void lsh_jaccard::fill_empty_bins(std::vector<int>& vec) const {
-  
   size_t chunk_size = num_input_dimensions / num_projections;
+
+  int64_t num_input_dimensions_i64 = truncate_check<int64_t>(num_input_dimensions);
+  int64_t num_projections_i64 = truncate_check<int64_t>(num_projections);
+  int64_t chunk_size_i64 = truncate_check<int64_t>(chunk_size);
+
   // find the first non-empty bin for left rotating
   int start_idx_left = 0;
   // find the first non-empty bin for right rotating
   int start_idx_right = num_projections - 1;
 
-  while (vec[start_idx_left] == num_input_dimensions // if it is not updated since initialized 
-         && start_idx_left < num_projections) {
+  while (vec[start_idx_left] == num_input_dimensions_i64 // if it is not updated since initialized
+         && start_idx_left < num_projections_i64) {
     ++start_idx_left;
   }
   
-  while (vec[start_idx_right] == num_input_dimensions // if it is not updated since initialized 
+  while (vec[start_idx_right] == num_input_dimensions_i64 // if it is not updated since initialized
          && start_idx_right >= 0) {
     --start_idx_right;
   }
 
   // no empty bins
-  if (start_idx_left == num_projections || start_idx_right == int(-1)) {
+  if (start_idx_left == num_projections_i64 || start_idx_right == int(-1)) {
     return;
   } 
 
@@ -362,7 +366,7 @@ void lsh_jaccard::fill_empty_bins(std::vector<int>& vec) const {
   int num_straight_empty_bins = 0;
 
   for (int idx = start_idx_left + num_projections; idx != start_idx_left; --idx) {
-    if (vec[idx % num_projections] >= 2 * chunk_size) { // empty
+    if (vec[idx % num_projections] >= 2 * chunk_size_i64) { // empty
       num_straight_empty_bins += 1;
       // h_j = h_{j+t} + t * C, where t is distance to the nearest non-empty bin
       // C is a constant >= chunk_size, here we take C = chunk_size * 2 
@@ -378,8 +382,8 @@ void lsh_jaccard::fill_empty_bins(std::vector<int>& vec) const {
   current_offset = vec[start_idx_right];
   num_straight_empty_bins = 0;
 
-  for (int idx = start_idx_right; idx != start_idx_right + num_projections; ++idx) {
-    if (vec[idx % num_projections] >= 2 * chunk_size) {
+  for (int idx = start_idx_right; idx != start_idx_right + num_projections_i64; ++idx) {
+    if (vec[idx % num_projections] >= 2 * chunk_size_i64) {
       num_straight_empty_bins += 1;
       // h_j = h_{j+t} + t * C, where t is distance to the nearest non-empty bin
       // C is a constant >= chunk_size, here we take C = chunk_size * 2 

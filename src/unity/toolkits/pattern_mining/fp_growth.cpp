@@ -13,6 +13,8 @@
 #include <unity/toolkits/pattern_mining/rule_mining.hpp>
 #include <unity/toolkits/feature_engineering/topk_indexer.hpp>
 
+#include <util/sys_util.hpp>
+
 namespace turi {
 namespace pattern_mining {
 
@@ -171,7 +173,8 @@ bool is_subset(const dense_bitset& A,
 gl_sframe fp_growth::extract_features(const gl_sframe& data) const {
   DASSERT_TRUE(state.count("num_items") > 0);
   size_t num_items = variant_get_value<size_t>(state.at("num_items"));
-  size_t num_frequent_patterns = variant_get_value<size_t>(state.at("num_frequent_patterns"));
+  TURI_ATTRIBUTE_UNUSED_NDEBUG size_t num_frequent_patterns =
+    variant_get_value<size_t>(state.at("num_frequent_patterns"));
   DASSERT_EQ(closed_bitsets.size(), num_frequent_patterns);
 
   // Preprocess the dataset.
@@ -189,7 +192,7 @@ gl_sframe fp_growth::extract_features(const gl_sframe& data) const {
   const auto& _closed_bitsets = this->closed_bitsets;
 
   ex_features["extracted_features"] = item_sa.apply(
-      [_closed_bitsets, num_items, num_frequent_patterns]
+      [_closed_bitsets, num_items]
       (const flexible_type& item_set) {
 
             // Convert flex_list to set.
@@ -217,7 +220,9 @@ gl_sframe fp_growth::extract_features(const gl_sframe& data) const {
 gl_sframe fp_growth::predict_topk(const gl_sframe& data,
           const std::string& score_function,
           const size_t& k) const {
-  size_t max_patterns = variant_get_value<size_t>(state.at("max_patterns"));
+
+  TURI_ATTRIBUTE_UNUSED_NDEBUG size_t max_patterns =
+    variant_get_value<size_t>(state.at("max_patterns"));
   size_t score_type = get_score_function_type_from_name(score_function);
   DASSERT_EQ(score_type, 0);
   DASSERT_LE(closed_bitsets.size(), max_patterns);

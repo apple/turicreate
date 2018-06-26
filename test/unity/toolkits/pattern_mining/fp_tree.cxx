@@ -744,12 +744,9 @@ struct fp_tree_test  {
 //      TS_ASSERT_EQUALS(my_tree.root_node->children_nodes.size(), 1);
 //      TS_ASSERT_EQUALS(my_tree.root_node->children_nodes[0]->item_id, 1);
 //      TS_ASSERT_EQUALS(my_tree.root_node->children_nodes[0]->item_count, 3);
-//      TS_ASSERT_EQUALS(my_tree.root_node->children_nodes[0]-> \
-//          children_nodes.size(), 1);
-//      TS_ASSERT_EQUALS(my_tree.root_node->children_nodes[0]-> \
-//          children_nodes[0]->item_id, 2);
-//      TS_ASSERT_EQUALS(my_tree.root_node->children_nodes[0]-> \
-//          children_nodes[0]->item_count, 1);
+//      TS_ASSERT_EQUALS(my_tree.root_node->children_nodes[0]->children_nodes.size(), 1);
+//      TS_ASSERT_EQUALS(my_tree.root_node->children_nodes[0]->children_nodes[0]->item_id, 2);
+//      TS_ASSERT_EQUALS(my_tree.root_node->children_nodes[0]->children_nodes[0]->item_count, 1);
 //    }
 
     // Test fp_top_k_tree::add_transaction()

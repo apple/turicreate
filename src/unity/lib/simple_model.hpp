@@ -44,19 +44,19 @@ class simple_model: public model_base {
   /**
    * Returns the current model version
    */
-  size_t get_version() const;
+  size_t get_version() const override;
 
   /**
    * Serializes the model. Must save the model to the file format version
    * matching that of get_version()
    */
-  void save_impl(oarchive& oarc) const;
+  void save_impl(oarchive& oarc) const override;
 
   /**
    * Loads a model previously saved at a particular version number.
    * Should raise an exception on failure.
    */
-  void load_version(iarchive& iarc, size_t version); 
+  void load_version(iarchive& iarc, size_t version) override;
 
   /// Destructor
   ~simple_model();

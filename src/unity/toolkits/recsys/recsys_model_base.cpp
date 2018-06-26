@@ -991,6 +991,11 @@ sframe recsys_model_base::recommend(
             user_hash_key = hash64( (const char*)(query_x.data()), sizeof(v2::ml_data_entry)*query_x.size());
             break;
           }
+
+          default: {
+            log_and_throw("Unsupported value for user_processing_mode");
+            ASSERT_UNREACHABLE();
+          }
         }
 
         if(done_flag)

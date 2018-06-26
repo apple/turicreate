@@ -67,6 +67,11 @@ namespace turi {
      case fileio::file_status::REGULAR_FILE:
        log_and_throw_io_failure("Cannot save to regular file. Must be a directory.");
        break;
+     case fileio::file_status::FS_UNAVAILABLE:
+       log_and_throw_io_failure("Error: status = FS_UNAVAILABLE");
+       break;
+     default:
+       log_and_throw_io_failure("Error: unknown");
     }
     // Write vertices
     sframe vertices = g.get_vertices();

@@ -7,6 +7,7 @@
 
 #import "mps_dev.h"
 
+API_AVAILABLE(macos(10.13))
 int devicePriority(id<MTLDevice> dev) {
   int prio = 0;
   if (!dev.isLowPower) {

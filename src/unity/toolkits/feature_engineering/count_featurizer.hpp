@@ -66,17 +66,17 @@ class EXPORT count_featurizer : public transformer_base {
   count_featurizer() = default;
 
   // serializers
-  size_t get_version() const;
-  void save_impl(oarchive& oarc) const;
-  void load_version(iarchive& iarc, size_t version);
+  size_t get_version() const override;
+  void save_impl(oarchive& oarc) const override;
+  void load_version(iarchive& iarc, size_t version) override;
 
   // transformer
   void init_options(const std::map<std::string, 
-                    flexible_type>& _options);
+                    flexible_type>& _options) override;
   void init_transformer(const std::map<std::string, 
-                        flexible_type>& _options);
-  void fit(gl_sframe data);
-  gl_sframe transform(gl_sframe data); 
+                        flexible_type>& _options) override;
+  void fit(gl_sframe data) override;
+  gl_sframe transform(gl_sframe data) override;
   gl_sframe fit_transform(gl_sframe data); 
 
   // collect the state in a single shared pointer so that this can be

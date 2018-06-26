@@ -8,16 +8,12 @@
 #include <unity/toolkits/ml_data_2/side_features.hpp>
 #include <unity/toolkits/ml_data_2/data_storage/util.hpp>
 #include <unity/lib/variant_deep_serialize.hpp>
+#include <util/basic_types.hpp>
 #include <util/try_finally.hpp>
 
 using namespace turi::v2::ml_data_internal;
 
 namespace turi { namespace v2 {
-
-// For integer values, returns ceil(n / m);
-static inline size_t ceil_divide(size_t n, size_t m) {
-  return (n + (m-1) ) / m;
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 //

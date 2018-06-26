@@ -14,9 +14,8 @@
 #include <sstream>
 #include <string>
 
-
-
-
+#include <fileio/fileio_constants.hpp>
+#include <logger/assertions.hpp>
 #include <util/fs_util.hpp>
 
 bool is_hidden(const std::string path) {
@@ -121,3 +120,34 @@ change_suffix(const std::string& fname,
   const std::string new_base(fname.substr(0, pos));
   return new_base + new_suffix;
 } // end of change_suffix
+
+
+std::string turi::fs_util::join(const std::vector<std::string>& components) {
+  namespace fs = boost::filesystem;
+  ASSERT_GT(components.size(), static_cast<size_t>(0));
+  fs::path ret(components[0]);
+  for (size_t i = 1; i < components.size(); i++) {
+    ret /= components[i];
+  }
+  return ret.string();
+}
+
+
+// Generate a path under the system temporary directory.
+// NOTE: This function (like the underlying boost::filesystem call) does
+// not guard against race conditions, and therefore should not be used in
+// security-critical settings.
+std::string turi::fs_util::system_temp_directory_unique_path(
+  const std::string& prefix, const std::string& suffix) {
+
+  ASSERT_TRUE(prefix.find("%") == std::string::npos);
+  ASSERT_TRUE(prefix.find("/") == std::string::npos);
+  ASSERT_TRUE(suffix.find("%") == std::string::npos);
+  ASSERT_TRUE(suffix.find("/") == std::string::npos);
+
+  auto base_path = turi::fileio::get_system_temp_directory();
+  auto sub_path = boost::filesystem::unique_path(
+    prefix + "%%%%-%%%%-%%%%-%%%%-%%%%-%%%%-%%%%-%%%%" + suffix).native();
+
+  return turi::fs_util::join({base_path, sub_path});
+}

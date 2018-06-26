@@ -139,7 +139,7 @@ histogram_bins histogram_result::get_bins(flex_int num_bins) const {
   // this assertion).
   //DASSERT_GE(effective_bins, (MAX_BINS/4));
 
-  if (num_bins > (MAX_BINS/4)) {
+  if (static_cast<size_t>(num_bins) > (MAX_BINS/4)) {
     log_and_throw("num_bins must be less than or equal to the effective number of bins available.");
   }
 
@@ -159,10 +159,10 @@ histogram_bins histogram_result::get_bins(flex_int num_bins) const {
   ret.bins = flex_list(num_bins, 0); // initialize empty
   ret.min = get_value_at_bin(std::max<ssize_t>(0, first_bin - before), scale_min, scale_max, MAX_BINS);
   ret.max = get_value_at_bin(std::min<ssize_t>(last_bin + after + 1, MAX_BINS), scale_min, scale_max, MAX_BINS);
-  for (size_t i=0; i<num_bins; i++) {
+  for (size_t i=0; i<static_cast<size_t>(num_bins); i++) {
     for (size_t j=0; j<bins_per_bin; j++) {
       ssize_t idx = (i * bins_per_bin) + j + (first_bin - before);
-      if (idx < 0 || idx >= MAX_BINS) {
+      if (idx < 0 || static_cast<size_t>(idx) >= MAX_BINS) {
         // don't try to get values below 0, or past MAX_BINS, that would be silly
         continue;
       }

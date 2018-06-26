@@ -52,7 +52,7 @@ struct test_table_printer  {
 
       for(size_t i = 0; i < saved_values.size(); ++i) {
 
-        size_t table_idx = i * interval;
+        TURI_ATTRIBUTE_UNUSED_NDEBUG size_t table_idx = i * interval;
 
         DASSERT_TRUE(saved_values[i][0].get_type() == flex_type_enum::INTEGER);
         DASSERT_TRUE(saved_values[i][0] == table_idx);

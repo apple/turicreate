@@ -34,7 +34,6 @@ void parallel_task_queue::launch(const boost::function<void (void)> &spawn_funct
 }
 
 void parallel_task_queue::join() {
-  std::pair<bool, bool> eventret;
   std::unique_lock<mutex> join_lock(mut);
   waiting_on_join = true;
   while(1) {

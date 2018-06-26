@@ -57,7 +57,7 @@ std::string extra_label_escape(const std::string& str){
 }
 
 /*
- * Prepares a raw JSON format string (from one of the vega_spec/*.json files)
+ * Prepares a raw JSON format string (from one of the *.json files in vega_spec/)
  * by doing the following:
  * 1. Strips all newlines.
  * 2. Wraps format string inside {"vega_spec": ...}.

@@ -16,7 +16,6 @@
 // $Date$
 // $Revision$
 
-#include <boost/type_traits/detail/template_arity_spec.hpp>
 #include <boost/mpl/aux_/lambda_support.hpp>
 
 #define BOOST_TT_AUX_TYPE_TRAIT_DEF1(trait,T,result) \
@@ -26,8 +25,6 @@ public:\
     typedef result type; \
     BOOST_MPL_AUX_LAMBDA_SUPPORT(1,trait,(T)) \
 }; \
-\
-BOOST_TT_AUX_TEMPLATE_ARITY_SPEC(1,trait) \
 /**/
 
 #define BOOST_TT_AUX_TYPE_TRAIT_SPEC1(trait,spec,result) \

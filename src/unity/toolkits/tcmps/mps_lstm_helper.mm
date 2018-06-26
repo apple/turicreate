@@ -70,6 +70,7 @@ static void getWMatDimension(MPSRNNMatrixId matrixId, int * nRowsOut, int * nCol
 }
 
 
+API_AVAILABLE(macos(10.13))
 static MPSMatrix * createMPSMatrix(id <MTLDevice> device, int sizeX, int sizeY, MPSDataType dataType, BOOL allowPadding = YES, void * data = NULL)
 {
     assert(nil != device);
@@ -104,6 +105,7 @@ MPSMatrix * createWeightMatrix(id <MTLDevice> device, MPSRNNMatrixId wMatId, int
     return createMPSMatrix(device, nCols, nRows, MPSDataTypeFloat32, NO);
 }
 
+API_AVAILABLE(macos(10.14))
 MPSRNNMatrixId MxnetNameToMatrixId(std::string mat_name) {
     static const std::map<std::string, MPSRNNMatrixId> MXnetNamesToMatId{
         {"i2h_i_weight", MPSRNNMatrixIdLSTMInputGateInputWeights},
@@ -128,6 +130,7 @@ MPSRNNMatrixId MxnetNameToMatrixId(std::string mat_name) {
     return it->second;
 }
 
+API_AVAILABLE(macos(10.13))
 MPSVector * MPSMatrixToVector (MPSMatrix * matrix)
 {
     MPSDataType dataType = matrix.dataType;

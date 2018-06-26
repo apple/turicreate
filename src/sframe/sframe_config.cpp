@@ -23,7 +23,7 @@ REGISTER_GLOBAL_WITH_CHECKS(int64_t,
                             true, 
                             +[](int64_t val){ return (val >= 1024) &&
                             // Check against overflow...no more than an exabyte
-                            (val <= size_t(1024*1024*1024)*size_t(1024*1024*1024)); });
+                            (val <= int64_t(1024*1024*1024)*int64_t(1024*1024*1024)); });
 
 
 REGISTER_GLOBAL_WITH_CHECKS(int64_t, 
