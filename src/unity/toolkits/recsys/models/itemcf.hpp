@@ -95,17 +95,19 @@ namespace recsys {
 
 class recsys_itemcf : public recsys_model_base {
  public:
-  bool use_target_column(bool target_is_present) const { return target_is_present; }
+  bool use_target_column(bool target_is_present) const override {
+    return target_is_present;
+  }
 
   static constexpr size_t ITEMCF_VERSION = 2;
 
-  void init_options(const std::map<std::string, flexible_type>& options);
+  void init_options(const std::map<std::string, flexible_type>& options) override;
 
  private:
   /** Handling extra data given by the
    *
    */
-  void set_extra_data(const std::map<std::string, variant_type>& extra_data);
+  void set_extra_data(const std::map<std::string, variant_type>& extra_data) override;
   void load_user_provided_data();
 
   struct user_provided_data_struct {
@@ -119,7 +121,7 @@ class recsys_itemcf : public recsys_model_base {
    *  When the number of items is less than 20k, it uses in memory computations train_in_memory().
    *  Otherwise, it uses the implementation based on SGraph train_using_sgraph().
    */
-  std::map<std::string, flexible_type> train(const v2::ml_data& data);
+  std::map<std::string, flexible_type> train(const v2::ml_data& data) override;
 
   /**
    * During the predict phase, we perform the "vector matrix product"
@@ -130,7 +132,7 @@ class recsys_itemcf : public recsys_model_base {
    * multiples each similarity by that value, e.g. a rating they gave the
    * item in question.
    */
-  sframe predict(const v2::ml_data& test_data) const;
+  sframe predict(const v2::ml_data& test_data) const override;
   
   std::vector<double> predict_all_items(
       const std::vector<flexible_type>& base_observation) const;
@@ -161,19 +163,19 @@ public:
       const std::vector<std::pair<size_t, double> >& user_item_list,
       const std::vector<std::pair<size_t, double> >& new_user_item_data,
       const std::vector<v2::ml_data_row_reference>& new_observation_data,
-      const std::shared_ptr<v2::ml_data_side_features>& known_side_features) const;
+      const std::shared_ptr<v2::ml_data_side_features>& known_side_features) const override;
   
  /**
    * Utilities
    */
   std::string response_column_name() const;
 
-  inline size_t internal_get_version() const {
+  inline size_t internal_get_version() const override {
     return ITEMCF_VERSION;
   }
 
-  void internal_save(turi::oarchive& oarc) const;
-  void internal_load(turi::iarchive& iarc, size_t version);
+  void internal_save(turi::oarchive& oarc) const override;
+  void internal_load(turi::iarchive& iarc, size_t version) override;
 
  private:
 
@@ -197,7 +199,8 @@ public:
    *  \param[in] topk Number of neighbors returned for each item
    *  \returns A SFrame with columns {"item", "similar", "score", "rank"}
    */
-  sframe get_similar_items(std::shared_ptr<sarray<flexible_type> > items, size_t topk=0) const;
+  sframe get_similar_items(
+    std::shared_ptr<sarray<flexible_type> > items, size_t topk=0) const override;
 
   /**
    *  Get the nearest neighbors of a set of users.
@@ -206,7 +209,8 @@ public:
    *  \param[in] topk Number of neighbors returned for each item
    *  \returns A SFrame with columns {"user", "similar", "score", "rank"}
    */
-  sframe get_similar_users(std::shared_ptr<sarray<flexible_type> > items, size_t topk=0) const {
+  sframe get_similar_users(
+    std::shared_ptr<sarray<flexible_type> > items, size_t topk=0) const override {
     log_and_throw("get_similar_users currently not supported for item similarity models. "
                   "To get the neighborhood of users, train a model with the items and users reversed, "
                   "then call get_similar_items.");

@@ -138,7 +138,8 @@ void run_test(const std::vector<std::vector<std::pair<size_t, T> > >& data_1,
 
     hit[idx] = true;
 
-    double calc_sim = calc_similarity(similarity, data_1[ref_idx], data_2[query_idx]);
+    TURI_ATTRIBUTE_UNUSED_NDEBUG double calc_sim = calc_similarity(
+      similarity, data_1[ref_idx], data_2[query_idx]);
     DASSERT_DELTA(calc_sim, value, 2e-5);
   };
 
@@ -148,7 +149,7 @@ void run_test(const std::vector<std::vector<std::pair<size_t, T> > >& data_1,
   all_pairs_similarity(data_1_sa, data_2_sa, similarity,
                        process_function_full, max_memory_usage, skip_pair);
 
-  auto bool_not = [](bool x) { return !x; };
+  TURI_ATTRIBUTE_UNUSED_NDEBUG auto bool_not = [](bool x) { return !x; };
   DASSERT_TRUE(std::count_if(hit.begin(), hit.end(), bool_not) == 0);
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -169,7 +170,8 @@ void run_test(const std::vector<std::vector<std::pair<size_t, T> > >& data_1,
 
       hit[idx] = true;
 
-      double calc_sim = calc_similarity(similarity, data_1[ref_idx], data_2[query_idx]);
+      TURI_ATTRIBUTE_UNUSED_NDEBUG double calc_sim = calc_similarity(
+        similarity, data_1[ref_idx], data_2[query_idx]);
       DASSERT_TRUE(query_mask.get(query_idx));
       DASSERT_DELTA(calc_sim, value, 2e-5);
     };
@@ -180,7 +182,7 @@ void run_test(const std::vector<std::vector<std::pair<size_t, T> > >& data_1,
     // Make sure we've only queried the ones with the mask on.
     for(size_t i = 0; i < n; ++i) {
       for(size_t j = 0; j < m; ++j) {
-        size_t idx = i * m + j;
+        TURI_ATTRIBUTE_UNUSED_NDEBUG size_t idx = i * m + j;
 
         if(query_mask.get(j)) {
           DASSERT_TRUE(hit[idx]);

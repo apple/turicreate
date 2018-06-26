@@ -9,8 +9,7 @@
 #include "Result.hpp"
 #include "Validators.hpp"
 
-#include "../build/format/Model_enums.h"
-#include "../build/format/Normalizer_enums.h"
+#include "unity/toolkits/coreml_export/protobuf_include_internal.hpp"
 
 namespace CoreML {
 

@@ -6,7 +6,7 @@
 //  Copyright © 2016 Apple. All rights reserved.
 //
 
-#include "../build/format/NeuralNetwork_enums.h"
+#include "unity/toolkits/coreml_export/protobuf_include_internal.hpp"
 #include "Validators.hpp"
 #include "ValidatorUtils-inl.hpp"
 #include "transforms/NeuralNetwork.hpp"

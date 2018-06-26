@@ -165,6 +165,12 @@ static void _to_serializable(flexible_type& data, schema_t& schema, const flexib
       data = FLEX_UNDEFINED;
       schema.insert(std::make_pair("type", JSON::types::UNDEFINED));
       break;
+    case flex_type_enum::ND_VECTOR:
+      log_and_throw("Unsupported flex_type_enum case: ND_VECTOR");
+      break;
+    default:
+      log_and_throw("Unsupported flex_type_enum case");
+      break;
   }
 }
 

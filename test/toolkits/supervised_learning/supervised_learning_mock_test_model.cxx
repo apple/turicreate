@@ -69,11 +69,11 @@ class predict_constant : public supervised_learning_model_base {
   /**
    * Train a supervised_learning model.
    */
-  void train(){
+  void train() override {
     constant = options.value("constant");
   }
 
-  bool is_classifier() const { return false; } 
+  bool is_classifier() const override { return false; }
 
 
   /**
@@ -83,7 +83,7 @@ class predict_constant : public supervised_learning_model_base {
    *
    * \param[in] options Options to set
    */
-  void init_options(const std::map<std::string, flexible_type>&_options){
+  void init_options(const std::map<std::string, flexible_type>&_options) override {
 
     options.create_real_option(
         "constant",
@@ -113,25 +113,29 @@ class predict_constant : public supervised_learning_model_base {
     add_or_update_state(flexmap_to_varmap(options.current_option_values()));
   }
 
-  flexible_type predict_single_example(const DenseVector& x,
-         const prediction_type_enum& output_type){
+  flexible_type predict_single_example(
+    const DenseVector& x,
+    const prediction_type_enum& output_type) override {
+
     return constant;
   }
 
-  flexible_type predict_single_example(const SparseVector& x,
-         const prediction_type_enum& output_type){
+  flexible_type predict_single_example(
+    const SparseVector& x,
+    const prediction_type_enum& output_type) override {
+
     return constant;
   }
 
 
-  size_t get_version() const {
+  size_t get_version() const override {
     return 0;
   }
 
   /**
    * Save the object using Turi's oarc.
    */
-  void save_impl(turi::oarchive& oarc) const{
+  void save_impl(turi::oarchive& oarc) const override {
 
     variant_deep_save(state, oarc);
 
@@ -146,7 +150,7 @@ class predict_constant : public supervised_learning_model_base {
   /**
    * Load the object using Turi's iarc.
    */
-  void load_version(turi::iarchive& iarc, size_t version){
+  void load_version(turi::iarchive& iarc, size_t version) override {
 
     // State
     variant_deep_load(state, iarc);
@@ -168,10 +172,9 @@ class predict_constant : public supervised_learning_model_base {
     return constant;
   }
 
-  std::shared_ptr<coreml::MLModelWrapper> export_to_coreml() { return std::shared_ptr<coreml::MLModelWrapper>(); }
-
-
-
+  std::shared_ptr<coreml::MLModelWrapper> export_to_coreml() override {
+    return std::shared_ptr<coreml::MLModelWrapper>();
+  }
 };
 
 
@@ -265,7 +268,6 @@ void run_predict_constant_test(std::map<std::string, flexible_type> opts) {
   ml_data data;
   std::vector<flexible_type> _pred;
   std::shared_ptr<sarray<flexible_type>> pred;
-  size_t rows;
 
 
   // Check the model
@@ -319,7 +321,7 @@ void run_predict_constant_test(std::map<std::string, flexible_type> opts) {
   data = model->construct_ml_data_using_current_metadata(X);
   pred = model->predict(data);
   auto reader = pred->get_reader();
-  rows = reader->read_rows(0, examples, _pred);
+  reader->read_rows(0, examples, _pred);
   for(size_t i=0; i < examples; i++){
     TS_ASSERT(_pred[i] - options["constant"] < 1e-5);
   }
@@ -396,7 +398,7 @@ void run_predict_constant_test(std::map<std::string, flexible_type> opts) {
   data = loaded_model->construct_ml_data_using_current_metadata(X);
   pred = loaded_model->predict(data);
   auto reader2 = pred->get_reader();
-  rows = reader2->read_rows(0, examples, _pred);
+  reader2->read_rows(0, examples, _pred);
   for(size_t i=0; i < examples; i++){
     TS_ASSERT(_pred[i] - options["constant"] < 1e-5);
   }

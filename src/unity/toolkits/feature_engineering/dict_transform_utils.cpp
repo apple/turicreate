@@ -186,6 +186,16 @@ static void _to_flat_dict_recursion(
       }
       break;
     }
+
+    case flex_type_enum::ND_VECTOR: {
+      log_and_throw(std::string("Flexible type case currently unsupported: ND_VECTOR"));
+      ASSERT_UNREACHABLE();
+    }
+
+    default: {
+      log_and_throw(std::string("Flexible type case not recognized"));
+      ASSERT_UNREACHABLE();
+    }
   }
 }
 
@@ -302,6 +312,14 @@ GL_HOT flex_dict to_flat_dict(
     }
     case flex_type_enum::UNDEFINED: {
       return flex_dict{ {undefined_string, 1} };
+    }
+    case flex_type_enum::ND_VECTOR: {
+      log_and_throw(std::string("Flexible type case currently unsupported: ND_VECTOR"));
+      ASSERT_UNREACHABLE();
+    }
+    default: {
+      log_and_throw(std::string("Flexible type case not recognized"));
+      ASSERT_UNREACHABLE();
     }
   }
 

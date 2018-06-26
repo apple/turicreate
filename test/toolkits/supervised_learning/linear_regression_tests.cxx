@@ -104,9 +104,8 @@ void run_linear_regression_test(std::map<std::string, flexible_type> opts) {
   std::shared_ptr<sarray<flexible_type>> _pred_margin = model->predict(data);
 
   // Save predictions made by the model
-  size_t rows;
   auto reader = _pred_margin->get_reader();
-  rows = reader->read_rows(0, examples, pred_margin);
+  reader->read_rows(0, examples, pred_margin);
 
   // Check that the predictions made by the model are right!
   for(size_t i=0; i < examples; i++){

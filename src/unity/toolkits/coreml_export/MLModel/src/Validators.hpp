@@ -11,7 +11,8 @@
 
 #include "Format.hpp"
 #include "Result.hpp"
-#include "../build/format/Model_enums.h"
+
+#include "unity/toolkits/coreml_export/protobuf_include_internal.hpp"
 
 #include "ValidatorUtils-inl.hpp"
 

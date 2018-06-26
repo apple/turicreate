@@ -93,10 +93,10 @@ class EXPORT recsys_factorization_model_base : public recsys_model_base {
 class recsys_factorization_model : public recsys_factorization_model_base {
 
  public:
-  bool use_target_column(bool target_is_present) const { return true; }
+  bool use_target_column(bool target_is_present) const override { return true; }
 
  private:
-  bool include_ranking_options() const { return false; }
+  bool include_ranking_options() const override { return false; }
 
  public: 
    // TODO: convert interface above to use the extensions methods here
@@ -115,10 +115,10 @@ class recsys_factorization_model : public recsys_factorization_model_base {
 class recsys_ranking_factorization_model : public recsys_factorization_model_base {
 
  public:
-  bool use_target_column(bool target_is_present) const { return target_is_present; }
+  bool use_target_column(bool target_is_present) const override { return target_is_present; }
 
  private:
-  bool include_ranking_options() const { return true; }
+  bool include_ranking_options() const override { return true; }
 
  public: 
    // TODO: convert interface above to use the extensions methods here

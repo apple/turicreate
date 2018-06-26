@@ -26,8 +26,6 @@ struct sarray_iterator_test  {
 
       std::shared_ptr<sarray<T> > data(new sarray<T>);
 
-      size_t num_threads = thread::cpu_count();
-
       switch(segment_mode) {
         case 0: {
           // All in one segment
@@ -133,7 +131,7 @@ struct sarray_iterator_test  {
           }
         }
 
-        size_t hit_count_ne_1_count =
+        TURI_ATTRIBUTE_UNUSED_NDEBUG size_t hit_count_ne_1_count =
             std::count_if(hit_count.begin(), hit_count.end(),
                           [](int i) { return i != 1; } );
 
@@ -168,7 +166,7 @@ struct sarray_iterator_test  {
             }
           });
 
-        size_t hit_count_ne_1_count =
+        TURI_ATTRIBUTE_UNUSED_NDEBUG size_t hit_count_ne_1_count =
             std::count_if(hit_count.begin(), hit_count.end(),
                           [](int i) { return i != 1; } );
 

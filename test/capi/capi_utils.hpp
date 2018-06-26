@@ -29,8 +29,10 @@
   } while (false)
 
 
+#ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-function"
+#endif
 
 __attribute__((__unused__))
 static tc_flex_list* make_flex_list_double(const std::vector<double>& v) {
@@ -234,6 +236,8 @@ __attribute__((__unused__))
   return false;
 }
 
+#ifdef __clang__
 #pragma clang diagnostic pop
+#endif
 
 #endif

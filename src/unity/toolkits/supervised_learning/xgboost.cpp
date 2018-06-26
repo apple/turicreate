@@ -1428,7 +1428,7 @@ utils::FeatMap get_index_map_with_escaping(
   char feature_name[256];
   auto to_index_info = [&](char* buf, size_t col, size_t feature_index) {
     size_t index = (metadata->global_index_offset(col) + feature_index);
-    int n = snprintf(buf, 256, format_str, index);
+    TURI_ATTRIBUTE_UNUSED_NDEBUG int n = snprintf(buf, 256, format_str, index);
     DASSERT_GT(n, 0);
     DASSERT_LT(n, 256);
     DASSERT_EQ(buf[n], '\0');
@@ -1727,6 +1727,7 @@ void xgboost_model::load_version(turi::iarchive& iarc, size_t version) {
 
 // Utility functions.
 // Returns the hexadecimal represenation of float in little endian
+TURI_ATTRIBUTE_UNUSED_NDEBUG
 static std::string float_to_hexadecimal(float value) {
   unsigned char* p = (unsigned char*)(&value);
   char ret[9];
@@ -1897,7 +1898,7 @@ std::shared_ptr<coreml::MLModelWrapper> xgboost_model::_export_xgboost_model(boo
       std::map<flex_string, flexible_type> node_dict(node_dict_raw.begin(), node_dict_raw.end());
       flex_int node_id = node_dict.at("id").get<flex_int>();
       flex_string type = node_dict.at("type").get<flex_string>();
-      flex_float value = node_dict.at("value").to<flex_float>();
+      node_dict.at("value").to<flex_float>();
 
       // Get the exact non-lossy double value and use that.  But it's stored as an
       flex_float exact_value = hexadecimal_to_float(node_dict.at("value_hexadecimal").get<flex_string>());
@@ -1924,7 +1925,7 @@ std::shared_ptr<coreml::MLModelWrapper> xgboost_model::_export_xgboost_model(boo
 
         size_t feature_index = 0;
 
-        size_t n = sscanf(feature_name.c_str(), "{%zd}\0", &feature_index);
+        size_t n = sscanf(feature_name.c_str(), "{%zd}", &feature_index);
         ASSERT_EQ(n, 1);
 
         // This means that we need to swap out the no and the missing columns.

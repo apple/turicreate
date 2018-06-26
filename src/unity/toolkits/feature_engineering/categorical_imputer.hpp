@@ -188,35 +188,35 @@ class EXPORT categorical_imputer : public transformer_base {
    *
    * \param[in] options Options to set
    */
-  void init_options(const std::map<std::string, flexible_type>&_options);
+  void init_options(const std::map<std::string, flexible_type>&_options) override;
 
   /**
    * Get a version for the object.
    */
-  size_t get_version() const;
+  size_t get_version() const override;
 
   /**
    * Save the object using Turi's oarc.
    */
-  void save_impl(turi::oarchive& oarc) const;
+  void save_impl(turi::oarchive& oarc) const override;
 
   /**
    * Load the object using Turi's iarc.
    */
-  void load_version(turi::iarchive& iarc, size_t version);
+  void load_version(turi::iarchive& iarc, size_t version) override;
 
 
   /**
    * Initialize the transformer.
    */
-  void init_transformer(const std::map<std::string, flexible_type>& _options);
+  void init_transformer(const std::map<std::string, flexible_type>& _options) override;
 
   /**
    * Set constant.
    *
    * \param[in] data  (SFrame of data)
    */
-  void fit(gl_sframe data);
+  void fit(gl_sframe data) override;
 
   /**
    * Transform the given data.
@@ -228,7 +228,7 @@ class EXPORT categorical_imputer : public transformer_base {
    * This function directly interfaces with "transform" in python.
    *
    */
-  gl_sframe transform(gl_sframe data);
+  gl_sframe transform(gl_sframe data) override;
 
   /**
    * Fit and transform the given data. Intended as an optimization because

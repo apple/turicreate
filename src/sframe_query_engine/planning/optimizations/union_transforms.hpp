@@ -113,7 +113,7 @@ class opt_union_on_source : public opt_union_transform {
           }
 
           // Store the key, since it's somewhat expensive to extract.
-          input_keys[i] = key_type{begin_index, end_index, size};
+          input_keys[i] = key_type{{begin_index, end_index, size}};
 
           distinct_input_ranges.insert(input_keys[i]);
         }

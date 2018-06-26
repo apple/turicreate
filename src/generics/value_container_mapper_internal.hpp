@@ -107,7 +107,7 @@ class vc_hashkey<T, typename std::enable_if<std::is_integral<T>::value>::type> {
   }
 
   static constexpr bool is_deleted(const vc_hashkey& key) GL_HOT_INLINE_FLATTEN {
-    return use_explicit_delete() && (key._value == ~(T(0)) ^ 1);
+    return use_explicit_delete() && (key._value == (~(T(0)) ^ 1));
   }
   
   static vc_hashkey as_empty() {

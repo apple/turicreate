@@ -112,23 +112,23 @@ class EXPORT topic_model : public ml_model_base{
    *
    * \param[in] opts Options to set
    */
-  virtual void init_options(const std::map<std::string,flexible_type>& _opts) = 0;
+  virtual void init_options(const std::map<std::string,flexible_type>& _opts) override = 0;
 
 
   /**
    * Gets the model version number
    */
-  virtual size_t get_version() const = 0;
+  virtual size_t get_version() const override = 0;
 
   /**
    * Serialize the model object.
    */
-  virtual void save_impl(turi::oarchive& oarc) const = 0;
+  virtual void save_impl(turi::oarchive& oarc) const override = 0;
 
   /**
    * Load the model object.
    */
-  virtual void load_version(turi::iarchive& iarc, size_t version) = 0;
+  virtual void load_version(turi::iarchive& iarc, size_t version) override = 0;
 
   /**
    * Create a topic model.

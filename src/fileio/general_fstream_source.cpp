@@ -69,6 +69,7 @@ std::streampos general_fstream_source::seek(std::streamoff off,
     return underlying_stream->tellg();
   } else {
     ASSERT_MSG(false, "Attempting to seek in a compressed file. Fail!");
+    ASSERT_UNREACHABLE();
   }
 }
 

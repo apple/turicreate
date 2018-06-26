@@ -100,7 +100,7 @@ variant_type _supervised_streaming_evaluator(
   auto pred_reader = predictions->get_reader();
   size_t current_row = 0;
   size_t nrows_y = MBSIZE;
-  size_t nrows_yhat = MBSIZE;
+  TURI_ATTRIBUTE_UNUSED_NDEBUG size_t nrows_yhat = MBSIZE;
 
   while (nrows_y == MBSIZE) {
     std::vector<flexible_type> current_yhat;

@@ -477,7 +477,9 @@ flexible_type logistic_regression::predict_single_example(
         log_and_throw("Output type not supported");
     }
   }
-  DASSERT_TRUE(false);
+
+  log_and_throw(std::string("Configuration not supported"));
+  ASSERT_UNREACHABLE();
 }
 
 /**

@@ -2632,8 +2632,13 @@ struct slicer_impl {
       else real_start = m_start;
     } else {
       // default values
-      if (m_step > 0) real_start = 0;
-      else if (m_step < 0) real_start = s.size() - 1;
+      if (m_step > 0) {
+        real_start = 0;
+      } else if (m_step < 0) {
+        real_start = s.size() - 1;
+      } else {
+        log_and_throw("Step value for a slice cannot be zero.");
+      }
     }
 
     int64_t real_stop;
@@ -2642,8 +2647,13 @@ struct slicer_impl {
       else real_stop = m_stop;
     } else {
       // default values
-      if (m_step > 0) real_stop = s.size();
-      else if (m_step < 0) real_stop = -1;
+      if (m_step > 0) {
+        real_stop = s.size();
+      } else if (m_step < 0) {
+        real_stop = -1;
+      } else {
+        log_and_throw("Step value for a slice cannot be zero.");
+      }
     }
 
     if (m_step > 0 && real_start < real_stop) {
@@ -2658,7 +2668,10 @@ struct slicer_impl {
       for (int64_t i = real_start; i > real_stop; i += m_step) {
         ret.push_back(s[i]);
       }
+    } else {
+      // Slice is empty; append no items to return vector.
     }
+
     return ret;
   }
 };

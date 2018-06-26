@@ -135,6 +135,7 @@ template <> struct ft_converter<CVTR__FLEXIBLE_TYPE_EXACT> {
       dest = src.to<flex_int>();
     } else { 
       throw_type_conversion_error(src, "numeric value");
+      ASSERT_UNREACHABLE();
     }  
   }
   
@@ -146,9 +147,11 @@ template <> struct ft_converter<CVTR__FLEXIBLE_TYPE_EXACT> {
       dest = static_cast<flex_int>(v);
       if(UNLIKELY(v != dest)) { 
         throw_type_conversion_error(src, "integer value");
+        ASSERT_UNREACHABLE();
       }
     } else { 
       throw_type_conversion_error(src, "numeric integer value");
+      ASSERT_UNREACHABLE();
     }  
   }
   
@@ -159,6 +162,7 @@ template <> struct ft_converter<CVTR__FLEXIBLE_TYPE_EXACT> {
       dest = src.to<flex_vec>(); 
     } else { 
       throw_type_conversion_error(src, "vector of floats");
+      ASSERT_UNREACHABLE();
     }  
   }
   
@@ -169,6 +173,7 @@ template <> struct ft_converter<CVTR__FLEXIBLE_TYPE_EXACT> {
       dest = src.to<flex_list>(); 
     } else { 
       throw_type_conversion_error(src, "vector of floats");
+      ASSERT_UNREACHABLE();
     }  
   }
 
@@ -214,6 +219,7 @@ template <> struct ft_converter<CVTR__FLOATING_POINT> {
       dest = static_cast<Float>(src.get<flex_int>());
     } else {
       throw_type_conversion_error(src, "numeric");
+      ASSERT_UNREACHABLE();
     }
   }
 
@@ -239,12 +245,14 @@ template <> struct ft_converter<CVTR__INTEGER> {
       flex_float v = src.get<flex_float>();
       if(static_cast<Integer>(v) != v) {
         throw_type_conversion_error(src, "integer / convertable float");
+        ASSERT_UNREACHABLE();
       }
       dest = static_cast<Integer>(v);
     } else if(src.get_type() == flex_type_enum::INTEGER) {
       dest = static_cast<Integer>(src.get<flex_int>());
     } else {
       throw_type_conversion_error(src, "integer");
+      ASSERT_UNREACHABLE();
     }
   }
 
@@ -284,6 +292,7 @@ template <> struct ft_converter<CVTR__FLEX_STRING_CONVERTIBLE> {
       dest = src.get<flex_string>().c_str();
     } else {
       throw_type_conversion_error(src, "const char* (reference to temporary).");
+      ASSERT_UNREACHABLE();
     }
   }
 
@@ -325,6 +334,7 @@ template <> struct ft_converter<CVTR__FLEX_VEC_CONVERTIBLE_SEQUENCE> {
       dest.assign(f.begin(), f.end());
     } else {
       throw_type_conversion_error(src, "flex_vec");
+      ASSERT_UNREACHABLE();
     }
   }
 
@@ -360,6 +370,7 @@ template <> struct ft_converter<CVTR__FLEX_VEC_CONVERTIBLE_PAIR> {
       const flex_list& l = src.get<flex_list>();
       if(l.size() != 2) {
         throw_type_conversion_error(src, "2-element flex_list/flex_vec (list size != 2)");
+        ASSERT_UNREACHABLE();
       }
       convert_from_flexible_type(dest.first, l[0]);
       convert_from_flexible_type(dest.second, l[1]);
@@ -367,11 +378,13 @@ template <> struct ft_converter<CVTR__FLEX_VEC_CONVERTIBLE_PAIR> {
       const flex_vec& v = src.get<flex_vec>();
       if(v.size() != 2){
         throw_type_conversion_error(src, "2-element flex_list/flex_vec (vector size != 2)");
+        ASSERT_UNREACHABLE();
       }
       dest.first = static_cast<T>(v[0]);
       dest.second = static_cast<U>(v[1]);
     } else {
       throw_type_conversion_error(src, "2-element flex_list/flex_vec");
+      ASSERT_UNREACHABLE();
     }
   }
 
@@ -480,6 +493,7 @@ template <> struct ft_converter<CVTR__FLEX_DICT_CONVERTIBLE_SEQUENCE> {
       }
     } else {
       throw_type_conversion_error(src, "flex_dict or flex_list of 2-element list/vectors");
+      ASSERT_UNREACHABLE();
     }
   }
 
@@ -531,6 +545,7 @@ template <> struct ft_converter<CVTR__FLEX_DICT_CONVERTIBLE_MAPS> {
       }
     } else {
       throw_type_conversion_error(src, "flex_dict / list of 2-element flex_lists/flex_vec");
+      ASSERT_UNREACHABLE();
     }
   }
 
@@ -573,11 +588,13 @@ template <> struct ft_converter<CVTR__FLEX_LIST_CONVERTIBLE_PAIR> {
       const flex_list& l = src.get<flex_list>();
       if(l.size() != 2) {
         throw_type_conversion_error(src, "2-element flex_list/flex_vec (list size != 2)");
+        ASSERT_UNREACHABLE();
       }
       convert_from_flexible_type(dest.first, l[0]);
       convert_from_flexible_type(dest.second, l[1]);
     } else {
       throw_type_conversion_error(src, "2-element flex_list/flex_vec");
+      ASSERT_UNREACHABLE();
     }
   }
 
@@ -680,6 +697,7 @@ template <> struct ft_converter<CVTR__FLEX_LIST_CONVERTIBLE_SEQUENCE> {
       }
       default: {
         throw_type_conversion_error(src, "flex_list");
+        ASSERT_UNREACHABLE();
       }
     }
   }
@@ -731,6 +749,7 @@ template <> struct ft_converter<CVTR__ENUM> {
       dest = static_cast<Enum>(src.get<flex_int>());
     } else {
       throw_type_conversion_error(src, "integer / enum.");
+      ASSERT_UNREACHABLE();
     }
   }
 

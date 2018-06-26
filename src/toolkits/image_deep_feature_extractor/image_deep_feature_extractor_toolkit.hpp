@@ -23,17 +23,17 @@ public:
 
   image_deep_feature_extractor_toolkit() { };
 
-  void init_options(const std::map<std::string, flexible_type>& options);
+  void init_options(const std::map<std::string, flexible_type>& options) override;
 
   gl_sarray extract_features(gl_sframe data, const std::string& column_name, bool verbose, size_t batch_size) const;
 
-  inline size_t get_version() const { return -1; }
+  inline size_t get_version() const override { return -1; }
 
-  void save_impl(turi::oarchive& oarc) const {
+  void save_impl(turi::oarchive& oarc) const override {
     log_and_throw("Model serialization is not support for this model");
   }
 
-  void load_version(turi::iarchive& iarc, size_t version) {
+  void load_version(turi::iarchive& iarc, size_t version) override {
     log_and_throw("Model serialization is not support for this model");
   }
 

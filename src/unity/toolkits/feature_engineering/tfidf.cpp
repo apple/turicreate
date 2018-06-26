@@ -185,6 +185,7 @@ flexible_type tfidf_apply(const flexible_type& input,
         } else {
           // Non-numeric flexible type values are considered to have a
           // "term frequency" of 0 and thus a tf-idf of 0.0.
+          tfidf_score = 0.0;
         }
 
         // Debugging:

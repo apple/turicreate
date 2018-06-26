@@ -284,7 +284,9 @@ flexible_type linear_svm::predict_single_example(
       log_and_throw("Output type not supported.");
 
   }
-  DASSERT_TRUE(false);
+
+  log_and_throw(std::string("Configuration not supported"));
+  ASSERT_UNREACHABLE();
 }
 
 /**
@@ -317,7 +319,9 @@ flexible_type linear_svm::predict_single_example(
     case prediction_type_enum::PROBABILITY_VECTOR:
       log_and_throw("Output type not supported.");
   }
-  DASSERT_TRUE(false);
+
+  log_and_throw(std::string("Configuration not supported"));
+  ASSERT_UNREACHABLE();
 }
 
 

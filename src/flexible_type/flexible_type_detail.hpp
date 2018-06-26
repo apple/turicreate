@@ -858,7 +858,10 @@ struct city_hash_visitor {
   }
   inline FLEX_ALWAYS_INLINE_FLATTEN size_t operator()(const flex_float& t) const {
     flex_float t2 = std::isnan(t) ? NAN : t;
-    return turi::hash64(*reinterpret_cast<const size_t*>(&t2));
+    size_t t2_int;
+    static_assert(sizeof(flex_float) == sizeof(size_t), "sizeof(flex_float) == sizeof(size_t)");
+    memcpy(&t2_int, &t2, sizeof(size_t));
+    return turi::hash64(t2_int);
   }
   inline FLEX_ALWAYS_INLINE_FLATTEN size_t operator()(const flex_string& t) const {
     return turi::hash64(t);
@@ -897,7 +900,10 @@ struct city_hash128_visitor {
   }
   inline FLEX_ALWAYS_INLINE_FLATTEN uint128_t operator()(const flex_float& t) const {
     flex_float t2 = std::isnan(t) ? NAN : t;
-    return turi::hash128(*reinterpret_cast<const size_t*>(&t2));
+    size_t t2_int;
+    static_assert(sizeof(flex_float) == sizeof(size_t), "sizeof(flex_float) == sizeof(size_t)");
+    memcpy(&t2_int, &t2, sizeof(size_t));
+    return turi::hash128(t2_int);
   }
   inline FLEX_ALWAYS_INLINE_FLATTEN uint128_t operator()(const flex_string& t) const {
     return turi::hash128(t);

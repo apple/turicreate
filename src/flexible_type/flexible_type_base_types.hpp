@@ -289,6 +289,7 @@ struct flex_date_time {
     }
   }
 
+  friend class flexible_type;
 
  private:
   uint32_t m_posix_timestamp_low: 32;

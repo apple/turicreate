@@ -207,7 +207,7 @@ class broadcast_queue {
    * Sets the cache limit
    * \param cache limit Number of elements to cache
    */
-  size_t set_cache_limit(size_t cache_limit) {
+  void set_cache_limit(size_t cache_limit) {
     m_cache_limit = cache_limit;
     if (m_cache_limit == 0) m_cache_limit = 1;
   }

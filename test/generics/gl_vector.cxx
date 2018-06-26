@@ -34,6 +34,7 @@
 #include <generics/is_memmovable.hpp>
 #include <generics/gl_vector.hpp>
 #include <generics/gl_string.hpp>
+#include <util/basic_types.hpp>
 #include <util/testing_utils.hpp>
 
 using namespace turi;
@@ -1151,7 +1152,7 @@ struct gl_vector_string_test  {
     int j;
     for (j = 0; j < 10; ++j)
       TS_ASSERT_EQUALS(v[j], "");
-    for (int k = 0; k < N; ++j, ++k)
+    for (int k = 0; k < truncate_check<int64_t>(N); ++j, ++k)
       TS_ASSERT_EQUALS(v[j], a[k]);
     for (; j < 105; ++j)
       TS_ASSERT_EQUALS(v[j], "");

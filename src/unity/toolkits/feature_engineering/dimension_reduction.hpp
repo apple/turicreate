@@ -89,37 +89,37 @@ class EXPORT random_projection : public transformer_base {
   /**
    * Define the options manager and set the initial options.
    */
-  void init_options(const std::map<std::string, flexible_type>& user_opts);
+  void init_options(const std::map<std::string, flexible_type>& user_opts) override;
 
   /**
    * Get the version number for a `random_projection` object.
    */
-  size_t get_version() const;
+  size_t get_version() const override;
 
   /**
    * Save a `random_projection` object using Turi's oarc.
    */
-  void save_impl(oarchive& iarc) const;
+  void save_impl(oarchive& iarc) const override;
 
   /**
    * Load a `random_projection` object using Turi's iarc.
    */
-  void load_version(iarchive & iarc, size_t version);
+  void load_version(iarchive & iarc, size_t version) override;
 
   /**
    * Initialize the transformer. This is the primary entry points for C++ users.
    */
-  void init_transformer(const std::map<std::string, flexible_type>& user_opts);
+  void init_transformer(const std::map<std::string, flexible_type>& user_opts) override;
 
   /**
    * Fit the random projection. There is no real logic to write here, right?
    */
-  void fit(gl_sframe data);
+  void fit(gl_sframe data) override;
 
   /**
    * Transform data into a low-dimensional space.
    */
-  gl_sframe transform(gl_sframe data);
+  gl_sframe transform(gl_sframe data) override;
 
   /**
    * Fit and transform the given data. Intended as an optimization because

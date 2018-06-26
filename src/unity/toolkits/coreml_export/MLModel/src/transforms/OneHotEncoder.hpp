@@ -3,7 +3,8 @@
 
 #include "../Result.hpp"
 #include "../Model.hpp"
-#include "../../build/format/OneHotEncoder_enums.h"
+
+#include "unity/toolkits/coreml_export/protobuf_include_internal.hpp"
 
 
 namespace CoreML {

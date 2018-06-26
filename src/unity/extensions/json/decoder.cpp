@@ -278,6 +278,12 @@ static variant_type _any_from_serializable(const flexible_type& data, const sche
     case flex_type_enum::DATETIME:
     case flex_type_enum::IMAGE:
       log_and_throw("Unexpected input to _any_from_serializable: serializable flex_type does not include datetime or Image types.");
+    case flex_type_enum::ND_VECTOR:
+      log_and_throw("Unsupported flex_type_enum case: ND_VECTOR");
+      break;
+    default:
+      log_and_throw("Unsupported flex_type_enum case");
+      break;
   }
 }
 

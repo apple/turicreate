@@ -20,6 +20,7 @@
 #include <util/logit_math.hpp>
 #include <util/cityhash_tc.hpp>
 #include <util/dense_bitset.hpp>
+#include <util/sys_util.hpp>
 #include <parallel/pthread_tools.hpp>
 
 namespace turi { namespace sparse_sim {
@@ -109,7 +110,6 @@ class sparse_similarity_lookup_impl : public sparse_similarity_lookup {
     void print_break()  { table.print_line_break(); }
     void print_footer() {
       item_pair_count = num_items * num_items;
-      size_t _item_pair_count = num_items * num_items;
       double percent_complete = 100.0;
       
       table.print_row(
@@ -403,7 +403,6 @@ class sparse_similarity_lookup_impl : public sparse_similarity_lookup {
 
     // Pretty much no magic here.  Just read it all out and dump it
     // into the item_interaction_data lookup.
-    size_t max_num_threads = thread::cpu_count();
 
     sframe interaction_data = _interaction_data.select_columns(
         {item_column, similar_item_column, similarity_column});
@@ -648,8 +647,6 @@ class sparse_similarity_lookup_impl : public sparse_similarity_lookup {
     // Make sure it's at least 1.
     target_num_items_per_slice = std::max(num_items, target_num_items_per_slice);
 
-    size_t max_data_passes = options.at("max_data_passes") - 1; // One for the vertex setup round.
-
     auto slice_boundaries = calculate_upper_triangular_slice_structure(
         num_items, target_num_items_per_slice, max_slices);
 
@@ -769,7 +766,6 @@ class sparse_similarity_lookup_impl : public sparse_similarity_lookup {
     DASSERT_EQ(item_in_nearest_neighbors.size(), item_info.size());
     DASSERT_EQ(item_in_nearest_neighbors.popcount(), 0);
 
-    size_t max_num_threads = thread::cpu_count();
     size_t num_items = item_info.size();
     size_t num_users = items_per_user.size();
 
@@ -1012,7 +1008,7 @@ class sparse_similarity_lookup_impl : public sparse_similarity_lookup {
     
     // Now that that is set up, get the rest.
     const size_t num_items = item_info.size();
-    const size_t n = data->size();
+    TURI_ATTRIBUTE_UNUSED_NDEBUG const size_t n = data->size();
     DASSERT_EQ(items_per_row.size(), n);
     
     const size_t random_seed = (options.count("random_seed")

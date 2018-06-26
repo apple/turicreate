@@ -117,19 +117,19 @@ class EXPORT fp_growth : public ml_model_base {
   /**
    * Returns the current model version
    */
-  size_t get_version() const;
+  size_t get_version() const override;
 
   /**
    * Serializes the model. Must save the model to the file format version
    * matching that of get_version()
    */
-  void save_impl(oarchive& oarc) const;
+  void save_impl(oarchive& oarc) const override;
 
   /**
    * Loads a model previously saved at a particular version number.
    * Should raise an exception on failure.
    */
-  void load_version(iarchive& iarc, size_t version);
+  void load_version(iarchive& iarc, size_t version) override;
 
   /**
    * Set one of the options in the algorithm. Use the option manager to set
@@ -138,7 +138,7 @@ class EXPORT fp_growth : public ml_model_base {
    *
    * \param[in] options Options to set
    */
-  void init_options(const std::map<std::string,flexible_type>& _options);
+  void init_options(const std::map<std::string,flexible_type>& _options) override;
 
   /**
    * Get frequent itemsets using the FP-Growth algorithm.

@@ -8,7 +8,8 @@
 
 #include "Result.hpp"
 #include "Format.hpp"
-#include "../build/format/Model_enums.h"
+
+#include "unity/toolkits/coreml_export/protobuf_include_internal.hpp"
 
 namespace CoreML {
 

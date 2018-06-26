@@ -110,7 +110,14 @@ struct integer_pack_test {
     
     // integer boundary cases
     int64_t maxint = std::numeric_limits<int64_t>::max() >> 4;
-    for (size_t multiplier = maxint; multiplier < maxint; ++multiplier) {
+
+    //
+    // FIXME: The following loop is a no-op; did the author mean for multiplier
+    // to range from (maxint >> 4) to maxint by powers of two?
+    //
+    for (size_t multiplier = static_cast<size_t>(maxint);
+         multiplier < static_cast<size_t>(maxint);
+         ++multiplier) {
       size_t len = 128;
       uint64_t in[len];
       uint64_t out[len];

@@ -12,6 +12,8 @@
 #include <sframe_query_engine/planning/optimizations/optimization_transforms.hpp>
 #include <sframe_query_engine/query_engine_lock.hpp>
 
+#include <util/sys_util.hpp>
+
 ////////////////////////////////////////////////////////////////////////////////
 // Test chaining transforms
 
@@ -182,7 +184,7 @@ void optimization_engine::replace_node(cnode_info_ptr _old_node, pnode_ptr new_p
   // Go through the outputs of the node, making sure the inputs are
   // replaced with the old node.
   for(const auto& n_out : old_node->outputs) {
-    bool is_present = false;
+    TURI_ATTRIBUTE_UNUSED_NDEBUG bool is_present = false;
     for(size_t i = 0; i < n_out->inputs.size(); ++i) {
       if(n_out->inputs[i] == old_node) {
         is_present = true;

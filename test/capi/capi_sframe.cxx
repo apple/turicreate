@@ -16,8 +16,8 @@
 #include <ctime>
 #include <unity/toolkits/util/random_sframe_generation.hpp>
 #include <fileio/fileio_constants.hpp>
+#include <util/fs_util.hpp>
 #include "capi_utils.hpp"
-#include "boost_utils.hpp"
 
 BOOST_AUTO_TEST_CASE(test_sframe_allocation) {
     tc_error* error = NULL;
@@ -37,7 +37,11 @@ std::vector<std::pair<std::string, std::vector<double> > > data
       {"a",    {5.0, 2., 1., 0.5} },
       {"b",    {7.0, 2., 3., 1.5} } };
 
-std::string url = turi::fileio::get_system_temp_directory() + "/sf_tmp_1/";
+    std::string url = turi::fs_util::join({
+      turi::fs_util::system_temp_directory_unique_path("", ""),
+      "sf_tmp_1",
+      ""
+    });
 
     tc_error* error = NULL;
 
@@ -1605,7 +1609,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_most_aggregates) {
   size_t n_rows1 = 10000;
   size_t n_columns1 = 100;
   std::string column_types1 = "R";
-  for (int index = 1; index < n_columns1; index++) {
+  for (int index = 1; index < static_cast<int64_t>(n_columns1); index++) {
     column_types1 += all_types[rand() % 6];
     srand(time(NULL));
   }
@@ -1713,7 +1717,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_quantiles) {
   size_t n_rows1 = 10000;
   size_t n_columns1 = 100;
   std::string column_types1 = "RZ";
-  for (int index = 2; index < n_columns1; index++) {
+  for (int index = 2; index < static_cast<int64_t>(n_columns1); index++) {
     column_types1 += all_types[rand() % 6];
     srand(time(NULL));
   }
@@ -1797,7 +1801,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_argminmax) {
   size_t n_rows1 = 10000;
   size_t n_columns1 = 100;
   std::string column_types1 = "RZ";
-  for (int index = 2; index < n_columns1; index++) {
+  for (int index = 2; index < static_cast<int64_t>(n_columns1); index++) {
     column_types1 += all_types[rand() % 6];
     srand(time(NULL));
   }

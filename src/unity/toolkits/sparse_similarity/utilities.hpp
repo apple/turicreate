@@ -151,7 +151,6 @@ void iterate_through_sparse_item_array_by_slice(
     ElementProcessFunction&& process_element,
     SliceFinalizeFunction&& finalize_slice) {
   
-  const size_t max_num_threads = thread::cpu_count();
   const size_t n = data->size();
 
   if(n == 0)
@@ -195,13 +194,12 @@ void iterate_through_sparse_item_array_by_slice(
           // Check in case of cancelation
           check_user_cancelatation();
 
-          size_t block_row_index_start = 0, block_row_index_end = 0;
+          size_t block_row_index_start = 0;
           if(data_it.read_next(&block_row_index_start, &item_buffer_v) ) {
             break;
           }
           
           size_t n_rows_read = item_buffer_v.size();
-          block_row_index_end = block_row_index_start + n_rows_read;
           
           for(size_t inner_idx = 0; inner_idx < n_rows_read && !user_cancelation; ++inner_idx) {
 
@@ -372,7 +370,6 @@ std::shared_ptr<sarray<std::vector<std::pair<size_t, T> > > > transpose_sparse_s
   slice_delimiters.push_back(num_items);
 
   // Set up the transpose.
-  const size_t max_num_threads = thread::cpu_count();
   const size_t n = data->size();
   const size_t num_slices = slice_delimiters.size() - 1;
 
