@@ -76,6 +76,16 @@ void check_type_consistent_with_mode(const std::string& column_name,
 
     case ml_column_mode::UNTRANSLATED:
       return;
+
+    case ml_column_mode::CATEGORICAL_SORTED:
+      std::cerr << "Unsupported ml_column_mode: CATEGORICAL_SORTED"
+                << std::endl;  // TODO: finish
+      raise_error();
+      ASSERT_UNREACHABLE();
+      return;
+
+    default:
+      log_and_throw(std::string("Unhandled case in ml_column_mode enum"));
   }
 }
 

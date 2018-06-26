@@ -8,6 +8,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/integer_traits.hpp>
 #include <util/md5.hpp>
+#include <util/sys_util.hpp>
 #include <globals/globals.hpp>
 #include <logger/logger.hpp>
 #include <export.hpp>
@@ -36,7 +37,7 @@ void set_recv_timeout(int ms) {
 void set_conservative_socket_parameters(int z_socket) {
   int timeoutms = 500;
   int rcvmaxsize = -1;
-  int rc;
+  TURI_ATTRIBUTE_UNUSED_NDEBUG int rc;
   rc = nn_setsockopt(z_socket, NN_SOL_SOCKET, NN_RCVTIMEO, &timeoutms, sizeof(timeoutms));
   assert(rc == 0);
   rc = nn_setsockopt(z_socket, NN_SOL_SOCKET, NN_SNDTIMEO, &timeoutms, sizeof(timeoutms));

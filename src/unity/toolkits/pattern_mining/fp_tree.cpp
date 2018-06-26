@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <unity/toolkits/pattern_mining/fp_tree.hpp>
+#include <util/basic_types.hpp>
 
 namespace turi {
 namespace pattern_mining {
@@ -162,7 +163,7 @@ namespace pattern_mining {
     // Initialize Vectors
     std::vector<size_t> cond_header_counts(heading_size);
     std::vector<size_t> cond_header_ids(heading_size);
-    for(int i = 0; i < heading_size; i++){
+    for(int i = 0; i < truncate_check<int64_t>(heading_size); i++){
       cond_header_ids[i] = header.headings[i].id;
     }
 
@@ -187,7 +188,7 @@ namespace pattern_mining {
 
     // Format Output
     std::vector<std::pair<size_t, size_t>> item_counts(heading_size);
-    for(int i = 0; i < heading_size; i++){
+    for(int i = 0; i < truncate_check<int64_t>(heading_size); i++){
       item_counts[i] = std::make_pair(cond_header_ids[i], \
           cond_header_counts[i]);
     }

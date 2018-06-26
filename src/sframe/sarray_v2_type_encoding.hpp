@@ -7,6 +7,7 @@
 #define TURI_SFRAME_SARRAY_V2_TYPE_ENCODING_HPP
 #include <flexible_type/flexible_type.hpp>
 #include <sframe/sarray_v2_block_types.hpp>
+#include <util/basic_types.hpp>
 #include <util/dense_bitset.hpp>
 #include <sframe/integer_pack.hpp>
 namespace turi {
@@ -439,6 +440,11 @@ static bool typed_decode_stream_callback(const block_info& info,
       undefined_bitmap.clear();
       iarc.read((char*)undefined_bitmap.array, sizeof(size_t)*undefined_bitmap.arrlen);
       num_undefined = undefined_bitmap.popcount();
+    } else {
+      logstream(LOG_ERROR) << "Unexpected value for num_types: "
+                           << static_cast<int>(num_types)
+                           << " (expected 0, 1, or 2)" << std::endl;
+      return false;
     }
   } else {
     std::vector<flexible_type> values;
@@ -454,7 +460,7 @@ static bool typed_decode_stream_callback(const block_info& info,
         [&](const flexible_type& val) {
           // generate all the undefined
           if (num_undefined) {
-            while(last_id < dsize && 
+            while(last_id < truncate_check<int64_t>(dsize) &&
                   undefined_bitmap.get(last_id)) {
               callback(FLEX_UNDEFINED);
               ++last_id;
@@ -494,7 +500,7 @@ static bool typed_decode_stream_callback(const block_info& info,
     }
     // generate the final undefined values
     if (num_undefined) {
-      while(last_id < dsize && 
+      while(last_id < truncate_check<int64_t>(dsize) &&
             undefined_bitmap.get(last_id)) {
         callback(FLEX_UNDEFINED);
         ++last_id;

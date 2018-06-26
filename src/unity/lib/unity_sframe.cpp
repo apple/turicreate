@@ -55,6 +55,7 @@
 #include <boost/archive/iterators/base64_from_binary.hpp>
 #include <boost/archive/iterators/transform_width.hpp>
 #include <logger/logger.hpp>
+#include <util/basic_types.hpp>
 
 #ifdef TC_HAS_PYTHON
 #include <lambda/pylambda_function.hpp>
@@ -1698,9 +1699,6 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
         reader->read_rows(start, end, rows);
         std::stringstream ss;
 
-        // resize string for table view
-        size_t resize_table_view = 200;
-
         // for DateTime string formatting
         ss.exceptions(std::ios_base::failbit);
         ss.imbue(std::locale(ss.getloc(),
@@ -1734,7 +1732,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
       }
     };
 
-    auto getAccordion = [self, &reader, &ew, &column_names, &empty_tz](std::string column_name, size_t index) {
+    auto getAccordion = [self, &ew, &column_names, &empty_tz](std::string column_name, size_t index) {
 
         ASSERT_TRUE(std::find(column_names.begin(), column_names.end(), column_name) != column_names.end());
         DASSERT_LT(index, self->size());
@@ -1959,7 +1957,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
       std::string column_name;
 
       enum MethodType {GetRows = 0, GetAccordion = 1};
-      MethodType response;
+      auto response = NONE<MethodType>();
 
       auto sa = gl_sarray(std::vector<flexible_type>(1, input)).astype(flex_type_enum::DICT);
       flex_dict dict = sa[0].get<flex_dict>();
@@ -1968,9 +1966,9 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
         const auto& value = pair.second;
         if (key == "method") {
           if(value.get<flex_string>() == "get_rows"){
-            response = GetRows;
+            response = SOME(GetRows);
           }else if(value.get<flex_string>() == "get_accordion"){
-            response = GetAccordion;
+            response = SOME(GetAccordion);
           }
         } else if (key == "start") {
           start = value.get<flex_int>();
@@ -1983,10 +1981,14 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
         }
       }
 
-      if(response == GetRows){
+      if (!!response && *response == GetRows) {
         getRows(start, end);
-      }else if(response == GetAccordion){
+      } else if (!!response && *response == GetAccordion) {
         getAccordion(column_name, index);
+      } else {
+        std_log_and_throw(
+          std::runtime_error, "Unsupported case (should be either GetRows or GetAccordion).");
+        ASSERT_UNREACHABLE();
       }
     }
   });

@@ -6,10 +6,8 @@
 #include <unity/toolkits/coreml_export/coreml_export_utils.hpp>
 #include <memory>
 #include <map>
-#pragma push_macro("CHECK")
-#undef CHECK
-#include "MLModel/build/format/Model.pb.h"
-#pragma pop_macro("CHECK")
+
+#include "unity/toolkits/coreml_export/protobuf_include_internal.hpp"
 
 namespace turi {
 

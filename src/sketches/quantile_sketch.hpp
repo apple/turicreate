@@ -12,6 +12,8 @@
 #include <tuple>
 #include <logger/assertions.hpp>
 #include <serialization/serialization_includes.hpp>
+#include <util/basic_types.hpp>
+
 namespace turi {
 namespace sketches {
 
@@ -306,7 +308,12 @@ class quantile_sketch {
     lower_index = std::max<int>(lower_index, 0);
     // see if fast_query can give us a good answer now
     auto fast_query_iter = fast_query_iterator(rank - 1);
-    if (fast_query_iter->rmin >= lower_index && fast_query_iter->rmax <= upper_index) {
+    static_assert(std::is_same<size_t, decltype(fast_query_iter->rmin)>::value,
+                  "rmin expected to have type size_t");
+    static_assert(std::is_same<size_t, decltype(fast_query_iter->rmax)>::value,
+                  "rmax expected to have type size_t");
+    if (truncate_check<int64_t>(fast_query_iter->rmin) >= lower_index &&
+        truncate_check<int64_t>(fast_query_iter->rmax) <= upper_index) {
       return fast_query_iter->val;
     }
 
@@ -319,7 +326,12 @@ class quantile_sketch {
     // less than, or greater than the required number of elements, it is not
     // obvious that this will succeed either.
     for (size_t i = 0;i < m_query.size(); ++i) {
-      if (m_query[i].rmin >= lower_index && m_query[i].rmax <= upper_index){
+      static_assert(std::is_same<size_t, decltype(m_query[i].rmin)>::value,
+                    "rmin expected to have type size_t");
+      static_assert(std::is_same<size_t, decltype(m_query[i].rmax)>::value,
+                    "rmax expected to have type size_t");
+      if (truncate_check<int64_t>(m_query[i].rmin) >= lower_index &&
+          truncate_check<int64_t>(m_query[i].rmax) <= upper_index){
         size_t center = (m_query[i].rmax + m_query[i].rmin) / 2;
         if (std::fabs(center - rank) < tightest_range) {
           tightest = i;

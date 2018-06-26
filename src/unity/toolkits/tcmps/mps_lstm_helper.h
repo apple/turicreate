@@ -16,9 +16,12 @@
 
 extern const std::string lstm_weight_names_mxnet_format[12];
 
+API_AVAILABLE(macos(10.13))
 MPSMatrix * createWeightMatrix(id <MTLDevice> device, MPSRNNMatrixId wMatId, int inputFeatures, int outputFeatures);
 MPSRNNMatrixId MxnetNameToMatrixId (std::string mat_name);
+API_AVAILABLE(macos(10.13))
 MPSVector * MPSMatrixToVector (MPSMatrix * matrix);
+API_AVAILABLE(macos(10.13))
 void printMatrix(MPSMatrix * matrix, const char* name, NSUInteger byteOffset);
 
 

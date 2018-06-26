@@ -223,7 +223,7 @@ namespace turi {
       return key.TLS_RANDOM_SOURCE_KEY;
     }
     // This forces __init_keys__ to be called prior to main.
-    static pthread_key_t __unused_init_keys__(get_random_source_key());
+    static TURI_ATTRIBUTE_UNUSED pthread_key_t __unused_init_keys__(get_random_source_key());
 
   // the combination of the two mechanisms above will force the
   // thread local store to be initialized

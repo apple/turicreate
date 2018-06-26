@@ -87,7 +87,8 @@ struct fixed_size_cache_manager_test {
       char buf[256];
       fin.read(buf, sizeof(size_t)) ;
       fin.close();
-      size_t value = *((size_t*)buf);
+      size_t value;
+      memcpy(&value, buf, sizeof(size_t));
       TS_ASSERT_EQUALS(value, i);
     }
   }

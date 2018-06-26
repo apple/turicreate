@@ -7,6 +7,7 @@
 #include <ml_data/ml_data.hpp>
 #include <ml_data/metadata.hpp>
 #include <globals/globals.hpp>
+#include <util/basic_types.hpp>
 #include <cstdint>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -112,7 +113,7 @@ void row_data_block::load(turi::iarchive& iarc) {
         if(bs_dbl.get(dbl_i++)) {
           // It's a double masquerading as an int!
           double v = double(*(double_as_int_read_ptr++));
-          *write_ptr = *reinterpret_cast<uint64_t*>(&v);
+          memcpy(write_ptr, &v, sizeof(double));
         } else {
           *write_ptr = *(double_read_ptr++);
         }

@@ -24,13 +24,13 @@ class EXPORT quadratic_features : public transformer_base {
 
   public:
 
-  void init_transformer(const std::map<std::string, flexible_type>& _options);
-  size_t get_version() const;
-  void save_impl(oarchive& oarc) const;
-  void load_version(iarchive& iarc, size_t version);
-  void init_options(const std::map<std::string, flexible_type>& _options);
-  void fit(gl_sframe training_data);
-  gl_sframe transform(gl_sframe training_data);
+  void init_transformer(const std::map<std::string, flexible_type>& _options) override;
+  size_t get_version() const override;
+  void save_impl(oarchive& oarc) const override;
+  void load_version(iarchive& iarc, size_t version) override;
+  void init_options(const std::map<std::string, flexible_type>& _options) override;
+  void fit(gl_sframe training_data) override;
+  gl_sframe transform(gl_sframe training_data) override;
 
 
   BEGIN_CLASS_MEMBER_REGISTRATION("_QuadraticFeatures")

@@ -328,10 +328,10 @@ struct recsys_itemcf_test  {
           logprogress_stream << truth[i][j];
         logprogress_stream << "\n";
 
-        size_t item = rows[i][0];
-        size_t neighbor = rows[i][1];
+        TURI_ATTRIBUTE_UNUSED_NDEBUG size_t item = rows[i][0];
+        TURI_ATTRIBUTE_UNUSED_NDEBUG size_t neighbor = rows[i][1];
         flexible_type score = rows[i][2];
-        size_t rank = rows[i][3];
+        TURI_ATTRIBUTE_UNUSED_NDEBUG size_t rank = rows[i][3];
         DASSERT_EQ(item, truth[i][0]);
         DASSERT_EQ(neighbor, truth[i][1]);
         TS_ASSERT_DELTA(score, truth[i][2], DELTA);
@@ -444,10 +444,10 @@ struct recsys_itemcf_test  {
 
       for (size_t i = 0; i < ret_item_neighbor.num_rows(); i++){
 
-        size_t item = rows[i][0];
-        size_t neighbor = rows[i][1];
+        TURI_ATTRIBUTE_UNUSED_NDEBUG size_t item = rows[i][0];
+        TURI_ATTRIBUTE_UNUSED_NDEBUG size_t neighbor = rows[i][1];
         flexible_type score = rows[i][2];
-        size_t rank = rows[i][3];
+        TURI_ATTRIBUTE_UNUSED_NDEBUG size_t rank = rows[i][3];
 
         DASSERT_EQ(item, truth[i][0]);
         DASSERT_EQ(neighbor, truth[i][1]);
@@ -564,10 +564,10 @@ struct recsys_itemcf_test  {
 
       for (size_t i = 0; i < ret_item_neighbor.num_rows(); i++){
 
-        size_t item = rows[i][0];
-        size_t neighbor = rows[i][1];
+        TURI_ATTRIBUTE_UNUSED_NDEBUG size_t item = rows[i][0];
+        TURI_ATTRIBUTE_UNUSED_NDEBUG size_t neighbor = rows[i][1];
         flexible_type score = rows[i][2];
-        size_t rank = rows[i][3];
+        TURI_ATTRIBUTE_UNUSED_NDEBUG size_t rank = rows[i][3];
 
         DASSERT_EQ(item, truth[i][0]);
         DASSERT_EQ(neighbor, truth[i][1]);
@@ -719,10 +719,10 @@ struct recsys_itemcf_test  {
 
     for (size_t i = 0; i < ret_item_neighbor.num_rows(); i++){
 
-      size_t item = rows[i][0];
-      size_t neighbor = rows[i][1];
+      TURI_ATTRIBUTE_UNUSED_NDEBUG size_t item = rows[i][0];
+      TURI_ATTRIBUTE_UNUSED_NDEBUG size_t neighbor = rows[i][1];
       flexible_type score = rows[i][2];
-      size_t rank = rows[i][3];
+      TURI_ATTRIBUTE_UNUSED_NDEBUG size_t rank = rows[i][3];
       DASSERT_EQ(item, truth[i][0]);
       DASSERT_EQ(neighbor, truth[i][1]);
       TS_ASSERT_DELTA(score, truth[i][2], DELTA);
@@ -830,10 +830,10 @@ struct recsys_itemcf_test  {
 
       for (size_t i = 0; i < ret_item_neighbor.num_rows(); i++){
 
-        size_t item = rows[i][0];
-        size_t neighbor = rows[i][1];
+        TURI_ATTRIBUTE_UNUSED_NDEBUG size_t item = rows[i][0];
+        TURI_ATTRIBUTE_UNUSED_NDEBUG size_t neighbor = rows[i][1];
         flexible_type score = rows[i][2];
-        size_t rank = rows[i][3];
+        TURI_ATTRIBUTE_UNUSED_NDEBUG size_t rank = rows[i][3];
 
         DASSERT_EQ(item, truth[i][0]);
         DASSERT_EQ(neighbor, truth[i][1]);
@@ -940,10 +940,10 @@ struct recsys_itemcf_test  {
 
       for (size_t i = 0; i < ret_item_neighbor.num_rows(); i++){
 
-        size_t item = rows[i][0];
-        size_t neighbor = rows[i][1];
+        TURI_ATTRIBUTE_UNUSED_NDEBUG size_t item = rows[i][0];
+        TURI_ATTRIBUTE_UNUSED_NDEBUG size_t neighbor = rows[i][1];
         flexible_type score = rows[i][2];
-        size_t rank = rows[i][3];
+        TURI_ATTRIBUTE_UNUSED_NDEBUG size_t rank = rows[i][3];
         DASSERT_EQ(item, truth[i][0]);
         DASSERT_EQ(neighbor, truth[i][1]);
 

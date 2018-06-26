@@ -89,7 +89,6 @@ struct broadcast_queue_test {
        n_to_push = std::min(n_to_push, max_writeval - writeval);
        for (size_t i = 0;i < n_to_push; ++i) bq.push(writeval++);
 
-       auto util = fileio::fixed_size_cache_manager::get_instance().get_cache_utilization();
        for (size_t k = 0; k < K; ++k) {
          size_t n_to_read = rand() % 100;
          n_to_read = std::min(n_to_read, writeval - readval[k]);

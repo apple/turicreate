@@ -73,7 +73,7 @@ query_results.head()
 
 Now, for a simple image like this (let's say the 10th image in the data).
 ```python
-reference_data[9].show()
+reference_data[9]['image'].show()
 ```
 ![Similar images](images/sample_image.jpg)
 Note: the loading order of images is non-deterministic, so your 10th image

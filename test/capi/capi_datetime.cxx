@@ -11,7 +11,6 @@
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <flexible_type/flexible_type.hpp>
 #include <util/test_macros.hpp>
-#include "boost_utils.hpp"
 
 BOOST_AUTO_TEST_CASE(test_tc_datetime_create_empty) {
   tc_error* error = nullptr;

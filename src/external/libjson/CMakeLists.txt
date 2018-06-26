@@ -16,5 +16,11 @@ SOURCES
   Source/JSONWorker.cpp
   Source/JSONAllocator.cpp
   Source/JSONIterators.cpp
+COMPILE_FLAGS_EXTRA
+  -Wno-reorder
+COMPILE_FLAGS_EXTRA_GCC
+  -Wno-cpp
+COMPILE_FLAGS_EXTRA_CLANG
+  -Wno-header-guard
+  -Wno-\#warnings
 )
-

@@ -542,6 +542,7 @@ struct variant_converter<std::function<S(Args...)>,
   variant_type set(const std::function<S(Args...)>& val) {
     std_log_and_throw(std::invalid_argument,
                       "Cannot convert function to variant");
+    ASSERT_UNREACHABLE();
   }
 };
 

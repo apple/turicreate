@@ -25,7 +25,8 @@
 
 
 #define _BAD(param)                                                     \
-  ASSERT_MSG(false, (std::string(#param) + " \'" + param + "\' not recognized.").c_str())
+  ASSERT_MSG(false, (std::string(#param) + " \'" + param + "\' not recognized.").c_str()); \
+  ASSERT_UNREACHABLE(); \
 
 ////////////////////////////////////////////////////////////////////////////////
 // Step 1: Select the solver.

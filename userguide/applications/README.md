@@ -7,5 +7,6 @@ these common scenarios:
 * [Image classification](../image_classifier/README.md)
 * [Image similarity](../image_similarity/README.md)
 * [Object detection](../object_detection/README.md)
+* [Style Transfer](../style_transfer/README.md)
 * [Activity classification](../activity_classifier/README.md)
 * [Text classifier](../text_classifier/README.md)

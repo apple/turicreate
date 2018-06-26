@@ -782,6 +782,16 @@ sframe recsys_itemcf::get_similar_items(
 }
 
 
+
+// TODO: resolve these issues at the source level
+#if defined(__GNUC__)
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wswitch"
+#elif defined (__clang__)
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wswitch"
+#endif
+
 void recsys_itemcf::export_to_coreml(
     std::shared_ptr<recsys_model_base> recsys_model,
     const std::string& filename) {
@@ -883,5 +893,10 @@ void recsys_itemcf::export_to_coreml(
 
 }
 
+#if defined(__GNUC__)
+  #pragma GCC diagnostic pop
+#elif defined (__clang__)
+  #pragma clang diagnostic pop
+#endif
 
 }} // namespace 

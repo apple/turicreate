@@ -23,7 +23,7 @@ EXPORT flex_string infer_string_content_interpretation(gl_sarray data) {
    *  quite a bit here.  We'll update these rules in the future, when
    *  we figure out how useful this is and where it breaks.
    */
-  std::array<char, 4> _sep_chars = {' ', ',', '.', '\t'};
+  std::array<char, 4> _sep_chars {{' ', ',', '.', '\t'}};
 
   // Track this so they can be excluded from the final average.
   auto n_undefined_ptr = std::make_shared<atomic<size_t> >(0);
@@ -200,6 +200,16 @@ EXPORT flex_string infer_content_interpretation(gl_sarray data) {
     case flex_type_enum::UNDEFINED: {
       interpretation = "undefined";
       break;
+    }
+
+    case flex_type_enum::ND_VECTOR: {
+      log_and_throw(std::string("Flexible type case currently unsupported: ND_VECTOR"));
+      ASSERT_UNREACHABLE();
+    }
+
+    default: {
+      log_and_throw(std::string("Flexible type case not recognized"));
+      ASSERT_UNREACHABLE();
     }
   }
 

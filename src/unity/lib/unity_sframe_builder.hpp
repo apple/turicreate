@@ -112,7 +112,6 @@ class unity_sframe_builder: public unity_sframe_builder_base {
   bool m_closed = false;
   sframe m_sframe;
   std::vector<sframe::iterator> m_out_iters;
-  flex_type_enum m_ary_type = flex_type_enum::UNDEFINED;
   std::string m_sframe_index_file;
 
   std::vector<std::shared_ptr<row_history_t>> m_history;

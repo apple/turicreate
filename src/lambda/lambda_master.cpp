@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <lambda/lambda_constants.hpp>
 #include <shmipc/shmipc.hpp>
+#include <util/sys_util.hpp>
 
 namespace turi { namespace lambda {
 
@@ -83,7 +84,7 @@ static lambda_master* instance_ptr = nullptr;
     std::vector<size_t> returned_hashes = m_worker_pool->call_all_workers<size_t>(make_lambda_fn);
     // validate all worker returns the same hash
     size_t lambda_hash = returned_hashes[0];
-    for (auto& v : returned_hashes) {
+    for (TURI_ATTRIBUTE_UNUSED_NDEBUG auto& v : returned_hashes) {
       DASSERT_MSG(lambda_hash == v,
                   "workers should return the same lambda index");
     }

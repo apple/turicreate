@@ -105,9 +105,8 @@ void run_linear_svm_test(std::map<std::string, flexible_type> opts) {
   _pred_class = model->predict(data, "class");
 
   // Save predictions made by the model
-  size_t rows;
   auto reader = _pred_class->get_reader();
-  rows = reader->read_rows(0, examples, pred_class);
+  reader->read_rows(0, examples, pred_class);
 
   // Check that the predictions made by the model are right!
   for(size_t i=0; i < examples; i++){
@@ -154,7 +153,7 @@ void run_linear_svm_test(std::map<std::string, flexible_type> opts) {
   // ----------------------------------------------------------------------
   _pred_class = model->predict(data, "class");
   reader = _pred_class->get_reader();
-  rows = reader->read_rows(0, examples, pred_class);
+  reader->read_rows(0, examples, pred_class);
 
   // Check that the predictions made by the model are right!
   for(size_t i=0; i < examples; i++){
@@ -294,9 +293,8 @@ void run_linear_svm_scaled_logistic_opt_interface_test(std::map<std::string,
 
     // Check gradients, functions and hessians.
     DenseVector gradient(variables);
-    double func_value;
 
-    func_value = svm_interface->compute_function_value(point);
+    svm_interface->compute_function_value(point);
     svm_interface->compute_gradient(point, gradient);
   }
 

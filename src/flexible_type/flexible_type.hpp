@@ -1244,6 +1244,8 @@ class flexible_type {
     };
   } val;
 
+  void clear_memory_internal();
+
   inline FLEX_ALWAYS_INLINE_FLATTEN void ensure_unique() {
     switch(val.stored_type){
      case flex_type_enum::STRING:
@@ -1622,10 +1624,22 @@ inline FLEX_ALWAYS_INLINE const flex_image& flexible_type::get<flex_image>() con
 }
 
 
-//constructors
-inline FLEX_ALWAYS_INLINE flexible_type::flexible_type() noexcept { 
+
+inline FLEX_ALWAYS_INLINE void flexible_type::clear_memory_internal() {
+  static_assert(sizeof(flex_date_time) == 12, "sizeof(flex_date_time)");
+  static_assert(sizeof(flexible_type::union_type) == sizeof(flex_date_time) + 4,
+                "sizeof(flexible_type::union_type)");
+  static_assert(static_cast<int>(flex_type_enum::INTEGER) == 0,
+                "value of flex_type_enum::INTEGER");
+
   val.intval = 0;
+  val.dtval.m_microsecond = 0;
   val.stored_type = flex_type_enum::INTEGER;
+}
+
+//constructors
+inline FLEX_ALWAYS_INLINE flexible_type::flexible_type() noexcept {
+  clear_memory_internal();
 }
 
 template <typename T>
@@ -1759,8 +1773,7 @@ flexible_type::operator=(T&& other) {
 inline FLEX_ALWAYS_INLINE_FLATTEN void flexible_type::reset(flex_type_enum target_type) {
   // delete old value
   decref(val, val.stored_type);
-  // clear the value
-  val.intval = 0;
+  clear_memory_internal();
 
   // switch types
   val.stored_type = target_type;
@@ -1802,7 +1815,7 @@ inline FLEX_ALWAYS_INLINE_FLATTEN void flexible_type::reset(flex_type_enum targe
 
 inline FLEX_ALWAYS_INLINE_FLATTEN void flexible_type::reset() {
   decref(val, val.stored_type);
-  val.intval = 0;
+  clear_memory_internal();
   // switch types
   val.stored_type = flex_type_enum::INTEGER;
 }

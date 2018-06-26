@@ -13,6 +13,8 @@
 #include <image/image_type.hpp>
 #include <vector>
 #include <fileio/fileio_constants.hpp>
+#include <util/fs_util.hpp>
+
 #include "capi_utils.hpp"
 
 BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
@@ -173,7 +175,8 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
 
         // Set the l2 regression
         {
-          std::string url = turi::fileio::get_system_temp_directory() + "coreml_export_test_1_tmp.mlmodel";
+          std::string url = turi::fs_util::system_temp_directory_unique_path(
+            "", "_coreml_export_test_1_tmp.mlmodel");
           tc_flexible_type* ft_name = tc_ft_create_from_cstring(url.c_str(), &error);
           CAPI_CHECK_ERROR(error);
           tc_parameters_add_flexible_type(export_args, "filename", ft_name,
@@ -182,8 +185,8 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
           tc_release(ft_name);
         }
 
-        tc_variant* ret_2 = tc_model_call_method(model, "export_to_coreml",
-                                                 export_args, &error);
+        tc_model_call_method(model, "export_to_coreml",
+                             export_args, &error);
         CAPI_CHECK_ERROR(error);
         tc_release(export_args);
       }
@@ -191,7 +194,8 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
 
     // Test saving and loading the model.
     {
-      std::string model_path = turi::fileio::get_system_temp_directory() + "save_test_1_tmp_model";
+      std::string model_path =
+        turi::fs_util::system_temp_directory_unique_path("", "_save_test_1_tmp_model");
 
       tc_model_save(model, model_path.c_str(), &error);
       CAPI_CHECK_ERROR(error);

@@ -6,7 +6,7 @@
 #include <vector>
 #include <map>
 
-#include "../build/format/FeatureTypes_enums.h"
+#include "unity/toolkits/coreml_export/protobuf_include_internal.hpp"
 
 namespace CoreML {
     namespace Specification {

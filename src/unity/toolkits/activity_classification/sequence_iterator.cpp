@@ -7,6 +7,7 @@
 #include <iomanip>
 #include "sequence_iterator.hpp"
 #include "random/random.hpp"
+#include "util/sys_util.hpp"
 
 namespace turi {
 namespace sdk_model {
@@ -31,7 +32,7 @@ static std::map<std::string,size_t> generate_column_index_map(const std::vector<
  */
 static double vec_majority_value(const flex_vec& input_vec) {
     size_t counter = 0;
-    double candidate;
+    double candidate = 0.0;
     for (size_t i = 0; i < input_vec.size(); ++i) {
         double value = input_vec[i];
         if (counter == 0) {
@@ -123,7 +124,7 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
     DASSERT_TRUE(prediction_window > 0);
     DASSERT_TRUE(predictions_in_chunk > 0);
     DASSERT_TRUE(data.contains_column(session_id));
-    for (auto &feat : features) {
+    for (TURI_ATTRIBUTE_UNUSED_NDEBUG auto &feat : features) {
         DASSERT_TRUE(data.contains_column(feat));
     }
 
@@ -207,7 +208,7 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
         if (use_target) {
             curr_window_targets.push_back(line[column_index_map[target]]);
 
-            if (curr_window_targets.size() == prediction_window) {
+            if (curr_window_targets.size() == static_cast<size_t>(prediction_window)) {
                 auto target_val = vec_majority_value(curr_window_targets);
                 curr_chunk_targets.push_back(target_val);
                 curr_window_targets.clear();
@@ -215,7 +216,7 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
         }
         // Check if the aggregated chunk data has reached the maximal chunk length, and finalize
         // the chunk processing.
-        if (curr_chunk_features.size() == feature_size) {
+        if (curr_chunk_features.size() == static_cast<size_t>(feature_size)) {
             finalize_chunk(curr_chunk_features,
                            curr_chunk_targets,
                            curr_window_targets,

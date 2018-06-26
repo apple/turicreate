@@ -15,6 +15,7 @@
 #include <type_traits>
 #include <initializer_list>
 #include <logger/assertions.hpp>
+#include <util/basic_types.hpp>
 #include <utility>
 
 #ifdef NDEBUG
@@ -142,7 +143,7 @@ GL_HOT_INLINE
 void uninitialized_construct(T* first, const T* last) {
 
   if(std::is_trivial<T>::value) {
-    memset(first, (last - first) * sizeof(T), 0);
+    memset(first, 0, (last - first) * sizeof(T));
   } else {
     for(;first != last; ++first) {
       new (first) T ();
@@ -198,7 +199,7 @@ static inline void _check_pointer_valid(_vstruct<T>* info, const T* ptr, bool in
   if((info == nullptr && ptr != nullptr && !include_end_point)
      || (info != nullptr
          && (ptr < info->data
-             || std::distance((const T*)(info->data), ptr) > size(info)
+             || std::distance((const T*)(info->data), ptr) > truncate_check<int64_t>(size(info))
              || (!include_end_point && info->data + size(info) == ptr))))
 
     throw std::out_of_range("Position of iterator points outside valid range.");
@@ -635,7 +636,8 @@ static inline
 bool _contains_iterator(
     _vstruct<T>*& info, const T* it) {
   ptrdiff_t delta = std::distance(cbegin(info), it);
-  return (delta >= 0) && (delta < capacity(info));
+  return (
+    (delta >= 0) && (static_cast<int64_t>(delta) < static_cast<int64_t>(capacity(info))));
 }
 
 template <typename T, class InputIterator>

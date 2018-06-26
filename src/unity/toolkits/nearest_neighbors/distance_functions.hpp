@@ -107,18 +107,22 @@ struct distance_metric {
 
   virtual double distance(const DenseVector& a, const DenseVector& b) const {
     ASSERT_MSG(false, "Dense vector type not supported by this distance metric.");
+    ASSERT_UNREACHABLE();
   }
 
   virtual double distance(const SparseVector& a, const SparseVector& b) const {
     ASSERT_MSG(false, "Sparse vector type not supported by this distance metric.");
+    ASSERT_UNREACHABLE();
   }
 
   virtual double distance(const std::string& a, const std::string& b) const {
     ASSERT_MSG(false, "String type not supported by this distance metric.");
+    ASSERT_UNREACHABLE();
   }
 
   virtual double distance(const std::vector<double>& a, const std::vector<double>& b) const {
     ASSERT_MSG(false, "Vector of double type not supported by this distance metric.");
+    ASSERT_UNREACHABLE();
   }
 
 };

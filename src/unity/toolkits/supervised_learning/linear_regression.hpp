@@ -59,7 +59,7 @@ class EXPORT linear_regression: public supervised_learning_model_base {
    * \param[in] data ML-Data object created by the init function.
    *
    */
-  void model_specific_init(const ml_data& data, const ml_data& valid_data);
+  void model_specific_init(const ml_data& data, const ml_data& valid_data) override;
   
   /**
    * Initialize the options.
@@ -71,29 +71,29 @@ class EXPORT linear_regression: public supervised_learning_model_base {
   /**
    * Gets the model version number
    */
-  size_t get_version() const;
+  size_t get_version() const override;
 
   bool is_classifier() const override { return false; }
 
   /**
    * Train a regression model.
    */
-  void train();
+  void train() override;
   
   /**
    * Setter for model coefficieints.
    */
-  void set_coefs(const DenseVector& _coefs);
+  void set_coefs(const DenseVector& _coefs) override;
 
   /**
    * Serialize the object.
    */
-  void save_impl(turi::oarchive& oarc) const;
+  void save_impl(turi::oarchive& oarc) const override;
 
   /**
    * Load the object
    */
-  void load_version(turi::iarchive& iarc, size_t version);
+  void load_version(turi::iarchive& iarc, size_t version) override;
 
   /**
    * Predict for a single example. 
@@ -104,8 +104,9 @@ class EXPORT linear_regression: public supervised_learning_model_base {
    * \returns Prediction for a single example.
    *
    */
-  flexible_type predict_single_example(const DenseVector& x, 
-          const prediction_type_enum& output_type=prediction_type_enum::NA);
+  flexible_type predict_single_example(
+    const DenseVector& x,
+    const prediction_type_enum& output_type=prediction_type_enum::NA) override;
 
   /**
    * Predict for a single example. 
@@ -116,8 +117,9 @@ class EXPORT linear_regression: public supervised_learning_model_base {
    * \returns Prediction for a single example.
    *
    */
-  flexible_type predict_single_example(const SparseVector& x, 
-          const prediction_type_enum& output_type=prediction_type_enum::NA);
+  flexible_type predict_single_example(
+    const SparseVector& x,
+    const prediction_type_enum& output_type=prediction_type_enum::NA) override;
 
   /**
   * Get coefficients for a trained model.

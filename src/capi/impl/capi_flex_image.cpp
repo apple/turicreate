@@ -129,6 +129,8 @@ EXPORT const char* tc_flex_image_format(const tc_flex_image* image, tc_error** e
     case turi::Format::PNG: return "png";
     case turi::Format::RAW_ARRAY: return "raw";
     case turi::Format::UNDEFINED: return "undefined";
+    default:
+      log_and_throw(std::string("Unrecognized image format"));
   }
 
   ERROR_HANDLE_END(error, NULL);

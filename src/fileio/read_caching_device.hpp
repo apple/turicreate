@@ -9,6 +9,7 @@
 #include <fileio/block_cache.hpp>
 #include <fileio/sanitize_url.hpp>
 #include <parallel/mutex.hpp>
+#include <util/basic_types.hpp>
 #include <mutex>
 #include <map>
 namespace turi {
@@ -150,7 +151,7 @@ class read_caching_device {
       }
       return m_file_pos;
     } else {
-      get_contents()->seek(off, way, openmode);
+      return get_contents()->seek(off, way, openmode);
     }
   }
 
@@ -199,7 +200,7 @@ class read_caching_device {
     auto& bc = block_cache::get_instance();
     std::string key = get_key_name(block_number);
     int64_t ret = bc.read(key, output, startpos, startpos + length);
-    if (ret == length) return true;
+    if (static_cast<size_t>(ret) == length) return true;
 
     logstream(LOG_INFO) << "Fetching " << sanitize_url(m_filename) << " Block " << block_number << std::endl;
     // ok. failure... no such block or block is bad. We read it ourselves.
@@ -213,7 +214,11 @@ class read_caching_device {
     auto bytes_read = contents->read(&(block_contents[0]),
                                      block_end - block_start);
     // read failed.
-    if (bytes_read < block_end - block_start) return false;
+    static_assert(std::is_signed<decltype(bytes_read)>::value, "decltype(bytes_read) signed");
+    static_assert(std::is_integral<decltype(bytes_read)>::value, "decltype(bytes_read) integral");
+    if (bytes_read < truncate_check<int64_t>(block_end - block_start)) {
+      return false;
+    }
 
     // write the block
     bool write_block_ok = bc.write(key, block_contents);
