@@ -686,7 +686,7 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
    */
   // TODO: This function should be const
   variant_map_type api_evaluate(
-      gl_sframe data, std::string missing_value_action, std::string metric);
+      gl_sframe data, std::string missing_value_action, std::string metric, gl_sarray predictions = gl_sarray());
 
   /**
    *  API interface through the unity server.
@@ -764,11 +764,12 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
       "evaluate", supervised_learning_model_base::api_evaluate, "data",
-      "missing_value_action", "metric");
+      "missing_value_action", "metric", "predictions");
 
   register_defaults("evaluate",
                     {{"metric", std::string("_report")},
-                     {"missing_value_action", std::string("auto")}});
+                     {"missing_value_action", std::string("auto")},
+                     {"predictions", gl_sarray()}});
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
       "extract_features", supervised_learning_model_base::api_extract_features,
