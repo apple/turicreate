@@ -13,7 +13,7 @@ In this section we will cover
 - [Finding similar items](#finding-similar-items)
 - [Saving and loading](#saving-and-loading-models)
 
-##### Making recommendations
+#### Making recommendations
 
 Once a model is created, you can now make recommendations of new items
 for users.  To do so, call `model.recommend()` with an SArray of user
@@ -130,7 +130,7 @@ recommendations = m_side_info.recommend(['Charlie'],
 
 Given Charlie's age category, the model can incorporate what it knows about the importance of age categories for item recommendations.  Currently, the following models can take side information into account when making recommendations: [LinearRegressionModel](https://apple.github.io/turicreate/docs/api/generated/turicreate.linear_regression.LinearRegression.html), [FactorizationRecommender](https://apple.github.io/turicreate/docs/api/generated/turicreate.recommender.factorization_recommender.FactorizationRecommender.html#turicreate.recommender.factorization_recommender.FactorizationRecommender).  LinearRegressionModel is the simpler model, and FactorizationRecommender the more powerful.  For more details on how each model makes use of side information, please refer to the model definition sections in the individual models' API documentation.
 
-#### Incorporating new observation data
+##### Incorporating new observation data
 
 `recommend()` accepts new observation data. Currently, the [ItemSimilarityModel](https://apple.github.io/turicreate/docs/api/generated/turicreate.recommender.item_similarity_recommender.ItemSimilarityRecommender.html) makes the best use of this information.
 
