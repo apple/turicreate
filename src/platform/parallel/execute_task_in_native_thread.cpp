@@ -9,9 +9,9 @@
 
 namespace turi {
 /*
- * LIBHDFS is rather annoying in that it does not handle fibers/coroutines
+ * LIBHDFS is rather annoying in that it does not handle coroutines
  * correctly since libJVM's AttachCurrentThread() does not handle 
- * fibers/coroutines correctly.
+ * coroutines correctly.
  *
  * The solution is to simply have a task queue model which allows the 
  * readers from HDFS to redirect the read to some other thread for processing.

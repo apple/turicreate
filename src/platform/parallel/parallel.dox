@@ -9,7 +9,6 @@
  - Semaphore \ref turi::semaphore
  - Thread Barriers \ref turi::barrier
  - Thread pools and groups \ref turi::thread_pool \ref turi::thread_group
- - User-mode threading \ref turi::fiber_group
  - OpenMP-like primitives
  - A bunch of atomic primitves
  - etc
