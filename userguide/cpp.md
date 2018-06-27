@@ -20,6 +20,7 @@ Currently, the C++ API is not packaged for easy consumption outside of the Turi 
 * `-stdlib=libc++` - may be needed on macOS (probably not on Linux).
 * Assuming <PATH_TO_TC> refers to the location where you cloned the Turi Create repository, the following directories must be added to the include paths with `-I`, and to the link paths with `-L`:
   * `-I<PATH_TO_TC>/turicreate/src`
+  * `-I<PATH_TO_TC>/turicreate/src/external`
   * `-I<PATH_TO_TC>/turicreate/deps/local/include`
   * `-I<PATH_TO_TC>/turicreate/src/external/armadillo/include`
   * `-L<PATH_TO_TC>/turicreate/release/src/unity`
@@ -193,7 +194,7 @@ cd release/src/unity
 make -j8
 
 # And assuming predict.cpp is in a sibling directory of turicreate, run:
-c++ -std=c++11 -stdlib=libc++ -I../turicreate/src -I../turicreate/src/platform -I../turicreate/deps/local/include -I../turicreate/src/external/armadillo/include -DHASH_FOR_UINT128_DEFINED -DHASH_FOR_INT128_DEFINED -L../turicreate/release/src/unity -lunity_shared predict.cpp ../turicreate/release/src/unity/libunity.a
+c++ -std=c++11 -stdlib=libc++ -I../turicreate/src -I../turicreate/src/external -I../turicreate/src/platform -I../turicreate/deps/local/include -I../turicreate/src/external/armadillo/include -DHASH_FOR_UINT128_DEFINED -DHASH_FOR_INT128_DEFINED -L../turicreate/release/src/unity -lunity_shared predict.cpp ../turicreate/release/src/unity/libunity.a
 LD_LIBRARY_PATH=../turicreate/release/src/unity ./a.out
 ```
 
