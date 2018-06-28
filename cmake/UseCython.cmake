@@ -71,10 +71,6 @@ set( CYTHON_FLAGS "" CACHE STRING
   "Extra flags to the cython compiler." )
 mark_as_advanced( CYTHON_ANNOTATE CYTHON_NO_DOCSTRINGS CYTHON_FLAGS )
 
-set(PYTHON_INCLUDE_DIR
-  ${CMAKE_SOURCE_DIR}/deps/local/include/${PYTHON_VERSION})
-set(PYTHON_LIBRARIES 
-  ${CMAKE_SOURCE_DIR}/deps/local/lib/${CMAKE_SHARED_LIBRARY_PREFIX}${PYTHON_VERSION}${CMAKE_SHARED_LIBRARY_SUFFIX})
 find_package( PythonLibs REQUIRED )
 
 find_package( Cython REQUIRED )
@@ -223,11 +219,6 @@ function( compile_pyx _name generated_file )
   list( REMOVE_DUPLICATES pxd_dependencies )
   list( REMOVE_DUPLICATES c_header_dependencies )
 
-  if (${PYTHON_VERSION} STREQUAL "python3.4m")
-    set( ADDITIONAL_CYTHON_PARAM, "-3")
-  else()
-    set( ADDITIONAL_CYTHON_PARAM, "")
-  endif()
   # Add the command to run the compiler.
   add_custom_command( OUTPUT ${_generated_file}
     COMMAND ${CYTHON_EXECUTABLE}
@@ -258,7 +249,6 @@ function( cython_add_module _name )
     endif()
   endforeach()
   compile_pyx( ${_name} generated_file ${pyx_module_sources} )
-  include_directories( ${PYTHON_INCLUDE_DIRS} )
   # message(STATUS "Cython Generation: ${_name} ${generated_file}")
   # Creates a custom target only for generating headers.
   # add_custom_target(${_name}_headers DEPENDS ${generated_file})
@@ -280,7 +270,6 @@ function( cython_add_standalone_executable _name )
   set( other_module_sources "" )
   set( main_module "" )
   cmake_parse_arguments( cython_arguments "" "MAIN_MODULE" "" ${ARGN} )
-  include_directories( ${PYTHON_INCLUDE_DIRS} )
   foreach( _file ${cython_arguments_UNPARSED_ARGUMENTS} )
     if( ${_file} MATCHES ".*\\.py[x]?$" )
       get_filename_component( _file_we ${_file} NAME_WE )
@@ -306,5 +295,5 @@ function( cython_add_standalone_executable _name )
   set( CYTHON_FLAGS ${CYTHON_FLAGS} --embed )
   compile_pyx( "${main_module_we}_static" generated_file ${main_module} )
   add_executable( ${_name} ${generated_file} ${pyx_module_sources} ${other_module_sources} )
-  target_link_libraries( ${_name} ${PYTHON_LIBRARIES} ${pyx_module_libs} )
+  target_link_libraries( ${_name} ${pyx_module_libs} )
 endfunction()
