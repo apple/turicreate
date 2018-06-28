@@ -1,6 +1,5 @@
 project(Turi)
 
-
 # We require the most recent version of cmake and automatically
 # install the correct version when using the cmake lists
 cmake_minimum_required(VERSION 2.8.3)
@@ -84,9 +83,15 @@ if(APPLE)
   else()
     SET(TC_BASE_SDK macosx)
 
-    # Modify COMPILER_FLAGS instead of setting CMAKE_OSX_DEPLOYMENT_TARGET so
+    # Set a minimum version
+    if(NOT CMAKE_OSX_DEPLOYMENT_TARGET)
+      SET(CMAKE_OSX_DEPLOYMENT_TARGET 10.12)
+    endif()
+
+    # Modify COMPILER_FLAGS as well as setting CMAKE_OSX_DEPLOYMENT_TARGET so
     # that this setting propagates to external dependencies.
-    SET(COMPILER_FLAGS "${COMPILER_FLAGS} -mmacosx-version-min=10.12")
+    SET(COMPILER_FLAGS "${COMPILER_FLAGS} -mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}")
+
   endif()
 
   EXEC_PROGRAM(xcrun ARGS --sdk ${TC_BASE_SDK} --show-sdk-version OUTPUT_VARIABLE TC_BASE_SDK_VERSION RETURN_VALUE _xcrun_ret)
