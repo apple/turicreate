@@ -19,7 +19,6 @@ subdirs(
         cppipc
         flexible_type
         parallel
-        fiber
         lambda
         sframe
         sgraph

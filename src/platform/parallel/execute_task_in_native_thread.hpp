@@ -11,7 +11,7 @@ namespace turi {
 
 /**
  * Takes a function and executes it in a native stack space.
- * Used to get by some libjvm oddities when using coroutines / fibers.
+ * Used to get by some libjvm oddities when using coroutines.
  *
  * Returns an exception if an exception was thrown while executing the inner task.
  * \ingroup threading
@@ -52,7 +52,7 @@ struct value_type<void> {
 } // namespace native_exec_task_impl
 /**
  * Takes a function call and runs it in a native stack space.
- * Used to get by some libjvm oddities when using coroutines / fibers.
+ * Used to get by some libjvm oddities when using coroutines.
  *
  * Returns an exception if an exception was thrown while executing the inner task.
  */
