@@ -122,7 +122,7 @@ Turi Create 5.0 -- now in beta -- includes:
 To install the 5.0 beta into your virtual environment, use:
 
 ```shell
-(venv) pip install turicreate==5.0b1  
+(venv) pip install turicreate==5.0b2
 ```
 
 Documentation
