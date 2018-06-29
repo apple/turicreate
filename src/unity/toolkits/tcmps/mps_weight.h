@@ -33,7 +33,7 @@
 #import "mps_utils.h"
 
 API_AVAILABLE(macos(10.14))
-@interface RandomWeights : NSObject <MPSCNNConvolutionDataSource> {
+@interface TCMPSConvolutionWeights : NSObject <MPSCNNConvolutionDataSource> {
 @private
   NSUInteger _outputFeatureChannels;
   NSUInteger _inputFeatureChannels;
@@ -116,10 +116,11 @@ updateWithCommandBuffer:(__nonnull id<MTLCommandBuffer>)commandBuffer
                 (MPSCNNConvolutionWeightsAndBiasesState *__nonnull)sourceState;
 - (void)checkpoint;
 - (void)checkpointWithCommandQueue:(nonnull id<MTLCommandQueue>)commandQueue;
-@end /* RandomWeights */
+
+@end  // TCMPSConvolutionWeights
 
 API_AVAILABLE(macos(10.14))
-@interface BNData : NSObject <MPSCNNBatchNormalizationDataSource> {
+@interface TCMPSBatchNormData : NSObject <MPSCNNBatchNormalizationDataSource> {
 @private
   NSUInteger _channels;
   float *_betaPointer, *_gammaPointer, *_betaMomentumPointer,
@@ -185,7 +186,7 @@ API_AVAILABLE(macos(10.14))
 - (BOOL)updateGammaAndBetaWithBatchNormalizationState:
     (MPSCNNBatchNormalizationState *__nonnull)batchNormalizationState;
 
-@end // MyBatchNormData
+@end  // TCMPSBatchNormData
 
 
 #endif /* MPS_WEIGHT_H_ */

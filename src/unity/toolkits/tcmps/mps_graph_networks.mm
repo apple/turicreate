@@ -1,7 +1,7 @@
 #include "mps_graph_networks.h"
 #include "mps_graph_layers.h"
 
-@interface MyHandle : NSObject <MPSHandle>
+@interface TCMPSGraphNodeHandle : NSObject <MPSHandle>
 + (nullable instancetype)handleWithLabel:(NSString *)label;
 - (nullable instancetype)initWithLabel:(NSString *)label;
 - (NSString *)label;
@@ -57,7 +57,7 @@ void MPSGraphNetwork::Init(id<MTLDevice> _Nonnull device,
     layers[i]->Init(device, cmd_queue, config, weights);
   }
   input_node =
-      [MPSNNImageNode nodeWithHandle:[MyHandle handleWithLabel:@"input"]];
+      [MPSNNImageNode nodeWithHandle:[TCMPSGraphNodeHandle handleWithLabel:@"input"]];
   MPSNNImageNode *src = input_node;
   for (int i = 0; i < layers.size(); ++i) {
     layers[i]->InitFwd(src);
@@ -67,13 +67,13 @@ void MPSGraphNetwork::Init(id<MTLDevice> _Nonnull device,
     // Construct forward-backward graph
     if (loss_layer_) {
       loss_layer_->Init(device, cmd_queue, config, weights);
-      loss_layer_->labels_node.handle = [MyHandle handleWithLabel:@"labels"];
+      loss_layer_->labels_node.handle = [TCMPSGraphNodeHandle handleWithLabel:@"labels"];
       loss_layer_->InitFwd(src);
       src = loss_layer_->fwd_img_node;
       loss_layer_->InitBwd(src);
       src = loss_layer_->bwd_img_node;
     } else {
-      grad_node = [MPSNNImageNode nodeWithHandle:[MyHandle handleWithLabel:@"grad"]];
+      grad_node = [MPSNNImageNode nodeWithHandle:[TCMPSGraphNodeHandle handleWithLabel:@"grad"]];
       src = grad_node;
     }
     if (layers.size() > 0) {
@@ -166,7 +166,7 @@ int MPSGraphNetwork::NumParams() {
 }  // namespace mps
 }  // namespace turi
 
-@implementation MyHandle {
+@implementation TCMPSGraphNodeHandle {
   NSString *_label;
 }
 
@@ -187,7 +187,7 @@ int MPSGraphNetwork::NumParams() {
 }
 
 - (BOOL)isEqual:(id)what {
-  return [_label isEqual:((MyHandle *)what).label];
+  return [_label isEqual:((TCMPSGraphNodeHandle *)what).label];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
@@ -196,12 +196,12 @@ int MPSGraphNetwork::NumParams() {
     return self;
 
   _label =
-      [aDecoder decodeObjectOfClass:NSString.class forKey:@"MyHandleLabel"];
+      [aDecoder decodeObjectOfClass:NSString.class forKey:@"TCMPSGraphNodeHandleLabel"];
   return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
-  [aCoder encodeObject:_label forKey:@"MyHandleLabel"];
+  [aCoder encodeObject:_label forKey:@"TCMPSGraphNodeHandleLabel"];
 }
 
 + (BOOL)supportsSecureCoding {

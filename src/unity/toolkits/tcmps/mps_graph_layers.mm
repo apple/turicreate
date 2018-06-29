@@ -58,7 +58,7 @@ void ConvGraphLayer::Init(id<MTLDevice> _Nonnull device,
     init_b = weights.at(bias_key).data;
   }
 
-  weight = [RandomWeights alloc];
+  weight = [TCMPSConvolutionWeights alloc];
   weight = [weight initWithKernelWidth:k_w
                           kernelHeight:k_h
                   inputFeatureChannels:c_in
@@ -175,7 +175,7 @@ void BNGraphLayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q
   
   float batchNormEpsilon = get_array_map_scalar(config, "batch_norm_epsilon", 1e-5f);
   
-  data = [BNData alloc];
+  data = [TCMPSBatchNormData alloc];
   data = [data initWithChannels:ch
          kernelParamsBinaryName:name.c_str()
                          device:device

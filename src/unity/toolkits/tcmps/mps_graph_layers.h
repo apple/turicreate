@@ -135,7 +135,7 @@ struct ConvGraphLayer : public GraphLayer {
   MPSCNNConvolutionNode *_Nonnull node_fwd;
   MPSCNNConvolutionGradientNode *_Nonnull node_bwd;
   MPSNNDefaultPadding *_Nonnull pad_policy;
-  RandomWeights *_Nonnull weight;
+  TCMPSConvolutionWeights *_Nonnull weight;
 };
 
 // BN Layer
@@ -164,7 +164,7 @@ struct BNGraphLayer : public GraphLayer {
          std::string, std::tuple<std::string, float *, int, std::vector<int>>>
              &table) override;
 
-  BNData *_Nonnull data;
+  TCMPSBatchNormData *_Nonnull data;
   MPSCNNBatchNormalizationNode *_Nonnull node_fwd;
   MPSCNNBatchNormalizationGradientNode * _Nonnull node_bwd;
 };

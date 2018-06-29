@@ -20,7 +20,7 @@
 // Common utilities for all Layers
 // -----------------------------------------------------------------------------------------
 
-@interface MyAllocator : NSObject <MPSImageAllocator>
+@interface TCMPSImageAllocator : NSObject <MPSImageAllocator>
 
 /*! @abstract   Create a new MPSImage
  *  @discussion See class description for sample implementation
@@ -324,7 +324,7 @@ struct ConvLayer : public Layer {
   MPSCNNConvolutionGradient *_Nullable op_backward{nil};
   MPSCNNConvolutionDescriptor *_Nonnull desc;
 //  MPSCNNWeight *_Nonnull weight;
-  RandomWeights *_Nonnull weight;
+  TCMPSConvolutionWeights *_Nonnull weight;
 };
 
 struct BNLayer : public Layer {
@@ -360,7 +360,7 @@ struct BNLayer : public Layer {
   bool is_state_init{false};
   bool is_train_mode_{true};
   bool use_temp_images_{true};
-  BNData *_Nonnull data;
+  TCMPSBatchNormData *_Nonnull data;
   MPSCNNBatchNormalizationStatistics *_Nullable         stat{nil};
   MPSCNNBatchNormalization *_Nonnull                    op_forward;
   MPSCNNBatchNormalizationGradient *_Nullable           op_backward{nil};
