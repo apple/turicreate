@@ -7,16 +7,20 @@
 #define EXPORT __attribute__((visibility("default")))
 
 /*! \brief  macro to guard beginning and end section of all functions */
-#define API_BEGIN() try {
+#define API_BEGIN()                                                            \
+  @autoreleasepool {                                                           \
+  try {
+
 /*! \brief every function starts with API_BEGIN();
      and finishes with API_END() or API_END_HANDLE_ERROR */
 #define API_END()                                                              \
-  }                                                                            \
+  }  /* try */                                                                 \
   catch (...) {                                                                \
     NSLog(@"Error");                                                           \
     return -1;                                                                 \
   }                                                                            \
-  return 0; // NOLINT(*)
+  return 0;                                                                    \
+  }  /* @autoreleasepool */
 
 #ifdef __cplusplus
 extern "C" {

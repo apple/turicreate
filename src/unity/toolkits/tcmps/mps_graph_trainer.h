@@ -1,30 +1,11 @@
 #ifndef GRAPH_C_API_H_
 #define GRAPH_C_API_H_
 
-#import "mps_cnnmodule.h"
-#import "mps_graph_cnnmodule.h"
 #import "mps_trainer.h"
-#import <exception>
-
-#define EXPORT __attribute__((visibility("default")))
-
-/*! \brief  macro to guard beginning and end section of all functions */
-#define API_BEGIN() try {
-//\brief every function starts with API_BEGIN();
-//     and finishes with API_END() or API_END_HANDLE_ERROR
-#define API_END()                                                              \
-  }                                                                            \
-  catch (...) {                                                                \
-    NSLog(@"Error");                                                           \
-    return -1;                                                                 \
-  }                                                                            \
-  return 0; // NOLINT(*)
 
 #ifdef __cplusplus
 extern "C" {
 #endif // __cplusplus
-
-typedef void *MPSHandle;
 
 EXPORT int TCMPSHasHighPowerMetalDevice(bool *has_device);
 EXPORT int TCMPSMetalDeviceName(char *name, int max_len);
