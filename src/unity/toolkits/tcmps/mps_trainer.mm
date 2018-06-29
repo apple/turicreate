@@ -5,6 +5,10 @@
 #import "unordered_map"
 #import "mps_utils.h"
 
+using turi::mps::FloatArrayMap;
+using turi::mps::MPSCNNModule;
+using turi::mps::make_array_map;
+
 int CreateMPS(MPSHandle *out) {
   API_BEGIN();
   MPSCNNModule *mps = new MPSCNNModule();

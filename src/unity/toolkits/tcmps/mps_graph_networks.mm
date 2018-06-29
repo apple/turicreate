@@ -11,6 +11,9 @@
 + (BOOL)supportsSecureCoding;
 @end
 
+namespace turi {
+namespace mps {
+
 std::unique_ptr<MPSGraphNetwork> createNetworkGraph(
     GraphNetworkType network_id, const std::vector<int> &params,
     const FloatArrayMap &config) {
@@ -159,6 +162,9 @@ int MPSGraphNetwork::NumParams() {
   }
   return ret;
 }
+
+}  // namespace mps
+}  // namespace turi
 
 @implementation MyHandle {
   NSString *_label;

@@ -4,6 +4,11 @@
 #import "string"
 #import "unordered_map"
 
+using turi::mps::FloatArrayMap;
+using turi::mps::MetalDevice;
+using turi::mps::MPSGraphModule;
+using turi::mps::make_array_map;
+
 int HasHighPowerMetalDevice(bool *has_device) {
   API_BEGIN();
   if (has_device) {

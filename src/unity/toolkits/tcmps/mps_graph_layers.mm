@@ -2,6 +2,9 @@
 #include "mps_utils.h"
 
 
+namespace turi {
+namespace mps {
+
 // --------------------------------------------------------------------------------------------
 //                                 Layer Implementations
 // --------------------------------------------------------------------------------------------
@@ -322,3 +325,6 @@ MPSCNNLossLabelsBatch *YoloLossGraphLayer::CreateLossState(id<MTLDevice> _Nonnul
   }
   return loss_state;
 }
+
+}  // namespace mps
+}  // namespace turi

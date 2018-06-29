@@ -76,6 +76,9 @@ imageForCommandBuffer:(__nonnull id<MTLCommandBuffer>)cmdBuf
 
 @end // MPSCNNWeight
 
+namespace turi {
+namespace mps {
+
 struct MPSUpdater;
 
 enum LayerType {
@@ -554,5 +557,8 @@ private:
   std::unordered_map<std::string, MPSMatrix *> copy_weight_matrices_;
   
 };
+
+}  // namespace mps
+}  // namespace turi
 
 #endif

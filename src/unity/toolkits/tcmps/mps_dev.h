@@ -14,6 +14,9 @@
 #import <memory>
 #import <mutex>
 
+namespace turi {
+namespace mps {
+
 template<typename T>
 struct ThreadLocal {
 public:
@@ -46,4 +49,8 @@ struct MetalDefaultDevice {
 };
 
 typedef ThreadLocal<MetalDefaultDevice> MetalDevice;
+
+}  // namespace mps
+}  // namespace turi
+
 #endif /* mps_dev_h */

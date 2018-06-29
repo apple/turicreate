@@ -6,6 +6,9 @@
 #import "vector"
 #import <Foundation/Foundation.h>
 
+namespace turi {
+namespace mps {
+
 struct Layer;
 
 struct MPSUpdater {
@@ -57,5 +60,8 @@ struct AdamUpdater : public SGDUpdater {
     void NewIteration() override;
 };
 MPSUpdater *createUpdater(int updater_id);
+
+}  // namespace mps
+}  // namespace turi
 
 #endif

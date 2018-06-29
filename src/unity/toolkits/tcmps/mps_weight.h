@@ -44,7 +44,7 @@ API_AVAILABLE(macos(10.14))
 
   size_t sizeBias, sizeWeights;
   unsigned _seed;
-  OptimizerOptions _optimizerOptions;
+  turi::mps::OptimizerOptions _optimizerOptions;
   float t;
 
   id<MTLBuffer> weightMomentumBuffer, biasMomentumBuffer, weightVelocityBuffer,
@@ -76,7 +76,7 @@ API_AVAILABLE(macos(10.14))
                                   cmd_queue:(id<MTLCommandQueue> _Nonnull) cmd_q
                             init_weight_ptr:(float* __nullable) w_ptr
                               init_bias_ptr:(float* __nullable) b_ptr
-                           optimizerOptions:(OptimizerOptions)optimizerOptions;
+                           optimizerOptions:(turi::mps::OptimizerOptions)optimizerOptions;
 
 - (nonnull instancetype)initWithKernelWidth:(NSUInteger)kernelWidth
                                kernelHeight:(NSUInteger)kernelHeight
@@ -92,7 +92,7 @@ API_AVAILABLE(macos(10.14))
                                   cmd_queue:(id<MTLCommandQueue> _Nonnull) cmd_q
                             init_weight_ptr:(float* __nullable) w_ptr
                               init_bias_ptr:(float* __nullable) b_ptr
-                           optimizerOptions:(OptimizerOptions)optimizerOptions;
+                           optimizerOptions:(turi::mps::OptimizerOptions)optimizerOptions;
 
 - (MPSDataType)dataType;
 - (MPSCNNConvolutionDescriptor *__nonnull)descriptor;
@@ -125,7 +125,7 @@ API_AVAILABLE(macos(10.14))
   float *_betaPointer, *_gammaPointer, *_betaMomentumPointer,
       *_betaVelocityPointer, *_gammaVelocityPointer, *_gammaMomentumPointer,
       *_movingVariancePointer, *_movingMeanPointer;
-  OptimizerOptions _optimizerOptions;
+  turi::mps::OptimizerOptions _optimizerOptions;
   float t;
   float _batchNormEpsilon;
 
@@ -162,7 +162,7 @@ API_AVAILABLE(macos(10.14))
                                     beta:(float *__nullable)b_ptr
                               moving_avg:(float *__nullable)ma_ptr
                               moving_var:(float *__nullable)mv_ptr
-                        optimizerOptions:(OptimizerOptions)optimizerOptions
+                        optimizerOptions:(turi::mps::OptimizerOptions)optimizerOptions
                         batchNormEpsilon:(float)batchNormEpsilon;
 
 // MPSCNNBatchNormalizationDataSource interface methods

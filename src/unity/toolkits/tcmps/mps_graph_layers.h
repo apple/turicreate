@@ -14,6 +14,9 @@
 
 #pragma clang diagnostic ignored "-Wunguarded-availability-new"
 
+namespace turi {
+namespace mps {
+
 struct GraphLayer {
   virtual void Init(id<MTLDevice> _Nonnull device,
                     id<MTLCommandQueue> _Nonnull cmd_queue,
@@ -218,5 +221,8 @@ private:
   Options options_;
   MPSCNNYOLOLossNode *yoloNode_;
 };
+
+}  // namespace mps
+}  // namespace turi
 
 #endif

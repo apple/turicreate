@@ -9,6 +9,9 @@
 #import "mps_utils.h"
 #include <sys/stat.h>
 
+namespace turi {
+namespace mps {
+
 FloatArrayMap make_array_map(char **names, void **arrays,
                              int64_t *sizes, int len) {
   FloatArrayMap ret;
@@ -75,3 +78,6 @@ float sumImage(MPSImage * _Nonnull image) {
     __builtin_trap();
   }
 }
+
+}  // namespace mps
+}  // namespace turi

@@ -7,7 +7,7 @@
 
 #include "mps_weight.h"
 
-
+using turi::mps::OptimizerOptions;
 
 
 

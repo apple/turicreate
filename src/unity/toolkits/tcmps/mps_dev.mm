@@ -7,6 +7,9 @@
 
 #import "mps_dev.h"
 
+namespace turi {
+namespace mps {
+
 API_AVAILABLE(macos(10.13))
 int devicePriority(id<MTLDevice> dev) {
   int prio = 0;
@@ -23,3 +26,6 @@ int devicePriority(id<MTLDevice> dev) {
   }
   return prio;
 }
+
+}  // namespace mps
+}  // namespace turi
