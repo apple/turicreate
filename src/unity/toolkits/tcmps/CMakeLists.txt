@@ -15,7 +15,7 @@ if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
         mps_cnnmodule.mm
         mps_graph_layers.mm
         mps_weight.mm
-        mps_dev.mm
+        mps_device_manager.m
         SHARED
     )
     target_compile_options(tcmps PUBLIC "-fobjc-arc -Wno-nullability-completeness -Wno-shadow-ivar")
