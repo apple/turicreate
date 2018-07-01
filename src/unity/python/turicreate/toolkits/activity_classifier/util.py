@@ -12,6 +12,7 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._internal_utils import _numeric_param_check_range
 
 MIN_NUM_SESSIONS_FOR_SPLIT = 100
+MAX_SESSIONS_TO_USE_IS_IN = 2000
 
 def random_split_by_session(dataset, session_id, fraction=0.9, seed=None):
     """
@@ -74,6 +75,38 @@ def random_split_by_session(dataset, session_id, fraction=0.9, seed=None):
         return dataset, None
 
     chosen, not_chosen = unique_sessions.random_split(fraction, seed)
-    train = dataset.filter_by(chosen['session'], session_id)
-    valid = dataset.filter_by(not_chosen['session'], session_id)
-    return train, valid
+
+    def split_using_is_in(data, session_id, not_chosen):
+        not_chosen_filter = data[session_id].is_in(not_chosen['session'])
+
+        train = data[1 - not_chosen_filter]
+        valid = data[not_chosen_filter]
+
+        return train, valid
+
+    def split_using_filter(data, session_id, chosen, not_chosen):
+
+        # The activty classifier assumes that lines within each session
+        # are consecutive samples, ordered in ascending time order.
+        # Since filter_by() does not maintain order - we will need to re-sort
+        # after the split.
+        id_column = "original_data_row_id"
+        data = data.add_row_number(id_column)
+
+        train = data.filter_by(chosen['session'], session_id)
+        valid = data.filter_by(not_chosen['session'], session_id)
+
+        train = train.sort(id_column)
+        valid = valid.sort(id_column)
+        train = train.remove_column(id_column)
+        valid = valid.remove_column(id_column)
+
+        return train, valid
+
+    # For a small number of unique sessions, creating a filter using SFrame.is_in() would
+    # be efficient - since filtering with a binary SArray maintains order, and no sorting
+    # is required.
+    if len(unique_sessions) < MAX_SESSIONS_TO_USE_IS_IN:
+        return split_using_is_in(dataset, session_id, not_chosen)
+    else:
+        return split_using_filter(dataset, session_id, chosen, not_chosen)
