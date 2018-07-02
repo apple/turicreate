@@ -181,8 +181,8 @@ class JSONTest(unittest.TestCase):
 
     def test_sarray_to_json(self):
         from ..data_structures.sarray import SArray
-        from ..data_structures.sframe import SFrame
         from .. import Image
+
         d = datetime.datetime(year=2016, month=3, day=5)
         [self._run_test_case(value) for value in [
             SArray(),

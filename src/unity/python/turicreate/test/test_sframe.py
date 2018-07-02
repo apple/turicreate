@@ -38,15 +38,7 @@ from .dbapi2_mock import dbapi2_mock
 #######################################################
 # Metrics tracking tests are in test_usage_metrics.py #
 #######################################################
-# Taken from http://stackoverflow.com/questions/1151658/python-hashable-dicts
-# by Alex Martelli
-class hashabledict(dict):
-    def __key(self):
-        return tuple((k,self[k]) for k in sorted(self))
-    def __hash__(self):
-        return hash(self.__key())
-    def __eq__(self, other):
-        return self.__key() == other.__key()
+
 
 class SFrameTest(unittest.TestCase):
     def setUp(self):
@@ -456,6 +448,16 @@ class SFrameTest(unittest.TestCase):
         sf2 = SFrame.read_json(f.name)
         sf2['float_data'] = sf2['float_data'].astype(float)
         self.__test_equal(sf2, self.dataframe)
+
+        with open(f.name, 'w') as out:
+            out.write('[\n]')
+        sf = SFrame.read_json(f.name)
+        self.__test_equal(SFrame(), sf.to_dataframe())
+
+        with open(f.name, 'w') as out:
+            out.write('')
+        sf = SFrame.read_json(f.name, orient='lines')
+        self.__test_equal(SFrame(), sf.to_dataframe())
 
         sf = SFrame(data=self.dataframe, format='dataframe')
         sf.export_json(f.name, orient='lines')

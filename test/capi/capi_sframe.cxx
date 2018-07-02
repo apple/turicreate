@@ -1496,6 +1496,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_slice_stride_test) {
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_read_json) {
+  // Test a normal looking json file
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_read_json("./json_test.json", &error);
 
@@ -1510,6 +1511,19 @@ BOOST_AUTO_TEST_CASE(test_sframe_read_json) {
   CAPI_CHECK_ERROR(error);
 
   TS_ASSERT(nr == 3);
+
+  // Test an empty json file
+  sf = tc_sframe_read_json("./json_test_empty.json", &error);
+
+  nc = tc_sframe_num_columns(sf, &error);
+  CAPI_CHECK_ERROR(error);
+
+  TS_ASSERT(nc == 0);
+
+  nr = tc_sframe_num_rows(sf, &error);
+  CAPI_CHECK_ERROR(error);
+
+  TS_ASSERT(nr == 0);
 
   tc_release(sf);
 }
