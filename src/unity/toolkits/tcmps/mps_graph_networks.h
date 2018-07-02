@@ -15,6 +15,9 @@
 #import "mps_networks.h"
 #import "mps_utils.h"
 
+namespace turi {
+namespace mps {
+
 struct GraphLayer;
 
 enum GraphNetworkType {
@@ -171,5 +174,7 @@ struct ODNetworkGraph : public MPSGraphNetwork {
   }
 };
 
+}  // namespace mps
+}  // namespace turi
 
 #endif

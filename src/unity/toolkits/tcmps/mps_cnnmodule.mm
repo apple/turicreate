@@ -2,6 +2,9 @@
 
 #include <iostream>
 
+namespace turi {
+namespace mps {
+
 namespace {
 
 MPSImageBatch * _Nonnull CreateImageBatch(id<MTLDevice> _Nonnull device,
@@ -461,3 +464,5 @@ MPSImageBatch *_Nonnull MPSCNNModule::ExtractLossImages(MPSCNNLossLabelsBatch *_
     return lossImage;
 }
 
+}  // namespace mps
+}  // namespace turi

@@ -1,5 +1,8 @@
 #import "mps_updater.h"
 
+namespace turi {
+namespace mps {
+
 void SGDUpdater::Init(const std::vector<Layer *> &net,
                       const std::vector<float> &fparam) {
   assert(fparam.size() == 1);
@@ -89,3 +92,5 @@ void AdamUpdater::NewIteration(){
     t++;
 }
 
+}  // namespace mps
+}  // namespace turi

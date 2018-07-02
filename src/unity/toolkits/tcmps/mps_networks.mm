@@ -1,6 +1,9 @@
 #include "mps_networks.h"
 #include "mps_layers.h"
 
+namespace turi {
+namespace mps {
+
 MPSNetwork *_Nonnull createNetwork(NetworkType network_id,
                                    const std::vector<int> &params,
                                    const FloatArrayMap& config) {
@@ -169,3 +172,5 @@ MPSImageBatch *_Nonnull MPSNetwork::Loss(MPSImageBatch *_Nonnull src,
   return lossLayer->bwd_output; // Loss gradients
 }
 
+}  // namespace mps
+}  // namespace turi
