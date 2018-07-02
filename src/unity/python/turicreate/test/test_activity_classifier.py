@@ -19,14 +19,15 @@ import pytest
 from turicreate.toolkits._internal_utils import _mac_ver
 
 
-def _load_data(self):
+def _load_data(self, num_examples = 1000, num_features = 3, max_num_sessions = 4,
+               randomize_num_sessions = True, num_labels = 9, prediction_window = 5):
     random.seed(42)
 
-    self.num_examples = 1000
-    self.num_features = 3
-    self.num_sessions = random.randint(1, 4)
-    self.num_labels = 9
-    self.prediction_window = 5
+    self.num_examples = num_examples
+    self.num_features = num_features
+    self.num_sessions = random.randint(1, max_num_sessions) if randomize_num_sessions else max_num_sessions
+    self.num_labels = num_labels
+    self.prediction_window = prediction_window
 
     self.features = ['X1-r', 'X2-r', 'X3-r']
     self.target = 'activity_label'
@@ -36,9 +37,8 @@ def _load_data(self):
     random_labels = [random.randint(0, self.num_labels - 1) for i in range(self.num_examples)]
 
     self.data = tc.util.generate_random_sframe(column_codes='r' * self.num_features, num_rows=self.num_examples)
-    self.data['session_id'] = random_session_ids
+    self.data[self.session_id] = random_session_ids
     self.data[self.target] = random_labels
-
 
 class ActivityClassifierCreateStressTests(unittest.TestCase):
     @classmethod
@@ -89,6 +89,74 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
                                               session_id=self.session_id,
                                               prediction_window=self.prediction_window,
                                               validation_set=None)
+
+
+class ActivityClassifierAutoValdSetTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.fraction = 0.9
+        self.seed = 42
+
+    def _create_auto_validation_set(self):
+        model = tc.activity_classifier.create(self.data,
+                            features=self.features ,
+                            target=self.target,
+                            session_id=self.session_id,
+                            prediction_window=self.prediction_window,
+                            validation_set='auto')
+        predictions = model.predict(self.data)
+
+    def _test_random_split_by_session(self, num_sessions, is_small= False):
+
+        train, valid = tc.activity_classifier.util.random_split_by_session(self.data, self.session_id, self.fraction, self.seed)
+
+        train_num_sessions = len(train[self.session_id].unique())
+        train_frac = float(train_num_sessions / num_sessions)
+        expected_frac = 1.0 if is_small else self.fraction
+
+
+        self.assertAlmostEqual(train_frac, expected_frac, places=1,
+                               msg= "Got {} train sessions out of {}, which is {:.3f}, and not the expected {}".format(
+                               train_num_sessions, num_sessions, train_frac, expected_frac))
+
+        if is_small:
+            self.assertTrue(valid is None, "For {} sessions - expected behaviour is no validation set.".format(num_sessions))
+            return
+
+        valid_num_sessions = len(valid[self.session_id].unique())
+        valid_frac = float(valid_num_sessions / num_sessions)
+        expected_valid_frac = 1.0 - self.fraction
+
+        self.assertAlmostEqual(valid_frac, expected_valid_frac, places=1,
+                               msg= "Got {} train sessions out of {}, which is {:.3f}, and not the expected {}".format(
+                               valid_num_sessions, num_sessions, valid_frac, expected_valid_frac))
+
+        train_sessions_set = set(train[self.session_id].unique())
+        valid_sessions_set = set(valid[self.session_id].unique())
+
+        self.assertTrue(train_sessions_set.isdisjoint(valid_sessions_set),
+                        "After train-test split, the train and validation sets should not include the same sessions")
+
+    def test_create_auto_validation_set_small(self):
+        num_sessions = tc.activity_classifier.util._MIN_NUM_SESSIONS_FOR_SPLIT / 2
+        _load_data(self, max_num_sessions=num_sessions, randomize_num_sessions=False)
+
+        self._create_auto_validation_set()
+        self._test_random_split_by_session(num_sessions, is_small=True)
+
+    def test_create_auto_validation_set_typical(self):
+        num_sessions = tc.activity_classifier.util._MAX_SESSIONS_TO_USE_IS_IN / 4
+        _load_data(self, num_examples=10000, max_num_sessions=num_sessions, randomize_num_sessions=False)
+
+        self._create_auto_validation_set()
+        self._test_random_split_by_session(num_sessions)
+
+    def test_create_auto_validation_set_large(self):
+        num_sessions = tc.activity_classifier.util._MAX_SESSIONS_TO_USE_IS_IN + 200
+        _load_data(self, num_examples=10000, max_num_sessions=num_sessions, randomize_num_sessions=False)
+
+        self._create_auto_validation_set()
+        self._test_random_split_by_session(num_sessions)
 
 class ActivityClassifierTest(unittest.TestCase):
 

@@ -11,8 +11,8 @@ from turicreate.util import _raise_error_if_not_of_type
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._internal_utils import _numeric_param_check_range
 
-MIN_NUM_SESSIONS_FOR_SPLIT = 100
-MAX_SESSIONS_TO_USE_IS_IN = 2000
+_MIN_NUM_SESSIONS_FOR_SPLIT = 100
+_MAX_SESSIONS_TO_USE_IS_IN = 2000
 
 def random_split_by_session(dataset, session_id, fraction=0.9, seed=None):
     """
@@ -70,8 +70,8 @@ def random_split_by_session(dataset, session_id, fraction=0.9, seed=None):
             'Input "dataset" must contain a column called %s.' % session_id)
 
     unique_sessions = _SFrame({'session': dataset[session_id].unique()})
-    if len(unique_sessions) < MIN_NUM_SESSIONS_FOR_SPLIT:
-        print ("The dataset has less than the minimum of", MIN_NUM_SESSIONS_FOR_SPLIT, "sessions required for train-validation split. Continuing without validation set")
+    if len(unique_sessions) < _MIN_NUM_SESSIONS_FOR_SPLIT:
+        print ("The dataset has less than the minimum of", _MIN_NUM_SESSIONS_FOR_SPLIT, "sessions required for train-validation split. Continuing without validation set")
         return dataset, None
 
     chosen, not_chosen = unique_sessions.random_split(fraction, seed)
@@ -106,7 +106,7 @@ def random_split_by_session(dataset, session_id, fraction=0.9, seed=None):
     # For a small number of unique sessions, creating a filter using SFrame.is_in() would
     # be efficient - since filtering with a binary SArray maintains order, and no sorting
     # is required.
-    if len(unique_sessions) < MAX_SESSIONS_TO_USE_IS_IN:
+    if len(unique_sessions) < _MAX_SESSIONS_TO_USE_IS_IN:
         return split_using_is_in(dataset, session_id, not_chosen)
     else:
         return split_using_filter(dataset, session_id, chosen, not_chosen)
