@@ -9,6 +9,7 @@ extern "C" {
 
 EXPORT int TCMPSHasHighPowerMetalDevice(bool *has_device);
 EXPORT int TCMPSMetalDeviceName(char *name, int max_len);
+EXPORT int TCMPSMetalDeviceMemoryLimit(uint64_t *size);
 
 EXPORT int TCMPSCreateGraphModule(MPSHandle *handle);
 EXPORT int TCMPSDeleteGraphModule(MPSHandle handle);

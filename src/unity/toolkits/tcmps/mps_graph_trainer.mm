@@ -28,6 +28,19 @@ int TCMPSMetalDeviceName(char *name, int max_len) {
   API_END();
 }
 
+int TCMPSMetalDeviceMemoryLimit(uint64_t *size) {
+  API_BEGIN();
+
+  id <MTLDevice> dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
+  if (dev == nil) {
+    return 1;
+  }
+
+  *size = dev.recommendedMaxWorkingSetSize;
+
+  API_END();
+}
+
 int TCMPSCreateGraphModule(MPSHandle *out) {
   API_BEGIN();
   MPSGraphModule *mps = new MPSGraphModule();
