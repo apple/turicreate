@@ -43,9 +43,9 @@ If you don't already have it, you can install it with:
 
     pip install virtualenv
 
-Note that you may need to do a system-wide install with `sudo`; this depends on your Python environment and whether your `pip` binary requires sudo permissions.
+Note that you may need to do a system-wide install with `sudo`; this depends on your Python environment and whether your `pip` binary requires sudo permissions. Alternately, you could try `pip install --user` to force a user-local installation if `pip install` gives permission denied errors.
 
-Optionally, set a [generator](https://cmake.org/cmake/help/v3.0/manual/cmake-generators.7.html) for CMake before running configure. Ninja can speed up incremental builds, but is not required.
+Optionally, set a [generator](https://cmake.org/cmake/help/v3.0/manual/cmake-generators.7.html) for CMake before running `./configure`. Ninja can speed up incremental builds, but is not required.
 
     # Optional: set a generator
     # The default is "Unix Makefiles"
@@ -58,11 +58,11 @@ Optionally, set an environment variable named `VIRTUALENV` if you want to use a 
     # /usr/local/bin/virtualenv is using Python 2.7
     export VIRTUALENV=/Library/Frameworks/Python.framework/Versions/3.6/bin/virtualenv
 
-Then, run ./configure (optionally with command line arguments to control what is built):
+Then, run `./configure` (optionally with command line arguments to control what is built):
 
     ./configure
 
-Running configure will create two sub-directories, `release/` and
+Running `./configure` will create two sub-directories, `release/` and
 `debug/` . cd into `src/unity` under either of these directories and running make will build the
 release or the debug versions respectively.
 

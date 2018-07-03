@@ -44,7 +44,7 @@ function print_help {
   echo "  --with-remotefs (default)         Include capabilities for remote file access."
   echo "  --no-remotefs                     Disable remote file access."
   echo
-  echo "  --virtualenv                      Path to virtualenv executable (otherwise looks in \$PATH)."
+  echo "  --virtualenv VIRTUALENV_EXE       Path to virtualenv executable (otherwise looks in \$PATH)."
   echo 
   echo "  --yes                             Defaults to yes on a prompt"
   echo

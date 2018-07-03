@@ -30,6 +30,6 @@ cp -a $BUILD_TYPE/src/unity/python/turicreate/test deps/env/lib/${PYTHON_VERSION
 cd deps/env/lib/${PYTHON_VERSION}/site-packages/turicreate/test
 
 # run tests
-pytest -v --junit-xml=../../../../../../../pytest.xml
+${PYTHON} -m pytest -v --junit-xml=../../../../../../../pytest.xml
 
 date
