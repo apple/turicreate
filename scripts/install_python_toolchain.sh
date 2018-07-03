@@ -7,19 +7,22 @@ if [[ -z $VIRTUALENV ]]; then
   VIRTUALENV=virtualenv
 fi
 
-PIP=pip3
+$VIRTUALENV deps/env
+source deps/env/bin/activate
+
+PYTHON="${PWD}/deps/env/bin/python"
+PIP="${PYTHON} -m pip"
+
+PYTHON_MAJOR_VERSION=$(${PYTHON} -c 'import sys; print(sys.version_info.major)')
+PYTHON_MINOR_VERSION=$(${PYTHON} -c 'import sys; print(sys.version_info.minor)')
+PYTHON_VERSION="python${PYTHON_MAJOR_VERSION}.${PYTHON_MINOR_VERSION}"
+
 # TODO - not sure why 'm' is necessary here (and not in 2.7)
 # note that PYTHON_VERSION includes the word "python", like "python2.7" or "python3.6"
 PYTHON_FULL_NAME=${PYTHON_VERSION}m
 if [[ "${PYTHON_VERSION}" == "python2.7" ]]; then
-  PIP=pip
   PYTHON_FULL_NAME=python2.7
 fi
-
-$VIRTUALENV -p ${PYTHON_VERSION} ${PWD}/deps/env
-source ${PWD}/deps/env/bin/activate
-
-python_scripts=deps/env/bin
 
 function make_windows_exec_link {
   targetname=$1/`basename $2 .exe`
@@ -51,12 +54,8 @@ function download_file {
   fi
 } # end of download file
 
-$python_scripts/$PIP install --upgrade "pip>=8.1"
-$python_scripts/$PIP install -r scripts/requirements.txt
-if [[ $OSTYPE == darwin* ]]; then
-  # macOS only test dependency
-  $python_scripts/$PIP install pyobjc==4.2.2
-fi
+$PIP install --upgrade "pip>=8.1"
+$PIP install -r scripts/requirements.txt
 
 mkdir -p deps/local/lib
 mkdir -p deps/local/include

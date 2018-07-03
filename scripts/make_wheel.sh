@@ -37,20 +37,10 @@ print_help() {
   echo
   echo "  --target-dir=[dir]       The directory where the wheel and associated files are put."
   echo
-  echo "  --python2.7              Use Python 2.7 (default)."
-  echo
-  echo "  --python3.5              Use Python 3.5, default is Python 2.7."
-  echo
-  echo "  --python3.6              Use Python 3.6, default is Python 2.7."
-  echo
   echo "Produce a local wheel and skip test and doc generation"
   echo "Example: ./make_wheel.sh --skip_test"
   exit 1
 } # end of print help
-
-python27=0
-python35=0
-python36=0
 
 # command flag options
 # Parse command line configure flags ------------------------------------------
@@ -64,9 +54,6 @@ while [ $# -gt 0 ]
     --skip_cpp_test)        SKIP_CPP_TEST=1;;
     --skip_build)           SKIP_BUILD=1;;
     --skip_doc)             SKIP_DOC=1;;
-    --python2.7)            python27=1;;
-    --python3.5)            python35=1;;
-    --python3.6)            python36=1;;
     --release)              build_type="release";;
     --debug)                build_type="debug";;
     --help)                 print_help ;;
@@ -118,18 +105,7 @@ build_source() {
   # Configure
   cd ${WORKSPACE}
 
-  if [[ $(($python27 + $python35 + $python36)) -gt 1 ]]; then
-    echo "Two or more versions of Python specified. Pick one."
-    exit 1
-  fi
-
-  if [[ "$python35" == "1" ]]; then
-      ./configure --python3.5
-  elif [[ "$python36" == "1" ]]; then
-      ./configure --python3.6
-  else
-      ./configure --python2.7
-  fi
+  ./configure
 
   push_ld_library_path
 
@@ -182,12 +158,6 @@ mac_patch_rpath() {
   # - output is in the form [file]: type, so cut on ":", we just want the file
   flist=`find . -type f -not -path "*/CMakeFiles/*" -not -path "./dist/*" | xargs -L 1 file | grep x86_64 | cut -f 1 -d :`
 
-  # change libpython2.7 link to @rpath/libpython2.7
-  # Empirically, it could be one of either
-  for f in $flist; do
-    install_name_tool -change libpython2.7.dylib @rpath/libpython2.7.dylib $f || true
-    install_name_tool -change /System/Library/Frameworks/Python.framework/Versions/2.7/Python @rpath/libpython2.7.dylib $f || true
-  done
   # We are generally going to be installed in
   # a place of the form
   # PREFIX/lib/python2.7/site-packages/[module]

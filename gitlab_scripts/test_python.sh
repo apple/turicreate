@@ -11,7 +11,7 @@ fi
 
 BUILD_TYPE=$1
 date
-(test -d $BUILD_TYPE) || ./configure --$2
+(test -d $BUILD_TYPE) || ./configure
 date
 source deps/env/bin/activate
 date
@@ -21,10 +21,15 @@ date
 cd $BUILD_TYPE/src/unity/python
 make python_source
 cd ../../../..
-cp -a $BUILD_TYPE/src/unity/python/turicreate/test deps/env/lib/$2/site-packages/turicreate/
-cd deps/env/lib/$2/site-packages/turicreate/test
+
+PYTHON="deps/env/bin/python"
+PYTHON_MAJOR_VERSION=$(${PYTHON} -c 'import sys; print(sys.version_info.major)')
+PYTHON_MINOR_VERSION=$(${PYTHON} -c 'import sys; print(sys.version_info.minor)')
+PYTHON_VERSION="python${PYTHON_MAJOR_VERSION}.${PYTHON_MINOR_VERSION}"
+cp -a $BUILD_TYPE/src/unity/python/turicreate/test deps/env/lib/${PYTHON_VERSION}/site-packages/turicreate/
+cd deps/env/lib/${PYTHON_VERSION}/site-packages/turicreate/test
 
 # run tests
-pytest -v --junit-xml=../../../../../../../pytest.xml
+${PYTHON} -m pytest -v --junit-xml=../../../../../../../pytest.xml
 
 date
