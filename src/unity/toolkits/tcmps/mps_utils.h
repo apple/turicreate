@@ -16,6 +16,9 @@
 #include <string>
 #include <unordered_map>
 
+namespace turi {
+namespace mps {
+
 //
 // Optimizer options
 //
@@ -133,5 +136,8 @@ float sumSingleImage(MPSImage * _Nonnull image){
 }
 
 #pragma clang diagnostic pop
+
+}  // namespace mps
+}  // namespace turi
 
 #endif /* mps_utils_h */

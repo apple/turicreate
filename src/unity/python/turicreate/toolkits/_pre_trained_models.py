@@ -15,14 +15,24 @@ from six.moves.urllib import parse as _urlparse
 
 MODELS_URL_ROOT = 'https://docs-assets.developer.apple.com/turicreate/models/'
 
+
 def _get_model_cache_dir():
-    tmp_dir = _tc.config.get_runtime_config()['TURI_CACHE_FILE_LOCATIONS']
-    return _os.path.join(tmp_dir, 'model_cache')
+    cache_dir = _tc.config.get_runtime_config()['TURI_CACHE_FILE_LOCATIONS']
+    download_path = _os.path.join(cache_dir, 'model_cache')
+
+    if not _os.path.exists(download_path):
+        try:
+            _os.makedirs(download_path)
+        except:
+            raise RuntimeError("Could not write to the turicreate file cache, which is currently set to \"{cache_dir}\".\n"
+                               "To continue you must update this location to a writable path by calling:\n"
+                               "\ttc.config.set_runtime_config(\'TURI_CACHE_FILE_LOCATIONS\', <path>)\n"
+                               "Where <path> is a writable file path that exists.".format(cache_dir=cache_dir))
+
+    return download_path
+
 
 def _download_and_checksum_files(urls, dirname, delete=False):
-    if not _os.path.exists(dirname):
-        _os.makedirs(dirname)
-
     def url_sha_pair(url_or_pair):
         if isinstance(url_or_pair, tuple):
             return url_or_pair

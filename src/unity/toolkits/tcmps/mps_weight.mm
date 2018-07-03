@@ -7,11 +7,11 @@
 
 #include "mps_weight.h"
 
+using turi::mps::OptimizerOptions;
 
 
 
-
-@implementation RandomWeights
+@implementation TCMPSConvolutionWeights
 
 - (nonnull instancetype)initWithKernelWidth:(NSUInteger)kernelWidth
                                kernelHeight:(NSUInteger)kernelHeight
@@ -357,9 +357,9 @@ updateWithCommandBuffer:(__nonnull id<MTLCommandBuffer>)commandBuffer
 
 - (void)dealloc {
 }
-@end /* MyRandomWeights */
+@end  // TCMPSConvolutionWeights
 
-@implementation BNData
+@implementation TCMPSBatchNormData
 
 @synthesize internalLabel = _label;
 
@@ -770,4 +770,4 @@ updateGammaAndBetaWithCommandBuffer:(nonnull id<MTLCommandBuffer>)commandBuffer
     [movingVarianceBuffer didModifyRange:NSMakeRange(0, _channels * sizeof(float))];
 }
 
-@end // MyBatchNormData
+@end  // TCMPSBatchNormData

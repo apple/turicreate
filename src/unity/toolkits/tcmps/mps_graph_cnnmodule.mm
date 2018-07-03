@@ -31,6 +31,9 @@ NS_ASSUME_NONNULL_END
 
 @end
 
+namespace turi {
+namespace mps {
+
 MPSGraphModule::MPSGraphModule() {
   @autoreleasepool {
     dev_ = MetalDevice::Get()->dev;
@@ -318,4 +321,5 @@ void MPSGraphModule::MPSImage2Blob(float *ptr, MPSImageBatch *batch) {
   }
 }
 
-
+}  // namespace mps
+}  // namespace turi

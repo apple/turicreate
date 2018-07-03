@@ -185,7 +185,7 @@ def has_fast_mps_support():
         return False
 
     c_bool = _ctypes.c_bool()
-    ret = lib.HasHighPowerMetalDevice(_ctypes.byref(c_bool))
+    ret = lib.TCMPSHasHighPowerMetalDevice(_ctypes.byref(c_bool))
     return ret == 0 and c_bool.value
 
 
@@ -206,7 +206,7 @@ def mps_device_name():
 
     n = 256
     c_name = (_ctypes.c_char * n)()
-    ret = lib.MetalDeviceName(_ctypes.byref(c_name), _ctypes.c_int32(n))
+    ret = lib.TCMPSMetalDeviceName(_ctypes.byref(c_name), _ctypes.c_int32(n))
     if ret == 0:
         return _decode_bytes_to_native_string(c_name.value)
     else:
@@ -242,7 +242,7 @@ class MpsGraphAPI(object):
         self.handle = _ctypes.c_void_p()
         self._LIB = _load_tcmps_lib()
         assert self._LIB is not None, "Cannot use MpsGraphAPI without libtcmps.dylib"
-        self._LIB.CreateMPSGraph(_ctypes.byref(self.handle))
+        self._LIB.TCMPSCreateGraphModule(_ctypes.byref(self.handle))
         self._buf_out_fp16 = None
         self._buf_loss = None
         self._ishape = None
@@ -253,7 +253,7 @@ class MpsGraphAPI(object):
         self._cur_learning_rate = None
 
     def __del__(self):
-        self._LIB.DeleteMPSGraph(self.handle)
+        self._LIB.TCMPSDeleteGraphModule(self.handle)
 
     def init(self, n, c_in, h_in, w_in, c_out, h_out, w_out, config=None, weights=None):
         if weights is None:
@@ -271,7 +271,7 @@ class MpsGraphAPI(object):
 
         config_items, config_name, config_arr, config_sz = _prepare_network_parameters(config)
         weights_items, weights_name, weights_arr, weights_sz = _prepare_network_parameters(weights)
-        self._LIB.InitGraph(
+        self._LIB.TCMPSInitGraph(
             self.handle,
             self.network_id,
             _ctypes.c_int32(n),
@@ -332,16 +332,16 @@ class MpsGraphAPI(object):
             input_args = self.prepare_input(input, 0)
             label_args = self.prepare_label(label)
             args = input_args['args'] + label_args['args']
-            self._LIB.StartTrainingBatchGraph(self.handle, *args)
+            self._LIB.TCMPSStartTrainingBatchGraph(self.handle, *args)
         elif self._mode == MpsGraphMode.TrainReturnGrad:
             input_args = self.prepare_input(input, 0)
             grad_args = self.prepare_input(grad, 1)
             args = input_args['args'] + grad_args['args']
-            self._LIB.StartTrainReturnGradBatchGraph(self.handle, *args)
+            self._LIB.TCMPSStartTrainReturnGradBatchGraph(self.handle, *args)
         else:
             input_args = self.prepare_input(input, 0)
             args = input_args['args']
-            self._LIB.StartInferenceBatchGraph(self.handle, *args)
+            self._LIB.TCMPSStartInferenceBatchGraph(self.handle, *args)
 
     # Waits for a previously submitted batch to complete and returns the output.
     # For models initialized with MpsGraphMode.Train, the return value is the
@@ -351,28 +351,28 @@ class MpsGraphAPI(object):
     # input layer.
     def wait_for_batch(self):
         if self._mode == MpsGraphMode.Train:
-            self._LIB.WaitForTrainingBatchGraph(self.handle, _ctypes.byref(self._buf_loss))
+            self._LIB.TCMPSWaitForTrainingBatchGraph(self.handle, _ctypes.byref(self._buf_loss))
             loss = _np.frombuffer(self._buf_loss, dtype=_np.float32).copy()
             return loss
         elif self._mode == MpsGraphMode.TrainReturnGrad:
-            self._LIB.WaitForTrainReturnGradBatchGraph(self.handle, _ctypes.byref(self._buf_out_fp16))
+            self._LIB.TCMPSWaitForTrainReturnGradBatchGraph(self.handle, _ctypes.byref(self._buf_out_fp16))
             raw_out = _np.frombuffer(self._buf_out_fp16, dtype=_np.float16)
             out = raw_out.reshape(self._ishape).astype(_np.float32).copy()
             return out
         else:
-            self._LIB.WaitForInferenceBatchGraph(self.handle, _ctypes.byref(self._buf_out_fp16))
+            self._LIB.TCMPSWaitForInferenceBatchGraph(self.handle, _ctypes.byref(self._buf_out_fp16))
             raw_out = _np.frombuffer(self._buf_out_fp16, dtype=_np.float16)
             out = raw_out.reshape(self._oshape).astype(_np.float32).copy()
             return out
 
     def set_learning_rate(self, new_lr):
         self._cur_learning_rate = new_lr
-        self._LIB.SetLearningRateGraph(self.handle, _ctypes.c_float(new_lr))
+        self._LIB.TCMPSSetLearningRateGraph(self.handle, _ctypes.c_float(new_lr))
 
     def load(self, weights):
-        self._LIB.DeleteMPSGraph(self.handle)
+        self._LIB.TCMPSDeleteGraphModule(self.handle)
         self.handle = _ctypes.c_void_p()
-        self._LIB.CreateMPSGraph(_ctypes.byref(self.handle),
+        self._LIB.TCMPSCreateGraphModule(_ctypes.byref(self.handle),
                                  _ctypes.c_int(self._mode))
         n, h_in, w_in, c_in = self._ishape
         _, h_out, w_out, c_out = self._oshape
@@ -384,7 +384,7 @@ class MpsGraphAPI(object):
 
     def _num_params(self):
         num = _ctypes.c_int32(0)
-        self._LIB.NumParamsGraph(self.handle, _ctypes.byref(num))
+        self._LIB.TCMPSNumParamsGraph(self.handle, _ctypes.byref(num))
         return num.value
 
     def export(self):
@@ -394,7 +394,7 @@ class MpsGraphAPI(object):
         arrs = (_ctypes.c_void_p * num_args)()
         dims = (_ctypes.c_int64 * num_args)()
         shapes = (_ctypes.POINTER(_ctypes.c_int32) * num_args)()
-        self._LIB.ExportGraph(self.handle, names, arrs, dims, shapes)
+        self._LIB.TCMPSExportGraph(self.handle, names, arrs, dims, shapes)
         for i in range(num_args):
             arr_name = _decode_bytes_to_native_string(names[i])
             dim = dims[i]
@@ -419,7 +419,7 @@ class MpsLowLevelAPI(object):
         self.handle = _ctypes.c_void_p()
         self._LIB = _load_tcmps_lib()
         assert self._LIB is not None, "Cannot use MpsLowLevelAPI without libtcmps.dylib"
-        self._LIB.CreateMPS(_ctypes.byref(self.handle))
+        self._LIB.TCMPSCreateCNNModule(_ctypes.byref(self.handle))
         self._buf = None
         self._buf_g = None
         self._ishape = None
@@ -427,11 +427,11 @@ class MpsLowLevelAPI(object):
         self.network_id = network_id
 
     def __del__(self):
-        self._LIB.DeleteMPS(self.handle)
+        self._LIB.TCMPSDeleteCNNModule(self.handle)
 
     def init(self, n, c_in, h_in, w_in, c_out, h_out, w_out, updater=1, config={}):
         config_items, config_name, config_arr, config_sz = _prepare_network_parameters(config)
-        self._LIB.Init(
+        self._LIB.TCMPSInit(
             self.handle,
             self.network_id,
             _ctypes.c_int32(n),
@@ -467,7 +467,7 @@ class MpsLowLevelAPI(object):
         s = _np.array(x.shape).astype(_np.int64)
         shape = s.ctypes.data_as(_ctypes.POINTER(_ctypes.c_int64))
         dim = _ctypes.c_int32(x.ndim)
-        self._LIB.Forward(self.handle, ptr, sz, shape,
+        self._LIB.TCMPSForward(self.handle, ptr, sz, shape,
                           dim, _ctypes.byref(self._buf), _ctypes.c_bool(is_train))
 
         output = (_np.frombuffer(self._buf, dtype=_np.float32).reshape(self._oshape)).copy()
@@ -475,7 +475,7 @@ class MpsLowLevelAPI(object):
 
     def forward_with_loss(self, x, labels, weights, loss_image_required, is_train=True):
         assert x.shape == self._ishape
-        return self._loss_or_iteration_call(self._LIB.ForwardWithLoss, x, labels, weights, loss_image_required, is_train=is_train)
+        return self._loss_or_iteration_call(self._LIB.TCMPSForwardWithLoss, x, labels, weights, loss_image_required, is_train=is_train)
 
     def backward(self, g):
         assert g.shape == self._oshape
@@ -488,14 +488,14 @@ class MpsLowLevelAPI(object):
         s = _np.array(g.shape).astype(_np.int64)
         shape = s.ctypes.data_as(_ctypes.POINTER(_ctypes.c_int64))
         dim = _ctypes.c_int32(g.ndim)
-        self._LIB.Backward(self.handle, ptr, sz, shape,
+        self._LIB.TCMPSBackward(self.handle, ptr, sz, shape,
                            dim, _ctypes.byref(self._buf_g))
         output = (_np.frombuffer(self._buf_g, dtype=_np.float32).reshape(self._ishape)).copy()
         return output
 
     def loss(self, x, labels, weights, loss_image_required):
         assert x.shape == self._oshape
-        return self._loss_or_iteration_call(self._LIB.Loss, x, labels, weights, loss_image_required)
+        return self._loss_or_iteration_call(self._LIB.TCMPSLoss, x, labels, weights, loss_image_required)
 
     def _loss_or_iteration_call(self, lib_method, x, labels, weights, loss_image_required, is_train=None, async_batch_id=None):
         expected_label_shape = (self._oshape[:-1] + (1,))
@@ -566,27 +566,27 @@ class MpsLowLevelAPI(object):
 
     def forward_backward(self, x, labels, weights, loss_image_required):
         assert x.shape == self._ishape
-        return self._loss_or_iteration_call(self._LIB.ForwardBackward, x, labels, weights, loss_image_required)
+        return self._loss_or_iteration_call(self._LIB.TCMPSForwardBackward, x, labels, weights, loss_image_required)
 
     def get_loss_output(self):
         batch_size = self._ishape[0]
         loss_buff = (_ctypes.c_float * batch_size)()
-        self._LIB.GetLossImages(self.handle, _ctypes.byref(loss_buff))
+        self._LIB.TCMPSGetLossImages(self.handle, _ctypes.byref(loss_buff))
         output = (_np.frombuffer(loss_buff, dtype=_np.float32)).copy()
         return output
 
     def begin_forward_batch(self, async_batch_id, x, labels, weights, loss_image_required, is_train=True):
         assert x.shape == self._ishape
-        self._loss_or_iteration_call(self._LIB.BeginForwardBatch, x, labels, weights, loss_image_required, is_train=is_train, async_batch_id=async_batch_id)
+        self._loss_or_iteration_call(self._LIB.TCMPSBeginForwardBatch, x, labels, weights, loss_image_required, is_train=is_train, async_batch_id=async_batch_id)
 
     def begin_forward_backward_batch(self, async_batch_id, x, labels, weights, loss_image_required):
         assert x.shape == self._ishape
-        self._loss_or_iteration_call(self._LIB.BeginForwardBackwardBatch, x, labels, weights, loss_image_required, async_batch_id=async_batch_id)
+        self._loss_or_iteration_call(self._LIB.TCMPSBeginForwardBackwardBatch, x, labels, weights, loss_image_required, async_batch_id=async_batch_id)
 
     def wait_for_batch(self, async_batch_id):
         batch_size = self._ishape[0]
         loss_buff = (_ctypes.c_float * batch_size)()
-        self._LIB.WaitForBatch(self.handle, _ctypes.c_int(async_batch_id),
+        self._LIB.TCMPSWaitForBatch(self.handle, _ctypes.c_int(async_batch_id),
                                _ctypes.byref(self._buf), _ctypes.byref(loss_buff))
         forward_output = (_np.frombuffer(self._buf, dtype=_np.float32).reshape(self._oshape)).copy()
         loss_output = (_np.frombuffer(loss_buff, dtype=_np.float32)).copy()
@@ -594,11 +594,11 @@ class MpsLowLevelAPI(object):
 
     def load(self, weights):
         weights_items, weights_name, weights_arr, weights_sz = _prepare_network_parameters(weights)
-        self._LIB.Load(self.handle, weights_name, weights_arr, weights_sz, _ctypes.c_int32(len(weights_items)))
+        self._LIB.TCMPSLoad(self.handle, weights_name, weights_arr, weights_sz, _ctypes.c_int32(len(weights_items)))
 
     def _num_params(self):
         num = _ctypes.c_int32(0)
-        self._LIB.NumParams(self.handle, _ctypes.byref(num))
+        self._LIB.TCMPSNumParams(self.handle, _ctypes.byref(num))
         return num.value
 
     def export(self):
@@ -608,7 +608,7 @@ class MpsLowLevelAPI(object):
         arrs = (_ctypes.c_void_p * num_args)()
         dims = (_ctypes.c_int64 * num_args)()
         shapes = (_ctypes.POINTER(_ctypes.c_int32) * num_args)()
-        self._LIB.Export(self.handle, names, arrs, dims, shapes)
+        self._LIB.TCMPSExport(self.handle, names, arrs, dims, shapes)
         for i in range(num_args):
             arr_name = _decode_bytes_to_native_string(names[i])
             dim = dims[i]
@@ -621,10 +621,10 @@ class MpsLowLevelAPI(object):
         return args
 
     def cpu_update(self):
-        self._LIB.CpuUpdate(self.handle)
+        self._LIB.TCMPSCpuUpdate(self.handle)
 
     def update(self):
-        self._LIB.Update(self.handle)
+        self._LIB.TCMPSUpdate(self.handle)
 
     def initalize_weights(self):
         args = self.export()

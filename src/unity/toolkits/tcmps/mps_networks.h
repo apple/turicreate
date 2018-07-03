@@ -13,6 +13,9 @@
 #import "mps_updater.h"
 #import "mps_utils.h"
 
+namespace turi {
+namespace mps {
+
 struct Layer;
 struct Updater;
 struct ConvLayer;
@@ -295,4 +298,8 @@ struct SingleLstmNetwork : public MPSNetwork {
                                   {n, hi, wi, ci}, {n, ho, wo, co});
     }
 };
+
+}  // namespace mps
+}  // namespace turi
+
 #endif
