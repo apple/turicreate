@@ -13,6 +13,12 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
   endif()
 
   if(APPLE)
+    if (${CMAKE_BUILD_TYPE} MATCHES "RELEASE")
+      set(XCODE_BUILD_TYPE "Release")
+    else()
+      set(XCODE_BUILD_TYPE "Debug")
+    endif()
+
     set(VISUALIZATION_XCODE_OUTPUT
       "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/Turi Create Visualization.app/Contents/_CodeSignature/CodeResources"
       # TODO - there are probably more files that should go here, but this one might be sufficient.
@@ -55,7 +61,7 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
     message(WARNING "VISUALIZATION_XCODE_INPUT is ${VISUALIZATION_XCODE_INPUT}")
     add_custom_command(
       OUTPUT "${VISUALIZATION_XCODE_OUTPUT}"
-      COMMAND xcodebuild -project "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization.xcodeproj/" -configuration ${CMAKE_BUILD_TYPE} SYMROOT=${CMAKE_CURRENT_BINARY_DIR}
+      COMMAND xcodebuild -project "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization.xcodeproj/" -configuration ${XCODE_BUILD_TYPE} SYMROOT=${CMAKE_CURRENT_BINARY_DIR}
       COMMENT "Building visualization client via xcodebuild"
       DEPENDS ${VISUALIZATION_XCODE_INPUT}
       VERBATIM
@@ -72,7 +78,7 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
         DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}/deps
         SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef
         BUILD_IN_SOURCE 1
-        CONFIGURE_COMMAND ${CMAKE_COMMAND} .
+        CONFIGURE_COMMAND ${CMAKE_COMMAND} . -DCEF_CXX_COMPILER_FLAGS=-Wno-undefined-var-template
         BUILD_COMMAND "make"
         INSTALL_COMMAND ""
         BUILD_BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/libcef_dll_wrapper/libcef_dll_wrapper.a

@@ -74,4 +74,17 @@ elseif(LINUX)
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vg2png" "${CMAKE_CURRENT_BINARY_DIR}"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_SOURCE_DIR}/src/unity/python/turicreate/visualization/vg2svg" "${CMAKE_CURRENT_BINARY_DIR}"
   )
+
+  if(CLANG)
+    find_library(LIBCXX c++)
+    find_library(LIBCXXABI c++abi)
+    find_library(LIBUNWIND unwind)
+    add_custom_target(
+      copy_libcxx_deps ALL
+      COMMAND cp ${LIBCXX}.1.0 ${CMAKE_CURRENT_BINARY_DIR}/libc++.so.1
+      COMMAND cp ${LIBCXXABI}.1.0 ${CMAKE_CURRENT_BINARY_DIR}/libc++abi.so.1
+      COMMAND cp ${LIBUNWIND}.1.0 ${CMAKE_CURRENT_BINARY_DIR}/libunwind.so.1
+    )
+
+  endif()
 endif()

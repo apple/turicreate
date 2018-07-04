@@ -191,12 +191,12 @@ function( compile_pyx _name generated_file )
     set( no_docstrings_arg "--no-docstrings" )
   endif()
 
-  if( "${CMAKE_BUILD_TYPE}" STREQUAL "Debug" OR
-        "${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo" )
+  if( "${CMAKE_BUILD_TYPE}" STREQUAL "DEBUG" OR
+      "${CMAKE_BUILD_TYPE}" STREQUAL "RELWITHDEBINFO" )
       set( cython_debug_arg "--gdb" )
   endif()
 
-  if( "${CMAKE_BUILD_TYPE}" STREQUAL "Debug" )
+  if( "${CMAKE_BUILD_TYPE}" STREQUAL "DEBUG" )
     set (cython_traceback "")
   else()
     set (cython_traceback "--no-c-in-traceback")

@@ -49,8 +49,13 @@ static void __Pyx_CppExn2PyErr() {
     PyErr_SetString(PyExc_RuntimeError, exn.c_str());
   } catch (const char* exn) {
     PyErr_SetString(PyExc_RuntimeError, exn);
+  } catch (const std::exception& e)
+  {
+    std::string what = e.what();
+    PyErr_SetString(PyExc_RuntimeError, what.c_str());
   } catch (...)
   {
+    std::exception_ptr eptr = std::current_exception();
     PyErr_SetString(PyExc_RuntimeError, "Unknown exception");
   }
 }

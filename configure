@@ -424,7 +424,7 @@ set -o pipefail
 rm -rf ${RELEASE_DIR}/src/unity/python/turicreate/cython
 rm -rf ${DEBUG_DIR}/src/unity/python/turicreate/cython
 
-echo -e "\n\n\n======================= Release ========================" \
+echo -e "\n\n\n======================= RELEASE ========================" \
 
 if [ ! -d $RELEASE_DIR ]; then
     mkdir $RELEASE_DIR
@@ -433,7 +433,7 @@ cd $RELEASE_DIR
 rm -f CMakeCache.txt
 build_cmd="$CMAKE \
     $GENERATOR \
-    -D CMAKE_BUILD_TYPE=Release \
+    -D CMAKE_BUILD_TYPE=RELEASE \
     -D CMAKE_C_COMPILER=$CCCMD \
     -D CMAKE_CXX_COMPILER=$CXXCMD \
     $CMAKE_CONFIG_FLAGS
@@ -443,7 +443,7 @@ eval $build_cmd
 cd $TURI_HOME
 
 
-echo -e "\n\n\n======================= Debug =========================" \
+echo -e "\n\n\n======================= DEBUG =========================" \
 
 if [ ! -d $DEBUG_DIR ]; then
     mkdir $DEBUG_DIR
@@ -452,7 +452,7 @@ cd $DEBUG_DIR
 rm -f CMakeCache.txt
 build_cmd="$CMAKE \
     $GENERATOR \
-    -D CMAKE_BUILD_TYPE=Debug \
+    -D CMAKE_BUILD_TYPE=DEBUG \
     -D CMAKE_C_COMPILER=$CCCMD \
     -D CMAKE_CXX_COMPILER=$CXXCMD \
     $CMAKE_CONFIG_FLAGS

@@ -285,6 +285,7 @@ static variant_type _any_from_serializable(const flexible_type& data, const sche
       log_and_throw("Unsupported flex_type_enum case");
       break;
   }
+  log_and_throw("Unexpected input to _any_from_serializable: flex type not handled.");
 }
 
 static schema_t schema_from_flex_dict(const flexible_type& f) {

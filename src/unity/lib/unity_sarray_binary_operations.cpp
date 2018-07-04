@@ -564,6 +564,9 @@ get_binary_operator(flex_type_enum left, flex_type_enum right, std::string op) {
   } else {
     throw std::string("Invalid Operation Type");
   }
+
+  // if we got here, we didn't match any op type, or had bad logic above
+  log_and_throw("Invalid Operation Type");
 }
 
 

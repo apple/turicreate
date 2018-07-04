@@ -1832,6 +1832,9 @@ class roc_curve: public supervised_evaluation_interface {
         ASSERT_UNREACHABLE();
       }
     }
+
+    DASSERT_TRUE(false);
+    return to_variant(std::make_shared<unity_sframe>());
   }
 };
 
@@ -1954,6 +1957,8 @@ class auc: public roc_curve {
         ASSERT_UNREACHABLE();
       }
     }
+    DASSERT_TRUE(false);
+    return to_variant(0.0);
   }
 };
 

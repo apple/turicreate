@@ -1,4 +1,4 @@
-project(Turi)
+nproject(Turi)
 
 
 # We require the most recent version of cmake and automatically
@@ -9,6 +9,8 @@ cmake_minimum_required(VERSION 2.8.3)
 cmake_policy(SET CMP0003 NEW)
 # Preprocessor definition values are now escaped automatically.
 cmake_policy(SET CMP0005 NEW)
+# Debug/Release treated as case-insensitive
+cmake_policy(SET CMP0022 NEW)
 # for cmake 3.0
 if(${CMAKE_MAJOR_VERSION} GREATER 2)
 cmake_policy(SET CMP0045 OLD)
@@ -213,12 +215,15 @@ message(WARNING "OpenMP Libraries were not found")
 #*                                                                        */
 #**************************************************************************/
 if (CLANG)
-set(CPP11_FLAGS "-std=c++11 -stdlib=libc++ -Wno-deprecated-register -Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900" CACHE STRING "C++11 enabling flags")
-set(WERROR_FLAGS "-Werror")
+  set(CPP11_FLAGS "-std=c++11 -stdlib=libc++ -Wno-deprecated-register -Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900" CACHE STRING "C++11 enabling flags")
+  if (NOT APPLE)
+    # Clang on Linux -- explicitly choose compiler-rt and libunwind
+    set(CPP11_FLAGS "${CPP11_FLAGS} -rtlib=compiler-rt -lunwind" CACHE STRING "C++11 enabling flags")
+  endif()
 else()
-set(CPP11_FLAGS "-std=c++11 -Wno-enum-compare -Wno-conversion-null -ftemplate-depth=900" CACHE STRING "C++11 enabling flags")
-set(WERROR_FLAGS "-Werror")
+  set(CPP11_FLAGS "-std=c++11 -Wno-enum-compare -Wno-conversion-null -ftemplate-depth=900" CACHE STRING "C++11 enabling flags")
 endif()
+set(WERROR_FLAGS "-Werror")
 # Shared compiler flags used by all builds (debug, profile, release)
 # Allow COMPILER_FLAGS to be used as options from the ./configure without
 # forcing all the other options I want to add to be lost
@@ -395,14 +400,14 @@ endif()
 #**************************************************************************/
 
 set(CMAKE_BUILD_TYPE "${CMAKE_BUILD_TYPE}" CACHE STRING "Build Type")
-if (CMAKE_BUILD_TYPE MATCHES "Release")
+if (CMAKE_BUILD_TYPE MATCHES "RELEASE")
   message(STATUS "Release build with C++ flags: " ${CMAKE_CXX_FLAGS_RELEASE})
   message(STATUS "Release build with C flags: " ${CMAKE_C_FLAGS_RELEASE})
-elseif(CMAKE_BUILD_TYPE MATCHES "Debug")
+elseif(CMAKE_BUILD_TYPE MATCHES "DEBUG")
   message(STATUS "Debug build with C++ flags: " ${CMAKE_CXX_FLAGS_DEBUG})
   message(STATUS "Debug build with C flags: " ${CMAKE_C_FLAGS_DEBUG})
 else()
-  message(ERROR "Unknown build type: " ${CMAKE_BUILD_TYPE} "!. Rerun ./configure")
+  message(FATAL_ERROR "Unknown build type: " ${CMAKE_BUILD_TYPE} "!. Rerun ./configure")
 endif()
 
 
@@ -602,12 +607,6 @@ macro(make_library NAME)
     target_compile_options(${NAME} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-fvisibility-inlines-hidden>)
   endif()
 
-  if(NOT CLANG)
-    if (NOT WIN32)
-      # set_property(TARGET ${NAME} APPEND_STRING PROPERTY LINK_FLAGS " -static-libstdc++ ")
-    endif()
-  endif()
-
   if(APPLE)
   if(make_library_EXPORT_OSX_MAP_FILE)
     set_property(TARGET ${NAME} APPEND PROPERTY LINK_DEPENDS "${make_library_EXPORT_OSX_MAP_FILE}")
@@ -766,11 +765,6 @@ function (make_executable NAME)
                   COMMAND install_name_tool $<TARGET_FILE:${NAME}> -change libpython2.7.dylib @rpath/libpython2.7.dylib)
   endif()
 
-  if(NOT CLANG)
-    if (NOT WIN32)
-      # set_property(TARGET ${NAME} APPEND_STRING PROPERTY LINK_FLAGS "-static-libstdc++")
-    endif()
-  endif()
 endfunction()
 
 

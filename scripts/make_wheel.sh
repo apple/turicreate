@@ -211,14 +211,16 @@ package_wheel() {
     OLD_IFS=${IFS}
     IFS=$'\n'
 
-    for f in $BINARY_LIST; do
-      if [ $OSTYPE == "msys" ] && [ $f == "./pylambda_worker.exe" ]; then
-        echo "Skipping pylambda_worker"
-      else
-        echo "Stripping $f"
-        strip -s $f;
-      fi
-    done
+    if [[ "${build_type}" == "release" ]]; then
+      for f in $BINARY_LIST; do
+        if [ $OSTYPE == "msys" ] && [ $f == "./pylambda_worker.exe" ]; then
+          echo "Skipping pylambda_worker"
+        else
+          echo "Stripping $f"
+          strip -s $f;
+        fi
+      done
+    fi
 
     # set IFS back to default
     IFS=${OLD_IFS}

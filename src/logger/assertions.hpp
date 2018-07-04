@@ -381,7 +381,7 @@ extern void __print_back_trace();
         << "Check failed: " << #condition << ":\n";                     \
       logger(LOG_ERROR, fmt, ##__VA_ARGS__);                            \
       __print_back_trace();                                             \
-      TURI_LOGGER_FAIL_METHOD("assertion failure");                    \
+      assert(#condition);                                               \
     }                                                                   \
   } while(0)
 

@@ -134,7 +134,7 @@ if __name__ == '__main__':
         'turicreate': [
                      'cython/*.so', 'cython/*.pyd', 'cython/*.dll', 'id',
                      'toolkits/deeplearning/*.conf',
-                     '*.so', '*.so.1', '*.dylib', 'toolkits/*.dylib',
+                     '*.so', '*.so.*', '*.dylib', 'toolkits/*.dylib',
                      '*.dll', '*.def',
                      'deploy/*.jar', '*.exe',
                      'mxnet/*.ttf',
