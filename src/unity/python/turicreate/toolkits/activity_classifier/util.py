@@ -10,9 +10,9 @@ from turicreate import SFrame as _SFrame
 from turicreate.util import _raise_error_if_not_of_type
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._internal_utils import _numeric_param_check_range
+import random as _random
 
 _MIN_NUM_SESSIONS_FOR_SPLIT = 100
-_MAX_SESSIONS_TO_USE_IS_IN = 2000
 
 def random_split_by_session(dataset, session_id, fraction=0.9, seed=None):
     """
@@ -74,39 +74,24 @@ def random_split_by_session(dataset, session_id, fraction=0.9, seed=None):
         print ("The dataset has less than the minimum of", _MIN_NUM_SESSIONS_FOR_SPLIT, "sessions required for train-validation split. Continuing without validation set")
         return dataset, None
 
-    chosen, not_chosen = unique_sessions.random_split(fraction, seed)
+    # We need an actual seed number, which we will later use in the apply function (see below).
+    # If the user didn't provide a seed - we can generate one based on current system time
+    # (similarly to mechanism behind random.seed(None) )
+    if seed is None:
+        import time
+        seed = long(time.time() * 256)
 
-    def split_using_is_in(data, session_id, not_chosen):
-        not_chosen_filter = data[session_id].is_in(not_chosen['session'])
+    # Create a random binary filter (boolean SArray), using the same probability across all lines
+    # that belong to the same session. In expectancy - the desired fraction of the sessions will
+    # go to the training set.
+    # Since boolean filters preserve order - there is no need to re-sort the lines within each session.
+    def random_session_pick(session_id):
+        # If we will use only the session_id as the seed - the split will be constant for the
+        # same dataset across different runs, which is of course undesired
+        _random.seed(hash(session_id) + seed)
+        return _random.uniform(0, 1) < fraction
 
-        train = data[1 - not_chosen_filter]
-        valid = data[not_chosen_filter]
-
-        return train, valid
-
-    def split_using_filter(data, session_id, chosen, not_chosen):
-
-        # The activty classifier assumes that lines within each session
-        # are consecutive samples, ordered in ascending time order.
-        # Since filter_by() does not maintain order - we will need to re-sort
-        # after the split.
-        id_column = "original_data_row_id"
-        data = data.add_row_number(id_column)
-
-        train = data.filter_by(chosen['session'], session_id)
-        valid = data.filter_by(not_chosen['session'], session_id)
-
-        train = train.sort(id_column)
-        valid = valid.sort(id_column)
-        train = train.remove_column(id_column)
-        valid = valid.remove_column(id_column)
-
-        return train, valid
-
-    # For a small number of unique sessions, creating a filter using SFrame.is_in() would
-    # be efficient - since filtering with a binary SArray maintains order, and no sorting
-    # is required.
-    if len(unique_sessions) < _MAX_SESSIONS_TO_USE_IS_IN:
-        return split_using_is_in(dataset, session_id, not_chosen)
-    else:
-        return split_using_filter(dataset, session_id, chosen, not_chosen)
+    chosen_filter = dataset[session_id].apply(random_session_pick)
+    train = dataset[chosen_filter]
+    valid = dataset[1 - chosen_filter]
+    return train, valid
