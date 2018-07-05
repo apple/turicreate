@@ -9,6 +9,8 @@
 #include "NeuralNetworkShapes.hpp"
 #include "Utils.hpp"
 
+#include <functional>
+
 using namespace CoreML;
 
 void NeuralNetworkShaper::shapeConvolutionLayer(const Specification::NeuralNetworkLayer& specLayer) {

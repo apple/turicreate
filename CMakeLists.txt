@@ -581,6 +581,12 @@ macro(make_library NAME)
           set_target_properties(${NAME} PROPERTIES OUTPUT_NAME ${make_library_OUTPUT_NAME})
   endif()
 
+  # TODO why is this necessary? Without it, these flags don't seem to get passed in.
+  target_compile_options(${NAME} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-std=c++11>)
+  if (CLANG AND NOT APPLE)
+    target_compile_options(${NAME} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-stdlib=libc++>)
+  endif()
+
   if (make_library_COMPILE_FLAGS_EXTRA)
     target_compile_options(${NAME} PRIVATE ${make_library_COMPILE_FLAGS_EXTRA})
   endif()
