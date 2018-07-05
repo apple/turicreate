@@ -1,4 +1,4 @@
-nproject(Turi)
+project(Turi)
 
 
 # We require the most recent version of cmake and automatically
