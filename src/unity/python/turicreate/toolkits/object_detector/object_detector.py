@@ -273,13 +273,15 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     if batch_size < 1:
         batch_size = 32  # Default if not user-specified
     num_mxnet_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=batch_size)
-    batch_size_each = batch_size // max(num_mxnet_gpus, 1)
-    # Note, this may slightly alter the batch size to fit evenly on the GPUs
-    batch_size = max(num_mxnet_gpus, 1) * batch_size_each
     use_mps = _use_mps() and num_mxnet_gpus == 0
+    batch_size_each = batch_size // max(num_mxnet_gpus, 1)
     if use_mps and _mps_device_memory_limit() < 4 * 1024 * 1024 * 1024:
         # Reduce batch size for GPUs with less than 4GB RAM
-        batch_size = 16
+        batch_size_each = 16
+    # Note, this may slightly alter the batch size to fit evenly on the GPUs
+    batch_size = max(num_mxnet_gpus, 1) * batch_size_each
+    if verbose:
+        print("Setting 'batch_size' to {}".format(batch_size))
 
 
     # The IO thread also handles MXNet-powered data augmentation. This seems
@@ -419,6 +421,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
             progress['last_time'] = cur_time
 
     if use_mps:
+        # Force initialization of net_params
+        # TODO: Do not rely on MXNet to initialize MPS-based network
         net.forward(_mx.nd.uniform(0, 1, (batch_size_each,) + input_image_shape))
         mps_net_params = {}
         keys = list(net_params)
