@@ -10,10 +10,11 @@
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 
-#import "mps_dev.h"
-
 #import "mps_networks.h"
 #import "mps_updater.h"
+
+namespace turi {
+namespace mps {
 
 class MPSCNNModule {
 public:
@@ -114,5 +115,8 @@ private:
       bool loss_image_required, bool wait_until_completed, float *out,
       bool do_backward, bool is_train = true);
 };
+
+}  // namespace mps
+}  // namespace turi
 
 #endif

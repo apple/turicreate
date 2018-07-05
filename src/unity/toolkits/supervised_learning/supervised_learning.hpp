@@ -646,7 +646,7 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
    */
   void api_train(gl_sframe data, const std::string& target,
                  const variant_type& validation_data,
-                 const std::map<std::string, flexible_type>& options);
+                 const std::map<std::string, flexible_type>& _options);
 
   /**
    *  API interface through the unity server.

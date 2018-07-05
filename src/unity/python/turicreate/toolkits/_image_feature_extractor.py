@@ -24,8 +24,6 @@ def _create_feature_extractor(model_name):
         return MXFeatureExtractor(ptModel)
 
     download_path = _get_model_cache_dir()
-    if not os.path.exists(download_path):
-        os.makedirs(download_path)
 
     if(model_name == 'resnet-50'):
         mlmodel_resnet_save_path = download_path + "/Resnet50.mlmodel"

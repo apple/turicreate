@@ -35,12 +35,6 @@ if(${TC_BUILD_PYTHON})
     message(FATAL, "Internal error: Python toolchain expected; not present.")
   endif()
 
-  if (PYTHON_VERSION)
-        set(PYTHON_VERSION ${PYTHON_VERSION} CACHE STRING "Target Python Version")
-  else()
-        set(PYTHON_VERSION "python2.7")
-  endif()
-
   include(UseCython)
   add_definitions(-DTC_HAS_PYTHON)
   add_definitions(-DTC_BUILD_VISUALIZATION_CLIENT)

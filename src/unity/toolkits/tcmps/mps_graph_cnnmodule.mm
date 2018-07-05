@@ -1,6 +1,6 @@
 #include "mps_graph_cnnmodule.h"
 
-#include "mps_dev.h"
+#import "mps_device_manager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -31,9 +31,12 @@ NS_ASSUME_NONNULL_END
 
 @end
 
+namespace turi {
+namespace mps {
+
 MPSGraphModule::MPSGraphModule() {
   @autoreleasepool {
-    dev_ = MetalDevice::Get()->dev;
+    dev_ = [[TCMPSDeviceManager sharedInstance] preferredDevice];
     assert(dev_ && "No valid Metal device. Availability should be checked before creating MPSGraphModule.");
     id<MTLCommandQueue> cq = [dev_ newCommandQueue];
     assert(cq);
@@ -318,4 +321,5 @@ void MPSGraphModule::MPSImage2Blob(float *ptr, MPSImageBatch *batch) {
   }
 }
 
-
+}  // namespace mps
+}  // namespace turi

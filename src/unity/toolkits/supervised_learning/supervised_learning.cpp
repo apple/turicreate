@@ -937,7 +937,7 @@ void supervised_learning_model_base::api_train(
     gl_sframe data, 
     const std::string& target,
     const variant_type& _validation_data,
-    const std::map<std::string, flexible_type>& options) {
+    const std::map<std::string, flexible_type>& _options) {
 
   gl_sframe validation_data;
   std::tie(data, validation_data) = create_validation_data(data, _validation_data);
@@ -949,6 +949,23 @@ void supervised_learning_model_base::api_train(
 
   gl_sframe f_data = data;
   f_data.remove_column(target);
+
+  // make a copy of options so we can remove "features"
+  std::map<std::string, flexible_type> options = _options;  
+  {
+    auto ft_it = options.find("features");
+
+    if (ft_it != options.end()) {
+      flex_list _ft = ft_it->second.to<flex_list>();
+      std::vector<std::string> ftv(_ft.begin(), _ft.end());
+      if(ftv.size() == 0) {
+        log_and_throw("Empty feature set has been specified");
+      }
+      f_data = f_data.select_columns(ftv);
+      options.erase(ft_it);
+    }
+  }
+
   sframe X = f_data.materialize_to_sframe(); 
     
   sframe y = data.select_columns({target}).materialize_to_sframe();

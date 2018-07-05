@@ -20,6 +20,9 @@ NS_ASSUME_NONNULL_BEGIN
 // of MPSGraphModule below.
 @class TCMPSGraphModuleBatch;
 
+namespace turi {
+namespace mps {
+
 class MPSGraphModule {
 public:
   MPSGraphModule();
@@ -83,6 +86,9 @@ private:
   MPSImageBatch * _Nullable recycled_input_ = nil;
   MPSImageBatch * _Nullable recycled_grad_ = nil;
 };
+
+}  // namespace mps
+}  // namespace turi
 
 NS_ASSUME_NONNULL_END
 

@@ -14,6 +14,9 @@
 #import <map>
 
 
+namespace turi {
+namespace mps {
+
 extern const std::string lstm_weight_names_mxnet_format[12];
 
 API_AVAILABLE(macos(10.13))
@@ -24,5 +27,7 @@ MPSVector * MPSMatrixToVector (MPSMatrix * matrix);
 API_AVAILABLE(macos(10.13))
 void printMatrix(MPSMatrix * matrix, const char* name, NSUInteger byteOffset);
 
+}  // namespace mps
+}  // namespace turi
 
 #endif /* mps_lstm_helper_h */

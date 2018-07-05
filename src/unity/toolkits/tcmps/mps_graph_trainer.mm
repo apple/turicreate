@@ -1,21 +1,26 @@
-#include "mps_graph_trainer.h"
-#import "iostream"
-#include "mps_graph_cnnmodule.h"
-#import "string"
-#import "unordered_map"
+#import "mps_graph_trainer.h"
 
-int HasHighPowerMetalDevice(bool *has_device) {
+#include <tuple>
+
+#import "mps_device_manager.h"
+#import "mps_graph_cnnmodule.h"
+
+using turi::mps::FloatArrayMap;
+using turi::mps::MPSGraphModule;
+using turi::mps::make_array_map;
+
+int TCMPSHasHighPowerMetalDevice(bool *has_device) {
   API_BEGIN();
   if (has_device) {
-    id<MTLDevice> dev = MetalDevice::Get()->dev;
+    id <MTLDevice> dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
     *has_device = ((dev != nil) && (!dev.isLowPower));
   }
   API_END();
 }
 
-int MetalDeviceName(char *name, int max_len) {
+int TCMPSMetalDeviceName(char *name, int max_len) {
   API_BEGIN();
-  id<MTLDevice> dev = MetalDevice::Get()->dev;
+  id <MTLDevice> dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
   if (dev == nil) {
     return 1;
   }
@@ -23,21 +28,34 @@ int MetalDeviceName(char *name, int max_len) {
   API_END();
 }
 
-int CreateMPSGraph(MPSHandle *out) {
+int TCMPSMetalDeviceMemoryLimit(uint64_t *size) {
+  API_BEGIN();
+
+  id <MTLDevice> dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
+  if (dev == nil) {
+    return 1;
+  }
+
+  *size = dev.recommendedMaxWorkingSetSize;
+
+  API_END();
+}
+
+int TCMPSCreateGraphModule(MPSHandle *out) {
   API_BEGIN();
   MPSGraphModule *mps = new MPSGraphModule();
   *out = (void *)mps;
   API_END();
 }
 
-int DeleteMPSGraph(MPSHandle handle) {
+int TCMPSDeleteGraphModule(MPSHandle handle) {
   API_BEGIN();
   MPSGraphModule *obj = (MPSGraphModule *)handle;
   delete obj;
   API_END();
 }
 
-int StartTrainingBatchGraph(MPSHandle handle, void *ptr, int64_t sz,
+int TCMPSStartTrainingBatchGraph(MPSHandle handle, void *ptr, int64_t sz,
                             int64_t *shape, int dim, float *labels_ptr) {
   API_BEGIN();
   MPSGraphModule *obj = (MPSGraphModule *)handle;
@@ -45,14 +63,14 @@ int StartTrainingBatchGraph(MPSHandle handle, void *ptr, int64_t sz,
   API_END();
 }
 
-int WaitForTrainingBatchGraph(MPSHandle handle, float *loss) {
+int TCMPSWaitForTrainingBatchGraph(MPSHandle handle, float *loss) {
   API_BEGIN();
   MPSGraphModule *obj = (MPSGraphModule *)handle;
   obj->WaitForTrainingBatch(loss);
   API_END();
 }
 
-int StartInferenceBatchGraph(MPSHandle handle, void *ptr, int64_t sz,
+int TCMPSStartInferenceBatchGraph(MPSHandle handle, void *ptr, int64_t sz,
                              int64_t *shape, int dim) {
   API_BEGIN();
   MPSGraphModule *obj = (MPSGraphModule *)handle;
@@ -60,14 +78,14 @@ int StartInferenceBatchGraph(MPSHandle handle, void *ptr, int64_t sz,
   API_END();
 }
 
-int WaitForInferenceBatchGraph(MPSHandle handle, float *out_ptr) {
+int TCMPSWaitForInferenceBatchGraph(MPSHandle handle, float *out_ptr) {
   API_BEGIN();
   MPSGraphModule *obj = (MPSGraphModule *)handle;
   obj->WaitForInferenceBatch(out_ptr);
   API_END();
 }
 
-int StartTrainReturnGradBatchGraph(
+int TCMPSStartTrainReturnGradBatchGraph(
     MPSHandle handle, void *ptr, int64_t sz, int64_t *shape, int dim,
     void *grad_ptr, int64_t grad_sz, int64_t *grad_shape, int grad_dim) {
   API_BEGIN();
@@ -77,14 +95,14 @@ int StartTrainReturnGradBatchGraph(
   API_END();
 }
 
-int WaitForTrainReturnGradBatchGraph(MPSHandle handle, float *out_ptr) {
+int TCMPSWaitForTrainReturnGradBatchGraph(MPSHandle handle, float *out_ptr) {
   API_BEGIN();
   MPSGraphModule *obj = (MPSGraphModule *)handle;
   obj->WaitForTrainReturnGradBatch(out_ptr);
   API_END();
 }
 
-int InitGraph(MPSHandle handle, int network_id, int n, int c_in, int h_in, int w_in,
+int TCMPSInitGraph(MPSHandle handle, int network_id, int n, int c_in, int h_in, int w_in,
               int c_out, int h_out, int w_out,
               char **config_names, void **config_arrays,
               int64_t *config_sizes, int config_len,
@@ -101,14 +119,14 @@ int InitGraph(MPSHandle handle, int network_id, int n, int c_in, int h_in, int w
   API_END();
 }
 
-int NumParamsGraph(MPSHandle handle, int *num) {
+int TCMPSNumParamsGraph(MPSHandle handle, int *num) {
   API_BEGIN();
   MPSGraphModule *obj = (MPSGraphModule *)handle;
   *num = obj->NumParams();
   API_END();
 }
 
-int ExportGraph(MPSHandle handle, char **names, void **arrs, int64_t *dim,
+int TCMPSExportGraph(MPSHandle handle, char **names, void **arrs, int64_t *dim,
            int **shape) {
   API_BEGIN();
   MPSGraphModule *obj = (MPSGraphModule *)handle;
@@ -124,7 +142,7 @@ int ExportGraph(MPSHandle handle, char **names, void **arrs, int64_t *dim,
   API_END();
 }
 
-int SetLearningRateGraph(MPSHandle handle, float new_lr) {
+int TCMPSSetLearningRateGraph(MPSHandle handle, float new_lr) {
   API_BEGIN();
   MPSGraphModule *obj = (MPSGraphModule *)handle;
   obj->SetLearningRate(new_lr);

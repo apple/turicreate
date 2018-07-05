@@ -18,3 +18,4 @@ statsmodels==0.8.0
 wheel==0.29.0
 mxnet==1.1.0
 UISoup==2.5.7
+pyobjc==4.2.2; sys_platform == 'darwin'

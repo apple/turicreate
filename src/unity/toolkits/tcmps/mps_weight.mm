@@ -7,11 +7,11 @@
 
 #include "mps_weight.h"
 
+using turi::mps::OptimizerOptions;
 
 
 
-
-@implementation RandomWeights
+@implementation TCMPSConvolutionWeights
 
 - (nonnull instancetype)initWithKernelWidth:(NSUInteger)kernelWidth
                                kernelHeight:(NSUInteger)kernelHeight
@@ -198,6 +198,17 @@
   return self;
 }
 
+// We don't yet trigger any copies of this data source, but real implementations
+// here will be necessary to support training with additional GPUs
+- (instancetype)copyWithZone:(nullable NSZone *)zone {
+  assert(false && "NSCopying not implemented for TCMPSConvolutionWeights");
+  return self;
+}
+
+- (instancetype)copyWithZone:(nullable NSZone *)zone device:(nullable id <MTLDevice>)device {
+  assert(false && "NSCopying not implemented for TCMPSConvolutionWeights");
+  return self;
+}
 
 - (MPSDataType)dataType {
   return MPSDataTypeFloat32;
@@ -357,9 +368,9 @@ updateWithCommandBuffer:(__nonnull id<MTLCommandBuffer>)commandBuffer
 
 - (void)dealloc {
 }
-@end /* MyRandomWeights */
+@end  // TCMPSConvolutionWeights
 
-@implementation BNData
+@implementation TCMPSBatchNormData
 
 @synthesize internalLabel = _label;
 
@@ -553,6 +564,18 @@ updateWithCommandBuffer:(__nonnull id<MTLCommandBuffer>)commandBuffer
   _label = [NSString stringWithCString:kernelParamsBinaryName
                               encoding:[NSString defaultCStringEncoding]];
 
+  return self;
+}
+
+// We don't yet trigger any copies of this data source, but real implementations
+// here will be necessary to support training with additional GPUs
+- (instancetype)copyWithZone:(nullable NSZone *)zone {
+  assert(false && "NSCopying not implemented for TCMPSBatchNormData");
+  return self;
+}
+
+- (instancetype)copyWithZone:(nullable NSZone *)zone device:(nullable id <MTLDevice>)device {
+  assert(false && "NSCopying not implemented for TCMPSBatchNormData");
   return self;
 }
 
@@ -770,4 +793,4 @@ updateGammaAndBetaWithCommandBuffer:(nonnull id<MTLCommandBuffer>)commandBuffer
     [movingVarianceBuffer didModifyRange:NSMakeRange(0, _channels * sizeof(float))];
 }
 
-@end // MyBatchNormData
+@end  // TCMPSBatchNormData
