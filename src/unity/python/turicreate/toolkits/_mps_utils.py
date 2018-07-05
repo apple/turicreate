@@ -213,6 +213,20 @@ def mps_device_name():
         return None
 
 
+def mps_device_memory_limit():
+    """
+    Returns the memory size in bytes that can be effectively allocated on the
+    MPS device that will be used, or None if no suitable device is available.
+    """
+    lib = _load_tcmps_lib()
+    if lib is None:
+        return None
+
+    c_size = _ctypes.c_uint64()
+    ret = lib.TCMPSMetalDeviceMemoryLimit(_ctypes.byref(c_size))
+    return c_size.value if ret == 0 else None
+
+
 def _xavier_init(weight):
     shape = weight.shape
     dim = len(shape)

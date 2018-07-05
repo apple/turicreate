@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#import "mps_device_manager.h"
+
 namespace turi {
 namespace mps {
 
@@ -20,7 +22,7 @@ MPSImageBatch * _Nonnull CreateImageBatch(id<MTLDevice> _Nonnull device,
 }  // anonymous namespace
 
 MPSCNNModule::MPSCNNModule() {
-  dev_ = MetalDevice::Get()->dev;
+  dev_ = [[TCMPSDeviceManager sharedInstance] preferredDevice];
   assert(dev_ && "No valid Metal device. Availability should be checked before creating MPSCNNModule.");
   id<MTLCommandQueue> cq = [dev_ newCommandQueue];
   assert(cq);

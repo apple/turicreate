@@ -1,18 +1,18 @@
-#include "mps_graph_trainer.h"
-#import "iostream"
-#include "mps_graph_cnnmodule.h"
-#import "string"
-#import "unordered_map"
+#import "mps_graph_trainer.h"
+
+#include <tuple>
+
+#import "mps_device_manager.h"
+#import "mps_graph_cnnmodule.h"
 
 using turi::mps::FloatArrayMap;
-using turi::mps::MetalDevice;
 using turi::mps::MPSGraphModule;
 using turi::mps::make_array_map;
 
 int TCMPSHasHighPowerMetalDevice(bool *has_device) {
   API_BEGIN();
   if (has_device) {
-    id<MTLDevice> dev = MetalDevice::Get()->dev;
+    id <MTLDevice> dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
     *has_device = ((dev != nil) && (!dev.isLowPower));
   }
   API_END();
@@ -20,11 +20,24 @@ int TCMPSHasHighPowerMetalDevice(bool *has_device) {
 
 int TCMPSMetalDeviceName(char *name, int max_len) {
   API_BEGIN();
-  id<MTLDevice> dev = MetalDevice::Get()->dev;
+  id <MTLDevice> dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
   if (dev == nil) {
     return 1;
   }
   strlcpy(name, [dev.name cStringUsingEncoding:NSUTF8StringEncoding], max_len);
+  API_END();
+}
+
+int TCMPSMetalDeviceMemoryLimit(uint64_t *size) {
+  API_BEGIN();
+
+  id <MTLDevice> dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
+  if (dev == nil) {
+    return 1;
+  }
+
+  *size = dev.recommendedMaxWorkingSetSize;
+
   API_END();
 }
 
