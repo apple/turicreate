@@ -266,16 +266,23 @@ void unity_sarray::construct_from_json_record_files(std::string url) {
           continue;
         }
 
+        size_t num_elems_parsed = 0;
         bool has_non_dict_elements = false;
         for (const auto& element : parse_result.first.get<flex_list>()) {
           if (element.get_type() == flex_type_enum::DICT ||
               element.get_type() == flex_type_enum::UNDEFINED) {
             (*output) = element;
             ++output;
+            ++num_elems_parsed;
           } else {
             has_non_dict_elements = true;
           }
         }
+
+        logstream(LOG_PROGRESS) << "Successfully parsed an SArray of "
+                                << num_elems_parsed 
+                                << " elements from the JSON file "
+                                << sanitize_url(p.first);
 
         if (has_non_dict_elements) {
           logstream(LOG_PROGRESS) << sanitize_url(p.first)
