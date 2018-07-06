@@ -14,7 +14,7 @@ build_wheel_debug_linux_python27:
     - export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
     - mkdir /root/.npm-global
     - export NPM_CONFIG_PREFIX=/root/.npm-global 
-    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --debug --python2.7
+    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --debug
     - date
     - cd debug/src
     - find . -type f -name '*.so' -print0 | xargs -0 strip -s
@@ -35,7 +35,7 @@ build_wheel_linux_python27:
     - export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
     - mkdir /root/.npm-global
     - export NPM_CONFIG_PREFIX=/root/.npm-global 
-    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --python2.7
+    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
     - date
     - cd release/src
     - find . -type f -name '*.so' -print0 | xargs -0 strip -s
@@ -59,7 +59,7 @@ build_wheel_linux_python35:
     - export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
     - mkdir /root/.npm-global
     - export NPM_CONFIG_PREFIX=/root/.npm-global 
-    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --python3.5
+    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
     - date
     - cd release/src
     - find . -type f -name '*.so' -print0 | xargs -0 strip -s
@@ -83,7 +83,7 @@ build_wheel_linux_python36:
     - export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
     - mkdir /root/.npm-global
     - export NPM_CONFIG_PREFIX=/root/.npm-global 
-    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --python3.6
+    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
     - date
     - cd release/src
     - find . -type f -name '*.so' -print0 | xargs -0 strip -s
@@ -105,7 +105,7 @@ build_wheel_mac_10_14_python27:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - source gitlab_scripts/use_ccache.sh
     - date
-    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --python2.7
+    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
     - date
     - cd release/src
     - find . \( -type f -name '*.dylib' -o -name '*.so' \) -print0 | xargs -0 tar cvf ../../shared_objects.tar
@@ -124,7 +124,7 @@ build_wheel_mac_10_14_python35:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.5/bin/virtualenv"
     - source gitlab_scripts/use_ccache.sh
     - date
-    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --python3.5
+    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
     - date
     - cd release/src
     - find . \( -type f -name '*.dylib' -o -name '*.so' \) -print0 | xargs -0 tar cvf ../../shared_objects.tar
@@ -146,7 +146,7 @@ build_wheel_mac_10_14_python36:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.6/bin/virtualenv"
     - source gitlab_scripts/use_ccache.sh
     - date
-    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --python3.6
+    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
     - date
     - cd release/src
     - find . \( -type f -name '*.dylib' -o -name '*.so' \) -print0 | xargs -0 tar cvf ../../shared_objects.tar
