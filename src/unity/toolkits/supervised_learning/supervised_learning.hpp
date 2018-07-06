@@ -605,6 +605,11 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
   std::vector<std::string> get_tracking_metrics()  const;
 
   /**
+   * Get metric display name.
+   */
+  std::string get_metric_display_name(const std::string& metric) const;
+
+  /**
    * Display model training data summary for regression.
    *
    * \param[in] model_display_name   Name to be displayed
