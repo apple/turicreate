@@ -201,7 +201,7 @@ build_cpp_tests_linux:
   script:
     - date
     - export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
-    - (test -d debug && test -d release) || ./configure --python2.7
+    - (test -d debug && test -d release) || ./configure
     - date
     - cd release/test
     - date
@@ -226,7 +226,7 @@ build_cpp_tests_mac:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - source gitlab_scripts/use_ccache.sh
     - date
-    - (test -d debug && test -d release) || ./configure --python2.7
+    - (test -d debug && test -d release) || ./configure
     - date
     - cd release/test
     - date
@@ -250,7 +250,7 @@ test_cpp_linux:
     - build_cpp_tests_linux
   script:
     - date
-    - (test -d debug && test -d release) || ./configure --python2.7
+    - (test -d debug && test -d release) || ./configure
     - date
     - source deps/env/bin/activate
     - date
@@ -281,7 +281,7 @@ test_cpp_mac_10_13:
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - date
-    - (test -d debug && test -d release) || ./configure --python2.7
+    - (test -d debug && test -d release) || ./configure
     - date
     - source deps/env/bin/activate
     - date
@@ -311,7 +311,7 @@ test_cpp_mac_10_14:
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - date
-    - (test -d debug && test -d release) || ./configure --python2.7
+    - (test -d debug && test -d release) || ./configure
     - date
     - source deps/env/bin/activate
     - date
