@@ -260,10 +260,12 @@ void unity_sarray::construct_from_json_record_files(std::string url) {
         const char* str = buffer.data();
         auto parse_result = parser.recursive_parse(&str, fsize);
         if (parse_result.second == false || parse_result.first.get_type() != flex_type_enum::LIST) {
-          logstream(LOG_PROGRESS) << "Unable to parse " << sanitize_url(p.first)  << ". "
-                                  << "It does not appear to be in JSON record format. "
-                                  << "A list of dictionaries is expected"  << std::endl;
-          continue;
+          std::stringstream error_msg;
+          error_msg << "Unable to parse " << sanitize_url(p.first)  << ". "
+                    << "It does not appear to be in JSON record format. "
+                    << "A list of dictionaries is expected"  << std::endl;
+
+          log_and_throw(error_msg.str());
         }
 
         size_t num_elems_parsed = 0;
