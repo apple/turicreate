@@ -1533,11 +1533,8 @@ class ObjectDetector(_CustomModel):
             u'Boxes \xd7 Class confidence (see user-defined metadata "classes")'
         model.description.output[1].shortDescription = \
             u'Boxes \xd7 [x, y, width, height] (relative to image size)'
-        from turicreate import __version__
-        user_defined_metadata = {
-            'turicreate_version': __version__,
-            'type': self.__class__.__name__,
-            'version': str(ObjectDetector._PYTHON_OBJECT_DETECTOR_VERSION),
+        version = ObjectDetector._PYTHON_OBJECT_DETECTOR_VERSION
+        partial_user_defined_metadata = {
             'model': self.model,
             'max_iterations': str(self.max_iterations),
             'training_iterations': str(self.training_iterations),
@@ -1551,6 +1548,10 @@ class ObjectDetector(_CustomModel):
             'annotations': self.annotations,
             'classes': ','.join(self.classes)
         }
+        user_defined_metadata = _get_model_metadata(
+            self.__class__.__name__,
+            partial_user_defined_metadata,
+            version)
         model.description.metadata.userDefined.update(user_defined_metadata)
         from coremltools.models.utils import save_spec as _save_spec
         _save_spec(model, filename)
