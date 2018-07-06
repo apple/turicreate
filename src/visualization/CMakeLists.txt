@@ -70,6 +70,11 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
   elseif(LINUX)
     include(ExternalProject)
 
+    set(TCVIZ_CEF_EXTRA_CXX_FLAGS "")
+    if (CLANG AND NOT APPLE)
+      set(TCVIZ_CEF_EXTRA_CXX_FLAGS "-stdlib=libc++")
+    endif()
+
     ExternalProject_Add(
         cef
         PREFIX "cef"
@@ -78,7 +83,7 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
         DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}/deps
         SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef
         BUILD_IN_SOURCE 1
-        CONFIGURE_COMMAND ${CMAKE_COMMAND} . -DCEF_C_COMPILER_FLAGS=${CMAKE_C_FLAGS_RELEASE} -DCEF_CXX_COMPILER_FLAGS=${CMAKE_CXX_FLAGS_RELEASE}
+        CONFIGURE_COMMAND ${CMAKE_COMMAND} . -DCEF_COMPILER_FLAGS=-w -DCEF_CXX_COMPILER_FLAGS=${TCVIZ_CEF_EXTRA_CXX_FLAGS}
         BUILD_COMMAND "make"
         INSTALL_COMMAND ""
         BUILD_BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef/libcef_dll_wrapper/libcef_dll_wrapper.a
