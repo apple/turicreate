@@ -820,9 +820,9 @@ table_printer xgboost_model::_init_progress_printer(bool has_validation_data) {
     {"Elapsed Time", default_column_width}
   };
   for (auto& metric : tracking_metrics) {
-    progress_header.push_back({"Training-" + metric, metric_column_width});
+    progress_header.push_back({"Training " + metric, metric_column_width});
     if (has_validation_data) {
-      progress_header.push_back({"Validation-" + metric, metric_column_width});
+      progress_header.push_back({"Validation " + metric, metric_column_width});
     }
   }
   table_printer printer(progress_header);
