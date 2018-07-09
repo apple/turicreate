@@ -166,11 +166,11 @@ class SentenceClassifierCreateTests(unittest.TestCase):
 
         # Test with a validation set
         model = tc.sentence_classifier.create(train, target='rating', validation_set=valid)
-        self.assertTrue('Validation-accuracy' in model.classifier.progress.column_names())
+        self.assertTrue('Validation Accuracy' in model.classifier.progress.column_names())
 
         # Test without a validation set
         model = tc.sentence_classifier.create(train, target='rating', validation_set=None)
-        self.assertTrue('Validation-accuracy' not in model.classifier.progress.column_names())
+        self.assertTrue('Validation Accuracy' not in model.classifier.progress.column_names())
 
         # Test 'auto' validation set
         big_data = train.append(tc.SFrame({
@@ -179,7 +179,7 @@ class SentenceClassifierCreateTests(unittest.TestCase):
             'text': ['large enough data for %5 percent validation split to activate'] * 100
         }))
         model = tc.sentence_classifier.create(big_data, target='rating', validation_set='auto')
-        self.assertTrue('Validation-accuracy' in model.classifier.progress.column_names())
+        self.assertTrue('Validation Accuracy' in model.classifier.progress.column_names())
 
         # Test bad validation set string
         with self.assertRaises(TypeError):

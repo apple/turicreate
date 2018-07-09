@@ -360,7 +360,7 @@ struct BNLayer : public Layer {
   bool is_state_init{false};
   bool is_train_mode_{true};
   bool use_temp_images_{true};
-  TCMPSBatchNormData *_Nonnull data;
+  TCMPSBatchNormWeights *_Nonnull data;
   MPSCNNBatchNormalizationStatistics *_Nullable         stat{nil};
   MPSCNNBatchNormalization *_Nonnull                    op_forward;
   MPSCNNBatchNormalizationGradient *_Nullable           op_backward{nil};

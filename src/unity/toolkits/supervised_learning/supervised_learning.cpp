@@ -350,6 +350,28 @@ std::vector<std::string>
   return tracking_metrics;
 }
 
+std::string supervised_learning_model_base::get_metric_display_name(const std::string& metric) const {
+  const static std::unordered_map<std::string, std::string> display_names = {
+    {"accuracy", "Accuracy"},
+    {"log_loss", "Log Loss"},
+    {"max_error", "Max Error"},
+    {"rmse", "Root-Mean-Square Error"},
+  };
+
+  auto found = display_names.find(metric);
+  if (found != display_names.end()) {
+    return found->second;
+  }
+
+  // Shouldn't get here; it means we neglected to map to a display name for this metric.
+  // If there is a metric and it's not in the map above, please add it.
+  // In the meantime, we fall back to using the internal name as the display name.
+#ifndef NDEBUG
+  std::string msg = "Could not find a display name for metric " + metric;
+  DASSERT_MSG(false, msg.c_str());
+#endif
+  return metric;
+}
 
 /**
  * Classify (with a probability) using a trained model.

@@ -9,7 +9,116 @@
 
 using turi::mps::OptimizerOptions;
 
+NS_ASSUME_NONNULL_BEGIN
 
+// Protocol generalizing across MPSNNOptimizerStochasticGradientDescent and
+// MPSNNOptimizerAdam, for convenience.
+API_AVAILABLE(macos(10.14))
+@protocol TCMPSConvolutionWeightsOptimizing <NSObject>
+
+// Conv update
+-(void)encodeToCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
+    convolutionGradientState:(MPSCNNConvolutionGradientState *)gradientState
+          convolutionWeights:(TCMPSConvolutionWeights *)weights;
+
+// Batch norm update
+-(void)encodeToCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
+     batchNormalizationState:(MPSCNNBatchNormalizationState *)state
+               batchNormData:(TCMPSBatchNormWeights *)weights;
+
+-(void)setLearningRate:(float)newLearningRate;
+
+@end
+
+// Category adding TCMPSConvolutionWeightsOptimizing to MPSNNOptimizerAdam
+@interface MPSNNOptimizerAdam (TCMPSWeightsOptimizing) <TCMPSConvolutionWeightsOptimizing>
+@end
+
+// Category adding TCMPSConvolutionWeightsOptimizing to
+// MPSNNOptimizerStochasticGradientDescent
+@interface MPSNNOptimizerStochasticGradientDescent (TCMPSWeightsOptimizing) <TCMPSConvolutionWeightsOptimizing>
+@end
+
+// Class extension for TCMPSConvolutionWeights internal implementation
+@interface TCMPSConvolutionWeights ()
+
+@property (nonatomic, readonly) id<TCMPSConvolutionWeightsOptimizing> optimizer;
+
+@property (nonatomic, readonly) MPSVector *weightMomentumVector;
+@property (nonatomic, readonly) MPSVector *weightVelocityVector;
+@property (nonatomic, readonly) MPSVector *biasMomentumVector;
+@property (nonatomic, readonly) MPSVector *biasVelocityVector;
+
+@end
+
+// Class extension for TCMPSBatchNormWeights internal implementation
+@interface TCMPSBatchNormWeights ()
+
+@property (nonatomic, readonly) id<TCMPSConvolutionWeightsOptimizing> optimizer;
+
+@property (nonatomic, readonly) MPSVector *gammaMomentumVector;
+@property (nonatomic, readonly) MPSVector *betaMomentumVector;
+@property (nonatomic, readonly) MPSVector *gammaVelocityVector;
+@property (nonatomic, readonly) MPSVector *betaVelocityVector;
+
+@property (nonatomic, readonly) MPSVector *movingMeanVector;
+@property (nonatomic, readonly) MPSVector *movingVarianceVector;
+
+@end
+
+NS_ASSUME_NONNULL_END
+
+@implementation MPSNNOptimizerAdam (TCMPSWeightsOptimizing)
+
+-(void)encodeToCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
+    convolutionGradientState:(MPSCNNConvolutionGradientState *)gradientState
+          convolutionWeights:(TCMPSConvolutionWeights *)weights
+{
+  [self encodeToCommandBuffer:commandBuffer
+     convolutionGradientState:gradientState
+       convolutionSourceState:weights.state
+         inputMomentumVectors:@[weights.weightMomentumVector, weights.biasMomentumVector]
+         inputVelocityVectors:@[weights.weightVelocityVector, weights.biasVelocityVector]
+                  resultState:weights.state];
+}
+
+-(void)encodeToCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
+     batchNormalizationState:(MPSCNNBatchNormalizationState *)state
+               batchNormData:(TCMPSBatchNormWeights *)weights
+{
+  [self encodeToCommandBuffer:commandBuffer
+      batchNormalizationState:state
+         inputMomentumVectors:@[weights.gammaMomentumVector, weights.betaMomentumVector]
+         inputVelocityVectors:@[weights.gammaVelocityVector, weights.betaVelocityVector]
+                  resultState:weights.gammaBetaState];
+}
+
+@end
+
+@implementation MPSNNOptimizerStochasticGradientDescent (TCMPSWeightsOptimizing)
+
+-(void)encodeToCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
+    convolutionGradientState:(MPSCNNConvolutionGradientState *)gradientState
+          convolutionWeights:(TCMPSConvolutionWeights *)weights
+{
+  [self encodeToCommandBuffer:commandBuffer
+     convolutionGradientState:gradientState
+       convolutionSourceState:weights.state
+         inputMomentumVectors:@[weights.weightMomentumVector, weights.biasMomentumVector]
+                  resultState:weights.state];
+}
+
+-(void)encodeToCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
+     batchNormalizationState:(MPSCNNBatchNormalizationState *)state
+               batchNormData:(TCMPSBatchNormWeights *)weights
+{
+  [self encodeToCommandBuffer:commandBuffer
+      batchNormalizationState:state
+         inputMomentumVectors:@[weights.gammaMomentumVector, weights.betaMomentumVector]
+                  resultState:weights.gammaBetaState];
+}
+
+@end
 
 @implementation TCMPSConvolutionWeights
 
@@ -92,30 +201,18 @@ using turi::mps::OptimizerOptions;
   sizeWeights = _inputFeatureChannels * _kernelHeight * _kernelWidth *
                 _outputFeatureChannels * sizeof(float);
 
-  t = 0.f;
-
   MPSNNOptimizerDescriptor *desc = _optimizerOptions.mpsDescriptor();
   
   if (_optimizerOptions.useSGD) {
-    sgdWeights = [[MPSNNOptimizerStochasticGradientDescent alloc] initWithDevice:dev
+    _optimizer = [[MPSNNOptimizerStochasticGradientDescent alloc] initWithDevice:dev
                                                                  momentumScale:_optimizerOptions.sgdMomentum useNestrovMomentum:NO optimizerDescriptor:desc];
-
-    sgdBias = [[MPSNNOptimizerStochasticGradientDescent alloc] initWithDevice:dev
-                                                                momentumScale:_optimizerOptions.sgdMomentum useNestrovMomentum:NO optimizerDescriptor:desc];
   } else {
-    adamWeights = [[MPSNNOptimizerAdam alloc] initWithDevice:dev
+    _optimizer =  [[MPSNNOptimizerAdam alloc] initWithDevice:dev
                                                        beta1:_optimizerOptions.adamBeta1
                                                        beta2:_optimizerOptions.adamBeta2
                                                      epsilon:_optimizerOptions.adamEpsilon
                                                     timeStep:0
                                          optimizerDescriptor:desc];
-
-    adamBias = [[MPSNNOptimizerAdam alloc] initWithDevice:dev
-                                                    beta1:_optimizerOptions.adamBeta1
-                                                    beta2:_optimizerOptions.adamBeta2
-                                                  epsilon:_optimizerOptions.adamEpsilon
-                                                 timeStep:0
-                                      optimizerDescriptor:desc];
   }
 
   MTLResourceOptions storageMode;
@@ -164,36 +261,29 @@ using turi::mps::OptimizerOptions;
       [dev newBufferWithLength:sizeof(float) * _outputFeatureChannels
                        options:storageMode];
 
-  convWtsAndBias = [[MPSCNNConvolutionWeightsAndBiasesState alloc]
-      initWithWeights:weightBuffer
-               biases:biasBuffer];
+  _state = [[MPSCNNConvolutionWeightsAndBiasesState alloc] initWithWeights:weightBuffer
+                                                                    biases:biasBuffer];
 
-  vDescWeights = [MPSVectorDescriptor
+  MPSVectorDescriptor *vDescWeights = [MPSVectorDescriptor
       vectorDescriptorWithLength:_inputFeatureChannels * _kernelHeight *
                                  _kernelWidth * _outputFeatureChannels
                         dataType:(MPSDataTypeFloat32)];
 
-  weightMomentumVector = [[MPSVector alloc] initWithBuffer:weightMomentumBuffer
-                                                descriptor:vDescWeights];
+  _weightMomentumVector = [[MPSVector alloc] initWithBuffer:weightMomentumBuffer
+                                                 descriptor:vDescWeights];
 
-  weightVelocityVector = [[MPSVector alloc] initWithBuffer:weightVelocityBuffer
-                                                descriptor:vDescWeights];
+  _weightVelocityVector = [[MPSVector alloc] initWithBuffer:weightVelocityBuffer
+                                                 descriptor:vDescWeights];
 
-  weightVector =
-      [[MPSVector alloc] initWithBuffer:weightBuffer descriptor:vDescWeights];
-
-  vDescBiases =
+  MPSVectorDescriptor *vDescBiases =
       [MPSVectorDescriptor vectorDescriptorWithLength:_outputFeatureChannels
                                              dataType:(MPSDataTypeFloat32)];
 
-  biasMomentumVector = [[MPSVector alloc] initWithBuffer:biasMomentumBuffer
-                                              descriptor:vDescBiases];
+  _biasMomentumVector = [[MPSVector alloc] initWithBuffer:biasMomentumBuffer
+                                               descriptor:vDescBiases];
 
-  biasVelocityVector = [[MPSVector alloc] initWithBuffer:biasVelocityBuffer
-                                              descriptor:vDescBiases];
-
-  biasVector =
-      [[MPSVector alloc] initWithBuffer:biasBuffer descriptor:vDescBiases];
+  _biasVelocityVector = [[MPSVector alloc] initWithBuffer:biasVelocityBuffer
+                                               descriptor:vDescBiases];
 
   return self;
 }
@@ -215,13 +305,7 @@ using turi::mps::OptimizerOptions;
 }
 
 - (void)setLearningRate:(float)lr {
-  if (_optimizerOptions.useSGD) {
-    [sgdBias setLearningRate:lr];
-    [sgdWeights setLearningRate:lr];
-  } else {
-    [adamBias setLearningRate:lr];
-    [adamWeights setLearningRate:lr];
-  }
+  [_optimizer setLearningRate:lr];
   _optimizerOptions.learningRate = lr;
 }
 
@@ -256,12 +340,11 @@ updateWithCommandBuffer:(__nonnull id<MTLCommandBuffer>)commandBuffer
           gradientState:
               (MPSCNNConvolutionGradientState *__nonnull)gradientState {
 
-  MPSCNNConvolutionWeightsAndBiasesState *__nonnull sourceState =
-      convWtsAndBias;
+  [self.optimizer encodeToCommandBuffer:commandBuffer
+               convolutionGradientState:gradientState
+                     convolutionWeights:self];
 
-  return [self updateWithCommandBuffer:commandBuffer
-                         gradientState:gradientState
-                           sourceState:sourceState];
+  return self.state;
 }
 
 - (MPSCNNConvolutionWeightsAndBiasesState *__nullable)
@@ -270,58 +353,10 @@ updateWithCommandBuffer:(__nonnull id<MTLCommandBuffer>)commandBuffer
             sourceState:
                 (MPSCNNConvolutionWeightsAndBiasesState *__nonnull)sourceState {
 
-  t++;
-
-  MPSVector *gradientWeightsVector =
-      [[MPSVector alloc] initWithBuffer:gradientState.gradientForWeights
-                             descriptor:vDescWeights];
-
-  if (_optimizerOptions.useSGD) {
-    [sgdWeights encodeToCommandBuffer:commandBuffer
-                  inputGradientVector:gradientWeightsVector
-                    inputValuesVector:weightVector
-                  inputMomentumVector:weightMomentumVector
-                   resultValuesVector:weightVector];
-  } else {
-    [adamWeights encodeToCommandBuffer:commandBuffer
-                 inputGradientVector:gradientWeightsVector
-                   inputValuesVector:weightVector
-                 inputMomentumVector:weightMomentumVector
-                 inputVelocityVector:weightVelocityVector
-                  resultValuesVector:weightVector];
-  }
-
-  MPSVector *gradientBiasesVector =
-      [[MPSVector alloc] initWithBuffer:gradientState.gradientForBiases
-                             descriptor:vDescBiases];
-
-  assert(sourceState.biases);
-
-  if (_optimizerOptions.useSGD) {
-    [sgdBias encodeToCommandBuffer:commandBuffer
-               inputGradientVector:gradientBiasesVector
-                 inputValuesVector:biasVector
-               inputMomentumVector:biasMomentumVector
-                resultValuesVector:biasVector];
-  } else {
-    [adamBias encodeToCommandBuffer:commandBuffer
-              inputGradientVector:gradientBiasesVector
-                inputValuesVector:biasVector
-              inputMomentumVector:biasMomentumVector
-              inputVelocityVector:biasVelocityVector
-               resultValuesVector:biasVector];
-  }
-
-  // TODO: Adopt the convenience MPSNNOptimizer API that handles more of these
-  // fiddly details.
-  if (gradientState.isTemporary) {
-    gradientState.readCount -= 1;
-  }
-  if (sourceState.isTemporary) {
-    sourceState.readCount -= 1;
-  }
-
-  return convWtsAndBias;
+  // Note: we ignore sourceState here, as self.state has the same data, with
+  // possibly higher precision.
+  return [self updateWithCommandBuffer:commandBuffer
+                         gradientState:gradientState];
 }
 
 - (void)set_cq:(id<MTLCommandQueue>)cmd_queue {
@@ -335,15 +370,15 @@ updateWithCommandBuffer:(__nonnull id<MTLCommandBuffer>)commandBuffer
 
   id<MTLCommandBuffer> commandBuffer = [commandQueue commandBuffer];
   id<MTLBlitCommandEncoder> blit = commandBuffer.blitCommandEncoder;
-  assert(convWtsAndBias.weights);
+  assert(self.state.weights);
   [blit synchronizeResource:weightMomentumBuffer];
   [blit synchronizeResource:weightVelocityBuffer];
-  [blit synchronizeResource:nonnull_cast(convWtsAndBias.weights)];
+  [blit synchronizeResource:nonnull_cast(self.state.weights)];
 
-  assert(convWtsAndBias.biases);
+  assert(self.state.biases);
   [blit synchronizeResource:biasMomentumBuffer];
   [blit synchronizeResource:biasVelocityBuffer];
-  [blit synchronizeResource:nonnull_cast(convWtsAndBias.biases)];
+  [blit synchronizeResource:nonnull_cast(self.state.biases)];
 
   [blit endEncoding];
 
@@ -359,18 +394,16 @@ updateWithCommandBuffer:(__nonnull id<MTLCommandBuffer>)commandBuffer
 - (void)loadBias:(float *)src {
   float *dst = (float *)biasBuffer.contents;
   memcpy((void *)dst, (void *)src, sizeBias);
-  [weightBuffer didModifyRange:NSMakeRange(0, sizeBias)];
+  [biasBuffer didModifyRange:NSMakeRange(0, sizeBias)];
 }
 
 - (NSString *_Nullable)label {
   return [NSString stringWithUTF8String:_kernelParamsBinaryName.c_str()];
 }
 
-- (void)dealloc {
-}
 @end  // TCMPSConvolutionWeights
 
-@implementation TCMPSBatchNormData
+@implementation TCMPSBatchNormWeights
 
 @synthesize internalLabel = _label;
 
@@ -410,25 +443,17 @@ updateWithCommandBuffer:(__nonnull id<MTLCommandBuffer>)commandBuffer
   MPSNNOptimizerDescriptor *desc = _optimizerOptions.mpsDescriptor();
 
   if (_optimizerOptions.useSGD) {
-    sgdGamma = [[MPSNNOptimizerStochasticGradientDescent alloc] initWithDevice:dev
-                                                                 momentumScale:_optimizerOptions.sgdMomentum useNestrovMomentum:NO optimizerDescriptor:desc];
-    sgdBeta = [[MPSNNOptimizerStochasticGradientDescent alloc] initWithDevice:dev
-                                                                momentumScale:_optimizerOptions.sgdMomentum useNestrovMomentum:NO optimizerDescriptor:desc];
-
+    _optimizer = [[MPSNNOptimizerStochasticGradientDescent alloc] initWithDevice:dev
+                                                                   momentumScale:_optimizerOptions.sgdMomentum
+                                                              useNestrovMomentum:NO
+                                                             optimizerDescriptor:desc];
   } else {
-    adamGamma = [[MPSNNOptimizerAdam alloc] initWithDevice:dev
-                                                     beta1:_optimizerOptions.adamBeta1
-                                                     beta2:_optimizerOptions.adamBeta2
-                                                   epsilon:_optimizerOptions.adamEpsilon
-                                                  timeStep:0
-                                       optimizerDescriptor:desc];
-
-    adamBeta = [[MPSNNOptimizerAdam alloc] initWithDevice:dev
-                                                    beta1:_optimizerOptions.adamBeta1
-                                                    beta2:_optimizerOptions.adamBeta2
-                                                  epsilon:_optimizerOptions.adamEpsilon
-                                                 timeStep:0
-                                      optimizerDescriptor:desc];
+    _optimizer = [[MPSNNOptimizerAdam alloc] initWithDevice:dev
+                                                      beta1:_optimizerOptions.adamBeta1
+                                                      beta2:_optimizerOptions.adamBeta2
+                                                    epsilon:_optimizerOptions.adamEpsilon
+                                                   timeStep:0
+                                        optimizerDescriptor:desc];
   }
 
   /*
@@ -522,10 +547,10 @@ updateWithCommandBuffer:(__nonnull id<MTLCommandBuffer>)commandBuffer
 
 
 
-  gammaBetaState =
+  _gammaBetaState =
       [[MPSCNNNormalizationGammaAndBetaState alloc] initWithGamma:gammaBuffer
                                                              beta:betaBuffer];
-  meanVarianceState =
+  _meanVarianceState =
       [[MPSCNNNormalizationMeanAndVarianceState alloc] initWithMean:movingMeanBuffer
                                                            variance:movingVarianceBuffer];
 
@@ -541,24 +566,20 @@ updateWithCommandBuffer:(__nonnull id<MTLCommandBuffer>)commandBuffer
   vDesc = [MPSVectorDescriptor vectorDescriptorWithLength:channels
                                                  dataType:(MPSDataTypeFloat32)];
 
-  gammaMomentumVector =
+  _gammaMomentumVector =
       [[MPSVector alloc] initWithBuffer:gammaMomentumBuffer descriptor:vDesc];
 
-  gammaVelocityVector =
+  _gammaVelocityVector =
       [[MPSVector alloc] initWithBuffer:gammaVelocityBuffer descriptor:vDesc];
 
-  gammaVector = [[MPSVector alloc] initWithBuffer:gammaBuffer descriptor:vDesc];
-
-  betaMomentumVector =
+  _betaMomentumVector =
       [[MPSVector alloc] initWithBuffer:betaMomentumBuffer descriptor:vDesc];
 
-  betaVelocityVector =
+  _betaVelocityVector =
       [[MPSVector alloc] initWithBuffer:betaVelocityBuffer descriptor:vDesc];
 
-  betaVector = [[MPSVector alloc] initWithBuffer:betaBuffer descriptor:vDesc];
-
-  movingMeanVector = [[MPSVector alloc] initWithBuffer:movingMeanBuffer descriptor:vDesc];
-  movingVarianceVector = [[MPSVector alloc] initWithBuffer:movingVarianceBuffer descriptor:vDesc];
+  _movingMeanVector = [[MPSVector alloc] initWithBuffer:movingMeanBuffer descriptor:vDesc];
+  _movingVarianceVector = [[MPSVector alloc] initWithBuffer:movingVarianceBuffer descriptor:vDesc];
 
 
   _label = [NSString stringWithCString:kernelParamsBinaryName
@@ -570,12 +591,12 @@ updateWithCommandBuffer:(__nonnull id<MTLCommandBuffer>)commandBuffer
 // We don't yet trigger any copies of this data source, but real implementations
 // here will be necessary to support training with additional GPUs
 - (instancetype)copyWithZone:(nullable NSZone *)zone {
-  assert(false && "NSCopying not implemented for TCMPSBatchNormData");
+  assert(false && "NSCopying not implemented for TCMPSBatchNormWeights");
   return self;
 }
 
 - (instancetype)copyWithZone:(nullable NSZone *)zone device:(nullable id <MTLDevice>)device {
-  assert(false && "NSCopying not implemented for TCMPSBatchNormData");
+  assert(false && "NSCopying not implemented for TCMPSBatchNormWeights");
   return self;
 }
 
@@ -615,13 +636,7 @@ updateWithCommandBuffer:(__nonnull id<MTLCommandBuffer>)commandBuffer
 }
 
 - (void)setLearningRate:(float)lr {
-  if (_optimizerOptions.useSGD) {
-    [sgdGamma setLearningRate:lr];
-    [sgdBeta setLearningRate:lr];
-  } else {
-    [adamGamma setLearningRate:lr];
-    [adamBeta setLearningRate:lr];
-  }
+  [_optimizer setLearningRate:lr];
   _optimizerOptions.learningRate = lr;
 }
 
@@ -674,55 +689,7 @@ updateGammaAndBetaWithCommandBuffer:(nonnull id<MTLCommandBuffer>)commandBuffer
             batchNormalizationState:(MPSCNNBatchNormalizationState *__nonnull)
                                         batchNormalizationState {
 
-  t++;
-
-  assert(batchNormalizationState.gradientForGamma);
-  MPSVector *gradientWeightsVector = [[MPSVector alloc]
-      initWithBuffer:nonnull_cast(batchNormalizationState.gradientForGamma)
-          descriptor:vDesc];
-
-  assert(batchNormalizationState.gamma);
-
-  if (_optimizerOptions.useSGD) {
-    [sgdGamma encodeToCommandBuffer:commandBuffer
-                inputGradientVector:gradientWeightsVector
-                  inputValuesVector:gammaVector
-                inputMomentumVector:gammaMomentumVector
-                 resultValuesVector:gammaVector];
-  } else {
-
-    [adamGamma encodeToCommandBuffer:commandBuffer
-               inputGradientVector:gradientWeightsVector
-                 inputValuesVector:gammaVector
-               inputMomentumVector:gammaMomentumVector
-               inputVelocityVector:gammaVelocityVector
-                resultValuesVector:gammaVector];
-  }
-
-
-  assert(batchNormalizationState.gradientForBeta);
-  MPSVector *gradientBiasesVector = [[MPSVector alloc]
-      initWithBuffer:nonnull_cast(batchNormalizationState.gradientForBeta)
-          descriptor:vDesc];
-
-  assert(batchNormalizationState.beta);
-
-  if (_optimizerOptions.useSGD) {
-    [sgdBeta encodeToCommandBuffer:commandBuffer
-               inputGradientVector:gradientBiasesVector
-                 inputValuesVector:betaVector
-               inputMomentumVector:betaMomentumVector
-                resultValuesVector:betaVector];
-
-  } else {
-    [adamBeta encodeToCommandBuffer:commandBuffer
-              inputGradientVector:gradientBiasesVector
-                inputValuesVector:betaVector
-              inputMomentumVector:betaMomentumVector
-              inputVelocityVector:betaVelocityVector
-               resultValuesVector:betaVector];
-  }
-  
+  // Update mean and variance.
   assert(batchNormalizationState.mean);
   MPSVector *meanVec= [[MPSVector alloc]
                        initWithBuffer:batchNormalizationState.mean
@@ -734,15 +701,22 @@ updateGammaAndBetaWithCommandBuffer:(nonnull id<MTLCommandBuffer>)commandBuffer
 
   [mov_avg_updater encodeToCommandBuffer:commandBuffer
                      inputGradientVector:meanVec
-                       inputValuesVector:movingMeanVector
+                       inputValuesVector:self.movingMeanVector
                      inputMomentumVector:nil
-                      resultValuesVector:movingMeanVector];
+                      resultValuesVector:self.movingMeanVector];
   [mov_var_updater encodeToCommandBuffer:commandBuffer
                      inputGradientVector:varVector
-                       inputValuesVector:movingVarianceVector
+                       inputValuesVector:self.movingVarianceVector
                      inputMomentumVector:nil
-                      resultValuesVector:movingVarianceVector];
-  return gammaBetaState;
+                      resultValuesVector:self.movingVarianceVector];
+
+  // Update gamma and beta. This update must come last, since the MPS API we use
+  // will decrement read counts.
+  [_optimizer encodeToCommandBuffer:commandBuffer
+            batchNormalizationState:batchNormalizationState
+                      batchNormData:self];
+
+  return self.gammaBetaState;
 }
 
 - (void)checkpointWithCommandQueue:(nonnull id<MTLCommandQueue>)commandQueue {
@@ -750,15 +724,15 @@ updateGammaAndBetaWithCommandBuffer:(nonnull id<MTLCommandBuffer>)commandBuffer
 #if TARGET_OS_OSX
   id<MTLCommandBuffer> commandBuffer = [commandQueue commandBuffer];
   id<MTLBlitCommandEncoder> blit = commandBuffer.blitCommandEncoder;
-  assert(gammaBetaState.beta);
+  assert(self.gammaBetaState.beta);
   [blit synchronizeResource:betaMomentumBuffer];
   [blit synchronizeResource:betaVelocityBuffer];
-  [blit synchronizeResource:nonnull_cast(gammaBetaState.beta)];
+  [blit synchronizeResource:nonnull_cast(self.gammaBetaState.beta)];
 
-  assert(gammaBetaState.gamma);
+  assert(self.gammaBetaState.gamma);
   [blit synchronizeResource:gammaMomentumBuffer];
   [blit synchronizeResource:gammaVelocityBuffer];
-  [blit synchronizeResource:nonnull_cast(gammaBetaState.gamma)];
+  [blit synchronizeResource:nonnull_cast(self.gammaBetaState.gamma)];
 
   [blit synchronizeResource:movingMeanBuffer];
   [blit synchronizeResource:movingVarianceBuffer];
@@ -768,9 +742,6 @@ updateGammaAndBetaWithCommandBuffer:(nonnull id<MTLCommandBuffer>)commandBuffer
   [commandBuffer commit];
   [commandBuffer waitUntilCompleted];
 #endif // TARGET_OS_OSX
-}
-
-- (void)dealloc {
 }
 
 - (void)loadBeta:(float * _Nullable)src {
@@ -793,4 +764,4 @@ updateGammaAndBetaWithCommandBuffer:(nonnull id<MTLCommandBuffer>)commandBuffer
     [movingVarianceBuffer didModifyRange:NSMakeRange(0, _channels * sizeof(float))];
 }
 
-@end  // TCMPSBatchNormData
+@end  // TCMPSBatchNormWeights

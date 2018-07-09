@@ -122,6 +122,10 @@ void table_printer::print_line_break() const {
  *      +-----------+------------+----------+------------------+
  */
 void table_printer::print_footer() const {
+  // If tracking is enabled, print the last tracked row if it wasn't already
+  // printed. Ensures the final row is printed if the tracking interval is 1.
+  print_track_row_if_necessary();
+
   print_line_break();
 }
 
@@ -168,6 +172,39 @@ sframe table_printer::get_tracked_table() {
   tracker_is_initialized = false;
   
   return track_sframe;
+}
+
+void table_printer::print_track_row_if_necessary() const {
+  std::lock_guard<mutex> guard(track_register_lock);
+  if (track_row_was_printed_) return;
+  if (track_row_values_.empty()) return;
+
+  ASSERT_EQ(track_row_values_.size(), format.size());
+  ASSERT_EQ(track_row_styles_.size(), format.size());
+
+  std::ostringstream ss;
+
+  ss << '|';
+  for (size_t i = 0; i < track_row_values_.size(); ++i) {
+    const flexible_type& value = track_row_values_[i];
+    const size_t width = format[i].second;
+
+    // Use track_row_styles_ to recover any type information lost when stuffing
+    // the value into flexible_type.
+    switch (track_row_styles_[i]) {
+    case style_type::kDefault:
+      _get_table_printer(value).print(ss, width);
+      break;
+    case style_type::kBool:
+      _get_table_printer(value.to<bool>()).print(ss, width);
+      break;
+    case style_type::kProgressTime:
+      _get_table_printer(progress_time(value.to<double>())).print(ss, width);
+      break;
+    }
+  }
+
+  _p(ss);
 }
 
 /**  Sets up the time interval at which things are printed.

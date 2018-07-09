@@ -41,13 +41,13 @@ class TreeRegressionTrackingMetricsTest(unittest.TestCase):
                 raise TypeError('Invalid metric type')
 
             for name in test_metrics:
-                column_name = 'Training-%s' % name
+                column_name = 'Training %s' % name
                 self.assertTrue(column_name in history_header)
                 final_eval = m.evaluate(train, name)[name]
                 progress_evals = m.progress[column_name]
                 self.assertAlmostEqual(float(progress_evals[-1]), final_eval, delta=1e-4)
                 if valid is not None:
-                    column_name = 'Validation-%s' % name
+                    column_name = 'Validation %s' % name
                     self.assertTrue(column_name in history_header)
 
     def test_auto_metric(self):
@@ -77,8 +77,8 @@ class TreeRegressionTrackingMetricsTest(unittest.TestCase):
 
         m_last = rf_models[-1]
         for name in self.test_metrics:
-            train_column_name = 'Training-%s' % name
-            test_column_name = 'Validation-%s' % name
+            train_column_name = 'Training %s' % name
+            test_column_name = 'Validation %s' % name
             train_evals = [float(x) for x in m_last.progress[train_column_name]]
             test_evals = [float(x) for x in m_last.progress[test_column_name]]
             # Check the final model's metric at iteration i against the ith model's last metric

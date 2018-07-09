@@ -23,7 +23,7 @@ Build Dependencies
 
 You will need:
 
-* On macOS, [Xcode](https://itunes.apple.com/us/app/xcode/id497799835) with command line tools (tested with Xcode 9 and Xcode 10 beta)
+* On macOS, [Xcode](https://itunes.apple.com/us/app/xcode/id497799835) with command line tools (tested with Xcode 9 and Xcode 10 beta 3)
 * On Linux:
   * A C++ compiler toolchain with C++11 support
   * `xxd` (typically provided by the `vim-common` package)

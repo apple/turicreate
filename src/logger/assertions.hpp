@@ -375,15 +375,7 @@ extern void __print_back_trace();
 
 
 #define DASSERT_MSG(condition, fmt, ...)                                \
-  do {                                                                  \
-    if (__builtin_expect(!(condition), 0)) {                            \
-      logstream(LOG_ERROR)                                              \
-        << "Check failed: " << #condition << ":\n";                     \
-      logger(LOG_ERROR, fmt, ##__VA_ARGS__);                            \
-      __print_back_trace();                                             \
-      TURI_LOGGER_FAIL_METHOD("assertion failure");                    \
-    }                                                                   \
-  } while(0)
+  ASSERT_MSG(condition, fmt, ##__VA_ARGS__)
 
 #endif
 
