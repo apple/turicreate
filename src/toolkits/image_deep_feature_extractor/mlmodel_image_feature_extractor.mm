@@ -350,8 +350,6 @@ mlmodel_image_feature_extractor::extract_features(gl_sarray data, bool verbose, 
 
   mutex mut;
 
-  timer tt;
-  tt.start();
   table_printer table(
         { {"Images Processed", 0}, {"Elapsed Time", 0}, {"Percent Complete", 0} }, 0);
   if (verbose) {
@@ -492,23 +490,28 @@ mlmodel_image_feature_extractor::extract_features(gl_sarray data, bool verbose, 
   parallel_for(0, batch_count, [&](size_t batch_index) {
     @autoreleasepool {
 
-      if (verbose) {
+      perform_batch(batch_index);
+
+      // Only touch the atomic variable once per iteration
+      const size_t local_batches_completed = ++batches_completed;
+
+      if (verbose && local_batches_completed < batch_count) {
         std::ostringstream d;
         // For pretty printing, floor percent done
         // resolution to the nearest .25% interval.  Do this by multiplying by
         // 400, then do integer division by the total size, then float divide
         // by 4.0
-        d << (double(size_t(400 * batches_completed) / batch_count) / 4.0) << '%';
-        table.print_progress_row(batches_completed, batches_completed * kBatchSize,
-                                 progress_time(tt), d.str());
+        d << local_batches_completed * 400 / batch_count / 4.0 << '%';
+        table.print_progress_row(local_batches_completed,
+                                 local_batches_completed * kBatchSize,
+                                 progress_time(), d.str());
       }
 
-      perform_batch(batch_index);
-      batches_completed++;
     } // end autoreleasepool
   });
 
   if (verbose) {
+    table.print_row(data.size(), progress_time(), "100%");
     table.print_footer();
   }
   return gl_sarray(result, flex_type_enum::VECTOR);

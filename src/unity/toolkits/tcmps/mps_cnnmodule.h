@@ -10,8 +10,6 @@
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 
-#import "mps_dev.h"
-
 #import "mps_networks.h"
 #import "mps_updater.h"
 

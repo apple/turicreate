@@ -350,6 +350,28 @@ std::vector<std::string>
   return tracking_metrics;
 }
 
+std::string supervised_learning_model_base::get_metric_display_name(const std::string& metric) const {
+  const static std::unordered_map<std::string, std::string> display_names = {
+    {"accuracy", "Accuracy"},
+    {"log_loss", "Log Loss"},
+    {"max_error", "Max Error"},
+    {"rmse", "Root-Mean-Square Error"},
+  };
+
+  auto found = display_names.find(metric);
+  if (found != display_names.end()) {
+    return found->second;
+  }
+
+  // Shouldn't get here; it means we neglected to map to a display name for this metric.
+  // If there is a metric and it's not in the map above, please add it.
+  // In the meantime, we fall back to using the internal name as the display name.
+#ifndef NDEBUG
+  std::string msg = "Could not find a display name for metric " + metric;
+  DASSERT_MSG(false, msg.c_str());
+#endif
+  return metric;
+}
 
 /**
  * Classify (with a probability) using a trained model.
@@ -937,7 +959,7 @@ void supervised_learning_model_base::api_train(
     gl_sframe data, 
     const std::string& target,
     const variant_type& _validation_data,
-    const std::map<std::string, flexible_type>& options) {
+    const std::map<std::string, flexible_type>& _options) {
 
   gl_sframe validation_data;
   std::tie(data, validation_data) = create_validation_data(data, _validation_data);
@@ -949,6 +971,23 @@ void supervised_learning_model_base::api_train(
 
   gl_sframe f_data = data;
   f_data.remove_column(target);
+
+  // make a copy of options so we can remove "features"
+  std::map<std::string, flexible_type> options = _options;  
+  {
+    auto ft_it = options.find("features");
+
+    if (ft_it != options.end()) {
+      flex_list _ft = ft_it->second.to<flex_list>();
+      std::vector<std::string> ftv(_ft.begin(), _ft.end());
+      if(ftv.size() == 0) {
+        log_and_throw("Empty feature set has been specified");
+      }
+      f_data = f_data.select_columns(ftv);
+      options.erase(ft_it);
+    }
+  }
+
   sframe X = f_data.materialize_to_sframe(); 
     
   sframe y = data.select_columns({target}).materialize_to_sframe();

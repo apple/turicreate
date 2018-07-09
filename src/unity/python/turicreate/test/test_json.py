@@ -26,6 +26,9 @@ import unittest
 
 from . import util
 from .. import _json # turicreate._json
+from ..data_structures.sarray import SArray
+from ..data_structures.sframe import SFrame
+from ..data_structures.sgraph import SGraph, Vertex, Edge
 
 if sys.version_info.major == 3:
     long = int
@@ -55,9 +58,6 @@ _SFrameComparer = util.SFrameComparer()
 
 class JSONTest(unittest.TestCase):
     def _assertEqual(self, x, y):
-        from ..data_structures.sarray import SArray
-        from ..data_structures.sframe import SFrame
-        from ..data_structures.sgraph import SGraph
         if type(x) in [long,int]:
             self.assertTrue(type(y) in [long,int])
         else:
@@ -180,9 +180,8 @@ class JSONTest(unittest.TestCase):
         ]]
 
     def test_sarray_to_json(self):
-        from ..data_structures.sarray import SArray
-        from ..data_structures.sframe import SFrame
         from .. import Image
+
         d = datetime.datetime(year=2016, month=3, day=5)
         [self._run_test_case(value) for value in [
             SArray(),
@@ -216,16 +215,12 @@ class JSONTest(unittest.TestCase):
         ]]
 
     def test_sframe_to_json(self):
-        from ..data_structures.sframe import SFrame
         [self._run_test_case(value) for value in [
             SFrame(),
             SFrame({'foo': [1,2,3,4], 'bar': [None, "Hello", None, "World"]}),
         ]]
 
     def test_sgraph_to_json(self):
-        from ..data_structures.sframe import SFrame
-        from ..data_structures.sgraph import SGraph, Vertex, Edge
-
         sg = SGraph()
         self._run_test_case(sg)
 
@@ -248,11 +243,13 @@ class JSONTest(unittest.TestCase):
     def test_variant_to_json(self):
         # not tested in the cases above: variant_type other than SFrame-like
         # but containing SFrame-like (so cannot be a flexible_type)
-        from ..data_structures.sarray import SArray
-        from ..data_structures.sframe import SFrame
         sf = SFrame({'col1': [1,2], 'col2': ['hello','world']})
         sa = SArray([5.0,6.0,7.0])
         [self._run_test_case(value) for value in [
             {'foo': sf, 'bar': sa},
             [sf, sa],
         ]]
+
+    def test_malformed_json(self):
+        self.assertRaises(RuntimeError, SArray.read_json, './malformed.json')
+        self.assertRaises(RuntimeError, SFrame.read_json, './malformed.json')

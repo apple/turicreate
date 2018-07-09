@@ -1473,8 +1473,8 @@ class SFrame(object):
 
     @classmethod
     def read_json(cls,
-                 url,
-                 orient='records'):
+                  url,
+                  orient='records'):
         """
         Reads a JSON file representing a table into an SFrame.
 
@@ -1559,10 +1559,14 @@ class SFrame(object):
         """
         if orient == "records":
             g = SArray.read_json(url)
+            if len(g) == 0:
+                return SFrame()
             g = SFrame({'X1':g})
             return g.unpack('X1','')
         elif orient == "lines":
             g = cls.read_csv(url, header=False)
+            if g.num_rows() == 0:
+                return SFrame()
             if g.num_columns() != 1:
                 raise RuntimeError("Input JSON not of expected format")
             if g['X1'].dtype == dict:

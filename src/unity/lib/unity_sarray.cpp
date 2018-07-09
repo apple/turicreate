@@ -260,22 +260,31 @@ void unity_sarray::construct_from_json_record_files(std::string url) {
         const char* str = buffer.data();
         auto parse_result = parser.recursive_parse(&str, fsize);
         if (parse_result.second == false || parse_result.first.get_type() != flex_type_enum::LIST) {
-          logstream(LOG_PROGRESS) << "Unable to parse " << sanitize_url(p.first)  << ". "
-                                  << "It does not appear to be in JSON record format. "
-                                  << "A list of dictionaries is expected"  << std::endl;
-          continue;
+          std::stringstream error_msg;
+          error_msg << "Unable to parse " << sanitize_url(p.first)  << ". "
+                    << "It does not appear to be in JSON record format. "
+                    << "A list of dictionaries is expected"  << std::endl;
+
+          log_and_throw(error_msg.str());
         }
 
+        size_t num_elems_parsed = 0;
         bool has_non_dict_elements = false;
         for (const auto& element : parse_result.first.get<flex_list>()) {
           if (element.get_type() == flex_type_enum::DICT ||
               element.get_type() == flex_type_enum::UNDEFINED) {
             (*output) = element;
             ++output;
+            ++num_elems_parsed;
           } else {
             has_non_dict_elements = true;
           }
         }
+
+        logstream(LOG_PROGRESS) << "Successfully parsed an SArray of "
+                                << num_elems_parsed 
+                                << " elements from the JSON file "
+                                << sanitize_url(p.first);
 
         if (has_non_dict_elements) {
           logstream(LOG_PROGRESS) << sanitize_url(p.first)

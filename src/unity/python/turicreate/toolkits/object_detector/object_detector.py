@@ -32,6 +32,7 @@ from .. import _pre_trained_models
 from ._evaluation import average_precision as _average_precision
 from .._mps_utils import (use_mps as _use_mps,
                           mps_device_name as _mps_device_name,
+                          mps_device_memory_limit as _mps_device_memory_limit,
                           MpsGraphAPI as _MpsGraphAPI,
                           MpsGraphNetworkType as _MpsGraphNetworkType,
                           MpsGraphMode as _MpsGraphMode,
@@ -98,7 +99,8 @@ def _raise_error_if_not_detection_sframe(dataset, feature, annotations, require_
 
 
 def create(dataset, annotations=None, feature=None, model='darknet-yolo',
-           classes=None, max_iterations=0, verbose=True, **kwargs):
+           classes=None, batch_size=0, max_iterations=0, verbose=True,
+           **kwargs):
     """
     Create a :class:`ObjectDetector` model.
 
@@ -142,6 +144,10 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     classes : list optional
         List of strings containing the names of the classes of objects.
         Inferred from the data if not provided.
+
+    batch_size: int
+        The number of images per training iteration. If 0, then it will be
+        automatically determined based on resource availability.
 
     max_iterations : int
         The number of training iterations. If 0, then it will be automatically
@@ -217,7 +223,6 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
             (16.0, 32.0), (16.0, 16.0), (32.0, 16.0),
         ],
         'grid_shape': [13, 13],
-        'batch_size': 32,
         'aug_resize': 0,
         'aug_rand_crop': 0.9,
         'aug_rand_pad': 0.9,
@@ -265,11 +270,18 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     anchors = params['anchors']
     num_anchors = len(anchors)
 
-    num_mxnet_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=params['batch_size'])
-    batch_size_each = params['batch_size'] // max(num_mxnet_gpus, 1)
+    if batch_size < 1:
+        batch_size = 32  # Default if not user-specified
+    num_mxnet_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=batch_size)
+    use_mps = _use_mps() and num_mxnet_gpus == 0
+    batch_size_each = batch_size // max(num_mxnet_gpus, 1)
+    if use_mps and _mps_device_memory_limit() < 4 * 1024 * 1024 * 1024:
+        # Reduce batch size for GPUs with less than 4GB RAM
+        batch_size_each = 16
     # Note, this may slightly alter the batch size to fit evenly on the GPUs
     batch_size = max(num_mxnet_gpus, 1) * batch_size_each
-    use_mps = _use_mps() and num_mxnet_gpus == 0
+    if verbose:
+        print("Setting 'batch_size' to {}".format(batch_size))
 
 
     # The IO thread also handles MXNet-powered data augmentation. This seems
@@ -409,6 +421,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
             progress['last_time'] = cur_time
 
     if use_mps:
+        # Force initialization of net_params
+        # TODO: Do not rely on MXNet to initialize MPS-based network
         net.forward(_mx.nd.uniform(0, 1, (batch_size_each,) + input_image_shape))
         mps_net_params = {}
         keys = list(net_params)
@@ -1517,35 +1531,41 @@ class ObjectDetector(_CustomModel):
         iouThresholdString = '(optional) IOU Threshold override (default: {})'
         confidenceThresholdString = ('(optional)' + 
             ' Confidence Threshold override (default: {})')
-        mlmodel = coremltools.models.MLModel(model)
         model_type = 'object detector (%s)' % self.model
-        mlmodel.short_description = _coreml_utils._mlmodel_short_description(
-            model_type)
-        mlmodel.input_description[self.feature] = 'Input image'
+        model.description.metadata.shortDescription = \
+            _coreml_utils._mlmodel_short_description(model_type)
+        model.description.input[0].shortDescription = 'Input image'
         if include_non_maximum_suppression:
             iouThresholdString = '(optional) IOU Threshold override (default: {})'
-            mlmodel.input_description['iouThreshold'] = \
+            model.description.input[1].shortDescription = \
                 iouThresholdString.format(iou_threshold)
             confidenceThresholdString = ('(optional)' + 
                 ' Confidence Threshold override (default: {})')
-            mlmodel.input_description['confidenceThreshold'] = \
+            model.description.input[2].shortDescription = \
                 confidenceThresholdString.format(confidence_threshold)
-        mlmodel.output_description['confidence'] = \
-                u'Boxes \xd7 Class confidence (see user-defined metadata "classes")'
-        mlmodel.output_description['coordinates'] = \
-                u'Boxes \xd7 [x, y, width, height] (relative to image size)'
-        _coreml_utils._set_model_metadata(mlmodel, self.__class__.__name__, {
-                'model': self.model,
-                'max_iterations': str(self.max_iterations),
-                'training_iterations': str(self.training_iterations),
-                'include_non_maximum_suppression': str(
-                    include_non_maximum_suppression),
-                'non_maximum_suppression_threshold': str(
-                    iou_threshold),
-                'confidence_threshold': str(confidence_threshold),
-                'iou_threshold': str(iou_threshold),
-                'feature': self.feature,
-                'annotations': self.annotations,
-                'classes': ','.join(self.classes),
-            }, version=ObjectDetector._PYTHON_OBJECT_DETECTOR_VERSION)
-        mlmodel.save(filename)
+        model.description.output[0].shortDescription = \
+            u'Boxes \xd7 Class confidence (see user-defined metadata "classes")'
+        model.description.output[1].shortDescription = \
+            u'Boxes \xd7 [x, y, width, height] (relative to image size)'
+        version = ObjectDetector._PYTHON_OBJECT_DETECTOR_VERSION
+        partial_user_defined_metadata = {
+            'model': self.model,
+            'max_iterations': str(self.max_iterations),
+            'training_iterations': str(self.training_iterations),
+            'include_non_maximum_suppression': str(
+                include_non_maximum_suppression),
+            'non_maximum_suppression_threshold': str(
+                iou_threshold),
+            'confidence_threshold': str(confidence_threshold),
+            'iou_threshold': str(iou_threshold),
+            'feature': self.feature,
+            'annotations': self.annotations,
+            'classes': ','.join(self.classes)
+        }
+        user_defined_metadata = _get_model_metadata(
+            self.__class__.__name__,
+            partial_user_defined_metadata,
+            version)
+        model.description.metadata.userDefined.update(user_defined_metadata)
+        from coremltools.models.utils import save_spec as _save_spec
+        _save_spec(model, filename)

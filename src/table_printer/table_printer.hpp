@@ -332,7 +332,7 @@ class table_printer {
       // Turn off the tracking if people don't want it, i.e. by
       // passing 0 as the track interval to the constructor.
       if(track_interval != 0)
-        _track_progress(columns...);
+        _track_progress(/* was_printed */ true, columns...);
     }
   }
 
@@ -355,16 +355,18 @@ class table_printer {
   inline GL_HOT_INLINE void print_progress_row(size_t tick, const Args&... columns) {
 
     size_t ticks_so_far = ++num_ticks_so_far;
+    bool was_printed = false;
     
     if(register_tick(tick, ticks_so_far)) {
       std::unique_lock<mutex> pl_guard(print_lock, std::defer_lock);
       if(pl_guard.try_lock()) {
-      _print_progress_row(columns...); 
-    }
+        _print_progress_row(columns...);
+        was_printed = true;
+      }
     }
     
     if((track_interval != 0) && ((ticks_so_far - 1) % track_interval) == 0) {
-      _track_progress(columns...);
+      _track_progress(was_printed, columns...);
     }
   }
 
@@ -376,23 +378,33 @@ class table_printer {
    * if calls are extremely frequent) calls.
    *
    */
-  inline GL_HOT_INLINE void print_progress_row_strs(size_t tick, const std::vector<std::string>& _cols) {
-    ASSERT_EQ(_cols.size(), format.size());
+  inline GL_HOT_INLINE void print_progress_row_strs(size_t tick, const std::vector<std::string>& cols) {
+    ASSERT_EQ(cols.size(), format.size());
 
-    auto cols = std::vector<flexible_type>();
-    for (const auto& c : _cols) {
-      cols.push_back(std::string(c));
-    }
-    
     size_t ticks_so_far = ++num_ticks_so_far;
+    bool was_printed = false;
     
     if(register_tick(tick, ticks_so_far)) {
       std::lock_guard<mutex> pl_guard(print_lock);
       print_row(cols);
+      was_printed = true;
     }
     
-    if(((ticks_so_far - 1) % track_interval) == 0) {
-      track_progress_row(cols); 
+    if (track_interval != 0 && ((ticks_so_far - 1) % track_interval) == 0) {
+      std::lock_guard<mutex> guard(track_register_lock);
+
+      if (!tracker_is_initialized) {
+        track_row_values_.resize(cols.size());
+        track_row_styles_.resize(cols.size());
+      }
+
+      for (size_t i = 0; i < cols.size(); ++i) {
+        track_row_values_[i] = cols[i];  // Convert from string to flexible_type
+        track_row_styles_[i] = style_type::kDefault;
+      }
+
+      track_progress_row(track_row_values_);
+      track_row_was_printed_ = was_printed;
     }
   }
 
@@ -412,6 +424,17 @@ class table_printer {
   sframe get_tracked_table();
 
 private:
+
+  /** Returns the table_printer::style_type for a given value
+   */
+  template <typename T>
+  table_internal::table_printer_element_base::style_type
+  _get_table_printer_style(const T& v) {
+    static_assert(table_internal::table_printer_element<T>::valid_type,
+                  "Table printer not available for this type; please cast to approprate type.");
+
+    return table_internal::table_printer_element<T>::style;
+  }
 
   /** By value, disambiguate the elements
    */
@@ -607,18 +630,23 @@ private:
   ////////////////////////////////////////////////////////////////////////////////
   // Stuff for registering the values
 
-  mutex track_register_lock;
+  using style_type = table_internal::table_printer_element_base::style_type;
+
+  mutable mutex track_register_lock;
   sframe track_sframe;
   bool tracker_is_initialized = false;
+  bool track_row_was_printed_ = false;
   sframe::iterator tracking_out_iter;
-  std::vector<flexible_type> track_row_buffer;
+  std::vector<flexible_type> track_row_values_;
+  std::vector<style_type> track_row_styles_;
   size_t track_interval = 1;
 
 
   /**  Record a row in the tracking SFrame.
    */
   template <typename... Args>
-  inline GL_HOT_NOINLINE void _track_progress(const Args&... columns) {
+  inline GL_HOT_NOINLINE void _track_progress(
+      bool was_printed, const Args&... columns) {
 
     std::lock_guard<decltype(track_register_lock)> register_lock_gourd(track_register_lock);
 
@@ -627,12 +655,16 @@ private:
     DASSERT_EQ(n, format.size());
 
     if(!tracker_is_initialized) {
-      track_row_buffer.resize(n);
+      track_row_values_.resize(n);
+      track_row_styles_.resize(n);
     }
 
-    _register_values_in_row(track_row_buffer, 0, columns...);
-    track_progress_row(track_row_buffer);
+    _register_values_in_row(0, columns...);
+    track_progress_row(track_row_values_);
+    track_row_was_printed_ = was_printed;
   }
+
+  void print_track_row_if_necessary() const;
 
   inline GL_HOT_NOINLINE void 
   track_progress_row(const std::vector<flexible_type>& track_row_buffer) {
@@ -662,22 +694,26 @@ private:
   /** Recursively add values in a row.
    */
   template <typename T, typename... Args>
-  GL_HOT_INLINE_FLATTEN void _register_values_in_row(std::vector<flexible_type>& vv, size_t column_index,
-                               const T& t, const Args&... columns) const {
-    DASSERT_LT(column_index, vv.size());
+  GL_HOT_INLINE_FLATTEN void _register_values_in_row(
+      size_t column_index, const T& t, const Args&... columns) {
+    DASSERT_LT(column_index, track_row_values_.size());
+    DASSERT_LT(column_index, track_row_styles_.size());
 
-    vv[column_index] = _get_table_printer(t).get_value();
-    _register_values_in_row(vv, column_index + 1, columns...);
+    track_row_values_[column_index] = _get_table_printer(t).get_value();
+    track_row_styles_[column_index] = _get_table_printer_style(t);
+    _register_values_in_row(column_index + 1, columns...);
   }
 
   /** Recursively add values in a row -- final termination state.
    */
   template <typename T, typename... Args>
-  GL_HOT_INLINE_FLATTEN void _register_values_in_row(std::vector<flexible_type>& vv,
-                               size_t column_index, const T& t) const {
-    DASSERT_LT(column_index, vv.size());
+  GL_HOT_INLINE_FLATTEN void _register_values_in_row(
+      size_t column_index, const T& t) {
+    DASSERT_LT(column_index, track_row_values_.size());
+    DASSERT_LT(column_index, track_row_styles_.size());
 
-    vv[column_index] = _get_table_printer(t).get_value();
+    track_row_values_[column_index] = _get_table_printer(t).get_value();
+    track_row_styles_[column_index] = _get_table_printer_style(t);
   }
 
 };
