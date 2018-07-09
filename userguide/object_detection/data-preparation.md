@@ -10,12 +10,23 @@ toolkit, we will rely on many useful SFrame functions.
 The dataset that we will use is [INRIA Annotations for Graz-02
 (IG02)](https://lear.inrialpes.fr/people/marszalek/data/ig02/)[^1][^2]. Our goal is to
 make a detector that can spot bikes and cars. Go ahead and click this link and
-download `ig02-v1.0-bikes.zip` and `ig02-v1.0-cars.zip`. In this tutorial, we
-will assume that you have unzipped these files into `~/Downloads/ig02`. That
-is, you should have the following data structure:
+download `ig02-v1.0-bikes.zip` and `ig02-v1.0-cars.zip`. On unzipping, they will probably 
+get named to `ig02-v1` and `ig02-v1-2` respectively. Open a Terminal session and 
+run the following commands:
 
 ```
-~/Downloads/ig02/
+$ cd ~/Downloads/ig02-v1
+$ mv ~/Downloads/ig02-v1-2/readme.txt ~/Downloads/ig02-v1-2/readme2.txt
+$ mv ~/Downloads/ig02-v1-2/* .
+$ rm -rf ~/Downloads/ig02-v1-2
+```
+Now, you should have the following data structure:
+
+```
+~/Downloads/ig02-v1/
+    bikes_info.txt
+    bikes_test.txt
+    bikes_train.txt
     bikes/
         bike_001.image.png
         bike_001.mask.0.png
@@ -24,11 +35,16 @@ is, you should have the following data structure:
         bike_001.mask.3.png
         bike_002.image.png
         ...
+    cars_info.txt
+    cars_test.txt
+    cars_train.txt
     cars/
         carsgraz_001.image.png
         carsgraz_001.mask.0.png
         carsgraz_002.image.png
         ...
+    readme.txt
+    readme2.txt
 ```
 
 This dataset contains masks marking the exact pixels belonging to each object
