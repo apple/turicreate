@@ -1423,6 +1423,15 @@ class ObjectDetector(_CustomModel):
             # Confidence threshold +---------------------------+          |
             #                        +------------------------------------+
 
+            from turicreate.toolkits._internal_utils import _mac_ver
+            if _mac_ver() < (10, 14):
+                raise _ToolkitError(
+                    "Non-maximum suppression is not supported for " + 
+                    "macOS < 10.14. Please consider upgrading to macOS 10.14" +
+                    " in order to use non-maximum suppression, or set " + 
+                    "include_non_maximum_suppression = False when passing it" +
+                    " to export_coreml.")
+
             model_neural_network = model.neuralNetwork
             model.specificationVersion = 3
             model.pipeline.ParseFromString(b'')
