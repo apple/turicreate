@@ -83,7 +83,7 @@ elseif(LINUX)
       copy_libcxx_deps ALL
       COMMAND cp ${LIBCXX}.1.0 ${CMAKE_CURRENT_BINARY_DIR}/libc++.so.1
       COMMAND cp ${LIBCXXABI}.1.0 ${CMAKE_CURRENT_BINARY_DIR}/libc++abi.so.1
-      COMMAND cp ${LIBUNWIND}.1.0 ${CMAKE_CURRENT_BINARY_DIR}/libunwind.so.1
+      COMMAND cp ${LIBUNWIND} ${CMAKE_CURRENT_BINARY_DIR}/libunwind.so.1
     )
 
   endif()
