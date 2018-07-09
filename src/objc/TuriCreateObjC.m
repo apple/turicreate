@@ -25,7 +25,6 @@ static bool handleError(tc_error* error_ptr, NSError** error) {
                                          code:MLModelErrorGeneric
                                      userInfo:userInfo];
         }
-        assert(false);
         return true;
     }
     return false;
