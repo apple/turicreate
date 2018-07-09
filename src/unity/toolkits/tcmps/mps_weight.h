@@ -111,7 +111,7 @@ updateWithCommandBuffer:(__nonnull id<MTLCommandBuffer>)commandBuffer
 @end  // TCMPSConvolutionWeights
 
 API_AVAILABLE(macos(10.14))
-@interface TCMPSBatchNormData : NSObject <MPSCNNBatchNormalizationDataSource> {
+@interface TCMPSBatchNormWeights : NSObject <MPSCNNBatchNormalizationDataSource> {
 @private
   NSUInteger _channels;
   float *_betaPointer, *_gammaPointer, *_betaMomentumPointer,
@@ -174,7 +174,7 @@ API_AVAILABLE(macos(10.14))
 - (BOOL)updateGammaAndBetaWithBatchNormalizationState:
     (MPSCNNBatchNormalizationState *__nonnull)batchNormalizationState;
 
-@end  // TCMPSBatchNormData
+@end  // TCMPSBatchNormWeights
 
 
 #endif /* MPS_WEIGHT_H_ */

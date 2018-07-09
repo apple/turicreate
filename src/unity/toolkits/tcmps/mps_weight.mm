@@ -24,7 +24,7 @@ API_AVAILABLE(macos(10.14))
 // Batch norm update
 -(void)encodeToCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
      batchNormalizationState:(MPSCNNBatchNormalizationState *)state
-               batchNormData:(TCMPSBatchNormData *)data;
+               batchNormData:(TCMPSBatchNormWeights *)weights;
 
 -(void)setLearningRate:(float)newLearningRate;
 
@@ -51,8 +51,8 @@ API_AVAILABLE(macos(10.14))
 
 @end
 
-// Class extension for TCMPSBatchNormData internal implementation
-@interface TCMPSBatchNormData ()
+// Class extension for TCMPSBatchNormWeights internal implementation
+@interface TCMPSBatchNormWeights ()
 
 @property (nonatomic, readonly) id<TCMPSConvolutionWeightsOptimizing> optimizer;
 
@@ -84,13 +84,13 @@ NS_ASSUME_NONNULL_END
 
 -(void)encodeToCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
      batchNormalizationState:(MPSCNNBatchNormalizationState *)state
-               batchNormData:(TCMPSBatchNormData *)data
+               batchNormData:(TCMPSBatchNormWeights *)weights
 {
   [self encodeToCommandBuffer:commandBuffer
       batchNormalizationState:state
-         inputMomentumVectors:@[data.gammaMomentumVector, data.betaMomentumVector]
-         inputVelocityVectors:@[data.gammaVelocityVector, data.betaVelocityVector]
-                  resultState:data.gammaBetaState];
+         inputMomentumVectors:@[weights.gammaMomentumVector, weights.betaMomentumVector]
+         inputVelocityVectors:@[weights.gammaVelocityVector, weights.betaVelocityVector]
+                  resultState:weights.gammaBetaState];
 }
 
 @end
@@ -110,12 +110,12 @@ NS_ASSUME_NONNULL_END
 
 -(void)encodeToCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
      batchNormalizationState:(MPSCNNBatchNormalizationState *)state
-               batchNormData:(TCMPSBatchNormData *)data
+               batchNormData:(TCMPSBatchNormWeights *)weights
 {
   [self encodeToCommandBuffer:commandBuffer
       batchNormalizationState:state
-         inputMomentumVectors:@[data.gammaMomentumVector, data.betaMomentumVector]
-                  resultState:data.gammaBetaState];
+         inputMomentumVectors:@[weights.gammaMomentumVector, weights.betaMomentumVector]
+                  resultState:weights.gammaBetaState];
 }
 
 @end
@@ -403,7 +403,7 @@ updateWithCommandBuffer:(__nonnull id<MTLCommandBuffer>)commandBuffer
 
 @end  // TCMPSConvolutionWeights
 
-@implementation TCMPSBatchNormData
+@implementation TCMPSBatchNormWeights
 
 @synthesize internalLabel = _label;
 
@@ -591,12 +591,12 @@ updateWithCommandBuffer:(__nonnull id<MTLCommandBuffer>)commandBuffer
 // We don't yet trigger any copies of this data source, but real implementations
 // here will be necessary to support training with additional GPUs
 - (instancetype)copyWithZone:(nullable NSZone *)zone {
-  assert(false && "NSCopying not implemented for TCMPSBatchNormData");
+  assert(false && "NSCopying not implemented for TCMPSBatchNormWeights");
   return self;
 }
 
 - (instancetype)copyWithZone:(nullable NSZone *)zone device:(nullable id <MTLDevice>)device {
-  assert(false && "NSCopying not implemented for TCMPSBatchNormData");
+  assert(false && "NSCopying not implemented for TCMPSBatchNormWeights");
   return self;
 }
 
@@ -764,4 +764,4 @@ updateGammaAndBetaWithCommandBuffer:(nonnull id<MTLCommandBuffer>)commandBuffer
     [movingVarianceBuffer didModifyRange:NSMakeRange(0, _channels * sizeof(float))];
 }
 
-@end  // TCMPSBatchNormData
+@end  // TCMPSBatchNormWeights
