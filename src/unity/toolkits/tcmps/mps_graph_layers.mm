@@ -175,7 +175,7 @@ void BNGraphLayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q
   
   float batchNormEpsilon = get_array_map_scalar(config, "batch_norm_epsilon", 1e-5f);
   
-  data = [TCMPSBatchNormData alloc];
+  data = [TCMPSBatchNormWeights alloc];
   data = [data initWithChannels:ch
          kernelParamsBinaryName:name.c_str()
                          device:device
