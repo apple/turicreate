@@ -1562,7 +1562,7 @@ class ObjectDetector(_CustomModel):
             'annotations': self.annotations,
             'classes': ','.join(self.classes)
         }
-        user_defined_metadata = _get_model_metadata(
+        user_defined_metadata = _coreml_utils._get_model_metadata(
             self.__class__.__name__,
             partial_user_defined_metadata,
             version)
