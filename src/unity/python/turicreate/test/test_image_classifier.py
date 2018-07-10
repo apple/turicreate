@@ -137,7 +137,7 @@ class ImageClassifierTest(unittest.TestCase):
         model = self.model
         single_image = self.sf[0][self.feature]
         prediction = model.predict(single_image)
-        self.assertTrue(isinstance(prediction, int))
+        self.assertTrue(isinstance(prediction, (int, str)))
         prediction = model.predict_topk(single_image)
         _raise_error_if_not_sframe(prediction)
         prediction = model.classify(single_image)
@@ -185,7 +185,7 @@ class ImageClassifierTest(unittest.TestCase):
 
             self.assertListAlmostEquals(
                coreml_values,
-               list(self.model.predict(img_fixed, output_type = 'probability_vector')[0]),
+               list(self.model.predict(img_fixed, output_type = 'probability_vector')),
                self.tolerance
             )
 
