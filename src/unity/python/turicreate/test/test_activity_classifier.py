@@ -59,10 +59,8 @@ def _random_session_ids(num_examples , num_sessions):
     max_lines_per_session = int(1.15 * examples_per_session)
 
     lines_in_each_session = [random.randint(min_lines_per_session, max_lines_per_session) for i in range(num_sessions)]
+    lines_in_each_session = [(x * (num_examples)) // sum(lines_in_each_session) for x in lines_in_each_session]
     lines_in_each_session[-1] += num_examples - sum(lines_in_each_session)
-
-    if lines_in_each_session[-1] < 0:
-        raise ValueError()
 
     session_ids = []
     for value, num_lines in enumerate(lines_in_each_session):

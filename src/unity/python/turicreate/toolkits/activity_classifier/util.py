@@ -10,7 +10,7 @@ from turicreate import SFrame as _SFrame
 from turicreate.util import _raise_error_if_not_of_type
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._internal_utils import _numeric_param_check_range
-import random as _random
+from random import Random
 
 _MIN_NUM_SESSIONS_FOR_SPLIT = 100
 
@@ -80,7 +80,9 @@ def random_split_by_session(dataset, session_id, fraction=0.9, seed=None):
     if seed is None:
         import time
         seed = long(time.time() * 256)
-
+    
+    random = Random()
+    
     # Create a random binary filter (boolean SArray), using the same probability across all lines
     # that belong to the same session. In expectancy - the desired fraction of the sessions will
     # go to the training set.
@@ -88,9 +90,9 @@ def random_split_by_session(dataset, session_id, fraction=0.9, seed=None):
     def random_session_pick(session_id):
         # If we will use only the session_id as the seed - the split will be constant for the
         # same dataset across different runs, which is of course undesired
-        _random.seed(hash(session_id) + seed)
-        return _random.uniform(0, 1) < fraction
-
+        random.seed(hash(session_id) + seed)
+        return random.uniform(0, 1) < fraction
+    
     chosen_filter = dataset[session_id].apply(random_session_pick)
     train = dataset[chosen_filter]
     valid = dataset[1 - chosen_filter]
