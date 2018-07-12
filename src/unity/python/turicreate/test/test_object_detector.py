@@ -104,15 +104,12 @@ class ObjectDetectorTest(unittest.TestCase):
 
         # Model
         self.sf = _get_data(feature=self.feature, annotations=self.annotations)
-        params = {
-            'batch_size': 2,
-        }
         self.model = tc.object_detector.create(self.sf,
                                                feature=self.feature,
                                                annotations=self.annotations,
+                                               batch_size=2,
                                                max_iterations=1,
-                                               model=self.pre_trained_model,
-                                               _advanced_parameters=params)
+                                               model=self.pre_trained_model)
 
         ## Answers
         self.opts = self.def_opts.copy()

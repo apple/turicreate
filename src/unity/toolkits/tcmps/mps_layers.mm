@@ -92,6 +92,18 @@ imageForCommandBuffer:(__nonnull id<MTLCommandBuffer>)cmdBuf
   return self;
 }
 
+// We don't yet trigger any copies of this data source, but real implementations
+// here will be necessary to support training with additional GPUs
+- (instancetype)copyWithZone:(nullable NSZone *)zone {
+  assert(false && "NSCopying not implemented for MPSCNNWeight");
+  return self;
+}
+
+- (instancetype)copyWithZone:(nullable NSZone *)zone device:(nullable id <MTLDevice>)device {
+  assert(false && "NSCopying not implemented for MPSCNNWeight");
+  return self;
+}
+
 - (MPSDataType)dataType {
   return MPSDataTypeFloat32;
 }

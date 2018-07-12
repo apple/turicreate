@@ -139,7 +139,6 @@ void MPSGraphModule::StartInferenceBatch(void *ptr, int64_t sz, int64_t *shape,
   @autoreleasepool {
 
   assert(mode_ == kGraphModeInference);
-  assert(pending_batches_.count > 0);
 
   id<MTLCommandBuffer> cb = [cmd_queue_ commandBuffer];
   TCMPSGraphModuleBatch *batch = [[TCMPSGraphModuleBatch alloc] initWithCommandBuffer:cb];
@@ -163,7 +162,8 @@ void MPSGraphModule::StartInferenceBatch(void *ptr, int64_t sz, int64_t *shape,
 void MPSGraphModule::WaitForInferenceBatch(float *out_ptr) {
   @autoreleasepool {
 
-  assert(mode_ == kGraphModeTrain);
+  assert(mode_ == kGraphModeInference);
+  assert(pending_batches_.count > 0);
 
   TCMPSGraphModuleBatch *batch = pending_batches_[0];
   [pending_batches_ removeObjectAtIndex:0];
