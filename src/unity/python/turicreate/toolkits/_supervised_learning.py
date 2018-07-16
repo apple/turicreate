@@ -284,7 +284,6 @@ def create(dataset, target, model_name, features=None,
         List of feature names used by feature column
 
     validation_set : SFrame, optional
-
         A dataset for monitoring the model's generalization performance.
         For each row of the progress table, the chosen metrics are computed
         for both the provided training dataset and the validation_set. The

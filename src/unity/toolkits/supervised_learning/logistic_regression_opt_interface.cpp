@@ -68,7 +68,7 @@ void flattened_sparse_vector_outer_prod(const SparseVector& a,
 logistic_regression_opt_interface::logistic_regression_opt_interface(
     const ml_data& _data, 
     const ml_data& _valid_data, 
-    logistic_regression& _sp_model) {  
+    logistic_regression& _sp_model) {
 
   data = _data;
   if (_valid_data.num_rows() > 0) valid_data = _valid_data;
@@ -176,7 +176,7 @@ size_t logistic_regression_opt_interface::num_classes() const{
 /**
  * Get strings needed to print the header for the progress table.
  */
-std::vector<std::pair<std::string, size_t>> 
+std::vector<std::pair<std::string, size_t>>
 logistic_regression_opt_interface::get_status_header(const std::vector<std::string>& stat_headers) {
   bool has_validation_data = (valid_data.num_rows() > 0);
   auto header = make_progress_header(smodel, stat_headers, has_validation_data); 

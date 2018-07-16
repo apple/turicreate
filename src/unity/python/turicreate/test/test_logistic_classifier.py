@@ -679,6 +679,15 @@ class LogisticRegressionCreateTest(unittest.TestCase):
                     False)
             self._test_create(*args)
 
+    def test_init_residual_of_zero(self):
+        X = tc.SFrame({'col1': [2., 1., 2., 1.], 'target': [1, 1, 2, 2]})
+
+        # Try all three solvers
+        tc.logistic_classifier.create(X, target = 'target', solver = 'newton')
+        tc.logistic_classifier.create(X, target = 'target', solver = 'lbfgs')
+        tc.logistic_classifier.create(X, target = 'target', solver = 'fista')
+
+
 class ListCategoricalLogisticRegressionTest(unittest.TestCase):
     """
     Unit test class for testing logistic regression with a categorical feature.
