@@ -24,11 +24,6 @@ if [[ "${PYTHON_VERSION}" == "python2.7" ]]; then
   PYTHON_FULL_NAME=python2.7
 fi
 
-function make_windows_exec_link {
-  targetname=$1/`basename $2 .exe`
-  echo "#!/bin/sh" > $targetname
-  echo "$2 \$@" >> $targetname
-}
 
 function linux_patch_sigfpe_handler {
 if [[ $OSTYPE == linux* ]]; then
@@ -37,22 +32,6 @@ if [[ $OSTYPE == linux* ]]; then
         mv -f tmp $targfile
 fi
 }
-
-
-function download_file {
-  # detect wget
-  echo "Downloading $2 from $1 ..."
-  if [ -z `which wget` ] ; then
-    if [ -z `which curl` ] ; then
-      echo "Unable to find either curl or wget! Cannot proceed with
-            automatic install."
-      exit 1
-    fi
-    curl $1 -o $2
-  else
-    wget $1 -O $2
-  fi
-} # end of download file
 
 $PIP install --upgrade "pip>=8.1"
 $PIP install -r scripts/requirements.txt
