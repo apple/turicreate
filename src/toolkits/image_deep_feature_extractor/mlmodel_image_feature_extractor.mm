@@ -441,15 +441,9 @@ mlmodel_image_feature_extractor::extract_features(gl_sarray data, bool verbose, 
       [image_batch release];
       checkNSError(error);
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"  // TODO: fix this issue
-
-      for (NSInteger i = 0; i < features_batch.featureProviderCount; ++i) {
-        [outputs addObject:[features_batch featureProviderAtIndex:i]];
+      for (NSInteger i = 0; i < features_batch.count; ++i) {
+        [outputs addObject:[features_batch featuresAtIndex:i]];
       }
-
-#pragma clang diagnostic pop
-
     } else {
 #else
     {
