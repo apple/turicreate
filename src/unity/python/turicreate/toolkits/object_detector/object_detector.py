@@ -905,16 +905,31 @@ class ObjectDetector(_CustomModel):
         return self._predict_with_options(dataset, with_ground_truth=False,
                                           postprocess=False)
 
+    def _canonize_input(self, dataset):
+        """
+        Takes input and returns tuple of the input in canonical form (SFrame)
+        along with an unpack callback function that can be applied to
+        prediction results to "undo" the canonization.
+        """
+        unpack = lambda x: x
+        if isinstance(dataset, _tc.SArray):
+            dataset = _tc.SFrame({self.feature: dataset})
+        elif isinstance(dataset, _tc.Image):
+            dataset = _tc.SFrame({self.feature: [dataset]})
+            unpack = lambda x: x[0]
+        return dataset, unpack
+
     def predict(self, dataset, confidence_threshold=0.25, verbose=True):
         """
         Predict object instances in an sframe of images.
 
         Parameters
         ----------
-        dataset : SFrame
-            A dataset that has the same columns that were used during training.
-            If the annotations column exists in ``dataset`` it will be ignored
-            while making predictions.
+        dataset : SFrame | SArray | turicreate.Image
+            The images on which to perform object detection.
+            If dataset is an SFrame, it must have a column with the same name
+            as the feature column during training. Additional columns are
+            ignored.
 
         confidence_threshold : float
             Only return predictions above this level of confidence. The
@@ -928,7 +943,9 @@ class ObjectDetector(_CustomModel):
         out : SArray
             An SArray with model predictions. Each element corresponds to
             an image and contains a list of dictionaries. Each dictionary
-            describes an object instances that was found in the image.
+            describes an object instances that was found in the image. If
+            `dataset` is a single image, the return value will be a single
+            prediction.
 
         See Also
         --------
@@ -957,12 +974,13 @@ class ObjectDetector(_CustomModel):
             >>> data['image_pred'] = turicreate.object_detector.util.draw_bounding_boxes(data['image'], data['predictions'])
         """
         _numeric_param_check_range('confidence_threshold', confidence_threshold, 0.0, 1.0)
+        dataset, unpack = self._canonize_input(dataset)
         stacked_pred = self._predict_with_options(dataset, with_ground_truth=False,
                                                   confidence_threshold=confidence_threshold,
                                                   verbose=verbose)
 
         from . import util
-        return util.unstack_annotations(stacked_pred, num_rows=len(dataset))
+        return unpack(util.unstack_annotations(stacked_pred, num_rows=len(dataset)))
 
     def evaluate(self, dataset, metric='auto', output_type='dict', verbose=True):
         """

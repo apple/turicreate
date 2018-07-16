@@ -210,6 +210,18 @@ class ObjectDetectorTest(unittest.TestCase):
         pred0 = self.model.predict(sf[:0])
         self.assertEqual(len(pred0), 0)
 
+    def test_single_image(self):
+        # Predict should work on a single image and product a list of dictionaries
+        # (we set confidene threshold to 0 to ensure predictions are returned)
+        pred = self.model.predict(self.sf[self.feature][0], confidence_threshold=0)
+        self.assertTrue(isinstance(pred, list))
+        self.assertTrue(isinstance(pred[0], dict))
+
+    def test_sarray(self):
+        sarray = self.sf.head()[self.feature]
+        pred = self.model.predict(sarray, confidence_threshold=0)
+        self.assertEqual(len(pred), len(sarray))
+
     def test_confidence_threshold(self):
         sf = self.sf.head()
         pred = self.model.predict(sf.head(), confidence_threshold=1.0)
