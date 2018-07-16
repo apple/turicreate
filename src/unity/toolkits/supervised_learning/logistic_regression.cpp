@@ -789,11 +789,24 @@ std::shared_ptr<coreml::MLModelWrapper> logistic_regression::export_to_coreml() 
   std::vector<double> one_hot_coefs;
   supervised::get_one_hot_encoded_coefs(coefs, ml_mdata, one_hot_coefs);
 
+  // Set weights and intercepts
+  // TODO: This logic is copied from linear_models_exporter.cpp. It should be
+  // factored out and shared.
+  std::vector<double> offsets;
+  std::vector<std::vector<double>> weights;
   size_t num_classes = ml_mdata->target_index_size();
-  double offset = one_hot_coefs.back();
-  model.setOffsets({offset});
-  one_hot_coefs.pop_back();
-  model.setWeights({one_hot_coefs});
+  size_t variables_per_class = one_hot_coefs.size() / (num_classes - 1);
+  for (size_t i = 0; i < num_classes - 1; ++i) {
+    size_t starting_index = i * variables_per_class;
+    weights.emplace_back();
+    for (size_t j = 0; j < variables_per_class - 1; ++j) {
+      weights[i].push_back(one_hot_coefs[starting_index + j]);
+    }
+    double cur_offset = one_hot_coefs[starting_index + variables_per_class - 1];
+    offsets.push_back(cur_offset);
+  }
+  model.setWeights(weights);
+  model.setOffsets(offsets);
 
   auto target_output_data_type = CoreML::FeatureType::Double();
   auto target_additional_data_type = CoreML::FeatureType::Double();
