@@ -203,7 +203,7 @@ EXPORT tc_sframe* tc_sframe_join_on_single_column(tc_sframe* left,
   tc_flexible_type *flex_column = tc_ft_create_from_cstring(column, error);
   if (flex_column == NULL) { assert(false); return NULL; } // error should be populated already
   uint64_t added = tc_flex_list_add_element(join_columns, flex_column, error);
-  if (added == -1) { assert(false); return NULL; } // error should be populated already
+  if (added == uint64_t(-1)) { assert(false); return NULL; } // error should be populated already
 
   tc_sframe *ret = tc_sframe_join_on_multiple_columns(left, right, join_columns, how, error);
   tc_release(flex_column);
