@@ -164,6 +164,9 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     _tkutl._raise_error_if_sarray_not_expected_dtype(dataset[target], target, [str, int])
     _tkutl._raise_error_if_sarray_not_expected_dtype(dataset[session_id], session_id, [str, int])
 
+    if isinstance(validation_set, str) and validation_set == 'auto':
+        dataset, validation_set = _random_split_by_session(dataset, session_id)
+
     # Encode the target column to numerical values
     use_target = target is not None
     dataset, target_map = _encode_target(dataset, target)
@@ -171,12 +174,6 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     predictions_in_chunk = 20
     chunked_data, num_sessions = _prep_data(dataset, features, session_id, prediction_window,
                                             predictions_in_chunk, target=target, verbose=verbose)
-
-    if isinstance(validation_set, str) and validation_set == 'auto':
-        if num_sessions < 100:
-            validation_set = None
-        else:
-            dataset, validation_set = _random_split_by_session(dataset, session_id)
 
     # Decide whether to use MPS GPU, MXnet GPU or CPU
     num_mxnet_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=num_sessions)

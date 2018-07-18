@@ -159,6 +159,32 @@ EXPORT tc_flex_list* tc_sframe_column_names(const tc_sframe* sf,
   ERROR_HANDLE_END(error, NULL);
 }
 
+EXPORT tc_sframe* tc_sframe_join_on_multiple_columns(
+    tc_sframe* left, tc_sframe* right,
+    tc_flex_list* join_columns,
+    const char* how, tc_error** error) {
+  ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
+
+  CHECK_NOT_NULL(error, left, "left tc_sframe", NULL);
+  CHECK_NOT_NULL(error, right, "right tc_sframe", NULL);
+
+  std::vector<std::string> join_columns_transform;
+
+  for (const turi::flexible_type& elem : join_columns->value) {
+    if (elem.get_type() != turi::flex_type_enum::STRING) {
+      set_error(error, "Contains a non-string column name.");
+      return NULL;
+    }
+    join_columns_transform.push_back(elem.get<turi::flex_string>());
+  }
+  
+  return new_tc_sframe(
+      left->value.join(right->value, join_columns_transform, how));
+
+  ERROR_HANDLE_END(error, NULL);
+}
+
 EXPORT tc_sframe* tc_sframe_join_on_single_column(tc_sframe* left,
                                                   tc_sframe* right,
                                                   const char* column,
@@ -169,21 +195,24 @@ EXPORT tc_sframe* tc_sframe_join_on_single_column(tc_sframe* left,
 
   CHECK_NOT_NULL(error, left, "left tc_sframe", NULL);
   CHECK_NOT_NULL(error, right, "right tc_sframe", NULL);
+  CHECK_NOT_NULL(error, column, "column", NULL);
+  CHECK_NOT_NULL(error, how, "how", NULL);
 
-  return new_tc_sframe(
-      left->value.join(right->value, {std::string(column)}, how));
+  tc_flex_list *join_columns = tc_flex_list_create(error);
+  if (join_columns == NULL) { assert(false); return NULL; } // error should be populated already
+  tc_flexible_type *flex_column = tc_ft_create_from_cstring(column, error);
+  if (flex_column == NULL) { assert(false); return NULL; } // error should be populated already
+  uint64_t added = tc_flex_list_add_element(join_columns, flex_column, error);
+  if (added == -1) { assert(false); return NULL; } // error should be populated already
+
+  tc_sframe *ret = tc_sframe_join_on_multiple_columns(left, right, join_columns, how, error);
+  tc_release(flex_column);
+  tc_release(join_columns);
+  return ret;
 
   ERROR_HANDLE_END(error, NULL);
 }
 
-EXPORT tc_sframe* tc_sframe_join_on_multiple_columns(
-    tc_sframe* left, tc_sframe* right,
-    tc_flex_list* join_columns,
-    const char* how, tc_error** error) {
-  // PLACEHOLDER
-  return NULL;
-
-}
 
 EXPORT tc_sframe* tc_sframe_read_csv(const char* url,
                                      const tc_parameters* params,

@@ -17,10 +17,7 @@
 #include <toolkits/supervised_learning/linear_svm_opt_interface.hpp>
 
 // CoreML
-#include <unity/toolkits/coreml_export/coreml_export_utils.hpp>
-#include <unity/toolkits/coreml_export/mldata_exporter.hpp>
-#include <unity/toolkits/coreml_export/MLModel/src/transforms/LinearModel.hpp>
-#include <unity/toolkits/coreml_export/MLModel/src/transforms/LogisticModel.hpp>
+#include <unity/toolkits/coreml_export/linear_models_exporter.hpp>
 
 
 // Solvers
@@ -416,77 +413,13 @@ size_t linear_svm::get_version() const{
   
 std::shared_ptr<coreml::MLModelWrapper> linear_svm::export_to_coreml() {
 
-  std::string prob_column_name = ml_mdata->target_column_name() + "Probability";
-  CoreML::Pipeline  pipeline = CoreML::Pipeline::Classifier(ml_mdata->target_column_name(), prob_column_name, "");
-
-  setup_pipeline_from_mldata(pipeline, ml_mdata);
-
-  //////////////////////////////////////////////////////////////////////
-  // Now set up the actual model.
-  CoreML::LogisticModel model = CoreML::LogisticModel(ml_mdata->target_column_name(),
-                                                                        prob_column_name,
-                                                                        "Linear SVM");
-
-  std::vector<double> one_hot_coefs;
-  supervised::get_one_hot_encoded_coefs(coefs, ml_mdata, one_hot_coefs);
-
-  size_t num_classes = ml_mdata->target_index_size();
-  double offset = one_hot_coefs.back();
-  model.setOffsets({offset});
-  one_hot_coefs.pop_back();
-  model.setWeights({one_hot_coefs});
-
-  auto target_output_data_type = CoreML::FeatureType::Double();
-  auto target_additional_data_type = CoreML::FeatureType::Double();
-  if(ml_mdata->target_column_type() == flex_type_enum::INTEGER) {
-      std::vector<int64_t> classes(num_classes);
-      for(size_t i = 0; i < num_classes; ++i) {
-        classes[i] = ml_mdata->target_indexer()->map_index_to_value(i).get<flex_int>();
-      }
-      model.setClassNames(classes);
-    target_output_data_type = CoreML::FeatureType::Int64();
-    target_additional_data_type = \
-              CoreML::FeatureType::Dictionary(MLDictionaryFeatureTypeKeyType_int64KeyType);
-  } else if(ml_mdata->target_column_type() == flex_type_enum::STRING) {
-      std::vector<std::string> classes(num_classes);
-      for(size_t i = 0; i < num_classes; i++) {
-        classes[i] = ml_mdata->target_indexer()->map_index_to_value(i).get<std::string>();
-      }
-      model.setClassNames(classes);
-      target_output_data_type = CoreML::FeatureType::String();
-      target_additional_data_type = \
-             CoreML::FeatureType::Dictionary(MLDictionaryFeatureTypeKeyType_stringKeyType);
-
-  } else {
-    log_and_throw("Only exporting classifiers with an output class "
-                  "of integer or string is supported.");
-  }
-
-  // Model inputs and output
-  model.addInput("__vectorized_features__",
-              CoreML::FeatureType::Array({static_cast<int64_t>(ml_mdata->num_dimensions())}));
-  model.addOutput(ml_mdata->target_column_name(), target_output_data_type);
-  model.addOutput(prob_column_name, target_additional_data_type);
-
-  // Pipeline outputs
-  pipeline.add(model);
-  pipeline.addOutput(ml_mdata->target_column_name(), target_output_data_type);
-  pipeline.addOutput(prob_column_name, target_additional_data_type);
-
-  
   std::map<std::string, flexible_type> context = { 
     {"model_type", "linear_svm"}, 
     {"version", std::to_string(get_version())}, 
     {"class", name()}, 
     {"short_description", "Linear SVM Model."}};
 
-  // Add metadata
-  add_metadata(pipeline.getProto(), context);
-
-  // Save pipeline
-  auto model_wrapper = std::make_shared<coreml::MLModelWrapper>(std::make_shared<CoreML::Pipeline>(pipeline));
-
-  return model_wrapper;
+  return export_linear_svm_as_model_asset(ml_mdata, coefs, context);
 }
 
 } // supervised

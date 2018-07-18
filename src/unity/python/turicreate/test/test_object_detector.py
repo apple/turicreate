@@ -104,15 +104,12 @@ class ObjectDetectorTest(unittest.TestCase):
 
         # Model
         self.sf = _get_data(feature=self.feature, annotations=self.annotations)
-        params = {
-            'batch_size': 2,
-        }
         self.model = tc.object_detector.create(self.sf,
                                                feature=self.feature,
                                                annotations=self.annotations,
+                                               batch_size=2,
                                                max_iterations=1,
-                                               model=self.pre_trained_model,
-                                               _advanced_parameters=params)
+                                               model=self.pre_trained_model)
 
         ## Answers
         self.opts = self.def_opts.copy()
@@ -212,6 +209,18 @@ class ObjectDetectorTest(unittest.TestCase):
         # Predict should work on no input (and produce no predictions)
         pred0 = self.model.predict(sf[:0])
         self.assertEqual(len(pred0), 0)
+
+    def test_single_image(self):
+        # Predict should work on a single image and product a list of dictionaries
+        # (we set confidene threshold to 0 to ensure predictions are returned)
+        pred = self.model.predict(self.sf[self.feature][0], confidence_threshold=0)
+        self.assertTrue(isinstance(pred, list))
+        self.assertTrue(isinstance(pred[0], dict))
+
+    def test_sarray(self):
+        sarray = self.sf.head()[self.feature]
+        pred = self.model.predict(sarray, confidence_threshold=0)
+        self.assertEqual(len(pred), len(sarray))
 
     def test_confidence_threshold(self):
         sf = self.sf.head()

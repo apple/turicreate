@@ -108,7 +108,7 @@ static bool handleError(tc_error* error_ptr, NSError** error) {
                         assert(false); // no way to propagate error to caller
                         return nil;
                     }
-                    scores[[NSString stringWithFormat:@"%lli", item_id_key]] = @(score);
+                    scores[[NSNumber numberWithInteger:item_id_key]] = @(score);
                     break;
                 }
                 case FT_TYPE_STRING: {
@@ -162,7 +162,7 @@ static bool handleError(tc_error* error_ptr, NSError** error) {
                         assert(false); // no way to propagate error to caller
                         return nil;
                     }
-                    ranks[[NSString stringWithFormat:@"%lli", item_id_key]] = @(rank);
+                    ranks[[NSNumber numberWithInteger:item_id_key]] = @(rank);
                     break;
                 }
                 case FT_TYPE_STRING: {
@@ -430,6 +430,9 @@ static bool handleError(tc_error* error_ptr, NSError** error) {
     if (handleError(error_ptr, error)) {
         return nil;
     }
+
+    assert(recommendation_sframe != NULL);
+    assert(item_id_name != NULL);
     // Convert predictions to an id<MLFeatureProvider>
     return [[TCRecommenderOutput alloc] initWithSFrame:recommendation_sframe
                                           item_id_name:item_id_name
