@@ -1092,8 +1092,6 @@ void xgboost_model::_save_training_state(size_t iteration,
     info["training_" + metric] = training_metrics[i];
     if (validation_metrics.size() > 0) {
       info["validation_" + metric] = validation_metrics[i];
-    } else {
-      info["validation_" + metric] = FLEX_UNDEFINED;
     }
   }
   // Store trees

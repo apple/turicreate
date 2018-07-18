@@ -306,10 +306,11 @@ class TreeModelMixin(object):
             ("Training time (sec)", 'training_time')]
 
         for m in ['accuracy', 'log_loss', 'auc', 'rmse', 'max_error']:
-            required_fields = ['training_%s' % m, 'validation_%s' %m]
-            if (all(i in self._list_fields() for i in required_fields)):
+            if 'training_%s' % m in self._list_fields():
                 training_fields.append(('Training %s' % m, 'training_%s' % m))
-                training_fields.append(('Validation %s' % m, 'validation_%s' % m))
+                if 'validation_%s' % m in self._list_fields():
+                    training_fields.append(('Validation %s' % m,
+                                            'validation_%s' % m))
 
         return ([data_fields, training_fields], ["Schema", "Settings"])
 
