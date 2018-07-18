@@ -49,6 +49,7 @@
 #include <timer/timer.hpp>
 #include <logger/fail_method.hpp>
 #include <logger/backtrace.hpp>
+#include <logger/error.hpp>
 #include <util/code_optimization.hpp> 
 #include <process/process_util.hpp>
 
@@ -345,7 +346,7 @@
   do {                                                                \
     auto throw_error = [&]() GL_COLD_NOINLINE_ERROR {    \
       logstream(LOG_ERROR) << (message) << std::endl;                 \
-      throw(std::ios_base::failure(message, std::error_code()));      \
+      throw(turi::error::io_error(message, std::error_code()));      \
     };                                                                \
     throw_error();                                                    \
   } while(0)
@@ -354,11 +355,18 @@
   do {                                                                \
     auto throw_error = [&]() GL_COLD_NOINLINE_ERROR {    \
       logstream(LOG_ERROR) << (message) << std::endl;                 \
-      throw(std::ios_base::failure(message));                         \
+      throw(turi::error::io_error(message));                         \
     };                                                                \
     throw_error();                                                    \
   } while(0)
 #endif
+
+#define log_and_throw_current_io_failure()                            \
+  do {                                                                \
+    auto error_code = errno;                                          \
+    std::string error_message = std::strerror(error_code);            \
+    log_and_throw_io_failure(error_message);                          \
+  } while(0)
 
 #define log_func_entry()                                       \
   do {                                                         \

@@ -194,7 +194,33 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
 
     // Test saving and loading the model.
     {
-      std::string model_path =
+      // sad path 1 - attempting to save without permission to location
+      // ensure the error message contains useful info
+      std::string model_path = "/permission_should_be_denied";
+      tc_model_save(model, model_path.c_str(), &error);
+      TS_ASSERT_DIFFERS(error, nullptr);
+      std::string error_message = tc_error_message(error);
+      std::string expected_substr = "Ensure that you have write permission to this location, or try again with a different path";
+      TS_ASSERT_DIFFERS(error_message.find(expected_substr), error_message.npos);
+      error = nullptr;
+
+      // sad path 2 - attempting to save into an existing non-directory path
+      // ensure the error message contains useful info
+      model_path =
+        turi::fs_util::system_temp_directory_unique_path("", "_save_test_1_tmp_file");
+      {
+        std::ofstream tmp_file(model_path);
+        tmp_file << "Hello world";
+      }
+      tc_model_save(model, model_path.c_str(), &error);
+      TS_ASSERT_DIFFERS(error, nullptr);
+      error_message = tc_error_message(error);
+      expected_substr = "It already exists as a file";
+      TS_ASSERT_DIFFERS(error_message.find(expected_substr), error_message.npos);
+      error = nullptr;
+
+      // happy path - save should succeed
+      model_path =
         turi::fs_util::system_temp_directory_unique_path("", "_save_test_1_tmp_model");
 
       tc_model_save(model, model_path.c_str(), &error);

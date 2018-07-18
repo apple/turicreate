@@ -8,6 +8,7 @@ project(Turi)
 
 make_library(logger
   SOURCES
+    error.cpp
     logger.cpp
     backtrace.cpp
     log_rotate.cpp
