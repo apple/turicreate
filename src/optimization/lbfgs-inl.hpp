@@ -94,6 +94,8 @@ inline solver_return lbfgs(first_order_opt_interface& model,
          << std::endl;
     std::stringstream ss;
     ss.str("");
+    } else { 
+      logprogress_stream << "Calibrating solver; this may take some time." << std::endl;
     }
     
     // Step 1: Algorithm init
