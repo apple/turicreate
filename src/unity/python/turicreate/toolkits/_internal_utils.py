@@ -523,9 +523,9 @@ def _validate_data(dataset, target, features=None, validation_set='auto'):
             raise TypeError('Unrecognized value for validation_set.')
     elif validation_set is None:
         # Canonicalize None to an empty SFrame
-        validation_set = _turicreate.SFrame()
+        validation_set = _SFrame()
     else:
-        if not isinstance(validation_set, _turicreate.SFrame):
+        if not isinstance(validation_set, _SFrame):
             raise TypeError("validation_set must be either 'auto' or an SFrame "
                             "matching the training data.")
 
