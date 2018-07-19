@@ -370,23 +370,6 @@ inline std::vector<std::string> make_evaluation_progress(
   return ret;
 }
 
-inline std::vector<std::pair<std::string, size_t>> make_printer_header(
-    const std::vector<std::string>& metrics, bool has_validation) {
-
-  std::vector<std::pair<std::string, size_t>> header{
-    {"Iteration", 0}, {"Examples", 8}, {"Elapsed Time", 8}
-  };
-
-  for (const auto& m: metrics) {
-    header.push_back({std::string("Training ") + m, 6});
-    if (has_validation)
-      header.push_back({std::string("Validation ") + m, 6});
-  }
-
-  header.push_back({"Examples/second", 0});
-  return header;
-}
-
 inline std::vector<std::string> make_progress_string(
     size_t iter, size_t examples, double time,
     const std::vector<std::string>& train_eval,

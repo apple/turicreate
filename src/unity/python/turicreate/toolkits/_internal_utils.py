@@ -499,10 +499,10 @@ def _validate_data(dataset, target, features=None, validation_set='auto'):
         features
 
     validation_set : SFrame or str
-        The validation set, minus any columns not referenced by target or
-        features. The only non-SFrame value possible is 'auto', indicating that
-        the validation set should be sampled from dataset (in a possibly
-        toolkit-specific way).
+        A canonicalized version of the input validation_set. For SFrame
+        arguments, the returned SFrame only includes those columns referenced by
+        target or features. SFrame arguments that do not match the schema of
+        dataset, or string arguments that are not 'auto', trigger an exception.
     """
 
     _raise_error_if_not_sframe(dataset, "training dataset")
@@ -521,20 +521,16 @@ def _validate_data(dataset, target, features=None, validation_set='auto'):
         # Only string value allowed is 'auto'
         if validation_set != 'auto':
             raise TypeError('Unrecognized value for validation_set.')
-    elif validation_set is None:
-        # Canonicalize None to an empty SFrame
-        validation_set = _SFrame()
-    else:
-        if not isinstance(validation_set, _SFrame):
-            raise TypeError("validation_set must be either 'auto' or an SFrame "
-                            "matching the training data.")
-
+    elif isinstance(validation_set, _SFrame):
         # Attempt to append the two datasets together to check schema
         validation_set.head().append(dataset.head())
 
         # Reduce validation set to requested columns
         validation_set = _toolkits_select_columns(
             validation_set, features + [target])
+    elif not validation_set is None:
+        raise TypeError("validation_set must be either 'auto', None, or an "
+                        "SFrame matching the training data.")
 
     # Reduce training set to requested columns
     dataset = _toolkits_select_columns(dataset, features + [target])
