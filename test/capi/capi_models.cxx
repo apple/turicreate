@@ -146,26 +146,26 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
         tc_release(p_args);
 
         int is_sarray = tc_variant_is_sarray(ret_2);
-      TS_ASSERT(is_sarray);
+        TS_ASSERT(is_sarray);
 
         tc_sarray* sa = tc_variant_sarray(ret_2, &error);
         CAPI_CHECK_ERROR(error);
 
-      const auto& target_values = data.back().second;
+        const auto& target_values = data.back().second;
 
-      for (size_t i = 0; i < target_values.size(); ++i) {
-        tc_flexible_type* ft = tc_sarray_extract_element(sa, i, &error);
+        for (size_t i = 0; i < target_values.size(); ++i) {
+          tc_flexible_type* ft = tc_sarray_extract_element(sa, i, &error);
           CAPI_CHECK_ERROR(error);
 
-        double v = tc_ft_double(ft, &error);
+          double v = tc_ft_double(ft, &error);
 
           CAPI_CHECK_ERROR(error);
           tc_release(ft);
 
-        // Make sure they are close -- on a tiny dataset like this the default
-        // setting
-        TS_ASSERT_DELTA(v, target_values[i], 0.5);
-      }
+          // Make sure they are close -- on a tiny dataset like this the default
+          // setting
+          TS_ASSERT_DELTA(v, target_values[i], 0.5);
+        }
         tc_release(ret_2);
       }
 
