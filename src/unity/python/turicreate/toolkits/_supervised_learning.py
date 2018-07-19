@@ -320,6 +320,8 @@ def create(dataset, target, model_name, features=None,
             dataset, validation_set = dataset.random_split(.95, seed=seed)
         else:
             validation_set = _turicreate.SFrame()
+    elif validation_set is None:
+        validation_set = _turicreate.SFrame()
 
     # Sanitize model-specific options
     options = {k.lower(): kwargs[k] for k in kwargs}
@@ -414,6 +416,8 @@ def create_classification_with_model_selector(dataset, target, model_selector,
 
         if 'validation_accuracy' in m._list_fields():
             metrics[model_name] = m.validation_accuracy
+        elif 'training_accuracy' in m._list_fields():
+            metrics[model_name] = m.training_accuracy
 
         # Most models have this.
         elif 'progress' in m._list_fields():
