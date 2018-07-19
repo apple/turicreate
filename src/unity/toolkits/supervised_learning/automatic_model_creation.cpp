@@ -67,7 +67,7 @@ std::shared_ptr<supervised_learning_model_base> create_automatic_classifier_mode
 
   // If no validation set and enough training data, create a validation set.
   if(validation_data.empty() && data.size() >= 100) {
-    std::pair<gl_sframe, gl_sframe>  split = data.random_split(.95);
+    std::pair<gl_sframe, gl_sframe>  split = data.random_split(.95, 0);
     data = split.first;
     validation_data = split.second;
   }
@@ -136,13 +136,13 @@ std::pair<gl_sframe, gl_sframe> create_validation_data(gl_sframe data, const var
                          << data.size() << " datapoints." << std::endl;
 
       double p = 10000.0 / data.size(); 
-      return data.random_split(1.0 - p);
+      return data.random_split(1.0 - p, 0);
     } else if(data.size() >= 200) { 
       logprogress_stream << "Automatically generating validation set from 5% of the data." << std::endl;
-      return data.random_split(0.95);
+      return data.random_split(0.95, 0);
     } else if(data.size() >= 50) { 
       logprogress_stream << "Automatically generating validation set from 10% of the data." << std::endl;
-      return data.random_split(0.9);
+      return data.random_split(0.9, 0);
     } else {
       logprogress_stream << "Skipping automatic creation of validation set; training set has fewer than 50 points." << std::endl;
       return {data, gl_sframe()};
