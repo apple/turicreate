@@ -32,7 +32,7 @@ class Layer : public CefApp, public CefBrowserProcessHandler, public CefRenderPr
 
     CefRefPtr<CefBrowser> Browser;
 
-    bool created;
+    bool created = 0;
   private:
 
     IMPLEMENT_REFCOUNTING(Layer);
