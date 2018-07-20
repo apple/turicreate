@@ -30,8 +30,6 @@
 namespace turi {
 namespace supervised {
 
-constexpr size_t WIDE_DATA = 200;
-
 // TODO: List of todo's for this file
 //------------------------------------------------------------------------------
 
@@ -1216,83 +1214,6 @@ supervised_learning_model_base::get_missing_value_enum_from_string(
   } else {
     log_and_throw("Missing value type '" + missing_value_str + "' not supported.");
   }
-}
-
-/**
- * Compute the width of the data.
- *
- * \param[in] X  Input SFrame
- * \returns width
- *
- * The width is the same as the num_coefficients.
- *
- */
-size_t compute_data_width(sframe X){
-  ml_data data;
-  data.fill(X);
-  return get_number_of_coefficients(data.metadata());
-}
-
-/**
- * Rule based better than stupid model selector.
- */
-std::string _regression_model_selector(std::shared_ptr<unity_sframe> _X){
-
-  sframe X = *(_X->get_underlying_sframe());
-  size_t data_width = compute_data_width(X);
-  if (data_width < WIDE_DATA){
-    return "boosted_trees_regression";
-  } else {
-    return "regression_linear_regression";
-  }
-}
-
-/**
- * Rule based better than stupid model selector.
- */
-std::string _classifier_model_selector(std::shared_ptr<unity_sframe> _X){
-
-  sframe X = *(_X->get_underlying_sframe());
-
-  size_t data_width = compute_data_width(X);
-  if (data_width < WIDE_DATA){
-    return "boosted_trees_classifier";
-  } else {
-    return "classifier_logistic_regression";
-  }
-}
-
-/**
- * Rule based better than stupid model selector.
- */
-std::vector<std::string> _classifier_available_models(size_t num_classes,
-                                         std::shared_ptr<unity_sframe> _X){
-  sframe X = *(_X->get_underlying_sframe());
-
-  // Throw error if only one class.
-  // If number of classes more than 2, use boosted trees
-  if (num_classes == 1) {
-    log_and_throw("One-class classification is not currently supported. Please check your target column.");
-  } else if (num_classes > 2) {
-    return {"boosted_trees_classifier",
-            "random_forest_classifier",
-            "decision_tree_classifier",
-            "classifier_logistic_regression"};
-  } else {
-    size_t data_width = compute_data_width(X);
-    if (data_width < WIDE_DATA){
-      return {"boosted_trees_classifier",
-              "random_forest_classifier",
-              "decision_tree_classifier",
-              "classifier_svm",
-              "classifier_logistic_regression"};
-    } else {
-      return {"classifier_logistic_regression",
-              "classifier_svm"};
-    }
-  }
-
-  return std::vector<std::string>();
 }
 
 /**

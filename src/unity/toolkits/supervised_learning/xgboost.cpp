@@ -816,10 +816,13 @@ table_printer xgboost_model::_init_progress_printer(bool has_validation_data) {
     {"Iteration", default_column_width},
     {"Elapsed Time", default_column_width}
   };
-  for (auto& metric : tracking_metrics) {
-    progress_header.push_back({"Training " + metric, metric_column_width});
+  for (const std::string& metric : tracking_metrics) {
+    std::string metric_display_name = get_metric_display_name(metric);
+    progress_header.emplace_back("Training " + metric_display_name,
+                                 metric_column_width);
     if (has_validation_data) {
-      progress_header.push_back({"Validation " + metric, metric_column_width});
+      progress_header.emplace_back("Validation " + metric_display_name,
+                                   metric_column_width);
     }
   }
   table_printer printer(progress_header);
@@ -1089,8 +1092,6 @@ void xgboost_model::_save_training_state(size_t iteration,
     info["training_" + metric] = training_metrics[i];
     if (validation_metrics.size() > 0) {
       info["validation_" + metric] = validation_metrics[i];
-    } else {
-      info["validation_" + metric] = FLEX_UNDEFINED;
     }
   }
   // Store trees
