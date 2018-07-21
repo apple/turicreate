@@ -634,7 +634,7 @@ class CustomModel(ExposeAttributesFromProxy):
         raise NotImplementedError("_get_version not implemented")
 
     def __getitem__(self, key):
-        return self.get(key)
+        return self._get(key)
 
     def _get_native_state(self):
         raise NotImplementedError("_get_native_state not implemented")
