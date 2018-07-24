@@ -9,21 +9,23 @@ toolkit, we will rely on many useful SFrame functions.
 
 The dataset that we will use is [INRIA Annotations for Graz-02
 (IG02)](https://lear.inrialpes.fr/people/marszalek/data/ig02/)[^1][^2]. Our goal is to
-make a detector that can spot bikes and cars. Go ahead and click this link and
-download `ig02-v1.0-bikes.zip` and `ig02-v1.0-cars.zip`. On unzipping, they will probably 
-get named to `ig02-v1` and `ig02-v1-2` respectively. Open a Terminal session and 
-run the following commands:
+make a detector that can spot bikes and cars. Open a new terminal window and run the following commands:
 
 ```
-$ cd ~/Downloads/ig02-v1
-$ mv ~/Downloads/ig02-v1-2/readme.txt ~/Downloads/ig02-v1-2/readme2.txt
-$ mv ~/Downloads/ig02-v1-2/* .
-$ rm -rf ~/Downloads/ig02-v1-2
+$ mkdir -p ~/Downloads/ig02
+$ cd ~/Downloads/ig02
+$ curl https://lear.inrialpes.fr/people/marszalek/data/ig02/ig02-v1.0-bikes.zip > bikes.zip
+$ curl https://lear.inrialpes.fr/people/marszalek/data/ig02/ig02-v1.0-cars.zip > cars.zip
+$ tar -xvf bikes.zip
+$ mv readme.txt readme2.txt
+$ tar -xvf cars.zip
+$ rm bikes.zip cars.zip 
 ```
-Now, you should have the following data structure:
+
+Now, you should have the following file structure:
 
 ```
-~/Downloads/ig02-v1/
+~/Downloads/ig02/
     bikes_info.txt
     bikes_test.txt
     bikes_train.txt
