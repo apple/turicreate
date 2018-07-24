@@ -81,7 +81,6 @@ void _logistic_classifier_export_as_model_asset(std::shared_ptr<supervised_learn
   }
 
   auto metadata = logistic_model->get_ml_metadata();
-
   arma::vec coefs;
   logistic_model->get_coefficients(coefs);
   export_logistic_model_as_model_asset(filename, metadata, coefs, context);
