@@ -251,7 +251,6 @@ def create(style_dataset, content_dataset, style_feature=None,
     gram_chunks = [[] for _ in range(num_layers)]
     for s_batch in style_images_loader:
         s_data = _gluon.utils.split_and_load(s_batch.data[0], ctx_list=ctx, batch_axis=0)
-        results = []
         for s in s_data:
             vgg16_s = _vgg16_data_prep(s)
             ret = vgg_model(vgg16_s)
@@ -285,92 +284,96 @@ def create(style_dataset, content_dataset, style_feature=None,
     rs = _np.random.RandomState(1234)
     while iterations < max_iterations:
         content_images_loader.reset()
-        for c_batch in content_images_loader:
-            c_data = _gluon.utils.split_and_load(c_batch.data[0], ctx_list=ctx, batch_axis=0)
+        try:
+            c_batch = content_images_loader.next()
+        except StopIteration:
+            print('Number of content images is less than the batch_size')
+            raise
+        c_data = _gluon.utils.split_and_load(c_batch.data[0], ctx_list=ctx, batch_axis=0)
 
-            Ls = []
-            curr_content_loss = []
-            curr_style_loss = []
-            with _mx.autograd.record():
-                for c in c_data:
-                    # Randomize styles to train
-                    indices = _mx.nd.array(rs.randint(num_styles, size=batch_size_each),
-                                           dtype=_np.int64, ctx=c.context)
+        Ls = []
+        curr_content_loss = []
+        curr_style_loss = []
+        with _mx.autograd.record():
+            for c in c_data:
+                # Randomize styles to train
+                indices = _mx.nd.array(rs.randint(num_styles, size=batch_size_each),
+                                       dtype=_np.int64, ctx=c.context)
 
-                    # Generate pastiche
-                    p = transformer(c, indices)
+                # Generate pastiche
+                p = transformer(c, indices)
 
-                    # mean subtraction
-                    vgg16_p = _vgg16_data_prep(p)
-                    vgg16_c = _vgg16_data_prep(c)
+                # mean subtraction
+                vgg16_p = _vgg16_data_prep(p)
+                vgg16_c = _vgg16_data_prep(c)
 
-                    # vgg forward
-                    p_vgg_outputs = vgg_model(vgg16_p)
+                # vgg forward
+                p_vgg_outputs = vgg_model(vgg16_p)
 
-                    c_vgg_outputs = vgg_model(vgg16_c)
-                    c_content_layer = c_vgg_outputs[vgg_content_loss_layer]
-                    p_content_layer = p_vgg_outputs[vgg_content_loss_layer]
+                c_vgg_outputs = vgg_model(vgg16_c)
+                c_content_layer = c_vgg_outputs[vgg_content_loss_layer]
+                p_content_layer = p_vgg_outputs[vgg_content_loss_layer]
 
-                    # Calculate Loss
-                    # Style Loss between style image and stylized image
-                    # Ls = sum of L2 norm of gram matrix of vgg16's conv layers
-                    style_losses = []
-                    for gram, p_vgg_output, style_loss_mult in zip(ctx_grams[c.context], p_vgg_outputs, _style_loss_mult):
-                        gram_s_vgg = gram[indices]
-                        gram_p_vgg = _gram_matrix(p_vgg_output)
+                # Calculate Loss
+                # Style Loss between style image and stylized image
+                # Ls = sum of L2 norm of gram matrix of vgg16's conv layers
+                style_losses = []
+                for gram, p_vgg_output, style_loss_mult in zip(ctx_grams[c.context], p_vgg_outputs, _style_loss_mult):
+                    gram_s_vgg = gram[indices]
+                    gram_p_vgg = _gram_matrix(p_vgg_output)
 
-                        style_losses.append(style_loss_mult * mse_loss(gram_s_vgg, gram_p_vgg))
+                    style_losses.append(style_loss_mult * mse_loss(gram_s_vgg, gram_p_vgg))
 
-                    style_loss = _mx.nd.add_n(*style_losses)
+                style_loss = _mx.nd.add_n(*style_losses)
 
-                    # Content Loss between content image and stylized image
-                    # Lc = L2 norm at a single layer in vgg16
-                    content_loss = _content_loss_mult * mse_loss(c_content_layer,
-                                                                 p_content_layer)
+                # Content Loss between content image and stylized image
+                # Lc = L2 norm at a single layer in vgg16
+                content_loss = _content_loss_mult * mse_loss(c_content_layer,
+                                                             p_content_layer)
 
-                    curr_content_loss.append(content_loss)
-                    curr_style_loss.append(style_loss)
-                    # Divide loss by large number to get into a more legible
-                    # range
-                    total_loss = (content_loss + style_loss) / 10000.0
-                    Ls.append(total_loss)
-                for L in Ls:
-                    L.backward()
+                curr_content_loss.append(content_loss)
+                curr_style_loss.append(style_loss)
+                # Divide loss by large number to get into a more legible
+                # range
+                total_loss = (content_loss + style_loss) / 10000.0
+                Ls.append(total_loss)
+            for L in Ls:
+                L.backward()
 
-            cur_loss = _np.mean([L.asnumpy()[0] for L in Ls])
+        cur_loss = _np.mean([L.asnumpy()[0] for L in Ls])
 
-            if smoothed_loss is None:
-                smoothed_loss = cur_loss
-            else:
-                smoothed_loss = 0.9 * smoothed_loss + 0.1 * cur_loss
-            iterations += 1
-            trainer.step(batch_size)
+        if smoothed_loss is None:
+            smoothed_loss = cur_loss
+        else:
+            smoothed_loss = 0.9 * smoothed_loss + 0.1 * cur_loss
+        iterations += 1
+        trainer.step(batch_size)
 
-            if verbose and iterations == 1:
-                # Print progress table header
-                column_names = ['Iteration', 'Loss', 'Elapsed Time']
-                num_columns = len(column_names)
-                column_width = max(map(lambda x: len(x), column_names)) + 2
-                hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
-                print(hr)
-                print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
-                print(hr)
+        if verbose and iterations == 1:
+            # Print progress table header
+            column_names = ['Iteration', 'Loss', 'Elapsed Time']
+            num_columns = len(column_names)
+            column_width = max(map(lambda x: len(x), column_names)) + 2
+            hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
+            print(hr)
+            print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
+            print(hr)
 
-            cur_time = _time.time()
-            if verbose and (cur_time > last_time + 10 or iterations == max_iterations):
-                # Print progress table row
-                elapsed_time = cur_time - start_time
-                print("| {cur_iter:<{width}}| {loss:<{width}.3f}| {time:<{width}.1f}|".format(
-                    cur_iter = iterations, loss = smoothed_loss,
-                    time = elapsed_time , width = column_width-1))
-                if params['print_loss_breakdown']:
-                    print_content_loss = _np.mean([L.asnumpy()[0] for L in curr_content_loss])
-                    print_style_loss = _np.mean([L.asnumpy()[0] for L in curr_style_loss])
-                    print('Total Loss: {:6.3f} | Content Loss: {:6.3f} | Style Loss: {:6.3f}'.format(cur_loss, print_content_loss, print_style_loss))
-                last_time = cur_time
-            if iterations == max_iterations:
-                print(hr)
-                break
+        cur_time = _time.time()
+        if verbose and (cur_time > last_time + 10 or iterations == max_iterations):
+            # Print progress table row
+            elapsed_time = cur_time - start_time
+            print("| {cur_iter:<{width}}| {loss:<{width}.3f}| {time:<{width}.1f}|".format(
+                cur_iter = iterations, loss = smoothed_loss,
+                time = elapsed_time , width = column_width-1))
+            if params['print_loss_breakdown']:
+                print_content_loss = _np.mean([L.asnumpy()[0] for L in curr_content_loss])
+                print_style_loss = _np.mean([L.asnumpy()[0] for L in curr_style_loss])
+                print('Total Loss: {:6.3f} | Content Loss: {:6.3f} | Style Loss: {:6.3f}'.format(cur_loss, print_content_loss, print_style_loss))
+            last_time = cur_time
+        if iterations == max_iterations:
+            print(hr)
+            break
 
     training_time = _time.time() - start_time
     style_sa = style_dataset[style_feature]
