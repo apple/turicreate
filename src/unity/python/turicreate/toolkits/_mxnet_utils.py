@@ -122,8 +122,5 @@ def get_gluon_net_params_state(net_params):
 def load_net_params_from_state(net_params, state, ctx = None):
     net_params_dict = params_from_dict(state, ctx)
     for k in net_params_dict:
-        #net_params[k].initialize(ctx)
-        #import pdb; pdb.set_trace()
-        #net_params[k].set_data(net_params_dict[k])
         net_params[k]._load_init(net_params_dict[k], ctx)
     return net_params
