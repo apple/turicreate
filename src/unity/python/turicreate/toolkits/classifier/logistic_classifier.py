@@ -479,7 +479,11 @@ class LogisticClassifier(_Classifier):
         short_description = _coreml_utils._mlmodel_short_description(display_name)
         context = {"class": self.__class__.__name__,
                    "version": _turicreate.__version__,
-                   "short_description": short_description}
+                   "short_description": short_description,
+                   'user_defined':{
+                    'turicreate_version': _turicreate.__version__
+                   }
+                }
         _logistic_classifier_export_as_model_asset(self.__proxy__, filename, context)
 
     def _get(self, field):
