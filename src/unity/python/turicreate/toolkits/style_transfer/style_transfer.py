@@ -227,15 +227,15 @@ def create(style_dataset, content_dataset, style_feature=None,
     smoothed_loss = None
     last_time = 0
 
-    num_mxnet_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=params['batch_size'])
-    if verbose:
-        if num_mxnet_gpus == 1:
-            print('Using GPU to create model (CUDA)')
-        elif num_mxnet_gpus > 1:
-            print('Using {} GPUs to create model (CUDA)'.format(num_mxnet_gpus))
-        else:
-            print('Using CPU to create model')
+    cuda_gpus = _mxnet_utils.get_gpus_in_use(max_devices=params['batch_size'])
+    num_mxnet_gpus = len(cuda_gpus)
 
+    if verbose:
+        # Estimate memory usage (based on experiments)
+        cuda_mem_req = 260 + batch_size_each * 880 + num_styles * 1.4
+
+        _tkutl._print_neural_compute_device(cuda_gpus=cuda_gpus, use_mps=False,
+                                            cuda_mem_req=cuda_mem_req, has_mps_impl=False)
     #
     # Pre-compute gram matrices for style images
     #

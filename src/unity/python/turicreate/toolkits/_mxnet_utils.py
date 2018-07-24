@@ -44,20 +44,30 @@ def get_mxnet_state(model):
     return state
 
 
+def get_gpu_ids_in_use(max_devices=None):
+    from turicreate.util import _CUDA_GPUS
+    gpus = _CUDA_GPUS
+    num_gpus = get_num_gpus_in_use(max_devices=max_devices)
+    if num_gpus >= 0:
+        gpus = gpus[:num_gpus]
+    if max_devices is not None:
+        gpus = gpus[:max_devices]
+    return [gpu_info['index'] for gpu_info in gpus]
+
+
 def get_mxnet_context(max_devices=None):
-    from turicreate.util import _CUDA_GPU_IDS
+    from turicreate.util import _CUDA_GPUS
     import mxnet as _mx
     assert_valid_num_gpus()
     num_gpus = _tc_config.get_num_gpus()
-    if num_gpus == 0 or not _CUDA_GPU_IDS:
+    if num_gpus == 0 or not _CUDA_GPUS:
         return [_mx.cpu()]
     else:
-        if num_gpus == -1:
-            ctx = [_mx.gpu(i) for i in _CUDA_GPU_IDS]
-        elif num_gpus > 0:
-            ctx = [_mx.gpu(i) for i in range(num_gpus)]
+        gpu_indices = [gpu['index'] for gpu in _CUDA_GPUS]
+        if num_gpus > 0:
+            gpu_indices = gpu_indices[:num_gpus]
 
-        ctx = ctx[:max_devices]
+        ctx = [_mx.gpu(index) for index in gpu_indices]
 
         # Do a quick check if we can use the GPU
         try:
@@ -87,16 +97,86 @@ def get_num_gpus_in_use(max_devices=None):
     return len(gpu_ctx)
 
 
+def get_gpus_in_use(max_devices=None):
+    """
+    Like get_num_gpus_in_use, but returns a list of dictionaries with just
+    queried GPU information.
+    """
+    from turicreate.util import _get_cuda_gpus
+    gpu_indices = get_gpu_ids_in_use(max_devices=max_devices)
+    gpus = _get_cuda_gpus()
+    return [gpus[index] for index in gpu_indices]
+
+
 def assert_valid_num_gpus():
-    from turicreate.util import _CUDA_GPU_IDS
+    from turicreate.util import _CUDA_GPUS
     num_gpus = _tc_config.get_num_gpus()
-    if not _CUDA_GPU_IDS and _sys.platform == 'darwin':
+    if not _CUDA_GPUS and _sys.platform == 'darwin':
         # GPU acceleration requires macOS 10.14+
         if num_gpus == 1 and _mac_ver() < (10, 14):
             raise _ToolkitError('GPU acceleration requires at least macOS 10.14')
         elif num_gpus >= 2:
             raise _ToolkitError('Using more than one GPU is currently not supported on Mac')
     _numeric_param_check_range('num_gpus', num_gpus, -1, _six.MAXSIZE)
+
+
+def _warn_if_less_than_cuda_free_memory(mem_mb, max_devices=None, has_batch_size_setting=True):
+    # Note, we cannot use _CUDA_GPUS, since we need an up-to-date snapshot of
+    # the free memory
+    import numpy as np
+    from turicreate.util import _get_cuda_gpus
+    import time
+    import textwrap
+    gpus = _get_cuda_gpus()
+    num_gpus = get_num_gpus_in_use(max_devices=max_devices)
+    gpus = gpus[:num_gpus]
+    capable = all(gpu['memory_total'] > mem_mb for gpu in gpus)
+    available = all(gpu['memory_free'] > mem_mb for gpu in gpus)
+    warning = None
+    if capable and not available:
+        # Get GPU with the least amount of free memroy
+        gpu_mems = [gpu['memory_free'] for gpu in gpus]
+        gpu_idx = np.argmin(gpu_mems)
+
+        warning = '''
+        You may not have enough free GPU memory to create this model, which may
+        result in a fatal crash or lower performance. We recommend that you
+        have at least {mem_req} MiB available on each GPU, while currently you
+        have only {mem_free:.0f} MiB free (out of {mem_total:.0f} MiB) on GPU
+        #{index:d}. Please close all other processes that may be using this
+        GPU.
+        '''.format(mem_req=mem_mb,
+                   mem_free=gpus[gpu_idx]['memory_free'],
+                   mem_total=gpus[gpu_idx]['memory_total'],
+                   index=gpus[gpu_idx]['index'])
+
+    elif not capable:
+        # Get GPU with the least amount of total memroy
+        gpu_mems = [gpu['memory_total'] for gpu in gpus]
+        gpu_idx = np.argmin(gpu_mems)
+
+        warning = '''
+        You may not have a capable enough GPU to create this model with the
+        current settings, which may result in a fatal crash or lower
+        performance. We recommend that you have at least {mem_req} MiB on each
+        requested GPU, while currently GPU #{index} has only {mem_total:.0f}
+        MiB of total memory.
+        '''.format(mem_req=mem_mb,
+                   mem_total=gpus[gpu_idx]['memory_total'],
+                   index=gpus[gpu_idx]['index'])
+
+        if has_batch_size_setting:
+            warning += 'Please try lowering the batch size by passing the parameter batch_size to create().'
+
+    if warning:
+        print('WARNING:')
+        print()
+        # Re-wrap text
+        lines = textwrap.wrap(textwrap.dedent(warning).lstrip(), width=75)
+        for line in lines:
+            print('   ', line)
+        print()
+        time.sleep(3)
 
 
 def load_mxnet_model_from_state(state, data, labels=None, existing_module=None, ctx = None):
