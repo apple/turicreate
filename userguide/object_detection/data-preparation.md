@@ -16,9 +16,9 @@ $ mkdir -p ~/Downloads/ig02
 $ cd ~/Downloads/ig02
 $ curl https://lear.inrialpes.fr/people/marszalek/data/ig02/ig02-v1.0-bikes.zip > bikes.zip
 $ curl https://lear.inrialpes.fr/people/marszalek/data/ig02/ig02-v1.0-cars.zip > cars.zip
-$ tar -xvf bikes.zip
-$ mv readme.txt readme2.txt
-$ tar -xvf cars.zip
+$ unzip bikes.zip
+$ mv readme.txt readme-bikes.txt
+$ unzip cars.zip
 $ rm bikes.zip cars.zip 
 ```
 
