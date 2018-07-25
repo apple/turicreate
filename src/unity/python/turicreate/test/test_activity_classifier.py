@@ -185,8 +185,9 @@ class ActivityClassifierAutoValdSetTest(unittest.TestCase):
         _load_data(self, num_examples=10000, max_num_sessions=num_sessions, randomize_num_sessions=False,
                    enforce_all_sessions=True)
 
+        from six.moves import xrange as _xrange
         session_ids_dict = {}
-        for i in xrange(num_sessions):
+        for i in _xrange(num_sessions):
             session_ids_dict[i] = uuid.uuid4().hex[:6].upper()
 
         self.data[self.session_id] =  self.data[self.session_id].apply(lambda x: session_ids_dict[x])

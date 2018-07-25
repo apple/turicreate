@@ -12,6 +12,10 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._internal_utils import _numeric_param_check_range
 from random import Random
 
+import sys as _sys
+if _sys.version_info.major > 2:
+    long = int
+
 _MIN_NUM_SESSIONS_FOR_SPLIT = 100
 
 def random_split_by_session(dataset, session_id, fraction=0.9, seed=None):
