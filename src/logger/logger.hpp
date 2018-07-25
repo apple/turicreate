@@ -365,7 +365,7 @@
   do {                                                                \
     auto error_code = errno;                                          \
     std::string error_message = std::strerror(error_code);            \
-    errno = 0; // clear errno
+    errno = 0; /* clear errno */                                      \
     log_and_throw_io_failure(error_message);                          \
   } while(0)
 
