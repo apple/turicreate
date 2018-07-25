@@ -25,11 +25,15 @@ If you are writing an iOS app for the iPhone/iPad, you would want
 `libRecommender-arm64.dylib`. 
 All the relevant `.dylib` files are available on the 
 [Github releases page](https://github.com/apple/turicreate/releases) 
-starting with Turi Create 5.0b1.
+starting with Turi Create 5.0b1. **Please ensure that you rename the respective `.dylib` that you need to `libRecommender.dylib`.**
 When you drag and drop the `.dylib`, you must copy all items and create folder 
 references. Here is a screenshot of what your selections on the dialog box 
 should look like.
 ![libRecommender drag and drop](libRecommender-drag-drop-shot.png)
+
+Now, do the following:
+* Under **Project > Build Phases**, add `libRecommender.dylib` to **Copy Bundle Resources**
+* Under **Project > General**, add `libRecommender.dylib` to **Embedded Binaries** and to **Linked Frameworks and Libraries**
 
 Now, you are ready to start writing app code to use the recommender model you
 created in Turi Create (and exported to Core ML) in your iOS app. 

@@ -356,8 +356,6 @@ void BNLayer::Forward(MPSImageBatch *_Nonnull src,
                       id<MTLCommandBuffer> _Nonnull cb,
                       bool is_train) {
     
-  MPSCNNBatchNormalizationState * state_to_encode;
-    
   if (use_temp_images_){
       fwd_output = AllocTempImageBatch(cb, false);
   }
@@ -369,20 +367,19 @@ void BNLayer::Forward(MPSImageBatch *_Nonnull src,
                                           sourceStates:nil
                                       destinationImage:fwd_output[0]];
     }
-    state_to_encode = bn_state;
     input = src;
     [stat encodeBatchToCommandBuffer:cb
                         sourceImages:src
              batchNormalizationState:bn_state];
+    [op_forward encodeBatchToCommandBuffer:cb
+                              sourceImages:src
+                   batchNormalizationState:bn_state
+                         destinationImages:fwd_output];
   } else {
-    state_to_encode = nil;
+    [op_forward encodeBatchToCommandBuffer:cb
+                              sourceImages:src
+                         destinationImages:fwd_output];
   }
-
-  [op_forward encodeBatchToCommandBuffer:cb
-                            sourceImages:src
-                 batchNormalizationState:state_to_encode
-                       destinationImages:fwd_output];
-
 }
 
 void BNLayer::Backward(MPSImageBatch *_Nonnull src,

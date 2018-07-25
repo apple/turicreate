@@ -124,9 +124,9 @@ std::string escapeForTable( const flexible_type& value,
           flex_dict dict = value.get<flex_dict>();
           size_t i = 0;
           for (const auto& pair : dict) {
-            const auto& dict_key = pair.first.get<flex_string>();
+            const auto& dict_key = pair.first;
             const auto& dict_value = pair.second;
-            ss << turi::visualization::extra_label_escape(dict_key);
+            ss << turi::visualization::extra_label_escape(std::string(dict_key));
             ss << " : ";
             ss << turi::visualization::escapeForTable(dict_value, empty_tz);
             if (i + 1 < dict.size()) ss << ", ";

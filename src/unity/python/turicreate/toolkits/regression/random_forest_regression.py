@@ -299,6 +299,9 @@ class RandomForestRegression(_SupervisedLearningModel, _TreeModelMixin):
                    "model_type" : "random_forest",
                    "version": _turicreate.__version__,
                    "class": self.__class__.__name__,
+                   'user_defined':{
+                    'turicreate_version': _turicreate.__version__
+                   },
                    "short_description": short_description}
         self._export_coreml_impl(filename, context)
 
