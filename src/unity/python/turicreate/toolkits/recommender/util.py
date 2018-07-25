@@ -27,7 +27,7 @@ def _create(observation_data,
            user_data=None, item_data=None,
            ranking=True,
            verbose=True):
-    r"""
+    """
     A unified interface for training recommender models. Based on simple
     characteristics of the data, a type of model is selected and trained. The
     trained model can be used to predict ratings and make recommendations.

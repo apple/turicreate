@@ -334,8 +334,15 @@ class SentenceClassifier(_CustomModel):
         short_description = _coreml_utils._mlmodel_short_description(display_name)
         context = {'class': self.__class__.__name__,
                    'version': _tc.__version__,
-                   'short_description': short_description}
+                   'short_description': short_description,
+                   'user_defined':{
+                    'turicreate_version': _tc.__version__
+                   }
+                }
+
+
         model = self.__proxy__['classifier'].__proxy__
+
         _logistic_classifier_export_as_model_asset(model, filename, context)
 
 
