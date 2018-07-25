@@ -11,14 +11,16 @@
 #include <ios>
 
 namespace turi {
-    namespace error {
-        class io_error: public std::ios_base::failure {
-        private:
-            std::string m_message;
+namespace error {
 
-        public:
-            explicit io_error(const std::string& message, const std::error_code& ec = std::io_errc::stream);
-            virtual const char* what() const noexcept override;
-        };
-    }
-}
+class io_error : public std::ios_base::failure {
+  private:
+    std::string m_message;
+
+  public:
+    explicit io_error(const std::string &message, const std::error_code &ec = std::io_errc::stream);
+    virtual const char *what() const noexcept override;
+};
+
+} // namespace error
+} // namespace turi

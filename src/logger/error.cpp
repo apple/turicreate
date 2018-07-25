@@ -12,9 +12,9 @@
 
 using namespace turi::error;
 
-io_error::io_error(const std::string& message, const std::error_code& ec)
-    : std::ios_base::failure(message, ec), m_message(message) { }
+io_error::io_error(const std::string &message, const std::error_code &ec)
+  : std::ios_base::failure(message, ec), m_message(message) {}
 
-const char* io_error::what() const noexcept {
-    return m_message.c_str();
+const char *io_error::what() const noexcept {
+  return m_message.c_str();
 }
