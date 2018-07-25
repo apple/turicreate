@@ -626,8 +626,7 @@ class ImageSimilarityModel(_CustomModel):
 
         _coreml_utils._set_model_metadata(mlmodel, self.__class__.__name__, {
             'model': self.model,
-            'num_examples': str(self.num_examples),
-            'training_time': str(self.training_time)
+            'num_examples': str(self.num_examples)
         }, version=ImageSimilarityModel._PYTHON_IMAGE_SIMILARITY_VERSION)
 
         mlmodel.save(filename)
