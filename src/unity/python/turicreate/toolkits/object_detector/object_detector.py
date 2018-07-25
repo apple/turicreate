@@ -391,15 +391,10 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     # easily hide bugs caused by names getting out of sync.
     ref_model.available_parameters_subset(net_params).load(ref_model.model_path, ctx)
 
-    if verbose:
-        # Print progress table header
-        column_names = ['Iteration', 'Loss', 'Elapsed Time']
-        num_columns = len(column_names)
-        column_width = max(map(lambda x: len(x), column_names)) + 2
-        hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
-        print(hr)
-        print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
-        print(hr)
+    column_names = ['Iteration', 'Loss', 'Elapsed Time']
+    num_columns = len(column_names)
+    column_width = max(map(lambda x: len(x), column_names)) + 2
+    hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
 
     progress = {'smoothed_loss': None, 'last_time': 0}
     iteration = 0
@@ -411,6 +406,15 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         else:
             progress['smoothed_loss'] = 0.9 * progress['smoothed_loss'] + 0.1 * cur_loss
         cur_time = _time.time()
+
+        # Printing of table header is deferred, so that start-of-training
+        # warnings appear above the table
+        if verbose and iteration == 0:
+            # Print progress table header
+            print(hr)
+            print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
+            print(hr)
+
         if verbose and (cur_time > progress['last_time'] + 10 or
                         iteration_base1 == max_iterations):
             # Print progress table row
