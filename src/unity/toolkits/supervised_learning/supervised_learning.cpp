@@ -351,6 +351,7 @@ std::vector<std::string>
 std::string supervised_learning_model_base::get_metric_display_name(const std::string& metric) const {
   const static std::unordered_map<std::string, std::string> display_names = {
     {"accuracy", "Accuracy"},
+    {"auc", "Area Under Curve"},
     {"log_loss", "Log Loss"},
     {"max_error", "Max Error"},
     {"rmse", "Root-Mean-Square Error"},
