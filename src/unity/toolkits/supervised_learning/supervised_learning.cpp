@@ -1115,11 +1115,18 @@ gl_sframe supervised_learning_model_base::api_classify(
  *  Evaluate the model
  */
 variant_map_type supervised_learning_model_base::api_evaluate(
-    gl_sframe data, std::string missing_value_action_str, std::string metric, gl_sarray predictions) {
+    gl_sframe data, std::string missing_value_action_str, std::string metric) {
   auto model = std::dynamic_pointer_cast<supervised_learning_model_base>(
       shared_from_this());
   ml_missing_value_action missing_value_action =
       get_missing_value_enum_from_string(missing_value_action_str);
+
+  sframe test_data = data.materialize_to_sframe();
+  sframe X = setup_test_data_sframe(test_data, model, missing_value_action);
+  sframe y = test_data.select_columns({get_target_name()});
+  ml_data m_data = setup_ml_data_for_evaluation(
+      X, y, model, missing_value_action);
+
 
   if(metric == "report") {
     if(is_classifier()) {
@@ -1130,18 +1137,12 @@ variant_map_type supervised_learning_model_base::api_evaluate(
       gl_sframe out;
 
       out["class"] = data[variant_get_ref<flexible_type>(state.at("target")).get<flex_string>()];
-      if(predictions.size() == 0) {
-        out["predicted_class"] =
-            api_predict(data, missing_value_action_str, "class");
-      } else {
-        out["predicted_class"] = predictions;
-      }
+      out["predicted_class"] = api_predict(data, missing_value_action_str, "class");
 
-      variant_map_type ret;
+      variant_map_type ret = evaluate(m_data, "auto");
 
       ret["confusion_matrix"] = confusion_matrix(out, target, pred_column);
-      ret["report_by_class"] =
-          classifier_report_by_class(out, target, pred_column);
+      ret["report_by_class"] = classifier_report_by_class(out, target, pred_column);
       ret["accuracy"] =
           double((out["class"] == out["predicted_class"]).sum()) / out.size();
 
@@ -1152,14 +1153,7 @@ variant_map_type supervised_learning_model_base::api_evaluate(
     }
   }
 
-  sframe test_data = data.materialize_to_sframe();
-  sframe X = setup_test_data_sframe(test_data, model, missing_value_action);
-  sframe y = test_data.select_columns({get_target_name()});
-  ml_data m_data = setup_ml_data_for_evaluation(
-      X, y, model, missing_value_action);
-
   variant_map_type results = evaluate(m_data, metric);
-
   return results;
 }
 
