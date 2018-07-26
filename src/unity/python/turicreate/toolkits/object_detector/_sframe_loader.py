@@ -14,13 +14,7 @@ from threading import Thread as _Thread
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from ._detection import yolo_boxes_to_yolo_map as _yolo_boxes_to_yolo_map
 
-_TMP_COL_RAW_IMAGE = '_raw_image_data'
 _TMP_COL_RANDOM_ORDER = '_random_order'
-
-
-def _convert_image_to_raw(image):
-    # Decode image and make sure it has 3 channels
-    return _tc.image_analysis.resize(image, image.width, image.height, 3, decode=True)
 
 
 def _is_rectangle_annotation(ann):
@@ -61,9 +55,6 @@ class _SFrameDataSource:
         # Make shallow copy, so that temporary columns do not change input
         self.sframe = sframe.copy()
 
-        # Convert images to raw to eliminate overhead of decoding
-        self.sframe[_TMP_COL_RAW_IMAGE] = self.sframe[self.feature_column].apply(_convert_image_to_raw)
-
     def __iter__(self):
         return self
 
@@ -80,15 +71,13 @@ class _SFrameDataSource:
         # If we're about to begin a new epoch, shuffle the SFrame if requested.
         row_index = self.cur_sample % len(self.sframe)
         if row_index == 0 and self.cur_sample > 0 and self.shuffle:
-            self.sframe = self.sframe.remove_column(_TMP_COL_RAW_IMAGE)
             self.sframe[_TMP_COL_RANDOM_ORDER] = _np.random.uniform(size=len(self.sframe))
             self.sframe = self.sframe.sort(_TMP_COL_RANDOM_ORDER)
-            self.sframe[_TMP_COL_RAW_IMAGE] = self.sframe[self.feature_column].apply(_convert_image_to_raw)
         self.cur_sample += 1
 
         # Copy the image data for this row into a NumPy array.
         row = self.sframe[row_index]
-        image = row[_TMP_COL_RAW_IMAGE].pixel_data
+        image = row[self.feature_column].pixel_data
 
         # Copy the annotated bounding boxes for this image, if requested.
         if self.load_labels:
