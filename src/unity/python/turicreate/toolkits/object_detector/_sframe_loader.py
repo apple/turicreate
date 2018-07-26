@@ -79,8 +79,10 @@ class _SFrameDataSource:
         # If we're about to begin a new epoch, shuffle the SFrame if requested.
         row_index = self.cur_sample % len(self.sframe)
         if row_index == 0 and self.cur_sample > 0 and self.shuffle:
+            self.sframe = self.sframe.remove_column(_TMP_COL_RAW_IMAGE)
             self.sframe[_TMP_COL_RANDOM_ORDER] = _np.random.uniform(size=len(self.sframe))
             self.sframe = self.sframe.sort(_TMP_COL_RANDOM_ORDER)
+            self.sframe[_TMP_COL_RAW_IMAGE] = self.sframe[feature_column].apply(_convert_image_to_raw)
         self.cur_sample += 1
 
         # Copy the image data for this row into a NumPy array.
