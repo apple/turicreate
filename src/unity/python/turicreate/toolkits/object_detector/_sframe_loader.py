@@ -52,6 +52,7 @@ class _SFrameDataSource:
     def __init__(self, sframe, feature_column, annotations_column,
                  load_labels=True, shuffle=True, samples=None):
         self.annotations_column = annotations_column
+        self.feature_column = feature_column
         self.load_labels = load_labels
         self.shuffle = shuffle
         self.num_samples = samples
@@ -61,7 +62,7 @@ class _SFrameDataSource:
         self.sframe = sframe.copy()
 
         # Convert images to raw to eliminate overhead of decoding
-        self.sframe[_TMP_COL_RAW_IMAGE] = self.sframe[feature_column].apply(_convert_image_to_raw)
+        self.sframe[_TMP_COL_RAW_IMAGE] = self.sframe[self.feature_column].apply(_convert_image_to_raw)
 
     def __iter__(self):
         return self
@@ -82,7 +83,7 @@ class _SFrameDataSource:
             self.sframe = self.sframe.remove_column(_TMP_COL_RAW_IMAGE)
             self.sframe[_TMP_COL_RANDOM_ORDER] = _np.random.uniform(size=len(self.sframe))
             self.sframe = self.sframe.sort(_TMP_COL_RANDOM_ORDER)
-            self.sframe[_TMP_COL_RAW_IMAGE] = self.sframe[feature_column].apply(_convert_image_to_raw)
+            self.sframe[_TMP_COL_RAW_IMAGE] = self.sframe[self.feature_column].apply(_convert_image_to_raw)
         self.cur_sample += 1
 
         # Copy the image data for this row into a NumPy array.
