@@ -85,8 +85,8 @@ class RecommenderTestBase(unittest.TestCase):
         scores_from_preds = predictions_tc['score']
         ranks_from_preds = predictions_tc['rank']
         for i in range(len(item_ids_from_preds)):
-            predictions_tc_dict['score'][str(item_ids_from_preds[i])] = scores_from_preds[i]
-            predictions_tc_dict['rank'][str(item_ids_from_preds[i])] = ranks_from_preds[i]
+            predictions_tc_dict['score'][item_ids_from_preds[i]] = scores_from_preds[i]
+            predictions_tc_dict['rank'][item_ids_from_preds[i]] = ranks_from_preds[i]
 
         # Do the CoreML export and predict (if on macOS)
         m.export_coreml(temp_file_path)
