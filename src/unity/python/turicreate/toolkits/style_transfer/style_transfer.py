@@ -670,7 +670,7 @@ class StyleTransfer(_CustomModel):
         max_h = 0
         max_w = 0
         oversized_count = 0
-        for img in images['image']:
+        for img in images[content_feature]:
             if img.height > input_shape[0] or img.width > input_shape[1]:
                 oversized_count += 1
             max_h = max(img.height, max_h)
