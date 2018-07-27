@@ -202,7 +202,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
         _tkutl._raise_error_if_sframe_empty(validation_set, 'validation_set')
         validation_set = _tkutl._toolkits_select_columns(
             validation_set, features + [session_id, target])
-        validation_set = validation_set.filter_by(target_map.keys(), target)
+        validation_set = validation_set.filter_by(list(target_map.keys()), target)
         validation_set, mapping = _encode_target(validation_set, target, target_map)
         chunked_validation_set, _ = _prep_data(validation_set, features, session_id, prediction_window,
                                             predictions_in_chunk, target=target, verbose=False)

@@ -78,12 +78,16 @@ def random_split_by_session(dataset, session_id, fraction=0.9, seed=None):
         print ("The dataset has less than the minimum of", _MIN_NUM_SESSIONS_FOR_SPLIT, "sessions required for train-validation split. Continuing without validation set")
         return dataset, None
 
-    # We need an actual seed number, which we will later use in the apply function (see below).
-    # If the user didn't provide a seed - we can generate one based on current system time
-    # (similarly to mechanism behind random.seed(None) )
     if seed is None:
+        # Include the nanosecond component as well.
         import time
-        seed = long(time.time() * 256)
+        seed = abs(hash("%0.20f" % time.time())) % (2 ** 31)
+
+    # The cython bindings require this to be an int, so cast if we can.
+    try:
+        seed = int(seed)
+    except ValueError:
+        raise ValueError('The \'seed\' parameter must be of type int.')
     
     random = Random()
     
@@ -91,13 +95,15 @@ def random_split_by_session(dataset, session_id, fraction=0.9, seed=None):
     # that belong to the same session. In expectancy - the desired fraction of the sessions will
     # go to the training set.
     # Since boolean filters preserve order - there is no need to re-sort the lines within each session.
-    def random_session_pick(session_id):
-        # If we will use only the session_id as the seed - the split will be constant for the
-        # same dataset across different runs, which is of course undesired
-        random.seed(hash(session_id) + seed)
+    # The boolean filter is a pseudorandom function of the session_id and the
+    # global seed above, allowing the train-test split to vary across runs using
+    # the same dataset.
+    def random_session_pick(session_id_hash):
+        random.seed(session_id_hash)
         return random.uniform(0, 1) < fraction
-    
-    chosen_filter = dataset[session_id].apply(random_session_pick)
+
+    chosen_filter = dataset[session_id].hash(seed).apply(random_session_pick)
+
     train = dataset[chosen_filter]
     valid = dataset[1 - chosen_filter]
     return train, valid
