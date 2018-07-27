@@ -67,7 +67,8 @@ class StyleTransferTest(unittest.TestCase):
         """
         The setup class method for the basic test case with all default values.
         """
-        self.style_feature = self.content_feature = 'image'
+        self.style_feature = 'style_feature_name'
+        self.content_feature = 'content_feature_name'
         self.pre_trained_model = 'resnet-16'
         ## Create the model
         # Model

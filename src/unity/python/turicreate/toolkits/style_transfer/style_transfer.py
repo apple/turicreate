@@ -670,7 +670,7 @@ class StyleTransfer(_CustomModel):
         max_h = 0
         max_w = 0
         oversized_count = 0
-        for img in images['image']:
+        for img in images[content_feature]:
             if img.height > input_shape[0] or img.width > input_shape[1]:
                 oversized_count += 1
             max_h = max(img.height, max_h)
@@ -790,7 +790,7 @@ class StyleTransfer(_CustomModel):
 
         # append batch size and channels
         image_shape = (1, 3) + image_shape
-        c_image = _mx.sym.Variable('image', shape=image_shape,
+        c_image = _mx.sym.Variable(self.content_feature, shape=image_shape,
                                          dtype=_np.float32)
 
         # signal that we want the transformer to prepare for coreml export
@@ -799,9 +799,9 @@ class StyleTransfer(_CustomModel):
         transformer.scale255 = True
         sym_out = transformer(c_image, index)
 
-        mod = _mx.mod.Module(symbol=sym_out, data_names=["image", "index"],
+        mod = _mx.mod.Module(symbol=sym_out, data_names=[self.content_feature, "index"],
                                     label_names=None)
-        mod.bind(data_shapes=zip(["image", "index"], [image_shape, (1,)]), for_training=False,
+        mod.bind(data_shapes=zip([self.content_feature, "index"], [image_shape, (1,)]), for_training=False,
                  inputs_need_grad=False)
         gluon_weights = transformer.collect_params()
         gluon_layers = []
