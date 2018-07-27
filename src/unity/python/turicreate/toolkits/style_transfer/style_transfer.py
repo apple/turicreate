@@ -833,6 +833,15 @@ class StyleTransfer(_CustomModel):
         stylized_image = 'stylized%s' % self.content_feature.capitalize()
         coremltools.utils.rename_feature(spec,
                 'transformer__mulscalar0_output', stylized_image, True, True)
+
+        # Support flexible shape
+        flexible_shape_utils = _mxnet_converter._coremltools.models.neural_network.flexible_shape_utils
+        img_size_ranges = flexible_shape_utils.NeuralNetworkImageSizeRange()
+        img_size_ranges.add_height_range((64, -1))
+        img_size_ranges.add_width_range((64, -1))
+        flexible_shape_utils.update_image_size_range(spec, feature_name='image', size_range=img_size_ranges)
+        flexible_shape_utils.update_image_size_range(spec,feature_name='stylizedImage', size_range=img_size_ranges)
+
         mlmodel = coremltools.models.MLModel(spec)
         model_type = 'style transfer (%s)' % self.model
         mlmodel.short_description = _coreml_utils._mlmodel_short_description(
