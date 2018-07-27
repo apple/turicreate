@@ -1532,6 +1532,8 @@ class ObjectDetector(_CustomModel):
         confidenceThresholdString = ('(optional)' + 
             ' Confidence Threshold override (default: {})')
         model_type = 'object detector (%s)' % self.model
+        if include_non_maximum_suppression:
+            model_type += ' with non-maximum suppression'
         model.description.metadata.shortDescription = \
             _coreml_utils._mlmodel_short_description(model_type)
         model.description.input[0].shortDescription = 'Input image'
