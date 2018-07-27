@@ -101,6 +101,7 @@ def random_split_by_session(dataset, session_id, fraction=0.9, seed=None):
     def random_session_pick(session_id_hash):
         random.seed(session_id_hash)
         return random.uniform(0, 1) < fraction
+
     chosen_filter = dataset[session_id].hash(seed).apply(random_session_pick)
 
     train = dataset[chosen_filter]
