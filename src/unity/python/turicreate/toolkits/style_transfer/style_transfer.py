@@ -140,6 +140,7 @@ def create(style_dataset, content_dataset, style_feature=None,
         'sequential_image_processing': False,
         # Only used if use_augmentaion is True
         'aug_resize': 0,
+        'aug_min_object_covered': 0,
         'aug_rand_crop': 0.9,
         'aug_rand_pad': 0.9,
         'aug_rand_gray': 0.0,
@@ -188,7 +189,7 @@ def create(style_dataset, content_dataset, style_feature=None,
     content_images_loader = _SFrameSTIter(content_dataset, batch_size, shuffle=True,
                                   feature_column=content_feature, input_shape=input_shape,
                                   num_epochs=max_iterations,
-                                  loader_type='stretch', aug_params=params,
+                                  loader_type=content_loader_type, aug_params=params,
                                   sequential=params['sequential_image_processing'])
     ctx = _mxnet_utils.get_mxnet_context(max_devices=params['batch_size'])
 
