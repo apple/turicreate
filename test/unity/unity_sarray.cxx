@@ -1170,8 +1170,10 @@ struct unity_sarray_test {
     // sarray of strings
     sa->construct_from_vector({"abcdef", "ghijkl"}, flex_type_enum::STRING);
 
+    const std::string temp_dir = get_temp_name();
+
     dir_archive write_arc;
-    write_arc.open_directory_for_write("cache://testdir");
+    write_arc.open_directory_for_write(temp_dir);
     oarchive oarc(write_arc);
     oarc << *sa;
     write_arc.close();
@@ -1179,7 +1181,7 @@ struct unity_sarray_test {
 
     auto sa2 = std::make_shared<unity_sarray>();
     dir_archive read_arc;
-    read_arc.open_directory_for_read("cache://testdir");
+    read_arc.open_directory_for_read(temp_dir);
     iarchive iarc(read_arc);
     iarc >> *sa2;
     read_arc.close();

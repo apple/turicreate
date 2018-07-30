@@ -200,6 +200,8 @@ struct progress_time {
 class table_printer {
 
  public:
+  /** Constructor.  Must be initialized elsewise using copy assignment ops. */
+  table_printer(){}
 
   /** Constructor.  Sets up the columns.
    *

@@ -337,6 +337,9 @@ namespace turi {
         log_and_throw_io_failure(message);
       }
       dir.close();
+    } catch (turi::error::io_error&) {
+      // already in a turi error message; just re-throw it
+      throw;
     } catch (std::ios_base::failure& e) {
       std::string message = "Unable to save model to " + sanitize_url(url) + ": " + e.what();
       log_and_throw_io_failure(message);
@@ -361,6 +364,9 @@ namespace turi {
         std::string message = "Fail to write.";
         log_and_throw_io_failure(message);
       }
+    } catch (turi::error::io_error&) {
+      // already in a turi error message; just re-throw it
+      throw;
     } catch (std::ios_base::failure& e) {
       std::string message = std::string("Unable to save model to data: ") + e.what();
       log_and_throw_io_failure(message);
@@ -394,6 +400,9 @@ namespace turi {
         log_and_throw_io_failure(message);
       }
       dir.close();
+    } catch (turi::error::io_error& e) {
+      // already in a turi error message; just re-throw it
+      throw;
     } catch (std::ios_base::failure& e) {
       std::string message = "Unable to save model to " + sanitize_url(url) + ": " + e.what();
       log_and_throw_io_failure(message);

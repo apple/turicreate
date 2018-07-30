@@ -65,7 +65,12 @@ std::shared_ptr<std::istream> general_ifstream::get_underlying_stream() {
 /*****************************************************************************/
 
 general_ofstream::general_ofstream(std::string filename)
-    try :general_ofstream_base(filename), opened_filename(filename) { } catch (const std::exception& e) {
+    try :general_ofstream_base(filename), opened_filename(filename) {
+      // this space intentionally left blank
+    } catch (const std::ios_base::failure& e) {
+      // an I/O error is already the exception type - just re-throw
+      throw;
+    } catch (const std::exception& e) {
       log_and_throw_io_failure("Cannot open " + sanitize_url(filename) + " for write. " + e.what());
     } catch (std::string e) {
       log_and_throw_io_failure("Cannot open " + sanitize_url(filename) + " for write. " + e);

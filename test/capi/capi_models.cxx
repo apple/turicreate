@@ -146,26 +146,26 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
         tc_release(p_args);
 
         int is_sarray = tc_variant_is_sarray(ret_2);
-      TS_ASSERT(is_sarray);
+        TS_ASSERT(is_sarray);
 
         tc_sarray* sa = tc_variant_sarray(ret_2, &error);
         CAPI_CHECK_ERROR(error);
 
-      const auto& target_values = data.back().second;
+        const auto& target_values = data.back().second;
 
-      for (size_t i = 0; i < target_values.size(); ++i) {
-        tc_flexible_type* ft = tc_sarray_extract_element(sa, i, &error);
+        for (size_t i = 0; i < target_values.size(); ++i) {
+          tc_flexible_type* ft = tc_sarray_extract_element(sa, i, &error);
           CAPI_CHECK_ERROR(error);
 
-        double v = tc_ft_double(ft, &error);
+          double v = tc_ft_double(ft, &error);
 
           CAPI_CHECK_ERROR(error);
           tc_release(ft);
 
-        // Make sure they are close -- on a tiny dataset like this the default
-        // setting
-        TS_ASSERT_DELTA(v, target_values[i], 0.5);
-      }
+          // Make sure they are close -- on a tiny dataset like this the default
+          // setting
+          TS_ASSERT_DELTA(v, target_values[i], 0.5);
+        }
         tc_release(ret_2);
       }
 
@@ -194,7 +194,33 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
 
     // Test saving and loading the model.
     {
-      std::string model_path =
+      // sad path 1 - attempting to save without permission to location
+      // ensure the error message contains useful info
+      std::string model_path = "/permission_should_be_denied";
+      tc_model_save(model, model_path.c_str(), &error);
+      TS_ASSERT_DIFFERS(error, nullptr);
+      std::string error_message = tc_error_message(error);
+      std::string expected_substr = "Ensure that you have write permission to this location, or try again with a different path";
+      TS_ASSERT_DIFFERS(error_message.find(expected_substr), error_message.npos);
+      error = nullptr;
+
+      // sad path 2 - attempting to save into an existing non-directory path
+      // ensure the error message contains useful info
+      model_path =
+        turi::fs_util::system_temp_directory_unique_path("", "_save_test_1_tmp_file");
+      {
+        std::ofstream tmp_file(model_path);
+        tmp_file << "Hello world";
+      }
+      tc_model_save(model, model_path.c_str(), &error);
+      TS_ASSERT_DIFFERS(error, nullptr);
+      error_message = tc_error_message(error);
+      expected_substr = "It already exists as a file";
+      TS_ASSERT_DIFFERS(error_message.find(expected_substr), error_message.npos);
+      error = nullptr;
+
+      // happy path - save should succeed
+      model_path =
         turi::fs_util::system_temp_directory_unique_path("", "_save_test_1_tmp_model");
 
       tc_model_save(model, model_path.c_str(), &error);

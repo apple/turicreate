@@ -16,6 +16,10 @@
 #include <fileio/sanitize_url.hpp>
 #include <boost/algorithm/string.hpp>
 #include <fileio/fs_utils.hpp>
+
+#include <cstring>
+#include <cerrno>
+
 namespace turi {
 /**
  * A simple union of std::fstream and turi::hdfs::fstream, and turi::fileio::cache_stream.
@@ -97,8 +101,7 @@ union_fstream::union_fstream(std::string url,
       // Output stream must be a local openable file.
       output_stream.reset(new std::ofstream(url, std::ofstream::binary));
       if (!output_stream->good()) {
-        output_stream.reset();
-        log_and_throw_io_failure("Cannot open " + url + " for writing");
+        log_and_throw_current_io_failure();
       }
     } else {
 #ifdef TC_ENABLE_REMOTEFS

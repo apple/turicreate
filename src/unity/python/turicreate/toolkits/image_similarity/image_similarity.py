@@ -623,4 +623,10 @@ class ImageSimilarityModel(_CustomModel):
         mlmodel.short_description = _coreml_utils._mlmodel_short_description(model_type)
         mlmodel.input_description[self.feature] = u'Input image'
         mlmodel.output_description[output_name] = u'Distances between the input and reference images'
+
+        _coreml_utils._set_model_metadata(mlmodel, self.__class__.__name__, {
+            'model': self.model,
+            'num_examples': str(self.num_examples)
+        }, version=ImageSimilarityModel._PYTHON_IMAGE_SIMILARITY_VERSION)
+
         mlmodel.save(filename)

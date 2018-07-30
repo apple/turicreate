@@ -473,6 +473,70 @@ def _numeric_param_check_range(variable_name, variable_value, range_bottom, rang
     if variable_value < range_bottom or variable_value > range_top:
         raise ToolkitError(err_msg % (variable_name, range_bottom, range_top))
 
+def _validate_data(dataset, target, features=None, validation_set='auto'):
+    """
+    Validate and canonicalize training and validation data.
+
+    Parameters
+    ----------
+    dataset : SFrame
+        Dataset for training the model.
+
+    target : string
+        Name of the column containing the target variable.
+
+    features : list[string], optional
+        List of feature names used.
+
+    validation_set : SFrame, optional
+        A dataset for monitoring the model's generalization performance, with
+        the same schema as the training dataset. Can also be None or 'auto'.
+
+    Returns
+    -------
+    dataset : SFrame
+        The input dataset, minus any columns not referenced by target or
+        features
+
+    validation_set : SFrame or str
+        A canonicalized version of the input validation_set. For SFrame
+        arguments, the returned SFrame only includes those columns referenced by
+        target or features. SFrame arguments that do not match the schema of
+        dataset, or string arguments that are not 'auto', trigger an exception.
+    """
+
+    _raise_error_if_not_sframe(dataset, "training dataset")
+
+    # Determine columns to keep
+    if features is None:
+        features = [feat for feat in dataset.column_names() if feat != target]
+    if not hasattr(features, '__iter__'):
+        raise TypeError("Input 'features' must be a list.")
+    if not all([isinstance(x, str) for x in features]):
+        raise TypeError(
+            "Invalid feature %s: Feature names must be of type str" % x)
+
+    # Check validation_set argument
+    if isinstance(validation_set, str):
+        # Only string value allowed is 'auto'
+        if validation_set != 'auto':
+            raise TypeError('Unrecognized value for validation_set.')
+    elif isinstance(validation_set, _SFrame):
+        # Attempt to append the two datasets together to check schema
+        validation_set.head().append(dataset.head())
+
+        # Reduce validation set to requested columns
+        validation_set = _toolkits_select_columns(
+            validation_set, features + [target])
+    elif not validation_set is None:
+        raise TypeError("validation_set must be either 'auto', None, or an "
+                        "SFrame matching the training data.")
+
+    # Reduce training set to requested columns
+    dataset = _toolkits_select_columns(dataset, features + [target])
+
+    return dataset, validation_set
+
 def _validate_row_label(dataset, label=None, default_label='__id'):
     """
     Validate a row label column. If the row label is not specified, a column is

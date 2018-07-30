@@ -30,8 +30,6 @@
 namespace turi {
 namespace supervised {
 
-constexpr size_t WIDE_DATA = 200;
-
 // TODO: List of todo's for this file
 //------------------------------------------------------------------------------
 
@@ -353,6 +351,7 @@ std::vector<std::string>
 std::string supervised_learning_model_base::get_metric_display_name(const std::string& metric) const {
   const static std::unordered_map<std::string, std::string> display_names = {
     {"accuracy", "Accuracy"},
+    {"auc", "Area Under Curve"},
     {"log_loss", "Log Loss"},
     {"max_error", "Max Error"},
     {"rmse", "Root-Mean-Square Error"},
@@ -1117,11 +1116,18 @@ gl_sframe supervised_learning_model_base::api_classify(
  *  Evaluate the model
  */
 variant_map_type supervised_learning_model_base::api_evaluate(
-    gl_sframe data, std::string missing_value_action_str, std::string metric, gl_sarray predictions) {
+    gl_sframe data, std::string missing_value_action_str, std::string metric) {
   auto model = std::dynamic_pointer_cast<supervised_learning_model_base>(
       shared_from_this());
   ml_missing_value_action missing_value_action =
       get_missing_value_enum_from_string(missing_value_action_str);
+
+  sframe test_data = data.materialize_to_sframe();
+  sframe X = setup_test_data_sframe(test_data, model, missing_value_action);
+  sframe y = test_data.select_columns({get_target_name()});
+  ml_data m_data = setup_ml_data_for_evaluation(
+      X, y, model, missing_value_action);
+
 
   if(metric == "report") {
     if(is_classifier()) {
@@ -1132,18 +1138,12 @@ variant_map_type supervised_learning_model_base::api_evaluate(
       gl_sframe out;
 
       out["class"] = data[variant_get_ref<flexible_type>(state.at("target")).get<flex_string>()];
-      if(predictions.size() == 0) {
-        out["predicted_class"] =
-            api_predict(data, missing_value_action_str, "class");
-      } else {
-        out["predicted_class"] = predictions;
-      }
+      out["predicted_class"] = api_predict(data, missing_value_action_str, "class");
 
-      variant_map_type ret;
+      variant_map_type ret = evaluate(m_data, "auto");
 
       ret["confusion_matrix"] = confusion_matrix(out, target, pred_column);
-      ret["report_by_class"] =
-          classifier_report_by_class(out, target, pred_column);
+      ret["report_by_class"] = classifier_report_by_class(out, target, pred_column);
       ret["accuracy"] =
           double((out["class"] == out["predicted_class"]).sum()) / out.size();
 
@@ -1154,14 +1154,7 @@ variant_map_type supervised_learning_model_base::api_evaluate(
     }
   }
 
-  sframe test_data = data.materialize_to_sframe();
-  sframe X = setup_test_data_sframe(test_data, model, missing_value_action);
-  sframe y = test_data.select_columns({get_target_name()});
-  ml_data m_data = setup_ml_data_for_evaluation(
-      X, y, model, missing_value_action);
-
   variant_map_type results = evaluate(m_data, metric);
-
   return results;
 }
 
@@ -1216,83 +1209,6 @@ supervised_learning_model_base::get_missing_value_enum_from_string(
   } else {
     log_and_throw("Missing value type '" + missing_value_str + "' not supported.");
   }
-}
-
-/**
- * Compute the width of the data.
- *
- * \param[in] X  Input SFrame
- * \returns width
- *
- * The width is the same as the num_coefficients.
- *
- */
-size_t compute_data_width(sframe X){
-  ml_data data;
-  data.fill(X);
-  return get_number_of_coefficients(data.metadata());
-}
-
-/**
- * Rule based better than stupid model selector.
- */
-std::string _regression_model_selector(std::shared_ptr<unity_sframe> _X){
-
-  sframe X = *(_X->get_underlying_sframe());
-  size_t data_width = compute_data_width(X);
-  if (data_width < WIDE_DATA){
-    return "boosted_trees_regression";
-  } else {
-    return "regression_linear_regression";
-  }
-}
-
-/**
- * Rule based better than stupid model selector.
- */
-std::string _classifier_model_selector(std::shared_ptr<unity_sframe> _X){
-
-  sframe X = *(_X->get_underlying_sframe());
-
-  size_t data_width = compute_data_width(X);
-  if (data_width < WIDE_DATA){
-    return "boosted_trees_classifier";
-  } else {
-    return "classifier_logistic_regression";
-  }
-}
-
-/**
- * Rule based better than stupid model selector.
- */
-std::vector<std::string> _classifier_available_models(size_t num_classes,
-                                         std::shared_ptr<unity_sframe> _X){
-  sframe X = *(_X->get_underlying_sframe());
-
-  // Throw error if only one class.
-  // If number of classes more than 2, use boosted trees
-  if (num_classes == 1) {
-    log_and_throw("One-class classification is not currently supported. Please check your target column.");
-  } else if (num_classes > 2) {
-    return {"boosted_trees_classifier",
-            "random_forest_classifier",
-            "decision_tree_classifier",
-            "classifier_logistic_regression"};
-  } else {
-    size_t data_width = compute_data_width(X);
-    if (data_width < WIDE_DATA){
-      return {"boosted_trees_classifier",
-              "random_forest_classifier",
-              "decision_tree_classifier",
-              "classifier_svm",
-              "classifier_logistic_regression"};
-    } else {
-      return {"classifier_logistic_regression",
-              "classifier_svm"};
-    }
-  }
-
-  return std::vector<std::string>();
 }
 
 /**
