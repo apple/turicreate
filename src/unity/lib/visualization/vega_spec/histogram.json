@@ -1,12 +1,12 @@
 {
-  "$schema": "https://vega.github.io/schema/vega/v3.0.json",
+  "$schema": "https://vega.github.io/schema/vega/v4.json",
   "description": "A simple bar chart with embedded data.",
   "autosize": "pad",
+  "width": 720,
+  "height": 550,
   "padding": 5,
-  "width": %1%,
-  "height": %2%,
   "title": {
-    "text": %3%,
+    "text": %1%,
     "offset": 30
   },
   "style": "cell",
@@ -120,7 +120,7 @@
   ],
   "axes": [
     {
-      "title": %4%,
+      "title": %2%,
       "scale": "x",
       "labelOverlap": true,
       "orient": "bottom",
@@ -145,7 +145,7 @@
       "gridScale": "y"
     },
     {
-      "title": %5%,
+      "title": %3%,
       "scale": "y",
       "labelOverlap": true,
       "orient": "left",
