@@ -37,14 +37,42 @@ styleArray?[styleIndex] = 1.0
 Now, you can stylize your images using:
 ```swift
 let mlModel = MyStyleTransferModel()
-let visionModel = try VNCoreMLModel(for: mlModel)
 
-let styleTransfer = VNCoreMLRequest(model: visionModel, completionHandler: { (request, error) in
-        guard let results = request.results else { return }
+let imageSize = CGSize(width: 600, height: 600)
 
-    for case let styleTransferedImage as VNPixelBufferObservation in results {
-        let imageLayer = CALayer()
-        imageLayer.contents = CIImage(cvPixelBuffer: styleTransferedImage.pixelBuffer, options: [:])
+func stylize(img:UIImage, index:Int, image_size: CGSize) -> UIImage {
+	let image = resizeImage(image: img, targetSize: image_size)
+    let ciImage = CIImage(image: image)
+    let context = CIContext(options: nil)
+    let cgImage = context.createCGImage(ciImage!, from: ciImage!.extent)
+    var pxbuffer: CVPixelBuffer? = nil
+    let options: NSDictionary = [:]
+    let bytesPerRow = cgImage!.bytesPerRow
+    let dataFromImageDataProvider = cgImage?.dataProvider!.data
+        
+    CVPixelBufferCreateWithBytes(
+        kCFAllocatorDefault,
+        image_size.width,
+        image_size.height,
+        kCVPixelFormatType_32BGRA,
+        CFDataGetMutableBytePtr(dataFromImageDataProvider as! CFMutableData),
+        bytesPerRow,
+        nil,
+        nil,
+        options,
+        &pxbuffer)
+
+    var pred_img:MyStyleTransferModelOutput;
+    do{
+        pred_img = try self.model.prediction(image: pxbuffer!, index: array!)
+        var ml_multi_array = (pred_img.stylizedImage)
+        var unwrapped_ml = ml_multi_array
+        var uiImage = getUIImage(img: unwrapped_ml)
+        return uiImage
+    } catch {
+        print("Unexpected Prediction Error: \(error)")
     }
-})
+}
+
+let prediction_image = stylize(img: InputImage, index: styleArray, image_size: CGSize(600, 600))
 ```
