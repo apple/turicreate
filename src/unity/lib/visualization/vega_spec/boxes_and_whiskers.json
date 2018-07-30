@@ -1,6 +1,6 @@
 {
-  "$schema": "https://vega.github.io/schema/vega/v3.0.json",
-  "autosize": "pad",
+  "$schema": "https://vega.github.io/schema/vega/v4.json",
+  "autosize": "fit",
   "metadata": {
     "bubbleOpts": {
       "showAllFields": false,
@@ -31,7 +31,7 @@
     "offset": 30
   },
   "padding": 5,
-  "height": 480,
+  "height": 550,
   "style": "cell",
   "data": [
     {

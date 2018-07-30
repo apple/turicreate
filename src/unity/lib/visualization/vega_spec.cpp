@@ -79,19 +79,13 @@ static std::string make_format_string(unsigned char *raw_format_str_ptr,
 
 EXPORT std::string histogram_spec(std::string title,
                                   std::string xlabel,
-                                  std::string ylabel,
-                                  double sizeMultiplier) {
+                                  std::string ylabel) {
   title = extra_label_escape(title);
   xlabel = extra_label_escape(xlabel);
   ylabel = extra_label_escape(ylabel);
 
-  size_t width = static_cast<size_t>(600.0 * sizeMultiplier);
-  size_t height = static_cast<size_t>(400.0 * sizeMultiplier);
-
   auto format_string = make_format_string(vega_spec_histogram_json, vega_spec_histogram_json_len);
   auto formatted = boost::format(format_string) %
-    width %
-    height %
     title %
     xlabel %
     ylabel;
@@ -101,19 +95,15 @@ EXPORT std::string histogram_spec(std::string title,
 EXPORT std::string categorical_spec(size_t length_list,
                                     std::string title,
                                     std::string xlabel,
-                                    std::string ylabel,
-                                    double sizeMultiplier) {
+                                    std::string ylabel) {
 
   title = extra_label_escape(title);
   xlabel = extra_label_escape(xlabel);
   ylabel = extra_label_escape(ylabel);
 
-  size_t width = static_cast<size_t>(600.0 * sizeMultiplier);
-  size_t height = static_cast<size_t>(std::max(static_cast<double>(length_list) * 16.0, static_cast<double>(length_list) * 25.0 * sizeMultiplier));
-
+  size_t height = static_cast<size_t>(static_cast<double>(length_list) * 25.0 + 160.0);
   auto format_string = make_format_string(vega_spec_categorical_json, vega_spec_categorical_json_len);
   auto formatted = boost::format(format_string) %
-    width %
     height %
     title %
     xlabel %
@@ -122,8 +112,8 @@ EXPORT std::string categorical_spec(size_t length_list,
 }
 
 
-EXPORT std::string summary_view_spec(size_t length_elements, double sizeMultiplier){
-  size_t height = static_cast<size_t>((300.0 * sizeMultiplier * length_elements) + 80.0);
+EXPORT std::string summary_view_spec(size_t length_elements){
+  size_t height = static_cast<size_t>((300.0 * length_elements) + 80.0);
 
   auto format_string = make_format_string(vega_spec_summary_view_json, vega_spec_summary_view_json_len);
   auto formatted = boost::format(format_string) %

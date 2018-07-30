@@ -13,9 +13,9 @@
 namespace turi {
   namespace visualization {
 
-    std::string histogram_spec(std::string title, std::string xlabel, std::string ylabel, double sizeMultiplier = 1.0);
-    std::string categorical_spec(size_t length_list, std::string title, std::string xlabel, std::string ylabel, double sizeMultiplier = 1.0);
-    std::string summary_view_spec(size_t length_elements, double sizeMultiplier = 1.0);
+    std::string histogram_spec(std::string title, std::string xlabel, std::string ylabel);
+    std::string categorical_spec(size_t length_list, std::string title, std::string xlabel, std::string ylabel);
+    std::string summary_view_spec(size_t length_elements);
     std::string scatter_spec(std::string xlabel = "", std::string ylabel = "", std::string title = "");
     std::string heatmap_spec(std::string xlabel = "", std::string ylabel = "", std::string title = "");
     std::string categorical_heatmap_spec(std::string xlabel = "", std::string ylabel = "", std::string title = "");
