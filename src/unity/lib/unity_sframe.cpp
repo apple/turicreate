@@ -855,21 +855,17 @@ std::shared_ptr<unity_sframe_base> unity_sframe::append(
 
       if(column_names != other_column_names) {
 
-      std::vector<std::string> in_this, in_other;
+      std::vector<std::string> in_this;
 
       std::set_difference(column_names.begin(), column_names.end(),
                           other_column_names.begin(), other_column_names.end(),
                           std::inserter(in_this, in_this.begin()));
 
-      std::set_difference(other_column_names.begin(), other_column_names.end(),
-                          column_names.begin(), column_names.end(),
-                          std::inserter(in_other, in_other.begin()));
-
         std::ostringstream ss;
-          ss << "Error: Attempting to append SFrame with columns "
-            << in_other << " to SFrame with columns " << in_this << ".";
+        ss << "Error: Columns [" << in_this
+           << "] not found in appending SFrame.";
 
-         log_and_throw(ss.str().c_str());
+        log_and_throw(ss.str().c_str());
       }
     }
 
