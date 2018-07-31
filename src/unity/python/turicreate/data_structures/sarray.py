@@ -357,7 +357,7 @@ class SArray(object):
             # Guard against numpy.matrix, which cannot be traversed recursively,
             # since subscripting a matrix always yields another (2d) matrix.
             if HAS_NUMPY and isinstance(data, numpy.matrix):
-                data = numpy.array(data)
+                data = numpy.asarray(data)
 
             # we need to perform type inference
             if dtype is None:
