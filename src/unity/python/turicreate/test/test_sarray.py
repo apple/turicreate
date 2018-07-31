@@ -114,6 +114,17 @@ class SArrayTest(unittest.TestCase):
         self.__test_creation_type_inference([np.bool_(True),np.bool_(False)],int,[1,0])
         self.__test_creation((1,2,3,4), int, [1,2,3,4])
 
+        # Test numpy types, which are not compatible with the pd.Series path in
+        # __test_creation and __test_creation_type_inference
+        self.__test_equal(SArray(np.array(self.vec_data), array.array),
+                          self.vec_data, array.array)
+        self.__test_equal(SArray(np.matrix(self.vec_data), array.array),
+                          self.vec_data, array.array)
+        self.__test_equal(SArray(np.array(self.vec_data)),
+                          self.vec_data, array.array)
+        self.__test_equal(SArray(np.matrix(self.vec_data)),
+                          self.vec_data, array.array)
+
     def test_list_with_none_creation(self):
         tlist=[[2,3,4],[5,6],[4,5,10,None]]
         g=SArray(tlist)
