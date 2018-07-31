@@ -123,6 +123,8 @@ $(document).ready(function(){initNavTree('classturi_1_1sarray__group__format__wr
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a69c57cc1b1f3dbf9ab11af3f0ddd1750"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sarray__group__format__writer.html#a69c57cc1b1f3dbf9ab11af3f0ddd1750">open</a> (std::string index_file, size_t segments_to_create, size_t columns_to_create)=0</td></tr>
 <tr class="separator:a69c57cc1b1f3dbf9ab11af3f0ddd1750"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b15f825507f6da39eb67d0d07598d5a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sarray__group__format__writer.html#a3b15f825507f6da39eb67d0d07598d5a">set_options</a> (const std::string &amp;option, int64_t value)=0</td></tr>
+<tr class="separator:a3b15f825507f6da39eb67d0d07598d5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af72886fbbcb1da9f88ade4d8cdc5574f"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="structturi_1_1group__index__file__information.html">group_index_file_information</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sarray__group__format__writer.html#af72886fbbcb1da9f88ade4d8cdc5574f">get_index_info</a> ()=0</td></tr>
 <tr class="separator:af72886fbbcb1da9f88ade4d8cdc5574f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae3166e01df9d079cb0f362a43d0846fa"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sarray__group__format__writer.html#ae3166e01df9d079cb0f362a43d0846fa">close</a> ()=0</td></tr>
@@ -215,7 +217,7 @@ template&lt;typename T&gt; </div>
 
 <p>Reimplemented in <a class="el" href="classturi_1_1sarray__group__format__writer__v2.html#abd1ad8c96243cba125cccfb3b55a1a13">turi::sarray_group_format_writer_v2&lt; T &gt;</a>.</p>
 
-<p>Definition at line <a class="el" href="sarray__file__format__interface_8hpp_source.html#l00240">240</a> of file <a class="el" href="sarray__file__format__interface_8hpp_source.html">sarray_file_format_interface.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray__file__format__interface_8hpp_source.html#l00247">247</a> of file <a class="el" href="sarray__file__format__interface_8hpp_source.html">sarray_file_format_interface.hpp</a>.</p>
 
 </div>
 </div>
@@ -345,6 +347,45 @@ template&lt;typename T&gt; </div>
 <p>Open has to be called before any of the other functions are called. No files are actually opened at this point. </p>
 
 <p>Implemented in <a class="el" href="classturi_1_1sarray__group__format__writer__v2.html#a01ecdabdee7242daff4752ea81aed0a7">turi::sarray_group_format_writer_v2&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a3b15f825507f6da39eb67d0d07598d5a"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void <a class="el" href="classturi_1_1sarray__group__format__writer.html">turi::sarray_group_format_writer</a>&lt; T &gt;::set_options </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>option</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int64_t&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Set write options. Available options are "disable_padding" = true or false </p>
+
+<p>Implemented in <a class="el" href="classturi_1_1sarray__group__format__writer__v2.html#a9c9a94fdb732430345879506bdfef2d8">turi::sarray_group_format_writer_v2&lt; T &gt;</a>.</p>
 
 </div>
 </div>

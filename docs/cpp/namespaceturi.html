@@ -218,17 +218,6 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1fast__integer__power.html">fast_integer_power</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1fiber__barrier.html">fiber_barrier</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1fiber__blocking__queue.html">fiber_blocking_queue</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implements a blocking queue useful for producer/consumer models. Similar to the <a class="el" href="classturi_1_1blocking__queue.html">blocking_queue</a>, but requires all threads waiting on the queue to be fibers. Also only supports the basic wait on dequeue operation, and not the other timed_wait, or wait_until_empty operations supported by the <a class="el" href="classturi_1_1blocking__queue.html">blocking_queue</a>.  <a href="classturi_1_1fiber__blocking__queue.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1fiber__conditional.html">fiber_conditional</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1fiber__control.html">fiber_control</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1fiber__group.html">fiber_group</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1file__download__cache.html">file_download_cache</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1file__line__count__estimator.html">file_line_count_estimator</a></td></tr>
@@ -861,6 +850,16 @@ template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ga25f23d791bd1d986c61cd39748ff2a09"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ga25f23d791bd1d986c61cd39748ff2a09"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classturi_1_1sarray__block__iterator.html">sarray_block_iterator</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__sframe__main.html#ga25f23d791bd1d986c61cd39748ff2a09">make_sarray_block_iterator</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; T &gt; &gt; &amp;data)</td></tr>
 <tr class="separator:ga25f23d791bd1d986c61cd39748ff2a09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3cd8b556a3ee14f1d63177cb56fdd14e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a3cd8b556a3ee14f1d63177cb56fdd14e">sframe_fast_compact</a> (const <a class="el" href="classturi_1_1sframe.html">sframe</a> &amp;sf)</td></tr>
+<tr class="separator:a3cd8b556a3ee14f1d63177cb56fdd14e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a916db418123be432c2fa91d4e2e04a7c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a916db418123be432c2fa91d4e2e04a7c">sframe_compact</a> (<a class="el" href="classturi_1_1sframe.html">sframe</a> &amp;sf, size_t segment_threshold)</td></tr>
+<tr class="separator:a916db418123be432c2fa91d4e2e04a7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6297d191a2e0f8845ea5f57bc125c4cf"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a6297d191a2e0f8845ea5f57bc125c4cf"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a6297d191a2e0f8845ea5f57bc125c4cf">sarray_fast_compact</a> (<a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; T &gt; &amp;column)</td></tr>
+<tr class="separator:a6297d191a2e0f8845ea5f57bc125c4cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af794f279568f80357f1a09d391510b2f"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:af794f279568f80357f1a09d391510b2f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceturi.html#af794f279568f80357f1a09d391510b2f">sarray_compact</a> (<a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; T &gt; &amp;column, size_t segment_threshold)</td></tr>
+<tr class="separator:af794f279568f80357f1a09d391510b2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf172c11fbe7e659f98d883fdc0385c33"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structturi_1_1sframe__index__file__information.html">sframe_index_file_information</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sframe__main.html#gaf172c11fbe7e659f98d883fdc0385c33">read_sframe_index_file</a> (std::string index_file)</td></tr>
 <tr class="separator:gaf172c11fbe7e659f98d883fdc0385c33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga0c729f5d7f2ff91f18a07fb3a2461f21"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sframe__main.html#ga0c729f5d7f2ff91f18a07fb3a2461f21">write_sframe_index_file</a> (std::string index_file, const <a class="el" href="structturi_1_1sframe__index__file__information.html">sframe_index_file_information</a> &amp;info)</td></tr>
@@ -932,12 +931,14 @@ template&lt;typename T &gt; </td></tr>
 <tr class="separator:a3693451f85e001eb5311f4dcaceda27a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2aac567773d5068dce533ce7420be04c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a2aac567773d5068dce533ce7420be04c">add_metadata</a> (CoreML::Specification::Model &amp;model_spec, const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;context)</td></tr>
 <tr class="separator:a2aac567773d5068dce533ce7420be04c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b005b4c526b7e2628f141a123542d86"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a0b005b4c526b7e2628f141a123542d86">export_linear_regression_as_model_asset</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const arma::vec &amp;coefs, const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;context)</td></tr>
+<tr class="separator:a0b005b4c526b7e2628f141a123542d86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a1df2e93705e7b81ffc572794e3390f"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a7a1df2e93705e7b81ffc572794e3390f">export_linear_svm_as_model_asset</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const arma::vec &amp;coefs, const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;context)</td></tr>
+<tr class="separator:a7a1df2e93705e7b81ffc572794e3390f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4242a046e8c8cb107616f1228886ad1"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ad4242a046e8c8cb107616f1228886ad1">export_logistic_model_as_model_asset</a> (const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const arma::vec &amp;coefs, const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;context)</td></tr>
+<tr class="separator:ad4242a046e8c8cb107616f1228886ad1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ea795baef4339e4840897168c320738"><td class="memItemLeft" align="right" valign="top">void EXPORT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a3ea795baef4339e4840897168c320738">export_linear_regression_as_model_asset</a> (const std::string &amp;filename, const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const arma::vec &amp;coefs, const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;context)</td></tr>
 <tr class="separator:a3ea795baef4339e4840897168c320738"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19e5aa7aa63ae6b64efeaa514aa70416"><td class="memItemLeft" align="right" valign="top">void EXPORT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a19e5aa7aa63ae6b64efeaa514aa70416">export_linear_svm_as_model_asset</a> (const std::string &amp;filename, const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const arma::vec &amp;coefs, const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;context)</td></tr>
-<tr class="separator:a19e5aa7aa63ae6b64efeaa514aa70416"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7aeea55f6857605df3c06b7ee9152796"><td class="memItemLeft" align="right" valign="top">void EXPORT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a7aeea55f6857605df3c06b7ee9152796">export_logistic_model_as_model_asset</a> (const std::string &amp;filename, const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;metadata, const arma::vec &amp;coefs, const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;context)</td></tr>
-<tr class="separator:a7aeea55f6857605df3c06b7ee9152796"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef2291d40ba400f9fed0fbcd55c20810"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#aef2291d40ba400f9fed0fbcd55c20810">setup_pipeline_from_mldata</a> (CoreML::Pipeline &amp;pipeline, std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; metadata)</td></tr>
 <tr class="separator:aef2291d40ba400f9fed0fbcd55c20810"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf17c7990e00eab46358ea2f7865faee"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__group__flexible__type__types.html#ga408eb4413a2a629b462fb3a5d4f42c24">flex_dict</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#acf17c7990e00eab46358ea2f7865faee">to_flat_dict</a> (const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;dict_or_list, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;separator, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;undefined_string, std::function&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>(const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;)&gt; nonnumeric_value_handler)</td></tr>
@@ -1284,6 +1285,10 @@ Variables</h2></td></tr>
 <tr class="separator:gae18272fca6572c6d7515da8e8470e68a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga83377e8db5ff62da684b96411aaebc08"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sframe__main.html#ga83377e8db5ff62da684b96411aaebc08">SFRAME_SORT_MAX_SEGMENTS</a></td></tr>
 <tr class="separator:ga83377e8db5ff62da684b96411aaebc08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2be7965a1407dd92f588ccfc23a15ade"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sframe__main.html#ga2be7965a1407dd92f588ccfc23a15ade">SFRAME_COMPACTION_THRESHOLD</a></td></tr>
+<tr class="separator:ga2be7965a1407dd92f588ccfc23a15ade"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gada49853579a049f753b1e39ce1669315"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sframe__main.html#gada49853579a049f753b1e39ce1669315">FAST_COMPACT_BLOCKS_IN_SMALL_SEGMENT</a></td></tr>
+<tr class="separator:gada49853579a049f753b1e39ce1669315"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gacc2ec4c1b9133efa5b133b70066a06e4"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sgraph__main.html#gacc2ec4c1b9133efa5b133b70066a06e4">SGRAPH_TRIPLE_APPLY_LOCK_ARRAY_SIZE</a></td></tr>
 <tr class="separator:gacc2ec4c1b9133efa5b133b70066a06e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf44898c8cb3937ab7bd60519333b12a3"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sgraph__main.html#gaf44898c8cb3937ab7bd60519333b12a3">SGRAPH_BATCH_TRIPLE_APPLY_LOCK_ARRAY_SIZE</a></td></tr>
@@ -1506,9 +1511,9 @@ template&lt;typename T &gt; </div>
 <p>Numeric vector type. Stored type is the <a class="el" href="group__group__flexible__type__types.html#gac2900ffa5e2fef35d706e307db74d859">flex_nd_vec</a> </p>
 </td></tr>
 </table>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="_2home_2zach_2turicreate_2src_2unity_2lib_2unity_sframe_8hpp-example.html#a1">/home/zach/turicreate/src/unity/lib/unity_sframe.hpp</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="_2home_2toby_2Documents_2turicreate_2src_2unity_2lib_2unity_sframe_8hpp-example.html#a1">/home/toby/Documents/turicreate/src/unity/lib/unity_sframe.hpp</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00330">330</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00331">331</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
 
 </div>
 </div>
@@ -2084,7 +2089,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="bitops_8hpp_source.html#l00345">345</a> of file <a class="el" href="bitops_8hpp_source.html">bitops.hpp</a>.</p>
+<p>Definition at line <a class="el" href="bitops_8hpp_source.html#l00352">352</a> of file <a class="el" href="bitops_8hpp_source.html">bitops.hpp</a>.</p>
 
 </div>
 </div>
@@ -2135,7 +2140,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="bitops_8hpp_source.html#l00358">358</a> of file <a class="el" href="bitops_8hpp_source.html">bitops.hpp</a>.</p>
+<p>Definition at line <a class="el" href="bitops_8hpp_source.html#l00365">365</a> of file <a class="el" href="bitops_8hpp_source.html">bitops.hpp</a>.</p>
 
 </div>
 </div>
@@ -2193,7 +2198,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="bitops_8hpp_source.html#l00372">372</a> of file <a class="el" href="bitops_8hpp_source.html">bitops.hpp</a>.</p>
+<p>Definition at line <a class="el" href="bitops_8hpp_source.html#l00379">379</a> of file <a class="el" href="bitops_8hpp_source.html">bitops.hpp</a>.</p>
 
 </div>
 </div>
@@ -2487,6 +2492,39 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a class="anchor" id="a0b005b4c526b7e2628f141a123542d86"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;coreml::MLModelWrapper&gt; turi::export_linear_regression_as_model_asset </td>
+          <td>(</td>
+          <td class="paramtype">const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>metadata</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const arma::vec &amp;&#160;</td>
+          <td class="paramname"><em>coefs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>context</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Export as model asset </p>
+
+</div>
+</div>
 <a class="anchor" id="a3ea795baef4339e4840897168c320738"></a>
 <div class="memitem">
 <div class="memproto">
@@ -2522,23 +2560,17 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Export as model asset </p>
+<p>Simplified versions of the above, with exported symbol visibility so that extensions can link to them. </p>
 
 </div>
 </div>
-<a class="anchor" id="a19e5aa7aa63ae6b64efeaa514aa70416"></a>
+<a class="anchor" id="a7a1df2e93705e7b81ffc572794e3390f"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void EXPORT turi::export_linear_svm_as_model_asset </td>
+          <td class="memname">std::shared_ptr&lt;coreml::MLModelWrapper&gt; turi::export_linear_svm_as_model_asset </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>filename</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>metadata</em>, </td>
         </tr>
@@ -2565,19 +2597,13 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a7aeea55f6857605df3c06b7ee9152796"></a>
+<a class="anchor" id="ad4242a046e8c8cb107616f1228886ad1"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void EXPORT turi::export_logistic_model_as_model_asset </td>
+          <td class="memname">std::shared_ptr&lt;coreml::MLModelWrapper&gt; turi::export_logistic_model_as_model_asset </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>filename</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">const std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>metadata</em>, </td>
         </tr>
@@ -2694,7 +2720,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="bitops_8hpp_source.html#l00383">383</a> of file <a class="el" href="bitops_8hpp_source.html">bitops.hpp</a>.</p>
+<p>Definition at line <a class="el" href="bitops_8hpp_source.html#l00390">390</a> of file <a class="el" href="bitops_8hpp_source.html">bitops.hpp</a>.</p>
 
 </div>
 </div>
@@ -2721,7 +2747,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Given the printable name of a <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> type, returns its corresponding <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> enumeration value. Reverse of <a class="el" href="namespaceturi.html#a65de5f31193ee46ccb4cfd60cddfaaa6">flex_type_enum_to_name</a>. </p>
 
-<p>Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00748">748</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00749">749</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
 
 </div>
 </div>
@@ -2748,7 +2774,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Returns a printable name of a flex_type_enum. Reverse of <a class="el" href="namespaceturi.html#a532ea655972eb0b72dc40ad14fd82075">flex_type_enum_from_name</a> </p>
 
-<p>Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00717">717</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00718">718</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
 
 </div>
 </div>
@@ -2792,7 +2818,7 @@ template&lt;typename T &gt; </div>
 <p>Check if numeric operators between these types are supported. if a and b are flexible_types and flex_type_has_binary_op(a.get_type(), b.get_type(), op) is true, this means. that a op= b and a op b is false. op is any of '+','-','*','/','','&lt;','&gt;','='</p>
 <p>'&lt;' is the less than operator, and '&gt;' is the greater than operator. '=' is the equality comparison operator. Suceeding on '&lt;' or '&gt;' implies that the less than or equal operator (&lt;=) and the greater than or equal operator (&gt;=) will also succeed</p>
 <p>For instance given <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> a, b </p><div class="fragment"><div class="line"><span class="keywordflow">if</span> (<a class="code" href="namespaceturi.html#a95083e63ff7e20e03de8833909a699f1">flex_type_has_binary_op</a>(a, b, <span class="charliteral">&#39;+&#39;</span>)) {</div><div class="line">  a += b <span class="comment">// will succeed</span></div><div class="line">  a + b  <span class="comment">// will succeed</span></div><div class="line">} <span class="keywordflow">else</span> {</div><div class="line">  a += b <span class="comment">// will fail</span></div><div class="line">  a + b  <span class="comment">// will fail</span></div><div class="line">}</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00391">391</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00392">392</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
 
 </div>
 </div>
@@ -2829,7 +2855,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Check if one flexible type is convertable to the other. </p>
 
-<p>Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00351">351</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00352">352</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
 
 </div>
 </div>
@@ -2972,7 +2998,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Given a set of types, choose a common type that all types in the set can be converted to and preserves the most data. Not designed to be passed a set with UNDEFINED in it. </p>
 
-<p>Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00824">824</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type__base__types_8hpp_source.html#l00825">825</a> of file <a class="el" href="flexible__type__base__types_8hpp_source.html">flexible_type_base_types.hpp</a>.</p>
 
 </div>
 </div>
@@ -3099,7 +3125,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="bitops_8hpp_source.html#l00249">249</a> of file <a class="el" href="bitops_8hpp_source.html">bitops.hpp</a>.</p>
+<p>Definition at line <a class="el" href="bitops_8hpp_source.html#l00256">256</a> of file <a class="el" href="bitops_8hpp_source.html">bitops.hpp</a>.</p>
 
 </div>
 </div>
@@ -3150,7 +3176,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="bitops_8hpp_source.html#l00332">332</a> of file <a class="el" href="bitops_8hpp_source.html">bitops.hpp</a>.</p>
+<p>Definition at line <a class="el" href="bitops_8hpp_source.html#l00339">339</a> of file <a class="el" href="bitops_8hpp_source.html">bitops.hpp</a>.</p>
 
 </div>
 </div>
@@ -3248,7 +3274,7 @@ template&lt;typename T , typename RowProcessFunction &gt; </div>
                 std::vector&lt;std::pair&lt;size_t, T&gt; &gt;&amp; row)
 </pre><p>In this case, row_idx is the row currently being processed and row is the current row. Any modifications to row are discarded after this. </p>
 
-<p>Definition at line <a class="el" href="utilities_8hpp_source.html#l00281">281</a> of file <a class="el" href="utilities_8hpp_source.html">utilities.hpp</a>.</p>
+<p>Definition at line <a class="el" href="utilities_8hpp_source.html#l00279">279</a> of file <a class="el" href="utilities_8hpp_source.html">utilities.hpp</a>.</p>
 
 </div>
 </div>
@@ -3647,7 +3673,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="bitops_8hpp_source.html#l00320">320</a> of file <a class="el" href="bitops_8hpp_source.html">bitops.hpp</a>.</p>
+<p>Definition at line <a class="el" href="bitops_8hpp_source.html#l00327">327</a> of file <a class="el" href="bitops_8hpp_source.html">bitops.hpp</a>.</p>
 
 </div>
 </div>
@@ -3698,7 +3724,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="bitops_8hpp_source.html#l00276">276</a> of file <a class="el" href="bitops_8hpp_source.html">bitops.hpp</a>.</p>
+<p>Definition at line <a class="el" href="bitops_8hpp_source.html#l00283">283</a> of file <a class="el" href="bitops_8hpp_source.html">bitops.hpp</a>.</p>
 
 </div>
 </div>
@@ -3749,7 +3775,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="bitops_8hpp_source.html#l00237">237</a> of file <a class="el" href="bitops_8hpp_source.html">bitops.hpp</a>.</p>
+<p>Definition at line <a class="el" href="bitops_8hpp_source.html#l00244">244</a> of file <a class="el" href="bitops_8hpp_source.html">bitops.hpp</a>.</p>
 
 </div>
 </div>
@@ -3800,7 +3826,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="bitops_8hpp_source.html#l00195">195</a> of file <a class="el" href="bitops_8hpp_source.html">bitops.hpp</a>.</p>
+<p>Definition at line <a class="el" href="bitops_8hpp_source.html#l00202">202</a> of file <a class="el" href="bitops_8hpp_source.html">bitops.hpp</a>.</p>
 
 </div>
 </div>
@@ -3845,7 +3871,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="bitops_8hpp_source.html#l00146">146</a> of file <a class="el" href="bitops_8hpp_source.html">bitops.hpp</a>.</p>
+<p>Definition at line <a class="el" href="bitops_8hpp_source.html#l00150">150</a> of file <a class="el" href="bitops_8hpp_source.html">bitops.hpp</a>.</p>
 
 </div>
 </div>
@@ -4108,10 +4134,62 @@ template&lt;typename F , typename... Args&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Takes a function call and runs it in a native stack space. Used to get by some libjvm oddities when using coroutines / fibers.</p>
+<p>Takes a function call and runs it in a native stack space. Used to get by some libjvm oddities when using coroutines.</p>
 <p>Returns an exception if an exception was thrown while executing the inner task. </p>
 
 <p>Definition at line <a class="el" href="execute__task__in__native__thread_8hpp_source.html#l00060">60</a> of file <a class="el" href="execute__task__in__native__thread_8hpp_source.html">execute_task_in_native_thread.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af794f279568f80357f1a09d391510b2f"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::sarray_compact </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>column</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>segment_threshold</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Inplace compacts an SArray. Fast compact is tried first and if the number of segments do not fall below the target, a slow compaction is performed. </p>
+
+<p>Definition at line <a class="el" href="sframe__compact__impl_8hpp_source.html#l00124">124</a> of file <a class="el" href="sframe__compact__impl_8hpp_source.html">sframe_compact_impl.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6297d191a2e0f8845ea5f57bc125c4cf"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">bool turi::sarray_fast_compact </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>column</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>sarray_fast_compact looks for runs of small segments (comprising of less than FAST_COMPACT_BLOCKS_IN_SMALL_SEGMENT block), and rebuilds them into bigger segments. Returns true if any compaction was performed. </p>
+
+<p>Definition at line <a class="el" href="sframe__compact__impl_8hpp_source.html#l00049">49</a> of file <a class="el" href="sframe__compact__impl_8hpp_source.html">sframe_compact_impl.hpp</a>.</p>
 
 </div>
 </div>
@@ -4246,6 +4324,50 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a class="anchor" id="a916db418123be432c2fa91d4e2e04a7c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::sframe_compact </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classturi_1_1sframe.html">sframe</a> &amp;&#160;</td>
+          <td class="paramname"><em>sf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>segment_threshold</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Inplace compacts an SFrame. Fast compact is tried first and if the number of segments do not fall below the target, a slow compaction is performed. </p>
+
+</div>
+</div>
+<a class="anchor" id="a3cd8b556a3ee14f1d63177cb56fdd14e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool turi::sframe_fast_compact </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classturi_1_1sframe.html">sframe</a> &amp;&#160;</td>
+          <td class="paramname"><em>sf</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>sframe_fast_compact looks for runs of small segments (comprising of less than FAST_COMPACT_BLOCKS_IN_SMALL_SEGMENT block), and rebuilds them into bigger segments. Returns true if any compaction was performed. </p>
+
+</div>
+</div>
 <a class="anchor" id="a963920bf11ee9d5069b14395b6e81cab"></a>
 <div class="memitem">
 <div class="memproto">
@@ -4304,7 +4426,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Solve for A*x = b using ldlt solving. A must be symmetric positive definite. </p>
 
-<p>Definition at line <a class="el" href="armadillo_8hpp_source.html#l00196">196</a> of file <a class="el" href="armadillo_8hpp_source.html">armadillo.hpp</a>.</p>
+<p>Definition at line <a class="el" href="armadillo_8hpp_source.html#l00195">195</a> of file <a class="el" href="armadillo_8hpp_source.html">armadillo.hpp</a>.</p>
 
 </div>
 </div>
@@ -4335,7 +4457,7 @@ template&lt;typename... T, typename b_t &gt; </div>
 </div><div class="memdoc">
 <p>Solve for A*x = b using ldlt ving A must be symmetric positive semi-definite </p>
 
-<p>Definition at line <a class="el" href="armadillo_8hpp_source.html#l00241">241</a> of file <a class="el" href="armadillo_8hpp_source.html">armadillo.hpp</a>.</p>
+<p>Definition at line <a class="el" href="armadillo_8hpp_source.html#l00240">240</a> of file <a class="el" href="armadillo_8hpp_source.html">armadillo.hpp</a>.</p>
 
 </div>
 </div>
@@ -4722,7 +4844,7 @@ template&lt;typename T &gt; </div>
 <p>To do this efficiently, the number of elements for each column_index are required ahead of time. This is passed in as item_counts, which should be of size equal to the column dimension.</p>
 <p>max_memory_usage gives the maximum memory allowed for the computation. The larger max_memory_usage is, the fewer passes through the data are required. </p>
 
-<p>Definition at line <a class="el" href="utilities_8hpp_source.html#l00342">342</a> of file <a class="el" href="utilities_8hpp_source.html">utilities.hpp</a>.</p>
+<p>Definition at line <a class="el" href="utilities_8hpp_source.html#l00340">340</a> of file <a class="el" href="utilities_8hpp_source.html">utilities.hpp</a>.</p>
 
 </div>
 </div>
@@ -5201,7 +5323,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>A global static variable to be used when an undefined value is needed. i.e. </p><div class="fragment"><div class="line">flexible_type f = <a class="code" href="namespaceturi.html#a239e289c661e697c9191abaaae05981d">FLEX_UNDEFINED</a>;</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01394">1394</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
+<p>Definition at line <a class="el" href="flexible__type_8hpp_source.html#l01396">1396</a> of file <a class="el" href="flexible__type_8hpp_source.html">flexible_type.hpp</a>.</p>
 
 </div>
 </div>

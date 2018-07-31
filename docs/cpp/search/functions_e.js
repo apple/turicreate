@@ -24,7 +24,6 @@ var searchData=
   ['notify_5fall',['notify_all',['../classturi_1_1conditional.html#a1f4c93a5bb8d2ce2b0b72d5ad941fb7e',1,'turi::conditional']]],
   ['notify_5fone',['notify_one',['../classturi_1_1conditional.html#a5e3cecea9156d8497b666248ea61b6d1',1,'turi::conditional']]],
   ['nrows',['nrows',['../structturi_1_1dataframe__t.html#aa698e225c9167cd66d2eccc68a1628cd',1,'turi::dataframe_t']]],
-  ['num_5factive_5fworkers',['num_active_workers',['../classturi_1_1fiber__control.html#af805abbe30422f573253086b39981917',1,'turi::fiber_control']]],
   ['num_5farguments',['num_arguments',['../structturi_1_1lazy__eval__operation__base.html#a32fd5d7c7e5a8bff83e52f6543069b5d',1,'turi::lazy_eval_operation_base']]],
   ['num_5favailable_5fworkers',['num_available_workers',['../classturi_1_1lambda_1_1worker__pool.html#ada2b75d966b666c29414b5822a3733f6',1,'turi::lambda::worker_pool']]],
   ['num_5fbits_5fon',['num_bits_on',['../namespaceturi.html#afd3fc0a7fbd4acedcfe0961d6f4b3b39',1,'turi']]],
@@ -47,7 +46,6 @@ var searchData=
   ['num_5fstages',['num_stages',['../structturi_1_1query__eval_1_1optimization__transform__registry.html#a3d0e511dd4f8e7234a8fe29039e59673',1,'turi::query_eval::optimization_transform_registry']]],
   ['num_5fstored_5frows',['num_stored_rows',['../classturi_1_1join__impl_1_1join__hash__table.html#a737d66a78a3b00a7db79b6bb8a355df6',1,'turi::join_impl::join_hash_table']]],
   ['num_5ftemp_5fdirectories',['num_temp_directories',['../group__fileio.html#ga938d93ca534d16a0946cba20516890f7',1,'turi']]],
-  ['num_5fthreads',['num_threads',['../classturi_1_1fiber__control.html#a97f6485821d3f523b0728aaa77961736',1,'turi::fiber_control']]],
   ['num_5fundefined',['num_undefined',['../classturi_1_1unity__sketch.html#a5dfbdbc08a8934e2e5732f04db063cbb',1,'turi::unity_sketch']]],
   ['num_5funique',['num_unique',['../classturi_1_1unity__sketch.html#a5c9e028f7f0b4ee22b00240f670db5a0',1,'turi::unity_sketch']]],
   ['num_5funpacked_5ffeatures',['num_unpacked_features',['../classturi_1_1supervised_1_1supervised__learning__model__base.html#a7471040841033b18a380f6720765a44c',1,'turi::supervised::supervised_learning_model_base']]],
@@ -56,6 +54,6 @@ var searchData=
   ['num_5fvalidation_5fexamples',['num_validation_examples',['../classturi_1_1supervised_1_1linear__regression__opt__interface.html#ac861404f84b636e7fb93acc8767cf7a2',1,'turi::supervised::linear_regression_opt_interface::num_validation_examples()'],['../classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#a5c2dedd842fa7c55be62e3af9f9f507e',1,'turi::supervised::linear_svm_scaled_logistic_opt_interface::num_validation_examples()'],['../classturi_1_1supervised_1_1logistic__regression__opt__interface.html#af8a91962c980f9976ca05350d4fbfd7e',1,'turi::supervised::logistic_regression_opt_interface::num_validation_examples()']]],
   ['num_5fvariables',['num_variables',['../classturi_1_1optimization_1_1first__order__opt__interface.html#ad7be6e45792c26966adf372eca1062e4',1,'turi::optimization::first_order_opt_interface::num_variables()'],['../classturi_1_1supervised_1_1linear__regression__opt__interface.html#a308be7d4adb1a769e207b2cc1f2eef41',1,'turi::supervised::linear_regression_opt_interface::num_variables()'],['../classturi_1_1supervised_1_1linear__svm__scaled__logistic__opt__interface.html#a03ea10eb8de55efc3f8cffa289ca312b',1,'turi::supervised::linear_svm_scaled_logistic_opt_interface::num_variables()'],['../classturi_1_1supervised_1_1logistic__regression__opt__interface.html#a6928e068574b89302e40a6c13db9a6e3',1,'turi::supervised::logistic_regression_opt_interface::num_variables()']]],
   ['num_5fvertices',['num_vertices',['../classturi_1_1sgraph.html#adab42b46d30e5030a7dc343c0b96771b',1,'turi::sgraph::num_vertices(size_t group) const '],['../classturi_1_1sgraph.html#aba64ad0bd8438748a43e466468119460',1,'turi::sgraph::num_vertices() const '],['../classturi_1_1gl__sgraph.html#a28252332f4da7bf0b659e04f631085b4',1,'turi::gl_sgraph::num_vertices()']]],
-  ['num_5fworkers',['num_workers',['../classturi_1_1lambda_1_1worker__pool.html#ad0ae20c2aa3c2b39fd5bd0f4818284f1',1,'turi::lambda::worker_pool::num_workers()'],['../classturi_1_1fiber__control.html#aec60bbc3a19351fa02d72e5c6f0fe6b9',1,'turi::fiber_control::num_workers()']]],
+  ['num_5fworkers',['num_workers',['../classturi_1_1lambda_1_1worker__pool.html#ad0ae20c2aa3c2b39fd5bd0f4818284f1',1,'turi::lambda::worker_pool']]],
   ['number_5fof_5flines',['number_of_lines',['../classturi_1_1file__line__count__estimator.html#a4dd0e62d58cf7dda7afdd1973024e825',1,'turi::file_line_count_estimator']]]
 ];

@@ -57,5 +57,6 @@ var classturi_1_1sframe =
     [ "set_num_segments", "classturi_1_1sframe.html#a67f17baba403d32740659b0cbfae5e78", null ],
     [ "size", "classturi_1_1sframe.html#a8fda4767861565784f7f9a2f964b5142", null ],
     [ "swap_columns", "classturi_1_1sframe.html#a6f67a5df23a70bb324a16ef000af380b", null ],
-    [ "to_dataframe", "classturi_1_1sframe.html#a15be075f1438b14c3779a6e43d13e4cf", null ]
+    [ "to_dataframe", "classturi_1_1sframe.html#a15be075f1438b14c3779a6e43d13e4cf", null ],
+    [ "try_compact", "classturi_1_1sframe.html#acf73cd84feb34eb5e8c92161c0892be4", null ]
 ];

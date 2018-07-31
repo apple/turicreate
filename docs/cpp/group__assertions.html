@@ -168,12 +168,12 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {                                                                  \</div><div class="line">    if (UNLIKELY(!(condition))) {                                       \</div><div class="line">      auto throw_error = [&amp;]() GL_GCC_ONLY(<a class="code" href="group__util.html#gae731468612d543efd1b13bca3a047139">GL_COLD_NOINLINE_ERROR</a>) {    \</div><div class="line">      std::ostringstream ss;                                            \</div><div class="line">      ss &lt;&lt; <span class="stringliteral">&quot;Check failed (&quot;</span> &lt;&lt; __FILE__ &lt;&lt; <span class="stringliteral">&quot;:&quot;</span> &lt;&lt; __LINE__ &lt;&lt; <span class="stringliteral">&quot;): &quot;</span>    \</div><div class="line">      &lt;&lt; #condition  &lt;&lt; std::endl;                                      <a class="code" href="group__Global.html#ga7fe3c756650e371ad8739b860495106c">\</a></div><div class="line"><a class="code" href="group__Global.html#ga7fe3c756650e371ad8739b860495106c">      logstream</a>(<a class="code" href="group__levels.html#gaced66975c154ea0e2a8ec3bc818b4e08">LOG_ERROR</a>) &lt;&lt; ss.str();                                 \</div><div class="line">      __print_back_trace();                                             \</div><div class="line">      LOGGED_TURI_LOGGER_FAIL_METHOD(ss.str());                     \</div><div class="line">    };                                                                  \</div><div class="line">    throw_error();                                                      \</div><div class="line">  }                                                                     \</div><div class="line">  } <span class="keywordflow">while</span>(0)</div><div class="ttc" id="group__Global_html_ga7fe3c756650e371ad8739b860495106c"><div class="ttname"><a href="group__Global.html#ga7fe3c756650e371ad8739b860495106c">logstream</a></div><div class="ttdeci">#define logstream(lvl)</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00274">logger.hpp:274</a></div></div>
-<div class="ttc" id="group__levels_html_gaced66975c154ea0e2a8ec3bc818b4e08"><div class="ttname"><a href="group__levels.html#gaced66975c154ea0e2a8ec3bc818b4e08">LOG_ERROR</a></div><div class="ttdeci">#define LOG_ERROR</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00095">logger.hpp:95</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {                                                                  \</div><div class="line">    if (UNLIKELY(!(condition))) {                                       \</div><div class="line">      auto throw_error = [&amp;]() GL_GCC_ONLY(<a class="code" href="group__util.html#gae731468612d543efd1b13bca3a047139">GL_COLD_NOINLINE_ERROR</a>) {    \</div><div class="line">      std::ostringstream ss;                                            \</div><div class="line">      ss &lt;&lt; <span class="stringliteral">&quot;Check failed (&quot;</span> &lt;&lt; __FILE__ &lt;&lt; <span class="stringliteral">&quot;:&quot;</span> &lt;&lt; __LINE__ &lt;&lt; <span class="stringliteral">&quot;): &quot;</span>    \</div><div class="line">      &lt;&lt; #condition  &lt;&lt; std::endl;                                      <a class="code" href="group__Global.html#ga7fe3c756650e371ad8739b860495106c">\</a></div><div class="line"><a class="code" href="group__Global.html#ga7fe3c756650e371ad8739b860495106c">      logstream</a>(<a class="code" href="group__levels.html#gaced66975c154ea0e2a8ec3bc818b4e08">LOG_ERROR</a>) &lt;&lt; ss.str();                                 \</div><div class="line">      __print_back_trace();                                             \</div><div class="line">      LOGGED_TURI_LOGGER_FAIL_METHOD(ss.str());                     \</div><div class="line">    };                                                                  \</div><div class="line">    throw_error();                                                      \</div><div class="line">  }                                                                     \</div><div class="line">  } <span class="keywordflow">while</span>(0)</div><div class="ttc" id="group__Global_html_ga7fe3c756650e371ad8739b860495106c"><div class="ttname"><a href="group__Global.html#ga7fe3c756650e371ad8739b860495106c">logstream</a></div><div class="ttdeci">#define logstream(lvl)</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00275">logger.hpp:275</a></div></div>
+<div class="ttc" id="group__levels_html_gaced66975c154ea0e2a8ec3bc818b4e08"><div class="ttname"><a href="group__levels.html#gaced66975c154ea0e2a8ec3bc818b4e08">LOG_ERROR</a></div><div class="ttdeci">#define LOG_ERROR</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00096">logger.hpp:96</a></div></div>
 <div class="ttc" id="group__util_html_gae731468612d543efd1b13bca3a047139"><div class="ttname"><a href="group__util.html#gae731468612d543efd1b13bca3a047139">GL_COLD_NOINLINE_ERROR</a></div><div class="ttdeci">#define GL_COLD_NOINLINE_ERROR</div><div class="ttdef"><b>Definition:</b> <a href="code__optimization_8hpp_source.html#l00090">code_optimization.hpp:90</a></div></div>
 </div><!-- fragment --><p>CHECK dies with a fatal error if condition is not true. It is <em>not</em> controlled by NDEBUG, so the check will be executed regardless of compilation mode. </p>
 
-<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00197">197</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00199">199</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
 
 </div>
 </div>
@@ -206,12 +206,12 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {                                                                  \</div><div class="line">    const <span class="keywordtype">double</span> _CHECK_OP_v1_ = val1;                                  \</div><div class="line">    const <span class="keywordtype">double</span> _CHECK_OP_v2_ = val2;                                  \</div><div class="line">    const <span class="keywordtype">double</span> _CHECK_OP_delta_ = delta;                              \</div><div class="line">    if (__builtin_expect(!( abs( (_CHECK_OP_v1_) - (_CHECK_OP_v2_)) &lt;= _CHECK_OP_delta_), 0)) { \</div><div class="line">      auto throw_error = [&amp;]() GL_GCC_ONLY(<a class="code" href="group__util.html#gae731468612d543efd1b13bca3a047139">GL_COLD_NOINLINE_ERROR</a>) {    \</div><div class="line">      std::ostringstream ss;                                            \</div><div class="line">      ss &lt;&lt; <span class="stringliteral">&quot;Assertion failed: (&quot;</span> &lt;&lt; __FILE__ &lt;&lt; <span class="stringliteral">&quot;:&quot;</span> &lt;&lt; __LINE__ &lt;&lt; <span class="stringliteral">&quot;): &quot;</span> \</div><div class="line">         &lt;&lt; <span class="stringliteral">&quot;abs(&quot;</span> &lt;&lt; #val1 &lt;&lt; <span class="stringliteral">&quot; - &quot;</span> &lt;&lt; #val2                           \</div><div class="line">         &lt;&lt; <span class="stringliteral">&quot;) &lt;= &quot;</span> &lt;&lt; #delta &lt;&lt; <span class="stringliteral">&quot;. [&quot;</span>                                  \</div><div class="line">         &lt;&lt; <span class="stringliteral">&quot;abs(&quot;</span> &lt;&lt; _CHECK_OP_v2_ &lt;&lt; <span class="stringliteral">&quot; - &quot;</span> &lt;&lt; _CHECK_OP_v1_           \</div><div class="line">         &lt;&lt; <span class="stringliteral">&quot;) &gt; &quot;</span> &lt;&lt; _CHECK_OP_delta_ &lt;&lt; <span class="stringliteral">&quot;]&quot;</span> &lt;&lt; std::endl;             <a class="code" href="group__Global.html#ga7fe3c756650e371ad8739b860495106c">\</a></div><div class="line"><a class="code" href="group__Global.html#ga7fe3c756650e371ad8739b860495106c">      logstream</a>(<a class="code" href="group__levels.html#gaced66975c154ea0e2a8ec3bc818b4e08">LOG_ERROR</a>) &lt;&lt; ss.str();                                 \</div><div class="line">      __print_back_trace();                                             \</div><div class="line">      LOGGED_TURI_LOGGER_FAIL_METHOD(ss.str());                     \</div><div class="line">    };                                                                  \</div><div class="line">    throw_error();                                                      \</div><div class="line">    }                                                                   \</div><div class="line">  } <span class="keywordflow">while</span>(0)</div><div class="ttc" id="group__Global_html_ga7fe3c756650e371ad8739b860495106c"><div class="ttname"><a href="group__Global.html#ga7fe3c756650e371ad8739b860495106c">logstream</a></div><div class="ttdeci">#define logstream(lvl)</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00274">logger.hpp:274</a></div></div>
-<div class="ttc" id="group__levels_html_gaced66975c154ea0e2a8ec3bc818b4e08"><div class="ttname"><a href="group__levels.html#gaced66975c154ea0e2a8ec3bc818b4e08">LOG_ERROR</a></div><div class="ttdeci">#define LOG_ERROR</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00095">logger.hpp:95</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {                                                                  \</div><div class="line">    const <span class="keywordtype">double</span> _CHECK_OP_v1_ = val1;                                  \</div><div class="line">    const <span class="keywordtype">double</span> _CHECK_OP_v2_ = val2;                                  \</div><div class="line">    const <span class="keywordtype">double</span> _CHECK_OP_delta_ = delta;                              \</div><div class="line">    if (__builtin_expect(!( abs( (_CHECK_OP_v1_) - (_CHECK_OP_v2_)) &lt;= _CHECK_OP_delta_), 0)) { \</div><div class="line">      auto throw_error = [&amp;]() GL_GCC_ONLY(<a class="code" href="group__util.html#gae731468612d543efd1b13bca3a047139">GL_COLD_NOINLINE_ERROR</a>) {    \</div><div class="line">      std::ostringstream ss;                                            \</div><div class="line">      ss &lt;&lt; <span class="stringliteral">&quot;Assertion failed: (&quot;</span> &lt;&lt; __FILE__ &lt;&lt; <span class="stringliteral">&quot;:&quot;</span> &lt;&lt; __LINE__ &lt;&lt; <span class="stringliteral">&quot;): &quot;</span> \</div><div class="line">         &lt;&lt; <span class="stringliteral">&quot;abs(&quot;</span> &lt;&lt; #val1 &lt;&lt; <span class="stringliteral">&quot; - &quot;</span> &lt;&lt; #val2                           \</div><div class="line">         &lt;&lt; <span class="stringliteral">&quot;) &lt;= &quot;</span> &lt;&lt; #delta &lt;&lt; <span class="stringliteral">&quot;. [&quot;</span>                                  \</div><div class="line">         &lt;&lt; <span class="stringliteral">&quot;abs(&quot;</span> &lt;&lt; _CHECK_OP_v2_ &lt;&lt; <span class="stringliteral">&quot; - &quot;</span> &lt;&lt; _CHECK_OP_v1_           \</div><div class="line">         &lt;&lt; <span class="stringliteral">&quot;) &gt; &quot;</span> &lt;&lt; _CHECK_OP_delta_ &lt;&lt; <span class="stringliteral">&quot;]&quot;</span> &lt;&lt; std::endl;             <a class="code" href="group__Global.html#ga7fe3c756650e371ad8739b860495106c">\</a></div><div class="line"><a class="code" href="group__Global.html#ga7fe3c756650e371ad8739b860495106c">      logstream</a>(<a class="code" href="group__levels.html#gaced66975c154ea0e2a8ec3bc818b4e08">LOG_ERROR</a>) &lt;&lt; ss.str();                                 \</div><div class="line">      __print_back_trace();                                             \</div><div class="line">      LOGGED_TURI_LOGGER_FAIL_METHOD(ss.str());                     \</div><div class="line">    };                                                                  \</div><div class="line">    throw_error();                                                      \</div><div class="line">    }                                                                   \</div><div class="line">  } <span class="keywordflow">while</span>(0)</div><div class="ttc" id="group__Global_html_ga7fe3c756650e371ad8739b860495106c"><div class="ttname"><a href="group__Global.html#ga7fe3c756650e371ad8739b860495106c">logstream</a></div><div class="ttdeci">#define logstream(lvl)</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00275">logger.hpp:275</a></div></div>
+<div class="ttc" id="group__levels_html_gaced66975c154ea0e2a8ec3bc818b4e08"><div class="ttname"><a href="group__levels.html#gaced66975c154ea0e2a8ec3bc818b4e08">LOG_ERROR</a></div><div class="ttdeci">#define LOG_ERROR</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00096">logger.hpp:96</a></div></div>
 <div class="ttc" id="group__util_html_gae731468612d543efd1b13bca3a047139"><div class="ttname"><a href="group__util.html#gae731468612d543efd1b13bca3a047139">GL_COLD_NOINLINE_ERROR</a></div><div class="ttdeci">#define GL_COLD_NOINLINE_ERROR</div><div class="ttdef"><b>Definition:</b> <a href="code__optimization_8hpp_source.html#l00090">code_optimization.hpp:90</a></div></div>
 </div><!-- fragment --><p>Expects |val1 - val2| &lt;= delta difference, dies with a fatal error otherwise. Mainly meant for floating point values. ASSERT_DELTA and EXPECT_DELTA </p>
 
-<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00260">260</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00262">262</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
 
 </div>
 </div>
@@ -240,7 +240,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>Expects val1 == val2, dies with a fatal error otherwise. Synonyms are ASSERT_EQ and EXPECT_EQ. </p>
 
-<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00284">284</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00286">286</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
 
 </div>
 </div>
@@ -269,7 +269,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>Expects val1 &gt;= val2, dies with a fatal error otherwise. Synonyms are ASSERT_GE and EXPECT_GE </p>
 
-<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00288">288</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00290">290</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
 
 </div>
 </div>
@@ -298,7 +298,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>Expects val1 &gt; val2, dies with a fatal error otherwise. Synonyms are ASSERT_GT and EXPECT_GT </p>
 
-<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00289">289</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00291">291</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
 
 </div>
 </div>
@@ -327,7 +327,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>Expects val1 &lt;= val2, dies with a fatal error otherwise. Synonyms are ASSERT_LE and EXPECT_LE </p>
 
-<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00286">286</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00288">288</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
 
 </div>
 </div>
@@ -356,7 +356,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>Expects val1 &lt; val2, dies with a fatal error otherwise. Synonyms are ASSERT_LT and EXPECT_LT </p>
 
-<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00287">287</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00289">289</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
 
 </div>
 </div>
@@ -385,7 +385,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>Expects val1 != val2, dies with a fatal error otherwise. Synonyms are ASSERT_NE and EXPECT_NE </p>
 
-<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00285">285</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00287">287</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
 
 </div>
 </div>
@@ -420,7 +420,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>Like <a class="el" href="group__assertions.html#ga293e0605baad97fb97fc0639e8f0a7b9">__CHECK_DELTA</a> but is compiled away by NDEBUG. Synonyms are DASSERT_DELTA. </p>
 
-<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00355">355</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00360">360</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
 
 </div>
 </div>
@@ -449,7 +449,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>Like <a class="el" href="group__assertions.html#ga3133377da54051b5e7f011a96ac9ce43">__CHECK_EQ</a> but is compiled away by NDEBUG. Synonyms are DASSERT_EQ. </p>
 
-<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00354">354</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00359">359</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
 
 </div>
 </div>
@@ -478,7 +478,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>Like <a class="el" href="group__assertions.html#ga1e2ab9ffbfa702a5ccd2bcf1cf1f3516">__CHECK_GE</a> but is compiled away by NDEBUG. Synonyms are DASSERT_GE. </p>
 
-<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00359">359</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00364">364</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
 
 </div>
 </div>
@@ -507,7 +507,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>Like <a class="el" href="group__assertions.html#ga3a25fc7c72059e82aef35f91ba6cf266">__CHECK_GT</a> but is compiled away by NDEBUG. Synonyms are DASSERT_GT. </p>
 
-<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00360">360</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00365">365</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
 
 </div>
 </div>
@@ -536,7 +536,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>Like <a class="el" href="group__assertions.html#gaa234f2f2584dd82cccb01ccee6b653c5">__CHECK_LE</a> but is compiled away by NDEBUG. Synonyms are DASSERT_LE. </p>
 
-<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00357">357</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00362">362</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
 
 </div>
 </div>
@@ -565,7 +565,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>Like <a class="el" href="group__assertions.html#ga1b6222a9bc0ba92b6ecd59ebfc477f68">__CHECK_LT</a> but is compiled away by NDEBUG. Synonyms are DASSERT_LT. </p>
 
-<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00358">358</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00363">363</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
 
 </div>
 </div>
@@ -594,7 +594,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>Like <a class="el" href="group__assertions.html#ga754fcc0c48925cbed4c6ffbe685041d2">__CHECK_NE</a> but is compiled away by NDEBUG. Synonyms are DASSERT_NE. </p>
 
-<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00356">356</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00361">361</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
 
 </div>
 </div>
@@ -613,7 +613,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>Expects val to evaluate to false, dies with a fatal error otherwise. Synonyms are EXPECT_FALSE </p>
 
-<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00311">311</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00313">313</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
 
 </div>
 </div>
@@ -632,7 +632,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>Expects val to evaluate to true, dies with a fatal error otherwise. Synonyms are EXPECT_TRUE </p>
 
-<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00310">310</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00312">312</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
 
 </div>
 </div>
@@ -651,7 +651,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>Like <a class="el" href="group__assertions.html#ga9efe2f02b4d8f1efc4b509bcc009df90">ASSERT_FALSE</a> but is compiled away by NDEBUG. </p>
 
-<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00362">362</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00367">367</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
 
 </div>
 </div>
@@ -670,7 +670,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>Like <a class="el" href="group__assertions.html#ga1656b25134a180161dcd61a11184cd12">ASSERT_TRUE</a> but is compiled away by NDEBUG. </p>
 
-<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00361">361</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
+<p>Definition at line <a class="el" href="assertions_8hpp_source.html#l00366">366</a> of file <a class="el" href="assertions_8hpp_source.html">assertions.hpp</a>.</p>
 
 </div>
 </div>

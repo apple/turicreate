@@ -1,6 +1,6 @@
 var dir_37e1a828234c9fd398158043b7f4112f =
 [
-    [ "basic_types.hpp", "basic__types_8hpp_source.html", null ],
+    [ "basic_types.hpp", "serialization_2basic__types_8hpp_source.html", null ],
     [ "conditional_serialize.hpp", "conditional__serialize_8hpp_source.html", null ],
     [ "dir_archive.hpp", "dir__archive_8hpp_source.html", null ],
     [ "has_load.hpp", "has__load_8hpp_source.html", null ],

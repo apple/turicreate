@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.image_similarity.ImageSimilarityModel.similarity_graph &mdash; Turi Create API 5.0b1 documentation</title>
+  <title>turicreate.image_similarity.ImageSimilarityModel.similarity_graph &mdash; Turi Create API 5.0b3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.0b1 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 5.0b3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -187,20 +187,19 @@ matched to the entire dataset. If the reference dataset has
 SGraph with <span class="math">\(n^2\)</span> edges).</li>
 </ul>
 <p class="rubric">Examples</p>
-<p>Unlike the <code class="docutils literal"><span class="pre">query</span></code> method, there is no need for a second dataset with
-<code class="docutils literal"><span class="pre">similarity_graph</span></code>.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">similarity_graph</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># an SGraph</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Most similar image for each image in the input dataset</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">edges</span>
+<span class="go">+----------+----------+----------------+------+</span>
+<span class="go">| __src_id | __dst_id |    distance    | rank |</span>
+<span class="go">+----------+----------+----------------+------+</span>
+<span class="go">|    0     |    1     | 0.376430604494 |  1   |</span>
+<span class="go">|    2     |    1     | 0.55542776308  |  1   |</span>
+<span class="go">|    1     |    0     | 0.376430604494 |  1   |</span>
+<span class="go">+----------+----------+----------------+------+</span>
 </pre></div>
 </div>
-<p># Most similar image for each image in the input dataset
-&gt;&gt;&gt; graph.edges
-+&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;+
-| __src_id | __dst_id |    distance    | rank |
-+&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;+
-|    0     |    1     | 0.376430604494 |  1   |
-|    2     |    1     | 0.55542776308  |  1   |
-|    1     |    0     | 0.376430604494 |  1   |
-+&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;+</p>
 </dd></dl>
 
 </div>
@@ -214,7 +213,7 @@ SGraph with <span class="math">\(n^2\)</span> edges).</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Jun 04, 2018.
+      Last updated on Jul 30, 2018.
     </p>
   </div>
 </footer>
@@ -232,7 +231,7 @@ SGraph with <span class="math">\(n^2\)</span> edges).</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.0b1',
+            VERSION:'5.0b3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

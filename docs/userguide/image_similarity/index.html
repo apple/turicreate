@@ -308,6 +308,19 @@
             
         </li>
     
+        <li class="chapter " data-level="1.3.1.3" data-path="../recommender/coreml-deployment.html">
+            
+                <a href="../recommender/coreml-deployment.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -559,9 +572,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.6.3" data-path="../activity_classifier/export-coreml.md">
+        <li class="chapter " data-level="1.3.6.3" data-path="../activity_classifier/export_coreml.html">
             
-                <span>
+                <a href="../activity_classifier/export_coreml.html">
             
                     
                     Deployment to Core ML
@@ -1083,7 +1096,7 @@ query_results.head()</code></pre>
 |      0      |       1148      | 19.1690505999 |  10  |
 +-------------+-----------------+---------------+------+
 [100 rows x 4 columns]</code></pre>
-<p>Now, for a simple image like this (let&apos;s say the 10th image in the data).</p><pre><code class="lang-python">reference_data[<span class="hljs-number">9</span>].show()</code></pre>
+<p>Now, for a simple image like this (let&apos;s say the 10th image in the data).</p><pre><code class="lang-python">reference_data[<span class="hljs-number">9</span>][<span class="hljs-string">&apos;image&apos;</span>].show()</code></pre>
 <p><img alt="Similar images" src="images/sample_image.jpg">
 Note: the loading order of images is non-deterministic, so your 10th image
 is likely something differnt but this isn&apos;t important for demonstration purposes.</p><p>The 10 most &quot;similar&quot; looking images are</p><pre><code class="lang-python">similar_rows = query_results[query_results[<span class="hljs-string">&apos;query_label&apos;</span>] == <span class="hljs-number">9</span>][<span class="hljs-string">&apos;reference_label&apos;</span>]
@@ -1172,7 +1185,7 @@ categories. IEEE Trans. Pattern Recognition and Machine Intelligence.
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Image similarity","level":"1.3.3","depth":2,"next":{"title":"Deployment to Core ML","level":"1.3.3.1","depth":3,"path":"image_similarity/export-coreml.md","ref":"image_similarity/export-coreml.md","articles":[]},"previous":{"title":"Deployment to Core ML","level":"1.3.2.3","depth":3,"path":"image_classifier/export-coreml.md","ref":"image_classifier/export-coreml.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"image_similarity/README.md","mtime":"2018-06-04T23:48:38.332Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-06-05T01:37:24.088Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Image similarity","level":"1.3.3","depth":2,"next":{"title":"Deployment to Core ML","level":"1.3.3.1","depth":3,"path":"image_similarity/export-coreml.md","ref":"image_similarity/export-coreml.md","articles":[]},"previous":{"title":"Deployment to Core ML","level":"1.3.2.3","depth":3,"path":"image_classifier/export-coreml.md","ref":"image_classifier/export-coreml.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"image_similarity/README.md","mtime":"2018-07-30T23:56:20.475Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-07-31T00:01:03.393Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

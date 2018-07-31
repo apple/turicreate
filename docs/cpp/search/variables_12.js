@@ -9,6 +9,7 @@ var searchData=
   ['segment_5ffiles',['segment_files',['../structturi_1_1index__file__information.html#a2314f2c4e049493a2fb646ed5e5ee6bd',1,'turi::index_file_information::segment_files()'],['../structturi_1_1group__index__file__information.html#acadb5936d7075097a90036fd5723731d',1,'turi::group_index_file_information::segment_files()']]],
   ['segment_5fsizes',['segment_sizes',['../structturi_1_1index__file__information.html#a1688e3201c274ae662b17819528a24be',1,'turi::index_file_information']]],
   ['sframe_5fblock_5fmanager_5fblock_5fbuffer_5fcount',['SFRAME_BLOCK_MANAGER_BLOCK_BUFFER_COUNT',['../group__sframe__main.html#ga257d1eac7da7cc34d1b09b4ad4a449c7',1,'turi']]],
+  ['sframe_5fcompaction_5fthreshold',['SFRAME_COMPACTION_THRESHOLD',['../group__sframe__main.html#ga2be7965a1407dd92f588ccfc23a15ade',1,'turi']]],
   ['sframe_5fcsv_5fparser_5fread_5fsize',['SFRAME_CSV_PARSER_READ_SIZE',['../group__sframe__main.html#gacdaf1bdee34727191c837f382bd50e1e',1,'turi']]],
   ['sframe_5fdefault_5fblock_5fsize',['SFRAME_DEFAULT_BLOCK_SIZE',['../group__sframe__main.html#ga113eafeb25d60f776d0c163bab66fc75',1,'turi']]],
   ['sframe_5fdefault_5fnum_5fsegments',['SFRAME_DEFAULT_NUM_SEGMENTS',['../group__sframe__main.html#ga0a14c814ad647a718e7ff20ef2999653',1,'turi']]],

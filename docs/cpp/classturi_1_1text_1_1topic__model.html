@@ -125,14 +125,14 @@ $(document).ready(function(){initNavTree('classturi_1_1text_1_1topic__model.html
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a12778eb28ace95b810127da56fcad935"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classturi_1_1text_1_1topic__model.html">topic_model</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1text_1_1topic__model.html#a12778eb28ace95b810127da56fcad935">topic_model_clone</a> ()=0</td></tr>
 <tr class="separator:a12778eb28ace95b810127da56fcad935"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ade56827ff47fab383a75a2f9082cdf37"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1text_1_1topic__model.html#ade56827ff47fab383a75a2f9082cdf37">init_options</a> (const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;_opts)=0</td></tr>
-<tr class="separator:ade56827ff47fab383a75a2f9082cdf37"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56111835a45d8da3a1a05bfdab2b6bad"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1text_1_1topic__model.html#a56111835a45d8da3a1a05bfdab2b6bad">get_version</a> () const =0</td></tr>
-<tr class="separator:a56111835a45d8da3a1a05bfdab2b6bad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77b3eaac4c4978f7a9f958b87a71fc32"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1text_1_1topic__model.html#a77b3eaac4c4978f7a9f958b87a71fc32">save_impl</a> (<a class="el" href="classturi_1_1oarchive.html">turi::oarchive</a> &amp;oarc) const =0</td></tr>
-<tr class="separator:a77b3eaac4c4978f7a9f958b87a71fc32"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a41de6a923a9c4744c89120090a9caf87"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1text_1_1topic__model.html#a41de6a923a9c4744c89120090a9caf87">load_version</a> (<a class="el" href="classturi_1_1iarchive.html">turi::iarchive</a> &amp;iarc, size_t version)=0</td></tr>
-<tr class="separator:a41de6a923a9c4744c89120090a9caf87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aacc173b03d771beb4ec528680d0d86ed"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1text_1_1topic__model.html#aacc173b03d771beb4ec528680d0d86ed">init_options</a> (const std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;_opts) override=0</td></tr>
+<tr class="separator:aacc173b03d771beb4ec528680d0d86ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2662589eb157666b0629f39dd75fc462"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1text_1_1topic__model.html#a2662589eb157666b0629f39dd75fc462">get_version</a> () const override=0</td></tr>
+<tr class="separator:a2662589eb157666b0629f39dd75fc462"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade8c9618a764cf10bf386d8a5379e274"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1text_1_1topic__model.html#ade8c9618a764cf10bf386d8a5379e274">save_impl</a> (<a class="el" href="classturi_1_1oarchive.html">turi::oarchive</a> &amp;oarc) const override=0</td></tr>
+<tr class="separator:ade8c9618a764cf10bf386d8a5379e274"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c308247f2913b036372d77e99d49454"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1text_1_1topic__model.html#a1c308247f2913b036372d77e99d49454">load_version</a> (<a class="el" href="classturi_1_1iarchive.html">turi::iarchive</a> &amp;iarc, size_t version) override=0</td></tr>
+<tr class="separator:a1c308247f2913b036372d77e99d49454"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac84e332ea3fbb5ee11477aa355ea3771"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1text_1_1topic__model.html#ac84e332ea3fbb5ee11477aa355ea3771">train</a> (std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray.html">sarray</a>&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt;&gt; dataset, bool verbose)=0</td></tr>
 <tr class="separator:ac84e332ea3fbb5ee11477aa355ea3771"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62b6fcbef2239fcd2dd66e8ef87f2f91"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1text_1_1topic__model.html#a62b6fcbef2239fcd2dd66e8ef87f2f91">list_fields</a> ()</td></tr>
@@ -586,7 +586,7 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a56111835a45d8da3a1a05bfdab2b6bad"></a>
+<a class="anchor" id="a2662589eb157666b0629f39dd75fc462"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -602,7 +602,7 @@ Protected Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">pure virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -610,7 +610,7 @@ Protected Attributes</h2></td></tr>
 
 <p>Implements <a class="el" href="classturi_1_1ml__model__base.html#a442396e6931fd07dd4fb21530fdacbf3">turi::ml_model_base</a>.</p>
 
-<p>Implemented in <a class="el" href="classturi_1_1text_1_1alias__topic__model.html#a4d3e92c3f5e9c2d2c007ced127df5277">turi::text::alias_topic_model</a>.</p>
+<p>Implemented in <a class="el" href="classturi_1_1text_1_1alias__topic__model.html#a8c56fdd6fa83c19e379dfa6f816d1a40">turi::text::alias_topic_model</a>.</p>
 
 </div>
 </div>
@@ -630,7 +630,7 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ade56827ff47fab383a75a2f9082cdf37"></a>
+<a class="anchor" id="aacc173b03d771beb4ec528680d0d86ed"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -647,7 +647,7 @@ Protected Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">pure virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -661,7 +661,7 @@ Protected Attributes</h2></td></tr>
 
 <p>Implements <a class="el" href="classturi_1_1ml__model__base.html#a025612dfa81d95f7d2e7c6d939e7e3d0">turi::ml_model_base</a>.</p>
 
-<p>Implemented in <a class="el" href="classturi_1_1text_1_1alias__topic__model.html#a48dab46375f115e9baf4663b956735c6">turi::text::alias_topic_model</a>.</p>
+<p>Implemented in <a class="el" href="classturi_1_1text_1_1alias__topic__model.html#a0519043e164089b7192a46d37579f5b7">turi::text::alias_topic_model</a>.</p>
 
 </div>
 </div>
@@ -779,7 +779,7 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a41de6a923a9c4744c89120090a9caf87"></a>
+<a class="anchor" id="a1c308247f2913b036372d77e99d49454"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -806,7 +806,7 @@ Protected Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">pure virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -814,7 +814,7 @@ Protected Attributes</h2></td></tr>
 
 <p>Implements <a class="el" href="classturi_1_1ml__model__base.html#a2937cedd4d80417f3594419b081a47f7">turi::ml_model_base</a>.</p>
 
-<p>Implemented in <a class="el" href="classturi_1_1text_1_1alias__topic__model.html#a4618a588bb8d95332a58a5991d436278">turi::text::alias_topic_model</a>.</p>
+<p>Implemented in <a class="el" href="classturi_1_1text_1_1alias__topic__model.html#a83d4377f6968d3257a26ea79449b80ff">turi::text::alias_topic_model</a>.</p>
 
 </div>
 </div>
@@ -1128,7 +1128,7 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a77b3eaac4c4978f7a9f958b87a71fc32"></a>
+<a class="anchor" id="ade8c9618a764cf10bf386d8a5379e274"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1145,7 +1145,7 @@ Protected Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">pure virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1153,7 +1153,7 @@ Protected Attributes</h2></td></tr>
 
 <p>Implements <a class="el" href="classturi_1_1ml__model__base.html#a0f07c134808464c261534308a7c4bffc">turi::ml_model_base</a>.</p>
 
-<p>Implemented in <a class="el" href="classturi_1_1text_1_1alias__topic__model.html#ab82fc409e756a99517ef438786b7cab9">turi::text::alias_topic_model</a>.</p>
+<p>Implemented in <a class="el" href="classturi_1_1text_1_1alias__topic__model.html#acf328711892f84cf652f9e13f4c83ac5">turi::text::alias_topic_model</a>.</p>
 
 </div>
 </div>
@@ -1315,7 +1315,7 @@ Protected Attributes</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>A new model with the same things in it.</dd></dl>
 <p><a class="el" href="classturi_1_1model__base.html">model_base</a> for details. </p>
 
-<p>Implemented in <a class="el" href="classturi_1_1text_1_1alias__topic__model.html#a5118fa88d85da0468bd90da31f4377ba">turi::text::alias_topic_model</a>.</p>
+<p>Implemented in <a class="el" href="classturi_1_1text_1_1alias__topic__model.html#a057208694b9c8f12e14da23d53285846">turi::text::alias_topic_model</a>.</p>
 
 </div>
 </div>

@@ -114,14 +114,6 @@ $(document).ready(function(){initNavTree('group__threading.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1fiber__barrier.html">turi::fiber_barrier</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1fiber__conditional.html">turi::fiber_conditional</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1fiber__control.html">turi::fiber_control</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1fiber__group.html">turi::fiber_group</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1deferred__rwlock.html">turi::deferred_rwlock</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1lockfree__push__back.html">turi::lockfree_push_back&lt; Container, T &gt;</a></td></tr>
@@ -204,7 +196,6 @@ template&lt;typename T &gt; </td></tr>
 <li>Semaphore <a class="el" href="classturi_1_1semaphore.html">turi::semaphore</a></li>
 <li>Thread Barriers turi::barrier</li>
 <li>Thread pools and groups <a class="el" href="classturi_1_1thread__pool.html">turi::thread_pool</a> <a class="el" href="classturi_1_1thread__group.html">turi::thread_group</a></li>
-<li>User-mode threading <a class="el" href="classturi_1_1fiber__group.html">turi::fiber_group</a></li>
 <li>OpenMP-like primitives</li>
 <li>A bunch of atomic primitves</li>
 <li>etc </li>
@@ -521,7 +512,7 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Takes a function and executes it in a native stack space. Used to get by some libjvm oddities when using coroutines / fibers.</p>
+<p>Takes a function and executes it in a native stack space. Used to get by some libjvm oddities when using coroutines.</p>
 <p>Returns an exception if an exception was thrown while executing the inner task. </p>
 
 </div>

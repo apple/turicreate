@@ -135,6 +135,7 @@ var group__fileio =
     [ "convert_to_generic", "group__fileio.html#ga6d6d5ac854435c9148befb7b47d7d32a", null ],
     [ "copy", "group__fileio.html#gad0613ccc198cd71f5616fb61cdaa1ce6", null ],
     [ "create_directory", "group__fileio.html#ga6cf2e34ad8bc7b04c7de6bd884723a9a", null ],
+    [ "create_directory_or_throw", "group__fileio.html#ga2e7139bfea7da07df0f809b884054a24", null ],
     [ "delete_object", "group__fileio.html#ga4b22e913c89f6de93fbbd479c4dbbe9c", null ],
     [ "delete_path", "group__fileio.html#gac4bb5cc16050dc9ffc8079c3a9a98719", null ],
     [ "delete_path_impl", "group__fileio.html#ga3c4d89c81cc33ca602ae95fa9e10988c", null ],

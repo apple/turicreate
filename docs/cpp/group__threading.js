@@ -1,54 +1,5 @@
 var group__threading =
 [
-    [ "fiber_barrier", "classturi_1_1fiber__barrier.html", [
-      [ "fiber_barrier", "classturi_1_1fiber__barrier.html#ac489fe96cce18ab43d1fcc34ec435d59", null ],
-      [ "wait", "classturi_1_1fiber__barrier.html#a75fb9b43b154f5ea6c3b2949cb3b8e3b", null ]
-    ] ],
-    [ "fiber_conditional", "classturi_1_1fiber__conditional.html", [
-      [ "fiber_conditional", "classturi_1_1fiber__conditional.html#a9c03f8c9ade6fa55c46d61292764a15d", null ],
-      [ "broadcast", "classturi_1_1fiber__conditional.html#af3166d38a62b1302093dc1ac94a53219", null ],
-      [ "signal", "classturi_1_1fiber__conditional.html#a790e83cf842ce80c0825d4bf21fe0100", null ],
-      [ "wait", "classturi_1_1fiber__conditional.html#a10c3a4f8e70c5bfac8b16f63b1f06e5b", null ]
-    ] ],
-    [ "fiber_control", "classturi_1_1fiber__control.html", [
-      [ "fiber_control", "classturi_1_1fiber__control.html#afc05d652b70638651833ee9c46d44cfc", null ],
-      [ "delete_instance", "classturi_1_1fiber__control.html#a2abc46d24ff311b747e9417aaf24c759", null ],
-      [ "deschedule_self", "classturi_1_1fiber__control.html#a580f8ee67697802f1ac8c9a60600b275", null ],
-      [ "exit", "classturi_1_1fiber__control.html#adb320cac8f950f838b4e0cabb2148156", null ],
-      [ "fast_yield", "classturi_1_1fiber__control.html#ab0453e42e2646793091e5b1d650c70d7", null ],
-      [ "get_instance", "classturi_1_1fiber__control.html#a2f03e7ca44ac5a671bf1b0ccdd13b7c6", null ],
-      [ "get_tid", "classturi_1_1fiber__control.html#acd80372c63851dbd3a671b3574ce0757", null ],
-      [ "get_tls", "classturi_1_1fiber__control.html#a3c4a4ae48d88be1c6a8c9cc4b606bde0", null ],
-      [ "get_worker_id", "classturi_1_1fiber__control.html#a42eba7e2b2d26eb952d802710e855b5e", null ],
-      [ "in_fiber", "classturi_1_1fiber__control.html#ae389e7d5ff63edb4e32e1e52113aaea3", null ],
-      [ "instance_set_parameters", "classturi_1_1fiber__control.html#ac53737c67899073725ed2d550e05cc42", null ],
-      [ "join", "classturi_1_1fiber__control.html#ad8e109cf90f692ea5df62741959d8e99", null ],
-      [ "launch", "classturi_1_1fiber__control.html#a4bc3f297f7954d470efe52ff88221f84", null ],
-      [ "num_active_workers", "classturi_1_1fiber__control.html#af805abbe30422f573253086b39981917", null ],
-      [ "num_threads", "classturi_1_1fiber__control.html#a97f6485821d3f523b0728aaa77961736", null ],
-      [ "num_workers", "classturi_1_1fiber__control.html#aec60bbc3a19351fa02d72e5c6f0fe6b9", null ],
-      [ "schedule_tid", "classturi_1_1fiber__control.html#a473cbf17616fe36f04727f05cad1c442", null ],
-      [ "set_context_switch_callback", "classturi_1_1fiber__control.html#af63063904960250c0d4364df11d90ac5", null ],
-      [ "set_context_switch_periodic_callback", "classturi_1_1fiber__control.html#a9cd8d114d855b4b56074ec1350e17630", null ],
-      [ "set_fiber_exit_callback", "classturi_1_1fiber__control.html#a3c80156b60a394cba576b55699174d17", null ],
-      [ "set_tls", "classturi_1_1fiber__control.html#a1a140cf59953b780fcb6a825abe947e9", null ],
-      [ "set_tls_deleter", "classturi_1_1fiber__control.html#af7eb8bd2e546c8361347f50d59064631", null ],
-      [ "total_threads_created", "classturi_1_1fiber__control.html#a70cf15a20a524435ecf01f9bfe829206", null ],
-      [ "worker_has_fibers_on_queue", "classturi_1_1fiber__control.html#a625d69bdcb8818b2d62717244ca16069", null ],
-      [ "worker_has_priority_fibers_on_queue", "classturi_1_1fiber__control.html#ae278ab1a0a8ab4eae5451042573356b9", null ],
-      [ "yield", "classturi_1_1fiber__control.html#a95a532f32a33fc9e15db1de557d7c680", null ],
-      [ "instance_created", "classturi_1_1fiber__control.html#a375c73da78e66f568ca0e0581b453fe7", null ]
-    ] ],
-    [ "fiber_group", "classturi_1_1fiber__group.html", [
-      [ "~fiber_group", "classturi_1_1fiber__group.html#a442ae0de3e794950899588d5e67f4c96", null ],
-      [ "join", "classturi_1_1fiber__group.html#a1e302835e9bd8ddb47e4b57c1e15c2a6", null ],
-      [ "launch", "classturi_1_1fiber__group.html#ab7eb32c15d9d08f749f36bbc13484106", null ],
-      [ "launch", "classturi_1_1fiber__group.html#afc3a2298c2ac1797e408f5d60147c1ea", null ],
-      [ "launch", "classturi_1_1fiber__group.html#affbb5274254f66789ffc264401eb621a", null ],
-      [ "running_threads", "classturi_1_1fiber__group.html#a03ae16f084befa4f019b2870c71cad4c", null ],
-      [ "set_affinity", "classturi_1_1fiber__group.html#a5ac5dd02cd8fc36c7e66c8b62e8f837c", null ],
-      [ "set_stacksize", "classturi_1_1fiber__group.html#a9ba6bf43b27adbe9319b7d3b63c99a90", null ]
-    ] ],
     [ "deferred_rwlock", "classturi_1_1deferred__rwlock.html", [
       [ "complete_rdlock", "classturi_1_1deferred__rwlock.html#a10478c50fa3713348b50d004c21a9a7e", null ],
       [ "complete_wrlock", "classturi_1_1deferred__rwlock.html#a6717ccae1023f6c1ee613657ee1eeea6", null ],

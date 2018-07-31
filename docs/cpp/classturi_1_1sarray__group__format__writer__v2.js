@@ -6,6 +6,7 @@ var classturi_1_1sarray__group__format__writer__v2 =
     [ "num_columns", "classturi_1_1sarray__group__format__writer__v2.html#a34d97b85b37a91b77a9cb90f5b7b1add", null ],
     [ "num_segments", "classturi_1_1sarray__group__format__writer__v2.html#abad725f102bd9135602cf239b4120161", null ],
     [ "open", "classturi_1_1sarray__group__format__writer__v2.html#a01ecdabdee7242daff4752ea81aed0a7", null ],
+    [ "set_options", "classturi_1_1sarray__group__format__writer__v2.html#a9c9a94fdb732430345879506bdfef2d8", null ],
     [ "write_column", "classturi_1_1sarray__group__format__writer__v2.html#a700bb131ceb912620ab3f4d477cdbf6c", null ],
     [ "write_column", "classturi_1_1sarray__group__format__writer__v2.html#a8e4c8b6e18d58d3a0bd5e6acd74ce7d3", null ],
     [ "write_index_file", "classturi_1_1sarray__group__format__writer__v2.html#a0c950b1ea7aa7d2669e8d282c538a5f0", null ],

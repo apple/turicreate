@@ -181,7 +181,7 @@ var searchData=
   ['run_5floss_5fcalculation_5fthread',['run_loss_calculation_thread',['../classturi_1_1factorization_1_1ranking__sgd__solver__base.html#a4249a46ee280ecc4e1bee0d13cbfbf04',1,'turi::factorization::ranking_sgd_solver_base']]],
   ['run_5fsgd_5fthread',['run_sgd_thread',['../classturi_1_1factorization_1_1ranking__sgd__solver__base.html#aade0a2d196aa73f292793b3a80dd47d5',1,'turi::factorization::ranking_sgd_solver_base']]],
   ['run_5ftoolkit',['run_toolkit',['../classturi_1_1unity__global.html#ac013e24f7c66e468fe7912ea00f2ce21',1,'turi::unity_global']]],
-  ['running_5fthreads',['running_threads',['../classturi_1_1fiber__group.html#a03ae16f084befa4f019b2870c71cad4c',1,'turi::fiber_group::running_threads()'],['../classturi_1_1thread__group.html#a238a00e4141455e790fa73612fbaaedf',1,'turi::thread_group::running_threads()']]],
+  ['running_5fthreads',['running_threads',['../classturi_1_1thread__group.html#a238a00e4141455e790fa73612fbaaedf',1,'turi::thread_group']]],
   ['rwlock',['rwlock',['../classturi_1_1rwlock.html',1,'turi']]],
   ['rwlock',['rwlock',['../classturi_1_1rwlock.html#adfae10395e9cbba5929c93ae8d9f6625',1,'turi::rwlock']]]
 ];

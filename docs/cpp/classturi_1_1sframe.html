@@ -245,6 +245,8 @@ size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 <tr class="separator:afd1356d51aac6d61138777ae0313c115"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0f81fcf909be27db8a79dcad6ab8696"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sframe.html#af0f81fcf909be27db8a79dcad6ab8696">save</a> (<a class="el" href="classturi_1_1oarchive.html">oarchive</a> &amp;oarc) const </td></tr>
 <tr class="separator:af0f81fcf909be27db8a79dcad6ab8696"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf73cd84feb34eb5e8c92161c0892be4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sframe.html#acf73cd84feb34eb5e8c92161c0892be4">try_compact</a> ()</td></tr>
+<tr class="separator:acf73cd84feb34eb5e8c92161c0892be4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae6b19605d355ff2abc919e100798c674"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sframe.html#ae6b19605d355ff2abc919e100798c674">load</a> (<a class="el" href="classturi_1_1iarchive.html">iarchive</a> &amp;iarc)</td></tr>
 <tr class="separator:ae6b19605d355ff2abc919e100798c674"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18d6149fdf153436ff0d8de65beb3104"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray__group__format__writer.html">sarray_group_format_writer</a>&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sframe.html#a18d6149fdf153436ff0d8de65beb3104">get_internal_writer</a> ()</td></tr>
@@ -827,7 +829,7 @@ size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 </div><div class="memdoc">
 <p>Internal API. Used to obtain the internal writer object. </p>
 
-<p>Definition at line <a class="el" href="sframe_8hpp_source.html#l00685">685</a> of file <a class="el" href="sframe_8hpp_source.html">sframe.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sframe_8hpp_source.html#l00691">691</a> of file <a class="el" href="sframe_8hpp_source.html">sframe.hpp</a>.</p>
 
 </div>
 </div>
@@ -1677,6 +1679,22 @@ size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
       </table>
 </div><div class="memdoc">
 <p>Converts the sframe into a <a class="el" href="structturi_1_1dataframe__t.html">dataframe_t</a>. Will reset iterators before and after the operation. </p>
+
+</div>
+</div>
+<a class="anchor" id="acf73cd84feb34eb5e8c92161c0892be4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::sframe::try_compact </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Attempts to compact if the number of segments in the SArray exceeds SFRAME_COMPACTION_THRESHOLD. </p>
 
 </div>
 </div>

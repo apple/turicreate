@@ -9,7 +9,7 @@ var classturi_1_1sarray =
     [ "sarray", "classturi_1_1sarray.html#a4bfe0444ce2466494ea80579bcf18759", null ],
     [ "sarray", "classturi_1_1sarray.html#a18f78b76a008e6cf69580a604c44b69f", null ],
     [ "append", "classturi_1_1sarray.html#a186cb2d095e5c5e8667a3a753a051b26", null ],
-    [ "clone", "classturi_1_1sarray.html#a229387370b626b2459b6333ed957c150", null ],
+    [ "clone", "classturi_1_1sarray.html#aaf95bcd96bd612bac89b214dee52d6a1", null ],
     [ "close", "classturi_1_1sarray.html#afb06795be1e13b87552a418b3a6f75b4", null ],
     [ "get_index_file", "classturi_1_1sarray.html#a606b0c22f4ae3d878ffcae38e537ef64", null ],
     [ "get_index_info", "classturi_1_1sarray.html#ae01b7caaca1201f24b62b140dcb8a3e6", null ],
@@ -28,7 +28,7 @@ var classturi_1_1sarray =
     [ "num_segments", "classturi_1_1sarray.html#ae49a31388b4db0e5c60a149a1047dffe", null ],
     [ "open_for_read", "classturi_1_1sarray.html#ac66d03dcd1b7a2e3f57072b935a1619e", null ],
     [ "open_for_read", "classturi_1_1sarray.html#ac346a961c5d37d95ad13d013825fba23", null ],
-    [ "open_for_write", "classturi_1_1sarray.html#a875c2213277315d164326962bdb62c79", null ],
+    [ "open_for_write", "classturi_1_1sarray.html#a8cd438df8c7117125b00cf8d43e17a2d", null ],
     [ "open_for_write", "classturi_1_1sarray.html#a23e1248408fc57d045865ec5a58bfbe5", null ],
     [ "operator=", "classturi_1_1sarray.html#a8f02b798cdbe95377da8897c7dd583ce", null ],
     [ "operator=", "classturi_1_1sarray.html#af8f5c14ae1deab92b4c348d1ce9c325d", null ],
@@ -39,5 +39,6 @@ var classturi_1_1sarray =
     [ "set_num_segments", "classturi_1_1sarray.html#a9e7deee1c05b01ac38a40f878571e33d", null ],
     [ "set_segment", "classturi_1_1sarray.html#afabc62a7bc8ce484f80c9f256abf4761", null ],
     [ "set_type", "classturi_1_1sarray.html#a00e32914956999b4d82d0653ce2b3727", null ],
-    [ "size", "classturi_1_1sarray.html#a2c743298d5cf6d2e9c22fd20ec6b73d7", null ]
+    [ "size", "classturi_1_1sarray.html#a2c743298d5cf6d2e9c22fd20ec6b73d7", null ],
+    [ "try_compact", "classturi_1_1sarray.html#a41a34fbbcdc40426d3840d713a237996", null ]
 ];

@@ -161,8 +161,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac66d03dcd1b7a2e3f57072b935a1619e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac346a961c5d37d95ad13d013825fba23"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sarray.html#ac346a961c5d37d95ad13d013825fba23">open_for_read</a> (std::string sidx_file)</td></tr>
 <tr class="separator:ac346a961c5d37d95ad13d013825fba23"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a875c2213277315d164326962bdb62c79"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sarray.html#a875c2213277315d164326962bdb62c79">open_for_write</a> (size_t <a class="el" href="classturi_1_1sarray.html#ae49a31388b4db0e5c60a149a1047dffe">num_segments</a>=<a class="el" href="group__sframe__main.html#ga0a14c814ad647a718e7ff20ef2999653">SFRAME_DEFAULT_NUM_SEGMENTS</a>)</td></tr>
-<tr class="separator:a875c2213277315d164326962bdb62c79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8cd438df8c7117125b00cf8d43e17a2d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sarray.html#a8cd438df8c7117125b00cf8d43e17a2d">open_for_write</a> (size_t <a class="el" href="classturi_1_1sarray.html#ae49a31388b4db0e5c60a149a1047dffe">num_segments</a>=<a class="el" href="group__sframe__main.html#ga0a14c814ad647a718e7ff20ef2999653">SFRAME_DEFAULT_NUM_SEGMENTS</a>, bool disable_padding=false)</td></tr>
+<tr class="separator:a8cd438df8c7117125b00cf8d43e17a2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23e1248408fc57d045865ec5a58bfbe5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sarray.html#a23e1248408fc57d045865ec5a58bfbe5">open_for_write</a> (std::string sidx_file, size_t <a class="el" href="classturi_1_1sarray.html#ae49a31388b4db0e5c60a149a1047dffe">num_segments</a>=<a class="el" href="group__sframe__main.html#ga0a14c814ad647a718e7ff20ef2999653">SFRAME_DEFAULT_NUM_SEGMENTS</a>)</td></tr>
 <tr class="separator:a23e1248408fc57d045865ec5a58bfbe5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61dd530552dc78cb08d820a1cce57630"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sarray.html#a61dd530552dc78cb08d820a1cce57630">is_opened_for_read</a> () const </td></tr>
@@ -193,12 +193,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ae01b7caaca1201f24b62b140dcb8a3e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a186cb2d095e5c5e8667a3a753a051b26"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classturi_1_1sarray.html">sarray</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sarray.html#a186cb2d095e5c5e8667a3a753a051b26">append</a> (const <a class="el" href="classturi_1_1sarray.html">sarray</a> &amp;other) const </td></tr>
 <tr class="separator:a186cb2d095e5c5e8667a3a753a051b26"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a229387370b626b2459b6333ed957c150"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classturi_1_1sarray.html">sarray</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sarray.html#a229387370b626b2459b6333ed957c150">clone</a> () const </td></tr>
-<tr class="separator:a229387370b626b2459b6333ed957c150"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf95bcd96bd612bac89b214dee52d6a1"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classturi_1_1sarray.html">sarray</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sarray.html#aaf95bcd96bd612bac89b214dee52d6a1">clone</a> (size_t nsegments=0) const </td></tr>
+<tr class="separator:aaf95bcd96bd612bac89b214dee52d6a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c91c301b9e9b1e482f31fbbeb37e599"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sarray.html#a4c91c301b9e9b1e482f31fbbeb37e599">save</a> (<a class="el" href="classturi_1_1oarchive.html">oarchive</a> &amp;oarc) const </td></tr>
 <tr class="separator:a4c91c301b9e9b1e482f31fbbeb37e599"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac8459da8db303770caeee137e31bba30"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sarray.html#ac8459da8db303770caeee137e31bba30">load</a> (<a class="el" href="classturi_1_1iarchive.html">iarchive</a> &amp;iarc)</td></tr>
 <tr class="separator:ac8459da8db303770caeee137e31bba30"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41a34fbbcdc40426d3840d713a237996"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sarray.html#a41a34fbbcdc40426d3840d713a237996">try_compact</a> ()</td></tr>
+<tr class="separator:a41a34fbbcdc40426d3840d713a237996"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9e7deee1c05b01ac38a40f878571e33d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sarray.html#a9e7deee1c05b01ac38a40f878571e33d">set_num_segments</a> (size_t numseg)</td></tr>
 <tr class="separator:a9e7deee1c05b01ac38a40f878571e33d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa378aa898a2d2a0325301cc72778c5f5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classturi_1_1sarray.html#a21e9ded658a76c3268e9673caf725458">iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1sarray.html#aa378aa898a2d2a0325301cc72778c5f5">get_output_iterator</a> (size_t segmentid)</td></tr>
@@ -237,7 +239,7 @@ class turi::sarray&lt; T &gt;</h3>
 </ul>
 <dl class="section note"><dt>Note</dt><dd>The only guaranteed concurrent safe function is get_output_iterator. All other mutating functions are not guaranteed to be safe. </dd></dl>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00124">124</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00125">125</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a82bc96a03f7400dda7eae49d55ccd11f"></a>
 <div class="memitem">
@@ -261,7 +263,7 @@ template&lt;typename T&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>default constructor; does nothing; use <a class="el" href="classturi_1_1sarray.html#ac66d03dcd1b7a2e3f57072b935a1619e">open_for_read</a> or <a class="el" href="classturi_1_1sarray.html#a875c2213277315d164326962bdb62c79">open_for_write</a> after construction to read/create an sarray. </p>
+<p>default constructor; does nothing; use <a class="el" href="classturi_1_1sarray.html#ac66d03dcd1b7a2e3f57072b935a1619e">open_for_read</a> or <a class="el" href="classturi_1_1sarray.html#a8cd438df8c7117125b00cf8d43e17a2d">open_for_write</a> after construction to read/create an sarray. </p>
 
 </div>
 </div>
@@ -290,7 +292,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Attempts to construct an sarray which reads from an sfrom the given file index file. If the index cannot be opened, an exception is thrown. </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00197">197</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00198">198</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -341,7 +343,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Create an sarray of given value and size. </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00204">204</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00205">205</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -371,11 +373,11 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Appends another SArray of the same type with the current SArray, returning a new sarray. without destroying the other array. Both SArrays can be empty, but cannot be opened for writing. </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00455">455</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00458">458</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a229387370b626b2459b6333ed957c150"></a>
+<a class="anchor" id="aaf95bcd96bd612bac89b214dee52d6a1"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -385,9 +387,10 @@ template&lt;typename T&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classturi_1_1sarray.html">sarray</a>* <a class="el" href="classturi_1_1sarray.html">turi::sarray</a>&lt; T &gt;::clone </td>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classturi_1_1sarray.html">sarray</a>&gt; <a class="el" href="classturi_1_1sarray.html">turi::sarray</a>&lt; T &gt;::clone </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>nsegments</em> = <code>0</code></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -399,7 +402,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Return a new sarray that contains a copy of the data in the current array. </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00484">484</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00488">488</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -429,7 +432,7 @@ template&lt;typename T&gt; </div>
 
 <p>Implements <a class="el" href="classturi_1_1swriter__base.html#aa5fd6c371b5acf5218b019181560e489">turi::swriter_base&lt; swriter_impl::output_iterator&lt; T &gt; &gt;</a>.</p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00587">587</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00605">605</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -457,7 +460,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Return the location of the index file of the sarray </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00337">337</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00340">340</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -485,7 +488,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Returns all the index information of the array. </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00445">445</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00448">448</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -524,7 +527,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Reads the value of a key associated with the sarray. Returns true on success, false on failure. </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00356">356</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00359">359</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -553,7 +556,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Reads the value of a key associated with the sarray. Returns a pair of (true, value) on success, and (false, empty_string) on failure. </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00367">367</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00370">370</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -587,7 +590,7 @@ template&lt;typename T &gt; </div>
 
 <p>Implements <a class="el" href="classturi_1_1swriter__base.html#a297f3dac3892b800eb37e366afab2bf1">turi::swriter_base&lt; swriter_impl::output_iterator&lt; T &gt; &gt;</a>.</p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00738">738</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00756">756</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -615,7 +618,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Gets an sarray reader object using the segmentation produced by the actual file segments on disk. </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00393">393</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00396">396</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -644,7 +647,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Gets an sarray reader object with num_segments number of logical segments. </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00404">404</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00407">407</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -673,7 +676,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Gets an sarray reader object with a custom segment layout. segment_lengths must sum up to the same length as the original array. </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00416">416</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00419">419</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -702,7 +705,7 @@ template&lt;typename T&gt; </div>
 <p>Returns the type of the SArray (as set by swriter&lt;flexible_type&gt;::set_type). If the type of the SArray was not set, this returns <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76a0db45d2a4141101bdfe48e3314cfbca3">flex_type_enum::UNDEFINED</a>, in which case each row can be of arbitrary type.</p>
 <p>This function should only be used for sarray&lt;flexible_type&gt; and will fail fatally otherwise. </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00625">625</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00643">643</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -730,7 +733,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Return the underlying writer of the sarray </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00345">345</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00348">348</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -758,7 +761,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Returns true if the Array is opened for reading. i.e. <a class="el" href="classturi_1_1sarray.html#a62d7639b646d2b857b609655b27a5610">get_reader()</a> will succeed </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00321">321</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00324">324</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -786,7 +789,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Returns true if the Array is opened for writing. i.e. <a class="el" href="classturi_1_1sarray.html#aa378aa898a2d2a0325301cc72778c5f5">get_output_iterator()</a> will succeed </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00330">330</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00333">333</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -815,7 +818,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>SArray deserializer. iarc must be associated with a directory. Loads from the next prefix inside the directory. </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00516">516</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00523">523</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -845,7 +848,7 @@ template&lt;typename T&gt; </div>
 
 <p>Implements <a class="el" href="classturi_1_1swriter__base.html#aa7da9991d68a7de151e1bad18b0dcd7f">turi::swriter_base&lt; swriter_impl::output_iterator&lt; T &gt; &gt;</a>.</p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00428">428</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00431">431</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -874,7 +877,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Initializes the SArray with an index info. If the SArray is already inited, this will throw an exception </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00231">231</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00232">232</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -903,11 +906,11 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Initializes the SArray with an index file. If the SArray is already inited, this will throw an exception </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00252">252</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00253">253</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a875c2213277315d164326962bdb62c79"></a>
+<a class="anchor" id="a8cd438df8c7117125b00cf8d43e17a2d"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -920,8 +923,18 @@ template&lt;typename T&gt; </div>
           <td class="memname">void <a class="el" href="classturi_1_1sarray.html">turi::sarray</a>&lt; T &gt;::open_for_write </td>
           <td>(</td>
           <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>num_segments</em> = <code><a class="el" href="group__sframe__main.html#ga0a14c814ad647a718e7ff20ef2999653">SFRAME_DEFAULT_NUM_SEGMENTS</a></code></td><td>)</td>
+          <td class="paramname"><em>num_segments</em> = <code><a class="el" href="group__sframe__main.html#ga0a14c814ad647a718e7ff20ef2999653">SFRAME_DEFAULT_NUM_SEGMENTS</a></code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>disable_padding</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -938,7 +951,7 @@ template&lt;typename T&gt; </div>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00279">279</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00280">280</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -984,7 +997,7 @@ template&lt;typename T&gt; </div>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00304">304</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00307">307</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -1013,7 +1026,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Move assignment. Moves other into this. Other will be cleared as if it is a newly constructed sarray object. </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00172">172</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00173">173</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -1042,7 +1055,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Sarray serializer. iarc must be associated with a directory. Saves into a prefix inside the directory. </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00507">507</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00514">514</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -1071,7 +1084,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Saves a copy of the current sarray into a different location. Does not modify the current sarray. </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00675">675</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00693">693</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -1100,7 +1113,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Return the length of segment i in the array. </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00437">437</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00440">440</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -1139,7 +1152,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Adds meta data to the array. Array must be first opened for writing. </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00601">601</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00619">619</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -1170,7 +1183,7 @@ template&lt;typename T&gt; </div>
 
 <p>Implements <a class="el" href="classturi_1_1swriter__base.html#a25e1d07938d770deb9835dd817ef5068">turi::swriter_base&lt; swriter_impl::output_iterator&lt; T &gt; &gt;</a>.</p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00534">534</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00552">552</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -1215,7 +1228,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Set the writer index_info for a given segment. This function can be called, when the actual segment writing is done by other logics. </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00663">663</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00681">681</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -1245,7 +1258,7 @@ template&lt;typename T&gt; </div>
 <p>Sets the internal type of the <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> when written. All writes will cast to this type.</p>
 <p>This function should only be used for sarray&lt;flexible_type&gt; and will fail fatally otherwise. </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00646">646</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00664">664</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>
@@ -1273,7 +1286,35 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>Returns the number of elements in the SArray </p>
 
-<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00379">379</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00382">382</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a41a34fbbcdc40426d3840d713a237996"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classturi_1_1sarray.html">turi::sarray</a>&lt; T &gt;::try_compact </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Attempts to compact if the number of segments in the SArray exceeds SFRAME_COMPACTION_THRESHOLD. </p>
+
+<p>Definition at line <a class="el" href="sarray_8hpp_source.html#l00532">532</a> of file <a class="el" href="sarray_8hpp_source.html">sarray.hpp</a>.</p>
 
 </div>
 </div>

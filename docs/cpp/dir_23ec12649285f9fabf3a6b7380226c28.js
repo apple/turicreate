@@ -1,6 +1,7 @@
 var dir_23ec12649285f9fabf3a6b7380226c28 =
 [
     [ "any.hpp", "any_8hpp_source.html", null ],
+    [ "basic_types.hpp", "util_2basic__types_8hpp_source.html", null ],
     [ "bitops.hpp", "bitops_8hpp_source.html", null ],
     [ "blocking_queue.hpp", "blocking__queue_8hpp_source.html", null ],
     [ "boost_property_tree_utils.hpp", "boost__property__tree__utils_8hpp_source.html", null ],
@@ -15,7 +16,6 @@ var dir_23ec12649285f9fabf3a6b7380226c28 =
     [ "fast_multinomial.hpp", "fast__multinomial_8hpp_source.html", null ],
     [ "fast_set.hpp", "fast__set_8hpp_source.html", null ],
     [ "fast_top_k.hpp", "fast__top__k_8hpp_source.html", null ],
-    [ "fiber_blocking_queue.hpp", "fiber__blocking__queue_8hpp_source.html", null ],
     [ "file_line_count_estimator.hpp", "file__line__count__estimator_8hpp_source.html", null ],
     [ "fs_util.hpp", "fs__util_8hpp_source.html", null ],
     [ "function_output_iterator.hpp", "function__output__iterator_8hpp_source.html", null ],
@@ -28,6 +28,7 @@ var dir_23ec12649285f9fabf3a6b7380226c28 =
     [ "resizing_array_sink.hpp", "resizing__array__sink_8hpp_source.html", null ],
     [ "safe_circular_char_buffer.hpp", "safe__circular__char__buffer_8hpp_source.html", null ],
     [ "stl_util.hpp", "stl__util_8hpp_source.html", null ],
+    [ "sys_util.hpp", "sys__util_8hpp_source.html", null ],
     [ "syserr_reporting.hpp", "syserr__reporting_8hpp_source.html", null ],
     [ "test_macros.hpp", "test__macros_8hpp_source.html", null ],
     [ "testing_utils.hpp", "util_2testing__utils_8hpp_source.html", null ],

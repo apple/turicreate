@@ -190,6 +190,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga125e90d8c636d5c4e70d25437f97682c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6cf2e34ad8bc7b04c7de6bd884723a9a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga6cf2e34ad8bc7b04c7de6bd884723a9a">turi::fileio::create_directory</a> (const std::string &amp;path)</td></tr>
 <tr class="separator:ga6cf2e34ad8bc7b04c7de6bd884723a9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2e7139bfea7da07df0f809b884054a24"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga2e7139bfea7da07df0f809b884054a24">turi::fileio::create_directory_or_throw</a> (const std::string &amp;path)</td></tr>
+<tr class="separator:ga2e7139bfea7da07df0f809b884054a24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac4bb5cc16050dc9ffc8079c3a9a98719"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#gac4bb5cc16050dc9ffc8079c3a9a98719">turi::fileio::delete_path</a> (const std::string &amp;path, file_status status=file_status::FS_UNAVAILABLE)</td></tr>
 <tr class="separator:gac4bb5cc16050dc9ffc8079c3a9a98719"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3c4d89c81cc33ca602ae95fa9e10988c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga3c4d89c81cc33ca602ae95fa9e10988c">turi::fileio::delete_path_impl</a> (const std::string &amp;path, file_status status=file_status::FS_UNAVAILABLE)</td></tr>
@@ -435,7 +437,24 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Creates a directory and all parent required directories (like mkdir -p). Path can be hdfs, s3, or regular filesystem. Returns true on success, false on failure. </p>
+<p>Creates a directory and all parent required directories (like mkdir -p). Path can be hdfs, s3, or regular filesystem. Returns true on creation, false on failure or if the directory already exists. To get meaningful error messages thrown on failure, use create_directory_or_throw. </p>
+
+</div>
+</div>
+<a class="anchor" id="ga2e7139bfea7da07df0f809b884054a24"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool turi::fileio::create_directory_or_throw </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Creates a directory and all parent required directories (like mkdir -p). Path can be hdfs, s3, or regular filesystem. Returns true on creation, false if the directory already exists. Throws std::ios_base::failure on failure. </p>
 
 </div>
 </div>

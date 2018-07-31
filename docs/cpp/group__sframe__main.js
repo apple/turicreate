@@ -11,7 +11,7 @@ var group__sframe__main =
       [ "sarray", "classturi_1_1sarray.html#a4bfe0444ce2466494ea80579bcf18759", null ],
       [ "sarray", "classturi_1_1sarray.html#a18f78b76a008e6cf69580a604c44b69f", null ],
       [ "append", "classturi_1_1sarray.html#a186cb2d095e5c5e8667a3a753a051b26", null ],
-      [ "clone", "classturi_1_1sarray.html#a229387370b626b2459b6333ed957c150", null ],
+      [ "clone", "classturi_1_1sarray.html#aaf95bcd96bd612bac89b214dee52d6a1", null ],
       [ "close", "classturi_1_1sarray.html#afb06795be1e13b87552a418b3a6f75b4", null ],
       [ "get_index_file", "classturi_1_1sarray.html#a606b0c22f4ae3d878ffcae38e537ef64", null ],
       [ "get_index_info", "classturi_1_1sarray.html#ae01b7caaca1201f24b62b140dcb8a3e6", null ],
@@ -30,7 +30,7 @@ var group__sframe__main =
       [ "num_segments", "classturi_1_1sarray.html#ae49a31388b4db0e5c60a149a1047dffe", null ],
       [ "open_for_read", "classturi_1_1sarray.html#ac66d03dcd1b7a2e3f57072b935a1619e", null ],
       [ "open_for_read", "classturi_1_1sarray.html#ac346a961c5d37d95ad13d013825fba23", null ],
-      [ "open_for_write", "classturi_1_1sarray.html#a875c2213277315d164326962bdb62c79", null ],
+      [ "open_for_write", "classturi_1_1sarray.html#a8cd438df8c7117125b00cf8d43e17a2d", null ],
       [ "open_for_write", "classturi_1_1sarray.html#a23e1248408fc57d045865ec5a58bfbe5", null ],
       [ "operator=", "classturi_1_1sarray.html#a8f02b798cdbe95377da8897c7dd583ce", null ],
       [ "operator=", "classturi_1_1sarray.html#af8f5c14ae1deab92b4c348d1ce9c325d", null ],
@@ -41,7 +41,8 @@ var group__sframe__main =
       [ "set_num_segments", "classturi_1_1sarray.html#a9e7deee1c05b01ac38a40f878571e33d", null ],
       [ "set_segment", "classturi_1_1sarray.html#afabc62a7bc8ce484f80c9f256abf4761", null ],
       [ "set_type", "classturi_1_1sarray.html#a00e32914956999b4d82d0653ce2b3727", null ],
-      [ "size", "classturi_1_1sarray.html#a2c743298d5cf6d2e9c22fd20ec6b73d7", null ]
+      [ "size", "classturi_1_1sarray.html#a2c743298d5cf6d2e9c22fd20ec6b73d7", null ],
+      [ "try_compact", "classturi_1_1sarray.html#a41a34fbbcdc40426d3840d713a237996", null ]
     ] ],
     [ "sarray_block_iterator", "classturi_1_1sarray__block__iterator.html", [
       [ "done", "classturi_1_1sarray__block__iterator.html#a64c6fadabf39455b8f5e41c7f443582a", null ],
@@ -149,7 +150,8 @@ var group__sframe__main =
       [ "set_num_segments", "classturi_1_1sframe.html#a67f17baba403d32740659b0cbfae5e78", null ],
       [ "size", "classturi_1_1sframe.html#a8fda4767861565784f7f9a2f964b5142", null ],
       [ "swap_columns", "classturi_1_1sframe.html#a6f67a5df23a70bb324a16ef000af380b", null ],
-      [ "to_dataframe", "classturi_1_1sframe.html#a15be075f1438b14c3779a6e43d13e4cf", null ]
+      [ "to_dataframe", "classturi_1_1sframe.html#a15be075f1438b14c3779a6e43d13e4cf", null ],
+      [ "try_compact", "classturi_1_1sframe.html#acf73cd84feb34eb5e8c92161c0892be4", null ]
     ] ],
     [ "sframe_index_file_information", "structturi_1_1sframe__index__file__information.html", [
       [ "column_files", "structturi_1_1sframe__index__file__information.html#a7198889333d7ee562bfd6fb774a1c98e", null ],
@@ -292,11 +294,13 @@ var group__sframe__main =
     [ "write_sframe_index_file", "group__sframe__main.html#ga0c729f5d7f2ff91f18a07fb3a2461f21", null ],
     [ "COMPRESSION_DISABLE_THRESHOLD", "group__sframe__main.html#ga24b7d344bc4cb3d49e53eb022da16599", null ],
     [ "DEFAULT_SARRAY_READER_BUFFER_SIZE", "group__sframe__main.html#ga147c13dd9ac3f4bb564fcacaea1a62be", null ],
+    [ "FAST_COMPACT_BLOCKS_IN_SMALL_SEGMENT", "group__sframe__main.html#gada49853579a049f753b1e39ce1669315", null ],
     [ "MIN_SEGMENT_LENGTH", "group__sframe__main.html#gaafbbdb0b7e14990e3abf78a1b0ae97bb", null ],
     [ "SARRAY_FROM_FILE_BATCH_SIZE", "group__sframe__main.html#gab4060e1d00eabb1bf74af3ecaef1751e", null ],
     [ "SARRAY_WRITER_INITAL_ELEMENTS_PER_BLOCK", "group__sframe__main.html#ga71cf727dd3ad628263a73b11c6ad6528", null ],
     [ "SARRAY_WRITER_MIN_ELEMENTS_PER_BLOCK", "group__sframe__main.html#ga7281e1bb0446ea33004e78d51ea8c6a7", null ],
     [ "SFRAME_BLOCK_MANAGER_BLOCK_BUFFER_COUNT", "group__sframe__main.html#ga257d1eac7da7cc34d1b09b4ad4a449c7", null ],
+    [ "SFRAME_COMPACTION_THRESHOLD", "group__sframe__main.html#ga2be7965a1407dd92f588ccfc23a15ade", null ],
     [ "SFRAME_CSV_PARSER_READ_SIZE", "group__sframe__main.html#gacdaf1bdee34727191c837f382bd50e1e", null ],
     [ "SFRAME_DEFAULT_BLOCK_SIZE", "group__sframe__main.html#ga113eafeb25d60f776d0c163bab66fc75", null ],
     [ "SFRAME_DEFAULT_NUM_SEGMENTS", "group__sframe__main.html#ga0a14c814ad647a718e7ff20ef2999653", null ],

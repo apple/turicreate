@@ -117,7 +117,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="functions_v.html#index_v"><span>v</span></a></li>
       <li><a href="functions_w.html#index_w"><span>w</span></a></li>
       <li><a href="functions_x.html#index_x"><span>x</span></a></li>
-      <li><a href="functions_y.html#index_y"><span>y</span></a></li>
       <li><a href="functions_0x7e.html#index_0x7e"><span>~</span></a></li>
     </ul>
   </div>
@@ -390,7 +389,6 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 </li>
 <li>get_instance()
 : <a class="el" href="classturi_1_1block__cache.html#a28db5537fb853bcdf4d22b1963a25ea8">turi::block_cache</a>
-, <a class="el" href="classturi_1_1fiber__control.html#a2f03e7ca44ac5a671bf1b0ccdd13b7c6">turi::fiber_control</a>
 , <a class="el" href="classturi_1_1file__download__cache.html#a6cfd0c9bd0447409a47c183f87df4b64">turi::file_download_cache</a>
 , <a class="el" href="classturi_1_1fileio_1_1file__handle__pool.html#ae146526f838dde1c12e2c137fefe386e">turi::fileio::file_handle_pool</a>
 , <a class="el" href="classturi_1_1thread__pool.html#a8de96a33ee2b65a81a44f2c4f1496d86">turi::thread_pool</a>
@@ -451,6 +449,9 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 , <a class="el" href="classturi_1_1evaluation_1_1rmse.html#a799543691987fa2c968f6a4ad561b772">turi::evaluation::rmse</a>
 , <a class="el" href="classturi_1_1evaluation_1_1roc__curve.html#ae16dd4916ded829654c1e38a36285476">turi::evaluation::roc_curve</a>
 , <a class="el" href="classturi_1_1evaluation_1_1supervised__evaluation__interface.html#a1cb652c3e453a4eee082e32c02fa0009">turi::evaluation::supervised_evaluation_interface</a>
+</li>
+<li>get_metric_display_name()
+: <a class="el" href="classturi_1_1supervised_1_1supervised__learning__model__base.html#afe2a01eeb13f71cd515a234bf10ba47a">turi::supervised::supervised_learning_model_base</a>
 </li>
 <li>get_metrics()
 : <a class="el" href="classturi_1_1supervised_1_1supervised__learning__model__base.html#a7a1393170560dede7cd9c8272a04426b">turi::supervised::supervised_learning_model_base</a>
@@ -590,12 +591,12 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 : <a class="el" href="classturi_1_1v2_1_1ml__data__side__features.html#a7e1a6130a3fa471866ed49f6375ce477">turi::v2::ml_data_side_features</a>
 </li>
 <li>get_similar_items()
-: <a class="el" href="classturi_1_1recsys_1_1recsys__itemcf.html#ab8baa91e952a75c972a5346852b83fba">turi::recsys::recsys_itemcf</a>
+: <a class="el" href="classturi_1_1recsys_1_1recsys__itemcf.html#a33e11613db8dd6cbb48217f3c00fc52c">turi::recsys::recsys_itemcf</a>
 , <a class="el" href="classturi_1_1recsys_1_1recsys__model__base.html#ab03fb0855f940eaa7bfae16318500d55">turi::recsys::recsys_model_base</a>
 , <a class="el" href="classturi_1_1sparse__similarity__lookup.html#a11b273cac070dd308c0c27de837e9a0b">turi::sparse_similarity_lookup</a>
 </li>
 <li>get_similar_users()
-: <a class="el" href="classturi_1_1recsys_1_1recsys__itemcf.html#a668b165b135a445a187569fe0c556689">turi::recsys::recsys_itemcf</a>
+: <a class="el" href="classturi_1_1recsys_1_1recsys__itemcf.html#a1c5adfa399394d841d5db5da9ad34952">turi::recsys::recsys_itemcf</a>
 , <a class="el" href="classturi_1_1recsys_1_1recsys__model__base.html#ae3afc37440bd5fbfc325be882af361ef">turi::recsys::recsys_model_base</a>
 </li>
 <li>get_size_limit()
@@ -628,12 +629,6 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 </li>
 <li>get_temp_cache_id()
 : <a class="el" href="classturi_1_1fileio_1_1fixed__size__cache__manager.html#a3712ce7da3aaca78394db7a9b012ce2f">turi::fileio::fixed_size_cache_manager</a>
-</li>
-<li>get_tid()
-: <a class="el" href="classturi_1_1fiber__control.html#acd80372c63851dbd3a671b3574ce0757">turi::fiber_control</a>
-</li>
-<li>get_tls()
-: <a class="el" href="classturi_1_1fiber__control.html#a3c4a4ae48d88be1c6a8c9cc4b606bde0">turi::fiber_control</a>
 </li>
 <li>get_tls_data()
 : <a class="el" href="classturi_1_1thread.html#a7998193ddbfa321e0fbaac735e01ba89">turi::thread</a>
@@ -727,7 +722,7 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 </li>
 <li>get_version()
 : <a class="el" href="classturi_1_1factorization_1_1factorization__model.html#a574a51d18c5132e208ca9494ca9a7f9c">turi::factorization::factorization_model</a>
-, <a class="el" href="classturi_1_1kmeans_1_1kmeans__model.html#a221b5737b6ac039a8f4e1cbf75b0e953">turi::kmeans::kmeans_model</a>
+, <a class="el" href="classturi_1_1kmeans_1_1kmeans__model.html#a96c2dc41b838fc30203fcb9a9911a7d4">turi::kmeans::kmeans_model</a>
 , <a class="el" href="classturi_1_1ml__data.html#af371642583d09a4f2f0e722adf9f78d6">turi::ml_data</a>
 , <a class="el" href="classturi_1_1ml__data__internal_1_1column__indexer.html#aa7779cddd8280b0d15802fa05404f632">turi::ml_data_internal::column_indexer</a>
 , <a class="el" href="classturi_1_1ml__data__internal_1_1column__statistics.html#a056e992ba663f538eef5520889c36dd3">turi::ml_data_internal::column_statistics</a>
@@ -735,23 +730,23 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 , <a class="el" href="classturi_1_1ml__model__base.html#a442396e6931fd07dd4fb21530fdacbf3">turi::ml_model_base</a>
 , <a class="el" href="classturi_1_1model__base.html#a7201757ce40107b06d5ab13dff7c6c70">turi::model_base</a>
 , <a class="el" href="classturi_1_1model__proxy.html#af441f0f72d7b879e42b1547a00332012">turi::model_proxy</a>
-, <a class="el" href="classturi_1_1nearest__neighbors_1_1ball__tree__neighbors.html#a98aab3eeaddf4cdd95518b12a0145cd3">turi::nearest_neighbors::ball_tree_neighbors</a>
-, <a class="el" href="classturi_1_1nearest__neighbors_1_1lsh__neighbors.html#af20760034fdc3371b9591cc486c8e2af">turi::nearest_neighbors::lsh_neighbors</a>
-, <a class="el" href="classturi_1_1pattern__mining_1_1fp__growth.html#a311743ffc172261acdd75d43451e5754">turi::pattern_mining::fp_growth</a>
-, <a class="el" href="classturi_1_1recsys_1_1recsys__model__base.html#a0751dcf3780b0752ccefb53377aab576">turi::recsys::recsys_model_base</a>
-, <a class="el" href="classturi_1_1sdk__model_1_1feature__engineering_1_1count__featurizer.html#afed89e4f1d4c17e416540c7ca1876752">turi::sdk_model::feature_engineering::count_featurizer</a>
-, <a class="el" href="classturi_1_1sdk__model_1_1feature__engineering_1_1feature__binner.html#ab52ed1fac4457cfed6f4dca8cdb3a257">turi::sdk_model::feature_engineering::feature_binner</a>
-, <a class="el" href="classturi_1_1sdk__model_1_1feature__engineering_1_1random__projection.html#a0792ba21f144414da5dd1bbd336dd458">turi::sdk_model::feature_engineering::random_projection</a>
-, <a class="el" href="classturi_1_1sdk__model_1_1feature__engineering_1_1sample__transformer.html#ac708d4f1a9acb08723fd51067461af96">turi::sdk_model::feature_engineering::sample_transformer</a>
+, <a class="el" href="classturi_1_1nearest__neighbors_1_1ball__tree__neighbors.html#a18b3e8ccbc8f77af4c6ff68fdf948412">turi::nearest_neighbors::ball_tree_neighbors</a>
+, <a class="el" href="classturi_1_1nearest__neighbors_1_1lsh__neighbors.html#a811bb13d46192aa14b87487135003978">turi::nearest_neighbors::lsh_neighbors</a>
+, <a class="el" href="classturi_1_1pattern__mining_1_1fp__growth.html#a59ef4b4f50c114783c1deef1690e89a5">turi::pattern_mining::fp_growth</a>
+, <a class="el" href="classturi_1_1recsys_1_1recsys__model__base.html#aef42936dcf8cce6c50352e00d549f230">turi::recsys::recsys_model_base</a>
+, <a class="el" href="classturi_1_1sdk__model_1_1feature__engineering_1_1count__featurizer.html#a3bd53286b6af85b73f7da262d18f9056">turi::sdk_model::feature_engineering::count_featurizer</a>
+, <a class="el" href="classturi_1_1sdk__model_1_1feature__engineering_1_1feature__binner.html#ad256f23f2b7e4083844c98217019bd58">turi::sdk_model::feature_engineering::feature_binner</a>
+, <a class="el" href="classturi_1_1sdk__model_1_1feature__engineering_1_1random__projection.html#a0573f89c2e9e7c4a26fca8cf63411612">turi::sdk_model::feature_engineering::random_projection</a>
+, <a class="el" href="classturi_1_1sdk__model_1_1feature__engineering_1_1sample__transformer.html#abaa0081edcf4c31fb1b2e4cb7b016f8a">turi::sdk_model::feature_engineering::sample_transformer</a>
 , <a class="el" href="classturi_1_1sdk__model_1_1feature__engineering_1_1transformer__base.html#ae1b84cc6b34ec182ffeabcc929d415d3">turi::sdk_model::feature_engineering::transformer_base</a>
-, <a class="el" href="classturi_1_1simple__model.html#a8eb129123bd99649feb5132548aa826c">turi::simple_model</a>
+, <a class="el" href="classturi_1_1simple__model.html#a36a57da1648b0fbbe176233ce920878c">turi::simple_model</a>
 , <a class="el" href="classturi_1_1statistics__tracker.html#a0655afea57853e7082d97501fded260a">turi::statistics_tracker</a>
-, <a class="el" href="classturi_1_1supervised_1_1linear__regression.html#a6420260a53dd32075dd46d3f6242f69a">turi::supervised::linear_regression</a>
-, <a class="el" href="classturi_1_1supervised_1_1linear__svm.html#af9bcaeb4f4e5afeefacce1ab2b6576dd">turi::supervised::linear_svm</a>
-, <a class="el" href="classturi_1_1supervised_1_1logistic__regression.html#a58c0b591d2db31c851da4d3205fdd9b1">turi::supervised::logistic_regression</a>
-, <a class="el" href="classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#a3332c1a4d4f4d8cf06f16e2b385a5304">turi::supervised::xgboost::xgboost_model</a>
-, <a class="el" href="classturi_1_1text_1_1alias__topic__model.html#a4d3e92c3f5e9c2d2c007ced127df5277">turi::text::alias_topic_model</a>
-, <a class="el" href="classturi_1_1text_1_1topic__model.html#a56111835a45d8da3a1a05bfdab2b6bad">turi::text::topic_model</a>
+, <a class="el" href="classturi_1_1supervised_1_1linear__regression.html#a045785507eeb9e05fa9c1c94e3d231c1">turi::supervised::linear_regression</a>
+, <a class="el" href="classturi_1_1supervised_1_1linear__svm.html#a055b27ea8709b6e017c342f7ad1a5c70">turi::supervised::linear_svm</a>
+, <a class="el" href="classturi_1_1supervised_1_1logistic__regression.html#a257b1e4560c1733b200a22b071704314">turi::supervised::logistic_regression</a>
+, <a class="el" href="classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#a51ff14a3e83ceaf027afbff835d85195">turi::supervised::xgboost::xgboost_model</a>
+, <a class="el" href="classturi_1_1text_1_1alias__topic__model.html#a8c56fdd6fa83c19e379dfa6f816d1a40">turi::text::alias_topic_model</a>
+, <a class="el" href="classturi_1_1text_1_1topic__model.html#a2662589eb157666b0629f39dd75fc462">turi::text::topic_model</a>
 , <a class="el" href="classturi_1_1topk__indexer.html#a392209c7112d5d99ee800e6dc9f0a56a">turi::topk_indexer</a>
 , <a class="el" href="classturi_1_1unity__global.html#a4aabf668085939b602bfd93f7123735b">turi::unity_global</a>
 , <a class="el" href="classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#a3b21cfc72d9410c95a0a41b6bb815161">turi::v2::ml_data_internal::column_indexer</a>
@@ -799,9 +794,6 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 <li>get_worker_guard()
 : <a class="el" href="classturi_1_1lambda_1_1worker__pool.html#a656c7eab21e774ddbfa70a7a50a307bc">turi::lambda::worker_pool&lt; ProxyType &gt;</a>
 </li>
-<li>get_worker_id()
-: <a class="el" href="classturi_1_1fiber__control.html#a42eba7e2b2d26eb952d802710e855b5e">turi::fiber_control</a>
-</li>
 <li>get_writer()
 : <a class="el" href="classturi_1_1sarray.html#ad40a7a80dd9381ba4dbf85cad01ca5a3">turi::sarray&lt; T &gt;</a>
 </li>
@@ -812,13 +804,13 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 : <a class="el" href="classCoreML_1_1LinearModel.html#a11a49a4dfc65481865f90faad128d18c">CoreML::LinearModel</a>
 </li>
 <li>gl_sarray()
-: <a class="el" href="classturi_1_1gl__sarray.html#a473fb86600f477eaf83215cf58cab578">turi::gl_sarray</a>
+: <a class="el" href="classturi_1_1gl__sarray.html#aeef2a1acc548bf72bd78878693307f81">turi::gl_sarray</a>
 </li>
 <li>gl_sarray_writer()
 : <a class="el" href="classturi_1_1gl__sarray__writer.html#a00da5fa6276f98db9669a355cd967a68">turi::gl_sarray_writer</a>
 </li>
 <li>gl_sframe()
-: <a class="el" href="classturi_1_1gl__sframe.html#aa0201b3d8714933fb0d220f4e04bbde8">turi::gl_sframe</a>
+: <a class="el" href="classturi_1_1gl__sframe.html#af9dee5eef29adf9bfe588885fcc5b185">turi::gl_sframe</a>
 </li>
 <li>gl_sframe_writer()
 : <a class="el" href="classturi_1_1gl__sframe__writer.html#aee8e6b6bc29f14689bd21237f471d01b">turi::gl_sframe_writer</a>
@@ -834,7 +826,7 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 </li>
 <li>global_index_offset()
 : <a class="el" href="structturi_1_1ml__data__internal_1_1column__metadata.html#aeba5ecc3ab95c054d57b7255420345d7">turi::ml_data_internal::column_metadata</a>
-, <a class="el" href="classturi_1_1ml__metadata.html#afdf8571fb20b2463b85922c40d8902db">turi::ml_metadata</a>
+, <a class="el" href="classturi_1_1ml__metadata.html#a0505b28ac50aa01569956786a507f2e4">turi::ml_metadata</a>
 , <a class="el" href="structturi_1_1v2_1_1ml__data__internal_1_1column__metadata.html#ae31f8a54f7642c78e87043153bb142cc">turi::v2::ml_data_internal::column_metadata</a>
 </li>
 <li>global_indices_of_side_information_block()
@@ -856,7 +848,7 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 , <a class="el" href="structturi_1_1optimization_1_1__solver__return.html#a55f4c0d5cb5008c344c2d2777525efd8">turi::optimization::_solver_return</a>
 </li>
 <li>group_aggregate_container()
-: <a class="el" href="classturi_1_1groupby__aggregate__impl_1_1group__aggregate__container.html#aff50de7cf9ee23bc8f4d7267976df43c">turi::groupby_aggregate_impl::group_aggregate_container</a>
+: <a class="el" href="classturi_1_1groupby__aggregate__impl_1_1group__aggregate__container.html#ac991925e7c01b88404ea93c25ccc2478">turi::groupby_aggregate_impl::group_aggregate_container</a>
 </li>
 <li>group_and_write()
 : <a class="el" href="classturi_1_1groupby__aggregate__impl_1_1group__aggregate__container.html#a5c37dcf5b6b14c27deaebd504760a55d">turi::groupby_aggregate_impl::group_aggregate_container</a>
@@ -868,10 +860,10 @@ $(document).ready(function(){initNavTree('functions_g.html','');});
 : <a class="el" href="classturi_1_1gl__sframe.html#a9762ca4858f7422616f48e05e4247ef4">turi::gl_sframe</a>
 </li>
 <li>groupby_aggregate()
-: <a class="el" href="classturi_1_1unity__sframe.html#acbf17f956c27440e2c6565db68e0b0d9">turi::unity_sframe</a>
+: <a class="el" href="classturi_1_1unity__sframe.html#a22928141ddddd417e0bf75f311aa2ea1">turi::unity_sframe</a>
 </li>
 <li>groupby_element()
-: <a class="el" href="structturi_1_1groupby__aggregate__impl_1_1groupby__element.html#a69a35fa48235fb0390209e4d9133c7fa">turi::groupby_aggregate_impl::groupby_element</a>
+: <a class="el" href="structturi_1_1groupby__aggregate__impl_1_1groupby__element.html#a3fcfaa649b90bef59936399b8f4cc34a">turi::groupby_aggregate_impl::groupby_element</a>
 </li>
 <li>guaranteed_frequent_items()
 : <a class="el" href="classturi_1_1sketches_1_1space__saving.html#aad4fa92879b6dacf079d2da9c4675033">turi::sketches::space_saving&lt; T &gt;</a>

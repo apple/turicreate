@@ -308,6 +308,19 @@
             
         </li>
     
+        <li class="chapter " data-level="1.3.1.3" data-path="../recommender/coreml-deployment.html">
+            
+                <a href="../recommender/coreml-deployment.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -559,9 +572,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.6.3" data-path="../activity_classifier/export-coreml.md">
+        <li class="chapter " data-level="1.3.6.3" data-path="../activity_classifier/export_coreml.html">
             
-                <span>
+                <a href="../activity_classifier/export_coreml.html">
             
                     
                     Deployment to Core ML
@@ -1089,10 +1102,7 @@ binary save format and a variety of text formats. In the following
 example we save the SGraph in binary format to a new folder called
 &quot;james_bond&quot;, then re-load it under a different name.</p><pre><code class="lang-python">g.save(<span class="hljs-string">&apos;james_bond.sgraph&apos;</span>)
 new_graph = turicreate.load_sgraph(<span class="hljs-string">&apos;james_bond.sgraph&apos;</span>)</code></pre>
-<h4 id="inspecting-sgraphs"><a name="inspecting-sgraphs" class="plugin-anchor" href="#inspecting-sgraphs"><i class="fa fa-link" aria-hidden="true"></i></a>Inspecting SGraphs</h4><p>Small graphs can be explored very efficiently with the <code>SGraph.show</code> method,
-which displays a plot of the graph. The vertex labels can be IDs or any vertex
-attribute.</p><p><img alt="Bond graph" src="images/bond_basic.png"></p><p>For large graphs visual displays are difficult, but graph exploration
-can still be done with the <code>SGraph.summary</code>---which prints the number of
+<h4 id="inspecting-sgraphs"><a name="inspecting-sgraphs" class="plugin-anchor" href="#inspecting-sgraphs"><i class="fa fa-link" aria-hidden="true"></i></a>Inspecting SGraphs</h4><p>Graphs can be explored with <code>SGraph.summary</code>---which prints the number of
 vertices and edges---or by retrieving and plotting subsets of edges and
 vertices.</p><pre><code class="lang-python">print(g.summary())</code></pre>
 <pre><code class="lang-no-highlight">{&apos;num_edges&apos;: 20, &apos;num_vertices&apos;: 10}</code></pre>
@@ -1128,8 +1138,10 @@ length of a path between any of the targets and a neighborhood vertex.
 If <code>full_subgraph</code> is true, then edges between neighborhood vertices are
 included even if the edges are not on direct paths between a target and
 a neighbor.</p><pre><code class="lang-python">targets = [<span class="hljs-string">&apos;James Bond&apos;</span>, <span class="hljs-string">&apos;Moneypenny&apos;</span>]
-subgraph = g.get_neighborhood(ids=targets, radius=<span class="hljs-number">1</span>, full_subgraph=<span class="hljs-keyword">True</span>)</code></pre>
-<p><img alt="Bond neighborhood" src="images/bond_neighborhood.png"></p><h4 id="modifying-sgraphs"><a name="modifying-sgraphs" class="plugin-anchor" href="#modifying-sgraphs"><i class="fa fa-link" aria-hidden="true"></i></a>Modifying SGraphs</h4><p>SGraphs are <em>structurally immutable</em>, but the data stored on vertices and edges
+subgraph = g.get_neighborhood(ids=targets, radius=<span class="hljs-number">1</span>, full_subgraph=<span class="hljs-keyword">True</span>)
+print(subgraph)</code></pre>
+<pre><code class="lang-no-highlight">SGraph({&apos;num_edges&apos;: 15, &apos;num_vertices&apos;: 8})</code></pre>
+<h4 id="modifying-sgraphs"><a name="modifying-sgraphs" class="plugin-anchor" href="#modifying-sgraphs"><i class="fa fa-link" aria-hidden="true"></i></a>Modifying SGraphs</h4><p>SGraphs are <em>structurally immutable</em>, but the data stored on vertices and edges
 can be mutated using two special SGraph properties. <code>SGraph.vertices</code> and
 <code>SGraph.edges</code> are SFrames containing the vertex and edge data, respectively.
 The following examples show the difference between the special graph-related
@@ -1274,7 +1286,7 @@ for SGraphs.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Graph data","level":"1.2.2","depth":2,"next":{"title":"Text data","level":"1.2.3","depth":2,"path":"text/analysis.md","ref":"text/analysis.md","articles":[]},"previous":{"title":"SQL Databases","level":"1.2.1.3","depth":3,"path":"data_formats_and_sources/sql_integration.md","ref":"data_formats_and_sources/sql_integration.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"sgraph/sgraph.md","mtime":"2018-05-04T06:42:37.906Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-06-05T01:37:24.088Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Graph data","level":"1.2.2","depth":2,"next":{"title":"Text data","level":"1.2.3","depth":2,"path":"text/analysis.md","ref":"text/analysis.md","articles":[]},"previous":{"title":"SQL Databases","level":"1.2.1.3","depth":3,"path":"data_formats_and_sources/sql_integration.md","ref":"data_formats_and_sources/sql_integration.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"sgraph/sgraph.md","mtime":"2018-07-30T23:56:20.479Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-07-31T00:01:03.393Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

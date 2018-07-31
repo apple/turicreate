@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.sentence_classifier.create &mdash; Turi Create API 5.0b1 documentation</title>
+  <title>turicreate.sentence_classifier.create &mdash; Turi Create API 5.0b3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.0b1 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 5.0b3 documentation" href="../index.html"/>
         <link rel="up" title="sentence_classifier" href="../turicreate.toolkits.sentence_classifier.html"/>
         <link rel="next" title="turicreate.sentence_classifier.SentenceClassifier" href="turicreate.sentence_classifier.SentenceClassifier.html"/>
         <link rel="prev" title="turicreate.sentence_classifier.SentenceClassifier" href="turicreate.sentence_classifier.SentenceClassifier.html"/> 
@@ -130,7 +130,7 @@
 <h1>turicreate.sentence_classifier.create<a class="headerlink" href="#turicreate-sentence-classifier-create" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="turicreate.sentence_classifier.create">
-<code class="descclassname">turicreate.sentence_classifier.</code><code class="descname">create</code><span class="sig-paren">(</span><em>dataset</em>, <em>target</em>, <em>features=None</em>, <em>method='auto'</em>, <em>validation_set='auto'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.sentence_classifier.create" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">turicreate.sentence_classifier.</code><code class="descname">create</code><span class="sig-paren">(</span><em>dataset</em>, <em>target</em>, <em>features=None</em>, <em>method='auto'</em>, <em>validation_set='auto'</em>, <em>max_iterations=10</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.sentence_classifier.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a model that trains a classifier to classify sentences from a
 collection of documents. The model is a
 <a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.html#turicreate.logistic_classifier.LogisticClassifier" title="turicreate.logistic_classifier.LogisticClassifier"><code class="xref py py-class docutils literal"><span class="pre">LogisticClassifier</span></code></a> model trained
@@ -165,6 +165,12 @@ By default this argument is set to &#8216;auto&#8217; and a validation set is
 automatically sampled and used for progress printing. If
 validation_set is set to None, then no additional metrics
 are computed. The default value is &#8216;auto&#8217;.</p>
+</dd>
+<dt><strong>max_iterations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">The maximum number of allowed passes through the data. More passes over
+the data can result in a more accurately trained model. Consider
+increasing this (the default value is 10) if the training accuracy is
+low and the <em>Grad-Norm</em> in the display is large.</p>
 </dd>
 </dl>
 </td>
@@ -212,7 +218,7 @@ are computed. The default value is &#8216;auto&#8217;.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Jun 04, 2018.
+      Last updated on Jul 30, 2018.
     </p>
   </div>
 </footer>
@@ -230,7 +236,7 @@ are computed. The default value is &#8216;auto&#8217;.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.0b1',
+            VERSION:'5.0b3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

@@ -308,6 +308,19 @@
             
         </li>
     
+        <li class="chapter " data-level="1.3.1.3" data-path="../recommender/coreml-deployment.html">
+            
+                <a href="../recommender/coreml-deployment.html">
+            
+                    
+                    Deployment to Core ML
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -559,9 +572,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.6.3" data-path="../activity_classifier/export-coreml.md">
+        <li class="chapter " data-level="1.3.6.3" data-path="../activity_classifier/export_coreml.html">
             
-                <span>
+                <a href="../activity_classifier/export_coreml.html">
             
                     
                     Deployment to Core ML
@@ -1045,11 +1058,19 @@ and load it into an SFrame. This will allow you to try out the Object Detection
 toolkit for yourself. To get this dataset into the format expected by our
 toolkit, we will rely on many useful SFrame functions.</p><p><em>Note: Please make sure that you have Turi Create 4.3 or above for these steps</em></p><p>The dataset that we will use is <a href="https://lear.inrialpes.fr/people/marszalek/data/ig02/" target="_blank">INRIA Annotations for Graz-02
 (IG02)</a><sup><a href="#fn_1" id="reffn_1">1</a></sup><sup><a href="#fn_2" id="reffn_2">2</a></sup>. Our goal is to
-make a detector that can spot bikes and cars. Go ahead and click this link and
-download <code>ig02-v1.0-bikes.zip</code> and <code>ig02-v1.0-cars.zip</code>. In this tutorial, we
-will assume that you have unzipped these files into <code>~/Downloads/ig02</code>. That
-is, you should have the following data structure:</p><pre><code>~/Downloads/ig02/
-    bike/
+make a detector that can spot bikes and cars. Open a new terminal window and run the following commands:</p><pre><code>$ mkdir -p ~/Downloads/ig02
+$ cd ~/Downloads/ig02
+$ curl https://lear.inrialpes.fr/people/marszalek/data/ig02/ig02-v1.0-bikes.zip &gt; bikes.zip
+$ curl https://lear.inrialpes.fr/people/marszalek/data/ig02/ig02-v1.0-cars.zip &gt; cars.zip
+$ unzip bikes.zip
+$ mv readme.txt readme-bikes.txt
+$ unzip cars.zip
+$ rm bikes.zip cars.zip </code></pre>
+<p>Now, you should have the following file structure:</p><pre><code>~/Downloads/ig02/
+    bikes_info.txt
+    bikes_test.txt
+    bikes_train.txt
+    bikes/
         bike_001.image.png
         bike_001.mask.0.png
         bike_001.mask.1.png
@@ -1057,11 +1078,16 @@ is, you should have the following data structure:</p><pre><code>~/Downloads/ig02
         bike_001.mask.3.png
         bike_002.image.png
         ...
+    cars_info.txt
+    cars_test.txt
+    cars_train.txt
     cars/
         carsgraz_001.image.png
         carsgraz_001.mask.0.png
         carsgraz_002.image.png
-        ...</code></pre>
+        ...
+    readme.txt
+    readme2.txt</code></pre>
 <p>This dataset contains masks marking the exact pixels belonging to each object
 instance. Each image may have several masks to indicate the presence of
 multiple objects. Red pixels indicate object presence and green indicate
@@ -1071,7 +1097,7 @@ Here is a snippet to turn this into an SFrame:</p><pre><code class="lang-python"
 <span class="hljs-keyword">import</span> os
 
 <span class="hljs-comment"># Change if applicable</span>
-ig02_path = <span class="hljs-string">&apos;~/Desktop/ig02&apos;</span>
+ig02_path = <span class="hljs-string">&apos;~/Downloads/ig02&apos;</span>
 
 <span class="hljs-comment"># Load all images in random order</span>
 raw_sf = tc.image_analysis.load_images(ig02_path, recursive=<span class="hljs-keyword">True</span>,
@@ -1195,7 +1221,7 @@ further in:</p><blockquote id="fn_1">
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Data Preparation","level":"1.3.4.1","depth":3,"next":{"title":"Advanced Usage","level":"1.3.4.2","depth":3,"path":"object_detection/advanced-usage.md","ref":"object_detection/advanced-usage.md","articles":[]},"previous":{"title":"Object detection","level":"1.3.4","depth":2,"path":"object_detection/README.md","ref":"object_detection/README.md","articles":[{"title":"Data Preparation","level":"1.3.4.1","depth":3,"path":"object_detection/data-preparation.md","ref":"object_detection/data-preparation.md","articles":[]},{"title":"Advanced Usage","level":"1.3.4.2","depth":3,"path":"object_detection/advanced-usage.md","ref":"object_detection/advanced-usage.md","articles":[]},{"title":"Deployment to Core ML","level":"1.3.4.3","depth":3,"path":"object_detection/export-coreml.md","ref":"object_detection/export-coreml.md","articles":[]},{"title":"How it works","level":"1.3.4.4","depth":3,"path":"object_detection/how-it-works.md","ref":"object_detection/how-it-works.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"object_detection/data-preparation.md","mtime":"2018-05-04T06:42:37.894Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-06-05T01:37:24.088Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Data Preparation","level":"1.3.4.1","depth":3,"next":{"title":"Advanced Usage","level":"1.3.4.2","depth":3,"path":"object_detection/advanced-usage.md","ref":"object_detection/advanced-usage.md","articles":[]},"previous":{"title":"Object detection","level":"1.3.4","depth":2,"path":"object_detection/README.md","ref":"object_detection/README.md","articles":[{"title":"Data Preparation","level":"1.3.4.1","depth":3,"path":"object_detection/data-preparation.md","ref":"object_detection/data-preparation.md","articles":[]},{"title":"Advanced Usage","level":"1.3.4.2","depth":3,"path":"object_detection/advanced-usage.md","ref":"object_detection/advanced-usage.md","articles":[]},{"title":"Deployment to Core ML","level":"1.3.4.3","depth":3,"path":"object_detection/export-coreml.md","ref":"object_detection/export-coreml.md","articles":[]},{"title":"How it works","level":"1.3.4.4","depth":3,"path":"object_detection/how-it-works.md","ref":"object_detection/how-it-works.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"object_detection/data-preparation.md","mtime":"2018-07-30T23:56:20.475Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-07-31T00:01:03.393Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

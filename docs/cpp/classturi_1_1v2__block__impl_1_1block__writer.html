@@ -125,6 +125,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ad707e1c982f119fb3fd210635b7f4fb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9048adead11afcb419f1d5dc24de8c0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2__block__impl_1_1block__writer.html#ab9048adead11afcb419f1d5dc24de8c0">open_segment</a> (size_t segment_id, std::string filename)</td></tr>
 <tr class="separator:ab9048adead11afcb419f1d5dc24de8c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2855c32dfd8361b5278c6d8132de1ecb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2__block__impl_1_1block__writer.html#a2855c32dfd8361b5278c6d8132de1ecb">set_options</a> (const std::string &amp;option, int64_t value)</td></tr>
+<tr class="separator:a2855c32dfd8361b5278c6d8132de1ecb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab2a84ae2ee49dc6ab36153e47b5ddfbe"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2__block__impl_1_1block__writer.html#ab2a84ae2ee49dc6ab36153e47b5ddfbe">write_block</a> (size_t segment_id, size_t column_id, char *data, <a class="el" href="structturi_1_1v2__block__impl_1_1block__info.html">block_info</a> block)</td></tr>
 <tr class="separator:ab2a84ae2ee49dc6ab36153e47b5ddfbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac09c7cfe8cb32b3a48489480f2934a6f"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1v2__block__impl_1_1block__writer.html#ac09c7cfe8cb32b3a48489480f2934a6f">write_typed_block</a> (size_t segment_id, size_t column_id, const std::vector&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; &amp;data, <a class="el" href="structturi_1_1v2__block__impl_1_1block__info.html">block_info</a> block)</td></tr>
@@ -237,6 +239,33 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a2855c32dfd8361b5278c6d8132de1ecb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::v2_block_impl::block_writer::set_options </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>option</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int64_t&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets write options. The only option available now is "disable_padding". If set to non-zero, disables 4K padding of blocks. </p>
+
+</div>
+</div>
 <a class="anchor" id="ab2a84ae2ee49dc6ab36153e47b5ddfbe"></a>
 <div class="memitem">
 <div class="memproto">
@@ -332,7 +361,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Writes a block of arbitrary contents. Direct serialization is used. </p>
 
-<p>Definition at line <a class="el" href="sarray__v2__block__writer_8hpp_source.html#l00112">112</a> of file <a class="el" href="sarray__v2__block__writer_8hpp_source.html">sarray_v2_block_writer.hpp</a>.</p>
+<p>Definition at line <a class="el" href="sarray__v2__block__writer_8hpp_source.html#l00118">118</a> of file <a class="el" href="sarray__v2__block__writer_8hpp_source.html">sarray_v2_block_writer.hpp</a>.</p>
 
 </div>
 </div>

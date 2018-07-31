@@ -160,16 +160,16 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a71a8425d51c0bbf4b01cc4a6f2bf995f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b86cd5053da759f839270f7622b89d7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classturi_1_1sframe.html">sframe</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1recsys_1_1recsys__model__base.html#a2b86cd5053da759f839270f7622b89d7">get_num_users_per_item</a> () const </td></tr>
 <tr class="separator:a2b86cd5053da759f839270f7622b89d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0751dcf3780b0752ccefb53377aab576"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1recsys_1_1recsys__model__base.html#a0751dcf3780b0752ccefb53377aab576">get_version</a> () const </td></tr>
-<tr class="separator:a0751dcf3780b0752ccefb53377aab576"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef42936dcf8cce6c50352e00d549f230"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1recsys_1_1recsys__model__base.html#aef42936dcf8cce6c50352e00d549f230">get_version</a> () const override</td></tr>
+<tr class="separator:aef42936dcf8cce6c50352e00d549f230"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aecd34959fbe03a917ba1d3098a9c82ba"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aecd34959fbe03a917ba1d3098a9c82ba"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1recsys_1_1recsys__model__base.html#aecd34959fbe03a917ba1d3098a9c82ba">save_impl</a> (<a class="el" href="classturi_1_1oarchive.html">turi::oarchive</a> &amp;oarc) const override</td></tr>
 <tr class="memdesc:aecd34959fbe03a917ba1d3098a9c82ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization &ndash; save. <br /></td></tr>
 <tr class="separator:aecd34959fbe03a917ba1d3098a9c82ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab8915c137ff012eb7a1bf425742b6397"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab8915c137ff012eb7a1bf425742b6397"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1recsys_1_1recsys__model__base.html#ab8915c137ff012eb7a1bf425742b6397">load_version</a> (<a class="el" href="classturi_1_1iarchive.html">turi::iarchive</a> &amp;iarc, size_t version)</td></tr>
-<tr class="memdesc:ab8915c137ff012eb7a1bf425742b6397"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization &ndash; load. <br /></td></tr>
-<tr class="separator:ab8915c137ff012eb7a1bf425742b6397"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6925ec352c297e58d906346232a118fb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6925ec352c297e58d906346232a118fb"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1recsys_1_1recsys__model__base.html#a6925ec352c297e58d906346232a118fb">load_version</a> (<a class="el" href="classturi_1_1iarchive.html">turi::iarchive</a> &amp;iarc, size_t version) override</td></tr>
+<tr class="memdesc:a6925ec352c297e58d906346232a118fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization &ndash; load. <br /></td></tr>
+<tr class="separator:a6925ec352c297e58d906346232a118fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90e81719e55e8d2c218276427a8122db"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a90e81719e55e8d2c218276427a8122db"></a>
 std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1recsys_1_1recsys__model__base.html#a90e81719e55e8d2c218276427a8122db">get_train_stats</a> ()</td></tr>
 <tr class="memdesc:a90e81719e55e8d2c218276427a8122db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get stats about algorithm runtime. <br /></td></tr>
@@ -714,7 +714,7 @@ template&lt;typename GetSimilarFunction &gt; </div>
 </div><div class="memdoc">
 <p>Get the nearest k items for each of the provided items. If no items are provided, then similar items are retrieved for all items observed during training. </p>
 
-<p>Implemented in <a class="el" href="classturi_1_1recsys_1_1recsys__itemcf.html#ab8baa91e952a75c972a5346852b83fba">turi::recsys::recsys_itemcf</a>.</p>
+<p>Implemented in <a class="el" href="classturi_1_1recsys_1_1recsys__itemcf.html#a33e11613db8dd6cbb48217f3c00fc52c">turi::recsys::recsys_itemcf</a>.</p>
 
 </div>
 </div>
@@ -751,7 +751,7 @@ template&lt;typename GetSimilarFunction &gt; </div>
 </div><div class="memdoc">
 <p>Get the nearest k users for each of the provided users. If no users are provided, then similar users are retrieved for all items observed during training. </p>
 
-<p>Implemented in <a class="el" href="classturi_1_1recsys_1_1recsys__itemcf.html#a668b165b135a445a187569fe0c556689">turi::recsys::recsys_itemcf</a>.</p>
+<p>Implemented in <a class="el" href="classturi_1_1recsys_1_1recsys__itemcf.html#a1c5adfa399394d841d5db5da9ad34952">turi::recsys::recsys_itemcf</a>.</p>
 
 </div>
 </div>
@@ -808,7 +808,7 @@ template&lt;typename GetSimilarFunction &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a0751dcf3780b0752ccefb53377aab576"></a>
+<a class="anchor" id="aef42936dcf8cce6c50352e00d549f230"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -824,7 +824,7 @@ template&lt;typename GetSimilarFunction &gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -882,7 +882,7 @@ template&lt;typename GetSimilarFunction &gt; </div>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classturi_1_1kmeans_1_1kmeans__model.html#aa461e3a2852b7683ab294cf1de162e8a">turi::kmeans::kmeans_model</a>, <a class="el" href="classturi_1_1supervised_1_1supervised__learning__model__base.html#ac5065e8ca8f6498c3ecf464edde40946">turi::supervised::supervised_learning_model_base</a>, <a class="el" href="classturi_1_1pattern__mining_1_1fp__growth.html#ab5c91ed04255c500569684361b8d9436">turi::pattern_mining::fp_growth</a>, <a class="el" href="classturi_1_1text_1_1topic__model.html#ade56827ff47fab383a75a2f9082cdf37">turi::text::topic_model</a>, <a class="el" href="classturi_1_1recsys_1_1recsys__itemcf.html#af3ca333d938d5c6a1e8507ea7305770a">turi::recsys::recsys_itemcf</a>, <a class="el" href="classturi_1_1supervised_1_1logistic__regression.html#a0877ea1dfc6796b59b2cbcb86bee28fd">turi::supervised::logistic_regression</a>, <a class="el" href="classturi_1_1supervised_1_1linear__svm.html#ad8f5741bbe39da19e710e7e531560964">turi::supervised::linear_svm</a>, <a class="el" href="classturi_1_1sdk__model_1_1feature__engineering_1_1transformer__base.html#ae2afbe9c872bb58e7dc9780113641f9e">turi::sdk_model::feature_engineering::transformer_base</a>, <a class="el" href="classturi_1_1sdk__model_1_1feature__engineering_1_1random__projection.html#a9301adbe8b8b812255bc83a61288ff05">turi::sdk_model::feature_engineering::random_projection</a>, <a class="el" href="classturi_1_1text_1_1alias__topic__model.html#a48dab46375f115e9baf4663b956735c6">turi::text::alias_topic_model</a>, <a class="el" href="classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#aa4d191af41b385e0d386ec6c16e9b6c1">turi::supervised::xgboost::xgboost_model</a>, <a class="el" href="classturi_1_1sdk__model_1_1feature__engineering_1_1feature__binner.html#a71b5ded765eb4944f505a0aee50fcb1c">turi::sdk_model::feature_engineering::feature_binner</a>, <a class="el" href="classturi_1_1supervised_1_1xgboost_1_1random__forest__classifier.html#aeb840b0fb35444eb15fa173132a79f23">turi::supervised::xgboost::random_forest_classifier</a>, <a class="el" href="classturi_1_1supervised_1_1xgboost_1_1boosted__trees__classifier.html#ad09c5e70c09ddcd7ecd1312b1705ede8">turi::supervised::xgboost::boosted_trees_classifier</a>, <a class="el" href="classturi_1_1sdk__model_1_1feature__engineering_1_1count__featurizer.html#a7fb6070d0bc00a4a1f6732cf45232253">turi::sdk_model::feature_engineering::count_featurizer</a>, <a class="el" href="classturi_1_1sdk__model_1_1feature__engineering_1_1sample__transformer.html#a659d7a48699cd5a0ba546940b7d8ab42">turi::sdk_model::feature_engineering::sample_transformer</a>, <a class="el" href="classturi_1_1supervised_1_1linear__regression.html#a0f9b647285964d3e45a422d7cb8c77b4">turi::supervised::linear_regression</a>, <a class="el" href="classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#a47d347782d03d82a4543b5a1019e5ca1">turi::supervised::xgboost::boosted_trees_regression</a>, <a class="el" href="classturi_1_1supervised_1_1xgboost_1_1random__forest__regression.html#a138c8d1dc8b1e4ddc471c88df6661fc2">turi::supervised::xgboost::random_forest_regression</a>, and <a class="el" href="classturi_1_1recsys_1_1recsys__factorization__model__base.html#a7732e08f716e3f42436206a3c89e05a2">turi::recsys::recsys_factorization_model_base</a>.</p>
+<p>Implemented in <a class="el" href="classturi_1_1kmeans_1_1kmeans__model.html#a36aac47c8163c743bab1c33523e231eb">turi::kmeans::kmeans_model</a>, <a class="el" href="classturi_1_1supervised_1_1supervised__learning__model__base.html#ac5065e8ca8f6498c3ecf464edde40946">turi::supervised::supervised_learning_model_base</a>, <a class="el" href="classturi_1_1pattern__mining_1_1fp__growth.html#ad1bd55fadcca456d74f769264dcc45dd">turi::pattern_mining::fp_growth</a>, <a class="el" href="classturi_1_1text_1_1topic__model.html#aacc173b03d771beb4ec528680d0d86ed">turi::text::topic_model</a>, <a class="el" href="classturi_1_1recsys_1_1recsys__itemcf.html#a3e8a7eedf219564930bd77c5abae1914">turi::recsys::recsys_itemcf</a>, <a class="el" href="classturi_1_1supervised_1_1logistic__regression.html#a0877ea1dfc6796b59b2cbcb86bee28fd">turi::supervised::logistic_regression</a>, <a class="el" href="classturi_1_1supervised_1_1linear__svm.html#ad8f5741bbe39da19e710e7e531560964">turi::supervised::linear_svm</a>, <a class="el" href="classturi_1_1sdk__model_1_1feature__engineering_1_1transformer__base.html#ae2afbe9c872bb58e7dc9780113641f9e">turi::sdk_model::feature_engineering::transformer_base</a>, <a class="el" href="classturi_1_1sdk__model_1_1feature__engineering_1_1random__projection.html#ad142182a455d6d3fb0fd190ee7822d74">turi::sdk_model::feature_engineering::random_projection</a>, <a class="el" href="classturi_1_1text_1_1alias__topic__model.html#a0519043e164089b7192a46d37579f5b7">turi::text::alias_topic_model</a>, <a class="el" href="classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#aa4d191af41b385e0d386ec6c16e9b6c1">turi::supervised::xgboost::xgboost_model</a>, <a class="el" href="classturi_1_1sdk__model_1_1feature__engineering_1_1feature__binner.html#ab1fc3cae1df1bba446df987a2163edf0">turi::sdk_model::feature_engineering::feature_binner</a>, <a class="el" href="classturi_1_1supervised_1_1xgboost_1_1random__forest__classifier.html#aeb840b0fb35444eb15fa173132a79f23">turi::supervised::xgboost::random_forest_classifier</a>, <a class="el" href="classturi_1_1supervised_1_1xgboost_1_1boosted__trees__classifier.html#ad09c5e70c09ddcd7ecd1312b1705ede8">turi::supervised::xgboost::boosted_trees_classifier</a>, <a class="el" href="classturi_1_1sdk__model_1_1feature__engineering_1_1count__featurizer.html#a416a6fab5e6e996734bdfe2161338cf2">turi::sdk_model::feature_engineering::count_featurizer</a>, <a class="el" href="classturi_1_1sdk__model_1_1feature__engineering_1_1sample__transformer.html#a118ab0996de5896e591792468c1ad344">turi::sdk_model::feature_engineering::sample_transformer</a>, <a class="el" href="classturi_1_1supervised_1_1linear__regression.html#a0f9b647285964d3e45a422d7cb8c77b4">turi::supervised::linear_regression</a>, <a class="el" href="classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#a47d347782d03d82a4543b5a1019e5ca1">turi::supervised::xgboost::boosted_trees_regression</a>, <a class="el" href="classturi_1_1supervised_1_1xgboost_1_1random__forest__regression.html#a138c8d1dc8b1e4ddc471c88df6661fc2">turi::supervised::xgboost::random_forest_regression</a>, and <a class="el" href="classturi_1_1recsys_1_1recsys__factorization__model__base.html#a7732e08f716e3f42436206a3c89e05a2">turi::recsys::recsys_factorization_model_base</a>.</p>
 
 </div>
 </div>
@@ -920,7 +920,7 @@ template&lt;typename GetSimilarFunction &gt; </div>
 <p>Implement serialization (load). The model subclass should reimplement this particular function. The syntax follows the standard turicreate load() method.</p>
 <p>When this method is called, all the model options have been set up in the base class and are readily accessible. Furthermore, once this function is called, the model is treated as trained and ready to be used for prediction and ranking. Thus loading a model can effectively replace the training stage. </p>
 
-<p>Implemented in <a class="el" href="classturi_1_1recsys_1_1recsys__itemcf.html#a7bcb3ff25981cbe35a08a1383da48379">turi::recsys::recsys_itemcf</a>, and <a class="el" href="classturi_1_1recsys_1_1recsys__factorization__model__base.html#a50c2e978bc0191767992bfc932977463">turi::recsys::recsys_factorization_model_base</a>.</p>
+<p>Implemented in <a class="el" href="classturi_1_1recsys_1_1recsys__itemcf.html#ae8f35974e3a14f78d3cc9afe5558f90b">turi::recsys::recsys_itemcf</a>, and <a class="el" href="classturi_1_1recsys_1_1recsys__factorization__model__base.html#a50c2e978bc0191767992bfc932977463">turi::recsys::recsys_factorization_model_base</a>.</p>
 
 </div>
 </div>
@@ -947,7 +947,7 @@ template&lt;typename GetSimilarFunction &gt; </div>
 </div><div class="memdoc">
 <p>Implement serialization (save). The model subclass should reimplement this particular function. The syntax follows the standard turicreate save() method. </p>
 
-<p>Implemented in <a class="el" href="classturi_1_1recsys_1_1recsys__itemcf.html#a9c759ec7336c13540bcd3acee875e9cb">turi::recsys::recsys_itemcf</a>, and <a class="el" href="classturi_1_1recsys_1_1recsys__factorization__model__base.html#a8ad250d58ca9ce9e0096c695c6aadd19">turi::recsys::recsys_factorization_model_base</a>.</p>
+<p>Implemented in <a class="el" href="classturi_1_1recsys_1_1recsys__itemcf.html#a9b214bd2eda1bcb66042961c955bbf0a">turi::recsys::recsys_itemcf</a>, and <a class="el" href="classturi_1_1recsys_1_1recsys__factorization__model__base.html#a8ad250d58ca9ce9e0096c695c6aadd19">turi::recsys::recsys_factorization_model_base</a>.</p>
 
 </div>
 </div>
@@ -1218,7 +1218,7 @@ template&lt;typename GetSimilarFunction &gt; </div>
 </div><div class="memdoc">
 <p>Run predictions on each element in the test data set. Returns a vector corresponding to the response prediction of each observation in the test_data set. Also takes a <a class="el" href="classturi_1_1ml__data.html">ml_data</a> in the same format containing observations that are considered "available" during prediction time. </p>
 
-<p>Implemented in <a class="el" href="classturi_1_1recsys_1_1recsys__itemcf.html#a8e33dac0af15bdbcdf490260d42fc3c1">turi::recsys::recsys_itemcf</a>, and <a class="el" href="classturi_1_1recsys_1_1recsys__factorization__model__base.html#a4f8c6f0fdc37876c7f609a80351be1d5">turi::recsys::recsys_factorization_model_base</a>.</p>
+<p>Implemented in <a class="el" href="classturi_1_1recsys_1_1recsys__itemcf.html#a3ceb88423e610eeca87f2ae3f7b52beb">turi::recsys::recsys_itemcf</a>, and <a class="el" href="classturi_1_1recsys_1_1recsys__factorization__model__base.html#a4f8c6f0fdc37876c7f609a80351be1d5">turi::recsys::recsys_factorization_model_base</a>.</p>
 
 </div>
 </div>
@@ -1535,7 +1535,7 @@ template&lt;typename GetSimilarFunction &gt; </div>
 <p>For a given base observation, predict the score for all the items with all non-item columns replaced by the values in the base observation.</p>
 <p>The base_observation vector is used to generate all the observations predicted. New observations are generated by repeatedly copying template_observation, then replacing the values in item_column_index by each possible item value. </p>
 
-<p>Implemented in <a class="el" href="classturi_1_1recsys_1_1recsys__itemcf.html#aa6fb22e2b7699b9b8a0211e9fd56a789">turi::recsys::recsys_itemcf</a>, and <a class="el" href="classturi_1_1recsys_1_1recsys__factorization__model__base.html#a7331fb2bbd848bfbfe18baf16b2fb8ea">turi::recsys::recsys_factorization_model_base</a>.</p>
+<p>Implemented in <a class="el" href="classturi_1_1recsys_1_1recsys__itemcf.html#a939f4a34456984a08fad68faefa32092">turi::recsys::recsys_itemcf</a>, and <a class="el" href="classturi_1_1recsys_1_1recsys__factorization__model__base.html#a7331fb2bbd848bfbfe18baf16b2fb8ea">turi::recsys::recsys_factorization_model_base</a>.</p>
 
 </div>
 </div>
@@ -1679,7 +1679,7 @@ template&lt;typename GetSimilarFunction &gt; </div>
 </div><div class="memdoc">
 <p>Train the algorithm. Takes a training/validation split. Returns a map of information about the run. </p>
 
-<p>Implemented in <a class="el" href="classturi_1_1recsys_1_1recsys__itemcf.html#a66d11510ace85e2107cf9bce7ebd2d97">turi::recsys::recsys_itemcf</a>, and <a class="el" href="classturi_1_1recsys_1_1recsys__factorization__model__base.html#aadb1ecc02247db0c29888c8f9ad95a18">turi::recsys::recsys_factorization_model_base</a>.</p>
+<p>Implemented in <a class="el" href="classturi_1_1recsys_1_1recsys__itemcf.html#a7cd112e5638e4cc2b88bf34e904d0b86">turi::recsys::recsys_itemcf</a>, and <a class="el" href="classturi_1_1recsys_1_1recsys__factorization__model__base.html#aadb1ecc02247db0c29888c8f9ad95a18">turi::recsys::recsys_factorization_model_base</a>.</p>
 
 </div>
 </div>

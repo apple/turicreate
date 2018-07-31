@@ -218,6 +218,10 @@ Variables</h2></td></tr>
 <tr class="separator:gae18272fca6572c6d7515da8e8470e68a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga83377e8db5ff62da684b96411aaebc08"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sframe__main.html#ga83377e8db5ff62da684b96411aaebc08">turi::SFRAME_SORT_MAX_SEGMENTS</a></td></tr>
 <tr class="separator:ga83377e8db5ff62da684b96411aaebc08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2be7965a1407dd92f588ccfc23a15ade"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sframe__main.html#ga2be7965a1407dd92f588ccfc23a15ade">turi::SFRAME_COMPACTION_THRESHOLD</a></td></tr>
+<tr class="separator:ga2be7965a1407dd92f588ccfc23a15ade"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gada49853579a049f753b1e39ce1669315"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sframe__main.html#gada49853579a049f753b1e39ce1669315">turi::FAST_COMPACT_BLOCKS_IN_SMALL_SEGMENT</a></td></tr>
+<tr class="separator:gada49853579a049f753b1e39ce1669315"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <h2 class="groupheader">Function Documentation</h2>
@@ -626,6 +630,19 @@ template&lt;typename T&gt; </div>
 
 </div>
 </div>
+<a class="anchor" id="gada49853579a049f753b1e39ce1669315"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t turi::FAST_COMPACT_BLOCKS_IN_SMALL_SEGMENT</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>If a segment contains less than this number of blocks, it is considered a small segment. </p>
+
+</div>
+</div>
 <a class="anchor" id="gaafbbdb0b7e14990e3abf78a1b0ae97bb"></a>
 <div class="memitem">
 <div class="memproto">
@@ -691,6 +708,19 @@ template&lt;typename T&gt; </div>
 
 </div>
 </div>
+<a class="anchor" id="ga2be7965a1407dd92f588ccfc23a15ade"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t turi::SFRAME_COMPACTION_THRESHOLD</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The maximum number of segments an SFrame can have after which compaction will be attempted </p>
+
+</div>
+</div>
 <a class="anchor" id="gacdaf1bdee34727191c837f382bd50e1e"></a>
 <div class="memitem">
 <div class="memproto">
@@ -726,7 +756,7 @@ template&lt;typename T&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The default number of segments created when an SFrame/SArray is opened for write. (i.e. <a class="el" href="classturi_1_1sarray.html#a875c2213277315d164326962bdb62c79">sarray::open_for_write</a> and <a class="el" href="classturi_1_1sframe.html#af6fdd0cca31cb1c4b44e60b554db28ad">sframe::open_for_write</a>). This is default is used in numerous places. For instance the default number of output segments from the sframe_csv_parser, and the dataframe to sframe converter. </p>
+<p>The default number of segments created when an SFrame/SArray is opened for write. (i.e. <a class="el" href="classturi_1_1sarray.html#a8cd438df8c7117125b00cf8d43e17a2d">sarray::open_for_write</a> and <a class="el" href="classturi_1_1sframe.html#af6fdd0cca31cb1c4b44e60b554db28ad">sframe::open_for_write</a>). This is default is used in numerous places. For instance the default number of output segments from the sframe_csv_parser, and the dataframe to sframe converter. </p>
 
 </div>
 </div>

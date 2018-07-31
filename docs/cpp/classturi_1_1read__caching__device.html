@@ -139,7 +139,7 @@ class turi::read_caching_device&lt; T &gt;</h3>
 <p>Can be wrapped around any device implement to provide read caching. This should be used only when the filesystem we are accessing is rather remote. It uses the <a class="el" href="classturi_1_1block__cache.html">block_cache</a> to cache large blocks on the cache:// file system.</p>
 <p>Before: </p><div class="fragment"><div class="line"><span class="keyword">typedef</span> boost::iostreams::stream&lt;s3_device&gt; s3_fstream;</div></div><!-- fragment --><p>After: </p><div class="fragment"><div class="line"><span class="keyword">typedef</span> boost::iostreams::stream&lt;read_caching_device&lt;s3_device&gt; &gt; s3_fstream;</div></div><!-- fragment --><p>It uses the <a class="el" href="classturi_1_1block__cache.html">block_cache</a> to pro </p>
 
-<p>Definition at line <a class="el" href="read__caching__device_8hpp_source.html#l00041">41</a> of file <a class="el" href="read__caching__device_8hpp_source.html">read_caching_device.hpp</a>.</p>
+<p>Definition at line <a class="el" href="read__caching__device_8hpp_source.html#l00042">42</a> of file <a class="el" href="read__caching__device_8hpp_source.html">read_caching_device.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="abaace5d798f53c345e6911d127d94a7b"></a>
 <div class="memitem">
@@ -165,7 +165,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Returns the file size of the opened file. Returns (size_t)(-1) if there is no file opened, or if there is an error obtaining the file size. </p>
 
-<p>Definition at line <a class="el" href="read__caching__device_8hpp_source.html#l00162">162</a> of file <a class="el" href="read__caching__device_8hpp_source.html">read_caching_device.hpp</a>.</p>
+<p>Definition at line <a class="el" href="read__caching__device_8hpp_source.html#l00163">163</a> of file <a class="el" href="read__caching__device_8hpp_source.html">read_caching_device.hpp</a>.</p>
 
 </div>
 </div>
@@ -193,7 +193,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>the optimal buffer size is 0. </p>
 
-<p>Definition at line <a class="el" href="read__caching__device_8hpp_source.html#l00097">97</a> of file <a class="el" href="read__caching__device_8hpp_source.html">read_caching_device.hpp</a>.</p>
+<p>Definition at line <a class="el" href="read__caching__device_8hpp_source.html#l00098">98</a> of file <a class="el" href="read__caching__device_8hpp_source.html">read_caching_device.hpp</a>.</p>
 
 </div>
 </div>
@@ -238,7 +238,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Seeks to a different location. </p>
 
-<p>Definition at line <a class="el" href="read__caching__device_8hpp_source.html#l00138">138</a> of file <a class="el" href="read__caching__device_8hpp_source.html">read_caching_device.hpp</a>.</p>
+<p>Definition at line <a class="el" href="read__caching__device_8hpp_source.html#l00139">139</a> of file <a class="el" href="read__caching__device_8hpp_source.html">read_caching_device.hpp</a>.</p>
 
 </div>
 </div>

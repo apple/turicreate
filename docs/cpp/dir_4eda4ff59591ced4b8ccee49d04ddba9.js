@@ -35,6 +35,8 @@ var dir_4eda4ff59591ced4b8ccee49d04ddba9 =
     [ "sarray_v2_encoded_block.hpp", "sarray__v2__encoded__block_8hpp_source.html", null ],
     [ "sarray_v2_type_encoding.hpp", "sarray__v2__type__encoding_8hpp_source.html", null ],
     [ "sframe.hpp", "sframe_8hpp_source.html", null ],
+    [ "sframe_compact.hpp", "sframe__compact_8hpp_source.html", null ],
+    [ "sframe_compact_impl.hpp", "sframe__compact__impl_8hpp_source.html", null ],
     [ "sframe_config.hpp", "sframe__config_8hpp_source.html", null ],
     [ "sframe_constants.hpp", "sframe__constants_8hpp_source.html", null ],
     [ "sframe_index_file.hpp", "sframe__index__file_8hpp_source.html", null ],

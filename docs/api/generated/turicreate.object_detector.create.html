@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.object_detector.create &mdash; Turi Create API 5.0b1 documentation</title>
+  <title>turicreate.object_detector.create &mdash; Turi Create API 5.0b3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.0b1 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 5.0b3 documentation" href="../index.html"/>
         <link rel="up" title="object_detector" href="../turicreate.toolkits.object_detector.html"/>
         <link rel="next" title="turicreate.object_detector.ObjectDetector" href="turicreate.object_detector.ObjectDetector.html"/>
         <link rel="prev" title="turicreate.object_detector.util.unstack_annotations" href="turicreate.object_detector.util.unstack_annotations.html"/> 
@@ -130,7 +130,7 @@
 <h1>turicreate.object_detector.create<a class="headerlink" href="#turicreate-object-detector-create" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="turicreate.object_detector.create">
-<code class="descclassname">turicreate.object_detector.</code><code class="descname">create</code><span class="sig-paren">(</span><em>dataset</em>, <em>annotations=None</em>, <em>feature=None</em>, <em>model='darknet-yolo'</em>, <em>classes=None</em>, <em>max_iterations=0</em>, <em>verbose=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.object_detector.create" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">turicreate.object_detector.</code><code class="descname">create</code><span class="sig-paren">(</span><em>dataset</em>, <em>annotations=None</em>, <em>feature=None</em>, <em>model='darknet-yolo'</em>, <em>classes=None</em>, <em>batch_size=0</em>, <em>max_iterations=0</em>, <em>verbose=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.object_detector.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a <a class="reference internal" href="turicreate.object_detector.ObjectDetector.html#turicreate.object_detector.ObjectDetector" title="turicreate.object_detector.ObjectDetector"><code class="xref py py-class docutils literal"><span class="pre">ObjectDetector</span></code></a> model.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -178,6 +178,10 @@ feature.</p>
 <dt><strong>classes</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list optional</span></dt>
 <dd><p class="first last">List of strings containing the names of the classes of objects.
 Inferred from the data if not provided.</p>
+</dd>
+<dt><strong>batch_size: int</strong></dt>
+<dd><p class="first last">The number of images per training iteration. If 0, then it will be
+automatically determined based on resource availability.</p>
 </dd>
 <dt><strong>max_iterations</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
 <dd><p class="first last">The number of training iterations. If 0, then it will be automatically
@@ -235,7 +239,7 @@ be determined based on the amount of data you provide.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Jun 04, 2018.
+      Last updated on Jul 30, 2018.
     </p>
   </div>
 </footer>
@@ -253,7 +257,7 @@ be determined based on the amount of data you provide.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.0b1',
+            VERSION:'5.0b3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

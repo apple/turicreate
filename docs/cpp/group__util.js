@@ -15,12 +15,6 @@ var group__util =
       [ "reserve", "classturi_1_1value__container__mapper.html#a9ef0495205b2c7fdc32ce2845a28f384", null ],
       [ "size", "classturi_1_1value__container__mapper.html#a4f3cd4a4cd47c4cb435b95636565b938", null ]
     ] ],
-    [ "fiber_conditional", "classturi_1_1fiber__conditional.html", [
-      [ "fiber_conditional", "classturi_1_1fiber__conditional.html#a9c03f8c9ade6fa55c46d61292764a15d", null ],
-      [ "broadcast", "classturi_1_1fiber__conditional.html#af3166d38a62b1302093dc1ac94a53219", null ],
-      [ "signal", "classturi_1_1fiber__conditional.html#a790e83cf842ce80c0825d4bf21fe0100", null ],
-      [ "wait", "classturi_1_1fiber__conditional.html#a10c3a4f8e70c5bfac8b16f63b1f06e5b", null ]
-    ] ],
     [ "thread_pool", "classturi_1_1thread__pool.html", [
       [ "thread_pool", "classturi_1_1thread__pool.html#a0fe687460263f09b2eb340cd4eed2d99", null ],
       [ "~thread_pool", "classturi_1_1thread__pool.html#a80276a6090c2899fdad87b5298bb36fd", null ],
@@ -136,18 +130,6 @@ var group__util =
       [ "fast_integer_power", "classturi_1_1fast__integer__power.html#a1bba2c727ce60a4e62858813ae3917c6", null ],
       [ "pow", "classturi_1_1fast__integer__power.html#a7854494a411298af2411d3e7a747b1ab", null ],
       [ "set_base", "classturi_1_1fast__integer__power.html#a1ed54b6c08d1eeae8f0f7fef01a178f2", null ]
-    ] ],
-    [ "fiber_blocking_queue", "classturi_1_1fiber__blocking__queue.html", [
-      [ "fiber_blocking_queue", "classturi_1_1fiber__blocking__queue.html#a60841124b4a5908c97ac364a7d873003", null ],
-      [ "broadcast", "classturi_1_1fiber__blocking__queue.html#a32be6924a78bf3413a852608b9bad2ad", null ],
-      [ "dequeue", "classturi_1_1fiber__blocking__queue.html#aa87f17ecd298160c548f14d9a46a18a8", null ],
-      [ "empty", "classturi_1_1fiber__blocking__queue.html#aa9abba04c23813384e1d49bb5e4f3683", null ],
-      [ "enqueue", "classturi_1_1fiber__blocking__queue.html#ae073f2ca281719e99afdcb013e20b5ba", null ],
-      [ "enqueue_to_head", "classturi_1_1fiber__blocking__queue.html#acdac75f630889b0f763d55d43711288d", null ],
-      [ "size", "classturi_1_1fiber__blocking__queue.html#a4ff20fd8a61be7312237ff4fcf6a0f49", null ],
-      [ "start_blocking", "classturi_1_1fiber__blocking__queue.html#a257f2c3019a8db0daddd367be4dad8ab", null ],
-      [ "stop_blocking", "classturi_1_1fiber__blocking__queue.html#ab1ce10889e1578edf4b5c3f2be19493d", null ],
-      [ "try_dequeue", "classturi_1_1fiber__blocking__queue.html#a02aa93ade9e4364bfc413cce5c0165a0", null ]
     ] ],
     [ "function_output_iterator", "classturi_1_1function__output__iterator.html", null ],
     [ "lru_cache", "structturi_1_1lru__cache.html", [

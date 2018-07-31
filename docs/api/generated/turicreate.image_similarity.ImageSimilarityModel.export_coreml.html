@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.image_similarity.ImageSimilarityModel.export_coreml &mdash; Turi Create API 5.0b1 documentation</title>
+  <title>turicreate.image_similarity.ImageSimilarityModel.export_coreml &mdash; Turi Create API 5.0b3 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.0b1 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 5.0b3 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -133,41 +133,44 @@ the k nearest neighbors of the query image.</p>
 <p class="last"><a class="reference internal" href="turicreate.image_similarity.ImageSimilarityModel.save.html#turicreate.image_similarity.ImageSimilarityModel.save" title="turicreate.image_similarity.ImageSimilarityModel.save"><code class="xref py py-obj docutils literal"><span class="pre">save</span></code></a></p>
 </div>
 <p class="rubric">Examples</p>
-<p># Train an image similarity model
-&gt;&gt;&gt; model = turicreate.image_similarity.create(data)</p>
-<p># Query the model for similar images
-&gt;&gt;&gt; similar_images = model.query(data)
-+&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;&#8211;+&#8212;&#8212;&#8212;&#8212;&#8212;+&#8212;&#8212;+
-| query_label | reference_label |    distance   | rank |
-+&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;&#8211;+&#8212;&#8212;&#8212;&#8212;&#8212;+&#8212;&#8212;+
-|      0      |        0        |      0.0      |  1   |
-|      0      |        2        | 24.9664942809 |  2   |
-|      0      |        1        | 28.4416069428 |  3   |
-|      1      |        1        |      0.0      |  1   |
-|      1      |        2        | 21.8715131191 |  2   |
-|      1      |        0        | 28.4416069428 |  3   |
-|      2      |        2        |      0.0      |  1   |
-|      2      |        1        | 21.8715131191 |  2   |
-|      2      |        0        | 24.9664942809 |  3   |
-+&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;&#8211;+&#8212;&#8212;&#8212;&#8212;&#8212;+&#8212;&#8212;+
-[9 rows x 4 columns]</p>
-<p># Export the model to Core ML format
-&gt;&gt;&gt; model.export_coreml(&#8216;myModel.mlmodel&#8217;)</p>
-<p># Load the Core ML model
-&gt;&gt;&gt; import coremltools
-&gt;&gt;&gt; ml_model = coremltools.models.MLModel(&#8216;myModel.mlmodel&#8217;)</p>
-<p># Prepare the first image of reference data for consumption
-# by the Core ML model
-&gt;&gt;&gt; import PIL
-&gt;&gt;&gt; image = tc.image_analysis.resize(</p>
-<blockquote>
-<div>data[&#8216;image&#8217;][0], <a href="#id1"><span class="problematic" id="id2">*</span></a>reversed(model.input_image_shape))</div></blockquote>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">pixel_data</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Train an image similarity model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">image_similarity</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Query the model for similar images</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">similar_images</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="go">+-------------+-----------------+---------------+------+</span>
+<span class="go">| query_label | reference_label |    distance   | rank |</span>
+<span class="go">+-------------+-----------------+---------------+------+</span>
+<span class="go">|      0      |        0        |      0.0      |  1   |</span>
+<span class="go">|      0      |        2        | 24.9664942809 |  2   |</span>
+<span class="go">|      0      |        1        | 28.4416069428 |  3   |</span>
+<span class="go">|      1      |        1        |      0.0      |  1   |</span>
+<span class="go">|      1      |        2        | 21.8715131191 |  2   |</span>
+<span class="go">|      1      |        0        | 28.4416069428 |  3   |</span>
+<span class="go">|      2      |        2        |      0.0      |  1   |</span>
+<span class="go">|      2      |        1        | 21.8715131191 |  2   |</span>
+<span class="go">|      2      |        0        | 24.9664942809 |  3   |</span>
+<span class="go">+-------------+-----------------+---------------+------+</span>
+<span class="go">[9 rows x 4 columns]</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Export the model to Core ML format</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">export_coreml</span><span class="p">(</span><span class="s1">&#39;myModel.mlmodel&#39;</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Load the Core ML model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">coremltools</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ml_model</span> <span class="o">=</span> <span class="n">coremltools</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">MLModel</span><span class="p">(</span><span class="s1">&#39;myModel.mlmodel&#39;</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Prepare the first image of reference data for consumption</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># by the Core ML model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">PIL</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">image_analysis</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="o">*</span><span class="nb">reversed</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">input_image_shape</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">pixel_data</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Calculate distances using the Core ML model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ml_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;image&#39;</span><span class="p">:</span> <span class="n">image</span><span class="p">})</span>
+<span class="go">{&#39;distance&#39;: array([ 0., 28.453125, 24.96875 ])}</span>
 </pre></div>
 </div>
-<p># Calculate distances using the Core ML model
-&gt;&gt;&gt; ml_model.predict(data={&#8216;image&#8217;: image})
-{&#8216;distance&#8217;: array([ 0.      , 28.453125, 24.96875 ])}</p>
 </dd></dl>
 
 </div>
@@ -181,7 +184,7 @@ the k nearest neighbors of the query image.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Jun 04, 2018.
+      Last updated on Jul 30, 2018.
     </p>
   </div>
 </footer>
@@ -199,7 +202,7 @@ the k nearest neighbors of the query image.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.0b1',
+            VERSION:'5.0b3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false
