@@ -193,26 +193,37 @@ class StyleTransferTest(unittest.TestCase):
         _raise_error_if_not_sframe(model_styles)
         self.assertEqual(len(model_styles), len(style))
 
-    def test_export_coreml(self):
+    def _coreml_python_predict(self, coreml_model, img_fixed):
         from PIL import Image
+        pil_img = Image.fromarray(img_fixed.pixel_data)
+        if _mac_ver() >= (10, 13):
+            index_data = np.zeros(self.num_styles)
+            index_data[0] = 1
+            coreml_output = coreml_model.predict(
+                {self.content_feature: pil_img, 'index': index_data},
+                usesCPUOnly=True)
+            img = next(iter(coreml_output.values()))
+            img = np.asarray(img)
+            img = img[..., 0:3]
+            return img
+
+    def test_export_coreml(self):
         import coremltools
         filename = tempfile.mkstemp('my_style_transfer.mlmodel')[1]
         model = self.model
         model.export_coreml(filename)
 
         coreml_model = coremltools.models.MLModel(filename)
-        img = self.style_sf[0:1][self.style_feature][0]
+        img = self.style_sf[0:2][self.style_feature][0]
         img_fixed = tc.image_analysis.resize(img, 256, 256, 3)
-        pil_img = Image.fromarray(img_fixed.pixel_data)
-        if _mac_ver() >= (10, 13):
-            index_data = np.zeros(self.num_styles)
-            index_data[0] = 1
-            coreml_output = coreml_model.predict({self.content_feature: pil_img, 'index':index_data}, usesCPUOnly = True)
-            img = next(iter(coreml_output.values()))
-            img = np.asarray(img)
-            img = img[..., 0:3]
+        img = self._coreml_python_predict(coreml_model, img_fixed)
+        self.assertEqual(img.shape, (256, 256, 3))
 
-            self.assertEqual(img.shape, (256, 256, 3))
+        # Test for flexible shape
+        img = self.style_sf[0:2][self.style_feature][1]
+        img_fixed = tc.image_analysis.resize(img, 512, 512, 3)
+        img = self._coreml_python_predict(coreml_model, img_fixed)
+        self.assertEqual(img.shape, (512, 512, 3))
 
         # Also check if we can train a second model and export it (there could
         # be naming issues in mxnet)
