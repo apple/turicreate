@@ -717,19 +717,41 @@ def subprocess_exe(exe, args, setup=None, teardown=None,
 # Automatic GPU detection
 def _get_cuda_gpus():
     """
-    Returns a list of 0-based integer indices of available CUDA GPUs.
+    Returns a list of dictionaries, with the following keys:
+    - index (integer, device index of the GPU)
+    - name (str, GPU name)
+    - memory_free (float, free memory in MiB)
+    - memory_total (float, total memory in MiB)
     """
     import subprocess
     try:
-        ret = subprocess.check_output(["nvidia-smi", "-L"], universal_newlines=True).split('\n')
-        return [i for i, s in enumerate(ret) if 'GPU' in s]
+        output = subprocess.check_output(['nvidia-smi',
+                                          '--query-gpu=index,gpu_name,memory.free,memory.total',
+                                          '--format=csv,noheader,nounits'],
+                                         universal_newlines=True)
     except OSError:
         return []
-_CUDA_GPU_IDS = _get_cuda_gpus()
+
+    gpus = []
+    for gpu_line in output.split('\n'):
+        if gpu_line:
+            index, gpu_name, memory_free, memory_total = gpu_line.split(', ')
+            index = int(index)
+            memory_free = float(memory_free)
+            memory_total = float(memory_total)
+            gpus.append({
+                'index': index,
+                'name': gpu_name,
+                'memory_free': memory_free,
+                'memory_total': memory_total,
+            })
+    return gpus
+
+_CUDA_GPUS = _get_cuda_gpus()
 
 
 def _num_available_cuda_gpus():
-    return len(_CUDA_GPU_IDS)
+    return len(_CUDA_GPUS)
 
 
 def _num_available_gpus():

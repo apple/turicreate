@@ -31,7 +31,6 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from .. import _pre_trained_models
 from ._evaluation import average_precision as _average_precision
 from .._mps_utils import (use_mps as _use_mps,
-                          mps_device_name as _mps_device_name,
                           mps_device_memory_limit as _mps_device_memory_limit,
                           MpsGraphAPI as _MpsGraphAPI,
                           MpsGraphNetworkType as _MpsGraphNetworkType,
@@ -272,7 +271,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
 
     if batch_size < 1:
         batch_size = 32  # Default if not user-specified
-    num_mxnet_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=batch_size)
+    cuda_gpus = _mxnet_utils.get_gpus_in_use(max_devices=batch_size)
+    num_mxnet_gpus = len(cuda_gpus)
     use_mps = _use_mps() and num_mxnet_gpus == 0
     batch_size_each = batch_size // max(num_mxnet_gpus, 1)
     if use_mps and _mps_device_memory_limit() < 4 * 1024 * 1024 * 1024:
@@ -291,14 +291,11 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     io_thread_buffer_size = params['io_thread_buffer_size'] if use_mps else 0
 
     if verbose:
-        if use_mps:
-            print('Using GPU to create model ({})'.format(_mps_device_name()))
-        elif num_mxnet_gpus == 1:
-            print('Using GPU to create model (CUDA)')
-        elif num_mxnet_gpus > 1:
-            print('Using {} GPUs to create model (CUDA)'.format(num_mxnet_gpus))
-        else:
-            print('Using CPU to create model')
+        # Estimate memory usage (based on experiments)
+        cuda_mem_req = 550 + batch_size_each * 85
+
+        _tkutl._print_neural_compute_device(cuda_gpus=cuda_gpus, use_mps=use_mps,
+                                            cuda_mem_req=cuda_mem_req)
 
     grid_shape = params['grid_shape']
     input_image_shape = (3,
@@ -562,6 +559,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                 net_params[k].set_data(_mps_to_mxnet(mps_net_params[k]))
 
     else:  # Use MxNet
+        net.hybridize()
+
         options = {'learning_rate': base_lr, 'lr_scheduler': lr_scheduler,
                    'momentum': params['sgd_momentum'], 'wd': params['weight_decay'], 'rescale_grad': 1.0}
         clip_grad = params.get('clip_gradients')
