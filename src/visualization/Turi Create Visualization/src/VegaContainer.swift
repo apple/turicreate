@@ -27,16 +27,18 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
     public var data_spec: [[String: Any]] = []
     public var image_spec: [[String: Any]] = []
     public var table_spec: [String: Any]?
+    public var ns_window: NSWindow
     public var view: WKWebView
     public var pipe: Pipe?
     private var loaded: Bool = false
     private var ready: Bool = false
     
-    init(view: WKWebView) {
+    init(view: WKWebView, window_handle: NSWindow) {
         
         // initialize variables
-        self.view = view;
+        self.view = view
         self.pipe = nil
+        self.ns_window = window_handle
         
         // super init call
         super.init()
@@ -80,7 +82,23 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
             self.ready = true
             self.send_data()
             break
-        
+            
+        case "resize":
+            assert(self.loaded)
+            
+            guard let width_page = messageBody["width"] as? Int else {
+                assert(false, "Cannot parse int")
+                return
+            }
+            
+            guard let height_page = messageBody["height"] as? Int else {
+                assert(false, "Cannot parse height")
+                return
+            }
+            
+            self.resize_window(width: width_page, height: height_page)
+            break
+            
         case "log":
             guard let level = messageBody["level"] as? String else {
                 assert(false)
@@ -288,6 +306,26 @@ class VegaContainer: NSObject, WKScriptMessageHandler {
                 });
             }
         }
+    }
+    
+    public func resize_window(width: Int, height: Int) {
+        var padding_vertical = 100
+        
+        let screenSizeRect: NSRect = (NSScreen.main()?.frame)!
+        let screenSize: NSSize = NSSize(width: Int(screenSizeRect.width*0.8), height: Int(screenSizeRect.height*0.8))
+        var window_size = NSSize(width: width, height: height)
+        
+        if(CGFloat(width) > screenSize.width){
+            window_size.width = screenSize.width
+        }
+        
+        if(CGFloat(height) > (screenSize.height)){
+            window_size.height = screenSize.height
+        }
+        
+        self.ns_window.minSize.height = window_size.height
+        self.ns_window.minSize.width = window_size.width
+        self.ns_window.setContentSize(window_size)
     }
     
     public func save_image() {

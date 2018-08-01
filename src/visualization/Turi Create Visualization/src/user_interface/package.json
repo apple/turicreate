@@ -7,6 +7,7 @@
         "@fortawesome/fontawesome": "^1.1.5",
         "@fortawesome/fontawesome-free-solid": "^5.0.9",
         "@fortawesome/react-fontawesome": "0.0.18",
+        "javascript-detect-element-resize": "^0.5.3",
         "d3": "^5.0.0",
         "element-resize-event": "^2.0.9",
         "react": "^16.2.0",
