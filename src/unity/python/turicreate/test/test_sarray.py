@@ -46,6 +46,7 @@ class SArrayTest(unittest.TestCase):
         self.string_data = ["abc", "def", "hello", "world", "pika", "chu", "hello", "world"]
         self.vec_data = [array.array('d', [i, i+1]) for i in self.int_data]
         self.np_array_data = [np.array(x) for x in self.vec_data]
+        self.empty_np_array_data = [np.array([])]
         self.np_matrix_data = [np.matrix(x) for x in self.vec_data]
         self.list_data = [[i, str(i), i * 1.0] for i in self.int_data]
         self.dict_data =  [{str(i): i, i : float(i)} for i in self.int_data]
@@ -111,6 +112,8 @@ class SArrayTest(unittest.TestCase):
 
         self.__test_creation(self.vec_data, array.array, self.vec_data)
         self.__test_creation(self.np_array_data, np.ndarray, self.np_array_data)
+        self.__test_creation(self.empty_np_array_data, np.ndarray,
+                             self.empty_np_array_data)
         self.__test_creation(self.np_matrix_data, np.ndarray, self.np_matrix_data)
         self.__test_creation(self.list_data, list, self.list_data)
 
@@ -124,6 +127,9 @@ class SArrayTest(unittest.TestCase):
         self.__test_creation_type_inference(self.vec_data, array.array, self.vec_data)
         self.__test_creation_type_inference(self.np_array_data, np.ndarray,
                                             self.np_array_data)
+        self.__test_creation_type_inference(self.empty_np_array_data,
+                                            np.ndarray,
+                                            self.empty_np_array_data)
         self.__test_creation_type_inference(self.np_matrix_data, np.ndarray,
                                             self.np_matrix_data)
         self.__test_creation_type_inference([np.bool_(True),np.bool_(False)],int,[1,0])
