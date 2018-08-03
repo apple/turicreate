@@ -350,6 +350,20 @@ _code_by_type_lookup[<object_ptr>(datetime_type)]       = FT_DATETIME_TYPE
 _code_by_type_lookup[<object_ptr>(_image_type)]         = FT_IMAGE_TYPE
 _code_by_type_lookup[<object_ptr>(np_ndarray)]          = FT_NDARRAY_TYPE
 
+try:
+    import builtins
+    _code_by_type_lookup[<object_ptr>(builtins.dict)]                = FT_DICT_TYPE
+    _code_by_type_lookup[<object_ptr>(builtins.float)]               = FT_FLOAT_TYPE
+    _code_by_type_lookup[<object_ptr>(builtins.int)]                 = FT_INT_TYPE
+    _code_by_type_lookup[<object_ptr>(builtins.bool)]                = FT_INT_TYPE  + FT_SAFE
+    _code_by_type_lookup[<object_ptr>(builtins.list)]                = FT_LIST_TYPE
+    _code_by_type_lookup[<object_ptr>(builtins.long)]                = FT_INT_TYPE  + FT_SAFE
+    _code_by_type_lookup[<object_ptr>(builtins.str)]                 = FT_STR_TYPE
+    _code_by_type_lookup[<object_ptr>(builtins.tuple)]               = FT_TUPLE_TYPE
+    _code_by_type_lookup[<object_ptr>(builtins.unicode)]             = FT_UNICODE_TYPE
+except ImportError:
+    pass
+
 cdef map[object_ptr, int] _code_by_map_force = map[object_ptr, int]()
 
 _code_by_map_force[<object_ptr>(int)]           = FT_INT_TYPE       + FT_SAFE
@@ -1381,8 +1395,6 @@ cdef inline bint __try_buffer_type_vec(flex_vec& retv, object v, _numeric t):
     try:
         buf = v
     except Exception as e:
-        #print "buf conversion failed for ", type(v), v
-        #print type(e), e
         return False
 
     cdef size_t i
