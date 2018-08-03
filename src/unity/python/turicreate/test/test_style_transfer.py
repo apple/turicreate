@@ -101,10 +101,6 @@ class StyleTransferTest(unittest.TestCase):
     def test_create_with_empty_content_dataset(self):
         tc.style_transfer.create(self.style_sf, self.content_sf[:0], max_iterations=0)
 
-    @pytest.mark.xfail(raises=_ToolkitError)
-    def test_create_with_few_content_images(self):
-        tc.style_transfer.create(self.style_sf, self.content_sf[:1], max_iterations=0)
-
     def _get_invalid_style_cases(self):
         style_cases = []
         # when style is an empty list

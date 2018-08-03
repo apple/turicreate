@@ -180,9 +180,6 @@ def create(style_dataset, content_dataset, style_feature=None,
         if verbose:
             print('Setting max_iterations to be {}'.format(max_iterations))
 
-    if len(content_dataset) < batch_size:
-        raise _ToolkitError('Number of content images is less than the batch_size')
-
     # data loader
     if params['use_augmentation']:
         content_loader_type = '%s-with-augmentation' % params['training_content_loader_type']
@@ -191,7 +188,6 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     content_images_loader = _SFrameSTIter(content_dataset, batch_size, shuffle=True,
                                   feature_column=content_feature, input_shape=input_shape,
-                                  num_epochs=max_iterations,
                                   loader_type=content_loader_type, aug_params=params,
                                   sequential=params['sequential_image_processing'])
     ctx = _mxnet_utils.get_mxnet_context(max_devices=params['batch_size'])
