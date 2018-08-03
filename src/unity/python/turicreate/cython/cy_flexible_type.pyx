@@ -206,24 +206,36 @@ from cpython.mem cimport PyMem_Malloc, PyMem_Free
 from cpython.buffer cimport PyBUF_ND, PyBUF_WRITABLE
 cdef class NDArrayWrapper:
     cdef flex_nd_vec* vec
+    cdef Py_ssize_t ndim
     cdef Py_ssize_t* shape
     cdef Py_ssize_t* strides
 
     def __cinit__(self):
         vec = NULL
+        ndim = 0
         shape = NULL
         strides = NULL
 
     cdef initialize(self, const flex_nd_vec* vec):
         self.vec = new flex_nd_vec()
         self.vec[0] = vec[0]
-        self.shape = <Py_ssize_t*>PyMem_Malloc(vec.shape().size() * sizeof(Py_ssize_t))
-        self.strides = <Py_ssize_t*>PyMem_Malloc(vec.stride().size() * sizeof(Py_ssize_t))
-        for i in range(vec.shape().size()):
-            self.shape[i] = vec.shape()[i]
 
-        for i in range(vec.stride().size()):
-            self.strides[i] = vec.stride()[i] * 8
+        # Our C++ ndarray canonicalizes all empty values to 0 dimensions, but
+        # numpy.asarray doesn't handle 0-dimensional buffers well. So we'll
+        # canonicalize empty values to 1-d, size-0 values, consistent with how
+        # our C++ ndarray converts scalars to 1-d, size-1 values.
+        self.ndim = vec.shape().size() if vec.num_elem() > 0 else 1
+        self.shape = <Py_ssize_t*>PyMem_Malloc(self.ndim * sizeof(Py_ssize_t))
+        self.strides = <Py_ssize_t*>PyMem_Malloc(self.ndim * sizeof(Py_ssize_t))
+        if vec.num_elem() > 0:
+            for i in range(vec.shape().size()):
+                self.shape[i] = vec.shape()[i]
+
+            for i in range(vec.stride().size()):
+                self.strides[i] = vec.stride()[i] * 8
+        else:
+            self.shape[0] = 0
+            self.strides[0] = 8
 
     def __dealloc__(self):
         if self.vec != NULL:
@@ -238,7 +250,7 @@ cdef class NDArrayWrapper:
         buffer.internal = NULL                  # see References
         buffer.itemsize = itemsize
         buffer.len = self.vec.num_elem() * itemsize
-        buffer.ndim = self.vec.shape().size()
+        buffer.ndim = self.ndim
         buffer.obj = self
         buffer.readonly = 0
         buffer.shape = self.shape
@@ -291,8 +303,10 @@ except ImportError:
     HAS_PANDAS = False
 
 cdef type np_ndarray
+cdef type np_matrix
 assert(HAS_NUMPY)
 np_ndarray = np.ndarray
+np_matrix = np.matrix
 
 class __bad_image(object):
     def __init__(*args, **kwargs):
@@ -349,6 +363,7 @@ _code_by_type_lookup[<object_ptr>(xrange_type)]         = FT_LIST_TYPE + FT_SAFE
 _code_by_type_lookup[<object_ptr>(datetime_type)]       = FT_DATETIME_TYPE
 _code_by_type_lookup[<object_ptr>(_image_type)]         = FT_IMAGE_TYPE
 _code_by_type_lookup[<object_ptr>(np_ndarray)]          = FT_NDARRAY_TYPE
+_code_by_type_lookup[<object_ptr>(np_matrix)]           = FT_NDARRAY_TYPE
 
 try:
     import builtins
@@ -377,6 +392,7 @@ _code_by_map_force[<object_ptr>(datetime_type)] = FT_DATETIME_TYPE  + FT_SAFE
 _code_by_map_force[<object_ptr>(none_type)]     = FT_NONE_TYPE
 _code_by_map_force[<object_ptr>(_image_type)]   = FT_IMAGE_TYPE     + FT_SAFE
 _code_by_map_force[<object_ptr>(np_ndarray)]    = FT_NDARRAY_TYPE
+_code_by_map_force[<object_ptr>(np_matrix)]     = FT_NDARRAY_TYPE
 
 cdef dict _code_by_name_lookup = {
     'str'      : FT_STR_TYPE     + FT_SAFE,
@@ -1435,7 +1451,10 @@ cdef inline bint _tr_buffer_to_flex_vec(flex_vec& retv, object v):
 
 @cython.boundscheck(False)
 cdef inline bint _tr_buffer_to_flex_nd_vec(flex_nd_vec& retv, object v):
-    if type(v) is not np_ndarray:
+    # Note that we explicitly support np.matrix mostly because otherwise we will
+    # treat it as a generic iterable (sequence) and crash when we attempt to
+    # traverse it: subscripting np.matrix doesn't reduce dimensionality.
+    if type(v) is not np_ndarray and type(v) is not np_matrix:
         return False
 
     # translate the elements

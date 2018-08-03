@@ -45,6 +45,9 @@ class SArrayTest(unittest.TestCase):
         self.float_data = [1., 2., 3., 4., 5., 6., 7., 8., 9., 10.]
         self.string_data = ["abc", "def", "hello", "world", "pika", "chu", "hello", "world"]
         self.vec_data = [array.array('d', [i, i+1]) for i in self.int_data]
+        self.np_array_data = [np.array(x) for x in self.vec_data]
+        self.empty_np_array_data = [np.array([])]
+        self.np_matrix_data = [np.matrix(x) for x in self.vec_data]
         self.list_data = [[i, str(i), i * 1.0] for i in self.int_data]
         self.dict_data =  [{str(i): i, i : float(i)} for i in self.int_data]
         self.url = "http://s3-us-west-2.amazonaws.com/testdatasets/a_to_z.txt.gz"
@@ -52,7 +55,14 @@ class SArrayTest(unittest.TestCase):
     def __test_equal(self, _sarray, _data, _type):
         self.assertEqual(_sarray.dtype, _type)
         self.assertEqual(len(_sarray), len(_data))
-        self.assertSequenceEqual(list(_sarray.head(len(_sarray))), _data)
+        sarray_contents = list(_sarray.head(len(_sarray)))
+        if _type == np.ndarray:
+            # Special case for np.ndarray elements, which assertSequenceEqual
+            # does not handle.
+            np.testing.assert_array_equal(sarray_contents, _data)
+        else:
+            # Use unittest methods when possible for better consistency.
+            self.assertSequenceEqual(sarray_contents, _data)
 
     def __test_almost_equal(self, _sarray, _data, _type):
         self.assertEqual(_sarray.dtype, _type)
@@ -101,6 +111,10 @@ class SArrayTest(unittest.TestCase):
         self.__test_equal(SArray(self.url, str), expected_output, str)
 
         self.__test_creation(self.vec_data, array.array, self.vec_data)
+        self.__test_creation(self.np_array_data, np.ndarray, self.np_array_data)
+        self.__test_creation(self.empty_np_array_data, np.ndarray,
+                             self.empty_np_array_data)
+        self.__test_creation(self.np_matrix_data, np.ndarray, self.np_matrix_data)
         self.__test_creation(self.list_data, list, self.list_data)
 
         self.__test_creation(self.dict_data, dict, self.dict_data)
@@ -111,6 +125,13 @@ class SArrayTest(unittest.TestCase):
         self.__test_creation_type_inference(self.bool_data, int, [int(x) for x in self.bool_data])
         self.__test_creation_type_inference(self.string_data, str, self.string_data)
         self.__test_creation_type_inference(self.vec_data, array.array, self.vec_data)
+        self.__test_creation_type_inference(self.np_array_data, np.ndarray,
+                                            self.np_array_data)
+        self.__test_creation_type_inference(self.empty_np_array_data,
+                                            np.ndarray,
+                                            self.empty_np_array_data)
+        self.__test_creation_type_inference(self.np_matrix_data, np.ndarray,
+                                            self.np_matrix_data)
         self.__test_creation_type_inference([np.bool_(True),np.bool_(False)],int,[1,0])
         self.__test_creation((1,2,3,4), int, [1,2,3,4])
 

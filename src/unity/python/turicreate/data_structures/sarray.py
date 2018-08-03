@@ -353,12 +353,6 @@ class SArray(object):
             self.__proxy__ = data.__proxy__
         else:
             self.__proxy__ = UnitySArrayProxy()
-
-            # Guard against numpy.matrix, which cannot be traversed recursively,
-            # since subscripting a matrix always yields another (2d) matrix.
-            if HAS_NUMPY and isinstance(data, numpy.matrix):
-                data = numpy.asarray(data)
-
             # we need to perform type inference
             if dtype is None:
                 if HAS_PANDAS and isinstance(data, pandas.Series):
