@@ -2,9 +2,6 @@
 #include "mps_lstm_helper.h"
 #include "mps_utils.h"
 
-// TODO: remove the define below once the dropout bug is fixed
-#define ALWAYS_ALLOCATE_DO_OUTPUT 1
-
 // --------------------------------------------------------------------------------------------
 //                  Common utilities for all Layers
 // --------------------------------------------------------------------------------------------
@@ -632,7 +629,7 @@ void DropOutLayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q
                     seed:nSeed
       maskStrideInPixels:MTLSize{.width = 1, .height = 1, .depth = 1}];
 
-  if (ALWAYS_ALLOCATE_DO_OUTPUT || is_output_layer || kLowLevelModeTest == net_mode){
+  if (is_output_layer || kLowLevelModeTest == net_mode) {
       op_forward.destinationImageAllocator = [[TCMPSImageAllocator alloc] initWithFormat:MPSImageFeatureChannelFormatFloat32];
   }
   op_backward = [[MPSCNNDropoutGradient alloc]
@@ -641,9 +638,9 @@ void DropOutLayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q
                     seed:nSeed
       maskStrideInPixels:MTLSize{.width = 1, .height = 1, .depth = 1}];
     
-    if (ALWAYS_ALLOCATE_DO_OUTPUT || kLowLevelModeTest == net_mode){
+  if (kLowLevelModeTest == net_mode) {
           op_backward.destinationImageAllocator = [[TCMPSImageAllocator alloc] initWithFormat:MPSImageFeatureChannelFormatFloat32];
-    }
+  }
 }
 
 // SoftMax
