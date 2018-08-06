@@ -29,8 +29,6 @@ def count_words(sa, to_lower=True,
     By default, words are split on all whitespace and newline characters. The
     output is commonly known as the "bag-of-words" representation of text data.
 
-    This function is implemented using
-
     Parameters
     ----------
     sa : SArray[str | dict | list]

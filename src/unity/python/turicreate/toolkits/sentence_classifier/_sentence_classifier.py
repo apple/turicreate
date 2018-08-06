@@ -39,9 +39,8 @@ def create(dataset, target, features=None, method='auto', validation_set='auto',
     Parameters
     ----------
     dataset: SFrame
-      Contains one column that contains the text dataset of interest.  This can be
-      unstructured text dataset, such as that appearing in forums, user-generated
-      reviews, and so on.
+      Contains one or more columns of text data. This can be unstructured text
+      dataset, such as that appearing in forums, user-generated reviews, etc.
 
     target: str
       The column name containing class labels for each document.
@@ -102,9 +101,8 @@ def create(dataset, target, features=None, method='auto', validation_set='auto',
     features = [f for f in features if f != target]
 
     # Process training set using the default feature extractor.
-    train = dataset
     feature_extractor = _BOW_FEATURE_EXTRACTOR
-    train = feature_extractor(train, target)
+    train = feature_extractor(dataset, target)
 
     # Check for a validation set.
     if isinstance(validation_set, _tc.SFrame):
