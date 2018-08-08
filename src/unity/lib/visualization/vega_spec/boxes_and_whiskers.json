@@ -35,7 +35,13 @@
   "style": "cell",
   "data": [
     {
-      "name": "source_2"
+      "name": "source_2",
+      "transform": [
+        {
+          "type": "collect",
+          "sort": {"field": "median"}
+        }
+      ] 
     }
   ],
   "signals": [
