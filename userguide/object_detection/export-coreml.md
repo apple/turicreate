@@ -35,8 +35,15 @@ let objectRecognition = VNCoreMLRequest(model: visionModel,
 
 For more details on the integration with Core ML and a sample app to get
 you started, please look at the the article on
-[Recognizing Objects in Live Capture](https://developer.apple.com/documentation/vision)[Recognizing Objects
-in Live Capture].
+[Recognizing Objects in Live Capture](https://developer.apple.com/documentation/vision/recognizing_objects_in_live_capture).
+
+**Note:** Only models that were exported with *non-maximum suppression* (the default
+behavior in Turi Create 5.0+) will work with this example app. Older models
+or models that specify `include_non_maximum_suppression=False` will not give
+results as `VNRecognizedObjectObservation` objects and instead as
+`VNCoreMLFeatureValueObservation` objects; these are silently ignored in
+this example app. To learn how to work with `VNCoreMLFeatureValueObservation`
+objects, please continue reading.
 
 #### Deployment for iOS 11 and  macOS 10.13
 
