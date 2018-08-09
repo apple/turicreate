@@ -36,43 +36,32 @@ styleArray?[styleIndex] = 1.0
 
 Now, you can stylize your images using:
 ```swift
-let mlModel = MyStyleTransferModel()
 
-let imageSize = CGSize(width: 600, height: 600)
+// Assumes that you have a `ciImage` variable
 
-func stylize(img:UIImage, index:Int, image_size: CGSize) -> UIImage {
-	let image = resizeImage(image: img, targetSize: image_size)
-    let ciImage = CIImage(image: image)
-    let context = CIContext(options: nil)
-    let cgImage = context.createCGImage(ciImage!, from: ciImage!.extent)
-    var pxbuffer: CVPixelBuffer? = nil
-    let options: NSDictionary = [:]
-    let bytesPerRow = cgImage!.bytesPerRow
-    let dataFromImageDataProvider = cgImage?.dataProvider!.data
-        
-    CVPixelBufferCreateWithBytes(
-        kCFAllocatorDefault,
-        image_size.width,
-        image_size.height,
-        kCVPixelFormatType_32BGRA,
-        CFDataGetMutableBytePtr(dataFromImageDataProvider as! CFMutableData),
-        bytesPerRow,
-        nil,
-        nil,
-        options,
-        &pxbuffer)
+// initialize model 
+let model = MyStyleTransferModel()
 
-    var pred_img:MyStyleTransferModelOutput;
-    do{
-        pred_img = try self.model.prediction(image: pxbuffer!, index: array!)
-        var ml_multi_array = (pred_img.stylizedImage)
-        var unwrapped_ml = ml_multi_array
-        var uiImage = getUIImage(img: unwrapped_ml)
-        return uiImage
-    } catch {
-        print("Unexpected Prediction Error: \(error)")
-    }
-}
+// set input size of the model
+let modelInputSize = CGSize(width: 600, height: 600)
 
-let prediction_image = stylize(img: InputImage, index: styleArray, image_size: CGSize(600, 600))
+// create a cvpixel buffer
+var pixelBuffer: CVPixelBuffer?
+let attrs = [kCVPixelBufferCGImageCompatibilityKey: kCFBooleanTrue,
+             kCVPixelBufferCGBitmapContextCompatibilityKey: kCFBooleanTrue] as CFDictionary
+CVPixelBufferCreate(kCFAllocatorDefault,
+                    modelInputSize.width,
+                    modelInputSize.height,
+                    kCVPixelFormatType_32BGRA,
+                    attrs,
+                    &pixelBuffer)
+
+// put bytes into pixelBuffer
+let context = CIContext()
+context.render(ciImage, to: pixelBuffer!)
+
+// predict image
+let output = try? model.prediction(image: pixelBuffer!, index: styleArray!)
+let predImage = CIImage(cvPixelBuffer: (output?.stylizedImage)!)
+
 ```
