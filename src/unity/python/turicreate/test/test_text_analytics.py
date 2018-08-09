@@ -163,15 +163,19 @@ class FeatureEngineeringTest(unittest.TestCase):
         ## Check that delimiters work properly by default and when modified.
         expected1 = ['this is some url http www someurl com this is some url http www someurl com', 'should we yes we should should we yes we should']
         expected2 = ['this is some url http://www.someurl.com this is some url http://www.someurl.com', 'should we yes we should. should we yes we should.']
+        expected3 = ['url http www someurl url http www someurl', '']
 
         word_counts1 = tc.text_analytics.trim_rare_words(self.punctuated_double)
         word_counts2 = tc.text_analytics.trim_rare_words(self.punctuated_double,
                                                      delimiters=["?", "!", ","," "])
+        word_counts3 = tc.text_analytics.trim_rare_words(self.punctuated_double, stop_words=tc.text_analytics.stop_words())
 
         self.assertEqual(word_counts1.dtype, str)
         self.sframe_comparer._assert_sarray_equal(word_counts1, expected1)
         self.assertEqual(word_counts2.dtype, str)
         self.sframe_comparer._assert_sarray_equal(word_counts2, expected2)
+        self.assertEqual(word_counts3.dtype, str)
+        self.sframe_comparer._assert_sarray_equal(word_counts3, expected3)
 
 
     def test_count_words(self):
