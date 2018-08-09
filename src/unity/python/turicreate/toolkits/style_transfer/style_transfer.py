@@ -179,8 +179,8 @@ def create(style_dataset, content_dataset, style_feature=None,
         max_iterations = 5000
         if verbose:
             print('Setting max_iterations to be {}'.format(max_iterations))
-    # data loader
 
+    # data loader
     if params['use_augmentation']:
         content_loader_type = '%s-with-augmentation' % params['training_content_loader_type']
     else:
@@ -188,7 +188,6 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     content_images_loader = _SFrameSTIter(content_dataset, batch_size, shuffle=True,
                                   feature_column=content_feature, input_shape=input_shape,
-                                  num_epochs=max_iterations,
                                   loader_type=content_loader_type, aug_params=params,
                                   sequential=params['sequential_image_processing'])
     ctx = _mxnet_utils.get_mxnet_context(max_devices=params['batch_size'])
@@ -251,7 +250,6 @@ def create(style_dataset, content_dataset, style_feature=None,
     gram_chunks = [[] for _ in range(num_layers)]
     for s_batch in style_images_loader:
         s_data = _gluon.utils.split_and_load(s_batch.data[0], ctx_list=ctx, batch_axis=0)
-        results = []
         for s in s_data:
             vgg16_s = _vgg16_data_prep(s)
             ret = vgg_model(vgg16_s)

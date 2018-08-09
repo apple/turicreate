@@ -125,12 +125,9 @@ class SFrameSTIter(_mx.io.DataIter):
         return self._provide_data
 
     def _next(self):
-        images = []
 
         if self.cur_epoch == self.num_epochs or len(self.sframe) == 0:
             raise StopIteration
-        indices = []
-        repeat_indices = []
 
         if self.loader_type == 'favor-native-size':
             b_images = []
