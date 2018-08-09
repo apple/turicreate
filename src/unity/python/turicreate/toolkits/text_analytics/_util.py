@@ -15,30 +15,34 @@ import six
 import turicreate.toolkits._feature_engineering as _feature_engineering
 
 
-def count_words(sa, to_lower=True,
-                delimiters=["\r", "\v", "\n", "\f", "\t", " "]):
-    """
-    count_words(sa, to_lower=True, delimiters=["\\\\r", "\\\\v", "\\\\n", "\\\\f", "\\\\t", " "])
+DEFAULT_DELIMITERS = ["\r", "\v", "\n", "\f", "\t", " ", "!", "#", "$", "%",
+                      "&", "'", "\"", "(", ")", "*", "+", ",", "-", ".", "/",
+                      ":", ";", "<", "=", ">", "?", "@", "[", "\\", "]", "^",
+                      "_", "`", "{", "|", "}", "~"]
 
-    Convert the content of string/dict/list type SArrays to a dictionary of
-    (word, count) pairs. Dictionary keys and list elements must be strings.
-    The strings are first tokenized into words according to the specified
-    `to_lower` and `delimiters` options. Then, word counts are accumulated.
-    In each output dictionary, the keys are the words in the corresponding
-    input data entry, and the values are the number of times the words appears.
-    By default, words are split on all whitespace and newline characters. The
-    output is commonly known as the "bag-of-words" representation of text data.
+
+def count_words(text, to_lower=True, delimiters=DEFAULT_DELIMITERS):
+    """
+    If `text` is an SArray of strings or an SArray of lists of strings, the
+    occurances of word are counted for each row in the SArray.
+
+    If `text` is an SArray of dictionaries, the keys are tokenized and the
+    values are the counts. Counts for the same word, in the same row, are
+    added together.
+
+    This output is commonly known as the "bag-of-words" representation of text
+    data.
 
     Parameters
     ----------
-    sa : SArray[str | dict | list]
-        Input data to be tokenized and counted. 
+    text : SArray[str | dict | list]
+        SArray of type: string, dict or list.
 
     to_lower : bool, optional
         If True, all strings are converted to lower case before counting.
 
     delimiters : list[str], None, optional
-        Input strings are tokenized using delimiter characters in this list.
+        Input strings are tokenized using `delimiters` characters in this list.
         Each entry in this list must contain a single character. If set to
         `None`, then a Penn treebank-style tokenization is used, which contains
         smart handling of punctuations.
@@ -46,8 +50,8 @@ def count_words(sa, to_lower=True,
     Returns
     -------
     out : SArray[dict]
-        Each entry contains a dictionary with the frequency count of each word
-        in the corresponding input entry.
+        An SArray with the same length as the`text` input. For each row, the keys
+        of the dictionary are the words and the values are the corresponding counts.
 
     See Also
     --------
@@ -66,14 +70,14 @@ def count_words(sa, to_lower=True,
 
         # Create input data
         >>> sa = turicreate.SArray(["The quick brown fox jumps.",
-        ...                       "Word word WORD, word!!!word"])
+                                    "Word word WORD, word!!!word"])
 
         # Run count_words
         >>> turicreate.text_analytics.count_words(sa)
         dtype: dict
         Rows: 2
         [{'quick': 1, 'brown': 1, 'the': 1, 'fox': 1, 'jumps.': 1},
-         {'word,': 1, 'word!!!word': 1, 'word': 2}]
+         {'word,': 5}]
 
         # Run count_words with Penn treebank style tokenization to handle
         # punctuations
@@ -85,7 +89,7 @@ def count_words(sa, to_lower=True,
 
         # Run count_words with dictionary input
         >>> sa = turicreate.SArray([{'alice bob': 1, 'Bob alice': 0.5},
-        ...                       {'a dog': 0, 'a dog cat': 5}])
+                                    {'a dog': 0, 'a dog cat': 5}])
         >>> turicreate.text_analytics.count_words(sa)
         dtype: dict
         Rows: 2
@@ -100,10 +104,10 @@ def count_words(sa, to_lower=True,
 
     """
 
-    _raise_error_if_not_sarray(sa, "sa")
+    _raise_error_if_not_sarray(text, "text")
 
     ## Compute word counts
-    sf = _turicreate.SFrame({'docs': sa})
+    sf = _turicreate.SFrame({'docs': text})
     fe = _feature_engineering.WordCounter(features='docs',
                                                    to_lower=to_lower,
                                                    delimiters=delimiters,
@@ -112,27 +116,19 @@ def count_words(sa, to_lower=True,
 
     return output_sf['docs']
 
-def count_ngrams(sa, n=2, method="word", to_lower=True,
-    delimiters=["\r", "\v", "\n", "\f", "\t", " ",
-                "!", "#", "$", "%", "&", "'", "(", ")",
-                "*", "+", ",", "-", ".", "/", ":", ";",
-                "<", "=", ">", "?", "@", "[", "\\", "]",
-                "^", "_", "`", "{", "|", "}", "~"],
-    ignore_punct=True, ignore_space=True):
+def count_ngrams(text, n=2, method="word", to_lower=True,
+                 delimiters=DEFAULT_DELIMITERS,
+                 ignore_punct=True, ignore_space=True):
     """
-    count_ngrams(sa, to_lower=True, delimiters=["\\\\r", "\\\\v", "\\\\n", "\\\\f", "\\\\t", " ", "!", "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "\\\\", "]", "^", "_", "`", "{", "|", "}", "~"], ignore_punct=True, ignore_space=True)
-
     Return an SArray of ``dict`` type where each element contains the count
     for each of the n-grams that appear in the corresponding input element.
     The n-grams can be specified to be either character n-grams or word
     n-grams.  The input SArray could contain strings, dicts with string keys
     and numeric values, or lists of strings.
 
-    This function is implemented using
-
     Parameters
     ----------
-    sa : SArray[str | dict | list]
+    Text : SArray[str | dict | list]
         Input text data. 
 
     n : int, optional
@@ -147,7 +143,7 @@ def count_ngrams(sa, n=2, method="word", to_lower=True,
         If True, all words are converted to lower case before counting.
 
     delimiters : list[str], None, optional
-        If method is "word", input strings are tokenized using delimiter
+        If method is "word", input strings are tokenized using `delimiters`
         characters in this list. Each entry in this list must contain a single
         character. If set to `None`, then a Penn treebank-style tokenization is
         used, which contains smart handling of punctuations. If method is
@@ -216,7 +212,7 @@ def count_ngrams(sa, n=2, method="word", to_lower=True,
 
         # Run count_ngrams with dictionary input
         >>> sa = turicreate.SArray([{'alice bob': 1, 'Bob alice': 0.5},
-        ...                       {'a dog': 0, 'a dog cat': 5}])
+                                    {'a dog': 0, 'a dog cat': 5}])
         >>> turicreate.text_analytics.count_ngrams(sa)
         dtype: dict
         Rows: 2
@@ -230,10 +226,10 @@ def count_ngrams(sa, n=2, method="word", to_lower=True,
         [{'bar bah': 1}, {'dog cat': 1, 'a dog': 2}]
     """
 
-    _raise_error_if_not_sarray(sa, "sa")
+    _raise_error_if_not_sarray(text, "text")
 
-    ## Compute word counts
-    sf = _turicreate.SFrame({'docs': sa})
+    # Compute ngrams counts
+    sf = _turicreate.SFrame({'docs': text})
     fe = _feature_engineering.NGramCounter(features='docs',
                                                     n=n,
                                                     method=method,
@@ -246,7 +242,8 @@ def count_ngrams(sa, n=2, method="word", to_lower=True,
 
     return output_sf['docs']
 
-def tf_idf(dataset):
+
+def tf_idf(text):
     """
     Compute the TF-IDF scores for each word in each document. The collection
     of documents must be in bag-of-words format.
@@ -259,11 +256,9 @@ def tf_idf(dataset):
     appeared in, :math:`N` is the number of documents, and we use the
     natural logarithm.
 
-    This function is implemented using
-
     Parameters
     ----------
-    dataset : SArray[str | dict | list]
+    text : SArray[str | dict | list]
         Input text data. 
 
     Returns
@@ -289,18 +284,19 @@ def tf_idf(dataset):
         >>> docs = turicreate.SArray('https://static.turi.com/datasets/nips-text')
         >>> docs_tfidf = turicreate.text_analytics.tf_idf(docs)
     """
-    _raise_error_if_not_sarray(dataset, "dataset")
+    _raise_error_if_not_sarray(text, "text")
 
-    if len(dataset) == 0:
+    if len(text) == 0:
         return _turicreate.SArray()
 
-    dataset = _turicreate.SFrame({'docs': dataset})
+    dataset = _turicreate.SFrame({'docs': text})
     scores = _feature_engineering.TFIDF('docs').fit_transform(dataset)
 
     return scores['docs']
 
-def trim_rare_words(sa, threshold=2, to_lower=True,
-                delimiters=["\r", "\v", "\n", "\f", "\t", " "], stopwords=None):
+
+def trim_rare_words(text, threshold=2, to_lower=True,
+                    delimiters=DEFAULT_DELIMITERS, stopwords=None):
     '''
     Remove words that occur below a certain number of times in an SArray.
     This is a common method of cleaning text before it is used, and can increase the
@@ -326,7 +322,7 @@ def trim_rare_words(sa, threshold=2, to_lower=True,
 
     Parameters
     ----------
-    sa: SArray[str | dict | list]
+    text : SArray[str | dict | list]
         The input text data.
 
     threshold : int, optional
@@ -367,7 +363,7 @@ def trim_rare_words(sa, threshold=2, to_lower=True,
 
         # Create input data
         >>> sa = turicreate.SArray(["The quick brown fox jumps in a fox like way.",
-        ...                       "Word word WORD, word!!!word"])
+                                    "Word word WORD, word!!!word"])
 
         # Run trim_rare_words
         >>> turicreate.text_analytics.trim_rare_words(sa)
@@ -384,7 +380,7 @@ def trim_rare_words(sa, threshold=2, to_lower=True,
 
         # Run trim_rare_words with dictionary input
         >>> sa = turicreate.SArray([{'alice bob': 1, 'Bob alice': 2},
-        ...                       {'a dog': 0, 'a dog cat': 5}])
+                                    {'a dog': 0, 'a dog cat': 5}])
         >>> turicreate.text_analytics.trim_rare_words(sa)
         dtype: dict
         Rows: 2
@@ -392,19 +388,17 @@ def trim_rare_words(sa, threshold=2, to_lower=True,
 
         # Run trim_rare_words with list input
         >>> sa = turicreate.SArray([['one', 'bar bah', 'One'],
-        ...                     ['a dog', 'a dog cat', 'A DOG']])
+                                    ['a dog', 'a dog cat', 'A DOG']])
         >>> turicreate.text_analytics.trim_rare_words(sa)
         dtype: list
         Rows: 2
         [['one', 'one'], ['a dog', 'a dog']]
+    '''
 
-
-'''
-
-    _raise_error_if_not_sarray(sa, "sa")
+    _raise_error_if_not_sarray(text, "text")
 
     ## Compute word counts
-    sf = _turicreate.SFrame({'docs': sa})
+    sf = _turicreate.SFrame({'docs': text})
     fe = _feature_engineering.RareWordTrimmer(features='docs',
                                                  threshold=threshold,
                                                  to_lower=to_lower,
@@ -415,16 +409,13 @@ def trim_rare_words(sa, threshold=2, to_lower=True,
 
     return tokens['docs']
 
-def tokenize(sa, to_lower=False,
-                delimiters=["\r", "\v", "\n", "\f", "\t", " "]):
+def tokenize(text, to_lower=False, delimiters=DEFAULT_DELIMITERS):
     """
-    tokenize(sa, to_lower=False, delimiters=["\\\\r", "\\\\v", "\\\\n", "\\\\f", "\\\\t", " "])
-
     Tokenize the input SArray of text strings and return the list of tokens.
 
     Parameters
     ----------
-    sa : SArray[str]
+    text : SArray[str]
         Input data of strings representing English text. This tokenizer is not
         intended to process XML, HTML, or other structured text formats.
 
@@ -457,7 +448,7 @@ def tokenize(sa, to_lower=False,
         >>> import turicreate
 
         >>> docs = turicreate.SArray(['This is the first sentence.',
-        ...                         "This one, it's the second sentence."])
+                                      "This one, it's the second sentence."])
 
         # Default tokenization by space characters
         >>> turicreate.text_analytics.tokenize(docs)
@@ -474,7 +465,7 @@ def tokenize(sa, to_lower=False,
          ['This', 'one', ',', 'it', "'s", 'the', 'second', 'sentence', '.']]
 
     """
-    _raise_error_if_not_sarray(sa, "sa")
+    _raise_error_if_not_sarray(text, "text")
 
     ## Compute word counts
     sf = _turicreate.SFrame({'docs': sa})
@@ -750,9 +741,9 @@ def random_split(dataset, prob=.5):
     --------
     >>> docs = turicreate.SArray([{'are':5, 'you':3, 'not': 1, 'entertained':10}])
     >>> train, test = turicreate.text_analytics.random_split(docs)
-    >>> print train
+    >>> print(train)
     [{'not': 1.0, 'you': 3.0, 'are': 3.0, 'entertained': 7.0}]
-    >>> print test
+    >>> print(test)
     [{'are': 2.0, 'entertained': 3.0}]
     """
 

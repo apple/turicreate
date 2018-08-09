@@ -42,12 +42,6 @@ class FeatureEngineeringTest(unittest.TestCase):
         self.sframe_comparer = util.SFrameComparer()
 
     def test_count_ngrams(self):
-        """
-        Check correctness of the `text_analytics.count_ngrams` function. This
-        code copies the same test in test_sarray.py, but that test will be
-        removed when the SArray version of count_ngrams is removed in GLC
-        version 1.7.
-        """
         # Testing word n-gram functionality
         result = tc.text_analytics.count_ngrams(self.sa_word, 3)
         result2 = tc.text_analytics.count_ngrams(self.sa_word, 2)
@@ -141,13 +135,6 @@ class FeatureEngineeringTest(unittest.TestCase):
             
 
     def test_trim_rare_words(self):
-        """
-        Check correctness of the `text_analytics.trim_rare_words` function. This
-        code copies the same test in test_sarray.py, but that test will be
-        removed when the SArray version of count_ngrams is removed in GLC
-        version 1.7.
-        """
-
         ## Bogus input type
         sa = tc.SArray([1, 2, 3])
         with self.assertRaises(RuntimeError):
@@ -155,11 +142,11 @@ class FeatureEngineeringTest(unittest.TestCase):
 
 
         ## Other languages
-        expected = ["this is someurl http://someurl!! this is someurl http://someurl!!",
+        expected = ["this is someurl http someurl this is someurl http someurl",
                                     "中文 应该也 行 中文 应该也 行",
                                     "Сблъсъкът между Сблъсъкът между"]
 
-        expected2 = ["This is someurl http://someurl!! This is someurl http://someurl!!",
+        expected2 = ["This is someurl http someurl This is someurl http someurl",
                                     "中文 应该也 行 中文 应该也 行",
                                     "Сблъсъкът между Сблъсъкът между"]
 
@@ -174,7 +161,7 @@ class FeatureEngineeringTest(unittest.TestCase):
 
 
         ## Check that delimiters work properly by default and when modified.
-        expected1 = ['this is some url http://www.someurl.com!! this is some url http://www.someurl.com!!', 'should we? yes, we should. should we? yes, we should.']
+        expected1 = ['this is some url http www someurl com this is some url http www someurl com', 'should we yes we should should we yes we should']
         expected2 = ['this is some url http://www.someurl.com this is some url http://www.someurl.com', 'should we yes we should. should we yes we should.']
 
         word_counts1 = tc.text_analytics.trim_rare_words(self.punctuated_double)
@@ -188,24 +175,16 @@ class FeatureEngineeringTest(unittest.TestCase):
 
 
     def test_count_words(self):
-        """
-        Check correctness of the `text_analytics.count_words` function. This
-        code copies the same test in test_sarray.py, but that test will be
-        removed when the SArray version of count_ngrams is removed in GLC
-        version 1.7.
-        """
-
         ## Bogus input type
         sa = tc.SArray([1, 2, 3])
         with self.assertRaises(RuntimeError):
             tc.text_analytics.count_words(sa)
 
-
         ## Other languages
-        expected = [{"this": 1, "http://someurl!!": 1, "someurl": 1, "is": 1},
+        expected = [{"this": 1, "http": 1, "someurl": 2, "is": 1},
                     {"中文": 1, "应该也": 1, "行": 1},
                     {"Сблъсъкът": 1, "между": 1}]
-        expected2 = [{"This": 1, "http://someurl!!": 1, "someurl": 1, "is": 1},
+        expected2 = [{"This": 1, "http": 1, "someurl": 2, "is": 1},
                      {"中文": 1, "应该也": 1, "行": 1},
                      {"Сблъсъкът": 1, "между": 1}]
 
@@ -217,10 +196,9 @@ class FeatureEngineeringTest(unittest.TestCase):
         self.assertEqual(result.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(result, expected2)
 
-
         ## Check that delimiters work properly by default and when modified.
-        expected1 = [{"this": 1, "is": 1, "some": 1, "url": 1, "http://www.someurl.com!!": 1},
-                     {"should": 1, "we?": 1, "we": 1, "yes,": 1, "should.": 1}]
+        expected1 = [{"this": 1, "is": 1, "some": 1, "url": 1, "http": 1, "www": 1, "someurl": 1, "com": 1},
+                     {"should": 2, "we": 2, "yes": 1}]
         expected2 = [{"this is some url http://www.someurl.com": 1},
                      {"should we": 1, " yes": 1, " we should.": 1}]
 
