@@ -217,7 +217,7 @@ sf.save('wikipedia.sframe')
 This particular subset of wikipedia has over 72,000 documents; in the interest
 of speed for the demo we sample 20% of this. We also preprocess the data by
 constructing a bag-of-words representation for each article and trimming out
-stopwords. See Turi Create's [text analytics](https://apple.github.io/turicreate/docs/api/turicreate.toolkits.text_analytics.html) and
+stop words. See Turi Create's [text analytics](https://apple.github.io/turicreate/docs/api/turicreate.toolkits.text_analytics.html) and
 [SArray](https://apple.github.io/turicreate/docs/api/generated/turicreate.SArray.html)
 documentation for more details.
 
@@ -225,7 +225,7 @@ documentation for more details.
 sf_sample = sf.sample(0.2)
 sf_sample['word_bag'] = tc.text_analytics.count_words(sf_sample['X1'])
 sf_sample['word_bag'] = sf_sample['word_bag'].dict_trim_by_keys(
-                                    tc.text_analytics.stopwords(), exclude=True)
+                                    tc.text_analytics.stop_words(), exclude=True)
 ```
 
 With our trimmed bag of words representation, Jaccard distance is a natural

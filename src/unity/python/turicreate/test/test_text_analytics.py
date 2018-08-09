@@ -211,13 +211,14 @@ class FeatureEngineeringTest(unittest.TestCase):
         self.assertEqual(word_counts2.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(word_counts2, expected2)
 
-    def test_stopwords(self):
+    def test_stop_words(self):
         """
-        Check that the stopwords can be accessed properly as part of the text
+        Check that the stop words can be accessed properly as part of the text
         analytics toolkit.
         """
-        words = tc.text_analytics.stopwords()
-        assert len(words) > 400
+        words = tc.text_analytics.stop_words()
+        self.assertTrue(len(words) > 400)
+        self.assertTrue('a' in words)
 
     def test_tf_idf(self):
         """

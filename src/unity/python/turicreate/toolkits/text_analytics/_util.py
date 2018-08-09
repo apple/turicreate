@@ -296,7 +296,7 @@ def tf_idf(text):
 
 
 def trim_rare_words(text, threshold=2, to_lower=True,
-                    delimiters=DEFAULT_DELIMITERS, stopwords=None):
+                    delimiters=DEFAULT_DELIMITERS, stop_words=None):
     '''
     Remove words that occur below a certain number of times in an SArray.
     This is a common method of cleaning text before it is used, and can increase the
@@ -328,7 +328,7 @@ def trim_rare_words(text, threshold=2, to_lower=True,
     threshold : int, optional
         The count below which words are removed from the input.
 
-    stopwords: list[str], optional
+    stop_words: list[str], optional
         A manually specified list of stopwords, which are removed regardless
         of count.
 
@@ -403,7 +403,7 @@ def trim_rare_words(text, threshold=2, to_lower=True,
                                                  threshold=threshold,
                                                  to_lower=to_lower,
                                                  delimiters=delimiters,
-                                                 stopwords=stopwords,
+                                                 stopwords=stop_words,
                                                  output_column_prefix=None)
     tokens = fe.fit_transform(sf)
 
@@ -778,10 +778,10 @@ def random_split(dataset, prob=.5):
     return train, test
 
 
-def stopwords(lang='en'):
+def stop_words(lang='en'):
     """
     Get common words that are often removed during preprocessing of text data,
-    i.e. "stopwords". Currently only English stop words are provided.
+    i.e. "stop words". Currently only English stop words are provided.
 
     Parameters
     ----------
