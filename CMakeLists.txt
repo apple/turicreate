@@ -1,9 +1,9 @@
 project(Turi)
 
 
-# We require the most recent version of cmake and automatically
-# install the correct version when using the cmake lists
-cmake_minimum_required(VERSION 2.8.3)
+# We require a reasonably recent version of cmake
+# 3.12 for https://stackoverflow.com/a/51436025 (used in src/capi/CMakeLists.txt)
+cmake_minimum_required(VERSION 3.12)
 
 # Libraries linked via full path no longer produce linker search paths.
 cmake_policy(SET CMP0003 NEW)
