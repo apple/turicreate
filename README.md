@@ -70,8 +70,11 @@ Turi Create supports:
 System Requirements
 -------------------
 
+Turi Create requires:
+
 * Python 2.7, 3.5, 3.6
 * x86\_64 architecture
+* At least 4 GB of RAM
 
 Installation
 ------------
