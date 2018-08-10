@@ -295,8 +295,8 @@ def tf_idf(text):
     return scores['docs']
 
 
-def trim_rare_words(text, threshold=2, to_lower=True,
-                    delimiters=DEFAULT_DELIMITERS, stop_words=None):
+def drop_words(text, threshold=2, to_lower=True, delimiters=DEFAULT_DELIMITERS,
+               stop_words=None):
     '''
     Remove words that occur below a certain number of times in an SArray.
     This is a common method of cleaning text before it is used, and can increase the

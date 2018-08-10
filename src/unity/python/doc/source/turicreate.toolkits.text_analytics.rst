@@ -44,6 +44,6 @@ utilities
   random_split
   stop_words
   tokenize
-  trim_rare_words
+  drop_words
 
 .. currentmodule:: turicreate._internal

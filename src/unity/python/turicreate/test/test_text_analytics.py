@@ -134,11 +134,11 @@ class FeatureEngineeringTest(unittest.TestCase):
             assert len(context) == 1
             
 
-    def test_trim_rare_words(self):
+    def test_drop_words(self):
         ## Bogus input type
         sa = tc.SArray([1, 2, 3])
         with self.assertRaises(RuntimeError):
-            tc.text_analytics.trim_rare_words(sa)
+            tc.text_analytics.drop_words(sa)
 
 
         ## Other languages
@@ -151,11 +151,11 @@ class FeatureEngineeringTest(unittest.TestCase):
                                     "Сблъсъкът между Сблъсъкът между"]
 
 
-        result = tc.text_analytics.trim_rare_words(self.languages_double)
+        result = tc.text_analytics.drop_words(self.languages_double)
         self.assertEqual(result.dtype, str)
         self.sframe_comparer._assert_sarray_equal(result, expected)
 
-        result = tc.text_analytics.trim_rare_words(self.languages_double, to_lower=False)
+        result = tc.text_analytics.drop_words(self.languages_double, to_lower=False)
         self.assertEqual(result.dtype, str)
         self.sframe_comparer._assert_sarray_equal(result, expected2)
 
@@ -165,10 +165,10 @@ class FeatureEngineeringTest(unittest.TestCase):
         expected2 = ['this is some url http://www.someurl.com this is some url http://www.someurl.com', 'should we yes we should. should we yes we should.']
         expected3 = ['url http www someurl url http www someurl', '']
 
-        word_counts1 = tc.text_analytics.trim_rare_words(self.punctuated_double)
-        word_counts2 = tc.text_analytics.trim_rare_words(self.punctuated_double,
+        word_counts1 = tc.text_analytics.drop_words(self.punctuated_double)
+        word_counts2 = tc.text_analytics.drop_words(self.punctuated_double,
                                                      delimiters=["?", "!", ","," "])
-        word_counts3 = tc.text_analytics.trim_rare_words(self.punctuated_double, stop_words=tc.text_analytics.stop_words())
+        word_counts3 = tc.text_analytics.drop_words(self.punctuated_double, stop_words=tc.text_analytics.stop_words())
 
         self.assertEqual(word_counts1.dtype, str)
         self.sframe_comparer._assert_sarray_equal(word_counts1, expected1)
