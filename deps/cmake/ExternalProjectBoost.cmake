@@ -150,9 +150,9 @@ add_dependencies(boost ex_boost)
 
 target_link_libraries(boost INTERFACE ${libnames})
 if (APPLE OR WIN32)
-  target_link_libraries(boost INTERFACE z)
+  target_link_libraries(boost INTERFACE z bz2)
 else()
-  target_link_libraries(boost INTERFACE z rt)
+  target_link_libraries(boost INTERFACE z bz2 rt)
 endif()
 target_compile_definitions(boost INTERFACE HAS_BOOST)
 
