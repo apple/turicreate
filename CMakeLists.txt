@@ -213,7 +213,7 @@ message(WARNING "OpenMP Libraries were not found")
 #*                                                                        */
 #**************************************************************************/
 if (CLANG)
-set(CPP11_FLAGS "-std=c++11 -stdlib=libc++ -Wno-deprecated-register -Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900" CACHE STRING "C++11 enabling flags")
+  set(CPP11_FLAGS "-std=c++11 -stdlib=libc++ -Wno-stdlibcxx-not-found -Wno-deprecated-register -Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900" CACHE STRING "C++11 enabling flags")
 set(WERROR_FLAGS "-Werror")
 else()
 set(CPP11_FLAGS "-std=c++11 -Wno-enum-compare -Wno-conversion-null -ftemplate-depth=900" CACHE STRING "C++11 enabling flags")
