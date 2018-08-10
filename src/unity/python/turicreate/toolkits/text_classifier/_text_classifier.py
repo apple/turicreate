@@ -31,7 +31,7 @@ def _BOW_FEATURE_EXTRACTOR(sf, target=None):
 
 def create(dataset, target, features=None, method='auto', validation_set='auto', max_iterations=10):
     """
-    Create a model that trains a classifier to classify sentences from a
+    Create a model that trains a classifier to classify text from a
     collection of documents. The model is a
     :class:`~turicreate.logistic_classifier.LogisticClassifier` model trained
     using a bag-of-words representation of the text dataset.
@@ -71,17 +71,17 @@ def create(dataset, target, features=None, method='auto', validation_set='auto',
 
     Returns
     -------
-    out : :class:`~SentenceClassifier`
+    out : :class:`~TextClassifier`
 
     Examples
     --------
     >>> import turicreate as tc
     >>> dataset = tc.SFrame({'rating': [1, 5], 'text': ['hate it', 'love it']})
 
-    >>> m = tc.sentence_classifier.create(dataset, 'rating', features=['text'])
+    >>> m = tc.text_classifier.create(dataset, 'rating', features=['text'])
     >>> m.predict(dataset)
 
-    You may also evaluate predictions against known sentence scores.
+    You may also evaluate predictions against known text scores.
 
     >>> metrics = m.evaluate(dataset)
     """
@@ -115,7 +115,7 @@ def create(dataset, target, features=None, method='auto', validation_set='auto',
                                        max_iterations=max_iterations,
                                        validation_set=validation_set)
     num_examples = len(dataset)
-    model = SentenceClassifier()
+    model = TextClassifier()
     model.__proxy__.update(
         {'target':   target,
          'features': features,
@@ -125,8 +125,8 @@ def create(dataset, target, features=None, method='auto', validation_set='auto',
          'classifier': m})
     return model
 
-class SentenceClassifier(_CustomModel):
-    _PYTHON_SENTENCE_CLASSIFIER_MODEL_VERSION = 1
+class TextClassifier(_CustomModel):
+    _PYTHON_TEXT_CLASSIFIER_MODEL_VERSION = 1
 
     def __init__(self, state=None):
         if state is None:
@@ -136,10 +136,10 @@ class SentenceClassifier(_CustomModel):
 
     @classmethod
     def _native_name(cls):
-        return "sentence_classifier"
+        return "text_classifier"
 
     def _get_version(self):
-        return self._PYTHON_SENTENCE_CLASSIFIER_MODEL_VERSION
+        return self._PYTHON_TEXT_CLASSIFIER_MODEL_VERSION
 
     def _get_native_state(self):
         import copy
@@ -152,7 +152,7 @@ class SentenceClassifier(_CustomModel):
         from turicreate.toolkits.classifier.logistic_classifier import LogisticClassifier
         state['classifier'] = LogisticClassifier(state['classifier'])
         state = _PythonProxy(state)
-        return SentenceClassifier(state)
+        return TextClassifier(state)
 
     def predict(self, dataset, output_type='class'):
         """
@@ -189,7 +189,7 @@ class SentenceClassifier(_CustomModel):
         --------
         >>> import turicreate as tc
         >>> dataset = tc.SFrame({'rating': [1, 5], 'text': ['hate it', 'love it']})
-        >>> m = tc.sentence_classifier.create(dataset, 'rating', features=['text'])
+        >>> m = tc.text_classifier.create(dataset, 'rating', features=['text'])
         >>> m.predict(dataset)
 
         """
@@ -225,7 +225,7 @@ class SentenceClassifier(_CustomModel):
         --------
         >>> import turicreate as tc
         >>> dataset = tc.SFrame({'rating': [1, 5], 'text': ['hate it', 'love it']})
-        >>> m = tc.sentence_classifier.create(dataset, 'rating', features=['text'])
+        >>> m = tc.text_classifier.create(dataset, 'rating', features=['text'])
         >>> output = m.classify(dataset)
 
         """
@@ -328,7 +328,7 @@ class SentenceClassifier(_CustomModel):
         from turicreate.extensions import _logistic_classifier_export_as_model_asset
         from turicreate.toolkits import _coreml_utils
 
-        display_name = 'sentence classifier'
+        display_name = 'text classifier'
         short_description = _coreml_utils._mlmodel_short_description(display_name)
         context = {'class': self.__class__.__name__,
                    'version': _tc.__version__,

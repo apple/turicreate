@@ -1,7 +1,7 @@
-:mod:`sentence_classifier`
+:mod:`text_classifier`
 ==========================
 
-.. automodule:: turicreate.toolkits.sentence_classifier
+.. automodule:: turicreate.toolkits.text_classifier
     :members:
 
 .. currentmodule:: turicreate
@@ -13,5 +13,5 @@ sentence classifier
   :toctree: generated/
   :nosignatures:
 
-  sentence_classifier.create
-  sentence_classifier.SentenceClassifier
+  text_classifier.create
+  text_classifier.TextClassifier
