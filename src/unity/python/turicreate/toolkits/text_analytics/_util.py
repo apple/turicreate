@@ -329,7 +329,7 @@ def drop_words(text, threshold=2, to_lower=True, delimiters=DEFAULT_DELIMITERS,
         The count below which words are removed from the input.
 
     stop_words: list[str], optional
-        A manually specified list of stopwords, which are removed regardless
+        A manually specified list of stop words, which are removed regardless
         of count.
 
     to_lower : bool, optional
@@ -365,31 +365,31 @@ def drop_words(text, threshold=2, to_lower=True, delimiters=DEFAULT_DELIMITERS,
         >>> sa = turicreate.SArray(["The quick brown fox jumps in a fox like way.",
                                     "Word word WORD, word!!!word"])
 
-        # Run trim_rare_words
-        >>> turicreate.text_analytics.trim_rare_words(sa)
+        # Run drop_words
+        >>> turicreate.text_analytics.drop_words(sa)
         dtype: str
         Rows: 2
         ['fox fox', 'word word']
 
-        # Run trim_rare_words with Penn treebank style tokenization to handle
+        # Run drop_words with Penn treebank style tokenization to handle
         # punctuations
-        >>> turicreate.text_analytics.trim_rare_words(sa, delimiters=None)
+        >>> turicreate.text_analytics.drop_words(sa, delimiters=None)
         dtype: str
         Rows: 2
         ['fox fox', 'word word word']
 
-        # Run trim_rare_words with dictionary input
+        # Run drop_words with dictionary input
         >>> sa = turicreate.SArray([{'alice bob': 1, 'Bob alice': 2},
                                     {'a dog': 0, 'a dog cat': 5}])
-        >>> turicreate.text_analytics.trim_rare_words(sa)
+        >>> turicreate.text_analytics.drop_words(sa)
         dtype: dict
         Rows: 2
         [{'bob alice': 2}, {'a dog cat': 5}]
 
-        # Run trim_rare_words with list input
+        # Run drop_words with list input
         >>> sa = turicreate.SArray([['one', 'bar bah', 'One'],
                                     ['a dog', 'a dog cat', 'A DOG']])
-        >>> turicreate.text_analytics.trim_rare_words(sa)
+        >>> turicreate.text_analytics.drop_words(sa)
         dtype: list
         Rows: 2
         [['one', 'one'], ['a dog', 'a dog']]
@@ -795,10 +795,10 @@ def stop_words(lang='en'):
 
     Examples
     --------
-    You may remove stopwords from an SArray as follows:
+    You may remove stop words from an SArray as follows:
 
     >>> docs = turicreate.SArray([{'are': 1, 'you': 1, 'not': 1, 'entertained':1}])
-    >>> docs.dict_trim_by_keys(turicreate.text_analytics.stopwords(), True)
+    >>> docs.dict_trim_by_keys(turicreate.text_analytics.stop_words(), True)
     dtype: dict
     Rows: 1
     [{'entertained': 1}]
@@ -806,7 +806,7 @@ def stop_words(lang='en'):
     if lang=='en' or lang=='english':
         return set(['a', 'able', 'about', 'above', 'according', 'accordingly', 'across', 'actually', 'after', 'afterwards', 'again', 'against', 'all', 'allow', 'allows', 'almost', 'alone', 'along', 'already', 'also', 'although', 'always', 'am', 'among', 'amongst', 'an', 'and', 'another', 'any', 'anybody', 'anyhow', 'anyone', 'anything', 'anyway', 'anyways', 'anywhere', 'apart', 'appear', 'appreciate', 'appropriate', 'are', 'around', 'as', 'aside', 'ask', 'asking', 'associated', 'at', 'available', 'away', 'awfully', 'b', 'be', 'became', 'because', 'become', 'becomes', 'becoming', 'been', 'before', 'beforehand', 'behind', 'being', 'believe', 'below', 'beside', 'besides', 'best', 'better', 'between', 'beyond', 'both', 'brief', 'but', 'by', 'c', 'came', 'can', 'cannot', 'cant', 'cause', 'causes', 'certain', 'certainly', 'changes', 'clearly', 'co', 'com', 'come', 'comes', 'concerning', 'consequently', 'consider', 'considering', 'contain', 'containing', 'contains', 'corresponding', 'could', 'course', 'currently', 'd', 'definitely', 'described', 'despite', 'did', 'different', 'do', 'does', 'doing', 'done', 'down', 'downwards', 'during', 'e', 'each', 'edu', 'eg', 'eight', 'either', 'else', 'elsewhere', 'enough', 'entirely', 'especially', 'et', 'etc', 'even', 'ever', 'every', 'everybody', 'everyone', 'everything', 'everywhere', 'ex', 'exactly', 'example', 'except', 'f', 'far', 'few', 'fifth', 'first', 'five', 'followed', 'following', 'follows', 'for', 'former', 'formerly', 'forth', 'four', 'from', 'further', 'furthermore', 'g', 'get', 'gets', 'getting', 'given', 'gives', 'go', 'goes', 'going', 'gone', 'got', 'gotten', 'greetings', 'h', 'had', 'happens', 'hardly', 'has', 'have', 'having', 'he', 'hello', 'help', 'hence', 'her', 'here', 'hereafter', 'hereby', 'herein', 'hereupon', 'hers', 'herself', 'hi', 'him', 'himself', 'his', 'hither', 'hopefully', 'how', 'howbeit', 'however', 'i', 'ie', 'if', 'ignored', 'immediate', 'in', 'inasmuch', 'inc', 'indeed', 'indicate', 'indicated', 'indicates', 'inner', 'insofar', 'instead', 'into', 'inward', 'is', 'it', 'its', 'itself', 'j', 'just', 'k', 'keep', 'keeps', 'kept', 'know', 'knows', 'known', 'l', 'last', 'lately', 'later', 'latter', 'latterly', 'least', 'less', 'lest', 'let', 'like', 'liked', 'likely', 'little', 'look', 'looking', 'looks', 'ltd', 'm', 'mainly', 'many', 'may', 'maybe', 'me', 'mean', 'meanwhile', 'merely', 'might', 'more', 'moreover', 'most', 'mostly', 'much', 'must', 'my', 'myself', 'n', 'name', 'namely', 'nd', 'near', 'nearly', 'necessary', 'need', 'needs', 'neither', 'never', 'nevertheless', 'new', 'next', 'nine', 'no', 'nobody', 'non', 'none', 'noone', 'nor', 'normally', 'not', 'nothing', 'novel', 'now', 'nowhere', 'o', 'obviously', 'of', 'off', 'often', 'oh', 'ok', 'okay', 'old', 'on', 'once', 'one', 'ones', 'only', 'onto', 'or', 'other', 'others', 'otherwise', 'ought', 'our', 'ours', 'ourselves', 'out', 'outside', 'over', 'overall', 'own', 'p', 'particular', 'particularly', 'per', 'perhaps', 'placed', 'please', 'plus', 'possible', 'presumably', 'probably', 'provides', 'q', 'que', 'quite', 'qv', 'r', 'rather', 'rd', 're', 'really', 'reasonably', 'regarding', 'regardless', 'regards', 'relatively', 'respectively', 'right', 's', 'said', 'same', 'saw', 'say', 'saying', 'says', 'second', 'secondly', 'see', 'seeing', 'seem', 'seemed', 'seeming', 'seems', 'seen', 'self', 'selves', 'sensible', 'sent', 'serious', 'seriously', 'seven', 'several', 'shall', 'she', 'should', 'since', 'six', 'so', 'some', 'somebody', 'somehow', 'someone', 'something', 'sometime', 'sometimes', 'somewhat', 'somewhere', 'soon', 'sorry', 'specified', 'specify', 'specifying', 'still', 'sub', 'such', 'sup', 'sure', 't', 'take', 'taken', 'tell', 'tends', 'th', 'than', 'thank', 'thanks', 'thanx', 'that', 'thats', 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'thence', 'there', 'thereafter', 'thereby', 'therefore', 'therein', 'theres', 'thereupon', 'these', 'they', 'think', 'third', 'this', 'thorough', 'thoroughly', 'those', 'though', 'three', 'through', 'throughout', 'thru', 'thus', 'to', 'together', 'too', 'took', 'toward', 'towards', 'tried', 'tries', 'truly', 'try', 'trying', 'twice', 'two', 'u', 'un', 'under', 'unfortunately', 'unless', 'unlikely', 'until', 'unto', 'up', 'upon', 'us', 'use', 'used', 'useful', 'uses', 'using', 'usually', 'uucp', 'v', 'value', 'various', 'very', 'via', 'viz', 'vs', 'w', 'want', 'wants', 'was', 'way', 'we', 'welcome', 'well', 'went', 'were', 'what', 'whatever', 'when', 'whence', 'whenever', 'where', 'whereafter', 'whereas', 'whereby', 'wherein', 'whereupon', 'wherever', 'whether', 'which', 'while', 'whither', 'who', 'whoever', 'whole', 'whom', 'whose', 'why', 'will', 'willing', 'wish', 'with', 'within', 'without', 'wonder', 'would', 'would', 'x', 'y', 'yes', 'yet', 'you', 'your', 'yours', 'yourself', 'yourselves', 'z', 'zero'])
     else:
-        raise NotImplementedError('Only English stopwords are currently available.')
+        raise NotImplementedError('Only English stop words are currently available.')
 
 
 
