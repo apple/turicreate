@@ -27,8 +27,8 @@ class TextClassifierTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        text = ['hello friend', 'how exciting', 'hello again']
-        score = [0, 1, 0]
+        text = ['hello friend', 'how exciting', 'mostly exciting', 'hello again']
+        score = [0, 1, 1, 0]
         self.docs = tc.SFrame({'text': text, 'score': score})
 
         self.features = ['text']
@@ -40,7 +40,7 @@ class TextClassifierTest(unittest.TestCase):
                                                    features=self.features,
                                                    method='auto')
 
-        self.num_examples = 3
+        self.num_examples = 4
 
     def test__list_fields(self):
         """

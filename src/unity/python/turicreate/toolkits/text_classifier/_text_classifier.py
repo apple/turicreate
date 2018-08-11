@@ -12,6 +12,7 @@ from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits._internal_utils import _toolkit_repr_print
+from turicreate.toolkits import text_analytics as _text_analytics
 
 
 def _BOW_FEATURE_EXTRACTOR(sf, target=None):
@@ -29,7 +30,9 @@ def _BOW_FEATURE_EXTRACTOR(sf, target=None):
             out[f] = _tc.text_analytics.count_words(out[f])
     return out
 
-def create(dataset, target, features=None, method='auto', validation_set='auto', max_iterations=10):
+def create(dataset, target, features = None, drop_stop_words = True,
+           word_count_threshold = 2, method = 'auto', validation_set = 'auto',
+           max_iterations = 10):
     """
     Create a model that trains a classifier to classify text from a
     collection of documents. The model is a
@@ -38,16 +41,24 @@ def create(dataset, target, features=None, method='auto', validation_set='auto',
 
     Parameters
     ----------
-    dataset: SFrame
+    dataset : SFrame
       Contains one or more columns of text data. This can be unstructured text
       dataset, such as that appearing in forums, user-generated reviews, etc.
 
-    target: str
+    target : str
       The column name containing class labels for each document.
 
-    features: list[str], optional
+    features : list[str], optional
       The column names of interest containing text dataset. Each provided column
       must be str type. Defaults to using all columns of type str.
+
+    drop_stop_words : bool, optional
+        Ignore very common words, eg: "the", "a", "is".
+        For the complete list of stop words, see: `text_classifier.drop_words()`.
+
+    word_count_threshold : int, optional
+        Words which occur less than this often, in the entire dataset, will be
+        ignored.
 
     method: str, optional
       Method to use for feature engineering and modeling. Currently only
@@ -84,6 +95,12 @@ def create(dataset, target, features=None, method='auto', validation_set='auto',
     You may also evaluate predictions against known text scores.
 
     >>> metrics = m.evaluate(dataset)
+
+    See Also
+    --------
+    text_classifier.stop_words, text_classifier.drop_words
+
+
     """
     _raise_error_if_not_sframe(dataset, "dataset")
 
@@ -103,6 +120,14 @@ def create(dataset, target, features=None, method='auto', validation_set='auto',
     # Process training set using the default feature extractor.
     feature_extractor = _BOW_FEATURE_EXTRACTOR
     train = feature_extractor(dataset, target)
+
+    stop_words = None
+    if drop_stop_words:
+        stop_words = _text_analytics.stop_words()
+    for cur_feature in features:
+        train[cur_feature] = _text_analytics.drop_words(train[cur_feature],
+                                                        threshold = word_count_threshold,
+                                                        stop_words = stop_words)
 
     # Check for a validation set.
     if isinstance(validation_set, _tc.SFrame):
