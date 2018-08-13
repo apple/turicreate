@@ -1,7 +1,0 @@
-{
-  global:
-    tc_*;
-
-  local:
-    *;
-};

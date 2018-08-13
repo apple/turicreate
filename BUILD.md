@@ -31,6 +31,7 @@ You will need:
 * On both macOS and Linux:
   * [Node.js](https://nodejs.org) 6.x or later with `node` and `npm` in `$PATH`
   * The python `virtualenv` package.
+  * [CMake](https://cmake.org) 3.12 or later.
 
 Turi Create automatically satisfies other dependencies in the `deps/` directory,
 which includes compiler support and dependent libraries.
