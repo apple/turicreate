@@ -234,66 +234,80 @@ void unity_sarray::construct_from_json_record_files(std::string url) {
   // go through each file
   std::vector<std::pair<std::string, fileio::file_status>> file_and_status = fileio::get_glob_files(url);
 
+
   for (auto p : file_and_status) {
-    if (p.second == fileio::file_status::REGULAR_FILE) {
-      logstream(LOG_PROGRESS) << "Parsing JSON records from " << sanitize_url(p.first)
-                          << std::endl;
+    switch(p.second) {
+      case fileio::file_status::REGULAR_FILE : {
+          logstream(LOG_PROGRESS) << "Parsing JSON records from "
+                                  << sanitize_url(p.first) << std::endl;
 
-      flexible_type record;
-      general_ifstream fin(p.first);
-      if (fin.good()) {
-        size_t fsize = fin.file_size();
-        // error handling on bad file
-        if (fsize == 0) {
-          continue;
-        } else if (fsize == (size_t)(-1)) {
-          logstream(LOG_PROGRESS) << "Unable to read " << sanitize_url(p.first) << std::endl;
-          continue;
-        }
+          flexible_type record;
+          general_ifstream fin(p.first);
+          if (fin.good()) {
+            size_t fsize = fin.file_size();
+            // error handling on bad file
+            if (fsize == 0) {
+              continue;
+            } else if (fsize == (size_t)(-1)) {
+              logstream(LOG_PROGRESS)
+                  << "Unable to read " << sanitize_url(p.first) << std::endl;
+              continue;
+            }
 
-        // read the whole file
-        buffer.resize(fin.file_size());
-        buffer.shrink_to_fit();
-        fin.read(buffer.data(), fsize);
+            // read the whole file
+            buffer.resize(fin.file_size());
+            buffer.shrink_to_fit();
+            fin.read(buffer.data(), fsize);
 
-        // try to parse. failing on error
-        const char* str = buffer.data();
-        auto parse_result = parser.recursive_parse(&str, fsize);
-        if (parse_result.second == false || parse_result.first.get_type() != flex_type_enum::LIST) {
-          std::stringstream error_msg;
-          error_msg << "Unable to parse " << sanitize_url(p.first)  << ". "
-                    << "It does not appear to be in JSON record format. "
-                    << "A list of dictionaries is expected"  << std::endl;
+            // try to parse. failing on error
+            const char* str = buffer.data();
+            auto parse_result = parser.recursive_parse(&str, fsize);
+            if (parse_result.second == false ||
+                parse_result.first.get_type() != flex_type_enum::LIST) {
+              std::stringstream error_msg;
+              error_msg << "Unable to parse " << sanitize_url(p.first) << ". "
+                        << "It does not appear to be in JSON record format. "
+                        << "A list of dictionaries is expected" << std::endl;
 
-          log_and_throw(error_msg.str());
-        }
+              log_and_throw(error_msg.str());
+            }
 
-        size_t num_elems_parsed = 0;
-        bool has_non_dict_elements = false;
-        for (const auto& element : parse_result.first.get<flex_list>()) {
-          if (element.get_type() == flex_type_enum::DICT ||
-              element.get_type() == flex_type_enum::UNDEFINED) {
-            (*output) = element;
-            ++output;
-            ++num_elems_parsed;
+            size_t num_elems_parsed = 0;
+            bool has_non_dict_elements = false;
+            for (const auto& element : parse_result.first.get<flex_list>()) {
+              if (element.get_type() == flex_type_enum::DICT ||
+                  element.get_type() == flex_type_enum::UNDEFINED) {
+                (*output) = element;
+                ++output;
+                ++num_elems_parsed;
+              } else {
+                has_non_dict_elements = true;
+              }
+            }
+
+            logstream(LOG_PROGRESS)
+                << "Successfully parsed an SArray of " << num_elems_parsed
+                << " elements from the JSON file " << sanitize_url(p.first);
+
+            if (has_non_dict_elements) {
+              logstream(LOG_PROGRESS)
+                  << sanitize_url(p.first)
+                  << " has non-dictionary elements which are ignored. "
+                  << std::endl;
+            }
           } else {
-            has_non_dict_elements = true;
+            logstream(LOG_PROGRESS)
+                << "Unable to read " << sanitize_url(p.first) << std::endl;
           }
+          break;
         }
-
-        logstream(LOG_PROGRESS) << "Successfully parsed an SArray of "
-                                << num_elems_parsed 
-                                << " elements from the JSON file "
-                                << sanitize_url(p.first);
-
-        if (has_non_dict_elements) {
-          logstream(LOG_PROGRESS) << sanitize_url(p.first)
-                                  << " has non-dictionary elements which are ignored. " << std::endl;
-        }
-      } else {
-        logstream(LOG_PROGRESS) << "Unable to read " << sanitize_url(p.first) << std::endl;
-      }
-    }
+      case fileio::file_status::DIRECTORY:
+        break; 
+      case fileio::file_status::MISSING:
+        log_and_throw("File '" + p.first + "' not found.");
+      case fileio::file_status::FS_UNAVAILABLE:
+        log_and_throw("File '" + p.first + "' cannot be read.");
+    }   
   }
 
   sarray_ptr->close();

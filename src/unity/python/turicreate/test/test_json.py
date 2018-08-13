@@ -253,3 +253,8 @@ class JSONTest(unittest.TestCase):
     def test_malformed_json(self):
         self.assertRaises(RuntimeError, SArray.read_json, './malformed.json')
         self.assertRaises(RuntimeError, SFrame.read_json, './malformed.json')
+
+    def test_nonexistant_json(self):
+        self.assertRaises(Exception, SArray.read_json, '/nonexistant.json')
+        self.assertRaises(Exception, SFrame.read_json, '/nonexistant.json')
+
