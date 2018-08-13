@@ -62,6 +62,10 @@ class CoreMLExportTest(unittest.TestCase):
             target[2] = 2
             self.sf[self.target] = target
 
+            self.add_cat_sf_val = self.sf.copy()
+            self.add_cat_sf_val["target"] = self.sf["target"] + 10
+
+
     def test_coreml_export_new_data(self):
         if self.model is None:
             return
@@ -258,9 +262,10 @@ class BoostedTreesClassifierStringClassTest(CoreMLExportTest):
                                   self.target, validation_set=None)
         self.sf[self.target] = self.sf[self.target].astype(int)
 
+
 # ------------------------------------------------------------------------------
 #
-#  Multiclass tests
+#  Multiclass tests with additional validation data
 #
 # ------------------------------------------------------------------------------
 
@@ -269,7 +274,7 @@ class LogisticRegressionMultiClassTest(CoreMLExportTest):
     def setUpClass(self):
         super(LogisticRegressionMultiClassTest, self).setUpClass(multiclass=True)
         self.model = tc.logistic_classifier.create(self.sf,
-                      self.target, validation_set=None)
+                      self.target, validation_set=self.sf)
 
 class RandomForestClassifierMultiClassTest(CoreMLExportTest):
     @classmethod
@@ -327,4 +332,66 @@ class BoostedTreesClassifierStringMultiClassTest(CoreMLExportTest):
         self.sf[self.target] = self.sf[self.target].astype(str)
         self.model = tc.boosted_trees_classifier.create(self.sf,
                                   self.target, validation_set=None)
-        self.sf[self.target] = self.sf[self.target].astype(int)
+        self.sf[self.target] = self.sf[self.target].astype(int)# ------------------------------------------------------------------------------
+#
+#  Multiclass tests
+#
+# ------------------------------------------------------------------------------
+
+class LogisticRegressionMultiClassTest_BadValidationCategories(CoreMLExportTest):
+    @classmethod
+    def setUpClass(self):
+        super(LogisticRegressionMultiClassTest_BadValidationCategories, self).setUpClass(multiclass=True)
+        self.model = tc.logistic_classifier.create(self.sf,
+                      self.target, validation_set=self.add_cat_sf_val)
+
+class RandomForestClassifierMultiClassTest_BadValidationCategories(CoreMLExportTest):
+    @classmethod
+    def setUpClass(self):
+        super(RandomForestClassifierMultiClassTest_BadValidationCategories, self).setUpClass(multiclass=True)
+        self.model = tc.random_forest_classifier.create(self.sf, self.target,
+                  validation_set=self.add_cat_sf_val)
+
+class DecisionTreeClassifierMultiClassTest_BadValidationCategories(CoreMLExportTest):
+    @classmethod
+    def setUpClass(self):
+        super(DecisionTreeClassifierMultiClassTest_BadValidationCategories, self).setUpClass(multiclass=True)
+        self.model = tc.decision_tree_classifier.create(self.sf, self.target,
+                  validation_set=self.add_cat_sf_val)
+
+class BoostedTreesClassifierMultiClassTest_BadValidationCategories(CoreMLExportTest):
+    @classmethod
+    def setUpClass(self):
+        super(BoostedTreesClassifierMultiClassTest_BadValidationCategories, self).setUpClass(multiclass=True)
+        self.model = tc.boosted_trees_classifier.create(self.sf,
+                                  self.target, validation_set=self.add_cat_sf_val)
+
+class LogisticRegressionStringMultiClassTest_BadValidationCategories(CoreMLExportTest):
+    @classmethod
+    def setUpClass(self):
+        super(LogisticRegressionStringMultiClassTest_BadValidationCategories, self).setUpClass(multiclass=True)
+        self.model = tc.logistic_classifier.create(self.sf,
+                      self.target, validation_set=self.add_cat_sf_val)
+
+class RandomForestClassifierStringMultiClassTest_BadValidationCategories(CoreMLExportTest):
+    @classmethod
+    def setUpClass(self):
+        super(RandomForestClassifierStringMultiClassTest_BadValidationCategories, self).setUpClass(multiclass=True)
+        self.model = tc.random_forest_classifier.create(self.sf, self.target,
+                  validation_set=self.add_cat_sf_val)
+        self.has_predict_topk = True
+
+class DecisionTreeClassifierStringMultiClassTest_BadValidationCategories(CoreMLExportTest):
+    @classmethod
+    def setUpClass(self):
+        super(DecisionTreeClassifierStringMultiClassTest_BadValidationCategories, self).setUpClass(multiclass=True)
+        self.model = tc.decision_tree_classifier.create(self.sf, self.target,
+                  validation_set=self.add_cat_sf_val)
+
+class BoostedTreesClassifierStringMultiClassTest_BadValidationCategories(CoreMLExportTest):
+    @classmethod
+    def setUpClass(self):
+        super(BoostedTreesClassifierStringMultiClassTest_BadValidationCategories, self).setUpClass(multiclass=True)
+        self.model = tc.boosted_trees_classifier.create(self.sf,
+                                  self.target, validation_set=self.add_cat_sf_val)
+

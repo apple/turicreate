@@ -253,15 +253,21 @@ void logistic_regression_opt_interface::compute_first_order_statistics(
       pointMat.reshape(variables_per_class, classes-1);
       size_t class_idx = 0;
       double kernel_sum = 0;
-      for(auto it = data.get_iterator(thread_idx, num_threads); 
-                                                              !it.done(); ++it) {
+      for (auto it = data.get_iterator(thread_idx, num_threads); !it.done();
+           ++it) {
+        class_idx = it->target_index();
+
+        if(class_idx >= classes) {
+           continue;
+        }
+
         fill_reference_encoding(*it, x);
         x(variables_per_class - 1) = 1;
         if(feature_rescaling){
           scaler->transform(x);
         }
 
-        class_idx = it->target_index();
+
         margin = pointMat.t() * x;
         margin_dot_class = (class_idx > 0) ? margin(class_idx - 1) : 0;
    
@@ -289,13 +295,18 @@ void logistic_regression_opt_interface::compute_first_order_statistics(
       double kernel_sum = 0;
       for(auto it = data.get_iterator(thread_idx, num_threads); 
                                                               !it.done(); ++it) {
+        class_idx = it->target_index();
+        
+        if(class_idx >= classes) {
+           continue;
+        }
+
         fill_reference_encoding(*it, x);
         x(variables_per_class - 1) = 1;
         if(feature_rescaling){
           scaler->transform(x);
         }
 
-        class_idx = it->target_index();
         margin = pointMatT * x;
         margin_dot_class = (class_idx > 0) ? margin(class_idx - 1) : 0;
    
