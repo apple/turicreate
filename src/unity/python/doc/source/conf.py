@@ -52,7 +52,7 @@ for m in [
           'decision_tree_regression',
           'regression',
           'shortest_path',
-          'sentence_classifier',
+          'text_classifier',
           'svm_classifier',
           'text_analytics',
           'object_detector',

@@ -42,8 +42,8 @@ utilities
   parse_sparse
   parse_docword
   random_split
-  stopwords
+  stop_words
   tokenize
-  trim_rare_words
+  drop_words
 
 .. currentmodule:: turicreate._internal

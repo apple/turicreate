@@ -45,7 +45,7 @@ document using
 [SArray.dict_trim_by_values](https://apple.github.io/turicreate/docs/api/generated/turicreate.SArray.dict_trim_by_values.html).
 
 Turi Create also contains a helper function called
-[stopwords](https://apple.github.io/turicreate/docs/api/generated/turicreate.text_analytics.stopwords.html?highlight=stopwords#turicreate.text_analytics.stopwords)
+[stop_words](https://apple.github.io/turicreate/docs/api/generated/turicreate.text_analytics.stop_words.html?highlight=stopwords#turicreate.text_analytics.stop_words)
 that returns a list of common words. We can use
 [SArray.docs.dict_trim_by_keys](https://apple.github.io/turicreate/docs/api/generated/turicreate.SArray.dict_trim_by_keys.html)
 to remove these words from the documents as a preprocessing step. NB:
