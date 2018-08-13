@@ -6,7 +6,7 @@
 .. currentmodule:: turicreate.style_transfer
 
 
-object detector
+style transfer
 ---------------
 .. autosummary::
   :toctree: generated/
