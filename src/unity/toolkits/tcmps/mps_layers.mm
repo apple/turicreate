@@ -2,9 +2,6 @@
 #include "mps_lstm_helper.h"
 #include "mps_utils.h"
 
-// TODO: remove the define below once the dropout bug is fixed
-#define ALWAYS_ALLOCATE_DO_OUTPUT 1
-
 // --------------------------------------------------------------------------------------------
 //                  Common utilities for all Layers
 // --------------------------------------------------------------------------------------------
@@ -357,7 +354,7 @@ void BNLayer::Forward(MPSImageBatch *_Nonnull src,
                       bool is_train) {
     
   if (use_temp_images_){
-      fwd_output = AllocTempImageBatch(cb, false);
+    fwd_output = AllocTempImageBatch(cb, op_forward, false);
   }
     
   if (is_train_mode_ && is_train) {
@@ -388,7 +385,7 @@ void BNLayer::Backward(MPSImageBatch *_Nonnull src,
   assert(bn_state != nil && "BN Backward can not be called after calling Forward(is_train=true)");
     
   if (use_temp_images_){
-      bwd_output = AllocTempImageBatch(cb, true);
+    bwd_output = AllocTempImageBatch(cb, op_backward, true);
   }
     
   [g_stat encodeBatchToCommandBuffer:cb
@@ -632,7 +629,7 @@ void DropOutLayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q
                     seed:nSeed
       maskStrideInPixels:MTLSize{.width = 1, .height = 1, .depth = 1}];
 
-  if (ALWAYS_ALLOCATE_DO_OUTPUT || is_output_layer || kLowLevelModeTest == net_mode){
+  if (is_output_layer || kLowLevelModeTest == net_mode) {
       op_forward.destinationImageAllocator = [[TCMPSImageAllocator alloc] initWithFormat:MPSImageFeatureChannelFormatFloat32];
   }
   op_backward = [[MPSCNNDropoutGradient alloc]
@@ -641,9 +638,9 @@ void DropOutLayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q
                     seed:nSeed
       maskStrideInPixels:MTLSize{.width = 1, .height = 1, .depth = 1}];
     
-    if (ALWAYS_ALLOCATE_DO_OUTPUT || kLowLevelModeTest == net_mode){
+  if (kLowLevelModeTest == net_mode) {
           op_backward.destinationImageAllocator = [[TCMPSImageAllocator alloc] initWithFormat:MPSImageFeatureChannelFormatFloat32];
-    }
+  }
 }
 
 // SoftMax
@@ -925,12 +922,9 @@ void LstmLayer::CopyImageBatchToBuffer(MPSImageBatch *imgBatch, id <MTLBuffer> b
     MPSMatrix *matrix = [[MPSMatrix alloc] initWithBuffer:buffer descriptor:desc];
 
     // Copy each image from the batch into its own row of the matrix.
-    MPSImage *img = nil;
-    for (NSUInteger i = 0; i < imgBatch.count; ++i) {
-        img = imgBatch[i];
-        image_to_matrix_kernel_.destinationMatrixOrigin = MTLOriginMake(i, 0, 0);
-        [image_to_matrix_kernel_ encodeToCommandBuffer:cb sourceImage:img destinationMatrix:matrix];
-    }
+    [image_to_matrix_kernel_ encodeBatchToCommandBuffer:cb
+                                           sourceImages:imgBatch
+                                      destinationMatrix:matrix];
 
     // Release the image memory back to MPS.
     MPSImageBatchIncrementReadCount(imgBatch, -1);
@@ -959,24 +953,16 @@ MPSImageBatch *LstmLayer::CopyImageBatchFromBuffer(id <MTLBuffer> buffer,
                                              featureChannels:num_features
                                               numberOfImages:1
                                                        usage:usage];
-    NSMutableArray *batch = [NSMutableArray arrayWithCapacity:batch_size_];
-    for (NSUInteger i = 0; i < batch_size_; ++i) {
-        // Create an MPSImage.
-        MPSImage *img;
-        if (use_temp_image_){
-            MPSTemporaryImage * temp_img = [MPSTemporaryImage temporaryImageWithCommandBuffer:cb imageDescriptor:imageDesc];
-            img = (MPSImage *) temp_img;
-        } else {
-            img = [[MPSImage alloc] initWithDevice:cb.device imageDescriptor:imageDesc];
-        }
-        // Copy row i of the matrix into this image.
-        matrix_to_image_kernel_.sourceMatrixOrigin = MTLOriginMake(i, 0, 0);
-        [matrix_to_image_kernel_ encodeToCommandBuffer:cb sourceMatrix:matrix destinationImage:img];
-        
-        [batch addObject:img];
-    }
+    id <MPSImageAllocator> allocator = use_temp_image_ ? [MPSTemporaryImage defaultAllocator] : [MPSImage defaultAllocator];
+    MPSImageBatch *batch = [allocator imageBatchForCommandBuffer:cb
+                                                 imageDescriptor:imageDesc
+                                                          kernel:matrix_to_image_kernel_
+                                                           count:batch_size_];
+    [matrix_to_image_kernel_ encodeBatchToCommandBuffer:cb
+                                           sourceMatrix:matrix
+                                      destinationImages:batch];
 
-    return [MPSImageBatch arrayWithArray:batch];
+    return batch;
 }
 
 void LstmLayer::Forward(MPSImageBatch * _Nonnull src,

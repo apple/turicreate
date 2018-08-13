@@ -63,8 +63,6 @@ public:
     }
   }
   int NumParams();
-  MPSImageBatch *_Nonnull ExtractLossImages(MPSCNNLossLabelsBatch *_Nonnull labels, int batch_size,
-                                            id<MTLCommandBuffer> cb);
 
 
   std::unordered_map<std::string,
@@ -79,6 +77,7 @@ private:
     MPSImageBatch * _Nonnull output = nil;
     MPSImageBatch * _Nonnull top_grad = nil;
     MPSImageBatch * _Nullable loss_images = nil;
+    MPSCNNLossLabelsBatch * _Nullable loss_labels = nil;
   };
 
   id<MTLDevice> _Nonnull dev_;
@@ -89,6 +88,7 @@ private:
   MPSImageBatch *_Nonnull output_;
   MPSImageBatch *_Nonnull top_grad_;
   MPSImageBatch *_Nullable loss_images_{nil};
+  MPSCNNLossLabelsBatch *_Nullable loss_labels_ = nil;
   MPSNetwork *_Nonnull network_{nil};
   MPSUpdater *_Nonnull updater_{nil};
   int output_chn_;
@@ -104,9 +104,21 @@ private:
   void SetupUpdater(int updater_id);
   void Blob2MPSImage(float *_Nonnull ptr, MPSImageBatch *_Nonnull batch);
   void MPSImage2Blob(float *_Nonnull ptr, MPSImageBatch *_Nonnull batch);
+
+  static NSData *EncodeLabels(float* labels, NSUInteger sequenceLength,
+                              NSUInteger numClasses);
+  static NSData *EncodeWeights(float* weights, NSUInteger sequenceLength,
+                               NSUInteger numClasses);
+
   MPSCNNLossLabelsBatch *_Nonnull initLossLabelsBatch(
       id<MTLDevice> _Nonnull device, float *_Nonnull labels_ptr, float *_Nonnull weights_ptr,
       int batch_size, int seq_len, int num_classes);
+  static void FillLossLabelsBatch(
+      MPSCNNLossLabelsBatch *labelsBatch, id <MTLDevice> device,
+      float* labels_ptr, float* weights_ptr,
+      int batch_size, int seq_len, int num_classes);
+  static MPSImageBatch *ExtractLossImages(MPSCNNLossLabelsBatch *labelsBatch,
+                                          id<MTLCommandBuffer> cb);
     
   void TrainingWithLoss(
       Batch *batch, void *ptr, size_t sz, int64_t *shape, int dim,
