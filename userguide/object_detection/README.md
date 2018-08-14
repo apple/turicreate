@@ -233,4 +233,25 @@ as intuitive. The main take aways of using this metric are:
 
 We describe this metric in more detail in the [Advanced
 Usage](advanced-usage.md) section, where we also cover using Core ML
-to deploy your detector to iOS and macOS:
+to deploy your detector to iOS and macOS.
+
+#### Using GPUs
+
+GPUs can make creating an object detection model much faster. If you have
+macOS 10.14 or higher, Turi Create will automatically use the GPU. If
+your Linux machine has an NVIDIA GPU, you can setup Turi Create to use
+the GPU, [see instructions](https://github.com/apple/turicreate/blob/master/LinuxGPU.md).
+
+The `turicreate.config.set_num_gpus` function allows you to control if GPUs are used:
+```python
+# Use all GPUs (default)
+turicreate.config.set_num_gpus(-1)
+
+# Use only 1 GPU
+turicreate.config.set_num_gpus(1)
+
+# Use CPU
+turicreate.config.set_num_gpus(0)
+```
+
+
