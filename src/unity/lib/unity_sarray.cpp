@@ -301,12 +301,12 @@ void unity_sarray::construct_from_json_record_files(std::string url) {
           }
           break;
         }
-      case fileio::file_status::DIRECTORY:
-        break; 
+      case fileio::file_status::DIRECTORY: 
+        log_and_throw_io_failure("'" + p.first + "' is a directory; expected valid JSON file.");
       case fileio::file_status::MISSING:
-        log_and_throw("File '" + p.first + "' not found.");
+        log_and_throw_io_failure("File '" + p.first + "' not found.");
       case fileio::file_status::FS_UNAVAILABLE:
-        log_and_throw("File '" + p.first + "' cannot be read.");
+        log_and_throw_io_failure("File '" + p.first + "' cannot be read.");
     }   
   }
 
