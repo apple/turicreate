@@ -157,10 +157,12 @@ csv_sf = tc.SFrame.read_csv(csv_path)
 def row_to_bbox_coordinates(row):
     """
     Takes a row and returns a dictionary representing bounding
-    box coordinates: e.g. {'x': 100, 'y': 120, 'width': 80, 'height': 120}
+    box coordinates:  (center_x, center_y, width, height)  e.g. {'x': 100, 'y': 120, 'width': 80, 'height': 120}
     """
-    return {'x': row['xMin'], 'width': (row['xMax'] - row['xMin']),
-            'y': row['yMin'], 'height': (row['yMax'] - row['yMin'])}
+    return {'x': row['xMin'] + (row['xMax'] - row['xMin'])/2, 
+            'width': (row['xMax'] - row['xMin']),
+            'y': row['yMin'] + (row['yMax'] - row['yMin'])/2, 
+            'height': (row['yMax'] - row['yMin'])}
 
 csv_sf['coordinates'] = csv_sf.apply(row_to_bbox_coordinates)
 # delete no longer needed columns
