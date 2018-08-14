@@ -1,18 +1,18 @@
 project(fileio_test)
 
-make_executable(fs SOURCES fs REQUIRES fileio)
-make_executable(general_fstream_test SOURCES general_fstream_test.cpp REQUIRES fileio)
-make_executable(curl_dependency_test SOURCES curl_dependency_test.cpp REQUIRES fileio)
-make_executable(fstream_bench SOURCES fstream_bench.cpp REQUIRES fileio)
-make_boost_test(temp_file_test.cxx REQUIRES fileio)
-make_boost_test(fixed_size_cache_manager_test.cxx REQUIRES fileio)
-make_boost_test(cache_stream_test.cxx REQUIRES fileio)
-make_boost_test(general_fstream_test.cxx REQUIRES fileio)
-make_boost_test(parse_hdfs_url_test.cxx REQUIRES fileio)
-make_boost_test(block_cache_test.cxx REQUIRES fileio random)
+make_executable(fs SOURCES fs REQUIRES test_dependencies)
+make_executable(general_fstream_test SOURCES general_fstream_test.cpp REQUIRES test_dependencies)
+make_executable(curl_dependency_test SOURCES curl_dependency_test.cpp REQUIRES test_dependencies)
+make_executable(fstream_bench SOURCES fstream_bench.cpp REQUIRES test_dependencies)
+make_boost_test(temp_file_test.cxx REQUIRES test_dependencies)
+make_boost_test(fixed_size_cache_manager_test.cxx REQUIRES test_dependencies)
+make_boost_test(cache_stream_test.cxx REQUIRES test_dependencies)
+make_boost_test(general_fstream_test.cxx REQUIRES test_dependencies)
+make_boost_test(parse_hdfs_url_test.cxx REQUIRES test_dependencies)
+make_boost_test(block_cache_test.cxx REQUIRES test_dependencies)
 
 if (TC_ENABLE_REMOTEFS)
-  make_boost_test(s3api_test.cxx REQUIRES fileio)
+  make_boost_test(s3api_test.cxx REQUIRES test_dependencies)
 endif()
 
 # this writes a big file
@@ -20,4 +20,3 @@ endif()
 #
 # requires s3
 # make_boost_test(sanitize_url_test.cxx REQUIRES fileio)
-

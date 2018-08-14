@@ -456,7 +456,7 @@ include(eval)
 #
 # Boost, pthread is always added as a default dependency. OpenMP is added
 # when possible.
-macro(make_target_impl NAME FLAGS REQUIREMENTS IS_LIBRARY SHARED SHARED_ALL_DEFINED)
+macro(make_target_impl NAME FLAGS REQUIREMENTS IS_LIBRARY SHARED SHARED_ALL_DEFINED EXTERNAL_VISIBILITY)
   # create the target
   if (${IS_LIBRARY})
     message(STATUS "Adding Library: ${NAME}")
@@ -487,7 +487,7 @@ macro(make_target_impl NAME FLAGS REQUIREMENTS IS_LIBRARY SHARED SHARED_ALL_DEFI
   endif()
 
   if (${IS_LIBRARY})
-    if(${SHARED})
+    if(${SHARED} AND NOT ${EXTERNAL_VISIBILITY})
             target_link_libraries(${NAME} PRIVATE ${REQUIREMENTS})
     else()
             target_link_libraries(${NAME} PUBLIC ${REQUIREMENTS})
@@ -569,7 +569,7 @@ macro(make_library NAME)
   endif()
 
   make_target_impl("${NAME}" "${make_library_COMPILE_FLAGS}"
-    "${make_library_REQUIRES}" TRUE "${make_library_SHARED}" "${make_library_SHARED_ALL_DEFINED}")
+    "${make_library_REQUIRES}" TRUE "${make_library_SHARED}" "${make_library_SHARED_ALL_DEFINED}" "${make_library_EXTERNAL_VISIBILITY}")
 
   if (make_library_OUTPUT_NAME)
           message(STATUS "make_library ${NAME} ===> ${make_library_OUTPUT_NAME}")
@@ -675,7 +675,7 @@ macro(make_empty_library NAME)
   endif()
   add_library(${NAME} STATIC ${CMAKE_SOURCE_DIR}/dummy.cpp)
   make_target_impl("${NAME}" ""
-      "${make_library_REQUIRES}" TRUE FALSE FALSE)
+      "${make_library_REQUIRES}" TRUE FALSE FALSE FALSE)
 
     set_target_properties(${NAME} PROPERTIES EMPTY_LIBRARY TRUE)
 endmacro()
@@ -752,7 +752,7 @@ function (make_executable NAME)
   endif()
 
   make_target_impl("${NAME}" "${make_library_COMPILE_FLAGS}"
-    "${make_library_REQUIRES}" FALSE FALSE FALSE)
+    "${make_library_REQUIRES}" FALSE FALSE FALSE FALSE)
   if (make_library_OUTPUT_NAME)
           message(STATUS "make_executable ${NAME} ===> ${make_library_OUTPUT_NAME}")
           set_target_properties(${NAME} PROPERTIES OUTPUT_NAME ${make_library_OUTPUT_NAME})
@@ -917,6 +917,7 @@ endforeach()
 include_directories(src)
 include_directories(SYSTEM src/external)
 include_directories(SYSTEM src/external/google)
+include_directories(SYSTEM src/external/armadillo/include)
 include_directories(src/platform)
 
 if(EXISTS ${CMAKE_SOURCE_DIR}/extensions)
