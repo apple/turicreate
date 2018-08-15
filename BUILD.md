@@ -26,6 +26,7 @@ You will need:
 * On macOS, [Xcode](https://itunes.apple.com/us/app/xcode/id497799835) with command line tools (tested with Xcode 9 and Xcode 10 beta 3)
 * On Linux:
   * A C++ compiler toolchain with C++11 support
+  * `gif_lib.h` (typically provided by the `libgif-dev` package)
   * `xxd` (typically provided by the `vim-common` package)
   * For visualization support, X11 libraries (typically provided by `libx11-dev` or `libX11-devel` packages)
 * On both macOS and Linux:
