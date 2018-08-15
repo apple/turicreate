@@ -40,6 +40,10 @@ before_install:
   - tar xf node-v8.9.4-linux-x64.tar.xz
   - popd
 
+install:
+  # Increase to 30 minutes the amount of time travis waits on output before killing this run
+  - travis_wait 30 mvn install
+
 script:
   - export PATH="/opt/node-v8.9.4-linux-x64/bin:${PATH}"
   - sudo ln -s /usr/bin/gcc-5 /usr/local/bin/gcc
@@ -54,5 +58,7 @@ script:
   - python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
   # Check whether O_NONBLOCK is set (should print "0"):
   - python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); print(flags&os.O_NONBLOCK);'
+
+  python -c "import ssl; print ssl.OPENSSL_VERSION"  # Debug
   # Build the wheel
   - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=2 --debug
