@@ -31,9 +31,10 @@ before_install:
   # TODO - do this through the official Travis CI python/virtualenv support matrix
   # So that we get various Python versions installed automatically
   - sudo easy_install pip
+  - sudo pip install --upgrade pip
   - sudo pip install virtualenv
   # Python 2.7 support for SNI (https://stackoverflow.com/questions/18578439/using-requests-with-tls-doesnt-give-sni-support/18579484#18579484)
-  - sudo pip install pyopenssl ndg-httpsclient pyasn1
+  #- sudo pip install pyopenssl ndg-httpsclient pyasn1
   # Install node.js from binary
   - pushd /opt
   - curl -O https://nodejs.org/dist/v8.9.4/node-v8.9.4-linux-x64.tar.xz
@@ -55,7 +56,8 @@ script:
   # Check whether O_NONBLOCK is set (should print "0"):
   - python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); print(flags&os.O_NONBLOCK);'
 
-  - pip install -U setuptools
-  - pip install pyOpenSSL ndg-httpsclient pyasn1
+  - sudo pip install -U setuptools
+  - sudo pip install -U pyOpenSSL ndg-httpsclient pyasn1
   # Build the wheel
-  - travis_wait 30 bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=2 --debug
+  #- travis_wait 30
+  - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=2 --debug
