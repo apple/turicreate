@@ -367,15 +367,17 @@ _code_by_type_lookup[<object_ptr>(np_matrix)]           = FT_NDARRAY_TYPE
 
 try:
     import builtins
+    import six
     _code_by_type_lookup[<object_ptr>(builtins.dict)]                = FT_DICT_TYPE
     _code_by_type_lookup[<object_ptr>(builtins.float)]               = FT_FLOAT_TYPE
     _code_by_type_lookup[<object_ptr>(builtins.int)]                 = FT_INT_TYPE
     _code_by_type_lookup[<object_ptr>(builtins.bool)]                = FT_INT_TYPE  + FT_SAFE
     _code_by_type_lookup[<object_ptr>(builtins.list)]                = FT_LIST_TYPE
-    _code_by_type_lookup[<object_ptr>(builtins.long)]                = FT_INT_TYPE  + FT_SAFE
     _code_by_type_lookup[<object_ptr>(builtins.str)]                 = FT_STR_TYPE
     _code_by_type_lookup[<object_ptr>(builtins.tuple)]               = FT_TUPLE_TYPE
-    _code_by_type_lookup[<object_ptr>(builtins.unicode)]             = FT_UNICODE_TYPE
+    if six.PY2:
+        _code_by_type_lookup[<object_ptr>(builtins.long)]            = FT_INT_TYPE  + FT_SAFE
+        _code_by_type_lookup[<object_ptr>(builtins.unicode)]         = FT_UNICODE_TYPE
 except ImportError:
     pass
 
