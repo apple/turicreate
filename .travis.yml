@@ -18,7 +18,6 @@ addons:
       - libgif-dev
       - vim-common
       - libx11-dev
-      - maven
 
 env:
   global:
@@ -41,9 +40,6 @@ before_install:
   - tar xf node-v8.9.4-linux-x64.tar.xz
   - popd
 
-# Increase to 30 minutes the amount of time travis waits on output before killing this run
-install: travis_wait 30 mvn install
-
 script:
   - export PATH="/opt/node-v8.9.4-linux-x64/bin:${PATH}"
   - sudo ln -s /usr/bin/gcc-5 /usr/local/bin/gcc
@@ -62,4 +58,4 @@ script:
   - pip install -U setuptools
   - pip install pyOpenSSL ndg-httpsclient pyasn1
   # Build the wheel
-  - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=2 --debug
+  - travis_wait 30 bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=2 --debug
