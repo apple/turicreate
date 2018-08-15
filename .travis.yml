@@ -18,6 +18,7 @@ addons:
       - libgif-dev
       - vim-common
       - libx11-dev
+      - maven
 
 env:
   global:
@@ -58,6 +59,7 @@ script:
   # Check whether O_NONBLOCK is set (should print "0"):
   - python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); print(flags&os.O_NONBLOCK);'
 
-  - python -c "import ssl; print ssl.OPENSSL_VERSION"  # Debug
+  - pip install -U setuptools
+  - pip install pyOpenSSL ndg-httpsclient pyasn1
   # Build the wheel
   - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=2 --debug
