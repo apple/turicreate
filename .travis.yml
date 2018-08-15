@@ -40,9 +40,8 @@ before_install:
   - tar xf node-v8.9.4-linux-x64.tar.xz
   - popd
 
-install:
-  # Increase to 30 minutes the amount of time travis waits on output before killing this run
-  - travis_wait 30 mvn install
+# Increase to 30 minutes the amount of time travis waits on output before killing this run
+install: travis_wait 30 mvn install
 
 script:
   - export PATH="/opt/node-v8.9.4-linux-x64/bin:${PATH}"
