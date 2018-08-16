@@ -176,7 +176,7 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     iterations = 0
     if max_iterations is None:
-        max_iterations = 5000
+        max_iterations = len(style_dataset) * 500 + 2000
         if verbose:
             print('Setting max_iterations to be {}'.format(max_iterations))
 
