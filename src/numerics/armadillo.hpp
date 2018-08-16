@@ -19,7 +19,6 @@
 
 namespace turi {
 
-//
 using arma::exp;
 using arma::approx_equal;
 

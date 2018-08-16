@@ -15,14 +15,24 @@ from six.moves.urllib import parse as _urlparse
 
 MODELS_URL_ROOT = 'https://docs-assets.developer.apple.com/turicreate/models/'
 
+
 def _get_model_cache_dir():
-    tmp_dir = _tc.config.get_runtime_config()['TURI_CACHE_FILE_LOCATIONS']
-    return _os.path.join(tmp_dir, 'model_cache')
+    cache_dir = _tc.config.get_runtime_config()['TURI_CACHE_FILE_LOCATIONS']
+    download_path = _os.path.join(cache_dir, 'model_cache')
+
+    if not _os.path.exists(download_path):
+        try:
+            _os.makedirs(download_path)
+        except:
+            raise RuntimeError("Could not write to the turicreate file cache, which is currently set to \"{cache_dir}\".\n"
+                               "To continue you must update this location to a writable path by calling:\n"
+                               "\ttc.config.set_runtime_config(\'TURI_CACHE_FILE_LOCATIONS\', <path>)\n"
+                               "Where <path> is a writable file path that exists.".format(cache_dir=cache_dir))
+
+    return download_path
+
 
 def _download_and_checksum_files(urls, dirname, delete=False):
-    if not _os.path.exists(dirname):
-        _os.makedirs(dirname)
-
     def url_sha_pair(url_or_pair):
         if isinstance(url_or_pair, tuple):
             return url_or_pair
@@ -76,6 +86,8 @@ class ImageClassifierPreTrainedModel(object):
 
 
 class ResNetImageClassifier(ImageClassifierPreTrainedModel):
+    input_image_shape = (3, 224, 224)
+
     def __init__(self):
         self.name = 'resnet-50'
         self.num_classes = 1000
@@ -85,7 +97,6 @@ class ResNetImageClassifier(ImageClassifierPreTrainedModel):
         self.label_layer = 'softmax_label'
         self.feature_layer = 'flatten0_output'
         self.is_feature_layer_final = False
-        self.input_image_shape = (3, 224, 224)
         epoch = 0
         self.symbols_url = _urlparse.urljoin(MODELS_URL_ROOT, '%s-symbol.json' % self.name)
         self.symbols_md5 = '2989c88d1d6629b777949a3ae695a42e'
@@ -100,6 +111,8 @@ class ResNetImageClassifier(ImageClassifierPreTrainedModel):
         self.mxmodel = _mx.model.load_checkpoint(_os.path.join(path, self.name), epoch)
 
 class SqueezeNetImageClassifierV1_1(ImageClassifierPreTrainedModel):
+    input_image_shape = (3, 227, 227)
+
     def __init__(self):
         self.name = 'squeezenet_v1.1'
         self.num_classes = 1000
@@ -109,7 +122,6 @@ class SqueezeNetImageClassifierV1_1(ImageClassifierPreTrainedModel):
         self.output_layer = 'prob_output'
         self.label_layer = 'prob_label'
         self.feature_layer = 'flatten_output'
-        self.input_image_shape = (3, 227, 227)
         epoch = 0
         self.symbols_url = _urlparse.urljoin(MODELS_URL_ROOT, '%s-symbol.json' % self.name)
         self.symbols_md5 = 'bab4d80f45e9285cf9f4a3f01f07022e'
@@ -167,4 +179,40 @@ class DarkNetObjectDetectorBase(ObjectDetectorBasePreTrainedModel):
 
 OBJECT_DETECTION_BASE_MODELS = {
     'darknet': DarkNetObjectDetectorBase,
+}
+
+
+class StyleTransferTransformer():
+
+    def __init__(self):
+        self.name = 'resnet-16'
+        self.source_url = _urlparse.urljoin(MODELS_URL_ROOT, 'resnet-16.params')
+        self.source_md5 = 'ac232afa6d0ead93a8c75b6c455f6dd3'
+        self.model_path = _download_and_checksum_files([
+            (self.source_url, self.source_md5)
+        ], _get_model_cache_dir())[0]
+
+
+    def get_model_path(self):
+        return self.model_path
+
+
+class Vgg16():
+
+    def __init__(self):
+        self.name = 'Vgg16-conv1_1-4_3'
+        self.source_url = _urlparse.urljoin(MODELS_URL_ROOT, 'vgg16-conv1_1-4_3.params')
+        self.source_md5 = '52e75e03160e64e5aa9cfbbc62a92345'
+        self.model_path = _download_and_checksum_files([
+            (self.source_url, self.source_md5)
+        ], _get_model_cache_dir())[0]
+
+
+    def get_model_path(self):
+        return self.model_path
+
+
+STYLE_TRANSFER_BASE_MODELS = {
+    'resnet-16': StyleTransferTransformer,
+    'Vgg16': Vgg16
 }

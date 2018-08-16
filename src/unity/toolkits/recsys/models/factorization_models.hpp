@@ -93,15 +93,20 @@ class EXPORT recsys_factorization_model_base : public recsys_model_base {
 class recsys_factorization_model : public recsys_factorization_model_base {
 
  public:
-  bool use_target_column(bool target_is_present) const { return true; }
+  bool use_target_column(bool target_is_present) const override { return true; }
 
  private:
-  bool include_ranking_options() const { return false; }
+  bool include_ranking_options() const override { return false; }
 
  public: 
    // TODO: convert interface above to use the extensions methods here
   BEGIN_CLASS_MEMBER_REGISTRATION("factorization_recommender")
   REGISTER_CLASS_MEMBER_FUNCTION(recsys_factorization_model::list_fields)
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+      "get_value", recsys_factorization_model::get_value_from_state, "field");
+  REGISTER_CLASS_MEMBER_FUNCTION(
+    recsys_factorization_model::recommend_extension_wrapper, 
+    "reference_data", "new_observation_data", "top_k")
   END_CLASS_MEMBER_REGISTRATION
 };
 
@@ -110,15 +115,20 @@ class recsys_factorization_model : public recsys_factorization_model_base {
 class recsys_ranking_factorization_model : public recsys_factorization_model_base {
 
  public:
-  bool use_target_column(bool target_is_present) const { return target_is_present; }
+  bool use_target_column(bool target_is_present) const override { return target_is_present; }
 
  private:
-  bool include_ranking_options() const { return true; }
+  bool include_ranking_options() const override { return true; }
 
  public: 
    // TODO: convert interface above to use the extensions methods here
   BEGIN_CLASS_MEMBER_REGISTRATION("ranking_factorization_recommender")
   REGISTER_CLASS_MEMBER_FUNCTION(recsys_ranking_factorization_model::list_fields)
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+      "get_value", recsys_ranking_factorization_model::get_value_from_state, "field");
+  REGISTER_CLASS_MEMBER_FUNCTION(
+    recsys_ranking_factorization_model::recommend_extension_wrapper, 
+    "reference_data", "new_observation_data", "top_k")
   END_CLASS_MEMBER_REGISTRATION
 
 };

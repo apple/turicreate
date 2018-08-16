@@ -59,9 +59,6 @@ void calculate_item_processing_colwise(
 
   item_info.resize(num_items);
 
-  size_t num_users = data->size();
-
-  const size_t max_num_threads = thread::cpu_count();
   const size_t n = data->size();
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -85,8 +82,7 @@ void calculate_item_processing_colwise(
 
   table.print_header();
   
-  atomic<size_t> row_idx = 0;
-  size_t next_to_print = 0;
+  atomic<size_t> rows_processed_total = 0;
   mutex print_lock;
   
   ////////////////////////////////////////////////////////////////////////////////
@@ -120,10 +116,10 @@ void calculate_item_processing_colwise(
       atomic_increment(item_info[item_a].num_users);
     }
     
-    size_t processed_row_idx = (++row_idx);
+    size_t local_rows_processed_total = ++rows_processed_total;
 
-    if(processed_row_idx % 1000 == 0) {
-      double percent_complete = double((400 * processed_row_idx) / n) / 4;
+    if(local_rows_processed_total % 1000 == 0) {
+      double percent_complete = double((400 * local_rows_processed_total) / n) / 4;
       table.print_timed_progress_row(progress_time(), percent_complete);
     }
   };
@@ -166,7 +162,6 @@ size_t calculate_item_processing_rowwise(
   // Setup all the containers.
 
   const size_t n = data->size();
-  const size_t num_items = n;
   size_t num_users = 0;
 
   item_info.resize(n);
@@ -176,11 +171,9 @@ size_t calculate_item_processing_rowwise(
   const size_t max_num_threads = thread::cpu_count();
   auto reader = data->get_reader(max_num_threads);
 
-  size_t num_dimensions = 0;
-
   // Comparing the indices in the row to verify it is indeed sorted.
-  auto idx_cmp_f = [](const std::pair<size_t, double>& p1,
-                      const std::pair<size_t, double>& p2) {
+  TURI_ATTRIBUTE_UNUSED_NDEBUG auto idx_cmp_f = [](const std::pair<size_t, double>& p1,
+                                                   const std::pair<size_t, double>& p2) {
     return p1.first < p2.first;
   };
 

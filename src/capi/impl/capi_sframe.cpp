@@ -1,8 +1,3 @@
-/* Copyright © 2018 Apple Inc. All rights reserved.
- *
- * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
- */
 #include <capi/TuriCreate.h>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
@@ -29,7 +24,7 @@ EXPORT tc_sframe* tc_sframe_create_empty(tc_error** error) {
   ERROR_HANDLE_END(error, NULL);
 }
 
-EXPORT tc_sframe* tc_sframe_create_copy(tc_sframe* sf, tc_error** error) {
+EXPORT tc_sframe* tc_sframe_create_copy(const tc_sframe* sf, tc_error** error) {
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
@@ -44,22 +39,11 @@ EXPORT tc_sframe* tc_sframe_load(const char* url, tc_error** error) {
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
-  return new_tc_sframe(url); 
+  return new_tc_sframe(url);
 
   ERROR_HANDLE_END(error, NULL);
 }
 
-EXPORT void tc_sframe_save_as_csv(const tc_sframe* sf, const char* url,
-                                  tc_error** error) {
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, sf, "tc_sframe");
- 
-  sf->value.save(url, "csv");
-  
-  ERROR_HANDLE_END(error);
-}
 
 EXPORT void tc_sframe_save(const tc_sframe* sf, const char* url,
                            tc_error** error) {
@@ -67,9 +51,9 @@ EXPORT void tc_sframe_save(const tc_sframe* sf, const char* url,
   turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sf, "tc_sframe");
- 
+
   sf->value.save(url, "binary");
-  
+
   ERROR_HANDLE_END(error);
 }
 
@@ -99,7 +83,7 @@ EXPORT void tc_sframe_remove_column(tc_sframe* sf, const char* column_name,
   ERROR_HANDLE_END(error);
 }
 
-EXPORT tc_sarray* tc_sframe_extract_column_by_name(tc_sframe* sf,
+EXPORT tc_sarray* tc_sframe_extract_column_by_name(const tc_sframe* sf,
                                                    const char* column_name,
                                                    tc_error** error) {
   ERROR_HANDLE_START();
@@ -175,6 +159,32 @@ EXPORT tc_flex_list* tc_sframe_column_names(const tc_sframe* sf,
   ERROR_HANDLE_END(error, NULL);
 }
 
+EXPORT tc_sframe* tc_sframe_join_on_multiple_columns(
+    tc_sframe* left, tc_sframe* right,
+    tc_flex_list* join_columns,
+    const char* how, tc_error** error) {
+  ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
+
+  CHECK_NOT_NULL(error, left, "left tc_sframe", NULL);
+  CHECK_NOT_NULL(error, right, "right tc_sframe", NULL);
+
+  std::vector<std::string> join_columns_transform;
+
+  for (const turi::flexible_type& elem : join_columns->value) {
+    if (elem.get_type() != turi::flex_type_enum::STRING) {
+      set_error(error, "Contains a non-string column name.");
+      return NULL;
+    }
+    join_columns_transform.push_back(elem.get<turi::flex_string>());
+  }
+  
+  return new_tc_sframe(
+      left->value.join(right->value, join_columns_transform, how));
+
+  ERROR_HANDLE_END(error, NULL);
+}
+
 EXPORT tc_sframe* tc_sframe_join_on_single_column(tc_sframe* left,
                                                   tc_sframe* right,
                                                   const char* column,
@@ -185,12 +195,24 @@ EXPORT tc_sframe* tc_sframe_join_on_single_column(tc_sframe* left,
 
   CHECK_NOT_NULL(error, left, "left tc_sframe", NULL);
   CHECK_NOT_NULL(error, right, "right tc_sframe", NULL);
+  CHECK_NOT_NULL(error, column, "column", NULL);
+  CHECK_NOT_NULL(error, how, "how", NULL);
 
-  return new_tc_sframe(
-      left->value.join(right->value, {std::string(column)}, how));
+  tc_flex_list *join_columns = tc_flex_list_create(error);
+  if (join_columns == NULL) { assert(false); return NULL; } // error should be populated already
+  tc_flexible_type *flex_column = tc_ft_create_from_cstring(column, error);
+  if (flex_column == NULL) { assert(false); return NULL; } // error should be populated already
+  uint64_t added = tc_flex_list_add_element(join_columns, flex_column, error);
+  if (added == uint64_t(-1)) { assert(false); return NULL; } // error should be populated already
+
+  tc_sframe *ret = tc_sframe_join_on_multiple_columns(left, right, join_columns, how, error);
+  tc_release(flex_column);
+  tc_release(join_columns);
+  return ret;
 
   ERROR_HANDLE_END(error, NULL);
 }
+
 
 EXPORT tc_sframe* tc_sframe_read_csv(const char* url,
                                      const tc_parameters* params,
@@ -199,8 +221,8 @@ EXPORT tc_sframe* tc_sframe_read_csv(const char* url,
   turi::ensure_server_initialized();
 
   tc_sframe* ret = new_tc_sframe();
-  turi::csv_parsing_config_map config;
-  turi::str_flex_type_map column_type_hints;
+  std::map<std::string, turi::flexible_type> config;
+  std::map<std::string, turi::flex_type_enum> column_type_hints; 
 
   turi::variant_map_type params_copy;
 
@@ -214,7 +236,7 @@ EXPORT tc_sframe* tc_sframe_read_csv(const char* url,
     if (it != params_copy.end()) {
       int64_t header = turi::variant_get_ref<turi::flexible_type>(it->second)
                            .to<turi::flex_int>();
-      config.insert({"header", header});
+      config.insert({"use_header", header});
       params_copy.erase(it);
     }
 
@@ -262,9 +284,8 @@ EXPORT tc_sframe* tc_sframe_read_csv(const char* url,
     it = params_copy.find("error_bad_lines");
     if (it != params_copy.end()) {
       int64_t error_bad_lines =
-          turi::variant_get_ref<turi::flexible_type>(it->second)
-              .to<turi::flex_int>();
-      config.insert({"error_bad_lines", error_bad_lines});
+          !(turi::variant_get_ref<turi::flexible_type>(it->second).is_zero());
+      config.insert({"continue_on_failure", !error_bad_lines});
       params_copy.erase(it);
     }
 
@@ -290,23 +311,33 @@ EXPORT tc_sframe* tc_sframe_read_csv(const char* url,
 
     // column_type_hints: flex_dict<string, flexible_type>
     it = params_copy.find("column_type_hints");
+
     if (it != params_copy.end()) {
-      std::vector<std::pair<turi::flexible_type, turi::flexible_type> >
-          ft_column_type_hints =
-              turi::variant_get_ref<turi::flexible_type>(it->second)
-                  .to<turi::flex_dict>();
-      for (auto iter = ft_column_type_hints.begin();
-           iter != ft_column_type_hints.end(); ++iter) {
-        std::pair<turi::flexible_type, turi::flexible_type> entry = *iter;
-        if ((entry.first).get_type() != turi::flex_type_enum::STRING ||
-            (entry.second).get_type() != turi::flex_type_enum::STRING) {
+      turi::flex_dict ft_column_type_hints =
+          turi::variant_get_value<turi::flex_dict>(it->second);
+
+      for (const auto& entry : ft_column_type_hints) {
+        if (entry.first.get_type() != turi::flex_type_enum::STRING) {
           log_and_throw(
-              "Invalid input to column_type_hints optional parameter: requires "
-              "a flex_dict of strings");
-          return NULL;
+              "Invalid input to column_type_hints optional parameter: "
+              "Keys must be a column names. ");
+        }
+
+        if (entry.second.get_type() == turi::flex_type_enum::STRING) {
+          column_type_hints[entry.first] = turi::flex_type_enum_from_name(
+              entry.second.get<turi::flex_string>());
+        } else if (entry.second.get_type() == turi::flex_type_enum::INTEGER) {
+          column_type_hints[entry.first] = static_cast<turi::flex_type_enum>(
+              entry.second.get<turi::flex_int>());
+        } else {
+          log_and_throw(
+              "Invalid input to column_type_hints optional parameter: "
+              "requires "
+              "a dictionary of column names to strings/enums giving column "
+              "types.");
         }
       }
-      config.insert({"column_type_hints", ft_column_type_hints});
+
       params_copy.erase(it);
     }
 
@@ -340,7 +371,7 @@ EXPORT tc_sframe* tc_sframe_read_csv(const char* url,
     }
 
     // usecols: flex_list<string>
-    it = params_copy.find("usecols");
+    it = params_copy.find("output_columns");
     if (it != params_copy.end()) {
       std::vector<turi::flexible_type> ft_usecols =
           turi::variant_get_ref<turi::flexible_type>(it->second)
@@ -353,25 +384,25 @@ EXPORT tc_sframe* tc_sframe_read_csv(const char* url,
           return NULL;
         }
       }
-      config.insert({"usecols", ft_usecols});
+      config.insert({"output_columns", ft_usecols});
       params_copy.erase(it);
     }
 
     // nrows: int
-    it = params_copy.find("nrows");
+    it = params_copy.find("row_limit");
     if (it != params_copy.end()) {
       int64_t nrows = turi::variant_get_ref<turi::flexible_type>(it->second)
                           .to<turi::flex_int>();
-      config.insert({"nrows", nrows});
+      config.insert({"row_limit", nrows});
       params_copy.erase(it);
     }
 
     // skiprows: int
-    it = params_copy.find("skiprows");
+    it = params_copy.find("skip_rows");
     if (it != params_copy.end()) {
       int64_t skiprows = turi::variant_get_ref<turi::flexible_type>(it->second)
                              .to<turi::flex_int>();
-      config.insert({"skiprows", skiprows});
+      config.insert({"skip_rows", skiprows});
       params_copy.erase(it);
     }
 
@@ -407,6 +438,7 @@ EXPORT tc_sframe* tc_sframe_read_csv(const char* url,
     }
   }
 
+  std::cout << "column_type_hints = " << column_type_hints << std::endl; 
   ret->value.construct_from_csvs(url, config, column_type_hints);
 
   return ret;
@@ -447,7 +479,9 @@ EXPORT tc_sframe* tc_sframe_read_json(const char* url, tc_error** error) {
 
   DASSERT_EQ(sf.num_columns(), 1);
 
-  std::cout << sf << std::endl; 
+  if(sf["X1"].empty()) {
+    return new_tc_sframe(turi::gl_sframe());
+  }
 
   sf = sf.unpack("X1", "");
 
@@ -456,19 +490,15 @@ EXPORT tc_sframe* tc_sframe_read_json(const char* url, tc_error** error) {
   ERROR_HANDLE_END(error, NULL);
 }
 
-EXPORT void tc_sframe_write(const tc_sframe* sf, const char* url,
-                            const char* format, tc_error** error) {
+EXPORT void tc_sframe_export(const tc_sframe* sf, const char* url,
+                            const char* format, const tc_parameters* options, tc_error** error) {
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
+  // TODO: add options.
   sf->value.save(url, format);
 
   ERROR_HANDLE_END(error);
-}
-
-EXPORT void tc_sframe_write_csv(const tc_sframe* sf, const char* url,
-                                tc_error** error) {
-  tc_sframe_write(sf, url, "csv", error);
 }
 
 EXPORT tc_sframe* tc_sframe_head(const tc_sframe* sf, size_t n,
@@ -524,8 +554,8 @@ EXPORT tc_ft_type_enum tc_sframe_column_type(const tc_sframe* sf,
 }
 
 EXPORT void tc_sframe_random_split(const tc_sframe* sf, double fraction,
-                                   size_t seed, tc_sframe** left,
-                                   tc_sframe** right, tc_error** error) {
+                                   size_t seed, const tc_sframe** left,
+                                   const tc_sframe** right, tc_error** error) {
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
@@ -539,20 +569,20 @@ EXPORT void tc_sframe_random_split(const tc_sframe* sf, double fraction,
   ERROR_HANDLE_END(error);
 }
 
-EXPORT tc_sframe* tc_sframe_append(tc_sframe* top, tc_sframe* bottom,
-                                   tc_error** error) {
+EXPORT tc_sframe* tc_sframe_append(const tc_sframe* top,
+                                   const tc_sframe* bottom, tc_error** error) {
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
-  CHECK_NOT_NULL(error, top, "top sframe", bottom);
-  CHECK_NOT_NULL(error, bottom, "bottom sframe", top);
+  CHECK_NOT_NULL(error, top, "top sframe", tc_sframe_create_copy(bottom, error));
+  CHECK_NOT_NULL(error, bottom, "bottom sframe", tc_sframe_create_copy(top, error));
 
   return new_tc_sframe(top->value.append(bottom->value));
 
   ERROR_HANDLE_END(error, NULL);
 }
 
-EXPORT int tc_sframe_is_materialized(const tc_sframe* src, tc_error** error) {
+EXPORT bool tc_sframe_is_materialized(const tc_sframe* src, tc_error** error) {
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
@@ -563,7 +593,7 @@ EXPORT int tc_sframe_is_materialized(const tc_sframe* src, tc_error** error) {
   ERROR_HANDLE_END(error, NULL);
 }
 
-EXPORT int tc_sframe_size_is_known(const tc_sframe* src, tc_error** error) {
+EXPORT bool tc_sframe_size_is_known(const tc_sframe* src, tc_error** error) {
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
@@ -935,9 +965,9 @@ EXPORT tc_sframe* tc_sframe_sort_single_column(const tc_sframe* sf,
   ERROR_HANDLE_END(error, NULL);
 }
 
-EXPORT tc_sframe* tc_sframe_dropna(const tc_sframe* sf,
-                                   const tc_flex_list* columns, const char* how,
-                                   tc_error** error) {
+EXPORT tc_sframe* tc_sframe_drop_na(const tc_sframe* sf,
+                                    const tc_flex_list* columns,
+                                    const char* how, tc_error** error) {
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
@@ -986,32 +1016,17 @@ EXPORT tc_sframe* tc_sframe_sort_multiple_columns(const tc_sframe* sf,
   ERROR_HANDLE_END(error, NULL);
 }
 
-EXPORT tc_sframe* tc_sframe_slice(const tc_sframe* sf, const uint64_t start,
-                                  const uint64_t end, tc_error** error) {
+EXPORT tc_sframe* tc_sframe_slice(const tc_sframe* sf, const int64_t start,
+                                  const int64_t slice, const int64_t end,
+                                  tc_error** error) {
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, sf, "sframe", NULL);
 
   return new_tc_sframe(
-      sf->value[{static_cast<long long>(start), static_cast<long long>(end)}]);
-
-  ERROR_HANDLE_END(error, NULL);
-}
-
-EXPORT tc_sframe* tc_sframe_slice_stride(const tc_sframe* sf,
-                                         const uint64_t start,
-                                         const uint64_t end,
-                                         const uint64_t stride,
-                                         tc_error** error) {
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, sf, "sframe", NULL);
-
-  return new_tc_sframe(
-      sf->value[{static_cast<long long>(start), static_cast<long long>(end),
-                 static_cast<long long>(stride)}]);
+      sf->value[{static_cast<long long>(start), static_cast<long long>(slice),
+                 static_cast<long long>(end)}]);
 
   ERROR_HANDLE_END(error, NULL);
 }
@@ -1029,9 +1044,10 @@ EXPORT tc_flex_list* tc_sframe_extract_row(const tc_sframe* sf,
   ERROR_HANDLE_END(error, NULL);
 }
 
-EXPORT tc_sframe* tc_sframe_fillna(const tc_sframe* data, const char* column,
-                                   const tc_flexible_type* value,
-                                   tc_error** error) {
+EXPORT tc_sframe* tc_sframe_replace_na(const tc_sframe* data,
+                                       const char* column,
+                                       const tc_flexible_type* value,
+                                       tc_error** error) {
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
@@ -1045,188 +1061,80 @@ EXPORT tc_sframe* tc_sframe_fillna(const tc_sframe* data, const char* column,
 
 EXPORT tc_groupby_aggregator* tc_groupby_aggregator_create(tc_error** error) {
   ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
 
   return new_tc_groupby_aggregator();
 
   ERROR_HANDLE_END(error, NULL);
 }
 
-EXPORT void tc_groupby_aggregator_add_count(tc_groupby_aggregator* gb,
-                                            const char* dest_column,
-                                            tc_error** error) {
+EXPORT void tc_groupby_aggregator_add_parameterized_aggregator(
+    tc_groupby_aggregator* gb, const char* dest_column,
+    const tc_parameters* param, tc_error** error) {
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
 
-  gb->value.emplace(dest_column, turi::aggregate::COUNT());
-
+  // PLACEHOLDER: TODO
   ERROR_HANDLE_END(error);
 }
 
-EXPORT void tc_groupby_aggregator_add_sum(tc_groupby_aggregator* gb,
-                                          const char* dest_column,
-                                          const char* src_column,
-                                          tc_error** error) {
+EXPORT tc_sframe* tc_sframe_apply_mask(const tc_sframe* sf, const tc_sarray* mask, tc_error** error) {
+
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
+  CHECK_NOT_NULL(error, sf, "tc_sframe", NULL);
+  CHECK_NOT_NULL(error, mask, "tc_sarray", NULL);
 
-  gb->value.insert({dest_column, turi::aggregate::SUM(src_column)});
+  return new_tc_sframe(sf->value[mask->value]);
 
-  ERROR_HANDLE_END(error);
+  ERROR_HANDLE_END(error, NULL);
 }
 
-EXPORT void tc_groupby_aggregator_add_max(tc_groupby_aggregator* gb,
-                                          const char* dest_column,
-                                          const char* src_column,
-                                          tc_error** error) {
+
+EXPORT void tc_groupby_aggregator_add_simple_aggregator(
+    tc_groupby_aggregator* gb, const char* agg_op, const char* dest_column,
+    const char* src_column, tc_error** error) {
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
+  typedef decltype(gb->value) agg_type;
 
-  gb->value.insert({dest_column, turi::aggregate::MAX(src_column)});
+#define AGG_OP(name, op_name)\
+   {name, [](agg_type& gb, const char* dest, const char* src) { gb.emplace(dest, turi::aggregate::op_name(src)); } }
 
-  ERROR_HANDLE_END(error);
-}
+  static std::map<std::string, std::function<void(agg_type&, const char*, const char*)> > agg_map =
+  {{"count", [](agg_type& gb, const char* dest, const char* src) { gb.emplace(dest, turi::aggregate::COUNT()); } },
+    AGG_OP("sum", SUM),
+    AGG_OP("max", MAX),
+    AGG_OP("min", MIN),
+    AGG_OP("avg", AVG),
+    AGG_OP("var", VAR),
+    AGG_OP("std", STD),
+    AGG_OP("stdv", STDV),
+    AGG_OP("select_one", SELECT_ONE),
+    AGG_OP("count_distinct", COUNT_DISTINCT),
+    AGG_OP("concat", CONCAT)
+  };
 
-EXPORT void tc_groupby_aggregator_add_min(tc_groupby_aggregator* gb,
-                                          const char* dest_column,
-                                          const char* src_column,
-                                          tc_error** error) {
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
+  auto it = agg_map.find(agg_op);
 
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
+  if(it == agg_map.end()) {
 
-  gb->value.insert({dest_column, turi::aggregate::MIN(src_column)});
+    std::ostringstream ss;
+    ss << "Aggregation " << agg_op << " not recognized. "
+       << "Available aggregation operators are ";
 
-  ERROR_HANDLE_END(error);
-}
+    for (const auto& p : agg_map) {
+      ss << p.first << " ";
+    }
+    ss << ".";
 
-EXPORT void tc_groupby_aggregator_add_mean(tc_groupby_aggregator* gb,
-                                           const char* dest_column,
-                                           const char* src_column,
-                                           tc_error** error) {
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
+    throw std::invalid_argument(ss.str());
+  }
 
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
-
-  gb->value.insert({dest_column, turi::aggregate::AVG(src_column)});
-
-  ERROR_HANDLE_END(error);
-}
-
-EXPORT void tc_groupby_aggregator_add_avg(tc_groupby_aggregator* gb,
-                                          const char* dest_column,
-                                          const char* src_column,
-                                          tc_error** error) {
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
-
-  gb->value.insert({dest_column, turi::aggregate::AVG(src_column)});
-
-  ERROR_HANDLE_END(error);
-}
-
-EXPORT void tc_groupby_aggregator_add_var(tc_groupby_aggregator* gb,
-                                          const char* dest_column,
-                                          const char* src_column,
-                                          tc_error** error) {
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
-
-  gb->value.insert({dest_column, turi::aggregate::VAR(src_column)});
-
-  ERROR_HANDLE_END(error);
-}
-
-EXPORT void tc_groupby_aggregator_add_variance(tc_groupby_aggregator* gb,
-                                               const char* dest_column,
-                                               const char* src_column,
-                                               tc_error** error) {
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
-
-  gb->value.insert({dest_column, turi::aggregate::VARIANCE(src_column)});
-
-  ERROR_HANDLE_END(error);
-}
-
-EXPORT void tc_groupby_aggregator_add_std(tc_groupby_aggregator* gb,
-                                          const char* dest_column,
-                                          const char* src_column,
-                                          tc_error** error) {
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
-
-  gb->value.insert({dest_column, turi::aggregate::STD(src_column)});
-
-  ERROR_HANDLE_END(error);
-}
-
-EXPORT void tc_groupby_aggregator_add_stdv(tc_groupby_aggregator* gb,
-                                           const char* dest_column,
-                                           const char* src_column,
-                                           tc_error** error) {
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
-
-  gb->value.insert({dest_column, turi::aggregate::STDV(src_column)});
-
-  ERROR_HANDLE_END(error);
-}
-
-EXPORT void tc_groupby_aggregator_add_select_one(tc_groupby_aggregator* gb,
-                                                 const char* dest_column,
-                                                 const char* src_column,
-                                                 tc_error** error) {
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
-
-  gb->value.insert({dest_column, turi::aggregate::SELECT_ONE(src_column)});
-
-  ERROR_HANDLE_END(error);
-}
-
-EXPORT void tc_groupby_aggregator_add_count_distinct(tc_groupby_aggregator* gb,
-                                                     const char* dest_column,
-                                                     const char* src_column,
-                                                     tc_error** error) {
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
-
-  gb->value.insert({dest_column, turi::aggregate::COUNT_DISTINCT(src_column)});
-
-  ERROR_HANDLE_END(error);
-}
-
-EXPORT void tc_groupby_aggregator_add_concat_one_column(
-    tc_groupby_aggregator* gb, const char* dest_column, const char* src_column,
-    tc_error** error) {
-  ERROR_HANDLE_START();
-  turi::ensure_server_initialized();
-
-  CHECK_NOT_NULL(error, gb, "groupby_aggregator");
-
-  gb->value.insert({dest_column, turi::aggregate::CONCAT(src_column)});
+  it->second(gb->value, dest_column, src_column);
 
   ERROR_HANDLE_END(error);
 }
@@ -1314,6 +1222,7 @@ EXPORT void tc_groupby_aggregator_add_argmin(tc_groupby_aggregator* gb,
 
   ERROR_HANDLE_END(error);
 }
+
 
 EXPORT tc_sframe* tc_sframe_group_by(const tc_sframe* sf,
                                      const tc_flex_list* column_list,

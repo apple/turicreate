@@ -310,15 +310,6 @@ class EXPORT nearest_neighbors_model : public ml_model_base {
   virtual ~nearest_neighbors_model(){}
 
   /**
-   * Returns the name of the model.
-   *
-   * \returns Name of the model.
-   *
-   * \ref model_base for details.
-   */
-  virtual std::string name() = 0;
-
-  /**
    * Create a nearest neighbors reference object without input reference labels.
    */
   virtual void train(const sframe& X,

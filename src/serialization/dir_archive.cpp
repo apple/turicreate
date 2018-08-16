@@ -176,7 +176,7 @@ void dir_archive::init_for_write(const std::string& directory) {
   // ok if we get here, everything is good. begin from scratch and create the
   // archive
   m_directory = fileio::convert_to_generic(directory);
-  fileio::create_directory(m_directory);
+  fileio::create_directory_or_throw(m_directory);
 
   // clear index info
   m_index_info = dir_archive_impl::archive_index_information();

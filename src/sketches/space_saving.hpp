@@ -467,8 +467,6 @@ class space_saving {
     // current entries. 
     std::map<size_t, size_t> part_sizes;
 
-    typedef std::pair<size_t, size_t> idx_pair;
-    
     // First, go through and update the partition sizes from the other
     // sketch, copying over the counts and errors where they deal with
     // these.

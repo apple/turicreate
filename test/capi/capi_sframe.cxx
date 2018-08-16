@@ -1,20 +1,22 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
+/* Copyright © 2018 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/lib/gl_sarray.hpp>
 #include <capi/TuriCreate.h>
-#include <fileio/fileio_constants.hpp>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <vector>
 #include <iostream>
 #include <ctime>
 #include <unity/toolkits/util/random_sframe_generation.hpp>
+#include <fileio/fileio_constants.hpp>
+#include <util/fs_util.hpp>
 #include "capi_utils.hpp"
 
 BOOST_AUTO_TEST_CASE(test_sframe_allocation) {
@@ -35,7 +37,11 @@ std::vector<std::pair<std::string, std::vector<double> > > data
       {"a",    {5.0, 2., 1., 0.5} },
       {"b",    {7.0, 2., 3., 1.5} } };
 
-std::string url = turi::fileio::get_system_temp_directory() + "/sf_tmp_1/";
+    std::string url = turi::fs_util::join({
+      turi::fs_util::system_temp_directory_unique_path("", ""),
+      "sf_tmp_1",
+      ""
+    });
 
     tc_error* error = NULL;
 
@@ -820,7 +826,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_rename_column_test) {
   tc_release(sf);
 }
 
-BOOST_AUTO_TEST_CASE(test_sframe_fillna_test) {
+BOOST_AUTO_TEST_CASE(test_sframe_replace_na_test) {
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_create_empty(&error);
   CAPI_CHECK_ERROR(error);
@@ -859,7 +865,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_fillna_test) {
 
   turi::flexible_type f_float(43.0);
 
-  tc_sframe* sampled_frame = tc_sframe_fillna(sf, "col1", ft, &error);
+  tc_sframe* sampled_frame = tc_sframe_replace_na(sf, "col1", ft, &error);
   CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe sampled_gl_sframe = sf_gl.fillna("col1", f_float);
@@ -1334,7 +1340,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_dropna_test) {
   std::vector<std::string> columns_transform;
   columns_transform.push_back("col1");
 
-  tc_sframe* pre_sampled_frame = tc_sframe_dropna(sf, flex_lst, "any", &error);
+  tc_sframe* pre_sampled_frame = tc_sframe_drop_na(sf, flex_lst, "any", &error);
   CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe pre_sampled_gl_sframe = sf_gl.dropna(columns_transform, "any");
@@ -1382,7 +1388,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_slice_test) {
     tc_release(sa);
   }
 
-  tc_sframe* pre_sampled_frame = tc_sframe_slice(sf, 1, 3, &error);
+  tc_sframe* pre_sampled_frame = tc_sframe_slice(sf, 1, 3, 1, &error);
   CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe pre_sampled_gl_sframe = sf_gl[{1,3}];
@@ -1476,7 +1482,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_slice_stride_test) {
     tc_release(sa);
   }
 
-  tc_sframe* pre_sampled_frame = tc_sframe_slice_stride(sf, 1, 5, 2, &error);
+  tc_sframe* pre_sampled_frame = tc_sframe_slice(sf, 1, 5, 2, &error);
   CAPI_CHECK_ERROR(error);
 
   turi::gl_sframe pre_sampled_gl_sframe = sf_gl[{1, 5, 2}];
@@ -1490,6 +1496,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_slice_stride_test) {
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_read_json) {
+  // Test a normal looking json file
   tc_error* error = NULL;
   tc_sframe* sf = tc_sframe_read_json("./json_test.json", &error);
 
@@ -1505,7 +1512,104 @@ BOOST_AUTO_TEST_CASE(test_sframe_read_json) {
 
   TS_ASSERT(nr == 3);
 
+  // Test an empty json file
+  sf = tc_sframe_read_json("./json_test_empty.json", &error);
+
+  nc = tc_sframe_num_columns(sf, &error);
+  CAPI_CHECK_ERROR(error);
+
+  TS_ASSERT(nc == 0);
+
+  nr = tc_sframe_num_rows(sf, &error);
+  CAPI_CHECK_ERROR(error);
+
+  TS_ASSERT(nr == 0);
+
   tc_release(sf);
+}
+
+BOOST_AUTO_TEST_CASE(test_sframe_join_single_column) {
+  tc_error *error = NULL;
+
+  auto assert_join_results_equal = [](tc_sframe *actual, tc_sframe *expected) {
+    TS_ASSERT(check_equality_tc_sframe(actual, expected, false /* check_row_order */));
+  };
+
+  tc_sframe *employees_sf = tc_sframe_create_empty(&error);
+  CAPI_CHECK_ERROR(error);
+
+  {
+    tc_sarray *last_name = make_sarray_string({"Rafferty","Jones","Heisenberg","Robinson","Smith","John"});
+    tc_flex_list *dep_id_list = make_flex_list_double({31,33,33,34,34});
+    tc_flexible_type *empty = tc_ft_create_empty(&error);
+    CAPI_CHECK_ERROR(error);
+    tc_flex_list_add_element(dep_id_list, empty, &error);
+    CAPI_CHECK_ERROR(error);
+    tc_sarray* dep_id = tc_sarray_create_from_list(dep_id_list, &error);
+    CAPI_CHECK_ERROR(error);
+
+    tc_sframe_add_column(employees_sf, "last_name", last_name, &error);
+    CAPI_CHECK_ERROR(error);
+    tc_sframe_add_column(employees_sf, "dep_id", dep_id, &error);
+    CAPI_CHECK_ERROR(error);
+
+    tc_release(last_name);
+    tc_release(dep_id_list);
+    tc_release(empty);
+    tc_release(dep_id);
+  }
+
+  tc_sframe *departments_sf = tc_sframe_create_empty(&error);
+  CAPI_CHECK_ERROR(error);
+
+  {
+    tc_sarray *dep_id = make_sarray_double({31,33,34,35});
+    tc_sarray *dep_name = make_sarray_string({"Sales","Engineering","Clerical","Marketing"});
+
+    tc_sframe_add_column(departments_sf, "dep_id", dep_id, &error);
+    CAPI_CHECK_ERROR(error);
+    tc_sframe_add_column(departments_sf, "dep_name", dep_name, &error);
+    CAPI_CHECK_ERROR(error);
+
+    tc_release(dep_id);
+    tc_release(dep_name);
+  }
+
+  tc_sframe *inner_expected = tc_sframe_create_empty(&error);
+  CAPI_CHECK_ERROR(error);
+
+  {
+    tc_sarray *last_name = make_sarray_string({"Robinson","Jones","Smith","Heisenberg","Rafferty"});
+    tc_sarray *dep_id = make_sarray_double({34,33,34,33,31});
+    tc_sarray *dep_name = make_sarray_string({"Clerical","Engineering","Clerical","Engineering","Sales"});
+
+    tc_sframe_add_column(inner_expected, "last_name", last_name, &error);
+    CAPI_CHECK_ERROR(error);
+    tc_sframe_add_column(inner_expected, "dep_id", dep_id, &error);
+    CAPI_CHECK_ERROR(error);
+    tc_sframe_add_column(inner_expected, "dep_name", dep_name, &error);
+    CAPI_CHECK_ERROR(error);
+  }
+
+  {
+    // Tests the "natural join" case
+    tc_sframe *res = tc_sframe_join_on_single_column(
+      employees_sf,
+      departments_sf,
+      "dep_id",
+      "inner",
+      &error);
+    CAPI_CHECK_ERROR(error);
+    TS_ASSERT_DIFFERS(res, nullptr);
+
+    assert_join_results_equal(res, inner_expected);
+  }
+
+  // TODO - port the rest of the Python test from test_sframe::test_simple_joins
+}
+
+BOOST_AUTO_TEST_CASE(test_sframe_join_multiple_columns) {
+  // TODO - port the Python test from test_sframe::test_big_composite_join
 }
 
 BOOST_AUTO_TEST_CASE(test_sframe_groupby_manual_sframe) {
@@ -1569,7 +1673,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_manual_sframe) {
   tc_flex_list_add_element(column_list, user_id_ft, &error);
   CAPI_CHECK_ERROR(error);
 
-  tc_groupby_aggregator_add_count(gb_manual, "count", &error);
+  tc_groupby_aggregator_add_simple_aggregator(gb_manual, "count", "count", "", &error);
   CAPI_CHECK_ERROR(error);
 
   tc_sframe* sampled_frame = tc_sframe_group_by(sf, column_list, gb_manual, &error);
@@ -1603,7 +1707,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_most_aggregates) {
   size_t n_rows1 = 10000;
   size_t n_columns1 = 100;
   std::string column_types1 = "R";
-  for (int index = 1; index < n_columns1; index++) {
+  for (int index = 1; index < static_cast<int64_t>(n_columns1); index++) {
     column_types1 += all_types[rand() % 6];
     srand(time(NULL));
   }
@@ -1622,39 +1726,39 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_most_aggregates) {
   TS_ASSERT(check_equality_gl_sframe(sf1->value, sf_gl1));
 
   // C interface
-  tc_groupby_aggregator_add_sum(gb1, "a_sum", zeroth_column.c_str(), &error);
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "sum", "a_sum", zeroth_column.c_str(), &error);
   CAPI_CHECK_ERROR(error);
-  tc_groupby_aggregator_add_max(gb1, "a_max", zeroth_column.c_str(), &error);
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "max", "a_max", zeroth_column.c_str(), &error);
   CAPI_CHECK_ERROR(error);
-  tc_groupby_aggregator_add_min(gb1, "a_min", zeroth_column.c_str(), &error);
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "min", "a_min", zeroth_column.c_str(), &error);
   CAPI_CHECK_ERROR(error);
-  tc_groupby_aggregator_add_mean(gb1, "a_mean", zeroth_column.c_str(), &error);
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "avg", "a_mean", zeroth_column.c_str(), &error);
   CAPI_CHECK_ERROR(error);
-  tc_groupby_aggregator_add_avg(gb1, "a_avg", zeroth_column.c_str(), &error);
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "avg", "a_avg", zeroth_column.c_str(), &error);
   CAPI_CHECK_ERROR(error);
-  tc_groupby_aggregator_add_var(gb1, "a_var", zeroth_column.c_str(), &error);
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "var", "a_var", zeroth_column.c_str(), &error);
   CAPI_CHECK_ERROR(error);
-  tc_groupby_aggregator_add_variance(gb1, "a_variance", zeroth_column.c_str(),
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "var", "a_variance", zeroth_column.c_str(),
     &error);
   CAPI_CHECK_ERROR(error);
-  tc_groupby_aggregator_add_std(gb1, "a_std", zeroth_column.c_str(), &error);
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "std", "a_std", zeroth_column.c_str(), &error);
   CAPI_CHECK_ERROR(error);
-  tc_groupby_aggregator_add_stdv(gb1, "a_stdv", zeroth_column.c_str(), &error);
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "stdv", "a_stdv", zeroth_column.c_str(), &error);
   CAPI_CHECK_ERROR(error);
-  tc_groupby_aggregator_add_select_one(gb1, "a_select_one",
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "select_one", "a_select_one",
     sf_gl1.column_name(50).c_str(), &error);
   CAPI_CHECK_ERROR(error);
-  tc_groupby_aggregator_add_count_distinct(gb1, "a_count_distinct",
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "count_distinct", "a_count_distinct",
     sf_gl1.column_name(75).c_str(), &error);
   CAPI_CHECK_ERROR(error);
-  tc_groupby_aggregator_add_concat_one_column(gb1, "a_concat_one_column",
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "concat", "a_concat_one_column",
     sf_gl1.column_name(25).c_str(), &error);
   CAPI_CHECK_ERROR(error);
   tc_groupby_aggregator_add_concat_two_columns(gb1, "a_concat_two_columns",
     sf_gl1.column_name(20).c_str(), sf_gl1.column_name(80).c_str(), &error);
   CAPI_CHECK_ERROR(error);
 
-  tc_groupby_aggregator_add_count(gb1, "a_count", &error);
+  tc_groupby_aggregator_add_simple_aggregator(gb1, "count", "a_count", "", &error);
   CAPI_CHECK_ERROR(error);
 
   tc_flexible_type* last_ft = tc_ft_create_from_cstring(last_column.c_str(),
@@ -1711,7 +1815,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_quantiles) {
   size_t n_rows1 = 10000;
   size_t n_columns1 = 100;
   std::string column_types1 = "RZ";
-  for (int index = 2; index < n_columns1; index++) {
+  for (int index = 2; index < static_cast<int64_t>(n_columns1); index++) {
     column_types1 += all_types[rand() % 6];
     srand(time(NULL));
   }
@@ -1795,7 +1899,7 @@ BOOST_AUTO_TEST_CASE(test_sframe_groupby_random_sframe_argminmax) {
   size_t n_rows1 = 10000;
   size_t n_columns1 = 100;
   std::string column_types1 = "RZ";
-  for (int index = 2; index < n_columns1; index++) {
+  for (int index = 2; index < static_cast<int64_t>(n_columns1); index++) {
     column_types1 += all_types[rand() % 6];
     srand(time(NULL));
   }

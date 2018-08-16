@@ -33,6 +33,12 @@ void _print_flexible_type(std::ostringstream& ss, size_t width, const flexible_t
 
 class table_printer_element_base {
  public:
+  enum class style_type : uint8_t {
+    kDefault,       // Written as number or string
+    kBool,          // Written as true or false
+    kProgressTime,  // Written as human-readable elapsed time
+  };
+
   virtual void print(std::ostringstream& ss, size_t width){};
   virtual flexible_type get_value(){return FLEX_UNDEFINED;}
 };
@@ -41,6 +47,7 @@ template <typename T, class Enable = void>
 struct table_printer_element : public table_printer_element_base
 {
   static constexpr bool valid_type = false;
+  static constexpr style_type style = style_type::kDefault;
 };
 
 /** For printing doubles.
@@ -52,6 +59,7 @@ struct table_printer_element
 
  public:
   static constexpr bool valid_type = true;
+  static constexpr style_type style = style_type::kDefault;
 
   table_printer_element(T v)
       : value(double(v))
@@ -79,6 +87,7 @@ struct table_printer_element
     : public table_printer_element_base {
  public:
   static constexpr bool valid_type = true;
+  static constexpr style_type style = style_type::kBool;
 
   table_printer_element(T v)
       : value(v)
@@ -105,6 +114,7 @@ struct table_printer_element
     : public table_printer_element_base {
 public:
   static constexpr bool valid_type = true;
+  static constexpr style_type style = style_type::kDefault;
 
   table_printer_element(const T& v)
       : value(v)
@@ -157,6 +167,7 @@ struct table_printer_element
 
  public:
   static constexpr bool valid_type = true;
+  static constexpr style_type style = style_type::kDefault;
 
   table_printer_element(const T& v)
       : value(v)
@@ -183,6 +194,7 @@ struct table_printer_element
 
  public:
   static constexpr bool valid_type = true;
+  static constexpr style_type style = style_type::kProgressTime;
 
   table_printer_element(double v)
       : value(v)
@@ -208,6 +220,7 @@ struct table_printer_element
     : public table_printer_element_base {
  public:
   static constexpr bool valid_type = true;
+  static constexpr style_type style = style_type::kDefault;
 
   table_printer_element(const T& v)
       : value(v)

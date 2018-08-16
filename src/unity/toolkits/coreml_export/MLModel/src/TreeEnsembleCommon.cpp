@@ -1,8 +1,3 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
- *
- * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
- */
 #include "TreeEnsembleCommon.hpp"
 #include <algorithm>
 #include <sstream>
@@ -113,12 +108,12 @@ namespace CoreML { namespace TreeEnsembles {
                 n.false_child_node_id = ns.falsechildnodeid();
                 n.missing_value_tracks_true_child = ns.missingvaluetrackstruechild();
             } else {
-                n.evaluation_values.resize(ns.evaluationinfo_size());
+                n.evaluation_values.resize(static_cast<size_t>(ns.evaluationinfo_size()));
 
                 for(int i = 0; i < ns.evaluationinfo_size(); ++i) {
                     uint64_t index = ns.evaluationinfo(i).evaluationindex();
                     double value = ns.evaluationinfo(i).evaluationvalue();
-                    n.evaluation_values[i] = {index, value};
+                    n.evaluation_values[static_cast<size_t>(i)] = {index, value};
                 }
 
                 // Check the evaluation values.
@@ -452,9 +447,9 @@ namespace CoreML { namespace TreeEnsembles {
 
         if(tes.basepredictionvalue_size() == 0) {
             tree_ensemble->default_values.assign(static_cast<size_t>(output_dimension), 0);
-        } else if(tes.basepredictionvalue_size() == output_dimension) {
+        } else if(static_cast<size_t>(tes.basepredictionvalue_size()) == output_dimension) {
             for(int i = 0; i < tes.basepredictionvalue_size(); ++i) {
-                tree_ensemble->default_values[i] = tes.basepredictionvalue(i);
+                tree_ensemble->default_values[static_cast<size_t>(i)] = tes.basepredictionvalue(i);
             }
         } else {
             std::ostringstream ss;
@@ -495,7 +490,7 @@ namespace CoreML { namespace TreeEnsembles {
             tree_ensemble->post_processing_transform = static_cast<PostEvaluationTransform>(
                                     m_spec.treeensembleclassifier().postevaluationtransform());
             
-            size_t n_classes = std::max(int64ClassLabels.vector_size(), stringClassLabels.vector_size());
+            size_t n_classes = static_cast<size_t>(std::max(int64ClassLabels.vector_size(), stringClassLabels.vector_size()));
             if(n_classes == 0) {
                 
                 /** Handle the binary classification mode.
@@ -543,11 +538,13 @@ namespace CoreML { namespace TreeEnsembles {
                               tree_ensemble->output_classes_string.resize(n_classes);
                           }
                           
-                          for(int i = 0; i < n_classes; ++i) {
+                          assert(n_classes >= 0);
+                          assert(n_classes < std::numeric_limits<int>::max());
+                          for(size_t i = 0; i < n_classes; ++i) {
                               if(integer_classes) {
-                                  tree_ensemble->output_classes_integer[i] = int64ClassLabels.vector(i);
+                                  tree_ensemble->output_classes_integer[i] = int64ClassLabels.vector(static_cast<int>(i));
                               } else {
-                                  tree_ensemble->output_classes_string[i] = stringClassLabels.vector(i);
+                                  tree_ensemble->output_classes_string[i] = stringClassLabels.vector(static_cast<int>(i));
                               }
                           }
                       } else {

@@ -96,7 +96,7 @@ struct flex_date_time {
   static constexpr double TIMEZONE_RESOLUTION_IN_HOURS = 0.25;
   static constexpr int32_t _LEGACY_TIMEZONE_SHIFT = 25;
 
-  inline flex_date_time():m_posix_timestamp_high(0), m_posix_timestamp_low(0),
+  inline flex_date_time(): m_posix_timestamp_low(0), m_posix_timestamp_high(0),
     m_tz_15min_offset(EMPTY_TIMEZONE + _LEGACY_TIMEZONE_SHIFT), m_microsecond(0) { }
   flex_date_time(const flex_date_time&) = default;
   flex_date_time(flex_date_time&&) = default;
@@ -200,8 +200,7 @@ struct flex_date_time {
     // see load(iarchive) for explanations of this oddity.
     if (m_tz_15min_offset < 0) {
       return m_tz_15min_offset + _LEGACY_TIMEZONE_SHIFT;
-    }
-    if (m_tz_15min_offset >= 0) {
+    } else { 
       return m_tz_15min_offset - _LEGACY_TIMEZONE_SHIFT;
     }
   }
@@ -217,8 +216,7 @@ struct flex_date_time {
     // see load(iarchive) for explanations of this oddity.
     if (tz_15min_offset < 0) {
       m_tz_15min_offset = tz_15min_offset - _LEGACY_TIMEZONE_SHIFT;
-    }
-    if (tz_15min_offset >= 0) {
+    } else { 
       m_tz_15min_offset = tz_15min_offset + _LEGACY_TIMEZONE_SHIFT;
     }
   }
@@ -291,6 +289,7 @@ struct flex_date_time {
     }
   }
 
+  friend class flexible_type;
 
  private:
   uint32_t m_posix_timestamp_low: 32;
@@ -760,9 +759,23 @@ inline flex_type_enum flex_type_enum_from_name(const std::string& name) {
     {"image", flex_type_enum::IMAGE},
     {"undefined", flex_type_enum::UNDEFINED}
   };
+  
   if (type_map.count(name) == 0) {
-    log_and_throw(std::string("Invalid flexible type name " + name));
+    auto throw_error = [&]() GL_COLD_NOINLINE_ERROR {
+      std::ostringstream ss;
+
+      ss << "Invalid flexible type name '" << name << "'. "
+         << "Valid names are: ";
+
+      for(const auto& p : type_map) { 
+         ss << p.first << ",";
   }
+
+      log_and_throw(ss.str().c_str());
+    };
+    throw_error();
+  } 
+  
   return type_map.at(name);
 }
 

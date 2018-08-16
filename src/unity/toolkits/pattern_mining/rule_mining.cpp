@@ -6,6 +6,8 @@
 #include <limits>
 #include <unity/toolkits/pattern_mining/rule_mining.hpp>
 
+#include <util/basic_types.hpp>
+
 namespace turi {
 namespace pattern_mining {
 
@@ -396,7 +398,7 @@ flex_list rule_list::get_top_k_rules(const size_t& top_k, \
 
   // Get unordered list of top k rules + scores
   std::vector<std::pair<rule,double>> top_rule_pairs;
-  for(int i = 0; i < rules.size(); i++){
+  for(int i = 0; i < truncate_check<int64_t>(rules.size()); i++){
     if(scores[i] >= min_score){
       std::pair<rule, double> rule_pair;
       rule_pair.first = rules[i];

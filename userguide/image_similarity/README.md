@@ -22,8 +22,8 @@ import turicreate as tc
 reference_data  = tc.image_analysis.load_images('./101_ObjectCategories')
 reference_data = reference_data.add_row_number()
 
-# Save the data for future use
-reference_data.save('caltech-101.sframe')
+# Save the SFrame for future use
+reference_data.save('./caltech-101.sframe')
 ```
 
 We can explore the data interactively using:
@@ -50,8 +50,8 @@ _method. This image or array of images does **not** need to be a part of the_
 _original dataset._
 
 ```python
-similar_images = model.query(reference_data[0:10], k=10)
-similar_images.head()
+query_results = model.query(reference_data[0:10], k=10)
+query_results.head()
 ```
 ```no-highlight
 +-------------+-----------------+---------------+------+
@@ -71,15 +71,18 @@ similar_images.head()
 [100 rows x 4 columns]
 ```
 
-Now, for a simple image like this (let's say the 9th image in the data)
+Now, for a simple image like this (let's say the 10th image in the data).
 ```python
-reference_data[9].show()
+reference_data[9]['image'].show()
 ```
 ![Similar images](images/sample_image.jpg)
+Note: the loading order of images is non-deterministic, so your 10th image
+is likely something differnt but this isn't important for demonstration purposes.
 
 The 10 most "similar" looking images are
 ```python
-similar_images[similar_images['query_label'] == 9].explore()
+similar_rows = query_results[query_results['query_label'] == 9]['reference_label']
+reference_data.filter_by(similar_rows, 'id').explore()
 ```
 
 ![Similar images](images/similar_images.png)
@@ -88,7 +91,7 @@ similar_images[similar_images['query_label'] == 9].explore()
 
 In some cases, we want to find the most similar images in the reference
 dataset for all images in the reference dataset. The similarity_graph
-method returns an SGraph whose vertices are the rows of the reference
+method returns an SGraph whose vertices are the row numbers of the reference
 dataset and whose edges indicate a nearest neighbor match. Specifically,
 the destination vertex of an edge is a nearest neighbor of the source
 vertex. `similarity_graph` can also return results in the same form as the
@@ -121,64 +124,8 @@ similar_images = similarity_graph.edges
 Once you have created a model, you can save it and load it back later for use.
 
 ```
-model.save('myModel.model')
-loaded_model = turicreate.load_model('myModel.model')
-```
-
-
-##### Deploying to Core ML
-
-Using the Core ML Framework, you can retrieve the distance between a query image and all images in the reference data. Exporting this model in Core ML format can be
-performed using the `export_coreml` function.
-
-```python
-model.export_coreml('MyImageSimilarityModel.mlmodel')
-```
-
-When you open the model in Xcode, it looks like the following:
-
-![Image similarity model in Xcode](images/image_similarity_model.png)
-
-The following Swift code is needed to consume the model in
-an iOS app.
-
-```swift
-let model = try VNCoreMLModel(for: MyImageSimilarityModel().model)
-
-let request = VNCoreMLRequest(model: model, completionHandler: { [weak self] request, error in
-    self?.processQuery(for: request, error: error)
-})
-request.imageCropAndScaleOption = .centerCrop
-return request
-```
-
-Notice that the image similarity model in Core ML returns the distances between the query image and all images in the reference dataset. In order to retrieve the most similar images in the reference dataset, we must sort them by distance. We can do this by modifying the [Core ML sample application
-](https://developer.apple.com/documentation/vision/classifying_images_with_vision_and_core_ml) as such:
-
-```swift
-func processQuery(for request: VNRequest, error: Error?, k: Int = 5) {
-    DispatchQueue.main.async {
-        guard let results = request.results else {
-            self.referenceRanking.text = "Unable to rank image.\n\(error!.localizedDescription)"
-            return
-        }
-
-        let queryResults = results as! [VNCoreMLFeatureValueObservation]
-        let distances = queryResults.first!.featureValue.multiArrayValue!
-        
-        // Create an array of distances to sort
-        let numReferenceImages = distances.shape[0].intValue
-        var distanceArray = [Double]()
-        for r in 0..<numReferenceImages {
-            distanceArray.append(Double(distances[r]))
-        }
-
-        let sorted = distanceArray.enumerated().sorted(by: {$0.element < $1.element})
-        let knn = sorted[..<min(k, numReferenceImages)]
-
-        self.referenceRanking.text = String(describing: knn)
-    }
-}
+model.save('./myModel.model')
+loaded_model = turicreate.load_model('./myModel.model')
 ```
 
 #### How it works
@@ -199,7 +146,7 @@ task.
 
 * **Stage 3**: Create a [nearest
   neighbors](../nearest_neighbors/nearest_neighbors.md) model with those
-features as input for your own task.
+feature vectors as input.
 
 #### References
 

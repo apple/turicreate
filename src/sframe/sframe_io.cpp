@@ -27,9 +27,12 @@ size_t sframe_row_to_csv(const std::vector<flexible_type>& row, char* buf, size_
       case flex_type_enum::FLOAT:
         last_bytes_written = snprintf(cur, space_remaining, "%f", val.get<flex_float>());
         break;
-      case flex_type_enum::INTEGER:
-        last_bytes_written = snprintf(cur, space_remaining, "%ld", val.get<flex_int>());
+      case flex_type_enum::INTEGER: {
+        static_assert(std::is_same<flex_int, int64_t>::value, "flex_int == int64_t");
+        long long r = static_cast<long long>(val.get<flex_int>());
+        last_bytes_written = snprintf(cur, space_remaining, "%lld", r);
         break;
+      }
       case flex_type_enum::UNDEFINED:
         last_bytes_written = 0;
         break;

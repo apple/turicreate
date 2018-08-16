@@ -35,8 +35,8 @@ void setup_pipeline_from_mldata(
       case ml_column_mode::NUMERIC_VECTOR:
         {
           size_t dimension = metadata->index_size(column_idx);
-          pipeline.addInput(column_name, CoreML::FeatureType::Array({dimension}));
-          vect.addInput(column_name, CoreML::FeatureType::Array({dimension}));
+          pipeline.addInput(column_name, CoreML::FeatureType::Array({static_cast<int64_t>(dimension)}));
+          vect.addInput(column_name, CoreML::FeatureType::Array({static_cast<int64_t>(dimension)}));
           vect.add(column_name, dimension);
           break;
         }
@@ -188,7 +188,7 @@ void setup_pipeline_from_mldata(
 
   // Set the output of the vectorizer.
   vect.addOutput("__vectorized_features__",
-                 CoreML::FeatureType::Array({metadata->num_dimensions()}));
+                 CoreML::FeatureType::Array({static_cast<int64_t>(metadata->num_dimensions())}));
 
   // Add the vectorizer to the pipeline.
   pipeline.add(vect);

@@ -62,7 +62,9 @@
 #include <logger/backtrace.hpp>
 
 #include <boost/typeof/typeof.hpp>
+
 #include <util/code_optimization.hpp>
+#include <util/sys_util.hpp>
 
 extern void __print_back_trace();
 
@@ -311,6 +313,8 @@ extern void __print_back_trace();
 #define ASSERT_FALSE(cond)    EXPECT_FALSE(cond)
 #define ASSERT_STREQ(a, b)    EXPECT_STREQ(a, b)
 
+#define ASSERT_UNREACHABLE()  { EXPECT_TRUE(false); assert(false); TURI_BUILTIN_UNREACHABLE(); }
+
 #define ASSERT_MSG(condition, fmt, ...)                                  \
   do {                                                                   \
     if (__builtin_expect(!(condition), 0)) {                             \
@@ -321,6 +325,7 @@ extern void __print_back_trace();
         logger(LOG_ERROR, fmt, ##__VA_ARGS__);                           \
         __print_back_trace();                                            \
         TURI_LOGGER_FAIL_METHOD(ss.str().c_str());                       \
+        ASSERT_UNREACHABLE();                                            \
       };                                                                 \
       throw_error();                                                     \
     }                                                                    \
@@ -370,15 +375,7 @@ extern void __print_back_trace();
 
 
 #define DASSERT_MSG(condition, fmt, ...)                                \
-  do {                                                                  \
-    if (__builtin_expect(!(condition), 0)) {                            \
-      logstream(LOG_ERROR)                                              \
-        << "Check failed: " << #condition << ":\n";                     \
-      logger(LOG_ERROR, fmt, ##__VA_ARGS__);                            \
-      __print_back_trace();                                             \
-      TURI_LOGGER_FAIL_METHOD("assertion failure");                    \
-    }                                                                   \
-  } while(0)
+  ASSERT_MSG(condition, fmt, ##__VA_ARGS__)
 
 #endif
 

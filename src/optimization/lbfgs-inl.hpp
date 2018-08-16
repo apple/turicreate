@@ -94,6 +94,8 @@ inline solver_return lbfgs(first_order_opt_interface& model,
          << std::endl;
     std::stringstream ss;
     ss.str("");
+    } else { 
+      logprogress_stream << "Calibrating solver; this may take some time." << std::endl;
     }
     
     // Step 1: Algorithm init
@@ -143,6 +145,17 @@ inline solver_return lbfgs(first_order_opt_interface& model,
     double residual = compute_residual(gradient);
     double fprevious = func_value;
     bool tune_step_size = true;
+
+    std::vector<std::string> stat_info =
+          (simple_mode
+               ? std::vector<std::string>{std::to_string(iters),
+              std::to_string(t.current_time())}
+               : std::vector<std::string>{std::to_string(iters),
+                     std::to_string(stats.num_passes),
+                     "NaN",
+                     std::to_string(t.current_time())});
+    std::vector<std::string> row = model.get_status(point, stat_info);
+    printer.print_progress_row_strs(iters, row);
 
     // LBFGS storage
     // The search steps and gradient differences are stored in a order 
@@ -324,16 +337,16 @@ inline solver_return lbfgs(first_order_opt_interface& model,
                           << std::endl;
 
       // Print progress
-      auto stat_info =
+      stat_info =
           (simple_mode
                ? std::vector<std::string>{std::to_string(iters),
                                           std::to_string(t.current_time())}
                : std::vector<std::string>{std::to_string(iters),
                         std::to_string(stats.num_passes),
-                        std::to_string(ls_stats.step_size), 
+                        std::to_string(ls_stats.step_size),
                                           std::to_string(t.current_time())});
 
-      auto row = model.get_status(point, stat_info);
+      row = model.get_status(point, stat_info);
       printer.print_progress_row_strs(iters, row);
 
     }

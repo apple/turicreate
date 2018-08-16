@@ -391,9 +391,16 @@ namespace turi {
     inline void notify_all() const {
       broadcast();
     }
-    ~conditional() {
+    ~conditional() noexcept {
       int error = pthread_cond_destroy(&m_cond);
-      DASSERT_MSG(!error, "Condition variable destroy error %d", error);
+      if (error) {
+        try {
+          std::cerr << "Condition variable destroy error " << error
+                     << std::endl;
+        } catch (...) {
+        }
+        abort();
+      }
     }
   }; // End conditional
 
@@ -500,7 +507,11 @@ namespace turi {
 #define atomic_inc(P) __sync_add_and_fetch((P), 1)
 #define atomic_add(P, V) __sync_add_and_fetch((P), (V))
 #define atomic_set_bit(P, V) __sync_or_and_fetch((P), 1<<(V))
+#ifdef __arm64
+#define cpu_relax() asm volatile("yield\n": : :"memory")
+#else
 #define cpu_relax() asm volatile("pause\n": : :"memory")
+#endif
 
   /**
    * \class spinrwlock
@@ -975,9 +986,9 @@ namespace turi {
      * thrown by the thread is forwarded to the join() function.
      */
     inline void join() {
-      if(this == NULL) {
+      if(ptrdiff_t(this) == 0) {
         std::cout << "Failure on join()" << std::endl;
-        exit(EXIT_FAILURE);
+        abort();
       }
       join(*this);
     }

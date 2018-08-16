@@ -200,7 +200,7 @@ int main(int argc, char** argv) {
     if (!success) {
       std::cerr << "Unable to create directory at " 
                 << turi::sanitize_url(dstpath) << "\n";
-      return false;
+      return 1;
     }
   } else if (command == "rm" && argc == 3) {
     std::string dstpath = argv[2];
@@ -209,7 +209,7 @@ int main(int argc, char** argv) {
     if (!success) {
       std::cerr << "Unable to delete path at " 
                 << turi::sanitize_url(dstpath) << "\n";
-      return false;
+      return 1;
     }
   } else if (command == "rmr" && argc == 3) {
     std::string dstpath = argv[2];
@@ -218,7 +218,7 @@ int main(int argc, char** argv) {
     if (!success) {
       std::cerr << "Unable to recursively delete path at " 
                 << turi::sanitize_url(dstpath) << "\n";
-      return false;
+      return 1;
     }
   } else if (command == "ls" && argc == 3) {
     std::string url = argv[2];

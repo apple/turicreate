@@ -82,7 +82,7 @@ class sarray_format_reader_v2: public sarray_format_reader<T> {
       m_segment_list.push_back(columnaddr);
       size_t nblocks = m_manager.num_blocks_in_column(columnaddr);
 
-      size_t segment_id, column_id, block_id;
+      size_t segment_id, column_id;
       std::tie(segment_id, column_id) = columnaddr;
 
       const std::vector<std::vector<v2_block_impl::block_info>>& segment_blocks = m_manager.get_all_block_info(segment_id);
@@ -597,6 +597,13 @@ class sarray_group_format_writer_v2: public sarray_group_format_writer<T> {
     for (size_t i = 0; i < m_nsegments; ++i) {
       open_segment(i);
     }
+  }
+
+  /**
+   * Sets write options. See \ref v2_block_impl::block_writer::set_options
+   */
+  void set_options(const std::string& option, int64_t value) {
+    m_writer.set_options(option, value);
   }
 
   /**

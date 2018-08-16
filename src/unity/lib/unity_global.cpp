@@ -15,11 +15,13 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/searching/boyer_moore.hpp>
+#include <boost/filesystem/path.hpp>
 #include <parallel/lambda_omp.hpp>
 #include <fileio/temp_files.hpp>
-#include <fileio/curl_downloader.hpp>
 #include <fileio/fs_utils.hpp>
+#ifdef TC_HAS_PYTHON
 #include <lambda/lambda_master.hpp>
+#endif
 #include <unity/lib/version.hpp>
 #include <unity/lib/unity_global.hpp>
 #include <perf/memory_info.hpp>
@@ -92,7 +94,7 @@ namespace turi {
      case 3:
        {
          auto model_ptr = boost::get<std::shared_ptr<model_base>>(v);
-         oarc << model_ptr->name();
+         oarc << std::string(model_ptr->name());
          oarc << (*model_ptr);
        }
        break;
@@ -215,10 +217,62 @@ namespace turi {
     }
   }
 
+  variant_map_type unity_global::load_model_impl(turi::iarchive& iarc, bool include_data) {
+    char buf[256] = "";
+    size_t magic_header_size = strlen(CLASS_MAGIC_HEADER);
+    iarc.read(buf, magic_header_size);
+    if (strcmp(buf, OLD_CLASS_MAGIC_HEADER) == 0) {
+      // legacy loader
+      std::string model_name;
+      std::string model_wrapper;
+      iarc >> model_name;
+      logstream(LOG_INFO) << "Model name: " << model_name << std::endl;
+      iarc >> model_wrapper;
+      std::shared_ptr<model_base> model_ptr = classes->get_toolkit_class(model_name);
+      iarc  >> *(model_ptr);
+      if (iarc.fail()) {
+        std::string message = "Fail to read.";
+        log_and_throw_io_failure(message);
+      }
+
+      // fill the return values
+      variant_map_type ret;
+      variant_set_value<flexible_type>(ret["archive_version"], 0);
+      variant_set_value<std::shared_ptr<model_base>>(ret["model_base"], model_ptr);
+      flexible_type flex_model_wrapper = (flexible_type)model_wrapper;
+      variant_set_value<flexible_type>(ret["model_wrapper"], flex_model_wrapper);
+      variant_set_value<flexible_type>(ret["model_name"], flexible_type(model_name));
+      return ret;
+    } else if (strcmp(buf, CLASS_MAGIC_HEADER) == 0) {
+      // new loader
+      std::string model_name;
+      iarc >> model_name;
+      variant_type var;
+      model_variant_deep_load(var, iarc);
+      variant_map_type ret;
+      if (include_data) {
+        DASSERT_TRUE(variant_is<variant_map_type>(var));
+        ret = variant_get_value<variant_map_type>(var);
+      } else {
+        DASSERT_TRUE(variant_is<std::shared_ptr<model_base> >(var));
+        ret["model"] = var;
+      }
+      variant_set_value<flexible_type>(ret["archive_version"], 1);
+      variant_set_value<flexible_type>(ret["model_name"], flexible_type(model_name));
+      if (iarc.fail()) {
+        std::string message = "Fail to read.";
+        log_and_throw_io_failure(message);
+      }
+      return ret;
+    } else {
+      log_and_throw(std::string("Invalid model file."));
+    }
+
+  }
+
   variant_map_type unity_global::load_model(const std::string& url) {
     logstream(LOG_INFO) << "Load model from " << sanitize_url(url) << std::endl;
     try {
-
       dir_archive dir;
       dir.open_directory_for_read(url);
       std::string contents;
@@ -226,51 +280,7 @@ namespace turi {
         log_and_throw(std::string("Archive does not contain a model."));
       }
       iarchive iarc(dir);
-
-      char buf[256] = "";
-      size_t magic_header_size = strlen(CLASS_MAGIC_HEADER);
-      iarc.read(buf, magic_header_size);
-      if (strcmp(buf, OLD_CLASS_MAGIC_HEADER) == 0) {
-        // legacy loader
-        std::string model_name;
-        std::string model_wrapper;
-        iarc >> model_name;
-        logstream(LOG_INFO) << "Model name: " << model_name << std::endl;
-        iarc >> model_wrapper;
-        std::shared_ptr<model_base> model_ptr = classes->get_toolkit_class(model_name);
-        iarc  >> *(model_ptr);
-        if (dir.get_input_stream()->fail()) {
-          std::string message = "Fail to read.";
-          log_and_throw_io_failure(message);
-        }
-        dir.close();
-
-        // fill the return values
-        variant_map_type ret;
-        variant_set_value<flexible_type>(ret["archive_version"], 0);
-        variant_set_value<std::shared_ptr<model_base>>(ret["model_base"], model_ptr);
-        flexible_type flex_model_wrapper = (flexible_type)model_wrapper;
-        variant_set_value<flexible_type>(ret["model_wrapper"], flex_model_wrapper);
-        variant_set_value<flexible_type>(ret["model_name"], flexible_type(model_name));
-        return ret;
-      } else if (strcmp(buf, CLASS_MAGIC_HEADER) == 0) {
-        // new loader
-        std::string model_name;
-        iarc >> model_name;
-        variant_type var;
-        model_variant_deep_load(var, iarc);
-        variant_map_type ret = variant_get_value<variant_map_type>(var);
-        variant_set_value<flexible_type>(ret["archive_version"], 1);
-        variant_set_value<flexible_type>(ret["model_name"], flexible_type(model_name));
-        if (dir.get_input_stream()->fail()) {
-          std::string message = "Fail to read.";
-          log_and_throw_io_failure(message);
-        }
-        dir.close();
-        return ret;
-      } else {
-        log_and_throw(std::string("Invalid model file."));
-      }
+      return load_model_impl(iarc, true /* include_data */);
     } catch (std::ios_base::failure& e) {
       std::string message = "Unable to load model from " + sanitize_url(url) + ": " + e.what();
       log_and_throw_io_failure(message);
@@ -280,6 +290,26 @@ namespace turi {
       log_and_throw(std::string("Unable to load model from ") + sanitize_url(url) + ": " + e.what());
     } catch (...) {
       log_and_throw(std::string("Unknown Error: Unable to load model from ") + sanitize_url(url));
+    }
+  }
+
+  variant_map_type unity_global::load_model_from_data(std::istream& data) {
+    logstream(LOG_INFO) << "Load model from data" << std::endl;
+    try {
+      iarchive iarc(data);
+      // include_data is false, because data (SFrame/SArray) can't be serialized
+      // as data (bytes). Requires a dir_archive with real filesystem.
+      return load_model_impl(iarc, false /* include_data */);
+    } catch (std::ios_base::failure& e) {
+      std::string message = "Unable to load model from data: ";
+      message += e.what();
+      log_and_throw_io_failure(message);
+    } catch (std::string& e) {
+      log_and_throw(std::string("Unable to load model from data: ") + e);
+    } catch (const std::exception& e) {
+      log_and_throw(std::string("Unable to load model from data: ") + e.what());
+    } catch (...) {
+      log_and_throw(std::string("Unknown Error: Unable to load model from data."));
     }
   }
 
@@ -299,7 +329,7 @@ namespace turi {
       // write to the archive. write a header, then the model name, then the map
       oarchive oarc(dir);
       oarc.write(CLASS_MAGIC_HEADER, strlen(CLASS_MAGIC_HEADER));
-      oarc << model->name();
+      oarc << std::string(model->name());
       model_variant_deep_save(to_variant(stored_map), oarc);
 
       if (dir.get_output_stream()->fail()) {
@@ -307,6 +337,9 @@ namespace turi {
         log_and_throw_io_failure(message);
       }
       dir.close();
+    } catch (turi::error::io_error&) {
+      // already in a turi error message; just re-throw it
+      throw;
     } catch (std::ios_base::failure& e) {
       std::string message = "Unable to save model to " + sanitize_url(url) + ": " + e.what();
       log_and_throw_io_failure(message);
@@ -314,6 +347,33 @@ namespace turi {
       log_and_throw(std::string("Unable to save model to ") + sanitize_url(url) + ": " + e);
     } catch (...) {
       log_and_throw(std::string("Unknown Error: Unable to save model to ") + sanitize_url(url));
+    }
+  }
+
+  void unity_global::save_model_to_data(std::shared_ptr<model_base> model, std::ostream& out) {
+    logstream(LOG_INFO) << "Save model to data" << std::endl;
+    logstream(LOG_INFO) << "Model name: " << model->name() << std::endl;
+    try {
+      oarchive oarc(out);
+      // write to the archive. write a header, then the model name, then the map
+      oarc.write(CLASS_MAGIC_HEADER, strlen(CLASS_MAGIC_HEADER));
+      oarc << std::string(model->name());
+      model_variant_deep_save(to_variant(model), oarc);
+
+      if (oarc.fail()) {
+        std::string message = "Fail to write.";
+        log_and_throw_io_failure(message);
+      }
+    } catch (turi::error::io_error&) {
+      // already in a turi error message; just re-throw it
+      throw;
+    } catch (std::ios_base::failure& e) {
+      std::string message = std::string("Unable to save model to data: ") + e.what();
+      log_and_throw_io_failure(message);
+    } catch (std::string& e) {
+      log_and_throw(std::string("Unable to save model to data: ") + e);
+    } catch (...) {
+      log_and_throw(std::string("Unknown Error: Unable to save model to data"));
     }
   }
 
@@ -340,6 +400,9 @@ namespace turi {
         log_and_throw_io_failure(message);
       }
       dir.close();
+    } catch (turi::error::io_error& e) {
+      // already in a turi error message; just re-throw it
+      throw;
     } catch (std::ios_base::failure& e) {
       std::string message = "Unable to save model to " + sanitize_url(url) + ": " + e.what();
       log_and_throw_io_failure(message);
@@ -416,28 +479,37 @@ namespace turi {
 
   flexible_type unity_global::eval_lambda(const std::string& string, const flexible_type& arg) {
     log_func_entry();
+#ifdef TC_HAS_PYTHON
     lambda::lambda_master& evaluator = lambda::lambda_master::get_instance();
     auto lambda_hash = evaluator.make_lambda(string);
     std::vector<flexible_type> return_val;
     evaluator.bulk_eval(lambda_hash, {arg}, return_val, false, 0);
     evaluator.release_lambda(lambda_hash);
     return return_val[0];
+#else
+    log_and_throw("Python lambdas not supported");
+#endif
   }
 
   flexible_type unity_global::eval_dict_lambda(const std::string& lambda_string,
                             const std::vector<std::string>& keys,
                             const std::vector<flexible_type>& values) {
     log_func_entry();
+#ifdef TC_HAS_PYTHON
     lambda::lambda_master& evaluator = lambda::lambda_master::get_instance();
     auto lambda_hash = evaluator.make_lambda(lambda_string);
     std::vector<flexible_type> return_val;
     evaluator.bulk_eval(lambda_hash, keys, {values}, return_val, false, 0);
     evaluator.release_lambda(lambda_hash);
     return return_val[0];
+#else
+    log_and_throw("Python lambdas not supported");
+#endif
   }
 
   std::vector<flexible_type> unity_global::parallel_eval_lambda(const std::string& string, const std::vector<flexible_type>& arg) {
     log_func_entry();
+#ifdef TC_HAS_PYTHON
     lambda::lambda_master& evaluator = lambda::lambda_master::get_instance();
     auto lambda_hash = evaluator.make_lambda(string);
 
@@ -451,6 +523,9 @@ namespace turi {
 
     evaluator.release_lambda(lambda_hash);
     return ret;
+#else
+    log_and_throw("Python lambdas not supported");
+#endif
   }
 
   std::string unity_global::__read__(const std::string& url) {

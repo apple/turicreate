@@ -2,7 +2,6 @@ project(TuriPlatformDepedentcode)
 
 subdirs(
   crash_handler
-  fiber
   minipsutil
   network
   parallel

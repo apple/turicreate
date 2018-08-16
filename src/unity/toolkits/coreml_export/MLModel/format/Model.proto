@@ -8,45 +8,57 @@
  * and a model description,
  * and can be any one of the following types:
  *
- * Pipelines
- *     - ``PipelineClassifier``
- *     - ``PipelineRegressor``
- *     - ``Pipeline``
+ * Neural Networks
+ *   - `NeuralNetwork`
  *
  * Regressors
- *     - ``GLMRegressor``
- *     - ``SupportVectorRegressor``
- *     - ``TreeEnsembleRegressor``
- *     - ``NeuralNetworkRegressor``
+ *   - ``GLMRegressor``
+ *   - ``SupportVectorRegressor``
+ *   - ``TreeEnsembleRegressor``
+ *   - ``NeuralNetworkRegressor``
+ *   - ``BayesianProbitRegressor``
  *
  * Classifiers
- *     - ``GLMClassifier``
- *     - ``SupportVectorClassifier``
- *     - ``TreeEnsembleClassifier``
- *     - ``NeuralNetworkClassifier``
+ *   - `NeuralNetworkClassifier`
+ *   - `TreeEnsembleClassifier`
+ *   - `GLMClassifier`
+ *   - `SupportVectorClassifier`
  *
- * Neural Networks
- *     - ``NeuralNetwork``
+ * Other models
+ *   - `CustomModel`
+ *   - `TextClassifier`
+ *   - `WordTagger`
+ *   - `VisionFeaturePrint`
  *
  * Feature Engineering
- *     - ``OneHotEncoder``
- *     - ``Imputer``
- *     - ``FeatureVectorizer``
- *     - ``DictVectorizer``
- *     - ``Scaler``
- *     - ``CategoricalMapping``
- *     - ``Normalizer``
- *     - ``ArrayFeatureExtractor``
+ *   - `Imputer`
+ *   - `Scaler`
+ *   - `Normalizer`
+ *   - `OneHotEncoder`
+ *   - `CategoricalMapping`
+ *   - `FeatureVectorizer`
+ *   - `DictVectorizer`
+ *   - `ArrayFeatureExtractor`
+ *
+ * Pipelines
+ *   - `PipelineClassifier`
+ *   - `PipelineRegressor`
+ *   - `Pipeline`
  *
  * Simple Mathematical Functions
- *     - ``Identity``
+ *   - `Identity`
  */
 
 syntax = "proto3";
 option optimize_for = LITE_RUNTIME;
 
+import public "VisionFeaturePrint.proto";
+import public "TextClassifier.proto";
+import public "WordTagger.proto";
 import public "ArrayFeatureExtractor.proto";
+import public "BayesianProbitRegressor.proto";
 import public "CategoricalMapping.proto";
+import public "CustomModel.proto";
 import public "DictVectorizer.proto";
 import public "FeatureTypes.proto";
 import public "FeatureVectorizer.proto";
@@ -58,6 +70,7 @@ import public "NeuralNetwork.proto";
 import public "Normalizer.proto";
 import public "OneHotEncoder.proto";
 import public "Scaler.proto";
+import public "NonMaximumSuppression.proto";
 import public "SVM.proto";
 import public "TreeEnsemble.proto";
 
@@ -75,12 +88,6 @@ message Pipeline {
  */
 message PipelineClassifier {
     Pipeline pipeline = 1;
-
-    // Required class label mapping
-    oneof ClassLabels {
-        StringVector stringClassLabels = 100;
-        Int64Vector int64ClassLabels = 101;
-    }
 }
 
 /**
@@ -143,7 +150,7 @@ message ModelDescription {
  * which is incremented anytime a backward-incompatible change is made
  * (this is functionally equivalent to the MAJOR version number
  * described by `Semantic Versioning 2.0.0 <http://semver.org/>`_).
- * The Core ML framework in macOS currently supports specification version `1`.
+ * The Core ML framework in macOS currently supports specification version ``1``.
  */
 message Model {
     int32 specificationVersion = 1;
@@ -162,6 +169,7 @@ message Model {
         SupportVectorRegressor supportVectorRegressor = 301;
         TreeEnsembleRegressor treeEnsembleRegressor = 302;
         NeuralNetworkRegressor neuralNetworkRegressor = 303;
+        BayesianProbitRegressor bayesianProbitRegressor = 304;
 
         // classifiers start at 400
         GLMClassifier glmClassifier = 400;
@@ -172,6 +180,9 @@ message Model {
         // generic models start at 500
         NeuralNetwork neuralNetwork = 500;
 
+        // Custom model
+        CustomModel customModel = 555;
+
         // feature engineering starts at 600
         OneHotEncoder oneHotEncoder = 600;
         Imputer imputer = 601;
@@ -181,10 +192,16 @@ message Model {
         CategoricalMapping categoricalMapping = 606;
         Normalizer normalizer = 607;
         ArrayFeatureExtractor arrayFeatureExtractor = 609;
+        NonMaximumSuppression nonMaximumSuppression = 610;
 
         // simple mathematical functions used for testing start at 900
         Identity identity = 900;
 
         // reserved until 1000
+
+        // CoreML provided models
+        CoreMLModels.TextClassifier textClassifier = 2000;
+        CoreMLModels.WordTagger wordTagger = 2001;
+        CoreMLModels.VisionFeaturePrint visionFeaturePrint = 2002;
     }
 }

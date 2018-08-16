@@ -29,7 +29,6 @@ std::string boxes_and_whiskers_result::vega_column_data(bool sframe) const {
 
   size_t i = 0;
 
-  size_t size_list = grouped.size();
   for (const auto& pair : grouped) {
     // if x is missing, nothing to plot -- skip for now
     // TODO: eventually we should probably have an "undefined" bin

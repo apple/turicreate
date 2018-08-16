@@ -163,7 +163,7 @@ class EXPORT xgboost_model : public supervised_learning_model_base {
    */
   sframe predict_topk(const ml_data& test_data,
                       const std::string& output_type="",
-                      const size_t topk = 2);
+                      const size_t topk = 2) override;
   /**
    * First make predictions and then evaluate.
    *
@@ -176,7 +176,7 @@ class EXPORT xgboost_model : public supervised_learning_model_base {
    */
   std::map<std::string, variant_type> evaluate(
                const ml_data& test_data,
-               const std::string& evaluation_type="");
+               const std::string& evaluation_type="") override;
 
   std::map<std::string, variant_type> evaluate_impl(
                const DMatrixMLData& dmat,
@@ -222,7 +222,7 @@ class EXPORT xgboost_model : public supervised_learning_model_base {
   /**
    * Gets the model version number
    */
-  virtual size_t get_version() const {
+  virtual size_t get_version() const override {
     // Version translator
     // -----------------------
     //  0 -  Version 1.0
@@ -240,12 +240,12 @@ class EXPORT xgboost_model : public supervised_learning_model_base {
   /**
    * Serialize the object.
    */
-  void save_impl(turi::oarchive& oarc) const;
+  void save_impl(turi::oarchive& oarc) const override;
 
   /**
    * Load the object
    */
-  void load_version(turi::iarchive& iarc, size_t version);
+  void load_version(turi::iarchive& iarc, size_t version) override;
 
   /**
    * Return true if the model is random forest classifier or regression model.

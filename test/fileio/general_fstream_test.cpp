@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
   std::string s;
   s.resize(16);
   for (size_t i = 0;i < 8; ++i) {
-    s[2 * i] = 255;
+    s[2 * i] = static_cast<char>(255);
     s[2 * i + 1] = 'a';
   }
   std::string expected;

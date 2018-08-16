@@ -481,6 +481,8 @@ get_binary_operator(flex_type_enum left, flex_type_enum right, std::string op) {
             return 0;
           }
         };
+      } else {
+        throw std::string("Invalid operands for flexible_type binary operator");
       }
 /**************************************************************************/
 /*                                                                        */
@@ -526,9 +528,39 @@ get_binary_operator(flex_type_enum left, flex_type_enum right, std::string op) {
   } else if (op == "!=") {
      return [](const flexible_type& l, const flexible_type& r)->flexible_type{return (int)(l != r);};
   } else if (op == "&") {
-     return [](const flexible_type& l, const flexible_type& r)->flexible_type{return (int)((!l.is_zero()) && (!r.is_zero()));};
+    // Ternary truth table
+    //  & | F - T
+    //  -------
+    //  F | F F F
+    //  - | F - -
+    //  T | F - T
+    //
+    return [](const flexible_type& l, const flexible_type& r)->flexible_type{
+       int ldef = !l.is_na();
+       int rdef = !r.is_na();
+       bool lval = !l.is_zero(); // note that NA is 0
+       bool rval = !r.is_zero();
+       if (ldef && rdef) return int(lval && rval); // regular case. Both are defined
+       else if (!ldef) return (rdef && rval == false) ? flexible_type(0) : FLEX_UNDEFINED;
+       else /* if (!rdef) */ return (ldef && lval == false) ? flexible_type(0) : FLEX_UNDEFINED;
+     };
   } else if (op == "|") {
-     return [](const flexible_type& l, const flexible_type& r)->flexible_type{return (int)((!l.is_zero()) || (!r.is_zero()));};
+    // Ternary truth table
+    //  | | F - T
+    //  -------
+    //  F | F - T
+    //  - | - - T
+    //  T | T T T
+    //
+    return [](const flexible_type& l, const flexible_type& r)->flexible_type{
+       int ldef = !l.is_na();
+       int rdef = !r.is_na();
+       bool lval = !l.is_zero(); // note that NA is 0
+       bool rval = !r.is_zero();
+       if (ldef && rdef) return int(lval || rval); // regular case. Both are defined
+       else if (!ldef) return (rdef && rval == true) ? flexible_type(1) : FLEX_UNDEFINED;
+       else /* if (!rdef) */ return (ldef && lval == true) ? flexible_type(1) : FLEX_UNDEFINED;
+     };
   } else {
     throw std::string("Invalid Operation Type");
   }

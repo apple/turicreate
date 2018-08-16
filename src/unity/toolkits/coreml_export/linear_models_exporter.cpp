@@ -10,22 +10,22 @@
 #include <unity/toolkits/coreml_export/MLModel/src/transforms/LinearModel.hpp>
 #include <unity/toolkits/coreml_export/MLModel/src/transforms/LogisticModel.hpp>
 
+using turi::coreml::MLModelWrapper;
+
 namespace turi {
 
 /**
  * Export as model asset
  */
-void export_linear_regression_as_model_asset(
-    const std::string& filename,
+std::shared_ptr<MLModelWrapper> export_linear_regression_as_model_asset(
     const std::shared_ptr<ml_metadata>& metadata,
     const arma::vec& coefs,
     const std::map<std::string, flexible_type>& context) {
 
-  CoreML::Pipeline pipeline = CoreML::Pipeline::Regressor(
-      metadata->target_column_name(),
-      "");
+  auto pipeline = std::make_shared<CoreML::Pipeline>(
+      CoreML::Pipeline::Regressor(metadata->target_column_name(), ""));
 
-  setup_pipeline_from_mldata(pipeline, metadata);
+  setup_pipeline_from_mldata(*pipeline, metadata);
 
   // Build the actual model
   CoreML::LinearModel lr = CoreML::LinearModel(metadata->target_column_name(), "");
@@ -42,35 +42,45 @@ void export_linear_regression_as_model_asset(
   lr.setWeights({one_hot_coefs});
 
   lr.addInput("__vectorized_features__",
-              CoreML::FeatureType::Array({metadata->num_dimensions()}));
+              CoreML::FeatureType::Array({static_cast<int64_t>(metadata->num_dimensions())}));
   lr.addOutput(metadata->target_column_name(), CoreML::FeatureType::Double());
 
-  pipeline.add(lr);
-  pipeline.addOutput(metadata->target_column_name(), CoreML::FeatureType::Double());
+  pipeline->add(lr);
+  pipeline->addOutput(metadata->target_column_name(),
+                      CoreML::FeatureType::Double());
 
   // Add metadata
-  add_metadata(pipeline.m_spec, context);
+  add_metadata(pipeline->getProto(), context);
 
-  CoreML::Result r = pipeline.save(filename);
-  if(!r.good()) {
-    log_and_throw("Could not export model: " + r.message());
-  }
+  return std::make_shared<MLModelWrapper>(std::move(pipeline));
+}
+
+void export_linear_regression_as_model_asset(
+    const std::string& filename,
+    const std::shared_ptr<ml_metadata>& metadata,
+    const arma::vec& coefs,
+    const std::map<std::string, flexible_type>& context) {
+
+  std::shared_ptr<MLModelWrapper> coreml_model =
+      export_linear_regression_as_model_asset(metadata, coefs, context);
+  coreml_model->save(filename);
 }
 
 
 /**
  * Export linear SVM as model asset.
  */
-void export_linear_svm_as_model_asset(
-    const std::string& filename,
+std::shared_ptr<MLModelWrapper> export_linear_svm_as_model_asset(
     const std::shared_ptr<ml_metadata>& metadata,
     const arma::vec& coefs,
     const std::map<std::string, flexible_type>& context) {
 
   std::string prob_column_name = metadata->target_column_name() + "Probability";
-  CoreML::Pipeline  pipeline = CoreML::Pipeline::Classifier(metadata->target_column_name(), prob_column_name, "");
+  auto pipeline = std::make_shared<CoreML::Pipeline>(
+      CoreML::Pipeline::Classifier(metadata->target_column_name(),
+                                   prob_column_name, ""));
 
-  setup_pipeline_from_mldata(pipeline, metadata);
+  setup_pipeline_from_mldata(*pipeline, metadata);
 
   //////////////////////////////////////////////////////////////////////
   // Now set up the actual model.
@@ -115,32 +125,37 @@ void export_linear_svm_as_model_asset(
 
   // Model inputs and output
   model.addInput("__vectorized_features__",
-              CoreML::FeatureType::Array({metadata->num_dimensions()}));
+              CoreML::FeatureType::Array({static_cast<int64_t>(metadata->num_dimensions())}));
   model.addOutput(metadata->target_column_name(), target_output_data_type);
   model.addOutput(prob_column_name, target_additional_data_type);
 
   // Pipeline outputs
-  pipeline.add(model);
-  pipeline.addOutput(metadata->target_column_name(), target_output_data_type);
-  pipeline.addOutput(prob_column_name, target_additional_data_type);
+  pipeline->add(model);
+  pipeline->addOutput(metadata->target_column_name(), target_output_data_type);
+  pipeline->addOutput(prob_column_name, target_additional_data_type);
 
   // Add metadata
-  add_metadata(pipeline.m_spec, context);
+  add_metadata(pipeline->getProto(), context);
 
-  // Save pipeline
-  CoreML::Result r = pipeline.save(filename);
-  if(!r.good()) {
-    log_and_throw("Could not export model: " + r.message());
-  }
+  return std::make_shared<MLModelWrapper>(std::move(pipeline));
 }
 
+void export_linear_svm_as_model_asset(
+    const std::string& filename,
+    const std::shared_ptr<ml_metadata>& metadata,
+    const arma::vec& coefs,
+    const std::map<std::string, flexible_type>& context) {
+
+  std::shared_ptr<MLModelWrapper> coreml_model =
+      export_linear_svm_as_model_asset(metadata, coefs, context);
+  coreml_model->save(filename);
+}
 
 
 /**
  * Export logistic regression as model asset.
  */
-void export_logistic_model_as_model_asset(
-    const std::string& filename,
+std::shared_ptr<MLModelWrapper> export_logistic_model_as_model_asset(
     const std::shared_ptr<ml_metadata>& metadata,
     const arma::vec& coefs,
     const std::map<std::string, flexible_type>& context) {
@@ -148,10 +163,11 @@ void export_logistic_model_as_model_asset(
 
   std::string prob_column_name = metadata->target_column_name() + "Probability";
 
-  CoreML::Pipeline  pipeline = CoreML::Pipeline::Classifier(
-      metadata->target_column_name(), prob_column_name, "");
+  auto pipeline = std::make_shared<CoreML::Pipeline>(
+      CoreML::Pipeline::Classifier(metadata->target_column_name(),
+                                   prob_column_name, ""));
 
-  setup_pipeline_from_mldata(pipeline, metadata);
+  setup_pipeline_from_mldata(*pipeline, metadata);
 
   //////////////////////////////////////////////////////////////////////
   // Now set up the actual model.
@@ -210,25 +226,31 @@ void export_logistic_model_as_model_asset(
 
   // Model inputs and output
   model.addInput("__vectorized_features__",
-              CoreML::FeatureType::Array({metadata->num_dimensions()}));
+              CoreML::FeatureType::Array({static_cast<int64_t>(metadata->num_dimensions())}));
   model.addOutput(metadata->target_column_name(), target_output_data_type);
   model.addOutput(prob_column_name, target_additional_data_type);
 
   // Pipeline outputs
-  pipeline.add(model);
-  pipeline.addOutput(metadata->target_column_name(), target_output_data_type);
-  pipeline.addOutput(prob_column_name, target_additional_data_type);
+  pipeline->add(model);
+  pipeline->addOutput(metadata->target_column_name(), target_output_data_type);
+  pipeline->addOutput(prob_column_name, target_additional_data_type);
 
   // Add metadata
-  add_metadata(pipeline.m_spec, context);
+  add_metadata(pipeline->getProto(), context);
 
-  // Save pipeline
-  CoreML::Result r = pipeline.save(filename);
-  if(!r.good()) {
-    log_and_throw("Could not export model: " + r.message());
-  }
+  return std::make_shared<MLModelWrapper>(std::move(pipeline));
+}
+
+void export_logistic_model_as_model_asset(
+    const std::string& filename,
+    const std::shared_ptr<ml_metadata>& metadata,
+    const arma::vec& coefs,
+    const std::map<std::string, flexible_type>& context) {
+
+  std::shared_ptr<MLModelWrapper> coreml_model =
+      export_logistic_model_as_model_asset(metadata, coefs, context);
+  coreml_model->save(filename);
 }
 
 
-
-}
+}  // namespace turi

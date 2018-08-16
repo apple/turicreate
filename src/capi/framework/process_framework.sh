@@ -8,6 +8,7 @@ src_header_dir=""
 fmwrk_dir=""
 install_tbd_file=0
 install_location=""
+iOS=0
 
 function print_options {
   echo "Required options: --name --src-headers --dest"
@@ -23,6 +24,7 @@ function print_options {
 while [ $# -gt 0 ]
   do case $1 in
     --name)                 name=$2; shift;;
+    --iOS)                  iOS=1;;
     --src-headers)          src_header_dir=$2; shift;;
     --framework)            fmwrk_dir=$2; shift;;
     --install-location)     install_location=$2; shift;;
@@ -75,15 +77,22 @@ function generate_tbd_file {
 
 symbol_list=`nm -defined-only -extern-only -just-symbol-name ${lib_file} | sed '$ ! s/$/, /g' | tr -d '\n'`
 
+archs=x86_64
+platform=macosx
+if [[ "$iOS" == "1" ]]; then
+  archs=arm64
+  platform=iphoneos
+fi
+
 echo "
-archs:           [ x86_64 ]
-platform:        macosx
+archs:           [ ${archs} ]
+platform:        ${platform}
 install-name:   '${install_location}/TuriCreate.framework/Versions/A/TuriCreate'
 current-version: 1.0.0
 compatibility-version: 0.0.0
 objc-constraint: none
 exports:
-  - archs:           [ x86_64 ]
+  - archs:           [ ${archs} ]
     symbols:         [ ${symbol_list} ]    
 " > ${out_file}
 

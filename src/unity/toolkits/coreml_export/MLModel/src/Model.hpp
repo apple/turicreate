@@ -1,24 +1,15 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
- *
- * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
- */
 #ifndef ML_MODEL_HPP
 #define ML_MODEL_HPP
-
-#include "Globals.hpp"
-#include "Result.hpp"
-#include "Validators.hpp"
-
-#include "../build/format/Model_enums.h"
-#include "../build/format/Normalizer_enums.h"
-
-#include "Export.hpp"
 
 #include <memory>
 #include <sstream>
 #include <string>
 
+#include "Globals.hpp"
+#include "Result.hpp"
+#include "Validators.hpp"
+
+#include "unity/toolkits/coreml_export/protobuf_include_internal.hpp"
 
 namespace CoreML {
 
@@ -33,12 +24,14 @@ namespace Specification {
  * saving and loading model specs, validating them, and incrementally building
  * them by adding transforms.
  */
-class EXPORT Model {
+class Model {
 private:
     static Result validateGeneric(const Specification::Model& model);
 
-public:
+protected:
     std::shared_ptr<Specification::Model> m_spec;
+    
+public:
     Model();
     Model(const std::string& description);
     Model(const Specification::Model& proto);
@@ -155,6 +148,13 @@ public:
      */
     virtual Result addOutput(const std::string& outputName, FeatureType outputType);
     
+    /**
+     * If a model does not use features from later specification versions, this will
+     * set the spec version so that the model can be executed on older versions of
+     * Core ML.
+     */
+    void downgradeSpecificationVersion();
+    
     // TODO -- This seems like a giant hack. This is leaking abstractions.
     const Specification::Model& getProto() const;
     Specification::Model& getProto();
@@ -170,20 +170,20 @@ extern "C" {
 /**
  * C-Structs needed for integration with pure C.
  */
-typedef struct EXPORT _MLModelSpecification {
+typedef struct _MLModelSpecification {
     std::shared_ptr<CoreML::Specification::Model> cppFormat;
     _MLModelSpecification();
     _MLModelSpecification(const CoreML::Specification::Model&);
     _MLModelSpecification(const CoreML::Model&);
 } MLModelSpecification;
     
-typedef struct EXPORT _MLModelMetadataSpecification {
+typedef struct _MLModelMetadataSpecification {
     std::shared_ptr<CoreML::Specification::Metadata> cppMetadata;
     _MLModelMetadataSpecification();
     _MLModelMetadataSpecification(const CoreML::Specification::Metadata&);
 } MLModelMetadataSpecification;
 
-typedef struct EXPORT _MLModelDescriptionSpecification {
+typedef struct _MLModelDescriptionSpecification {
     std::shared_ptr<CoreML::Specification::ModelDescription> cppInterface;
     _MLModelDescriptionSpecification();
     _MLModelDescriptionSpecification(const CoreML::Specification::ModelDescription&);

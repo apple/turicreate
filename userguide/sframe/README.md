@@ -1,7 +1,7 @@
 # Working with Data
 
 Prior to model creation, one has to often parse, clean, and manipulate
-to data make it ready. Many of these tasks have been written into Turi
+data to make it ready. Many of these tasks have been written into Turi
 Create. This section describes how to import data from different sources
 into various Turi data structures, reshape unstructured data, make
 transformations of existing data quickly, and compute summary

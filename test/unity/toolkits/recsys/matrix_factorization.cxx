@@ -244,9 +244,10 @@ struct regressions  {
     auto training_stats
         = variant_get_value<std::map<std::string, variant_type> >(state["training_stats"]);
 
-    double initial_objective = variant_get_value<double>(training_stats["initial_objective_value"]);
-    double final_objective = variant_get_value<double>(training_stats["final_objective_value"]);
-    double initial_sgd_step = variant_get_value<double>(training_stats["sgd_step_size"]);
+    TURI_ATTRIBUTE_UNUSED_NDEBUG double initial_objective =
+      variant_get_value<double>(training_stats["initial_objective_value"]);
+    variant_get_value<double>(training_stats["final_objective_value"]);
+    variant_get_value<double>(training_stats["sgd_step_size"]);
 
 
     DASSERT_LT(initial_objective, 100);

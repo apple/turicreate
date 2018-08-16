@@ -1,0 +1,22 @@
+ [
+  {
+  "text": "["I", "have", "an", "atlas"]",
+  "label": ["NONE", "NONE", "NONE", "NONE"]
+  },
+  {
+  "text": ["These", "are", "my", "dogs"],
+  "label": ["NONE", "NONE", "NONE", "PLN"]
+  },
+  {
+  "text": ["The", "sheep", "are", "fluffy"],
+  "label": ["NONE","PLN","NONE","NONE"]
+  },
+  {
+  "text": ["Billiards", "is", "my", "favourite", "game"],
+  "label": ["NONE", "NONE", "NONE", "NONE", "NONE"]
+  },
+  {
+  "text": ["I", "went", "to", "five", "sessions", "today"],
+  "label": ["NONE", "NONE", "NONE", "NONE", "PLN", "NONE"]
+  }
+ ]

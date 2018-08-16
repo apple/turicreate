@@ -6,542 +6,166 @@
 
 #include <algorithm>
 
-#include <protobuf/stubs/common.h>
-#include <protobuf/stubs/port.h>
-#include <protobuf/stubs/once.h>
-#include <protobuf/io/coded_stream.h>
-#include <protobuf/wire_format_lite_inl.h>
-#include <protobuf/io/zero_copy_stream_impl_lite.h>
+#include <google/protobuf/stubs/common.h>
+#include <google/protobuf/stubs/port.h>
+#include <google/protobuf/stubs/once.h>
+#include <google/protobuf/io/coded_stream.h>
+#include <google/protobuf/wire_format_lite_inl.h>
+#include <google/protobuf/io/zero_copy_stream_impl_lite.h>
 // @@protoc_insertion_point(includes)
 
 namespace CoreML {
 namespace Specification {
+class Int64FeatureTypeDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<Int64FeatureType> {
+} _Int64FeatureType_default_instance_;
+class DoubleFeatureTypeDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<DoubleFeatureType> {
+} _DoubleFeatureType_default_instance_;
+class StringFeatureTypeDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<StringFeatureType> {
+} _StringFeatureType_default_instance_;
+class SizeRangeDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<SizeRange> {
+} _SizeRange_default_instance_;
+class ImageFeatureType_ImageSizeDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<ImageFeatureType_ImageSize> {
+} _ImageFeatureType_ImageSize_default_instance_;
+class ImageFeatureType_EnumeratedImageSizesDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<ImageFeatureType_EnumeratedImageSizes> {
+} _ImageFeatureType_EnumeratedImageSizes_default_instance_;
+class ImageFeatureType_ImageSizeRangeDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<ImageFeatureType_ImageSizeRange> {
+} _ImageFeatureType_ImageSizeRange_default_instance_;
+class ImageFeatureTypeDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<ImageFeatureType> {
+  public:
+  const ::CoreML::Specification::ImageFeatureType_EnumeratedImageSizes* enumeratedsizes_;
+  const ::CoreML::Specification::ImageFeatureType_ImageSizeRange* imagesizerange_;
+} _ImageFeatureType_default_instance_;
+class ArrayFeatureType_ShapeDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<ArrayFeatureType_Shape> {
+} _ArrayFeatureType_Shape_default_instance_;
+class ArrayFeatureType_EnumeratedShapesDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<ArrayFeatureType_EnumeratedShapes> {
+} _ArrayFeatureType_EnumeratedShapes_default_instance_;
+class ArrayFeatureType_ShapeRangeDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<ArrayFeatureType_ShapeRange> {
+} _ArrayFeatureType_ShapeRange_default_instance_;
+class ArrayFeatureTypeDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<ArrayFeatureType> {
+  public:
+  const ::CoreML::Specification::ArrayFeatureType_EnumeratedShapes* enumeratedshapes_;
+  const ::CoreML::Specification::ArrayFeatureType_ShapeRange* shaperange_;
+} _ArrayFeatureType_default_instance_;
+class DictionaryFeatureTypeDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<DictionaryFeatureType> {
+  public:
+  const ::CoreML::Specification::Int64FeatureType* int64keytype_;
+  const ::CoreML::Specification::StringFeatureType* stringkeytype_;
+} _DictionaryFeatureType_default_instance_;
+class SequenceFeatureTypeDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<SequenceFeatureType> {
+  public:
+  const ::CoreML::Specification::Int64FeatureType* int64type_;
+  const ::CoreML::Specification::StringFeatureType* stringtype_;
+} _SequenceFeatureType_default_instance_;
+class FeatureTypeDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<FeatureType> {
+  public:
+  const ::CoreML::Specification::Int64FeatureType* int64type_;
+  const ::CoreML::Specification::DoubleFeatureType* doubletype_;
+  const ::CoreML::Specification::StringFeatureType* stringtype_;
+  const ::CoreML::Specification::ImageFeatureType* imagetype_;
+  const ::CoreML::Specification::ArrayFeatureType* multiarraytype_;
+  const ::CoreML::Specification::DictionaryFeatureType* dictionarytype_;
+  const ::CoreML::Specification::SequenceFeatureType* sequencetype_;
+} _FeatureType_default_instance_;
 
-void protobuf_ShutdownFile_FeatureTypes_2eproto() {
-  Int64FeatureType_default_instance_.Shutdown();
-  DoubleFeatureType_default_instance_.Shutdown();
-  StringFeatureType_default_instance_.Shutdown();
-  ImageFeatureType_default_instance_.Shutdown();
-  ArrayFeatureType_default_instance_.Shutdown();
-  DictionaryFeatureType_default_instance_.Shutdown();
-  FeatureType_default_instance_.Shutdown();
+namespace protobuf_FeatureTypes_2eproto {
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTableField
+    const TableStruct::entries[] = {
+  {0, 0, 0, ::google::protobuf::internal::kInvalidMask, 0, 0},
+};
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::AuxillaryParseTableField
+    const TableStruct::aux[] = {
+  ::google::protobuf::internal::AuxillaryParseTableField(),
+};
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTable const
+    TableStruct::schema[] = {
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
+};
+
+
+void TableStruct::Shutdown() {
+  _Int64FeatureType_default_instance_.Shutdown();
+  _DoubleFeatureType_default_instance_.Shutdown();
+  _StringFeatureType_default_instance_.Shutdown();
+  _SizeRange_default_instance_.Shutdown();
+  _ImageFeatureType_ImageSize_default_instance_.Shutdown();
+  _ImageFeatureType_EnumeratedImageSizes_default_instance_.Shutdown();
+  _ImageFeatureType_ImageSizeRange_default_instance_.Shutdown();
+  _ImageFeatureType_default_instance_.Shutdown();
+  _ArrayFeatureType_Shape_default_instance_.Shutdown();
+  _ArrayFeatureType_EnumeratedShapes_default_instance_.Shutdown();
+  _ArrayFeatureType_ShapeRange_default_instance_.Shutdown();
+  _ArrayFeatureType_default_instance_.Shutdown();
+  _DictionaryFeatureType_default_instance_.Shutdown();
+  _SequenceFeatureType_default_instance_.Shutdown();
+  _FeatureType_default_instance_.Shutdown();
 }
 
-void protobuf_InitDefaults_FeatureTypes_2eproto_impl() {
+void TableStruct::InitDefaultsImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  Int64FeatureType_default_instance_.DefaultConstruct();
-  DoubleFeatureType_default_instance_.DefaultConstruct();
-  StringFeatureType_default_instance_.DefaultConstruct();
-  ImageFeatureType_default_instance_.DefaultConstruct();
-  ArrayFeatureType_default_instance_.DefaultConstruct();
-  DictionaryFeatureType_default_instance_.DefaultConstruct();
-  FeatureType_default_instance_.DefaultConstruct();
-  Int64FeatureType_default_instance_.get_mutable()->InitAsDefaultInstance();
-  DoubleFeatureType_default_instance_.get_mutable()->InitAsDefaultInstance();
-  StringFeatureType_default_instance_.get_mutable()->InitAsDefaultInstance();
-  ImageFeatureType_default_instance_.get_mutable()->InitAsDefaultInstance();
-  ArrayFeatureType_default_instance_.get_mutable()->InitAsDefaultInstance();
-  DictionaryFeatureType_default_instance_.get_mutable()->InitAsDefaultInstance();
-  FeatureType_default_instance_.get_mutable()->InitAsDefaultInstance();
+  ::google::protobuf::internal::InitProtobufDefaults();
+  _Int64FeatureType_default_instance_.DefaultConstruct();
+  _DoubleFeatureType_default_instance_.DefaultConstruct();
+  _StringFeatureType_default_instance_.DefaultConstruct();
+  _SizeRange_default_instance_.DefaultConstruct();
+  _ImageFeatureType_ImageSize_default_instance_.DefaultConstruct();
+  _ImageFeatureType_EnumeratedImageSizes_default_instance_.DefaultConstruct();
+  _ImageFeatureType_ImageSizeRange_default_instance_.DefaultConstruct();
+  _ImageFeatureType_default_instance_.DefaultConstruct();
+  _ArrayFeatureType_Shape_default_instance_.DefaultConstruct();
+  _ArrayFeatureType_EnumeratedShapes_default_instance_.DefaultConstruct();
+  _ArrayFeatureType_ShapeRange_default_instance_.DefaultConstruct();
+  _ArrayFeatureType_default_instance_.DefaultConstruct();
+  _DictionaryFeatureType_default_instance_.DefaultConstruct();
+  _SequenceFeatureType_default_instance_.DefaultConstruct();
+  _FeatureType_default_instance_.DefaultConstruct();
+  _ImageFeatureType_ImageSizeRange_default_instance_.get_mutable()->widthrange_ = const_cast< ::CoreML::Specification::SizeRange*>(
+      ::CoreML::Specification::SizeRange::internal_default_instance());
+  _ImageFeatureType_ImageSizeRange_default_instance_.get_mutable()->heightrange_ = const_cast< ::CoreML::Specification::SizeRange*>(
+      ::CoreML::Specification::SizeRange::internal_default_instance());
+  _SequenceFeatureType_default_instance_.get_mutable()->sizerange_ = const_cast< ::CoreML::Specification::SizeRange*>(
+      ::CoreML::Specification::SizeRange::internal_default_instance());
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_InitDefaults_FeatureTypes_2eproto_once_);
-void protobuf_InitDefaults_FeatureTypes_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_InitDefaults_FeatureTypes_2eproto_once_,
-                 &protobuf_InitDefaults_FeatureTypes_2eproto_impl);
+void InitDefaults() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &TableStruct::InitDefaultsImpl);
 }
-void protobuf_AddDesc_FeatureTypes_2eproto_impl() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  protobuf_InitDefaults_FeatureTypes_2eproto();
-  ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_FeatureTypes_2eproto);
+void AddDescriptorsImpl() {
+  InitDefaults();
+  ::google::protobuf::internal::OnShutdown(&TableStruct::Shutdown);
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_AddDesc_FeatureTypes_2eproto_once_);
-void protobuf_AddDesc_FeatureTypes_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_AddDesc_FeatureTypes_2eproto_once_,
-                 &protobuf_AddDesc_FeatureTypes_2eproto_impl);
+void AddDescriptors() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &AddDescriptorsImpl);
 }
 #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 // Force AddDescriptors() to be called at static initialization time.
-struct StaticDescriptorInitializer_FeatureTypes_2eproto {
-  StaticDescriptorInitializer_FeatureTypes_2eproto() {
-    protobuf_AddDesc_FeatureTypes_2eproto();
+struct StaticDescriptorInitializer {
+  StaticDescriptorInitializer() {
+    AddDescriptors();
   }
-} static_descriptor_initializer_FeatureTypes_2eproto_;
+} static_descriptor_initializer;
 #endif  // GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 
-namespace {
-
-static void MergeFromFail(int line) GOOGLE_ATTRIBUTE_COLD GOOGLE_ATTRIBUTE_NORETURN;
-static void MergeFromFail(int line) {
-  ::google::protobuf::internal::MergeFromFail(__FILE__, line);
-}
-
-}  // namespace
-
-
-// ===================================================================
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-Int64FeatureType::Int64FeatureType()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_FeatureTypes_2eproto();
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:CoreML.Specification.Int64FeatureType)
-}
-
-void Int64FeatureType::InitAsDefaultInstance() {
-}
-
-Int64FeatureType::Int64FeatureType(const Int64FeatureType& from)
-  : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:CoreML.Specification.Int64FeatureType)
-}
-
-void Int64FeatureType::SharedCtor() {
-  _cached_size_ = 0;
-}
-
-Int64FeatureType::~Int64FeatureType() {
-  // @@protoc_insertion_point(destructor:CoreML.Specification.Int64FeatureType)
-  SharedDtor();
-}
-
-void Int64FeatureType::SharedDtor() {
-}
-
-void Int64FeatureType::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const Int64FeatureType& Int64FeatureType::default_instance() {
-  protobuf_InitDefaults_FeatureTypes_2eproto();
-  return *internal_default_instance();
-}
-
-::google::protobuf::internal::ExplicitlyConstructed<Int64FeatureType> Int64FeatureType_default_instance_;
-
-Int64FeatureType* Int64FeatureType::New(::google::protobuf::Arena* arena) const {
-  Int64FeatureType* n = new Int64FeatureType;
-  if (arena != NULL) {
-    arena->Own(n);
-  }
-  return n;
-}
-
-void Int64FeatureType::Clear() {
-// @@protoc_insertion_point(message_clear_start:CoreML.Specification.Int64FeatureType)
-}
-
-bool Int64FeatureType::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:CoreML.Specification.Int64FeatureType)
-  for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-  handle_unusual:
-    if (tag == 0 ||
-        ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-        ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-      goto success;
-    }
-    DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
-  }
-success:
-  // @@protoc_insertion_point(parse_success:CoreML.Specification.Int64FeatureType)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:CoreML.Specification.Int64FeatureType)
-  return false;
-#undef DO_
-}
-
-void Int64FeatureType::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:CoreML.Specification.Int64FeatureType)
-  // @@protoc_insertion_point(serialize_end:CoreML.Specification.Int64FeatureType)
-}
-
-size_t Int64FeatureType::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.Int64FeatureType)
-  size_t total_size = 0;
-
-  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = cached_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void Int64FeatureType::CheckTypeAndMergeFrom(
-    const ::google::protobuf::MessageLite& from) {
-  MergeFrom(*::google::protobuf::down_cast<const Int64FeatureType*>(&from));
-}
-
-void Int64FeatureType::MergeFrom(const Int64FeatureType& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.Int64FeatureType)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
-
-void Int64FeatureType::UnsafeMergeFrom(const Int64FeatureType& from) {
-  GOOGLE_DCHECK(&from != this);
-}
-
-void Int64FeatureType::CopyFrom(const Int64FeatureType& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.Int64FeatureType)
-  if (&from == this) return;
-  Clear();
-  UnsafeMergeFrom(from);
-}
-
-bool Int64FeatureType::IsInitialized() const {
-
-  return true;
-}
-
-void Int64FeatureType::Swap(Int64FeatureType* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void Int64FeatureType::InternalSwap(Int64FeatureType* other) {
-  _unknown_fields_.Swap(&other->_unknown_fields_);
-  std::swap(_cached_size_, other->_cached_size_);
-}
-
-::std::string Int64FeatureType::GetTypeName() const {
-  return "CoreML.Specification.Int64FeatureType";
-}
-
-#if PROTOBUF_INLINE_NOT_IN_HEADERS
-// Int64FeatureType
-
-inline const Int64FeatureType* Int64FeatureType::internal_default_instance() {
-  return &Int64FeatureType_default_instance_.get();
-}
-#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
-
-// ===================================================================
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-DoubleFeatureType::DoubleFeatureType()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_FeatureTypes_2eproto();
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:CoreML.Specification.DoubleFeatureType)
-}
-
-void DoubleFeatureType::InitAsDefaultInstance() {
-}
-
-DoubleFeatureType::DoubleFeatureType(const DoubleFeatureType& from)
-  : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:CoreML.Specification.DoubleFeatureType)
-}
-
-void DoubleFeatureType::SharedCtor() {
-  _cached_size_ = 0;
-}
-
-DoubleFeatureType::~DoubleFeatureType() {
-  // @@protoc_insertion_point(destructor:CoreML.Specification.DoubleFeatureType)
-  SharedDtor();
-}
-
-void DoubleFeatureType::SharedDtor() {
-}
-
-void DoubleFeatureType::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const DoubleFeatureType& DoubleFeatureType::default_instance() {
-  protobuf_InitDefaults_FeatureTypes_2eproto();
-  return *internal_default_instance();
-}
-
-::google::protobuf::internal::ExplicitlyConstructed<DoubleFeatureType> DoubleFeatureType_default_instance_;
-
-DoubleFeatureType* DoubleFeatureType::New(::google::protobuf::Arena* arena) const {
-  DoubleFeatureType* n = new DoubleFeatureType;
-  if (arena != NULL) {
-    arena->Own(n);
-  }
-  return n;
-}
-
-void DoubleFeatureType::Clear() {
-// @@protoc_insertion_point(message_clear_start:CoreML.Specification.DoubleFeatureType)
-}
-
-bool DoubleFeatureType::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:CoreML.Specification.DoubleFeatureType)
-  for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-  handle_unusual:
-    if (tag == 0 ||
-        ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-        ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-      goto success;
-    }
-    DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
-  }
-success:
-  // @@protoc_insertion_point(parse_success:CoreML.Specification.DoubleFeatureType)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:CoreML.Specification.DoubleFeatureType)
-  return false;
-#undef DO_
-}
-
-void DoubleFeatureType::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:CoreML.Specification.DoubleFeatureType)
-  // @@protoc_insertion_point(serialize_end:CoreML.Specification.DoubleFeatureType)
-}
-
-size_t DoubleFeatureType::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.DoubleFeatureType)
-  size_t total_size = 0;
-
-  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = cached_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void DoubleFeatureType::CheckTypeAndMergeFrom(
-    const ::google::protobuf::MessageLite& from) {
-  MergeFrom(*::google::protobuf::down_cast<const DoubleFeatureType*>(&from));
-}
-
-void DoubleFeatureType::MergeFrom(const DoubleFeatureType& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.DoubleFeatureType)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
-
-void DoubleFeatureType::UnsafeMergeFrom(const DoubleFeatureType& from) {
-  GOOGLE_DCHECK(&from != this);
-}
-
-void DoubleFeatureType::CopyFrom(const DoubleFeatureType& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.DoubleFeatureType)
-  if (&from == this) return;
-  Clear();
-  UnsafeMergeFrom(from);
-}
-
-bool DoubleFeatureType::IsInitialized() const {
-
-  return true;
-}
-
-void DoubleFeatureType::Swap(DoubleFeatureType* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void DoubleFeatureType::InternalSwap(DoubleFeatureType* other) {
-  _unknown_fields_.Swap(&other->_unknown_fields_);
-  std::swap(_cached_size_, other->_cached_size_);
-}
-
-::std::string DoubleFeatureType::GetTypeName() const {
-  return "CoreML.Specification.DoubleFeatureType";
-}
-
-#if PROTOBUF_INLINE_NOT_IN_HEADERS
-// DoubleFeatureType
-
-inline const DoubleFeatureType* DoubleFeatureType::internal_default_instance() {
-  return &DoubleFeatureType_default_instance_.get();
-}
-#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
-
-// ===================================================================
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-StringFeatureType::StringFeatureType()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_FeatureTypes_2eproto();
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:CoreML.Specification.StringFeatureType)
-}
-
-void StringFeatureType::InitAsDefaultInstance() {
-}
-
-StringFeatureType::StringFeatureType(const StringFeatureType& from)
-  : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:CoreML.Specification.StringFeatureType)
-}
-
-void StringFeatureType::SharedCtor() {
-  _cached_size_ = 0;
-}
-
-StringFeatureType::~StringFeatureType() {
-  // @@protoc_insertion_point(destructor:CoreML.Specification.StringFeatureType)
-  SharedDtor();
-}
-
-void StringFeatureType::SharedDtor() {
-}
-
-void StringFeatureType::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const StringFeatureType& StringFeatureType::default_instance() {
-  protobuf_InitDefaults_FeatureTypes_2eproto();
-  return *internal_default_instance();
-}
-
-::google::protobuf::internal::ExplicitlyConstructed<StringFeatureType> StringFeatureType_default_instance_;
-
-StringFeatureType* StringFeatureType::New(::google::protobuf::Arena* arena) const {
-  StringFeatureType* n = new StringFeatureType;
-  if (arena != NULL) {
-    arena->Own(n);
-  }
-  return n;
-}
-
-void StringFeatureType::Clear() {
-// @@protoc_insertion_point(message_clear_start:CoreML.Specification.StringFeatureType)
-}
-
-bool StringFeatureType::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:CoreML.Specification.StringFeatureType)
-  for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-  handle_unusual:
-    if (tag == 0 ||
-        ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-        ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-      goto success;
-    }
-    DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
-  }
-success:
-  // @@protoc_insertion_point(parse_success:CoreML.Specification.StringFeatureType)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:CoreML.Specification.StringFeatureType)
-  return false;
-#undef DO_
-}
-
-void StringFeatureType::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:CoreML.Specification.StringFeatureType)
-  // @@protoc_insertion_point(serialize_end:CoreML.Specification.StringFeatureType)
-}
-
-size_t StringFeatureType::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.StringFeatureType)
-  size_t total_size = 0;
-
-  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = cached_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void StringFeatureType::CheckTypeAndMergeFrom(
-    const ::google::protobuf::MessageLite& from) {
-  MergeFrom(*::google::protobuf::down_cast<const StringFeatureType*>(&from));
-}
-
-void StringFeatureType::MergeFrom(const StringFeatureType& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.StringFeatureType)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
-
-void StringFeatureType::UnsafeMergeFrom(const StringFeatureType& from) {
-  GOOGLE_DCHECK(&from != this);
-}
-
-void StringFeatureType::CopyFrom(const StringFeatureType& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.StringFeatureType)
-  if (&from == this) return;
-  Clear();
-  UnsafeMergeFrom(from);
-}
-
-bool StringFeatureType::IsInitialized() const {
-
-  return true;
-}
-
-void StringFeatureType::Swap(StringFeatureType* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void StringFeatureType::InternalSwap(StringFeatureType* other) {
-  _unknown_fields_.Swap(&other->_unknown_fields_);
-  std::swap(_cached_size_, other->_cached_size_);
-}
-
-::std::string StringFeatureType::GetTypeName() const {
-  return "CoreML.Specification.StringFeatureType";
-}
-
-#if PROTOBUF_INLINE_NOT_IN_HEADERS
-// StringFeatureType
-
-inline const StringFeatureType* StringFeatureType::internal_default_instance() {
-  return &StringFeatureType_default_instance_.get();
-}
-#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
-
-// ===================================================================
+}  // namespace protobuf_FeatureTypes_2eproto
 
 bool ImageFeatureType_ColorSpace_IsValid(int value) {
   switch (value) {
@@ -564,33 +188,1518 @@ const ImageFeatureType_ColorSpace ImageFeatureType::ColorSpace_MIN;
 const ImageFeatureType_ColorSpace ImageFeatureType::ColorSpace_MAX;
 const int ImageFeatureType::ColorSpace_ARRAYSIZE;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+bool ArrayFeatureType_ArrayDataType_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 65568:
+    case 65600:
+    case 131104:
+      return true;
+    default:
+      return false;
+  }
+}
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const ArrayFeatureType_ArrayDataType ArrayFeatureType::INVALID_ARRAY_DATA_TYPE;
+const ArrayFeatureType_ArrayDataType ArrayFeatureType::FLOAT32;
+const ArrayFeatureType_ArrayDataType ArrayFeatureType::DOUBLE;
+const ArrayFeatureType_ArrayDataType ArrayFeatureType::INT32;
+const ArrayFeatureType_ArrayDataType ArrayFeatureType::ArrayDataType_MIN;
+const ArrayFeatureType_ArrayDataType ArrayFeatureType::ArrayDataType_MAX;
+const int ArrayFeatureType::ArrayDataType_ARRAYSIZE;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+Int64FeatureType::Int64FeatureType()
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_FeatureTypes_2eproto::InitDefaults();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:CoreML.Specification.Int64FeatureType)
+}
+Int64FeatureType::Int64FeatureType(const Int64FeatureType& from)
+  : ::google::protobuf::MessageLite(),
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:CoreML.Specification.Int64FeatureType)
+}
+
+void Int64FeatureType::SharedCtor() {
+  _cached_size_ = 0;
+}
+
+Int64FeatureType::~Int64FeatureType() {
+  // @@protoc_insertion_point(destructor:CoreML.Specification.Int64FeatureType)
+  SharedDtor();
+}
+
+void Int64FeatureType::SharedDtor() {
+}
+
+void Int64FeatureType::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const Int64FeatureType& Int64FeatureType::default_instance() {
+  protobuf_FeatureTypes_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+Int64FeatureType* Int64FeatureType::New(::google::protobuf::Arena* arena) const {
+  Int64FeatureType* n = new Int64FeatureType;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void Int64FeatureType::Clear() {
+// @@protoc_insertion_point(message_clear_start:CoreML.Specification.Int64FeatureType)
+}
+
+bool Int64FeatureType::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:CoreML.Specification.Int64FeatureType)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+  handle_unusual:
+    if (tag == 0 ||
+        ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+        ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+      goto success;
+    }
+    DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+  }
+success:
+  // @@protoc_insertion_point(parse_success:CoreML.Specification.Int64FeatureType)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:CoreML.Specification.Int64FeatureType)
+  return false;
+#undef DO_
+}
+
+void Int64FeatureType::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:CoreML.Specification.Int64FeatureType)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // @@protoc_insertion_point(serialize_end:CoreML.Specification.Int64FeatureType)
+}
+
+size_t Int64FeatureType::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.Int64FeatureType)
+  size_t total_size = 0;
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void Int64FeatureType::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const Int64FeatureType*>(&from));
+}
+
+void Int64FeatureType::MergeFrom(const Int64FeatureType& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.Int64FeatureType)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+}
+
+void Int64FeatureType::CopyFrom(const Int64FeatureType& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.Int64FeatureType)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Int64FeatureType::IsInitialized() const {
+  return true;
+}
+
+void Int64FeatureType::Swap(Int64FeatureType* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void Int64FeatureType::InternalSwap(Int64FeatureType* other) {
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::std::string Int64FeatureType::GetTypeName() const {
+  return "CoreML.Specification.Int64FeatureType";
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// Int64FeatureType
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+DoubleFeatureType::DoubleFeatureType()
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_FeatureTypes_2eproto::InitDefaults();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:CoreML.Specification.DoubleFeatureType)
+}
+DoubleFeatureType::DoubleFeatureType(const DoubleFeatureType& from)
+  : ::google::protobuf::MessageLite(),
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:CoreML.Specification.DoubleFeatureType)
+}
+
+void DoubleFeatureType::SharedCtor() {
+  _cached_size_ = 0;
+}
+
+DoubleFeatureType::~DoubleFeatureType() {
+  // @@protoc_insertion_point(destructor:CoreML.Specification.DoubleFeatureType)
+  SharedDtor();
+}
+
+void DoubleFeatureType::SharedDtor() {
+}
+
+void DoubleFeatureType::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const DoubleFeatureType& DoubleFeatureType::default_instance() {
+  protobuf_FeatureTypes_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+DoubleFeatureType* DoubleFeatureType::New(::google::protobuf::Arena* arena) const {
+  DoubleFeatureType* n = new DoubleFeatureType;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void DoubleFeatureType::Clear() {
+// @@protoc_insertion_point(message_clear_start:CoreML.Specification.DoubleFeatureType)
+}
+
+bool DoubleFeatureType::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:CoreML.Specification.DoubleFeatureType)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+  handle_unusual:
+    if (tag == 0 ||
+        ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+        ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+      goto success;
+    }
+    DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+  }
+success:
+  // @@protoc_insertion_point(parse_success:CoreML.Specification.DoubleFeatureType)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:CoreML.Specification.DoubleFeatureType)
+  return false;
+#undef DO_
+}
+
+void DoubleFeatureType::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:CoreML.Specification.DoubleFeatureType)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // @@protoc_insertion_point(serialize_end:CoreML.Specification.DoubleFeatureType)
+}
+
+size_t DoubleFeatureType::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.DoubleFeatureType)
+  size_t total_size = 0;
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void DoubleFeatureType::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const DoubleFeatureType*>(&from));
+}
+
+void DoubleFeatureType::MergeFrom(const DoubleFeatureType& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.DoubleFeatureType)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+}
+
+void DoubleFeatureType::CopyFrom(const DoubleFeatureType& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.DoubleFeatureType)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool DoubleFeatureType::IsInitialized() const {
+  return true;
+}
+
+void DoubleFeatureType::Swap(DoubleFeatureType* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void DoubleFeatureType::InternalSwap(DoubleFeatureType* other) {
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::std::string DoubleFeatureType::GetTypeName() const {
+  return "CoreML.Specification.DoubleFeatureType";
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// DoubleFeatureType
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+StringFeatureType::StringFeatureType()
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_FeatureTypes_2eproto::InitDefaults();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:CoreML.Specification.StringFeatureType)
+}
+StringFeatureType::StringFeatureType(const StringFeatureType& from)
+  : ::google::protobuf::MessageLite(),
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:CoreML.Specification.StringFeatureType)
+}
+
+void StringFeatureType::SharedCtor() {
+  _cached_size_ = 0;
+}
+
+StringFeatureType::~StringFeatureType() {
+  // @@protoc_insertion_point(destructor:CoreML.Specification.StringFeatureType)
+  SharedDtor();
+}
+
+void StringFeatureType::SharedDtor() {
+}
+
+void StringFeatureType::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const StringFeatureType& StringFeatureType::default_instance() {
+  protobuf_FeatureTypes_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+StringFeatureType* StringFeatureType::New(::google::protobuf::Arena* arena) const {
+  StringFeatureType* n = new StringFeatureType;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void StringFeatureType::Clear() {
+// @@protoc_insertion_point(message_clear_start:CoreML.Specification.StringFeatureType)
+}
+
+bool StringFeatureType::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:CoreML.Specification.StringFeatureType)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+  handle_unusual:
+    if (tag == 0 ||
+        ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+        ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+      goto success;
+    }
+    DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+  }
+success:
+  // @@protoc_insertion_point(parse_success:CoreML.Specification.StringFeatureType)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:CoreML.Specification.StringFeatureType)
+  return false;
+#undef DO_
+}
+
+void StringFeatureType::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:CoreML.Specification.StringFeatureType)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // @@protoc_insertion_point(serialize_end:CoreML.Specification.StringFeatureType)
+}
+
+size_t StringFeatureType::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.StringFeatureType)
+  size_t total_size = 0;
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void StringFeatureType::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const StringFeatureType*>(&from));
+}
+
+void StringFeatureType::MergeFrom(const StringFeatureType& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.StringFeatureType)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+}
+
+void StringFeatureType::CopyFrom(const StringFeatureType& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.StringFeatureType)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool StringFeatureType::IsInitialized() const {
+  return true;
+}
+
+void StringFeatureType::Swap(StringFeatureType* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void StringFeatureType::InternalSwap(StringFeatureType* other) {
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::std::string StringFeatureType::GetTypeName() const {
+  return "CoreML.Specification.StringFeatureType";
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// StringFeatureType
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int SizeRange::kLowerBoundFieldNumber;
+const int SizeRange::kUpperBoundFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+SizeRange::SizeRange()
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_FeatureTypes_2eproto::InitDefaults();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:CoreML.Specification.SizeRange)
+}
+SizeRange::SizeRange(const SizeRange& from)
+  : ::google::protobuf::MessageLite(),
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::memcpy(&lowerbound_, &from.lowerbound_,
+    reinterpret_cast<char*>(&upperbound_) -
+    reinterpret_cast<char*>(&lowerbound_) + sizeof(upperbound_));
+  // @@protoc_insertion_point(copy_constructor:CoreML.Specification.SizeRange)
+}
+
+void SizeRange::SharedCtor() {
+  ::memset(&lowerbound_, 0, reinterpret_cast<char*>(&upperbound_) -
+    reinterpret_cast<char*>(&lowerbound_) + sizeof(upperbound_));
+  _cached_size_ = 0;
+}
+
+SizeRange::~SizeRange() {
+  // @@protoc_insertion_point(destructor:CoreML.Specification.SizeRange)
+  SharedDtor();
+}
+
+void SizeRange::SharedDtor() {
+}
+
+void SizeRange::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const SizeRange& SizeRange::default_instance() {
+  protobuf_FeatureTypes_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+SizeRange* SizeRange::New(::google::protobuf::Arena* arena) const {
+  SizeRange* n = new SizeRange;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void SizeRange::Clear() {
+// @@protoc_insertion_point(message_clear_start:CoreML.Specification.SizeRange)
+  ::memset(&lowerbound_, 0, reinterpret_cast<char*>(&upperbound_) -
+    reinterpret_cast<char*>(&lowerbound_) + sizeof(upperbound_));
+}
+
+bool SizeRange::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:CoreML.Specification.SizeRange)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // uint64 lowerBound = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(8u)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
+                 input, &lowerbound_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // int64 upperBound = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(16u)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &upperbound_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:CoreML.Specification.SizeRange)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:CoreML.Specification.SizeRange)
+  return false;
+#undef DO_
+}
+
+void SizeRange::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:CoreML.Specification.SizeRange)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint64 lowerBound = 1;
+  if (this->lowerbound() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(1, this->lowerbound(), output);
+  }
+
+  // int64 upperBound = 2;
+  if (this->upperbound() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(2, this->upperbound(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:CoreML.Specification.SizeRange)
+}
+
+size_t SizeRange::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.SizeRange)
+  size_t total_size = 0;
+
+  // uint64 lowerBound = 1;
+  if (this->lowerbound() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt64Size(
+        this->lowerbound());
+  }
+
+  // int64 upperBound = 2;
+  if (this->upperbound() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
+        this->upperbound());
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void SizeRange::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const SizeRange*>(&from));
+}
+
+void SizeRange::MergeFrom(const SizeRange& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.SizeRange)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.lowerbound() != 0) {
+    set_lowerbound(from.lowerbound());
+  }
+  if (from.upperbound() != 0) {
+    set_upperbound(from.upperbound());
+  }
+}
+
+void SizeRange::CopyFrom(const SizeRange& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.SizeRange)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SizeRange::IsInitialized() const {
+  return true;
+}
+
+void SizeRange::Swap(SizeRange* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void SizeRange::InternalSwap(SizeRange* other) {
+  std::swap(lowerbound_, other->lowerbound_);
+  std::swap(upperbound_, other->upperbound_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::std::string SizeRange::GetTypeName() const {
+  return "CoreML.Specification.SizeRange";
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// SizeRange
+
+// uint64 lowerBound = 1;
+void SizeRange::clear_lowerbound() {
+  lowerbound_ = GOOGLE_ULONGLONG(0);
+}
+::google::protobuf::uint64 SizeRange::lowerbound() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.SizeRange.lowerBound)
+  return lowerbound_;
+}
+void SizeRange::set_lowerbound(::google::protobuf::uint64 value) {
+  
+  lowerbound_ = value;
+  // @@protoc_insertion_point(field_set:CoreML.Specification.SizeRange.lowerBound)
+}
+
+// int64 upperBound = 2;
+void SizeRange::clear_upperbound() {
+  upperbound_ = GOOGLE_LONGLONG(0);
+}
+::google::protobuf::int64 SizeRange::upperbound() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.SizeRange.upperBound)
+  return upperbound_;
+}
+void SizeRange::set_upperbound(::google::protobuf::int64 value) {
+  
+  upperbound_ = value;
+  // @@protoc_insertion_point(field_set:CoreML.Specification.SizeRange.upperBound)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int ImageFeatureType_ImageSize::kWidthFieldNumber;
+const int ImageFeatureType_ImageSize::kHeightFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+ImageFeatureType_ImageSize::ImageFeatureType_ImageSize()
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_FeatureTypes_2eproto::InitDefaults();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:CoreML.Specification.ImageFeatureType.ImageSize)
+}
+ImageFeatureType_ImageSize::ImageFeatureType_ImageSize(const ImageFeatureType_ImageSize& from)
+  : ::google::protobuf::MessageLite(),
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::memcpy(&width_, &from.width_,
+    reinterpret_cast<char*>(&height_) -
+    reinterpret_cast<char*>(&width_) + sizeof(height_));
+  // @@protoc_insertion_point(copy_constructor:CoreML.Specification.ImageFeatureType.ImageSize)
+}
+
+void ImageFeatureType_ImageSize::SharedCtor() {
+  ::memset(&width_, 0, reinterpret_cast<char*>(&height_) -
+    reinterpret_cast<char*>(&width_) + sizeof(height_));
+  _cached_size_ = 0;
+}
+
+ImageFeatureType_ImageSize::~ImageFeatureType_ImageSize() {
+  // @@protoc_insertion_point(destructor:CoreML.Specification.ImageFeatureType.ImageSize)
+  SharedDtor();
+}
+
+void ImageFeatureType_ImageSize::SharedDtor() {
+}
+
+void ImageFeatureType_ImageSize::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ImageFeatureType_ImageSize& ImageFeatureType_ImageSize::default_instance() {
+  protobuf_FeatureTypes_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+ImageFeatureType_ImageSize* ImageFeatureType_ImageSize::New(::google::protobuf::Arena* arena) const {
+  ImageFeatureType_ImageSize* n = new ImageFeatureType_ImageSize;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void ImageFeatureType_ImageSize::Clear() {
+// @@protoc_insertion_point(message_clear_start:CoreML.Specification.ImageFeatureType.ImageSize)
+  ::memset(&width_, 0, reinterpret_cast<char*>(&height_) -
+    reinterpret_cast<char*>(&width_) + sizeof(height_));
+}
+
+bool ImageFeatureType_ImageSize::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:CoreML.Specification.ImageFeatureType.ImageSize)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // uint64 width = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(8u)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
+                 input, &width_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // uint64 height = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(16u)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
+                 input, &height_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:CoreML.Specification.ImageFeatureType.ImageSize)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:CoreML.Specification.ImageFeatureType.ImageSize)
+  return false;
+#undef DO_
+}
+
+void ImageFeatureType_ImageSize::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:CoreML.Specification.ImageFeatureType.ImageSize)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint64 width = 1;
+  if (this->width() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(1, this->width(), output);
+  }
+
+  // uint64 height = 2;
+  if (this->height() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(2, this->height(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:CoreML.Specification.ImageFeatureType.ImageSize)
+}
+
+size_t ImageFeatureType_ImageSize::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.ImageFeatureType.ImageSize)
+  size_t total_size = 0;
+
+  // uint64 width = 1;
+  if (this->width() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt64Size(
+        this->width());
+  }
+
+  // uint64 height = 2;
+  if (this->height() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt64Size(
+        this->height());
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void ImageFeatureType_ImageSize::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const ImageFeatureType_ImageSize*>(&from));
+}
+
+void ImageFeatureType_ImageSize::MergeFrom(const ImageFeatureType_ImageSize& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.ImageFeatureType.ImageSize)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.width() != 0) {
+    set_width(from.width());
+  }
+  if (from.height() != 0) {
+    set_height(from.height());
+  }
+}
+
+void ImageFeatureType_ImageSize::CopyFrom(const ImageFeatureType_ImageSize& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.ImageFeatureType.ImageSize)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ImageFeatureType_ImageSize::IsInitialized() const {
+  return true;
+}
+
+void ImageFeatureType_ImageSize::Swap(ImageFeatureType_ImageSize* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void ImageFeatureType_ImageSize::InternalSwap(ImageFeatureType_ImageSize* other) {
+  std::swap(width_, other->width_);
+  std::swap(height_, other->height_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::std::string ImageFeatureType_ImageSize::GetTypeName() const {
+  return "CoreML.Specification.ImageFeatureType.ImageSize";
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// ImageFeatureType_ImageSize
+
+// uint64 width = 1;
+void ImageFeatureType_ImageSize::clear_width() {
+  width_ = GOOGLE_ULONGLONG(0);
+}
+::google::protobuf::uint64 ImageFeatureType_ImageSize::width() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.ImageFeatureType.ImageSize.width)
+  return width_;
+}
+void ImageFeatureType_ImageSize::set_width(::google::protobuf::uint64 value) {
+  
+  width_ = value;
+  // @@protoc_insertion_point(field_set:CoreML.Specification.ImageFeatureType.ImageSize.width)
+}
+
+// uint64 height = 2;
+void ImageFeatureType_ImageSize::clear_height() {
+  height_ = GOOGLE_ULONGLONG(0);
+}
+::google::protobuf::uint64 ImageFeatureType_ImageSize::height() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.ImageFeatureType.ImageSize.height)
+  return height_;
+}
+void ImageFeatureType_ImageSize::set_height(::google::protobuf::uint64 value) {
+  
+  height_ = value;
+  // @@protoc_insertion_point(field_set:CoreML.Specification.ImageFeatureType.ImageSize.height)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int ImageFeatureType_EnumeratedImageSizes::kSizesFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+ImageFeatureType_EnumeratedImageSizes::ImageFeatureType_EnumeratedImageSizes()
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_FeatureTypes_2eproto::InitDefaults();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:CoreML.Specification.ImageFeatureType.EnumeratedImageSizes)
+}
+ImageFeatureType_EnumeratedImageSizes::ImageFeatureType_EnumeratedImageSizes(const ImageFeatureType_EnumeratedImageSizes& from)
+  : ::google::protobuf::MessageLite(),
+      _internal_metadata_(NULL),
+      sizes_(from.sizes_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:CoreML.Specification.ImageFeatureType.EnumeratedImageSizes)
+}
+
+void ImageFeatureType_EnumeratedImageSizes::SharedCtor() {
+  _cached_size_ = 0;
+}
+
+ImageFeatureType_EnumeratedImageSizes::~ImageFeatureType_EnumeratedImageSizes() {
+  // @@protoc_insertion_point(destructor:CoreML.Specification.ImageFeatureType.EnumeratedImageSizes)
+  SharedDtor();
+}
+
+void ImageFeatureType_EnumeratedImageSizes::SharedDtor() {
+}
+
+void ImageFeatureType_EnumeratedImageSizes::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ImageFeatureType_EnumeratedImageSizes& ImageFeatureType_EnumeratedImageSizes::default_instance() {
+  protobuf_FeatureTypes_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+ImageFeatureType_EnumeratedImageSizes* ImageFeatureType_EnumeratedImageSizes::New(::google::protobuf::Arena* arena) const {
+  ImageFeatureType_EnumeratedImageSizes* n = new ImageFeatureType_EnumeratedImageSizes;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void ImageFeatureType_EnumeratedImageSizes::Clear() {
+// @@protoc_insertion_point(message_clear_start:CoreML.Specification.ImageFeatureType.EnumeratedImageSizes)
+  sizes_.Clear();
+}
+
+bool ImageFeatureType_EnumeratedImageSizes::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:CoreML.Specification.ImageFeatureType.EnumeratedImageSizes)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated .CoreML.Specification.ImageFeatureType.ImageSize sizes = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+                input, add_sizes()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:CoreML.Specification.ImageFeatureType.EnumeratedImageSizes)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:CoreML.Specification.ImageFeatureType.EnumeratedImageSizes)
+  return false;
+#undef DO_
+}
+
+void ImageFeatureType_EnumeratedImageSizes::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:CoreML.Specification.ImageFeatureType.EnumeratedImageSizes)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .CoreML.Specification.ImageFeatureType.ImageSize sizes = 1;
+  for (unsigned int i = 0, n = this->sizes_size(); i < n; i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      1, this->sizes(i), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:CoreML.Specification.ImageFeatureType.EnumeratedImageSizes)
+}
+
+size_t ImageFeatureType_EnumeratedImageSizes::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.ImageFeatureType.EnumeratedImageSizes)
+  size_t total_size = 0;
+
+  // repeated .CoreML.Specification.ImageFeatureType.ImageSize sizes = 1;
+  {
+    unsigned int count = this->sizes_size();
+    total_size += 1UL * count;
+    for (unsigned int i = 0; i < count; i++) {
+      total_size +=
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->sizes(i));
+    }
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void ImageFeatureType_EnumeratedImageSizes::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const ImageFeatureType_EnumeratedImageSizes*>(&from));
+}
+
+void ImageFeatureType_EnumeratedImageSizes::MergeFrom(const ImageFeatureType_EnumeratedImageSizes& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.ImageFeatureType.EnumeratedImageSizes)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  sizes_.MergeFrom(from.sizes_);
+}
+
+void ImageFeatureType_EnumeratedImageSizes::CopyFrom(const ImageFeatureType_EnumeratedImageSizes& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.ImageFeatureType.EnumeratedImageSizes)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ImageFeatureType_EnumeratedImageSizes::IsInitialized() const {
+  return true;
+}
+
+void ImageFeatureType_EnumeratedImageSizes::Swap(ImageFeatureType_EnumeratedImageSizes* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void ImageFeatureType_EnumeratedImageSizes::InternalSwap(ImageFeatureType_EnumeratedImageSizes* other) {
+  sizes_.InternalSwap(&other->sizes_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::std::string ImageFeatureType_EnumeratedImageSizes::GetTypeName() const {
+  return "CoreML.Specification.ImageFeatureType.EnumeratedImageSizes";
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// ImageFeatureType_EnumeratedImageSizes
+
+// repeated .CoreML.Specification.ImageFeatureType.ImageSize sizes = 1;
+int ImageFeatureType_EnumeratedImageSizes::sizes_size() const {
+  return sizes_.size();
+}
+void ImageFeatureType_EnumeratedImageSizes::clear_sizes() {
+  sizes_.Clear();
+}
+const ::CoreML::Specification::ImageFeatureType_ImageSize& ImageFeatureType_EnumeratedImageSizes::sizes(int index) const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.ImageFeatureType.EnumeratedImageSizes.sizes)
+  return sizes_.Get(index);
+}
+::CoreML::Specification::ImageFeatureType_ImageSize* ImageFeatureType_EnumeratedImageSizes::mutable_sizes(int index) {
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.ImageFeatureType.EnumeratedImageSizes.sizes)
+  return sizes_.Mutable(index);
+}
+::CoreML::Specification::ImageFeatureType_ImageSize* ImageFeatureType_EnumeratedImageSizes::add_sizes() {
+  // @@protoc_insertion_point(field_add:CoreML.Specification.ImageFeatureType.EnumeratedImageSizes.sizes)
+  return sizes_.Add();
+}
+::google::protobuf::RepeatedPtrField< ::CoreML::Specification::ImageFeatureType_ImageSize >*
+ImageFeatureType_EnumeratedImageSizes::mutable_sizes() {
+  // @@protoc_insertion_point(field_mutable_list:CoreML.Specification.ImageFeatureType.EnumeratedImageSizes.sizes)
+  return &sizes_;
+}
+const ::google::protobuf::RepeatedPtrField< ::CoreML::Specification::ImageFeatureType_ImageSize >&
+ImageFeatureType_EnumeratedImageSizes::sizes() const {
+  // @@protoc_insertion_point(field_list:CoreML.Specification.ImageFeatureType.EnumeratedImageSizes.sizes)
+  return sizes_;
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int ImageFeatureType_ImageSizeRange::kWidthRangeFieldNumber;
+const int ImageFeatureType_ImageSizeRange::kHeightRangeFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+ImageFeatureType_ImageSizeRange::ImageFeatureType_ImageSizeRange()
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_FeatureTypes_2eproto::InitDefaults();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:CoreML.Specification.ImageFeatureType.ImageSizeRange)
+}
+ImageFeatureType_ImageSizeRange::ImageFeatureType_ImageSizeRange(const ImageFeatureType_ImageSizeRange& from)
+  : ::google::protobuf::MessageLite(),
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  if (from.has_widthrange()) {
+    widthrange_ = new ::CoreML::Specification::SizeRange(*from.widthrange_);
+  } else {
+    widthrange_ = NULL;
+  }
+  if (from.has_heightrange()) {
+    heightrange_ = new ::CoreML::Specification::SizeRange(*from.heightrange_);
+  } else {
+    heightrange_ = NULL;
+  }
+  // @@protoc_insertion_point(copy_constructor:CoreML.Specification.ImageFeatureType.ImageSizeRange)
+}
+
+void ImageFeatureType_ImageSizeRange::SharedCtor() {
+  ::memset(&widthrange_, 0, reinterpret_cast<char*>(&heightrange_) -
+    reinterpret_cast<char*>(&widthrange_) + sizeof(heightrange_));
+  _cached_size_ = 0;
+}
+
+ImageFeatureType_ImageSizeRange::~ImageFeatureType_ImageSizeRange() {
+  // @@protoc_insertion_point(destructor:CoreML.Specification.ImageFeatureType.ImageSizeRange)
+  SharedDtor();
+}
+
+void ImageFeatureType_ImageSizeRange::SharedDtor() {
+  if (this != internal_default_instance()) {
+    delete widthrange_;
+  }
+  if (this != internal_default_instance()) {
+    delete heightrange_;
+  }
+}
+
+void ImageFeatureType_ImageSizeRange::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ImageFeatureType_ImageSizeRange& ImageFeatureType_ImageSizeRange::default_instance() {
+  protobuf_FeatureTypes_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+ImageFeatureType_ImageSizeRange* ImageFeatureType_ImageSizeRange::New(::google::protobuf::Arena* arena) const {
+  ImageFeatureType_ImageSizeRange* n = new ImageFeatureType_ImageSizeRange;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void ImageFeatureType_ImageSizeRange::Clear() {
+// @@protoc_insertion_point(message_clear_start:CoreML.Specification.ImageFeatureType.ImageSizeRange)
+  if (GetArenaNoVirtual() == NULL && widthrange_ != NULL) {
+    delete widthrange_;
+  }
+  widthrange_ = NULL;
+  if (GetArenaNoVirtual() == NULL && heightrange_ != NULL) {
+    delete heightrange_;
+  }
+  heightrange_ = NULL;
+}
+
+bool ImageFeatureType_ImageSizeRange::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:CoreML.Specification.ImageFeatureType.ImageSizeRange)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // .CoreML.Specification.SizeRange widthRange = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_widthrange()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .CoreML.Specification.SizeRange heightRange = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_heightrange()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:CoreML.Specification.ImageFeatureType.ImageSizeRange)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:CoreML.Specification.ImageFeatureType.ImageSizeRange)
+  return false;
+#undef DO_
+}
+
+void ImageFeatureType_ImageSizeRange::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:CoreML.Specification.ImageFeatureType.ImageSizeRange)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .CoreML.Specification.SizeRange widthRange = 1;
+  if (this->has_widthrange()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      1, *this->widthrange_, output);
+  }
+
+  // .CoreML.Specification.SizeRange heightRange = 2;
+  if (this->has_heightrange()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      2, *this->heightrange_, output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:CoreML.Specification.ImageFeatureType.ImageSizeRange)
+}
+
+size_t ImageFeatureType_ImageSizeRange::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.ImageFeatureType.ImageSizeRange)
+  size_t total_size = 0;
+
+  // .CoreML.Specification.SizeRange widthRange = 1;
+  if (this->has_widthrange()) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        *this->widthrange_);
+  }
+
+  // .CoreML.Specification.SizeRange heightRange = 2;
+  if (this->has_heightrange()) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        *this->heightrange_);
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void ImageFeatureType_ImageSizeRange::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const ImageFeatureType_ImageSizeRange*>(&from));
+}
+
+void ImageFeatureType_ImageSizeRange::MergeFrom(const ImageFeatureType_ImageSizeRange& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.ImageFeatureType.ImageSizeRange)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.has_widthrange()) {
+    mutable_widthrange()->::CoreML::Specification::SizeRange::MergeFrom(from.widthrange());
+  }
+  if (from.has_heightrange()) {
+    mutable_heightrange()->::CoreML::Specification::SizeRange::MergeFrom(from.heightrange());
+  }
+}
+
+void ImageFeatureType_ImageSizeRange::CopyFrom(const ImageFeatureType_ImageSizeRange& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.ImageFeatureType.ImageSizeRange)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ImageFeatureType_ImageSizeRange::IsInitialized() const {
+  return true;
+}
+
+void ImageFeatureType_ImageSizeRange::Swap(ImageFeatureType_ImageSizeRange* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void ImageFeatureType_ImageSizeRange::InternalSwap(ImageFeatureType_ImageSizeRange* other) {
+  std::swap(widthrange_, other->widthrange_);
+  std::swap(heightrange_, other->heightrange_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::std::string ImageFeatureType_ImageSizeRange::GetTypeName() const {
+  return "CoreML.Specification.ImageFeatureType.ImageSizeRange";
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// ImageFeatureType_ImageSizeRange
+
+// .CoreML.Specification.SizeRange widthRange = 1;
+bool ImageFeatureType_ImageSizeRange::has_widthrange() const {
+  return this != internal_default_instance() && widthrange_ != NULL;
+}
+void ImageFeatureType_ImageSizeRange::clear_widthrange() {
+  if (GetArenaNoVirtual() == NULL && widthrange_ != NULL) delete widthrange_;
+  widthrange_ = NULL;
+}
+const ::CoreML::Specification::SizeRange& ImageFeatureType_ImageSizeRange::widthrange() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.ImageFeatureType.ImageSizeRange.widthRange)
+  return widthrange_ != NULL ? *widthrange_
+                         : *::CoreML::Specification::SizeRange::internal_default_instance();
+}
+::CoreML::Specification::SizeRange* ImageFeatureType_ImageSizeRange::mutable_widthrange() {
+  
+  if (widthrange_ == NULL) {
+    widthrange_ = new ::CoreML::Specification::SizeRange;
+  }
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.ImageFeatureType.ImageSizeRange.widthRange)
+  return widthrange_;
+}
+::CoreML::Specification::SizeRange* ImageFeatureType_ImageSizeRange::release_widthrange() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.ImageFeatureType.ImageSizeRange.widthRange)
+  
+  ::CoreML::Specification::SizeRange* temp = widthrange_;
+  widthrange_ = NULL;
+  return temp;
+}
+void ImageFeatureType_ImageSizeRange::set_allocated_widthrange(::CoreML::Specification::SizeRange* widthrange) {
+  delete widthrange_;
+  widthrange_ = widthrange;
+  if (widthrange) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.ImageFeatureType.ImageSizeRange.widthRange)
+}
+
+// .CoreML.Specification.SizeRange heightRange = 2;
+bool ImageFeatureType_ImageSizeRange::has_heightrange() const {
+  return this != internal_default_instance() && heightrange_ != NULL;
+}
+void ImageFeatureType_ImageSizeRange::clear_heightrange() {
+  if (GetArenaNoVirtual() == NULL && heightrange_ != NULL) delete heightrange_;
+  heightrange_ = NULL;
+}
+const ::CoreML::Specification::SizeRange& ImageFeatureType_ImageSizeRange::heightrange() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.ImageFeatureType.ImageSizeRange.heightRange)
+  return heightrange_ != NULL ? *heightrange_
+                         : *::CoreML::Specification::SizeRange::internal_default_instance();
+}
+::CoreML::Specification::SizeRange* ImageFeatureType_ImageSizeRange::mutable_heightrange() {
+  
+  if (heightrange_ == NULL) {
+    heightrange_ = new ::CoreML::Specification::SizeRange;
+  }
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.ImageFeatureType.ImageSizeRange.heightRange)
+  return heightrange_;
+}
+::CoreML::Specification::SizeRange* ImageFeatureType_ImageSizeRange::release_heightrange() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.ImageFeatureType.ImageSizeRange.heightRange)
+  
+  ::CoreML::Specification::SizeRange* temp = heightrange_;
+  heightrange_ = NULL;
+  return temp;
+}
+void ImageFeatureType_ImageSizeRange::set_allocated_heightrange(::CoreML::Specification::SizeRange* heightrange) {
+  delete heightrange_;
+  heightrange_ = heightrange;
+  if (heightrange) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.ImageFeatureType.ImageSizeRange.heightRange)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int ImageFeatureType::kWidthFieldNumber;
 const int ImageFeatureType::kHeightFieldNumber;
+const int ImageFeatureType::kEnumeratedSizesFieldNumber;
+const int ImageFeatureType::kImageSizeRangeFieldNumber;
 const int ImageFeatureType::kColorSpaceFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ImageFeatureType::ImageFeatureType()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_FeatureTypes_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_FeatureTypes_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.ImageFeatureType)
 }
-
-void ImageFeatureType::InitAsDefaultInstance() {
-}
-
 ImageFeatureType::ImageFeatureType(const ImageFeatureType& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::memcpy(&width_, &from.width_,
+    reinterpret_cast<char*>(&colorspace_) -
+    reinterpret_cast<char*>(&width_) + sizeof(colorspace_));
+  clear_has_SizeFlexibility();
+  switch (from.SizeFlexibility_case()) {
+    case kEnumeratedSizes: {
+      mutable_enumeratedsizes()->::CoreML::Specification::ImageFeatureType_EnumeratedImageSizes::MergeFrom(from.enumeratedsizes());
+      break;
+    }
+    case kImageSizeRange: {
+      mutable_imagesizerange()->::CoreML::Specification::ImageFeatureType_ImageSizeRange::MergeFrom(from.imagesizerange());
+      break;
+    }
+    case SIZEFLEXIBILITY_NOT_SET: {
+      break;
+    }
+  }
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.ImageFeatureType)
 }
 
 void ImageFeatureType::SharedCtor() {
   ::memset(&width_, 0, reinterpret_cast<char*>(&colorspace_) -
     reinterpret_cast<char*>(&width_) + sizeof(colorspace_));
+  clear_has_SizeFlexibility();
   _cached_size_ = 0;
 }
 
@@ -600,6 +1709,9 @@ ImageFeatureType::~ImageFeatureType() {
 }
 
 void ImageFeatureType::SharedDtor() {
+  if (has_SizeFlexibility()) {
+    clear_SizeFlexibility();
+  }
 }
 
 void ImageFeatureType::SetCachedSize(int size) const {
@@ -608,11 +1720,9 @@ void ImageFeatureType::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const ImageFeatureType& ImageFeatureType::default_instance() {
-  protobuf_InitDefaults_FeatureTypes_2eproto();
+  protobuf_FeatureTypes_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<ImageFeatureType> ImageFeatureType_default_instance_;
 
 ImageFeatureType* ImageFeatureType::New(::google::protobuf::Arena* arena) const {
   ImageFeatureType* n = new ImageFeatureType;
@@ -622,29 +1732,30 @@ ImageFeatureType* ImageFeatureType::New(::google::protobuf::Arena* arena) const 
   return n;
 }
 
+void ImageFeatureType::clear_SizeFlexibility() {
+// @@protoc_insertion_point(one_of_clear_start:CoreML.Specification.ImageFeatureType)
+  switch (SizeFlexibility_case()) {
+    case kEnumeratedSizes: {
+      delete SizeFlexibility_.enumeratedsizes_;
+      break;
+    }
+    case kImageSizeRange: {
+      delete SizeFlexibility_.imagesizerange_;
+      break;
+    }
+    case SIZEFLEXIBILITY_NOT_SET: {
+      break;
+    }
+  }
+  _oneof_case_[0] = SIZEFLEXIBILITY_NOT_SET;
+}
+
+
 void ImageFeatureType::Clear() {
 // @@protoc_insertion_point(message_clear_start:CoreML.Specification.ImageFeatureType)
-#if defined(__clang__)
-#define ZR_HELPER_(f) \
-  _Pragma("clang diagnostic push") \
-  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
-  __builtin_offsetof(ImageFeatureType, f) \
-  _Pragma("clang diagnostic pop")
-#else
-#define ZR_HELPER_(f) reinterpret_cast<char*>(\
-  &reinterpret_cast<ImageFeatureType*>(16)->f)
-#endif
-
-#define ZR_(first, last) do {\
-  ::memset(&(first), 0,\
-           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
-} while (0)
-
-  ZR_(width_, colorspace_);
-
-#undef ZR_HELPER_
-#undef ZR_
-
+  ::memset(&width_, 0, reinterpret_cast<char*>(&colorspace_) -
+    reinterpret_cast<char*>(&width_) + sizeof(colorspace_));
+  clear_SizeFlexibility();
 }
 
 bool ImageFeatureType::MergePartialFromCodedStream(
@@ -653,43 +1764,42 @@ bool ImageFeatureType::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.ImageFeatureType)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(16383u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional uint64 width = 1;
+      // int64 width = 1;
       case 1: {
-        if (tag == 8) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(8u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
                  input, &width_)));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(16)) goto parse_height;
         break;
       }
 
-      // optional uint64 height = 2;
+      // int64 height = 2;
       case 2: {
-        if (tag == 16) {
-         parse_height:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(16u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
                  input, &height_)));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(24)) goto parse_colorSpace;
         break;
       }
 
-      // optional .CoreML.Specification.ImageFeatureType.ColorSpace colorSpace = 3;
+      // .CoreML.Specification.ImageFeatureType.ColorSpace colorSpace = 3;
       case 3: {
-        if (tag == 24) {
-         parse_colorSpace:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(24u)) {
           int value;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
@@ -698,7 +1808,30 @@ bool ImageFeatureType::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      // .CoreML.Specification.ImageFeatureType.EnumeratedImageSizes enumeratedSizes = 21;
+      case 21: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(170u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_enumeratedsizes()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .CoreML.Specification.ImageFeatureType.ImageSizeRange imageSizeRange = 31;
+      case 31: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(250u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_imagesizerange()));
+        } else {
+          goto handle_unusual;
+        }
         break;
       }
 
@@ -726,20 +1859,35 @@ failure:
 void ImageFeatureType::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.ImageFeatureType)
-  // optional uint64 width = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // int64 width = 1;
   if (this->width() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt64(1, this->width(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(1, this->width(), output);
   }
 
-  // optional uint64 height = 2;
+  // int64 height = 2;
   if (this->height() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt64(2, this->height(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(2, this->height(), output);
   }
 
-  // optional .CoreML.Specification.ImageFeatureType.ColorSpace colorSpace = 3;
+  // .CoreML.Specification.ImageFeatureType.ColorSpace colorSpace = 3;
   if (this->colorspace() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       3, this->colorspace(), output);
+  }
+
+  // .CoreML.Specification.ImageFeatureType.EnumeratedImageSizes enumeratedSizes = 21;
+  if (has_enumeratedsizes()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      21, *SizeFlexibility_.enumeratedsizes_, output);
+  }
+
+  // .CoreML.Specification.ImageFeatureType.ImageSizeRange imageSizeRange = 31;
+  if (has_imagesizerange()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      31, *SizeFlexibility_.imagesizerange_, output);
   }
 
   // @@protoc_insertion_point(serialize_end:CoreML.Specification.ImageFeatureType)
@@ -749,26 +1897,45 @@ size_t ImageFeatureType::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.ImageFeatureType)
   size_t total_size = 0;
 
-  // optional uint64 width = 1;
+  // int64 width = 1;
   if (this->width() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::UInt64Size(
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
         this->width());
   }
 
-  // optional uint64 height = 2;
+  // int64 height = 2;
   if (this->height() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::UInt64Size(
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
         this->height());
   }
 
-  // optional .CoreML.Specification.ImageFeatureType.ColorSpace colorSpace = 3;
+  // .CoreML.Specification.ImageFeatureType.ColorSpace colorSpace = 3;
   if (this->colorspace() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::EnumSize(this->colorspace());
   }
 
+  switch (SizeFlexibility_case()) {
+    // .CoreML.Specification.ImageFeatureType.EnumeratedImageSizes enumeratedSizes = 21;
+    case kEnumeratedSizes: {
+      total_size += 2 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *SizeFlexibility_.enumeratedsizes_);
+      break;
+    }
+    // .CoreML.Specification.ImageFeatureType.ImageSizeRange imageSizeRange = 31;
+    case kImageSizeRange: {
+      total_size += 2 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *SizeFlexibility_.imagesizerange_);
+      break;
+    }
+    case SIZEFLEXIBILITY_NOT_SET: {
+      break;
+    }
+  }
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = cached_size;
@@ -783,15 +1950,11 @@ void ImageFeatureType::CheckTypeAndMergeFrom(
 
 void ImageFeatureType::MergeFrom(const ImageFeatureType& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.ImageFeatureType)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void ImageFeatureType::UnsafeMergeFrom(const ImageFeatureType& from) {
-  GOOGLE_DCHECK(&from != this);
   if (from.width() != 0) {
     set_width(from.width());
   }
@@ -801,17 +1964,29 @@ void ImageFeatureType::UnsafeMergeFrom(const ImageFeatureType& from) {
   if (from.colorspace() != 0) {
     set_colorspace(from.colorspace());
   }
+  switch (from.SizeFlexibility_case()) {
+    case kEnumeratedSizes: {
+      mutable_enumeratedsizes()->::CoreML::Specification::ImageFeatureType_EnumeratedImageSizes::MergeFrom(from.enumeratedsizes());
+      break;
+    }
+    case kImageSizeRange: {
+      mutable_imagesizerange()->::CoreML::Specification::ImageFeatureType_ImageSizeRange::MergeFrom(from.imagesizerange());
+      break;
+    }
+    case SIZEFLEXIBILITY_NOT_SET: {
+      break;
+    }
+  }
 }
 
 void ImageFeatureType::CopyFrom(const ImageFeatureType& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.ImageFeatureType)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool ImageFeatureType::IsInitialized() const {
-
   return true;
 }
 
@@ -823,7 +1998,8 @@ void ImageFeatureType::InternalSwap(ImageFeatureType* other) {
   std::swap(width_, other->width_);
   std::swap(height_, other->height_);
   std::swap(colorspace_, other->colorspace_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
+  std::swap(SizeFlexibility_, other->SizeFlexibility_);
+  std::swap(_oneof_case_[0], other->_oneof_case_[0]);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -834,35 +2010,131 @@ void ImageFeatureType::InternalSwap(ImageFeatureType* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // ImageFeatureType
 
-// optional uint64 width = 1;
+// int64 width = 1;
 void ImageFeatureType::clear_width() {
-  width_ = GOOGLE_ULONGLONG(0);
+  width_ = GOOGLE_LONGLONG(0);
 }
-::google::protobuf::uint64 ImageFeatureType::width() const {
+::google::protobuf::int64 ImageFeatureType::width() const {
   // @@protoc_insertion_point(field_get:CoreML.Specification.ImageFeatureType.width)
   return width_;
 }
-void ImageFeatureType::set_width(::google::protobuf::uint64 value) {
+void ImageFeatureType::set_width(::google::protobuf::int64 value) {
   
   width_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.ImageFeatureType.width)
 }
 
-// optional uint64 height = 2;
+// int64 height = 2;
 void ImageFeatureType::clear_height() {
-  height_ = GOOGLE_ULONGLONG(0);
+  height_ = GOOGLE_LONGLONG(0);
 }
-::google::protobuf::uint64 ImageFeatureType::height() const {
+::google::protobuf::int64 ImageFeatureType::height() const {
   // @@protoc_insertion_point(field_get:CoreML.Specification.ImageFeatureType.height)
   return height_;
 }
-void ImageFeatureType::set_height(::google::protobuf::uint64 value) {
+void ImageFeatureType::set_height(::google::protobuf::int64 value) {
   
   height_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.ImageFeatureType.height)
 }
 
-// optional .CoreML.Specification.ImageFeatureType.ColorSpace colorSpace = 3;
+// .CoreML.Specification.ImageFeatureType.EnumeratedImageSizes enumeratedSizes = 21;
+bool ImageFeatureType::has_enumeratedsizes() const {
+  return SizeFlexibility_case() == kEnumeratedSizes;
+}
+void ImageFeatureType::set_has_enumeratedsizes() {
+  _oneof_case_[0] = kEnumeratedSizes;
+}
+void ImageFeatureType::clear_enumeratedsizes() {
+  if (has_enumeratedsizes()) {
+    delete SizeFlexibility_.enumeratedsizes_;
+    clear_has_SizeFlexibility();
+  }
+}
+ const ::CoreML::Specification::ImageFeatureType_EnumeratedImageSizes& ImageFeatureType::enumeratedsizes() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.ImageFeatureType.enumeratedSizes)
+  return has_enumeratedsizes()
+      ? *SizeFlexibility_.enumeratedsizes_
+      : ::CoreML::Specification::ImageFeatureType_EnumeratedImageSizes::default_instance();
+}
+::CoreML::Specification::ImageFeatureType_EnumeratedImageSizes* ImageFeatureType::mutable_enumeratedsizes() {
+  if (!has_enumeratedsizes()) {
+    clear_SizeFlexibility();
+    set_has_enumeratedsizes();
+    SizeFlexibility_.enumeratedsizes_ = new ::CoreML::Specification::ImageFeatureType_EnumeratedImageSizes;
+  }
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.ImageFeatureType.enumeratedSizes)
+  return SizeFlexibility_.enumeratedsizes_;
+}
+::CoreML::Specification::ImageFeatureType_EnumeratedImageSizes* ImageFeatureType::release_enumeratedsizes() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.ImageFeatureType.enumeratedSizes)
+  if (has_enumeratedsizes()) {
+    clear_has_SizeFlexibility();
+    ::CoreML::Specification::ImageFeatureType_EnumeratedImageSizes* temp = SizeFlexibility_.enumeratedsizes_;
+    SizeFlexibility_.enumeratedsizes_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void ImageFeatureType::set_allocated_enumeratedsizes(::CoreML::Specification::ImageFeatureType_EnumeratedImageSizes* enumeratedsizes) {
+  clear_SizeFlexibility();
+  if (enumeratedsizes) {
+    set_has_enumeratedsizes();
+    SizeFlexibility_.enumeratedsizes_ = enumeratedsizes;
+  }
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.ImageFeatureType.enumeratedSizes)
+}
+
+// .CoreML.Specification.ImageFeatureType.ImageSizeRange imageSizeRange = 31;
+bool ImageFeatureType::has_imagesizerange() const {
+  return SizeFlexibility_case() == kImageSizeRange;
+}
+void ImageFeatureType::set_has_imagesizerange() {
+  _oneof_case_[0] = kImageSizeRange;
+}
+void ImageFeatureType::clear_imagesizerange() {
+  if (has_imagesizerange()) {
+    delete SizeFlexibility_.imagesizerange_;
+    clear_has_SizeFlexibility();
+  }
+}
+ const ::CoreML::Specification::ImageFeatureType_ImageSizeRange& ImageFeatureType::imagesizerange() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.ImageFeatureType.imageSizeRange)
+  return has_imagesizerange()
+      ? *SizeFlexibility_.imagesizerange_
+      : ::CoreML::Specification::ImageFeatureType_ImageSizeRange::default_instance();
+}
+::CoreML::Specification::ImageFeatureType_ImageSizeRange* ImageFeatureType::mutable_imagesizerange() {
+  if (!has_imagesizerange()) {
+    clear_SizeFlexibility();
+    set_has_imagesizerange();
+    SizeFlexibility_.imagesizerange_ = new ::CoreML::Specification::ImageFeatureType_ImageSizeRange;
+  }
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.ImageFeatureType.imageSizeRange)
+  return SizeFlexibility_.imagesizerange_;
+}
+::CoreML::Specification::ImageFeatureType_ImageSizeRange* ImageFeatureType::release_imagesizerange() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.ImageFeatureType.imageSizeRange)
+  if (has_imagesizerange()) {
+    clear_has_SizeFlexibility();
+    ::CoreML::Specification::ImageFeatureType_ImageSizeRange* temp = SizeFlexibility_.imagesizerange_;
+    SizeFlexibility_.imagesizerange_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void ImageFeatureType::set_allocated_imagesizerange(::CoreML::Specification::ImageFeatureType_ImageSizeRange* imagesizerange) {
+  clear_SizeFlexibility();
+  if (imagesizerange) {
+    set_has_imagesizerange();
+    SizeFlexibility_.imagesizerange_ = imagesizerange;
+  }
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.ImageFeatureType.imageSizeRange)
+}
+
+// .CoreML.Specification.ImageFeatureType.ColorSpace colorSpace = 3;
 void ImageFeatureType::clear_colorspace() {
   colorspace_ = 0;
 }
@@ -876,59 +2148,711 @@ void ImageFeatureType::set_colorspace(::CoreML::Specification::ImageFeatureType_
   // @@protoc_insertion_point(field_set:CoreML.Specification.ImageFeatureType.colorSpace)
 }
 
-inline const ImageFeatureType* ImageFeatureType::internal_default_instance() {
-  return &ImageFeatureType_default_instance_.get();
+bool ImageFeatureType::has_SizeFlexibility() const {
+  return SizeFlexibility_case() != SIZEFLEXIBILITY_NOT_SET;
+}
+void ImageFeatureType::clear_has_SizeFlexibility() {
+  _oneof_case_[0] = SIZEFLEXIBILITY_NOT_SET;
+}
+ImageFeatureType::SizeFlexibilityCase ImageFeatureType::SizeFlexibility_case() const {
+  return ImageFeatureType::SizeFlexibilityCase(_oneof_case_[0]);
 }
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
 
-bool ArrayFeatureType_ArrayDataType_IsValid(int value) {
-  switch (value) {
-    case 0:
-    case 65568:
-    case 65600:
-    case 131104:
-      return true;
-    default:
-      return false;
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int ArrayFeatureType_Shape::kShapeFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+ArrayFeatureType_Shape::ArrayFeatureType_Shape()
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_FeatureTypes_2eproto::InitDefaults();
   }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:CoreML.Specification.ArrayFeatureType.Shape)
+}
+ArrayFeatureType_Shape::ArrayFeatureType_Shape(const ArrayFeatureType_Shape& from)
+  : ::google::protobuf::MessageLite(),
+      _internal_metadata_(NULL),
+      shape_(from.shape_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:CoreML.Specification.ArrayFeatureType.Shape)
 }
 
+void ArrayFeatureType_Shape::SharedCtor() {
+  _cached_size_ = 0;
+}
+
+ArrayFeatureType_Shape::~ArrayFeatureType_Shape() {
+  // @@protoc_insertion_point(destructor:CoreML.Specification.ArrayFeatureType.Shape)
+  SharedDtor();
+}
+
+void ArrayFeatureType_Shape::SharedDtor() {
+}
+
+void ArrayFeatureType_Shape::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ArrayFeatureType_Shape& ArrayFeatureType_Shape::default_instance() {
+  protobuf_FeatureTypes_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+ArrayFeatureType_Shape* ArrayFeatureType_Shape::New(::google::protobuf::Arena* arena) const {
+  ArrayFeatureType_Shape* n = new ArrayFeatureType_Shape;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void ArrayFeatureType_Shape::Clear() {
+// @@protoc_insertion_point(message_clear_start:CoreML.Specification.ArrayFeatureType.Shape)
+  shape_.Clear();
+}
+
+bool ArrayFeatureType_Shape::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:CoreML.Specification.ArrayFeatureType.Shape)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated int64 shape = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, this->mutable_shape())));
+        } else if (static_cast< ::google::protobuf::uint8>(tag) ==
+                   static_cast< ::google::protobuf::uint8>(8u)) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 1, 10u, input, this->mutable_shape())));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:CoreML.Specification.ArrayFeatureType.Shape)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:CoreML.Specification.ArrayFeatureType.Shape)
+  return false;
+#undef DO_
+}
+
+void ArrayFeatureType_Shape::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:CoreML.Specification.ArrayFeatureType.Shape)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated int64 shape = 1;
+  if (this->shape_size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteTag(1, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
+    output->WriteVarint32(_shape_cached_byte_size_);
+  }
+  for (int i = 0, n = this->shape_size(); i < n; i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64NoTag(
+      this->shape(i), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:CoreML.Specification.ArrayFeatureType.Shape)
+}
+
+size_t ArrayFeatureType_Shape::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.ArrayFeatureType.Shape)
+  size_t total_size = 0;
+
+  // repeated int64 shape = 1;
+  {
+    size_t data_size = ::google::protobuf::internal::WireFormatLite::
+      Int64Size(this->shape_);
+    if (data_size > 0) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
+    }
+    int cached_size = ::google::protobuf::internal::ToCachedSize(data_size);
+    GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+    _shape_cached_byte_size_ = cached_size;
+    GOOGLE_SAFE_CONCURRENT_WRITES_END();
+    total_size += data_size;
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void ArrayFeatureType_Shape::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const ArrayFeatureType_Shape*>(&from));
+}
+
+void ArrayFeatureType_Shape::MergeFrom(const ArrayFeatureType_Shape& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.ArrayFeatureType.Shape)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  shape_.MergeFrom(from.shape_);
+}
+
+void ArrayFeatureType_Shape::CopyFrom(const ArrayFeatureType_Shape& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.ArrayFeatureType.Shape)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ArrayFeatureType_Shape::IsInitialized() const {
+  return true;
+}
+
+void ArrayFeatureType_Shape::Swap(ArrayFeatureType_Shape* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void ArrayFeatureType_Shape::InternalSwap(ArrayFeatureType_Shape* other) {
+  shape_.InternalSwap(&other->shape_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::std::string ArrayFeatureType_Shape::GetTypeName() const {
+  return "CoreML.Specification.ArrayFeatureType.Shape";
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// ArrayFeatureType_Shape
+
+// repeated int64 shape = 1;
+int ArrayFeatureType_Shape::shape_size() const {
+  return shape_.size();
+}
+void ArrayFeatureType_Shape::clear_shape() {
+  shape_.Clear();
+}
+::google::protobuf::int64 ArrayFeatureType_Shape::shape(int index) const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.ArrayFeatureType.Shape.shape)
+  return shape_.Get(index);
+}
+void ArrayFeatureType_Shape::set_shape(int index, ::google::protobuf::int64 value) {
+  shape_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CoreML.Specification.ArrayFeatureType.Shape.shape)
+}
+void ArrayFeatureType_Shape::add_shape(::google::protobuf::int64 value) {
+  shape_.Add(value);
+  // @@protoc_insertion_point(field_add:CoreML.Specification.ArrayFeatureType.Shape.shape)
+}
+const ::google::protobuf::RepeatedField< ::google::protobuf::int64 >&
+ArrayFeatureType_Shape::shape() const {
+  // @@protoc_insertion_point(field_list:CoreML.Specification.ArrayFeatureType.Shape.shape)
+  return shape_;
+}
+::google::protobuf::RepeatedField< ::google::protobuf::int64 >*
+ArrayFeatureType_Shape::mutable_shape() {
+  // @@protoc_insertion_point(field_mutable_list:CoreML.Specification.ArrayFeatureType.Shape.shape)
+  return &shape_;
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const ArrayFeatureType_ArrayDataType ArrayFeatureType::INVALID_ARRAY_DATA_TYPE;
-const ArrayFeatureType_ArrayDataType ArrayFeatureType::FLOAT32;
-const ArrayFeatureType_ArrayDataType ArrayFeatureType::DOUBLE;
-const ArrayFeatureType_ArrayDataType ArrayFeatureType::INT32;
-const ArrayFeatureType_ArrayDataType ArrayFeatureType::ArrayDataType_MIN;
-const ArrayFeatureType_ArrayDataType ArrayFeatureType::ArrayDataType_MAX;
-const int ArrayFeatureType::ArrayDataType_ARRAYSIZE;
+const int ArrayFeatureType_EnumeratedShapes::kShapesFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+ArrayFeatureType_EnumeratedShapes::ArrayFeatureType_EnumeratedShapes()
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_FeatureTypes_2eproto::InitDefaults();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:CoreML.Specification.ArrayFeatureType.EnumeratedShapes)
+}
+ArrayFeatureType_EnumeratedShapes::ArrayFeatureType_EnumeratedShapes(const ArrayFeatureType_EnumeratedShapes& from)
+  : ::google::protobuf::MessageLite(),
+      _internal_metadata_(NULL),
+      shapes_(from.shapes_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:CoreML.Specification.ArrayFeatureType.EnumeratedShapes)
+}
+
+void ArrayFeatureType_EnumeratedShapes::SharedCtor() {
+  _cached_size_ = 0;
+}
+
+ArrayFeatureType_EnumeratedShapes::~ArrayFeatureType_EnumeratedShapes() {
+  // @@protoc_insertion_point(destructor:CoreML.Specification.ArrayFeatureType.EnumeratedShapes)
+  SharedDtor();
+}
+
+void ArrayFeatureType_EnumeratedShapes::SharedDtor() {
+}
+
+void ArrayFeatureType_EnumeratedShapes::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ArrayFeatureType_EnumeratedShapes& ArrayFeatureType_EnumeratedShapes::default_instance() {
+  protobuf_FeatureTypes_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+ArrayFeatureType_EnumeratedShapes* ArrayFeatureType_EnumeratedShapes::New(::google::protobuf::Arena* arena) const {
+  ArrayFeatureType_EnumeratedShapes* n = new ArrayFeatureType_EnumeratedShapes;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void ArrayFeatureType_EnumeratedShapes::Clear() {
+// @@protoc_insertion_point(message_clear_start:CoreML.Specification.ArrayFeatureType.EnumeratedShapes)
+  shapes_.Clear();
+}
+
+bool ArrayFeatureType_EnumeratedShapes::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:CoreML.Specification.ArrayFeatureType.EnumeratedShapes)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated .CoreML.Specification.ArrayFeatureType.Shape shapes = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+                input, add_shapes()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:CoreML.Specification.ArrayFeatureType.EnumeratedShapes)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:CoreML.Specification.ArrayFeatureType.EnumeratedShapes)
+  return false;
+#undef DO_
+}
+
+void ArrayFeatureType_EnumeratedShapes::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:CoreML.Specification.ArrayFeatureType.EnumeratedShapes)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .CoreML.Specification.ArrayFeatureType.Shape shapes = 1;
+  for (unsigned int i = 0, n = this->shapes_size(); i < n; i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      1, this->shapes(i), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:CoreML.Specification.ArrayFeatureType.EnumeratedShapes)
+}
+
+size_t ArrayFeatureType_EnumeratedShapes::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.ArrayFeatureType.EnumeratedShapes)
+  size_t total_size = 0;
+
+  // repeated .CoreML.Specification.ArrayFeatureType.Shape shapes = 1;
+  {
+    unsigned int count = this->shapes_size();
+    total_size += 1UL * count;
+    for (unsigned int i = 0; i < count; i++) {
+      total_size +=
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->shapes(i));
+    }
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void ArrayFeatureType_EnumeratedShapes::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const ArrayFeatureType_EnumeratedShapes*>(&from));
+}
+
+void ArrayFeatureType_EnumeratedShapes::MergeFrom(const ArrayFeatureType_EnumeratedShapes& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.ArrayFeatureType.EnumeratedShapes)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  shapes_.MergeFrom(from.shapes_);
+}
+
+void ArrayFeatureType_EnumeratedShapes::CopyFrom(const ArrayFeatureType_EnumeratedShapes& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.ArrayFeatureType.EnumeratedShapes)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ArrayFeatureType_EnumeratedShapes::IsInitialized() const {
+  return true;
+}
+
+void ArrayFeatureType_EnumeratedShapes::Swap(ArrayFeatureType_EnumeratedShapes* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void ArrayFeatureType_EnumeratedShapes::InternalSwap(ArrayFeatureType_EnumeratedShapes* other) {
+  shapes_.InternalSwap(&other->shapes_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::std::string ArrayFeatureType_EnumeratedShapes::GetTypeName() const {
+  return "CoreML.Specification.ArrayFeatureType.EnumeratedShapes";
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// ArrayFeatureType_EnumeratedShapes
+
+// repeated .CoreML.Specification.ArrayFeatureType.Shape shapes = 1;
+int ArrayFeatureType_EnumeratedShapes::shapes_size() const {
+  return shapes_.size();
+}
+void ArrayFeatureType_EnumeratedShapes::clear_shapes() {
+  shapes_.Clear();
+}
+const ::CoreML::Specification::ArrayFeatureType_Shape& ArrayFeatureType_EnumeratedShapes::shapes(int index) const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.ArrayFeatureType.EnumeratedShapes.shapes)
+  return shapes_.Get(index);
+}
+::CoreML::Specification::ArrayFeatureType_Shape* ArrayFeatureType_EnumeratedShapes::mutable_shapes(int index) {
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.ArrayFeatureType.EnumeratedShapes.shapes)
+  return shapes_.Mutable(index);
+}
+::CoreML::Specification::ArrayFeatureType_Shape* ArrayFeatureType_EnumeratedShapes::add_shapes() {
+  // @@protoc_insertion_point(field_add:CoreML.Specification.ArrayFeatureType.EnumeratedShapes.shapes)
+  return shapes_.Add();
+}
+::google::protobuf::RepeatedPtrField< ::CoreML::Specification::ArrayFeatureType_Shape >*
+ArrayFeatureType_EnumeratedShapes::mutable_shapes() {
+  // @@protoc_insertion_point(field_mutable_list:CoreML.Specification.ArrayFeatureType.EnumeratedShapes.shapes)
+  return &shapes_;
+}
+const ::google::protobuf::RepeatedPtrField< ::CoreML::Specification::ArrayFeatureType_Shape >&
+ArrayFeatureType_EnumeratedShapes::shapes() const {
+  // @@protoc_insertion_point(field_list:CoreML.Specification.ArrayFeatureType.EnumeratedShapes.shapes)
+  return shapes_;
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int ArrayFeatureType_ShapeRange::kSizeRangesFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+ArrayFeatureType_ShapeRange::ArrayFeatureType_ShapeRange()
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_FeatureTypes_2eproto::InitDefaults();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:CoreML.Specification.ArrayFeatureType.ShapeRange)
+}
+ArrayFeatureType_ShapeRange::ArrayFeatureType_ShapeRange(const ArrayFeatureType_ShapeRange& from)
+  : ::google::protobuf::MessageLite(),
+      _internal_metadata_(NULL),
+      sizeranges_(from.sizeranges_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:CoreML.Specification.ArrayFeatureType.ShapeRange)
+}
+
+void ArrayFeatureType_ShapeRange::SharedCtor() {
+  _cached_size_ = 0;
+}
+
+ArrayFeatureType_ShapeRange::~ArrayFeatureType_ShapeRange() {
+  // @@protoc_insertion_point(destructor:CoreML.Specification.ArrayFeatureType.ShapeRange)
+  SharedDtor();
+}
+
+void ArrayFeatureType_ShapeRange::SharedDtor() {
+}
+
+void ArrayFeatureType_ShapeRange::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ArrayFeatureType_ShapeRange& ArrayFeatureType_ShapeRange::default_instance() {
+  protobuf_FeatureTypes_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+ArrayFeatureType_ShapeRange* ArrayFeatureType_ShapeRange::New(::google::protobuf::Arena* arena) const {
+  ArrayFeatureType_ShapeRange* n = new ArrayFeatureType_ShapeRange;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void ArrayFeatureType_ShapeRange::Clear() {
+// @@protoc_insertion_point(message_clear_start:CoreML.Specification.ArrayFeatureType.ShapeRange)
+  sizeranges_.Clear();
+}
+
+bool ArrayFeatureType_ShapeRange::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:CoreML.Specification.ArrayFeatureType.ShapeRange)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated .CoreML.Specification.SizeRange sizeRanges = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+                input, add_sizeranges()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:CoreML.Specification.ArrayFeatureType.ShapeRange)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:CoreML.Specification.ArrayFeatureType.ShapeRange)
+  return false;
+#undef DO_
+}
+
+void ArrayFeatureType_ShapeRange::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:CoreML.Specification.ArrayFeatureType.ShapeRange)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .CoreML.Specification.SizeRange sizeRanges = 1;
+  for (unsigned int i = 0, n = this->sizeranges_size(); i < n; i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      1, this->sizeranges(i), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:CoreML.Specification.ArrayFeatureType.ShapeRange)
+}
+
+size_t ArrayFeatureType_ShapeRange::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.ArrayFeatureType.ShapeRange)
+  size_t total_size = 0;
+
+  // repeated .CoreML.Specification.SizeRange sizeRanges = 1;
+  {
+    unsigned int count = this->sizeranges_size();
+    total_size += 1UL * count;
+    for (unsigned int i = 0; i < count; i++) {
+      total_size +=
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->sizeranges(i));
+    }
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void ArrayFeatureType_ShapeRange::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const ArrayFeatureType_ShapeRange*>(&from));
+}
+
+void ArrayFeatureType_ShapeRange::MergeFrom(const ArrayFeatureType_ShapeRange& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.ArrayFeatureType.ShapeRange)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  sizeranges_.MergeFrom(from.sizeranges_);
+}
+
+void ArrayFeatureType_ShapeRange::CopyFrom(const ArrayFeatureType_ShapeRange& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.ArrayFeatureType.ShapeRange)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ArrayFeatureType_ShapeRange::IsInitialized() const {
+  return true;
+}
+
+void ArrayFeatureType_ShapeRange::Swap(ArrayFeatureType_ShapeRange* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void ArrayFeatureType_ShapeRange::InternalSwap(ArrayFeatureType_ShapeRange* other) {
+  sizeranges_.InternalSwap(&other->sizeranges_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::std::string ArrayFeatureType_ShapeRange::GetTypeName() const {
+  return "CoreML.Specification.ArrayFeatureType.ShapeRange";
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// ArrayFeatureType_ShapeRange
+
+// repeated .CoreML.Specification.SizeRange sizeRanges = 1;
+int ArrayFeatureType_ShapeRange::sizeranges_size() const {
+  return sizeranges_.size();
+}
+void ArrayFeatureType_ShapeRange::clear_sizeranges() {
+  sizeranges_.Clear();
+}
+const ::CoreML::Specification::SizeRange& ArrayFeatureType_ShapeRange::sizeranges(int index) const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.ArrayFeatureType.ShapeRange.sizeRanges)
+  return sizeranges_.Get(index);
+}
+::CoreML::Specification::SizeRange* ArrayFeatureType_ShapeRange::mutable_sizeranges(int index) {
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.ArrayFeatureType.ShapeRange.sizeRanges)
+  return sizeranges_.Mutable(index);
+}
+::CoreML::Specification::SizeRange* ArrayFeatureType_ShapeRange::add_sizeranges() {
+  // @@protoc_insertion_point(field_add:CoreML.Specification.ArrayFeatureType.ShapeRange.sizeRanges)
+  return sizeranges_.Add();
+}
+::google::protobuf::RepeatedPtrField< ::CoreML::Specification::SizeRange >*
+ArrayFeatureType_ShapeRange::mutable_sizeranges() {
+  // @@protoc_insertion_point(field_mutable_list:CoreML.Specification.ArrayFeatureType.ShapeRange.sizeRanges)
+  return &sizeranges_;
+}
+const ::google::protobuf::RepeatedPtrField< ::CoreML::Specification::SizeRange >&
+ArrayFeatureType_ShapeRange::sizeranges() const {
+  // @@protoc_insertion_point(field_list:CoreML.Specification.ArrayFeatureType.ShapeRange.sizeRanges)
+  return sizeranges_;
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int ArrayFeatureType::kShapeFieldNumber;
 const int ArrayFeatureType::kDataTypeFieldNumber;
+const int ArrayFeatureType::kEnumeratedShapesFieldNumber;
+const int ArrayFeatureType::kShapeRangeFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ArrayFeatureType::ArrayFeatureType()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_FeatureTypes_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_FeatureTypes_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.ArrayFeatureType)
 }
-
-void ArrayFeatureType::InitAsDefaultInstance() {
-}
-
 ArrayFeatureType::ArrayFeatureType(const ArrayFeatureType& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      shape_(from.shape_),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  datatype_ = from.datatype_;
+  clear_has_ShapeFlexibility();
+  switch (from.ShapeFlexibility_case()) {
+    case kEnumeratedShapes: {
+      mutable_enumeratedshapes()->::CoreML::Specification::ArrayFeatureType_EnumeratedShapes::MergeFrom(from.enumeratedshapes());
+      break;
+    }
+    case kShapeRange: {
+      mutable_shaperange()->::CoreML::Specification::ArrayFeatureType_ShapeRange::MergeFrom(from.shaperange());
+      break;
+    }
+    case SHAPEFLEXIBILITY_NOT_SET: {
+      break;
+    }
+  }
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.ArrayFeatureType)
 }
 
 void ArrayFeatureType::SharedCtor() {
   datatype_ = 0;
+  clear_has_ShapeFlexibility();
   _cached_size_ = 0;
 }
 
@@ -938,6 +2862,9 @@ ArrayFeatureType::~ArrayFeatureType() {
 }
 
 void ArrayFeatureType::SharedDtor() {
+  if (has_ShapeFlexibility()) {
+    clear_ShapeFlexibility();
+  }
 }
 
 void ArrayFeatureType::SetCachedSize(int size) const {
@@ -946,11 +2873,9 @@ void ArrayFeatureType::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const ArrayFeatureType& ArrayFeatureType::default_instance() {
-  protobuf_InitDefaults_FeatureTypes_2eproto();
+  protobuf_FeatureTypes_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<ArrayFeatureType> ArrayFeatureType_default_instance_;
 
 ArrayFeatureType* ArrayFeatureType::New(::google::protobuf::Arena* arena) const {
   ArrayFeatureType* n = new ArrayFeatureType;
@@ -960,10 +2885,30 @@ ArrayFeatureType* ArrayFeatureType::New(::google::protobuf::Arena* arena) const 
   return n;
 }
 
+void ArrayFeatureType::clear_ShapeFlexibility() {
+// @@protoc_insertion_point(one_of_clear_start:CoreML.Specification.ArrayFeatureType)
+  switch (ShapeFlexibility_case()) {
+    case kEnumeratedShapes: {
+      delete ShapeFlexibility_.enumeratedshapes_;
+      break;
+    }
+    case kShapeRange: {
+      delete ShapeFlexibility_.shaperange_;
+      break;
+    }
+    case SHAPEFLEXIBILITY_NOT_SET: {
+      break;
+    }
+  }
+  _oneof_case_[0] = SHAPEFLEXIBILITY_NOT_SET;
+}
+
+
 void ArrayFeatureType::Clear() {
 // @@protoc_insertion_point(message_clear_start:CoreML.Specification.ArrayFeatureType)
-  datatype_ = 0;
   shape_.Clear();
+  datatype_ = 0;
+  clear_ShapeFlexibility();
 }
 
 bool ArrayFeatureType::MergePartialFromCodedStream(
@@ -972,31 +2917,32 @@ bool ArrayFeatureType::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.ArrayFeatureType)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(16383u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated uint64 shape = 1;
+      // repeated int64 shape = 1;
       case 1: {
-        if (tag == 10) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
-                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
                  input, this->mutable_shape())));
-        } else if (tag == 8) {
+        } else if (static_cast< ::google::protobuf::uint8>(tag) ==
+                   static_cast< ::google::protobuf::uint8>(8u)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
-                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
-                 1, 10, input, this->mutable_shape())));
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 1, 10u, input, this->mutable_shape())));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(16)) goto parse_dataType;
         break;
       }
 
-      // optional .CoreML.Specification.ArrayFeatureType.ArrayDataType dataType = 2;
+      // .CoreML.Specification.ArrayFeatureType.ArrayDataType dataType = 2;
       case 2: {
-        if (tag == 16) {
-         parse_dataType:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(16u)) {
           int value;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
@@ -1005,7 +2951,30 @@ bool ArrayFeatureType::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      // .CoreML.Specification.ArrayFeatureType.EnumeratedShapes enumeratedShapes = 21;
+      case 21: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(170u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_enumeratedshapes()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .CoreML.Specification.ArrayFeatureType.ShapeRange shapeRange = 31;
+      case 31: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(250u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_shaperange()));
+        } else {
+          goto handle_unusual;
+        }
         break;
       }
 
@@ -1033,20 +3002,35 @@ failure:
 void ArrayFeatureType::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.ArrayFeatureType)
-  // repeated uint64 shape = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated int64 shape = 1;
   if (this->shape_size() > 0) {
     ::google::protobuf::internal::WireFormatLite::WriteTag(1, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
     output->WriteVarint32(_shape_cached_byte_size_);
   }
-  for (int i = 0; i < this->shape_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt64NoTag(
+  for (int i = 0, n = this->shape_size(); i < n; i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64NoTag(
       this->shape(i), output);
   }
 
-  // optional .CoreML.Specification.ArrayFeatureType.ArrayDataType dataType = 2;
+  // .CoreML.Specification.ArrayFeatureType.ArrayDataType dataType = 2;
   if (this->datatype() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       2, this->datatype(), output);
+  }
+
+  // .CoreML.Specification.ArrayFeatureType.EnumeratedShapes enumeratedShapes = 21;
+  if (has_enumeratedshapes()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      21, *ShapeFlexibility_.enumeratedshapes_, output);
+  }
+
+  // .CoreML.Specification.ArrayFeatureType.ShapeRange shapeRange = 31;
+  if (has_shaperange()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      31, *ShapeFlexibility_.shaperange_, output);
   }
 
   // @@protoc_insertion_point(serialize_end:CoreML.Specification.ArrayFeatureType)
@@ -1056,20 +3040,10 @@ size_t ArrayFeatureType::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.ArrayFeatureType)
   size_t total_size = 0;
 
-  // optional .CoreML.Specification.ArrayFeatureType.ArrayDataType dataType = 2;
-  if (this->datatype() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->datatype());
-  }
-
-  // repeated uint64 shape = 1;
+  // repeated int64 shape = 1;
   {
-    size_t data_size = 0;
-    unsigned int count = this->shape_size();
-    for (unsigned int i = 0; i < count; i++) {
-      data_size += ::google::protobuf::internal::WireFormatLite::
-        UInt64Size(this->shape(i));
-    }
+    size_t data_size = ::google::protobuf::internal::WireFormatLite::
+      Int64Size(this->shape_);
     if (data_size > 0) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
@@ -1081,6 +3055,31 @@ size_t ArrayFeatureType::ByteSizeLong() const {
     total_size += data_size;
   }
 
+  // .CoreML.Specification.ArrayFeatureType.ArrayDataType dataType = 2;
+  if (this->datatype() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->datatype());
+  }
+
+  switch (ShapeFlexibility_case()) {
+    // .CoreML.Specification.ArrayFeatureType.EnumeratedShapes enumeratedShapes = 21;
+    case kEnumeratedShapes: {
+      total_size += 2 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *ShapeFlexibility_.enumeratedshapes_);
+      break;
+    }
+    // .CoreML.Specification.ArrayFeatureType.ShapeRange shapeRange = 31;
+    case kShapeRange: {
+      total_size += 2 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *ShapeFlexibility_.shaperange_);
+      break;
+    }
+    case SHAPEFLEXIBILITY_NOT_SET: {
+      break;
+    }
+  }
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = cached_size;
@@ -1095,18 +3094,27 @@ void ArrayFeatureType::CheckTypeAndMergeFrom(
 
 void ArrayFeatureType::MergeFrom(const ArrayFeatureType& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.ArrayFeatureType)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void ArrayFeatureType::UnsafeMergeFrom(const ArrayFeatureType& from) {
-  GOOGLE_DCHECK(&from != this);
-  shape_.UnsafeMergeFrom(from.shape_);
+  shape_.MergeFrom(from.shape_);
   if (from.datatype() != 0) {
     set_datatype(from.datatype());
+  }
+  switch (from.ShapeFlexibility_case()) {
+    case kEnumeratedShapes: {
+      mutable_enumeratedshapes()->::CoreML::Specification::ArrayFeatureType_EnumeratedShapes::MergeFrom(from.enumeratedshapes());
+      break;
+    }
+    case kShapeRange: {
+      mutable_shaperange()->::CoreML::Specification::ArrayFeatureType_ShapeRange::MergeFrom(from.shaperange());
+      break;
+    }
+    case SHAPEFLEXIBILITY_NOT_SET: {
+      break;
+    }
   }
 }
 
@@ -1114,11 +3122,10 @@ void ArrayFeatureType::CopyFrom(const ArrayFeatureType& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.ArrayFeatureType)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool ArrayFeatureType::IsInitialized() const {
-
   return true;
 }
 
@@ -1127,9 +3134,10 @@ void ArrayFeatureType::Swap(ArrayFeatureType* other) {
   InternalSwap(other);
 }
 void ArrayFeatureType::InternalSwap(ArrayFeatureType* other) {
-  shape_.UnsafeArenaSwap(&other->shape_);
+  shape_.InternalSwap(&other->shape_);
   std::swap(datatype_, other->datatype_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
+  std::swap(ShapeFlexibility_, other->ShapeFlexibility_);
+  std::swap(_oneof_case_[0], other->_oneof_case_[0]);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -1140,37 +3148,37 @@ void ArrayFeatureType::InternalSwap(ArrayFeatureType* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // ArrayFeatureType
 
-// repeated uint64 shape = 1;
+// repeated int64 shape = 1;
 int ArrayFeatureType::shape_size() const {
   return shape_.size();
 }
 void ArrayFeatureType::clear_shape() {
   shape_.Clear();
 }
-::google::protobuf::uint64 ArrayFeatureType::shape(int index) const {
+::google::protobuf::int64 ArrayFeatureType::shape(int index) const {
   // @@protoc_insertion_point(field_get:CoreML.Specification.ArrayFeatureType.shape)
   return shape_.Get(index);
 }
-void ArrayFeatureType::set_shape(int index, ::google::protobuf::uint64 value) {
+void ArrayFeatureType::set_shape(int index, ::google::protobuf::int64 value) {
   shape_.Set(index, value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.ArrayFeatureType.shape)
 }
-void ArrayFeatureType::add_shape(::google::protobuf::uint64 value) {
+void ArrayFeatureType::add_shape(::google::protobuf::int64 value) {
   shape_.Add(value);
   // @@protoc_insertion_point(field_add:CoreML.Specification.ArrayFeatureType.shape)
 }
-const ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >&
+const ::google::protobuf::RepeatedField< ::google::protobuf::int64 >&
 ArrayFeatureType::shape() const {
   // @@protoc_insertion_point(field_list:CoreML.Specification.ArrayFeatureType.shape)
   return shape_;
 }
-::google::protobuf::RepeatedField< ::google::protobuf::uint64 >*
+::google::protobuf::RepeatedField< ::google::protobuf::int64 >*
 ArrayFeatureType::mutable_shape() {
   // @@protoc_insertion_point(field_mutable_list:CoreML.Specification.ArrayFeatureType.shape)
   return &shape_;
 }
 
-// optional .CoreML.Specification.ArrayFeatureType.ArrayDataType dataType = 2;
+// .CoreML.Specification.ArrayFeatureType.ArrayDataType dataType = 2;
 void ArrayFeatureType::clear_datatype() {
   datatype_ = 0;
 }
@@ -1184,8 +3192,110 @@ void ArrayFeatureType::set_datatype(::CoreML::Specification::ArrayFeatureType_Ar
   // @@protoc_insertion_point(field_set:CoreML.Specification.ArrayFeatureType.dataType)
 }
 
-inline const ArrayFeatureType* ArrayFeatureType::internal_default_instance() {
-  return &ArrayFeatureType_default_instance_.get();
+// .CoreML.Specification.ArrayFeatureType.EnumeratedShapes enumeratedShapes = 21;
+bool ArrayFeatureType::has_enumeratedshapes() const {
+  return ShapeFlexibility_case() == kEnumeratedShapes;
+}
+void ArrayFeatureType::set_has_enumeratedshapes() {
+  _oneof_case_[0] = kEnumeratedShapes;
+}
+void ArrayFeatureType::clear_enumeratedshapes() {
+  if (has_enumeratedshapes()) {
+    delete ShapeFlexibility_.enumeratedshapes_;
+    clear_has_ShapeFlexibility();
+  }
+}
+ const ::CoreML::Specification::ArrayFeatureType_EnumeratedShapes& ArrayFeatureType::enumeratedshapes() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.ArrayFeatureType.enumeratedShapes)
+  return has_enumeratedshapes()
+      ? *ShapeFlexibility_.enumeratedshapes_
+      : ::CoreML::Specification::ArrayFeatureType_EnumeratedShapes::default_instance();
+}
+::CoreML::Specification::ArrayFeatureType_EnumeratedShapes* ArrayFeatureType::mutable_enumeratedshapes() {
+  if (!has_enumeratedshapes()) {
+    clear_ShapeFlexibility();
+    set_has_enumeratedshapes();
+    ShapeFlexibility_.enumeratedshapes_ = new ::CoreML::Specification::ArrayFeatureType_EnumeratedShapes;
+  }
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.ArrayFeatureType.enumeratedShapes)
+  return ShapeFlexibility_.enumeratedshapes_;
+}
+::CoreML::Specification::ArrayFeatureType_EnumeratedShapes* ArrayFeatureType::release_enumeratedshapes() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.ArrayFeatureType.enumeratedShapes)
+  if (has_enumeratedshapes()) {
+    clear_has_ShapeFlexibility();
+    ::CoreML::Specification::ArrayFeatureType_EnumeratedShapes* temp = ShapeFlexibility_.enumeratedshapes_;
+    ShapeFlexibility_.enumeratedshapes_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void ArrayFeatureType::set_allocated_enumeratedshapes(::CoreML::Specification::ArrayFeatureType_EnumeratedShapes* enumeratedshapes) {
+  clear_ShapeFlexibility();
+  if (enumeratedshapes) {
+    set_has_enumeratedshapes();
+    ShapeFlexibility_.enumeratedshapes_ = enumeratedshapes;
+  }
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.ArrayFeatureType.enumeratedShapes)
+}
+
+// .CoreML.Specification.ArrayFeatureType.ShapeRange shapeRange = 31;
+bool ArrayFeatureType::has_shaperange() const {
+  return ShapeFlexibility_case() == kShapeRange;
+}
+void ArrayFeatureType::set_has_shaperange() {
+  _oneof_case_[0] = kShapeRange;
+}
+void ArrayFeatureType::clear_shaperange() {
+  if (has_shaperange()) {
+    delete ShapeFlexibility_.shaperange_;
+    clear_has_ShapeFlexibility();
+  }
+}
+ const ::CoreML::Specification::ArrayFeatureType_ShapeRange& ArrayFeatureType::shaperange() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.ArrayFeatureType.shapeRange)
+  return has_shaperange()
+      ? *ShapeFlexibility_.shaperange_
+      : ::CoreML::Specification::ArrayFeatureType_ShapeRange::default_instance();
+}
+::CoreML::Specification::ArrayFeatureType_ShapeRange* ArrayFeatureType::mutable_shaperange() {
+  if (!has_shaperange()) {
+    clear_ShapeFlexibility();
+    set_has_shaperange();
+    ShapeFlexibility_.shaperange_ = new ::CoreML::Specification::ArrayFeatureType_ShapeRange;
+  }
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.ArrayFeatureType.shapeRange)
+  return ShapeFlexibility_.shaperange_;
+}
+::CoreML::Specification::ArrayFeatureType_ShapeRange* ArrayFeatureType::release_shaperange() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.ArrayFeatureType.shapeRange)
+  if (has_shaperange()) {
+    clear_has_ShapeFlexibility();
+    ::CoreML::Specification::ArrayFeatureType_ShapeRange* temp = ShapeFlexibility_.shaperange_;
+    ShapeFlexibility_.shaperange_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void ArrayFeatureType::set_allocated_shaperange(::CoreML::Specification::ArrayFeatureType_ShapeRange* shaperange) {
+  clear_ShapeFlexibility();
+  if (shaperange) {
+    set_has_shaperange();
+    ShapeFlexibility_.shaperange_ = shaperange;
+  }
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.ArrayFeatureType.shapeRange)
+}
+
+bool ArrayFeatureType::has_ShapeFlexibility() const {
+  return ShapeFlexibility_case() != SHAPEFLEXIBILITY_NOT_SET;
+}
+void ArrayFeatureType::clear_has_ShapeFlexibility() {
+  _oneof_case_[0] = SHAPEFLEXIBILITY_NOT_SET;
+}
+ArrayFeatureType::ShapeFlexibilityCase ArrayFeatureType::ShapeFlexibility_case() const {
+  return ArrayFeatureType::ShapeFlexibilityCase(_oneof_case_[0]);
 }
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
@@ -1197,20 +3307,32 @@ const int DictionaryFeatureType::kStringKeyTypeFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 DictionaryFeatureType::DictionaryFeatureType()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_FeatureTypes_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_FeatureTypes_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.DictionaryFeatureType)
 }
-
-void DictionaryFeatureType::InitAsDefaultInstance() {
-}
-
 DictionaryFeatureType::DictionaryFeatureType(const DictionaryFeatureType& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  clear_has_KeyType();
+  switch (from.KeyType_case()) {
+    case kInt64KeyType: {
+      mutable_int64keytype()->::CoreML::Specification::Int64FeatureType::MergeFrom(from.int64keytype());
+      break;
+    }
+    case kStringKeyType: {
+      mutable_stringkeytype()->::CoreML::Specification::StringFeatureType::MergeFrom(from.stringkeytype());
+      break;
+    }
+    case KEYTYPE_NOT_SET: {
+      break;
+    }
+  }
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.DictionaryFeatureType)
 }
 
@@ -1236,11 +3358,9 @@ void DictionaryFeatureType::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const DictionaryFeatureType& DictionaryFeatureType::default_instance() {
-  protobuf_InitDefaults_FeatureTypes_2eproto();
+  protobuf_FeatureTypes_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<DictionaryFeatureType> DictionaryFeatureType_default_instance_;
 
 DictionaryFeatureType* DictionaryFeatureType::New(::google::protobuf::Arena* arena) const {
   DictionaryFeatureType* n = new DictionaryFeatureType;
@@ -1280,32 +3400,31 @@ bool DictionaryFeatureType::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.DictionaryFeatureType)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional .CoreML.Specification.Int64FeatureType int64KeyType = 1;
+      // .CoreML.Specification.Int64FeatureType int64KeyType = 1;
       case 1: {
-        if (tag == 10) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_int64keytype()));
         } else {
           goto handle_unusual;
         }
-        goto after_stringkeytype;
         break;
       }
 
-      // optional .CoreML.Specification.StringFeatureType stringKeyType = 2;
+      // .CoreML.Specification.StringFeatureType stringKeyType = 2;
       case 2: {
-        if (tag == 18) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_stringkeytype()));
         } else {
           goto handle_unusual;
         }
-       after_stringkeytype:
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -1333,13 +3452,16 @@ failure:
 void DictionaryFeatureType::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.DictionaryFeatureType)
-  // optional .CoreML.Specification.Int64FeatureType int64KeyType = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .CoreML.Specification.Int64FeatureType int64KeyType = 1;
   if (has_int64keytype()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       1, *KeyType_.int64keytype_, output);
   }
 
-  // optional .CoreML.Specification.StringFeatureType stringKeyType = 2;
+  // .CoreML.Specification.StringFeatureType stringKeyType = 2;
   if (has_stringkeytype()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       2, *KeyType_.stringkeytype_, output);
@@ -1353,14 +3475,14 @@ size_t DictionaryFeatureType::ByteSizeLong() const {
   size_t total_size = 0;
 
   switch (KeyType_case()) {
-    // optional .CoreML.Specification.Int64FeatureType int64KeyType = 1;
+    // .CoreML.Specification.Int64FeatureType int64KeyType = 1;
     case kInt64KeyType: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *KeyType_.int64keytype_);
       break;
     }
-    // optional .CoreML.Specification.StringFeatureType stringKeyType = 2;
+    // .CoreML.Specification.StringFeatureType stringKeyType = 2;
     case kStringKeyType: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -1385,15 +3507,11 @@ void DictionaryFeatureType::CheckTypeAndMergeFrom(
 
 void DictionaryFeatureType::MergeFrom(const DictionaryFeatureType& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.DictionaryFeatureType)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void DictionaryFeatureType::UnsafeMergeFrom(const DictionaryFeatureType& from) {
-  GOOGLE_DCHECK(&from != this);
   switch (from.KeyType_case()) {
     case kInt64KeyType: {
       mutable_int64keytype()->::CoreML::Specification::Int64FeatureType::MergeFrom(from.int64keytype());
@@ -1413,11 +3531,10 @@ void DictionaryFeatureType::CopyFrom(const DictionaryFeatureType& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.DictionaryFeatureType)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool DictionaryFeatureType::IsInitialized() const {
-
   return true;
 }
 
@@ -1428,7 +3545,6 @@ void DictionaryFeatureType::Swap(DictionaryFeatureType* other) {
 void DictionaryFeatureType::InternalSwap(DictionaryFeatureType* other) {
   std::swap(KeyType_, other->KeyType_);
   std::swap(_oneof_case_[0], other->_oneof_case_[0]);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -1439,7 +3555,7 @@ void DictionaryFeatureType::InternalSwap(DictionaryFeatureType* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // DictionaryFeatureType
 
-// optional .CoreML.Specification.Int64FeatureType int64KeyType = 1;
+// .CoreML.Specification.Int64FeatureType int64KeyType = 1;
 bool DictionaryFeatureType::has_int64keytype() const {
   return KeyType_case() == kInt64KeyType;
 }
@@ -1487,7 +3603,7 @@ void DictionaryFeatureType::set_allocated_int64keytype(::CoreML::Specification::
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.DictionaryFeatureType.int64KeyType)
 }
 
-// optional .CoreML.Specification.StringFeatureType stringKeyType = 2;
+// .CoreML.Specification.StringFeatureType stringKeyType = 2;
 bool DictionaryFeatureType::has_stringkeytype() const {
   return KeyType_case() == kStringKeyType;
 }
@@ -1544,8 +3660,450 @@ void DictionaryFeatureType::clear_has_KeyType() {
 DictionaryFeatureType::KeyTypeCase DictionaryFeatureType::KeyType_case() const {
   return DictionaryFeatureType::KeyTypeCase(_oneof_case_[0]);
 }
-inline const DictionaryFeatureType* DictionaryFeatureType::internal_default_instance() {
-  return &DictionaryFeatureType_default_instance_.get();
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int SequenceFeatureType::kInt64TypeFieldNumber;
+const int SequenceFeatureType::kStringTypeFieldNumber;
+const int SequenceFeatureType::kSizeRangeFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+SequenceFeatureType::SequenceFeatureType()
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_FeatureTypes_2eproto::InitDefaults();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:CoreML.Specification.SequenceFeatureType)
+}
+SequenceFeatureType::SequenceFeatureType(const SequenceFeatureType& from)
+  : ::google::protobuf::MessageLite(),
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  if (from.has_sizerange()) {
+    sizerange_ = new ::CoreML::Specification::SizeRange(*from.sizerange_);
+  } else {
+    sizerange_ = NULL;
+  }
+  clear_has_Type();
+  switch (from.Type_case()) {
+    case kInt64Type: {
+      mutable_int64type()->::CoreML::Specification::Int64FeatureType::MergeFrom(from.int64type());
+      break;
+    }
+    case kStringType: {
+      mutable_stringtype()->::CoreML::Specification::StringFeatureType::MergeFrom(from.stringtype());
+      break;
+    }
+    case TYPE_NOT_SET: {
+      break;
+    }
+  }
+  // @@protoc_insertion_point(copy_constructor:CoreML.Specification.SequenceFeatureType)
+}
+
+void SequenceFeatureType::SharedCtor() {
+  sizerange_ = NULL;
+  clear_has_Type();
+  _cached_size_ = 0;
+}
+
+SequenceFeatureType::~SequenceFeatureType() {
+  // @@protoc_insertion_point(destructor:CoreML.Specification.SequenceFeatureType)
+  SharedDtor();
+}
+
+void SequenceFeatureType::SharedDtor() {
+  if (this != internal_default_instance()) {
+    delete sizerange_;
+  }
+  if (has_Type()) {
+    clear_Type();
+  }
+}
+
+void SequenceFeatureType::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const SequenceFeatureType& SequenceFeatureType::default_instance() {
+  protobuf_FeatureTypes_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+SequenceFeatureType* SequenceFeatureType::New(::google::protobuf::Arena* arena) const {
+  SequenceFeatureType* n = new SequenceFeatureType;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void SequenceFeatureType::clear_Type() {
+// @@protoc_insertion_point(one_of_clear_start:CoreML.Specification.SequenceFeatureType)
+  switch (Type_case()) {
+    case kInt64Type: {
+      delete Type_.int64type_;
+      break;
+    }
+    case kStringType: {
+      delete Type_.stringtype_;
+      break;
+    }
+    case TYPE_NOT_SET: {
+      break;
+    }
+  }
+  _oneof_case_[0] = TYPE_NOT_SET;
+}
+
+
+void SequenceFeatureType::Clear() {
+// @@protoc_insertion_point(message_clear_start:CoreML.Specification.SequenceFeatureType)
+  if (GetArenaNoVirtual() == NULL && sizerange_ != NULL) {
+    delete sizerange_;
+  }
+  sizerange_ = NULL;
+  clear_Type();
+}
+
+bool SequenceFeatureType::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:CoreML.Specification.SequenceFeatureType)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(16383u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // .CoreML.Specification.Int64FeatureType int64Type = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_int64type()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .CoreML.Specification.StringFeatureType stringType = 3;
+      case 3: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(26u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_stringtype()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .CoreML.Specification.SizeRange sizeRange = 101;
+      case 101: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(810u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_sizerange()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:CoreML.Specification.SequenceFeatureType)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:CoreML.Specification.SequenceFeatureType)
+  return false;
+#undef DO_
+}
+
+void SequenceFeatureType::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:CoreML.Specification.SequenceFeatureType)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .CoreML.Specification.Int64FeatureType int64Type = 1;
+  if (has_int64type()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      1, *Type_.int64type_, output);
+  }
+
+  // .CoreML.Specification.StringFeatureType stringType = 3;
+  if (has_stringtype()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      3, *Type_.stringtype_, output);
+  }
+
+  // .CoreML.Specification.SizeRange sizeRange = 101;
+  if (this->has_sizerange()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      101, *this->sizerange_, output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:CoreML.Specification.SequenceFeatureType)
+}
+
+size_t SequenceFeatureType::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.SequenceFeatureType)
+  size_t total_size = 0;
+
+  // .CoreML.Specification.SizeRange sizeRange = 101;
+  if (this->has_sizerange()) {
+    total_size += 2 +
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        *this->sizerange_);
+  }
+
+  switch (Type_case()) {
+    // .CoreML.Specification.Int64FeatureType int64Type = 1;
+    case kInt64Type: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *Type_.int64type_);
+      break;
+    }
+    // .CoreML.Specification.StringFeatureType stringType = 3;
+    case kStringType: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *Type_.stringtype_);
+      break;
+    }
+    case TYPE_NOT_SET: {
+      break;
+    }
+  }
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void SequenceFeatureType::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const SequenceFeatureType*>(&from));
+}
+
+void SequenceFeatureType::MergeFrom(const SequenceFeatureType& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.SequenceFeatureType)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.has_sizerange()) {
+    mutable_sizerange()->::CoreML::Specification::SizeRange::MergeFrom(from.sizerange());
+  }
+  switch (from.Type_case()) {
+    case kInt64Type: {
+      mutable_int64type()->::CoreML::Specification::Int64FeatureType::MergeFrom(from.int64type());
+      break;
+    }
+    case kStringType: {
+      mutable_stringtype()->::CoreML::Specification::StringFeatureType::MergeFrom(from.stringtype());
+      break;
+    }
+    case TYPE_NOT_SET: {
+      break;
+    }
+  }
+}
+
+void SequenceFeatureType::CopyFrom(const SequenceFeatureType& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.SequenceFeatureType)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SequenceFeatureType::IsInitialized() const {
+  return true;
+}
+
+void SequenceFeatureType::Swap(SequenceFeatureType* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void SequenceFeatureType::InternalSwap(SequenceFeatureType* other) {
+  std::swap(sizerange_, other->sizerange_);
+  std::swap(Type_, other->Type_);
+  std::swap(_oneof_case_[0], other->_oneof_case_[0]);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::std::string SequenceFeatureType::GetTypeName() const {
+  return "CoreML.Specification.SequenceFeatureType";
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// SequenceFeatureType
+
+// .CoreML.Specification.Int64FeatureType int64Type = 1;
+bool SequenceFeatureType::has_int64type() const {
+  return Type_case() == kInt64Type;
+}
+void SequenceFeatureType::set_has_int64type() {
+  _oneof_case_[0] = kInt64Type;
+}
+void SequenceFeatureType::clear_int64type() {
+  if (has_int64type()) {
+    delete Type_.int64type_;
+    clear_has_Type();
+  }
+}
+ const ::CoreML::Specification::Int64FeatureType& SequenceFeatureType::int64type() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.SequenceFeatureType.int64Type)
+  return has_int64type()
+      ? *Type_.int64type_
+      : ::CoreML::Specification::Int64FeatureType::default_instance();
+}
+::CoreML::Specification::Int64FeatureType* SequenceFeatureType::mutable_int64type() {
+  if (!has_int64type()) {
+    clear_Type();
+    set_has_int64type();
+    Type_.int64type_ = new ::CoreML::Specification::Int64FeatureType;
+  }
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.SequenceFeatureType.int64Type)
+  return Type_.int64type_;
+}
+::CoreML::Specification::Int64FeatureType* SequenceFeatureType::release_int64type() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.SequenceFeatureType.int64Type)
+  if (has_int64type()) {
+    clear_has_Type();
+    ::CoreML::Specification::Int64FeatureType* temp = Type_.int64type_;
+    Type_.int64type_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void SequenceFeatureType::set_allocated_int64type(::CoreML::Specification::Int64FeatureType* int64type) {
+  clear_Type();
+  if (int64type) {
+    set_has_int64type();
+    Type_.int64type_ = int64type;
+  }
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.SequenceFeatureType.int64Type)
+}
+
+// .CoreML.Specification.StringFeatureType stringType = 3;
+bool SequenceFeatureType::has_stringtype() const {
+  return Type_case() == kStringType;
+}
+void SequenceFeatureType::set_has_stringtype() {
+  _oneof_case_[0] = kStringType;
+}
+void SequenceFeatureType::clear_stringtype() {
+  if (has_stringtype()) {
+    delete Type_.stringtype_;
+    clear_has_Type();
+  }
+}
+ const ::CoreML::Specification::StringFeatureType& SequenceFeatureType::stringtype() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.SequenceFeatureType.stringType)
+  return has_stringtype()
+      ? *Type_.stringtype_
+      : ::CoreML::Specification::StringFeatureType::default_instance();
+}
+::CoreML::Specification::StringFeatureType* SequenceFeatureType::mutable_stringtype() {
+  if (!has_stringtype()) {
+    clear_Type();
+    set_has_stringtype();
+    Type_.stringtype_ = new ::CoreML::Specification::StringFeatureType;
+  }
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.SequenceFeatureType.stringType)
+  return Type_.stringtype_;
+}
+::CoreML::Specification::StringFeatureType* SequenceFeatureType::release_stringtype() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.SequenceFeatureType.stringType)
+  if (has_stringtype()) {
+    clear_has_Type();
+    ::CoreML::Specification::StringFeatureType* temp = Type_.stringtype_;
+    Type_.stringtype_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void SequenceFeatureType::set_allocated_stringtype(::CoreML::Specification::StringFeatureType* stringtype) {
+  clear_Type();
+  if (stringtype) {
+    set_has_stringtype();
+    Type_.stringtype_ = stringtype;
+  }
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.SequenceFeatureType.stringType)
+}
+
+// .CoreML.Specification.SizeRange sizeRange = 101;
+bool SequenceFeatureType::has_sizerange() const {
+  return this != internal_default_instance() && sizerange_ != NULL;
+}
+void SequenceFeatureType::clear_sizerange() {
+  if (GetArenaNoVirtual() == NULL && sizerange_ != NULL) delete sizerange_;
+  sizerange_ = NULL;
+}
+const ::CoreML::Specification::SizeRange& SequenceFeatureType::sizerange() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.SequenceFeatureType.sizeRange)
+  return sizerange_ != NULL ? *sizerange_
+                         : *::CoreML::Specification::SizeRange::internal_default_instance();
+}
+::CoreML::Specification::SizeRange* SequenceFeatureType::mutable_sizerange() {
+  
+  if (sizerange_ == NULL) {
+    sizerange_ = new ::CoreML::Specification::SizeRange;
+  }
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.SequenceFeatureType.sizeRange)
+  return sizerange_;
+}
+::CoreML::Specification::SizeRange* SequenceFeatureType::release_sizerange() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.SequenceFeatureType.sizeRange)
+  
+  ::CoreML::Specification::SizeRange* temp = sizerange_;
+  sizerange_ = NULL;
+  return temp;
+}
+void SequenceFeatureType::set_allocated_sizerange(::CoreML::Specification::SizeRange* sizerange) {
+  delete sizerange_;
+  sizerange_ = sizerange;
+  if (sizerange) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.SequenceFeatureType.sizeRange)
+}
+
+bool SequenceFeatureType::has_Type() const {
+  return Type_case() != TYPE_NOT_SET;
+}
+void SequenceFeatureType::clear_has_Type() {
+  _oneof_case_[0] = TYPE_NOT_SET;
+}
+SequenceFeatureType::TypeCase SequenceFeatureType::Type_case() const {
+  return SequenceFeatureType::TypeCase(_oneof_case_[0]);
 }
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
@@ -1558,24 +4116,58 @@ const int FeatureType::kStringTypeFieldNumber;
 const int FeatureType::kImageTypeFieldNumber;
 const int FeatureType::kMultiArrayTypeFieldNumber;
 const int FeatureType::kDictionaryTypeFieldNumber;
+const int FeatureType::kSequenceTypeFieldNumber;
 const int FeatureType::kIsOptionalFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 FeatureType::FeatureType()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_FeatureTypes_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_FeatureTypes_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.FeatureType)
 }
-
-void FeatureType::InitAsDefaultInstance() {
-}
-
 FeatureType::FeatureType(const FeatureType& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  isoptional_ = from.isoptional_;
+  clear_has_Type();
+  switch (from.Type_case()) {
+    case kInt64Type: {
+      mutable_int64type()->::CoreML::Specification::Int64FeatureType::MergeFrom(from.int64type());
+      break;
+    }
+    case kDoubleType: {
+      mutable_doubletype()->::CoreML::Specification::DoubleFeatureType::MergeFrom(from.doubletype());
+      break;
+    }
+    case kStringType: {
+      mutable_stringtype()->::CoreML::Specification::StringFeatureType::MergeFrom(from.stringtype());
+      break;
+    }
+    case kImageType: {
+      mutable_imagetype()->::CoreML::Specification::ImageFeatureType::MergeFrom(from.imagetype());
+      break;
+    }
+    case kMultiArrayType: {
+      mutable_multiarraytype()->::CoreML::Specification::ArrayFeatureType::MergeFrom(from.multiarraytype());
+      break;
+    }
+    case kDictionaryType: {
+      mutable_dictionarytype()->::CoreML::Specification::DictionaryFeatureType::MergeFrom(from.dictionarytype());
+      break;
+    }
+    case kSequenceType: {
+      mutable_sequencetype()->::CoreML::Specification::SequenceFeatureType::MergeFrom(from.sequencetype());
+      break;
+    }
+    case TYPE_NOT_SET: {
+      break;
+    }
+  }
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.FeatureType)
 }
 
@@ -1602,11 +4194,9 @@ void FeatureType::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const FeatureType& FeatureType::default_instance() {
-  protobuf_InitDefaults_FeatureTypes_2eproto();
+  protobuf_FeatureTypes_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<FeatureType> FeatureType_default_instance_;
 
 FeatureType* FeatureType::New(::google::protobuf::Arena* arena) const {
   FeatureType* n = new FeatureType;
@@ -1643,6 +4233,10 @@ void FeatureType::clear_Type() {
       delete Type_.dictionarytype_;
       break;
     }
+    case kSequenceType: {
+      delete Type_.sequencetype_;
+      break;
+    }
     case TYPE_NOT_SET: {
       break;
     }
@@ -1663,88 +4257,98 @@ bool FeatureType::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.FeatureType)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(16383);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(16383u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional .CoreML.Specification.Int64FeatureType int64Type = 1;
+      // .CoreML.Specification.Int64FeatureType int64Type = 1;
       case 1: {
-        if (tag == 10) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_int64type()));
         } else {
           goto handle_unusual;
         }
-        goto after_dictionarytype;
         break;
       }
 
-      // optional .CoreML.Specification.DoubleFeatureType doubleType = 2;
+      // .CoreML.Specification.DoubleFeatureType doubleType = 2;
       case 2: {
-        if (tag == 18) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_doubletype()));
         } else {
           goto handle_unusual;
         }
-        goto after_dictionarytype;
         break;
       }
 
-      // optional .CoreML.Specification.StringFeatureType stringType = 3;
+      // .CoreML.Specification.StringFeatureType stringType = 3;
       case 3: {
-        if (tag == 26) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(26u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_stringtype()));
         } else {
           goto handle_unusual;
         }
-        goto after_dictionarytype;
         break;
       }
 
-      // optional .CoreML.Specification.ImageFeatureType imageType = 4;
+      // .CoreML.Specification.ImageFeatureType imageType = 4;
       case 4: {
-        if (tag == 34) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(34u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_imagetype()));
         } else {
           goto handle_unusual;
         }
-        goto after_dictionarytype;
         break;
       }
 
-      // optional .CoreML.Specification.ArrayFeatureType multiArrayType = 5;
+      // .CoreML.Specification.ArrayFeatureType multiArrayType = 5;
       case 5: {
-        if (tag == 42) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(42u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_multiarraytype()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(50)) goto parse_dictionaryType;
         break;
       }
 
-      // optional .CoreML.Specification.DictionaryFeatureType dictionaryType = 6;
+      // .CoreML.Specification.DictionaryFeatureType dictionaryType = 6;
       case 6: {
-        if (tag == 50) {
-         parse_dictionaryType:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(50u)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_dictionarytype()));
         } else {
           goto handle_unusual;
         }
-       after_dictionarytype:
-        if (input->ExpectTag(8000)) goto parse_isOptional;
         break;
       }
 
-      // optional bool isOptional = 1000;
+      // .CoreML.Specification.SequenceFeatureType sequenceType = 7;
+      case 7: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(58u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_sequencetype()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // bool isOptional = 1000;
       case 1000: {
-        if (tag == 8000) {
-         parse_isOptional:
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(8000u)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
@@ -1752,7 +4356,6 @@ bool FeatureType::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -1780,43 +4383,52 @@ failure:
 void FeatureType::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.FeatureType)
-  // optional .CoreML.Specification.Int64FeatureType int64Type = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .CoreML.Specification.Int64FeatureType int64Type = 1;
   if (has_int64type()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       1, *Type_.int64type_, output);
   }
 
-  // optional .CoreML.Specification.DoubleFeatureType doubleType = 2;
+  // .CoreML.Specification.DoubleFeatureType doubleType = 2;
   if (has_doubletype()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       2, *Type_.doubletype_, output);
   }
 
-  // optional .CoreML.Specification.StringFeatureType stringType = 3;
+  // .CoreML.Specification.StringFeatureType stringType = 3;
   if (has_stringtype()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       3, *Type_.stringtype_, output);
   }
 
-  // optional .CoreML.Specification.ImageFeatureType imageType = 4;
+  // .CoreML.Specification.ImageFeatureType imageType = 4;
   if (has_imagetype()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       4, *Type_.imagetype_, output);
   }
 
-  // optional .CoreML.Specification.ArrayFeatureType multiArrayType = 5;
+  // .CoreML.Specification.ArrayFeatureType multiArrayType = 5;
   if (has_multiarraytype()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       5, *Type_.multiarraytype_, output);
   }
 
-  // optional .CoreML.Specification.DictionaryFeatureType dictionaryType = 6;
+  // .CoreML.Specification.DictionaryFeatureType dictionaryType = 6;
   if (has_dictionarytype()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       6, *Type_.dictionarytype_, output);
   }
 
-  // optional bool isOptional = 1000;
+  // .CoreML.Specification.SequenceFeatureType sequenceType = 7;
+  if (has_sequencetype()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      7, *Type_.sequencetype_, output);
+  }
+
+  // bool isOptional = 1000;
   if (this->isoptional() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(1000, this->isoptional(), output);
   }
@@ -1828,52 +4440,59 @@ size_t FeatureType::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.FeatureType)
   size_t total_size = 0;
 
-  // optional bool isOptional = 1000;
+  // bool isOptional = 1000;
   if (this->isoptional() != 0) {
     total_size += 2 + 1;
   }
 
   switch (Type_case()) {
-    // optional .CoreML.Specification.Int64FeatureType int64Type = 1;
+    // .CoreML.Specification.Int64FeatureType int64Type = 1;
     case kInt64Type: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.int64type_);
       break;
     }
-    // optional .CoreML.Specification.DoubleFeatureType doubleType = 2;
+    // .CoreML.Specification.DoubleFeatureType doubleType = 2;
     case kDoubleType: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.doubletype_);
       break;
     }
-    // optional .CoreML.Specification.StringFeatureType stringType = 3;
+    // .CoreML.Specification.StringFeatureType stringType = 3;
     case kStringType: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.stringtype_);
       break;
     }
-    // optional .CoreML.Specification.ImageFeatureType imageType = 4;
+    // .CoreML.Specification.ImageFeatureType imageType = 4;
     case kImageType: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.imagetype_);
       break;
     }
-    // optional .CoreML.Specification.ArrayFeatureType multiArrayType = 5;
+    // .CoreML.Specification.ArrayFeatureType multiArrayType = 5;
     case kMultiArrayType: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.multiarraytype_);
       break;
     }
-    // optional .CoreML.Specification.DictionaryFeatureType dictionaryType = 6;
+    // .CoreML.Specification.DictionaryFeatureType dictionaryType = 6;
     case kDictionaryType: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *Type_.dictionarytype_);
+      break;
+    }
+    // .CoreML.Specification.SequenceFeatureType sequenceType = 7;
+    case kSequenceType: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *Type_.sequencetype_);
       break;
     }
     case TYPE_NOT_SET: {
@@ -1894,15 +4513,14 @@ void FeatureType::CheckTypeAndMergeFrom(
 
 void FeatureType::MergeFrom(const FeatureType& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.FeatureType)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void FeatureType::UnsafeMergeFrom(const FeatureType& from) {
-  GOOGLE_DCHECK(&from != this);
+  if (from.isoptional() != 0) {
+    set_isoptional(from.isoptional());
+  }
   switch (from.Type_case()) {
     case kInt64Type: {
       mutable_int64type()->::CoreML::Specification::Int64FeatureType::MergeFrom(from.int64type());
@@ -1928,12 +4546,13 @@ void FeatureType::UnsafeMergeFrom(const FeatureType& from) {
       mutable_dictionarytype()->::CoreML::Specification::DictionaryFeatureType::MergeFrom(from.dictionarytype());
       break;
     }
+    case kSequenceType: {
+      mutable_sequencetype()->::CoreML::Specification::SequenceFeatureType::MergeFrom(from.sequencetype());
+      break;
+    }
     case TYPE_NOT_SET: {
       break;
     }
-  }
-  if (from.isoptional() != 0) {
-    set_isoptional(from.isoptional());
   }
 }
 
@@ -1941,11 +4560,10 @@ void FeatureType::CopyFrom(const FeatureType& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.FeatureType)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool FeatureType::IsInitialized() const {
-
   return true;
 }
 
@@ -1957,7 +4575,6 @@ void FeatureType::InternalSwap(FeatureType* other) {
   std::swap(isoptional_, other->isoptional_);
   std::swap(Type_, other->Type_);
   std::swap(_oneof_case_[0], other->_oneof_case_[0]);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -1968,7 +4585,7 @@ void FeatureType::InternalSwap(FeatureType* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // FeatureType
 
-// optional .CoreML.Specification.Int64FeatureType int64Type = 1;
+// .CoreML.Specification.Int64FeatureType int64Type = 1;
 bool FeatureType::has_int64type() const {
   return Type_case() == kInt64Type;
 }
@@ -2016,7 +4633,7 @@ void FeatureType::set_allocated_int64type(::CoreML::Specification::Int64FeatureT
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.FeatureType.int64Type)
 }
 
-// optional .CoreML.Specification.DoubleFeatureType doubleType = 2;
+// .CoreML.Specification.DoubleFeatureType doubleType = 2;
 bool FeatureType::has_doubletype() const {
   return Type_case() == kDoubleType;
 }
@@ -2064,7 +4681,7 @@ void FeatureType::set_allocated_doubletype(::CoreML::Specification::DoubleFeatur
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.FeatureType.doubleType)
 }
 
-// optional .CoreML.Specification.StringFeatureType stringType = 3;
+// .CoreML.Specification.StringFeatureType stringType = 3;
 bool FeatureType::has_stringtype() const {
   return Type_case() == kStringType;
 }
@@ -2112,7 +4729,7 @@ void FeatureType::set_allocated_stringtype(::CoreML::Specification::StringFeatur
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.FeatureType.stringType)
 }
 
-// optional .CoreML.Specification.ImageFeatureType imageType = 4;
+// .CoreML.Specification.ImageFeatureType imageType = 4;
 bool FeatureType::has_imagetype() const {
   return Type_case() == kImageType;
 }
@@ -2160,7 +4777,7 @@ void FeatureType::set_allocated_imagetype(::CoreML::Specification::ImageFeatureT
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.FeatureType.imageType)
 }
 
-// optional .CoreML.Specification.ArrayFeatureType multiArrayType = 5;
+// .CoreML.Specification.ArrayFeatureType multiArrayType = 5;
 bool FeatureType::has_multiarraytype() const {
   return Type_case() == kMultiArrayType;
 }
@@ -2208,7 +4825,7 @@ void FeatureType::set_allocated_multiarraytype(::CoreML::Specification::ArrayFea
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.FeatureType.multiArrayType)
 }
 
-// optional .CoreML.Specification.DictionaryFeatureType dictionaryType = 6;
+// .CoreML.Specification.DictionaryFeatureType dictionaryType = 6;
 bool FeatureType::has_dictionarytype() const {
   return Type_case() == kDictionaryType;
 }
@@ -2256,7 +4873,55 @@ void FeatureType::set_allocated_dictionarytype(::CoreML::Specification::Dictiona
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.FeatureType.dictionaryType)
 }
 
-// optional bool isOptional = 1000;
+// .CoreML.Specification.SequenceFeatureType sequenceType = 7;
+bool FeatureType::has_sequencetype() const {
+  return Type_case() == kSequenceType;
+}
+void FeatureType::set_has_sequencetype() {
+  _oneof_case_[0] = kSequenceType;
+}
+void FeatureType::clear_sequencetype() {
+  if (has_sequencetype()) {
+    delete Type_.sequencetype_;
+    clear_has_Type();
+  }
+}
+ const ::CoreML::Specification::SequenceFeatureType& FeatureType::sequencetype() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.FeatureType.sequenceType)
+  return has_sequencetype()
+      ? *Type_.sequencetype_
+      : ::CoreML::Specification::SequenceFeatureType::default_instance();
+}
+::CoreML::Specification::SequenceFeatureType* FeatureType::mutable_sequencetype() {
+  if (!has_sequencetype()) {
+    clear_Type();
+    set_has_sequencetype();
+    Type_.sequencetype_ = new ::CoreML::Specification::SequenceFeatureType;
+  }
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.FeatureType.sequenceType)
+  return Type_.sequencetype_;
+}
+::CoreML::Specification::SequenceFeatureType* FeatureType::release_sequencetype() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.FeatureType.sequenceType)
+  if (has_sequencetype()) {
+    clear_has_Type();
+    ::CoreML::Specification::SequenceFeatureType* temp = Type_.sequencetype_;
+    Type_.sequencetype_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void FeatureType::set_allocated_sequencetype(::CoreML::Specification::SequenceFeatureType* sequencetype) {
+  clear_Type();
+  if (sequencetype) {
+    set_has_sequencetype();
+    Type_.sequencetype_ = sequencetype;
+  }
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.FeatureType.sequenceType)
+}
+
+// bool isOptional = 1000;
 void FeatureType::clear_isoptional() {
   isoptional_ = false;
 }
@@ -2278,9 +4943,6 @@ void FeatureType::clear_has_Type() {
 }
 FeatureType::TypeCase FeatureType::Type_case() const {
   return FeatureType::TypeCase(_oneof_case_[0]);
-}
-inline const FeatureType* FeatureType::internal_default_instance() {
-  return &FeatureType_default_instance_.get();
 }
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 

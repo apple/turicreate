@@ -195,25 +195,12 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
    * -------------------------------------------------------------------------
    */
 
-  /**
-   * Returns the name of the model.
-   *
-   * \returns Name of the model.
-   * \ref model_base for details.
-   */
-  virtual std::string name() = 0;
-  
 
   /**
    * Train a supervised_learning model.
    */
   virtual void train() = 0;
   
-
-  /**
-   * Gets the model version number
-   */
-  virtual size_t get_version() const = 0;
 
   /**
    * Save the object using Turi's oarc.
@@ -598,9 +585,7 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
   /**
    * Returns true if the model is a classifier.
    */
-  bool is_classifier() {
-    return name().find("classifier") != std::string::npos;
-  }
+  virtual bool is_classifier() const = 0;
 
   /**
    * Returns true if the model is a classifier.
@@ -618,6 +603,11 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
    * Get tracking metrics strings.
    */
   std::vector<std::string> get_tracking_metrics()  const;
+
+  /**
+   * Get metric display name.
+   */
+  std::string get_metric_display_name(const std::string& metric) const;
 
   /**
    * Display model training data summary for regression.
@@ -661,7 +651,7 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
    */
   void api_train(gl_sframe data, const std::string& target,
                  const variant_type& validation_data,
-                 const std::map<std::string, flexible_type>& options);
+                 const std::map<std::string, flexible_type>& _options);
 
   /**
    *  API interface through the unity server.
@@ -853,22 +843,6 @@ gl_sframe _fast_classify(
  */
 std::vector<std::vector<flexible_type>> _get_metadata_mapping(
     std::shared_ptr<supervised_learning_model_base> model);
-
-/**
- * Rule based better than stupid model selector.
- */
-std::string _regression_model_selector(std::shared_ptr<unity_sframe> _X);
-
-/**
- * Rule based better than stupid model selector.
- */
-std::string _classifier_model_selector(std::shared_ptr<unity_sframe> _X);
-
-/**
- * Rule-based method for getting a list of potential models.
- */
-std::vector<std::string> _classifier_available_models(size_t num_classes, 
-                                         std::shared_ptr<unity_sframe> _X);
 
 } // supervised
 } // turicreate

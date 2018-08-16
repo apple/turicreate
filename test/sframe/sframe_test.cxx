@@ -1516,7 +1516,9 @@ struct sframe_test  {
        parallel_vals.push_back(val->new_instance());
      }
      for (size_t i = 0;i < 4; ++i) {
-       TS_ASSERT(typeid(*parallel_vals[i]) == typeid(*val));
+       auto parallel_vals_i_raw = parallel_vals[i];
+       auto val_raw = val.get();
+       TS_ASSERT(typeid(*parallel_vals_i_raw) == typeid(*val_raw));
      }
      // perform the partial aggregation
      for (size_t i = 0; i < vals.size(); ++i) {
@@ -1634,6 +1636,30 @@ struct sframe_test  {
        TS_ASSERT_EQUALS(result[i][0], i % 6);
        TS_ASSERT_EQUALS(result[i][1], (double)(i % 6));
        TS_ASSERT_EQUALS(result[i][2], std::to_string(i % 6));
+     }
+   }
+   void test_sarray_recursive_append(void) {
+     std::vector<flexible_type> int_col{0};
+     std::vector<flexible_type> float_col{0};
+     std::vector<flexible_type> str_col{"0"};
+     dataframe_t df;
+     df.set_column("int_col", int_col, flex_type_enum::INTEGER);
+     df.set_column("float_col", float_col, flex_type_enum::FLOAT);
+     df.set_column("str_col", str_col, flex_type_enum::STRING);
+     sframe sf(df);
+
+     for (size_t i = 0;i < 20; ++i) {
+       sf = sf.append(sf);
+     }
+     TS_ASSERT_EQUALS(sf.size(), 1048576);
+     auto reader = sf.get_reader();
+     sframe_rows rows;
+     reader->read_rows(0, 1048576, rows);
+     TS_ASSERT_EQUALS(rows.num_rows(), 1048576);
+     for (auto& row: rows) {
+       TS_ASSERT_EQUALS(row[0], int_col[0]);
+       TS_ASSERT_EQUALS(row[1], float_col[0]);
+       TS_ASSERT_EQUALS(row[2], str_col[0]);
      }
    }
 

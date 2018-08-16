@@ -110,7 +110,7 @@ struct deserialize_impl<iarchive, turi::variant_type, false> {
 namespace turi {
 // A list of accessors to help Cython access the variant
 template <typename T>
-GL_COLD_NOINLINE 
+GL_COLD_NOINLINE_ERROR
 void _throw_variant_error(const variant_type& v) {
     std::string errormsg =  //
         std::string("Variant type error: Expecting ") +
@@ -152,79 +152,97 @@ static inline const T& variant_get_ref(const variant_type& v) {
 
 // Convenience functions 
 template <typename T>
-static inline bool variant_is(const variant_type&) { 
+GL_HOT_INLINE_FLATTEN 
+inline bool variant_is(const variant_type&) { 
    return false; 
 }
 
 template <>
+GL_HOT_INLINE_FLATTEN 
 inline bool variant_is<flexible_type>(const variant_type& t) {
    return t.which() == 0;
 }
 
 template <>
+GL_HOT_INLINE_FLATTEN 
 inline bool variant_is<flex_string>(const variant_type& t) {
    return variant_is<flexible_type>(t) && (variant_get_ref<flexible_type>(t).get_type() == flex_type_enum::STRING);
 }
 
 template <>
+GL_HOT_INLINE_FLATTEN 
 inline bool variant_is<flex_vec>(const variant_type& t) {
    return variant_is<flexible_type>(t) && (variant_get_ref<flexible_type>(t).get_type() == flex_type_enum::VECTOR);
 }
 
 template <>
+GL_HOT_INLINE_FLATTEN 
 inline bool variant_is<flex_int>(const variant_type& t) {
    return variant_is<flexible_type>(t) && (variant_get_ref<flexible_type>(t).get_type() == flex_type_enum::INTEGER);
 }
 
 template <>
+GL_HOT_INLINE_FLATTEN 
 inline bool variant_is<flex_float>(const variant_type& t) {
    return variant_is<flexible_type>(t) && (variant_get_ref<flexible_type>(t).get_type() == flex_type_enum::FLOAT);
 }
 
 template <>
+GL_HOT_INLINE_FLATTEN 
 inline bool variant_is<flex_list>(const variant_type& t) {
    return variant_is<flexible_type>(t) && (variant_get_ref<flexible_type>(t).get_type() == flex_type_enum::LIST);
 }
 
 template <>
+GL_HOT_INLINE_FLATTEN 
 inline bool variant_is<flex_dict>(const variant_type& t) {
    return variant_is<flexible_type>(t) && (variant_get_ref<flexible_type>(t).get_type() == flex_type_enum::DICT);
 }
 
 template <>
+GL_HOT_INLINE_FLATTEN 
 inline bool variant_is<flex_image>(const variant_type& t) {
    return variant_is<flexible_type>(t) && (variant_get_ref<flexible_type>(t).get_type() == flex_type_enum::IMAGE);
 }
 
 template <>
+GL_HOT_INLINE_FLATTEN 
 inline bool variant_is<flex_date_time>(const variant_type& t) {
    return variant_is<flexible_type>(t) && (variant_get_ref<flexible_type>(t).get_type() == flex_type_enum::DATETIME);
 }
+
 template <>
+GL_HOT_INLINE_FLATTEN 
 inline bool variant_is<flex_nd_vec>(const variant_type& t) {
    return variant_is<flexible_type>(t) && (variant_get_ref<flexible_type>(t).get_type() == flex_type_enum::ND_VECTOR);
 }
+
 template <>
+GL_HOT_INLINE_FLATTEN 
 inline bool variant_is<flex_undefined>(const variant_type& t) {
    return variant_is<flexible_type>(t) && (variant_get_ref<flexible_type>(t).get_type() == flex_type_enum::UNDEFINED);
 }
 
 template <>
+GL_HOT_INLINE_FLATTEN 
 inline bool variant_is<std::shared_ptr<unity_sgraph_base> >(const variant_type& t) {
    return t.which() == 1;
 }
 
 template <>
+GL_HOT_INLINE_FLATTEN 
 inline bool variant_is<dataframe_t>(const variant_type& t) {
    return t.which() == 2;
 }
 
 template <>
+GL_HOT_INLINE_FLATTEN 
 inline bool variant_is<std::shared_ptr<model_base> >(const variant_type& t) {
    return t.which() == 3;
 }
 
 template <>
+GL_HOT_INLINE_FLATTEN 
 inline bool variant_is<std::shared_ptr<unity_sframe_base> >(const variant_type& t) {
    return t.which() == 4;
 }
@@ -232,11 +250,13 @@ inline bool variant_is<std::shared_ptr<unity_sframe_base> >(const variant_type& 
 class gl_sframe; 
 
 template <>
+GL_HOT_INLINE_FLATTEN 
 inline bool variant_is<gl_sframe>(const variant_type& t) {
    return t.which() == 4;
 }
 
 template <>
+GL_HOT_INLINE_FLATTEN 
 inline bool variant_is<std::shared_ptr<unity_sarray_base> >(const variant_type& t) {
    return t.which() == 5;
 }
@@ -244,16 +264,19 @@ inline bool variant_is<std::shared_ptr<unity_sarray_base> >(const variant_type& 
 class gl_sarray; 
 
 template <>
+GL_HOT_INLINE_FLATTEN 
 inline bool variant_is<gl_sarray>(const variant_type& t) {
    return t.which() == 5;
 }
 
 template <>
+GL_HOT_INLINE_FLATTEN 
 inline bool variant_is<variant_map_type>(const variant_type& t) {
    return t.which() == 6;
 }
 
 template <>
+GL_HOT_INLINE_FLATTEN 
 inline bool variant_is<boost::recursive_wrapper<function_closure_info> >(const variant_type& t) {
    return t.which() == 7;
 }

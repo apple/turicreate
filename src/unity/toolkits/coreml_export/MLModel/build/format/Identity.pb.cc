@@ -6,62 +6,70 @@
 
 #include <algorithm>
 
-#include <protobuf/stubs/common.h>
-#include <protobuf/stubs/port.h>
-#include <protobuf/stubs/once.h>
-#include <protobuf/io/coded_stream.h>
-#include <protobuf/wire_format_lite_inl.h>
-#include <protobuf/io/zero_copy_stream_impl_lite.h>
+#include <google/protobuf/stubs/common.h>
+#include <google/protobuf/stubs/port.h>
+#include <google/protobuf/stubs/once.h>
+#include <google/protobuf/io/coded_stream.h>
+#include <google/protobuf/wire_format_lite_inl.h>
+#include <google/protobuf/io/zero_copy_stream_impl_lite.h>
 // @@protoc_insertion_point(includes)
 
 namespace CoreML {
 namespace Specification {
+class IdentityDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<Identity> {
+} _Identity_default_instance_;
 
-void protobuf_ShutdownFile_Identity_2eproto() {
-  Identity_default_instance_.Shutdown();
+namespace protobuf_Identity_2eproto {
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTableField
+    const TableStruct::entries[] = {
+  {0, 0, 0, ::google::protobuf::internal::kInvalidMask, 0, 0},
+};
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::AuxillaryParseTableField
+    const TableStruct::aux[] = {
+  ::google::protobuf::internal::AuxillaryParseTableField(),
+};
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTable const
+    TableStruct::schema[] = {
+  { NULL, NULL, 0, -1, -1, false },
+};
+
+
+void TableStruct::Shutdown() {
+  _Identity_default_instance_.Shutdown();
 }
 
-void protobuf_InitDefaults_Identity_2eproto_impl() {
+void TableStruct::InitDefaultsImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  Identity_default_instance_.DefaultConstruct();
-  Identity_default_instance_.get_mutable()->InitAsDefaultInstance();
+  ::google::protobuf::internal::InitProtobufDefaults();
+  _Identity_default_instance_.DefaultConstruct();
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_InitDefaults_Identity_2eproto_once_);
-void protobuf_InitDefaults_Identity_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_InitDefaults_Identity_2eproto_once_,
-                 &protobuf_InitDefaults_Identity_2eproto_impl);
+void InitDefaults() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &TableStruct::InitDefaultsImpl);
 }
-void protobuf_AddDesc_Identity_2eproto_impl() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  protobuf_InitDefaults_Identity_2eproto();
-  ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_Identity_2eproto);
+void AddDescriptorsImpl() {
+  InitDefaults();
+  ::google::protobuf::internal::OnShutdown(&TableStruct::Shutdown);
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_AddDesc_Identity_2eproto_once_);
-void protobuf_AddDesc_Identity_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_AddDesc_Identity_2eproto_once_,
-                 &protobuf_AddDesc_Identity_2eproto_impl);
+void AddDescriptors() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &AddDescriptorsImpl);
 }
 #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 // Force AddDescriptors() to be called at static initialization time.
-struct StaticDescriptorInitializer_Identity_2eproto {
-  StaticDescriptorInitializer_Identity_2eproto() {
-    protobuf_AddDesc_Identity_2eproto();
+struct StaticDescriptorInitializer {
+  StaticDescriptorInitializer() {
+    AddDescriptors();
   }
-} static_descriptor_initializer_Identity_2eproto_;
+} static_descriptor_initializer;
 #endif  // GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 
-namespace {
-
-static void MergeFromFail(int line) GOOGLE_ATTRIBUTE_COLD GOOGLE_ATTRIBUTE_NORETURN;
-static void MergeFromFail(int line) {
-  ::google::protobuf::internal::MergeFromFail(__FILE__, line);
-}
-
-}  // namespace
+}  // namespace protobuf_Identity_2eproto
 
 
 // ===================================================================
@@ -70,20 +78,18 @@ static void MergeFromFail(int line) {
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Identity::Identity()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_Identity_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_Identity_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.Identity)
 }
-
-void Identity::InitAsDefaultInstance() {
-}
-
 Identity::Identity(const Identity& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.Identity)
 }
 
@@ -105,11 +111,9 @@ void Identity::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const Identity& Identity::default_instance() {
-  protobuf_InitDefaults_Identity_2eproto();
+  protobuf_Identity_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<Identity> Identity_default_instance_;
 
 Identity* Identity::New(::google::protobuf::Arena* arena) const {
   Identity* n = new Identity;
@@ -129,7 +133,7 @@ bool Identity::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.Identity)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
   handle_unusual:
@@ -152,6 +156,9 @@ failure:
 void Identity::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.Identity)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
   // @@protoc_insertion_point(serialize_end:CoreML.Specification.Identity)
 }
 
@@ -173,26 +180,21 @@ void Identity::CheckTypeAndMergeFrom(
 
 void Identity::MergeFrom(const Identity& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.Identity)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void Identity::UnsafeMergeFrom(const Identity& from) {
-  GOOGLE_DCHECK(&from != this);
 }
 
 void Identity::CopyFrom(const Identity& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.Identity)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool Identity::IsInitialized() const {
-
   return true;
 }
 
@@ -201,7 +203,6 @@ void Identity::Swap(Identity* other) {
   InternalSwap(other);
 }
 void Identity::InternalSwap(Identity* other) {
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -212,9 +213,6 @@ void Identity::InternalSwap(Identity* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // Identity
 
-inline const Identity* Identity::internal_default_instance() {
-  return &Identity_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // @@protoc_insertion_point(namespace_scope)

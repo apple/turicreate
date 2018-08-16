@@ -41,7 +41,13 @@ RetType extract_field(planner_node_type ptype, CallArgs... call_args) {
     case planner_node_type::GENERALIZED_TRANSFORM_NODE:
       return FieldExtractionVisitor<planner_node_type::GENERALIZED_TRANSFORM_NODE>::get(call_args...);
     case planner_node_type::LAMBDA_TRANSFORM_NODE:
+#ifdef TC_HAS_PYTHON
       return FieldExtractionVisitor<planner_node_type::LAMBDA_TRANSFORM_NODE>::get(call_args...);
+#else
+      ASSERT_MSG(false, "LAMBDA_TRANSFORM_NODE not supported (requires Python)");
+      ASSERT_UNREACHABLE();
+      return RetType();
+#endif
     case planner_node_type::UNION_NODE:
       return FieldExtractionVisitor<planner_node_type::UNION_NODE>::get(call_args...);
     case planner_node_type::REDUCE_NODE:

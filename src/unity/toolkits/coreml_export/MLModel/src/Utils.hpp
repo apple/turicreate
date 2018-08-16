@@ -1,8 +1,3 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
- *
- * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
- */
 #ifndef MLMODEL_UTILS
 #define MLMODEL_UTILS
 
@@ -20,6 +15,9 @@
 
 namespace CoreML {
 
+    // This is the type used internally in Espresso for float 16
+    typedef unsigned short float16;
+    
     // insert_or_assign not available until C++17
     template<typename K, typename V>
     inline void insert_or_assign(std::unordered_map<K, V>& map, const K& k, const V& v) {
@@ -61,7 +59,7 @@ namespace CoreML {
         google::protobuf::io::IstreamInputStream rawInput(&in);
         google::protobuf::io::CodedInputStream codedInput(&rawInput);
 
-        codedInput.SetTotalBytesLimit((2048 * 1024 * 1024) - 1, -1);
+        codedInput.SetTotalBytesLimit(std::numeric_limits<int>::max(), -1);
 
         if (!formatObj.ParseFromCodedStream(&codedInput)) {
             return Result(ResultType::FAILED_TO_DESERIALIZE,
@@ -79,6 +77,47 @@ namespace CoreML {
         formatObj = m.getProto();
         return Result();
     }
+    
+    // Helper functions for determining model version
+    bool hasCustomLayer(Specification::Model& model);
 
+    bool hasOnlyFlexibleShapes(Specification::Model& model);
+    bool hasIOS12Features(Specification::Model& model);
+
+    typedef std::pair<std::string,std::string> StringPair;
+    // Returns a vector of pairs of strings, one pair per custom layer instance
+    std::vector<StringPair> getCustomLayerNamesAndDescriptions(const Specification::Model& model);
+    // Returns a vector of pairs of strings, one pair per custom model instance
+    std::vector<StringPair> getCustomModelNamesAndDescriptions(const Specification::Model& model);
+
+    bool hasfp16Weights(Specification::Model& model);
+
+    bool hasCustomModel(Specification::Model& model);
+    bool hasAppleWordTagger(Specification::Model& model);
+    bool hasAppleTextClassifier(Specification::Model& model);
+    bool hasAppleImageFeatureExtractor(Specification::Model& model);
+    bool hasCategoricalSequences(Specification::Model& model);
+    
+    // Returns the lowest precision weight type among the weights in the layer
+    WeightParamType getLSTMWeightParamType(const Specification::LSTMWeightParams& params);
+    WeightParamType getWeightParamType(const Specification::NeuralNetworkLayer& layer);
+
+    static inline std::vector<float16> readFloat16Weights(const Specification::WeightParams& weights) {
+
+        std::string weight_bytes = weights.float16value();
+        std::vector<float16> output(weight_bytes.size() / 2);
+        
+        for (size_t i = 0; i < weight_bytes.size(); i+=2) {
+
+            float16 out = static_cast<float16>((static_cast<float16>(weight_bytes[i]) << 8)) | static_cast<float16>(weight_bytes[i+1]);
+            output[i/2] = out;
+            
+        }
+        return output;
+    }
+    
 }
+
+google::protobuf::RepeatedPtrField<CoreML::Specification::NeuralNetworkLayer> const *getNNSpec(const CoreML::Specification::Model& model);
+
 #endif

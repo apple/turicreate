@@ -5,6 +5,12 @@
  */
 #ifndef CPPIPC_IPC_DESERIALIZER_HPP
 #define CPPIPC_IPC_DESERIALIZER_HPP
+
+#ifdef DISABLE_TURI_CPPIPC_PROXY_GENERATION
+#include <cppipc/common/ipc_deserializer_minimal.hpp>
+
+#else
+
 #include <type_traits>
 #include <serialization/iarchive.hpp>
 #include <cppipc/ipc_object_base.hpp>
@@ -81,17 +87,13 @@ struct deserialize_impl<InArcType, std::shared_ptr<T>, false,
       }
       value = std::static_pointer_cast<T>(obj);
     } else if (client) {
-#ifdef DISABLE_TURI_CPPIPC_PROXY_GENERATION
-      value.reset();
-#else
       size_t object_id;
       iarc >> object_id;
       value.reset(new typename T::proxy_object_type(*client, false, object_id));
-#endif
     }
   }
 };
 } // archive_detail
 } // turicreate
-
+#endif
 #endif

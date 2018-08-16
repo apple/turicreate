@@ -1,17 +1,20 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
+/* Copyright © 2018 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
 #define BOOST_TEST_MODULE capi_models
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
-#include <fileio/fileio_constants.hpp>
 
 #include <capi/TuriCreate.h>
 #include <algorithm>
 #include <image/image_type.hpp>
 #include <vector>
+#include <fileio/fileio_constants.hpp>
+#include <util/fs_util.hpp>
+
 #include "capi_utils.hpp"
 
 BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
@@ -143,26 +146,26 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
         tc_release(p_args);
 
         int is_sarray = tc_variant_is_sarray(ret_2);
-      TS_ASSERT(is_sarray);
+        TS_ASSERT(is_sarray);
 
         tc_sarray* sa = tc_variant_sarray(ret_2, &error);
         CAPI_CHECK_ERROR(error);
 
-      const auto& target_values = data.back().second;
+        const auto& target_values = data.back().second;
 
-      for (size_t i = 0; i < target_values.size(); ++i) {
-        tc_flexible_type* ft = tc_sarray_extract_element(sa, i, &error);
+        for (size_t i = 0; i < target_values.size(); ++i) {
+          tc_flexible_type* ft = tc_sarray_extract_element(sa, i, &error);
           CAPI_CHECK_ERROR(error);
 
-        double v = tc_ft_double(ft, &error);
+          double v = tc_ft_double(ft, &error);
 
           CAPI_CHECK_ERROR(error);
           tc_release(ft);
 
-        // Make sure they are close -- on a tiny dataset like this the default
-        // setting
-        TS_ASSERT_DELTA(v, target_values[i], 0.5);
-      }
+          // Make sure they are close -- on a tiny dataset like this the default
+          // setting
+          TS_ASSERT_DELTA(v, target_values[i], 0.5);
+        }
         tc_release(ret_2);
       }
 
@@ -172,7 +175,8 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
 
         // Set the l2 regression
         {
-          std::string url = turi::fileio::get_system_temp_directory() + "coreml_export_test_1_tmp.mlmodel";
+          std::string url = turi::fs_util::system_temp_directory_unique_path(
+            "", "_coreml_export_test_1_tmp.mlmodel");
           tc_flexible_type* ft_name = tc_ft_create_from_cstring(url.c_str(), &error);
           CAPI_CHECK_ERROR(error);
           tc_parameters_add_flexible_type(export_args, "filename", ft_name,
@@ -181,8 +185,8 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
           tc_release(ft_name);
         }
 
-        tc_variant* ret_2 = tc_model_call_method(model, "export_to_coreml",
-                                                 export_args, &error);
+        tc_model_call_method(model, "export_to_coreml",
+                             export_args, &error);
         CAPI_CHECK_ERROR(error);
         tc_release(export_args);
       }
@@ -190,7 +194,35 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
 
     // Test saving and loading the model.
     {
-      std::string model_path = turi::fileio::get_system_temp_directory() + "/save_test_1_tmp";
+      // sad path 1 - attempting to save without permission to location
+      // ensure the error message contains useful info
+      std::string model_path = "/permission_should_be_denied";
+      tc_model_save(model, model_path.c_str(), &error);
+      TS_ASSERT_DIFFERS(error, nullptr);
+      std::string error_message = tc_error_message(error);
+      std::string expected_substr = "Ensure that you have write permission to this location, or try again with a different path";
+      TS_ASSERT_DIFFERS(error_message.find(expected_substr), error_message.npos);
+      error = nullptr;
+
+      // sad path 2 - attempting to save into an existing non-directory path
+      // ensure the error message contains useful info
+      model_path =
+        turi::fs_util::system_temp_directory_unique_path("", "_save_test_1_tmp_file");
+      {
+        std::ofstream tmp_file(model_path);
+        tmp_file << "Hello world";
+      }
+      tc_model_save(model, model_path.c_str(), &error);
+      TS_ASSERT_DIFFERS(error, nullptr);
+      error_message = tc_error_message(error);
+      expected_substr = "It already exists as a file";
+      TS_ASSERT_DIFFERS(error_message.find(expected_substr), error_message.npos);
+      error = nullptr;
+
+      // happy path - save should succeed
+      model_path =
+        turi::fs_util::system_temp_directory_unique_path("", "_save_test_1_tmp_model");
+
       tc_model_save(model, model_path.c_str(), &error);
       CAPI_CHECK_ERROR(error);
 

@@ -30,8 +30,6 @@
 namespace turi {
 namespace supervised {
 
-constexpr size_t WIDE_DATA = 200;
-
 // TODO: List of todo's for this file
 //------------------------------------------------------------------------------
 
@@ -145,21 +143,24 @@ void supervised_learning_model_base::init(const sframe& X, const sframe& y,
   this->state["num_features"] = feature_column_names.size();
   this->state["num_unpacked_features"] = feature_names.size();
 
+  // Turned off temporarily until we can find a better way to hide for image classification
+  bool simple_mode = true;
+
+
   // Check the number of dimensions in this dataset is small, otherwise warn the
   // user. (see  #3001 for context)
-  /*
-  // Turned off temporarily until we can find a better way to hide for image classification. 
-  size_t num_dims = get_number_of_coefficients(this->ml_mdata);
-  if(num_dims >= X.num_rows()) {
-    std::stringstream ss;
-    ss << "WARNING: The number of feature dimensions in this problem is "
-       << "very large in comparison with the number of examples. Unless "
-       << "an appropriate regularization value is set, this model "
-       << "may not provide accurate predictions for a validation/test set."
-       << std::endl;
-    logprogress_stream << ss.str() << std::endl;
+  if (not simple_mode) {
+      size_t num_dims = get_number_of_coefficients(this->ml_mdata);
+      if(num_dims >= X.num_rows()) {
+        std::stringstream ss;
+        ss << "WARNING: The number of feature dimensions in this problem is "
+           << "very large in comparison with the number of examples. Unless "
+           << "an appropriate regularization value is set, this model "
+           << "may not provide accurate predictions for a validation/test set."
+           << std::endl;
+        logprogress_stream << ss.str() << std::endl;
+      }
   }
-  */
 
   ml_data valid_data;
   if (valid_X.num_rows() > 0) {
@@ -175,8 +176,9 @@ void supervised_learning_model_base::init(const sframe& X, const sframe& y,
   // Finally call the model-specific init function.
   model_specific_init(data, valid_data);
 
-  // Raise error if mean and variance are not finite.
-  check_feature_means_and_variances(this->ml_mdata, show_extra_warnings);
+  // Raise error if mean and variance are not finite
+  check_feature_means_and_variances(this->ml_mdata,
+             show_extra_warnings && (not simple_mode));
 
   // One class classification error message.
   if(this->is_classifier()) {
@@ -346,17 +348,36 @@ std::vector<std::string>
   return tracking_metrics;
 }
 
+std::string supervised_learning_model_base::get_metric_display_name(const std::string& metric) const {
+  const static std::unordered_map<std::string, std::string> display_names = {
+    {"accuracy", "Accuracy"},
+    {"auc", "Area Under Curve"},
+    {"log_loss", "Log Loss"},
+    {"max_error", "Max Error"},
+    {"rmse", "Root-Mean-Square Error"},
+  };
+
+  auto found = display_names.find(metric);
+  if (found != display_names.end()) {
+    return found->second;
+  }
+
+  // Shouldn't get here; it means we neglected to map to a display name for this metric.
+  // If there is a metric and it's not in the map above, please add it.
+  // In the meantime, we fall back to using the internal name as the display name.
+#ifndef NDEBUG
+  std::string msg = "Could not find a display name for metric " + metric;
+  DASSERT_MSG(false, msg.c_str());
+#endif
+  return metric;
+}
 
 /**
  * Classify (with a probability) using a trained model.
  */
 sframe supervised_learning_model_base::classify(const ml_data& test_data,
                                             const std::string& output_type){
-  DASSERT_TRUE(name() == "classifier_logistic_regression" ||
-               name() == "classifier_svm" ||
-               name() == "random_forest_classifier" ||
-               name() == "decision_tree_classifier" ||
-               name() == "boosted_trees_classifier");
+  DASSERT_TRUE(is_classifier());
 
   // Class predictions
   sframe sf_class;
@@ -537,11 +558,6 @@ gl_sarray supervised_learning_model_base::fast_predict(
 gl_sframe supervised_learning_model_base::fast_classify(
     const std::vector<flexible_type>& rows,
     const std::string& missing_value_action) {
-  DASSERT_TRUE(name() == "classifier_logistic_regression" ||
-               name() == "classifier_svm" ||
-               name() == "random_forest_classifier" ||
-               name() == "decision_tree_classifier" ||
-               name() == "boosted_trees_classifier");
 
   // Class predictions
   gl_sframe sf_class;
@@ -581,7 +597,7 @@ gl_sframe supervised_learning_model_base::fast_classify(
 sframe supervised_learning_model_base::predict_topk(
           const ml_data& test_data, const std::string& output_type,
           const size_t topk){
-  DASSERT_TRUE(name().find("classifier") != std::string::npos);
+  DASSERT_TRUE(is_classifier());
   size_t num_classes = variant_get_value<size_t>(state.at("num_classes"));
   size_t n_threads = turi::thread_pool::get_instance().size();
   size_t variables = 0;
@@ -942,7 +958,7 @@ void supervised_learning_model_base::api_train(
     gl_sframe data, 
     const std::string& target,
     const variant_type& _validation_data,
-    const std::map<std::string, flexible_type>& options) {
+    const std::map<std::string, flexible_type>& _options) {
 
   gl_sframe validation_data;
   std::tie(data, validation_data) = create_validation_data(data, _validation_data);
@@ -954,6 +970,23 @@ void supervised_learning_model_base::api_train(
 
   gl_sframe f_data = data;
   f_data.remove_column(target);
+
+  // make a copy of options so we can remove "features"
+  std::map<std::string, flexible_type> options = _options;  
+  {
+    auto ft_it = options.find("features");
+
+    if (ft_it != options.end()) {
+      flex_list _ft = ft_it->second.to<flex_list>();
+      std::vector<std::string> ftv(_ft.begin(), _ft.end());
+      if(ftv.size() == 0) {
+        log_and_throw("Empty feature set has been specified");
+      }
+      f_data = f_data.select_columns(ftv);
+      options.erase(ft_it);
+    }
+  }
+
   sframe X = f_data.materialize_to_sframe(); 
     
   sframe y = data.select_columns({target}).materialize_to_sframe();
@@ -1176,83 +1209,6 @@ supervised_learning_model_base::get_missing_value_enum_from_string(
   } else {
     log_and_throw("Missing value type '" + missing_value_str + "' not supported.");
   }
-}
-
-/**
- * Compute the width of the data.
- *
- * \param[in] X  Input SFrame
- * \returns width
- *
- * The width is the same as the num_coefficients.
- *
- */
-size_t compute_data_width(sframe X){
-  ml_data data;
-  data.fill(X);
-  return get_number_of_coefficients(data.metadata());
-}
-
-/**
- * Rule based better than stupid model selector.
- */
-std::string _regression_model_selector(std::shared_ptr<unity_sframe> _X){
-
-  sframe X = *(_X->get_underlying_sframe());
-  size_t data_width = compute_data_width(X);
-  if (data_width < WIDE_DATA){
-    return "boosted_trees_regression";
-  } else {
-    return "regression_linear_regression";
-  }
-}
-
-/**
- * Rule based better than stupid model selector.
- */
-std::string _classifier_model_selector(std::shared_ptr<unity_sframe> _X){
-
-  sframe X = *(_X->get_underlying_sframe());
-
-  size_t data_width = compute_data_width(X);
-  if (data_width < WIDE_DATA){
-    return "boosted_trees_classifier";
-  } else {
-    return "classifier_logistic_regression";
-  }
-}
-
-/**
- * Rule based better than stupid model selector.
- */
-std::vector<std::string> _classifier_available_models(size_t num_classes,
-                                         std::shared_ptr<unity_sframe> _X){
-  sframe X = *(_X->get_underlying_sframe());
-
-  // Throw error if only one class.
-  // If number of classes more than 2, use boosted trees
-  if (num_classes == 1) {
-    log_and_throw("One-class classification is not currently supported. Please check your target column.");
-  } else if (num_classes > 2) {
-    return {"boosted_trees_classifier",
-            "random_forest_classifier",
-            "decision_tree_classifier",
-            "classifier_logistic_regression"};
-  } else {
-    size_t data_width = compute_data_width(X);
-    if (data_width < WIDE_DATA){
-      return {"boosted_trees_classifier",
-              "random_forest_classifier",
-              "decision_tree_classifier",
-              "classifier_svm",
-              "classifier_logistic_regression"};
-    } else {
-      return {"classifier_logistic_regression",
-              "classifier_svm"};
-    }
-  }
-
-  return std::vector<std::string>();
 }
 
 /**

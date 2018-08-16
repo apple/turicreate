@@ -550,6 +550,11 @@ bool typed_decode(const block_info& info,
         ret[t].reset(flex_type_enum::UNDEFINED);
       }
       num_undefined = d.popcount();
+    } else {
+      logstream(LOG_ERROR) << "Unexpected value for num_types: "
+                           << static_cast<int>(num_types)
+                           << " (expected 0, 1, or 2)" << std::endl;
+      return false;
     }
   } else {
     iarc >> ret;

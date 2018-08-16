@@ -104,8 +104,6 @@ class server {
 
   std::string m_shmname;
   shared_memory_buffer* m_buffer = nullptr;
-  bool connection_made = false;
-
 };
 
 
@@ -151,7 +149,6 @@ class client{
    */
   bool receive_direct(char**c, size_t* len, size_t& receivelen, size_t timeout);
  private:
-  bool connection_made = false;
   std::shared_ptr<boost::interprocess::shared_memory_object> m_shared_object;
   std::shared_ptr<boost::interprocess::mapped_region> m_mapped_region;
   shared_memory_buffer* m_buffer = nullptr;

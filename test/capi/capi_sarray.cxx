@@ -1,20 +1,21 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
+/* Copyright © 2018 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
 
 #include <capi/TuriCreate.h>
 #include <vector>
-#include <fileio/fileio_constants.hpp>
 #include "capi_utils.hpp"
 
 #include <unity/lib/gl_sframe.hpp>
 #include <unity/lib/gl_sarray.hpp>
 #include <capi/impl/capi_wrapper_structs.hpp>
+#include <fileio/fileio_constants.hpp>
 #include <iostream>
 
 class capi_test_sarray {
@@ -124,12 +125,11 @@ class capi_test_sarray {
     turi::gl_sarray g2(lst2);
 
 
-    tc_sarray* combined_output = tc_op_sarray_lt_sarray(sa1, sa2, &error);
+      tc_sarray* combined_output = tc_binary_op_ss(sa1, "<", sa2, &error);
       CAPI_CHECK_ERROR(error);
 
     turi::gl_sarray combined_gl_output = (g1 < g2);
 
-    TS_ASSERT((combined_gl_output == combined_output->value).all());
     TS_ASSERT((combined_gl_output == combined_output->value).all());
 
       tc_release(fl1);
@@ -172,7 +172,7 @@ class capi_test_sarray {
 
     turi::gl_sarray g2(lst2);
 
-    tc_sarray* combined_output = tc_op_sarray_gt_sarray(sa1, sa2, &error);
+      tc_sarray* combined_output = tc_binary_op_ss(sa1, ">", sa2, &error);
       CAPI_CHECK_ERROR(error);
 
     turi::gl_sarray combined_gl_output = (g1 > g2);
@@ -220,7 +220,7 @@ class capi_test_sarray {
     turi::gl_sarray g2(lst2);
 
 
-    tc_sarray* combined_output = tc_op_sarray_le_sarray(sa1, sa2, &error);
+      tc_sarray* combined_output = tc_binary_op_ss(sa1, "<=", sa2, &error);
       CAPI_CHECK_ERROR(error);
 
     turi::gl_sarray combined_gl_output = (g1 <= g2);
@@ -268,7 +268,7 @@ class capi_test_sarray {
 
     turi::gl_sarray g2(lst2);
 
-    tc_sarray* combined_output = tc_op_sarray_ge_sarray(sa1, sa2, &error);
+      tc_sarray* combined_output = tc_binary_op_ss(sa1, ">=", sa2, &error);
       CAPI_CHECK_ERROR(error);
 
     turi::gl_sarray combined_gl_output = (g1 >= g2);
@@ -315,7 +315,7 @@ class capi_test_sarray {
 
     turi::gl_sarray g2(lst2);
 
-    tc_sarray* combined_output = tc_op_sarray_eq_sarray(sa1, sa2, &error);
+      tc_sarray* combined_output = tc_binary_op_ss(sa1, "==", sa2, &error);
       CAPI_CHECK_ERROR(error);
 
     turi::gl_sarray combined_gl_output = (g1 == g2);
@@ -354,7 +354,7 @@ class capi_test_sarray {
 
     turi::flexible_type f_float(3.0);
 
-    tc_sarray* combined_output = tc_op_sarray_lt_ft(sa1, ft1, &error);
+      tc_sarray* combined_output = tc_binary_op_sf(sa1, "<", ft1, &error);
       CAPI_CHECK_ERROR(error);
 
     turi::gl_sarray combined_gl_output = (g1 < f_float);
@@ -391,7 +391,7 @@ class capi_test_sarray {
 
     turi::flexible_type f_float(3.0);
 
-    tc_sarray* combined_output = tc_op_sarray_gt_ft(sa1, ft1, &error);
+    tc_sarray* combined_output = tc_binary_op_sf(sa1, ">", ft1, &error);
     CAPI_CHECK_ERROR(error);
 
     turi::gl_sarray combined_gl_output = (g1 > f_float);
@@ -427,7 +427,7 @@ class capi_test_sarray {
 
     turi::flexible_type f_float(3.0);
 
-    tc_sarray* combined_output = tc_op_sarray_ge_ft(sa1, ft1, &error);
+    tc_sarray* combined_output = tc_binary_op_sf(sa1, ">=", ft1, &error);
     CAPI_CHECK_ERROR(error);
 
     turi::gl_sarray combined_gl_output = (g1 >= f_float);
@@ -464,7 +464,7 @@ class capi_test_sarray {
 
     turi::flexible_type f_float(3.0);
 
-    tc_sarray* combined_output = tc_op_sarray_le_ft(sa1, ft1, &error);
+    tc_sarray* combined_output = tc_binary_op_sf(sa1, "<=", ft1, &error);
     CAPI_CHECK_ERROR(error);
 
     turi::gl_sarray combined_gl_output = (g1 <= f_float);
@@ -501,7 +501,7 @@ class capi_test_sarray {
 
     turi::flexible_type f_float(3.0);
 
-    tc_sarray* combined_output = tc_op_sarray_eq_ft(sa1, ft1, &error);
+    tc_sarray* combined_output = tc_binary_op_sf(sa1, "==", ft1, &error);
     CAPI_CHECK_ERROR(error);
 
     turi::gl_sarray combined_gl_output = (g1 == f_float);
@@ -548,7 +548,7 @@ class capi_test_sarray {
 
     CAPI_CHECK_ERROR(error);
 
-    tc_sarray* combined_output = tc_op_sarray_logical_and_sarray(sa1, sa2, &error);
+    tc_sarray* combined_output = tc_binary_op_ss(sa1, "&", sa2, &error);
     CAPI_CHECK_ERROR(error);
 
     turi::gl_sarray combined_gl_output = (g1 && g2);
@@ -597,7 +597,7 @@ class capi_test_sarray {
 
     turi::gl_sarray g2(lst2);
 
-    tc_sarray* combined_output = tc_op_sarray_bitwise_and_sarray(sa1, sa2, &error);
+    tc_sarray* combined_output = tc_binary_op_ss(sa1, "&", sa2, &error);
     CAPI_CHECK_ERROR(error);
 
     turi::gl_sarray combined_gl_output = (g1 & g2);
@@ -646,7 +646,7 @@ class capi_test_sarray {
 
     turi::gl_sarray g2(lst2);
 
-    tc_sarray* combined_output = tc_op_sarray_logical_or_sarray(sa1, sa2, &error);
+    tc_sarray* combined_output = tc_binary_op_ss(sa1, "|", sa2, &error);
     CAPI_CHECK_ERROR(error);
 
     turi::gl_sarray combined_gl_output = (g1 || g2);
@@ -695,12 +695,11 @@ class capi_test_sarray {
 
     turi::gl_sarray g2(lst2);
 
-    tc_sarray* combined_output = tc_op_sarray_bitwise_or_sarray(sa1, sa2, &error);
+    tc_sarray* combined_output = tc_binary_op_ss(sa1, "|", sa2, &error);
     CAPI_CHECK_ERROR(error);
 
     turi::gl_sarray combined_gl_output = (g1 | g2);
 
-    TS_ASSERT((combined_gl_output == combined_output->value).all());
     TS_ASSERT((combined_gl_output == combined_output->value).all());
 
     tc_release(fl1);
@@ -708,6 +707,30 @@ class capi_test_sarray {
 
     tc_release(sa1);
     tc_release(sa2);
+
+    CAPI_CHECK_ERROR(error);
+  };
+
+  void test_tc_sarray_apply_slice(){
+    tc_error* error = NULL;
+
+    std::vector<double> v1 = {1, 2, 4.5, 9, 389, 23};
+
+    tc_flex_list* fl1 = make_flex_list_double(v1);
+    tc_sarray* sa1 = tc_sarray_create_from_list(fl1, &error);
+    CAPI_CHECK_ERROR(error);
+
+    turi::gl_sarray g1(fl1->value);
+    tc_release(fl1);
+
+    tc_sarray* combined_output = tc_sarray_slice(sa1, 2,2,5, &error);
+    CAPI_CHECK_ERROR(error);
+
+    turi::gl_sarray combined_gl_output = (g1[{2,2,5}]);
+
+    TS_ASSERT((combined_gl_output == combined_output->value).all());
+
+    tc_release(sa1);
 
     CAPI_CHECK_ERROR(error);
   };
@@ -1624,7 +1647,7 @@ class capi_test_sarray {
 
     CAPI_CHECK_ERROR(error);
 
-    TS_ASSERT((g1.dropna() == tc_sarray_drop_nan(sa1, &error)->value).all());
+    TS_ASSERT((g1.dropna() == tc_sarray_drop_na(sa1, &error)->value).all());
     CAPI_CHECK_ERROR(error);
 
     CAPI_CHECK_ERROR(error);
@@ -1656,7 +1679,7 @@ class capi_test_sarray {
 
     turi::flexible_type f_float_1(1.0);
 
-    TS_ASSERT((g1.fillna(f_float_1) == tc_sarray_replace_nan(sa1, ft1, &error)->value).all());
+    TS_ASSERT((g1.fillna(f_float_1) == tc_sarray_replace_na(sa1, ft1, &error)->value).all());
     CAPI_CHECK_ERROR(error);
 
     CAPI_CHECK_ERROR(error);

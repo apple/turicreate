@@ -47,9 +47,6 @@ EXPORT uint64_t tc_flex_enum_list_add_element(tc_flex_enum_list* fl, const tc_ft
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
-  CHECK_NOT_NULL(error, ft, "tc_ft_type_enum", NULL);
-
-
   if(fl == NULL) {
     set_error(error, "tc_flex_enum_list instance null.");
     return uint64_t(-1);

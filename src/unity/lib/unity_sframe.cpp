@@ -32,9 +32,10 @@
 #include <sframe_query_engine/algorithm/ec_sort.hpp>
 #include <sframe_query_engine/algorithm/groupby_aggregate.hpp>
 #include <sframe_query_engine/operators/operator_properties.hpp>
-#include <unity/lib/visualization/plot.hpp>
-#include <lambda/pylambda_function.hpp>
 #include <exceptions/error_types.hpp>
+
+#if(TC_BUILD_VISUALIZATION_CLIENT)
+#include <unity/lib/visualization/plot.hpp>
 #include <unity/lib/visualization/process_wrapper.hpp>
 #include <unity/lib/visualization/histogram.hpp>
 #include <unity/lib/visualization/escape.hpp>
@@ -45,6 +46,8 @@
 #include <unity/lib/visualization/summary_view.hpp>
 #include <unity/lib/visualization/vega_data.hpp>
 #include <unity/lib/visualization/vega_spec.hpp>
+#endif
+
 #include <unity/lib/image_util.hpp>
 #include <unity/lib/unity_sketch.hpp>
 #include <algorithm>
@@ -52,7 +55,11 @@
 #include <boost/archive/iterators/base64_from_binary.hpp>
 #include <boost/archive/iterators/transform_width.hpp>
 #include <logger/logger.hpp>
+#include <util/basic_types.hpp>
 
+#ifdef TC_HAS_PYTHON
+#include <lambda/pylambda_function.hpp>
+#endif
 namespace turi {
 
 using namespace turi::query_eval;
@@ -594,6 +601,7 @@ std::shared_ptr<unity_sarray_base> unity_sframe::transform(const std::string& la
                                            bool skip_undefined, // unused
                                            int random_seed) {
   log_func_entry();
+#ifdef TC_HAS_PYTHON
   auto new_planner_node = op_lambda_transform::make_planner_node(
       this->get_planner_node(), lambda, type,
       this->column_names(),
@@ -602,6 +610,9 @@ std::shared_ptr<unity_sarray_base> unity_sframe::transform(const std::string& la
   std::shared_ptr<unity_sarray> ret(new unity_sarray());
   ret->construct_from_planner_node(new_planner_node);
   return ret;
+#else
+  log_and_throw("Python functions not supported");
+#endif
 }
 
 std::shared_ptr<unity_sarray_base> unity_sframe::transform_native(const function_closure_info& toolkit_fn_name,
@@ -652,6 +663,7 @@ std::shared_ptr<unity_sframe_base> unity_sframe::flat_map(
     std::vector<flex_type_enum> column_types,
     bool skip_undefined,
     int seed) {
+#ifdef TC_HAS_PYTHON
   log_func_entry();
   DASSERT_EQ(column_names.size(), column_types.size());
   DASSERT_TRUE(!column_names.empty());
@@ -699,6 +711,9 @@ std::shared_ptr<unity_sframe_base> unity_sframe::flat_map(
   auto ret = std::make_shared<unity_sframe>();
   ret->construct_from_sframe(out_sf);
   return ret;
+#else
+  log_and_throw("Python lambda functions not supported");
+#endif
 }
 
 
@@ -1576,6 +1591,7 @@ std::string unity_sframe::generate_next_column_name() {
 }
 
 void unity_sframe::show(const std::string& path_to_client) {
+#if(TC_BUILD_VISUALIZATION_CLIENT)
   using namespace turi;
   using namespace turi::visualization;
 
@@ -1584,26 +1600,33 @@ void unity_sframe::show(const std::string& path_to_client) {
   if(plt != nullptr){
     plt->show();
   }
+#else
+  std_log_and_throw(std::runtime_error, "Turi Create compiled with visualizations disabled.");
+#endif
 }
 
 std::shared_ptr<model_base> unity_sframe::plot(const std::string& path_to_client){
+#if(TC_BUILD_VISUALIZATION_CLIENT)
   using namespace turi;
   using namespace turi::visualization;
 
   std::shared_ptr<unity_sframe_base> self = this->select_columns(this->column_names());
 
   return plot_columnwise_summary(path_to_client, self);
+#else
+  std_log_and_throw(std::runtime_error, "Turi Create compiled with visualizations disabled.");
+#endif
 }
 
 void unity_sframe::explore(const std::string& path_to_client, const std::string& title) {
+#if(TC_BUILD_VISUALIZATION_CLIENT)
   using namespace turi;
   using namespace turi::visualization;
 
   std::shared_ptr<unity_sframe_base> self = this->select_columns(this->column_names());
 
-  logprogress_stream << "Materializing SFrame..." << std::endl;
+  logprogress_stream << "Materializing SFrame" << std::endl;
   this->materialize();
-  logprogress_stream << "Done." << std::endl;
 
   if(self->size() == 0){
     log_and_throw("Nothing to explore; SFrame is empty.");
@@ -1676,9 +1699,6 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
         reader->read_rows(start, end, rows);
         std::stringstream ss;
 
-        // resize string for table view
-        size_t resize_table_view = 200;
-
         // for DateTime string formatting
         ss.exceptions(std::ios_base::failbit);
         ss.imbue(std::locale(ss.getloc(),
@@ -1712,7 +1732,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
       }
     };
 
-    auto getAccordion = [self, &reader, &ew, &column_names, &empty_tz](std::string column_name, size_t index) {
+    auto getAccordion = [self, &ew, &column_names, &empty_tz](std::string column_name, size_t index) {
 
         ASSERT_TRUE(std::find(column_names.begin(), column_names.end(), column_name) != column_names.end());
         DASSERT_LT(index, self->size());
@@ -1937,7 +1957,7 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
       std::string column_name;
 
       enum MethodType {GetRows = 0, GetAccordion = 1};
-      MethodType response;
+      auto response = NONE<MethodType>();
 
       auto sa = gl_sarray(std::vector<flexible_type>(1, input)).astype(flex_type_enum::DICT);
       flex_dict dict = sa[0].get<flex_dict>();
@@ -1946,9 +1966,9 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
         const auto& value = pair.second;
         if (key == "method") {
           if(value.get<flex_string>() == "get_rows"){
-            response = GetRows;
+            response = SOME(GetRows);
           }else if(value.get<flex_string>() == "get_accordion"){
-            response = GetAccordion;
+            response = SOME(GetAccordion);
           }
         } else if (key == "start") {
           start = value.get<flex_int>();
@@ -1961,13 +1981,20 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
         }
       }
 
-      if(response == GetRows){
+      if (!!response && *response == GetRows) {
         getRows(start, end);
-      }else if(response == GetAccordion){
+      } else if (!!response && *response == GetAccordion) {
         getAccordion(column_name, index);
+      } else {
+        std_log_and_throw(
+          std::runtime_error, "Unsupported case (should be either GetRows or GetAccordion).");
+        ASSERT_UNREACHABLE();
       }
     }
   });
+#else
+  std_log_and_throw(std::runtime_error, "Turi Create compiled with visualizations disabled.");
+#endif
 
 }
 

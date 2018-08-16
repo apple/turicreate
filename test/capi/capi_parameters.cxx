@@ -1,8 +1,9 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
+/* Copyright © 2018 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <util/test_macros.hpp>
@@ -93,7 +94,6 @@ struct capi_test_parameters {
    tc_parameters* p = tc_parameters_create_empty(&error);
    CAPI_CHECK_ERROR(error);
 
-   typedef std::pair<std::string, std::vector<double> > p_t; 
    tc_sframe* sf = make_sframe_double(
        { {"col1", {1.0, 2.0, 4.0}}, 
          {"col2", {2.0, 3.0, 0.0}}

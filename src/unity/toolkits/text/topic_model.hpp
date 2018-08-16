@@ -106,38 +106,29 @@ class EXPORT topic_model : public ml_model_base{
   virtual topic_model* topic_model_clone() = 0;
 
   /**
-   * Returns the name of the model.
-   *
-   * \returns Name of the model.
-   *
-   * \ref model_base for details.
-   */
-  virtual std::string name() = 0;
-
-  /**
    * Set the model options. Use the option manager to set these options. The
    * option manager should throw errors if the options do not satisfy the option
    * manager's conditions.
    *
    * \param[in] opts Options to set
    */
-  virtual void init_options(const std::map<std::string,flexible_type>& _opts) = 0;
+  virtual void init_options(const std::map<std::string,flexible_type>& _opts) override = 0;
 
 
   /**
    * Gets the model version number
    */
-  virtual size_t get_version() const = 0;
+  virtual size_t get_version() const override = 0;
 
   /**
    * Serialize the model object.
    */
-  virtual void save_impl(turi::oarchive& oarc) const = 0;
+  virtual void save_impl(turi::oarchive& oarc) const override = 0;
 
   /**
    * Load the model object.
    */
-  virtual void load_version(turi::iarchive& iarc, size_t version) = 0;
+  virtual void load_version(turi::iarchive& iarc, size_t version) override = 0;
 
   /**
    * Create a topic model.

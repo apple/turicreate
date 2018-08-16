@@ -1,12 +1,12 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
- *
- * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
- */
+//
+//  ImputerValidator
+//  libmlmodelspec
+//
+
 #include "Result.hpp"
 #include "Validators.hpp"
 #include "ValidatorUtils-inl.hpp"
-#include "../build/format/Model.pb.h"
+#include "unity/toolkits/coreml_export/protobuf_include_internal.hpp"
 
 namespace CoreML {
 
@@ -17,7 +17,7 @@ namespace CoreML {
         Result result;
 
         // Validate its a MLModel type.
-        result = validateModelDescription(description);
+        result = validateModelDescription(description, format.specificationversion());
         if (!result.good()) {
             return result;
         }
@@ -115,7 +115,7 @@ namespace CoreML {
                 }
                 
                     // Check to make sure the array sizes match
-                if(input.type().multiarraytype().shape(0) != imputer.imputeddoublearray().vector_size()) {
+                if(input.type().multiarraytype().shape(0) != static_cast<int64_t>(imputer.imputeddoublearray().vector_size())) {
                     return  Result(ResultType::INVALID_MODEL_PARAMETERS,
                                    "Shape of imputed array value does not match shape of input array.");
                 }
@@ -133,7 +133,7 @@ namespace CoreML {
                 }
                 
                     // Check to make sure the array sizes match
-                if(input.type().multiarraytype().shape(0) != imputer.imputedint64array().vector_size()) {
+                if(input.type().multiarraytype().shape(0) != static_cast<int64_t>(imputer.imputedint64array().vector_size())) {
                     return  Result(ResultType::INVALID_MODEL_PARAMETERS,
                                    "Shape of imputed array value does not match shape of input array.");
                 }

@@ -31,7 +31,6 @@ struct evaluation_test {
     auto targets = std::vector<flexible_type>(num_observations);
     double total = 0.0;
     double true_max_error = 0;
-    double err;
     for (size_t i = 0; i < num_observations; ++i) {
       predictions[i] = random::fast_uniform<double>(0, 1);
       targets[i] = random::fast_uniform<double>(0, 1);

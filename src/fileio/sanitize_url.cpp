@@ -5,18 +5,29 @@
  */
 #include <string>
 #include <boost/algorithm/string/predicate.hpp>
+#include <logger/logger.hpp>
 #include <fileio/sanitize_url.hpp>
-#include <fileio/s3_api.hpp>
 #include <export.hpp>
+#ifdef TC_ENABLE_REMOTEFS
+#include <fileio/s3_api.hpp>
+#endif
 
 namespace turi {
 
 EXPORT std::string sanitize_url(std::string url) {
+#ifdef TC_ENABLE_REMOTEFS
   if (boost::algorithm::starts_with(url, "s3://")) {
+#ifdef TC_BUILD_IOS
+    log_and_throw_io_failure("Not implemented: compiled without support for s3:// URLs.");
+#else
     return sanitize_s3_url(url);
+#endif
   } else {
     return url;
   }
+#else
+    return url;
+#endif
 }
 
 }

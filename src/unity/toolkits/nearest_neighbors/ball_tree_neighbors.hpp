@@ -99,7 +99,7 @@ class EXPORT ball_tree_neighbors: public nearest_neighbors_model {
    *
    * \param[in] opts Options to set 
    */ 
-  void init_options(const std::map<std::string,flexible_type>& _opts);
+  void init_options(const std::map<std::string,flexible_type>& _opts) override;
 
 
   /**
@@ -112,7 +112,7 @@ class EXPORT ball_tree_neighbors: public nearest_neighbors_model {
    */
   void train(const sframe& X, const std::vector<flexible_type>& ref_labels,
              const std::vector<dist_component_type>& composite_distance_params,
-             const std::map<std::string, flexible_type>& opts);
+             const std::map<std::string, flexible_type>& opts) override;
 
   /**
    * Find neighbors of queries in a created ball tree model.
@@ -136,24 +136,24 @@ class EXPORT ball_tree_neighbors: public nearest_neighbors_model {
   sframe query(const v2::ml_data& mld_queries, 
                const std::vector<flexible_type>& query_labels,
                const size_t k, const double radius,
-               const bool include_self_edges) const;
+               const bool include_self_edges) const override;
 
   /**
    * Gets the model version number
    */
-  inline size_t get_version() const {
+  inline size_t get_version() const override {
     return BALL_TREE_NEIGHBORS_VERSION;
   }
 
   /**
    * Turi serialization save
    */
-  void save_impl(turi::oarchive& oarc) const;
+  void save_impl(turi::oarchive& oarc) const override;
 
   /**
    * Turi serialization save
    */
-  void load_version(turi::iarchive& iarc, size_t version);
+  void load_version(turi::iarchive& iarc, size_t version) override;
   
   // TODO: convert interface above to use the extensions methods here
   BEGIN_CLASS_MEMBER_REGISTRATION("nearest_neighbors_ball_tree")

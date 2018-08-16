@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <util/cityhash_tc.hpp>
 #include <util/hash_value.hpp>
+#include <util/sys_util.hpp>
 
 using namespace turi;
 
@@ -136,7 +137,7 @@ struct hash_function_test  {
       DASSERT_EQ(i, reverse_index_hash(index_hash(i)));
     }
     
-    for(long i : values) {
+    for(TURI_ATTRIBUTE_UNUSED_NDEBUG long i : values) {
       DASSERT_EQ(i, long(reverse_index_hash(index_hash(size_t(i)))));
     }
   }  
@@ -148,7 +149,7 @@ struct hash_function_test  {
     for(size_t i = 0; i < 10000; ++i) {
       double prop = (double(i) / 10000);
 
-      uint64_t cutoff = hash64_proportion_cutoff(prop);
+      TURI_ATTRIBUTE_UNUSED_NDEBUG uint64_t cutoff = hash64_proportion_cutoff(prop);
 
       DASSERT_DELTA(prop, double(cutoff) / std::numeric_limits<uint64_t>::max(), 1e-6);
     }

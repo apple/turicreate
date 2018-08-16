@@ -33,12 +33,14 @@ class EXPORT random_forest_regression: public xgboost_model {
    */
   void init_options(const std::map<std::string,flexible_type>& _opts) override; 
 
+  bool is_classifier() const override { return false; }
+
   /** 
    * Configure booster from options 
    */
   void configure(void) override;
   
-  std::shared_ptr<coreml::MLModelWrapper> export_to_coreml();
+  std::shared_ptr<coreml::MLModelWrapper> export_to_coreml() override;
 
   SUPERVISED_LEARNING_METHODS_REGISTRATION(
       "random_forest_regression", 
@@ -74,6 +76,8 @@ class EXPORT random_forest_classifier: public xgboost_model {
    */
   void init_options(const std::map<std::string, flexible_type>& _opts) override; 
 
+  bool is_classifier() const override { return true; }
+
   /** 
    * Configure booster from options 
    */
@@ -82,7 +86,7 @@ class EXPORT random_forest_classifier: public xgboost_model {
   /**
    * Set the default evaluation metric during model evaluation..
    */
-  void set_default_evaluation_metric(){
+  void set_default_evaluation_metric() override {
     set_evaluation_metric({
         "accuracy", 
         "auc", 
@@ -98,7 +102,7 @@ class EXPORT random_forest_classifier: public xgboost_model {
   /**
    * Set the default evaluation metric for progress tracking.
    */
-  void set_default_tracking_metric(){
+  void set_default_tracking_metric() override {
     set_tracking_metric({
         "accuracy", "log_loss"
        }); 

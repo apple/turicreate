@@ -44,6 +44,8 @@ void fill_error_from_exception(std::exception_ptr eptr, tc_error** error) {
     set_error(error, std::string("Error: ") + e.what());
   } catch (const std::string& s) {
     set_error(error, "Error: " + s);
+  } catch (const char* c) {
+    set_error(error, std::string("Error: ") + c);
   } catch (...) {
     set_error(error, "Unknown internal error occurred.");
   }

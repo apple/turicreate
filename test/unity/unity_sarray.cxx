@@ -929,11 +929,8 @@ struct unity_sarray_test {
   }
 
   void test_logical_vector_ops() {
-    // make a vector with an UNDEFINED first value
     std::vector<flexible_type> vec{0,0,0,0,1,1,1,1};
     std::vector<flexible_type> vec2{1,0,1,0,1,0,1,0};
-    // one missing at 0 to test missing propagation
-    vec[0] = flexible_type(flex_type_enum::UNDEFINED);
 
     auto dbl = std::make_shared<unity_sarray>();
     dbl->construct_from_vector(vec, flex_type_enum::INTEGER);
@@ -945,8 +942,7 @@ struct unity_sarray_test {
       auto ret = dbl->vector_operator(dbl2, "&");
       std::vector<flexible_type> vecret = ret->_head(size_t(-1));
       TS_ASSERT_EQUALS(vecret.size(), vec.size());
-      TS_ASSERT_EQUALS(vec[0].get_type(), flex_type_enum::UNDEFINED);
-      for (size_t i = 1;i < vecret.size(); ++i) {
+      for (size_t i = 0;i < vecret.size(); ++i) {
         TS_ASSERT_EQUALS(vecret[i], int(vec[i]) & int(vec2[i]));
       }
     }
@@ -956,9 +952,86 @@ struct unity_sarray_test {
       auto ret = dbl->vector_operator(dbl2, "|");
       std::vector<flexible_type> vecret = ret->_head(size_t(-1));
       TS_ASSERT_EQUALS(vecret.size(), vec.size());
-      TS_ASSERT_EQUALS(vec[0].get_type(), flex_type_enum::UNDEFINED);
-      for (size_t i = 1;i < vecret.size(); ++i) {
+      for (size_t i = 0;i < vecret.size(); ++i) {
         TS_ASSERT_EQUALS(vecret[i], int(vec[i]) | int(vec2[i]));
+      }
+    }
+  }
+  void test_logical_vector_ops_missing_value_propagation() {
+    // Ternary truth table
+    //  & | F - T
+    //  -------
+    //  F | F F F
+    //  - | F - -
+    //  T | F - T
+    //
+    //  | | F - T
+    //  -------
+    //  F | F - T
+    //  - | - - T
+    //  T | T T T
+    std::vector<flexible_type> vec{flexible_type(0),
+                                   flexible_type(0),
+                                   flexible_type(0),
+                                   FLEX_UNDEFINED,
+                                   FLEX_UNDEFINED,
+                                   FLEX_UNDEFINED,
+                                   flexible_type(1),
+                                   flexible_type(1),
+                                   flexible_type(1)};
+
+    std::vector<flexible_type> vec2{flexible_type(0),
+                                    FLEX_UNDEFINED,
+                                    flexible_type(1),
+                                    flexible_type(0),
+                                    FLEX_UNDEFINED,
+                                    flexible_type(1),
+                                    flexible_type(0),
+                                    FLEX_UNDEFINED,
+                                    flexible_type(1)};
+
+    std::vector<flexible_type> andv{flexible_type(0),
+                                    flexible_type(0),
+                                    flexible_type(0),
+                                    flexible_type(0),
+                                    FLEX_UNDEFINED,
+                                    FLEX_UNDEFINED,
+                                    flexible_type(0),
+                                    FLEX_UNDEFINED,
+                                    flexible_type(1)};
+
+    std::vector<flexible_type> orv{flexible_type(0),
+                                   FLEX_UNDEFINED,
+                                   flexible_type(1),
+                                   FLEX_UNDEFINED,
+                                   FLEX_UNDEFINED,
+                                   flexible_type(1),
+                                   flexible_type(1),
+                                   flexible_type(1),
+                                   flexible_type(1)};
+
+    auto dbl = std::make_shared<unity_sarray>();
+    dbl->construct_from_vector(vec, flex_type_enum::INTEGER);
+    auto dbl2 = std::make_shared<unity_sarray>();
+    dbl2->construct_from_vector(vec2, flex_type_enum::INTEGER);
+
+    // logical and
+    {
+      auto ret = dbl->vector_operator(dbl2, "&");
+      std::vector<flexible_type> vecret = ret->_head(size_t(-1));
+      TS_ASSERT_EQUALS(vecret.size(), vec.size());
+      for (size_t i = 0;i < vecret.size(); ++i) {
+        TS_ASSERT(vecret[i] == andv[i]);
+      }
+    }
+
+    // logical or
+    {
+      auto ret = dbl->vector_operator(dbl2, "|");
+      std::vector<flexible_type> vecret = ret->_head(size_t(-1));
+      TS_ASSERT_EQUALS(vecret.size(), vec.size());
+      for (size_t i = 0;i < vecret.size(); ++i) {
+        TS_ASSERT(vecret[i] == orv[i]);
       }
     }
   }
@@ -1097,8 +1170,10 @@ struct unity_sarray_test {
     // sarray of strings
     sa->construct_from_vector({"abcdef", "ghijkl"}, flex_type_enum::STRING);
 
+    const std::string temp_dir = get_temp_name();
+
     dir_archive write_arc;
-    write_arc.open_directory_for_write("cache://testdir");
+    write_arc.open_directory_for_write(temp_dir);
     oarchive oarc(write_arc);
     oarc << *sa;
     write_arc.close();
@@ -1106,7 +1181,7 @@ struct unity_sarray_test {
 
     auto sa2 = std::make_shared<unity_sarray>();
     dir_archive read_arc;
-    read_arc.open_directory_for_read("cache://testdir");
+    read_arc.open_directory_for_read(temp_dir);
     iarchive iarc(read_arc);
     iarc >> *sa2;
     read_arc.close();
@@ -1184,6 +1259,9 @@ BOOST_AUTO_TEST_CASE(test_logical_filter_with_strings) {
 }
 BOOST_AUTO_TEST_CASE(test_logical_vector_ops) {
   unity_sarray_test::test_logical_vector_ops();
+}
+BOOST_AUTO_TEST_CASE(test_logical_vector_ops_missing_value_propagation) {
+  unity_sarray_test::test_logical_vector_ops_missing_value_propagation();
 }
 BOOST_AUTO_TEST_CASE(test_string_scalar_ops) {
   unity_sarray_test::test_string_scalar_ops();

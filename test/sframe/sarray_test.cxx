@@ -501,6 +501,68 @@ struct sarray_test {
     TS_ASSERT_EQUALS(rval[1], data[0]);
   }
 
+  void test_sarray_many_small_append(void) {
+    std::vector<flexible_type> data{flexible_type(1.0)};
+    sarray<flexible_type> array;
+    array.open_for_write(1);
+    turi::copy(data.begin(), data.end(), array);
+    array.close();
+
+    sarray<flexible_type> array2 = array.append(array);
+    for (size_t i = 0;i < 510; ++i) {
+      array2 = array2.append(array);
+    }
+    auto reader = array2.get_reader();
+    std::vector<flexible_type> rval;
+    reader->read_rows(0, 512, rval);
+    TS_ASSERT_EQUALS(array2.size(), 512);
+    TS_ASSERT_EQUALS(rval.size(), 512);
+    for (size_t i = 0;i < 512; ++i) {
+      TS_ASSERT_EQUALS(rval[i], data[0]);
+    }
+    TS_ASSERT(array2.get_index_info().segment_files.size() <= 256);
+
+    // try it again changing the compaction threshold so that we trigger
+    // the slow compact route
+    auto OLD_SFRAME_COMPACTION_THRESHOLD = SFRAME_COMPACTION_THRESHOLD; 
+    auto OLD_FAST_COMPACT_BLOCKS_IN_SMALL_SEGMENT = FAST_COMPACT_BLOCKS_IN_SMALL_SEGMENT;
+    for (size_t i = 0;i < 512; ++i) {
+      array2 = array2.append(array);
+    }
+    TS_ASSERT_EQUALS(array2.size(), 1024);
+    reader = array2.get_reader();
+    reader->read_rows(0, 1024, rval);
+    TS_ASSERT_EQUALS(rval.size(), 1024);
+    for (size_t i = 0;i < 1024; ++i) {
+      TS_ASSERT_EQUALS(rval[i], data[0]);
+    }
+    TS_ASSERT(array2.get_index_info().segment_files.size() <= SFRAME_COMPACTION_THRESHOLD);
+
+    SFRAME_COMPACTION_THRESHOLD = OLD_SFRAME_COMPACTION_THRESHOLD; 
+    FAST_COMPACT_BLOCKS_IN_SMALL_SEGMENT = OLD_FAST_COMPACT_BLOCKS_IN_SMALL_SEGMENT;
+  }
+
+  void test_sarray_recursive_append(void) {
+    std::vector<flexible_type> data{flexible_type(1.0)};
+    sarray<flexible_type> array;
+    array.open_for_write(1);
+    turi::copy(data.begin(), data.end(), array);
+    array.close();
+
+    for (size_t i = 0;i < 20; ++i) {
+      array = array.append(array);
+    }
+    TS_ASSERT_EQUALS(array.size(), 1048576);
+    TS_ASSERT(array.get_index_info().segment_files.size() <= SFRAME_COMPACTION_THRESHOLD);
+    auto reader = array.get_reader();
+    std::vector<flexible_type> rval;
+    reader->read_rows(0, 1048576, rval);
+    TS_ASSERT_EQUALS(rval.size(), 1048576);
+    for (size_t i = 0;i < 1048576; ++i) {
+      TS_ASSERT_EQUALS(rval[i], data[0]);
+    }
+
+  }
   void validate_test_sarray_logical_segments(std::unique_ptr<sarray_reader<size_t> > reader,
                                              size_t nsegments) {
     TS_ASSERT_EQUALS(reader->num_segments(), nsegments);
@@ -657,6 +719,12 @@ BOOST_AUTO_TEST_CASE(test_sarray_append) {
 }
 BOOST_AUTO_TEST_CASE(test_sarray_small_append) {
   sarray_test::test_sarray_small_append();
+}
+BOOST_AUTO_TEST_CASE(test_sarray_many_small_append) {
+  sarray_test::test_sarray_many_small_append();
+}
+BOOST_AUTO_TEST_CASE(test_sarray_recursive_append) {
+  sarray_test::test_sarray_recursive_append();
 }
 BOOST_AUTO_TEST_CASE(test_sarray_logical_segments) {
   sarray_test::test_sarray_logical_segments();

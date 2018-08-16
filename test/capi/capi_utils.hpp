@@ -1,8 +1,9 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
+/* Copyright © 2018 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
 #ifndef CAPI_TEST_UTILS
 #define CAPI_TEST_UTILS
 
@@ -28,8 +29,12 @@
   } while (false)
 
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-function"
+#endif
 
-
+__attribute__((__unused__))
 static tc_flex_list* make_flex_list_double(const std::vector<double>& v) {
 
   tc_error* error = NULL;
@@ -78,6 +83,7 @@ static tc_flex_list* make_flex_list_double(const std::vector<double>& v) {
   return fl;
 }
 
+__attribute__((__unused__))
 static tc_flex_list* make_flex_list_string(const std::vector<std::string>& v) {
 
   tc_error* error = NULL;
@@ -110,6 +116,8 @@ static tc_flex_list* make_flex_list_string(const std::vector<std::string>& v) {
   return fl;
 }
 
+
+__attribute__((__unused__))
 static tc_sarray* make_sarray_double(const std::vector<double>& v) {
 
   tc_error* error = NULL;
@@ -140,6 +148,41 @@ static tc_sarray* make_sarray_double(const std::vector<double>& v) {
   return sa;
 }
 
+__attribute__((__unused__))
+static tc_sarray* make_sarray_string(const std::vector<std::string>& v) {
+
+  tc_error* error = NULL;
+
+  tc_flex_list* fl = make_flex_list_string(v);
+
+  tc_sarray* sa = tc_sarray_create_from_list(fl, &error);
+
+  CAPI_CHECK_ERROR(error);
+
+  {
+    // Make sure it gets out what we want it to.
+    for(size_t i = 0; i < v.size(); ++i) {
+      tc_flexible_type* ft = tc_sarray_extract_element(sa, i, &error);
+      CAPI_CHECK_ERROR(error);
+
+      TS_ASSERT(tc_ft_is_string(ft) != 0);
+
+      size_t len = tc_ft_string_length(ft, &error);
+      CAPI_CHECK_ERROR(error);
+      const char * data = tc_ft_string_data(ft, &error);
+      CAPI_CHECK_ERROR(error);
+
+      std::string val(data, len);
+      TS_ASSERT(v[i] == val);
+
+      tc_release(ft);
+    }
+  }
+
+  return sa;
+}
+
+__attribute__((__unused__))
 static tc_sframe* make_sframe_double(const std::vector<std::pair<std::string, std::vector<double> > >& data ) {
 
     tc_error* error = NULL;
@@ -178,53 +221,63 @@ static tc_sframe* make_sframe_double(const std::vector<std::pair<std::string, st
     return sf;
   }
 
-static bool check_equality_gl_sframe(
-  const turi::gl_sframe& sf_gl, const turi::gl_sframe& ref_gl) {
+__attribute__((__unused__))
+  static bool check_equality_gl_sframe(
+  turi::gl_sframe sf_gl, turi::gl_sframe ref_gl, bool check_row_order=true) {
 
   size_t num_columns_sf = sf_gl.num_columns();
   size_t num_columns_ref = ref_gl.num_columns();
 
-  if (num_columns_sf == num_columns_ref) {
-    std::vector<std::string> column_names_sf = sf_gl.column_names();
-    std::vector<std::string> column_names_ref = ref_gl.column_names();
-    TS_ASSERT(column_names_sf == column_names_ref);
-    for (size_t column_index=0; column_index < num_columns_sf; column_index++) {
-      // go through all columns and check for sarray equality one by one
+  TS_ASSERT_EQUALS(num_columns_sf, num_columns_ref);
 
-      turi::gl_sarray column_sf = sf_gl.select_column(
-        column_names_sf[column_index]);
-      turi::gl_sarray column_ref = ref_gl.select_column(
-        column_names_ref[column_index]);
+  std::vector<std::string> column_names_sf = sf_gl.column_names();
+  std::vector<std::string> column_names_ref = ref_gl.column_names();
+  TS_ASSERT(column_names_sf == column_names_ref);
 
-      if (column_sf.dtype() != column_ref.dtype()) return false;
+  if (!check_row_order) {
+      sf_gl = sf_gl.sort(column_names_sf);
+      ref_gl = ref_gl.sort(column_names_ref);
+  }
 
-      for (size_t i = 0; i < column_sf.size(); i++) {
-        if (column_sf[i].get_type() == turi::flex_type_enum::UNDEFINED
-          || column_ref[i].get_type() == turi::flex_type_enum::UNDEFINED) {
-          if (column_sf[i] != column_ref[i]) return false;
-          else continue;
+  for (size_t column_index=0; column_index < num_columns_sf; column_index++) {
+    // go through all columns and check for sarray equality one by one
+
+    turi::gl_sarray column_sf = sf_gl.select_column(
+      column_names_sf[column_index]);
+    turi::gl_sarray column_ref = ref_gl.select_column(
+      column_names_ref[column_index]);
+
+    TS_ASSERT_EQUALS(column_sf.dtype(), column_ref.dtype());
+
+    for (size_t i = 0; i < column_sf.size(); i++) {
+      if (column_sf.dtype() == turi::flex_type_enum::FLOAT) {
+        if ((std::isnan(column_sf[i].get<turi::flex_float>()))
+          && (std::isnan(column_ref[i].get<turi::flex_float>()))) {
+          continue;
         }
-        if (column_sf.dtype() == turi::flex_type_enum::FLOAT) {
-          if ((std::isnan(column_sf[i].get<turi::flex_float>()))
-            && (std::isnan(column_ref[i].get<turi::flex_float>()))) {
-            continue;
-          }
-          if ((std::isinf(column_sf[i].get<turi::flex_float>()))
-            && (std::isinf(column_ref[i].get<turi::flex_float>()))) {
-            // check for both positive or both negative
-            if ((column_sf[i] > 0 && column_ref[i] < 0)
-              || (column_sf[i] < 0 && column_ref[i] > 0)) {
-              // their signs are different so not equal
-              return false;
-            } else continue;
-          }
+        if ((std::isinf(column_sf[i].get<turi::flex_float>()))
+          && (std::isinf(column_ref[i].get<turi::flex_float>()))) {
+          // check for both positive or both negative
+          TS_ASSERT_EQUALS(column_sf[i] > 0, column_ref[i] > 0);
+          TS_ASSERT_EQUALS(column_sf[i] < 0, column_ref[i] < 0);
         }
-        if (column_sf[i] != column_ref[i]) return false;
       }
-      return true;
+      TS_ASSERT_EQUALS(column_sf[i], column_ref[i]);
     }
   }
-  return false;
+
+  return true;
 }
+
+__attribute__((__unused__))
+  static bool check_equality_tc_sframe(
+  tc_sframe *sf, tc_sframe *ref, bool check_row_order=true) {
+
+  return check_equality_gl_sframe(sf->value, ref->value, check_row_order);
+}
+
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 
 #endif

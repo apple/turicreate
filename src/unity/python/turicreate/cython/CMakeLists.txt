@@ -13,7 +13,13 @@ function(cython_add_turicreate_module _module_name _sources)
   cython_add_module( ${_module_name} ${_sources} )
   set_property(TARGET ${_module_name} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,-rpath,\\$ORIGIN -Wl,-rpath,\\$ORIGIN/.. -Wl,-rpath,${CMAKE_CURRENT_BINARY_DIR} ")
   target_link_libraries(${_module_name} boost nanomsg ${UNITY_EXTENSION_LIBRARY})
-  set_property(TARGET ${_module_name} APPEND_STRING PROPERTY COMPILE_FLAGS " -include ${CMAKE_CURRENT_SOURCE_DIR}/cython_cpp_error_handler.hpp ")
+  set_property(TARGET ${_module_name} APPEND_STRING PROPERTY COMPILE_FLAGS " -include ${CMAKE_CURRENT_SOURCE_DIR}/cython_cpp_error_handler.hpp")
+  set_property(TARGET ${_module_name} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-writable-strings")
+
+  if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    set_property(TARGET ${_module_name} APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-sign-compare")
+  endif()
+
   add_dependencies(${_module_name} release_binaries)
 endfunction()
 
@@ -27,8 +33,6 @@ foreach(source ${cython_sources})
   set_target_properties(${target} PROPERTIES OUTPUT_NAME ${target})
   add_dependencies(cython_targets ${target})
 endforeach()
-
-target_link_libraries(cy_server unity)
 
 
 ADD_CUSTOM_TARGET (clean_cython)

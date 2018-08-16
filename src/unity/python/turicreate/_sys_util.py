@@ -64,7 +64,12 @@ def make_unity_server_env():
     # Set mxnet envvars
     if 'MXNET_CPU_WORKER_NTHREADS' not in env:
         from multiprocessing import cpu_count
-        num_workers = min(2, int(env.get('OMP_NUM_THREADS', cpu_count())))
+        num_cpus = int(env.get('OMP_NUM_THREADS', cpu_count()))
+        if sys.platform == 'darwin':
+            num_workers = num_cpus
+        else:
+            # On Linux, BLAS doesn't seem to tolerate larger numbers of workers.
+            num_workers = min(2, num_cpus)
         env['MXNET_CPU_WORKER_NTHREADS'] = str(num_workers)
 
     ## set local to be c standard so that unity_server will run ##

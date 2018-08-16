@@ -3,9 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
 #include <parallel/pthread_tools.hpp>
 #include <boost/bind.hpp>
 #include <util/any.hpp>
+#include <util/sys_util.hpp>
+
 #ifdef _WIN32
 #include <cross_platform/windows_wrapper.hpp>
 #endif
@@ -29,7 +32,7 @@ namespace turi {
     return keys.TURI_TSD_ID;
   }
   // This forces get_tsd_id to be called prior to main.
-  static pthread_key_t __unused_init_keys__(get_tsd_id());
+  static TURI_ATTRIBUTE_UNUSED pthread_key_t __unused_init_keys__(get_tsd_id());
   
   // the combination of the two mechanisms above will force the
   // thread local store to be initialized

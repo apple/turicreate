@@ -6,65 +6,70 @@
 
 #include <algorithm>
 
-#include <protobuf/stubs/common.h>
-#include <protobuf/stubs/port.h>
-#include <protobuf/stubs/once.h>
-#include <protobuf/io/coded_stream.h>
-#include <protobuf/wire_format_lite_inl.h>
-#include <protobuf/io/zero_copy_stream_impl_lite.h>
+#include <google/protobuf/stubs/common.h>
+#include <google/protobuf/stubs/port.h>
+#include <google/protobuf/stubs/once.h>
+#include <google/protobuf/io/coded_stream.h>
+#include <google/protobuf/wire_format_lite_inl.h>
+#include <google/protobuf/io/zero_copy_stream_impl_lite.h>
 // @@protoc_insertion_point(includes)
 
 namespace CoreML {
 namespace Specification {
+class NormalizerDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<Normalizer> {
+} _Normalizer_default_instance_;
 
-void protobuf_ShutdownFile_Normalizer_2eproto() {
-  Normalizer_default_instance_.Shutdown();
+namespace protobuf_Normalizer_2eproto {
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTableField
+    const TableStruct::entries[] = {
+  {0, 0, 0, ::google::protobuf::internal::kInvalidMask, 0, 0},
+};
+
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::AuxillaryParseTableField
+    const TableStruct::aux[] = {
+  ::google::protobuf::internal::AuxillaryParseTableField(),
+};
+PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTable const
+    TableStruct::schema[] = {
+  { NULL, NULL, 0, -1, -1, false },
+};
+
+
+void TableStruct::Shutdown() {
+  _Normalizer_default_instance_.Shutdown();
 }
 
-void protobuf_InitDefaults_Normalizer_2eproto_impl() {
+void TableStruct::InitDefaultsImpl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  Normalizer_default_instance_.DefaultConstruct();
-  Normalizer_default_instance_.get_mutable()->InitAsDefaultInstance();
+  ::google::protobuf::internal::InitProtobufDefaults();
+  _Normalizer_default_instance_.DefaultConstruct();
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_InitDefaults_Normalizer_2eproto_once_);
-void protobuf_InitDefaults_Normalizer_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_InitDefaults_Normalizer_2eproto_once_,
-                 &protobuf_InitDefaults_Normalizer_2eproto_impl);
+void InitDefaults() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &TableStruct::InitDefaultsImpl);
 }
-void protobuf_AddDesc_Normalizer_2eproto_impl() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  protobuf_InitDefaults_Normalizer_2eproto();
-  ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_Normalizer_2eproto);
+void AddDescriptorsImpl() {
+  InitDefaults();
+  ::google::protobuf::internal::OnShutdown(&TableStruct::Shutdown);
 }
 
-GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_AddDesc_Normalizer_2eproto_once_);
-void protobuf_AddDesc_Normalizer_2eproto() {
-  ::google::protobuf::GoogleOnceInit(&protobuf_AddDesc_Normalizer_2eproto_once_,
-                 &protobuf_AddDesc_Normalizer_2eproto_impl);
+void AddDescriptors() {
+  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
+  ::google::protobuf::GoogleOnceInit(&once, &AddDescriptorsImpl);
 }
 #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 // Force AddDescriptors() to be called at static initialization time.
-struct StaticDescriptorInitializer_Normalizer_2eproto {
-  StaticDescriptorInitializer_Normalizer_2eproto() {
-    protobuf_AddDesc_Normalizer_2eproto();
+struct StaticDescriptorInitializer {
+  StaticDescriptorInitializer() {
+    AddDescriptors();
   }
-} static_descriptor_initializer_Normalizer_2eproto_;
+} static_descriptor_initializer;
 #endif  // GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
 
-namespace {
-
-static void MergeFromFail(int line) GOOGLE_ATTRIBUTE_COLD GOOGLE_ATTRIBUTE_NORETURN;
-static void MergeFromFail(int line) {
-  ::google::protobuf::internal::MergeFromFail(__FILE__, line);
-}
-
-}  // namespace
-
-
-// ===================================================================
+}  // namespace protobuf_Normalizer_2eproto
 
 bool Normalizer_NormType_IsValid(int value) {
   switch (value) {
@@ -85,25 +90,27 @@ const Normalizer_NormType Normalizer::NormType_MIN;
 const Normalizer_NormType Normalizer::NormType_MAX;
 const int Normalizer::NormType_ARRAYSIZE;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+// ===================================================================
+
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int Normalizer::kNormTypeFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Normalizer::Normalizer()
-  : ::google::protobuf::MessageLite(), _arena_ptr_(NULL) {
-  if (this != internal_default_instance()) protobuf_InitDefaults_Normalizer_2eproto();
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_Normalizer_2eproto::InitDefaults();
+  }
   SharedCtor();
   // @@protoc_insertion_point(constructor:CoreML.Specification.Normalizer)
 }
-
-void Normalizer::InitAsDefaultInstance() {
-}
-
 Normalizer::Normalizer(const Normalizer& from)
   : ::google::protobuf::MessageLite(),
-    _arena_ptr_(NULL) {
-  SharedCtor();
-  UnsafeMergeFrom(from);
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  normtype_ = from.normtype_;
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.Normalizer)
 }
 
@@ -126,11 +133,9 @@ void Normalizer::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
 const Normalizer& Normalizer::default_instance() {
-  protobuf_InitDefaults_Normalizer_2eproto();
+  protobuf_Normalizer_2eproto::InitDefaults();
   return *internal_default_instance();
 }
-
-::google::protobuf::internal::ExplicitlyConstructed<Normalizer> Normalizer_default_instance_;
 
 Normalizer* Normalizer::New(::google::protobuf::Arena* arena) const {
   Normalizer* n = new Normalizer;
@@ -151,13 +156,14 @@ bool Normalizer::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.Normalizer)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional .CoreML.Specification.Normalizer.NormType normType = 1;
+      // .CoreML.Specification.Normalizer.NormType normType = 1;
       case 1: {
-        if (tag == 8) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(8u)) {
           int value;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
@@ -166,7 +172,6 @@ bool Normalizer::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
@@ -194,7 +199,10 @@ failure:
 void Normalizer::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:CoreML.Specification.Normalizer)
-  // optional .CoreML.Specification.Normalizer.NormType normType = 1;
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .CoreML.Specification.Normalizer.NormType normType = 1;
   if (this->normtype() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       1, this->normtype(), output);
@@ -207,7 +215,7 @@ size_t Normalizer::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.Normalizer)
   size_t total_size = 0;
 
-  // optional .CoreML.Specification.Normalizer.NormType normType = 1;
+  // .CoreML.Specification.Normalizer.NormType normType = 1;
   if (this->normtype() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::EnumSize(this->normtype());
@@ -227,15 +235,11 @@ void Normalizer::CheckTypeAndMergeFrom(
 
 void Normalizer::MergeFrom(const Normalizer& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.Normalizer)
-  if (GOOGLE_PREDICT_TRUE(&from != this)) {
-    UnsafeMergeFrom(from);
-  } else {
-    MergeFromFail(__LINE__);
-  }
-}
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
 
-void Normalizer::UnsafeMergeFrom(const Normalizer& from) {
-  GOOGLE_DCHECK(&from != this);
   if (from.normtype() != 0) {
     set_normtype(from.normtype());
   }
@@ -245,11 +249,10 @@ void Normalizer::CopyFrom(const Normalizer& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.Normalizer)
   if (&from == this) return;
   Clear();
-  UnsafeMergeFrom(from);
+  MergeFrom(from);
 }
 
 bool Normalizer::IsInitialized() const {
-
   return true;
 }
 
@@ -259,7 +262,6 @@ void Normalizer::Swap(Normalizer* other) {
 }
 void Normalizer::InternalSwap(Normalizer* other) {
   std::swap(normtype_, other->normtype_);
-  _unknown_fields_.Swap(&other->_unknown_fields_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -270,7 +272,7 @@ void Normalizer::InternalSwap(Normalizer* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // Normalizer
 
-// optional .CoreML.Specification.Normalizer.NormType normType = 1;
+// .CoreML.Specification.Normalizer.NormType normType = 1;
 void Normalizer::clear_normtype() {
   normtype_ = 0;
 }
@@ -284,9 +286,6 @@ void Normalizer::set_normtype(::CoreML::Specification::Normalizer_NormType value
   // @@protoc_insertion_point(field_set:CoreML.Specification.Normalizer.normType)
 }
 
-inline const Normalizer* Normalizer::internal_default_instance() {
-  return &Normalizer_default_instance_.get();
-}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // @@protoc_insertion_point(namespace_scope)

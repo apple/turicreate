@@ -28,6 +28,9 @@ make_library(supervised_learning
     optimization
     xgboost
     numerics
+  COMPILE_FLAGS_EXTRA_GCC
+    -Wno-unknown-pragmas  # NOTE: used for auto-generated protobuf source files
+    -Wno-unused-function  # NOTE: used for auto-generated protobuf source files
   )
 
 set_property(TARGET supervised_learning APPEND_STRING PROPERTY COMPILE_FLAGS " -DXGBOOST_CUSTOMIZE_MSG_")

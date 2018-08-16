@@ -13,11 +13,10 @@ def _mlmodel_short_description(model_type):
     from turicreate import __version__
     return '%s created by Turi Create (version %s)' % (model_type.capitalize(), __version__)
 
-
-def _set_model_metadata(mlmodel, model_class, metadata, version=None):
+def _get_model_metadata(model_class, metadata, version=None):
     """
-    Sets user-defined metadata, making sure information all models should have
-    is also available
+    Returns user-defined metadata, making sure information all models should 
+    have is also available, as a dictionary
     """
     from turicreate import __version__
     info = {
@@ -27,4 +26,13 @@ def _set_model_metadata(mlmodel, model_class, metadata, version=None):
     if version is not None:
         info['version'] = str(version)
     info.update(metadata)
+    return info
+
+
+def _set_model_metadata(mlmodel, model_class, metadata, version=None):
+    """
+    Sets user-defined metadata, making sure information all models should have
+    is also available
+    """
+    info = _get_model_metadata(model_class, metadata, version)
     mlmodel.user_defined_metadata.update(info)

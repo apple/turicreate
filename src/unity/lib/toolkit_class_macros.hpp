@@ -65,19 +65,15 @@
  * END_CLASS_MEMBER_REGISTRATION
  * \endcode
  */
-#define BEGIN_CLASS_MEMBER_REGISTRATION(python_facing_classname) \
- public: \
-   virtual inline std::string name() { \
-     return python_facing_classname; \
-   } \
-   virtual inline std::string uid() { \
-     const char* file = __FILE__; \
-     file = ((strrchr(file, '/') ? : file- 1) + 1); \
-     return std::string(file) + ":" + \
-         std::to_string(__LINE__); \
-   } \
-   virtual inline void perform_registration() { \
-     if (is_registered()) return;
+#define BEGIN_CLASS_MEMBER_REGISTRATION(python_facing_classname)                 \
+ public:                                                                         \
+  virtual inline const char* name() override { return python_facing_classname; } \
+  virtual inline const std::string& uid() override {                             \
+    static std::string _uid = ("__LINE__," __FILE__);                            \
+    return _uid;                                                                 \
+  }                                                                              \
+  virtual inline void perform_registration() override {                          \
+    if (is_registered()) return;
 
 /**
  * Registers a single class member function.

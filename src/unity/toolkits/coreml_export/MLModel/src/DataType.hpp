@@ -1,18 +1,12 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
- *
- * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
- */
 #ifndef MLMODEL_DATA_TYPE
 #define MLMODEL_DATA_TYPE
 
 #include <memory>
 #include <string>
 #include <vector>
+#include <map>
 
-#include "../build/format/FeatureTypes_enums.h"
-
-#include "Export.hpp"
+#include "unity/toolkits/coreml_export/protobuf_include_internal.hpp"
 
 namespace CoreML {
     namespace Specification {
@@ -23,7 +17,7 @@ namespace CoreML {
      * Wrapper for Specification::DataType to enable high level logic around the proto
      * struct. Ex: conversion to string for error messages, comparison logic, etc.
      */
-    class EXPORT FeatureType {
+    class FeatureType {
     private:
         FeatureType(MLFeatureTypeType type);
         std::shared_ptr<Specification::FeatureType> m_type;
@@ -39,8 +33,8 @@ namespace CoreML {
         static FeatureType Image();
 
         // parametric types
-        static FeatureType Array(const std::vector<uint64_t> dimensions);
-        static FeatureType Array(const std::vector<uint64_t> dimensions, MLArrayDataType dataType);
+        static FeatureType Array(const std::vector<int64_t> dimensions);
+        static FeatureType Array(const std::vector<int64_t> dimensions, MLArrayDataType dataType);
         static FeatureType Dictionary(MLDictionaryFeatureTypeKeyType keyType);
 
         // operators
@@ -53,6 +47,7 @@ namespace CoreML {
 
         // methods
         std::string toString() const;
+        std::map<std::string,std::string> toDictionary() const;
 
         // copies onto the heap (using operator new) -- if passed into a protobuf
         // set_allocated_ method, protobuf will take ownership.

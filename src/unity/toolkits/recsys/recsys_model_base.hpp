@@ -298,6 +298,14 @@ public:
                    double diversity_factor = 0,
                    size_t random_seed = 0) const;
 
+  std::shared_ptr<unity_sframe_base> recommend_extension_wrapper(
+    std::shared_ptr<unity_sframe_base> reference_data,
+    std::shared_ptr<unity_sframe_base> new_observation_data,
+    flex_int top_k) const;
+
+  virtual void export_to_coreml(
+    std::shared_ptr<recsys_model_base> recsys_model,
+    const std::string& filename);
 
   /**
    * Compute the precision and recall for a (potentially held out) set of
@@ -334,15 +342,15 @@ public:
   sframe get_num_users_per_item() const;
 
 
-  inline size_t get_version() const {
+  inline size_t get_version() const override {
     return RECSYS_MODEL_BASE_VERSION;
   }
 
   /// Serialization -- save
-  void save_impl(turi::oarchive& oarc) const;
+  virtual void save_impl(turi::oarchive& oarc) const override;
 
   /// Serialization -- load
-  void load_version(turi::iarchive& iarc, size_t version);
+  void load_version(turi::iarchive& iarc, size_t version) override;
 
   /// Get stats about algorithm runtime
   std::map<std::string, flexible_type> get_train_stats();
@@ -406,7 +414,7 @@ sframe recsys_model_base::_create_similar_sframe(
 
           size_t query_idx = use_all_values ? block_start + i : indexer->immutable_map_value_to_index(data[i]);
 
-          if(query_idx == -1)
+          if(query_idx == static_cast<size_t>(-1))
             continue;
 
           similar(query_idx, score_list);

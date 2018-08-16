@@ -26,7 +26,7 @@ class python_model : public model_base {
 
   public:
 
-  virtual void save_impl(oarchive& oarc) const  {
+  virtual void save_impl(oarchive& oarc) const override {
 
     // Read from pickle file (path: temp_file)
     std::ifstream in_file(temp_file, std::ios::binary);
@@ -53,13 +53,13 @@ class python_model : public model_base {
   /**
    * Get a version for the object.
    */
-  size_t get_version() const {
+  size_t get_version() const override {
     return PYTHON_MODEL_VERSION;
   }
   /**
    * Load the object using Turi's iarc.
    */
-  virtual void load_version(iarchive& iarc, size_t version) {
+  virtual void load_version(iarchive& iarc, size_t version) override {
     std::string language;
     unsigned int file_size = 0;
 

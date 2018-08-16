@@ -215,7 +215,7 @@ class l2_rescaling: public standardization_interface {
   /**
    * Default destructor.
    */
-  ~l2_rescaling() {};
+  virtual ~l2_rescaling() {}
 
   /**
    * Default constructor.
@@ -324,6 +324,23 @@ class l2_rescaling: public standardization_interface {
                              stats->stdev(k) * stats->stdev(k);
             idx++;
           }
+          break;
+        }
+
+        case ml_column_mode::UNTRANSLATED: {
+          break;
+        }
+
+        case ml_column_mode::CATEGORICAL_SORTED: {
+          std::cerr << "Unsupported ml_column_mode for L2 rescaling: CATEGORICAL_SORTED"
+                    << std::endl;  // TODO: finish
+          ASSERT_UNREACHABLE();
+          break;
+        }
+
+        default: {
+          std::cerr << "Unsupported ml_column_mode for L2 rescaling" << std::endl;
+          ASSERT_UNREACHABLE();
           break;
         }
       } // End of column-switch-case

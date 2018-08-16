@@ -141,44 +141,48 @@ EXPORT tc_ft_type_enum tc_ft_type(const tc_flexible_type* ft) {
   return static_cast<tc_ft_type_enum>(ft->value.get_type());
 }
 
-EXPORT int tc_ft_is_string(const tc_flexible_type* ft) {
+EXPORT bool tc_ft_is_string(const tc_flexible_type* ft) {
   return (ft != NULL) && (ft->value.get_type() == turi::flex_type_enum::STRING);
 }
 
-EXPORT int tc_ft_is_double(const tc_flexible_type* ft) {
+EXPORT bool tc_ft_is_double(const tc_flexible_type* ft) {
   return (ft != NULL) && (ft->value.get_type() == turi::flex_type_enum::FLOAT);
 }
 
-EXPORT int tc_ft_is_int64(const tc_flexible_type* ft) {
+EXPORT bool tc_ft_is_int64(const tc_flexible_type* ft) {
   return (ft != NULL) && (ft->value.get_type() == turi::flex_type_enum::INTEGER);
 }
 
-EXPORT int tc_ft_is_image(const tc_flexible_type* ft) {
+EXPORT bool tc_ft_is_image(const tc_flexible_type* ft) {
   return (ft != NULL) && (ft->value.get_type() == turi::flex_type_enum::IMAGE);
 }
 
-EXPORT int tc_ft_is_array(const tc_flexible_type* ft) {
+EXPORT bool tc_ft_is_array(const tc_flexible_type* ft) {
   return (ft != NULL) && (ft->value.get_type() == turi::flex_type_enum::VECTOR);
 }
 
-EXPORT int tc_ft_is_datetime(const tc_flexible_type* ft) {
+EXPORT bool tc_ft_is_datetime(const tc_flexible_type* ft) {
   return (ft != NULL) && (ft->value.get_type() == turi::flex_type_enum::DATETIME);
 }
 
-EXPORT int tc_ft_is_dict(const tc_flexible_type* ft) {
+EXPORT bool tc_ft_is_dict(const tc_flexible_type* ft) {
   return (ft != NULL) && (ft->value.get_type() == turi::flex_type_enum::DICT);
 }
 
-EXPORT int tc_ft_is_list(const tc_flexible_type* ft) {
+EXPORT bool tc_ft_is_list(const tc_flexible_type* ft) {
   return (ft != NULL) && (ft->value.get_type() == turi::flex_type_enum::LIST);
 }
 
-EXPORT int tc_ft_is_undefined(const tc_flexible_type* ft) {
+EXPORT bool tc_ft_is_undefined(const tc_flexible_type* ft) {
   return (ft != NULL) && (ft->value.get_type() == turi::flex_type_enum::UNDEFINED);
 }
 
-EXPORT int tc_ft_is_ndarray(const tc_flexible_type* ft) {
+EXPORT bool tc_ft_is_ndarray(const tc_flexible_type* ft) {
   return (ft != NULL) && (ft->value.get_type() == turi::flex_type_enum::ND_VECTOR);
+}
+
+EXPORT bool tc_ft_is_type(const tc_flexible_type* ft, tc_ft_type_enum t) {
+  return (ft != NULL) && (ft->value.get_type() == static_cast<turi::flex_type_enum>(t));
 }
 
 /****************************************************/
@@ -366,15 +370,26 @@ EXPORT tc_ndarray* tc_ft_ndarray(const tc_flexible_type* ft, tc_error **error) {
   ERROR_HANDLE_END(error, NULL);
 }
 
-
-
-EXPORT tc_flexible_type* tc_ft_as_string(const tc_flexible_type* ft, tc_error** error) {
+EXPORT tc_flexible_type* tc_ft_to_string(const tc_flexible_type* ft, tc_error** error) {
   ERROR_HANDLE_START();
   turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, ft, "Flexible type", NULL);
 
   return new_tc_flexible_type(ft->value.to<turi::flex_string>());
+
+  ERROR_HANDLE_END(error, NULL);
+}
+
+EXPORT tc_flexible_type* tc_ft_to_type(const tc_flexible_type* ft, tc_ft_type_enum t, tc_error** error) {
+  ERROR_HANDLE_START();
+  turi::ensure_server_initialized();
+
+  CHECK_NOT_NULL(error, ft, "Flexible type", NULL);
+
+  turi::flexible_type out(static_cast<turi::flex_type_enum>(t));
+  out.soft_assign(ft->value);
+  return new_tc_flexible_type(out);
 
   ERROR_HANDLE_END(error, NULL);
 }

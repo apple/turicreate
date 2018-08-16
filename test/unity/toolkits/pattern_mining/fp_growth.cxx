@@ -149,7 +149,7 @@ struct fp_growth_test  {
       fp_results_tree closed_itemset_tree = closet_algorithm(database, min_support);
       // Tree should be
       // header: {4:6, 2:5, 1:4, 6:3, 0:2, 3:2, 5:1}
-      // (root (4:6 (2:4(5:1, 1:2 (3:1), 6:1), 1:4 (3:2, 6:1 (0:1)), 6:2), \
+      // (root (4:6 (2:4(5:1, 1:2 (3:1), 6:1), 1:4 (3:2, 6:1 (0:1)), 6:2),
       //        2:5 (6:2 (0:1)), 6:3 (0:2)))
       // std::cout << closed_itemset_tree;
 

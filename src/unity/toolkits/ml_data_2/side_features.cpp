@@ -447,7 +447,7 @@ void ml_data_side_features::uniquify_side_column_names(
   for(size_t i = 0; i < _full_metadata.size(); ++i)
     existing_columns.insert(_full_metadata[i]->name);
 
-  bool join_column_detected = false;
+  TURI_ATTRIBUTE_UNUSED_NDEBUG bool join_column_detected = false;
 
   DASSERT_TRUE(column_name_map.empty());
 

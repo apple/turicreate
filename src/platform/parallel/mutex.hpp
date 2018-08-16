@@ -46,9 +46,15 @@ namespace turi {
       ASSERT_MSG(!error, "Mutex create error %d", error);
     }
 
-    ~mutex(){
+    ~mutex() noexcept {
       int error = pthread_mutex_destroy( &m_mut );
-      DASSERT_MSG(!error, "Mutex destroy error %d", error);
+      if(error) {
+        try {
+        std::cerr << "Mutex destroy error " << error << std::endl;
+        } catch (...) { 
+        }
+        abort(); 
+      }
     }
 
     // not copyable
@@ -56,7 +62,7 @@ namespace turi {
 
     /// Acquires a lock on the mutex
     inline void lock() const {
-      int error = pthread_mutex_lock( &m_mut  );
+      TURI_ATTRIBUTE_UNUSED_NDEBUG int error = pthread_mutex_lock( &m_mut  );
       DASSERT_MSG(!error, "Mutex lock error %d", error);
 #ifdef _WIN32
       DASSERT_TRUE(!locked);
@@ -68,7 +74,8 @@ namespace turi {
 #ifdef _WIN32
       locked = false;
 #endif
-      int error = pthread_mutex_unlock( &m_mut );
+
+      TURI_ATTRIBUTE_UNUSED_NDEBUG int error = pthread_mutex_unlock( &m_mut );
       DASSERT_MSG(!error, "Mutex unlock error %d", error);
     }
     /// Non-blocking attempt to acquire a lock on the mutex
@@ -120,7 +127,7 @@ namespace turi {
     }
 
     ~recursive_mutex(){
-      int error = pthread_mutex_destroy( &m_mut );
+      TURI_ATTRIBUTE_UNUSED_NDEBUG int error = pthread_mutex_destroy( &m_mut );
       DASSERT_TRUE(!error);
     }
 
@@ -129,13 +136,13 @@ namespace turi {
 
     /// Acquires a lock on the mutex
     inline void lock() const {
-      int error = pthread_mutex_lock( &m_mut  );
+      TURI_ATTRIBUTE_UNUSED_NDEBUG int error = pthread_mutex_lock( &m_mut  );
       // if (error) std::cerr << "mutex.lock() error: " << error << std::endl;
       DASSERT_TRUE(!error);
     }
     /// Releases a lock on the mutex
     inline void unlock() const {
-      int error = pthread_mutex_unlock( &m_mut );
+      TURI_ATTRIBUTE_UNUSED_NDEBUG int error = pthread_mutex_unlock( &m_mut );
       DASSERT_TRUE(!error);
     }
     /// Non-blocking attempt to acquire a lock on the mutex

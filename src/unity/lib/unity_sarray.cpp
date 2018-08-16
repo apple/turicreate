@@ -15,7 +15,6 @@
 #include <unity/lib/unity_global_singleton.hpp>
 #include <unity/lib/variant.hpp>
 #include <fileio/temp_files.hpp>
-#include <fileio/curl_downloader.hpp>
 #include <fileio/sanitize_url.hpp>
 #include <fileio/fs_utils.hpp>
 #include <util/file_line_count_estimator.hpp>
@@ -97,7 +96,7 @@ void unity_sarray::construct_from_vector(const std::vector<flexible_type>& vec,
 
   auto sarray_ptr = std::make_shared<sarray<flexible_type>>();
 
-  sarray_ptr->open_for_write(1);
+  sarray_ptr->open_for_write(1, true /*disable padding*/);
   sarray_ptr->set_type(type);
 
   // ok. copy into the writer.
@@ -261,22 +260,31 @@ void unity_sarray::construct_from_json_record_files(std::string url) {
         const char* str = buffer.data();
         auto parse_result = parser.recursive_parse(&str, fsize);
         if (parse_result.second == false || parse_result.first.get_type() != flex_type_enum::LIST) {
-          logstream(LOG_PROGRESS) << "Unable to parse " << sanitize_url(p.first)  << ". "
-                                  << "It does not appear to be in JSON record format. "
-                                  << "A list of dictionaries is expected"  << std::endl;
-          continue;
+          std::stringstream error_msg;
+          error_msg << "Unable to parse " << sanitize_url(p.first)  << ". "
+                    << "It does not appear to be in JSON record format. "
+                    << "A list of dictionaries is expected"  << std::endl;
+
+          log_and_throw(error_msg.str());
         }
 
+        size_t num_elems_parsed = 0;
         bool has_non_dict_elements = false;
         for (const auto& element : parse_result.first.get<flex_list>()) {
           if (element.get_type() == flex_type_enum::DICT ||
               element.get_type() == flex_type_enum::UNDEFINED) {
             (*output) = element;
             ++output;
+            ++num_elems_parsed;
           } else {
             has_non_dict_elements = true;
           }
         }
+
+        logstream(LOG_PROGRESS) << "Successfully parsed an SArray of "
+                                << num_elems_parsed 
+                                << " elements from the JSON file "
+                                << sanitize_url(p.first);
 
         if (has_non_dict_elements) {
           logstream(LOG_PROGRESS) << sanitize_url(p.first)
@@ -432,7 +440,7 @@ std::shared_ptr<unity_sarray_base> unity_sarray::transform(const std::string& la
                                                            bool skip_undefined,
                                                            int seed) {
   log_func_entry();
-
+#ifdef TC_HAS_PYTHON
   // create a le_transform operator to lazily evaluate this
   auto lambda_node =
       query_eval::op_lambda_transform::
@@ -445,6 +453,9 @@ std::shared_ptr<unity_sarray_base> unity_sarray::transform(const std::string& la
   auto ret_unity_sarray = std::make_shared<unity_sarray>();
   ret_unity_sarray->construct_from_planner_node(lambda_node);
   return ret_unity_sarray;
+#else
+  log_and_throw("Python functions not supported");
+#endif
 }
 
 
@@ -1252,9 +1263,8 @@ std::shared_ptr<unity_sarray_base> unity_sarray::datetime_to_str(const std::stri
 std::shared_ptr<unity_sarray_base> unity_sarray::astype(flex_type_enum dtype,
                                                         bool undefined_on_failure) {
   auto ret = lazy_astype(dtype, undefined_on_failure);
-  if (undefined_on_failure == false &&
-      this->dtype() == flex_type_enum::STRING && dtype != flex_type_enum::STRING) {
-    // if we are parsing, materialize
+  if (undefined_on_failure == false && this->dtype() == flex_type_enum::STRING) {
+    // if we are parsing, or image loading, materialize
     ret->materialize();
   }
   return ret;
@@ -1272,6 +1282,22 @@ std::shared_ptr<unity_sarray_base> unity_sarray::lazy_astype(flex_type_enum dtyp
           undefined_on_failure);
   }
 
+  // Special path for converting strings to image
+  if (current_type == flex_type_enum::STRING &&
+      dtype == flex_type_enum::IMAGE) {
+    return transform_lambda([=](const flexible_type& f)->flexible_type {
+                                  try {
+                                    return image_util::load_image(f.to<flex_string>(), "");
+                                  } catch (...) {
+                                    if (undefined_on_failure) return FLEX_UNDEFINED;
+                                    else throw;
+                                  }
+                                },
+                                dtype,
+                                true /*skip undefined*/,
+                                0 /*random seed*/);
+  };
+
   // if no changes. just keep the identity function
   if (dtype == current_type) {
     return std::static_pointer_cast<unity_sarray>(shared_from_this());
@@ -1283,7 +1309,7 @@ std::shared_ptr<unity_sarray_base> unity_sarray::lazy_astype(flex_type_enum dtyp
         (current_type == flex_type_enum::STRING && dtype == flex_type_enum::VECTOR) ||
         (current_type == flex_type_enum::STRING && dtype == flex_type_enum::LIST) ||
         (current_type == flex_type_enum::STRING && dtype == flex_type_enum::DICT) ||
-        (current_type == flex_type_enum::LIST&& dtype == flex_type_enum::VECTOR)
+        (current_type == flex_type_enum::LIST && dtype == flex_type_enum::VECTOR)
        )) {
     log_and_throw("Not able to cast to given type");
   }
@@ -1498,9 +1524,10 @@ std::shared_ptr<unity_sarray_base> unity_sarray::scalar_operator(flexible_type o
   // most of the time the scalar operators can skip undefined. Except
   //  - certain operators which depend on equality of values.
   //     like == or != or in.
+  //  - or if the binary operator does ternary logic
   //  - Or if the other scalar value is undefined.
-  bool op_is_equality_compare = (op == "==" || op == "!=" || op == "in");
-  if (other.get_type() == flex_type_enum::UNDEFINED || op_is_equality_compare) {
+  bool op_ternary = (op == "==" || op == "!=" || op == "in" || op == "&" || op == "|");
+  if (other.get_type() == flex_type_enum::UNDEFINED || op_ternary) {
     auto transformfn =
         [=](const flexible_type& f)->flexible_type {
           return right_operator ? binaryfn(other, f) : binaryfn(f, other);
@@ -1565,28 +1592,59 @@ std::shared_ptr<unity_sarray_base> unity_sarray::vector_operator(
   auto transformfn =
       unity_sarray_binary_operations::get_binary_operator(dtype(), other->dtype(), op);
 
-  bool op_is_not_equality_compare = (op != "==" && op != "!=");
-  bool op_is_equality = (op == "==");
-  auto transform_fn_with_undefined_checking =
-      [=](const sframe_rows::row& frow,
-          const sframe_rows::row& grow)->flexible_type {
-        const auto& f = frow[0];
-        const auto& g = grow[0];
-        if (f.get_type() == flex_type_enum::UNDEFINED ||
-            g.get_type() == flex_type_enum::UNDEFINED) {
-          if (op_is_not_equality_compare) {
-            // op is not == or !=
-            return FLEX_UNDEFINED;
-          } else if (op_is_equality) {
-            // op is ==
+  query_eval::binary_transform_type transform_fn_with_undefined_checking;
+  if (op == "==") {
+    transform_fn_with_undefined_checking =
+        [=](const sframe_rows::row& frow,
+            const sframe_rows::row& grow)->flexible_type {
+          const auto& f = frow[0];
+          const auto& g = grow[0];
+          if (f.get_type() == flex_type_enum::UNDEFINED ||
+              g.get_type() == flex_type_enum::UNDEFINED) {
+            // this says (UNDEFINED == UNDEFINED) == True
+            // and false in all other cases where an UNDEFINED appears
             return f.get_type() == g.get_type();
-          } else {
-            // op is !=
+          }
+          else return transformfn(f, g);
+        };
+  } else if (op == "!=") {
+    transform_fn_with_undefined_checking =
+        [=](const sframe_rows::row& frow,
+            const sframe_rows::row& grow)->flexible_type {
+          const auto& f = frow[0];
+          const auto& g = grow[0];
+          if (f.get_type() == flex_type_enum::UNDEFINED ||
+              g.get_type() == flex_type_enum::UNDEFINED) {
+            // this says (UNDEFINED != UNDEFINED) == False
+            // and true in all other cases where an UNDEFINED appears
             return f.get_type() != g.get_type();
           }
-        }
-        else return transformfn(f, g);
-      };
+          else return transformfn(f, g);
+        };
+  } else if (op == "&" || op == "|") {
+    // these do ternary logic
+    transform_fn_with_undefined_checking =
+        [=](const sframe_rows::row& frow,
+            const sframe_rows::row& grow)->flexible_type {
+          const auto& f = frow[0];
+          const auto& g = grow[0];
+          return transformfn(f, g);
+        };
+  } else {
+    // all others constant propagate
+    transform_fn_with_undefined_checking =
+        [=](const sframe_rows::row& frow,
+            const sframe_rows::row& grow)->flexible_type {
+          const auto& f = frow[0];
+          const auto& g = grow[0];
+          if (f.get_type() == flex_type_enum::UNDEFINED ||
+              g.get_type() == flex_type_enum::UNDEFINED) {
+            return FLEX_UNDEFINED;
+          }
+          else return transformfn(f, g);
+        };
+  }
+
   auto ret = std::make_shared<unity_sarray>();
   ret->construct_from_planner_node(
       op_binary_transform::make_planner_node(m_planner_node,
@@ -1719,7 +1777,7 @@ std::shared_ptr<unity_sarray_base> unity_sarray::sample(float percent,
 }
 
 
-std::shared_ptr<unity_sarray_base> unity_sarray::hash(int random_seed) {
+std::shared_ptr<unity_sarray_base> unity_sarray::hash(uint64_t random_seed) {
   flex_int seed_hash = flexible_type((flex_int)(random_seed)).hash();
   auto filter_fn = [seed_hash](const flexible_type& val)->flexible_type {
         return hash64(val.hash() ^ seed_hash);
@@ -2583,8 +2641,13 @@ struct slicer_impl {
       else real_start = m_start;
     } else {
       // default values
-      if (m_step > 0) real_start = 0;
-      else if (m_step < 0) real_start = s.size() - 1;
+      if (m_step > 0) {
+        real_start = 0;
+      } else if (m_step < 0) {
+        real_start = s.size() - 1;
+      } else {
+        log_and_throw("Step value for a slice cannot be zero.");
+      }
     }
 
     int64_t real_stop;
@@ -2593,8 +2656,13 @@ struct slicer_impl {
       else real_stop = m_stop;
     } else {
       // default values
-      if (m_step > 0) real_stop = s.size();
-      else if (m_step < 0) real_stop = -1;
+      if (m_step > 0) {
+        real_stop = s.size();
+      } else if (m_step < 0) {
+        real_stop = -1;
+      } else {
+        log_and_throw("Step value for a slice cannot be zero.");
+      }
     }
 
     if (m_step > 0 && real_start < real_stop) {
@@ -2609,7 +2677,10 @@ struct slicer_impl {
       for (int64_t i = real_start; i > real_stop; i += m_step) {
         ret.push_back(s[i]);
       }
+    } else {
+      // Slice is empty; append no items to return vector.
     }
+
     return ret;
   }
 };
@@ -2884,6 +2955,8 @@ std::shared_ptr<model_base> unity_sarray::plot(const std::string& path_to_client
 
   using namespace turi;
   using namespace turi::visualization;
+
+  this->materialize();
 
   if (this->size() == 0) {
     log_and_throw("Nothing to show; SArray is empty.");

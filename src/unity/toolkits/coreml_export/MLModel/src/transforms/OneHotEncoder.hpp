@@ -1,19 +1,15 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
- *
- * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
- */
 #ifndef MLMODEL_ONE_HOT_ENCODER_SPEC_HPP
 #define MLMODEL_ONE_HOT_ENCODER_SPEC_HPP
 
 #include "../Result.hpp"
 #include "../Model.hpp"
-#include "../../build/format/OneHotEncoder_enums.h"
+
+#include "unity/toolkits/coreml_export/protobuf_include_internal.hpp"
 
 
 namespace CoreML {
     
-    class EXPORT OneHotEncoder : public Model {
+    class OneHotEncoder : public Model {
     
     public:
 

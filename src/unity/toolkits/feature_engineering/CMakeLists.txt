@@ -8,7 +8,6 @@ make_library(unity_feature_engineering
     one_hot_encoder.cpp
     feature_binner.cpp
     sample_transformer.cpp
-    feature_hasher.cpp
     dimension_reduction.cpp
     quadratic_features.cpp
     topk_indexer.cpp
@@ -29,4 +28,7 @@ make_library(unity_feature_engineering
     unity_clustering
     unity_graph_analytics
     unity_ml_model
+  COMPILE_FLAGS_EXTRA_GCC
+    -Wno-unknown-pragmas  # NOTE: used for auto-generated protobuf source files
+    -Wno-unused-function  # NOTE: used for auto-generated protobuf source files
     )

@@ -1,13 +1,15 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
- *
- * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
- */
+//
+//  LinearRegressionValidator.hpp
+//  libmlmodelspec
+//
+//  Created by Srikrishna Sridhar on 11/10/16.
+//  Copyright © 2016 Apple. All rights reserved.
+//
+
 #include "Result.hpp"
 #include "Validators.hpp"
 #include "ValidatorUtils-inl.hpp"
-#include "ValidatorClassifiers-impl.hpp"
-#include "../build/format/Model.pb.h"
+#include "unity/toolkits/coreml_export/protobuf_include_internal.hpp"
 
 namespace CoreML {
 
@@ -17,7 +19,7 @@ namespace CoreML {
         const Specification::ModelDescription& interface = format.description();
 
         // Must have a regressor interface (since GLMRegressor is an MLRegressor)
-        Result result = validateRegressorInterface(interface);
+        Result result = validateRegressorInterface(interface, format.specificationversion());
         if (!result.good()) {
             return result;
         }
@@ -69,7 +71,10 @@ namespace CoreML {
         // Check has a classifier interface
         Specification::ModelDescription interface = format.description();
         Result result = validateClassifierInterface(format, format.glmclassifier());
-
+        if (!result.good()) {
+            return result;
+        }
+        
         // Check that inputs are vectorizable
         result = validateDescriptionsAreAllVectorizableTypes(interface.input());
         if (!result.good()) {
@@ -89,7 +94,7 @@ namespace CoreML {
         }
 
         // Check has weights and same size as offsets
-        size_t numCoefficient = glmClassifier.weights_size();
+        int numCoefficient = glmClassifier.weights_size();
         if(numCoefficient == 0) {
             return Result(ResultType::INVALID_MODEL_PARAMETERS, "The number of DoubleArrays in weights must be greater than zero");
         }
@@ -98,7 +103,7 @@ namespace CoreML {
         }
 
         // Check number of weight vector makes sense based on the number of classes and the class encoding
-        size_t numClasses;
+        int numClasses;
         switch (glmClassifier.ClassLabels_case()) {
             case Specification::GLMClassifier::kInt64ClassLabels:
                 numClasses = glmClassifier.int64classlabels().vector_size();
