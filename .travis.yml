@@ -60,4 +60,4 @@ script:
   - sudo pip install -U pyOpenSSL ndg-httpsclient pyasn1
   # Build the wheel
   #- travis_wait 30
-  - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=2 --debug
+  - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=2 --debug --skip_cpp_test
