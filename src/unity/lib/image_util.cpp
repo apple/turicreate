@@ -4,6 +4,10 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <unity/lib/image_util.hpp>
+
+#include <algorithm>
+#include <string>
+
 #include <image/image_util_impl.hpp>
 #include <sframe/sframe_iterators.hpp>
 #include <sframe/sframe.hpp>
@@ -152,6 +156,8 @@ flexible_type load_image(const std::string& url, const std::string format) {
   return ret;
 };
 
+namespace {
+
 size_t load_images_impl(std::vector<std::string>& all_files,
                         sarray<flexible_type>::iterator& image_iter,
                         sarray<flexible_type>::iterator& path_iter,
@@ -231,17 +237,22 @@ std::vector<std::string> get_directory_files(std::string url, bool recursive) {
   return ret;
 }
 
+bool lacks_image_extension(const std::string& url) {
 
-static bool endswith(std::string full_string, std::string ending, 
-    bool case_sensitive) {
-    if (!case_sensitive) {
-      boost::algorithm::to_lower(full_string);
-      boost::algorithm::to_lower(ending);
-    }
-    return (
-      full_string.rfind(ending) == full_string.length() - ending.length()
-      );
+  // Return true unless the url ends with any of these strings.
+  const std::initializer_list<const char*> extensions =
+      {".jpg", ".jpeg", ".png"};
+
+  // Define a predicate (over extensions) that performs case-insensitive
+  // matching against the url.
+  auto ends_url = [&url](const char* extension) {
+    return boost::algorithm::iends_with(url, extension);
+  };
+
+  return std::none_of(extensions.begin(), extensions.end(), ends_url);
 }
+
+}  // namespace
 
 /**
  * Construct an sframe of flex_images, with url pointing to directory where images reside. 
@@ -251,28 +262,37 @@ std::shared_ptr<unity_sframe> load_images(std::string url, std::string format, b
     log_func_entry();
 
     std::vector<std::string> all_files;
-    if (endswith(url, std::string(".jpg"), false) 
-      || endswith(url, std::string(".png"), false)
-      || endswith(url, std::string(".jpeg"), false)) {
-      // URL is a single file
-      typedef std::vector<std::pair<std::string, fileio::file_status>> path_status_vec_t;
-      path_status_vec_t path_status_vec;
-      boost::filesystem::path p = url;
-      if (p.is_absolute()) {
-          all_files.push_back(url);
-      } else {
-          // relative path
-          path_status_vec = fileio::get_directory_listing(".");
-          for (const auto& path_status : path_status_vec) {
-            if (endswith(path_status.first, url, true) 
-              && path_status.second == fileio::file_status::REGULAR_FILE){
-              all_files.push_back(path_status.first);
-            }
-          }
-      }
-    } else {
-      // URL is a directory
+
+    // See what's at the user-provided location.
+    switch (fileio::get_file_status(url)) {
+
+    case fileio::file_status::MISSING:
+      log_and_throw_io_failure(sanitize_url(url) + " not found.");
+
+    case fileio::file_status::REGULAR_FILE:
+      all_files.push_back(url);
+      break;
+
+    case fileio::file_status::DIRECTORY:
       all_files = get_directory_files(url, recursive);
+      if (format != "JPG" && format != "PNG") {
+        // We will deduce file formats from file extensions. Prune the list of
+        // files to those supported.
+        auto first_to_remove = std::remove_if(
+            all_files.begin(), all_files.end(), lacks_image_extension);
+        if (first_to_remove == all_files.begin() && !all_files.empty()) {
+          logprogress_stream << "Directory " << sanitize_url(url)
+                             << " does not contain any files with supported"
+                             << " image extensions: .jpg .jpeg .png"
+                             << std::endl;
+        }
+        all_files.erase(first_to_remove, all_files.end());
+      }
+      break;
+
+    case fileio::file_status::FS_UNAVAILABLE:
+      log_and_throw_io_failure("Error getting file system status for "
+                               + sanitize_url(url));
     }
 
     std::vector<std::string> column_names;
