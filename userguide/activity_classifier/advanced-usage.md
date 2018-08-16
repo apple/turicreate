@@ -73,9 +73,10 @@ These predictions are produced by duplicating each prediction per ```prediction_
 #### Using GPUs
 
 GPUs can make creating an activity classifier model much faster. If you have
-macOS 10.14 or higher, Turi Create will automatically use the GPU. If
-your Linux machine has an NVIDIA GPU, you can setup Turi Create to use
-the GPU, [see instructions](https://github.com/apple/turicreate/blob/master/LinuxGPU.md).
+macOS 10.14 or higher, Turi Create will automatically use an available discrete
+GPU. (Integrated Intel GPUs are not supported.) If your Linux machine has an
+NVIDIA GPU, you can setup Turi Create to use the GPU,
+[see instructions](https://github.com/apple/turicreate/blob/master/LinuxGPU.md).
 
 The `turicreate.config.set_num_gpus` function allows you to control if GPUs are used:
 ```python
