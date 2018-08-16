@@ -178,7 +178,8 @@ virtual void AllocImage(id<MTLDevice> _Nonnull device , bool is_train = true) {
     }
   }
   
-  virtual MPSImageBatch * AllocTempImageBatch(id<MTLCommandBuffer>_Nonnull cb, bool is_output){
+  virtual MPSImageBatch *AllocTempImageBatch(
+      id <MTLCommandBuffer> cb, MPSKernel *kernel, bool is_output) {
     int n = ishape[0];
     int h = ishape[1];
     int w = ishape[2];
@@ -192,16 +193,11 @@ virtual void AllocImage(id<MTLDevice> _Nonnull device , bool is_train = true) {
                                 numberOfImages:1
                                 usage:MTLTextureUsageShaderWrite |
                                 MTLTextureUsageShaderRead];
-    
-    MPSImageBatch * batch =@[];
-    for (int i = 0; i < n; ++i) {
-      MPSTemporaryImage * temp_img = [MPSTemporaryImage
-                                      temporaryImageWithCommandBuffer:cb
-                                      imageDescriptor:desc];
-      batch = [batch arrayByAddingObject:temp_img];
-    }
-    
-    return batch;
+
+    return [[MPSTemporaryImage defaultAllocator] imageBatchForCommandBuffer:cb
+                                                            imageDescriptor:desc
+                                                                     kernel:kernel
+                                                                      count:n];
   }
 
   virtual ~Layer() {}

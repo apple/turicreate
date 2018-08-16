@@ -1,9 +1,9 @@
 {
-  "$schema": "https://vega.github.io/schema/vega/v3.0.json",
-  "autosize": "pad",
+  "$schema": "https://vega.github.io/schema/vega/v4.json",
+  "autosize": "fit",
   "padding": 5,
-  "width": 640,
-  "height": 480,
+  "width": 720,
+  "height": 550,
   "style": "cell",
   "title": {
     "text": %1%,
@@ -34,7 +34,7 @@
             "value": 0
           },
           "height": {
-            "value": 480
+            "value": 350
           },
           "clip": {
             "value": 0

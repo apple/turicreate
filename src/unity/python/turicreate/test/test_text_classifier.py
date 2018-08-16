@@ -20,27 +20,27 @@ if sys.version_info.major == 3:
     unittest.TestCase.assertItemsEqual = unittest.TestCase.assertCountEqual
 
 
-class SentenceClassifierTest(unittest.TestCase):
+class TextClassifierTest(unittest.TestCase):
     """
     Unit test class for an already trained model.
     """
 
     @classmethod
     def setUpClass(self):
-        text = ['hello friend', 'how exciting', 'hello again']
-        score = [0, 1, 0]
+        text = ['hello friend', 'how exciting', 'mostly exciting', 'hello again']
+        score = [0, 1, 1, 0]
         self.docs = tc.SFrame({'text': text, 'score': score})
 
         self.features = ['text']
         self.num_features = 1
         self.target = 'score'
         self.method = 'bow-logistic'
-        self.model = tc.sentence_classifier.create(self.docs,
+        self.model = tc.text_classifier.create(self.docs,
                                                    target=self.target,
                                                    features=self.features,
                                                    method='auto')
 
-        self.num_examples = 3
+        self.num_examples = 4
 
     def test__list_fields(self):
         """
@@ -126,7 +126,7 @@ class SentenceClassifierTest(unittest.TestCase):
             self.test_summaries()
             print("Saved model summaries passed")
 
-class SentenceClassifierCreateTests(unittest.TestCase):
+class TextClassifierCreateTests(unittest.TestCase):
     @classmethod
     def setUpClass(self):
 
@@ -147,29 +147,29 @@ class SentenceClassifierCreateTests(unittest.TestCase):
         self.rating_column = 'rating'
         self.features = ['text']
         self.keywords = ['burrito', 'dad']
-        self.model = tc.sentence_classifier.create(self.data, target='rating',
+        self.model = tc.text_classifier.create(self.data, target='rating',
                                                   features=self.features)
 
     def test_sentiment_create_no_features(self):
-        model = tc.sentence_classifier.create(self.data, target='rating')
-        self.assertTrue(isinstance(model, tc.sentence_classifier.SentenceClassifier))
+        model = tc.text_classifier.create(self.data, target='rating')
+        self.assertTrue(isinstance(model, tc.text_classifier.TextClassifier))
 
     def test_sentiment_create_string_target(self):
         data_str = self.data[:]
         data_str['rating'] = data_str['rating'].astype(str)
-        model = tc.sentence_classifier.create(data_str, target='rating')
-        self.assertTrue(isinstance(model, tc.sentence_classifier.SentenceClassifier))
+        model = tc.text_classifier.create(data_str, target='rating')
+        self.assertTrue(isinstance(model, tc.text_classifier.TextClassifier))
 
     def test_validation_set(self):
         train = self.data
         valid = self.data
 
         # Test with a validation set
-        model = tc.sentence_classifier.create(train, target='rating', validation_set=valid)
+        model = tc.text_classifier.create(train, target='rating', validation_set=valid)
         self.assertTrue('Validation Accuracy' in model.classifier.progress.column_names())
 
         # Test without a validation set
-        model = tc.sentence_classifier.create(train, target='rating', validation_set=None)
+        model = tc.text_classifier.create(train, target='rating', validation_set=None)
         self.assertTrue('Validation Accuracy' not in model.classifier.progress.column_names())
 
         # Test 'auto' validation set
@@ -178,16 +178,16 @@ class SentenceClassifierCreateTests(unittest.TestCase):
             'place': ['d'] * 100,
             'text': ['large enough data for %5 percent validation split to activate'] * 100
         }))
-        model = tc.sentence_classifier.create(big_data, target='rating', validation_set='auto')
+        model = tc.text_classifier.create(big_data, target='rating', validation_set='auto')
         self.assertTrue('Validation Accuracy' in model.classifier.progress.column_names())
 
         # Test bad validation set string
         with self.assertRaises(TypeError):
-            tc.sentence_classifier.create(train, target='rating', validation_set='wrong')
+            tc.text_classifier.create(train, target='rating', validation_set='wrong')
 
         # Test bad validation set type
         with self.assertRaises(TypeError):
-            tc.sentence_classifier.create(train, target='rating', validation_set=5)
+            tc.text_classifier.create(train, target='rating', validation_set=5)
 
     def test_sentiment_classifier(self):
         m = self.model
@@ -209,7 +209,7 @@ class SentenceClassifierCreateTests(unittest.TestCase):
         dataset = {'rating': [1,5], 'text': ['this is bad', 'this is good']}
         try:
             # dataset is NOT an SFrame
-            tc.sentence_classifier.create(dataset, 'rating', features=['text'])
+            tc.text_classifier.create(dataset, 'rating', features=['text'])
         except ToolkitError as t:
             exception_msg = t.args[0]
             self.assertTrue(exception_msg.startswith('Input dataset is not an SFrame. '))
@@ -217,7 +217,7 @@ class SentenceClassifierCreateTests(unittest.TestCase):
             self.fail("This should have thrown an exception")
 
 
-class SentenceClassifierCreateBadValues(unittest.TestCase):
+class TextClassifierCreateBadValues(unittest.TestCase):
     @classmethod
     def setUpClass(self):
 
@@ -234,7 +234,7 @@ class SentenceClassifierCreateBadValues(unittest.TestCase):
         self.keywords = ['burrito', 'dad']
 
     def test_create(self):
-        model = tc.sentence_classifier.create(self.data,
+        model = tc.text_classifier.create(self.data,
           target=self.rating_column,
           features=self.features)
         self.assertTrue(model is not None)

@@ -1,6 +1,6 @@
 {
-  "$schema": "https://vega.github.io/schema/vega/v3.0.json",
-  "autosize": "pad",
+  "$schema": "https://vega.github.io/schema/vega/v4.json",
+  "autosize": "fit",
   "padding": 5,
   "metadata": {
     "bubbleOpts": {
@@ -15,10 +15,10 @@
       ]
     }
   },
-  "width": %1%,
-  "height": %2%,
+  "width": 720,
+  "height": %1%,
   "title": {
-    "text": %3%,
+    "text": %2%,
     "offset": 30
   },
   "style": "cell",
@@ -174,7 +174,7 @@
       "tickCount": {
         "signal": "ceil(width/40)"
       },
-      "title": %4%,
+      "title": %3%,
       "zindex": 1
     },
     {
@@ -196,7 +196,7 @@
       "scale": "y",
       "labelOverlap": true,
       "orient": "left",
-      "title": %5%,
+      "title": %4%,
       "zindex": 1
     }
   ],

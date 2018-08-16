@@ -179,8 +179,8 @@ def create(style_dataset, content_dataset, style_feature=None,
         max_iterations = 5000
         if verbose:
             print('Setting max_iterations to be {}'.format(max_iterations))
-    # data loader
 
+    # data loader
     if params['use_augmentation']:
         content_loader_type = '%s-with-augmentation' % params['training_content_loader_type']
     else:
@@ -188,7 +188,6 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     content_images_loader = _SFrameSTIter(content_dataset, batch_size, shuffle=True,
                                   feature_column=content_feature, input_shape=input_shape,
-                                  num_epochs=max_iterations,
                                   loader_type=content_loader_type, aug_params=params,
                                   sequential=params['sequential_image_processing'])
     ctx = _mxnet_utils.get_mxnet_context(max_devices=params['batch_size'])
@@ -228,15 +227,15 @@ def create(style_dataset, content_dataset, style_feature=None,
     smoothed_loss = None
     last_time = 0
 
-    num_mxnet_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=params['batch_size'])
-    if verbose:
-        if num_mxnet_gpus == 1:
-            print('Using GPU to create model (CUDA)')
-        elif num_mxnet_gpus > 1:
-            print('Using {} GPUs to create model (CUDA)'.format(num_mxnet_gpus))
-        else:
-            print('Using CPU to create model')
+    cuda_gpus = _mxnet_utils.get_gpus_in_use(max_devices=params['batch_size'])
+    num_mxnet_gpus = len(cuda_gpus)
 
+    if verbose:
+        # Estimate memory usage (based on experiments)
+        cuda_mem_req = 260 + batch_size_each * 880 + num_styles * 1.4
+
+        _tkutl._print_neural_compute_device(cuda_gpus=cuda_gpus, use_mps=False,
+                                            cuda_mem_req=cuda_mem_req, has_mps_impl=False)
     #
     # Pre-compute gram matrices for style images
     #
@@ -251,7 +250,6 @@ def create(style_dataset, content_dataset, style_feature=None,
     gram_chunks = [[] for _ in range(num_layers)]
     for s_batch in style_images_loader:
         s_data = _gluon.utils.split_and_load(s_batch.data[0], ctx_list=ctx, batch_axis=0)
-        results = []
         for s in s_data:
             vgg16_s = _vgg16_data_prep(s)
             ret = vgg_model(vgg16_s)
@@ -833,6 +831,15 @@ class StyleTransfer(_CustomModel):
         stylized_image = 'stylized%s' % self.content_feature.capitalize()
         coremltools.utils.rename_feature(spec,
                 'transformer__mulscalar0_output', stylized_image, True, True)
+
+        # Support flexible shape
+        flexible_shape_utils = _mxnet_converter._coremltools.models.neural_network.flexible_shape_utils
+        img_size_ranges = flexible_shape_utils.NeuralNetworkImageSizeRange()
+        img_size_ranges.add_height_range((64, -1))
+        img_size_ranges.add_width_range((64, -1))
+        flexible_shape_utils.update_image_size_range(spec, feature_name=self.content_feature, size_range=img_size_ranges)
+        flexible_shape_utils.update_image_size_range(spec, feature_name=stylized_image, size_range=img_size_ranges)
+
         mlmodel = coremltools.models.MLModel(spec)
         model_type = 'style transfer (%s)' % self.model
         mlmodel.short_description = _coreml_utils._mlmodel_short_description(

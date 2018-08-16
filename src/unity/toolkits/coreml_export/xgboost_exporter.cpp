@@ -131,9 +131,9 @@ std::shared_ptr<MLModelWrapper> export_xgboost_model(
 
   } else {
 
-    auto ti = metadata->target_indexer();
-
-    size_t num_classes = ti->indexed_column_size();
+    // Call the target_index_size, which does not reflect the added dimensions of 
+    // the 
+    size_t num_classes = metadata->target_index_size();
 
     auto tc = new CoreML::TreeEnsembleClassifier(
         metadata->target_column_name(),
@@ -151,6 +151,8 @@ std::shared_ptr<MLModelWrapper> export_xgboost_model(
       tc->setPostEvaluationTransform(
           CoreML::PostEvaluationTransform::Classification_SoftMax);
     }
+    
+    auto ti = metadata->target_indexer();
 
     if(metadata->target_column_type() == flex_type_enum::STRING) {
       std::vector<std::string> classes(num_classes);
@@ -193,7 +195,7 @@ std::shared_ptr<MLModelWrapper> export_xgboost_model(
 
       if(type == "leaf") {
         if(is_random_forest) {
-          size_t num_classes = metadata->target_indexer()->indexed_column_size();
+          size_t num_classes = metadata->target_index_size();
           size_t num_trees_per_class;
           if (num_classes <= 2) {
             num_trees_per_class = trees.size();

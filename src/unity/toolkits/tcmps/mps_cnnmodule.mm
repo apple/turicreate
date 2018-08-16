@@ -1,5 +1,6 @@
 #include "mps_cnnmodule.h"
 
+#include <algorithm>
 #include <iostream>
 
 #import "mps_device_manager.h"
@@ -125,6 +126,7 @@ void MPSCNNModule::WaitForBatch(int batch_id, float *forward_out,
   batch.output = nil;
   batch.top_grad = nil;
   batch.loss_images = nil;
+  batch.loss_labels = nil;
 
   free_batches_.push_back(std::move(batch));
   active_batches_.erase(it);
@@ -184,19 +186,19 @@ void MPSCNNModule::Loss(void *_Nonnull ptr, size_t sz, int64_t *_Nonnull shape, 
 
 
       // Creating labels batch
-      MPSCNNLossLabelsBatch *labels =
+      loss_labels_ =
           initLossLabelsBatch(dev_, (float *)label_ptr, (float *)weight_ptr,
                               network_->batch_size, output_width_, output_chn_);
 
       // Calc loss
-      top_grad_ = network_->Loss(output_, labels, commandBuffer);
+      top_grad_ = network_->Loss(output_, loss_labels_, commandBuffer);
 
       for (NSUInteger i = 0; i < [top_grad_ count]; ++i) {
         [top_grad_[i] synchronizeOnCommandBuffer:commandBuffer];
       }
       
       if (loss_image_required){
-          loss_images_ = ExtractLossImages(labels, network_->batch_size, commandBuffer);
+        loss_images_ = ExtractLossImages(loss_labels_, commandBuffer);
       }
 
       [commandBuffer commit];
@@ -264,24 +266,38 @@ void MPSCNNModule::TrainingWithLoss(
       bool do_backward, bool is_train) {
     // may check shape here
     if (batch) {
+      // TODO: Recycle non-temporary MPSImage instances using image allocators
+      // wrapping pools of recycled instances. Something similar can be done for
+      // MPSCNNLossLabels instances.
       input_ = batch->input;
+      loss_images_ = batch->loss_images;
+      loss_labels_ = batch->loss_labels;
     }
     Blob2MPSImage((float *)ptr, input_);
     @autoreleasepool {
         id<MTLCommandBuffer> commandBuffer = [cmd_queue_ commandBuffer];
+
         // Creating labels batch
-        MPSCNNLossLabelsBatch *labels =
-            initLossLabelsBatch(dev_, (float *)label_ptr, (float *)weight_ptr,
-                                network_->batch_size, output_width_, output_chn_);
+        if (loss_labels_) {
+          // Recycle existing allocations
+          FillLossLabelsBatch(
+              loss_labels_, dev_, (float *)label_ptr, (float *)weight_ptr,
+              network_->batch_size, output_width_, output_chn_);
+        } else {
+          loss_labels_ = initLossLabelsBatch(
+              dev_, (float *)label_ptr, (float *)weight_ptr,
+              network_->batch_size, output_width_, output_chn_);
+        }
+
         // run foward pass
         output_ = network_->Forward(input_, commandBuffer, is_train);
         
         // Calc loss
-        top_grad_ = network_->Loss(output_, labels, commandBuffer);
+        top_grad_ = network_->Loss(output_, loss_labels_, commandBuffer);
         
         
         if (loss_image_required){
-            loss_images_ = ExtractLossImages(labels, network_->batch_size, commandBuffer);
+          loss_images_ = ExtractLossImages(loss_labels_, commandBuffer);
         }
         
         if (do_backward){
@@ -322,6 +338,7 @@ void MPSCNNModule::TrainingWithLoss(
           batch->output = output_;
           batch->top_grad = top_grad_;
           batch->loss_images = loss_images_;
+          batch->loss_labels = loss_labels_;
         }
     }
 }
@@ -386,54 +403,70 @@ void MPSCNNModule::MPSImage2Blob(float *ptr, MPSImageBatch *batch) {
   }
 }
 
-MPSCNNLossLabelsBatch *_Nonnull MPSCNNModule::initLossLabelsBatch(
+// static
+NSData *MPSCNNModule::EncodeLabels(float* labels, NSUInteger sequenceLength,
+                                   NSUInteger numClasses) {
+  NSUInteger dataLength = sequenceLength * numClasses * sizeof(float);
+  NSMutableData *result = [NSMutableData dataWithLength:dataLength];  // Zeroed
+
+  // Create a hot one encoded representation of the label, per sequence
+  float* output = (float*)result.mutableBytes;
+  for (NSUInteger i = 0; i < sequenceLength; ++i) {
+    // Interpret the label as an index to a class
+    NSUInteger classIndex = (NSUInteger)labels[i];
+
+    // Set the corresponding float value to 1
+    output[classIndex] = 1.f;
+
+    // Advance output pointer to encoding of the next sequence element.
+    output += numClasses;
+  }
+
+  return result;
+}
+
+// static
+NSData *MPSCNNModule::EncodeWeights(float* weights, NSUInteger sequenceLength,
+                                    NSUInteger numClasses) {
+  NSUInteger dataLength = sequenceLength * numClasses * sizeof(float);
+  NSMutableData *result = [NSMutableData dataWithLength:dataLength];
+
+  // Repeat each weight value numClasses times, so each of the channels in the
+  // one-hot encoded representation of the labels will have the same weight.
+  float* output = (float*)result.mutableBytes;
+  for (NSUInteger i = 0; i < sequenceLength; ++i) {
+    std::fill(output, output + numClasses, weights[i]);
+    output += numClasses;
+  }
+
+  return result;
+}
+
+MPSCNNLossLabelsBatch *MPSCNNModule::initLossLabelsBatch(
       id<MTLDevice> _Nonnull device, float *_Nonnull labels_ptr, float *_Nonnull weights_ptr,
       int batch_size, int seq_len, int num_classes) {
     
   MPSCNNLossLabelsBatch *labels = @[];
 
-  // label size in each batch is 1 (height) * seq_len (width) * num_classes
+  // label size in each batch is seq_len (width) * 1 (height) * num_classes
   // (output channels)
-  int label_size = 1 * seq_len * num_classes;
-
-    std::vector<float> sequenceLabels(label_size);
-    std::vector<float> sequenceWeights(label_size);
-    float *labelsBuffer = sequenceLabels.data();
-    float *weightBuffer = sequenceWeights.data();
-
   MTLSize labelMtlSize = MTLSizeMake(seq_len, 1, num_classes);
 
   for (int batch_idx = 0; batch_idx < batch_size; batch_idx++) {
 
-    // Init the data buffer for a new batch
-    memset(labelsBuffer, 0.0, label_size * sizeof(float));
+    // labels_ptr and weights_ptr are each C arrays of length
+    // `batch_size * seq_len`
+    int ptr_offset_for_batch = batch_idx * seq_len;
 
-    for (int seq_idx = 0; seq_idx < seq_len; seq_idx++) {
-      // Create a hot one encoded representation of the label, per sequence
-      int src_index = batch_idx * seq_len + seq_idx;
-      int dst_index = seq_idx * num_classes;
-      int nClassLabelVal = (int) labels_ptr[src_index];
-      labelsBuffer[dst_index + nClassLabelVal] = 1.f;
-      
-      // Repeat each weight value num_classes time - so each of the channel
-      // in the one hot encoded represantion will have the same weight
-      float weightVal = weights_ptr[src_index];
-      for (int chn_idx = 0; chn_idx < num_classes; chn_idx++){
-          weightBuffer[dst_index + chn_idx] = weightVal;
-      }
-    }
-
-    NSData *labelsData =
-        [NSData dataWithBytes:labelsBuffer length:label_size * sizeof(float)];
-
+    NSData *labelsData = EncodeLabels(labels_ptr + ptr_offset_for_batch,
+                                      seq_len, num_classes);
     MPSCNNLossDataDescriptor *labelsDescriptor = [MPSCNNLossDataDescriptor
         cnnLossDataDescriptorWithData:labelsData
                                layout:MPSDataLayoutHeightxWidthxFeatureChannels
                                  size:labelMtlSize];
     
-    NSData *weightsData =
-          [NSData dataWithBytes:weightBuffer length:label_size * sizeof(float)];
-    
+    NSData *weightsData = EncodeWeights(weights_ptr + ptr_offset_for_batch,
+                                        seq_len, num_classes);
     MPSCNNLossDataDescriptor *weightsDescriptor = [MPSCNNLossDataDescriptor
                                                    cnnLossDataDescriptorWithData:weightsData
                                                                           layout:MPSDataLayoutHeightxWidthxFeatureChannels
@@ -451,19 +484,71 @@ MPSCNNLossLabelsBatch *_Nonnull MPSCNNModule::initLossLabelsBatch(
   return labels;
 }
 
-MPSImageBatch *_Nonnull MPSCNNModule::ExtractLossImages(MPSCNNLossLabelsBatch *_Nonnull labels, int batch_size,
-                                                        id<MTLCommandBuffer> cb) {
-    MPSImageBatch *lossImage = @[];
-    
-    // Sync the LossLabels so loss image can be extracted
-    for (NSUInteger i = 0; i < [labels count]; ++i) {
-        [labels[i] synchronizeOnCommandBuffer:cb];
-    }
-    
-    for (NSUInteger i = 0; i < batch_size; i++) {
-        lossImage = [lossImage arrayByAddingObject:[labels[i] lossImage]];
-    }
-    return lossImage;
+// static
+void MPSCNNModule::FillLossLabelsBatch(
+    MPSCNNLossLabelsBatch *labelsBatch, id <MTLDevice> device,
+    float* labels_ptr, float* weights_ptr,
+    int batch_size, int seq_len, int num_classes) {
+
+  MPSImageReadWriteParams labelsFeatureChannelInfo = {
+      .featureChannelOffset = 0,
+      .numberOfFeatureChannelsToReadWrite =
+          (NSUInteger)num_classes  // featureChannels
+  };
+
+  MTLRegion labelsRegion = {
+      .origin = { .x = 0, .y = 0, .z = 0 },
+      .size   = { .width = (NSUInteger)seq_len, .height = 1, .depth = 1 }
+  };
+
+  for (NSUInteger i = 0; i < (NSUInteger)batch_size; ++i) {
+
+    MPSCNNLossLabels *lossLabels = labelsBatch[i];
+
+    // labels_ptr and weights_ptr are each C arrays of length
+    // `batch_size * seq_len`
+    NSUInteger ptrOffsetForBatch = i * (NSUInteger)seq_len;
+    NSData *labelsData = EncodeLabels(labels_ptr + ptrOffsetForBatch,
+                                      seq_len, num_classes);
+    NSData *weightsData = EncodeWeights(weights_ptr + ptrOffsetForBatch,
+                                        seq_len, num_classes);
+
+    // Overwrite the data in the existing labelsImage and weightsImage from this
+    // batch's lossLabels.
+
+    MPSImage *labelsImage = [[MPSImage alloc] initWithTexture:lossLabels.labelsImage.texture
+                                              featureChannels:num_classes];
+    MPSImage *weightsImage = [[MPSImage alloc] initWithTexture:lossLabels.weightsImage.texture
+                                               featureChannels:num_classes];
+    [labelsImage writeBytes:(float*)labelsData.bytes
+                 dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
+                bytesPerRow:seq_len * sizeof(float)
+              bytesPerImage:num_classes * seq_len * sizeof(float)
+                     region:labelsRegion
+         featureChannelInfo:labelsFeatureChannelInfo
+                 imageIndex:0];
+    [weightsImage writeBytes:(float*)weightsData.bytes
+                  dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
+                 bytesPerRow:seq_len * sizeof(float)
+               bytesPerImage:num_classes * seq_len * sizeof(float)
+                      region:labelsRegion
+          featureChannelInfo:labelsFeatureChannelInfo
+                  imageIndex:0];
+  }
+}
+
+// static
+MPSImageBatch *MPSCNNModule::ExtractLossImages(
+    MPSCNNLossLabelsBatch *labelsBatch, id<MTLCommandBuffer> cb) {
+  NSMutableArray<MPSImage *> *lossImages = [[NSMutableArray alloc] initWithCapacity:labelsBatch.count];
+
+  for (NSUInteger i = 0; i < labelsBatch.count; ++i) {
+    MPSImage* lossImage = labelsBatch[i].lossImage;
+    [lossImages addObject:lossImage];
+    [lossImage synchronizeOnCommandBuffer:cb];
+  }
+
+  return lossImages;
 }
 
 }  // namespace mps

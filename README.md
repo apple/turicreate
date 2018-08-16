@@ -1,8 +1,10 @@
-Quick Links: [Installation](#supported-platforms) | [Documentation](#documentation) | [v5.0 Beta](#version-50-beta)
+Quick Links: [Installation](#supported-platforms) | [Documentation](#documentation) | [v5.0 Beta](#version-50-beta) | [WWDC 2018 Talk](https://developer.apple.com/videos/play/wwdc2018/712/)
 
 <img align="right" src="https://docs-assets.developer.apple.com/turicreate/turi-dog.svg" alt="Turi Create" width="100">
 
 # Turi Create 
+
+[Click here to check out our talk at WWDC 2018!](https://developer.apple.com/videos/play/wwdc2018/712/)
 
 Turi Create simplifies the development of custom machine learning models. You
 don't have to be a machine learning expert to add recommendations, object
@@ -68,8 +70,11 @@ Turi Create supports:
 System Requirements
 -------------------
 
+Turi Create requires:
+
 * Python 2.7, 3.5, 3.6
 * x86\_64 architecture
+* At least 4 GB of RAM
 
 Installation
 ------------
@@ -122,7 +127,7 @@ Turi Create 5.0 -- now in beta -- includes:
 To install the 5.0 beta into your virtual environment, use:
 
 ```shell
-(venv) pip install turicreate==5.0b2
+(venv) pip install turicreate==5.0b3
 ```
 
 Documentation

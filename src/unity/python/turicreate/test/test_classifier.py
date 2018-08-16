@@ -8,7 +8,6 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import unittest
 import turicreate as tc
-import pandas as pd
 import numpy as np
 
 
@@ -17,38 +16,35 @@ class ClassifierCreateTest(unittest.TestCase):
     Unit test class for testing a classifier model.
     """
 
-    """
-       Creation test helper function.
-    """
     def _test_create(self, n, d, validation_set = 'auto'):
+        """
+        Creation test helper function.
+        """
 
-      # Simulate test data
-      np.random.seed(42)
-      sf = tc.SFrame()
+        # Simulate test data
+        np.random.seed(42)
+        sf = tc.SFrame()
 
-      for i in range(d):
-          sf.add_column(tc.SArray(np.random.rand(n)), inplace=True)
+        for i in range(d):
+            sf.add_column(tc.SArray(np.random.rand(n)), inplace=True)
 
-      target = np.random.randn(n)
-      sf['target'] = target
-      sf['target'] = sf['target'] > 0
-      model = tc.classifier.create(sf, 'target', features=None,
-                   validation_set = validation_set)
-      self.assertTrue(model is not None, 'Model is None.')
+        target = np.random.randn(n)
+        sf['target'] = target
+        sf['target'] = sf['target'] > 0
+        model = tc.classifier.create(sf, 'target', features=None,
+                                     validation_set = validation_set)
+        self.assertTrue(model is not None, 'Model is None.')
 
-      features = sf.column_names()
-      features.remove('target')
-      model = tc.classifier.create(sf, 'target', features = features,
-                          validation_set = validation_set)
-      self.assertTrue(model is not None, 'Model is None.')
-      self.assertTrue(isinstance(model,
-                tc.toolkits._supervised_learning.SupervisedLearningModel))
+        features = sf.column_names()
+        features.remove('target')
+        model = tc.classifier.create(sf, 'target', features = features,
+                                     validation_set = validation_set)
+        self.assertTrue(model is not None, 'Model is None.')
+        self.assertTrue(isinstance(model,
+                                   tc.toolkits._supervised_learning.SupervisedLearningModel))
 
-    """
-       Test create.
-    """
+
     def test_multi_class_create(self):
-
         d = 10
         n = 100
         np.random.seed(42)
@@ -60,11 +56,8 @@ class ClassifierCreateTest(unittest.TestCase):
         self.assertTrue(isinstance(model,
                   tc.toolkits._supervised_learning.SupervisedLearningModel))
 
-    """
-       Test create.
-    """
-    def test_create(self):
 
+    def test_create(self):
         self._test_create(99, 10)
         self._test_create(100, 100)
         self._test_create(20000, 10)

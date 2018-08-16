@@ -22,23 +22,23 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-__all__ = ['tf_idf', 'bm25', 'stopwords', 'count_words',
+__all__ = ['tf_idf', 'bm25', 'stop_words', 'count_words',
            'count_ngrams', 'random_split', 'parse_sparse',
-           'parse_docword', 'tokenize', 'trim_rare_words','split_by_sentence',
+           'parse_docword', 'tokenize', 'drop_words','split_by_sentence',
            'extract_parts_of_speech']
 def __dir__():
-  return ['tf_idf', 'bm25', 'stopwords', 'count_words',
+  return ['tf_idf', 'bm25', 'stop_words', 'count_words',
           'count_ngrams', 'random_split', 'parse_sparse',
-          'parse_docword', 'tokenize', 'trim_rare_words', 'split_by_sentence',
+          'parse_docword', 'tokenize', 'drop_words', 'split_by_sentence',
           'extract_parts_of_speech']
 
 from ._util import tf_idf
 from ._util import bm25
-from ._util import stopwords
+from ._util import stop_words
 from ._util import count_words
 from ._util import count_ngrams
 from ._util import random_split
 from ._util import parse_sparse
 from ._util import parse_docword
 from ._util import tokenize
-from ._util import trim_rare_words
+from ._util import drop_words

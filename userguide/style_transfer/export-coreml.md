@@ -36,15 +36,32 @@ styleArray?[styleIndex] = 1.0
 
 Now, you can stylize your images using:
 ```swift
-let mlModel = MyStyleTransferModel()
-let visionModel = try VNCoreMLModel(for: mlModel)
 
-let styleTransfer = VNCoreMLRequest(model: visionModel, completionHandler: { (request, error) in
-        guard let results = request.results else { return }
+// Assumes that you have a `ciImage` variable
 
-    for case let styleTransferedImage as VNPixelBufferObservation in results {
-        let imageLayer = CALayer()
-        imageLayer.contents = CIImage(cvPixelBuffer: styleTransferedImage.pixelBuffer, options: [:])
-    }
-})
+// initialize model 
+let model = MyStyleTransferModel()
+
+// set input size of the model
+let modelInputSize = CGSize(width: 600, height: 600)
+
+// create a cvpixel buffer
+var pixelBuffer: CVPixelBuffer?
+let attrs = [kCVPixelBufferCGImageCompatibilityKey: kCFBooleanTrue,
+             kCVPixelBufferCGBitmapContextCompatibilityKey: kCFBooleanTrue] as CFDictionary
+CVPixelBufferCreate(kCFAllocatorDefault,
+                    modelInputSize.width,
+                    modelInputSize.height,
+                    kCVPixelFormatType_32BGRA,
+                    attrs,
+                    &pixelBuffer)
+
+// put bytes into pixelBuffer
+let context = CIContext()
+context.render(ciImage, to: pixelBuffer!)
+
+// predict image
+let output = try? model.prediction(image: pixelBuffer!, index: styleArray!)
+let predImage = CIImage(cvPixelBuffer: (output?.stylizedImage)!)
+
 ```

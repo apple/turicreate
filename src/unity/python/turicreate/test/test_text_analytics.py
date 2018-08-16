@@ -42,12 +42,6 @@ class FeatureEngineeringTest(unittest.TestCase):
         self.sframe_comparer = util.SFrameComparer()
 
     def test_count_ngrams(self):
-        """
-        Check correctness of the `text_analytics.count_ngrams` function. This
-        code copies the same test in test_sarray.py, but that test will be
-        removed when the SArray version of count_ngrams is removed in GLC
-        version 1.7.
-        """
         # Testing word n-gram functionality
         result = tc.text_analytics.count_ngrams(self.sa_word, 3)
         result2 = tc.text_analytics.count_ngrams(self.sa_word, 2)
@@ -140,72 +134,61 @@ class FeatureEngineeringTest(unittest.TestCase):
             assert len(context) == 1
             
 
-    def test_trim_rare_words(self):
-        """
-        Check correctness of the `text_analytics.trim_rare_words` function. This
-        code copies the same test in test_sarray.py, but that test will be
-        removed when the SArray version of count_ngrams is removed in GLC
-        version 1.7.
-        """
-
+    def test_drop_words(self):
         ## Bogus input type
         sa = tc.SArray([1, 2, 3])
         with self.assertRaises(RuntimeError):
-            tc.text_analytics.trim_rare_words(sa)
+            tc.text_analytics.drop_words(sa)
 
 
         ## Other languages
-        expected = ["this is someurl http://someurl!! this is someurl http://someurl!!",
+        expected = ["this is someurl http someurl this is someurl http someurl",
                                     "中文 应该也 行 中文 应该也 行",
                                     "Сблъсъкът между Сблъсъкът между"]
 
-        expected2 = ["This is someurl http://someurl!! This is someurl http://someurl!!",
+        expected2 = ["This is someurl http someurl This is someurl http someurl",
                                     "中文 应该也 行 中文 应该也 行",
                                     "Сблъсъкът между Сблъсъкът между"]
 
 
-        result = tc.text_analytics.trim_rare_words(self.languages_double)
+        result = tc.text_analytics.drop_words(self.languages_double)
         self.assertEqual(result.dtype, str)
         self.sframe_comparer._assert_sarray_equal(result, expected)
 
-        result = tc.text_analytics.trim_rare_words(self.languages_double, to_lower=False)
+        result = tc.text_analytics.drop_words(self.languages_double, to_lower=False)
         self.assertEqual(result.dtype, str)
         self.sframe_comparer._assert_sarray_equal(result, expected2)
 
 
         ## Check that delimiters work properly by default and when modified.
-        expected1 = ['this is some url http://www.someurl.com!! this is some url http://www.someurl.com!!', 'should we? yes, we should. should we? yes, we should.']
+        expected1 = ['this is some url http www someurl com this is some url http www someurl com', 'should we yes we should should we yes we should']
         expected2 = ['this is some url http://www.someurl.com this is some url http://www.someurl.com', 'should we yes we should. should we yes we should.']
+        expected3 = ['url http www someurl url http www someurl', '']
 
-        word_counts1 = tc.text_analytics.trim_rare_words(self.punctuated_double)
-        word_counts2 = tc.text_analytics.trim_rare_words(self.punctuated_double,
+        word_counts1 = tc.text_analytics.drop_words(self.punctuated_double)
+        word_counts2 = tc.text_analytics.drop_words(self.punctuated_double,
                                                      delimiters=["?", "!", ","," "])
+        word_counts3 = tc.text_analytics.drop_words(self.punctuated_double, stop_words=tc.text_analytics.stop_words())
 
         self.assertEqual(word_counts1.dtype, str)
         self.sframe_comparer._assert_sarray_equal(word_counts1, expected1)
         self.assertEqual(word_counts2.dtype, str)
         self.sframe_comparer._assert_sarray_equal(word_counts2, expected2)
+        self.assertEqual(word_counts3.dtype, str)
+        self.sframe_comparer._assert_sarray_equal(word_counts3, expected3)
 
 
     def test_count_words(self):
-        """
-        Check correctness of the `text_analytics.count_words` function. This
-        code copies the same test in test_sarray.py, but that test will be
-        removed when the SArray version of count_ngrams is removed in GLC
-        version 1.7.
-        """
-
         ## Bogus input type
         sa = tc.SArray([1, 2, 3])
         with self.assertRaises(RuntimeError):
             tc.text_analytics.count_words(sa)
 
-
         ## Other languages
-        expected = [{"this": 1, "http://someurl!!": 1, "someurl": 1, "is": 1},
+        expected = [{"this": 1, "http": 1, "someurl": 2, "is": 1},
                     {"中文": 1, "应该也": 1, "行": 1},
                     {"Сблъсъкът": 1, "между": 1}]
-        expected2 = [{"This": 1, "http://someurl!!": 1, "someurl": 1, "is": 1},
+        expected2 = [{"This": 1, "http": 1, "someurl": 2, "is": 1},
                      {"中文": 1, "应该也": 1, "行": 1},
                      {"Сблъсъкът": 1, "между": 1}]
 
@@ -217,10 +200,9 @@ class FeatureEngineeringTest(unittest.TestCase):
         self.assertEqual(result.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(result, expected2)
 
-
         ## Check that delimiters work properly by default and when modified.
-        expected1 = [{"this": 1, "is": 1, "some": 1, "url": 1, "http://www.someurl.com!!": 1},
-                     {"should": 1, "we?": 1, "we": 1, "yes,": 1, "should.": 1}]
+        expected1 = [{"this": 1, "is": 1, "some": 1, "url": 1, "http": 1, "www": 1, "someurl": 1, "com": 1},
+                     {"should": 2, "we": 2, "yes": 1}]
         expected2 = [{"this is some url http://www.someurl.com": 1},
                      {"should we": 1, " yes": 1, " we should.": 1}]
 
@@ -233,13 +215,14 @@ class FeatureEngineeringTest(unittest.TestCase):
         self.assertEqual(word_counts2.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(word_counts2, expected2)
 
-    def test_stopwords(self):
+    def test_stop_words(self):
         """
-        Check that the stopwords can be accessed properly as part of the text
+        Check that the stop words can be accessed properly as part of the text
         analytics toolkit.
         """
-        words = tc.text_analytics.stopwords()
-        assert len(words) > 400
+        words = tc.text_analytics.stop_words()
+        self.assertTrue(len(words) > 400)
+        self.assertTrue('a' in words)
 
     def test_tf_idf(self):
         """

@@ -620,3 +620,27 @@ def _mac_ver():
         return tuple([int(v) for v in ver_str.split('.')])
     else:
         return ()
+
+def _print_neural_compute_device(cuda_gpus, use_mps, cuda_mem_req=None, has_mps_impl=True):
+    """
+    Print a message making it clear to the user what compute resource is used in
+    neural network training.
+    """
+    num_cuda_gpus = len(cuda_gpus)
+    if num_cuda_gpus >= 1:
+        gpu_names = ', '.join(gpu['name'] for gpu in cuda_gpus)
+
+    if use_mps:
+        from ._mps_utils import mps_device_name
+        print('Using GPU to create model ({})'.format(mps_device_name()))
+    elif num_cuda_gpus >= 1:
+        from . import _mxnet_utils
+        plural = 's' if num_cuda_gpus >= 2 else ''
+        print('Using GPU{} to create model ({})'.format(plural, gpu_names))
+        if cuda_mem_req is not None:
+            _mxnet_utils._warn_if_less_than_cuda_free_memory(cuda_mem_req, max_devices=num_cuda_gpus)
+    else:
+        import sys
+        print('Using CPU to create model')
+        if sys.platform == 'darwin' and _mac_ver() < (10, 14) and has_mps_impl:
+            print('NOTE: If available, an AMD GPU can be leveraged on macOS 10.14+ for faster model creation')
