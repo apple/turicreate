@@ -47,8 +47,7 @@ include(CheckLibraryExists)
 include(CheckFunctionExists)
 include(ExternalProject)
 include(CheckCXXSourceCompiles)
-
-
+include(CheckCXXCompilerFlag)
 
 #**************************************************************************/
 #*                                                                        */
@@ -213,8 +212,17 @@ message(WARNING "OpenMP Libraries were not found")
 #*                                                                        */
 #**************************************************************************/
 if (CLANG)
-  set(CPP11_FLAGS "-std=c++11 -stdlib=libc++ -Wno-stdlibcxx-not-found -Wno-deprecated-register -Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900" CACHE STRING "C++11 enabling flags")
-set(WERROR_FLAGS "-Werror")
+
+  set(_cpp11_optional_flags "")
+
+  check_cxx_compiler_flag("-Wno-stdlibcxx-not-found" __no_stdlibcxx_not_found)
+  if(${__no_stdlibcxx_not_found})
+    set(_cpp11_optional_flags "${_cpp11_optional_flags} -Wno-stdlibcxx-not-found")
+  endif()
+
+  set(CPP11_FLAGS "-std=c++11 -stdlib=libc++ -Wno-deprecated-register -Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900 ${_cpp11_optional_flags}" CACHE STRING "C++11 enabling flags")
+
+  set(WERROR_FLAGS "-Werror")
 else()
 set(CPP11_FLAGS "-std=c++11 -Wno-enum-compare -Wno-conversion-null -ftemplate-depth=900" CACHE STRING "C++11 enabling flags")
 set(WERROR_FLAGS "-Werror")
@@ -274,7 +282,6 @@ endif()
 
 
 
-include(CheckCXXCompilerFlag)
 if (MARCH)
   set(ARCH_FLAG "-march=${MARCH}")
 elseif (ARCH)
