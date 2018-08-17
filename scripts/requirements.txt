@@ -20,3 +20,6 @@ mxnet==1.1.0
 UISoup==2.5.7
 pyobjc==4.2.2; sys_platform == 'darwin'
 future==0.16.0
+pyOpenSSL
+ndg-httpsclient
+pyasn1
