@@ -126,7 +126,7 @@ class ActivityClassifierAutoValdSetTest(unittest.TestCase):
         self.fraction = 0.9
         self.seed = 42
 
-    def _create_auto_validation_set(self):
+    def _create_auto_validation_set(self, is_small=False):
         model = tc.activity_classifier.create(self.data,
                             features=self.features ,
                             target=self.target,
@@ -135,21 +135,28 @@ class ActivityClassifierAutoValdSetTest(unittest.TestCase):
                             validation_set='auto')
         predictions = model.predict(self.data)
 
-    def _test_random_split_by_session(self, num_sessions, is_small= False):
+        # Check the size of the auto validation set
+        num_sessions = len(self.data[self.session_id].unique())
+        valid_num_sessions = num_sessions - model.num_sessions
+        valid_frac = float(valid_num_sessions / num_sessions)
+        expected_frac = 0.0 if is_small else 1.0 - self.fraction
+        self.assertAlmostEqual(valid_frac, expected_frac, places=1,
+                               msg="Got {} validation sessions out of {}, which is {:.3f}, and not the expected {}".format(valid_num_sessions, num_sessions, valid_frac, expected_frac))
+
+    def test_random_split_by_session(self):
+        num_sessions = tc.activity_classifier.util._MIN_NUM_SESSIONS_FOR_SPLIT
+        _load_data(self, num_examples=10000, max_num_sessions=num_sessions,
+                   randomize_num_sessions=False, enforce_all_sessions=True)
 
         train, valid = tc.activity_classifier.util.random_split_by_session(self.data, self.session_id, self.fraction, self.seed)
 
         train_num_sessions = len(train[self.session_id].unique())
         train_frac = float(train_num_sessions / num_sessions)
-        expected_frac = 1.0 if is_small else self.fraction
+        expected_frac = self.fraction
 
         self.assertAlmostEqual(train_frac, expected_frac, places=1,
                                msg= "Got {} train sessions out of {}, which is {:.3f}, and not the expected {}".format(
                                train_num_sessions, num_sessions, train_frac, expected_frac))
-
-        if is_small:
-            self.assertTrue(valid is None, "For {} sessions - expected behaviour is no validation set.".format(num_sessions))
-            return
 
         valid_num_sessions = len(valid[self.session_id].unique())
         valid_frac = float(valid_num_sessions / num_sessions)
@@ -169,8 +176,7 @@ class ActivityClassifierAutoValdSetTest(unittest.TestCase):
         num_sessions = tc.activity_classifier.util._MIN_NUM_SESSIONS_FOR_SPLIT // 2
         _load_data(self, max_num_sessions=num_sessions, randomize_num_sessions=False, enforce_all_sessions=True)
 
-        self._create_auto_validation_set()
-        self._test_random_split_by_session(num_sessions, is_small=True)
+        self._create_auto_validation_set(is_small=True)
 
     def test_create_auto_validation_set_typical(self):
         num_sessions = tc.activity_classifier.util._MIN_NUM_SESSIONS_FOR_SPLIT * 4
@@ -178,7 +184,6 @@ class ActivityClassifierAutoValdSetTest(unittest.TestCase):
                    enforce_all_sessions=True)
 
         self._create_auto_validation_set()
-        self._test_random_split_by_session(num_sessions)
 
     def test_create_auto_validation_set_string_session_id(self):
         num_sessions = tc.activity_classifier.util._MIN_NUM_SESSIONS_FOR_SPLIT * 4
@@ -193,7 +198,6 @@ class ActivityClassifierAutoValdSetTest(unittest.TestCase):
         self.data[self.session_id] =  self.data[self.session_id].apply(lambda x: session_ids_dict[x])
 
         self._create_auto_validation_set()
-        self._test_random_split_by_session(num_sessions)
 
 class ActivityClassifierTest(unittest.TestCase):
 

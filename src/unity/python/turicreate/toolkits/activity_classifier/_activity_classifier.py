@@ -28,6 +28,7 @@ from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 
 from .util import random_split_by_session as _random_split_by_session
+from .util import _MIN_NUM_SESSIONS_FOR_SPLIT
 
 
 def create(dataset, session_id, target, features=None, prediction_window=100,
@@ -165,7 +166,12 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     _tkutl._raise_error_if_sarray_not_expected_dtype(dataset[session_id], session_id, [str, int])
 
     if isinstance(validation_set, str) and validation_set == 'auto':
-        dataset, validation_set = _random_split_by_session(dataset, session_id)
+        unique_sessions = _SFrame({'session': dataset[session_id].unique()})
+        if len(unique_sessions) < _MIN_NUM_SESSIONS_FOR_SPLIT:
+            print ("The dataset has less than the minimum of", _MIN_NUM_SESSIONS_FOR_SPLIT, "sessions required for train-validation split. Continuing without validation set")
+            validation_set = None
+        else:
+            dataset, validation_set = _random_split_by_session(dataset, session_id)
 
     # Encode the target column to numerical values
     use_target = target is not None
