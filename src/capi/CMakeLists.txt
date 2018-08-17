@@ -32,7 +32,7 @@ add_library(_capi_objects OBJECT
 )
 
 set(_capi_requires unity unity_core numerics)
- 
+add_dependencies(_capi_objects ${_capi_requires})
 
 make_library(capi 
   SOURCES
