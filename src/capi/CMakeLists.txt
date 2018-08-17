@@ -26,13 +26,20 @@ set(_turi_capi_source_files
   "${__CAPI_SOURCE_DIR}/impl/capi_memory_management.cpp"
 )
 
-make_library(capi
-  SOURCES
-    ${_turi_capi_source_files}
-  REQUIRES
-    unity unity_core numerics
+# This needs to be an object type library to avoid multiple compilations.
+add_library(_capi_objects OBJECT
+  ${_turi_capi_source_files}
 )
 
+set(_capi_requires unity unity_core numerics)
+ 
+
+make_library(capi 
+  SOURCES
+    "$<TARGET_OBJECTS:_capi_objects>"
+  REQUIRES
+  ${_capi_requires})
+    
 # Create a static version of the library that also bundles in the server initializer
 make_library(TuriCreate_static
   SOURCES
@@ -74,9 +81,9 @@ macro(make_capi_library NAME)
 
     make_library(${NAME}
       SOURCES
-      ${__capi_INITIALIZER_SOURCE_FILE}
+        ${__capi_INITIALIZER_SOURCE_FILE}
+        $<TARGET_OBJECTS:_capi_objects>
        REQUIRES
-       capi
        ${EXTRA_REQUIRES}
        ${__capi_REQUIRES}
       SHARED_ALL_DEFINED
@@ -111,26 +118,29 @@ macro(make_capi_library NAME)
 
     add_dependencies(${NAME} "${__CAPI_SOURCE_DIR}/framework/process_framework.sh")
     add_dependencies(${NAME} "${__CAPI_SOURCE_DIR}/framework/Info.plist")
-    add_dependencies(${NAME} "${__CAPI_SOURCE_DIR}/framework/tc_capi_exports_osx.ver")
-    add_dependencies(${NAME} "${__CAPI_SOURCE_DIR}/framework/tc_capi_exports_linux.ver")
 
   else()
     #build out as a regular library
-    make_library(${NAME}
+        make_library(${NAME}
       SOURCES 
             ${__capi_INITIALIZER_SOURCE_FILE}
+            $<TARGET_OBJECTS:_capi_objects>
        REQUIRES
-            capi
             ${EXTRA_REQUIRES}
             ${__capi_REQUIRES}
+            ${_capi_requires}
       SHARED_ALL_DEFINED
       SHARED
-          EXPORT_LINUX_MAP_FILE "${__CAPI_SOURCE_DIR}/framework/tc_capi_exports_linux.ver"
-          EXPORT_OSX_MAP_FILE "${__CAPI_SOURCE_DIR}/framework/tc_capi_exports_osx.ver"
+      EXPORT_LINUX_MAP_FILE "${__CAPI_SOURCE_DIR}/framework/tc_capi_exports_linux.ver"
+      EXPORT_OSX_MAP_FILE "${__CAPI_SOURCE_DIR}/framework/tc_capi_exports_osx.ver"
       DEAD_STRIP
     )
 
   endif()
+
+  # For both framework and non-framework, add .ver files as dependencies
+  add_dependencies(${NAME} "${__CAPI_SOURCE_DIR}/framework/tc_capi_exports_osx.ver")
+  add_dependencies(${NAME} "${__CAPI_SOURCE_DIR}/framework/tc_capi_exports_linux.ver")
 
 endmacro()
 
