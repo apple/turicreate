@@ -24,26 +24,29 @@ static std::map<std::string,size_t> generate_column_index_map(const std::vector<
 
 /**
  *  Find the statistical mode (majority value) of a given vector.
- *  Based on https://en.wikipedia.org/wiki/Boyer–Moore_majority_vote_algorithm
  *
  * \param[in] input_vec a vector for which the mode will be calculated
 
  * \return    The most frequent value within the given vector.
  */
 
-static double vec_majority_value(const flex_vec& input_vec) {
-    std::map<double, int> count_map;
+static double vec_mode(const flex_vec& input_vec) {
+    std::vector<int> histogram;
     for (size_t i = 0; i < input_vec.size(); ++i) {
-        double value = input_vec[i];
-        count_map[value]++;
+        int value = static_cast<int>(input_vec[i]);
+
+        assert(static_cast<double>(static_cast<double>(input_vec[i])) == input_vec[i]);
+
+        if(histogram.size() < (value + 1)){
+          histogram.resize(value + 1);
+        }
+
+        histogram[value]++;
     }
-    auto majority = std::max_element(count_map.begin(), 
-                                count_map.end(), 
-                                [] (const std::pair<double, int> & p1,
-                                    const std::pair<double, int> & p2) {
-      return p1.second < p2.second;
-    });
-    return majority->first;
+
+    auto majority = std::max_element(histogram.begin(), histogram.end());
+    
+    return (majority - histogram.begin());
 }
 
 /**
@@ -82,7 +85,7 @@ static void finalize_chunk(flex_vec&            curr_chunk_features,
 
     if (use_target) {
         if (curr_window_targets.size() > 0) {
-            curr_chunk_targets.push_back(vec_majority_value(curr_window_targets));
+            curr_chunk_targets.push_back(vec_mode(curr_window_targets));
             curr_window_targets.clear();
         }
 
@@ -208,7 +211,7 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
             curr_window_targets.push_back(line[column_index_map[target]]);
 
             if (curr_window_targets.size() == static_cast<size_t>(prediction_window)) {
-                auto target_val = vec_majority_value(curr_window_targets);
+                auto target_val = vec_mode(curr_window_targets);
                 curr_chunk_targets.push_back(target_val);
                 curr_window_targets.clear();
             }
