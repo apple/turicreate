@@ -30,21 +30,20 @@ static std::map<std::string,size_t> generate_column_index_map(const std::vector<
 
  * \return    The most frequent value within the given vector.
  */
+
 static double vec_majority_value(const flex_vec& input_vec) {
-    size_t counter = 0;
-    double candidate = 0.0;
+    std::map<double, int> count_map;
     for (size_t i = 0; i < input_vec.size(); ++i) {
         double value = input_vec[i];
-        if (counter == 0) {
-            candidate = value;
-            counter = 1;
-        } else if (candidate == value) {
-            counter++;
-        } else {
-            counter--;
-        }
+        count_map[value]++;
     }
-    return candidate;
+    auto majority = std::max_element(count_map.begin(), 
+                                count_map.end(), 
+                                [] (const std::pair<double, int> & p1,
+                                    const std::pair<double, int> & p2) {
+      return p1.second < p2.second;
+    });
+    return majority->first;
 }
 
 /**
