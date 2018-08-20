@@ -73,11 +73,6 @@ def random_split_by_session(dataset, session_id, fraction=0.9, seed=None):
         raise _ToolkitError(
             'Input "dataset" must contain a column called %s.' % session_id)
 
-    unique_sessions = _SFrame({'session': dataset[session_id].unique()})
-    if len(unique_sessions) < _MIN_NUM_SESSIONS_FOR_SPLIT:
-        print ("The dataset has less than the minimum of", _MIN_NUM_SESSIONS_FOR_SPLIT, "sessions required for train-validation split. Continuing without validation set")
-        return dataset, None
-
     if seed is None:
         # Include the nanosecond component as well.
         import time
