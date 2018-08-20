@@ -166,6 +166,10 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     _tkutl._raise_error_if_sarray_not_expected_dtype(dataset[session_id], session_id, [str, int])
 
     if isinstance(validation_set, str) and validation_set == 'auto':
+        # Computing the number of unique sessions in this way is relatively
+        # expensive. Ideally we'd incorporate this logic into the C++ code that
+        # chunks the raw data by prediction window.
+        # TODO: https://github.com/apple/turicreate/issues/991
         unique_sessions = _SFrame({'session': dataset[session_id].unique()})
         if len(unique_sessions) < _MIN_NUM_SESSIONS_FOR_SPLIT:
             print ("The dataset has less than the minimum of", _MIN_NUM_SESSIONS_FOR_SPLIT, "sessions required for train-validation split. Continuing without validation set")
