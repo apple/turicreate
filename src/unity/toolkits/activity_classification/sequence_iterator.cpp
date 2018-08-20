@@ -35,7 +35,8 @@ static double vec_mode(const flex_vec& input_vec) {
     for (size_t i = 0; i < input_vec.size(); ++i) {
         int value = static_cast<int>(input_vec[i]);
 
-        assert(static_cast<double>(static_cast<double>(input_vec[i])) == input_vec[i]);
+        // Each value should be in the index of a class label
+        assert(static_cast<double>(static_cast<int>(input_vec[i])) == input_vec[i]);
 
         if(histogram.size() < (value + 1)){
           histogram.resize(value + 1);
@@ -144,7 +145,7 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
 
     // Build a dict pf the column order by column name, to later access within the iterator
     auto column_index_map = generate_column_index_map(data.column_names());
-
+    
     flex_vec curr_chunk_targets;
     flex_vec curr_chunk_features;
     curr_chunk_features.reserve(feature_size);
