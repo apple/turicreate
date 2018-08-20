@@ -1,6 +1,5 @@
 project(Turi)
 
-
 # We require the most recent version of cmake and automatically
 # install the correct version when using the cmake lists
 cmake_minimum_required(VERSION 2.8.3)
@@ -42,6 +41,12 @@ else()
   message("Skipping python libraries.")
 endif()
 
+if(NOT APPLE)
+  include(FindLAPACK)
+  if(NOT ${LAPACK_FOUND})
+    message(FATAL_ERROR "lapack is not installed")
+  endif()
+endif()
 
 include(CheckLibraryExists)
 include(CheckFunctionExists)
