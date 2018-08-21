@@ -243,6 +243,7 @@ class StyleTransferTest(unittest.TestCase):
         self.assertEqual(type(str(model)), str)
         self.assertEqual(type(model.__repr__()), str)
 
+    '''
     def test_save_and_load(self):
         with test_util.TempDirectory() as filename:
             self.model.save(filename)
@@ -252,6 +253,7 @@ class StyleTransferTest(unittest.TestCase):
             print("Stylize passed")
             self.test_get_styles_success()
             print("Get styles passed")
+    '''
 
 
 @unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
