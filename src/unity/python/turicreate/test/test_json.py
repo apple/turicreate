@@ -23,6 +23,7 @@ import os
 import pytz
 import sys
 import unittest
+import tempfile
 
 from . import util
 from .. import _json # turicreate._json
@@ -251,8 +252,36 @@ class JSONTest(unittest.TestCase):
         ]]
 
     def test_malformed_json(self):
-        self.assertRaises(IOError, SArray.read_json, './malformed.json')
-        self.assertRaises(IOError, SFrame.read_json, './malformed.json')
+        out = """
+[
+  {
+  "text": "["I", "have", "an", "atlas"]",
+  "label": ["NONE", "NONE", "NONE", "NONE"]
+  },
+  {
+  "text": ["These", "are", "my", "dogs"],
+  "label": ["NONE", "NONE", "NONE", "PLN"]
+  },
+  {
+  "text": ["The", "sheep", "are", "fluffy"],
+  "label": ["NONE","PLN","NONE","NONE"]
+  },
+  {
+  "text": ["Billiards", "is", "my", "favourite", "game"],
+  "label": ["NONE", "NONE", "NONE", "NONE", "NONE"]
+  },
+  {
+  "text": ["I", "went", "to", "five", "sessions", "today"],
+  "label": ["NONE", "NONE", "NONE", "NONE", "PLN", "NONE"]
+  }
+ ]
+ """
+        with tempfile.NamedTemporaryFile() as f:
+            f.write(out)
+            f.flush()
+
+            self.assertRaises(RuntimeError, SArray.read_json, f.name)
+            self.assertRaises(RuntimeError, SFrame.read_json, f.name)
 
     def test_nonexistant_json(self):
         self.assertRaises(IOError, SArray.read_json, '/nonexistant.json')
