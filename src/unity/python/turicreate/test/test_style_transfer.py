@@ -211,7 +211,10 @@ class StyleTransferTest(unittest.TestCase):
         import coremltools
         filename = tempfile.mkstemp('my_style_transfer.mlmodel')[1]
         model = self.model
-        model.export_coreml(filename)
+        if _mac_ver() >= (10, 14):
+            model.export_coreml(filename)
+        else:
+            model.export_coreml(filename, include_flexible_shape=False)
 
         coreml_model = coremltools.models.MLModel(filename)
 

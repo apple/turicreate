@@ -758,7 +758,8 @@ class StyleTransfer(_CustomModel):
         image.type.imageType.width = width
         image.type.imageType.height = height
 
-    def export_coreml(self, path, image_shape=(256, 256)):
+    def export_coreml(self, path, image_shape=(256, 256), 
+        include_flexible_shape=True):
         """
         Save the model in Core ML format. The Core ML model takes an image of
         fixed size, and a style index inputs and produces an output
@@ -771,6 +772,9 @@ class StyleTransfer(_CustomModel):
 
         image_shape: tuple
             A tuple (defaults to (256, 256)) will bind the coreml model to a fixed shape.
+
+        include_flexible_shape: bool
+            A boolean value indicating whether flexible_shape should be included or not.
 
         See Also
         --------
@@ -832,7 +836,7 @@ class StyleTransfer(_CustomModel):
         coremltools.utils.rename_feature(spec,
                 'transformer__mulscalar0_output', stylized_image, True, True)
 
-        if _mac_ver() >= (10, 14):
+        if include_flexible_shape:
             # Support flexible shape
             flexible_shape_utils = _mxnet_converter._coremltools.models.neural_network.flexible_shape_utils
             img_size_ranges = flexible_shape_utils.NeuralNetworkImageSizeRange()
