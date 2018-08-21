@@ -36,7 +36,7 @@ static double vec_mode(const flex_vec& input_vec) {
         int value = static_cast<int>(input_vec[i]);
 
         // Each value should be in the index of a class label
-        assert(static_cast<double>(static_cast<int>(input_vec[i])) == input_vec[i]);
+        DASSERT_EQ(static_cast<double>(static_cast<int>(input_vec[i])) == input_vec[i]);
 
         if(histogram.size() < (value + 1)){
           histogram.resize(value + 1);
@@ -47,7 +47,7 @@ static double vec_mode(const flex_vec& input_vec) {
 
     auto majority = std::max_element(histogram.begin(), histogram.end());
     
-    return (majority - histogram.begin());
+    return std::distance(histogram.begin(), majority);
 }
 
 /**
