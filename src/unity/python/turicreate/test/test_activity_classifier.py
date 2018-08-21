@@ -340,6 +340,23 @@ class ActivityClassifierTest(unittest.TestCase):
             expected_len = self._calc_expected_predictions_length(self.data.head(100), top_k=5)
             self.assertEqual(len(preds), expected_len)
 
+    def test_evaluate_with_incomplete_targets(self):
+        """
+        Check that evaluation does not require the test data to span all labels.
+        """
+
+        # Arbitrarily filter out all rows whose label matches the first row's.
+        filtered_label = self.data[self.target][0]
+        filtered_data = self.data[self.data[self.target] != filtered_label]
+
+        # Run evaluation.
+        evaluation = self.model.evaluate(filtered_data)
+
+        # Verify that all metrics were computed and included in the result.
+        for metric in ['accuracy', 'auc', 'precision', 'recall', 'f1_score',
+                       'log_loss', 'confusion_matrix', 'roc_curve']:
+            self.assertIn(metric, evaluation)
+
     def test__list_fields(self):
         """
         Check the list fields function.
