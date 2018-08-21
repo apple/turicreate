@@ -420,7 +420,7 @@ void recsys_model_base::export_to_coreml(
   std::shared_ptr<recsys_model_base> recsys_model,
   const std::string& filename) {
   flexible_type model_name = recsys_model->name();
-  log_and_throw("Currently, only item similarity models can be exported to Core ML (use turicreate.item_similarity.create to create such a model).");
+  log_and_throw("Currently, only item similarity models can be exported to Core ML (use turicreate.item_similarity.create to make such a model).");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
