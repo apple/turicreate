@@ -723,7 +723,7 @@ class ActivityClassifier(_CustomModel):
         if 'accuracy' in metrics:
             ret['accuracy'] = _evaluation.accuracy(dataset[self.target], classes)
         if 'auc' in metrics:
-            ret['auc'] = _evaluation.auc(dataset[self.target], probs)
+            ret['auc'] = _evaluation.auc(dataset[self.target], probs, index_map=self._target_id_map)
         if 'precision' in metrics:
             ret['precision'] = _evaluation.precision(dataset[self.target], classes)
         if 'recall' in metrics:
@@ -731,11 +731,11 @@ class ActivityClassifier(_CustomModel):
         if 'f1_score' in metrics:
             ret['f1_score'] = _evaluation.f1_score(dataset[self.target], classes)
         if 'log_loss' in metrics:
-            ret['log_loss'] = _evaluation.log_loss(dataset[self.target], probs)
+            ret['log_loss'] = _evaluation.log_loss(dataset[self.target], probs, index_map=self._target_id_map)
         if 'confusion_matrix' in metrics:
             ret['confusion_matrix'] = _evaluation.confusion_matrix(dataset[self.target], classes)
         if 'roc_curve' in metrics:
-            ret['roc_curve'] = _evaluation.roc_curve(dataset[self.target], probs)
+            ret['roc_curve'] = _evaluation.roc_curve(dataset[self.target], probs, index_map=self._target_id_map)
 
         return ret
 

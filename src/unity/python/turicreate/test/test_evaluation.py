@@ -127,6 +127,20 @@ class MetricsTest(unittest.TestCase):
         observed = turicreate.toolkits.evaluation.log_loss(y, yhat)
         self.assertAlmostEqual(expected, observed)
 
+        # Multiclass with strings and explicit index map
+        y    = turicreate.SArray([ "a", "c", "d", "a"])
+        yhat = turicreate.SArray([[.5, .0, .1, .4],
+                                  [.5, .0, .1, .4],
+                                  [.1, .0, .5, .4],
+                                  [.2, .0, .3, .5]])
+        index_map = {"a" : 0, "b" : 1, "c" : 2, "d" : 3} 
+
+        true_probs = [yhat[0][0], yhat[1][2], yhat[2][3], yhat[3][0]]
+        expected = - sum([math.log(x) for x in true_probs])/4.0
+
+        observed = turicreate.toolkits.evaluation.log_loss(y, yhat, index_map=index_map)
+        self.assertAlmostEqual(expected, observed)
+
     def test_logloss_clipping(self):
 
         y    = turicreate.SArray([0, 1, 2, 0])
@@ -155,6 +169,22 @@ class MetricsTest(unittest.TestCase):
         yhat = turicreate.SArray([0.1, 1.0, 0.1, 0.1])
         log_loss = turicreate.toolkits.evaluation.log_loss(y, yhat)
         self.assertTrue(log_loss != inf)
+
+    def test_probabilities_with_index_map(self):
+
+        y    = turicreate.SArray([0, 2, 3, 0])
+        yhat = turicreate.SArray([[0.9, 0.0, 0.0, 0.1],
+                                  [0.8, 0.0, 0.1, 0.1],
+                                  [0.1, 0.0, 0.1, 0.8],
+                                  [0.1, 0.0, 0.1, 0.8]])
+
+        # The evaluation toolkit must know that 1 is a possible class label, and
+        # corresponds to index 1 in each probability vector.
+        index_map = {i: i for i in range(4)}
+
+        log_loss = turicreate.toolkits.evaluation.log_loss(y, yhat, index_map=index_map)
+        auc = turicreate.toolkits.evaluation.auc(y, yhat, index_map=index_map)
+        roc_curve = turicreate.toolkits.evaluation.roc_curve(y, yhat, index_map=index_map)
 
     def test_integer_probabilities(self):
 
@@ -1087,11 +1117,6 @@ class MetricsTest(unittest.TestCase):
         # Arrange (mismatch number of classes)
         t, _ = _generate_classes_and_scores(3, n=100, hard_predictions=False)
         _, p = _generate_classes_and_scores(4, n=100, hard_predictions=False)
-        sk_p = {}
-        sk_t = {}
-        for i in range(3):
-            sk_p[i] = p[:, i]
-            sk_t[i] = t == i
         targets = turicreate.SArray(list(t))
         predictions = turicreate.SArray(list(p))
         float_predictions = predictions.apply(lambda x: x[0])
@@ -1146,3 +1171,54 @@ class MetricsTest(unittest.TestCase):
         with self.assertRaises(ToolkitError):
             score = turicreate.toolkits.evaluation.auc(bad_range_targets,
                                                  bad_range_predictions)
+
+        targets = turicreate.SArray([0, 1, 2, 0])
+        predictions = turicreate.SArray([[0.9, 0.0, 0.1, 0.0],
+                                         [0.8, 0.1, 0.1, 0.0],
+                                         [0.1, 0.1, 0.8, 0.0],
+                                         [0.1, 0.1, 0.8, 0.0]])
+        good_index_map = {i: i for i in range(4)}
+        incomplete_index_map = {i: i for i in range(3)}
+        invalid_range_index_map = {0: 1, 1: 2, 2: 3, 3: 4}
+        non_injective_index_map = {0: 0, 1: 0, 2: 2, 3: 3}
+
+        # No exception with a correct index map
+        score = turicreate.toolkits.evaluation.auc(
+            targets, predictions, index_map=good_index_map)
+        score = turicreate.toolkits.evaluation.roc_curve(
+            targets, predictions, index_map=good_index_map)
+        score = turicreate.toolkits.evaluation.log_loss(
+            targets, predictions, index_map=good_index_map)
+
+        # Exception if index_map size does not match prediction vector size
+        with self.assertRaises(ToolkitError):
+            score = turicreate.toolkits.evaluation.auc(
+                targets, predictions, index_map=incomplete_index_map)
+        with self.assertRaises(ToolkitError):
+            score = turicreate.toolkits.evaluation.roc_curve(
+                targets, predictions, index_map=incomplete_index_map)
+        with self.assertRaises(ToolkitError):
+            score = turicreate.toolkits.evaluation.log_loss(
+                targets, predictions, index_map=incomplete_index_map)
+
+        # Exception if index_map values do not span prediction vector indices
+        with self.assertRaises(ToolkitError):
+            score = turicreate.toolkits.evaluation.auc(
+                targets, predictions, index_map=invalid_range_index_map)
+        with self.assertRaises(ToolkitError):
+            score = turicreate.toolkits.evaluation.roc_curve(
+                targets, predictions, index_map=invalid_range_index_map)
+        with self.assertRaises(ToolkitError):
+            score = turicreate.toolkits.evaluation.log_loss(
+                targets, predictions, index_map=invalid_range_index_map)
+
+        # Exception if index_map uses the same index for two labels
+        with self.assertRaises(ToolkitError):
+            score = turicreate.toolkits.evaluation.auc(
+                targets, predictions, index_map=non_injective_index_map)
+        with self.assertRaises(ToolkitError):
+            score = turicreate.toolkits.evaluation.roc_curve(
+                targets, predictions, index_map=non_injective_index_map)
+        with self.assertRaises(ToolkitError):
+            score = turicreate.toolkits.evaluation.log_loss(
+                targets, predictions, index_map=non_injective_index_map)
