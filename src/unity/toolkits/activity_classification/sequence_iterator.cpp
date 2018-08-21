@@ -5,6 +5,7 @@
  */
 #include <time.h>
 #include <iomanip>
+#include <logger/assertions.hpp>
 #include "sequence_iterator.hpp"
 #include "random/random.hpp"
 #include "util/sys_util.hpp"
@@ -36,7 +37,7 @@ static double vec_mode(const flex_vec& input_vec) {
         int value = static_cast<int>(input_vec[i]);
 
         // Each value should be in the index of a class label
-        DASSERT_EQ(static_cast<double>(static_cast<int>(input_vec[i])) == input_vec[i]);
+        DASSERT_EQ(static_cast<double>(static_cast<int>(input_vec[i])), input_vec[i]);
 
         if(histogram.size() < (value + 1)){
           histogram.resize(value + 1);
