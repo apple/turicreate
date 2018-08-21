@@ -3418,27 +3418,31 @@ class SFrameTest(unittest.TestCase):
 
     def test_builtins(self):
         import builtins
+        import six
 
         sf = SFrame({'dict': [builtins.dict({'foo': 'bar'})],
                      'float': [builtins.float(3.14)],
                      'int': [builtins.int(12)],
                      'bool': [builtins.bool(False)],
                      'list': [builtins.list([1,2,3])],
-                     'long': [builtins.long(12)],
                      'str': [builtins.str('foo')],
                      'tuple': [builtins.tuple((1,2))],
-                     'unicode': [builtins.unicode('foo')],
         })
         sf2 = SFrame({'dict': [{'foo': 'bar'}],
                      'float': [3.14],
                      'int': [12],
                      'bool': [False],
                      'list': [[1,2,3]],
-                     'long': [12],
                      'str': ['foo'],
                      'tuple': [(1,2)],
-                     'unicode': [unicode('foo')],
         })
+
+        if six.PY2:
+            sf = sf.add_columns(SFrame(
+                {'long': [builtins.long(12)], 'unicode': [builtins.unicode('foo')]}))
+            sf2 = sf2.add_columns(SFrame(
+                {'long': [12], 'unicode': [unicode('foo')]}))
+
         _assert_sframe_equal(sf, sf2)
 
 

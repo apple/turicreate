@@ -840,14 +840,14 @@ class StyleTransfer(_CustomModel):
         flexible_shape_utils.update_image_size_range(spec, feature_name=self.content_feature, size_range=img_size_ranges)
         flexible_shape_utils.update_image_size_range(spec, feature_name=stylized_image, size_range=img_size_ranges)
 
-        mlmodel = coremltools.models.MLModel(spec)
         model_type = 'style transfer (%s)' % self.model
-        mlmodel.short_description = _coreml_utils._mlmodel_short_description(
+        spec.description.metadata.shortDescription = _coreml_utils._mlmodel_short_description(
             model_type)
-        mlmodel.input_description[self.content_feature] = 'Input image'
-        mlmodel.input_description['index'] = u'Style index array (set index I to 1.0 to enable Ith style)'
-        mlmodel.output_description[stylized_image] = 'Stylized image'
-        _coreml_utils._set_model_metadata(mlmodel, self.__class__.__name__, {
+        spec.description.input[0].shortDescription = 'Input image'
+        spec.description.input[1].shortDescription = u'Style index array (set index I to 1.0 to enable Ith style)'
+        spec.description.output[0].shortDescription = 'Stylized image'
+        user_defined_metadata = _coreml_utils._get_model_metadata(
+            self.__class__.__name__, {
                 'model': self.model,
                 'num_styles': str(self.num_styles),
                 'content_feature': self.content_feature,
@@ -855,7 +855,9 @@ class StyleTransfer(_CustomModel):
                 'max_iterations': str(self.max_iterations),
                 'training_iterations': str(self.training_iterations),
             }, version=StyleTransfer._PYTHON_STYLE_TRANSFER_VERSION)
-        mlmodel.save(path)
+        spec.description.metadata.userDefined.update(user_defined_metadata)
+        from coremltools.models.utils import save_spec as _save_spec
+        _save_spec(spec, path)
 
     def get_styles(self, style=None):
         """

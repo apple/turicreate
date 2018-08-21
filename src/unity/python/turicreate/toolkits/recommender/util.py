@@ -1843,5 +1843,10 @@ class _Recommender(_Model):
         --------
         >>> model.export_coreml('myModel.mlmodel')
         """
+        print('This model is exported as a custom Core ML model. In order to use it in your\n'
+              'application, you must also include "libRecommender.dylib". For additional\n'
+              'details see:\n'
+              'https://apple.github.io/turicreate/docs/userguide/recommender/coreml-deployment.html')
+
         import turicreate as tc
         tc.extensions._recsys.export_to_coreml(self.__proxy__, filename)

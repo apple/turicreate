@@ -85,8 +85,9 @@ variant_type _supervised_streaming_evaluator(
   for (const auto& kvp: kwargs) {
     opts[kvp.first] = to_variant(kvp.second);
   } 
-  if ((metric == "auc") || (metric == "roc_curve") || 
-      (metric == "binary_logloss") || (metric == "multiclass_logloss")) {
+  const bool needs_index_map = (metric == "auc") || (metric == "roc_curve") ||
+      (metric == "binary_logloss") || (metric == "multiclass_logloss");
+  if (needs_index_map && opts.count("index_map") == 0) {
     opts["index_map"] =  to_variant(
         get_index_map(unity_targets, unity_predictions));
   }

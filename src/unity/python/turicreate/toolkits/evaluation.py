@@ -69,7 +69,19 @@ def _check_target_not_float(targets):
     if targets.dtype == float:
         raise TypeError("Input `targets` cannot be an SArray of type float.")
 
-def log_loss(targets, predictions):
+def _check_index_map(index_map):
+    if index_map is None:
+        return
+
+    if not isinstance(index_map, dict):
+        raise TypeError("Input `index_map` must be a dict mapping target label to prediction-vector index.")
+
+    indices = [v for k,v in index_map.items()]
+    indices.sort()
+    if indices != list(range(len(index_map))):
+        raise _ToolkitError("Invalid index_map: each target label must map to a distinct index into the prediction vector.")
+
+def log_loss(targets, predictions, index_map=None):
     r"""
     Compute the logloss for the given targets and the given predicted
     probabilities. This quantity is defined to be the negative of the sum
@@ -108,6 +120,12 @@ def log_loss(targets, predictions):
         classification, the predictions are expected to be an array of
         predictions for each class.
 
+    index_map : dict[int], [None (default)]
+        For binary classification, a dictionary mapping the two target labels to
+        either 0 (negative) or 1 (positive). For multi-class classification, a
+        dictionary mapping potential target labels to the associated index into
+        the vectors in ``predictions``.
+
     Returns
     -------
     out : float
@@ -123,13 +141,15 @@ def log_loss(targets, predictions):
        then the labels are sorted alphanumerically and the largest label is
        chosen as the "positive" label.  For example, if the classifier labels
        are {"cat", "dog"}, then "dog" is chosen as the positive label for the
-       binary classification case.
+       binary classification case. This behavior can be overridden by providing
+       an explicit ``index_map``.
      - For multi-class classification, when the target label is of type
        "string", then the probability vector is assumed to be a vector of
        probabilities of classes as sorted alphanumerically. Hence, for the
        probability vector [0.1, 0.2, 0.7] for a dataset with classes "cat",
        "dog", and "rat"; the 0.1 corresponds to "cat", the 0.2 to "dog" and the
-       0.7 to "rat".
+       0.7 to "rat". This behavior can be overridden by providing an explicit
+       ``index_map``.
      - Logloss is undefined when a probability value p = 0, or p = 1.  Hence,
        probabilities are clipped to max(EPSILON, min(1 - EPSILON, p)) where
        EPSILON = 1e-15.
@@ -187,19 +207,38 @@ def log_loss(targets, predictions):
                                 [.3, .6, 0.1]])
         log_loss = tc.evaluation.log_loss(targets, predictions)
 
+    If the probability vectors contain predictions for labels not present among
+    the targets, an explicit index map must be provided.
+
+    .. sourcecode:: python
+
+        target    = tc.SArray([ "dog", "cat", "cat", "dog"])
+        predictions = tc.SArray([[.1, .8, 0.1],
+                                [.9, .1, 0.0],
+                                [.8, .1, 0.1],
+                                [.3, .6, 0.1]])
+        index_map = {"cat": 0, "dog": 1, "foosa": 2}
+        log_loss = tc.evaluation.log_loss(targets, predictions, index_map=index_map)
+
     """
 
     _supervised_evaluation_error_checking(targets, predictions)
     _check_prob_and_prob_vector(predictions)
     _check_target_not_float(targets)
+    _check_index_map(index_map)
+
     multiclass = predictions.dtype not in [float, int]
+
+    opts = {}
+    if index_map is not None:
+        opts['index_map'] = index_map
 
     if multiclass:
         result = _turicreate.extensions._supervised_streaming_evaluator(targets,
-            predictions, "multiclass_logloss", {})
+            predictions, "multiclass_logloss", opts)
     else:
         result = _turicreate.extensions._supervised_streaming_evaluator(targets,
-            predictions, "binary_logloss", {})
+            predictions, "binary_logloss", opts)
     return result
 
 
@@ -912,7 +951,7 @@ def recall(targets, predictions, average='macro'):
     return _turicreate.extensions._supervised_streaming_evaluator(targets,
                           predictions, "recall", opts)
 
-def roc_curve(targets, predictions, average=None):
+def roc_curve(targets, predictions, average=None, index_map=None):
     r"""
     Compute an ROC curve for the given targets and predictions. Currently,
     only binary classification is supported.
@@ -936,6 +975,12 @@ def roc_curve(targets, predictions, average=None):
 
             - None: No averaging is performed and a single metric is returned
               for each class.
+
+    index_map : dict[int], [None (default)]
+        For binary classification, a dictionary mapping the two target labels to
+        either 0 (negative) or 1 (positive). For multi-class classification, a
+        dictionary mapping potential target labels to the associated index into
+        the vectors in ``predictions``.
 
     Returns
     -------
@@ -966,13 +1011,15 @@ def roc_curve(targets, predictions, average=None):
        then the labels are sorted alphanumerically and the largest label is
        chosen as the "positive" label.  For example, if the classifier labels
        are {"cat", "dog"}, then "dog" is chosen as the positive label for the
-       binary classification case.
+       binary classification case. This behavior can be overridden by providing
+       an explicit ``index_map``.
      - For multi-class classification, when the target label is of type
        "string", then the probability vector is assumed to be a vector of
        probabilities of classes as sorted alphanumerically. Hence, for the
        probability vector [0.1, 0.2, 0.7] for a dataset with classes "cat",
        "dog", and "rat"; the 0.1 corresponds to "cat", the 0.2 to "dog" and the
-       0.7 to "rat".
+       0.7 to "rat". This behavior can be overridden by providing an explicit
+       ``index_map``.
      - The ROC curve is computed using a binning approximation with 1M bins and
        is hence accurate only to the 5th decimal.
 
@@ -1087,12 +1134,17 @@ def roc_curve(targets, predictions, average=None):
     _check_categorical_option_type('average', average, [None])
     _check_prob_and_prob_vector(predictions)
     _check_target_not_float(targets)
+    _check_index_map(index_map)
+
     opts = {"average": average,
             "binary": predictions.dtype in [int, float]}
+    if index_map is not None:
+        opts['index_map'] = index_map
+
     return _turicreate.extensions._supervised_streaming_evaluator(targets,
                        predictions, "roc_curve", opts)
 
-def auc(targets, predictions, average='macro'):
+def auc(targets, predictions, average='macro', index_map=None):
     r"""
     Compute the area under the ROC curve for the given targets and predictions.
 
@@ -1115,6 +1167,12 @@ def auc(targets, predictions, average='macro'):
               for each class.
             - 'macro': Calculate metrics for each label, and find their
               unweighted mean. This does not take label imbalance into account.
+
+    index_map : dict[int], [None (default)]
+        For binary classification, a dictionary mapping the two target labels to
+        either 0 (negative) or 1 (positive). For multi-class classification, a
+        dictionary mapping potential target labels to the associated index into
+        the vectors in ``predictions``.
 
     Returns
     -------
@@ -1197,7 +1255,12 @@ def auc(targets, predictions, average='macro'):
                          ['macro', None])
     _check_prob_and_prob_vector(predictions)
     _check_target_not_float(targets)
+    _check_index_map(index_map)
+
     opts = {"average": average,
             "binary": predictions.dtype in [int, float]}
+    if index_map is not None:
+        opts['index_map'] = index_map
+
     return _turicreate.extensions._supervised_streaming_evaluator(targets,
                       predictions, "auc", opts)

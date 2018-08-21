@@ -1,6 +1,5 @@
 project(Turi)
 
-
 # We require the most recent version of cmake and automatically
 # install the correct version when using the cmake lists
 cmake_minimum_required(VERSION 2.8.3)
@@ -42,13 +41,18 @@ else()
   message("Skipping python libraries.")
 endif()
 
+if(NOT APPLE)
+  include(FindLAPACK)
+  if(NOT ${LAPACK_FOUND})
+    message(FATAL_ERROR "lapack is not installed")
+  endif()
+endif()
 
 include(CheckLibraryExists)
 include(CheckFunctionExists)
 include(ExternalProject)
 include(CheckCXXSourceCompiles)
-
-
+include(CheckCXXCompilerFlag)
 
 #**************************************************************************/
 #*                                                                        */
@@ -213,8 +217,17 @@ message(WARNING "OpenMP Libraries were not found")
 #*                                                                        */
 #**************************************************************************/
 if (CLANG)
-  set(CPP11_FLAGS "-std=c++11 -stdlib=libc++ -Wno-stdlibcxx-not-found -Wno-deprecated-register -Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900" CACHE STRING "C++11 enabling flags")
-set(WERROR_FLAGS "-Werror")
+
+  set(_cpp11_optional_flags "")
+
+  check_cxx_compiler_flag("-Wno-stdlibcxx-not-found" __no_stdlibcxx_not_found)
+  if(${__no_stdlibcxx_not_found})
+    set(_cpp11_optional_flags "${_cpp11_optional_flags} -Wno-stdlibcxx-not-found")
+  endif()
+
+  set(CPP11_FLAGS "-std=c++11 -stdlib=libc++ -Wno-deprecated-register -Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900 ${_cpp11_optional_flags}" CACHE STRING "C++11 enabling flags")
+
+  set(WERROR_FLAGS "-Werror")
 else()
 set(CPP11_FLAGS "-std=c++11 -Wno-enum-compare -Wno-conversion-null -ftemplate-depth=900" CACHE STRING "C++11 enabling flags")
 set(WERROR_FLAGS "-Werror")
@@ -274,7 +287,6 @@ endif()
 
 
 
-include(CheckCXXCompilerFlag)
 if (MARCH)
   set(ARCH_FLAG "-march=${MARCH}")
 elseif (ARCH)
@@ -350,16 +362,16 @@ endif()
 
 # Set the debug flags
 set(EXTERNAL_CMAKE_C_FLAGS_DEBUG
-  "${DEBUG_OPTIMIZATION_LEVEL} -Wno-attributes ${ARCH_FLAG} -Winit-self ${PROFILING_FLAGS} ${C_REAL_COMPILER_FLAGS} -fno-inline ${ALTERNATE_LINKER} -DHAVE_PTHREAD=1"
+  "${DEBUG_OPTIMIZATION_LEVEL} -Wno-attributes ${ARCH_FLAG} -Winit-self  ${PROFILING_FLAGS} ${C_REAL_COMPILER_FLAGS} -fno-inline ${ALTERNATE_LINKER} -DHAVE_PTHREAD=1"
   CACHE STRING "compiler options" FORCE)
 set(CMAKE_C_FLAGS_DEBUG
-  "${EXTERNAL_CMAKE_C_FLAGS_DEBUG} ${WERROR_FLAGS}"
+  "${EXTERNAL_CMAKE_C_FLAGS_DEBUG} ${WERROR_FLAGS} -Wuninitialized "
   CACHE STRING "compiler options" FORCE)
 set(EXTERNAL_CMAKE_CXX_FLAGS_DEBUG
   "${DEBUG_OPTIMIZATION_LEVEL} ${DISABLE_WARNING_FLAGS} -Wno-attributes ${ARCH_FLAG} -Winit-self ${PROFILING_FLAGS} ${CPP_REAL_COMPILER_FLAGS} ${INT128_FLAGS} ${ALTERNATE_LINKER} -fno-inline -DHAVE_PTHREAD=1"
   CACHE STRING "compiler options" FORCE)
 set(CMAKE_CXX_FLAGS_DEBUG
-  "${EXTERNAL_CMAKE_CXX_FLAGS_DEBUG} ${WERROR_FLAGS}"
+  "${EXTERNAL_CMAKE_CXX_FLAGS_DEBUG} ${WERROR_FLAGS} -Wuninitialized"
   CACHE STRING "compiler options" FORCE)
 
 set(CMAKE_C_FLAGS_RELEASE
