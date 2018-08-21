@@ -211,25 +211,23 @@ class StyleTransferTest(unittest.TestCase):
         import coremltools
         filename = tempfile.mkstemp('my_style_transfer.mlmodel')[1]
         model = self.model
-        if _mac_ver() >= (10, 14):
-            model.export_coreml(filename)
-        else:
-            model.export_coreml(filename, include_flexible_shape=False)
-
+        model.export_coreml(filename)
+        
         coreml_model = coremltools.models.MLModel(filename)
 
-        if _mac_ver() >= (10, 13):
+        if _mac_ver() >= (10, 14):
+            # It should work in 10.13 but there is a coremltools issue (#198)
+            # that is fixed in master but not in a release yet (as of 2.0b1)
             img = self.style_sf[0:2][self.style_feature][0]
             img_fixed = tc.image_analysis.resize(img, 256, 256, 3)
             img = self._coreml_python_predict(coreml_model, img_fixed)
             self.assertEqual(img.shape, (256, 256, 3))
 
-            if _mac_ver() >= (10, 14):
-                # Test for flexible shape
-                img = self.style_sf[0:2][self.style_feature][1]
-                img_fixed = tc.image_analysis.resize(img, 512, 512, 3)
-                img = self._coreml_python_predict(coreml_model, img_fixed)
-                self.assertEqual(img.shape, (512, 512, 3))
+            # Test for flexible shape
+            img = self.style_sf[0:2][self.style_feature][1]
+            img_fixed = tc.image_analysis.resize(img, 512, 512, 3)
+            img = self._coreml_python_predict(coreml_model, img_fixed)
+            self.assertEqual(img.shape, (512, 512, 3))
 
         # Also check if we can train a second model and export it (there could
         # be naming issues in mxnet)
