@@ -113,7 +113,7 @@ if(APPLE)
     add_definitions(-DHAS_CORE_ML_BATCH_INFERENCE)
 
     # GPU-accelerated training with MPS backend requires macOS 10.14 or higher
-    set(HAS_MPS TRUE)
+    set(HAS_MPS FALSE)
 
     # CoreML MLCustomModel requires macOS 10.14 or higher
     set(HAS_MLCUSTOMMODEL TRUE)
