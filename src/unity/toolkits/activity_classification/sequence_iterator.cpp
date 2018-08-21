@@ -48,6 +48,7 @@ static double vec_mode(const flex_vec& input_vec) {
 
     auto majority = std::max_element(histogram.begin(), histogram.end());
     
+    // return index to mode majority value
     return std::distance(histogram.begin(), majority);
 }
 
