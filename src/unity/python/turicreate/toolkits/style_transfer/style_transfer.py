@@ -11,7 +11,7 @@ from datetime import datetime as _datetime
 
 import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits import _coreml_utils
-from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
+from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe, _mac_ver
 from .. import _mxnet_utils
 from ._utils import _seconds_as_string
 from .. import _pre_trained_models
@@ -832,13 +832,14 @@ class StyleTransfer(_CustomModel):
         coremltools.utils.rename_feature(spec,
                 'transformer__mulscalar0_output', stylized_image, True, True)
 
-        # Support flexible shape
-        flexible_shape_utils = _mxnet_converter._coremltools.models.neural_network.flexible_shape_utils
-        img_size_ranges = flexible_shape_utils.NeuralNetworkImageSizeRange()
-        img_size_ranges.add_height_range((64, -1))
-        img_size_ranges.add_width_range((64, -1))
-        flexible_shape_utils.update_image_size_range(spec, feature_name=self.content_feature, size_range=img_size_ranges)
-        flexible_shape_utils.update_image_size_range(spec, feature_name=stylized_image, size_range=img_size_ranges)
+        if _mac_ver() >= (10, 14):
+            # Support flexible shape
+            flexible_shape_utils = _mxnet_converter._coremltools.models.neural_network.flexible_shape_utils
+            img_size_ranges = flexible_shape_utils.NeuralNetworkImageSizeRange()
+            img_size_ranges.add_height_range((64, -1))
+            img_size_ranges.add_width_range((64, -1))
+            flexible_shape_utils.update_image_size_range(spec, feature_name=self.content_feature, size_range=img_size_ranges)
+            flexible_shape_utils.update_image_size_range(spec, feature_name=stylized_image, size_range=img_size_ranges)
 
         model_type = 'style transfer (%s)' % self.model
         spec.description.metadata.shortDescription = _coreml_utils._mlmodel_short_description(

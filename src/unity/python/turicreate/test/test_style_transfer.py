@@ -221,11 +221,12 @@ class StyleTransferTest(unittest.TestCase):
             img = self._coreml_python_predict(coreml_model, img_fixed)
             self.assertEqual(img.shape, (256, 256, 3))
 
-            # Test for flexible shape
-            img = self.style_sf[0:2][self.style_feature][1]
-            img_fixed = tc.image_analysis.resize(img, 512, 512, 3)
-            img = self._coreml_python_predict(coreml_model, img_fixed)
-            self.assertEqual(img.shape, (512, 512, 3))
+            if _mac_ver() >= (10, 14):
+                # Test for flexible shape
+                img = self.style_sf[0:2][self.style_feature][1]
+                img_fixed = tc.image_analysis.resize(img, 512, 512, 3)
+                img = self._coreml_python_predict(coreml_model, img_fixed)
+                self.assertEqual(img.shape, (512, 512, 3))
 
         # Also check if we can train a second model and export it (there could
         # be naming issues in mxnet)
