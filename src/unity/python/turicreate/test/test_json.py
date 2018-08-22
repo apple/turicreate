@@ -276,7 +276,7 @@ class JSONTest(unittest.TestCase):
   }
  ]
  """
-        with tempfile.NamedTemporaryFile() as f:
+        with tempfile.NamedTemporaryFile('w') as f:
             f.write(out)
             f.flush()
 
