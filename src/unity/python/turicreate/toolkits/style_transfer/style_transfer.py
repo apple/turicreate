@@ -11,7 +11,7 @@ from datetime import datetime as _datetime
 
 import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits import _coreml_utils
-from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
+from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe, _mac_ver
 from .. import _mxnet_utils
 from ._utils import _seconds_as_string
 from .. import _pre_trained_models
@@ -758,7 +758,8 @@ class StyleTransfer(_CustomModel):
         image.type.imageType.width = width
         image.type.imageType.height = height
 
-    def export_coreml(self, path, image_shape=(256, 256)):
+    def export_coreml(self, path, image_shape=(256, 256), 
+        include_flexible_shape=True):
         """
         Save the model in Core ML format. The Core ML model takes an image of
         fixed size, and a style index inputs and produces an output
@@ -771,6 +772,9 @@ class StyleTransfer(_CustomModel):
 
         image_shape: tuple
             A tuple (defaults to (256, 256)) will bind the coreml model to a fixed shape.
+
+        include_flexible_shape: bool
+            A boolean value indicating whether flexible_shape should be included or not.
 
         See Also
         --------
@@ -832,13 +836,14 @@ class StyleTransfer(_CustomModel):
         coremltools.utils.rename_feature(spec,
                 'transformer__mulscalar0_output', stylized_image, True, True)
 
-        # Support flexible shape
-        flexible_shape_utils = _mxnet_converter._coremltools.models.neural_network.flexible_shape_utils
-        img_size_ranges = flexible_shape_utils.NeuralNetworkImageSizeRange()
-        img_size_ranges.add_height_range((64, -1))
-        img_size_ranges.add_width_range((64, -1))
-        flexible_shape_utils.update_image_size_range(spec, feature_name=self.content_feature, size_range=img_size_ranges)
-        flexible_shape_utils.update_image_size_range(spec, feature_name=stylized_image, size_range=img_size_ranges)
+        if include_flexible_shape:
+            # Support flexible shape
+            flexible_shape_utils = _mxnet_converter._coremltools.models.neural_network.flexible_shape_utils
+            img_size_ranges = flexible_shape_utils.NeuralNetworkImageSizeRange()
+            img_size_ranges.add_height_range((64, -1))
+            img_size_ranges.add_width_range((64, -1))
+            flexible_shape_utils.update_image_size_range(spec, feature_name=self.content_feature, size_range=img_size_ranges)
+            flexible_shape_utils.update_image_size_range(spec, feature_name=stylized_image, size_range=img_size_ranges)
 
         model_type = 'style transfer (%s)' % self.model
         spec.description.metadata.shortDescription = _coreml_utils._mlmodel_short_description(

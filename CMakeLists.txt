@@ -235,8 +235,17 @@ endif()
 # Shared compiler flags used by all builds (debug, profile, release)
 # Allow COMPILER_FLAGS to be used as options from the ./configure without
 # forcing all the other options I want to add to be lost
-set(C_REAL_COMPILER_FLAGS "-Wall -pthread -g ${COMPILER_FLAGS}" CACHE STRING "common compiler options")
-set(CPP_REAL_COMPILER_FLAGS "-Wall -pthread -g ${CPP11_FLAGS} ${COMPILER_FLAGS}" CACHE STRING "common compiler options")
+set(C_REAL_COMPILER_FLAGS "-Wall -g ${COMPILER_FLAGS}" CACHE STRING "common compiler options")
+set(CPP_REAL_COMPILER_FLAGS "-Wall -g ${CPP11_FLAGS} ${COMPILER_FLAGS}" CACHE STRING "common compiler options")
+
+if (CLANG)
+  # clang 9.0.0 and earlier will warn (error with -Werror) on unused -pthread during linking
+  # so adding only to compile options is what we need.
+  add_compile_options(-pthread)
+else()
+  set(C_REAL_COMPILER_FLAGS "${C_REAL_COMPILER_FLAGS} -pthread" CACHE STRING "common compiler options")
+  set(CPP_REAL_COMPILER_FLAGS "${CPP_REAL_COMPILER_FLAGS} -pthread" CACHE STRING "common compiler options")
+endif()
 
 # Disable address space randomization for OSX lion and above
 if (APPLE)
