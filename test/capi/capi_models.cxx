@@ -15,6 +15,12 @@
 #include <fileio/fileio_constants.hpp>
 #include <util/fs_util.hpp>
 
+#ifdef LINUX
+#include <linux/fs.h>
+#else
+#include <boost/filesystem.hpp>
+#endif
+
 #include "capi_utils.hpp"
 
 BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
@@ -196,7 +202,23 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
     {
       // sad path 1 - attempting to save without permission to location
       // ensure the error message contains useful info
-      std::string model_path = "/permission_should_be_denied";
+
+      // first, make a directory we can't write to
+      std::string bad_directory =
+        turi::fs_util::system_temp_directory_unique_path("capi_model_permission_denied", "");
+      turi::fileio::create_directory(bad_directory);
+
+#ifdef LINUX
+      // set immutable bit on the directory
+      int new_attrs = FS_IMMUTABLE_FL;
+      if (ioctl(fd, FS_IOC_SETFLAGS, &new_attrs) == -1) {
+        TS_ASSERT(false, "ERROR: Unable to set immutable flag\n")
+      }
+#else
+      boost::filesystem::permissions(bad_directory, boost::filesystem::owner_read);
+#endif
+
+      std::string model_path = turi::fs_util::join({bad_directory, "model.mlmodel"});
       tc_model_save(model, model_path.c_str(), &error);
       TS_ASSERT_DIFFERS(error, nullptr);
       std::string error_message = tc_error_message(error);
