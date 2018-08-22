@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.sentence_classifier.create &mdash; Turi Create API 5.0b3 documentation</title>
+  <title>turicreate.text_classifier.create &mdash; Turi Create API 5.0 documentation</title>
   
 
   
@@ -27,10 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.0b3 documentation" href="../index.html"/>
-        <link rel="up" title="sentence_classifier" href="../turicreate.toolkits.sentence_classifier.html"/>
-        <link rel="next" title="turicreate.sentence_classifier.SentenceClassifier" href="turicreate.sentence_classifier.SentenceClassifier.html"/>
-        <link rel="prev" title="turicreate.sentence_classifier.SentenceClassifier" href="turicreate.sentence_classifier.SentenceClassifier.html"/> 
+    <link rel="top" title="Turi Create API 5.0 documentation" href="../index.html"/>
+        <link rel="up" title="text_classifier" href="../turicreate.toolkits.text_classifier.html"/>
+        <link rel="next" title="turicreate.text_classifier.TextClassifier" href="turicreate.text_classifier.TextClassifier.html"/>
+        <link rel="prev" title="turicreate.text_classifier.TextClassifier" href="turicreate.text_classifier.TextClassifier.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -115,9 +115,9 @@
       
           <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
       
-          <li><a href="../turicreate.toolkits.sentence_classifier.html"><code class="docutils literal"><span class="pre">sentence_classifier</span></code></a> &raquo;</li>
+          <li><a href="../turicreate.toolkits.text_classifier.html"><code class="docutils literal"><span class="pre">text_classifier</span></code></a> &raquo;</li>
       
-    <li>turicreate.sentence_classifier.create</li>
+    <li>turicreate.text_classifier.create</li>
       <li class="wy-breadcrumbs-aside">
         
       </li>
@@ -126,12 +126,12 @@
 </div>
           <div role="main" class="document">
             
-  <div class="section" id="turicreate-sentence-classifier-create">
-<h1>turicreate.sentence_classifier.create<a class="headerlink" href="#turicreate-sentence-classifier-create" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="turicreate-text-classifier-create">
+<h1>turicreate.text_classifier.create<a class="headerlink" href="#turicreate-text-classifier-create" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="turicreate.sentence_classifier.create">
-<code class="descclassname">turicreate.sentence_classifier.</code><code class="descname">create</code><span class="sig-paren">(</span><em>dataset</em>, <em>target</em>, <em>features=None</em>, <em>method='auto'</em>, <em>validation_set='auto'</em>, <em>max_iterations=10</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.sentence_classifier.create" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a model that trains a classifier to classify sentences from a
+<dt id="turicreate.text_classifier.create">
+<code class="descclassname">turicreate.text_classifier.</code><code class="descname">create</code><span class="sig-paren">(</span><em>dataset</em>, <em>target</em>, <em>features=None</em>, <em>drop_stop_words=True</em>, <em>word_count_threshold=2</em>, <em>method='auto'</em>, <em>validation_set='auto'</em>, <em>max_iterations=10</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.text_classifier.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a model that trains a classifier to classify text from a
 collection of documents. The model is a
 <a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.html#turicreate.logistic_classifier.LogisticClassifier" title="turicreate.logistic_classifier.LogisticClassifier"><code class="xref py py-class docutils literal"><span class="pre">LogisticClassifier</span></code></a> model trained
 using a bag-of-words representation of the text dataset.</p>
@@ -140,17 +140,24 @@ using a bag-of-words representation of the text dataset.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>dataset: SFrame</strong></dt>
-<dd><p class="first last">Contains one column that contains the text dataset of interest.  This can be
-unstructured text dataset, such as that appearing in forums, user-generated
-reviews, and so on.</p>
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">Contains one or more columns of text data. This can be unstructured text
+dataset, such as that appearing in forums, user-generated reviews, etc.</p>
 </dd>
-<dt><strong>target: str</strong></dt>
+<dt><strong>target</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">The column name containing class labels for each document.</p>
 </dd>
-<dt><strong>features: list[str], optional</strong></dt>
+<dt><strong>features</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[str], optional</span></dt>
 <dd><p class="first last">The column names of interest containing text dataset. Each provided column
 must be str type. Defaults to using all columns of type str.</p>
+</dd>
+<dt><strong>drop_stop_words</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd><p class="first last">Ignore very common words, eg: &#8220;the&#8221;, &#8220;a&#8221;, &#8220;is&#8221;.
+For the complete list of stop words, see: <cite>text_classifier.drop_words()</cite>.</p>
+</dd>
+<dt><strong>word_count_threshold</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd><p class="first last">Words which occur less than this often, in the entire dataset, will be
+ignored.</p>
 </dd>
 <dt><strong>method: str, optional</strong></dt>
 <dd><p class="first last">Method to use for feature engineering and modeling. Currently only
@@ -176,23 +183,27 @@ low and the <em>Grad-Norm</em> in the display is large.</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference internal" href="turicreate.sentence_classifier.SentenceClassifier.html#turicreate.sentence_classifier.SentenceClassifier" title="turicreate.sentence_classifier.SentenceClassifier"><code class="xref py py-class docutils literal"><span class="pre">SentenceClassifier</span></code></a></span></dt>
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference internal" href="turicreate.text_classifier.TextClassifier.html#turicreate.text_classifier.TextClassifier" title="turicreate.text_classifier.TextClassifier"><code class="xref py py-class docutils literal"><span class="pre">TextClassifier</span></code></a></span></dt>
 <dd></dd>
 </dl>
 </td>
 </tr>
 </tbody>
 </table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-obj docutils literal"><span class="pre">text_classifier.stop_words</span></code>, <code class="xref py py-obj docutils literal"><span class="pre">text_classifier.drop_words</span></code></p>
+</div>
 <p class="rubric">Examples</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">turicreate</span> <span class="kn">as</span> <span class="nn">tc</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;rating&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;hate it&#39;</span><span class="p">,</span> <span class="s1">&#39;love it&#39;</span><span class="p">]})</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">sentence_classifier</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s1">&#39;rating&#39;</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">])</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">text_classifier</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s1">&#39;rating&#39;</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>You may also evaluate predictions against known sentence scores.</p>
+<p>You may also evaluate predictions against known text scores.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metrics</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -206,10 +217,10 @@ low and the <em>Grad-Norm</em> in the display is large.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="turicreate.sentence_classifier.SentenceClassifier.html" class="btn btn-neutral float-right" title="turicreate.sentence_classifier.SentenceClassifier">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="turicreate.text_classifier.TextClassifier.html" class="btn btn-neutral float-right" title="turicreate.text_classifier.TextClassifier">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="turicreate.sentence_classifier.SentenceClassifier.html" class="btn btn-neutral" title="turicreate.sentence_classifier.SentenceClassifier"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="turicreate.text_classifier.TextClassifier.html" class="btn btn-neutral" title="turicreate.text_classifier.TextClassifier"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -218,7 +229,7 @@ low and the <em>Grad-Norm</em> in the display is large.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Jul 30, 2018.
+      Last updated on Aug 22, 2018.
     </p>
   </div>
 </footer>
@@ -236,7 +247,7 @@ low and the <em>Grad-Norm</em> in the display is large.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.0b3',
+            VERSION:'5.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

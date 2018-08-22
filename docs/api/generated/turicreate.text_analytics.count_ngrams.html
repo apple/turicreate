@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.text_analytics.count_ngrams &mdash; Turi Create API 5.0b3 documentation</title>
+  <title>turicreate.text_analytics.count_ngrams &mdash; Turi Create API 5.0 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.0b3 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 5.0 documentation" href="../index.html"/>
         <link rel="up" title="text_analytics" href="../turicreate.toolkits.text_analytics.html"/>
         <link rel="next" title="turicreate.text_analytics.parse_sparse" href="turicreate.text_analytics.parse_sparse.html"/>
         <link rel="prev" title="turicreate.text_analytics.count_words" href="turicreate.text_analytics.count_words.html"/> 
@@ -130,19 +130,18 @@
 <h1>turicreate.text_analytics.count_ngrams<a class="headerlink" href="#turicreate-text-analytics-count-ngrams" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="turicreate.text_analytics.count_ngrams">
-<code class="descclassname">turicreate.text_analytics.</code><code class="descname">count_ngrams</code><span class="sig-paren">(</span><em>sa, to_lower=True, delimiters=[&quot;\r&quot;, &quot;\v&quot;, &quot;\n&quot;, &quot;\f&quot;, &quot;\t&quot;, &quot; &quot;, &quot;!&quot;, &quot;#&quot;, &quot;$&quot;, &quot;%&quot;, &quot;&amp;&quot;, &quot;'&quot;, &quot;(&quot;, &quot;)&quot;, &quot;*&quot;, &quot;+&quot;, &quot;,&quot;, &quot;-&quot;, &quot;.&quot;, &quot;/&quot;, &quot;:&quot;, &quot;;&quot;, &quot;&lt;&quot;, &quot;=&quot;, &quot;&gt;&quot;, &quot;?&quot;, &quot;&#64;&quot;, &quot;[&quot;, &quot;\&quot;, &quot;]&quot;, &quot;^&quot;, &quot;_&quot;, &quot;`&quot;, &quot;{&quot;, &quot;|&quot;, &quot;}&quot;, &quot;~&quot;], ignore_punct=True, ignore_space=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.text_analytics.count_ngrams" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">turicreate.text_analytics.</code><code class="descname">count_ngrams</code><span class="sig-paren">(</span><em>text, n=2, method='word', to_lower=True, delimiters=['\r', '\x0b', '\n', '\x0c', '\t', ' ', '!', '#', '$', '%', '&amp;', &quot;'&quot;, '&quot;', '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '&lt;', '=', '&gt;', '?', '&#64;', '[', '\\', ']', '^', '_', '`', '{', '|', '}', '~'], ignore_punct=True, ignore_space=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.text_analytics.count_ngrams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an SArray of <code class="docutils literal"><span class="pre">dict</span></code> type where each element contains the count
 for each of the n-grams that appear in the corresponding input element.
 The n-grams can be specified to be either character n-grams or word
 n-grams.  The input SArray could contain strings, dicts with string keys
 and numeric values, or lists of strings.</p>
-<p>This function is implemented using</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>sa</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray[str | dict | list]</span></dt>
+<dt><strong>Text</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray[str | dict | list]</span></dt>
 <dd><p class="first last">Input text data.</p>
 </dd>
 <dt><strong>n</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
@@ -157,7 +156,7 @@ counts.</p>
 <dd><p class="first last">If True, all words are converted to lower case before counting.</p>
 </dd>
 <dt><strong>delimiters</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list[str], None, optional</span></dt>
-<dd><p class="first last">If method is &#8220;word&#8221;, input strings are tokenized using delimiter
+<dd><p class="first last">If method is &#8220;word&#8221;, input strings are tokenized using <cite>delimiters</cite>
 characters in this list. Each entry in this list must contain a single
 character. If set to <cite>None</cite>, then a Penn treebank-style tokenization is
 used, which contains smart handling of punctuations. If method is
@@ -229,7 +228,7 @@ punctuations, spaces, neither, or both.</li>
 
 <span class="go"># Run count_ngrams with dictionary input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([{</span><span class="s1">&#39;alice bob&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Bob alice&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">},</span>
-<span class="gp">... </span>                      <span class="p">{</span><span class="s1">&#39;a dog&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;a dog cat&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}])</span>
+<span class="go">                            {&#39;a dog&#39;: 0, &#39;a dog cat&#39;: 5}])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">count_ngrams</span><span class="p">(</span><span class="n">sa</span><span class="p">)</span>
 <span class="go">dtype: dict</span>
 <span class="go">Rows: 2</span>
@@ -265,7 +264,7 @@ punctuations, spaces, neither, or both.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Jul 30, 2018.
+      Last updated on Aug 22, 2018.
     </p>
   </div>
 </footer>
@@ -283,7 +282,7 @@ punctuations, spaces, neither, or both.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.0b3',
+            VERSION:'5.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

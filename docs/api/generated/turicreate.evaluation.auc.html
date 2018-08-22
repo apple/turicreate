@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.evaluation.auc &mdash; Turi Create API 5.0b3 documentation</title>
+  <title>turicreate.evaluation.auc &mdash; Turi Create API 5.0 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.0b3 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 5.0 documentation" href="../index.html"/>
         <link rel="up" title="evaluation" href="../turicreate.toolkits.evaluation.html"/>
         <link rel="next" title="turicreate.evaluation.accuracy" href="turicreate.evaluation.accuracy.html"/>
         <link rel="prev" title="turicreate.evaluation.max_error" href="turicreate.evaluation.max_error.html"/> 
@@ -130,7 +130,7 @@
 <h1>turicreate.evaluation.auc<a class="headerlink" href="#turicreate-evaluation-auc" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="turicreate.evaluation.auc">
-<code class="descclassname">turicreate.evaluation.</code><code class="descname">auc</code><span class="sig-paren">(</span><em>targets</em>, <em>predictions</em>, <em>average='macro'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.evaluation.auc" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">turicreate.evaluation.</code><code class="descname">auc</code><span class="sig-paren">(</span><em>targets</em>, <em>predictions</em>, <em>average='macro'</em>, <em>index_map=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.evaluation.auc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the area under the ROC curve for the given targets and predictions.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -157,6 +157,12 @@ for each class.</li>
 unweighted mean. This does not take label imbalance into account.</li>
 </ul>
 </div></blockquote>
+</dd>
+<dt><strong>index_map</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict[int], [None (default)]</span></dt>
+<dd><p class="first last">For binary classification, a dictionary mapping the two target labels to
+either 0 (negative) or 1 (positive). For multi-class classification, a
+dictionary mapping potential target labels to the associated index into
+the vectors in <code class="docutils literal"><span class="pre">predictions</span></code>.</p>
 </dd>
 </dl>
 </td>
@@ -253,7 +259,7 @@ as the reference class).</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Jul 30, 2018.
+      Last updated on Aug 22, 2018.
     </p>
   </div>
 </footer>
@@ -271,7 +277,7 @@ as the reference class).</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.0b3',
+            VERSION:'5.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

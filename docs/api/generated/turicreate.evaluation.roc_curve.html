@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.evaluation.roc_curve &mdash; Turi Create API 5.0b3 documentation</title>
+  <title>turicreate.evaluation.roc_curve &mdash; Turi Create API 5.0 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.0b3 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 5.0 documentation" href="../index.html"/>
         <link rel="up" title="evaluation" href="../turicreate.toolkits.evaluation.html"/>
         <link rel="next" title="turicreate.evaluation.rmse" href="turicreate.evaluation.rmse.html"/>
         <link rel="prev" title="turicreate.evaluation.recall" href="turicreate.evaluation.recall.html"/> 
@@ -130,7 +130,7 @@
 <h1>turicreate.evaluation.roc_curve<a class="headerlink" href="#turicreate-evaluation-roc-curve" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="turicreate.evaluation.roc_curve">
-<code class="descclassname">turicreate.evaluation.</code><code class="descname">roc_curve</code><span class="sig-paren">(</span><em>targets</em>, <em>predictions</em>, <em>average=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.evaluation.roc_curve" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">turicreate.evaluation.</code><code class="descname">roc_curve</code><span class="sig-paren">(</span><em>targets</em>, <em>predictions</em>, <em>average=None</em>, <em>index_map=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.evaluation.roc_curve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute an ROC curve for the given targets and predictions. Currently,
 only binary classification is supported.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -158,6 +158,12 @@ strategies can be one of the following:</p>
 for each class.</li>
 </ul>
 </div></blockquote>
+</dd>
+<dt><strong>index_map</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict[int], [None (default)]</span></dt>
+<dd><p class="first last">For binary classification, a dictionary mapping the two target labels to
+either 0 (negative) or 1 (positive). For multi-class classification, a
+dictionary mapping potential target labels to the associated index into
+the vectors in <code class="docutils literal"><span class="pre">predictions</span></code>.</p>
 </dd>
 </dl>
 </td>
@@ -193,13 +199,15 @@ performance:</p>
 then the labels are sorted alphanumerically and the largest label is
 chosen as the &#8220;positive&#8221; label.  For example, if the classifier labels
 are {&#8220;cat&#8221;, &#8220;dog&#8221;}, then &#8220;dog&#8221; is chosen as the positive label for the
-binary classification case.</li>
+binary classification case. This behavior can be overridden by providing
+an explicit <code class="docutils literal"><span class="pre">index_map</span></code>.</li>
 <li>For multi-class classification, when the target label is of type
 &#8220;string&#8221;, then the probability vector is assumed to be a vector of
 probabilities of classes as sorted alphanumerically. Hence, for the
 probability vector [0.1, 0.2, 0.7] for a dataset with classes &#8220;cat&#8221;,
 &#8220;dog&#8221;, and &#8220;rat&#8221;; the 0.1 corresponds to &#8220;cat&#8221;, the 0.2 to &#8220;dog&#8221; and the
-0.7 to &#8220;rat&#8221;.</li>
+0.7 to &#8220;rat&#8221;. This behavior can be overridden by providing an explicit
+<code class="docutils literal"><span class="pre">index_map</span></code>.</li>
 <li>The ROC curve is computed using a binning approximation with 1M bins and
 is hence accurate only to the 5th decimal.</li>
 </ul>
@@ -325,7 +333,7 @@ is hence accurate only to the 5th decimal.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Jul 30, 2018.
+      Last updated on Aug 22, 2018.
     </p>
   </div>
 </footer>
@@ -343,7 +351,7 @@ is hence accurate only to the 5th decimal.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.0b3',
+            VERSION:'5.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

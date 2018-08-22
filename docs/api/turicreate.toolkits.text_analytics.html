@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>text_analytics &mdash; Turi Create API 5.0b3 documentation</title>
+  <title>text_analytics &mdash; Turi Create API 5.0 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.0b3 documentation" href="index.html"/>
+    <link rel="top" title="Turi Create API 5.0 documentation" href="index.html"/>
         <link rel="up" title="Modelling" href="turicreate.toolkits.html"/>
         <link rel="next" title="turicreate.text_analytics.bm25" href="generated/turicreate.text_analytics.bm25.html"/>
         <link rel="prev" title="turicreate.linear_regression.LinearRegression" href="generated/turicreate.linear_regression.LinearRegression.html"/> 
@@ -188,7 +188,7 @@ more info.</p>
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.text_analytics.count_words.html#turicreate.text_analytics.count_words" title="turicreate.text_analytics.count_words"><code class="xref py py-obj docutils literal"><span class="pre">count_words</span></code></a></td>
-<td>Convert the content of string/dict/list type SArrays to a dictionary of (word, count) pairs.</td>
+<td>If <cite>text</cite> is an SArray of strings or an SArray of lists of strings, the occurances of word are counted for each row in the SArray.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/turicreate.text_analytics.count_ngrams.html#turicreate.text_analytics.count_ngrams" title="turicreate.text_analytics.count_ngrams"><code class="xref py py-obj docutils literal"><span class="pre">count_ngrams</span></code></a></td>
 <td>Return an SArray of <code class="docutils literal"><span class="pre">dict</span></code> type where each element contains the count for each of the n-grams that appear in the corresponding input element.</td>
@@ -202,13 +202,13 @@ more info.</p>
 <tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.text_analytics.random_split.html#turicreate.text_analytics.random_split" title="turicreate.text_analytics.random_split"><code class="xref py py-obj docutils literal"><span class="pre">random_split</span></code></a></td>
 <td>Utility for performing a random split for text data that is already in bag-of-words format.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.text_analytics.stopwords.html#turicreate.text_analytics.stopwords" title="turicreate.text_analytics.stopwords"><code class="xref py py-obj docutils literal"><span class="pre">stopwords</span></code></a></td>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.text_analytics.stop_words.html#turicreate.text_analytics.stop_words" title="turicreate.text_analytics.stop_words"><code class="xref py py-obj docutils literal"><span class="pre">stop_words</span></code></a></td>
 <td>Get common words that are often removed during preprocessing of text data, i.e.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.text_analytics.tokenize.html#turicreate.text_analytics.tokenize" title="turicreate.text_analytics.tokenize"><code class="xref py py-obj docutils literal"><span class="pre">tokenize</span></code></a></td>
 <td>Tokenize the input SArray of text strings and return the list of tokens.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.text_analytics.trim_rare_words.html#turicreate.text_analytics.trim_rare_words" title="turicreate.text_analytics.trim_rare_words"><code class="xref py py-obj docutils literal"><span class="pre">trim_rare_words</span></code></a></td>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.text_analytics.drop_words.html#turicreate.text_analytics.drop_words" title="turicreate.text_analytics.drop_words"><code class="xref py py-obj docutils literal"><span class="pre">drop_words</span></code></a></td>
 <td>Remove words that occur below a certain number of times in an SArray.</td>
 </tr>
 </tbody>
@@ -234,7 +234,7 @@ more info.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Jul 30, 2018.
+      Last updated on Aug 22, 2018.
     </p>
   </div>
 </footer>
@@ -252,7 +252,7 @@ more info.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'5.0b3',
+            VERSION:'5.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

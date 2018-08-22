@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.text_analytics.tokenize &mdash; Turi Create API 5.0b3 documentation</title>
+  <title>turicreate.text_analytics.tokenize &mdash; Turi Create API 5.0 documentation</title>
   
 
   
@@ -27,10 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.0b3 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 5.0 documentation" href="../index.html"/>
         <link rel="up" title="text_analytics" href="../turicreate.toolkits.text_analytics.html"/>
-        <link rel="next" title="turicreate.text_analytics.trim_rare_words" href="turicreate.text_analytics.trim_rare_words.html"/>
-        <link rel="prev" title="turicreate.text_analytics.stopwords" href="turicreate.text_analytics.stopwords.html"/> 
+        <link rel="next" title="turicreate.text_analytics.drop_words" href="turicreate.text_analytics.drop_words.html"/>
+        <link rel="prev" title="turicreate.text_analytics.stop_words" href="turicreate.text_analytics.stop_words.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -130,14 +130,14 @@
 <h1>turicreate.text_analytics.tokenize<a class="headerlink" href="#turicreate-text-analytics-tokenize" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="turicreate.text_analytics.tokenize">
-<code class="descclassname">turicreate.text_analytics.</code><code class="descname">tokenize</code><span class="sig-paren">(</span><em>sa, to_lower=False, delimiters=[&quot;\r&quot;, &quot;\v&quot;, &quot;\n&quot;, &quot;\f&quot;, &quot;\t&quot;, &quot; &quot;]</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.text_analytics.tokenize" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">turicreate.text_analytics.</code><code class="descname">tokenize</code><span class="sig-paren">(</span><em>text, to_lower=False, delimiters=['\r', '\x0b', '\n', '\x0c', '\t', ' ', '!', '#', '$', '%', '&amp;', &quot;'&quot;, '&quot;', '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '&lt;', '=', '&gt;', '?', '&#64;', '[', '\\', ']', '^', '_', '`', '{', '|', '}', '~']</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.text_analytics.tokenize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tokenize the input SArray of text strings and return the list of tokens.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>sa</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray[str]</span></dt>
+<dt><strong>text</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray[str]</span></dt>
 <dd><p class="first last">Input data of strings representing English text. This tokenizer is not
 intended to process XML, HTML, or other structured text formats.</p>
 </dd>
@@ -174,7 +174,7 @@ smart handling of punctuations.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">turicreate</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">docs</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="s1">&#39;This is the first sentence.&#39;</span><span class="p">,</span>
-<span class="gp">... </span>                        <span class="s2">&quot;This one, it&#39;s the second sentence.&quot;</span><span class="p">])</span>
+<span class="go">                              &quot;This one, it&#39;s the second sentence.&quot;])</span>
 
 <span class="go"># Default tokenization by space characters</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
@@ -201,10 +201,10 @@ smart handling of punctuations.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="turicreate.text_analytics.trim_rare_words.html" class="btn btn-neutral float-right" title="turicreate.text_analytics.trim_rare_words">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="turicreate.text_analytics.drop_words.html" class="btn btn-neutral float-right" title="turicreate.text_analytics.drop_words">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="turicreate.text_analytics.stopwords.html" class="btn btn-neutral" title="turicreate.text_analytics.stopwords"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="turicreate.text_analytics.stop_words.html" class="btn btn-neutral" title="turicreate.text_analytics.stop_words"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -213,7 +213,7 @@ smart handling of punctuations.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Jul 30, 2018.
+      Last updated on Aug 22, 2018.
     </p>
   </div>
 </footer>
@@ -231,7 +231,7 @@ smart handling of punctuations.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.0b3',
+            VERSION:'5.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

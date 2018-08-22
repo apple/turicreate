@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.text_analytics.tf_idf &mdash; Turi Create API 5.0b3 documentation</title>
+  <title>turicreate.text_analytics.tf_idf &mdash; Turi Create API 5.0 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.0b3 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 5.0 documentation" href="../index.html"/>
         <link rel="up" title="text_analytics" href="../turicreate.toolkits.text_analytics.html"/>
         <link rel="next" title="turicreate.topic_model.create" href="turicreate.topic_model.create.html"/>
         <link rel="prev" title="turicreate.text_analytics.bm25" href="turicreate.text_analytics.bm25.html"/> 
@@ -130,7 +130,7 @@
 <h1>turicreate.text_analytics.tf_idf<a class="headerlink" href="#turicreate-text-analytics-tf-idf" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="turicreate.text_analytics.tf_idf">
-<code class="descclassname">turicreate.text_analytics.</code><code class="descname">tf_idf</code><span class="sig-paren">(</span><em>dataset</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.text_analytics.tf_idf" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">turicreate.text_analytics.</code><code class="descname">tf_idf</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.text_analytics.tf_idf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the TF-IDF scores for each word in each document. The collection
 of documents must be in bag-of-words format.</p>
 <div class="math">
@@ -139,13 +139,12 @@ of documents must be in bag-of-words format.</p>
 document <span class="math">\(d\)</span>, <span class="math">\(f(w)\)</span> is the number of documents word <span class="math">\(w\)</span>
 appeared in, <span class="math">\(N\)</span> is the number of documents, and we use the
 natural logarithm.</p>
-<p>This function is implemented using</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray[str | dict | list]</span></dt>
+<dt><strong>text</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray[str | dict | list]</span></dt>
 <dd><p class="first last">Input text data.</p>
 </dd>
 </dl>
@@ -198,7 +197,7 @@ TF-IDF transformation.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Jul 30, 2018.
+      Last updated on Aug 22, 2018.
     </p>
   </div>
 </footer>
@@ -216,7 +215,7 @@ TF-IDF transformation.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.0b3',
+            VERSION:'5.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

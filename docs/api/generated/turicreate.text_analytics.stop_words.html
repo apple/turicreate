@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.sentence_classifier.SentenceClassifier.evaluate &mdash; Turi Create API 5.0b3 documentation</title>
+  <title>turicreate.text_analytics.stop_words &mdash; Turi Create API 5.0 documentation</title>
   
 
   
@@ -27,7 +27,10 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.0b3 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 5.0 documentation" href="../index.html"/>
+        <link rel="up" title="text_analytics" href="../turicreate.toolkits.text_analytics.html"/>
+        <link rel="next" title="turicreate.text_analytics.tokenize" href="turicreate.text_analytics.tokenize.html"/>
+        <link rel="prev" title="turicreate.text_analytics.random_split" href="turicreate.text_analytics.random_split.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -60,16 +63,16 @@
         
           
           
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
 </ul>
 </li>
@@ -110,7 +113,11 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../index.html">Docs</a> &raquo;</li>
       
-    <li>turicreate.sentence_classifier.SentenceClassifier.evaluate</li>
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.text_analytics.html"><code class="docutils literal"><span class="pre">text_analytics</span></code></a> &raquo;</li>
+      
+    <li>turicreate.text_analytics.stop_words</li>
       <li class="wy-breadcrumbs-aside">
         
       </li>
@@ -119,55 +126,41 @@
 </div>
           <div role="main" class="document">
             
-  <div class="section" id="turicreate-sentence-classifier-sentenceclassifier-evaluate">
-<h1>turicreate.sentence_classifier.SentenceClassifier.evaluate<a class="headerlink" href="#turicreate-sentence-classifier-sentenceclassifier-evaluate" title="Permalink to this headline">¶</a></h1>
-<dl class="method">
-<dt id="turicreate.sentence_classifier.SentenceClassifier.evaluate">
-<code class="descclassname">SentenceClassifier.</code><code class="descname">evaluate</code><span class="sig-paren">(</span><em>dataset</em>, <em>metric='auto'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.sentence_classifier.SentenceClassifier.evaluate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluate the model by making predictions of target values and comparing
-these to actual values.</p>
+  <div class="section" id="turicreate-text-analytics-stop-words">
+<h1>turicreate.text_analytics.stop_words<a class="headerlink" href="#turicreate-text-analytics-stop-words" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.text_analytics.stop_words">
+<code class="descclassname">turicreate.text_analytics.</code><code class="descname">stop_words</code><span class="sig-paren">(</span><em>lang='en'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.text_analytics.stop_words" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get common words that are often removed during preprocessing of text data,
+i.e. &#8220;stop words&#8221;. Currently only English stop words are provided.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
-<dd><p class="first last">An SFrame having the same feature columns as provided when creating
-the model.</p>
-</dd>
-<dt><strong>metric</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
-<dd><p class="first">Name of the evaluation metric.  Possible values are:</p>
-<ul class="simple">
-<li>&#8216;auto&#8217;             : Returns all available metrics.</li>
-<li>&#8216;accuracy&#8217;         : Classification accuracy (micro average).</li>
-<li>&#8216;auc&#8217;              : Area under the ROC curve (macro average)</li>
-<li>&#8216;precision&#8217;        : Precision score (macro average)</li>
-<li>&#8216;recall&#8217;           : Recall score (macro average)</li>
-<li>&#8216;f1_score&#8217;         : F1 score (macro average)</li>
-<li>&#8216;log_loss&#8217;         : Log loss</li>
-<li>&#8216;confusion_matrix&#8217; : An SFrame with counts of possible prediction/true label combinations.</li>
-<li>&#8216;roc_curve&#8217;        : An SFrame containing information needed for an ROC curve</li>
-</ul>
-<p class="last">For more flexibility in calculating evaluation metrics, use the
-<code class="xref py py-class docutils literal"><span class="pre">evaluation</span></code> module.</p>
+<dt><strong>lang</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd><p class="first last">The desired language. Default: &#8216;en&#8217; (English).</p>
 </dd>
 </dl>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
-<dd><p class="first last">Dictionary of evaluation results where the key is the name of the
-evaluation metric (e.g. <cite>accuracy</cite>) and the value is the evaluation
-score.</p>
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">set</span></dt>
+<dd><p class="first last">A set of strings.</p>
 </dd>
 </dl>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.sentence_classifier.create.html#turicreate.sentence_classifier.create" title="turicreate.sentence_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a>, <a class="reference internal" href="turicreate.sentence_classifier.SentenceClassifier.predict.html#turicreate.sentence_classifier.SentenceClassifier.predict" title="turicreate.sentence_classifier.SentenceClassifier.predict"><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code></a>, <a class="reference internal" href="turicreate.sentence_classifier.SentenceClassifier.classify.html#turicreate.sentence_classifier.SentenceClassifier.classify" title="turicreate.sentence_classifier.SentenceClassifier.classify"><code class="xref py py-obj docutils literal"><span class="pre">classify</span></code></a></p>
+<p class="rubric">Examples</p>
+<p>You may remove stop words from an SArray as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">docs</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([{</span><span class="s1">&#39;are&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;you&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;not&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;entertained&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">}])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">docs</span><span class="o">.</span><span class="n">dict_trim_by_keys</span><span class="p">(</span><span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">stop_words</span><span class="p">(),</span> <span class="bp">True</span><span class="p">)</span>
+<span class="go">dtype: dict</span>
+<span class="go">Rows: 1</span>
+<span class="go">[{&#39;entertained&#39;: 1}]</span>
+</pre></div>
 </div>
 </dd></dl>
 
@@ -177,12 +170,21 @@ score.</p>
           </div>
           <footer>
   
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.text_analytics.tokenize.html" class="btn btn-neutral float-right" title="turicreate.text_analytics.tokenize">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="turicreate.text_analytics.random_split.html" class="btn btn-neutral" title="turicreate.text_analytics.random_split"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-      Last updated on Jul 30, 2018.
+      Last updated on Aug 22, 2018.
     </p>
   </div>
 </footer>
@@ -200,7 +202,7 @@ score.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.0b3',
+            VERSION:'5.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

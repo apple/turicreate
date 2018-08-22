@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.text_analytics.random_split &mdash; Turi Create API 5.0b3 documentation</title>
+  <title>turicreate.text_analytics.random_split &mdash; Turi Create API 5.0 documentation</title>
   
 
   
@@ -27,9 +27,9 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.0b3 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 5.0 documentation" href="../index.html"/>
         <link rel="up" title="text_analytics" href="../turicreate.toolkits.text_analytics.html"/>
-        <link rel="next" title="turicreate.text_analytics.stopwords" href="turicreate.text_analytics.stopwords.html"/>
+        <link rel="next" title="turicreate.text_analytics.stop_words" href="turicreate.text_analytics.stop_words.html"/>
         <link rel="prev" title="turicreate.text_analytics.parse_docword" href="turicreate.text_analytics.parse_docword.html"/> 
 
   
@@ -162,9 +162,9 @@ equal to the counts in the original data set.</p>
 <p class="rubric">Examples</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">docs</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([{</span><span class="s1">&#39;are&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;you&#39;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;not&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;entertained&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">}])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">random_split</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">train</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
 <span class="go">[{&#39;not&#39;: 1.0, &#39;you&#39;: 3.0, &#39;are&#39;: 3.0, &#39;entertained&#39;: 7.0}]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">test</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
 <span class="go">[{&#39;are&#39;: 2.0, &#39;entertained&#39;: 3.0}]</span>
 </pre></div>
 </div>
@@ -178,7 +178,7 @@ equal to the counts in the original data set.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="turicreate.text_analytics.stopwords.html" class="btn btn-neutral float-right" title="turicreate.text_analytics.stopwords">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="turicreate.text_analytics.stop_words.html" class="btn btn-neutral float-right" title="turicreate.text_analytics.stop_words">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="turicreate.text_analytics.parse_docword.html" class="btn btn-neutral" title="turicreate.text_analytics.parse_docword"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -190,7 +190,7 @@ equal to the counts in the original data set.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Jul 30, 2018.
+      Last updated on Aug 22, 2018.
     </p>
   </div>
 </footer>
@@ -208,7 +208,7 @@ equal to the counts in the original data set.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.0b3',
+            VERSION:'5.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

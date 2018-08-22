@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.sentence_classifier.SentenceClassifier.classify &mdash; Turi Create API 5.0b3 documentation</title>
+  <title>turicreate.text_classifier.TextClassifier.save &mdash; Turi Create API 5.0 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.0b3 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 5.0 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -110,7 +110,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../index.html">Docs</a> &raquo;</li>
       
-    <li>turicreate.sentence_classifier.SentenceClassifier.classify</li>
+    <li>turicreate.text_classifier.TextClassifier.save</li>
       <li class="wy-breadcrumbs-aside">
         
       </li>
@@ -119,31 +119,20 @@
 </div>
           <div role="main" class="document">
             
-  <div class="section" id="turicreate-sentence-classifier-sentenceclassifier-classify">
-<h1>turicreate.sentence_classifier.SentenceClassifier.classify<a class="headerlink" href="#turicreate-sentence-classifier-sentenceclassifier-classify" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="turicreate-text-classifier-textclassifier-save">
+<h1>turicreate.text_classifier.TextClassifier.save<a class="headerlink" href="#turicreate-text-classifier-textclassifier-save" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
-<dt id="turicreate.sentence_classifier.SentenceClassifier.classify">
-<code class="descclassname">SentenceClassifier.</code><code class="descname">classify</code><span class="sig-paren">(</span><em>dataset</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.sentence_classifier.SentenceClassifier.classify" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a classification, for each example in the <code class="docutils literal"><span class="pre">dataset</span></code>, using the
-trained model. The output SFrame contains predictions as both class
-labels as well as probabilities that the predicted value is the
-associated label.</p>
+<dt id="turicreate.text_classifier.TextClassifier.save">
+<code class="descclassname">TextClassifier.</code><code class="descname">save</code><span class="sig-paren">(</span><em>location</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.text_classifier.TextClassifier.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the model. The model is saved as a directory which can then be
+loaded using the <a class="reference internal" href="../turicreate.load_model.html#turicreate.load_model" title="turicreate.load_model"><code class="xref py py-func docutils literal"><span class="pre">load_model()</span></code></a> method.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
-<dd><p class="first last">dataset of new observations. Must include columns with the same
-names as the features used for model training, but does not require
-a target column. Additional columns are ignored.</p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
-<dd><p class="first last">An SFrame with model predictions i.e class labels and probabilities.</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>location</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Target destination for the model. Can be a local path or remote URL.</p>
 </dd>
 </dl>
 </td>
@@ -152,13 +141,11 @@ a target column. Additional columns are ignored.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="turicreate.sentence_classifier.create.html#turicreate.sentence_classifier.create" title="turicreate.sentence_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">create</span></code></a>, <a class="reference internal" href="turicreate.sentence_classifier.SentenceClassifier.evaluate.html#turicreate.sentence_classifier.SentenceClassifier.evaluate" title="turicreate.sentence_classifier.SentenceClassifier.evaluate"><code class="xref py py-obj docutils literal"><span class="pre">evaluate</span></code></a>, <a class="reference internal" href="turicreate.sentence_classifier.SentenceClassifier.predict.html#turicreate.sentence_classifier.SentenceClassifier.predict" title="turicreate.sentence_classifier.SentenceClassifier.predict"><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code></a></p>
+<p class="last"><a class="reference internal" href="../turicreate.load_model.html#turicreate.load_model" title="turicreate.load_model"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.load_model</span></code></a></p>
 </div>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">turicreate</span> <span class="kn">as</span> <span class="nn">tc</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;rating&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;hate it&#39;</span><span class="p">,</span> <span class="s1">&#39;love it&#39;</span><span class="p">]})</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">sentence_classifier</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s1">&#39;rating&#39;</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">output</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">classify</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;my_model_file&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">loaded_model</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="s1">&#39;my_model_file&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -174,7 +161,7 @@ a target column. Additional columns are ignored.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Jul 30, 2018.
+      Last updated on Aug 22, 2018.
     </p>
   </div>
 </footer>
@@ -192,7 +179,7 @@ a target column. Additional columns are ignored.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.0b3',
+            VERSION:'5.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

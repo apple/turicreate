@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.text_analytics.trim_rare_words &mdash; Turi Create API 5.0b3 documentation</title>
+  <title>turicreate.text_analytics.drop_words &mdash; Turi Create API 5.0 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.0b3 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 5.0 documentation" href="../index.html"/>
         <link rel="up" title="text_analytics" href="../turicreate.toolkits.text_analytics.html"/>
         <link rel="next" title="topic_model" href="../turicreate.toolkits.topic_model.html"/>
         <link rel="prev" title="turicreate.text_analytics.tokenize" href="turicreate.text_analytics.tokenize.html"/> 
@@ -117,7 +117,7 @@
       
           <li><a href="../turicreate.toolkits.text_analytics.html"><code class="docutils literal"><span class="pre">text_analytics</span></code></a> &raquo;</li>
       
-    <li>turicreate.text_analytics.trim_rare_words</li>
+    <li>turicreate.text_analytics.drop_words</li>
       <li class="wy-breadcrumbs-aside">
         
       </li>
@@ -126,11 +126,11 @@
 </div>
           <div role="main" class="document">
             
-  <div class="section" id="turicreate-text-analytics-trim-rare-words">
-<h1>turicreate.text_analytics.trim_rare_words<a class="headerlink" href="#turicreate-text-analytics-trim-rare-words" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="turicreate-text-analytics-drop-words">
+<h1>turicreate.text_analytics.drop_words<a class="headerlink" href="#turicreate-text-analytics-drop-words" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="turicreate.text_analytics.trim_rare_words">
-<code class="descclassname">turicreate.text_analytics.</code><code class="descname">trim_rare_words</code><span class="sig-paren">(</span><em>sa, threshold=2, to_lower=True, delimiters=['\r', '\x0b', '\n', '\x0c', '\t', ' '], stopwords=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.text_analytics.trim_rare_words" title="Permalink to this definition">¶</a></dt>
+<dt id="turicreate.text_analytics.drop_words">
+<code class="descclassname">turicreate.text_analytics.</code><code class="descname">drop_words</code><span class="sig-paren">(</span><em>text, threshold=2, to_lower=True, delimiters=['\r', '\x0b', '\n', '\x0c', '\t', ' ', '!', '#', '$', '%', '&amp;', &quot;'&quot;, '&quot;', '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '&lt;', '=', '&gt;', '?', '&#64;', '[', '\\', ']', '^', '_', '`', '{', '|', '}', '~'], stop_words=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.text_analytics.drop_words" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove words that occur below a certain number of times in an SArray.
 This is a common method of cleaning text before it is used, and can increase the
 quality and explainability of the models learned on the transformed data.</p>
@@ -154,14 +154,14 @@ key must be of integer type and is considered to be the count of that key.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>sa: SArray[str | dict | list]</strong></dt>
+<dt><strong>text</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray[str | dict | list]</span></dt>
 <dd><p class="first last">The input text data.</p>
 </dd>
 <dt><strong>threshold</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
 <dd><p class="first last">The count below which words are removed from the input.</p>
 </dd>
-<dt><strong>stopwords: list[str], optional</strong></dt>
-<dd><p class="first last">A manually specified list of stopwords, which are removed regardless
+<dt><strong>stop_words: list[str], optional</strong></dt>
+<dd><p class="first last">A manually specified list of stop words, which are removed regardless
 of count.</p>
 </dd>
 <dt><strong>to_lower</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
@@ -199,33 +199,33 @@ is better at handling punctuations. (See reference below for details.)</p>
 
 <span class="go"># Create input data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="s2">&quot;The quick brown fox jumps in a fox like way.&quot;</span><span class="p">,</span>
-<span class="gp">... </span>                      <span class="s2">&quot;Word word WORD, word!!!word&quot;</span><span class="p">])</span>
+<span class="go">                            &quot;Word word WORD, word!!!word&quot;])</span>
 
-<span class="go"># Run trim_rare_words</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">trim_rare_words</span><span class="p">(</span><span class="n">sa</span><span class="p">)</span>
+<span class="go"># Run drop_words</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">drop_words</span><span class="p">(</span><span class="n">sa</span><span class="p">)</span>
 <span class="go">dtype: str</span>
 <span class="go">Rows: 2</span>
 <span class="go">[&#39;fox fox&#39;, &#39;word word&#39;]</span>
 
-<span class="go"># Run trim_rare_words with Penn treebank style tokenization to handle</span>
+<span class="go"># Run drop_words with Penn treebank style tokenization to handle</span>
 <span class="go"># punctuations</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">trim_rare_words</span><span class="p">(</span><span class="n">sa</span><span class="p">,</span> <span class="n">delimiters</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">drop_words</span><span class="p">(</span><span class="n">sa</span><span class="p">,</span> <span class="n">delimiters</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
 <span class="go">dtype: str</span>
 <span class="go">Rows: 2</span>
 <span class="go">[&#39;fox fox&#39;, &#39;word word word&#39;]</span>
 
-<span class="go"># Run trim_rare_words with dictionary input</span>
+<span class="go"># Run drop_words with dictionary input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([{</span><span class="s1">&#39;alice bob&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Bob alice&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
-<span class="gp">... </span>                      <span class="p">{</span><span class="s1">&#39;a dog&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;a dog cat&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">trim_rare_words</span><span class="p">(</span><span class="n">sa</span><span class="p">)</span>
+<span class="go">                            {&#39;a dog&#39;: 0, &#39;a dog cat&#39;: 5}])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">drop_words</span><span class="p">(</span><span class="n">sa</span><span class="p">)</span>
 <span class="go">dtype: dict</span>
 <span class="go">Rows: 2</span>
 <span class="go">[{&#39;bob alice&#39;: 2}, {&#39;a dog cat&#39;: 5}]</span>
 
-<span class="go"># Run trim_rare_words with list input</span>
+<span class="go"># Run drop_words with list input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sa</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([[</span><span class="s1">&#39;one&#39;</span><span class="p">,</span> <span class="s1">&#39;bar bah&#39;</span><span class="p">,</span> <span class="s1">&#39;One&#39;</span><span class="p">],</span>
-<span class="gp">... </span>                    <span class="p">[</span><span class="s1">&#39;a dog&#39;</span><span class="p">,</span> <span class="s1">&#39;a dog cat&#39;</span><span class="p">,</span> <span class="s1">&#39;A DOG&#39;</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">trim_rare_words</span><span class="p">(</span><span class="n">sa</span><span class="p">)</span>
+<span class="go">                            [&#39;a dog&#39;, &#39;a dog cat&#39;, &#39;A DOG&#39;]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">drop_words</span><span class="p">(</span><span class="n">sa</span><span class="p">)</span>
 <span class="go">dtype: list</span>
 <span class="go">Rows: 2</span>
 <span class="go">[[&#39;one&#39;, &#39;one&#39;], [&#39;a dog&#39;, &#39;a dog&#39;]]</span>
@@ -253,7 +253,7 @@ is better at handling punctuations. (See reference below for details.)</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Jul 30, 2018.
+      Last updated on Aug 22, 2018.
     </p>
   </div>
 </footer>
@@ -271,7 +271,7 @@ is better at handling punctuations. (See reference below for details.)</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.0b3',
+            VERSION:'5.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false
