@@ -15,6 +15,16 @@
 #include <fileio/fileio_constants.hpp>
 #include <util/fs_util.hpp>
 
+#ifdef __linux
+#include <fcntl.h>
+#include <linux/fs.h>
+#include <sys/ioctl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#endif
+
+#include <boost/filesystem.hpp>
+
 #include "capi_utils.hpp"
 
 BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
@@ -196,7 +206,28 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
     {
       // sad path 1 - attempting to save without permission to location
       // ensure the error message contains useful info
-      std::string model_path = "/permission_should_be_denied";
+
+      // first, make a directory we can't write to
+      std::string bad_directory =
+        turi::fs_util::system_temp_directory_unique_path("capi_model_permission_denied", "");
+      turi::fileio::create_directory(bad_directory);
+      std::string model_path = turi::fs_util::join({bad_directory, "model.mlmodel"});
+
+#ifdef __linux
+      // set the immutable bit on it
+      int new_attrs = FS_IMMUTABLE_FL;
+      size_t fd = open(bad_directory.c_str(), 0);
+      // If ioctl returns -1, it means the user probably isn't root -
+      // in that case, try setting owner_read permission instead.
+      // As root, we must rely on the immutable flag.
+      if (ioctl(fd, FS_IOC_SETFLAGS, &new_attrs) == -1) {
+        boost::filesystem::permissions(bad_directory, boost::filesystem::owner_read);
+      }
+      close(fd);
+#else
+      boost::filesystem::permissions(bad_directory, boost::filesystem::owner_read);
+#endif
+
       tc_model_save(model, model_path.c_str(), &error);
       TS_ASSERT_DIFFERS(error, nullptr);
       std::string error_message = tc_error_message(error);
