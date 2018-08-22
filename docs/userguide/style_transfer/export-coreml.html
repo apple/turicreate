@@ -1068,17 +1068,34 @@ the 4th style, then index should be</p><pre><code class="lang-swift"><span class
     styleArray?[i] = <span class="hljs-number">0.0</span>
 }
 styleArray?[styleIndex] = <span class="hljs-number">1.0</span></code></pre>
-<p>Now, you can stylize your images using:</p><pre><code class="lang-swift"><span class="hljs-keyword">let</span> mlModel = <span class="hljs-type">MyStyleTransferModel</span>()
-<span class="hljs-keyword">let</span> visionModel = <span class="hljs-keyword">try</span> <span class="hljs-type">VNCoreMLModel</span>(<span class="hljs-keyword">for</span>: mlModel)
+<p>Now, you can stylize your images using:</p><pre><code class="lang-swift">
+<span class="hljs-comment">// Assumes that you have a `ciImage` variable</span>
 
-<span class="hljs-keyword">let</span> styleTransfer = <span class="hljs-type">VNCoreMLRequest</span>(model: visionModel, completionHandler: { (request, error) <span class="hljs-keyword">in</span>
-        <span class="hljs-keyword">guard</span> <span class="hljs-keyword">let</span> results = request.results <span class="hljs-keyword">else</span> { <span class="hljs-keyword">return</span> }
+<span class="hljs-comment">// initialize model </span>
+<span class="hljs-keyword">let</span> model = <span class="hljs-type">MyStyleTransferModel</span>()
 
-    <span class="hljs-keyword">for</span> <span class="hljs-keyword">case</span> <span class="hljs-keyword">let</span> styleTransferedImage <span class="hljs-keyword">as</span> <span class="hljs-type">VNPixelBufferObservation</span> <span class="hljs-keyword">in</span> results {
-        <span class="hljs-keyword">let</span> imageLayer = <span class="hljs-type">CALayer</span>()
-        imageLayer.contents = <span class="hljs-type">CIImage</span>(cvPixelBuffer: styleTransferedImage.pixelBuffer, options: [:])
-    }
-})</code></pre>
+<span class="hljs-comment">// set input size of the model</span>
+<span class="hljs-keyword">let</span> modelInputSize = <span class="hljs-type">CGSize</span>(width: <span class="hljs-number">600</span>, height: <span class="hljs-number">600</span>)
+
+<span class="hljs-comment">// create a cvpixel buffer</span>
+<span class="hljs-keyword">var</span> pixelBuffer: <span class="hljs-type">CVPixelBuffer</span>?
+<span class="hljs-keyword">let</span> attrs = [kCVPixelBufferCGImageCompatibilityKey: kCFBooleanTrue,
+             kCVPixelBufferCGBitmapContextCompatibilityKey: kCFBooleanTrue] <span class="hljs-keyword">as</span> <span class="hljs-type">CFDictionary</span>
+<span class="hljs-type">CVPixelBufferCreate</span>(kCFAllocatorDefault,
+                    modelInputSize.width,
+                    modelInputSize.height,
+                    kCVPixelFormatType_32BGRA,
+                    attrs,
+                    &amp;pixelBuffer)
+
+<span class="hljs-comment">// put bytes into pixelBuffer</span>
+<span class="hljs-keyword">let</span> context = <span class="hljs-type">CIContext</span>()
+context.render(ciImage, to: pixelBuffer!)
+
+<span class="hljs-comment">// predict image</span>
+<span class="hljs-keyword">let</span> output = <span class="hljs-keyword">try</span>? model.prediction(image: pixelBuffer!, index: styleArray!)
+<span class="hljs-keyword">let</span> predImage = <span class="hljs-type">CIImage</span>(cvPixelBuffer: (output?.stylizedImage)!)
+</code></pre>
 
                                 
                                 </section>
@@ -1122,7 +1139,7 @@ styleArray?[styleIndex] = <span class="hljs-number">1.0</span></code></pre>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Deployment to Core ML","level":"1.3.5.2","depth":3,"next":{"title":"Activity classification","level":"1.3.6","depth":2,"path":"activity_classifier/README.md","ref":"activity_classifier/README.md","articles":[{"title":"Data Preparation","level":"1.3.6.1","depth":3,"path":"activity_classifier/data-preparation.md","ref":"activity_classifier/data-preparation.md","articles":[]},{"title":"Advanced Usage","level":"1.3.6.2","depth":3,"path":"activity_classifier/advanced-usage.md","ref":"activity_classifier/advanced-usage.md","articles":[]},{"title":"Deployment to Core ML","level":"1.3.6.3","depth":3,"path":"activity_classifier/export_coreml.md","ref":"activity_classifier/export_coreml.md","articles":[]},{"title":"How it works","level":"1.3.6.4","depth":3,"path":"activity_classifier/how-it-works.md","ref":"activity_classifier/how-it-works.md","articles":[]}]},"previous":{"title":"How it works","level":"1.3.5.1","depth":3,"path":"style_transfer/how-it-works.md","ref":"style_transfer/how-it-works.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"style_transfer/export-coreml.md","mtime":"2018-07-30T23:56:20.479Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-07-31T00:01:03.393Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Deployment to Core ML","level":"1.3.5.2","depth":3,"next":{"title":"Activity classification","level":"1.3.6","depth":2,"path":"activity_classifier/README.md","ref":"activity_classifier/README.md","articles":[{"title":"Data Preparation","level":"1.3.6.1","depth":3,"path":"activity_classifier/data-preparation.md","ref":"activity_classifier/data-preparation.md","articles":[]},{"title":"Advanced Usage","level":"1.3.6.2","depth":3,"path":"activity_classifier/advanced-usage.md","ref":"activity_classifier/advanced-usage.md","articles":[]},{"title":"Deployment to Core ML","level":"1.3.6.3","depth":3,"path":"activity_classifier/export_coreml.md","ref":"activity_classifier/export_coreml.md","articles":[]},{"title":"How it works","level":"1.3.6.4","depth":3,"path":"activity_classifier/how-it-works.md","ref":"activity_classifier/how-it-works.md","articles":[]}]},"previous":{"title":"How it works","level":"1.3.5.1","depth":3,"path":"style_transfer/how-it-works.md","ref":"style_transfer/how-it-works.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"style_transfer/export-coreml.md","mtime":"2018-08-16T21:35:12.689Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-08-22T23:06:17.982Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

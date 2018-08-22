@@ -1171,7 +1171,68 @@ sf.save(<span class="hljs-string">&apos;ig02.sframe&apos;</span>)</code></pre>
 to go through it in an interactive session or a notebook so that you can
 inspect the outcome of each command.</p><p>After you have run this script, you should have <code>ig02.sframe</code> in your current
 directory. This SFrame can be used as described in the <a href="./">Object detection user
-guide</a>.</p><h2 id="references"><a name="references" class="plugin-anchor" href="#references"><i class="fa fa-link" aria-hidden="true"></i></a>References</h2><p>The <a href="lear.inrialpes.fr/people/marszalek/data/ig02">IG02</a> dataset is described
+guide</a>.</p><p>Alternately, if you don&apos;t have access to bitmasks and you&apos;re using an image 
+annotation tool like the one 
+<a href="https://github.com/sgp715/simple_image_annotator" target="_blank">here</a>, here is a code snippet
+(thanks to <a href="https://github.com/Kurry" target="_blank">@Kurry</a>) 
+that would convert the CSV you get out of the annotator into an SFrame.</p><pre><code class="lang-python"><span class="hljs-keyword">import</span> turicreate <span class="hljs-keyword">as</span> tc
+<span class="hljs-keyword">import</span> os
+
+IMAGES_DIR = <span class="hljs-string">&apos;images&apos;</span> <span class="hljs-comment"># Change if applicable</span>
+csv_path = <span class="hljs-string">&apos;out.csv&apos;</span> <span class="hljs-comment"># assumes CSV column format is image,id,name,xMin,xMax,yMin,yMax</span>
+csv_sf = tc.SFrame.read_csv(csv_path)
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">row_to_bbox_coordinates</span><span class="hljs-params">(row)</span>:</span>
+    <span class="hljs-string">&quot;&quot;&quot;
+    Takes a row and returns a dictionary representing bounding
+    box coordinates:  (center_x, center_y, width, height)  e.g. {&apos;x&apos;: 100, &apos;y&apos;: 120, &apos;width&apos;: 80, &apos;height&apos;: 120}
+    &quot;&quot;&quot;</span>
+    <span class="hljs-keyword">return</span> {<span class="hljs-string">&apos;x&apos;</span>: row[<span class="hljs-string">&apos;xMin&apos;</span>] + (row[<span class="hljs-string">&apos;xMax&apos;</span>] - row[<span class="hljs-string">&apos;xMin&apos;</span>])/<span class="hljs-number">2</span>, 
+            <span class="hljs-string">&apos;width&apos;</span>: (row[<span class="hljs-string">&apos;xMax&apos;</span>] - row[<span class="hljs-string">&apos;xMin&apos;</span>]),
+            <span class="hljs-string">&apos;y&apos;</span>: row[<span class="hljs-string">&apos;yMin&apos;</span>] + (row[<span class="hljs-string">&apos;yMax&apos;</span>] - row[<span class="hljs-string">&apos;yMin&apos;</span>])/<span class="hljs-number">2</span>, 
+            <span class="hljs-string">&apos;height&apos;</span>: (row[<span class="hljs-string">&apos;yMax&apos;</span>] - row[<span class="hljs-string">&apos;yMin&apos;</span>])}
+
+csv_sf[<span class="hljs-string">&apos;coordinates&apos;</span>] = csv_sf.apply(row_to_bbox_coordinates)
+<span class="hljs-comment"># delete no longer needed columns</span>
+<span class="hljs-keyword">del</span> csv_sf[<span class="hljs-string">&apos;id&apos;</span>], csv_sf[<span class="hljs-string">&apos;xMin&apos;</span>], csv_sf[<span class="hljs-string">&apos;xMax&apos;</span>], csv_sf[<span class="hljs-string">&apos;yMin&apos;</span>], csv_sf[<span class="hljs-string">&apos;yMax&apos;</span>]
+<span class="hljs-comment"># rename columns</span>
+csv_sf = csv_sf.rename({<span class="hljs-string">&apos;name&apos;</span>: <span class="hljs-string">&apos;label&apos;</span>, <span class="hljs-string">&apos;image&apos;</span>: <span class="hljs-string">&apos;name&apos;</span>})
+
+<span class="hljs-comment"># Load all images in random order</span>
+sf_images = tc.image_analysis.load_images(images_directory, recursive=<span class="hljs-keyword">True</span>,
+    random_order=<span class="hljs-keyword">True</span>)
+
+<span class="hljs-comment"># Split path to get filename</span>
+info = sf_images[<span class="hljs-string">&apos;path&apos;</span>].apply(<span class="hljs-keyword">lambda</span> path: os.path.basename(path).split(<span class="hljs-string">&apos;/&apos;</span>)[:<span class="hljs-number">1</span>])
+
+<span class="hljs-comment"># Rename columns to &apos;name&apos;</span>
+info = info.unpack().rename({<span class="hljs-string">&apos;X.0&apos;</span>: <span class="hljs-string">&apos;name&apos;</span>})
+
+<span class="hljs-comment"># Add to our main SFrame</span>
+sf_images = sf_images.add_columns(info)
+
+<span class="hljs-comment"># Original path no longer needed</span>
+<span class="hljs-keyword">del</span> sf_images[<span class="hljs-string">&apos;path&apos;</span>]
+
+<span class="hljs-comment"># Combine label and coordinates into a bounding box dictionary</span>
+csv_sf = csv_sf.pack_columns([<span class="hljs-string">&apos;label&apos;</span>, <span class="hljs-string">&apos;coordinates&apos;</span>], new_column_name=<span class="hljs-string">&apos;bbox&apos;</span>, dtype=dict)
+
+<span class="hljs-comment"># Combine bounding boxes of the same &apos;name&apos; into lists</span>
+sf_annotations = csv_sf.groupby(<span class="hljs-string">&apos;name&apos;</span>, 
+    {<span class="hljs-string">&apos;annotations&apos;</span>: tc.aggregate.CONCAT(<span class="hljs-string">&apos;bbox&apos;</span>)})
+
+<span class="hljs-comment"># Join annotations with the images. Note, some images do not have annotations,</span>
+<span class="hljs-comment"># but we still want to keep them in the dataset. This is why it is important to</span>
+<span class="hljs-comment"># a LEFT join.</span>
+sf = sf_images.join(sf_annotations, on=<span class="hljs-string">&apos;name&apos;</span>, how=<span class="hljs-string">&apos;left&apos;</span>)
+
+<span class="hljs-comment"># The LEFT join fills missing matches with None, so we replace these with empty</span>
+<span class="hljs-comment"># lists instead using fillna.</span>
+sf[<span class="hljs-string">&apos;annotations&apos;</span>] = sf[<span class="hljs-string">&apos;annotations&apos;</span>].fillna([])
+
+<span class="hljs-comment"># Save SFrame</span>
+sf.save(<span class="hljs-string">&apos;ig02.sframe&apos;</span>)</code></pre>
+<h2 id="references"><a name="references" class="plugin-anchor" href="#references"><i class="fa fa-link" aria-hidden="true"></i></a>References</h2><p>The <a href="lear.inrialpes.fr/people/marszalek/data/ig02">IG02</a> dataset is described
 further in:</p><blockquote id="fn_1">
 <sup>1</sup>. Marcin Marsza&#x142;ek and Cordelia Schmid. <a href="http://lear.inrialpes.fr/pubs/2007/MS07a/" target="_blank">Accurate Object Localization with Shape Masks.</a> IEEE Conference on Computer Vision &amp; Pattern Recognition, 2007.<a href="#reffn_1" title="Jump back to footnote [1] in the text."> &#x21A9;</a>
 </blockquote>
@@ -1221,7 +1282,7 @@ further in:</p><blockquote id="fn_1">
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Data Preparation","level":"1.3.4.1","depth":3,"next":{"title":"Advanced Usage","level":"1.3.4.2","depth":3,"path":"object_detection/advanced-usage.md","ref":"object_detection/advanced-usage.md","articles":[]},"previous":{"title":"Object detection","level":"1.3.4","depth":2,"path":"object_detection/README.md","ref":"object_detection/README.md","articles":[{"title":"Data Preparation","level":"1.3.4.1","depth":3,"path":"object_detection/data-preparation.md","ref":"object_detection/data-preparation.md","articles":[]},{"title":"Advanced Usage","level":"1.3.4.2","depth":3,"path":"object_detection/advanced-usage.md","ref":"object_detection/advanced-usage.md","articles":[]},{"title":"Deployment to Core ML","level":"1.3.4.3","depth":3,"path":"object_detection/export-coreml.md","ref":"object_detection/export-coreml.md","articles":[]},{"title":"How it works","level":"1.3.4.4","depth":3,"path":"object_detection/how-it-works.md","ref":"object_detection/how-it-works.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"object_detection/data-preparation.md","mtime":"2018-07-30T23:56:20.475Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-07-31T00:01:03.393Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Data Preparation","level":"1.3.4.1","depth":3,"next":{"title":"Advanced Usage","level":"1.3.4.2","depth":3,"path":"object_detection/advanced-usage.md","ref":"object_detection/advanced-usage.md","articles":[]},"previous":{"title":"Object detection","level":"1.3.4","depth":2,"path":"object_detection/README.md","ref":"object_detection/README.md","articles":[{"title":"Data Preparation","level":"1.3.4.1","depth":3,"path":"object_detection/data-preparation.md","ref":"object_detection/data-preparation.md","articles":[]},{"title":"Advanced Usage","level":"1.3.4.2","depth":3,"path":"object_detection/advanced-usage.md","ref":"object_detection/advanced-usage.md","articles":[]},{"title":"Deployment to Core ML","level":"1.3.4.3","depth":3,"path":"object_detection/export-coreml.md","ref":"object_detection/export-coreml.md","articles":[]},{"title":"How it works","level":"1.3.4.4","depth":3,"path":"object_detection/how-it-works.md","ref":"object_detection/how-it-works.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"object_detection/data-preparation.md","mtime":"2018-08-16T21:35:12.689Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-08-22T23:06:17.982Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

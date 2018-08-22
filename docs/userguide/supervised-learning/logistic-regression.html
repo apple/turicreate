@@ -1194,6 +1194,30 @@ Confusion Matrix :
 |      1       |        1        | 34942 |
 +--------------+-----------------+-------+
 [4 rows x 3 columns]</code></pre>
+<p>Using basic SFrame operations, we can also isolate the examples in the
+test data where the model made mistakes:</p><pre><code class="lang-python">predictions = model.predict(test_data)
+
+<span class="hljs-comment"># Compute a boolean SArray of whether or not the model was right</span>
+mistakes_filter = predictions != test_data[model.target]
+correct_filter = predictions == test_data[model.target]
+
+<span class="hljs-comment"># Apply the logical filter on the data</span>
+mistakes = test_data[mistakes_filter]
+correct = test_data[correct_filter]</code></pre>
+<p>We can use the similar idea to isolate mistakes that are:</p><ul><li><strong>false positives</strong>: The model predicted true (for a class) but the
+ground truth was false.
+</li>
+<li><strong>false negative</strong>: The model predicted false (for a class) but the
+ground truth was true.
+</li></ul>
+<pre><code class="lang-python">predictions = model.predict(test_data)
+
+<span class="hljs-comment"># Compute boolean filters</span>
+false_positive_filter = (predictions == <span class="hljs-number">1</span>) &amp; (test_data[model.target] == <span class="hljs-number">0</span>)
+false_negative_filter = (predictions == <span class="hljs-number">0</span>) &amp; (test_data[model.target] == <span class="hljs-number">1</span>)
+
+false_negatives = test_data[false_negative_filter]
+false_positives = test_data[false_positive_filter]</code></pre>
 <h6 id="working-with-imbalanced-data"><a name="working-with-imbalanced-data" class="plugin-anchor" href="#working-with-imbalanced-data"><i class="fa fa-link" aria-hidden="true"></i></a><a name="logregr-imbalanced-data"></a> Working with imbalanced data</h6><p>Many difficult <strong>real-world</strong> problems have imbalanced data, where at least one
 class is under-represented. Turi Create models can handle the imbalanced data by
 assigning asymmetric costs of misclassifying elements of different classes.</p><pre><code class="lang-python"><span class="hljs-comment"># Load the data</span>
@@ -1305,7 +1329,7 @@ Data:
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Logistic Regression","level":"1.4.1.3","depth":3,"next":{"title":"Nearest Neighbor Classifier","level":"1.4.1.4","depth":3,"path":"supervised-learning/knn_classifier.md","ref":"supervised-learning/knn_classifier.md","articles":[]},"previous":{"title":"Decision Tree Classifier","level":"1.4.1.2","depth":3,"path":"supervised-learning/decision_tree_classifier.md","ref":"supervised-learning/decision_tree_classifier.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"supervised-learning/logistic-regression.md","mtime":"2018-04-09T22:43:34.924Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-07-31T00:01:03.393Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Logistic Regression","level":"1.4.1.3","depth":3,"next":{"title":"Nearest Neighbor Classifier","level":"1.4.1.4","depth":3,"path":"supervised-learning/knn_classifier.md","ref":"supervised-learning/knn_classifier.md","articles":[]},"previous":{"title":"Decision Tree Classifier","level":"1.4.1.2","depth":3,"path":"supervised-learning/decision_tree_classifier.md","ref":"supervised-learning/decision_tree_classifier.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"supervised-learning/logistic-regression.md","mtime":"2018-08-22T03:04:46.883Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-08-22T23:06:17.982Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
