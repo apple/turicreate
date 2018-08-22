@@ -34,10 +34,10 @@ static std::map<std::string,size_t> generate_column_index_map(const std::vector<
 static double vec_mode(const flex_vec& input_vec) {
     std::vector<int> histogram;
     for (size_t i = 0; i < input_vec.size(); ++i) {
-        int value = static_cast<int>(input_vec[i]);
+        size_t value = static_cast<size_t>(input_vec[i]);
 
         // Each value should be in the index of a class label
-        DASSERT_EQ(static_cast<double>(static_cast<int>(input_vec[i])), input_vec[i]);
+        DASSERT_EQ(static_cast<double>(static_cast<size_t>(input_vec[i])), input_vec[i]);
 
         if(histogram.size() < (value + 1)){
           histogram.resize(value + 1);
