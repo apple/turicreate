@@ -207,7 +207,7 @@ class StyleTransferTest(unittest.TestCase):
             img = img[..., 0:3]
             return img
 
-    def test_export_coreml_with_flexible_shape(self):
+    def test_export_coreml(self):
         import coremltools
         model = self.model
         for flexible_shape_on in [True, False]:
