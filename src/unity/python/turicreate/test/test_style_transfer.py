@@ -170,13 +170,11 @@ class StyleTransferTest(unittest.TestCase):
         self.assertTrue(isinstance(sf, tc.SFrame))
         self.assertEqual(len(sf), 1)
 
-    '''
     def test_sarray(self):
         sarray = self.content_sf[self.content_feature][:2]
         imgs = self.model.stylize(sarray, style=0)
         self.assertTrue(isinstance(imgs, tc.SArray))
         self.assertEqual(len(imgs), len(sarray))
-    '''
 
     def test_get_styles_fail(self):
         style_cases = self._get_invalid_style_cases()
@@ -243,7 +241,6 @@ class StyleTransferTest(unittest.TestCase):
         self.assertEqual(type(str(model)), str)
         self.assertEqual(type(model.__repr__()), str)
 
-    '''
     def test_save_and_load(self):
         with test_util.TempDirectory() as filename:
             self.model.save(filename)
@@ -253,7 +250,6 @@ class StyleTransferTest(unittest.TestCase):
             print("Stylize passed")
             self.test_get_styles_success()
             print("Get styles passed")
-    '''
 
 
 @unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
