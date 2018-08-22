@@ -207,36 +207,45 @@ class StyleTransferTest(unittest.TestCase):
             img = img[..., 0:3]
             return img
 
-    def test_export_coreml(self):
+    def test_export_coreml_with_flexible_shape(self):
         import coremltools
-        filename = tempfile.mkstemp('my_style_transfer.mlmodel')[1]
         model = self.model
-        model.export_coreml(filename)
-        
-        coreml_model = coremltools.models.MLModel(filename)
+        for flexible_shape_on in [True, False]:
+            filename = tempfile.mkstemp('my_style_transfer.mlmodel')[1]
+            # The following if statement should vanish once #207 on coremltools
+            # which is already merged into master, becomes part of a release.
+            if _mac_ver() < (10,14):
+                model.export_coreml(filename, 
+                    include_flexible_shape = False)
+            else:
+                model.export_coreml(filename, 
+                    include_flexible_shape = flexible_shape_on)
+            
+            coreml_model = coremltools.models.MLModel(filename)
 
-        if _mac_ver() >= (10, 14):
-            # It should work in 10.13 but there is a coremltools issue (#198)
-            # that is fixed in master but not in a release yet (as of 2.0b1)
-            img = self.style_sf[0:2][self.style_feature][0]
-            img_fixed = tc.image_analysis.resize(img, 256, 256, 3)
-            img = self._coreml_python_predict(coreml_model, img_fixed)
-            self.assertEqual(img.shape, (256, 256, 3))
+            mac_os_version_threshold = (10,14) if flexible_shape_on else (10,13)
 
-            # Test for flexible shape
-            img = self.style_sf[0:2][self.style_feature][1]
-            img_fixed = tc.image_analysis.resize(img, 512, 512, 3)
-            img = self._coreml_python_predict(coreml_model, img_fixed)
-            self.assertEqual(img.shape, (512, 512, 3))
+            if _mac_ver() >= mac_os_version_threshold:
+                img = self.style_sf[0:2][self.style_feature][0]
+                img_fixed = tc.image_analysis.resize(img, 256, 256, 3)
+                img = self._coreml_python_predict(coreml_model, img_fixed)
+                self.assertEqual(img.shape, (256, 256, 3))
 
-        # Also check if we can train a second model and export it (there could
-        # be naming issues in mxnet)
-        filename2 = tempfile.mkstemp('my_style_transfer2.mlmodel')[1]
-        # We also test at the same time if we can export a model with a single
-        # class
+                if flexible_shape_on:
+                    # Test for flexible shape
+                    img = self.style_sf[0:2][self.style_feature][1]
+                    img_fixed = tc.image_analysis.resize(img, 512, 512, 3)
+                    img = self._coreml_python_predict(coreml_model, img_fixed)
+                    self.assertEqual(img.shape, (512, 512, 3))
 
-        model2 = tc.style_transfer.create(self.style_sf, self.content_sf, max_iterations=1)
-        model2.export_coreml(filename2)
+            # Also check if we can train a second model and export it (there could
+            # be naming issues in mxnet)
+            filename2 = tempfile.mkstemp('my_style_transfer2.mlmodel')[1]
+            # We also test at the same time if we can export a model with a single
+            # class
+
+            model2 = tc.style_transfer.create(self.style_sf, self.content_sf, max_iterations=1)
+            model2.export_coreml(filename2)
 
     def test_repr(self):
         model = self.model
