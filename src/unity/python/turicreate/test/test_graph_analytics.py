@@ -146,6 +146,11 @@ class GraphAnalyticsTest(unittest.TestCase):
             self.assertAlmostEqual(m2.pagerank['pagerank'].sum(), 7087.08, delta=1e-2)
             with self.assertRaises(Exception):
                 assert_frame_equal(m.pagerank.topk('pagerank'), m2.pagerank.topk('pagerank'))
+
+            pr_out = m2['pagerank']
+            with self.assertRaises(Exception):
+                assert_frame_equal(m.pagerank.topk('pagerank'), pr_out.topk('pagerank'))
+            
             self.__test_model_save_load_helper__(m2)
 
     def test_triangle_counting(self):
