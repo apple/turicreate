@@ -1,0 +1,61 @@
+dist: trusty
+sudo: required
+language: minimal
+cache: ccache
+
+addons:
+  apt:
+    update: true
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-5
+      - g++-5
+      - libstdc++6
+      - libblas-dev
+      - liblapack-dev
+      - python-setuptools
+      - libgif-dev
+      - vim-common
+      - libx11-dev
+
+env:
+  global:
+    - CI=false
+    - OMP_NUM_THREADS=4
+    - CC=gcc-5
+    - CXX=g++-5
+
+before_install:
+  # Install Python dependencies
+  # TODO - do this through the official Travis CI python/virtualenv support matrix
+  # So that we get various Python versions installed automatically
+  - sudo easy_install pip
+  - sudo pip install --upgrade pip
+  - sudo pip install virtualenv
+  # Install node.js from binary
+  - pushd /opt
+  - curl -O https://nodejs.org/dist/v8.9.4/node-v8.9.4-linux-x64.tar.xz
+  - tar xf node-v8.9.4-linux-x64.tar.xz
+  - popd
+
+script:
+  - export PATH="/opt/node-v8.9.4-linux-x64/bin:${PATH}"
+  - sudo ln -s /usr/bin/gcc-5 /usr/local/bin/gcc
+  - sudo ln -s /usr/bin/g++-5 /usr/local/bin/g++
+  # We sometimes get `error: No space left on device`
+  # The workaround seems to be to force blocking I/O
+  # See https://github.com/travis-ci/travis-ci/issues/8902 and
+  # https://github.com/travis-ci/travis-ci/issues/4704#issuecomment-348435959
+  # Check whether O_NONBLOCK is set (probably should print "1"):
+  - python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); print(flags&os.O_NONBLOCK);'
+  # Turn off O_NONBLOCK:
+  - python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
+  # Check whether O_NONBLOCK is set (should print "0"):
+  - python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); print(flags&os.O_NONBLOCK);'
+
+  # Remove style transfer unit tests
+  - rm  src/unity/python/turicreate/test/test_style_transfer.py 
+
+  # Build the wheel
+  - travis_wait 180 bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=2 --debug --skip_cpp_test
