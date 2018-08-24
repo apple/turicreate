@@ -2772,6 +2772,8 @@ class SFrame(object):
         if format == None:
             if filename.endswith(('.csv', '.csv.gz')):
                 format = 'csv'
+            elif filename.endswith(('.json')):
+                format = 'json'
             else:
                 format = 'binary'
         else:
