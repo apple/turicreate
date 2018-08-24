@@ -19,6 +19,7 @@ Applications
     turicreate.toolkits.object_detector
     turicreate.toolkits.recommender
     turicreate.toolkits.text_classifier
+    turicreate.toolkits.style_transfer.rst
 
 Essentials
 ----------

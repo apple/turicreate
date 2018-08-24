@@ -7,7 +7,7 @@
 .. currentmodule:: turicreate
 
 
-sentence classifier
+text classifier
 ---------------------
 .. autosummary::
   :toctree: generated/
