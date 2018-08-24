@@ -1,7 +1,11 @@
 dist: trusty
 sudo: required
-language: minimal
 cache: ccache
+
+language: python
+python:
+  - "2.7"
+  - "3.6"
 
 addons:
   apt:
@@ -54,7 +58,7 @@ script:
   # Check whether O_NONBLOCK is set (should print "0"):
   - python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); print(flags&os.O_NONBLOCK);'
 
-  # Remove object detector and style transfer unit tests
+  # Remove object detector and style transfer unit tests. See: https://github.com/apple/turicreate/issues/1031
   - rm src/unity/python/turicreate/test/test_style_transfer.py src/unity/python/turicreate/test/test_object_detector.py
 
   # Build the wheel
