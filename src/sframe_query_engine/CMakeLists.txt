@@ -18,6 +18,6 @@ make_library(sframe_query_engine
    algorithm/ec_permute.cpp
    query_engine_lock.cpp
    REQUIRES
-     sframe flexible_type pylambda
+     sframe flexible_type pylambda turicreate_dot_graph
     EXTERNAL_VISIBILITY
  )
