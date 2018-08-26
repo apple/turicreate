@@ -221,6 +221,15 @@ static tc_sframe* make_sframe_double(const std::vector<std::pair<std::string, st
     return sf;
   }
 
+/*
+__attribute__((__unused__))
+static tc_sframe* make_sframe_sframe(const turi::gl_sframe& sf ) {
+  tc_sframe* ret = new_tc_sframe();
+  ret->value = sf;
+  return ret;
+}
+*/
+
 __attribute__((__unused__))
   static bool check_equality_gl_sframe(
   turi::gl_sframe sf_gl, turi::gl_sframe ref_gl, bool check_row_order=true) {

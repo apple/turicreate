@@ -1824,11 +1824,15 @@ class gl_sarray {
                                   ssize_t end,
                                   size_t min_observations=size_t(-1)) const;
 
-
   /**
    * Show a visualization of the SArray.
    */
   void show(const std::string& path_to_client, const std::string& title, const std::string& xlabel, const std::string& ylabel) const;
+
+  /**
+   * Return a visualization of the SArray.
+   */
+  //std::shared_ptr<model_base> plot(const std::string& path_to_client, const std::string& title, const std::string& xlabel, const std::string& ylabel) const;
 
   /**
    * \internal
