@@ -61,5 +61,9 @@ script:
   # Remove object detector and style transfer unit tests. See: https://github.com/apple/turicreate/issues/1031
   - rm src/unity/python/turicreate/test/test_style_transfer.py src/unity/python/turicreate/test/test_object_detector.py
 
+  # Try different num_procs for different python versions, to get us under the two hour limit
+  - export NUM_PROCS=2
+  - if [ `python -c 'import sys; print(sys.version_info.major);'` == 3 ]; then export NUM_PROCS=3; fi
+
   # Build the wheel
-  - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=3 --debug --skip_cpp_test --skip_doc
+  - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=${NUM_PROCS} --debug --skip_cpp_test --skip_doc
