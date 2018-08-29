@@ -873,7 +873,11 @@ tc_variant* tc_function_call(
 /******************************************************************************/
 
 // Single SArray view (`.show` on an SArray)
-tc_plot* tc_plot_create_1d(const tc_sarray* sa, tc_error** error);
+tc_plot* tc_plot_create_1d(const tc_sarray* sa,
+                           const char *title,
+                           const char *x_axis_title,
+                           const char *y_axis_title,
+                           tc_error** error);
 
 // 2d plot with X/Y axies (`tc.show` with two SArrays)
 tc_plot* tc_plot_create_2d(const tc_sarray* sa_x, const tc_sarray* sa_y, tc_error** error);

@@ -13,6 +13,7 @@
 #include <sframe/sframe_rows.hpp>
 #include <sframe/group_aggregate_value.hpp>
 #include <flexible_type/flexible_type.hpp>
+#include <unity/lib/visualization/plot.hpp>
 
 namespace turi {
 /**************************************************************************/
@@ -1832,7 +1833,7 @@ class gl_sarray {
   /**
    * Return a visualization of the SArray.
    */
-  //std::shared_ptr<model_base> plot(const std::string& path_to_client, const std::string& title, const std::string& xlabel, const std::string& ylabel) const;
+  std::shared_ptr<model_base> plot(const std::string& path_to_client, const std::string& title, const std::string& xlabel, const std::string& ylabel) const;
 
   /**
    * \internal
