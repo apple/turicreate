@@ -1,4 +1,4 @@
-Quick Links: [Installation](#supported-platforms) | [Documentation](#documentation) | [v5.0 Beta](#version-50-beta) | [WWDC 2018 Talk](https://developer.apple.com/videos/play/wwdc2018/712/)
+Quick Links: [Installation](#supported-platforms) | [Documentation](#documentation) | [WWDC 2018 Talk](https://developer.apple.com/videos/play/wwdc2018/712/)
 
 <img align="right" src="https://docs-assets.developer.apple.com/turicreate/turi-dog.svg" alt="Turi Create" width="100">
 
@@ -111,10 +111,10 @@ To install `Turi Create` within your virtual environment:
 (venv) pip install -U turicreate
 ```
 
-Version 5.0 (Beta)
------------
+Version 5.0 (New)
+-----------------
 
-Turi Create 5.0 -- now in beta -- includes:
+Turi Create 5.0 includes:
 * GPU Acceleration on Macs for:
   * Image Classification (macOS 10.13+)
   * Image Similarity (macOS 10.13+)
@@ -124,11 +124,6 @@ Turi Create 5.0 -- now in beta -- includes:
 * Recommender model deployment
 * Vision Feature Print model deployment
 
-To install the 5.0 beta into your virtual environment, use:
-
-```shell
-(venv) pip install turicreate==5.0b3
-```
 
 Documentation
 -------------
