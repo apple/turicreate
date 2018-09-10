@@ -175,7 +175,7 @@ static MLModel *create_model(const std::string& download_path,
     NSError* error = nil;
     result = [MLModel modelWithContentsOfURL:compiledModelURL error:&error];
 
-    if (error) {
+    if (error || !result) {
 
       // The compiled model appears to be corrupted. Attempt to delete it.
       if (!fileio::delete_path_recursive(compiled_modified_model_path)) {
