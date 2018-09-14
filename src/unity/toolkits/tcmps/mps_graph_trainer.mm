@@ -7,9 +7,9 @@
 #import "mps_device_manager.h"
 #import "mps_graph_cnnmodule.h"
 
-using turi::mps::FloatArrayMap;
 using turi::mps::MPSGraphModule;
 using turi::mps::float_array;
+using turi::mps::float_array_map;
 using turi::mps::make_array_map;
 
 int TCMPSHasHighPowerMetalDevice(bool *has_device) {
@@ -115,8 +115,10 @@ int TCMPSInitGraph(MPSHandle handle, int network_id, int n, int c_in, int h_in, 
               int64_t *weight_sizes, int weight_len) {
   API_BEGIN();
   
-  FloatArrayMap config = make_array_map(config_names, config_arrays, config_sizes, config_len);
-  FloatArrayMap weights = make_array_map(weight_names, weight_arrays, weight_sizes, weight_len);
+  float_array_map config =
+      make_array_map(config_names, config_arrays, config_sizes, config_len);
+  float_array_map weights =
+      make_array_map(weight_names, weight_arrays, weight_sizes, weight_len);
 
   MPSGraphModule *obj = (MPSGraphModule *)handle;
   obj->Init(network_id, n, c_in, h_in, w_in, c_out, h_out, w_out,

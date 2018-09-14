@@ -10,10 +10,10 @@
 #import "mps_cnnmodule.h"
 #import "mps_utils.h"
 
+using turi::mps::MPSCNNModule;
 using turi::mps::external_float_array;
 using turi::mps::float_array;
-using turi::mps::FloatArrayMap;
-using turi::mps::MPSCNNModule;
+using turi::mps::float_array_map;
 using turi::mps::make_array_map;
 
 int TCMPSCreateCNNModule(MPSHandle *out) {
@@ -159,7 +159,8 @@ int TCMPSInit(MPSHandle handle, int network_id, int n, int c_in, int h_in, int w
          int64_t *config_sizes, int config_len) {
   API_BEGIN();
 
-  FloatArrayMap config = make_array_map(config_names, config_arrays, config_sizes, config_len);
+  float_array_map config =
+      make_array_map(config_names, config_arrays, config_sizes, config_len);
 
   MPSCNNModule *obj = (MPSCNNModule *)handle;
   obj->Init(network_id, n, c_in, h_in, w_in, c_out, h_out, w_out, updater_id, config);
@@ -169,7 +170,7 @@ int TCMPSInit(MPSHandle handle, int network_id, int n, int c_in, int h_in, int w
 int TCMPSLoad(MPSHandle handle, char **names, void **arrs, int64_t *sz, int len) {
   API_BEGIN();
 
-  FloatArrayMap weights = make_array_map(names, arrs, sz, len);
+  float_array_map weights = make_array_map(names, arrs, sz, len);
 
   MPSCNNModule *obj = (MPSCNNModule *)handle;
   obj->Load(weights);

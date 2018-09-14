@@ -23,7 +23,8 @@ public:
   MPSCNNModule();
   ~MPSCNNModule();
   void Init(int network_id, int n, int c_in, int h_in, int w_in, int c_out,
-            int h_out, int w_out, int updater_id, const FloatArrayMap &config);
+            int h_out, int w_out, int updater_id,
+            const float_array_map& config);
   void Forward(const float_array& inputs, float* out, bool is_train = true);
   void Backward(const float_array& gradient, float* out);
   void ForwardBackward(const float_array& inputs, const float_array& labels,
@@ -45,7 +46,7 @@ public:
   void GetLossImages(float *_Nonnull out);
   void Update();
   void GpuUpdate();
-  void Load(const FloatArrayMap &weights);
+  void Load(const float_array_map& weights);
   void Export();
   void SetLearningRate(float new_lr) {
     if (updater_ != nil) {

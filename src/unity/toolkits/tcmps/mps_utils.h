@@ -12,9 +12,12 @@
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
-#include <vector>
+
+#include <map>
 #include <string>
-#include <unordered_map>
+#include <vector>
+
+#include "mps_float_array.hpp"
 
 namespace turi {
 namespace mps {
@@ -68,23 +71,18 @@ struct OptimizerOptions {
   }
 };
 
-//
-// FloatArrayMap is a (str -> float array pointer) dictionary is used to
-// pass weights and config into the library
-//
-struct FloatArray {
-  size_t size;
-  float * _Nullable data;
-};
+// Convenient typedef for data structure used to pass configuration and weights
+// into and out of TCMPS.
+using float_array_map = std::map<std::string, shared_float_array>;
 
-typedef std::unordered_map<std::string, FloatArray> FloatArrayMap;
+float_array_map make_array_map(char **names, void **arrays,
+                               int64_t *sizes, int len);
 
-FloatArrayMap make_array_map(char **names, void **arrays,
-                             int64_t *sizes, int len);
-
-float get_array_map_scalar(const FloatArrayMap &config, const std::string &key, float default_value);
-BOOL get_array_map_bool(const FloatArrayMap &config, const std::string &key, BOOL default_value);
-OptimizerOptions get_array_map_optimizer_options(const FloatArrayMap &config);
+float get_array_map_scalar(const float_array_map &config,
+                           const std::string &key, float default_value);
+bool get_array_map_bool(const float_array_map &config, const std::string &key,
+                        bool default_value);
+OptimizerOptions get_array_map_optimizer_options(const float_array_map &config);
 
 // Graph mode
 

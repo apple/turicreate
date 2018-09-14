@@ -36,7 +36,7 @@ MPSCNNModule::MPSCNNModule() {
 
 void MPSCNNModule::Init(int network_id, int n, int c_in, int h_in, int w_in,
                         int c_out, int h_out, int w_out, int updater_id,
-                        const FloatArrayMap &config) {
+                        const float_array_map& config) {
 
   // Save output shape, used for initializing the labels (that can not
   // be pre-initialized without the data)
@@ -347,7 +347,7 @@ void MPSCNNModule::GpuUpdate(){
     }
 }
 
-void MPSCNNModule::Load(const FloatArrayMap &weights) {
+void MPSCNNModule::Load(const float_array_map& weights) {
   network_->Load(weights);
 }
 void MPSCNNModule::Export() {

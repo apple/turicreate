@@ -44,14 +44,14 @@ struct MPSNetwork {
   MPSNetwork(){};
   virtual ~MPSNetwork();
     
-  MPSNetwork(const FloatArrayMap &config){
+  explicit MPSNetwork(const float_array_map& config) {
       std::string mode_key = "mode";
       network_mode_ = (LowLevelMode) get_array_map_scalar(config, mode_key, kLowLevelModeTrain);
       is_train_ = (kLowLevelModeTrain == network_mode_ || kLowLevelModeTest == network_mode_);
   }
 
   void Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
-            const FloatArrayMap &config);
+            const float_array_map& config);
   MPSImageBatch *_Nonnull Forward(MPSImageBatch *_Nonnull src,
                                   id<MTLCommandBuffer> _Nonnull cb,
                                   bool is_train = true);
@@ -61,7 +61,7 @@ struct MPSNetwork {
                                MPSCNNLossLabelsBatch *_Nonnull labels,
                                id<MTLCommandBuffer> _Nonnull cb);
   void SyncState(id<MTLCommandBuffer> _Nonnull cb);
-  void Load(const FloatArrayMap &weights);
+  void Load(const float_array_map& weights);
   void
   Export(std::unordered_map<std::string, std::tuple<std::string, float *, int,
                                                     std::vector<int>>> &table);
@@ -77,7 +77,7 @@ struct MPSNetwork {
 // Factory function to create a network
 MPSNetwork *_Nonnull createNetwork(NetworkType network_id,
                                    const std::vector<int> &params,
-                                   const FloatArrayMap &config);
+                                   const float_array_map& config);
 
 // Various networks
 // ---------------------------------------------------------------------------------------------
@@ -85,7 +85,9 @@ MPSNetwork *_Nonnull createNetwork(NetworkType network_id,
 // Unit testing networks
 // ---------------------------------------------------------------------------------------------
 struct SingleConvNetwork : public MPSNetwork {
-    explicit SingleConvNetwork(const std::vector<int> &iparam, const FloatArrayMap& config) : MPSNetwork(config) {
+  SingleConvNetwork(const std::vector<int> &iparam,
+                    const float_array_map& config) : MPSNetwork(config) {
+
     int n = iparam[0];
     int hi = iparam[1];
     int wi = iparam[2];
@@ -100,7 +102,9 @@ struct SingleConvNetwork : public MPSNetwork {
 };
 
 struct Single1DConvNetwork : public MPSNetwork {
-    explicit Single1DConvNetwork(const std::vector<int> &iparam, const FloatArrayMap& config) : MPSNetwork(config) {
+  Single1DConvNetwork(const std::vector<int> &iparam,
+                      const float_array_map& config) : MPSNetwork(config) {
+
     int n = iparam[0];
     int hi = iparam[1];
     int wi = iparam[2];
@@ -116,7 +120,9 @@ struct Single1DConvNetwork : public MPSNetwork {
   }
 };
 struct SingleReLUNetwork : public MPSNetwork {
-  explicit SingleReLUNetwork(const std::vector<int> &iparam, const FloatArrayMap& config) : MPSNetwork(config) {
+  SingleReLUNetwork(const std::vector<int> &iparam,
+                    const float_array_map& config) : MPSNetwork(config) {
+
     int n = iparam[0];
     int hi = iparam[1];
     int wi = iparam[2];
@@ -130,7 +136,9 @@ struct SingleReLUNetwork : public MPSNetwork {
 };
 
 struct SingleBNNetwork : public MPSNetwork {
-  explicit SingleBNNetwork(const std::vector<int> &iparam, const FloatArrayMap& config) : MPSNetwork(config) {
+  SingleBNNetwork(const std::vector<int> &iparam,
+                  const float_array_map& config) : MPSNetwork(config) {
+
     int n = iparam[0];
     int hi = iparam[1];
     int wi = iparam[2];
@@ -144,7 +152,9 @@ struct SingleBNNetwork : public MPSNetwork {
 };
 
 struct SingleMPNetwork : public MPSNetwork {
-  explicit SingleMPNetwork(const std::vector<int> &iparam, const FloatArrayMap& config) : MPSNetwork(config) {
+  SingleMPNetwork(const std::vector<int> &iparam,
+                  const float_array_map& config) : MPSNetwork(config) {
+
     layers.resize(1);
     int n = iparam[0];
     int hi = iparam[1];
@@ -159,7 +169,9 @@ struct SingleMPNetwork : public MPSNetwork {
 };
 
 struct ODNetwork : public MPSNetwork {
-  ODNetwork(const std::vector<int> &iparam, const FloatArrayMap& config) : MPSNetwork(config) {
+  ODNetwork(const std::vector<int> &iparam, const float_array_map& config)
+      : MPSNetwork(config) {
+
     int n = iparam[0];
     int hi = iparam[1];
     int wi = iparam[2];
@@ -193,7 +205,9 @@ struct ODNetwork : public MPSNetwork {
 };
 
 struct SingleDropOutNetwork : public MPSNetwork {
-  SingleDropOutNetwork(const std::vector<int> &iparam, const FloatArrayMap& config) : MPSNetwork(config) {
+  SingleDropOutNetwork(const std::vector<int> &iparam,
+                       const float_array_map& config) : MPSNetwork(config) {
+
     int n = iparam[0];
     int hi = iparam[1];
     int wi = iparam[2];
@@ -208,7 +222,10 @@ struct SingleDropOutNetwork : public MPSNetwork {
 };
 
 struct ActivityClassifierNetwork : public MPSNetwork {
-  ActivityClassifierNetwork(const std::vector<int> &iparam, const FloatArrayMap& config) : MPSNetwork(config) {
+  ActivityClassifierNetwork(const std::vector<int> &iparam,
+                            const float_array_map& config)
+      : MPSNetwork(config) {
+
     assert(iparam.size() >= 7);
     int n = iparam[0];
     int hi = iparam[1];
@@ -255,7 +272,9 @@ struct ActivityClassifierNetwork : public MPSNetwork {
 };
 
 struct SingleFcNetwork : public MPSNetwork {
-  SingleFcNetwork(const std::vector<int> &iparam, const FloatArrayMap& config) : MPSNetwork(config) {
+  SingleFcNetwork(const std::vector<int> &iparam, const float_array_map& config)
+      : MPSNetwork(config) {
+
     int n = iparam[0];
     int hi = iparam[1];
     int wi = iparam[2];
@@ -270,7 +289,9 @@ struct SingleFcNetwork : public MPSNetwork {
 };
 
 struct SingleSoftMaxNetwork : public MPSNetwork {
-  SingleSoftMaxNetwork(const std::vector<int> &iparam, const FloatArrayMap& config) : MPSNetwork(config) {
+  SingleSoftMaxNetwork(const std::vector<int> &iparam,
+                       const float_array_map& config) : MPSNetwork(config) {
+
     int n = iparam[0];
     int hi = iparam[1];
     int wi = iparam[2];
@@ -285,7 +306,9 @@ struct SingleSoftMaxNetwork : public MPSNetwork {
 };
 
 struct SingleLstmNetwork : public MPSNetwork {
-    explicit SingleLstmNetwork(const std::vector<int> &iparam, const FloatArrayMap& config) : MPSNetwork(config) {
+  SingleLstmNetwork(const std::vector<int> &iparam,
+                    const float_array_map& config) : MPSNetwork(config) {
+
         int n = iparam[0];
         int hi = iparam[1];
         int wi = iparam[2];

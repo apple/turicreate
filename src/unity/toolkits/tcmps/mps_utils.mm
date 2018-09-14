@@ -7,29 +7,34 @@
 //
 
 #import "mps_utils.h"
+
 #include <sys/stat.h>
+#include <memory>
 
 namespace turi {
 namespace mps {
 
-FloatArrayMap make_array_map(char **names, void **arrays,
-                             int64_t *sizes, int len) {
-  FloatArrayMap ret;
+float_array_map make_array_map(char **names, void **arrays,
+                               int64_t *sizes, int len) {
+  float_array_map ret;
   for (int i = 0; i < len; ++i) {
     std::string name = names[i];
-    ret[name] = FloatArray{(size_t)sizes[i], (float *)arrays[i]};
+    const float* array = reinterpret_cast<const float*>(arrays[i]);
+    const size_t size = static_cast<size_t>(sizes[i]);
+    ret[name] = shared_float_array::copy(array, {size});
   }
   return ret;
 }
 
-float get_array_map_scalar(const FloatArrayMap &config, const std::string &key, float default_value) {
+float get_array_map_scalar(const float_array_map &config,
+                           const std::string &key, float default_value) {
   float value = default_value;
 
   if (config.count(key) > 0) {
  
-    const FloatArray& arr = config.at(key);
-    if (arr.size == 1) {
-      value = arr.data[0];
+    const shared_float_array& arr = config.at(key);
+    if (arr.size() == 1) {
+      value = arr.data()[0];
     } else {
       // TODO: raise exception
     }
@@ -38,13 +43,14 @@ float get_array_map_scalar(const FloatArrayMap &config, const std::string &key, 
   return value;
 }
 
-BOOL get_array_map_bool(const FloatArrayMap &config, const std::string &key, BOOL default_value) {
+bool get_array_map_bool(const float_array_map &config, const std::string &key,
+                        bool default_value) {
   // 0 == False, the rest will be True (or the default if key is not present)
-  BOOL value = default_value;
+  bool value = default_value;
   if (config.count(key) > 0) {
-    const FloatArray& arr = config.at(key);
-    if (arr.size == 1) {
-      value = arr.data[0] != 0;
+    const shared_float_array& arr = config.at(key);
+    if (arr.size() == 1) {
+      value = arr.data()[0] != 0;
     } else {
       // TODO: raise exception
     }
@@ -52,7 +58,8 @@ BOOL get_array_map_bool(const FloatArrayMap &config, const std::string &key, BOO
   return value;
 }
 
-OptimizerOptions get_array_map_optimizer_options(const FloatArrayMap &config) {
+OptimizerOptions
+get_array_map_optimizer_options(const float_array_map &config) {
   OptimizerOptions opt;
   opt.useSGD = get_array_map_bool(config,  "use_sgd", opt.useSGD);
   opt.learningRate = get_array_map_scalar(config, "learning_rate", opt.learningRate);

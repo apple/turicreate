@@ -6,7 +6,7 @@ namespace mps {
 
 MPSNetwork *_Nonnull createNetwork(NetworkType network_id,
                                    const std::vector<int> &params,
-                                   const FloatArrayMap& config) {
+                                   const float_array_map& config) {
   switch (network_id) {
   case kSingleReLUNet:
     return new SingleReLUNetwork(params, config);
@@ -45,7 +45,7 @@ MPSNetwork::~MPSNetwork() {
 }
 
 void MPSNetwork::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
-                      const FloatArrayMap &config) {
+                      const float_array_map& config) {
     
   for (int i = 0; i < layers.size(); ++i) {
     layers[i]->Init(device, cmd_q, config, is_train_, network_mode_ ,(i == layers.size() - 1));
@@ -112,7 +112,7 @@ void MPSNetwork::SyncState(id<MTLCommandBuffer> _Nonnull cb) {
   }
 }
 
-void MPSNetwork::Load(const FloatArrayMap &weights) {
+void MPSNetwork::Load(const float_array_map& weights) {
   for (int i = 0; i < layers.size(); ++i) {
     layers[i]->Load(weights);
   }

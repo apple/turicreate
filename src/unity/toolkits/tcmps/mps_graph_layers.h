@@ -24,11 +24,11 @@ namespace mps {
 struct GraphLayer {
   virtual void Init(id<MTLDevice> _Nonnull device,
                     id<MTLCommandQueue> _Nonnull cmd_queue,
-                    const FloatArrayMap &config,
-                    const FloatArrayMap &weights) {}
+                    const float_array_map& config,
+                    const float_array_map& weights) {}
   virtual void InitFwd(MPSNNImageNode *_Nonnull src) = 0;
   virtual void InitBwd(MPSNNImageNode *_Nonnull src) = 0;
-  virtual void Load(const FloatArrayMap &weights) {}
+  virtual void Load(const float_array_map& weights) {}
   virtual void SetLearningRate(float lr) {}
   virtual void
   Export(std::unordered_map<std::string, std::tuple<std::string, float *, int,
@@ -38,15 +38,15 @@ struct GraphLayer {
   virtual ~GraphLayer() {}
 
   void _Load(const std::string &key,
-             const FloatArrayMap &weights,
-             int dst_size,
+             const float_array_map& weights,
+             size_t dst_size,
              float *_Nonnull dst) {
     if (weights.count(key) > 0) {
       LogStdString("Loading weight: " + key);
-      assert(weights.at(key).size == dst_size);
+      assert(weights.at(key).size() == dst_size);
       size_t size = dst_size * sizeof(float);
       void *dest = (void *)dst;
-      void *src = (void *)weights.at(key).data;
+      const float *src = weights.at(key).data();
       std::memcpy(dest, src, size);
     }
   }
@@ -124,8 +124,8 @@ struct ConvGraphLayer : public GraphLayer {
   ~ConvGraphLayer() {}
 
   void Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> _Nonnull cmd_queue,
-            const FloatArrayMap &config,
-            const FloatArrayMap &weights) override;
+            const float_array_map& config,
+            const float_array_map& weights) override;
   void InitFwd(MPSNNImageNode * _Nonnull src) override;
   void InitBwd(MPSNNImageNode * _Nonnull src) override;
   void SetLearningRate(float lr) override;
@@ -157,8 +157,8 @@ struct BNGraphLayer : public GraphLayer {
   ~BNGraphLayer() {}
 
   void Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> _Nonnull cmd_queue,
-            const FloatArrayMap &config,
-            const FloatArrayMap &weights) override;
+            const float_array_map& config,
+            const float_array_map& weights) override;
   void InitFwd(MPSNNImageNode * _Nonnull src) override;
   void InitBwd(MPSNNImageNode * _Nonnull src) override;
   void SetLearningRate(float lr) override;
@@ -214,8 +214,8 @@ public:
                      Options options);
 
   void Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> _Nonnull cmd_queue,
-            const FloatArrayMap &config,
-            const FloatArrayMap &weights) override;
+            const float_array_map& config,
+            const float_array_map& weights) override;
   void InitFwd(MPSNNImageNode *src) override;
   void InitBwd(MPSNNImageNode *src) override;
 

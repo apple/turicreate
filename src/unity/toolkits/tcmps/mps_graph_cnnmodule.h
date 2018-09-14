@@ -31,8 +31,7 @@ public:
 
   void Init(int network_id, int n, int c_in, int h_in, int w_in, int c_out,
             int h_out, int w_out,
-            const FloatArrayMap &config,
-            const FloatArrayMap &weights);
+            const float_array_map& config, const float_array_map& weights);
 
   // Each call to a Start*Batch function must be paired with a call to a
   // WaitFor*Batch function. These functions must match the graph mode used to
