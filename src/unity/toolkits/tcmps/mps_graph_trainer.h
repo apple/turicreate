@@ -14,17 +14,16 @@ EXPORT int TCMPSMetalDeviceMemoryLimit(uint64_t *size);
 EXPORT int TCMPSCreateGraphModule(MPSHandle *handle);
 EXPORT int TCMPSDeleteGraphModule(MPSHandle handle);
 
-EXPORT int TCMPSStartTrainingBatchGraph(MPSHandle handle, void *ptr, int64_t sz,
-                                   int64_t *shape, int dim, float *labels_ptr);
+EXPORT int TCMPSStartTrainingBatchGraph(
+    MPSHandle handle, TCMPSFloatArrayRef inputs, TCMPSFloatArrayRef labels);
 EXPORT int TCMPSWaitForTrainingBatchGraph(MPSHandle handle, float *loss);
 
-EXPORT int TCMPSStartInferenceBatchGraph(MPSHandle handle, void *ptr, int64_t sz,
-                                    int64_t *shape, int dim);
+EXPORT int TCMPSStartInferenceBatchGraph(
+    MPSHandle handle, TCMPSFloatArrayRef inputs);
 EXPORT int TCMPSWaitForInferenceBatchGraph(MPSHandle handle, float *out_ptr);
 
 EXPORT int TCMPSStartTrainReturnGradBatchGraph(
-    MPSHandle handle, void *ptr, int64_t sz, int64_t *shape, int dim,
-    void *grad_ptr, int64_t grad_sz, int64_t *grad_shape, int grad_dim);
+    MPSHandle handle, TCMPSFloatArrayRef inputs, TCMPSFloatArrayRef gradient);
 EXPORT int TCMPSWaitForTrainReturnGradBatchGraph(MPSHandle handle, float *out_ptr);
 
 EXPORT int TCMPSInitGraph(MPSHandle handle, int network_id, int n, int c_in, int h_in, int w_in,

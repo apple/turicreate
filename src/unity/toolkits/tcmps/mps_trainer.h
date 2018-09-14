@@ -27,46 +27,44 @@ extern "C" {
 #endif // __cplusplus
 
 typedef void *MPSHandle;
+typedef void *TCMPSFloatArrayRef;
 
 EXPORT int TCMPSCreateCNNModule(MPSHandle *handle);
 EXPORT int TCMPSDeleteCNNModule(MPSHandle handle);
 
-EXPORT int TCMPSForward(MPSHandle handle, void *ptr, int64_t sz, int64_t *shape, int dim,
-                   float *out, bool is_train);
+EXPORT int TCMPSCreateFloatArray(TCMPSFloatArrayRef *array_out, float* data,
+                                 size_t size, size_t* shape, size_t dim);
+EXPORT int TCMPSDeleteFloatArray(TCMPSFloatArrayRef array_ref);
 
-EXPORT int TCMPSBackward(MPSHandle handle, void *ptr, int64_t sz, int64_t *shape, int dim,
-                    float *out);
+EXPORT int TCMPSForward(MPSHandle handle, TCMPSFloatArrayRef inputs, float *out,
+                        bool is_train);
 
-EXPORT int TCMPSLoss(MPSHandle handle, void *ptr, size_t sz, int64_t *shape, int dim,
-                void *label_ptr, size_t label_sz, int64_t *label_shape, int label_dim,
-                void *weight_ptr, size_t weight_sz, int64_t *weight_shape, int weight_dim,
-                bool loss_image_required,
-                float *out);
+EXPORT int TCMPSBackward(MPSHandle handle, TCMPSFloatArrayRef gradient,
+                         float *out);
+
+EXPORT int TCMPSLoss(MPSHandle handle, TCMPSFloatArrayRef inputs,
+                     TCMPSFloatArrayRef labels, TCMPSFloatArrayRef weights,
+                     bool loss_image_required, float *out);
     
-EXPORT int TCMPSForwardBackward(MPSHandle handle, void *ptr, size_t sz, int64_t *shape, int dim,
-                           void *label_ptr, size_t label_sz, int64_t *label_shape, int label_dim,
-                           void *weight_ptr, size_t weight_sz, int64_t *weight_shape, int weight_dim,
-                           bool loss_image_required,
-                           float *out);
+EXPORT int TCMPSForwardBackward(
+    MPSHandle handle, TCMPSFloatArrayRef inputs, TCMPSFloatArrayRef labels,
+    TCMPSFloatArrayRef weights, bool loss_image_required, float *out);
 
-EXPORT int TCMPSForwardWithLoss(MPSHandle handle, void *ptr, size_t sz, int64_t *shape, int dim,
-                           void *label_ptr, size_t label_sz, int64_t *label_shape, int label_dim,
-                           void *weight_ptr, size_t weight_sz, int64_t *weight_shape, int weight_dim,
-                           bool loss_image_required, bool is_train,
-                           float *out);
+EXPORT int TCMPSForwardWithLoss(
+    MPSHandle handle, TCMPSFloatArrayRef inputs, TCMPSFloatArrayRef labels,
+    TCMPSFloatArrayRef weights, bool loss_image_required, bool is_train,
+    float *out);
 
 EXPORT int TCMPSGetLossImages(MPSHandle handle, float *out);
 
 EXPORT int TCMPSBeginForwardBatch(
-    MPSHandle handle, int batch_id, void *ptr, size_t sz, int64_t *shape, int dim,
-    void *label_ptr, size_t label_sz, int64_t *label_shape, int label_dim,
-    void *weight_ptr, size_t weight_sz, int64_t *weight_shape, int weight_dim,
+    MPSHandle handle, int batch_id, TCMPSFloatArrayRef inputs,
+    TCMPSFloatArrayRef labels, TCMPSFloatArrayRef weights,
     bool loss_image_required, bool is_train);
 
 EXPORT int TCMPSBeginForwardBackwardBatch(
-    MPSHandle handle, int batch_id, void *ptr, size_t sz, int64_t *shape, int dim,
-    void *label_ptr, size_t label_sz, int64_t *label_shape, int label_dim,
-    void *weight_ptr, size_t weight_sz, int64_t *weight_shape, int weight_dim,
+    MPSHandle handle, int batch_id, TCMPSFloatArrayRef inputs,
+    TCMPSFloatArrayRef labels, TCMPSFloatArrayRef weights,
     bool loss_image_required);
 
 EXPORT int TCMPSWaitForBatch(MPSHandle handle, int batch_id, float *forward_out,

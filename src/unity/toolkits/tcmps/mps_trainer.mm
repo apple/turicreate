@@ -1,10 +1,17 @@
-#include "mps_trainer.h"
-#import "iostream"
-#include "mps_cnnmodule.h"
-#import "string"
-#import "unordered_map"
+#import "mps_trainer.h"
+
+#include <iostream>
+#include <memory>
+#include <string>
+#include <unordered_map>
+
+#include "mps_float_array.hpp"
+
+#import "mps_cnnmodule.h"
 #import "mps_utils.h"
 
+using turi::mps::external_float_array;
+using turi::mps::float_array;
 using turi::mps::FloatArrayMap;
 using turi::mps::MPSCNNModule;
 using turi::mps::make_array_map;
@@ -23,65 +30,82 @@ int TCMPSDeleteCNNModule(MPSHandle handle) {
   API_END();
 }
 
-int TCMPSForward(MPSHandle handle, void *ptr, int64_t sz, int64_t *shape, int dim,
-            float *out, bool is_train) {
+int TCMPSCreateFloatArray(TCMPSFloatArrayRef *array_out, float* data,
+                          size_t size, size_t* shape, size_t dim) {
   API_BEGIN();
-  MPSCNNModule *obj = (MPSCNNModule *)handle;
-  obj->Forward(ptr, sz, shape, dim, out, is_train);
+
+  float_array* array = new external_float_array(data, size, shape, dim);
+  *array_out = reinterpret_cast<TCMPSFloatArrayRef>(array);
+
   API_END();
 }
 
-int TCMPSBackward(MPSHandle handle, void *ptr, int64_t sz, int64_t *shape, int dim,
+int TCMPSDeleteFloatArray(TCMPSFloatArrayRef array) {
+  API_BEGIN();
+
+  delete reinterpret_cast<float_array*>(array);
+
+  API_END();
+}
+
+int TCMPSForward(MPSHandle handle, TCMPSFloatArrayRef inputs, float *out,
+                 bool is_train) {
+  API_BEGIN();
+  MPSCNNModule *obj = (MPSCNNModule *)handle;
+  float_array* inputs_array = reinterpret_cast<float_array*>(inputs);
+  obj->Forward(*inputs_array, out, is_train);
+  API_END();
+}
+
+int TCMPSBackward(MPSHandle handle, TCMPSFloatArrayRef gradient,
              float *out) {
   API_BEGIN();
   MPSCNNModule *obj = (MPSCNNModule *)handle;
-  obj->Backward(ptr, sz, shape, dim, out);
+  float_array* gradient_array = reinterpret_cast<float_array*>(gradient);
+  obj->Backward(*gradient_array, out);
   API_END();
 }
 
-int TCMPSLoss(MPSHandle handle, void *ptr, size_t sz, int64_t *shape, int dim,
-         void *label_ptr, size_t label_sz, int64_t *label_shape, int label_dim,
-         void *weight_ptr, size_t weight_sz, int64_t *weight_shape, int weight_dim,
-         bool loss_image_required,
-         float *out) {
+int TCMPSLoss(MPSHandle handle, TCMPSFloatArrayRef inputs,
+              TCMPSFloatArrayRef labels, TCMPSFloatArrayRef weights,
+              bool loss_image_required, float *out) {
   API_BEGIN();
   MPSCNNModule *obj = (MPSCNNModule *)handle;
-  obj->Loss(ptr, sz, shape, dim,
-            label_ptr, label_sz, label_shape, label_dim,
-            weight_ptr, weight_sz, weight_shape, weight_dim,
-            loss_image_required,
+  float_array* inputs_array = reinterpret_cast<float_array*>(inputs);
+  float_array* labels_array = reinterpret_cast<float_array*>(labels);
+  float_array* weights_array = reinterpret_cast<float_array*>(weights);
+  obj->Loss(*inputs_array, *labels_array, *weights_array, loss_image_required,
             out);
   API_END();
 }
 
-int TCMPSForwardBackward(MPSHandle handle, void *ptr, size_t sz, int64_t *shape, int dim,
-         void *label_ptr, size_t label_sz, int64_t *label_shape, int label_dim,
-         void *weight_ptr, size_t weight_sz, int64_t *weight_shape, int weight_dim,
-         bool loss_image_required,
-         float *out) {
-    API_BEGIN();
-    MPSCNNModule *obj = (MPSCNNModule *)handle;
-    obj->ForwardBackward(ptr, sz, shape, dim,
-                         label_ptr, label_sz, label_shape, label_dim,
-                         weight_ptr, weight_sz, weight_shape, weight_dim,
-                         loss_image_required,
-                         out);
-    API_END();
+int TCMPSForwardBackward(
+    MPSHandle handle, TCMPSFloatArrayRef inputs, TCMPSFloatArrayRef labels,
+    TCMPSFloatArrayRef weights, bool loss_image_required, float *out) {
+
+  API_BEGIN();
+  MPSCNNModule *obj = (MPSCNNModule *)handle;
+  float_array* inputs_array = reinterpret_cast<float_array*>(inputs);
+  float_array* labels_array = reinterpret_cast<float_array*>(labels);
+  float_array* weights_array = reinterpret_cast<float_array*>(weights);
+  obj->ForwardBackward(*inputs_array, *labels_array, *weights_array,
+                       loss_image_required, out);
+  API_END();
 }
 
-int TCMPSForwardWithLoss(MPSHandle handle, void *ptr, size_t sz, int64_t *shape, int dim,
-                    void *label_ptr, size_t label_sz, int64_t *label_shape, int label_dim,
-                    void *weight_ptr, size_t weight_sz, int64_t *weight_shape, int weight_dim,
-                    bool loss_image_required, bool is_train,
-                    float *out) {
-    API_BEGIN();
-    MPSCNNModule *obj = (MPSCNNModule *)handle;
-    obj->Forward(ptr, sz, shape, dim,
-                 label_ptr, label_sz, label_shape, label_dim,
-                 weight_ptr, weight_sz, weight_shape, weight_dim,
-                 loss_image_required, is_train,
-                 out);
-    API_END();
+int TCMPSForwardWithLoss(
+    MPSHandle handle, TCMPSFloatArrayRef inputs, TCMPSFloatArrayRef labels,
+    TCMPSFloatArrayRef weights, bool loss_image_required, bool is_train,
+    float *out) {
+
+  API_BEGIN();
+  MPSCNNModule *obj = (MPSCNNModule *)handle;
+  float_array* inputs_array = reinterpret_cast<float_array*>(inputs);
+  float_array* labels_array = reinterpret_cast<float_array*>(labels);
+  float_array* weights_array = reinterpret_cast<float_array*>(weights);
+  obj->Forward(*inputs_array, *labels_array, *weights_array,
+               loss_image_required, is_train, out);
+  API_END();
 }
 
 int TCMPSGetLossImages(MPSHandle handle, float *out) {
@@ -92,30 +116,32 @@ int TCMPSGetLossImages(MPSHandle handle, float *out) {
 }
 
 int TCMPSBeginForwardBatch(
-    MPSHandle handle, int batch_id, void *ptr, size_t sz, int64_t *shape, int dim,
-    void *label_ptr, size_t label_sz, int64_t *label_shape, int label_dim,
-    void *weight_ptr, size_t weight_sz, int64_t *weight_shape, int weight_dim,
+    MPSHandle handle, int batch_id, TCMPSFloatArrayRef inputs,
+    TCMPSFloatArrayRef labels, TCMPSFloatArrayRef weights,
     bool loss_image_required, bool is_train) {
+
   API_BEGIN();
   MPSCNNModule *obj = reinterpret_cast<MPSCNNModule *>(handle);
-  obj->BeginForwardBatch(batch_id, ptr, sz, shape, dim,
-                         label_ptr, label_sz, label_shape, label_dim,
-                         weight_ptr, weight_sz, weight_shape, weight_dim,
+  float_array* inputs_array = reinterpret_cast<float_array*>(inputs);
+  float_array* labels_array = reinterpret_cast<float_array*>(labels);
+  float_array* weights_array = reinterpret_cast<float_array*>(weights);
+  obj->BeginForwardBatch(batch_id, *inputs_array, *labels_array, *weights_array,
                          loss_image_required, is_train);
   API_END();
 }
 
 int TCMPSBeginForwardBackwardBatch(
-    MPSHandle handle, int batch_id, void *ptr, size_t sz, int64_t *shape, int dim,
-    void *label_ptr, size_t label_sz, int64_t *label_shape, int label_dim,
-    void *weight_ptr, size_t weight_sz, int64_t *weight_shape, int weight_dim,
+    MPSHandle handle, int batch_id, TCMPSFloatArrayRef inputs,
+    TCMPSFloatArrayRef labels, TCMPSFloatArrayRef weights,
     bool loss_image_required) {
+
   API_BEGIN();
   MPSCNNModule *obj = reinterpret_cast<MPSCNNModule *>(handle);
-  obj->BeginForwardBackwardBatch(batch_id, ptr, sz, shape, dim,
-                                 label_ptr, label_sz, label_shape, label_dim,
-                                 weight_ptr, weight_sz, weight_shape, weight_dim,
-                                 loss_image_required);
+  float_array* inputs_array = reinterpret_cast<float_array*>(inputs);
+  float_array* labels_array = reinterpret_cast<float_array*>(labels);
+  float_array* weights_array = reinterpret_cast<float_array*>(weights);
+  obj->BeginForwardBackwardBatch(batch_id, *inputs_array, *labels_array,
+                                 *weights_array, loss_image_required);
   API_END();
 }
 

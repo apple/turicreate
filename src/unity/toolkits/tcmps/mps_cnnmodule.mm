@@ -132,10 +132,10 @@ void MPSCNNModule::WaitForBatch(int batch_id, float *forward_out,
   active_batches_.erase(it);
 }
 
-void MPSCNNModule::Forward(void *ptr, int64_t sz, int64_t *shape, int dim,
-                           float *out, bool is_train) {
+void MPSCNNModule::Forward(const float_array& inputs, float *out,
+                           bool is_train) {
   // may check shape here
-  Blob2MPSImage((float *)ptr, input_);
+  Blob2MPSImage(inputs, input_);
   @autoreleasepool {
     id<MTLCommandBuffer> commandBuffer = [cmd_queue_ commandBuffer];
 
@@ -155,9 +155,8 @@ void MPSCNNModule::Forward(void *ptr, int64_t sz, int64_t *shape, int dim,
   }
 }
 
-void MPSCNNModule::Backward(void *ptr, size_t sz, int64_t *shape, int dim,
-                            float *out) {
-  Blob2MPSImage((float *)ptr, top_grad_);
+void MPSCNNModule::Backward(const float_array& gradient, float *out) {
+  Blob2MPSImage(gradient, top_grad_);
   @autoreleasepool {
     id<MTLCommandBuffer> commandBuffer = [cmd_queue_ commandBuffer];
 
@@ -175,19 +174,17 @@ void MPSCNNModule::Backward(void *ptr, size_t sz, int64_t *shape, int dim,
   }
 }
 
-void MPSCNNModule::Loss(void *_Nonnull ptr, size_t sz, int64_t *_Nonnull shape, int dim,
-                        void *_Nonnull label_ptr, size_t label_sz, int64_t *_Nonnull label_shape, int label_dim,
-                        void *_Nonnull weight_ptr, size_t weight_sz, int64_t *_Nonnull weight_shape, int weight_dim,
-                        bool loss_image_required,
-                        float *_Nonnull out) {
-  Blob2MPSImage((float *)ptr, output_);
+void MPSCNNModule::Loss(const float_array& inputs, const float_array& labels,
+                        const float_array& weights, bool loss_image_required,
+                        float* out) {
+  Blob2MPSImage(inputs, output_);
   @autoreleasepool {
       id<MTLCommandBuffer> commandBuffer = [cmd_queue_ commandBuffer];
 
 
       // Creating labels batch
       loss_labels_ =
-          initLossLabelsBatch(dev_, (float *)label_ptr, (float *)weight_ptr,
+          initLossLabelsBatch(dev_, labels, weights,
                               network_->batch_size, output_width_, output_chn_);
 
       // Calc loss
@@ -209,59 +206,44 @@ void MPSCNNModule::Loss(void *_Nonnull ptr, size_t sz, int64_t *_Nonnull shape, 
   }
 }
 
-void MPSCNNModule::Forward(void * _Nonnull ptr, size_t sz, int64_t * _Nonnull shape, int dim,
-                           void * _Nonnull label_ptr, size_t label_sz, int64_t * _Nonnull label_shape, int label_dim,
-                           void *_Nonnull weight_ptr, size_t weight_sz, int64_t *_Nonnull weight_shape, int weight_dim,
-                           bool loss_image_required, bool is_train,
-                           float * _Nonnull out) {
+void MPSCNNModule::Forward(const float_array& inputs, const float_array& labels,
+                           const float_array& weights, bool loss_image_required,
+                           bool is_train, float* out) {
     
-    TrainingWithLoss(/* batch */ nullptr, ptr, sz, shape, dim, label_ptr,
-                     label_sz, label_shape, label_dim,
-                     weight_ptr, weight_sz, weight_shape, weight_dim,
+    TrainingWithLoss(/* batch */ nullptr, inputs, labels, weights,
                      loss_image_required, /* wait_until_completed */ true, out,
                      /* do_backward */ false, is_train);
 }
-void MPSCNNModule::ForwardBackward(void * _Nonnull ptr, size_t sz, int64_t * _Nonnull shape, int dim,
-                                   void * _Nonnull label_ptr, size_t label_sz, int64_t * _Nonnull label_shape, int label_dim,
-                                   void *_Nonnull weight_ptr, size_t weight_sz, int64_t *_Nonnull weight_shape, int weight_dim,
-                                   bool loss_image_required,
-                                   float * _Nonnull out) {
+void MPSCNNModule::ForwardBackward(
+    const float_array& inputs, const float_array& labels,
+    const float_array& weights, bool loss_image_required, float* out) {
     
-    TrainingWithLoss(/* batch */ nullptr, ptr, sz, shape, dim, label_ptr,
-                     label_sz, label_shape, label_dim,
-                     weight_ptr, weight_sz, weight_shape, weight_dim,
+    TrainingWithLoss(/* batch */ nullptr, inputs, labels, weights,
                      loss_image_required, /* wait_until_completed */ true, out,
                      /* do_backward */ true);
 }
 
 void MPSCNNModule::BeginForwardBatch(
-    int batch_id, void *ptr, size_t sz, int64_t *shape, int dim,
-    void *label_ptr, size_t label_sz, int64_t *label_shape, int label_dim,
-    void *weight_ptr, size_t weight_sz, int64_t *weight_shape, int weight_dim,
-    bool loss_image_required, bool is_train) {
+    int batch_id, const float_array& inputs, const float_array& labels,
+    const float_array& weights, bool loss_image_required, bool is_train) {
   Batch* batch = StartBatch(batch_id);
-  TrainingWithLoss(batch, ptr, sz, shape, dim, label_ptr, label_sz, label_shape,
-                   label_dim, weight_ptr, weight_sz, weight_shape, weight_dim,
+  TrainingWithLoss(batch, inputs, labels, weights,
                    loss_image_required, /* wait_until_completed */ false,
                    /* out */ nullptr, /* do_backward */ false, is_train);
 }
 
 void MPSCNNModule::BeginForwardBackwardBatch(
-    int batch_id, void *ptr, size_t sz, int64_t *shape, int dim,
-    void *label_ptr, size_t label_sz, int64_t *label_shape, int label_dim,
-    void *weight_ptr, size_t weight_sz, int64_t *weight_shape, int weight_dim,
-    bool loss_image_required) {
+    int batch_id, const float_array& inputs, const float_array& labels,
+    const float_array& weights, bool loss_image_required) {
   Batch* batch = StartBatch(batch_id);
-  TrainingWithLoss(batch, ptr, sz, shape, dim, label_ptr, label_sz, label_shape,
-                   label_dim, weight_ptr, weight_sz, weight_shape, weight_dim,
+  TrainingWithLoss(batch, inputs, labels, weights,
                    loss_image_required, /* wait_until_completed */ false,
                    /* out */ nullptr, /* do_backward */ true);
 }
 
 void MPSCNNModule::TrainingWithLoss(
-      Batch *batch, void *ptr, size_t sz, int64_t *shape, int dim,
-      void *label_ptr, size_t label_sz, int64_t *label_shape, int label_dim,
-      void *weight_ptr, size_t weight_sz, int64_t *weight_shape, int weight_dim,
+      Batch *batch, const float_array& inputs_array,
+      const float_array& labels_array, const float_array& weights_array,
       bool loss_image_required, bool wait_until_completed, float *out,
       bool do_backward, bool is_train) {
     // may check shape here
@@ -273,7 +255,7 @@ void MPSCNNModule::TrainingWithLoss(
       loss_images_ = batch->loss_images;
       loss_labels_ = batch->loss_labels;
     }
-    Blob2MPSImage((float *)ptr, input_);
+    Blob2MPSImage(inputs_array, input_);
     @autoreleasepool {
         id<MTLCommandBuffer> commandBuffer = [cmd_queue_ commandBuffer];
 
@@ -281,11 +263,11 @@ void MPSCNNModule::TrainingWithLoss(
         if (loss_labels_) {
           // Recycle existing allocations
           FillLossLabelsBatch(
-              loss_labels_, dev_, (float *)label_ptr, (float *)weight_ptr,
+              loss_labels_, dev_, labels_array, weights_array,
               network_->batch_size, output_width_, output_chn_);
         } else {
           loss_labels_ = initLossLabelsBatch(
-              dev_, (float *)label_ptr, (float *)weight_ptr,
+              dev_, labels_array, weights_array,
               network_->batch_size, output_width_, output_chn_);
         }
 
@@ -379,9 +361,11 @@ void MPSCNNModule::SetupUpdater(int updater_id) {
   updater_->Init(network_->layers, {1e-3});
 }
 
-void MPSCNNModule::Blob2MPSImage(float *ptr, MPSImageBatch *batch) {
+void MPSCNNModule::Blob2MPSImage(const float_array& blob,
+                                 MPSImageBatch *batch) {
   // add size chcek later
   assert([batch count] > 0);
+  const float* ptr = blob.data();
   MPSImage *img = batch[0];
   int stride = [img width] * [img height] * [img featureChannels];
   for (int i = 0; i < [batch count]; ++i) {
@@ -404,8 +388,9 @@ void MPSCNNModule::MPSImage2Blob(float *ptr, MPSImageBatch *batch) {
 }
 
 // static
-NSData *MPSCNNModule::EncodeLabels(float* labels, NSUInteger sequenceLength,
-                                   NSUInteger numClasses) {
+NSData *MPSCNNModule::EncodeLabels(
+    const float* labels, NSUInteger sequenceLength, NSUInteger numClasses) {
+
   NSUInteger dataLength = sequenceLength * numClasses * sizeof(float);
   NSMutableData *result = [NSMutableData dataWithLength:dataLength];  // Zeroed
 
@@ -426,8 +411,9 @@ NSData *MPSCNNModule::EncodeLabels(float* labels, NSUInteger sequenceLength,
 }
 
 // static
-NSData *MPSCNNModule::EncodeWeights(float* weights, NSUInteger sequenceLength,
-                                    NSUInteger numClasses) {
+NSData *MPSCNNModule::EncodeWeights(
+      const float* weights, NSUInteger sequenceLength, NSUInteger numClasses) {
+
   NSUInteger dataLength = sequenceLength * numClasses * sizeof(float);
   NSMutableData *result = [NSMutableData dataWithLength:dataLength];
 
@@ -443,9 +429,13 @@ NSData *MPSCNNModule::EncodeWeights(float* weights, NSUInteger sequenceLength,
 }
 
 MPSCNNLossLabelsBatch *MPSCNNModule::initLossLabelsBatch(
-      id<MTLDevice> _Nonnull device, float *_Nonnull labels_ptr, float *_Nonnull weights_ptr,
-      int batch_size, int seq_len, int num_classes) {
-    
+      id<MTLDevice> device, const float_array& labels_array,
+      const float_array& weights_array, int batch_size, int seq_len,
+      int num_classes) {
+
+  const float* labels_ptr = labels_array.data();
+  const float* weights_ptr = weights_array.data();
+
   MPSCNNLossLabelsBatch *labels = @[];
 
   // label size in each batch is seq_len (width) * 1 (height) * num_classes
@@ -487,8 +477,11 @@ MPSCNNLossLabelsBatch *MPSCNNModule::initLossLabelsBatch(
 // static
 void MPSCNNModule::FillLossLabelsBatch(
     MPSCNNLossLabelsBatch *labelsBatch, id <MTLDevice> device,
-    float* labels_ptr, float* weights_ptr,
+    const float_array& labels_array, const float_array& weights_array,
     int batch_size, int seq_len, int num_classes) {
+
+  const float* labels_ptr = labels_array.data();
+  const float* weights_ptr = weights_array.data();
 
   MPSImageReadWriteParams labelsFeatureChannelInfo = {
       .featureChannelOffset = 0,

@@ -2,11 +2,14 @@
 
 #include <tuple>
 
+#include "mps_float_array.hpp"
+
 #import "mps_device_manager.h"
 #import "mps_graph_cnnmodule.h"
 
 using turi::mps::FloatArrayMap;
 using turi::mps::MPSGraphModule;
+using turi::mps::float_array;
 using turi::mps::make_array_map;
 
 int TCMPSHasHighPowerMetalDevice(bool *has_device) {
@@ -55,11 +58,13 @@ int TCMPSDeleteGraphModule(MPSHandle handle) {
   API_END();
 }
 
-int TCMPSStartTrainingBatchGraph(MPSHandle handle, void *ptr, int64_t sz,
-                            int64_t *shape, int dim, float *labels_ptr) {
+int TCMPSStartTrainingBatchGraph(
+    MPSHandle handle, TCMPSFloatArrayRef inputs, TCMPSFloatArrayRef labels) {
   API_BEGIN();
   MPSGraphModule *obj = (MPSGraphModule *)handle;
-  obj->StartTrainingBatch(ptr, sz, shape, dim, labels_ptr);
+  float_array* inputs_ptr = reinterpret_cast<float_array*>(inputs);
+  float_array* labels_ptr = reinterpret_cast<float_array*>(labels);
+  obj->StartTrainingBatch(*inputs_ptr, *labels_ptr);
   API_END();
 }
 
@@ -70,11 +75,11 @@ int TCMPSWaitForTrainingBatchGraph(MPSHandle handle, float *loss) {
   API_END();
 }
 
-int TCMPSStartInferenceBatchGraph(MPSHandle handle, void *ptr, int64_t sz,
-                             int64_t *shape, int dim) {
+int TCMPSStartInferenceBatchGraph(MPSHandle handle, TCMPSFloatArrayRef inputs) {
   API_BEGIN();
   MPSGraphModule *obj = (MPSGraphModule *)handle;
-  obj->StartInferenceBatch(ptr, sz, shape, dim);
+  float_array* inputs_ptr = reinterpret_cast<float_array*>(inputs);
+  obj->StartInferenceBatch(*inputs_ptr);
   API_END();
 }
 
@@ -86,12 +91,12 @@ int TCMPSWaitForInferenceBatchGraph(MPSHandle handle, float *out_ptr) {
 }
 
 int TCMPSStartTrainReturnGradBatchGraph(
-    MPSHandle handle, void *ptr, int64_t sz, int64_t *shape, int dim,
-    void *grad_ptr, int64_t grad_sz, int64_t *grad_shape, int grad_dim) {
+    MPSHandle handle, TCMPSFloatArrayRef inputs, TCMPSFloatArrayRef gradient) {
   API_BEGIN();
   MPSGraphModule *obj = (MPSGraphModule *)handle;
-  obj->StartTrainReturnGradBatch(ptr, sz, shape, dim,
-                                 grad_ptr, grad_sz, grad_shape, grad_dim);
+  float_array* inputs_ptr = reinterpret_cast<float_array*>(inputs);
+  float_array* gradient_ptr = reinterpret_cast<float_array*>(gradient);
+  obj->StartTrainReturnGradBatch(*inputs_ptr, *gradient_ptr);
   API_END();
 }
 

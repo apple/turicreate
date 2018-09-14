@@ -1,16 +1,20 @@
 #ifndef MPS_GRAPH_LAYERS_H_
 #define MPS_GRAPH_LAYERS_H_
 
-#import "mps_layers.h"
-#import "mps_weight.h"
-#import "mps_utils.h"
+#include <string>
+#include <unordered_map>
+#include <vector>
+
 #import <Accelerate/Accelerate.h>
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
-#import <string>
-#import <unordered_map>
-#import <vector>
+
+#include "mps_float_array.hpp"
+
+#import "mps_layers.h"
+#import "mps_weight.h"
+#import "mps_utils.h"
 
 #pragma clang diagnostic ignored "-Wunguarded-availability-new"
 
@@ -78,8 +82,8 @@ struct GraphLayer {
 struct LossGraphLayer: public GraphLayer {
   MPSNNLabelsNode *labels_node = nil;
 
-  virtual MPSCNNLossLabelsBatch *CreateLossState(id<MTLDevice> _Nonnull device,
-                                                 float *data) const = 0;
+  virtual MPSCNNLossLabelsBatch *CreateLossState(
+      id<MTLDevice> _Nonnull device, const float_array& labels_batch) const = 0;
 };
 
 // Individual Layers
@@ -215,7 +219,9 @@ public:
   void InitFwd(MPSNNImageNode *src) override;
   void InitBwd(MPSNNImageNode *src) override;
 
-  MPSCNNLossLabelsBatch *CreateLossState(id<MTLDevice> _Nonnull device, float *data) const override;
+  MPSCNNLossLabelsBatch *CreateLossState(
+      id<MTLDevice> _Nonnull device,
+      const float_array& labels_batch) const override;
 
 private:
   Options options_;

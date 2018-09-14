@@ -301,8 +301,9 @@ void YoloLossGraphLayer::InitBwd(MPSNNImageNode *src) {
   bwd_img_node = fwd_img_node;
 }
 
-MPSCNNLossLabelsBatch *YoloLossGraphLayer::CreateLossState(id<MTLDevice> _Nonnull device,
-                                                      float *data) const {
+MPSCNNLossLabelsBatch *YoloLossGraphLayer::CreateLossState(
+    id<MTLDevice> _Nonnull device, const float_array &labels_array) const {
+  const float* data = labels_array.data();
   MPSCNNLossLabelsBatch *loss_state = @[];
   int batch_size = oshape[0];
   MTLSize loss_image_size = {1, 1, 1};
