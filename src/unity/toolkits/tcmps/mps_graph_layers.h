@@ -30,10 +30,7 @@ struct GraphLayer {
   virtual void InitBwd(MPSNNImageNode *_Nonnull src) = 0;
   virtual void Load(const float_array_map& weights) {}
   virtual void SetLearningRate(float lr) {}
-  virtual void
-  Export(std::unordered_map<std::string, std::tuple<std::string, float *, int,
-                                                    std::vector<int>>> &table) {
-  }
+  virtual float_array_map Export() const { return float_array_map(); }
 
   virtual ~GraphLayer() {}
 
@@ -130,10 +127,8 @@ struct ConvGraphLayer : public GraphLayer {
   void InitBwd(MPSNNImageNode * _Nonnull src) override;
   void SetLearningRate(float lr) override;
 
-  void
-  Export(std::unordered_map<
-         std::string, std::tuple<std::string, float *, int, std::vector<int>>>
-             &table) override;
+  float_array_map Export() const override;
+
   // content
   bool use_bias{false};
   MPSCNNConvolutionNode *_Nonnull node_fwd;
@@ -163,10 +158,7 @@ struct BNGraphLayer : public GraphLayer {
   void InitBwd(MPSNNImageNode * _Nonnull src) override;
   void SetLearningRate(float lr) override;
 
-  void
-  Export(std::unordered_map<
-         std::string, std::tuple<std::string, float *, int, std::vector<int>>>
-             &table) override;
+  float_array_map Export() const override;
 
   TCMPSBatchNormWeights *_Nonnull data;
   MPSCNNBatchNormalizationNode *_Nonnull node_fwd;

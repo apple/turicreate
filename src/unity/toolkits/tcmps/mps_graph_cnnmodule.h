@@ -57,12 +57,8 @@ public:
                                  const float_array& gradient_batch);
   void WaitForTrainReturnGradBatch(float *out_ptr);
 
-  void Export();
+  float_array_map Export() const;
   int NumParams();
-
-  std::unordered_map<std::string,
-                     std::tuple<std::string, float *, int, std::vector<int>>>
-      table_;
 
 private:
   MPSImageBatch *CreateImageBatch(MPSImageDescriptor *desc);

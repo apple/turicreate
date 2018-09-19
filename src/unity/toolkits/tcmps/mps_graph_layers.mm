@@ -98,22 +98,22 @@ void ConvGraphLayer::SetLearningRate(float lr) {
   [weight setLearningRate:lr];
 }
 
-void ConvGraphLayer::Export(
-    std::unordered_map<std::string,
-                       std::tuple<std::string, float *, int, std::vector<int>>>
-        &table) {
-  int k_h = iparams[0];
-  int k_w = iparams[1];
-  int c_in = iparams[2];
-  int c_out = iparams[3];
+float_array_map ConvGraphLayer::Export() const {
+  float_array_map table;
+  size_t k_h = iparams[0];
+  size_t k_w = iparams[1];
+  size_t c_in = iparams[2];
+  size_t c_out = iparams[3];
   [weight load];
   std::string weight_key = name + "_weight";
-  table[weight_key] = {
-      weight_key, (float *)[weight weights], 4, {c_out, k_h, k_w, c_in}};
+  table[weight_key] = shared_float_array::copy(
+      reinterpret_cast<float*>([weight weights]), {c_out, k_h, k_w, c_in});
   if (use_bias) {
     std::string bias_key = name + "_bias";
-    table[bias_key] = {bias_key, (float *)[weight biasTerms], 1, {c_out}};
+    table[bias_key] = shared_float_array::copy(
+        reinterpret_cast<float*>([weight biasTerms]), {c_out});
   }
+  return table;
 }
 
 // MaxPoolGraphLayer Layer
@@ -188,20 +188,23 @@ void BNGraphLayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q
                batchNormEpsilon:batchNormEpsilon];
 }
 
-void BNGraphLayer::Export(
-    std::unordered_map<std::string,
-                       std::tuple<std::string, float *, int, std::vector<int>>>
-        &table) {
+float_array_map BNGraphLayer::Export() const {
+  float_array_map table;
+
   std::string gamma_key = name + "_gamma";
   std::string beta_key = name + "_beta";
   std::string var_key = name + "_running_var";
   std::string mean_key = name + "_running_mean";
-  int num_channel = ishape[3];
+  size_t num_channel = ishape[3];
+
   [data load];
-  table[gamma_key] = {gamma_key, (float *)[data gamma], 1, {num_channel}};
-  table[beta_key] = {beta_key, (float *)[data beta], 1, {num_channel}};
-  table[var_key] = {var_key, (float *)[data variance], 1, {num_channel}};
-  table[mean_key] = {mean_key, (float *)[data mean], 1, {num_channel}};
+
+  table[gamma_key] = shared_float_array::copy([data gamma], {num_channel});
+  table[beta_key] = shared_float_array::copy([data beta], {num_channel});
+  table[var_key] = shared_float_array::copy([data variance], {num_channel});
+  table[mean_key] = shared_float_array::copy([data mean], {num_channel});
+
+  return table;
 }
 
 void BNGraphLayer::InitFwd(MPSNNImageNode *src) {

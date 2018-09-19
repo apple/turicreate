@@ -62,9 +62,7 @@ struct MPSNetwork {
                                id<MTLCommandBuffer> _Nonnull cb);
   void SyncState(id<MTLCommandBuffer> _Nonnull cb);
   void Load(const float_array_map& weights);
-  void
-  Export(std::unordered_map<std::string, std::tuple<std::string, float *, int,
-                                                    std::vector<int>>> &table);
+  float_array_map Export() const;
   int NumParams();
 
   void Update(MPSUpdater *_Nonnull updater);

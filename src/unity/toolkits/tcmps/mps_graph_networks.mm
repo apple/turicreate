@@ -129,13 +129,15 @@ MPSImageBatch *MPSGraphNetwork::RunGraph(id<MTLCommandBuffer> cb, MPSImageBatch 
   return ret;
 }
 
-void MPSGraphNetwork::Export(
-    std::unordered_map<std::string,
-                       std::tuple<std::string, float *, int, std::vector<int>>>
-        &table) {
+float_array_map MPSGraphNetwork::Export() const {
+  float_array_map table;
   for (int i = 0; i < layers.size(); ++i) {
-    layers[i]->Export(table);
+    float_array_map layer_table = layers[i]->Export();
+    table.insert(layer_table.begin(), layer_table.end());
+    // TODO: In C++17, we can use std::map::merge to move the table entries
+    // instead of copying them: table.merge(layers[i]->Export());
   }
+  return table;
 }
 
 int MPSGraphNetwork::NumParams() {

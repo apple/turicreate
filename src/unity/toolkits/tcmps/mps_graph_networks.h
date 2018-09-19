@@ -41,9 +41,7 @@ struct MPSGraphNetwork {
   MPSImageBatch * _Nonnull RunGraph(id<MTLCommandBuffer>_Nonnull  cb, MPSImageBatch *_Nonnull src,
                           MPSCNNLossLabelsBatch *_Nonnull loss_state);
   MPSImageBatch * _Nonnull RunGraph(id<MTLCommandBuffer> _Nonnull  cb, NSDictionary *_Nonnull inputs);
-  void
-  Export(std::unordered_map<std::string, std::tuple<std::string, float *, int,
-                                                    std::vector<int>>> &table);
+  float_array_map Export() const;
   int NumParams();
   MPSNNGraph *_Nonnull  graph;
   MPSNNImageNode *_Nonnull  input_node;

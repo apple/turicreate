@@ -350,9 +350,9 @@ void MPSCNNModule::GpuUpdate(){
 void MPSCNNModule::Load(const float_array_map& weights) {
   network_->Load(weights);
 }
-void MPSCNNModule::Export() {
-  table_.clear();
-  network_->Export(table_);
+
+float_array_map MPSCNNModule::Export() const {
+  return network_->Export();
 }
 int MPSCNNModule::NumParams() { return network_->NumParams(); }
 

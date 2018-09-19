@@ -298,28 +298,27 @@ void ConvLayer::Load(const float_array_map& weights) {
   }
 }
 
-void ConvLayer::Export(
+float_array_map ConvLayer::Export() const {
+  float_array_map table;
 
-    std::unordered_map<std::string,
-                       std::tuple<std::string, float *, int, std::vector<int>>>
-        &table) {
-  int k_h = iparams[0];
-  int k_w = iparams[1];
-  int c_in = iparams[2];
-  int c_out = iparams[3];
+  size_t k_h = iparams[0];
+  size_t k_w = iparams[1];
+  size_t c_in = iparams[2];
+  size_t c_out = iparams[3];
     
   if (weight.load)
   {
       std::string weight_key = name + "_weight";
       std::string bias_key = name + "_bias";
-      table[weight_key] = {
-          weight_key, (float *)[weight weights], 4, {c_out, k_h, k_w, c_in}};
-      table[bias_key] = {bias_key,
-                         (float *)[weight biasTerms],
-                         1,
-                         {static_cast<int>([weight bias_size])}};
-      
+      table[weight_key] = shared_float_array::copy(
+          reinterpret_cast<float*>([weight weights]), {c_out, k_h, k_w, c_in});
+
+      size_t bias_size = [weight bias_size];
+      table[bias_key] = shared_float_array::copy(
+          reinterpret_cast<float*>([weight biasTerms]), {bias_size});
   }
+
+  return table;
 }
 
 void ConvLayer::GpuUpdate(id<MTLCommandBuffer> _Nonnull cb){
@@ -483,22 +482,23 @@ void BNLayer::Load(const float_array_map& weights) {
   [op_forward reloadMeanAndVarianceFromDataSource];
 }
 
-void BNLayer::Export(
-    std::unordered_map<std::string,
-                       std::tuple<std::string, float *, int, std::vector<int>>>
-        &table) {
+float_array_map BNLayer::Export() const {
+  float_array_map table;
+
   std::string gamma_key = name + "_gamma";
   std::string beta_key = name + "_beta";
   std::string var_key = name + "_running_var";
   std::string mean_key = name + "_running_mean";
-  int num_channel = [data numberOfFeatureChannels];
+  size_t num_channel = [data numberOfFeatureChannels];
 
-    if ([data load]){
-        table[gamma_key] = {gamma_key, (float *)[data gamma], 1, {num_channel}};
-        table[beta_key] = {beta_key, (float *)[data beta], 1, {num_channel}};
-        table[var_key] = {var_key, (float *)[data variance], 1, {num_channel}};
-        table[mean_key] = {mean_key, (float *)[data mean], 1, {num_channel}};
-    }
+  if ([data load]) {
+    table[gamma_key] = shared_float_array::copy([data gamma], {num_channel});
+    table[beta_key] = shared_float_array::copy([data beta], {num_channel});
+    table[var_key] = shared_float_array::copy([data variance], {num_channel});
+    table[mean_key] = shared_float_array::copy([data mean], {num_channel});
+  }
+
+  return table;
 }
 
 void BNLayer::Update(MPSUpdater *_Nonnull updater, int lid) {
@@ -1064,27 +1064,18 @@ void LstmLayer::Load(const float_array_map& init_weights) {
 
 }
 
-void LstmLayer::Export(std::unordered_map<std::string,
-                                          std::tuple<std::string, float *, int, std::vector<int>>> &table) {
-    
-
+float_array_map LstmLayer::Export() const {
+    float_array_map table;
     
     id<MTLCommandBuffer> commandBuffer = [cmd_q_ commandBuffer];
 
+    // Request copy from GPU to the MPSMatrix instances in copy_weight_matrices_
     for (const auto& lstm_weight_name : lstm_weight_names_mxnet_format){
         std::string full_key = name + "_" + lstm_weight_name;
         MPSRNNMatrixId wMatId = MxnetNameToMatrixId(lstm_weight_name);
         MPSMatrix * weightMat = copy_weight_matrices_.at(lstm_weight_name);
         memset(weightMat.data.contents , 0 , weightMat.data.length);
         [weightMat.data didModifyRange:NSMakeRange(0, weightMat.data.length)];
-
-        if (lstm_weight_name.find("bias") != std::string::npos){
-            table[full_key] = {
-                full_key, (float *)weightMat.data.contents, 1 , {(int)weightMat.columns}};
-        } else {
-            table[full_key] = {
-                full_key, (float *)weightMat.data.contents, 2 , {(int)weightMat.rows , (int)weightMat.columns}};
-        }
 
         [filter encodeCopyWeightsToCommandBuffer: commandBuffer
                                          weights: weights
@@ -1097,9 +1088,27 @@ void LstmLayer::Export(std::unordered_map<std::string,
 
     }
 
+    // Wait for the copy to finish.
     [commandBuffer commit];
     [commandBuffer waitUntilCompleted];
 
+    // Copy from the MPSMatrix instances to float_array instances, which can be
+    // moved out of the TCMPS library.
+    for (const auto& lstm_weight_name : lstm_weight_names_mxnet_format){
+        std::string full_key = name + "_" + lstm_weight_name;
+        MPSMatrix *weightMat = copy_weight_matrices_.at(lstm_weight_name);
+        const size_t num_cols = weightMat.columns;
+        float* data = reinterpret_cast<float*>(weightMat.data.contents);
+        if (lstm_weight_name.find("bias") != std::string::npos){
+            table[full_key] = shared_float_array::copy(data, {num_cols});
+        } else {
+            const size_t num_rows = weightMat.rows;
+            table[full_key] = shared_float_array::copy(data,
+                                                       {num_rows, num_cols});
+        }
+    }
+
+    return table;
 }
 
 void LstmLayer::GpuUpdate(id<MTLCommandBuffer> _Nonnull cb){

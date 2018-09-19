@@ -8,6 +8,8 @@
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
+
+#import <map>
 #import <string>
 #import <unordered_map>
 #import <vector>
@@ -129,10 +131,7 @@ struct Layer {
                     const float_array_map& config, bool is_train,
                     LowLevelMode net_mode, bool is_output_layer) = 0;
   virtual void Load(const float_array_map& weights) {}
-  virtual void
-  Export(std::unordered_map<std::string, std::tuple<std::string, float *, int,
-                                                    std::vector<int>>> &table) {
-  }
+  virtual float_array_map Export() const { return float_array_map(); }
   virtual void Update(MPSUpdater *_Nonnull updater, int lid) {}
   virtual void GpuUpdate(id<MTLCommandBuffer> _Nonnull cb) {}
 
@@ -308,10 +307,7 @@ struct ConvLayer : public Layer {
             bool is_output_layer) override;
   void Load(const float_array_map& weights) override;
 
-  void
-  Export(std::unordered_map<
-         std::string, std::tuple<std::string, float *, int, std::vector<int>>>
-             &table) override;
+  float_array_map Export() const override;
   void Update(MPSUpdater *_Nonnull updater, int lid) override;
   void GpuUpdate(id<MTLCommandBuffer> _Nonnull cb) override;
 
@@ -347,10 +343,7 @@ struct BNLayer : public Layer {
             const float_array_map& config, bool is_train, LowLevelMode net_mode,
             bool is_output_layer) override;
   void Load(const float_array_map& weights) override;
-  void
-  Export(std::unordered_map<
-         std::string, std::tuple<std::string, float *, int, std::vector<int>>>
-             &table) override;
+  float_array_map Export() const override;
 
   void Update(MPSUpdater *_Nonnull updater, int lid) override;
   void GpuUpdate(id<MTLCommandBuffer> _Nonnull cb) override;
@@ -506,10 +499,7 @@ struct LstmLayer : public Layer {
             const float_array_map& config, bool is_train, LowLevelMode net_mode,
             bool is_output_layer) override;
   void Load(const float_array_map& weights) override;
-  void
-  Export(std::unordered_map<
-         std::string, std::tuple<std::string, float *, int, std::vector<int>>>
-         &table) override;
+  float_array_map Export() const override;
   void GpuUpdate(id<MTLCommandBuffer> _Nonnull cb) override;
   
 private:

@@ -10,6 +10,7 @@
 using turi::mps::MPSGraphModule;
 using turi::mps::float_array;
 using turi::mps::float_array_map;
+using turi::mps::float_array_map_iterator;
 using turi::mps::make_array_map;
 
 int TCMPSHasHighPowerMetalDevice(bool *has_device) {
@@ -133,19 +134,13 @@ int TCMPSNumParamsGraph(MPSHandle handle, int *num) {
   API_END();
 }
 
-int TCMPSExportGraph(MPSHandle handle, char **names, void **arrs, int64_t *dim,
-           int **shape) {
+int TCMPSExportGraph(MPSHandle handle,
+                     TCMPSFloatArrayMapIteratorRef* float_array_map_out) {
   API_BEGIN();
   MPSGraphModule *obj = (MPSGraphModule *)handle;
-  obj->Export();
-  auto &table = obj->table_;
-  int cnt = 0;
-  for (auto &p : table) {
-    names[cnt] = (char *)std::get<0>(p.second).c_str();
-    arrs[cnt] = (void *)std::get<1>(p.second);
-    dim[cnt] = std::get<2>(p.second);
-    shape[cnt++] = &(std::get<3>(p.second)[0]);
-  }
+  auto* float_array_map = new float_array_map_iterator(obj->Export());
+  *float_array_map_out =
+      reinterpret_cast<TCMPSFloatArrayMapIteratorRef>(float_array_map);
   API_END();
 }
 

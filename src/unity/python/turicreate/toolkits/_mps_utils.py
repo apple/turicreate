@@ -288,6 +288,70 @@ class MpsFloatArray(object):
         status_code = self._LIB.TCMPSDeleteFloatArray(self.handle)
         assert status_code == 0, "Error calling TCMPSDeleteFloatArray"
 
+class MpsFloatArrayIterator(object):
+    """
+    A Python wrapper owning a sequence of name/float_array pairs output from the
+    TCMPS backend.
+
+    This class exists to simplify conversions from the output of TCMPS export
+    functions. It implements the iterator protocol, so that a Python dict
+    (mapping parameter names for numpy arrays) can be initialized directly from
+    an instance of this class.
+    """
+
+    def __init__(self, handle):
+        """Wrap the output of a TCMPSExport* function."""
+        self._LIB = _load_tcmps_lib()
+        assert self._LIB is not None, "Cannot use MpsFloatArrayIterator without libtcmps.dylib"
+
+        self.handle = handle
+
+    def __del__(self):
+        status_code = self._LIB.TCMPSDeleteFloatArrayMapIterator(self.handle)
+        assert status_code == 0, "Error calling TCMPSDeleteFloatArrayMapIterator"
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        # Create C variables that will serve as out parameters for TCMPS.
+        name_ptr = _ctypes.c_char_p()                    # char* name_ptr
+        data_ptr = _ctypes.POINTER(_ctypes.c_float)()    # float* data_ptr
+        shape_ptr = _ctypes.POINTER(_ctypes.c_size_t)()  # size_t* shape_ptr
+        dim = _ctypes.c_size_t()                         # size_t dim
+
+        # Obtain pointers into memory owned by the C++ object self.handle.
+        status_code = self._LIB.TCMPSNextFloatArray(
+            self.handle, _ctypes.byref(name_ptr), _ctypes.byref(data_ptr),
+            _ctypes.byref(shape_ptr), _ctypes.byref(dim))
+
+        if status_code != 0:
+            raise StopIteration
+
+        # Wrap size_t* as size_t[dim]
+        shape_buf = (_ctypes.c_size_t * dim.value).from_address(
+            _ctypes.addressof(shape_ptr.contents))
+
+        # Convert size_t[dim] to numpy
+        shape = _np.fromiter(shape_buf, _np.uint64, dim.value)
+
+        # Wrap float* to float[size]
+        size = _np.prod(shape)
+        data_buf = (_ctypes.c_float * size).from_address(
+            _ctypes.addressof(data_ptr.contents))
+
+        # Convert float[size] to numpy
+        array = _np.fromiter(data_buf, _np.float32, size).reshape(shape)
+
+        # Convert char* to Python string
+        name = _decode_bytes_to_native_string(name_ptr.value)
+
+        return (name, array)
+
+    def next(self):
+        return self.__next__()
+
+
 #----------------------------------------------------------
 #
 #  MPS Graph level API, currently used by Object detector
@@ -427,24 +491,11 @@ class MpsGraphAPI(object):
         return num.value
 
     def export(self):
-        args = {}
-        num_args = self._num_params()
-        names = (_ctypes.c_char_p * num_args)()
-        arrs = (_ctypes.c_void_p * num_args)()
-        dims = (_ctypes.c_int64 * num_args)()
-        shapes = (_ctypes.POINTER(_ctypes.c_int32) * num_args)()
-        self._LIB.TCMPSExportGraph(self.handle, names, arrs, dims, shapes)
-        for i in range(num_args):
-            arr_name = _decode_bytes_to_native_string(names[i])
-            dim = dims[i]
-            sb = (_ctypes.c_int32 *
-                  dim).from_address(_ctypes.c_void_p.from_buffer(shapes[i]).value)
-            shape = _np.frombuffer(sb, dtype=_np.int32)
-            arr_sz = _np.prod(shape)
-            buf = (_ctypes.c_float * arr_sz).from_address(arrs[i])
-            array = _np.frombuffer(buf, dtype=_np.float32).reshape(shape)
-            args[arr_name] = array.copy()
-        return args
+        iter_handle = _ctypes.c_void_p()
+        status_code = self._LIB.TCMPSExportGraph(self.handle,
+                                                 _ctypes.byref(iter_handle))
+        assert status_code == 0
+        return dict(MpsFloatArrayIterator(iter_handle))
 
 
 #----------------------------------------------------------
@@ -597,23 +648,11 @@ class MpsLowLevelAPI(object):
         return num.value
 
     def export(self):
-        args = {}
-        num_args = self._num_params()
-        names = (_ctypes.c_char_p * num_args)()
-        arrs = (_ctypes.c_void_p * num_args)()
-        dims = (_ctypes.c_int64 * num_args)()
-        shapes = (_ctypes.POINTER(_ctypes.c_int32) * num_args)()
-        self._LIB.TCMPSExport(self.handle, names, arrs, dims, shapes)
-        for i in range(num_args):
-            arr_name = _decode_bytes_to_native_string(names[i])
-            dim = dims[i]
-            sb = (_ctypes.c_int32 * dim).from_address(_ctypes.c_void_p.from_buffer(shapes[i]).value)
-            shape = _np.frombuffer(sb, dtype=_np.int32)
-            arr_sz = _np.prod(shape)
-            buf = (_ctypes.c_float * arr_sz).from_address(arrs[i])
-            array = _np.frombuffer(buf, dtype=_np.float32).reshape(shape)
-            args[arr_name] = array.copy()
-        return args
+        iter_handle = _ctypes.c_void_p()
+        status_code = self._LIB.TCMPSExport(self.handle,
+                                            _ctypes.byref(iter_handle))
+        assert status_code == 0
+        return dict(MpsFloatArrayIterator(iter_handle))
 
     def cpu_update(self):
         self._LIB.TCMPSCpuUpdate(self.handle)

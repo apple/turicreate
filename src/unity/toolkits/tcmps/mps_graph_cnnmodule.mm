@@ -228,10 +228,9 @@ void MPSGraphModule::WaitForTrainReturnGradBatch(float *out_ptr) {
   }  // @autoreleasepool
 }
 
-void MPSGraphModule::Export() {
+float_array_map MPSGraphModule::Export() const {
   @autoreleasepool {
-    table_.clear();
-    network_->Export(table_);
+    return network_->Export();
   }
 }
 

@@ -14,6 +14,7 @@
 
 #import "mps_networks.h"
 #import "mps_updater.h"
+#import "mps_utils.h"
 
 namespace turi {
 namespace mps {
@@ -47,18 +48,13 @@ public:
   void Update();
   void GpuUpdate();
   void Load(const float_array_map& weights);
-  void Export();
+  float_array_map Export() const;
   void SetLearningRate(float new_lr) {
     if (updater_ != nil) {
       updater_->SetLearningRate(new_lr);
     }
   }
   int NumParams();
-
-
-  std::unordered_map<std::string,
-                     std::tuple<std::string, float *, int, std::vector<int>>>
-      table_;
 
 private:
   // Used by the asynchronous API.

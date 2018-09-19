@@ -14,7 +14,9 @@ using turi::mps::MPSCNNModule;
 using turi::mps::external_float_array;
 using turi::mps::float_array;
 using turi::mps::float_array_map;
+using turi::mps::float_array_map_iterator;
 using turi::mps::make_array_map;
+using turi::mps::shared_float_array;
 
 int TCMPSCreateCNNModule(MPSHandle *out) {
   API_BEGIN();
@@ -44,6 +46,35 @@ int TCMPSDeleteFloatArray(TCMPSFloatArrayRef array) {
   API_BEGIN();
 
   delete reinterpret_cast<float_array*>(array);
+
+  API_END();
+}
+
+int TCMPSNextFloatArray(
+    TCMPSFloatArrayMapIteratorRef iter_ref, char** name_out, float** data_out,
+    size_t** shape_out, size_t* dim_out) {
+
+  auto* iter = reinterpret_cast<float_array_map_iterator*>(iter_ref);
+  if (!iter->has_next()) return -1;
+
+  // Note that it is crucial that we do not copy anything out of the
+  // float_array_map_iterator, so that the raw pointers we return point to
+  // memory owned by the client via the float_array_map_iterator.
+  const auto& name_and_float_array = iter->next();
+  const std::string& name = name_and_float_array.first;
+  const shared_float_array& float_array = name_and_float_array.second;
+  *name_out = const_cast<char*>(name.c_str());
+  *data_out = const_cast<float*>(float_array.data());
+  *shape_out = const_cast<size_t*>(float_array.shape());
+  *dim_out = float_array.dim();
+
+  return 0;
+}
+
+int TCMPSDeleteFloatArrayMapIterator(TCMPSFloatArrayMapIteratorRef iter) {
+  API_BEGIN();
+
+  delete reinterpret_cast<float_array_map_iterator*>(iter);
 
   API_END();
 }
@@ -184,19 +215,13 @@ int TCMPSNumParams(MPSHandle handle, int *num) {
   API_END();
 }
 
-int TCMPSExport(MPSHandle handle, char **names, void **arrs, int64_t *dim,
-           int **shape) {
+int TCMPSExport(MPSHandle handle,
+                TCMPSFloatArrayMapIteratorRef* float_array_map_out) {
   API_BEGIN();
   MPSCNNModule *obj = (MPSCNNModule *)handle;
-  obj->Export();
-  auto &table = obj->table_;
-  int cnt = 0;
-  for (auto &p : table) {
-    names[cnt] = (char *)std::get<0>(p.second).c_str();
-    arrs[cnt] = (void *)std::get<1>(p.second);
-    dim[cnt] = std::get<2>(p.second);
-    shape[cnt++] = &(std::get<3>(p.second)[0]);
-  }
+  auto* float_array_map = new float_array_map_iterator(obj->Export());
+  *float_array_map_out =
+      reinterpret_cast<TCMPSFloatArrayMapIteratorRef>(float_array_map);
   API_END();
 }
 

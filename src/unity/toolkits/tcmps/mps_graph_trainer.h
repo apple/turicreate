@@ -35,8 +35,8 @@ EXPORT int TCMPSInitGraph(MPSHandle handle, int network_id, int n, int c_in, int
 
 EXPORT int TCMPSNumParamsGraph(MPSHandle handle, int *num);
 
-EXPORT int TCMPSExportGraph(MPSHandle handle, char **names, void **arrs, int64_t *dim,
-           int **shape);
+EXPORT int TCMPSExportGraph(MPSHandle handle,
+                            TCMPSFloatArrayMapIteratorRef* float_array_map_out);
 
 EXPORT int TCMPSSetLearningRateGraph(MPSHandle handle, float new_lr);
 
