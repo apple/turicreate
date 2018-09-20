@@ -121,7 +121,9 @@ std::string item_frequency_result::vega_column_data(bool sframe) const {
     ss << i;
     ss << ",\"count\": ";
     ss << count;
-    ss << "}";
+    ss << ",\"percentage\": \"";
+    ss << ((float)(100.0 * count))/((float) m_count.emit());
+    ss << "%\"}";
 
     x++;
   }
