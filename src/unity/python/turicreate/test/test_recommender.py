@@ -2544,6 +2544,13 @@ class TestContentRecommender(RecommenderTestBase):
             self.assertEqual(int(d["similar"]), int(d["item_id"]) + 25)
         self._test_coreml_export(m, ['0','1'])
 
+    def test_regression_1(self):
+
+        temp_sframe = tc.SFrame({"my_item_id" : range(4),
+                           "data_1" : [0,1,0,0] ,
+                           "data_2" : [0,1,0,0] })
+        tc.item_content_recommender.create(temp_sframe,'my_item_id')
+
 
 
 if __name__ == "__main__":
