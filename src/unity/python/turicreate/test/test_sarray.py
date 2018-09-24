@@ -535,6 +535,9 @@ class SArrayTest(unittest.TestCase):
 
         badcast = list(SArray([["a",1.0],["b",2.0]]).astype(array.array, undefined_on_failure=True))
         self.assertEqual(badcast, [None, None])
+        
+        with self.assertRaises(TypeError):
+            s.astype(None)
 
     def test_clip(self):
         # invalid types
