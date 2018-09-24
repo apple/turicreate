@@ -593,6 +593,9 @@ cdef inline flex_type_enum flex_type_enum_from_pytype(type t) except *:
     """
     Given a type, returns the flex_type_enum associated with that type.
     """
+    if t is None:
+        raise TypeError("dtype argument cannot be None.")
+
     return flex_type_from_tr_code(get_translation_code(t))
 
 ################################################################################

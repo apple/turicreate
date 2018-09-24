@@ -3,8 +3,8 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#ifndef TURI_DML_DATA_STORAGE_UTIL_H_
-#define TURI_DML_DATA_STORAGE_UTIL_H_
+#ifndef TURI_DATA_STORAGE_UTIL_H_
+#define TURI_DATA_STORAGE_UTIL_H_
 
 #include <ml_data/metadata.hpp>
 #include <sframe/sarray.hpp>
@@ -22,4 +22,4 @@ size_t estimate_row_block_size(
 
 }}
 
-#endif /* TURI_DML_DATA_STORAGE_UTIL_H_ */
+#endif /* TURI_DATA_STORAGE_UTIL_H_ */
