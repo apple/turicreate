@@ -3160,7 +3160,6 @@ class SArrayTest(unittest.TestCase):
         self.assertTrue(np.array_equal(SArray([a1,b1]).sum(), a1+b1))
 
     def test_type_casting(self):
-        
         x = SFrame({'a': [[1,2], None, [3,4], None]})
         x['a'] = SArray(x['a'], list)
         self.assertTrue(x['a'].dtype == list)
