@@ -3144,8 +3144,18 @@ class SFrame(object):
         [3 rows x 3 columns]
         """
         # Check type for pandas dataframe or SArray?
+        
+        from collections import Iterable
+        
         if not isinstance(data, SArray):
-            raise TypeError("Must give column as SArray")
+            if isinstance(data, Iterable):
+                data = SArray(data)
+            else:
+                if len(self.column_names()) == 0:
+                    data = SArray([data])
+                else:
+                    data = SArray([data for _ in xrange(self.shape[0])])
+    
         if not isinstance(column_name, str):
             raise TypeError("Invalid column name: must be str")
 
