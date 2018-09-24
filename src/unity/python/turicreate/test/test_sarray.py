@@ -9,6 +9,7 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 from ..data_structures.sarray import SArray
+from ..data_structures.sframe import SFrame
 from ..data_structures.sarray import load_sarray
 from ..util.timezone import GMT
 from . import util
@@ -3157,3 +3158,10 @@ class SArrayTest(unittest.TestCase):
             res.sum()
 
         self.assertTrue(np.array_equal(SArray([a1,b1]).sum(), a1+b1))
+
+    def test_type_casting(self):
+        x = SFrame({'a': [[1,2], None, [3,4], None]})
+        x['a'] = SArray(x['a'], list)
+        self.assertTrue(x['a'].dtype == list)
+
+

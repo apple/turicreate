@@ -349,8 +349,11 @@ class SArray(object):
 
         if (_proxy):
             self.__proxy__ = _proxy
-        elif type(data) == SArray:
-            self.__proxy__ = data.__proxy__
+        elif isinstance(data, SArray):
+            if dtype is None:
+                self.__proxy__ = data.__proxy__
+            else:
+                self.__proxy__ = data.astype(dtype).__proxy__
         else:
             self.__proxy__ = UnitySArrayProxy()
             # we need to perform type inference
