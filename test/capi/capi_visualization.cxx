@@ -46,9 +46,9 @@ class capi_test_visualization {
             std::string expected_spec = expected_obj->get_spec();
 
             tc_error *error = nullptr;
-            tc_plot *actual_obj = tc_plot_create_1d(m_sa_uniform_int, "foo", "bar", "baz", &error);
+            tc_plot *actual_obj = tc_plot_create_1d(m_sa_uniform_int, "foo", "bar", "baz", nullptr, &error);
             CAPI_CHECK_ERROR(error);
-            tc_flexible_type *actual_spec_ft = tc_plot_get_vega_spec(actual_obj, &error);
+            tc_flexible_type *actual_spec_ft = tc_plot_get_vega_spec(actual_obj, nullptr, &error);
             CAPI_CHECK_ERROR(error);
             const char *actual_spec_data = tc_ft_string_data(actual_spec_ft, &error);
             CAPI_CHECK_ERROR(error);
