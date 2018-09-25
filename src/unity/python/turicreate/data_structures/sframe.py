@@ -3155,7 +3155,6 @@ class SFrame(object):
                 if len(self.column_names()) == 0:
                     data = SArray([data])
                 else:
-                    #data = SArray([data] * self.shape[0])
                     data = SArray.from_const(data, self.num_rows())
     
         if not isinstance(column_name, str):
