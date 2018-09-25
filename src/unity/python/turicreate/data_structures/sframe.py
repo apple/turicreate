@@ -3154,7 +3154,7 @@ class SFrame(object):
                 if len(self.column_names()) == 0:
                     data = SArray([data])
                 else:
-                    data = SArray([data for _ in xrange(self.shape[0])])
+                    data = SArray([data] * self.shape[0])
     
         if not isinstance(column_name, str):
             raise TypeError("Invalid column name: must be str")

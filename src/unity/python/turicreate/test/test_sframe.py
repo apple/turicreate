@@ -3447,17 +3447,36 @@ class SFrameTest(unittest.TestCase):
     
     def test_add_column_nonSArray(self):
         sf = SFrame()
-        sf.add_column([1,2,3,4],'x')
+        sf = sf.add_column([1,2,3,4],'x')
+    
+        sf_test = SFrame()
+        sf_test['x'] = SArray([1,2,3,4])
+        
+        _assert_sframe_equal(sf, sf_test)
+    
     
     def test_add_column_noniterable1(self):
         sf = SFrame()
-        sf.add_column([1,2,3,4],'x')
-        sf.add_column(5,'y')
+        sf = sf.add_column([1,2,3,4],'x')
+        sf = sf.add_column(5,'y')
+    
+        sf_test = SFrame()
+        sf_test['x'] = SArray([1,2,3,4])
+        sf_test['y'] = 5
+        
+        _assert_sframe_equal(sf, sf_test)
+    
+    
 
     def test_add_column_noniterable2(self):
-            # If SFrame is empty then the passed data should be treated as an SArray of size 1
-            sf = SFrame()
-            sf.add_column(5,'y')
+        # If SFrame is empty then the passed data should be treated as an SArray of size 1
+        sf = SFrame()
+        sf = sf.add_column(5,'y')
+
+        sf_test = SFrame()
+        sf_test['y'] = SArray([5])
+        
+        _assert_sframe_equal(sf, sf_test)
 
 
 if __name__ == "__main__":
