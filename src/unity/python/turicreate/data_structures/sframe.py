@@ -39,6 +39,7 @@ import numbers
 import sys
 import six
 import csv
+from collections import Iterable as _Iterable
 
 __all__ = ['SFrame']
 __LOGGER__ = _logging.getLogger(__name__)
@@ -3145,16 +3146,17 @@ class SFrame(object):
         """
         # Check type for pandas dataframe or SArray?
         
-        from collections import Iterable
+        
         
         if not isinstance(data, SArray):
-            if isinstance(data, Iterable):
+            if isinstance(data, _Iterable):
                 data = SArray(data)
             else:
                 if len(self.column_names()) == 0:
                     data = SArray([data])
                 else:
-                    data = SArray([data] * self.shape[0])
+                    #data = SArray([data] * self.shape[0])
+                    data = SArray.from_const(data, self.num_rows())
     
         if not isinstance(column_name, str):
             raise TypeError("Invalid column name: must be str")
