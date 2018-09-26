@@ -62,7 +62,7 @@ def create(item_data, item_id,
         If observation_data is given, then this specifies the column
         name corresponding to the user identifier.
 
-    target_id : None (optional)
+    target : None (optional)
         If observation_data is given, then this specifies the column
         name corresponding to the target or rating.
 
