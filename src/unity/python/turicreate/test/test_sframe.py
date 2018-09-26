@@ -145,9 +145,10 @@ class SFrameTest(unittest.TestCase):
 
 
     def __test_equal(self, sf, df):
+        # asserts two frames are equal, ignoring column ordering.
         self.assertEqual(sf.num_rows(), df.shape[0])
         self.assertEqual(sf.num_columns(), df.shape[1])
-        assert_frame_equal(sf.to_dataframe(), df)
+        assert_frame_equal(sf.to_dataframe(), df[sf.column_names()])
 
     def __create_test_df(self, size):
         int_data = []
