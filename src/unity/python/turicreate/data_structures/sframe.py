@@ -3146,13 +3146,12 @@ class SFrame(object):
         """
         # Check type for pandas dataframe or SArray?
         
-        
-        
+       
         if not isinstance(data, SArray):
             if isinstance(data, _Iterable):
                 data = SArray(data)
             else:
-                if len(self.column_names()) == 0:
+                if self.num_columns() == 0:
                     data = SArray([data])
                 else:
                     data = SArray.from_const(data, self.num_rows())
