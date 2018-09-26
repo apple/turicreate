@@ -3146,7 +3146,7 @@ class SFrame(object):
         """
         # Check type for pandas dataframe or SArray?
         
-       
+
         if not isinstance(data, SArray):
             if isinstance(data, _Iterable):
                 data = SArray(data)
