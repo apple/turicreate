@@ -16,7 +16,7 @@ extern "C" {
                             const char* title,
                             const char* x_axis_title,
                             const char* y_axis_title,
-                            tc_parameters*,
+                            const tc_parameters*,
                             tc_error** error) {
 
         ERROR_HANDLE_START();
@@ -30,7 +30,7 @@ extern "C" {
         ERROR_HANDLE_END(error, NULL);
     }
 
-    tc_flexible_type* tc_plot_get_vega_spec(const tc_plot* plot, tc_parameters*, tc_error** error) {
+    tc_flexible_type* tc_plot_get_vega_spec(const tc_plot* plot, const tc_parameters*, tc_error** error) {
         ERROR_HANDLE_START();
         turi::ensure_server_initialized();
 
@@ -42,7 +42,7 @@ extern "C" {
         ERROR_HANDLE_END(error, NULL);
     }
 
-    tc_flexible_type* tc_plot_get_next_data(const tc_plot* plot, tc_parameters*, tc_error** error) {
+    tc_flexible_type* tc_plot_get_next_data(const tc_plot* plot, const tc_parameters*, tc_error** error) {
         ERROR_HANDLE_START();
         turi::ensure_server_initialized();
 
