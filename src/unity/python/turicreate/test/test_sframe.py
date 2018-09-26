@@ -3479,6 +3479,16 @@ class SFrameTest(unittest.TestCase):
         
         _assert_sframe_equal(sf, sf_test)
 
+    def test_sframe_const_setitem(self):
+        # Check if setitem for const assignments works as intended when assigning to empty SFrame
+        sf = SFrame()
+        sf['x'] = 3
+
+        sf_test = SFrame()
+        sf_test['x'] = [3]
+
+        _assert_sframe_equal(sf, sf_test)
+
 
 if __name__ == "__main__":
 

@@ -3146,7 +3146,7 @@ class SFrame(object):
         """
         # Check type for pandas dataframe or SArray?
         
-       
+
         if not isinstance(data, SArray):
             if isinstance(data, _Iterable):
                 data = SArray(data)
@@ -3590,7 +3590,7 @@ class SFrame(object):
             elif _is_non_string_iterable(value):  # wrap list, array... to sarray
                 sa_value = SArray(value)
             else:  # create an sarray  of constant value
-                sa_value = SArray.from_const(value, self.num_rows())
+                sa_value = SArray.from_const(value, max(1, self.num_rows()))
 
             # set new column
             if not key in self.column_names():
