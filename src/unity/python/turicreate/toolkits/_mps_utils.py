@@ -256,6 +256,8 @@ class MpsFloatArray(object):
     def __init__(self, x):
         """Wrap a numpy array"""
 
+        assert isinstance(x, _np.ndarray)
+
         # Load TCMPS backend library.
         self._LIB = _load_tcmps_lib()
         assert self._LIB is not None, "Cannot use MpsFloatArray without libtcmps.dylib"
