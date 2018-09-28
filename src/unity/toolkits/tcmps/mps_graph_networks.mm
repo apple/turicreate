@@ -140,31 +140,6 @@ float_array_map MPSGraphNetwork::Export() const {
   return table;
 }
 
-int MPSGraphNetwork::NumParams() {
-  int ret = 0;
-  for (int i = 0; i < layers.size(); ++i) {
-    LayerType type = layers[i]->type;
-    switch (type) {
-    case kConv:
-      {
-        ConvGraphLayer *convLayer = reinterpret_cast<ConvGraphLayer*>(layers[i]);
-        if (convLayer->use_bias) {
-          ret += 2;
-        } else {
-          ret += 1;
-        }
-      }
-      break;
-    case kBN:
-      ret += 4;
-      break;
-    default:
-      break;
-    }
-  }
-  return ret;
-}
-
 }  // namespace mps
 }  // namespace turi
 

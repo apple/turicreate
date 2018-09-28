@@ -93,7 +93,7 @@ public:
   static shared_float_array wrap(std::vector<float> data,
                                  std::vector<size_t> shape) {
     return shared_float_array(
-        std::make_shared<float_buffer>(std::move(data), std::move(shape)));    
+        std::make_shared<float_buffer>(std::move(data), std::move(shape)));
   }
 
   // Simply wraps an existing float_array shared_ptr.
