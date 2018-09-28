@@ -33,18 +33,25 @@ float_buffer::float_buffer(const float* data, std::vector<size_t> shape)
   assert(size_ > 0);
 }
 
+float_buffer::float_buffer(std::vector<float> data, std::vector<size_t> shape)
+  : shape_(std::move(shape)),
+    size_(std::accumulate(shape_.begin(), shape_.end(), 1, multiply)),
+    data_(std::move(data))
+{
+  assert(data_.size() == size_);
+}
+
 shared_float_array::shared_float_array(
-    std::shared_ptr<float_array> impl, const float* data, const size_t* shape,
+    std::shared_ptr<float_array> impl, size_t offset, const size_t* shape,
     size_t dim)
   : impl_(std::move(impl)),
-    data_(data),
+    offset_(offset),
     shape_(shape),
     dim_(dim),
     size_(std::accumulate(shape_, shape_ + dim_, 1, multiply))
 {
   // The provided data array must be a view into the impl's data array.
-  assert(impl_->data() <= data_);
-  assert(data_ + size_ <= impl_->data() + impl_->size());
+  assert(offset_ + size_ <= impl_->size());
 
   // The provided shape array must be a view into the impl's shape array.
   assert(impl_->shape() <= shape_);
@@ -60,6 +67,22 @@ std::shared_ptr<float_array> shared_float_array::default_value() {
           std::make_shared<external_float_array>(&default_scalar, /* size */ 1,
                                                  nullptr, /* dim */ 0));
   return *singleton;
+}
+
+deferred_float_array::deferred_float_array(
+    std::shared_future<shared_float_array> data_future,
+    std::vector<size_t> shape)
+  : data_future_(std::move(data_future)),
+    shape_(std::move(shape)),
+    size_(std::accumulate(shape_.begin(), shape_.end(), 1, multiply))
+{}
+
+const float* deferred_float_array::data() const {
+  const shared_float_array& float_array = data_future_.get();
+  assert(size_ == float_array.size());
+  assert(shape_.size() == float_array.dim());
+  assert(std::equal(shape_.begin(), shape_.end(), float_array.shape()));
+  return float_array.data();
 }
 
 }  // namespace mps
