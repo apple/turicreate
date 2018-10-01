@@ -560,7 +560,7 @@ class FlexibleTypeTest(unittest.TestCase):
             sa_int_words.astype(int)
 
     def test_hashable_dict_keys(self):
-        # testing valid sarray of inf's (inf is a float)
+        # Make sure that the keys of a dictionary are actually expressable as keys.
         sa_dictionary = SArray([{(1,2) : 3}])
         out = list(sa_dictionary)
 
