@@ -204,6 +204,11 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
 
     // Test saving and loading the model.
     {
+      std::string model_path;
+      std::string error_message;
+      std::string expected_substr;
+
+#ifdef MECHANISM_FOR_TRIGGERING_AN_ERROR_IN_DOCKER
       // sad path 1 - attempting to save without permission to location
       // ensure the error message contains useful info
 
@@ -211,7 +216,7 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
       std::string bad_directory =
         turi::fs_util::system_temp_directory_unique_path("capi_model_permission_denied", "");
       turi::fileio::create_directory(bad_directory);
-      std::string model_path = turi::fs_util::join({bad_directory, "model.mlmodel"});
+      model_path = turi::fs_util::join({bad_directory, "model.mlmodel"});
 
 #ifdef __linux
       // set the immutable bit on it
@@ -230,10 +235,11 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
 
       tc_model_save(model, model_path.c_str(), &error);
       TS_ASSERT_DIFFERS(error, nullptr);
-      std::string error_message = tc_error_message(error);
-      std::string expected_substr = "Ensure that you have write permission to this location, or try again with a different path";
+      error_message = tc_error_message(error);
+      expected_substr = "Ensure that you have write permission to this location, or try again with a different path";
       TS_ASSERT_DIFFERS(error_message.find(expected_substr), error_message.npos);
       error = nullptr;
+#endif  // MECHANISM_FOR_TRIGGERING_AN_ERROR_IN_DOCKER
 
       // sad path 2 - attempting to save into an existing non-directory path
       // ensure the error message contains useful info
