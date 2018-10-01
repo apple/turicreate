@@ -9,6 +9,7 @@
  */
 
 #include <ios>
+#include <system_error>
 
 namespace turi {
 namespace error {
@@ -18,7 +19,7 @@ class io_error : public std::ios_base::failure {
     std::string m_message;
 
   public:
-    explicit io_error(const std::string &message, const std::error_code &ec = std::io_errc::stream);
+    explicit io_error(const std::string &message);
     virtual const char *what() const noexcept override;
 };
 

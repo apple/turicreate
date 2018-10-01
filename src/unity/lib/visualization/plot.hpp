@@ -21,7 +21,15 @@ namespace turi {
                                               m_transformer(transformer){}
         void show();
         void materialize();
+
+        // vega specification
         std::string get_spec();
+
+        // streaming data aggregation
+        bool finished();
+        std::string get_next_data();
+
+        // non-streaming data aggregation: causes full materialization
         std::string get_data();
 
         // TODO - these hould be private

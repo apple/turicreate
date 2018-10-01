@@ -24,6 +24,7 @@ set(_turi_capi_source_files
   "${__CAPI_SOURCE_DIR}/impl/capi_flex_enum_list.cpp"
   "${__CAPI_SOURCE_DIR}/impl/capi_wrapper_structs.cpp"
   "${__CAPI_SOURCE_DIR}/impl/capi_memory_management.cpp"
+  "${__CAPI_SOURCE_DIR}/impl/capi_visualization.cpp"
 )
 
 # This needs to be an object type library to avoid multiple compilations.

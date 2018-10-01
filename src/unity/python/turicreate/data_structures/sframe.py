@@ -39,6 +39,7 @@ import numbers
 import sys
 import six
 import csv
+from collections import Iterable as _Iterable
 
 __all__ = ['SFrame']
 __LOGGER__ = _logging.getLogger(__name__)
@@ -2758,6 +2759,8 @@ class SFrame(object):
         if format is None:
             if filename.endswith(('.csv', '.csv.gz')):
                 format = 'csv'
+            elif filename.endswith(('.json')):
+                format = 'json'
             else:
                 format = 'binary'
         else:
@@ -3142,8 +3145,17 @@ class SFrame(object):
         [3 rows x 3 columns]
         """
         # Check type for pandas dataframe or SArray?
+        
+       
         if not isinstance(data, SArray):
-            raise TypeError("Must give column as SArray")
+            if isinstance(data, _Iterable):
+                data = SArray(data)
+            else:
+                if self.num_columns() == 0:
+                    data = SArray([data])
+                else:
+                    data = SArray.from_const(data, self.num_rows())
+    
         if not isinstance(column_name, str):
             raise TypeError("Invalid column name: must be str")
 

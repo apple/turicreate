@@ -1,9 +1,5 @@
 # Deployment to Core ML
 
-***Note:*** *This functionality is available in the beta release of Turi Create 5.0. For a 
-full list of 5.0 features and installation instructions, see 
-[release notes](https://github.com/apple/turicreate/releases/tag/5.0b1)*
-
 ***Note:*** *This functionality is only available on iOS 12+ and macOS 10.14+*
 
 The Turi Create Recommender Model is also available for use in your iOS/macOS

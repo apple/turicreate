@@ -41,7 +41,6 @@ make_library(fileio
     file_handle_pool.cpp
     fileio_constants.cpp
     block_cache.cpp
-    curl_downloader.cpp
   REQUIRES
   ${FILEIO_REMOTE_FS_REQUIRES} libxml2 logger pthread z cancel_serverside_ops globals process util ${PLATFORM_DEPENDENCIES} network random 
   MAC_REQUIRES

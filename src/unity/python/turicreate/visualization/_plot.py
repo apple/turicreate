@@ -272,7 +272,7 @@ class Plot(object):
                             <div id="vis"> \
                             </div> \
                             <script> \
-                                var vega_json = '+_json.dumps(_json.dumps(vega_spec)).replace("'", "&apos;")+'; \
+                                var vega_json = '+_json.dumps(_json.dumps(vega_spec)).replace("&", "&amp;").replace("'", "&apos;")+'; \
                                 var vega_json_parsed = JSON.parse(vega_json); \
                                 var toolTipOpts = { \
                                     showAllFields: true \
