@@ -4399,6 +4399,92 @@ class SArray(object):
         agg_op = "__builtin__cum_var__"
         return SArray(_proxy = self.__proxy__.builtin_cumulative_aggregate(agg_op))
 
+    def filter_by(self, values, exclude=False):
+        
+        """
+        Filter an SArray by values inside an iterable object. Result is an SArray that
+        only includes (or excludes) the values in the given ``values`` :class:`~turicreate.SArray`.
+        If ``values`` is not an SArray, we attempt to convert it to one before filtering.
+        
+        Parameters
+        ----------
+        values : SArray | list | numpy.ndarray | pandas.Series | str
+        The values to use to filter the SArray. The resulting SArray will
+        only include rows that have one of these values in the given
+        column.
+        
+        exclude : bool
+        If True, the result SArray will contain all rows EXCEPT those that
+        have one of the ``values``.
+        
+        Returns
+        -------
+        out : SArray
+        The filtered SArray.
+        
+        Examples
+        --------
+        >>> sa = SArray(['dog', 'cat', 'cow', 'horse'])
+        >>> sa.filter_by(['cat', 'hamster', 'dog', 'fish', 'bird', 'snake'])
+        dtype: str
+        Rows: 2
+        ['dog', 'cat']
+        
+        >>> sa.filter_by(['cat', 'hamster', 'dog', 'fish', 'bird', 'snake'], exclude=True)
+        dtype: str
+        Rows: 2
+        ['horse', 'cow']
+        """
+    
+        from .sframe import SFrame as _SFrame
+        
+        column_name = 'sarray'
+        
+        #convert values to SArray
+        if type(values) is not SArray:
+            # If we were given a single element, try to put in list and convert
+            # to SArray
+            if not _is_non_string_iterable(values):
+                values = [values]
+            values = SArray(values)
+    
+        #convert values to SFrame
+        value_sf = _SFrame()
+        value_sf.add_column(values, column_name, inplace=True)
+        given_type = value_sf.column_types()[0] #value column type
+        
+        existing_type = self.dtype
+        sarray_sf = _SFrame()
+        sarray_sf.add_column(self, column_name, inplace=True)
+        
+        if given_type != existing_type:
+            raise TypeError("Type of given values does not match type of the SArray column")
+        
+        # Make sure the values list has unique values, or else join will not
+        # filter.
+        value_sf = value_sf.groupby(column_name, {})
+        print(value_sf)
+        
+        with cython_context():
+            if exclude:
+                id_name = "id"
+                # Make sure this name is unique so we know what to remove in
+                # the result
+                id_name += "1"
+                
+                value_sf = value_sf.add_row_number(id_name)
+                tmp = _SFrame(_proxy=sarray_sf.__proxy__.join(value_sf.__proxy__,
+                                                        'left',
+                                                        {column_name:column_name}))
+                ret_sf = tmp[tmp[id_name] == None]
+                del ret_sf[id_name]
+                return ret_sf[column_name]
+            else:
+                ret_sf = _SFrame(_proxy=sarray_sf.__proxy__.join(value_sf.__proxy__,
+                                                             'inner',
+                                                             {column_name:column_name}))
+                return ret_sf[column_name]
+
     def __copy__(self):
         """
         Returns a shallow copy of the sarray.
