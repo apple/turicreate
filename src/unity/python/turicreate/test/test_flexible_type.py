@@ -559,6 +559,13 @@ class FlexibleTypeTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             sa_int_words.astype(int)
 
+    def test_hashable_dict_keys(self):
+        # Make sure that the keys of a dictionary are actually expressable as keys.
+        sa_dictionary = SArray([{(1,2) : 3}])
+        out = list(sa_dictionary)
+
+        self.assertEqual(out[0][(1,2)], 3)
+
 
 
 

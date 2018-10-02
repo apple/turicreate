@@ -1772,6 +1772,11 @@ cdef inline dict pydict_from_flex_dict(const flex_dict& fd):
     for i in range(n):
         first = pyobject_from_flexible_type(fd[i].first)
         second = pyobject_from_flexible_type(fd[i].second)
+
+        if type(first) is list or type(first) is array_type:
+            # Replace this with a hashable type.  
+            first = tuple(first)
+
         ret[first] = second
 
     return ret
