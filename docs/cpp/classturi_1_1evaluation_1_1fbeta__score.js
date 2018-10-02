@@ -6,9 +6,9 @@ var classturi_1_1evaluation_1_1fbeta__score =
     [ "get_metric", "classturi_1_1evaluation_1_1fbeta__score.html#a9dd254a2dcbcdf1f6d4a05ab2aa5f98f", null ],
     [ "get_reference_label", "classturi_1_1evaluation_1_1fbeta__score.html#a60c8170ab64451241c7bc04860d68cee", null ],
     [ "init", "classturi_1_1evaluation_1_1fbeta__score.html#aa8ea2a38339c94df2b56b75a9c6aa455", null ],
-    [ "is_prob_evaluator", "classturi_1_1evaluation_1_1fbeta__score.html#a69940f58116ef257fad9695c66c4c07c", null ],
-    [ "is_table_printer_compatible", "classturi_1_1evaluation_1_1fbeta__score.html#a74ce46b07aff309d3c64e8f258144c9e", null ],
-    [ "name", "classturi_1_1evaluation_1_1fbeta__score.html#ac2a0cf9021c926c98ad2706aae940cd1", null ],
+    [ "is_prob_evaluator", "classturi_1_1evaluation_1_1fbeta__score.html#ac45bd0921004971d1ee01b2c7c76a627", null ],
+    [ "is_table_printer_compatible", "classturi_1_1evaluation_1_1fbeta__score.html#a012f7a0a0c14e3d85dac48454fed0ef8", null ],
+    [ "name", "classturi_1_1evaluation_1_1fbeta__score.html#a9e3ff0bad26323acce7afb10f6fbe15a", null ],
     [ "register_example", "classturi_1_1evaluation_1_1fbeta__score.html#ac481d6ecc571b2d7fab8c08d1a52910b", null ],
     [ "register_unmapped_example", "classturi_1_1evaluation_1_1fbeta__score.html#a4cbc66db6a1d4bf1b12614fa14c9e727", null ]
 ];

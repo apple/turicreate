@@ -1,7 +1,7 @@
 var classturi_1_1nearest__neighbors_1_1ball__tree__neighbors =
 [
     [ "~ball_tree_neighbors", "classturi_1_1nearest__neighbors_1_1ball__tree__neighbors.html#a707787e5ae8db71570ab6fc553ada2c0", null ],
-    [ "activate_query_node", "classturi_1_1nearest__neighbors_1_1ball__tree__neighbors.html#a6ba4da7a8357daf46f3e773595179286", null ],
+    [ "activate_query_node", "classturi_1_1nearest__neighbors_1_1ball__tree__neighbors.html#a0ec9e7d4cfeb45ed6b99386c6311cbf9", null ],
     [ "get_version", "classturi_1_1nearest__neighbors_1_1ball__tree__neighbors.html#a18b3e8ccbc8f77af4c6ff68fdf948412", null ],
     [ "init_options", "classturi_1_1nearest__neighbors_1_1ball__tree__neighbors.html#a82c4eeaf711942134576af4bbb804912", null ],
     [ "load_version", "classturi_1_1nearest__neighbors_1_1ball__tree__neighbors.html#af63bff674de892810b1233a5a8c5340d", null ],

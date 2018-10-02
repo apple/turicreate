@@ -16,8 +16,6 @@ var searchData=
   ['is_5fsiterable',['is_siterable',['../structturi_1_1sframe__impl_1_1is__siterable.html',1,'turi::sframe_impl']]],
   ['is_5fswriter_5fbase',['is_swriter_base',['../structturi_1_1sframe__impl_1_1is__swriter__base.html',1,'turi::sframe_impl']]],
   ['is_5fvalid_5fflex_5ftype',['is_valid_flex_type',['../structturi_1_1is__valid__flex__type.html',1,'turi']]],
-  ['iterator',['iterator',['../structturi_1_1gl__sarray__range_1_1iterator.html',1,'turi::gl_sarray_range']]],
-  ['iterator',['iterator',['../structturi_1_1sframe__rows_1_1iterator.html',1,'turi::sframe_rows']]],
-  ['iterator',['iterator',['../structturi_1_1gl__sframe__range_1_1iterator.html',1,'turi::gl_sframe_range']]],
-  ['iterator',['iterator',['../structturi_1_1hopscotch__table_1_1iterator.html',1,'turi::hopscotch_table']]]
+  ['is_5fvariant_5fconvertible',['is_variant_convertible',['../structturi_1_1is__variant__convertible.html',1,'turi']]],
+  ['iterator',['iterator',['../structturi_1_1sframe__rows_1_1iterator.html',1,'turi::sframe_rows::iterator'],['../structturi_1_1hopscotch__table_1_1iterator.html',1,'turi::hopscotch_table&lt; T, Hash, KeyEqual &gt;::iterator'],['../structturi_1_1gl__sarray__range_1_1iterator.html',1,'turi::gl_sarray_range::iterator'],['../structturi_1_1gl__sframe__range_1_1iterator.html',1,'turi::gl_sframe_range::iterator']]]
 ];

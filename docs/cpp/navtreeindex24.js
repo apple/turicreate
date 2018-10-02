@@ -175,7 +175,6 @@ var NAVTREEINDEX24 =
 "lru_8hpp_source.html":[4,0,28,22],
 "lsh__family_8hpp_source.html":[4,0,27,4,10,6],
 "lsh__neighbors_8hpp_source.html":[4,0,27,4,10,7],
-"lualambda__master_8hpp_source.html":[4,0,10,7],
 "map_8hpp_source.html":[4,0,19,9],
 "materialize__options_8hpp_source.html":[4,0,21,3,1],
 "md5_8hpp_source.html":[4,0,28,23],
@@ -226,8 +225,8 @@ var NAVTREEINDEX24 =
 "namespacemembers_e.html":[2,1,0,5],
 "namespacemembers_enum.html":[2,1,4],
 "namespacemembers_f.html":[2,1,0,6],
-"namespacemembers_func.html":[2,1,1],
 "namespacemembers_func.html":[2,1,1,0],
+"namespacemembers_func.html":[2,1,1],
 "namespacemembers_func_a.html":[2,1,1,1],
 "namespacemembers_func_b.html":[2,1,1,2],
 "namespacemembers_func_c.html":[2,1,1,3],
@@ -249,5 +248,6 @@ var NAVTREEINDEX24 =
 "namespacemembers_func_t.html":[2,1,1,19],
 "namespacemembers_func_u.html":[2,1,1,20],
 "namespacemembers_func_v.html":[2,1,1,21],
-"namespacemembers_func_w.html":[2,1,1,22]
+"namespacemembers_func_w.html":[2,1,1,22],
+"namespacemembers_g.html":[2,1,0,7]
 };

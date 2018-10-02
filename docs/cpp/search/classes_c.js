@@ -2,8 +2,7 @@ var searchData=
 [
   ['l1_5fnorm',['l1_norm',['../classturi_1_1optimization_1_1l1__norm.html',1,'turi::optimization']]],
   ['l2_5fnorm',['l2_norm',['../classturi_1_1optimization_1_1l2__norm.html',1,'turi::optimization']]],
-  ['l2_5frescaling',['l2_rescaling',['../classturi_1_1supervised_1_1l2__rescaling.html',1,'turi::supervised']]],
-  ['l2_5frescaling',['l2_rescaling',['../classturi_1_1l2__rescaling.html',1,'turi']]],
+  ['l2_5frescaling',['l2_rescaling',['../classturi_1_1l2__rescaling.html',1,'turi::l2_rescaling'],['../classturi_1_1supervised_1_1l2__rescaling.html',1,'turi::supervised::l2_rescaling']]],
   ['lambda_5fcall_5fby_5fdict_5fdata',['lambda_call_by_dict_data',['../structturi_1_1lambda_1_1lambda__call__by__dict__data.html',1,'turi::lambda']]],
   ['lambda_5fcall_5fby_5fsframe_5frows_5fdata',['lambda_call_by_sframe_rows_data',['../structturi_1_1lambda_1_1lambda__call__by__sframe__rows__data.html',1,'turi::lambda']]],
   ['lambda_5fcall_5fdata',['lambda_call_data',['../structturi_1_1lambda_1_1lambda__call__data.html',1,'turi::lambda']]],
@@ -42,6 +41,5 @@ var searchData=
   ['lsh_5fmanhattan',['lsh_manhattan',['../classturi_1_1nearest__neighbors_1_1lsh__manhattan.html',1,'turi::nearest_neighbors']]],
   ['lsh_5fneighbors',['lsh_neighbors',['../classturi_1_1nearest__neighbors_1_1lsh__neighbors.html',1,'turi::nearest_neighbors']]],
   ['lsh_5fsquared_5feuclidean',['lsh_squared_euclidean',['../classturi_1_1nearest__neighbors_1_1lsh__squared__euclidean.html',1,'turi::nearest_neighbors']]],
-  ['lt_5foperator',['lt_operator',['../structturi_1_1flexible__type__impl_1_1lt__operator.html',1,'turi::flexible_type_impl']]],
-  ['lualambda_5fmaster',['lualambda_master',['../classturi_1_1lambda_1_1lualambda__master.html',1,'turi::lambda']]]
+  ['lt_5foperator',['lt_operator',['../structturi_1_1flexible__type__impl_1_1lt__operator.html',1,'turi::flexible_type_impl']]]
 ];

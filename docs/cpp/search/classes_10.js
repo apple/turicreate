@@ -21,8 +21,7 @@ var searchData=
   ['precision_5frecall_5fbase',['precision_recall_base',['../classturi_1_1evaluation_1_1precision__recall__base.html',1,'turi::evaluation']]],
   ['process',['process',['../classturi_1_1process.html',1,'turi']]],
   ['progress_5ftime',['progress_time',['../structturi_1_1progress__time.html',1,'turi']]],
-  ['publish_5fsocket',['publish_socket',['../classturi_1_1nanosockets_1_1publish__socket.html',1,'turi::nanosockets']]],
-  ['publish_5fsocket',['publish_socket',['../classlibfault_1_1publish__socket.html',1,'libfault']]],
+  ['publish_5fsocket',['publish_socket',['../classlibfault_1_1publish__socket.html',1,'libfault::publish_socket'],['../classturi_1_1nanosockets_1_1publish__socket.html',1,'turi::nanosockets::publish_socket']]],
   ['pylambda_5fevaluator',['pylambda_evaluator',['../classturi_1_1lambda_1_1pylambda__evaluator.html',1,'turi::lambda']]],
   ['pylambda_5ffunction',['pylambda_function',['../classturi_1_1lambda_1_1pylambda__function.html',1,'turi::lambda']]],
   ['pysgraph_5fsynchronize',['pysgraph_synchronize',['../classturi_1_1lambda_1_1pysgraph__synchronize.html',1,'turi::lambda']]]

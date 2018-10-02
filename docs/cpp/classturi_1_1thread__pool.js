@@ -8,5 +8,5 @@ var classturi_1_1thread__pool =
     [ "release_instance", "classturi_1_1thread__pool.html#ae5902616ee2bc1f0c363f8430328314c", null ],
     [ "resize", "classturi_1_1thread__pool.html#a5254159ed2f87f03bf06305692af9fee", null ],
     [ "set_cpu_affinity", "classturi_1_1thread__pool.html#a650086b00863a6b772018a45b26b30d0", null ],
-    [ "size", "classturi_1_1thread__pool.html#a71f2a50d2dcdbc95acd753422ecfbb91", null ]
+    [ "size", "classturi_1_1thread__pool.html#a410c65467f29f20fc1d075b9081e0057", null ]
 ];

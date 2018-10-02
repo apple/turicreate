@@ -5,9 +5,9 @@ var group__sketching =
       [ "add", "classturi_1_1sketches_1_1countmin.html#a433effffde1a4b2d3f8d5a3d4ca9ffe7", null ],
       [ "atomic_add", "classturi_1_1sketches_1_1countmin.html#a94ed2a99baa8a036a4e5a4f158ff8a0c", null ],
       [ "combine", "classturi_1_1sketches_1_1countmin.html#a84dea6c46de84d5738dd4ed2a4e36381", null ],
-      [ "density", "classturi_1_1sketches_1_1countmin.html#ac8cb1ec8b3ea742f7f85e848e656a501", null ],
-      [ "estimate", "classturi_1_1sketches_1_1countmin.html#a654c1513949701a5b207d61a006a32fb", null ],
-      [ "print", "classturi_1_1sketches_1_1countmin.html#a3c56f15ba8ea4c777c2cd26a1bcf36fb", null ]
+      [ "density", "classturi_1_1sketches_1_1countmin.html#ace2cebc4ffe491ee201da2157bffeec3", null ],
+      [ "estimate", "classturi_1_1sketches_1_1countmin.html#a2e9077c6e12c388901f5c8124788f115", null ],
+      [ "print", "classturi_1_1sketches_1_1countmin.html#a2b6826b16d4855785ab96c2a19b491dc", null ]
     ] ],
     [ "countsketch", "classturi_1_1sketches_1_1countsketch.html", [
       [ "countsketch", "classturi_1_1sketches_1_1countsketch.html#a863f612c26bd03ad33f03900f58cfe52", null ],
@@ -29,14 +29,14 @@ var group__sketching =
       [ "quantile_sketch", "classturi_1_1sketches_1_1quantile__sketch.html#ad18252bc6968326a3c3e0771fe1d2ef7", null ],
       [ "add", "classturi_1_1sketches_1_1quantile__sketch.html#a743abb8c8b102b867ff495d52b522dd5", null ],
       [ "combine", "classturi_1_1sketches_1_1quantile__sketch.html#a7ec8ac3070fe7de589d07b7338da6707", null ],
-      [ "fast_query", "classturi_1_1sketches_1_1quantile__sketch.html#a7846cae572bf9e5cf4d732c266d6c66b", null ],
-      [ "fast_query_quantile", "classturi_1_1sketches_1_1quantile__sketch.html#a366b9fae75d2b3a603a45f7141c92dc7", null ],
+      [ "fast_query", "classturi_1_1sketches_1_1quantile__sketch.html#a833793f8bf9e5113189be02cfcdb4d43", null ],
+      [ "fast_query_quantile", "classturi_1_1sketches_1_1quantile__sketch.html#ae902ebe8d93516d6da7b459ea46468f7", null ],
       [ "finalize", "classturi_1_1sketches_1_1quantile__sketch.html#a47e08d94476e66ff833d6923674403ee", null ],
       [ "init", "classturi_1_1sketches_1_1quantile__sketch.html#a17968d6d02bec92a05a31556d5c53aa8", null ],
       [ "memory_usage", "classturi_1_1sketches_1_1quantile__sketch.html#a3a21d5c4f7d26a1de81ab72621c1313b", null ],
-      [ "query", "classturi_1_1sketches_1_1quantile__sketch.html#a8e4ce34f2d1e3885c201c464118b0a36", null ],
-      [ "query_quantile", "classturi_1_1sketches_1_1quantile__sketch.html#aecf5f64ca337cc94d5ec7295e05e3551", null ],
-      [ "size", "classturi_1_1sketches_1_1quantile__sketch.html#a697f2b55c07a6e1c2f9ac492ef4b068b", null ],
+      [ "query", "classturi_1_1sketches_1_1quantile__sketch.html#a4c41e9db0c8282e50a5898eafd43c442", null ],
+      [ "query_quantile", "classturi_1_1sketches_1_1quantile__sketch.html#aa5d3fde5d846ad27937144a8c94bd765", null ],
+      [ "size", "classturi_1_1sketches_1_1quantile__sketch.html#adb392cde1b37db8d14d6d8b7c25eeabd", null ],
       [ "sketch_size", "classturi_1_1sketches_1_1quantile__sketch.html#a915e64286e69c7b76d0faa7009f58694", null ]
     ] ],
     [ "space_saving", "classturi_1_1sketches_1_1space__saving.html", [
@@ -44,10 +44,10 @@ var group__sketching =
       [ "add", "classturi_1_1sketches_1_1space__saving.html#a4f70b2bf7df05c3d010d0eaa205f6545", null ],
       [ "clear", "classturi_1_1sketches_1_1space__saving.html#a0f6cef5d1925ca2bdf8df069a4c49c5c", null ],
       [ "combine", "classturi_1_1sketches_1_1space__saving.html#ad5bc0b54ef31412ac4efb25263d95295", null ],
-      [ "frequent_items", "classturi_1_1sketches_1_1space__saving.html#aaa223d9f39c1992f418e151a5159721d", null ],
-      [ "guaranteed_frequent_items", "classturi_1_1sketches_1_1space__saving.html#aad4fa92879b6dacf079d2da9c4675033", null ],
+      [ "frequent_items", "classturi_1_1sketches_1_1space__saving.html#a6afea4ba4fc92c93122a06f4de48a021", null ],
+      [ "guaranteed_frequent_items", "classturi_1_1sketches_1_1space__saving.html#a7a007ea82cfe273e9b145f32c9507091", null ],
       [ "initialize", "classturi_1_1sketches_1_1space__saving.html#a8e6e269af3eebf26598c340d019325d9", null ],
-      [ "size", "classturi_1_1sketches_1_1space__saving.html#aa43aeb765b2dedb711e82a78f48ef13a", null ]
+      [ "size", "classturi_1_1sketches_1_1space__saving.html#a89c04e1a9e84b353e3e2218459d10675", null ]
     ] ],
     [ "space_saving_flextype", "classturi_1_1sketches_1_1space__saving__flextype.html", [
       [ "space_saving_flextype", "classturi_1_1sketches_1_1space__saving__flextype.html#a4f71e06405699d686eb765badc769c31", null ],
@@ -55,7 +55,7 @@ var group__sketching =
       [ "combine", "classturi_1_1sketches_1_1space__saving__flextype.html#a835acb006448a4095e853107f3964a78", null ],
       [ "frequent_items", "classturi_1_1sketches_1_1space__saving__flextype.html#af43635d2ac185a5ca87b0a5c87eac315", null ],
       [ "guaranteed_frequent_items", "classturi_1_1sketches_1_1space__saving__flextype.html#a2b4da552eb9d04f9a084419ddae2774b", null ],
-      [ "size", "classturi_1_1sketches_1_1space__saving__flextype.html#a182f50cc03eccb3a4890c5c6cbc3010f", null ]
+      [ "size", "classturi_1_1sketches_1_1space__saving__flextype.html#abdb28c76edeaf5500b6d12b44ff2f56e", null ]
     ] ],
     [ "streaming_quantile_sketch", "classturi_1_1sketches_1_1streaming__quantile__sketch.html", [
       [ "streaming_quantile_sketch", "classturi_1_1sketches_1_1streaming__quantile__sketch.html#afa9c19075176f234d4297c275c6d7873", null ],
@@ -69,7 +69,7 @@ var group__sketching =
       [ "memory_usage", "classturi_1_1sketches_1_1streaming__quantile__sketch.html#a0dd7042e123872ecb9a6993ae5cb7fee", null ],
       [ "query", "classturi_1_1sketches_1_1streaming__quantile__sketch.html#ad3c7cd3f4700ad7e34a1aa989ceecbd0", null ],
       [ "query_quantile", "classturi_1_1sketches_1_1streaming__quantile__sketch.html#afe1017a878bcaddf2563aa1127fe071b", null ],
-      [ "size", "classturi_1_1sketches_1_1streaming__quantile__sketch.html#a9b8fa6383412a167612f09a999117b0f", null ],
+      [ "size", "classturi_1_1sketches_1_1streaming__quantile__sketch.html#ac4662c34ccfb634623e1ed44bfea39f2", null ],
       [ "sketch_size", "classturi_1_1sketches_1_1streaming__quantile__sketch.html#a176a093e626a9cb0fad99123734ff638", null ],
       [ "substream_finalize", "classturi_1_1sketches_1_1streaming__quantile__sketch.html#a73aa96ce21c702683f43b9efef052ef9", null ]
     ] ]

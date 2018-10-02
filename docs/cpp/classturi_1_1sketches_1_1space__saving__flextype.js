@@ -5,5 +5,5 @@ var classturi_1_1sketches_1_1space__saving__flextype =
     [ "combine", "classturi_1_1sketches_1_1space__saving__flextype.html#a835acb006448a4095e853107f3964a78", null ],
     [ "frequent_items", "classturi_1_1sketches_1_1space__saving__flextype.html#af43635d2ac185a5ca87b0a5c87eac315", null ],
     [ "guaranteed_frequent_items", "classturi_1_1sketches_1_1space__saving__flextype.html#a2b4da552eb9d04f9a084419ddae2774b", null ],
-    [ "size", "classturi_1_1sketches_1_1space__saving__flextype.html#a182f50cc03eccb3a4890c5c6cbc3010f", null ]
+    [ "size", "classturi_1_1sketches_1_1space__saving__flextype.html#abdb28c76edeaf5500b6d12b44ff2f56e", null ]
 ];

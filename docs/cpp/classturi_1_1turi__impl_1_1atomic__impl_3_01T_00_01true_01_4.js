@@ -10,7 +10,7 @@ var classturi_1_1turi__impl_1_1atomic__impl_3_01T_00_01true_01_4 =
     [ "inc", "classturi_1_1turi__impl_1_1atomic__impl_3_01T_00_01true_01_4.html#ac19e588783e46f5988936ed9b70cd21d", null ],
     [ "inc_ret_last", "classturi_1_1turi__impl_1_1atomic__impl_3_01T_00_01true_01_4.html#a5467e5f6c9d35ca692afccf56ae96d04", null ],
     [ "inc_ret_last", "classturi_1_1turi__impl_1_1atomic__impl_3_01T_00_01true_01_4.html#a4a7817f62e05d7b7a6e52b998b593681", null ],
-    [ "operator T", "classturi_1_1turi__impl_1_1atomic__impl_3_01T_00_01true_01_4.html#afc9bd16001ad18c1a8c77a6edd6c6b43", null ],
+    [ "operator T", "classturi_1_1turi__impl_1_1atomic__impl_3_01T_00_01true_01_4.html#a8608c5d7d18b7cdbe991f586621ffc3e", null ],
     [ "operator++", "classturi_1_1turi__impl_1_1atomic__impl_3_01T_00_01true_01_4.html#ae5ec188d26b47ca40a64d60ac6ef6154", null ],
     [ "operator++", "classturi_1_1turi__impl_1_1atomic__impl_3_01T_00_01true_01_4.html#ab473e44ffb142c4c3d83cb31a07e0a96", null ],
     [ "operator+=", "classturi_1_1turi__impl_1_1atomic__impl_3_01T_00_01true_01_4.html#aeaf3cb98f2206db7ad52f04652ecb141", null ],

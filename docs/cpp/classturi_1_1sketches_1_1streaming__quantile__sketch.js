@@ -11,7 +11,7 @@ var classturi_1_1sketches_1_1streaming__quantile__sketch =
     [ "memory_usage", "classturi_1_1sketches_1_1streaming__quantile__sketch.html#a0dd7042e123872ecb9a6993ae5cb7fee", null ],
     [ "query", "classturi_1_1sketches_1_1streaming__quantile__sketch.html#ad3c7cd3f4700ad7e34a1aa989ceecbd0", null ],
     [ "query_quantile", "classturi_1_1sketches_1_1streaming__quantile__sketch.html#afe1017a878bcaddf2563aa1127fe071b", null ],
-    [ "size", "classturi_1_1sketches_1_1streaming__quantile__sketch.html#a9b8fa6383412a167612f09a999117b0f", null ],
+    [ "size", "classturi_1_1sketches_1_1streaming__quantile__sketch.html#ac4662c34ccfb634623e1ed44bfea39f2", null ],
     [ "sketch_size", "classturi_1_1sketches_1_1streaming__quantile__sketch.html#a176a093e626a9cb0fad99123734ff638", null ],
     [ "substream_finalize", "classturi_1_1sketches_1_1streaming__quantile__sketch.html#a73aa96ce21c702683f43b9efef052ef9", null ]
 ];

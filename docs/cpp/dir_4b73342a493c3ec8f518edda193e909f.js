@@ -7,7 +7,6 @@ var dir_4b73342a493c3ec8f518edda193e909f =
     [ "lambda_interface.hpp", "lambda__interface_8hpp_source.html", null ],
     [ "lambda_master.hpp", "lambda__master_8hpp_source.html", null ],
     [ "lambda_utils.hpp", "lambda__utils_8hpp_source.html", null ],
-    [ "lualambda_master.hpp", "lualambda__master_8hpp_source.html", null ],
     [ "pylambda.hpp", "pylambda_8hpp_source.html", null ],
     [ "pylambda_function.hpp", "pylambda__function_8hpp_source.html", null ],
     [ "pylambda_worker.hpp", "pylambda__worker_8hpp_source.html", null ],
