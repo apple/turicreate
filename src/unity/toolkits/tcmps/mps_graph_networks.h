@@ -37,14 +37,11 @@ struct MPSGraphNetwork {
   virtual ~MPSGraphNetwork();
   void Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> _Nonnull cmd_queue,
             GraphMode mode,
-            const FloatArrayMap &config,
-            const FloatArrayMap &weights);
+            const float_array_map& config, const float_array_map& weights);
   MPSImageBatch * _Nonnull RunGraph(id<MTLCommandBuffer>_Nonnull  cb, MPSImageBatch *_Nonnull src,
                           MPSCNNLossLabelsBatch *_Nonnull loss_state);
   MPSImageBatch * _Nonnull RunGraph(id<MTLCommandBuffer> _Nonnull  cb, NSDictionary *_Nonnull inputs);
-  void
-  Export(std::unordered_map<std::string, std::tuple<std::string, float *, int,
-                                                    std::vector<int>>> &table);
+  float_array_map Export() const;
   int NumParams();
   MPSNNGraph *_Nonnull  graph;
   MPSNNImageNode *_Nonnull  input_node;
@@ -54,7 +51,7 @@ struct MPSGraphNetwork {
 // Factory function to create a network
 std::unique_ptr<MPSGraphNetwork> createNetworkGraph(
     GraphNetworkType network_id, const std::vector<int> &params,
-    const FloatArrayMap &config);
+    const float_array_map& config);
 
 // Various networks
 // ---------------------------------------------------------------------------------------------
@@ -65,7 +62,8 @@ std::unique_ptr<MPSGraphNetwork> createNetworkGraph(
 // ---------------------------------------------------------------------------------------------
 
 struct SingleConvNetworkGraph : public MPSGraphNetwork {
-  SingleConvNetworkGraph(const std::vector<int> &iparam, const FloatArrayMap& config) {
+  SingleConvNetworkGraph(const std::vector<int> &iparam,
+                         const float_array_map& config) {
     int n = iparam[0];
     int hi = iparam[1];
     int wi = iparam[2];
@@ -81,7 +79,8 @@ struct SingleConvNetworkGraph : public MPSGraphNetwork {
 };
 
 struct SingleReLUNetworkGraph : public MPSGraphNetwork {
-  SingleReLUNetworkGraph(const std::vector<int> &iparam, const FloatArrayMap& config) {
+  SingleReLUNetworkGraph(const std::vector<int> &iparam,
+                         const float_array_map& config) {
     int n = iparam[0];
     int hi = iparam[1];
     int wi = iparam[2];
@@ -96,7 +95,8 @@ struct SingleReLUNetworkGraph : public MPSGraphNetwork {
 };
 
 struct SingleBNNetworkGraph : public MPSGraphNetwork {
-  SingleBNNetworkGraph(const std::vector<int> &iparam, const FloatArrayMap& config) {
+  SingleBNNetworkGraph(const std::vector<int> &iparam,
+                       const float_array_map& config) {
     int n = iparam[0];
     int hi = iparam[1];
     int wi = iparam[2];
@@ -110,7 +110,8 @@ struct SingleBNNetworkGraph : public MPSGraphNetwork {
 };
 
 struct SingleMPNetworkGraph : public MPSGraphNetwork {
-  SingleMPNetworkGraph(const std::vector<int> &iparam, const FloatArrayMap& config) {
+  SingleMPNetworkGraph(const std::vector<int> &iparam,
+                       const float_array_map& config) {
     layers.resize(1);
     int n = iparam[0];
     int hi = iparam[1];
@@ -127,7 +128,8 @@ struct SingleMPNetworkGraph : public MPSGraphNetwork {
 };
 
 struct ODNetworkGraph : public MPSGraphNetwork {
-  ODNetworkGraph(const std::vector<int> &iparam, const FloatArrayMap& config) {
+  ODNetworkGraph(const std::vector<int> &iparam,
+                 const float_array_map& config) {
     int n = iparam[0];
     int hi = iparam[1];
     int wi = iparam[2];

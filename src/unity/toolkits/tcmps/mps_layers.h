@@ -8,6 +8,8 @@
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
+
+#import <map>
 #import <string>
 #import <unordered_map>
 #import <vector>
@@ -126,13 +128,10 @@ struct Layer {
   virtual void Backward(MPSImageBatch *_Nonnull src,
                         id<MTLCommandBuffer> _Nonnull cb) = 0;
   virtual void Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
-                    const FloatArrayMap &config, bool is_train,
+                    const float_array_map& config, bool is_train,
                     LowLevelMode net_mode, bool is_output_layer) = 0;
-  virtual void Load(const FloatArrayMap &weights) {}
-  virtual void
-  Export(std::unordered_map<std::string, std::tuple<std::string, float *, int,
-                                                    std::vector<int>>> &table) {
-  }
+  virtual void Load(const float_array_map& weights) {}
+  virtual float_array_map Export() const { return float_array_map(); }
   virtual void Update(MPSUpdater *_Nonnull updater, int lid) {}
   virtual void GpuUpdate(id<MTLCommandBuffer> _Nonnull cb) {}
 
@@ -202,16 +201,15 @@ virtual void AllocImage(id<MTLDevice> _Nonnull device , bool is_train = true) {
 
   virtual ~Layer() {}
 
-  void _Load(const std::string &key,
-             const FloatArrayMap &weights, int dst_size,
-             float *_Nonnull dst) {
+  void _Load(const std::string &key, const float_array_map& weights,
+             int dst_size, float *_Nonnull dst) {
     if (weights.count(key) > 0) {
-      const FloatArray &arr = weights.at(key);
+      const shared_float_array &arr = weights.at(key);
       LogStdString("Loading weight: " + key);
-      assert(arr.size == dst_size);
+      assert(arr.size() == dst_size);
       size_t size = dst_size * sizeof(float);
       void *dest = (void *)dst;
-      void *src = (void *)arr.data;
+      const float* src = arr.data();
       std::memcpy(dest, src, size);
     }
   }
@@ -278,7 +276,8 @@ struct ReLULayer : public Layer {
   void Backward(MPSImageBatch *_Nonnull src,
                 id<MTLCommandBuffer> _Nonnull cb) override;
   void Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
-            const FloatArrayMap &config, bool is_train, LowLevelMode net_mode, bool is_output_layer) override;
+            const float_array_map& config, bool is_train,
+            LowLevelMode net_mode, bool is_output_layer) override;
 
   // content
   MPSCNNNeuronReLU *_Nonnull op_forward;
@@ -304,13 +303,11 @@ struct ConvLayer : public Layer {
   void Backward(MPSImageBatch *_Nonnull src,
                 id<MTLCommandBuffer> _Nonnull cb) override;
   void Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
-            const FloatArrayMap &config, bool is_train, LowLevelMode net_mode, bool is_output_layer) override;
-  void Load(const FloatArrayMap &weights) override;
+            const float_array_map& config, bool is_train, LowLevelMode net_mode,
+            bool is_output_layer) override;
+  void Load(const float_array_map& weights) override;
 
-  void
-  Export(std::unordered_map<
-         std::string, std::tuple<std::string, float *, int, std::vector<int>>>
-             &table) override;
+  float_array_map Export() const override;
   void Update(MPSUpdater *_Nonnull updater, int lid) override;
   void GpuUpdate(id<MTLCommandBuffer> _Nonnull cb) override;
 
@@ -343,12 +340,10 @@ struct BNLayer : public Layer {
   void Backward(MPSImageBatch *_Nonnull src,
                 id<MTLCommandBuffer> _Nonnull cb) override;
   void Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
-            const FloatArrayMap &config, bool is_train, LowLevelMode net_mode, bool is_output_layer) override;
-  void Load(const FloatArrayMap &weights) override;
-  void
-  Export(std::unordered_map<
-         std::string, std::tuple<std::string, float *, int, std::vector<int>>>
-             &table) override;
+            const float_array_map& config, bool is_train, LowLevelMode net_mode,
+            bool is_output_layer) override;
+  void Load(const float_array_map& weights) override;
+  float_array_map Export() const override;
 
   void Update(MPSUpdater *_Nonnull updater, int lid) override;
   void GpuUpdate(id<MTLCommandBuffer> _Nonnull cb) override;
@@ -383,7 +378,8 @@ struct MaxPoolLayer : public Layer {
   void Backward(MPSImageBatch *_Nonnull src,
                 id<MTLCommandBuffer> _Nonnull cb) override;
   void Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
-            const FloatArrayMap &config, bool is_train, LowLevelMode net_mode, bool is_output_layer) override;
+            const float_array_map& config, bool is_train, LowLevelMode net_mode,
+            bool is_output_layer) override;
 
   MPSCNNPoolingMax *_Nonnull op_forward;
   MPSCNNPoolingMaxGradient *_Nullable op_backward{nil};
@@ -411,7 +407,8 @@ struct DropOutLayer : public Layer {
   void Backward(MPSImageBatch *_Nonnull src,
                 id<MTLCommandBuffer> _Nonnull cb) override;
   void Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
-            const FloatArrayMap &config, bool is_train, LowLevelMode net_mode, bool is_output_layer) override;
+            const float_array_map& config, bool is_train, LowLevelMode net_mode,
+            bool is_output_layer) override;
 
   // content
   MPSCNNDropout *_Nonnull op_forward;
@@ -440,7 +437,8 @@ struct SoftMaxLayer : public Layer {
   void Backward(MPSImageBatch *_Nonnull src,
                 id<MTLCommandBuffer> _Nonnull cb) override;
   void Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
-            const FloatArrayMap &config, bool is_train, LowLevelMode net_mode, bool is_output_layer) override;
+            const float_array_map& config, bool is_train, LowLevelMode net_mode,
+            bool is_output_layer) override;
 
   // content
   MPSCNNSoftMax *_Nonnull op_forward;
@@ -469,7 +467,7 @@ struct SmceLossLayer : public LossLayer {
                     MPSCNNLossLabelsBatch *_Nonnull labels,
                     id<MTLCommandBuffer> _Nonnull cb) override;
   void Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
-            const FloatArrayMap &config, bool is_train = true,
+            const float_array_map& config, bool is_train = true,
             LowLevelMode net_mode = kLowLevelModeTrain, bool is_output_layer = true) override;
 
   // content
@@ -498,12 +496,10 @@ struct LstmLayer : public Layer {
   void Backward(MPSImageBatch *_Nonnull src,
                 id<MTLCommandBuffer> _Nonnull cb) override;
   void Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
-            const FloatArrayMap &config, bool is_train, LowLevelMode net_mode, bool is_output_layer) override;
-  void Load(const FloatArrayMap &weights) override;
-  void
-  Export(std::unordered_map<
-         std::string, std::tuple<std::string, float *, int, std::vector<int>>>
-         &table) override;
+            const float_array_map& config, bool is_train, LowLevelMode net_mode,
+            bool is_output_layer) override;
+  void Load(const float_array_map& weights) override;
+  float_array_map Export() const override;
   void GpuUpdate(id<MTLCommandBuffer> _Nonnull cb) override;
   
 private:

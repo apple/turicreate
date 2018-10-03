@@ -32,8 +32,8 @@ void ReLUGraphLayer::InitBwd(MPSNNImageNode *src) {
 // ------------------------------------------------------------------------------------
 void ConvGraphLayer::Init(id<MTLDevice> _Nonnull device,
                           id<MTLCommandQueue> cmd_queue,
-                          const FloatArrayMap &config,
-                          const FloatArrayMap &weights) {
+                          const float_array_map& config,
+                          const float_array_map& weights) {
   assert(iparams.size() >= 8);
   int k_h = iparams[0];
   int k_w = iparams[1];
@@ -51,11 +51,11 @@ void ConvGraphLayer::Init(id<MTLDevice> _Nonnull device,
   // TODO: force has key
   if (weights.count(weight_key) > 0) {
     LogStdString("Loading " + weight_key);
-    init_w = weights.at(weight_key).data;
+    init_w = const_cast<float*>(weights.at(weight_key).data());
   }
   if (weights.count(bias_key) > 0) {
     LogStdString("Loading " + bias_key);
-    init_b = weights.at(bias_key).data;
+    init_b = const_cast<float*>(weights.at(bias_key).data());
   }
 
   weight = [TCMPSConvolutionWeights alloc];
@@ -98,22 +98,22 @@ void ConvGraphLayer::SetLearningRate(float lr) {
   [weight setLearningRate:lr];
 }
 
-void ConvGraphLayer::Export(
-    std::unordered_map<std::string,
-                       std::tuple<std::string, float *, int, std::vector<int>>>
-        &table) {
-  int k_h = iparams[0];
-  int k_w = iparams[1];
-  int c_in = iparams[2];
-  int c_out = iparams[3];
+float_array_map ConvGraphLayer::Export() const {
+  float_array_map table;
+  size_t k_h = iparams[0];
+  size_t k_w = iparams[1];
+  size_t c_in = iparams[2];
+  size_t c_out = iparams[3];
   [weight load];
   std::string weight_key = name + "_weight";
-  table[weight_key] = {
-      weight_key, (float *)[weight weights], 4, {c_out, k_h, k_w, c_in}};
+  table[weight_key] = shared_float_array::copy(
+      reinterpret_cast<float*>([weight weights]), {c_out, k_h, k_w, c_in});
   if (use_bias) {
     std::string bias_key = name + "_bias";
-    table[bias_key] = {bias_key, (float *)[weight biasTerms], 1, {c_out}};
+    table[bias_key] = shared_float_array::copy(
+        reinterpret_cast<float*>([weight biasTerms]), {c_out});
   }
+  return table;
 }
 
 // MaxPoolGraphLayer Layer
@@ -142,8 +142,8 @@ void MaxPoolGraphLayer::InitBwd(MPSNNImageNode *src) {
 
 // BN Layer
 void BNGraphLayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_queue,
-                        const FloatArrayMap &config,
-                        const FloatArrayMap &weights) {
+                        const float_array_map& config,
+                        const float_array_map& weights) {
   assert(ishape.size() == 4);
   int ch = ishape[3];
 
@@ -158,19 +158,19 @@ void BNGraphLayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q
   // TODO: force has key
   if (weights.count(gamma_key) > 0) {
     LogStdString("Loading " + gamma_key);
-    init_gamma = weights.at(gamma_key).data;
+    init_gamma = const_cast<float*>(weights.at(gamma_key).data());
   }
   if (weights.count(beta_key) > 0) {
     LogStdString("Loading " + beta_key);
-    init_beta = weights.at(beta_key).data;
+    init_beta = const_cast<float*>(weights.at(beta_key).data());
   }
   if (weights.count(mv_key) > 0) {
     LogStdString("Loading " + mv_key);
-    init_mv = weights.at(mv_key).data;
+    init_mv = const_cast<float*>(weights.at(mv_key).data());
   }
   if (weights.count(ma_key) > 0) {
     LogStdString("Loading " + ma_key);
-    init_ma = weights.at(ma_key).data;
+    init_ma = const_cast<float*>(weights.at(ma_key).data());
   }
   
   float batchNormEpsilon = get_array_map_scalar(config, "batch_norm_epsilon", 1e-5f);
@@ -188,20 +188,23 @@ void BNGraphLayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q
                batchNormEpsilon:batchNormEpsilon];
 }
 
-void BNGraphLayer::Export(
-    std::unordered_map<std::string,
-                       std::tuple<std::string, float *, int, std::vector<int>>>
-        &table) {
+float_array_map BNGraphLayer::Export() const {
+  float_array_map table;
+
   std::string gamma_key = name + "_gamma";
   std::string beta_key = name + "_beta";
   std::string var_key = name + "_running_var";
   std::string mean_key = name + "_running_mean";
-  int num_channel = ishape[3];
+  size_t num_channel = ishape[3];
+
   [data load];
-  table[gamma_key] = {gamma_key, (float *)[data gamma], 1, {num_channel}};
-  table[beta_key] = {beta_key, (float *)[data beta], 1, {num_channel}};
-  table[var_key] = {var_key, (float *)[data variance], 1, {num_channel}};
-  table[mean_key] = {mean_key, (float *)[data mean], 1, {num_channel}};
+
+  table[gamma_key] = shared_float_array::copy([data gamma], {num_channel});
+  table[beta_key] = shared_float_array::copy([data beta], {num_channel});
+  table[var_key] = shared_float_array::copy([data variance], {num_channel});
+  table[mean_key] = shared_float_array::copy([data mean], {num_channel});
+
+  return table;
 }
 
 void BNGraphLayer::InitFwd(MPSNNImageNode *src) {
@@ -244,15 +247,18 @@ YoloLossGraphLayer::YoloLossGraphLayer(std::string layer_name, std::vector<int> 
 }
 
 void YoloLossGraphLayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_queue,
-                              const FloatArrayMap &config,
-                              const FloatArrayMap &weights) {
+                              const float_array_map& config,
+                              const float_array_map& weights) {
 
   if (config.count("od_anchors")) {
-    const FloatArray& arr = config.at("od_anchors");
-    if (arr.size % 2 == 0 && arr.size > 0) {
+    const shared_float_array& arr = config.at("od_anchors");
+    const size_t size = arr.size();
+    const float* const data = arr.data();
+    if (size % 2 == 0 && size > 0) {
       options_.anchor_boxes.clear();
-      for (size_t b = 0; b < arr.size / 2; ++b) {
-        options_.anchor_boxes.push_back(simd::make_float2(arr.data[b * 2], arr.data[b * 2 + 1]));
+      for (size_t b = 0; b < size / 2; ++b) {
+        options_.anchor_boxes.push_back(simd::make_float2(data[b * 2],
+                                                          data[b * 2 + 1]));
       }
     } else {
       // TODO: Raise exception
@@ -301,8 +307,9 @@ void YoloLossGraphLayer::InitBwd(MPSNNImageNode *src) {
   bwd_img_node = fwd_img_node;
 }
 
-MPSCNNLossLabelsBatch *YoloLossGraphLayer::CreateLossState(id<MTLDevice> _Nonnull device,
-                                                      float *data) const {
+MPSCNNLossLabelsBatch *YoloLossGraphLayer::CreateLossState(
+    id<MTLDevice> _Nonnull device, const float_array &labels_array) const {
+  const float* data = labels_array.data();
   MPSCNNLossLabelsBatch *loss_state = @[];
   int batch_size = oshape[0];
   MTLSize loss_image_size = {1, 1, 1};
