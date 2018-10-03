@@ -3184,6 +3184,7 @@ class SArrayTest(unittest.TestCase):
         x = SArray(['dog', 'cat', 'cow', 'horse'])
         self.assertTrue(np.array_equal(x.filter_by(['cat', 'hamster', 'dog', 'fish', 'bird', 'snake']), SArray(['dog', 'cat'])))
         self.assertTrue(np.array_equal(x.filter_by(['cat', 'hamster', 'dog', 'fish', 'bird', 'snake'], exclude=True), SArray(['horse', 'cow'])))
+        self.assertTrue(np.array_equal(x.filter_by('dog'), SArray(['dog'])))
     
     
 
