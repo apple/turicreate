@@ -45,6 +45,10 @@ flex_int scatter::get_rows_processed() const{
   return m_sf.size();
 }
 
+flex_int scatter::get_total_rows() const{
+  return m_sf.size();
+}
+
 size_t scatter::get_batch_size() const{
   return m_sf.size();
 }

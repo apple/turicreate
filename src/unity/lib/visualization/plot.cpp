@@ -42,22 +42,29 @@ namespace turi{
       do {
         m_transformer->get()->vega_column_data();
       } while(!m_transformer->eof());
+      DASSERT_EQ(get_percent_complete(), 1.0);
+    }
+
+    bool Plot::finished_streaming() {
+      return m_transformer->eof();
+    }
+
+    double Plot::get_percent_complete() {
+      return m_transformer->get_percent_complete();
+    }
+
+    std::string Plot::get_next_data() {
+      vega_data vd;
+      vd << m_transformer->get()->vega_column_data();
+      return vd.get_data_spec(get_percent_complete());
     }
 
     std::string Plot::get_data() {
       this->materialize();
+      DASSERT_TRUE(m_transformer->eof());
       vega_data vd;
-
-      while(true) {
-        vd << m_transformer->get()->vega_column_data();
-        if (m_transformer->eof()) {
-          break;
-        }
-      }
-
-      std::stringstream ss;
-      ss << vd.get_data_spec(100);
-      return ss.str();
+      vd << m_transformer->get()->vega_column_data();
+      return vd.get_data_spec(100 /* percent_complete */);
     }
 
     std::string Plot::get_spec() {

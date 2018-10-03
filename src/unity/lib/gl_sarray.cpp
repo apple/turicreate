@@ -378,7 +378,7 @@ bool gl_sarray::empty() const {
 flex_type_enum gl_sarray::dtype() const {
   return get_proxy()->dtype();
 }
-void gl_sarray::materialize() {
+void gl_sarray::materialize() const {
   get_proxy()->materialize();
 }
 bool gl_sarray::is_materialized() const {

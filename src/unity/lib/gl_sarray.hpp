@@ -657,7 +657,7 @@ class gl_sarray {
    *
    *  \see is_materialized
    */
-  void materialize();
+  void materialize() const;
 
   /**
    * Returns whether or not the sarray has been materialized.

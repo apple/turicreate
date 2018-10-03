@@ -17,8 +17,8 @@ namespace turi {
       get_toolkit_function_registration();
 
     std::shared_ptr<Plot> plot(const std::string& path_to_client,
-              gl_sarray& x,
-              gl_sarray& y,
+              const gl_sarray& x,
+              const gl_sarray& y,
               const std::string& xlabel,
               const std::string& ylabel,
               const std::string& title);
