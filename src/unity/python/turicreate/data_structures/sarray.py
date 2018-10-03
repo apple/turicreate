@@ -4466,11 +4466,7 @@ class SArray(object):
         
         with cython_context():
             if exclude:
-                
                 id_name = "id"
-                # Make sure this name is unique so we know what to remove in
-                # the result
-                
                 value_sf = value_sf.add_row_number(id_name)
                 tmp = _SFrame(_proxy=sarray_sf.__proxy__.join(value_sf.__proxy__,
                                                         'left',
