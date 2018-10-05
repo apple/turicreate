@@ -25,8 +25,8 @@ namespace turi {
         std::string get_spec();
 
         // streaming data aggregation
-        double get_percent_complete(); // out of 1.0
-        bool finished_streaming();
+        double get_percent_complete() const; // out of 1.0
+        bool finished_streaming() const;
         std::string get_next_data();
 
         // non-streaming data aggregation: causes full materialization

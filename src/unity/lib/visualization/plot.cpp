@@ -45,11 +45,11 @@ namespace turi{
       DASSERT_EQ(get_percent_complete(), 1.0);
     }
 
-    bool Plot::finished_streaming() {
+    bool Plot::finished_streaming() const {
       return m_transformer->eof();
     }
 
-    double Plot::get_percent_complete() {
+    double Plot::get_percent_complete() const {
       return m_transformer->get_percent_complete();
     }
 
