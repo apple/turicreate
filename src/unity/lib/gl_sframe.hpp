@@ -527,7 +527,7 @@ class gl_sframe {
   /**
    * Return a plot object of the SFrame (same visualization as `show`)
    */
-  std::shared_ptr<model_base> plot(const std::string& path_to_client) const;
+  std::shared_ptr<model_base> plot() const;
 
   /**
    * Constructs a gl_sframe from an in-memory map of values

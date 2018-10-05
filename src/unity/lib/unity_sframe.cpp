@@ -1621,24 +1621,24 @@ void unity_sframe::show(const std::string& path_to_client) {
   using namespace turi;
   using namespace turi::visualization;
 
-  std::shared_ptr<Plot> plt = std::dynamic_pointer_cast<Plot>(this->plot(path_to_client));
+  std::shared_ptr<Plot> plt = std::dynamic_pointer_cast<Plot>(this->plot());
 
   if(plt != nullptr){
-    plt->show();
+    plt->show(path_to_client);
   }
 #else
   std_log_and_throw(std::runtime_error, "Turi Create compiled with visualizations disabled.");
 #endif
 }
 
-std::shared_ptr<model_base> unity_sframe::plot(const std::string& path_to_client){
+std::shared_ptr<model_base> unity_sframe::plot(){
 #if(TC_BUILD_VISUALIZATION_CLIENT)
   using namespace turi;
   using namespace turi::visualization;
 
   std::shared_ptr<unity_sframe_base> self = this->select_columns(this->column_names());
 
-  return plot_columnwise_summary(path_to_client, self);
+  return plot_columnwise_summary(self);
 #else
   std_log_and_throw(std::runtime_error, "Turi Create compiled with visualizations disabled.");
 #endif

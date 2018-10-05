@@ -16,7 +16,7 @@ namespace turi {
     std::vector<toolkit_function_specification>
       get_toolkit_function_registration();
 
-    std::shared_ptr<Plot> plot(const std::string& path_to_client,
+    std::shared_ptr<Plot> plot(
               const gl_sarray& x,
               const gl_sarray& y,
               const std::string& xlabel,

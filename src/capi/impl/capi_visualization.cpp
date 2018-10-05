@@ -28,7 +28,7 @@ extern "C" {
         CHECK_NOT_NULL(error, x_axis_title, "x_axis_title", NULL);
         CHECK_NOT_NULL(error, y_axis_title, "y_axis_title", NULL);
 
-        std::shared_ptr<turi::model_base> plot = sa->value.plot("" /* path_to_client */, title, x_axis_title, y_axis_title);
+        std::shared_ptr<turi::model_base> plot = sa->value.plot(title, x_axis_title, y_axis_title);
         return new_tc_plot(std::dynamic_pointer_cast<turi::visualization::Plot>(plot));
 
         ERROR_HANDLE_END(error, NULL);
@@ -52,7 +52,6 @@ extern "C" {
         CHECK_NOT_NULL(error, y_axis_title, "y_axis_title", NULL);
 
         std::shared_ptr<turi::model_base> plot = turi::visualization::plot(
-            "" /* path_to_client */,
             sa_x->value,
             sa_y->value,
             x_axis_title,
@@ -71,7 +70,7 @@ extern "C" {
 
         CHECK_NOT_NULL(error, sf, "sframe", NULL);
 
-        std::shared_ptr<turi::model_base> plot = sf->value.plot("" /* path_to_client */);
+        std::shared_ptr<turi::model_base> plot = sf->value.plot();
         return new_tc_plot(std::dynamic_pointer_cast<turi::visualization::Plot>(plot));
         
         ERROR_HANDLE_END(error, NULL);

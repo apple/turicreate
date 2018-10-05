@@ -87,7 +87,7 @@ std::string scatter_result::vega_column_data(bool sframe) const {
 }
 
 
-std::shared_ptr<Plot> turi::visualization::plot_scatter(const std::string& path_to_client,
+std::shared_ptr<Plot> turi::visualization::plot_scatter(
                                        const gl_sarray& x,
                                        const gl_sarray& y,
                                        const std::string& xlabel,
@@ -113,7 +113,7 @@ std::shared_ptr<Plot> turi::visualization::plot_scatter(const std::string& path_
   sct.init(temp_sf);
 
   std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<scatter>(sct);
-  return std::make_shared<Plot>(path_to_client, scatter_specification, shared_unity_transformer, size_array);
+  return std::make_shared<Plot>(scatter_specification, shared_unity_transformer, size_array);
 
 }
 

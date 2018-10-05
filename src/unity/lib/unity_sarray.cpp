@@ -2955,14 +2955,14 @@ void unity_sarray::show(const std::string& path_to_client,
   using namespace turi;
   using namespace turi::visualization;
 
-  std::shared_ptr<Plot> plt = std::dynamic_pointer_cast<Plot>(this->plot(path_to_client, _title, _xlabel, _ylabel));
+  std::shared_ptr<Plot> plt = std::dynamic_pointer_cast<Plot>(this->plot(_title, _xlabel, _ylabel));
 
   if(plt != nullptr){
-    plt->show();
+    plt->show(path_to_client);
   }
 }
 
-std::shared_ptr<model_base> unity_sarray::plot(const std::string& path_to_client,
+std::shared_ptr<model_base> unity_sarray::plot(
                         const std::string& _title,
                         const std::string& _xlabel,
                         const std::string& _ylabel) {
@@ -2982,9 +2982,9 @@ std::shared_ptr<model_base> unity_sarray::plot(const std::string& path_to_client
   switch (self->dtype()) {
     case flex_type_enum::INTEGER:
     case flex_type_enum::FLOAT:
-      return plot_histogram(path_to_client, sa, _xlabel, _ylabel, _title);
+      return plot_histogram(sa, _xlabel, _ylabel, _title);
     case flex_type_enum::STRING:
-      return plot_item_frequency(path_to_client, sa, _xlabel, _ylabel, _title);
+      return plot_item_frequency(sa, _xlabel, _ylabel, _title);
     default:
       log_and_throw(std::string("SArray.plot is currently not available for SArrays of type ") + flex_type_enum_to_name(self->dtype()));
       return nullptr;

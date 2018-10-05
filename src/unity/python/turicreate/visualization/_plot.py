@@ -3,6 +3,7 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import json as _json
 import os as _os
+import sys as _sys
 from tempfile import mkstemp as _mkstemp
 from subprocess import Popen as _Popen
 from subprocess import PIPE as _PIPE
@@ -13,6 +14,19 @@ _SUCCESS = 0
 _CANVAS_PREBUILT_NOT_FOUND_ERROR = 1
 _NODE_NOT_FOUND_ERROR_CODE = 127
 _PERMISSION_DENIED_ERROR_CODE = 243
+
+def _get_client_app_path():
+    (tcviz_dir, _) = _os.path.split(_os.path.dirname(__file__))
+
+    if _sys.platform != 'darwin' and _sys.platform != 'linux2' and _sys.platform != 'linux' :
+        raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
+    
+    if _sys.platform == 'darwin':
+        return _os.path.join(tcviz_dir, 'Turi Create Visualization.app', 'Contents', 'MacOS', 'Turi Create Visualization')
+
+    if _sys.platform == 'linux2' or _sys.platform == 'linux':
+        return _os.path.join(tcviz_dir, 'Turi Create Visualization', 'visualization_client')
+
 
 def _run_cmdline(command):
     # runs a shell command
@@ -108,11 +122,11 @@ class Plot(object):
             pass
         finally:
             if not display:
-                import sys
-                if sys.platform != 'darwin' and sys.platform != 'linux2' and sys.platform != 'linux':
+                if _sys.platform != 'darwin' and _sys.platform != 'linux2' and _sys.platform != 'linux':
                      raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
 
-                self.__proxy__.call_function('show')
+                path_to_client = _get_client_app_path()
+                self.__proxy__.call_function('show', {'path_to_client': path_to_client})
 
     def save(self, filepath):
         """

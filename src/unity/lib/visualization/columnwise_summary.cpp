@@ -3,8 +3,7 @@
 
 namespace turi {
   namespace visualization {
-    std::shared_ptr<Plot> plot_columnwise_summary(
-      const std::string& path_to_client, std::shared_ptr<unity_sframe_base> sf) {
+    std::shared_ptr<Plot> plot_columnwise_summary(std::shared_ptr<unity_sframe_base> sf) {
 
       logprogress_stream << "Materializing SFrame" << std::endl;
       sf->materialize();
@@ -91,7 +90,7 @@ namespace turi {
 
       std::shared_ptr<transformation_base> shared_unity_transformer = std::static_pointer_cast<transformation_base>(summary_view_transformers);
 
-      return std::make_shared<Plot>(path_to_client, summary_view_vega_spec, shared_unity_transformer, (sf->size() * column_transformers.size()));
+      return std::make_shared<Plot>(summary_view_vega_spec, shared_unity_transformer, (sf->size() * column_transformers.size()));
     }
 
   }

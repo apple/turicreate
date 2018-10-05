@@ -39,7 +39,7 @@ class item_frequency : public item_frequency_parent {
     virtual void merge_results(std::vector<item_frequency_result>& transformers) override;
 };
 
-std::shared_ptr<Plot> plot_item_frequency(const std::string& path_to_client, 
+std::shared_ptr<Plot> plot_item_frequency(
   gl_sarray& sa, std::string xlabel, std::string ylabel, 
   std::string title);
 

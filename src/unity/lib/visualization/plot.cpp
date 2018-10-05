@@ -13,12 +13,12 @@
 
 namespace turi{
   namespace visualization{
-    void Plot::show() {
+    void Plot::show(const std::string& path_to_client) {
 
       std::shared_ptr<Plot> self = std::make_shared<Plot>(*this);
 
-      ::turi::visualization::run_thread([self]() {
-        process_wrapper ew(self->m_path_to_client);
+      ::turi::visualization::run_thread([self, path_to_client]() {
+        process_wrapper ew(path_to_client);
         ew << self->m_vega_spec;
 
         while(ew.good()) {

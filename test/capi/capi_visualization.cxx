@@ -84,7 +84,7 @@ class capi_test_visualization {
         void test_1d_plots() {
 
             // numeric histogram (int)
-            std::shared_ptr<model_base> expected_obj_base = m_sa_int->value.plot("", "foo", "bar", "baz");
+            std::shared_ptr<model_base> expected_obj_base = m_sa_int->value.plot("foo", "bar", "baz");
             std::shared_ptr<Plot> expected_obj = std::dynamic_pointer_cast<Plot>(expected_obj_base);
             std::string expected_spec = expected_obj->get_spec();
             tc_error *error = nullptr;
@@ -115,7 +115,7 @@ class capi_test_visualization {
             CAPI_CHECK_ERROR(error);
 
             // numeric histogram (float)
-            expected_obj_base = m_sa_float->value.plot("", "foo", "bar", "baz");
+            expected_obj_base = m_sa_float->value.plot("foo", "bar", "baz");
             expected_obj = std::dynamic_pointer_cast<Plot>(expected_obj_base);
             expected_spec = expected_obj->get_spec();
             error = nullptr;
@@ -146,7 +146,7 @@ class capi_test_visualization {
             CAPI_CHECK_ERROR(error);
 
             // categorical histogram (str)
-            expected_obj_base = m_sa_str->value.plot("", "foo", "bar", "baz");
+            expected_obj_base = m_sa_str->value.plot("foo", "bar", "baz");
             expected_obj = std::dynamic_pointer_cast<Plot>(expected_obj_base);
             expected_spec = expected_obj->get_spec();
             error = nullptr;
@@ -179,7 +179,7 @@ class capi_test_visualization {
 
         void test_2d_plots() {
             // numeric x numeric small (scatter plot)
-            std::shared_ptr<model_base> expected_obj_base = plot("", m_sa_int->value, m_sa_float->value, "bar", "baz", "foo");
+            std::shared_ptr<model_base> expected_obj_base = plot(m_sa_int->value, m_sa_float->value, "bar", "baz", "foo");
             std::shared_ptr<Plot> expected_obj = std::dynamic_pointer_cast<Plot>(expected_obj_base);
             std::string expected_spec = expected_obj->get_spec();
             tc_error *error = nullptr;
@@ -210,7 +210,7 @@ class capi_test_visualization {
             CAPI_CHECK_ERROR(error);
 
             // numeric x numeric large (continuous heat map)
-            expected_obj_base = plot("", m_sa_float_10k->value, m_sa_float_10k->value, "bar", "baz", "foo");
+            expected_obj_base = plot(m_sa_float_10k->value, m_sa_float_10k->value, "bar", "baz", "foo");
             expected_obj = std::dynamic_pointer_cast<Plot>(expected_obj_base);
             expected_spec = expected_obj->get_spec();
             error = nullptr;
@@ -241,7 +241,7 @@ class capi_test_visualization {
             CAPI_CHECK_ERROR(error);
 
             // numeric x categorical (boxes and whiskers)
-            expected_obj_base = plot("", m_sa_float->value, m_sa_str->value, "bar", "baz", "foo");
+            expected_obj_base = plot(m_sa_float->value, m_sa_str->value, "bar", "baz", "foo");
             expected_obj = std::dynamic_pointer_cast<Plot>(expected_obj_base);
             expected_spec = expected_obj->get_spec();
             error = nullptr;
@@ -272,7 +272,7 @@ class capi_test_visualization {
             CAPI_CHECK_ERROR(error);
 
             // categorical x categorical (discrete heat map)
-            expected_obj_base = plot("", m_sa_str->value, m_sa_str->value, "bar", "baz", "foo");
+            expected_obj_base = plot(m_sa_str->value, m_sa_str->value, "bar", "baz", "foo");
             expected_obj = std::dynamic_pointer_cast<Plot>(expected_obj_base);
             expected_spec = expected_obj->get_spec();
             error = nullptr;
@@ -304,7 +304,7 @@ class capi_test_visualization {
         }
 
         void test_sframe_summary_plot() {
-            std::shared_ptr<model_base> expected_obj_base = m_sf_float->value.plot("");
+            std::shared_ptr<model_base> expected_obj_base = m_sf_float->value.plot();
             std::shared_ptr<Plot> expected_obj = std::dynamic_pointer_cast<Plot>(expected_obj_base);
             std::string expected_spec = expected_obj->get_spec();
             tc_error *error = nullptr;

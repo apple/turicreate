@@ -4495,9 +4495,7 @@ class SFrame(object):
 
         >>> plt.show()
         """
-        path_to_client = _get_client_app_path()
-
-        return Plot(self.__proxy__.plot(path_to_client))
+        return Plot(self.__proxy__.plot())
 
     def pack_columns(self, column_names=None, column_name_prefix=None, dtype=list,
                      fill_na=None, remove_prefix=True, new_column_name=None):
