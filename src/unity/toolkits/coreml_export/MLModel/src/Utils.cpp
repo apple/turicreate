@@ -179,7 +179,7 @@ WeightParamType CoreML::getWeightParamType(const Specification::NeuralNetworkLay
                 || valueType(layer.simplerecurrent().recursionmatrix()) == FLOAT16
                 || valueType(layer.simplerecurrent().biasvector()) == FLOAT16)
                 retval = FLOAT16;
-                break;
+            break;
         case Specification::NeuralNetworkLayer::LayerCase::kGru:
             if (valueType(layer.gru().updategateweightmatrix()) == FLOAT16
                 || valueType(layer.gru().resetgateweightmatrix()) == FLOAT16

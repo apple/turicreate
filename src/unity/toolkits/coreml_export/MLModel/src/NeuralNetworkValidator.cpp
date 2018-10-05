@@ -14,6 +14,7 @@
 #include "QuantizationValidationUtils.hpp"
 
 #include <algorithm>
+#include <functional>
 #include <sstream>
 
 namespace CoreML {
