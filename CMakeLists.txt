@@ -225,26 +225,28 @@ if (CLANG)
     set(_cpp11_optional_flags "${_cpp11_optional_flags} -Wno-stdlibcxx-not-found")
   endif()
 
-  set(CPP11_FLAGS "-std=c++11 -stdlib=libc++ -Wno-deprecated-register -Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900 ${_cpp11_optional_flags}" CACHE STRING "C++11 enabling flags")
+  set(CPP11_FLAGS "-std=c++11 -stdlib=libc++ -Wno-deprecated-register -Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900 ${_cpp11_optional_flags}")
 
   set(WERROR_FLAGS "-Werror")
 else()
-set(CPP11_FLAGS "-std=c++11 -Wno-enum-compare -Wno-conversion-null -ftemplate-depth=900" CACHE STRING "C++11 enabling flags")
-set(WERROR_FLAGS "-Werror")
+  # non-clang
+  set(CPP11_FLAGS "-std=c++11 -Wno-enum-compare -Wno-conversion-null -ftemplate-depth=900")
+  set(WERROR_FLAGS "-Werror")
 endif()
+
 # Shared compiler flags used by all builds (debug, profile, release)
 # Allow COMPILER_FLAGS to be used as options from the ./configure without
 # forcing all the other options I want to add to be lost
-set(C_REAL_COMPILER_FLAGS "-Wall -g ${COMPILER_FLAGS}" CACHE STRING "common compiler options")
-set(CPP_REAL_COMPILER_FLAGS "-Wall -g ${CPP11_FLAGS} ${COMPILER_FLAGS}" CACHE STRING "common compiler options")
+set(C_REAL_COMPILER_FLAGS "-Wall -g ${COMPILER_FLAGS}")
+set(CPP_REAL_COMPILER_FLAGS "-Wall -g ${CPP11_FLAGS} ${COMPILER_FLAGS}")
 
 if (CLANG)
   # clang 9.0.0 and earlier will warn (error with -Werror) on unused -pthread during linking
   # so adding only to compile options is what we need.
   add_compile_options(-pthread)
 else()
-  set(C_REAL_COMPILER_FLAGS "${C_REAL_COMPILER_FLAGS} -pthread" CACHE STRING "common compiler options")
-  set(CPP_REAL_COMPILER_FLAGS "${CPP_REAL_COMPILER_FLAGS} -pthread" CACHE STRING "common compiler options")
+  set(C_REAL_COMPILER_FLAGS "${C_REAL_COMPILER_FLAGS} -pthread")
+  set(CPP_REAL_COMPILER_FLAGS "${CPP_REAL_COMPILER_FLAGS} -pthread")
 endif()
 
 # Disable address space randomization for OSX lion and above

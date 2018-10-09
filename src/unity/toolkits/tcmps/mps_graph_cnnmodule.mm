@@ -52,8 +52,8 @@ MPSGraphModule::MPSGraphModule() {
 
 void MPSGraphModule::Init(int network_id, int n, int c_in, int h_in, int w_in,
                           int c_out, int h_out, int w_out,
-                          const FloatArrayMap &config,
-                          const FloatArrayMap &weights) {
+                          const float_array_map& config,
+                          const float_array_map& weights) {
   @autoreleasepool {
     mode_ = (GraphMode)get_array_map_scalar(config, "mode", kGraphModeTrainReturnGrad);
     
@@ -80,8 +80,8 @@ void MPSGraphModule::Init(int network_id, int n, int c_in, int h_in, int w_in,
   }
 }
 
-void MPSGraphModule::StartTrainingBatch(void *ptr, int64_t sz, int64_t *shape,
-                                        int dim, float *labels_ptr) {
+void MPSGraphModule::StartTrainingBatch(const float_array& input_batch,
+                                        const float_array& label_batch) {
   @autoreleasepool {
 
   assert(mode_ == kGraphModeTrain);
@@ -90,8 +90,8 @@ void MPSGraphModule::StartTrainingBatch(void *ptr, int64_t sz, int64_t *shape,
   TCMPSGraphModuleBatch *batch = [[TCMPSGraphModuleBatch alloc] initWithCommandBuffer:cb];
 
   // Copy from raw C inputs to MPS images and loss labels.
-  batch.input = CopyInput(ptr, sz, shape, dim);
-  batch.lossState = CopyLabels(labels_ptr);
+  batch.input = CopyInput(input_batch);
+  batch.lossState = CopyLabels(label_batch);
 
   // Encode the forward-backward pass.
   batch.output = network_->RunGraph(cb, batch.input, batch.lossState);
@@ -134,8 +134,7 @@ void MPSGraphModule::WaitForTrainingBatch(float *loss) {
   }  // @autoreleasepool
 }
 
-void MPSGraphModule::StartInferenceBatch(void *ptr, int64_t sz, int64_t *shape,
-                                         int dim) {
+void MPSGraphModule::StartInferenceBatch(const float_array& input_batch) {
   @autoreleasepool {
 
   assert(mode_ == kGraphModeInference);
@@ -144,7 +143,7 @@ void MPSGraphModule::StartInferenceBatch(void *ptr, int64_t sz, int64_t *shape,
   TCMPSGraphModuleBatch *batch = [[TCMPSGraphModuleBatch alloc] initWithCommandBuffer:cb];
 
   // Copy from raw C inputs to MPS images. Encode the forward pass.
-  batch.input = CopyInput(ptr, sz, shape, dim);
+  batch.input = CopyInput(input_batch);
   batch.output = network_->RunGraph(cb, @{@"input" : batch.input});
 
   // Schedule synchronization of the output from GPU to CPU.
@@ -181,8 +180,7 @@ void MPSGraphModule::WaitForInferenceBatch(float *out_ptr) {
 }
 
 void MPSGraphModule::StartTrainReturnGradBatch(
-    void *ptr, int64_t sz, int64_t *shape, int dim,
-    void *grad_ptr, int64_t grad_sz, int64_t *grad_shape, int grad_dim) {
+    const float_array& input_batch, const float_array& gradient_batch) {
   @autoreleasepool {
 
   assert(mode_ == kGraphModeTrainReturnGrad);
@@ -191,8 +189,8 @@ void MPSGraphModule::StartTrainReturnGradBatch(
   TCMPSGraphModuleBatch *batch = [[TCMPSGraphModuleBatch alloc] initWithCommandBuffer:cb];
 
   // Copy from raw C inputs to MPS images. Encode the forward-backward pass.
-  batch.input = CopyInput(ptr, sz, shape, dim);
-  batch.grad = CopyGrad(grad_ptr, grad_sz, grad_shape, grad_dim);
+  batch.input = CopyInput(input_batch);
+  batch.grad = CopyGrad(gradient_batch);
   batch.output = network_->RunGraph(cb, @{@"input" : batch.input,
                                           @"grad"  : batch.grad   });
 
@@ -230,10 +228,9 @@ void MPSGraphModule::WaitForTrainReturnGradBatch(float *out_ptr) {
   }  // @autoreleasepool
 }
 
-void MPSGraphModule::Export() {
+float_array_map MPSGraphModule::Export() const {
   @autoreleasepool {
-    table_.clear();
-    network_->Export(table_);
+    return network_->Export();
   }
 }
 
@@ -256,8 +253,7 @@ MPSImageBatch *MPSGraphModule::CreateImageBatch(MPSImageDescriptor *desc) {
   return [result copy];
 }
 
-MPSImageBatch *MPSGraphModule::CopyInput(void *ptr, int64_t sz, int64_t *shape,
-                                         int dim) {
+MPSImageBatch *MPSGraphModule::CopyInput(const float_array& input) {
   @autoreleasepool {
     // may check shape
 
@@ -268,13 +264,12 @@ MPSImageBatch *MPSGraphModule::CopyInput(void *ptr, int64_t sz, int64_t *shape,
       // Allocate a new MPSImageBatch if necessary.
       batch = CreateImageBatch(input_desc_);
     }
-    Blob2MPSImage((float *)ptr, batch);
+    Blob2MPSImage(input, batch);
     return batch;
   }
 }
 
-MPSImageBatch *MPSGraphModule::CopyGrad(void *ptr, int64_t sz, int64_t *shape,
-                                        int dim) {
+MPSImageBatch *MPSGraphModule::CopyGrad(const float_array& gradient) {
   @autoreleasepool {
     // may check shape
 
@@ -285,20 +280,22 @@ MPSImageBatch *MPSGraphModule::CopyGrad(void *ptr, int64_t sz, int64_t *shape,
       // Allocate a new MPSImageBatch if necessary.
       batch = CreateImageBatch(output_desc_);
     }
-    Blob2MPSImage((float *)ptr, batch);
+    Blob2MPSImage(gradient, batch);
     return batch;
   }
 }
 
-MPSCNNLossLabelsBatch *MPSGraphModule::CopyLabels(float *ptr) {
+MPSCNNLossLabelsBatch *MPSGraphModule::CopyLabels(const float_array& labels) {
   @autoreleasepool {
-    return network_->loss_layer_->CreateLossState(dev_, ptr);
+    return network_->loss_layer_->CreateLossState(dev_, labels);
   }
 }
 
-void MPSGraphModule::Blob2MPSImage(float *ptr, MPSImageBatch *batch) {
+void MPSGraphModule::Blob2MPSImage(const float_array& blob,
+                                   MPSImageBatch *batch) {
   // add size chcek later
   assert([batch count] > 0);
+  const float* ptr = blob.data();
   MPSImage *img = batch[0];
   int stride = [img width] * [img height] * [img featureChannels];
   for (int i = 0; i < [batch count]; ++i) {

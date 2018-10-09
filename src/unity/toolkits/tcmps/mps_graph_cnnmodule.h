@@ -11,6 +11,8 @@
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 
+#include "mps_float_array.hpp"
+
 #import "mps_utils.h"
 #import "mps_graph_networks.h"
 
@@ -29,8 +31,7 @@ public:
 
   void Init(int network_id, int n, int c_in, int h_in, int w_in, int c_out,
             int h_out, int w_out,
-            const FloatArrayMap &config,
-            const FloatArrayMap &weights);
+            const float_array_map& config, const float_array_map& weights);
 
   // Each call to a Start*Batch function must be paired with a call to a
   // WaitFor*Batch function. These functions must match the graph mode used to
@@ -43,34 +44,29 @@ public:
 
   // Training
   void SetLearningRate(float lr);
-  void StartTrainingBatch(void *ptr, int64_t sz, int64_t *shape, int dim,
-                          float *labels_ptr);
+  void StartTrainingBatch(const float_array& input_batch,
+                          const float_array& label_batch);
   void WaitForTrainingBatch(float *loss);
 
   // Inference
-  void StartInferenceBatch(void *ptr, int64_t sz, int64_t *shape, int dim);
+  void StartInferenceBatch(const float_array& input_batch);
   void WaitForInferenceBatch(float *out_ptr);
 
   // Forward-backward pass with specified input and top-gradient images
-  void StartTrainReturnGradBatch(void *ptr, int64_t sz, int64_t *shape, int dim,
-                                 void *grad_ptr, int64_t grad_sz,
-                                 int64_t *grad_shape, int grad_dim);
+  void StartTrainReturnGradBatch(const float_array& input_batch,
+                                 const float_array& gradient_batch);
   void WaitForTrainReturnGradBatch(float *out_ptr);
 
-  void Export();
+  float_array_map Export() const;
   int NumParams();
-
-  std::unordered_map<std::string,
-                     std::tuple<std::string, float *, int, std::vector<int>>>
-      table_;
 
 private:
   MPSImageBatch *CreateImageBatch(MPSImageDescriptor *desc);
-  MPSImageBatch *CopyInput(void *ptr, int64_t sz, int64_t *shape, int dim);
-  MPSImageBatch *CopyGrad(void *ptr, int64_t sz, int64_t *shape, int dim);
-  MPSCNNLossLabelsBatch *CopyLabels(float *ptr);
+  MPSImageBatch *CopyInput(const float_array& input);
+  MPSImageBatch *CopyGrad(const float_array& gradient);
+  MPSCNNLossLabelsBatch *CopyLabels(const float_array& labels);
 
-  void Blob2MPSImage(float *ptr, MPSImageBatch *batch);
+  void Blob2MPSImage(const float_array& blob, MPSImageBatch *batch);
   void MPSImage2Blob(float *ptr, MPSImageBatch *batch);
 
   id<MTLDevice> dev_;

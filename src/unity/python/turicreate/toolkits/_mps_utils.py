@@ -244,6 +244,116 @@ def _xavier_init(weight):
     return _np.random.uniform(-c, c, shape).astype(_np.float32)
 
 
+class MpsFloatArray(object):
+    """
+    A Python wrapper owning a C++ float_array created by the TCMPS backend.
+
+    This class exists to simplify conversions from numpy to the TCMPS format and
+    to simplify memory management. Instances usually just serve as arguments to
+    the methods on MpsGraphAPI and MpsLowLevelAPI, below.
+    """
+
+    def __init__(self, x):
+        """Wrap a numpy array"""
+
+        assert isinstance(x, _np.ndarray)
+
+        # Load TCMPS backend library.
+        self._LIB = _load_tcmps_lib()
+        assert self._LIB is not None, "Cannot use MpsFloatArray without libtcmps.dylib"
+
+        # Convert the input if necessary to contain a contiguous float array.
+        self.data = x
+        if self.data.dtype != _np.float32:
+            self.data = self.data.astype(_np.float32)
+        if not self.data.flags.c_contiguous:
+            self.data = self.data.copy()
+        assert self.data.flags.c_contiguous, "Data must be row-major"
+
+        # Obtain a pointer to the internal float array (and obtain size).
+        data_ptr = self.data.ctypes.data_as(_ctypes.POINTER(_ctypes.c_void_p))
+        sz = _ctypes.c_size_t(self.data.size)
+
+        # Copy the shape so that it contains a size_t array.
+        self.shape = _np.array(self.data.shape).astype(_np.uintp)
+        shape_ptr = self.shape.ctypes.data_as(_ctypes.POINTER(_ctypes.c_size_t))
+        dim = _ctypes.c_size_t(self.data.ndim)
+
+        # Call into TCMPS to create a wrapper around self.data and self.shape.
+        # Those two properties must outlive the resulting self.handle.
+        self.handle = _ctypes.c_void_p()
+        status_code = self._LIB.TCMPSCreateFloatArray(
+            _ctypes.byref(self.handle), data_ptr, sz, shape_ptr, dim)
+        assert status_code == 0, "Error calling TCMPSCreateFloatArray"
+
+    def __del__(self):
+        status_code = self._LIB.TCMPSDeleteFloatArray(self.handle)
+        assert status_code == 0, "Error calling TCMPSDeleteFloatArray"
+
+class MpsFloatArrayIterator(object):
+    """
+    A Python wrapper owning a sequence of name/float_array pairs output from the
+    TCMPS backend.
+
+    This class exists to simplify conversions from the output of TCMPS export
+    functions. It implements the iterator protocol, so that a Python dict
+    (mapping parameter names for numpy arrays) can be initialized directly from
+    an instance of this class.
+    """
+
+    def __init__(self, handle):
+        """Wrap the output of a TCMPSExport* function."""
+        self._LIB = _load_tcmps_lib()
+        assert self._LIB is not None, "Cannot use MpsFloatArrayIterator without libtcmps.dylib"
+
+        self.handle = handle
+
+    def __del__(self):
+        status_code = self._LIB.TCMPSDeleteFloatArrayMapIterator(self.handle)
+        assert status_code == 0, "Error calling TCMPSDeleteFloatArrayMapIterator"
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        # Create C variables that will serve as out parameters for TCMPS.
+        name_ptr = _ctypes.c_char_p()                    # char* name_ptr
+        data_ptr = _ctypes.POINTER(_ctypes.c_float)()    # float* data_ptr
+        shape_ptr = _ctypes.POINTER(_ctypes.c_size_t)()  # size_t* shape_ptr
+        dim = _ctypes.c_size_t()                         # size_t dim
+
+        # Obtain pointers into memory owned by the C++ object self.handle.
+        status_code = self._LIB.TCMPSNextFloatArray(
+            self.handle, _ctypes.byref(name_ptr), _ctypes.byref(data_ptr),
+            _ctypes.byref(shape_ptr), _ctypes.byref(dim))
+
+        if status_code != 0:
+            raise StopIteration
+
+        # Wrap size_t* as size_t[dim]
+        shape_buf = (_ctypes.c_size_t * dim.value).from_address(
+            _ctypes.addressof(shape_ptr.contents))
+
+        # Convert size_t[dim] to numpy
+        shape = _np.fromiter(shape_buf, _np.uint64, dim.value)
+
+        # Wrap float* to float[size]
+        size = _np.prod(shape)
+        data_buf = (_ctypes.c_float * size).from_address(
+            _ctypes.addressof(data_ptr.contents))
+
+        # Convert float[size] to numpy
+        array = _np.fromiter(data_buf, _np.float32, size).reshape(shape)
+
+        # Convert char* to Python string
+        name = _decode_bytes_to_native_string(name_ptr.value)
+
+        return (name, array)
+
+    def next(self):
+        return self.__next__()
+
+
 #----------------------------------------------------------
 #
 #  MPS Graph level API, currently used by Object detector
@@ -308,54 +418,35 @@ class MpsGraphAPI(object):
         self._ishape = (n, h_in, w_in, c_in)
         self._oshape = (n, h_out, w_out, c_out)
 
-    def prepare_input(self, x, flag=0):
-        if flag == 0:
-            assert x.shape == self._ishape
-        else:
-            assert x.shape == self._oshape
-        if x.dtype != _np.float32:
-            x = x.astype(_np.float32)
-        if not x.flags.c_contiguous:
-            x = x.copy()
-        assert x.flags.c_contiguous, "Input image must be row-major"
-        ptr = x.ctypes.data_as(_ctypes.POINTER(_ctypes.c_void_p))
-        sz = _ctypes.c_int64(x.size)
-        s = _np.array(x.shape).astype(_np.int64)
-        shape = s.ctypes.data_as(_ctypes.POINTER(_ctypes.c_int64))
-        dim = _ctypes.c_int32(x.ndim)
-        return {'_input' : x, '_shape' : s, 'args' : [ptr, sz, shape, dim]}
-
-    def prepare_label(self, t):
-        assert t.shape == self._oshape
-        assert self._is_train, "Pure inference graph does not expect label input"
-        if t.dtype != _np.float32:
-            t = t.astype(_np.float32)
-        if not t.flags.c_contiguous:
-            t = t.copy()
-        assert t.flags.c_contiguous, "Input label must be row-major"
-        ptr = t.ctypes.data_as(_ctypes.POINTER(_ctypes.c_void_p))
-        return {'_label' : t, 'args' : [ptr]}
-
     # Submits an input batch to the model. The model will process the input
     # asynchronously. This call must be matched with a corresponding call to
     # wait_for_batch. Label data is required for models initialized with
     # MpsGraphMode.Train; grad data is required for models initialized with
     # MpsGraphMode.TrainReturnGrad.
     def start_batch(self, input, label=None, grad=None):
+        assert input.shape == self._ishape
+
+        input_array = MpsFloatArray(input)
+
         if self._mode == MpsGraphMode.Train:
-            input_args = self.prepare_input(input, 0)
-            label_args = self.prepare_label(label)
-            args = input_args['args'] + label_args['args']
-            self._LIB.TCMPSStartTrainingBatchGraph(self.handle, *args)
+            assert label is not None, "Training graph requires labels"
+            assert label.shape == self._oshape
+
+            label_array = MpsFloatArray(label)
+            self._LIB.TCMPSStartTrainingBatchGraph(
+                self.handle, input_array.handle, label_array.handle)
+
         elif self._mode == MpsGraphMode.TrainReturnGrad:
-            input_args = self.prepare_input(input, 0)
-            grad_args = self.prepare_input(grad, 1)
-            args = input_args['args'] + grad_args['args']
-            self._LIB.TCMPSStartTrainReturnGradBatchGraph(self.handle, *args)
+            assert grad is not None, "Training graph (without loss) requires gradient"
+            assert grad.shape == self._oshape
+
+            grad_array = MpsFloatArray(grad)
+            self._LIB.TCMPSStartTrainReturnGradBatchGraph(
+                self.handle, input_array.handle, grad_array.handle)
+
         else:
-            input_args = self.prepare_input(input, 0)
-            args = input_args['args']
-            self._LIB.TCMPSStartInferenceBatchGraph(self.handle, *args)
+            self._LIB.TCMPSStartInferenceBatchGraph(
+                self.handle, input_array.handle)
 
     # Waits for a previously submitted batch to complete and returns the output.
     # For models initialized with MpsGraphMode.Train, the return value is the
@@ -402,24 +493,11 @@ class MpsGraphAPI(object):
         return num.value
 
     def export(self):
-        args = {}
-        num_args = self._num_params()
-        names = (_ctypes.c_char_p * num_args)()
-        arrs = (_ctypes.c_void_p * num_args)()
-        dims = (_ctypes.c_int64 * num_args)()
-        shapes = (_ctypes.POINTER(_ctypes.c_int32) * num_args)()
-        self._LIB.TCMPSExportGraph(self.handle, names, arrs, dims, shapes)
-        for i in range(num_args):
-            arr_name = _decode_bytes_to_native_string(names[i])
-            dim = dims[i]
-            sb = (_ctypes.c_int32 *
-                  dim).from_address(_ctypes.c_void_p.from_buffer(shapes[i]).value)
-            shape = _np.frombuffer(sb, dtype=_np.int32)
-            arr_sz = _np.prod(shape)
-            buf = (_ctypes.c_float * arr_sz).from_address(arrs[i])
-            array = _np.frombuffer(buf, dtype=_np.float32).reshape(shape)
-            args[arr_name] = array.copy()
-        return args
+        iter_handle = _ctypes.c_void_p()
+        status_code = self._LIB.TCMPSExportGraph(self.handle,
+                                                 _ctypes.byref(iter_handle))
+        assert status_code == 0
+        return dict(MpsFloatArrayIterator(iter_handle))
 
 
 #----------------------------------------------------------
@@ -472,17 +550,11 @@ class MpsLowLevelAPI(object):
 
     def forward(self, x, is_train=True):
         assert x.shape == self._ishape
-        x = x.astype(_np.float32)
-        if not x.flags.c_contiguous:
-            x = x.copy()
-        assert x.flags.c_contiguous
-        ptr = x.ctypes.data_as(_ctypes.POINTER(_ctypes.c_void_p))
-        sz = _ctypes.c_int64(x.size)
-        s = _np.array(x.shape).astype(_np.int64)
-        shape = s.ctypes.data_as(_ctypes.POINTER(_ctypes.c_int64))
-        dim = _ctypes.c_int32(x.ndim)
-        self._LIB.TCMPSForward(self.handle, ptr, sz, shape,
-                          dim, _ctypes.byref(self._buf), _ctypes.c_bool(is_train))
+        x_array = MpsFloatArray(x)
+
+        self._LIB.TCMPSForward(
+            self.handle, x_array.handle, _ctypes.byref(self._buf),
+            _ctypes.c_bool(is_train))
 
         output = (_np.frombuffer(self._buf, dtype=_np.float32).reshape(self._oshape)).copy()
         return output
@@ -493,17 +565,11 @@ class MpsLowLevelAPI(object):
 
     def backward(self, g):
         assert g.shape == self._oshape
-        g = g.astype(_np.float32)
-        if not g.flags.c_contiguous:
-            g = g.copy()
-        assert g.flags.c_contiguous
-        ptr = g.ctypes.data_as(_ctypes.POINTER(_ctypes.c_void_p))
-        sz = _ctypes.c_int64(g.size)
-        s = _np.array(g.shape).astype(_np.int64)
-        shape = s.ctypes.data_as(_ctypes.POINTER(_ctypes.c_int64))
-        dim = _ctypes.c_int32(g.ndim)
-        self._LIB.TCMPSBackward(self.handle, ptr, sz, shape,
-                           dim, _ctypes.byref(self._buf_g))
+        g_array = MpsFloatArray(g)
+
+        self._LIB.TCMPSBackward(self.handle, g_array.handle,
+                                _ctypes.byref(self._buf_g))
+
         output = (_np.frombuffer(self._buf_g, dtype=_np.float32).reshape(self._ishape)).copy()
         return output
 
@@ -517,63 +583,31 @@ class MpsLowLevelAPI(object):
         assert labels.shape == expected_label_shape
         assert weights.shape == expected_label_shape
 
-        x = x.astype(_np.float32)
-        if not x.flags.c_contiguous:
-            x = x.copy()
-        assert x.flags.c_contiguous
-        ptr = x.ctypes.data_as(_ctypes.POINTER(_ctypes.c_void_p))
-        sz = _ctypes.c_int64(x.size)
-        s = _np.array(x.shape).astype(_np.int64)
-        shape = s.ctypes.data_as(_ctypes.POINTER(_ctypes.c_int64))
-        dim = _ctypes.c_int32(x.ndim)
-
-        labels = labels.astype(_np.float32)
-        if not labels.flags.c_contiguous:
-            labels = labels.copy()
-        assert labels.flags.c_contiguous
-        l_ptr = labels.ctypes.data_as(_ctypes.POINTER(_ctypes.c_void_p))
-        l_sz = _ctypes.c_int64(labels.size)
-        l_s = _np.array(labels.shape).astype(_np.int64)
-        l_shape = l_s.ctypes.data_as(_ctypes.POINTER(_ctypes.c_int64))
-        l_dim = _ctypes.c_int32(labels.ndim)
-
-        weights = weights.astype(_np.float32)
-        if not weights.flags.c_contiguous:
-            weights = weights.copy()
-        assert weights.flags.c_contiguous
-        w_ptr = weights.ctypes.data_as(_ctypes.POINTER(_ctypes.c_void_p))
-        w_sz = _ctypes.c_int64(weights.size)
-        w_s = _np.array(weights.shape).astype(_np.int64)
-        w_shape = w_s.ctypes.data_as(_ctypes.POINTER(_ctypes.c_int64))
-        w_dim = _ctypes.c_int32(weights.ndim)
-
+        x_array = MpsFloatArray(x)
+        labels_array = MpsFloatArray(labels)
+        weights_array = MpsFloatArray(weights)
         loss_rq_bool = _ctypes.c_bool(loss_image_required)
 
         if async_batch_id is not None:
             batch_id = _ctypes.c_int(async_batch_id)
             if is_train is None:
-                lib_method(self.handle, batch_id, ptr, sz, shape, dim,
-                           l_ptr, l_sz, l_shape, l_dim,
-                           w_ptr, w_sz, w_shape, w_dim,
+                lib_method(self.handle, batch_id, x_array.handle,
+                           labels_array.handle, weights_array.handle,
                            loss_rq_bool)
             else:
-                lib_method(self.handle, batch_id, ptr, sz, shape, dim,
-                           l_ptr, l_sz, l_shape, l_dim,
-                           w_ptr, w_sz, w_shape, w_dim,
+                lib_method(self.handle, batch_id, x_array.handle,
+                           labels_array.handle, weights_array.handle,
                            loss_rq_bool, _ctypes.c_bool(is_train))
             return  # Async requests don't return anything immediately
 
         if is_train is None:
-            lib_method(self.handle, ptr, sz, shape, dim,
-                       l_ptr, l_sz, l_shape, l_dim,
-                                      w_ptr, w_sz, w_shape, w_dim,
-                                      loss_rq_bool,
-                                      _ctypes.byref(self._buf))
+            lib_method(self.handle, x_array.handle, labels_array.handle,
+                       weights_array.handle, loss_rq_bool,
+                       _ctypes.byref(self._buf))
         else:
-            lib_method(self.handle, ptr, sz, shape, dim, l_ptr, l_sz, l_shape, l_dim,
-                                      w_ptr, w_sz, w_shape, w_dim,
-                                      loss_rq_bool, _ctypes.c_bool(is_train),
-                                     _ctypes.byref(self._buf))
+            lib_method(self.handle, x_array.handle, labels_array.handle,
+                       weights_array.handle, loss_rq_bool,
+                       _ctypes.c_bool(is_train), _ctypes.byref(self._buf))
 
         output = (_np.frombuffer(self._buf, dtype=_np.float32).reshape(self._oshape)).copy()
         return output
@@ -616,23 +650,11 @@ class MpsLowLevelAPI(object):
         return num.value
 
     def export(self):
-        args = {}
-        num_args = self._num_params()
-        names = (_ctypes.c_char_p * num_args)()
-        arrs = (_ctypes.c_void_p * num_args)()
-        dims = (_ctypes.c_int64 * num_args)()
-        shapes = (_ctypes.POINTER(_ctypes.c_int32) * num_args)()
-        self._LIB.TCMPSExport(self.handle, names, arrs, dims, shapes)
-        for i in range(num_args):
-            arr_name = _decode_bytes_to_native_string(names[i])
-            dim = dims[i]
-            sb = (_ctypes.c_int32 * dim).from_address(_ctypes.c_void_p.from_buffer(shapes[i]).value)
-            shape = _np.frombuffer(sb, dtype=_np.int32)
-            arr_sz = _np.prod(shape)
-            buf = (_ctypes.c_float * arr_sz).from_address(arrs[i])
-            array = _np.frombuffer(buf, dtype=_np.float32).reshape(shape)
-            args[arr_name] = array.copy()
-        return args
+        iter_handle = _ctypes.c_void_p()
+        status_code = self._LIB.TCMPSExport(self.handle,
+                                            _ctypes.byref(iter_handle))
+        assert status_code == 0
+        return dict(MpsFloatArrayIterator(iter_handle))
 
     def cpu_update(self):
         self._LIB.TCMPSCpuUpdate(self.handle)

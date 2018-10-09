@@ -93,16 +93,13 @@ Dragging the saved model into Xcode and inspecting it looks like the following:
 The model expects a bag-of-words representation of the input text. In Swift, we can use the [NSLinguisticTagger](https://developer.apple.com/documentation/foundation/nslinguistictagger/tokenizing_natural_language_text) to parse the input string into words and create this representation. The example below demonstrates how to use the NSLinguisticTagger, and get predictions from the exported model.
 
 ```swift
-let bagOfWords = bow(text: text)
-let prediction = try? MySentenceClassifier().prediction(text: bagOfWords)
-
 func bow(text: String) -> [String: Double] {
     var bagOfWords = [String: Double]()
     
     let tagger = NSLinguisticTagger(tagSchemes: [.tokenType], options: 0)
     let range = NSRange(location: 0, length: text.utf16.count)
     let options: NSLinguisticTagger.Options = [.omitPunctuation, .omitWhitespace]
-    tagger.string = text
+    tagger.string = text.lowercased()
     
     tagger.enumerateTags(in: range, unit: .word, scheme: .tokenType, options: options) { _, tokenRange, _ in
         let word = (text as NSString).substring(with: tokenRange)
@@ -115,4 +112,7 @@ func bow(text: String) -> [String: Double] {
     
     return bagOfWords
 }
+
+let bagOfWords = bow(text: text)
+let prediction = try? MySentenceClassifier().prediction(text: bagOfWords)
 ```

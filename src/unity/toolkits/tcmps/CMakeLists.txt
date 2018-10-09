@@ -3,6 +3,7 @@ project(unity_toolkits)
 if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
     make_library(tcmps
         SOURCES
+        mps_float_array.cpp
         mps_graph_trainer.mm
         mps_graph_networks.mm
         mps_updater.mm

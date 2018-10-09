@@ -180,7 +180,8 @@ void ReLULayer::Backward(MPSImageBatch *_Nonnull src,
 }
 
 void ReLULayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
-                     const FloatArrayMap &config, bool is_train, LowLevelMode net_mode, bool is_output_layer) {
+                     const float_array_map& config, bool is_train,
+                     LowLevelMode net_mode, bool is_output_layer) {
   assert(fparams.size() > 0);
   float a = fparams[0];
 
@@ -230,7 +231,8 @@ void ConvLayer::Backward(MPSImageBatch *_Nonnull src,
 }
 
 void ConvLayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
-                     const FloatArrayMap &config, bool is_train, LowLevelMode net_mode, bool is_output_layer) {
+                     const float_array_map& config, bool is_train,
+                     LowLevelMode net_mode, bool is_output_layer) {
   assert(iparams.size() >= 8);
   int k_h = iparams[0];
   int k_w = iparams[1];
@@ -275,18 +277,18 @@ void ConvLayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
   }
 }
 
-void ConvLayer::Load(const FloatArrayMap &weights) {
+void ConvLayer::Load(const float_array_map& weights) {
   std::string weight_key = name + "_weight";
   std::string bias_key = name + "_bias";
 
     if (weights.count(weight_key) > 0){
         LogStdString("Loading weight: " + weight_key);
-        [weight loadWeight:(float*) weights.at(weight_key).data];
+        [weight loadWeight: const_cast<float*>(weights.at(weight_key).data())];
 
     }
     if (weights.count(bias_key) > 0){
         LogStdString("Loading weight: " + bias_key);
-        [weight loadBias:(float*) weights.at(bias_key).data];
+        [weight loadBias: const_cast<float*>(weights.at(bias_key).data())];
         
     }
     
@@ -296,28 +298,27 @@ void ConvLayer::Load(const FloatArrayMap &weights) {
   }
 }
 
-void ConvLayer::Export(
+float_array_map ConvLayer::Export() const {
+  float_array_map table;
 
-    std::unordered_map<std::string,
-                       std::tuple<std::string, float *, int, std::vector<int>>>
-        &table) {
-  int k_h = iparams[0];
-  int k_w = iparams[1];
-  int c_in = iparams[2];
-  int c_out = iparams[3];
+  size_t k_h = iparams[0];
+  size_t k_w = iparams[1];
+  size_t c_in = iparams[2];
+  size_t c_out = iparams[3];
     
   if (weight.load)
   {
       std::string weight_key = name + "_weight";
       std::string bias_key = name + "_bias";
-      table[weight_key] = {
-          weight_key, (float *)[weight weights], 4, {c_out, k_h, k_w, c_in}};
-      table[bias_key] = {bias_key,
-                         (float *)[weight biasTerms],
-                         1,
-                         {static_cast<int>([weight bias_size])}};
-      
+      table[weight_key] = shared_float_array::copy(
+          reinterpret_cast<float*>([weight weights]), {c_out, k_h, k_w, c_in});
+
+      size_t bias_size = [weight bias_size];
+      table[bias_key] = shared_float_array::copy(
+          reinterpret_cast<float*>([weight biasTerms]), {bias_size});
   }
+
+  return table;
 }
 
 void ConvLayer::GpuUpdate(id<MTLCommandBuffer> _Nonnull cb){
@@ -402,7 +403,8 @@ void BNLayer::Backward(MPSImageBatch *_Nonnull src,
 }
 
 void BNLayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
-                   const FloatArrayMap &config, bool is_train, LowLevelMode net_mode, bool is_output_layer) {
+                   const float_array_map& config, bool is_train,
+                   LowLevelMode net_mode, bool is_output_layer) {
     assert(ishape.size() == 4);
     int ch = ishape[3];
 
@@ -446,56 +448,57 @@ void BNLayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
   }
 }
 
-void BNLayer::Load(const FloatArrayMap &weights) {
+void BNLayer::Load(const float_array_map& weights) {
   std::string gamma_key = name + "_gamma";
   std::string beta_key = name + "_beta";
   std::string var_key = name + "_running_var";
   std::string mean_key = name + "_running_mean";
 
   if (weights.count(gamma_key) > 0){
-    const FloatArray &arr = weights.at(gamma_key);
-    assert(arr.size == [data numberOfFeatureChannels]);
-    [data loadGamma:arr.data];
+    const shared_float_array &arr = weights.at(gamma_key);
+    assert(arr.size() == [data numberOfFeatureChannels]);
+    [data loadGamma: const_cast<float*>(arr.data())];
   }
 
   if (weights.count(beta_key) > 0){
-    const FloatArray &arr = weights.at(beta_key);
-    assert(arr.size == [data numberOfFeatureChannels]);
-    [data loadBeta:arr.data];
+    const shared_float_array &arr = weights.at(beta_key);
+    assert(arr.size() == [data numberOfFeatureChannels]);
+    [data loadBeta: const_cast<float*>(arr.data())];
   }
 
   if (weights.count(mean_key) > 0){
-    const FloatArray &arr = weights.at(mean_key);
-    assert(arr.size == [data numberOfFeatureChannels]);
-    [data loadMovingAvg:arr.data];
+    const shared_float_array &arr = weights.at(mean_key);
+    assert(arr.size() == [data numberOfFeatureChannels]);
+    [data loadMovingAvg: const_cast<float*>(arr.data())];
   }
 
   if (weights.count(var_key) > 0){
-    const FloatArray &arr = weights.at(var_key);
-    assert(arr.size == [data numberOfFeatureChannels]);
-    [data loadMovingVar:arr.data];
+    const shared_float_array &arr = weights.at(var_key);
+    assert(arr.size() == [data numberOfFeatureChannels]);
+    [data loadMovingVar: const_cast<float*>(arr.data())];
   }
 
   [op_forward reloadGammaAndBetaFromDataSource];
   [op_forward reloadMeanAndVarianceFromDataSource];
 }
 
-void BNLayer::Export(
-    std::unordered_map<std::string,
-                       std::tuple<std::string, float *, int, std::vector<int>>>
-        &table) {
+float_array_map BNLayer::Export() const {
+  float_array_map table;
+
   std::string gamma_key = name + "_gamma";
   std::string beta_key = name + "_beta";
   std::string var_key = name + "_running_var";
   std::string mean_key = name + "_running_mean";
-  int num_channel = [data numberOfFeatureChannels];
+  size_t num_channel = [data numberOfFeatureChannels];
 
-    if ([data load]){
-        table[gamma_key] = {gamma_key, (float *)[data gamma], 1, {num_channel}};
-        table[beta_key] = {beta_key, (float *)[data beta], 1, {num_channel}};
-        table[var_key] = {var_key, (float *)[data variance], 1, {num_channel}};
-        table[mean_key] = {mean_key, (float *)[data mean], 1, {num_channel}};
-    }
+  if ([data load]) {
+    table[gamma_key] = shared_float_array::copy([data gamma], {num_channel});
+    table[beta_key] = shared_float_array::copy([data beta], {num_channel});
+    table[var_key] = shared_float_array::copy([data variance], {num_channel});
+    table[mean_key] = shared_float_array::copy([data mean], {num_channel});
+  }
+
+  return table;
 }
 
 void BNLayer::Update(MPSUpdater *_Nonnull updater, int lid) {
@@ -548,7 +551,8 @@ void MaxPoolLayer::Backward(MPSImageBatch *_Nonnull src,
                                         gradientStates:state];
 }
 void MaxPoolLayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
-                        const FloatArrayMap &config, bool is_train, LowLevelMode net_mode, bool is_output_layer) {
+                        const float_array_map& config, bool is_train,
+                        LowLevelMode net_mode, bool is_output_layer) {
   assert(iparams.size() >= 4);
   int kH = iparams[0];
   int kW = iparams[1];
@@ -610,7 +614,8 @@ void DropOutLayer::Backward(MPSImageBatch *_Nonnull src,
 }
 
 void DropOutLayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
-                        const FloatArrayMap &config, bool is_train, LowLevelMode net_mode, bool is_output_layer) {
+                        const float_array_map& config, bool is_train,
+                        LowLevelMode net_mode, bool is_output_layer) {
   assert(iparams.size() >= 2);
   float fKeepProb = (float)iparams[0] / 100.0;
   int nSeed = iparams[1];
@@ -667,7 +672,8 @@ void SoftMaxLayer::Backward(MPSImageBatch *_Nonnull src,
 }
 
 void SoftMaxLayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
-                        const FloatArrayMap &config, bool is_train, LowLevelMode net_mode, bool is_output_layer) {
+                        const float_array_map& config, bool is_train,
+                        LowLevelMode net_mode, bool is_output_layer) {
 
 
   op_forward = [[MPSCNNSoftMax alloc] initWithDevice:device];
@@ -694,7 +700,8 @@ void SmceLossLayer::Loss(MPSImageBatch *_Nonnull src,
 }
 
 void SmceLossLayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
-                         const FloatArrayMap &config, bool is_train, LowLevelMode net_mode, bool is_output_layer) {
+                         const float_array_map& config, bool is_train,
+                         LowLevelMode net_mode, bool is_output_layer) {
 
   assert(iparams.size() >= 1);
 
@@ -714,7 +721,8 @@ void SmceLossLayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_
 // LSTM
 // ------------------------------------------------------------------------------------
 void LstmLayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
-                     const FloatArrayMap &config, bool is_train, LowLevelMode net_mode, bool is_output_layer) {
+                     const float_array_map& config, bool is_train,
+                     LowLevelMode net_mode, bool is_output_layer) {
     batch_size_ = (NSUInteger)ishape[0];
     sequence_length_ = (NSUInteger)ishape[2];
     num_input_features_ = (NSUInteger)ishape[3];
@@ -1025,7 +1033,7 @@ void LstmLayer::Backward(MPSImageBatch *_Nonnull src, id<MTLCommandBuffer> _Nonn
     bwd_output = CopyImageBatchFromBuffer(bwd_dst_buffer_, num_input_features_, cb);
 }
 
-void LstmLayer::Load(const FloatArrayMap &init_weights) {
+void LstmLayer::Load(const float_array_map& init_weights) {
 
     id<MTLCommandBuffer> commandBuffer = [cmd_q_ commandBuffer];
 
@@ -1033,12 +1041,12 @@ void LstmLayer::Load(const FloatArrayMap &init_weights) {
         std::string full_key = name + "_" + lstm_weight_name;
 
         if (init_weights.count(full_key) > 0){
-            const FloatArray &arr = init_weights.at(full_key);
+            const shared_float_array &arr = init_weights.at(full_key);
             MPSRNNMatrixId wMatId = MxnetNameToMatrixId(lstm_weight_name);
             MPSMatrix * weightMat = copy_weight_matrices_.at(lstm_weight_name);
             LogStdString("Loading weight: " + full_key);
-            assert (arr.size*sizeof(float) == weightMat.data.length);
-            memcpy(weightMat.data.contents, arr.data, weightMat.data.length);
+            assert(arr.size()*sizeof(float) == weightMat.data.length);
+            memcpy(weightMat.data.contents, arr.data(), weightMat.data.length);
             [weightMat.data didModifyRange:NSMakeRange(0, weightMat.data.length)];
             
             [filter encodeCopyWeightsToCommandBuffer: commandBuffer
@@ -1056,27 +1064,18 @@ void LstmLayer::Load(const FloatArrayMap &init_weights) {
 
 }
 
-void LstmLayer::Export(std::unordered_map<std::string,
-                                          std::tuple<std::string, float *, int, std::vector<int>>> &table) {
-    
-
+float_array_map LstmLayer::Export() const {
+    float_array_map table;
     
     id<MTLCommandBuffer> commandBuffer = [cmd_q_ commandBuffer];
 
+    // Request copy from GPU to the MPSMatrix instances in copy_weight_matrices_
     for (const auto& lstm_weight_name : lstm_weight_names_mxnet_format){
         std::string full_key = name + "_" + lstm_weight_name;
         MPSRNNMatrixId wMatId = MxnetNameToMatrixId(lstm_weight_name);
         MPSMatrix * weightMat = copy_weight_matrices_.at(lstm_weight_name);
         memset(weightMat.data.contents , 0 , weightMat.data.length);
         [weightMat.data didModifyRange:NSMakeRange(0, weightMat.data.length)];
-
-        if (lstm_weight_name.find("bias") != std::string::npos){
-            table[full_key] = {
-                full_key, (float *)weightMat.data.contents, 1 , {(int)weightMat.columns}};
-        } else {
-            table[full_key] = {
-                full_key, (float *)weightMat.data.contents, 2 , {(int)weightMat.rows , (int)weightMat.columns}};
-        }
 
         [filter encodeCopyWeightsToCommandBuffer: commandBuffer
                                          weights: weights
@@ -1089,9 +1088,27 @@ void LstmLayer::Export(std::unordered_map<std::string,
 
     }
 
+    // Wait for the copy to finish.
     [commandBuffer commit];
     [commandBuffer waitUntilCompleted];
 
+    // Copy from the MPSMatrix instances to float_array instances, which can be
+    // moved out of the TCMPS library.
+    for (const auto& lstm_weight_name : lstm_weight_names_mxnet_format){
+        std::string full_key = name + "_" + lstm_weight_name;
+        MPSMatrix *weightMat = copy_weight_matrices_.at(lstm_weight_name);
+        const size_t num_cols = weightMat.columns;
+        float* data = reinterpret_cast<float*>(weightMat.data.contents);
+        if (lstm_weight_name.find("bias") != std::string::npos){
+            table[full_key] = shared_float_array::copy(data, {num_cols});
+        } else {
+            const size_t num_rows = weightMat.rows;
+            table[full_key] = shared_float_array::copy(data,
+                                                       {num_rows, num_cols});
+        }
+    }
+
+    return table;
 }
 
 void LstmLayer::GpuUpdate(id<MTLCommandBuffer> _Nonnull cb){
