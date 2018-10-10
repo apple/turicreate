@@ -138,11 +138,10 @@ cdef class UnitySFrameProxy:
         with nogil:
             self.thisptr.show(path_to_client)
 
-    cpdef plot(self, _path_to_client):
-        cdef string path_to_client = str_to_cpp(_path_to_client)
+    cpdef plot(self):
         cdef model_base_ptr proxy
         with nogil:
-            proxy = self.thisptr.plot(path_to_client)
+            proxy = self.thisptr.plot()
         return create_model_from_proxy(proxy)
 
     cpdef explore(self, _path_to_client, _title):

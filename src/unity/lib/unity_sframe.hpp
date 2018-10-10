@@ -554,7 +554,7 @@ class unity_sframe : public unity_sframe_base {
 
   void explore(const std::string& path_to_client, const std::string& title);
   void show(const std::string& path_to_client);
-  std::shared_ptr<model_base> plot(const std::string& path_to_client);
+  std::shared_ptr<model_base> plot();
 
  private:
   /**

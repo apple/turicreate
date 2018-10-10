@@ -880,8 +880,19 @@ tc_plot* tc_plot_create_1d(const tc_sarray* sa,
                            const tc_parameters* params,
                            tc_error** error);
 
+// SFrame Summary View (`.show` on SFrame)
+tc_plot* tc_plot_create_sframe_summary(const tc_sframe* sf,
+                                       const tc_parameters* params,
+                                       tc_error** error);
+
 // 2d plot with X/Y axies (`tc.show` with two SArrays)
-tc_plot* tc_plot_create_2d(const tc_sarray* sa_x, const tc_sarray* sa_y, const tc_parameters* params, tc_error** error);
+tc_plot* tc_plot_create_2d(const tc_sarray* sa_x,
+                           const tc_sarray* sa_y,
+                           const char* title,
+                           const char* x_axis_title,
+                           const char* y_axis_title,
+                           const tc_parameters* params,
+                           tc_error** error);
 
 // SFrame summary view (`.show` on an SFrame)
 tc_plot* tc_plot_create_sframe_summary(const tc_sframe* sf, const tc_parameters* params, tc_error** error);

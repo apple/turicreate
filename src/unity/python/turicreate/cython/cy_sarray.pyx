@@ -473,14 +473,13 @@ cdef class UnitySArrayProxy:
         with nogil:
             self.thisptr.show(path_to_client, title, xlabel, ylabel)
 
-    cpdef plot(self, _path_to_client, _title, _xlabel, _ylabel):
-        cdef string path_to_client = str_to_cpp(_path_to_client)
+    cpdef plot(self, _title, _xlabel, _ylabel):
         cdef string title = str_to_cpp(_title)
         cdef string xlabel = str_to_cpp(_xlabel)
         cdef string ylabel = str_to_cpp(_ylabel)
         cdef model_base_ptr proxy
         with nogil:
-            proxy = self.thisptr.plot(path_to_client, title, xlabel, ylabel)
+            proxy = self.thisptr.plot(title, xlabel, ylabel)
         return create_model_from_proxy(proxy)
 
     cpdef builtin_cumulative_aggregate(self, _fn_name):

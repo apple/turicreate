@@ -83,6 +83,16 @@ flex_int summary_view_transformation::get_rows_processed() const {
   return flex_int(all_rows_processed);
 }
 
+flex_int summary_view_transformation::get_total_rows() const {
+  size_t all_rows = 0;
+
+  for (const auto& transformer : m_transformers) {
+    all_rows += transformer->get_total_rows();
+  }
+
+  return flex_int(all_rows);
+}
+
 size_t summary_view_transformation::get_batch_size() const {
   // we also guaranteed in the constructor that there is at least 1 transformer.
   // we need only ask the 1 we know of for rows_processed.

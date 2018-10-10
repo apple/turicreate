@@ -657,7 +657,7 @@ class gl_sarray {
    *
    *  \see is_materialized
    */
-  void materialize();
+  void materialize() const;
 
   /**
    * Returns whether or not the sarray has been materialized.
@@ -1833,7 +1833,7 @@ class gl_sarray {
   /**
    * Return a visualization of the SArray.
    */
-  std::shared_ptr<model_base> plot(const std::string& path_to_client, const std::string& title, const std::string& xlabel, const std::string& ylabel) const;
+  std::shared_ptr<model_base> plot(const std::string& title, const std::string& xlabel, const std::string& ylabel) const;
 
   /**
    * \internal
