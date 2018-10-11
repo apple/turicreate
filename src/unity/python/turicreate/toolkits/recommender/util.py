@@ -1415,7 +1415,7 @@ class _Recommender(_Model):
         observed_items: list, SArray, or SFrame
 
         """
-
+        
         column_types = self._get_data_schema()
         user_id = self.user_id
         item_id = self.item_id
@@ -1452,7 +1452,7 @@ class _Recommender(_Model):
 
         else:
             users = _SArray([self._implicit_user_name], dtype = user_type)
-            observed_items[user_id] = self._implicit_user_name
+            observed_items[user_id] = [self._implicit_user_name]*observed_items.num_rows()
 
         if observed_items[user_id].dtype != user_type:
             observed_items[user_id] = observed_items[user_id].astype(user_type)

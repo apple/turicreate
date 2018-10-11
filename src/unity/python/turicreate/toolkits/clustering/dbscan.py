@@ -242,7 +242,9 @@ def create(dataset, features=None, distance=None, radius=1.,
     cc_labels = cc.component_size.add_row_number('__label')
     core_assignments = cc.component_id.join(cc_labels, on='component_id',
                                                how='left')[['__id', '__label']]
-    core_assignments['type'] = 'core'
+    
+    if core_assignments.num_rows()>0:
+        core_assignments['type'] = 'core'
 
 
     ## Join potential boundary points to core cluster labels (points that aren't
@@ -264,7 +266,9 @@ def create(dataset, features=None, distance=None, radius=1.,
 
     boundary_assignments = boundary_assignments.rename({'query_label': '__id'}, inplace=True)
     boundary_assignments = boundary_assignments.remove_column('reference_label', inplace=True)
-    boundary_assignments['type'] = 'boundary'
+
+    if boundary_assignments.num_rows()>0:
+        boundary_assignments['type'] = 'boundary'
 
 
     ## Identify boundary candidates that turned out to be in small clusters but
@@ -280,9 +284,11 @@ def create(dataset, features=None, distance=None, radius=1.,
     noise_idx = noise_idx.union(small_cluster_idx)
 
     noise_assignments = _tc.SFrame({'row_id': _tc.SArray(list(noise_idx), int)})
-    noise_assignments['cluster_id'] = None
-    noise_assignments['cluster_id'] = noise_assignments['cluster_id'].astype(int)
-    noise_assignments['type'] = 'noise'
+
+    if noise_assignments.num_rows()>0:
+        noise_assignments['cluster_id'] = None
+        noise_assignments['cluster_id'] = noise_assignments['cluster_id'].astype(int)
+        noise_assignments['type'] = 'noise'
 
 
     ## Append core, boundary, and noise results to each other.
