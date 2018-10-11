@@ -50,6 +50,33 @@ int TCMPSDeleteFloatArray(TCMPSFloatArrayRef array) {
   API_END();
 }
 
+int TCMPSGetFloatArrayShape(TCMPSFloatArrayRef array_ref,
+                            size_t** shape_out, size_t* dim_out) {
+  API_BEGIN();
+
+  float_array* array = reinterpret_cast<float_array*>(array_ref);
+  *shape_out = const_cast<size_t*>(array->shape());
+  *dim_out = array->dim();
+
+  API_END();
+}
+
+int TCMPSReadFloatArray(TCMPSFloatArrayRef array_ref, float** data_out,
+                        size_t** shape_out, size_t* dim_out) {
+  API_BEGIN();
+
+  float_array* array = reinterpret_cast<float_array*>(array_ref);
+  *data_out = const_cast<float*>(array->data());
+  if (shape_out) {
+    *shape_out = const_cast<size_t*>(array->shape());
+  }
+  if (dim_out) {
+    *dim_out = array->dim();
+  }
+
+  API_END();
+}
+
 int TCMPSNextFloatArray(
     TCMPSFloatArrayMapIteratorRef iter_ref, char** name_out, float** data_out,
     size_t** shape_out, size_t* dim_out) {

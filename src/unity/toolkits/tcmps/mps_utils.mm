@@ -14,6 +14,58 @@
 namespace turi {
 namespace mps {
 
+shared_float_array copy_image_batch_float16(std::vector<size_t> shape,
+                                            MPSImageBatch *batch) {
+  assert(shape.size() == 4);  // NHWC
+
+  const size_t n = shape[0];  // N
+  const size_t stride = shape[1] * shape[2] * shape[3];  // H * W * C
+  const size_t size = n * stride;
+
+  // Copy from MPS to a local __fp16 buffer.
+  assert(batch.count >= n);
+  std::unique_ptr<__fp16[]> fp16_buffer(new __fp16[size]);
+  for (size_t i = 0; i < n; ++i) {
+    MPSImage *img = batch[i];
+
+    assert(img.height == shape[1]);
+    assert(img.width == shape[2]);
+    assert(img.featureChannels == shape[3]);
+    assert(img.pixelFormat == MTLPixelFormatRGBA16Float);
+
+    [img readBytes:fp16_buffer.get() + stride * i
+        dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
+        imageIndex:0];
+  }
+
+  // Convert from __fp16 to float.
+  std::vector<float> float_buffer(fp16_buffer.get(), fp16_buffer.get() + size);
+
+  return shared_float_array::wrap(std::move(float_buffer), std::move(shape)); 
+}
+
+void fill_image_batch(const float_array& blob, MPSImageBatch *batch) {
+  assert(blob.dim() == 4);  // NHWC
+
+  const float* data = blob.data();
+  const size_t* shape = blob.shape();
+  const size_t stride = shape[1] * shape[2] * shape[3];  // H * W * C
+
+  assert(batch.count <= shape[0]);
+  for (MPSImage *img in batch) {
+    assert(img.height == shape[1]);
+    assert(img.width == shape[2]);
+    assert(img.featureChannels == shape[3]);
+    assert(img.pixelFormat == MTLPixelFormatRGBA32Float);
+
+    [img writeBytes:data
+         dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
+         imageIndex:0];
+
+    data += stride;
+  }
+}
+
 float_array_map make_array_map(char **names, void **arrays,
                                int64_t *sizes, int len) {
   float_array_map ret;

@@ -71,6 +71,13 @@ struct OptimizerOptions {
   }
 };
 
+API_AVAILABLE(macos(10.14))
+shared_float_array copy_image_batch_float16(std::vector<size_t> shape,
+                                        MPSImageBatch * _Nonnull batch);
+
+API_AVAILABLE(macos(10.14))
+void fill_image_batch(const float_array& data, MPSImageBatch * _Nonnull batch);
+
 // Convenient typedef for data structure used to pass configuration and weights
 // into and out of TCMPS.
 using float_array_map = std::map<std::string, shared_float_array>;
