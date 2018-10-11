@@ -19,6 +19,7 @@ subdirs(ml_model
         feature_engineering
         text
         tcmps
+        mps
         image)
 
 
@@ -31,12 +32,13 @@ make_empty_library(unity_toolkits
     unity_nearest_neighbors
     unity_text
     unity_ml_data_2
+    unity_mps_graph
     unity_feature_engineering
     unity_pattern_mining
     unity_evaluation
     unity_coreml_model_export
     unity_image_export
-    unity_activity_classification
+    unity_activity_classification 
     )
 
 add_dependencies(unity_toolkits tcmps)

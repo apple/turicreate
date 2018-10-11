@@ -44,6 +44,7 @@
 #include <unity/toolkits/pattern_mining/class_registrations.hpp>
 #include <unity/toolkits/clustering/class_registrations.hpp>
 #include <unity/toolkits/util/class_registrations.hpp>
+#include <unity/toolkits/mps/class_registrations.hpp>
 
 #include <toolkits/image_deep_feature_extractor/class_registrations.hpp>
 
@@ -84,6 +85,7 @@ void register_functions(toolkit_function_registry& registry) {
   registry.register_toolkit_function(turi::pattern_mining::get_toolkit_function_registration());
   registry.register_toolkit_function(turi::sdk_model::activity_classification::get_toolkit_function_registration());
   registry.register_toolkit_function(turi::util::get_toolkit_function_registration());
+  registry.register_toolkit_function(turi::mps::get_toolkit_function_registration());
 }
 
 namespace registration_internal {
