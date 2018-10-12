@@ -3,7 +3,9 @@
 
 #include <cstddef>
 #include <future>
+#include <map>
 #include <memory>
+#include <string>
 #include <vector>
 
 namespace turi {
@@ -148,6 +150,9 @@ private:
   std::vector<size_t> shape_;
   size_t size_ = 0;
 };
+
+// Convenient typedef for data structure used to pass configuration and weights.
+using float_array_map = std::map<std::string, shared_float_array>;
 
 }  // namespace mps
 }  // namespace turi

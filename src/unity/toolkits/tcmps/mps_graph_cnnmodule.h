@@ -11,6 +11,7 @@
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 
+#include "cnn_module.hpp"
 #include "mps_float_array.hpp"
 
 #import "mps_utils.h"
@@ -21,11 +22,11 @@ NS_ASSUME_NONNULL_BEGIN
 namespace turi {
 namespace mps {
 
-class MPSGraphModule {
+class mps_graph_cnn_module: public cnn_module {
 public:
-  MPSGraphModule();
+  mps_graph_cnn_module();
 
-  void Init(int network_id, int n, int c_in, int h_in, int w_in, int c_out,
+  void init(int network_id, int n, int c_in, int h_in, int w_in, int c_out,
             int h_out, int w_out,
             const float_array_map& config, const float_array_map& weights);
 
@@ -35,24 +36,24 @@ public:
   // component of the `config` map.
 
   // Training
-  void SetLearningRate(float lr);
-  deferred_float_array Train(const float_array& input_batch,
+  void set_learning_rate(float lr);
+  deferred_float_array train(const float_array& input_batch,
                              const float_array& label_batch);
 
   // Inference
-  deferred_float_array Predict(const float_array& input_batch);
+  deferred_float_array predict(const float_array& input_batch);
 
   // Forward-backward pass with specified input and top-gradient images
-  deferred_float_array TrainReturnGrad(const float_array& input_batch,
-                                       const float_array& gradient_batch);
+  deferred_float_array train_return_grad(const float_array& input_batch,
+                                         const float_array& gradient_batch);
 
-  float_array_map Export() const;
+  float_array_map export_weights() const;
 
 private:
-  MPSImageBatch *CreateImageBatch(MPSImageDescriptor *desc);
-  MPSImageBatch *CopyInput(const float_array& input);
-  MPSImageBatch *CopyGrad(const float_array& gradient);
-  MPSCNNLossLabelsBatch *CopyLabels(const float_array& labels);
+  MPSImageBatch *create_image_batch(MPSImageDescriptor *desc);
+  MPSImageBatch *copy_input(const float_array& input);
+  MPSImageBatch *copy_grad(const float_array& gradient);
+  MPSCNNLossLabelsBatch *copy_labels(const float_array& labels);
 
   id<MTLDevice> dev_;
   id<MTLCommandQueue> cmd_queue_;

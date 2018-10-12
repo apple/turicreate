@@ -19,7 +19,9 @@ subdirs(ml_model
         feature_engineering
         text
         tcmps
-        image)
+        image
+        object_detection
+)
 
 
 make_empty_library(unity_toolkits
@@ -37,6 +39,5 @@ make_empty_library(unity_toolkits
     unity_coreml_model_export
     unity_image_export
     unity_activity_classification
+    unity_object_detection
     )
-
-add_dependencies(unity_toolkits tcmps)
