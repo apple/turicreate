@@ -994,16 +994,7 @@ class _Recommender(_Model):
         check_type(items, "items", _SArray, ["SArray", "list"])
         check_type(k, "k", int, ["int"])
 
-        opt = {'model': self.__proxy__,
-               'items': items,
-               'get_all_items' : get_all_items,
-               'k': k,
-               'verbose': verbose}
-
-        response = _turicreate.extensions._recsys.get_similar_items(opt)
-        neighbors = response['data']
-
-        return neighbors
+        return self.__proxy__.get_similar_items(items, k, verbose, get_all_items)
 
     def get_similar_users(self, users=None, k=10):
         """Get the k most similar users for each entry in `users`.

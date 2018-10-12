@@ -89,6 +89,8 @@ class EXPORT recsys_popularity : public recsys_model_base {
   REGISTER_CLASS_MEMBER_FUNCTION(recsys_popularity::list_fields)
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
       "get_value", recsys_popularity::get_value_from_state, "field");
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+      "get_similar_items", recsys_popularity::api_get_similar_items, "items", "k", "verbose", "get_all_items");
   REGISTER_CLASS_MEMBER_FUNCTION(
     recsys_popularity::recommend_extension_wrapper, "reference_data", "new_observation_data", "top_k")
   END_CLASS_MEMBER_REGISTRATION

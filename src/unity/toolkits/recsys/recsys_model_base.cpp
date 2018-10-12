@@ -1721,6 +1721,28 @@ sframe recsys_model_base::get_num_users_per_item() const {
   return ret;
 }
 
+gl_sframe recsys_model_base::api_get_similar_items(gl_sarray items, size_t k, size_t verbose, int get_all_items) const {
+
+  turi::timer timer;
+
+  auto items_sa = items.materialize_to_sarray();
+
+  if(get_all_items) {
+    items_sa.reset();
+  }
+
+  timer.start();
+
+  sframe raw_ranks = this->get_similar_items(items_sa, k);
+
+  if (verbose) {
+    logprogress_stream << "Getting similar items completed in "
+                       << timer.current_time() << "" << std::endl;
+  }
+
+  return gl_sframe(raw_ranks);
+}
+
 
 }}
 

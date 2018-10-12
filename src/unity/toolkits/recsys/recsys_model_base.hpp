@@ -250,6 +250,8 @@ public:
 
   recsys_model_base& operator=(const recsys_model_base&) = default;
 
+  gl_sframe api_get_similar_items(gl_sarray items, size_t k, size_t verbose, int get_all_items) const;
+
 
   /** Creates and returns a popularity baseline
    *
