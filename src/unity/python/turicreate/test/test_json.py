@@ -20,6 +20,7 @@ import datetime
 import json # Python built-in JSON module
 import math
 import os
+import pandas
 import pytz
 import sys
 import unittest
@@ -287,3 +288,15 @@ class JSONTest(unittest.TestCase):
         self.assertRaises(IOError, SArray.read_json, '/nonexistant.json')
         self.assertRaises(IOError, SFrame.read_json, '/nonexistant.json')
 
+    def test_strange_128_char_corner_case(self):
+        json_text = """
+{"foo":[{"bar":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. In eget odio velit. Suspendisse potenti. Vivamus a urna feugiat nullam."}]}
+"""
+        with tempfile.NamedTemporaryFile('w') as f:
+            f.write(json_text)
+            f.flush()
+
+            df = pandas.read_json(f.name, lines=True)
+            sf_actual = SFrame.read_json(f.name, orient='lines')
+            sf_expected = SFrame(df)
+            _SFrameComparer._assert_sframe_equal(sf_expected, sf_actual)
