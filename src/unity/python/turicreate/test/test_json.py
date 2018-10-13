@@ -17,11 +17,13 @@ from __future__ import absolute_import as _
 
 import array
 import datetime
+import hypothesis
 import json # Python built-in JSON module
 import math
 import os
 import pandas
 import pytz
+import string
 import sys
 import unittest
 import tempfile
@@ -58,13 +60,80 @@ image_info = [image_info(u) for u in image_urls]
 
 _SFrameComparer = util.SFrameComparer()
 
+def _compareJson(x, y):
+    return json.loads(json.dumps(x)) == json.loads(json.dumps(y))
+
+def _jsonContainsValueRecursive(json_obj, val):
+    def impl(obj):
+        if isinstance(obj, list):
+            return any(map(impl, obj))
+        elif isinstance(obj, dict):
+            return any(map(impl, [v for (k,v) in obj.items()]))
+        else:
+            return obj == val
+    return impl(json_obj)
+
 class JSONTest(unittest.TestCase):
+    # Only generate lists of dicts, but allow nearly-arbitrary JSON inside those.
+    # However, limit to length 1 to make sure the keys are the same in all rows.
+
+    # Known bug #1: escaped chars give different behavior in SFrame JSON parsing
+    # vs Python's built-in JSON module. Not sure which is correct:
+    """
+    Original JSON:  [{"": [{"\f": 0}]}]
+    Expected:  +---------------+
+    |       X1      |
+    +---------------+
+    | [{'\x0c': 0}] |
+    +---------------+
+    [1 rows x 1 columns]
+
+    Actual:  +--------------+
+    |      X1      |
+    +--------------+
+    | [{'\\f': 0}] |
+    +--------------+
+    [1 rows x 1 columns]
+    """
+    # In the meantime, let's use `string.ascii_letters + string.digits` instead of
+    # `string.printable` (which contains the problematic characters).
+    hypothesis_json = hypothesis.strategies.lists(
+        hypothesis.strategies.dictionaries(
+            keys=hypothesis.strategies.text(string.ascii_letters + string.digits),
+            values=hypothesis.strategies.recursive(
+                # Known bug #2: [{"": null}] parses as "null" in SFrame, and should be None
+                # Once this is fixed, uncomment the line below.
+                #hypothesis.strategies.none() |
+                # Known bug #3: [{"": false}] parses as "false" in SFrame, and should be 0
+                # Once this is fixed, uncomment the line below.
+                #hypothesis.strategies.booleans() |
+                hypothesis.strategies.integers(min_value=-(2**53)+1, max_value=(2**53)-1) |
+                hypothesis.strategies.floats() |
+                hypothesis.strategies.text(string.ascii_letters + string.digits),
+                lambda children: hypothesis.strategies.lists(children, 1) |
+                hypothesis.strategies.dictionaries(
+                    hypothesis.strategies.text(string.ascii_letters + string.digits), children, min_size=1)),
+            min_size=1,
+            max_size=1
+        ),
+        min_size=1,
+        max_size=1
+    )
+
     def _assertEqual(self, x, y):
+        print("DEBUG: comparing x (left):")
+        print(x)
+        print("DEBUG: with y (right):")
+        print(y)
         if type(x) in [long,int]:
             self.assertTrue(type(y) in [long,int])
+        elif type(x) in [str, unicode]:
+            self.assertTrue(type(y) in [str,unicode])
         else:
             self.assertEqual(type(x), type(y))
-        if isinstance(x, SArray):
+        if isinstance(x, (str, unicode)):
+            self.assertEqual(str(x), str(y))
+        elif isinstance(x, SArray):
             _SFrameComparer._assert_sarray_equal(x, y)
         elif isinstance(x, SFrame):
             _SFrameComparer._assert_sframe_equal(x, y)
@@ -300,3 +369,47 @@ class JSONTest(unittest.TestCase):
             sf_actual = SFrame.read_json(f.name, orient='lines')
             sf_expected = SFrame(df)
             _SFrameComparer._assert_sframe_equal(sf_expected, sf_actual)
+
+    @hypothesis.settings(derandomize=True) # deterministic across runs
+    @hypothesis.given(hypothesis_json)
+    def test_arbitrary_json(self, json_obj):
+        # Known bug #1: escaped chars give different behavior in SFrame JSON parsing
+        # vs Python's built-in JSON module. Not sure which is correct.
+        # Workaround captured in definition of `hypothesis_json`
+
+        # Known bug #2: [{"": null}] parses as "null" in SFrame, and should be None
+        # Workaround captured in definition of `hypothesis_json`
+
+        # Known bug #3: [{"": false}] parses as "false" in SFrame, and should be 0
+        # Workaround captured in definition of `hypothesis_json`
+
+        try:
+            json_text = json.dumps(json_obj, allow_nan=False)
+        except:
+            # not actually valid JSON - skip this example
+            return
+
+        print("DEBUG:")
+        print("Original JSON: ", json_text)
+        try:
+            expected = SFrame(json_obj).unpack('X1', column_name_prefix='')
+        except TypeError:
+            # something like TypeError: A common type cannot be infered from types integer, string.
+            # TC enforces all list items have the same type, which
+            # JSON does not necessarily enforce. Let's skip those examples.
+            return
+        print("Expected: ", expected)
+        with tempfile.NamedTemporaryFile('w') as f:
+            f.write(json_text)
+            f.flush()
+
+            try:
+                actual = SFrame.read_json(f.name)
+            except TypeError:
+                # something like TypeError: A common type cannot be infered from types integer, string.
+                # TC enforces all list items have the same type, which
+                # JSON does not necessarily enforce. Let's skip those examples.
+                return
+
+            print("Actual: ", actual)
+            _SFrameComparer._assert_sframe_equal(expected, actual)
