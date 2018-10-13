@@ -47,7 +47,8 @@ public:
   /**
    * Performs a forward pass.
    */
-  virtual deferred_float_array predict(const float_array& input_batch) = 0;
+  virtual deferred_float_array
+  predict(const float_array& input_batch) const = 0;
 
   /**
    * Exports the network weights.

@@ -158,7 +158,7 @@ deferred_float_array mps_graph_cnn_module::train(
 }
 
 deferred_float_array
-mps_graph_cnn_module::predict(const float_array& input_batch) {
+mps_graph_cnn_module::predict(const float_array& input_batch) const {
   @autoreleasepool {
 
   assert(mode_ == kGraphModeInference);
@@ -273,7 +273,7 @@ void mps_graph_cnn_module::set_learning_rate(float lr) {
 }
 
 MPSImageBatch *
-mps_graph_cnn_module::create_image_batch(MPSImageDescriptor *desc) {
+mps_graph_cnn_module::create_image_batch(MPSImageDescriptor *desc) const {
   NSUInteger batchSize = (NSUInteger)network_->batch_size;
   NSMutableArray<MPSImage *> *result = [[NSMutableArray alloc] initWithCapacity:batchSize];
   for (NSUInteger i = 0; i < batchSize; ++i) {
@@ -282,7 +282,8 @@ mps_graph_cnn_module::create_image_batch(MPSImageDescriptor *desc) {
   return [result copy];
 }
 
-MPSImageBatch *mps_graph_cnn_module::copy_input(const float_array& input) {
+MPSImageBatch *
+mps_graph_cnn_module::copy_input(const float_array& input) const {
   @autoreleasepool {
     // may check shape
 
@@ -303,7 +304,8 @@ MPSImageBatch *mps_graph_cnn_module::copy_input(const float_array& input) {
   }
 }
 
-MPSImageBatch *mps_graph_cnn_module::copy_grad(const float_array& gradient) {
+MPSImageBatch *
+mps_graph_cnn_module::copy_grad(const float_array& gradient) const {
   @autoreleasepool {
     // may check shape
 
@@ -325,7 +327,7 @@ MPSImageBatch *mps_graph_cnn_module::copy_grad(const float_array& gradient) {
 }
 
 MPSCNNLossLabelsBatch *
-mps_graph_cnn_module::copy_labels(const float_array& labels) {
+mps_graph_cnn_module::copy_labels(const float_array& labels) const {
   @autoreleasepool {
     return network_->loss_layer_->CreateLossState(dev_, labels);
   }

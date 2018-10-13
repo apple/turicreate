@@ -36,24 +36,24 @@ public:
   // component of the `config` map.
 
   // Training
-  void set_learning_rate(float lr);
+  void set_learning_rate(float lr) override;
   deferred_float_array train(const float_array& input_batch,
-                             const float_array& label_batch);
+                             const float_array& label_batch) override;
 
   // Inference
-  deferred_float_array predict(const float_array& input_batch);
+  deferred_float_array predict(const float_array& input_batch) const override;
 
   // Forward-backward pass with specified input and top-gradient images
   deferred_float_array train_return_grad(const float_array& input_batch,
                                          const float_array& gradient_batch);
 
-  float_array_map export_weights() const;
+  float_array_map export_weights() const override;
 
 private:
-  MPSImageBatch *create_image_batch(MPSImageDescriptor *desc);
-  MPSImageBatch *copy_input(const float_array& input);
-  MPSImageBatch *copy_grad(const float_array& gradient);
-  MPSCNNLossLabelsBatch *copy_labels(const float_array& labels);
+  MPSImageBatch *create_image_batch(MPSImageDescriptor *desc) const;
+  MPSImageBatch *copy_input(const float_array& input) const;
+  MPSImageBatch *copy_grad(const float_array& gradient) const;
+  MPSCNNLossLabelsBatch *copy_labels(const float_array& labels) const;
 
   id<MTLDevice> dev_;
   id<MTLCommandQueue> cmd_queue_;
