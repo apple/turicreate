@@ -12,30 +12,30 @@
 #include <vector>
 
 namespace turi{
-	namespace mps {
-		struct EXPORT UpsamplingNode: public Layer {
-			public:
-				UpsamplingNode(){};
-				UpsamplingNode(std::string name,
-							   std::shared_ptr<Layer> input,
-							   size_t scale_x,
-							   size_t scale_y,
-							   size_t type):
-					Layer(name, layer_type::upsampling),
-					m_input(input),
-					m_scale_x(scale_x),
-					m_scale_y(scale_y),
-					m_type(static_cast<upsampling_type>(type)) {};
+    namespace mps {
+        struct EXPORT UpsamplingNode: public Layer {
+            public:
+                UpsamplingNode(){};
+                UpsamplingNode(std::string name,
+                               std::shared_ptr<Layer> input,
+                               size_t scale_x,
+                               size_t scale_y,
+                               size_t type):
+                    Layer(name, layer_type::upsampling),
+                    m_input(input),
+                    m_scale_x(scale_x),
+                    m_scale_y(scale_y),
+                    m_type(static_cast<upsampling_type>(type)) {};
 
-				std::shared_ptr<Layer> m_input;
-				size_t m_scale_x;
-				size_t m_scale_y;
-				upsampling_type m_type;
+                std::shared_ptr<Layer> m_input;
+                size_t m_scale_x;
+                size_t m_scale_y;
+                upsampling_type m_type;
 
-				BEGIN_CLASS_MEMBER_REGISTRATION("_UpsamplingNode")
-				END_CLASS_MEMBER_REGISTRATION
-		};
-	}
+                BEGIN_CLASS_MEMBER_REGISTRATION("_UpsamplingNode")
+                END_CLASS_MEMBER_REGISTRATION
+        };
+    }
 }
 
 #endif

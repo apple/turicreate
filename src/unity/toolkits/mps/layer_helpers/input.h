@@ -12,16 +12,16 @@
 #include <vector>
 
 namespace turi{
-	namespace mps {
-		struct EXPORT InputNode: public Layer {
-			public:
-				InputNode(){};
-				InputNode(std::string name): Layer(name, layer_type::input) {};
+    namespace mps {
+        struct EXPORT InputNode: public Layer {
+            public:
+                InputNode(){};
+                InputNode(std::string name): Layer(name, layer_type::input) {};
 
-				BEGIN_CLASS_MEMBER_REGISTRATION("_InputNode")
-				END_CLASS_MEMBER_REGISTRATION
-		};
-	}
+                BEGIN_CLASS_MEMBER_REGISTRATION("_InputNode")
+                END_CLASS_MEMBER_REGISTRATION
+        };
+    }
 }
 
 #endif

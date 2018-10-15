@@ -12,20 +12,20 @@
 #include <vector>
 
 namespace turi{
-	namespace mps {
-		struct EXPORT ReluNode: public Layer {
-			public:
-				ReluNode(){};
-				ReluNode(std::string name, std::shared_ptr<Layer> input):
-					Layer(name, layer_type::relu),
-					m_input(input) {};
+    namespace mps {
+        struct EXPORT ReluNode: public Layer {
+            public:
+                ReluNode(){};
+                ReluNode(std::string name, std::shared_ptr<Layer> input):
+                    Layer(name, layer_type::relu),
+                    m_input(input) {};
 
-				std::shared_ptr<Layer> m_input;
+                std::shared_ptr<Layer> m_input;
 
-				BEGIN_CLASS_MEMBER_REGISTRATION("_ReluNode")
-				END_CLASS_MEMBER_REGISTRATION
-		};
-	}
+                BEGIN_CLASS_MEMBER_REGISTRATION("_ReluNode")
+                END_CLASS_MEMBER_REGISTRATION
+        };
+    }
 }
 
 #endif

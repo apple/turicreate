@@ -4,19 +4,19 @@
 #import <Accelerate/Accelerate.h>
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
-#import <MetalPerformanceShaders/MetalPerformanceShaders.h>	
+#import <MetalPerformanceShaders/MetalPerformanceShaders.h> 
 
 API_AVAILABLE(macos(10.13))
 @interface SigmoidLayer: NSObject {
-	NSString *mName;
-	MPSCNNNeuronSigmoidNode *mSigmoidNode;
+    NSString *mName;
+    MPSCNNNeuronSigmoidNode *mSigmoidNode;
 }
 
 - (id __nonnull) initWithParams:(NSString *__nonnull)name
-					  inputNode:(MPSNNImageNode *__nonnull)inputNode;
+                      inputNode:(MPSNNImageNode *__nonnull)inputNode;
 
 - (MPSNNImageNode *__nonnull) resultImage;
 
 @end
-	
+    
 #endif

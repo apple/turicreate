@@ -4,25 +4,25 @@
 #import <Accelerate/Accelerate.h>
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
-#import <MetalPerformanceShaders/MetalPerformanceShaders.h>	
+#import <MetalPerformanceShaders/MetalPerformanceShaders.h> 
 
 API_AVAILABLE(macos(10.13))
 @interface InstanceNormDataLoader: NSObject <MPSCNNInstanceNormalizationDataSource> {
-	NSString *mName;
-	NSUInteger mNumberOfFeatureChannels;
+    NSString *mName;
+    NSUInteger mNumberOfFeatureChannels;
 
-	int mStyles;	
-	int mCurrentStyle;	
+    int mStyles;    
+    int mCurrentStyle;  
 
-	float **mGamma;
-	float **mBeta;
+    float **mGamma;
+    float **mBeta;
 }
 
 - (id __nonnull) initWithParams:(NSString *__nonnull)name
-				   gammaWeights:(float *__nonnull*__nonnull)gammaWeights
-					betaWeights:(float *__nonnull*__nonnull)betaWeights
-		  numberFeatureChannels:(int)numberFeatureChannels
-						 styles:(int)styles;
+                   gammaWeights:(float *__nonnull*__nonnull)gammaWeights
+                    betaWeights:(float *__nonnull*__nonnull)betaWeights
+          numberFeatureChannels:(int)numberFeatureChannels
+                         styles:(int)styles;
 
 - (void) updateNumberOfStyles:(int) styles;
 - (void) updateCurrentStyle:(int) style;

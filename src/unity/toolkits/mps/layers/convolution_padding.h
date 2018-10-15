@@ -9,21 +9,21 @@
 API_AVAILABLE(macos(10.13))
 @interface ConvolutionPadding : NSObject <MPSNNPadding>
 {
-	int mPaddingWidth;
-	int mPaddingHeight;
+    int mPaddingWidth;
+    int mPaddingHeight;
 }
 @property (class, readonly) BOOL supportsSecureCoding;
 
 - (id __nonnull) initWithParams:(int)paddingWidth
-				  paddingHeight:(int)paddingHeight;
+                  paddingHeight:(int)paddingHeight;
 
 - (id __nullable) initWithCoder:(NSCoder * __nonnull)coder;
 
 - (MPSNNPaddingMethod) paddingMethod;
 - (MPSImageDescriptor *__nonnull) destinationImageDescriptorForSourceImages:(NSArray<MPSImage *> *__nonnull)sourceImages 
-															   sourceStates:(NSArray<MPSState *> *__nullable)sourceStates 
-																  forKernel:(MPSKernel *__nonnull)kernel 
-														suggestedDescriptor:(MPSImageDescriptor *__nonnull)inDescriptor;
+                                                               sourceStates:(NSArray<MPSState *> *__nullable)sourceStates 
+                                                                  forKernel:(MPSKernel *__nonnull)kernel 
+                                                        suggestedDescriptor:(MPSImageDescriptor *__nonnull)inDescriptor;
 
 - (void) encodeWithCoder:(NSCoder *__nullable) coder;
 

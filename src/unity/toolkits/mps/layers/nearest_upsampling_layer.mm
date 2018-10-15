@@ -3,21 +3,21 @@
 @implementation NearestUpsamplingLayer 
 
 - (id __nonnull) initWithParams:(NSString *__nonnull)name
-						 scaleX:(int)scaleX
-						 scaleY:(int)scaleY
-					  inputNode:(MPSNNImageNode *__nonnull)inputNode {
-	@autoreleasepool{
-		self = [self init];
+                         scaleX:(int)scaleX
+                         scaleY:(int)scaleY
+                      inputNode:(MPSNNImageNode *__nonnull)inputNode {
+    @autoreleasepool{
+        self = [self init];
 
-		mName = name;
-		mUpsamplingNode = [MPSCNNUpsamplingNearestNode nodeWithSource:inputNode integerScaleFactorX:scaleY integerScaleFactorY:scaleY];
-	
-		return self;
-	}
+        mName = name;
+        mUpsamplingNode = [MPSCNNUpsamplingNearestNode nodeWithSource:inputNode integerScaleFactorX:scaleY integerScaleFactorY:scaleY];
+    
+        return self;
+    }
 }
 
 - (MPSNNImageNode *__nonnull) resultImage {
-	return mUpsamplingNode.resultImage;
+    return mUpsamplingNode.resultImage;
 }
 
 @end

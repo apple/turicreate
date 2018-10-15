@@ -9,26 +9,26 @@
 #include <unity/toolkits/mps/layers/nearest_upsampling_layer.h>
 
 namespace turi{
-	namespace mps {
+    namespace mps {
 
-		void Graph::add_node(){
-			printf("TODO: add node to the current graph");
-		}
+        void Graph::add_node(){
+            printf("TODO: add node to the current graph");
+        }
 
-		void Graph::compile(){
-			printf("TODO: compile the graph for forward and backward pass");
-		}
+        void Graph::compile(){
+            printf("TODO: compile the graph for forward and backward pass");
+        }
 
-		void Graph::clear(){
-			printf("TODO: clear the exsisting graph structure");
-		}
+        void Graph::clear(){
+            printf("TODO: clear the exsisting graph structure");
+        }
 
-		void Graph::forward(){
-			printf("TODO: forward pass");
-		}
+        void Graph::forward(){
+            printf("TODO: forward pass");
+        }
 
-		void Graph::backward(){
-			printf("TODO: backward pass");
-		}
-	}
+        void Graph::backward(){
+            printf("TODO: backward pass");
+        }
+    }
 }

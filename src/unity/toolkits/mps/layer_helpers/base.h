@@ -11,22 +11,22 @@
 #include <vector>
 
 namespace turi{
-	namespace mps {
-		struct EXPORT Layer: public model_base {
-			public:
-				std::string m_name;
-				layer_type m_type;
-				Layer(){};
+    namespace mps {
+        struct EXPORT Layer: public model_base {
+            public:
+                std::string m_name;
+                layer_type m_type;
+                Layer(){};
 
-			protected:
-				Layer(std::string name, int type):m_name(name),
-					m_type(static_cast<layer_type>(type)) {};
+            protected:
+                Layer(std::string name, int type):m_name(name),
+                    m_type(static_cast<layer_type>(type)) {};
 
-			public:
-				BEGIN_CLASS_MEMBER_REGISTRATION("_Layer")
-				END_CLASS_MEMBER_REGISTRATION
-		};
-	}
+            public:
+                BEGIN_CLASS_MEMBER_REGISTRATION("_Layer")
+                END_CLASS_MEMBER_REGISTRATION
+        };
+    }
 }
 
 #endif

@@ -19,21 +19,21 @@
 
 
 namespace turi {
-	namespace mps {
-		BEGIN_FUNCTION_REGISTRATION
-		REGISTER_FUNCTION(create_graph, "input");
-		END_FUNCTION_REGISTRATION
+    namespace mps {
+        BEGIN_FUNCTION_REGISTRATION
+        REGISTER_FUNCTION(create_graph, "input");
+        END_FUNCTION_REGISTRATION
 
-		BEGIN_CLASS_REGISTRATION
-		REGISTER_CLASS(Graph)
-		REGISTER_CLASS(Layer)
-		REGISTER_CLASS(InputNode)
-		REGISTER_CLASS(OutputNode)
-		REGISTER_CLASS(AdditionNode)
-		REGISTER_CLASS(ConvolutionNode)
-		REGISTER_CLASS(InstanceNormNode)
-		REGISTER_CLASS(ReluNode)
-		REGISTER_CLASS(SigmoidNode)
-		END_CLASS_REGISTRATION
-	}
+        BEGIN_CLASS_REGISTRATION
+        REGISTER_CLASS(Graph)
+        REGISTER_CLASS(Layer)
+        REGISTER_CLASS(InputNode)
+        REGISTER_CLASS(OutputNode)
+        REGISTER_CLASS(AdditionNode)
+        REGISTER_CLASS(ConvolutionNode)
+        REGISTER_CLASS(InstanceNormNode)
+        REGISTER_CLASS(ReluNode)
+        REGISTER_CLASS(SigmoidNode)
+        END_CLASS_REGISTRATION
+    }
 }

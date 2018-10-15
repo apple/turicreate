@@ -12,20 +12,20 @@
 #include <vector>
 
 namespace turi{
-	namespace mps {
-		struct EXPORT SigmoidNode: public Layer {
-			public:
-				SigmoidNode(){};
-				SigmoidNode(std::string name, std::shared_ptr<Layer> input):
-					Layer(name, layer_type::sigmoid),
-					m_input(input) {};
+    namespace mps {
+        struct EXPORT SigmoidNode: public Layer {
+            public:
+                SigmoidNode(){};
+                SigmoidNode(std::string name, std::shared_ptr<Layer> input):
+                    Layer(name, layer_type::sigmoid),
+                    m_input(input) {};
 
-				std::shared_ptr<Layer> m_input;
+                std::shared_ptr<Layer> m_input;
 
-				BEGIN_CLASS_MEMBER_REGISTRATION("_SigmoidNode")
-				END_CLASS_MEMBER_REGISTRATION
-		};
-	}
+                BEGIN_CLASS_MEMBER_REGISTRATION("_SigmoidNode")
+                END_CLASS_MEMBER_REGISTRATION
+        };
+    }
 }
 
 #endif

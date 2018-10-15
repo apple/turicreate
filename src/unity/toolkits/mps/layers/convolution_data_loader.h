@@ -8,31 +8,31 @@
 
 API_AVAILABLE(macos(10.13))
 @interface ConvolutionDataLoader: NSObject <MPSCNNConvolutionDataSource> {
-	NSString *mName;
-	
-	int mKernelWidth;
-	int mKernelHeight;
-	
-	int mInputFeatureChannels;
-	int mOutputFeatureChannels;
-	
-	int mStrideWidth;
-	int mStrideHeight;
-	
-	id<MTLBuffer> mWeights;
-	id<MTLBuffer> mBiases;
+    NSString *mName;
+    
+    int mKernelWidth;
+    int mKernelHeight;
+    
+    int mInputFeatureChannels;
+    int mOutputFeatureChannels;
+    
+    int mStrideWidth;
+    int mStrideHeight;
+    
+    id<MTLBuffer> mWeights;
+    id<MTLBuffer> mBiases;
 }
 
 - (id __nonnull) initWithParams:(NSString *__nonnull)name
-				   kernelWidth:(int)kernelWidth
-				  kernelHeight:(int)kernelHeight
-		  inputFeatureChannels:(int)inputFeatureChannels
-		 outputFeatureChannels:(int)outputFeatureChannels
-				   strideWidth:(int)strideWidth
-				  strideHeight:(int)strideHeight
-					   weights:(float *__nonnull)weights
-						biases:(float *__nullable)biases
-						device:(id<MTLDevice> __nonnull)dev;
+                   kernelWidth:(int)kernelWidth
+                  kernelHeight:(int)kernelHeight
+          inputFeatureChannels:(int)inputFeatureChannels
+         outputFeatureChannels:(int)outputFeatureChannels
+                   strideWidth:(int)strideWidth
+                  strideHeight:(int)strideHeight
+                       weights:(float *__nonnull)weights
+                        biases:(float *__nullable)biases
+                        device:(id<MTLDevice> __nonnull)dev;
 
 - (MPSDataType) dataType;
 - (MPSCNNConvolutionDescriptor *__nonnull) descriptor;

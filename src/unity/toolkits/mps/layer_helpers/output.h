@@ -12,20 +12,20 @@
 #include <vector>
 
 namespace turi{
-	namespace mps {
-		struct EXPORT OutputNode: public Layer {
-			public:
-				OutputNode(){};
-				OutputNode(std::string name, std::vector<Layer> layers):
-					Layer(name, layer_type::output),
-					m_layers(layers) {};
+    namespace mps {
+        struct EXPORT OutputNode: public Layer {
+            public:
+                OutputNode(){};
+                OutputNode(std::string name, std::vector<Layer> layers):
+                    Layer(name, layer_type::output),
+                    m_layers(layers) {};
 
-				std::vector<Layer> m_layers;
+                std::vector<Layer> m_layers;
 
-				BEGIN_CLASS_MEMBER_REGISTRATION("_OutputNode")
-				END_CLASS_MEMBER_REGISTRATION
-		};
-	}
+                BEGIN_CLASS_MEMBER_REGISTRATION("_OutputNode")
+                END_CLASS_MEMBER_REGISTRATION
+        };
+    }
 }
 
 #endif
