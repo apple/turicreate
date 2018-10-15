@@ -23,7 +23,7 @@ namespace turi{
                     m_type(static_cast<layer_type>(type)) {};
 
             public:
-                BEGIN_CLASS_MEMBER_REGISTRATION("Layer")
+                BEGIN_CLASS_MEMBER_REGISTRATION("_Layer")
                 END_CLASS_MEMBER_REGISTRATION
         };
     }

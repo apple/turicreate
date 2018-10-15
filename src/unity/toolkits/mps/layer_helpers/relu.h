@@ -16,13 +16,14 @@ namespace turi{
         struct EXPORT ReluNode: public Layer {
             public:
                 ReluNode(){};
-                ReluNode(std::string name, std::shared_ptr<Layer> input):
-                    Layer(name, layer_type::relu),
-                    m_input(input) {};
+                ReluNode(std::string name, std::shared_ptr<Layer> input);
+
+                void init(std::string name, std::shared_ptr<Layer> input);
 
                 std::shared_ptr<Layer> m_input;
 
-                BEGIN_CLASS_MEMBER_REGISTRATION("ReluNode")
+                BEGIN_CLASS_MEMBER_REGISTRATION("_ReluNode")
+                REGISTER_CLASS_MEMBER_FUNCTION(ReluNode::init, "name", "input")
                 END_CLASS_MEMBER_REGISTRATION
         };
     }

@@ -22,24 +22,24 @@ namespace turi{
                             size_t kernel_height,
                             size_t stride_in_pixels_x,
                             size_t stride_in_pixels_y,
-                            size_t type):
-                    Layer(name, layer_type::upsampling),
-                    m_input(input),
-                    m_kernel_width(kernel_width),
-                    m_kernel_height(kernel_height),
-                    m_stride_in_pixels_x(stride_in_pixels_x),
-                    m_stride_in_pixels_y(stride_in_pixels_y),
-                    m_type(static_cast<pooling_type>(type)) {};
+                            size_t type);
+
+                void init(std::string name,
+                          std::shared_ptr<Layer> input,
+                          std::pair<size_t, size_t> kernel,
+                          std::pair<size_t, size_t> stride,
+                          size_t type);
 
                 std::shared_ptr<Layer> m_input;
                 size_t m_kernel_width;
                 size_t m_kernel_height;
                 size_t m_stride_in_pixels_x;
                 size_t m_stride_in_pixels_y;
-                pooling_type m_type;
+                pooling_type m_pooling;
 
 
-                BEGIN_CLASS_MEMBER_REGISTRATION("PoolingNode")
+                BEGIN_CLASS_MEMBER_REGISTRATION("_PoolingNode")
+                REGISTER_CLASS_MEMBER_FUNCTION(PoolingNode::init, "name", "input", "kernel", "stride", "type")
                 END_CLASS_MEMBER_REGISTRATION
         };
     }

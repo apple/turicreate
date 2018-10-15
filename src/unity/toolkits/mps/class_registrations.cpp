@@ -17,23 +17,24 @@
 
 #include <unity/toolkits/mps/utils.h>
 
+using namespace turi;
 
 namespace turi {
     namespace mps {
         BEGIN_FUNCTION_REGISTRATION
         REGISTER_FUNCTION(create_graph, "input");
         END_FUNCTION_REGISTRATION
-
-        BEGIN_CLASS_REGISTRATION
-        REGISTER_CLASS(Graph)
-        REGISTER_CLASS(Layer)
-        REGISTER_CLASS(InputNode)
-        REGISTER_CLASS(OutputNode)
-        REGISTER_CLASS(AdditionNode)
-        REGISTER_CLASS(ConvolutionNode)
-        REGISTER_CLASS(InstanceNormNode)
-        REGISTER_CLASS(ReluNode)
-        REGISTER_CLASS(SigmoidNode)
-        END_CLASS_REGISTRATION
     }
 }
+
+BEGIN_CLASS_REGISTRATION
+REGISTER_CLASS(turi::mps::Graph)
+REGISTER_CLASS(turi::mps::Layer)
+REGISTER_CLASS(turi::mps::InputNode)
+REGISTER_CLASS(turi::mps::OutputNode)
+REGISTER_CLASS(turi::mps::AdditionNode)
+REGISTER_CLASS(turi::mps::ConvolutionNode)
+REGISTER_CLASS(turi::mps::InstanceNormNode)
+REGISTER_CLASS(turi::mps::ReluNode)
+REGISTER_CLASS(turi::mps::SigmoidNode)
+END_CLASS_REGISTRATION

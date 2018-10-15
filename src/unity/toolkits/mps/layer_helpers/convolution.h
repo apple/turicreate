@@ -10,6 +10,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 namespace turi{
     namespace mps {
@@ -27,19 +28,13 @@ namespace turi{
                                 size_t padding_width,
                                 size_t padding_height,
                                 std::vector<float> weights,
-                                std::vector<float> biases):
-                    Layer(name, layer_type::convolution),
-                    m_input(input),
-                    m_kernel_width(kernel_width),
-                    m_kernel_height(kernel_height),
-                    m_input_feature_channels(input_feature_channels),
-                    m_output_feature_channels(output_feature_channels),
-                    m_stride_width(stride_width),
-                    m_stride_height(stride_height),
-                    m_padding_width(padding_width),
-                    m_padding_height(padding_height),
-                    m_weights(weights),
-                    m_biases(biases) {};
+                                std::vector<float> biases);
+
+                void init(std::string name,
+                          std::shared_ptr<Layer> input,
+                          std::map<std::string, size_t> options,
+                          std::map<std::string, std::vector<float>> data);
+
 
                 std::shared_ptr<Layer> m_input;
                 size_t m_kernel_width;
@@ -54,7 +49,8 @@ namespace turi{
                 std::vector<float> m_biases;
 
 
-                BEGIN_CLASS_MEMBER_REGISTRATION("ConvolutionNode")
+                BEGIN_CLASS_MEMBER_REGISTRATION("_ConvolutionNode")
+                REGISTER_CLASS_MEMBER_FUNCTION(ConvolutionNode::init, "name", "input", "options", "data")
                 END_CLASS_MEMBER_REGISTRATION
         };
     }

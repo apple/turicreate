@@ -16,13 +16,14 @@ namespace turi{
         struct EXPORT SigmoidNode: public Layer {
             public:
                 SigmoidNode(){};
-                SigmoidNode(std::string name, std::shared_ptr<Layer> input):
-                    Layer(name, layer_type::sigmoid),
-                    m_input(input) {};
+                SigmoidNode(std::string name, std::shared_ptr<Layer> input);
+
+                void init(std::string name, std::shared_ptr<Layer> input);
 
                 std::shared_ptr<Layer> m_input;
 
-                BEGIN_CLASS_MEMBER_REGISTRATION("SigmoidNode")
+                BEGIN_CLASS_MEMBER_REGISTRATION("_SigmoidNode")
+                REGISTER_CLASS_MEMBER_FUNCTION(SigmoidNode::init, "name", "input")
                 END_CLASS_MEMBER_REGISTRATION
         };
     }

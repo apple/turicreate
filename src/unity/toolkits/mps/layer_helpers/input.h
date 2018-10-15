@@ -16,9 +16,12 @@ namespace turi{
         struct EXPORT InputNode: public Layer {
             public:
                 InputNode(){};
-                InputNode(std::string name): Layer(name, layer_type::input) {};
+                InputNode(std::string name);
 
-                BEGIN_CLASS_MEMBER_REGISTRATION("InputNode")
+                void init(std::string name);
+
+                BEGIN_CLASS_MEMBER_REGISTRATION("_InputNode")
+                REGISTER_CLASS_MEMBER_FUNCTION(InputNode::init, "name", "input")
                 END_CLASS_MEMBER_REGISTRATION
         };
     }
