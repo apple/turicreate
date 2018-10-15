@@ -14,6 +14,20 @@ namespace turi{
 			sigmoid,
 			upsampling
 		};
+
+		enum pooling_type {
+			average,
+			average_gradient,
+			l_two_norm,
+			max
+		};
+
+		enum upsampling_type {
+			bilinear,
+			bilinear_gradient,
+			gradient,
+			nearest
+		};
 	}
 }
 

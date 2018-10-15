@@ -7,7 +7,13 @@
 #include <unity/toolkits/mps/layer_helpers/base.h>
 #include <unity/toolkits/mps/layer_helpers/convolution.h>
 #include <unity/toolkits/mps/layer_helpers/input.h>
+#include <unity/toolkits/mps/layer_helpers/instance_norm.h>
 #include <unity/toolkits/mps/layer_helpers/output.h>
+#include <unity/toolkits/mps/layer_helpers/pooling.h>
+#include <unity/toolkits/mps/layer_helpers/relu.h>
+#include <unity/toolkits/mps/layer_helpers/sigmoid.h>
+#include <unity/toolkits/mps/layer_helpers/upsampling.h>
+
 
 #include <unity/toolkits/mps/utils.h>
 
@@ -25,6 +31,9 @@ namespace turi {
 		REGISTER_CLASS(OutputNode)
 		REGISTER_CLASS(AdditionNode)
 		REGISTER_CLASS(ConvolutionNode)
+		REGISTER_CLASS(InstanceNormNode)
+		REGISTER_CLASS(ReluNode)
+		REGISTER_CLASS(SigmoidNode)
 		END_CLASS_REGISTRATION
 	}
 }

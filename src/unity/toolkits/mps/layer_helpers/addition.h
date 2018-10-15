@@ -14,18 +14,18 @@
 namespace turi{
 	namespace mps {
 		struct EXPORT AdditionNode: public Layer {
-			std::shared_ptr<Layer> m_left;
-			std::shared_ptr<Layer> m_right;
+			public:
+				AdditionNode(){};
+				AdditionNode(std::string name, std::shared_ptr<Layer> left, std::shared_ptr<Layer> right):
+					Layer(name, layer_type::addition),
+					m_left(left),
+					m_right(right) {};
 
-			AdditionNode(){};
+				std::shared_ptr<Layer> m_left;
+				std::shared_ptr<Layer> m_right;
 
-			AdditionNode(std::string name, std::shared_ptr<Layer> left, std::shared_ptr<Layer> right):
-				Layer(name, layer_type::addition),
-				m_left(left),
-				m_right(right) {};
-
-			BEGIN_CLASS_MEMBER_REGISTRATION("_AdditionNode")
-			END_CLASS_MEMBER_REGISTRATION
+				BEGIN_CLASS_MEMBER_REGISTRATION("_AdditionNode")
+				END_CLASS_MEMBER_REGISTRATION
 		};
 	}
 }

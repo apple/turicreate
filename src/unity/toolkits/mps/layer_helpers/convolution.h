@@ -14,46 +14,48 @@
 namespace turi{
 	namespace mps {
 		struct EXPORT ConvolutionNode: public Layer {
-			std::shared_ptr<Layer> m_input;
-			size_t m_kernelWidth;
-			size_t m_kernelHeight;
-			size_t m_inputFeatureChannels;
-			size_t m_outputFeatureChannels;
-			size_t m_strideWidth;
-			size_t m_strideHeight;
-			size_t m_paddingWidth;
-			size_t m_paddingHeight;
-			std::vector<float> m_weights;
-			std::vector<float> m_biases;
+			public:
+				ConvolutionNode(){};
+				ConvolutionNode(std::string name,
+								std::shared_ptr<Layer> input,
+								size_t kernel_width,
+								size_t kernel_height,
+								size_t input_feature_channels,
+								size_t output_feature_channels,
+								size_t stride_width,
+								size_t stride_height,
+								size_t padding_width,
+								size_t padding_height,
+								std::vector<float> weights,
+								std::vector<float> biases):
+					Layer(name, layer_type::convolution),
+					m_input(input),
+					m_kernel_width(kernel_width),
+					m_kernel_height(kernel_height),
+					m_input_feature_channels(input_feature_channels),
+					m_output_feature_channels(output_feature_channels),
+					m_stride_width(stride_width),
+					m_stride_height(stride_height),
+					m_padding_width(padding_width),
+					m_padding_height(padding_height),
+					m_weights(weights),
+					m_biases(biases) {};
 
-			ConvolutionNode(){};
-			ConvolutionNode(std::string name,
-							std::shared_ptr<Layer> input,
-							size_t kernelWidth,
-							size_t kernelHeight,
-							size_t inputFeatureChannels,
-							size_t outputFeatureChannels,
-							size_t strideWidth,
-							size_t strideHeight,
-							size_t paddingWidth,
-							size_t paddingHeight,
-							std::vector<float> weights,
-							std::vector<float> biases):
-				Layer(name, layer_type::addition),
-				m_input(input),
-				m_kernelWidth(kernelWidth),
-				m_kernelHeight(kernelHeight),
-				m_inputFeatureChannels(inputFeatureChannels),
-				m_outputFeatureChannels(outputFeatureChannels),
-				m_strideWidth(strideWidth),
-				m_strideHeight(strideHeight),
-				m_paddingWidth(paddingWidth),
-				m_paddingHeight(paddingHeight),
-				m_weights(weights),
-				m_biases(biases) {};
+				std::shared_ptr<Layer> m_input;
+				size_t m_kernel_width;
+				size_t m_kernel_height;
+				size_t m_input_feature_channels;
+				size_t m_output_feature_channels;
+				size_t m_stride_width;
+				size_t m_stride_height;
+				size_t m_padding_width;
+				size_t m_padding_height;
+				std::vector<float> m_weights;
+				std::vector<float> m_biases;
 
-			BEGIN_CLASS_MEMBER_REGISTRATION("_ConvolutionNode")
-			END_CLASS_MEMBER_REGISTRATION
+
+				BEGIN_CLASS_MEMBER_REGISTRATION("_ConvolutionNode")
+				END_CLASS_MEMBER_REGISTRATION
 		};
 	}
 }
