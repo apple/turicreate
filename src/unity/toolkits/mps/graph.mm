@@ -28,7 +28,7 @@ namespace turi{
         }
 
         void set_trainable_layers(std::map<std::string, bool> trainable){
-            
+            printf("TODO: set trainable layers")
         }
 
         void Graph::forward(){
