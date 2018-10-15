@@ -6,7 +6,6 @@
 #include <unity/lib/toolkit_function_macros.hpp>
 #include <unity/toolkits/util/class_registrations.hpp>
 #include <unity/toolkits/util/random_sframe_generation.hpp>
-#include <unity/toolkits/mps/generator.hpp>
 
 namespace turi {
 namespace util {
@@ -19,13 +18,7 @@ REGISTER_FUNCTION(_generate_random_classification_sframe,
                   "num_rows", "column_codes", "random_seed", "num_classes",
                   "num_extra_class_bins", "misclassification_spread");
 
-REGISTER_FUNCTION(mps::create_graph, "input");
-
 END_FUNCTION_REGISTRATION
-
-BEGIN_CLASS_REGISTRATION
-REGISTER_CLASS(mps::Graph)
-END_CLASS_REGISTRATION
 
 }  // namespace util
 }  // namespace turi
