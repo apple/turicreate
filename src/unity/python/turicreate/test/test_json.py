@@ -60,19 +60,6 @@ image_info = [image_info(u) for u in image_urls]
 
 _SFrameComparer = util.SFrameComparer()
 
-def _compareJson(x, y):
-    return json.loads(json.dumps(x)) == json.loads(json.dumps(y))
-
-def _jsonContainsValueRecursive(json_obj, val):
-    def impl(obj):
-        if isinstance(obj, list):
-            return any(map(impl, obj))
-        elif isinstance(obj, dict):
-            return any(map(impl, [v for (k,v) in obj.items()]))
-        else:
-            return obj == val
-    return impl(json_obj)
-
 class JSONTest(unittest.TestCase):
     # Only generate lists of dicts, but allow nearly-arbitrary JSON inside those.
     # However, limit to length 1 to make sure the keys are the same in all rows.
@@ -121,10 +108,6 @@ class JSONTest(unittest.TestCase):
     )
 
     def _assertEqual(self, x, y):
-        print("DEBUG: comparing x (left):")
-        print(x)
-        print("DEBUG: with y (right):")
-        print(y)
         if type(x) in [long,int]:
             self.assertTrue(type(y) in [long,int])
         elif type(x) in [str, unicode]:
@@ -389,8 +372,6 @@ class JSONTest(unittest.TestCase):
             # not actually valid JSON - skip this example
             return
 
-        print("DEBUG:")
-        print("Original JSON: ", json_text)
         try:
             expected = SFrame(json_obj).unpack('X1', column_name_prefix='')
         except TypeError:
@@ -398,7 +379,6 @@ class JSONTest(unittest.TestCase):
             # TC enforces all list items have the same type, which
             # JSON does not necessarily enforce. Let's skip those examples.
             return
-        print("Expected: ", expected)
         with tempfile.NamedTemporaryFile('w') as f:
             f.write(json_text)
             f.flush()
@@ -411,5 +391,4 @@ class JSONTest(unittest.TestCase):
                 # JSON does not necessarily enforce. Let's skip those examples.
                 return
 
-            print("Actual: ", actual)
             _SFrameComparer._assert_sframe_equal(expected, actual)
