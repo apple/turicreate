@@ -54,7 +54,7 @@ namespace turi{
                 std::vector<float> m_biases;
 
 
-                BEGIN_CLASS_MEMBER_REGISTRATION("_ConvolutionNode")
+                BEGIN_CLASS_MEMBER_REGISTRATION("ConvolutionNode")
                 END_CLASS_MEMBER_REGISTRATION
         };
     }

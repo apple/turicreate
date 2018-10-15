@@ -32,7 +32,7 @@ namespace turi{
                 size_t m_scale_y;
                 upsampling_type m_type;
 
-                BEGIN_CLASS_MEMBER_REGISTRATION("_UpsamplingNode")
+                BEGIN_CLASS_MEMBER_REGISTRATION("UpsamplingNode")
                 END_CLASS_MEMBER_REGISTRATION
         };
     }

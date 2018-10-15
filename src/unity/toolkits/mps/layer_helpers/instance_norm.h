@@ -35,7 +35,7 @@ namespace turi{
                 std::vector<std::vector<float>> m_gamma;
                 std::vector<std::vector<float>> m_beta;
 
-                BEGIN_CLASS_MEMBER_REGISTRATION("_InstanceNormNode")
+                BEGIN_CLASS_MEMBER_REGISTRATION("InstanceNormNode")
                 END_CLASS_MEMBER_REGISTRATION
         };
     }

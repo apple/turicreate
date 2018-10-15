@@ -22,7 +22,7 @@ namespace turi{
 
                 std::shared_ptr<Layer> m_input;
 
-                BEGIN_CLASS_MEMBER_REGISTRATION("_SigmoidNode")
+                BEGIN_CLASS_MEMBER_REGISTRATION("SigmoidNode")
                 END_CLASS_MEMBER_REGISTRATION
         };
     }

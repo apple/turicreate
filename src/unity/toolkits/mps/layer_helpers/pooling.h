@@ -39,7 +39,7 @@ namespace turi{
                 pooling_type m_type;
 
 
-                BEGIN_CLASS_MEMBER_REGISTRATION("_PoolingNode")
+                BEGIN_CLASS_MEMBER_REGISTRATION("PoolingNode")
                 END_CLASS_MEMBER_REGISTRATION
         };
     }

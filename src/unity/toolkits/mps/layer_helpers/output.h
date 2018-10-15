@@ -22,7 +22,7 @@ namespace turi{
 
                 std::vector<Layer> m_layers;
 
-                BEGIN_CLASS_MEMBER_REGISTRATION("_OutputNode")
+                BEGIN_CLASS_MEMBER_REGISTRATION("OutputNode")
                 END_CLASS_MEMBER_REGISTRATION
         };
     }

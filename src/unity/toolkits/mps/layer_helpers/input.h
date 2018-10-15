@@ -18,7 +18,7 @@ namespace turi{
                 InputNode(){};
                 InputNode(std::string name): Layer(name, layer_type::input) {};
 
-                BEGIN_CLASS_MEMBER_REGISTRATION("_InputNode")
+                BEGIN_CLASS_MEMBER_REGISTRATION("InputNode")
                 END_CLASS_MEMBER_REGISTRATION
         };
     }

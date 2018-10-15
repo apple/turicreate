@@ -24,7 +24,8 @@ namespace turi{
                 m_left(left),
                 m_right(right) {};
 
-            BEGIN_CLASS_MEMBER_REGISTRATION("_AdditionNode")
+            BEGIN_CLASS_MEMBER_REGISTRATION("AdditionNode")
+            REGISTER_CLASS_DOCSTRING("A simple AdditionNode.")
             END_CLASS_MEMBER_REGISTRATION
         };
     }
