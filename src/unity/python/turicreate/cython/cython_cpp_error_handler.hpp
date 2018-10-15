@@ -43,8 +43,6 @@ static void __Pyx_CppExn2PyErr() {
     PyErr_SetString(PyExc_ArithmeticError, exn.what());
   } catch (const std::underflow_error& exn) {
     PyErr_SetString(PyExc_ArithmeticError, exn.what());
-  } catch (const std::exception& exn) {
-    PyErr_SetString(PyExc_RuntimeError, exn.what());
   } catch (const std::string& exn) {
     PyErr_SetString(PyExc_RuntimeError, exn.c_str());
   } catch (const char* exn) {
