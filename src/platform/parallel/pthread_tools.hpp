@@ -986,10 +986,6 @@ namespace turi {
      * thrown by the thread is forwarded to the join() function.
      */
     inline void join() {
-      if(ptrdiff_t(this) == 0) {
-        std::cout << "Failure on join()" << std::endl;
-        abort();
-      }
       join(*this);
     }
 

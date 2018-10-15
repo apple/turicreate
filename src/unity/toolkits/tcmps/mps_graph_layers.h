@@ -1,16 +1,20 @@
 #ifndef MPS_GRAPH_LAYERS_H_
 #define MPS_GRAPH_LAYERS_H_
 
-#import "mps_layers.h"
-#import "mps_weight.h"
-#import "mps_utils.h"
+#include <string>
+#include <unordered_map>
+#include <vector>
+
 #import <Accelerate/Accelerate.h>
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
-#import <string>
-#import <unordered_map>
-#import <vector>
+
+#include "mps_float_array.hpp"
+
+#import "mps_layers.h"
+#import "mps_weight.h"
+#import "mps_utils.h"
 
 #pragma clang diagnostic ignored "-Wunguarded-availability-new"
 
@@ -20,29 +24,26 @@ namespace mps {
 struct GraphLayer {
   virtual void Init(id<MTLDevice> _Nonnull device,
                     id<MTLCommandQueue> _Nonnull cmd_queue,
-                    const FloatArrayMap &config,
-                    const FloatArrayMap &weights) {}
+                    const float_array_map& config,
+                    const float_array_map& weights) {}
   virtual void InitFwd(MPSNNImageNode *_Nonnull src) = 0;
   virtual void InitBwd(MPSNNImageNode *_Nonnull src) = 0;
-  virtual void Load(const FloatArrayMap &weights) {}
+  virtual void Load(const float_array_map& weights) {}
   virtual void SetLearningRate(float lr) {}
-  virtual void
-  Export(std::unordered_map<std::string, std::tuple<std::string, float *, int,
-                                                    std::vector<int>>> &table) {
-  }
+  virtual float_array_map Export() const { return float_array_map(); }
 
   virtual ~GraphLayer() {}
 
   void _Load(const std::string &key,
-             const FloatArrayMap &weights,
-             int dst_size,
+             const float_array_map& weights,
+             size_t dst_size,
              float *_Nonnull dst) {
     if (weights.count(key) > 0) {
       LogStdString("Loading weight: " + key);
-      assert(weights.at(key).size == dst_size);
+      assert(weights.at(key).size() == dst_size);
       size_t size = dst_size * sizeof(float);
       void *dest = (void *)dst;
-      void *src = (void *)weights.at(key).data;
+      const float *src = weights.at(key).data();
       std::memcpy(dest, src, size);
     }
   }
@@ -78,8 +79,8 @@ struct GraphLayer {
 struct LossGraphLayer: public GraphLayer {
   MPSNNLabelsNode *labels_node = nil;
 
-  virtual MPSCNNLossLabelsBatch *CreateLossState(id<MTLDevice> _Nonnull device,
-                                                 float *data) const = 0;
+  virtual MPSCNNLossLabelsBatch *CreateLossState(
+      id<MTLDevice> _Nonnull device, const float_array& labels_batch) const = 0;
 };
 
 // Individual Layers
@@ -120,16 +121,14 @@ struct ConvGraphLayer : public GraphLayer {
   ~ConvGraphLayer() {}
 
   void Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> _Nonnull cmd_queue,
-            const FloatArrayMap &config,
-            const FloatArrayMap &weights) override;
+            const float_array_map& config,
+            const float_array_map& weights) override;
   void InitFwd(MPSNNImageNode * _Nonnull src) override;
   void InitBwd(MPSNNImageNode * _Nonnull src) override;
   void SetLearningRate(float lr) override;
 
-  void
-  Export(std::unordered_map<
-         std::string, std::tuple<std::string, float *, int, std::vector<int>>>
-             &table) override;
+  float_array_map Export() const override;
+
   // content
   bool use_bias{false};
   MPSCNNConvolutionNode *_Nonnull node_fwd;
@@ -153,16 +152,13 @@ struct BNGraphLayer : public GraphLayer {
   ~BNGraphLayer() {}
 
   void Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> _Nonnull cmd_queue,
-            const FloatArrayMap &config,
-            const FloatArrayMap &weights) override;
+            const float_array_map& config,
+            const float_array_map& weights) override;
   void InitFwd(MPSNNImageNode * _Nonnull src) override;
   void InitBwd(MPSNNImageNode * _Nonnull src) override;
   void SetLearningRate(float lr) override;
 
-  void
-  Export(std::unordered_map<
-         std::string, std::tuple<std::string, float *, int, std::vector<int>>>
-             &table) override;
+  float_array_map Export() const override;
 
   TCMPSBatchNormWeights *_Nonnull data;
   MPSCNNBatchNormalizationNode *_Nonnull node_fwd;
@@ -210,12 +206,14 @@ public:
                      Options options);
 
   void Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> _Nonnull cmd_queue,
-            const FloatArrayMap &config,
-            const FloatArrayMap &weights) override;
+            const float_array_map& config,
+            const float_array_map& weights) override;
   void InitFwd(MPSNNImageNode *src) override;
   void InitBwd(MPSNNImageNode *src) override;
 
-  MPSCNNLossLabelsBatch *CreateLossState(id<MTLDevice> _Nonnull device, float *data) const override;
+  MPSCNNLossLabelsBatch *CreateLossState(
+      id<MTLDevice> _Nonnull device,
+      const float_array& labels_batch) const override;
 
 private:
   Options options_;

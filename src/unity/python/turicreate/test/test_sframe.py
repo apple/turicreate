@@ -145,9 +145,10 @@ class SFrameTest(unittest.TestCase):
 
 
     def __test_equal(self, sf, df):
+        # asserts two frames are equal, ignoring column ordering.
         self.assertEqual(sf.num_rows(), df.shape[0])
         self.assertEqual(sf.num_columns(), df.shape[1])
-        assert_frame_equal(sf.to_dataframe(), df)
+        assert_frame_equal(sf.to_dataframe(), df[sf.column_names()])
 
     def __create_test_df(self, size):
         int_data = []
@@ -3415,6 +3416,69 @@ class SFrameTest(unittest.TestCase):
         assert sf is not sf_copy
 
         _assert_sframe_equal(sf, sf_copy)
+
+    def test_builtins(self):
+        import builtins
+        import six
+
+        sf = SFrame({'dict': [builtins.dict({'foo': 'bar'})],
+                     'float': [builtins.float(3.14)],
+                     'int': [builtins.int(12)],
+                     'bool': [builtins.bool(False)],
+                     'list': [builtins.list([1,2,3])],
+                     'str': [builtins.str('foo')],
+                     'tuple': [builtins.tuple((1,2))],
+        })
+        sf2 = SFrame({'dict': [{'foo': 'bar'}],
+                     'float': [3.14],
+                     'int': [12],
+                     'bool': [False],
+                     'list': [[1,2,3]],
+                     'str': ['foo'],
+                     'tuple': [(1,2)],
+        })
+
+        if six.PY2:
+            sf = sf.add_columns(SFrame(
+                {'long': [builtins.long(12)], 'unicode': [builtins.unicode('foo')]}))
+            sf2 = sf2.add_columns(SFrame(
+                {'long': [12], 'unicode': [unicode('foo')]}))
+
+        _assert_sframe_equal(sf, sf2)
+    
+    def test_add_column_nonSArray(self):
+        sf = SFrame()
+        sf = sf.add_column([1,2,3,4],'x')
+    
+        sf_test = SFrame()
+        sf_test['x'] = SArray([1,2,3,4])
+        
+        _assert_sframe_equal(sf, sf_test)
+    
+    
+    def test_add_column_noniterable1(self):
+        sf = SFrame()
+        sf = sf.add_column([1,2,3,4],'x')
+        sf = sf.add_column(5,'y')
+    
+        sf_test = SFrame()
+        sf_test['x'] = SArray([1,2,3,4])
+        sf_test['y'] = 5
+        
+        _assert_sframe_equal(sf, sf_test)
+    
+    
+
+    def test_add_column_noniterable2(self):
+        # If SFrame is empty then the passed data should be treated as an SArray of size 1
+        sf = SFrame()
+        sf = sf.add_column(5,'y')
+
+        sf_test = SFrame()
+        sf_test['y'] = SArray([5])
+        
+        _assert_sframe_equal(sf, sf_test)
+
 
 if __name__ == "__main__":
 

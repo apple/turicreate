@@ -17,27 +17,56 @@ from numbers import Number
 from . import util as test_util
 import pytest
 from turicreate.toolkits._internal_utils import _mac_ver
+import uuid
 
 
-def _load_data(self):
+def _load_data(self, num_examples = 1000, num_features = 3, max_num_sessions = 4,
+               randomize_num_sessions = True, num_labels = 9, prediction_window = 5,
+               enforce_all_sessions = False):
     random.seed(42)
 
-    self.num_examples = 1000
-    self.num_features = 3
-    self.num_sessions = random.randint(1, 4)
-    self.num_labels = 9
-    self.prediction_window = 5
+    self.num_examples = num_examples
+    self.num_features = num_features
+    self.num_sessions = random.randint(1, max_num_sessions) if randomize_num_sessions else max_num_sessions
+    self.num_labels = num_labels
+    self.prediction_window = prediction_window
 
     self.features = ['X1-r', 'X2-r', 'X3-r']
     self.target = 'activity_label'
     self.session_id = 'session_id'
 
-    random_session_ids = sorted([random.randint(0, self.num_sessions - 1) for i in range(self.num_examples)])
+    if (enforce_all_sessions):
+        random_session_ids = _random_session_ids(self.num_examples, self.num_sessions)
+    else:
+        random_session_ids = sorted([random.randint(0, self.num_sessions - 1) for i in range(self.num_examples)])
+
     random_labels = [random.randint(0, self.num_labels - 1) for i in range(self.num_examples)]
 
     self.data = tc.util.generate_random_sframe(column_codes='r' * self.num_features, num_rows=self.num_examples)
-    self.data['session_id'] = random_session_ids
+    self.data[self.session_id] = random_session_ids
     self.data[self.target] = random_labels
+
+'''
+    Creates a random session_id column, that guarantees that the number
+    of sessions is exactly the requested one.
+'''
+def _random_session_ids(num_examples , num_sessions):
+    examples_per_session = num_examples // num_sessions
+    if (examples_per_session == 0):
+        raise ValueError("Can't divide {} lines into {} sessions.".format(num_examples, num_sessions))
+
+    min_lines_per_session = int(0.85 * examples_per_session)
+    max_lines_per_session = int(1.15 * examples_per_session)
+
+    lines_in_each_session = [random.randint(min_lines_per_session, max_lines_per_session) for i in range(num_sessions)]
+    lines_in_each_session = [(x * (num_examples)) // sum(lines_in_each_session) for x in lines_in_each_session]
+    lines_in_each_session[-1] += num_examples - sum(lines_in_each_session)
+
+    session_ids = []
+    for value, num_lines in enumerate(lines_in_each_session):
+        session_ids.extend([value] * num_lines)
+
+    return session_ids
 
 
 class ActivityClassifierCreateStressTests(unittest.TestCase):
@@ -89,6 +118,86 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
                                               session_id=self.session_id,
                                               prediction_window=self.prediction_window,
                                               validation_set=None)
+
+
+class ActivityClassifierAutoValdSetTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.fraction = 0.9
+        self.seed = 42
+
+    def _create_auto_validation_set(self, is_small=False):
+        model = tc.activity_classifier.create(self.data,
+                            features=self.features ,
+                            target=self.target,
+                            session_id=self.session_id,
+                            prediction_window=self.prediction_window,
+                            validation_set='auto')
+        predictions = model.predict(self.data)
+
+        # Check the size of the auto validation set
+        num_sessions = len(self.data[self.session_id].unique())
+        valid_num_sessions = num_sessions - model.num_sessions
+        valid_frac = float(valid_num_sessions / num_sessions)
+        expected_frac = 0.0 if is_small else 1.0 - self.fraction
+        self.assertAlmostEqual(valid_frac, expected_frac, places=1,
+                               msg="Got {} validation sessions out of {}, which is {:.3f}, and not the expected {}".format(valid_num_sessions, num_sessions, valid_frac, expected_frac))
+
+    def test_random_split_by_session(self):
+        num_sessions = tc.activity_classifier.util._MIN_NUM_SESSIONS_FOR_SPLIT
+        _load_data(self, num_examples=10000, max_num_sessions=num_sessions,
+                   randomize_num_sessions=False, enforce_all_sessions=True)
+
+        train, valid = tc.activity_classifier.util.random_split_by_session(self.data, self.session_id, self.fraction, self.seed)
+
+        train_num_sessions = len(train[self.session_id].unique())
+        train_frac = float(train_num_sessions / num_sessions)
+        expected_frac = self.fraction
+
+        self.assertAlmostEqual(train_frac, expected_frac, places=1,
+                               msg= "Got {} train sessions out of {}, which is {:.3f}, and not the expected {}".format(
+                               train_num_sessions, num_sessions, train_frac, expected_frac))
+
+        valid_num_sessions = len(valid[self.session_id].unique())
+        valid_frac = float(valid_num_sessions / num_sessions)
+        expected_valid_frac = 1.0 - self.fraction
+
+        self.assertAlmostEqual(valid_frac, expected_valid_frac, places=1,
+                               msg= "Got {} train sessions out of {}, which is {:.3f}, and not the expected {}".format(
+                               valid_num_sessions, num_sessions, valid_frac, expected_valid_frac))
+
+        train_sessions_set = set(train[self.session_id].unique())
+        valid_sessions_set = set(valid[self.session_id].unique())
+
+        self.assertTrue(train_sessions_set.isdisjoint(valid_sessions_set),
+                        "After train-test split, the train and validation sets should not include the same sessions")
+
+    def test_create_auto_validation_set_small(self):
+        num_sessions = tc.activity_classifier.util._MIN_NUM_SESSIONS_FOR_SPLIT // 2
+        _load_data(self, max_num_sessions=num_sessions, randomize_num_sessions=False, enforce_all_sessions=True)
+
+        self._create_auto_validation_set(is_small=True)
+
+    def test_create_auto_validation_set_typical(self):
+        num_sessions = tc.activity_classifier.util._MIN_NUM_SESSIONS_FOR_SPLIT * 4
+        _load_data(self, num_examples=10000, max_num_sessions=num_sessions, randomize_num_sessions=False,
+                   enforce_all_sessions=True)
+
+        self._create_auto_validation_set()
+
+    def test_create_auto_validation_set_string_session_id(self):
+        num_sessions = tc.activity_classifier.util._MIN_NUM_SESSIONS_FOR_SPLIT * 4
+        _load_data(self, num_examples=10000, max_num_sessions=num_sessions, randomize_num_sessions=False,
+                   enforce_all_sessions=True)
+
+        from six.moves import xrange as _xrange
+        session_ids_dict = {}
+        for i in _xrange(num_sessions):
+            session_ids_dict[i] = uuid.uuid4().hex[:6].upper()
+
+        self.data[self.session_id] =  self.data[self.session_id].apply(lambda x: session_ids_dict[x])
+
+        self._create_auto_validation_set()
 
 class ActivityClassifierTest(unittest.TestCase):
 
@@ -230,6 +339,23 @@ class ActivityClassifierTest(unittest.TestCase):
                 self.data.head(100), k=5, output_frequency='per_window')
             expected_len = self._calc_expected_predictions_length(self.data.head(100), top_k=5)
             self.assertEqual(len(preds), expected_len)
+
+    def test_evaluate_with_incomplete_targets(self):
+        """
+        Check that evaluation does not require the test data to span all labels.
+        """
+
+        # Arbitrarily filter out all rows whose label matches the first row's.
+        filtered_label = self.data[self.target][0]
+        filtered_data = self.data[self.data[self.target] != filtered_label]
+
+        # Run evaluation.
+        evaluation = self.model.evaluate(filtered_data)
+
+        # Verify that all metrics were computed and included in the result.
+        for metric in ['accuracy', 'auc', 'precision', 'recall', 'f1_score',
+                       'log_loss', 'confusion_matrix', 'roc_curve']:
+            self.assertIn(metric, evaluation)
 
     def test__list_fields(self):
         """

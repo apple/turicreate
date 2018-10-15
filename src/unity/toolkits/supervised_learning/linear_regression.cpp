@@ -9,10 +9,7 @@
 #include <ml_data/ml_data.hpp>
 
 // Core ML
-#include <unity/toolkits/coreml_export/MLModel/src/transforms/LinearModel.hpp>
-#include <unity/toolkits/coreml_export/MLModel/src/transforms/LogisticModel.hpp>
-#include <unity/toolkits/coreml_export/mldata_exporter.hpp>
-#include <unity/toolkits/coreml_export/coreml_export_utils.hpp>
+#include <unity/toolkits/coreml_export/linear_models_exporter.hpp>
 
 // Toolkits
 #include <toolkits/supervised_learning/linear_regression_opt_interface.hpp>
@@ -422,45 +419,13 @@ size_t linear_regression::get_version() const{
 
 std::shared_ptr<coreml::MLModelWrapper> linear_regression::export_to_coreml() {
 
-  CoreML::Pipeline pipeline = CoreML::Pipeline::Regressor(
-      ml_mdata->target_column_name(),
-      "");
-
-  setup_pipeline_from_mldata(pipeline, ml_mdata);
-
-  // Build the actual model
-  CoreML::LinearModel lr = CoreML::LinearModel(ml_mdata->target_column_name(), "");
-
-  std::vector<double> one_hot_coefs;
-  supervised::get_one_hot_encoded_coefs(coefs, ml_mdata, one_hot_coefs);
-
-  // Push the offset
-  double offset = one_hot_coefs.back();
-  lr.setOffsets({offset});
-
-  // Push the coefs
-  one_hot_coefs.pop_back();
-  lr.setWeights({one_hot_coefs});
-
-  lr.addInput("__vectorized_features__",
-              CoreML::FeatureType::Array({static_cast<int64_t>(ml_mdata->num_dimensions())}));
-  lr.addOutput(ml_mdata->target_column_name(), CoreML::FeatureType::Double());
-
-  pipeline.add(lr);
-  pipeline.addOutput(ml_mdata->target_column_name(), CoreML::FeatureType::Double());
-
-  // Add metadata
   std::map<std::string, flexible_type> context_metadata = {
     {"class", name()},
     {"version", std::to_string(get_version())},
     {"short_description", "Linear regression model."}};
 
-  add_metadata(pipeline.getProto(), context_metadata);
-
-  auto model_wrapper = std::make_shared<coreml::MLModelWrapper>(std::make_shared<CoreML::Pipeline>(pipeline));
-
-
-  return model_wrapper;
+  return export_linear_regression_as_model_asset(ml_mdata, coefs,
+                                                 context_metadata);
 }
 
 

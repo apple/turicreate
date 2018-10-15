@@ -14,19 +14,6 @@ EXPORT int TCMPSMetalDeviceMemoryLimit(uint64_t *size);
 EXPORT int TCMPSCreateGraphModule(MPSHandle *handle);
 EXPORT int TCMPSDeleteGraphModule(MPSHandle handle);
 
-EXPORT int TCMPSStartTrainingBatchGraph(MPSHandle handle, void *ptr, int64_t sz,
-                                   int64_t *shape, int dim, float *labels_ptr);
-EXPORT int TCMPSWaitForTrainingBatchGraph(MPSHandle handle, float *loss);
-
-EXPORT int TCMPSStartInferenceBatchGraph(MPSHandle handle, void *ptr, int64_t sz,
-                                    int64_t *shape, int dim);
-EXPORT int TCMPSWaitForInferenceBatchGraph(MPSHandle handle, float *out_ptr);
-
-EXPORT int TCMPSStartTrainReturnGradBatchGraph(
-    MPSHandle handle, void *ptr, int64_t sz, int64_t *shape, int dim,
-    void *grad_ptr, int64_t grad_sz, int64_t *grad_shape, int grad_dim);
-EXPORT int TCMPSWaitForTrainReturnGradBatchGraph(MPSHandle handle, float *out_ptr);
-
 EXPORT int TCMPSInitGraph(MPSHandle handle, int network_id, int n, int c_in, int h_in, int w_in,
                      int c_out, int h_out, int w_out,
                      char **config_names, void **config_arrays,
@@ -34,12 +21,21 @@ EXPORT int TCMPSInitGraph(MPSHandle handle, int network_id, int n, int c_in, int
                      char **weight_names, void **weight_arrays,
                      int64_t *weight_sizes, int weight_len);
 
-EXPORT int TCMPSNumParamsGraph(MPSHandle handle, int *num);
-
-EXPORT int TCMPSExportGraph(MPSHandle handle, char **names, void **arrs, int64_t *dim,
-           int **shape);
-
 EXPORT int TCMPSSetLearningRateGraph(MPSHandle handle, float new_lr);
+
+EXPORT int TCMPSTrainGraph(MPSHandle handle,
+                           TCMPSFloatArrayRef inputs, TCMPSFloatArrayRef labels,
+                           TCMPSFloatArrayRef* loss_out);
+
+EXPORT int TCMPSPredictGraph(
+    MPSHandle handle, TCMPSFloatArrayRef inputs, TCMPSFloatArrayRef* outputs);
+
+EXPORT int TCMPSTrainReturnGradGraph(
+    MPSHandle handle, TCMPSFloatArrayRef inputs, TCMPSFloatArrayRef gradient,
+    TCMPSFloatArrayRef* outputs);
+
+EXPORT int TCMPSExportGraph(MPSHandle handle,
+                            TCMPSFloatArrayMapIteratorRef* float_array_map_out);
 
 #ifdef __cplusplus
 }

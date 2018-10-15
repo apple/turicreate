@@ -68,7 +68,7 @@ void flattened_sparse_vector_outer_prod(const SparseVector& a,
 logistic_regression_opt_interface::logistic_regression_opt_interface(
     const ml_data& _data, 
     const ml_data& _valid_data, 
-    logistic_regression& _sp_model) {  
+    logistic_regression& _sp_model) {
 
   data = _data;
   if (_valid_data.num_rows() > 0) valid_data = _valid_data;
@@ -176,7 +176,7 @@ size_t logistic_regression_opt_interface::num_classes() const{
 /**
  * Get strings needed to print the header for the progress table.
  */
-std::vector<std::pair<std::string, size_t>> 
+std::vector<std::pair<std::string, size_t>>
 logistic_regression_opt_interface::get_status_header(const std::vector<std::string>& stat_headers) {
   bool has_validation_data = (valid_data.num_rows() > 0);
   auto header = make_progress_header(smodel, stat_headers, has_validation_data); 
@@ -253,15 +253,21 @@ void logistic_regression_opt_interface::compute_first_order_statistics(
       pointMat.reshape(variables_per_class, classes-1);
       size_t class_idx = 0;
       double kernel_sum = 0;
-      for(auto it = data.get_iterator(thread_idx, num_threads); 
-                                                              !it.done(); ++it) {
+      for (auto it = data.get_iterator(thread_idx, num_threads); !it.done();
+           ++it) {
+        class_idx = it->target_index();
+
+        if(class_idx >= classes) {
+           continue;
+        }
+
         fill_reference_encoding(*it, x);
         x(variables_per_class - 1) = 1;
         if(feature_rescaling){
           scaler->transform(x);
         }
 
-        class_idx = it->target_index();
+
         margin = pointMat.t() * x;
         margin_dot_class = (class_idx > 0) ? margin(class_idx - 1) : 0;
    
@@ -289,13 +295,18 @@ void logistic_regression_opt_interface::compute_first_order_statistics(
       double kernel_sum = 0;
       for(auto it = data.get_iterator(thread_idx, num_threads); 
                                                               !it.done(); ++it) {
+        class_idx = it->target_index();
+        
+        if(class_idx >= classes) {
+           continue;
+        }
+
         fill_reference_encoding(*it, x);
         x(variables_per_class - 1) = 1;
         if(feature_rescaling){
           scaler->transform(x);
         }
 
-        class_idx = it->target_index();
         margin = pointMatT * x;
         margin_dot_class = (class_idx > 0) ? margin(class_idx - 1) : 0;
    

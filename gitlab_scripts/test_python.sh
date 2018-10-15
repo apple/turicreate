@@ -22,7 +22,7 @@ cd $BUILD_TYPE/src/unity/python
 make python_source
 cd ../../../..
 
-PYTHON="deps/env/bin/python"
+PYTHON="$PWD/deps/env/bin/python"
 PYTHON_MAJOR_VERSION=$(${PYTHON} -c 'import sys; print(sys.version_info.major)')
 PYTHON_MINOR_VERSION=$(${PYTHON} -c 'import sys; print(sys.version_info.minor)')
 PYTHON_VERSION="python${PYTHON_MAJOR_VERSION}.${PYTHON_MINOR_VERSION}"

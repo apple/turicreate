@@ -121,7 +121,9 @@ std::string item_frequency_result::vega_column_data(bool sframe) const {
     ss << i;
     ss << ",\"count\": ";
     ss << count;
-    ss << "}";
+    ss << ",\"percentage\": \"";
+    ss << ((float)(100.0 * count))/((float) m_count.emit());
+    ss << "%\"}";
 
     x++;
   }
@@ -132,7 +134,7 @@ std::string item_frequency_result::vega_column_data(bool sframe) const {
 namespace turi {
   namespace visualization {
 
-    std::shared_ptr<Plot> plot_item_frequency(const std::string& path_to_client, 
+    std::shared_ptr<Plot> plot_item_frequency(
       gl_sarray& sa, std::string xlabel, std::string ylabel, 
       std::string title) {
 
@@ -175,7 +177,7 @@ namespace turi {
         double size_array = static_cast<double>(self->size());
 
         std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<item_frequency>(item_freq);
-        return std::make_shared<Plot>(path_to_client, category_spec, shared_unity_transformer, size_array);
+        return std::make_shared<Plot>(category_spec, shared_unity_transformer, size_array);
       }
 
   }

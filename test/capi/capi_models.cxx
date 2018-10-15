@@ -15,6 +15,16 @@
 #include <fileio/fileio_constants.hpp>
 #include <util/fs_util.hpp>
 
+#ifdef __linux
+#include <fcntl.h>
+#include <linux/fs.h>
+#include <sys/ioctl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#endif
+
+#include <boost/filesystem.hpp>
+
 #include "capi_utils.hpp"
 
 BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
@@ -146,26 +156,26 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
         tc_release(p_args);
 
         int is_sarray = tc_variant_is_sarray(ret_2);
-      TS_ASSERT(is_sarray);
+        TS_ASSERT(is_sarray);
 
         tc_sarray* sa = tc_variant_sarray(ret_2, &error);
         CAPI_CHECK_ERROR(error);
 
-      const auto& target_values = data.back().second;
+        const auto& target_values = data.back().second;
 
-      for (size_t i = 0; i < target_values.size(); ++i) {
-        tc_flexible_type* ft = tc_sarray_extract_element(sa, i, &error);
+        for (size_t i = 0; i < target_values.size(); ++i) {
+          tc_flexible_type* ft = tc_sarray_extract_element(sa, i, &error);
           CAPI_CHECK_ERROR(error);
 
-        double v = tc_ft_double(ft, &error);
+          double v = tc_ft_double(ft, &error);
 
           CAPI_CHECK_ERROR(error);
           tc_release(ft);
 
-        // Make sure they are close -- on a tiny dataset like this the default
-        // setting
-        TS_ASSERT_DELTA(v, target_values[i], 0.5);
-      }
+          // Make sure they are close -- on a tiny dataset like this the default
+          // setting
+          TS_ASSERT_DELTA(v, target_values[i], 0.5);
+        }
         tc_release(ret_2);
       }
 
@@ -194,7 +204,60 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
 
     // Test saving and loading the model.
     {
-      std::string model_path =
+      std::string model_path;
+      std::string error_message;
+      std::string expected_substr;
+
+#ifdef MECHANISM_FOR_TRIGGERING_AN_ERROR_IN_DOCKER
+      // sad path 1 - attempting to save without permission to location
+      // ensure the error message contains useful info
+
+      // first, make a directory we can't write to
+      std::string bad_directory =
+        turi::fs_util::system_temp_directory_unique_path("capi_model_permission_denied", "");
+      turi::fileio::create_directory(bad_directory);
+      model_path = turi::fs_util::join({bad_directory, "model.mlmodel"});
+
+#ifdef __linux
+      // set the immutable bit on it
+      int new_attrs = FS_IMMUTABLE_FL;
+      size_t fd = open(bad_directory.c_str(), 0);
+      // If ioctl returns -1, it means the user probably isn't root -
+      // in that case, try setting owner_read permission instead.
+      // As root, we must rely on the immutable flag.
+      if (ioctl(fd, FS_IOC_SETFLAGS, &new_attrs) == -1) {
+        boost::filesystem::permissions(bad_directory, boost::filesystem::owner_read);
+      }
+      close(fd);
+#else
+      boost::filesystem::permissions(bad_directory, boost::filesystem::owner_read);
+#endif
+
+      tc_model_save(model, model_path.c_str(), &error);
+      TS_ASSERT_DIFFERS(error, nullptr);
+      error_message = tc_error_message(error);
+      expected_substr = "Ensure that you have write permission to this location, or try again with a different path";
+      TS_ASSERT_DIFFERS(error_message.find(expected_substr), error_message.npos);
+      error = nullptr;
+#endif  // MECHANISM_FOR_TRIGGERING_AN_ERROR_IN_DOCKER
+
+      // sad path 2 - attempting to save into an existing non-directory path
+      // ensure the error message contains useful info
+      model_path =
+        turi::fs_util::system_temp_directory_unique_path("", "_save_test_1_tmp_file");
+      {
+        std::ofstream tmp_file(model_path);
+        tmp_file << "Hello world";
+      }
+      tc_model_save(model, model_path.c_str(), &error);
+      TS_ASSERT_DIFFERS(error, nullptr);
+      error_message = tc_error_message(error);
+      expected_substr = "It already exists as a file";
+      TS_ASSERT_DIFFERS(error_message.find(expected_substr), error_message.npos);
+      error = nullptr;
+
+      // happy path - save should succeed
+      model_path =
         turi::fs_util::system_temp_directory_unique_path("", "_save_test_1_tmp_model");
 
       tc_model_save(model, model_path.c_str(), &error);

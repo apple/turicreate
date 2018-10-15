@@ -12,6 +12,7 @@ make_boost_test(capi_models.cxx REQUIRES capi TuriCreate_static fileio)
 make_boost_test(capi_functions.cxx REQUIRES capi TuriCreate_static)
 make_boost_test(capi_datetime.cxx REQUIRES capi TuriCreate_static)
 make_boost_test(capi_ndarray.cxx REQUIRES capi TuriCreate_static)
+make_boost_test(capi_visualization.cxx REQUIRES capi TuriCreate_static)
 
 # make_boost_test(basic_capi.cxx REQUIRES capi TuriCreate_static)
 

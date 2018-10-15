@@ -42,14 +42,14 @@ import turicreate as tc
 data = tc.SFrame('ratings_data.csv')
 
 # Create a model
-model = tc.sentence_classifier.create(data, 'rating', features=['text'])
+model = tc.text_classifier.create(data, 'rating', features=['text'])
 
 # Make predictions & evaluation the model
 predictions = model.predict(data)
 results = model.evaluate(data)
 
 # Save the model for later use in Turi Create
-model.save('MySentenceClassifier.model')
+model.save('MyTextClassifier.model')
 
 # Export for use in Core ML
 model.export_coreml('MySentenceClassifier.mlmodel')
@@ -81,7 +81,7 @@ classifier = model.classifier
 
 #### Deploying to Core ML
 
-You can use the trained sentence classifier in Xcode by exporting it to Core ML. Exporting is done by:
+You can use the trained text classifier in Xcode by exporting it to Core ML. Exporting is done by:
 
 ```python
 model.export_coreml('MySentenceClassifier.mlmodel')
@@ -93,16 +93,13 @@ Dragging the saved model into Xcode and inspecting it looks like the following:
 The model expects a bag-of-words representation of the input text. In Swift, we can use the [NSLinguisticTagger](https://developer.apple.com/documentation/foundation/nslinguistictagger/tokenizing_natural_language_text) to parse the input string into words and create this representation. The example below demonstrates how to use the NSLinguisticTagger, and get predictions from the exported model.
 
 ```swift
-let bagOfWords = bow(text: text)
-let prediction = try? MySentenceClassifier().prediction(text: bagOfWords)
-
 func bow(text: String) -> [String: Double] {
     var bagOfWords = [String: Double]()
     
     let tagger = NSLinguisticTagger(tagSchemes: [.tokenType], options: 0)
     let range = NSRange(location: 0, length: text.utf16.count)
     let options: NSLinguisticTagger.Options = [.omitPunctuation, .omitWhitespace]
-    tagger.string = text
+    tagger.string = text.lowercased()
     
     tagger.enumerateTags(in: range, unit: .word, scheme: .tokenType, options: options) { _, tokenRange, _ in
         let word = (text as NSString).substring(with: tokenRange)
@@ -115,4 +112,7 @@ func bow(text: String) -> [String: Double] {
     
     return bagOfWords
 }
+
+let bagOfWords = bow(text: text)
+let prediction = try? MySentenceClassifier().prediction(text: bagOfWords)
 ```

@@ -31,7 +31,6 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from .. import _pre_trained_models
 from ._evaluation import average_precision as _average_precision
 from .._mps_utils import (use_mps as _use_mps,
-                          mps_device_name as _mps_device_name,
                           mps_device_memory_limit as _mps_device_memory_limit,
                           MpsGraphAPI as _MpsGraphAPI,
                           MpsGraphNetworkType as _MpsGraphNetworkType,
@@ -272,7 +271,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
 
     if batch_size < 1:
         batch_size = 32  # Default if not user-specified
-    num_mxnet_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=batch_size)
+    cuda_gpus = _mxnet_utils.get_gpus_in_use(max_devices=batch_size)
+    num_mxnet_gpus = len(cuda_gpus)
     use_mps = _use_mps() and num_mxnet_gpus == 0
     batch_size_each = batch_size // max(num_mxnet_gpus, 1)
     if use_mps and _mps_device_memory_limit() < 4 * 1024 * 1024 * 1024:
@@ -291,14 +291,11 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     io_thread_buffer_size = params['io_thread_buffer_size'] if use_mps else 0
 
     if verbose:
-        if use_mps:
-            print('Using GPU to create model ({})'.format(_mps_device_name()))
-        elif num_mxnet_gpus == 1:
-            print('Using GPU to create model (CUDA)')
-        elif num_mxnet_gpus > 1:
-            print('Using {} GPUs to create model (CUDA)'.format(num_mxnet_gpus))
-        else:
-            print('Using CPU to create model')
+        # Estimate memory usage (based on experiments)
+        cuda_mem_req = 550 + batch_size_each * 85
+
+        _tkutl._print_neural_compute_device(cuda_gpus=cuda_gpus, use_mps=use_mps,
+                                            cuda_mem_req=cuda_mem_req)
 
     grid_shape = params['grid_shape']
     input_image_shape = (3,
@@ -391,15 +388,10 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     # easily hide bugs caused by names getting out of sync.
     ref_model.available_parameters_subset(net_params).load(ref_model.model_path, ctx)
 
-    if verbose:
-        # Print progress table header
-        column_names = ['Iteration', 'Loss', 'Elapsed Time']
-        num_columns = len(column_names)
-        column_width = max(map(lambda x: len(x), column_names)) + 2
-        hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
-        print(hr)
-        print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
-        print(hr)
+    column_names = ['Iteration', 'Loss', 'Elapsed Time']
+    num_columns = len(column_names)
+    column_width = max(map(lambda x: len(x), column_names)) + 2
+    hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
 
     progress = {'smoothed_loss': None, 'last_time': 0}
     iteration = 0
@@ -411,6 +403,15 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         else:
             progress['smoothed_loss'] = 0.9 * progress['smoothed_loss'] + 0.1 * cur_loss
         cur_time = _time.time()
+
+        # Printing of table header is deferred, so that start-of-training
+        # warnings appear above the table
+        if verbose and iteration == 0:
+            # Print progress table header
+            print(hr)
+            print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
+            print(hr)
+
         if verbose and (cur_time > progress['last_time'] + 10 or
                         iteration_base1 == max_iterations):
             # Print progress table row
@@ -512,8 +513,12 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         numpy_worker_thread = _Thread(target=numpy_worker)
         numpy_worker_thread.start()
 
-        batches_started = 0
-        batches_finished = 0
+        batch_queue = []
+        def wait_for_batch():
+            pending_loss = batch_queue.pop(0)
+            batch_loss = pending_loss.asnumpy()  # Waits for the batch to finish
+            return batch_loss.sum() / mps_loss_mult
+
         while True:
             batch = numpy_batch_queue.get()
             if batch is None:
@@ -526,13 +531,11 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                 mps_net.set_learning_rate(new_lr / mps_loss_mult)
 
             # Submit this match to MPS.
-            mps_net.start_batch(batch['input'], label=batch['label'])
-            batches_started += 1
+            batch_queue.append(mps_net.train(batch['input'], batch['label']))
 
             # If we have two batches in flight, wait for the first one.
-            if batches_started - batches_finished > 1:
-                batches_finished += 1
-                cur_loss = mps_net.wait_for_batch().sum() / mps_loss_mult
+            if len(batch_queue) > 1:
+                cur_loss = wait_for_batch()
 
                 # If we just submitted the first batch of an iteration, update
                 # progress for the iteration completed by the last batch we just
@@ -542,9 +545,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
             iteration = batch['iteration']
 
         # Wait for any pending batches and finalize our progress updates.
-        while batches_finished < batches_started:
-            batches_finished += 1
-            cur_loss = mps_net.wait_for_batch().sum() / mps_loss_mult
+        while len(batch_queue) > 0:
+            cur_loss = wait_for_batch()
         update_progress(cur_loss, iteration)
 
         sframe_worker_thread.join()
@@ -558,6 +560,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                 net_params[k].set_data(_mps_to_mxnet(mps_net_params[k]))
 
     else:  # Use MxNet
+        net.hybridize()
+
         options = {'learning_rate': base_lr, 'lr_scheduler': lr_scheduler,
                    'momentum': params['sgd_momentum'], 'wd': params['weight_decay'], 'rescale_grad': 1.0}
         clip_grad = params.get('clip_gradients')
@@ -818,8 +822,8 @@ class ObjectDetector(_CustomModel):
                                                     dtype=mps_data.dtype)
                         mps_data_padded[:mps_data.shape[0]] = mps_data
                         mps_data = mps_data_padded
-                    self._mps_inference_net.start_batch(mps_data)
-                    mps_z = self._mps_inference_net.wait_for_batch()[:n_samples]
+                    mps_float_array = self._mps_inference_net.predict(mps_data)
+                    mps_z = mps_float_array.asnumpy()[:n_samples]
                     z = _mps_to_mxnet(mps_z)
                 else:
                     z = self._model(data).asnumpy()
@@ -905,16 +909,31 @@ class ObjectDetector(_CustomModel):
         return self._predict_with_options(dataset, with_ground_truth=False,
                                           postprocess=False)
 
+    def _canonize_input(self, dataset):
+        """
+        Takes input and returns tuple of the input in canonical form (SFrame)
+        along with an unpack callback function that can be applied to
+        prediction results to "undo" the canonization.
+        """
+        unpack = lambda x: x
+        if isinstance(dataset, _tc.SArray):
+            dataset = _tc.SFrame({self.feature: dataset})
+        elif isinstance(dataset, _tc.Image):
+            dataset = _tc.SFrame({self.feature: [dataset]})
+            unpack = lambda x: x[0]
+        return dataset, unpack
+
     def predict(self, dataset, confidence_threshold=0.25, verbose=True):
         """
         Predict object instances in an sframe of images.
 
         Parameters
         ----------
-        dataset : SFrame
-            A dataset that has the same columns that were used during training.
-            If the annotations column exists in ``dataset`` it will be ignored
-            while making predictions.
+        dataset : SFrame | SArray | turicreate.Image
+            The images on which to perform object detection.
+            If dataset is an SFrame, it must have a column with the same name
+            as the feature column during training. Additional columns are
+            ignored.
 
         confidence_threshold : float
             Only return predictions above this level of confidence. The
@@ -928,7 +947,9 @@ class ObjectDetector(_CustomModel):
         out : SArray
             An SArray with model predictions. Each element corresponds to
             an image and contains a list of dictionaries. Each dictionary
-            describes an object instances that was found in the image.
+            describes an object instances that was found in the image. If
+            `dataset` is a single image, the return value will be a single
+            prediction.
 
         See Also
         --------
@@ -957,12 +978,13 @@ class ObjectDetector(_CustomModel):
             >>> data['image_pred'] = turicreate.object_detector.util.draw_bounding_boxes(data['image'], data['predictions'])
         """
         _numeric_param_check_range('confidence_threshold', confidence_threshold, 0.0, 1.0)
+        dataset, unpack = self._canonize_input(dataset)
         stacked_pred = self._predict_with_options(dataset, with_ground_truth=False,
                                                   confidence_threshold=confidence_threshold,
                                                   verbose=verbose)
 
         from . import util
-        return util.unstack_annotations(stacked_pred, num_rows=len(dataset))
+        return unpack(util.unstack_annotations(stacked_pred, num_rows=len(dataset)))
 
     def evaluate(self, dataset, metric='auto', output_type='dict', verbose=True):
         """
@@ -1532,6 +1554,8 @@ class ObjectDetector(_CustomModel):
         confidenceThresholdString = ('(optional)' + 
             ' Confidence Threshold override (default: {})')
         model_type = 'object detector (%s)' % self.model
+        if include_non_maximum_suppression:
+            model_type += ' with non-maximum suppression'
         model.description.metadata.shortDescription = \
             _coreml_utils._mlmodel_short_description(model_type)
         model.description.input[0].shortDescription = 'Input image'
@@ -1562,7 +1586,7 @@ class ObjectDetector(_CustomModel):
             'annotations': self.annotations,
             'classes': ','.join(self.classes)
         }
-        user_defined_metadata = _get_model_metadata(
+        user_defined_metadata = _coreml_utils._get_model_metadata(
             self.__class__.__name__,
             partial_user_defined_metadata,
             version)

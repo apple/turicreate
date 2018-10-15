@@ -272,6 +272,39 @@ EXPORT bool create_directory(const std::string& path) {
   return false;
 }
 
+EXPORT bool create_directory_or_throw(const std::string& path) {
+  bool result = create_directory(path);
+
+  // this function throws if the directory still doesn't exist
+  // at that location
+  file_status status = get_file_status(path);
+  switch (status) {
+    case file_status::MISSING:
+      log_and_throw_io_failure(
+        "Unable to create directory structure at " +
+        path +
+        ". Ensure that you have write permission to this location, or try again with a different path."
+      );
+      break;
+    case file_status::REGULAR_FILE:
+      log_and_throw_io_failure(
+        "Unable to create directory at " +
+        path +
+        ". A non-directory file already exists there. Delete that file, or try again with a different path."
+      );
+    case file_status::DIRECTORY:
+      // happy path, return below
+      break;
+    default:
+      // not sure what error message to give; fall back to current I/O error
+      log_and_throw_current_io_failure();
+  }
+
+  // result will still indicate whether it was created or not
+  // by this function call
+  return result;
+}
+
 EXPORT bool delete_path(const std::string& path,
                         file_status stat) {
   if (stat == file_status::FS_UNAVAILABLE) stat = get_file_status(path);

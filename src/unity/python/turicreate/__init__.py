@@ -72,7 +72,7 @@ from turicreate.toolkits.clustering import dbscan
 from turicreate.toolkits.topic_model import topic_model
 
 from turicreate.toolkits.image_analysis import image_analysis
-import turicreate.toolkits.sentence_classifier as sentence_classifier
+import turicreate.toolkits.text_classifier as text_classifier
 import turicreate.toolkits.image_classifier as image_classifier
 import turicreate.toolkits.image_similarity as image_similarity
 import turicreate.toolkits.object_detector as object_detector

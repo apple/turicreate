@@ -1,6 +1,5 @@
 project(Turi)
 
-
 # We require the most recent version of cmake and automatically
 # install the correct version when using the cmake lists
 cmake_minimum_required(VERSION 2.8.3)
@@ -44,13 +43,18 @@ else()
   message("Skipping python libraries.")
 endif()
 
+if(NOT APPLE)
+  include(FindLAPACK)
+  if(NOT ${LAPACK_FOUND})
+    message(FATAL_ERROR "lapack is not installed")
+  endif()
+endif()
 
 include(CheckLibraryExists)
 include(CheckFunctionExists)
 include(ExternalProject)
 include(CheckCXXSourceCompiles)
-
-
+include(CheckCXXCompilerFlag)
 
 #**************************************************************************/
 #*                                                                        */
@@ -215,20 +219,43 @@ message(WARNING "OpenMP Libraries were not found")
 #*                                                                        */
 #**************************************************************************/
 if (CLANG)
-  set(CPP11_FLAGS "-std=c++11 -stdlib=libc++ -Wno-deprecated-register -Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900" CACHE STRING "C++11 enabling flags")
-  if (NOT APPLE)
-    # Clang on Linux -- explicitly choose compiler-rt and libunwind
-    set(CPP11_FLAGS "${CPP11_FLAGS} -rtlib=compiler-rt -lunwind" CACHE STRING "C++11 enabling flags")
+
+  set(_cpp11_optional_flags "")
+
+  check_cxx_compiler_flag("-Wno-stdlibcxx-not-found" __no_stdlibcxx_not_found)
+  if(${__no_stdlibcxx_not_found})
+    set(_cpp11_optional_flags "${_cpp11_optional_flags} -Wno-stdlibcxx-not-found")
   endif()
+
+  set(CPP11_FLAGS "-std=c++11 -stdlib=libc++ -Wno-deprecated-register -Wno-enum-compare -Wno-conversion-null -Wno-constant-logical-operand -Wno-parentheses-equality -ftemplate-depth=900 ${_cpp11_optional_flags}")
+
+  if (NOT APPLE)
+    # Clang on Linux -- explicitly choose compiler-rt and libunwind.
+    # Not sure why but this seems necessary (we get linker errors without it).
+    set(CPP11_FLAGS "${CPP11_FLAGS} -rtlib=compiler-rt -lunwind")
+  endif()
+
+  set(WERROR_FLAGS "-Werror")
 else()
-  set(CPP11_FLAGS "-std=c++11 -Wno-enum-compare -Wno-conversion-null -ftemplate-depth=900" CACHE STRING "C++11 enabling flags")
+  # non-clang
+  set(CPP11_FLAGS "-std=c++11 -Wno-enum-compare -Wno-conversion-null -ftemplate-depth=900")
+  set(WERROR_FLAGS "-Werror")
 endif()
-set(WERROR_FLAGS "-Werror")
+
 # Shared compiler flags used by all builds (debug, profile, release)
 # Allow COMPILER_FLAGS to be used as options from the ./configure without
 # forcing all the other options I want to add to be lost
-set(C_REAL_COMPILER_FLAGS "-Wall -pthread -g ${COMPILER_FLAGS}" CACHE STRING "common compiler options")
-set(CPP_REAL_COMPILER_FLAGS "-Wall -pthread -g ${CPP11_FLAGS} ${COMPILER_FLAGS}" CACHE STRING "common compiler options")
+set(C_REAL_COMPILER_FLAGS "-Wall -g ${COMPILER_FLAGS}")
+set(CPP_REAL_COMPILER_FLAGS "-Wall -g ${CPP11_FLAGS} ${COMPILER_FLAGS}")
+
+if (CLANG)
+  # clang 9.0.0 and earlier will warn (error with -Werror) on unused -pthread during linking
+  # so adding only to compile options is what we need.
+  add_compile_options(-pthread)
+else()
+  set(C_REAL_COMPILER_FLAGS "${C_REAL_COMPILER_FLAGS} -pthread")
+  set(CPP_REAL_COMPILER_FLAGS "${CPP_REAL_COMPILER_FLAGS} -pthread")
+endif()
 
 # Disable address space randomization for OSX lion and above
 if (APPLE)
@@ -279,7 +306,6 @@ endif()
 
 
 
-include(CheckCXXCompilerFlag)
 if (MARCH)
   set(ARCH_FLAG "-march=${MARCH}")
 elseif (ARCH)
@@ -355,16 +381,16 @@ endif()
 
 # Set the debug flags
 set(EXTERNAL_CMAKE_C_FLAGS_DEBUG
-  "${DEBUG_OPTIMIZATION_LEVEL} -Wno-attributes ${ARCH_FLAG} -Winit-self ${PROFILING_FLAGS} ${C_REAL_COMPILER_FLAGS} -fno-inline ${ALTERNATE_LINKER} -DHAVE_PTHREAD=1"
+  "${DEBUG_OPTIMIZATION_LEVEL} -Wno-attributes ${ARCH_FLAG} -Winit-self  ${PROFILING_FLAGS} ${C_REAL_COMPILER_FLAGS} -fno-inline ${ALTERNATE_LINKER} -DHAVE_PTHREAD=1"
   CACHE STRING "compiler options" FORCE)
 set(CMAKE_C_FLAGS_DEBUG
-  "${EXTERNAL_CMAKE_C_FLAGS_DEBUG} ${WERROR_FLAGS}"
+  "${EXTERNAL_CMAKE_C_FLAGS_DEBUG} ${WERROR_FLAGS} -Wuninitialized "
   CACHE STRING "compiler options" FORCE)
 set(EXTERNAL_CMAKE_CXX_FLAGS_DEBUG
   "${DEBUG_OPTIMIZATION_LEVEL} ${DISABLE_WARNING_FLAGS} -Wno-attributes ${ARCH_FLAG} -Winit-self ${PROFILING_FLAGS} ${CPP_REAL_COMPILER_FLAGS} ${INT128_FLAGS} ${ALTERNATE_LINKER} -fno-inline -DHAVE_PTHREAD=1"
   CACHE STRING "compiler options" FORCE)
 set(CMAKE_CXX_FLAGS_DEBUG
-  "${EXTERNAL_CMAKE_CXX_FLAGS_DEBUG} ${WERROR_FLAGS}"
+  "${EXTERNAL_CMAKE_CXX_FLAGS_DEBUG} ${WERROR_FLAGS} -Wuninitialized"
   CACHE STRING "compiler options" FORCE)
 
 set(CMAKE_C_FLAGS_RELEASE

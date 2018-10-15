@@ -18,7 +18,8 @@ Applications
     turicreate.toolkits.image_similarity
     turicreate.toolkits.object_detector
     turicreate.toolkits.recommender
-    turicreate.toolkits.sentence_classifier
+    turicreate.toolkits.text_classifier
+    turicreate.toolkits.style_transfer.rst
 
 Essentials
 ----------

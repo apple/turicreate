@@ -10,6 +10,8 @@
 #include <unity/toolkits/coreml_export/mldata_exporter.hpp>
 #include <unity/toolkits/coreml_export/coreml_export_utils.hpp>
 
+using turi::coreml::MLModelWrapper;
+
 namespace turi {
 
 
@@ -72,13 +74,13 @@ static double hexadecimal_to_float(std::string hex) {
 }
 
 
-void export_xgboost_model(const std::string& filename,
+std::shared_ptr<MLModelWrapper> export_xgboost_model(
     const std::shared_ptr<ml_metadata>& metadata,
     const std::vector<std::string>& trees,
     bool is_classifier, bool is_random_forest,
     const std::map<std::string, flexible_type>& context) {
 
-  CoreML::Pipeline pipeline(
+  auto pipeline = std::make_shared<CoreML::Pipeline>(
       is_classifier
       ? CoreML::Pipeline::Classifier(
             metadata->target_column_name(),
@@ -89,7 +91,7 @@ void export_xgboost_model(const std::string& filename,
           ""));
 
   // set up the pipeline from metadata.
-  setup_pipeline_from_mldata(pipeline, metadata);
+  setup_pipeline_from_mldata(*pipeline, metadata);
   std::map<size_t, size_t> dict_indices;
   for (size_t c = 0; c < metadata->num_columns(); c++) {
     if (metadata->column_type(c) == flex_type_enum::DICT) {
@@ -129,9 +131,9 @@ void export_xgboost_model(const std::string& filename,
 
   } else {
 
-    auto ti = metadata->target_indexer();
-
-    size_t num_classes = ti->indexed_column_size();
+    // Call the target_index_size, which does not reflect the added dimensions of 
+    // the 
+    size_t num_classes = metadata->target_index_size();
 
     auto tc = new CoreML::TreeEnsembleClassifier(
         metadata->target_column_name(),
@@ -149,6 +151,8 @@ void export_xgboost_model(const std::string& filename,
       tc->setPostEvaluationTransform(
           CoreML::PostEvaluationTransform::Classification_SoftMax);
     }
+    
+    auto ti = metadata->target_indexer();
 
     if(metadata->target_column_type() == flex_type_enum::STRING) {
       std::vector<std::string> classes(num_classes);
@@ -191,7 +195,7 @@ void export_xgboost_model(const std::string& filename,
 
       if(type == "leaf") {
         if(is_random_forest) {
-          size_t num_classes = metadata->target_indexer()->indexed_column_size();
+          size_t num_classes = metadata->target_index_size();
           size_t num_trees_per_class;
           if (num_classes <= 2) {
             num_trees_per_class = trees.size();
@@ -253,18 +257,27 @@ void export_xgboost_model(const std::string& filename,
     tree_ensemble->addOutput(target_additional_name, target_additional_data_type);
   tree_ensemble->finish();
 
-  pipeline.add(*tree_ensemble);
-  pipeline.addOutput(metadata->target_column_name(), target_output_data_type);
+  pipeline->add(*tree_ensemble);
+  pipeline->addOutput(metadata->target_column_name(), target_output_data_type);
   if(is_classifier)
-    pipeline.addOutput(target_additional_name, target_additional_data_type);
+    pipeline->addOutput(target_additional_name, target_additional_data_type);
 
   // Add metadata
-  add_metadata(pipeline.getProto(), context);
+  add_metadata(pipeline->getProto(), context);
 
-  CoreML::Result r = pipeline.save(filename);
-  if(!r.good()) {
-    log_and_throw("Could not export model: " + r.message());
-  }
+  return std::make_shared<MLModelWrapper>(std::move(pipeline));
+}
+
+void export_xgboost_model(const std::string& filename,
+    const std::shared_ptr<ml_metadata>& metadata,
+    const std::vector<std::string>& trees,
+    bool is_classifier, bool is_random_forest,
+    const std::map<std::string, flexible_type>& context) {
+
+  std::shared_ptr<MLModelWrapper> coreml_model =
+      export_xgboost_model(metadata, trees, is_classifier, is_random_forest,
+                           context);
+  coreml_model->save(filename);
 }
 
 } // End namespace.

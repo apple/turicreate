@@ -87,7 +87,7 @@ class TcPlot extends Component {
         renderer: "svg"
         };
 
-        this.vega_json.autosize = {"type": "pad", "resize": true, "contains": "padding"};
+        this.vega_json.autosize = {"type": "fit", "resize": true, "contains": "padding"};
 
         if(this.vega_json["metadata"] != null){
             if(this.vega_json["metadata"]["bubbleOpts"] != null){

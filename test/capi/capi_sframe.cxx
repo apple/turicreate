@@ -1528,6 +1528,90 @@ BOOST_AUTO_TEST_CASE(test_sframe_read_json) {
   tc_release(sf);
 }
 
+BOOST_AUTO_TEST_CASE(test_sframe_join_single_column) {
+  tc_error *error = NULL;
+
+  auto assert_join_results_equal = [](tc_sframe *actual, tc_sframe *expected) {
+    TS_ASSERT(check_equality_tc_sframe(actual, expected, false /* check_row_order */));
+  };
+
+  tc_sframe *employees_sf = tc_sframe_create_empty(&error);
+  CAPI_CHECK_ERROR(error);
+
+  {
+    tc_sarray *last_name = make_sarray_string({"Rafferty","Jones","Heisenberg","Robinson","Smith","John"});
+    tc_flex_list *dep_id_list = make_flex_list_double({31,33,33,34,34});
+    tc_flexible_type *empty = tc_ft_create_empty(&error);
+    CAPI_CHECK_ERROR(error);
+    tc_flex_list_add_element(dep_id_list, empty, &error);
+    CAPI_CHECK_ERROR(error);
+    tc_sarray* dep_id = tc_sarray_create_from_list(dep_id_list, &error);
+    CAPI_CHECK_ERROR(error);
+
+    tc_sframe_add_column(employees_sf, "last_name", last_name, &error);
+    CAPI_CHECK_ERROR(error);
+    tc_sframe_add_column(employees_sf, "dep_id", dep_id, &error);
+    CAPI_CHECK_ERROR(error);
+
+    tc_release(last_name);
+    tc_release(dep_id_list);
+    tc_release(empty);
+    tc_release(dep_id);
+  }
+
+  tc_sframe *departments_sf = tc_sframe_create_empty(&error);
+  CAPI_CHECK_ERROR(error);
+
+  {
+    tc_sarray *dep_id = make_sarray_double({31,33,34,35});
+    tc_sarray *dep_name = make_sarray_string({"Sales","Engineering","Clerical","Marketing"});
+
+    tc_sframe_add_column(departments_sf, "dep_id", dep_id, &error);
+    CAPI_CHECK_ERROR(error);
+    tc_sframe_add_column(departments_sf, "dep_name", dep_name, &error);
+    CAPI_CHECK_ERROR(error);
+
+    tc_release(dep_id);
+    tc_release(dep_name);
+  }
+
+  tc_sframe *inner_expected = tc_sframe_create_empty(&error);
+  CAPI_CHECK_ERROR(error);
+
+  {
+    tc_sarray *last_name = make_sarray_string({"Robinson","Jones","Smith","Heisenberg","Rafferty"});
+    tc_sarray *dep_id = make_sarray_double({34,33,34,33,31});
+    tc_sarray *dep_name = make_sarray_string({"Clerical","Engineering","Clerical","Engineering","Sales"});
+
+    tc_sframe_add_column(inner_expected, "last_name", last_name, &error);
+    CAPI_CHECK_ERROR(error);
+    tc_sframe_add_column(inner_expected, "dep_id", dep_id, &error);
+    CAPI_CHECK_ERROR(error);
+    tc_sframe_add_column(inner_expected, "dep_name", dep_name, &error);
+    CAPI_CHECK_ERROR(error);
+  }
+
+  {
+    // Tests the "natural join" case
+    tc_sframe *res = tc_sframe_join_on_single_column(
+      employees_sf,
+      departments_sf,
+      "dep_id",
+      "inner",
+      &error);
+    CAPI_CHECK_ERROR(error);
+    TS_ASSERT_DIFFERS(res, nullptr);
+
+    assert_join_results_equal(res, inner_expected);
+  }
+
+  // TODO - port the rest of the Python test from test_sframe::test_simple_joins
+}
+
+BOOST_AUTO_TEST_CASE(test_sframe_join_multiple_columns) {
+  // TODO - port the Python test from test_sframe::test_big_composite_join
+}
+
 BOOST_AUTO_TEST_CASE(test_sframe_groupby_manual_sframe) {
 
   tc_error* error = NULL;

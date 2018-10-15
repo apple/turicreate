@@ -89,5 +89,6 @@ DECLARE_CAPI_WRAPPER_STRUCT(tc_variant, turi::variant_type);
 DECLARE_CAPI_WRAPPER_STRUCT(tc_parameters, turi::variant_map_type);
 DECLARE_CAPI_WRAPPER_STRUCT(tc_model, std::shared_ptr<turi::model_base>);
 DECLARE_CAPI_WRAPPER_STRUCT(tc_groupby_aggregator, groupby_aggregator_map_type);
+DECLARE_CAPI_WRAPPER_STRUCT(tc_plot, std::shared_ptr<turi::visualization::Plot>);
 
 #endif

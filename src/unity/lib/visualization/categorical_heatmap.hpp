@@ -31,7 +31,7 @@ class categorical_heatmap : public categorical_heatmap_parent {
     virtual void merge_results(std::vector<categorical_heatmap_result>& transformers) override;
 };
 
-std::shared_ptr<Plot> plot_categorical_heatmap(const std::string& path_to_client,
+std::shared_ptr<Plot> plot_categorical_heatmap(
                               const gl_sarray& x,
                               const gl_sarray& y,
                               const std::string& xlabel,

@@ -82,7 +82,7 @@ struct stack_buffer {
   }
 
   std::string& get_string() {
-    if (pos < STACK_BUF_SIZE) altbuf = std::string(buf, pos);
+    if (pos <= STACK_BUF_SIZE) altbuf = std::string(buf, pos);
     return altbuf;
   }
 };

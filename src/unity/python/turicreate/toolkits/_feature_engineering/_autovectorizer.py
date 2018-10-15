@@ -26,7 +26,7 @@ import textwrap as _textwrap
 from turicreate import SFrame as _SFrame
 import turicreate as _tc
 
-class _ColumnFunctionTransformation(_TransformerBase):
+class _ColumnFunctionTransformation(_TransformerBase, ExposeAttributesFromProxy):
     """
     Utility transformer: Passes all specified columns through a given function.
     """

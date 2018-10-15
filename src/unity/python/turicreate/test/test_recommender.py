@@ -85,8 +85,8 @@ class RecommenderTestBase(unittest.TestCase):
         scores_from_preds = predictions_tc['score']
         ranks_from_preds = predictions_tc['rank']
         for i in range(len(item_ids_from_preds)):
-            predictions_tc_dict['score'][str(item_ids_from_preds[i])] = scores_from_preds[i]
-            predictions_tc_dict['rank'][str(item_ids_from_preds[i])] = ranks_from_preds[i]
+            predictions_tc_dict['score'][item_ids_from_preds[i]] = scores_from_preds[i]
+            predictions_tc_dict['rank'][item_ids_from_preds[i]] = ranks_from_preds[i]
 
         # Do the CoreML export and predict (if on macOS)
         m.export_coreml(temp_file_path)
@@ -2543,6 +2543,13 @@ class TestContentRecommender(RecommenderTestBase):
         for d in sim_items:
             self.assertEqual(int(d["similar"]), int(d["item_id"]) + 25)
         self._test_coreml_export(m, ['0','1'])
+
+    def test_regression_1(self):
+
+        temp_sframe = tc.SFrame({"my_item_id" : range(4),
+                           "data_1" : [0,1,0,0] ,
+                           "data_2" : [0,1,0,0] })
+        tc.item_content_recommender.create(temp_sframe,'my_item_id')
 
 
 

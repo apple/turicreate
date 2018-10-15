@@ -1,8 +1,10 @@
-Quick Links: [Installation](#supported-platforms) | [Documentation](#documentation) | [v5.0 Beta](#version-50-beta)
+Quick Links: [Installation](#supported-platforms) | [Documentation](#documentation) | [WWDC 2018 Talk](https://developer.apple.com/videos/play/wwdc2018/712/)
 
 <img align="right" src="https://docs-assets.developer.apple.com/turicreate/turi-dog.svg" alt="Turi Create" width="100">
 
 # Turi Create 
+
+[Click here to check out our talk at WWDC 2018!](https://developer.apple.com/videos/play/wwdc2018/712/)
 
 Turi Create simplifies the development of custom machine learning models. You
 don't have to be a machine learning expert to add recommendations, object
@@ -68,8 +70,11 @@ Turi Create supports:
 System Requirements
 -------------------
 
+Turi Create requires:
+
 * Python 2.7, 3.5, 3.6
 * x86\_64 architecture
+* At least 4 GB of RAM
 
 Installation
 ------------
@@ -106,10 +111,10 @@ To install `Turi Create` within your virtual environment:
 (venv) pip install -U turicreate
 ```
 
-Version 5.0 (Beta)
------------
+Version 5.0 (New)
+-----------------
 
-Turi Create 5.0 -- now in beta -- includes:
+Turi Create 5.0 includes:
 * GPU Acceleration on Macs for:
   * Image Classification (macOS 10.13+)
   * Image Similarity (macOS 10.13+)
@@ -119,11 +124,6 @@ Turi Create 5.0 -- now in beta -- includes:
 * Recommender model deployment
 * Vision Feature Print model deployment
 
-To install the 5.0 beta into your virtual environment, use:
-
-```shell
-(venv) pip install turicreate==5.0b2
-```
 
 Documentation
 -------------
@@ -139,8 +139,8 @@ Turi Create **does not require a GPU**, but certain models can be accelerated 9-
 Turi Create automatically utilizes Mac GPUs for the following tasks:
 * Image Classification (macOS 10.13+)
 * Image Similarity (macOS 10.13+)
-* Object Detection (macOS 10.14+)
-* Activity Classification (macOS 10.14+)
+* Object Detection (macOS 10.14+, discrete GPU only)
+* Activity Classification (macOS 10.14+, discrete GPU only)
 
 For linux GPU support, see [LinuxGPU.md](LinuxGPU.md).
 

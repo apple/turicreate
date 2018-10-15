@@ -525,6 +525,11 @@ class gl_sframe {
   void show(const std::string& path_to_client) const;
 
   /**
+   * Return a plot object of the SFrame (same visualization as `show`)
+   */
+  std::shared_ptr<model_base> plot() const;
+
+  /**
    * Constructs a gl_sframe from an in-memory map of values
    * \code
    * std::vector<flexible_type> a{1,2,3,4,5};

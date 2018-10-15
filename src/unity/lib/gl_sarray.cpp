@@ -378,7 +378,7 @@ bool gl_sarray::empty() const {
 flex_type_enum gl_sarray::dtype() const {
   return get_proxy()->dtype();
 }
-void gl_sarray::materialize() {
+void gl_sarray::materialize() const {
   get_proxy()->materialize();
 }
 bool gl_sarray::is_materialized() const {
@@ -675,6 +675,12 @@ void gl_sarray::show(const std::string& path_to_client,
                      const std::string& xlabel,
                      const std::string& ylabel) const {
   get_proxy()->show(path_to_client, title, xlabel, ylabel);
+}
+
+std::shared_ptr<model_base> gl_sarray::plot(const std::string& title,
+                                            const std::string& xlabel,
+                                            const std::string& ylabel) const {
+  return get_proxy()->plot(title, xlabel, ylabel);
 }
 
 gl_sarray gl_sarray::cumulative_aggregate(

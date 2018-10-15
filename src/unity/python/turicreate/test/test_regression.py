@@ -8,7 +8,6 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import unittest
 import turicreate as tc
-import pandas as pd
 import numpy as np
 
 

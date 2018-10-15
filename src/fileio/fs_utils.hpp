@@ -45,9 +45,20 @@ std::vector<std::pair<std::string, file_status>> get_directory_listing(const std
  * \ingroup fileio
  * Creates a directory and all parent required directories (like mkdir -p).
  * Path can be hdfs, s3, or regular filesystem.
- * Returns true on success, false on failure.
+ * Returns true on creation, false on failure or if the directory already exists.
+ * To get meaningful error messages thrown on failure, use create_directory_or_throw.
  */
 bool create_directory(const std::string& path);
+
+
+/**
+ * \ingroup fileio
+ * Creates a directory and all parent required directories (like mkdir -p).
+ * Path can be hdfs, s3, or regular filesystem.
+ * Returns true on creation, false if the directory already exists.
+ * Throws std::ios_base::failure on failure.
+ */
+bool create_directory_or_throw(const std::string& path);
 
 /**
  * \ingroup fileio

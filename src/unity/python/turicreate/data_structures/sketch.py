@@ -216,9 +216,8 @@ class Sketch(object):
       else:
           sorted_freq = sorted_freq[:10]
           sf = SFrame()
-          sf.add_column(SArray(['count']), 'value', inplace=True)
-          for elem in sorted_freq:
-              sf[elem[0]] = SArray([elem[1]])
+          sf['value'] = [elem[0] for elem in sorted_freq]
+          sf['count'] = [elem[1] for elem in sorted_freq]
           s += sf.__str__(footer=False) + "\n"
       s += "\n"
 

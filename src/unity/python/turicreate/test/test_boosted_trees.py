@@ -769,3 +769,4 @@ class TestStringTarget(unittest.TestCase):
         # Assert
         self.assertEqual(['cat-0', 'cat-1'],
             sorted(list(evaluation['confusion_matrix']['target_label'].unique())))
+

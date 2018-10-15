@@ -32,7 +32,7 @@ static inline gl_sarray validate_dtype(const gl_sarray& input) {
   return input;
 }
 
-std::shared_ptr<Plot> turi::visualization::plot_heatmap(const std::string& path_to_client,
+std::shared_ptr<Plot> turi::visualization::plot_heatmap(
                                        const gl_sarray& x,
                                        const gl_sarray& y,
                                        const std::string& xlabel,
@@ -57,7 +57,7 @@ std::shared_ptr<Plot> turi::visualization::plot_heatmap(const std::string& path_
   hm.init(temp_sf);
 
   std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<heatmap>(hm);
-  return std::make_shared<Plot>(path_to_client, heatmap_specification, shared_unity_transformer, size_array);
+  return std::make_shared<Plot>(heatmap_specification, shared_unity_transformer, size_array);
 }
 
 heatmap_result::heatmap_result() : bins(NUM_BINS, std::vector<flex_int>(NUM_BINS, 0)) {}

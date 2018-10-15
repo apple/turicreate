@@ -11,7 +11,7 @@ from datetime import datetime as _datetime
 
 import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits import _coreml_utils
-from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
+from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe, _mac_ver
 from .. import _mxnet_utils
 from ._utils import _seconds_as_string
 from .. import _pre_trained_models
@@ -140,6 +140,7 @@ def create(style_dataset, content_dataset, style_feature=None,
         'sequential_image_processing': False,
         # Only used if use_augmentaion is True
         'aug_resize': 0,
+        'aug_min_object_covered': 0,
         'aug_rand_crop': 0.9,
         'aug_rand_pad': 0.9,
         'aug_rand_gray': 0.0,
@@ -175,11 +176,11 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     iterations = 0
     if max_iterations is None:
-        max_iterations = 5000
+        max_iterations = len(style_dataset) * 500 + 2000
         if verbose:
             print('Setting max_iterations to be {}'.format(max_iterations))
-    # data loader
 
+    # data loader
     if params['use_augmentation']:
         content_loader_type = '%s-with-augmentation' % params['training_content_loader_type']
     else:
@@ -187,8 +188,7 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     content_images_loader = _SFrameSTIter(content_dataset, batch_size, shuffle=True,
                                   feature_column=content_feature, input_shape=input_shape,
-                                  num_epochs=max_iterations,
-                                  loader_type='stretch', aug_params=params,
+                                  loader_type=content_loader_type, aug_params=params,
                                   sequential=params['sequential_image_processing'])
     ctx = _mxnet_utils.get_mxnet_context(max_devices=params['batch_size'])
 
@@ -227,15 +227,15 @@ def create(style_dataset, content_dataset, style_feature=None,
     smoothed_loss = None
     last_time = 0
 
-    num_mxnet_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=params['batch_size'])
-    if verbose:
-        if num_mxnet_gpus == 1:
-            print('Using GPU to create model (CUDA)')
-        elif num_mxnet_gpus > 1:
-            print('Using {} GPUs to create model (CUDA)'.format(num_mxnet_gpus))
-        else:
-            print('Using CPU to create model')
+    cuda_gpus = _mxnet_utils.get_gpus_in_use(max_devices=params['batch_size'])
+    num_mxnet_gpus = len(cuda_gpus)
 
+    if verbose:
+        # Estimate memory usage (based on experiments)
+        cuda_mem_req = 260 + batch_size_each * 880 + num_styles * 1.4
+
+        _tkutl._print_neural_compute_device(cuda_gpus=cuda_gpus, use_mps=False,
+                                            cuda_mem_req=cuda_mem_req, has_mps_impl=False)
     #
     # Pre-compute gram matrices for style images
     #
@@ -250,7 +250,6 @@ def create(style_dataset, content_dataset, style_feature=None,
     gram_chunks = [[] for _ in range(num_layers)]
     for s_batch in style_images_loader:
         s_data = _gluon.utils.split_and_load(s_batch.data[0], ctx_list=ctx, batch_axis=0)
-        results = []
         for s in s_data:
             vgg16_s = _vgg16_data_prep(s)
             ret = vgg_model(vgg16_s)
@@ -670,7 +669,7 @@ class StyleTransfer(_CustomModel):
         max_h = 0
         max_w = 0
         oversized_count = 0
-        for img in images['image']:
+        for img in images[content_feature]:
             if img.height > input_shape[0] or img.width > input_shape[1]:
                 oversized_count += 1
             max_h = max(img.height, max_h)
@@ -759,7 +758,8 @@ class StyleTransfer(_CustomModel):
         image.type.imageType.width = width
         image.type.imageType.height = height
 
-    def export_coreml(self, path, image_shape=(256, 256)):
+    def export_coreml(self, path, image_shape=(256, 256), 
+        include_flexible_shape=True):
         """
         Save the model in Core ML format. The Core ML model takes an image of
         fixed size, and a style index inputs and produces an output
@@ -772,6 +772,9 @@ class StyleTransfer(_CustomModel):
 
         image_shape: tuple
             A tuple (defaults to (256, 256)) will bind the coreml model to a fixed shape.
+
+        include_flexible_shape: bool
+            A boolean value indicating whether flexible_shape should be included or not.
 
         See Also
         --------
@@ -790,7 +793,7 @@ class StyleTransfer(_CustomModel):
 
         # append batch size and channels
         image_shape = (1, 3) + image_shape
-        c_image = _mx.sym.Variable('image', shape=image_shape,
+        c_image = _mx.sym.Variable(self.content_feature, shape=image_shape,
                                          dtype=_np.float32)
 
         # signal that we want the transformer to prepare for coreml export
@@ -799,9 +802,9 @@ class StyleTransfer(_CustomModel):
         transformer.scale255 = True
         sym_out = transformer(c_image, index)
 
-        mod = _mx.mod.Module(symbol=sym_out, data_names=["image", "index"],
+        mod = _mx.mod.Module(symbol=sym_out, data_names=[self.content_feature, "index"],
                                     label_names=None)
-        mod.bind(data_shapes=zip(["image", "index"], [image_shape, (1,)]), for_training=False,
+        mod.bind(data_shapes=zip([self.content_feature, "index"], [image_shape, (1,)]), for_training=False,
                  inputs_need_grad=False)
         gluon_weights = transformer.collect_params()
         gluon_layers = []
@@ -832,14 +835,24 @@ class StyleTransfer(_CustomModel):
         stylized_image = 'stylized%s' % self.content_feature.capitalize()
         coremltools.utils.rename_feature(spec,
                 'transformer__mulscalar0_output', stylized_image, True, True)
-        mlmodel = coremltools.models.MLModel(spec)
+
+        if include_flexible_shape:
+            # Support flexible shape
+            flexible_shape_utils = _mxnet_converter._coremltools.models.neural_network.flexible_shape_utils
+            img_size_ranges = flexible_shape_utils.NeuralNetworkImageSizeRange()
+            img_size_ranges.add_height_range((64, -1))
+            img_size_ranges.add_width_range((64, -1))
+            flexible_shape_utils.update_image_size_range(spec, feature_name=self.content_feature, size_range=img_size_ranges)
+            flexible_shape_utils.update_image_size_range(spec, feature_name=stylized_image, size_range=img_size_ranges)
+
         model_type = 'style transfer (%s)' % self.model
-        mlmodel.short_description = _coreml_utils._mlmodel_short_description(
+        spec.description.metadata.shortDescription = _coreml_utils._mlmodel_short_description(
             model_type)
-        mlmodel.input_description[self.content_feature] = 'Input image'
-        mlmodel.input_description['index'] = u'Style index array (set index I to 1.0 to enable Ith style)'
-        mlmodel.output_description[stylized_image] = 'Stylized image'
-        _coreml_utils._set_model_metadata(mlmodel, self.__class__.__name__, {
+        spec.description.input[0].shortDescription = 'Input image'
+        spec.description.input[1].shortDescription = u'Style index array (set index I to 1.0 to enable Ith style)'
+        spec.description.output[0].shortDescription = 'Stylized image'
+        user_defined_metadata = _coreml_utils._get_model_metadata(
+            self.__class__.__name__, {
                 'model': self.model,
                 'num_styles': str(self.num_styles),
                 'content_feature': self.content_feature,
@@ -847,7 +860,9 @@ class StyleTransfer(_CustomModel):
                 'max_iterations': str(self.max_iterations),
                 'training_iterations': str(self.training_iterations),
             }, version=StyleTransfer._PYTHON_STYLE_TRANSFER_VERSION)
-        mlmodel.save(path)
+        spec.description.metadata.userDefined.update(user_defined_metadata)
+        from coremltools.models.utils import save_spec as _save_spec
+        _save_spec(spec, path)
 
     def get_styles(self, style=None):
         """

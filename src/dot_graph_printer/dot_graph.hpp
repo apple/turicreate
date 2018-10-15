@@ -3,8 +3,8 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#ifndef GRAPHALB_DOT_GRAPH_HPP
-#define GRAPHALB_DOT_GRAPH_HPP
+#ifndef TURI_DOT_GRAPH_HPP
+#define TURI_DOT_GRAPH_HPP
 #include <string>
 #include <vector>
 #include <set>

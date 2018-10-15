@@ -634,7 +634,7 @@ class CustomModel(ExposeAttributesFromProxy):
         raise NotImplementedError("_get_version not implemented")
 
     def __getitem__(self, key):
-        return self.get(key)
+        return self._get(key)
 
     def _get_native_state(self):
         raise NotImplementedError("_get_native_state not implemented")
@@ -662,7 +662,8 @@ class CustomModel(ExposeAttributesFromProxy):
         import copy
         state = copy.copy(self._get_native_state())
         state['model_version'] = self._get_version()
-        return glconnect.get_unity().save_model2(self.__class__._native_name(), location, state)
+        return glconnect.get_unity().save_model2(
+            self.__class__._native_name(), _make_internal_url(location), state)
 
     @classmethod
     def _native_name(cls):

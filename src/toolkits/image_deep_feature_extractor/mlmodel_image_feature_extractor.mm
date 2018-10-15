@@ -162,10 +162,33 @@ API_AVAILABLE(macos(10.13))
 static MLModel *create_model(const std::string& download_path,
 			     const std::string& model_name) {
 
+  @autoreleasepool {
+
+  MLModel* result = nil;
+
   const std::string compiled_modified_model_path = download_path + "/" + model_name + "_modified.mlmodelc";
+  NSURL* compiledModelURL = [NSURL fileURLWithPath:[NSString stringWithUTF8String:compiled_modified_model_path.c_str()]];
+
+  // If the compiled modified model already exists on disk, attempt to load it.
+  if (boost::filesystem::exists(compiled_modified_model_path)) {
+
+    NSError* error = nil;
+    result = [MLModel modelWithContentsOfURL:compiledModelURL error:&error];
+
+    if (error || !result) {
+
+      // The compiled model appears to be corrupted. Attempt to delete it.
+      if (!fileio::delete_path_recursive(compiled_modified_model_path)) {
+        log_and_throw("Model at " + compiled_modified_model_path + " could not be loaded or deleted.");
+      }
+
+      // Ensure that we attempt to regenerate the modified model below.
+      result = nil;
+    }
+  }
 
   // Create the compiled modified model, if we don't already have it
-  if(! boost::filesystem::exists(compiled_modified_model_path)) {
+  if (!result) {
 
     // Create the modified model
     const std::string modified_model_path = download_path + "/" + model_name + "_modified.mlmodel";
@@ -211,20 +234,16 @@ static MLModel *create_model(const std::string& download_path,
       [[NSFileManager defaultManager] copyItemAtURL:modelPath toURL:compiledModelPath error:&error];
       checkNSError(error);
     }
-  }
 
-  // Load the compiled modified model
-  MLModel* result = nil;
-  @autoreleasepool {
+    // Load the compiled modified model
     NSError* error = nil;
-    NSString* temp = [NSString stringWithUTF8String:compiled_modified_model_path.c_str()];
-    NSURL* compiledModelPath = [NSURL fileURLWithPath:temp];
-    result = [MLModel modelWithContentsOfURL:compiledModelPath error:&error];
+    result = [MLModel modelWithContentsOfURL:compiledModelURL error:&error];
     checkNSError(error);
-    result = [result retain];  // Safe to retain now that no exceptions possible
   }
 
-  return result;
+  return [result retain];  // Safe to retain now that no exceptions possible
+
+  }  // @autoreleasepool
 }
 
 
@@ -441,15 +460,9 @@ mlmodel_image_feature_extractor::extract_features(gl_sarray data, bool verbose, 
       [image_batch release];
       checkNSError(error);
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"  // TODO: fix this issue
-
-      for (NSInteger i = 0; i < features_batch.featureProviderCount; ++i) {
-        [outputs addObject:[features_batch featureProviderAtIndex:i]];
+      for (NSInteger i = 0; i < features_batch.count; ++i) {
+        [outputs addObject:[features_batch featuresAtIndex:i]];
       }
-
-#pragma clang diagnostic pop
-
     } else {
 #else
     {

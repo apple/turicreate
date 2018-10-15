@@ -27,7 +27,7 @@ def _create(observation_data,
            user_data=None, item_data=None,
            ranking=True,
            verbose=True):
-    r"""
+    """
     A unified interface for training recommender models. Based on simple
     characteristics of the data, a type of model is selected and trained. The
     trained model can be used to predict ratings and make recommendations.
@@ -569,13 +569,12 @@ class _Recommender(_Model):
         Examples
         --------
         >>> data = turicreate.SFrame({'user_id': ["0", "0", "0", "1", "1", "2", "2", "2"],
-        ...                         'item_id': ["a", "b", "c", "a", "b", "b", "c", "d"],
-        ...                         'rating': [1, 3, 2, 5, 4, 1, 4, 3]})
-        >>> from turicreate.recommender
-        >>> m = factorization_recommender.create(data, "user_id", "item_id", "rating")
-        >>> d = m.get("coefficients")
+                                      'item_id': ["a", "b", "c", "a", "b", "b", "c", "d"],
+                                      'rating': [1, 3, 2, 5, 4, 1, 4, 3]})
+        >>> m = turicreate.factorization_recommender.create(data, "user_id", "item_id", "rating")
+        >>> d = m._get("coefficients")
         >>> U1 = d['user_id']
-        >>> U2 = d['movie_id']
+        >>> U2 = d['item_id']
         """
         opts = {'model': self.__proxy__, 'field': field}
         response = _turicreate.extensions._recsys.get_value(opts)
@@ -1844,5 +1843,10 @@ class _Recommender(_Model):
         --------
         >>> model.export_coreml('myModel.mlmodel')
         """
+        print('This model is exported as a custom Core ML model. In order to use it in your\n'
+              'application, you must also include "libRecommender.dylib". For additional\n'
+              'details see:\n'
+              'https://apple.github.io/turicreate/docs/userguide/recommender/coreml-deployment.html')
+
         import turicreate as tc
         tc.extensions._recsys.export_to_coreml(self.__proxy__, filename)

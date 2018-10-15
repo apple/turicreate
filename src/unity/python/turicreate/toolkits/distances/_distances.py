@@ -23,7 +23,7 @@ def euclidean(x, y):
     of equal length. Suppose `x` and `y` each contain :math:`d`
     variables:
 
-    .. math:: D(x, y) = \\sqrt{\sum_i^d (x_i - y_i)^2}
+    .. math:: D(x, y) = \\sqrt{\\sum_i^d (x_i - y_i)^2}
 
     Parameters
     ----------
@@ -64,7 +64,7 @@ def gaussian_kernel(x, y):
     of equal length. Suppose `x` and `y` each contain :math:`d`
     variables:
 
-    .. math:: D(x, y) = 1 - \\exp{-\sum_i^d (x_i - y_i)^2}
+    .. math:: D(x, y) = 1 - \\exp{-\\sum_i^d (x_i - y_i)^2}
 
     Parameters
     ----------
@@ -105,7 +105,7 @@ def squared_euclidean(x, y):
     two lists of equal length. Suppose `x` and `y` each contain
     :math:`d` variables:
 
-    .. math:: D(x, y) = \sum_i^d (x_i - y_i)^2
+    .. math:: D(x, y) = \\sum_i^d (x_i - y_i)^2
 
     Parameters
     ----------
@@ -197,8 +197,8 @@ def cosine(x, y):
 
     .. math::
 
-        D(x, y) = 1 - \\frac{\sum_i^d x_i y_i}
-        {\sqrt{\sum_i^d x_i^2}\sqrt{\sum_i^d y_i^2}}
+        D(x, y) = 1 - \\frac{\\sum_i^d x_i y_i}
+        {\\sqrt{\\sum_i^d x_i^2}\\sqrt{\\sum_i^d y_i^2}}
 
     Parameters
     ----------
@@ -247,9 +247,9 @@ def levenshtein(x, y):
 
         D(x, y) = d(|x|, |y|)
 
-        d(i, j) = \max(i, j), \quad \mathrm{if } \min(i, j) = 0
+        d(i, j) = \\max(i, j), \\quad \\mathrm{if } \\min(i, j) = 0
 
-        d(i, j) = \min \Big \{d(i-1, j) + 1, \ d(i, j-1) + 1, \ d(i-1, j-1) + I(x_i \\neq y_i) \Big \}, \quad \mathrm{else}
+        d(i, j) = \\min \\Big \\{d(i-1, j) + 1, \\ d(i, j-1) + 1, \\ d(i-1, j-1) + I(x_i \\neq y_i) \\Big \\}, \\quad \\mathrm{else}
 
 
     Parameters
@@ -282,7 +282,7 @@ def dot_product(x, y):
     Compute the dot_product between two dictionaries or two lists of
     equal length. Suppose `x` and `y` each contain :math:`d` variables:
 
-    .. math:: D(x, y) = \\frac{1}{\sum_i^d x_i y_i}
+    .. math:: D(x, y) = \\frac{1}{\\sum_i^d x_i y_i}
 
     .. warning::
 
@@ -329,7 +329,7 @@ def transformed_dot_product(x, y):
     two inputs---a similarity measure---into a distance measure. Suppose `x` and
     `y` each contain :math:`d` variables:
 
-    .. math:: D(x, y) = \log\{1 + \exp\{-\sum_i^d x_i y_i\}\}
+    .. math:: D(x, y) = \\log\\{1 + \\exp\\{-\\sum_i^d x_i y_i\\}\\}
 
     .. warning::
 
@@ -376,7 +376,7 @@ def jaccard(x, y):
     Suppose :math:`K_x` and :math:`K_y` are the sets of keys from the
     two input dictionaries.
 
-    .. math:: D(x, y) = 1 - \\frac{|K_x \cap K_y|}{|K_x \cup K_y|}
+    .. math:: D(x, y) = 1 - \\frac{|K_x \\cap K_y|}{|K_x \\cup K_y|}
 
     Parameters
     ----------
@@ -419,8 +419,8 @@ def weighted_jaccard(x, y):
 
     .. math::
 
-        D(x, y) = 1 - \\frac{\sum_{k \in K_x \cup K_y} \min\{x_k, y_k\}}
-        {\sum_{k \in K_x \cup K_y} \max\{x_k, y_k\}}
+        D(x, y) = 1 - \\frac{\\sum_{k \\in K_x \\cup K_y} \\min\\{x_k, y_k\\}}
+        {\\sum_{k \\in K_x \\cup K_y} \\max\\{x_k, y_k\\}}
 
     Parameters
     ----------

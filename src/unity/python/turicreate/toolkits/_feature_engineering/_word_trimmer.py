@@ -310,7 +310,7 @@ output_column_prefix = None):
         _raise_error_if_not_of_type(features, [list, str, type(None)])
         _raise_error_if_not_of_type(threshold, [int, type(None)])
         _raise_error_if_not_of_type(output_column_prefix, [str, type(None)])
-        _raise_error_if_not_of_type(stopwords, [list, type(None)])
+        _raise_error_if_not_of_type(stopwords, [list, set, type(None)])
         _raise_error_if_not_of_type(to_lower, [bool])
         _raise_error_if_not_of_type(delimiters, [list, type(None)])
 

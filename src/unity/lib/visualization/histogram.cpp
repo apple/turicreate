@@ -334,7 +334,7 @@ std::string histogram_result::vega_summary_data() const {
 
 }
 
-std::shared_ptr<Plot> plot_histogram(const std::string& path_to_client,
+std::shared_ptr<Plot> plot_histogram(
   gl_sarray& sa, std::string xlabel, std::string ylabel,
   std::string title) {
     using namespace turi;
@@ -373,7 +373,7 @@ std::shared_ptr<Plot> plot_histogram(const std::string& path_to_client,
     hist.init(*self);
 
     std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<histogram>(hist);
-    return std::make_shared<Plot>(path_to_client, histogram_spec, shared_unity_transformer, size_array);
+    return std::make_shared<Plot>(histogram_spec, shared_unity_transformer, size_array);
 }
 
 

@@ -10,7 +10,13 @@ from turicreate import SFrame as _SFrame
 from turicreate.util import _raise_error_if_not_of_type
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._internal_utils import _numeric_param_check_range
+from random import Random
 
+import sys as _sys
+if _sys.version_info.major > 2:
+    long = int
+
+_MIN_NUM_SESSIONS_FOR_SPLIT = 100
 
 def random_split_by_session(dataset, session_id, fraction=0.9, seed=None):
     """
@@ -67,8 +73,32 @@ def random_split_by_session(dataset, session_id, fraction=0.9, seed=None):
         raise _ToolkitError(
             'Input "dataset" must contain a column called %s.' % session_id)
 
-    unique_sessions = _SFrame({'session': dataset[session_id].unique()})
-    chosen, not_chosen = unique_sessions.random_split(fraction, seed)
-    train = dataset.filter_by(chosen['session'], session_id)
-    valid = dataset.filter_by(not_chosen['session'], session_id)
+    if seed is None:
+        # Include the nanosecond component as well.
+        import time
+        seed = abs(hash("%0.20f" % time.time())) % (2 ** 31)
+
+    # The cython bindings require this to be an int, so cast if we can.
+    try:
+        seed = int(seed)
+    except ValueError:
+        raise ValueError('The \'seed\' parameter must be of type int.')
+    
+    random = Random()
+    
+    # Create a random binary filter (boolean SArray), using the same probability across all lines
+    # that belong to the same session. In expectancy - the desired fraction of the sessions will
+    # go to the training set.
+    # Since boolean filters preserve order - there is no need to re-sort the lines within each session.
+    # The boolean filter is a pseudorandom function of the session_id and the
+    # global seed above, allowing the train-test split to vary across runs using
+    # the same dataset.
+    def random_session_pick(session_id_hash):
+        random.seed(session_id_hash)
+        return random.uniform(0, 1) < fraction
+
+    chosen_filter = dataset[session_id].hash(seed).apply(random_session_pick)
+
+    train = dataset[chosen_filter]
+    valid = dataset[1 - chosen_filter]
     return train, valid

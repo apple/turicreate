@@ -8,7 +8,6 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 
 from ..deps import numpy as _np
-import array as _array
 
 _JPG = "JPG"
 _PNG = "PNG"
@@ -49,7 +48,6 @@ class Image(object):
 
     Examples
     --------
-
     >>> img = turicreate.Image('https://static.turi.com/datasets/images/sample.jpg')
     >>> turicreate.SArray([img]).show()
     """
@@ -89,7 +87,6 @@ class Image(object):
 
         Examples
         --------
-
         >>> img = turicreate.Image('https://static.turi.com/datasets/images/sample.jpg')
         >>> img.height
 
@@ -112,7 +109,6 @@ class Image(object):
 
         Examples
         --------
-
         >>> img = turicreate.Image('https://static.turi.com/datasets/images/sample.jpg')
         >>> img.width
 
@@ -135,7 +131,6 @@ class Image(object):
 
         Examples
         --------
-
         >>> img = turicreate.Image('https://static.turi.com/datasets/images/sample.jpg')
         >>> img.channels
 
@@ -160,7 +155,6 @@ class Image(object):
 
         Examples
         --------
-
         >>> img = turicreate.Image('https://static.turi.com/datasets/images/sample.jpg')
         >>> image_array = img.pixel_data
         """
@@ -195,6 +189,19 @@ class Image(object):
         return _PIL_Image.fromarray(self.pixel_data)
 
     def save(self, filename):
+        """
+        Saves the image to a file system for later use.
+
+        Parameters
+        ----------
+        filename : string
+            The location to save the image.
+
+        Examples
+        --------
+        >>> img.save('/tmp/my_image.jpg')
+
+        """
         self._to_pil_image().save(filename)
 
     def show(self):
@@ -210,7 +217,6 @@ class Image(object):
 
         Examples
         --------
-
         >>> img = turicreate.Image('https://static.turi.com/datasets/images/sample.jpg')
         >>> img.show()
 

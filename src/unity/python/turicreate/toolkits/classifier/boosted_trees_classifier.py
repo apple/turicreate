@@ -440,7 +440,11 @@ class BoostedTreesClassifier(_Classifier, _TreeModelMixin):
                    "model_type" : "boosted_trees",
                    "version": _turicreate.__version__,
                    "class": self.__class__.__name__,
-                   "short_description": short_description}
+                   "short_description": short_description,
+                   'user_defined':{
+                    'turicreate_version': _turicreate.__version__
+                   }
+                }
         self._export_coreml_impl(filename, context)
 
 def create(dataset, target,

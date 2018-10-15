@@ -1157,6 +1157,10 @@ void gl_sframe::show(const std::string& path_to_client) const {
   get_proxy()->show(path_to_client);
 }
 
+std::shared_ptr<model_base> gl_sframe::plot() const {
+  return get_proxy()->plot();
+}
+
 /**************************************************************************/
 /*                                                                        */
 /*                            gl_sframe_writer                            */

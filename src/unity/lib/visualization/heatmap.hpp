@@ -61,7 +61,7 @@ namespace visualization {
       virtual std::vector<heatmap_result> split_input(size_t num_threads) override;
   };
 
-  std::shared_ptr<Plot> plot_heatmap(const std::string& path_to_client,
+  std::shared_ptr<Plot> plot_heatmap(
                     const gl_sarray& x,
                     const gl_sarray& y,
                     const std::string& xlabel,

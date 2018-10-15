@@ -11,7 +11,9 @@ import sys
 import unittest
 import turicreate as tc
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
-from turicreate.toolkits._internal_utils import _mac_ver
+from turicreate.toolkits._internal_utils import (_mac_ver,
+                                                 _raise_error_if_not_sframe,
+                                                 _raise_error_if_not_sarray)
 import tempfile
 from . import util as test_util
 import pytest
@@ -128,27 +130,28 @@ class ImageClassifierTest(unittest.TestCase):
         model = self.model
         for output_type in ['class', 'probability_vector']:
             preds = model.predict(self.sf.head(), output_type=output_type)
+            _raise_error_if_not_sarray(preds)
             self.assertEqual(len(preds), len(self.sf.head()))
 
     def test_single_image(self):
         model = self.model
         single_image = self.sf[0][self.feature]
-        predictions = model.predict(single_image)
-        self.assertIsNotNone(predictions)
-        predictions = model.predict_topk(single_image)
-        self.assertIsNotNone(predictions)
-        predictions = model.classify(single_image)
-        self.assertIsNotNone(predictions)
+        prediction = model.predict(single_image)
+        self.assertTrue(isinstance(prediction, (int, str)))
+        prediction = model.predict_topk(single_image)
+        _raise_error_if_not_sframe(prediction)
+        prediction = model.classify(single_image)
+        self.assertTrue(isinstance(prediction, dict) and 'class' in prediction and 'probability' in prediction)
 
     def test_sarray(self):
         model = self.model
         data = self.sf[self.feature]
         predictions = model.predict(data)
-        self.assertIsNotNone(predictions)
+        _raise_error_if_not_sarray(predictions)
         predictions = model.predict_topk(data)
-        self.assertIsNotNone(predictions)
+        _raise_error_if_not_sframe(predictions)
         predictions = model.classify(data)
-        self.assertIsNotNone(predictions)
+        _raise_error_if_not_sframe(predictions)
 
     def test_junk_input(self):
         model = self.model
@@ -182,7 +185,7 @@ class ImageClassifierTest(unittest.TestCase):
 
             self.assertListAlmostEquals(
                coreml_values,
-               list(self.model.predict(img_fixed, output_type = 'probability_vector')[0]),
+               list(self.model.predict(img_fixed, output_type = 'probability_vector')),
                self.tolerance
             )
 

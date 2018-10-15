@@ -184,6 +184,39 @@ Confusion Matrix :
 [4 rows x 3 columns]
 ```
 
+Using basic SFrame operations, we can also isolate the examples in the
+test data where the model made mistakes:
+
+```python
+predictions = model.predict(test_data)
+
+# Compute a boolean SArray of whether or not the model was right
+mistakes_filter = predictions != test_data[model.target]
+correct_filter = predictions == test_data[model.target]
+
+# Apply the logical filter on the data
+mistakes = test_data[mistakes_filter]
+correct = test_data[correct_filter]
+```
+
+We can use the similar idea to isolate mistakes that are:
+- **false positives**: The model predicted true (for a class) but the
+  ground truth was false.
+- **false negative**: The model predicted false (for a class) but the
+  ground truth was true.
+
+
+```python
+predictions = model.predict(test_data)
+
+# Compute boolean filters
+false_positive_filter = (predictions == 1) & (test_data[model.target] == 0)
+false_negative_filter = (predictions == 0) & (test_data[model.target] == 1)
+
+false_negatives = test_data[false_negative_filter]
+false_positives = test_data[false_positive_filter]
+```
+
 ######  <a name="logregr-imbalanced-data"></a> Working with imbalanced data
 
 Many difficult **real-world** problems have imbalanced data, where at least one

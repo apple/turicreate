@@ -12,6 +12,7 @@ from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits._internal_utils import _toolkit_repr_print
+from turicreate.toolkits import text_analytics as _text_analytics
 
 
 def _BOW_FEATURE_EXTRACTOR(sf, target=None):
@@ -29,26 +30,35 @@ def _BOW_FEATURE_EXTRACTOR(sf, target=None):
             out[f] = _tc.text_analytics.count_words(out[f])
     return out
 
-def create(dataset, target, features=None, method='auto', validation_set='auto', max_iterations=10):
+def create(dataset, target, features = None, drop_stop_words = True,
+           word_count_threshold = 2, method = 'auto', validation_set = 'auto',
+           max_iterations = 10):
     """
-    Create a model that trains a classifier to classify sentences from a
+    Create a model that trains a classifier to classify text from a
     collection of documents. The model is a
     :class:`~turicreate.logistic_classifier.LogisticClassifier` model trained
     using a bag-of-words representation of the text dataset.
 
     Parameters
     ----------
-    dataset: SFrame
-      Contains one column that contains the text dataset of interest.  This can be
-      unstructured text dataset, such as that appearing in forums, user-generated
-      reviews, and so on.
+    dataset : SFrame
+      Contains one or more columns of text data. This can be unstructured text
+      dataset, such as that appearing in forums, user-generated reviews, etc.
 
-    target: str
+    target : str
       The column name containing class labels for each document.
 
-    features: list[str], optional
+    features : list[str], optional
       The column names of interest containing text dataset. Each provided column
       must be str type. Defaults to using all columns of type str.
+
+    drop_stop_words : bool, optional
+        Ignore very common words, eg: "the", "a", "is".
+        For the complete list of stop words, see: `text_classifier.drop_words()`.
+
+    word_count_threshold : int, optional
+        Words which occur less than this often, in the entire dataset, will be
+        ignored.
 
     method: str, optional
       Method to use for feature engineering and modeling. Currently only
@@ -72,19 +82,25 @@ def create(dataset, target, features=None, method='auto', validation_set='auto',
 
     Returns
     -------
-    out : :class:`~SentenceClassifier`
+    out : :class:`~TextClassifier`
 
     Examples
     --------
     >>> import turicreate as tc
     >>> dataset = tc.SFrame({'rating': [1, 5], 'text': ['hate it', 'love it']})
 
-    >>> m = tc.sentence_classifier.create(dataset, 'rating', features=['text'])
+    >>> m = tc.text_classifier.create(dataset, 'rating', features=['text'])
     >>> m.predict(dataset)
 
-    You may also evaluate predictions against known sentence scores.
+    You may also evaluate predictions against known text scores.
 
     >>> metrics = m.evaluate(dataset)
+
+    See Also
+    --------
+    text_classifier.stop_words, text_classifier.drop_words
+
+
     """
     _raise_error_if_not_sframe(dataset, "dataset")
 
@@ -102,9 +118,16 @@ def create(dataset, target, features=None, method='auto', validation_set='auto',
     features = [f for f in features if f != target]
 
     # Process training set using the default feature extractor.
-    train = dataset
     feature_extractor = _BOW_FEATURE_EXTRACTOR
-    train = feature_extractor(train, target)
+    train = feature_extractor(dataset, target)
+
+    stop_words = None
+    if drop_stop_words:
+        stop_words = _text_analytics.stop_words()
+    for cur_feature in features:
+        train[cur_feature] = _text_analytics.drop_words(train[cur_feature],
+                                                        threshold = word_count_threshold,
+                                                        stop_words = stop_words)
 
     # Check for a validation set.
     if isinstance(validation_set, _tc.SFrame):
@@ -117,7 +140,7 @@ def create(dataset, target, features=None, method='auto', validation_set='auto',
                                        max_iterations=max_iterations,
                                        validation_set=validation_set)
     num_examples = len(dataset)
-    model = SentenceClassifier()
+    model = TextClassifier()
     model.__proxy__.update(
         {'target':   target,
          'features': features,
@@ -127,8 +150,8 @@ def create(dataset, target, features=None, method='auto', validation_set='auto',
          'classifier': m})
     return model
 
-class SentenceClassifier(_CustomModel):
-    _PYTHON_SENTENCE_CLASSIFIER_MODEL_VERSION = 1
+class TextClassifier(_CustomModel):
+    _PYTHON_TEXT_CLASSIFIER_MODEL_VERSION = 1
 
     def __init__(self, state=None):
         if state is None:
@@ -138,10 +161,10 @@ class SentenceClassifier(_CustomModel):
 
     @classmethod
     def _native_name(cls):
-        return "sentence_classifier"
+        return "text_classifier"
 
     def _get_version(self):
-        return self._PYTHON_SENTENCE_CLASSIFIER_MODEL_VERSION
+        return self._PYTHON_TEXT_CLASSIFIER_MODEL_VERSION
 
     def _get_native_state(self):
         import copy
@@ -154,7 +177,7 @@ class SentenceClassifier(_CustomModel):
         from turicreate.toolkits.classifier.logistic_classifier import LogisticClassifier
         state['classifier'] = LogisticClassifier(state['classifier'])
         state = _PythonProxy(state)
-        return SentenceClassifier(state)
+        return TextClassifier(state)
 
     def predict(self, dataset, output_type='class'):
         """
@@ -191,7 +214,7 @@ class SentenceClassifier(_CustomModel):
         --------
         >>> import turicreate as tc
         >>> dataset = tc.SFrame({'rating': [1, 5], 'text': ['hate it', 'love it']})
-        >>> m = tc.sentence_classifier.create(dataset, 'rating', features=['text'])
+        >>> m = tc.text_classifier.create(dataset, 'rating', features=['text'])
         >>> m.predict(dataset)
 
         """
@@ -227,7 +250,7 @@ class SentenceClassifier(_CustomModel):
         --------
         >>> import turicreate as tc
         >>> dataset = tc.SFrame({'rating': [1, 5], 'text': ['hate it', 'love it']})
-        >>> m = tc.sentence_classifier.create(dataset, 'rating', features=['text'])
+        >>> m = tc.text_classifier.create(dataset, 'rating', features=['text'])
         >>> output = m.classify(dataset)
 
         """
@@ -330,12 +353,19 @@ class SentenceClassifier(_CustomModel):
         from turicreate.extensions import _logistic_classifier_export_as_model_asset
         from turicreate.toolkits import _coreml_utils
 
-        display_name = 'sentence classifier'
+        display_name = 'text classifier'
         short_description = _coreml_utils._mlmodel_short_description(display_name)
         context = {'class': self.__class__.__name__,
                    'version': _tc.__version__,
-                   'short_description': short_description}
+                   'short_description': short_description,
+                   'user_defined':{
+                    'turicreate_version': _tc.__version__
+                   }
+                }
+
+
         model = self.__proxy__['classifier'].__proxy__
+
         _logistic_classifier_export_as_model_asset(model, filename, context)
 
 

@@ -119,7 +119,7 @@ class histogram : public histogram_parent {
     virtual void init(const gl_sarray& source) override;
 };
 
-std::shared_ptr<Plot> plot_histogram(const std::string& path_to_client, 
+std::shared_ptr<Plot> plot_histogram(
   gl_sarray& sa, std::string xlabel, std::string ylabel, 
   std::string title);
 

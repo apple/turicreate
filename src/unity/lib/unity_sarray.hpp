@@ -794,10 +794,9 @@ class unity_sarray: public unity_sarray_base {
             const std::string& xlabel,
             const std::string& ylabel);
 
-  std::shared_ptr<model_base> plot(const std::string& path_to_client,
-                          const std::string& _title,
-                          const std::string& _xlabel,
-                          const std::string& _ylabel);
+  std::shared_ptr<model_base> plot(const std::string& _title,
+                                   const std::string& _xlabel,
+                                   const std::string& _ylabel);
 
  private:
   /**

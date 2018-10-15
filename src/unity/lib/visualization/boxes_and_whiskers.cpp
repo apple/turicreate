@@ -76,7 +76,7 @@ std::string boxes_and_whiskers_result::vega_column_data(bool sframe) const {
   return ss.str();
 }
 
-std::shared_ptr<Plot> turi::visualization::plot_boxes_and_whiskers(const std::string& path_to_client,
+std::shared_ptr<Plot> turi::visualization::plot_boxes_and_whiskers(
                                                     const gl_sarray& x,
                                                     const gl_sarray& y,
                                                     const std::string& xlabel,
@@ -99,5 +99,5 @@ std::shared_ptr<Plot> turi::visualization::plot_boxes_and_whiskers(const std::st
   bw.init(temp_sf);
 
   std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<boxes_and_whiskers>(bw);
-  return std::make_shared<Plot>(path_to_client, boxes_and_whiskers_specification, shared_unity_transformer, size_array);
+  return std::make_shared<Plot>(boxes_and_whiskers_specification, shared_unity_transformer, size_array);
 }

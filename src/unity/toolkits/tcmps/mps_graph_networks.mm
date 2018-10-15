@@ -16,7 +16,7 @@ namespace mps {
 
 std::unique_ptr<MPSGraphNetwork> createNetworkGraph(
     GraphNetworkType network_id, const std::vector<int> &params,
-    const FloatArrayMap &config) {
+    const float_array_map& config) {
   std::unique_ptr<MPSGraphNetwork> result;
   switch (network_id) {
   case kSingleReLUGraphNet:
@@ -51,8 +51,8 @@ MPSGraphNetwork::~MPSGraphNetwork() {
 void MPSGraphNetwork::Init(id<MTLDevice> _Nonnull device,
                            id<MTLCommandQueue> cmd_queue,
                            GraphMode mode,
-                           const FloatArrayMap &config,
-                           const FloatArrayMap &weights) {
+                           const float_array_map& config,
+                           const float_array_map& weights) {
   for (int i = 0; i < layers.size(); ++i) {
     layers[i]->Init(device, cmd_queue, config, weights);
   }
@@ -129,38 +129,15 @@ MPSImageBatch *MPSGraphNetwork::RunGraph(id<MTLCommandBuffer> cb, MPSImageBatch 
   return ret;
 }
 
-void MPSGraphNetwork::Export(
-    std::unordered_map<std::string,
-                       std::tuple<std::string, float *, int, std::vector<int>>>
-        &table) {
+float_array_map MPSGraphNetwork::Export() const {
+  float_array_map table;
   for (int i = 0; i < layers.size(); ++i) {
-    layers[i]->Export(table);
+    float_array_map layer_table = layers[i]->Export();
+    table.insert(layer_table.begin(), layer_table.end());
+    // TODO: In C++17, we can use std::map::merge to move the table entries
+    // instead of copying them: table.merge(layers[i]->Export());
   }
-}
-
-int MPSGraphNetwork::NumParams() {
-  int ret = 0;
-  for (int i = 0; i < layers.size(); ++i) {
-    LayerType type = layers[i]->type;
-    switch (type) {
-    case kConv:
-      {
-        ConvGraphLayer *convLayer = reinterpret_cast<ConvGraphLayer*>(layers[i]);
-        if (convLayer->use_bias) {
-          ret += 2;
-        } else {
-          ret += 1;
-        }
-      }
-      break;
-    case kBN:
-      ret += 4;
-      break;
-    default:
-      break;
-    }
-  }
-  return ret;
+  return table;
 }
 
 }  // namespace mps

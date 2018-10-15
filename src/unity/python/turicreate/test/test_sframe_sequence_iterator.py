@@ -156,7 +156,7 @@ class SFrameActivityIteratorTest(unittest.TestCase):
         builder = tc.SFrameBuilder([array.array , int , str , array.array , array.array] , ['features' , 'chunk_len' , 'session_id' , 'target' , 'weights'])
         builder.append([[0, 0, 1, 10, 2, 20, 3, 30] + [0] * 4 , 4 , 's1' , [1 , 2 , 0] , [1 , 1 , 0] ])
         builder.append([[4, 40, 5, 50, 6, 60, 7, 70, 8, 80, 9, 90] , 6 , 's2' , [1 , 1 , 3], [1 , 1 , 1] ])
-        builder.append([[10, 100, 11, 110, 12, 120, 13, 130, 14, 140, 15, 150] , 6 , 's3' , [1 ,2, 3], [1 , 1, 1] ])
+        builder.append([[10, 100, 11, 110, 12, 120, 13, 130, 14, 140, 15, 150] , 6 , 's3' , [1 ,2, 2], [1 , 1, 1] ])
         builder.append([[16, 160, 17, 170] + [0] * 8, 2 , 's3' , [2 ,0 , 0], [1 , 0, 0] ])
         self.expected_chunked_2_3 = builder.close()
 

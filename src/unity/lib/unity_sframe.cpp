@@ -844,20 +844,46 @@ std::shared_ptr<unity_sframe_base> unity_sframe::append(
     if (this->num_columns() != other_sframe->num_columns()) {
       log_and_throw("Two SFrames have different number of columns");
     }
-    auto column_names = this->column_names();
-    auto other_column_names = other_sframe->column_names();
-    auto column_types = this->dtype();
-    auto other_column_types = other_sframe->dtype();
+    std::vector<std::string> column_names = this->column_names();
+    std::vector<std::string> other_column_names = other_sframe->column_names();
+
     size_t num_columns = column_names.size();
 
-    for(size_t i = 0; i < num_columns; i++) {
-      // check column name matchs
-      if (column_names[i] != other_column_names[i]) {
-        log_and_throw("Column names are not the same in two SFrames");
+    if(column_names != other_column_names) {
+      std::sort(column_names.begin(), column_names.end());
+      std::sort(other_column_names.begin(), other_column_names.end());
+
+      if(column_names != other_column_names) {
+
+      std::vector<std::string> in_this;
+
+      std::set_difference(column_names.begin(), column_names.end(),
+                          other_column_names.begin(), other_column_names.end(),
+                          std::inserter(in_this, in_this.begin()));
+
+        std::ostringstream ss;
+        ss << "Error: Columns [" << in_this
+           << "] not found in appending SFrame.";
+
+        log_and_throw(ss.str().c_str());
       }
+    }
+
+    auto column_types = this->dtype();
+    auto other_column_types = other_sframe->dtype();
+
+    for(size_t i = 0; i < num_columns; i++) {
+
       // check column type matches
       if (column_types[i] != other_column_types[i]) {
-        log_and_throw("Column types are not the same in two SFrames");
+        std::ostringstream ss;
+        ss << "Column types are not the same in two SFrames (Column "
+           << column_names[i] << ", attempting to append column of type "
+           << flex_type_enum_to_name(other_column_types[i])
+           << " to column of type " << flex_type_enum_to_name(column_types[i])
+           << ").";
+
+        log_and_throw(ss.str().c_str());
       }
     }
   }
@@ -1595,24 +1621,24 @@ void unity_sframe::show(const std::string& path_to_client) {
   using namespace turi;
   using namespace turi::visualization;
 
-  std::shared_ptr<Plot> plt = std::dynamic_pointer_cast<Plot>(this->plot(path_to_client));
+  std::shared_ptr<Plot> plt = std::dynamic_pointer_cast<Plot>(this->plot());
 
   if(plt != nullptr){
-    plt->show();
+    plt->show(path_to_client);
   }
 #else
   std_log_and_throw(std::runtime_error, "Turi Create compiled with visualizations disabled.");
 #endif
 }
 
-std::shared_ptr<model_base> unity_sframe::plot(const std::string& path_to_client){
+std::shared_ptr<model_base> unity_sframe::plot(){
 #if(TC_BUILD_VISUALIZATION_CLIENT)
   using namespace turi;
   using namespace turi::visualization;
 
   std::shared_ptr<unity_sframe_base> self = this->select_columns(this->column_names());
 
-  return plot_columnwise_summary(path_to_client, self);
+  return plot_columnwise_summary(self);
 #else
   std_log_and_throw(std::runtime_error, "Turi Create compiled with visualizations disabled.");
 #endif
