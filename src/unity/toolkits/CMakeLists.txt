@@ -38,7 +38,7 @@ make_empty_library(unity_toolkits
     unity_evaluation
     unity_coreml_model_export
     unity_image_export
-    unity_activity_classification 
+    unity_activity_classification
     )
 
 add_dependencies(unity_toolkits tcmps)
