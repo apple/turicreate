@@ -5,6 +5,7 @@
 
 #include <unity/toolkits/mps/layer_helpers/addition.h>
 #include <unity/toolkits/mps/layer_helpers/base.h>
+#include <unity/toolkits/mps/layer_helpers/convolution.h>
 #include <unity/toolkits/mps/layer_helpers/input.h>
 #include <unity/toolkits/mps/layer_helpers/output.h>
 
@@ -23,6 +24,7 @@ namespace turi {
 		REGISTER_CLASS(InputNode)
 		REGISTER_CLASS(OutputNode)
 		REGISTER_CLASS(AdditionNode)
+		REGISTER_CLASS(ConvolutionNode)
 		END_CLASS_REGISTRATION
 	}
 }
