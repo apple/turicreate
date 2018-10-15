@@ -8,7 +8,7 @@ This module defines the SFrame class which provides the
 ability to create, access and manipulate a remote scalable dataframe object.
 
 SFrame acts similarly to pandas.DataFrame, but the data is completely immutable
-and is stored column wise on the Turi Server side.
+and is stored column wise.
 '''
 from __future__ import print_function as _
 from __future__ import division as _
@@ -171,7 +171,7 @@ def _force_cast_sql_types(data, result_types, force_cast_cols):
 class SFrame(object):
     """
     A tabular, column-mutable dataframe object that can scale to big data. The
-    data in SFrame is stored column-wise on the Turi Server side, and is
+    data in SFrame is stored column-wise, and is
     stored on persistent storage (e.g. disk) to avoid being constrained by
     memory size.  Each column in an SFrame is a size-immutable
     :class:`~turicreate.SArray`, but SFrames are mutable in that columns can be
@@ -192,7 +192,7 @@ class SFrame(object):
     and from the following sources:
 
     * your local file system
-    * the Turi Server's file system
+    * a network file system mounted locally
     * HDFS
     * Amazon S3
     * HTTP(S).
