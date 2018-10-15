@@ -12,15 +12,15 @@ namespace turi{
 	namespace mps {
 
 		void Graph::add_node(){
-			printf("TODO: forward pass");
+			printf("TODO: add node to the current graph");
 		}
 
 		void Graph::compile(){
-			printf("TODO: forward pass");
+			printf("TODO: compile the graph for forward and backward pass");
 		}
 
 		void Graph::clear(){
-			printf("TODO: forward pass");
+			printf("TODO: clear the exsisting graph structure");
 		}
 
 		void Graph::forward(){
