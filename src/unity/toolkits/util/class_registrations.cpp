@@ -19,6 +19,5 @@ REGISTER_FUNCTION(_generate_random_classification_sframe,
                   "num_extra_class_bins", "misclassification_spread");
 
 END_FUNCTION_REGISTRATION
-
 }  // namespace util
 }  // namespace turi
