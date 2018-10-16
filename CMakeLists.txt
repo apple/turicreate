@@ -356,6 +356,8 @@ if(HAS_FTRACER)
         set(EXTRA_OPTIMIZATION_FLAGS "${EXTRA_OPTIMIZATION_FLAGS} -ftracer")
 endif()
 
+
+
 set(DEBUG_OPTIMIZATION_LEVEL -O0)
 
 if(${RELEASE_OPT_FOR_SIZE})
@@ -398,6 +400,7 @@ set(CMAKE_CXX_FLAGS_RELEASE
 #*       Some C++ Implementation Oddities between libc++ and stdc++       */
 #*                                                                        */
 #**************************************************************************/
+set(CMAKE_REQUIRED_FLAGS ${CMAKE_CXX_FLAGS_DEBUG})
 check_cxx_source_compiles("#include <ios>
                            #include <system_error>
                            int main(int argc, char** argv) {
@@ -410,6 +413,24 @@ if(COMPILER_HAS_IOS_BASE_FAILURE_WITH_ERROR_CODE)
 else()
   message(STATUS "Compiler does not support ios_base::failure(str, error_code)")
 endif()
+
+check_cxx_source_compiles("#include <ios>
+                           #include <system_error>
+                                                    
+                           class io_error : public std::ios_base::failure {
+                             public:   /* The noexcept here is different between C++ 17 and C++ 11. */
+                              const char *what() const noexcept { return \"\"; } 
+                           };
+                           int main(int argc, char** argv) { return 0; }" 
+                          COMPILER_HAS_NOEXCEPT_WHAT_ON_EXCEPTIONS)
+
+if(COMPILER_HAS_NOEXCEPT_WHAT_ON_EXCEPTIONS)
+  message(STATUS "Compiler supports noexcept on what() with ios_base::failure.")
+  add_definitions(-DCOMPILER_HAS_NOEXCEPT_WHAT_ON_EXCEPTIONS)
+else()
+  message(STATUS "Compiler uses throw() on what() with ios_base::failure.")
+endif()
+
 
 #**************************************************************************/
 #*                                                                        */
