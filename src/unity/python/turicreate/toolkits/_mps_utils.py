@@ -166,8 +166,12 @@ def _load_tcmps_lib():
         if _mac_ver() < (10, 14):
             return None
 
+        # The symbols defined in libtcmps are now exposed directly by
+        # libunity_shared. Eventually the object_detector and
+        # activity_classifier toolkits will use the same Python/C++ bridge as
+        # the other toolkits, and this usage of ctypes will go away.
         file_dir = _os.path.dirname(__file__)
-        lib_path = _os.path.abspath(_os.path.join(file_dir, 'libtcmps.dylib'))
+        lib_path = _os.path.abspath(_os.path.join(file_dir, _os.pardir, 'libunity_shared.dylib'))
         try:
             _g_TCMPS_LIB = _ctypes.CDLL(lib_path, _ctypes.RTLD_LOCAL)
         except OSError:

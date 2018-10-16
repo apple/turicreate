@@ -3,6 +3,7 @@ project(unity_toolkits)
 if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
     make_library(tcmps
         SOURCES
+        cnn_module.mm
         mps_float_array.cpp
         mps_graph_trainer.mm
         mps_graph_networks.mm
@@ -17,7 +18,6 @@ if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
         mps_graph_layers.mm
         mps_weight.mm
         mps_device_manager.m
-        SHARED
     )
     target_compile_options(tcmps PUBLIC "-fobjc-arc -Wno-nullability-completeness -Wno-shadow-ivar")
 endif()

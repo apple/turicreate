@@ -20,6 +20,7 @@
 #endif 
 
 #include <unity/toolkits/activity_classification/class_registrations.hpp>
+#include <unity/toolkits/object_detection/class_registrations.hpp>
 
 #include <unity/toolkits/evaluation/metrics.hpp>
 #include <unity/toolkits/evaluation/unity_evaluation.hpp>
@@ -131,6 +132,9 @@ void register_models(toolkit_class_registry& registry) {
   // Image Deep Feature Extractor
   registry.register_toolkit_class(turi::image_deep_feature_extractor::get_toolkit_class_registration());
 #endif
+
+  // Object Detection
+  registry.register_toolkit_class(turi::object_detection::get_toolkit_class_registration());
 
 }
 

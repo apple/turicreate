@@ -34,10 +34,10 @@ NS_ASSUME_NONNULL_END
 namespace turi {
 namespace mps {
 
-MPSGraphModule::MPSGraphModule() {
+mps_graph_cnn_module::mps_graph_cnn_module() {
   @autoreleasepool {
     dev_ = [[TCMPSDeviceManager sharedInstance] preferredDevice];
-    assert(dev_ && "No valid Metal device. Availability should be checked before creating MPSGraphModule.");
+    assert(dev_ && "No valid Metal device. Availability should be checked before creating mps_graph_cnn_module.");
     id<MTLCommandQueue> cq = [dev_ newCommandQueue];
     assert(cq);
     cmd_queue_ = cq;
@@ -48,10 +48,10 @@ MPSGraphModule::MPSGraphModule() {
   }
 }
 
-void MPSGraphModule::Init(int network_id, int n, int c_in, int h_in, int w_in,
-                          int c_out, int h_out, int w_out,
-                          const float_array_map& config,
-                          const float_array_map& weights) {
+void mps_graph_cnn_module::init(
+    int network_id, int n, int c_in, int h_in, int w_in, int c_out, int h_out,
+    int w_out, const float_array_map& config, const float_array_map& weights) {
+
   @autoreleasepool {
     mode_ = (GraphMode)get_array_map_scalar(config, "mode", kGraphModeTrainReturnGrad);
     
@@ -99,8 +99,9 @@ void MPSGraphModule::Init(int network_id, int n, int c_in, int h_in, int w_in,
   }
 }
 
-deferred_float_array MPSGraphModule::Train(const float_array& input_batch,
-                                           const float_array& label_batch) {
+deferred_float_array mps_graph_cnn_module::train(
+      const float_array& input_batch, const float_array& label_batch) {
+
   @autoreleasepool {
 
   assert(mode_ == kGraphModeTrain);
@@ -109,8 +110,8 @@ deferred_float_array MPSGraphModule::Train(const float_array& input_batch,
   TCMPSGraphModuleBatch *batch = [[TCMPSGraphModuleBatch alloc] initWithCommandBuffer:cb];
 
   // Copy from raw C inputs to MPS images and loss labels.
-  batch.input = CopyInput(input_batch);
-  batch.lossState = CopyLabels(label_batch);
+  batch.input = copy_input(input_batch);
+  batch.lossState = copy_labels(label_batch);
 
   // Encode the forward-backward pass.
   batch.output = network_->RunGraph(cb, batch.input, batch.lossState);
@@ -156,7 +157,8 @@ deferred_float_array MPSGraphModule::Train(const float_array& input_batch,
   }  // @autoreleasepool
 }
 
-deferred_float_array MPSGraphModule::Predict(const float_array& input_batch) {
+deferred_float_array
+mps_graph_cnn_module::predict(const float_array& input_batch) const {
   @autoreleasepool {
 
   assert(mode_ == kGraphModeInference);
@@ -165,7 +167,7 @@ deferred_float_array MPSGraphModule::Predict(const float_array& input_batch) {
   TCMPSGraphModuleBatch *batch = [[TCMPSGraphModuleBatch alloc] initWithCommandBuffer:cb];
 
   // Copy from raw C inputs to MPS images. Encode the forward pass.
-  batch.input = CopyInput(input_batch);
+  batch.input = copy_input(input_batch);
   batch.output = network_->RunGraph(cb, @{@"input" : batch.input});
 
   // Schedule synchronization of the output from GPU to CPU.
@@ -202,8 +204,9 @@ deferred_float_array MPSGraphModule::Predict(const float_array& input_batch) {
   }  // @autoreleasepool
 }
 
-deferred_float_array MPSGraphModule::TrainReturnGrad(
+deferred_float_array mps_graph_cnn_module::train_return_grad(
     const float_array& input_batch, const float_array& gradient_batch) {
+
   @autoreleasepool {
 
   assert(mode_ == kGraphModeTrainReturnGrad);
@@ -212,8 +215,8 @@ deferred_float_array MPSGraphModule::TrainReturnGrad(
   TCMPSGraphModuleBatch *batch = [[TCMPSGraphModuleBatch alloc] initWithCommandBuffer:cb];
 
   // Copy from raw C inputs to MPS images. Encode the forward-backward pass.
-  batch.input = CopyInput(input_batch);
-  batch.grad = CopyGrad(gradient_batch);
+  batch.input = copy_input(input_batch);
+  batch.grad = copy_grad(gradient_batch);
   batch.output = network_->RunGraph(cb, @{@"input" : batch.input,
                                           @"grad"  : batch.grad   });
 
@@ -255,13 +258,13 @@ deferred_float_array MPSGraphModule::TrainReturnGrad(
   }  // @autoreleasepool
 }
 
-float_array_map MPSGraphModule::Export() const {
+float_array_map mps_graph_cnn_module::export_weights() const {
   @autoreleasepool {
     return network_->Export();
   }
 }
 
-void MPSGraphModule::SetLearningRate(float lr) {
+void mps_graph_cnn_module::set_learning_rate(float lr) {
   @autoreleasepool {
     for (int i = 0; i < network_->layers.size(); ++i) {
       network_->layers[i]->SetLearningRate(lr);
@@ -269,7 +272,8 @@ void MPSGraphModule::SetLearningRate(float lr) {
   }
 }
 
-MPSImageBatch *MPSGraphModule::CreateImageBatch(MPSImageDescriptor *desc) {
+MPSImageBatch *
+mps_graph_cnn_module::create_image_batch(MPSImageDescriptor *desc) const {
   NSUInteger batchSize = (NSUInteger)network_->batch_size;
   NSMutableArray<MPSImage *> *result = [[NSMutableArray alloc] initWithCapacity:batchSize];
   for (NSUInteger i = 0; i < batchSize; ++i) {
@@ -278,7 +282,8 @@ MPSImageBatch *MPSGraphModule::CreateImageBatch(MPSImageDescriptor *desc) {
   return [result copy];
 }
 
-MPSImageBatch *MPSGraphModule::CopyInput(const float_array& input) {
+MPSImageBatch *
+mps_graph_cnn_module::copy_input(const float_array& input) const {
   @autoreleasepool {
     // may check shape
 
@@ -292,14 +297,15 @@ MPSImageBatch *MPSGraphModule::CopyInput(const float_array& input) {
     }
     if (!batch) {
       // Allocate a new MPSImageBatch if necessary.
-      batch = CreateImageBatch(input_desc_);
+      batch = create_image_batch(input_desc_);
     }
     fill_image_batch(input, batch);
     return batch;
   }
 }
 
-MPSImageBatch *MPSGraphModule::CopyGrad(const float_array& gradient) {
+MPSImageBatch *
+mps_graph_cnn_module::copy_grad(const float_array& gradient) const {
   @autoreleasepool {
     // may check shape
 
@@ -313,14 +319,15 @@ MPSImageBatch *MPSGraphModule::CopyGrad(const float_array& gradient) {
     }
     if (!batch) {
       // Allocate a new MPSImageBatch if necessary.
-      batch = CreateImageBatch(output_desc_);
+      batch = create_image_batch(output_desc_);
     }
     fill_image_batch(gradient, batch);
     return batch;
   }
 }
 
-MPSCNNLossLabelsBatch *MPSGraphModule::CopyLabels(const float_array& labels) {
+MPSCNNLossLabelsBatch *
+mps_graph_cnn_module::copy_labels(const float_array& labels) const {
   @autoreleasepool {
     return network_->loss_layer_->CreateLossState(dev_, labels);
   }
