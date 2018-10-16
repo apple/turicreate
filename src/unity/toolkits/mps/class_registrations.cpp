@@ -22,7 +22,8 @@ using namespace turi;
 namespace turi {
     namespace mps {
         BEGIN_FUNCTION_REGISTRATION
-        REGISTER_FUNCTION(create_graph, "input");
+        REGISTER_FUNCTION(create_graph, "layer_dict", "layer_arr");
+        REGISTER_FUNCTION(test);
         END_FUNCTION_REGISTRATION
     }
 }
@@ -37,4 +38,5 @@ REGISTER_CLASS(turi::mps::ConvolutionNode)
 REGISTER_CLASS(turi::mps::InstanceNormNode)
 REGISTER_CLASS(turi::mps::ReluNode)
 REGISTER_CLASS(turi::mps::SigmoidNode)
+REGISTER_CLASS(turi::mps::UpsamplingNode)
 END_CLASS_REGISTRATION

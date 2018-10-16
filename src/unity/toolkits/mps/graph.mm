@@ -23,12 +23,12 @@ namespace turi{
             printf("TODO: clear the exsisting graph structure");
         }
 
-        void update_weights(){
+        void Graph::update_weights(){
             printf("TODO: update graph weights");
         }
 
-        void set_trainable_layers(std::map<std::string, bool> trainable){
-            printf("TODO: set trainable layers")
+        void Graph::set_trainable_layers(std::map<std::string, bool> trainable){
+            printf("TODO: set trainable layers");
         }
 
         void Graph::forward(){

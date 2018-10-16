@@ -22,7 +22,9 @@ import turicreate as _tc
 import numpy as _np
 import math as _math
 import six as _six
+from .._mps_utils import use_mps as _use_mps
 
+from .. import _mps
 
 def _vgg16_data_prep(batch):
     """
@@ -203,6 +205,35 @@ def create(style_dataset, content_dataset, style_feature=None,
     # For some reason, the transformer fails to hybridize for training, so we
     # avoid this until resolved
     # transformer.hybridize()
+
+    cuda_gpus = _mxnet_utils.get_gpus_in_use(max_devices=batch_size)
+    num_mxnet_gpus = len(cuda_gpus)
+    use_mps = _use_mps() and num_mxnet_gpus == 0
+
+    if(use_mps):
+        transformer.batch_size = 0
+
+        image_shape = (1, 3, 256, 256)
+        c_image = _mx.sym.Variable("image", shape=image_shape, dtype=_np.float32)
+        index = _mx.sym.Variable("index", shape=(1,), dtype=_np.int32)
+        mod_out = transformer(c_image, index)
+        sym_out = _mx.mod.Module(symbol=mod_out, data_names=["image", "index"], label_names=None)
+        sym_out.bind(data_shapes=zip(["image", "index"], [image_shape, (1,)]), for_training=False, inputs_need_grad=False)
+
+        gluon_weights = transformer.collect_params()
+        gluon_layers = []
+        for layer in transformer.collect_params()._params:
+            gluon_layers.append(layer)
+
+        sym_layers = sym_out._param_names
+        sym_weight_dict = {}
+        for gluon_layer, sym_layer in zip(gluon_layers, sym_layers):
+            sym_weight_dict[sym_layer] = gluon_weights[gluon_layer]._data[0]
+
+        _mps.create_mps_graph(sym_out, sym_weight_dict, zip(["image", "index"], [image_shape, (1,)]), ['transformer_activation5'])
+        
+        # TODO: finish the rest of the MPS Pipeline 
+        return
 
     # VGG MODEL
     from ._model import Vgg16 as _Vgg16

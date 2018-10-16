@@ -21,7 +21,7 @@ namespace turi{
                 void init(std::string name);
 
                 BEGIN_CLASS_MEMBER_REGISTRATION("_InputNode")
-                REGISTER_CLASS_MEMBER_FUNCTION(InputNode::init, "name", "input")
+                REGISTER_CLASS_MEMBER_FUNCTION(InputNode::init, "name")
                 END_CLASS_MEMBER_REGISTRATION
         };
     }

@@ -5,6 +5,7 @@ enable_testing()
 subdirs(
         toolkits
         ml_data
+		mps
         optimization
         user_pagefault
         util

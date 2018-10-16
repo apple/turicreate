@@ -29,6 +29,7 @@ from turicreate.data_structures.sgraph import load_sgraph
 
 import turicreate.aggregate
 import turicreate.toolkits
+import turicreate.toolkits.mps
 import turicreate.toolkits.clustering as clustering
 import turicreate.toolkits.distances as distances
 
