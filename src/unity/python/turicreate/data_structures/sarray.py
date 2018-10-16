@@ -8,7 +8,7 @@ This module defines the SArray class which provides the
 ability to create, access and manipulate a remote scalable array object.
 
 SArray acts similarly to pandas.Series but without indexing.
-The data is immutable, homogeneous, and is stored on the Turi Server side.
+The data is immutable and homogeneous.
 '''
 from __future__ import print_function as _
 from __future__ import division as _
