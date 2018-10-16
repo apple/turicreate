@@ -131,9 +131,9 @@ class EXPORT linear_regression: public supervised_learning_model_base {
 
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml() override;
 
-  SUPERVISED_LEARNING_METHODS_REGISTRATION(
-      "regression_linear_regression", linear_regression); 
-      
+  BEGIN_CLASS_MEMBER_REGISTRATION("regression_linear_regression");
+  IMPORT_BASE_CLASS_REGISTRATION(supervised_learning_model_base);
+  END_CLASS_MEMBER_REGISTRATION
 };
 
 } // supervised

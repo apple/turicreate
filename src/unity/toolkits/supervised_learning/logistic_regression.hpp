@@ -172,8 +172,9 @@ class EXPORT logistic_regression: public supervised_learning_model_base {
   
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml() override;
 
-  SUPERVISED_LEARNING_METHODS_REGISTRATION(
-      "classifier_logistic_regression", logistic_regression);
+  BEGIN_CLASS_MEMBER_REGISTRATION("classifier_logistic_regression");
+  IMPORT_BASE_CLASS_REGISTRATION(supervised_learning_model_base);
+  END_CLASS_MEMBER_REGISTRATION
 
 };
 } // supervised
