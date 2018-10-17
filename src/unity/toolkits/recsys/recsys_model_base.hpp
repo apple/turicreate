@@ -252,6 +252,26 @@ public:
 
   gl_sframe api_get_similar_items(gl_sarray items, size_t k, size_t verbose, int get_all_items) const;
 
+  gl_sframe api_get_similar_users(gl_sarray users, size_t k, int get_all_users) const;
+
+  variant_map_type api_train_test_split(gl_sframe _dataset, const std::string& user_column, const std::string& item_column,
+  flexible_type max_num_users, double item_test_proportion, size_t random_seed);
+
+  gl_sframe api_predict(gl_sframe data_to_predict, gl_sframe new_user_data, gl_sframe new_item_data) const;
+  variant_map_type api_set_current_options(std::map<std::string, flexible_type> options);
+
+  variant_map_type api_train(gl_sframe _dataset, gl_sframe _user_data, gl_sframe _item_data, std::map<std::string, flexible_type> opts);
+
+  variant_map_type api_get_current_options();
+
+  gl_sframe api_recommend(gl_sframe _query, gl_sframe _exclude, gl_sframe _restrictions, gl_sframe _new_data, gl_sframe _new_user_data,
+  gl_sframe new_item_data, bool exclude_training_interactions, size_t top_k, double diversity, size_t random_seed);
+
+  gl_sframe api_get_item_intersection_info(gl_sframe item_pairs);
+
+  gl_sframe api_precision_recall_stats(gl_sframe indexed_validation_data, gl_sframe recommend_output, const std::vector<size_t>& cutoffs);
+
+  //gl_sframe api_get_value(flexible_type field);
 
   /** Creates and returns a popularity baseline
    *
@@ -305,9 +325,7 @@ public:
     std::shared_ptr<unity_sframe_base> new_observation_data,
     flex_int top_k) const;
 
-  virtual void export_to_coreml(
-    std::shared_ptr<recsys_model_base> recsys_model,
-    const std::string& filename);
+  virtual void export_to_coreml(std::shared_ptr<recsys_model_base> model, const std::string& filename);
 
   /**
    * Compute the precision and recall for a (potentially held out) set of

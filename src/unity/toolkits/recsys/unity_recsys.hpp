@@ -95,10 +95,6 @@ variant_map_type get_current_options(variant_map_type& params);
 
 variant_map_type set_current_options(variant_map_type& params);
 
-variant_map_type get_stats(variant_map_type& params);
-
-variant_map_type data_summary(variant_map_type& params);
-
 variant_map_type train_test_split(variant_map_type& params);
 
 /**
