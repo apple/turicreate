@@ -1,7 +1,7 @@
 #import "mps_updater.h"
 
 namespace turi {
-namespace mps {
+namespace neural_net {
 
 void SGDUpdater::Init(const std::vector<Layer *> &net,
                       const std::vector<float> &fparam) {
@@ -92,5 +92,5 @@ void AdamUpdater::NewIteration(){
     t++;
 }
 
-}  // namespace mps
+}  // namespace neural_net
 }  // namespace turi

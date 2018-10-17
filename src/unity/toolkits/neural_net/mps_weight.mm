@@ -7,7 +7,7 @@
 
 #include "mps_weight.h"
 
-using turi::mps::OptimizerOptions;
+using turi::neural_net::OptimizerOptions;
 
 NS_ASSUME_NONNULL_BEGIN
 

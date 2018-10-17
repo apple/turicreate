@@ -10,14 +10,14 @@
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 
-#include "mps_float_array.hpp"
+#include <unity/toolkits/neural_net/float_array.hpp>
 
 #import "mps_networks.h"
 #import "mps_updater.h"
 #import "mps_utils.h"
 
 namespace turi {
-namespace mps {
+namespace neural_net {
 
 class MPSCNNModule {
 public:
@@ -114,7 +114,7 @@ private:
       bool do_backward, bool is_train = true);
 };
 
-}  // namespace mps
+}  // namespace neural_net
 }  // namespace turi
 
 #endif

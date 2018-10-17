@@ -4,15 +4,15 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#ifndef TURI_MPS_CNN_MODULE_HPP_
-#define TURI_MPS_CNN_MODULE_HPP_
+#ifndef UNITY_TOOLKITS_NEURAL_NET_CNN_MODULE_HPP_
+#define UNITY_TOOLKITS_NEURAL_NET_CNN_MODULE_HPP_
 
 #include <memory>
 
-#include "mps_float_array.hpp"
+#include <unity/toolkits/neural_net/float_array.hpp>
 
 namespace turi {
-namespace mps {
+namespace neural_net {
 
 /**
  * A pure virtual interface for neural networks, used to abstract across model
@@ -56,7 +56,7 @@ public:
   virtual float_array_map export_weights() const = 0;
 };
 
-}  // namespace mps
+}  // namespace neural_net
 }  // namespace turi
 
-#endif  // TURI_MPS_CNN_MODULE_HPP_
+#endif  // UNITY_TOOLKITS_NEURAL_NET_CNN_MODULE_HPP_

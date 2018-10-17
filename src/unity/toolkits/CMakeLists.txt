@@ -18,8 +18,8 @@ subdirs(ml_model
         pattern_mining
         feature_engineering
         text
-        tcmps
         image
+        neural_net
         object_detection
 )
 

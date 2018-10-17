@@ -1,5 +1,11 @@
-#ifndef MPS_FLOAT_ARRAY_HPP_
-#define MPS_FLOAT_ARRAY_HPP_
+/* Copyright © 2018 Apple Inc. All rights reserved.
+ *
+ * Use of this source code is governed by a BSD-3-clause license that can
+ * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ */
+
+#ifndef UNITY_TOOLKITS_NEURAL_NET_FLOAT_ARRAY_HPP_
+#define UNITY_TOOLKITS_NEURAL_NET_FLOAT_ARRAY_HPP_
 
 #include <cstddef>
 #include <future>
@@ -9,7 +15,7 @@
 #include <vector>
 
 namespace turi {
-namespace mps {
+namespace neural_net {
 
 // Pure virtual (but low-level) interface for an n-dimensional array. The inputs
 // and outputs of the TCMPS library are largely expressed with this type.
@@ -154,7 +160,7 @@ private:
 // Convenient typedef for data structure used to pass configuration and weights.
 using float_array_map = std::map<std::string, shared_float_array>;
 
-}  // namespace mps
+}  // namespace neural_net
 }  // namespace turi
 
-#endif  // MPS_FLOAT_ARRAY_HPP_
+#endif  // UNITY_TOOLKITS_NEURAL_NET_FLOAT_ARRAY_HPP_

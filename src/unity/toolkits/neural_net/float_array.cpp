@@ -1,11 +1,17 @@
-#include "mps_float_array.hpp"
+/* Copyright © 2018 Apple Inc. All rights reserved.
+ *
+ * Use of this source code is governed by a BSD-3-clause license that can
+ * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ */
+
+#include <unity/toolkits/neural_net/float_array.hpp>
 
 #include <algorithm>
 #include <cassert>
 #include <numeric>
 
 namespace turi {
-namespace mps {
+namespace neural_net {
 
 namespace {
 
@@ -85,5 +91,5 @@ const float* deferred_float_array::data() const {
   return float_array.data();
 }
 
-}  // namespace mps
+}  // namespace neural_net
 }  // namespace turi

@@ -6,7 +6,7 @@
 
 #include <unity/toolkits/object_detection/object_detector.hpp>
 
-using turi::mps::cnn_module;
+using turi::neural_net::cnn_module;
 
 namespace turi {
 namespace object_detection {
@@ -19,12 +19,11 @@ constexpr size_t OBJECT_DETECTOR_VERSION = 1;
 
 void object_detector::init_options(const std::map<std::string,
                                    flexible_type>& options) {
-  // TODO: Push platform dependency into (likely renamed) TCMPS library.
-#ifdef HAS_MPS
+
+  // TODO: Parse real factory arguments from `options`.
   cnn_module_ = cnn_module::create_object_detector(
-      0, 0, 0, 0, 0, 0, 0, mps::float_array_map(),
-      mps::float_array_map());
-#endif  // HAS_MPS
+      0, 0, 0, 0, 0, 0, 0, neural_net::float_array_map(),
+      neural_net::float_array_map());
 }
 
 size_t object_detector::get_version() const {

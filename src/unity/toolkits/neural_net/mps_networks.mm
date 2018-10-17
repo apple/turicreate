@@ -2,7 +2,7 @@
 #include "mps_layers.h"
 
 namespace turi {
-namespace mps {
+namespace neural_net {
 
 MPSNetwork *_Nonnull createNetwork(NetworkType network_id,
                                    const std::vector<int> &params,
@@ -174,5 +174,5 @@ MPSImageBatch *_Nonnull MPSNetwork::Loss(MPSImageBatch *_Nonnull src,
   return lossLayer->bwd_output; // Loss gradients
 }
 
-}  // namespace mps
+}  // namespace neural_net
 }  // namespace turi

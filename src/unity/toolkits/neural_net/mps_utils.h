@@ -16,10 +16,10 @@
 #include <string>
 #include <vector>
 
-#include "mps_float_array.hpp"
+#include <unity/toolkits/neural_net/float_array.hpp>
 
 namespace turi {
-namespace mps {
+namespace neural_net {
 
 //
 // Optimizer options
@@ -155,7 +155,7 @@ float sumSingleImage(MPSImage * _Nonnull image){
 
 #pragma clang diagnostic pop
 
-}  // namespace mps
+}  // namespace neural_net
 }  // namespace turi
 
 #endif /* mps_utils_h */
