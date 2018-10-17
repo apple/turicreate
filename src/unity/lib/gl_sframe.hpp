@@ -373,8 +373,8 @@ groupby_descriptor_type ARGMIN(const std::string& agg, const std::string& out);
  * \ingroup group_glsdk
  * A tabular, column-mutable dataframe object that can scale to big data. 
  *
- * The data in \ref gl_sframe is stored column-wise on the Turi Server
- * side, and is stored on persistent storage (e.g. disk) to avoid being
+ * The data in \ref gl_sframe is stored column-wise on persistent
+ * storage (e.g. disk) to avoid being
  * constrained by memory size.  Each column in an \ref gl_sframe is a
  * immutable \ref gl_sarray, but \ref gl_sframe objects
  * are mutable in that columns can be added and subtracted with ease.  
@@ -523,6 +523,11 @@ class gl_sframe {
    * Show a visualization of the SFrame.
    */
   void show(const std::string& path_to_client) const;
+
+  /**
+   * Return a plot object of the SFrame (same visualization as `show`)
+   */
+  std::shared_ptr<model_base> plot() const;
 
   /**
    * Constructs a gl_sframe from an in-memory map of values

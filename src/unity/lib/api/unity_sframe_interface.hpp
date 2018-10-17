@@ -12,7 +12,6 @@
 #include <sframe/dataframe.hpp>
 #include <unity/lib/options_map.hpp>
 #include <cppipc/magic_macros.hpp>
-#include <unity/lib/visualization/plot.hpp>
 #include <unity/lib/api/unity_sarray_interface.hpp>
 
 namespace turi {
@@ -75,7 +74,7 @@ GENERATE_INTERFACE_AND_PROXY(unity_sframe_base, unity_sframe_proxy,
       (void, delete_on_close, )
       (void, explore, (const std::string&)(const std::string&))
       (void, show, (const std::string&))
-      (std::shared_ptr<model_base>, plot, (const std::string&))
+      (std::shared_ptr<model_base>, plot, )
     )
 } // namespace turi
 #endif // TURI_UNITY_SFRAME_INTERFACE_HPP

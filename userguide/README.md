@@ -23,7 +23,7 @@ If you haven’t already installed Turi Create, you can find instructions
 ## SFrame
 
 SFrame is a scalable, tabular, column-mutable dataframe object. The data
-in SFrame is stored column-wise on the Turi Server side, and is stored
+in SFrame is stored column-wise, and is stored
 on persistent storage (e.g. disk) to avoid being constrained by memory
 size. Each column in an SFrame is a size-immutable SArray, but SFrames
 are mutable in that columns can be added and subtracted with ease. An
@@ -35,8 +35,8 @@ directory where an Sframe was saved previously), general text file (with
 csv parsing options; see read_csv()), Python dictionary,
 pandas.DataFrame and JSON.
 
-An SFrame can be constructed with data from your local file system, the
-Turi server’s file system, HDFS, Amazon S3, or HTTP(S).
+An SFrame can be constructed with data from your local file system, a
+network file system mounted locally, HDFS, Amazon S3, or HTTP(S).
 
 See [Working with data](sframe/README.md) for more guidance on
 data structures and the [API

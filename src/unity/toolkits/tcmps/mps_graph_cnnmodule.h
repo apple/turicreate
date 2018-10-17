@@ -11,6 +11,7 @@
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 
+#include "cnn_module.hpp"
 #include "mps_float_array.hpp"
 
 #import "mps_utils.h"
@@ -18,69 +19,54 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-// Forward declaration of internal Objective-C class used in the implementation
-// of MPSGraphModule below.
-@class TCMPSGraphModuleBatch;
-
 namespace turi {
 namespace mps {
 
-class MPSGraphModule {
+class mps_graph_cnn_module: public cnn_module {
 public:
-  MPSGraphModule();
+  mps_graph_cnn_module();
 
-  void Init(int network_id, int n, int c_in, int h_in, int w_in, int c_out,
+  void init(int network_id, int n, int c_in, int h_in, int w_in, int c_out,
             int h_out, int w_out,
             const float_array_map& config, const float_array_map& weights);
 
-  // Each call to a Start*Batch function must be paired with a call to a
-  // WaitFor*Batch function. These functions must match the graph mode used to
-  // initialize the module.
-  //
-  // TODO: Replace this API with a more user-friendly one: each Start*Batch
-  // function could return a handle wrapping the MPSImage containing the
-  // expected output. Attempting to read from the MPSImage would trigger a wait
-  // if necessary, a la MXNet NDArray.
+  // The graph mode used to initialize the module determines which of the
+  // following functions are allowed.
+  // TODO: Parameters such as graph mode should be more explicit than just a
+  // component of the `config` map.
 
   // Training
-  void SetLearningRate(float lr);
-  void StartTrainingBatch(const float_array& input_batch,
-                          const float_array& label_batch);
-  void WaitForTrainingBatch(float *loss);
+  void set_learning_rate(float lr) override;
+  deferred_float_array train(const float_array& input_batch,
+                             const float_array& label_batch) override;
 
   // Inference
-  void StartInferenceBatch(const float_array& input_batch);
-  void WaitForInferenceBatch(float *out_ptr);
+  deferred_float_array predict(const float_array& input_batch) const override;
 
   // Forward-backward pass with specified input and top-gradient images
-  void StartTrainReturnGradBatch(const float_array& input_batch,
-                                 const float_array& gradient_batch);
-  void WaitForTrainReturnGradBatch(float *out_ptr);
+  deferred_float_array train_return_grad(const float_array& input_batch,
+                                         const float_array& gradient_batch);
 
-  float_array_map Export() const;
-  int NumParams();
+  float_array_map export_weights() const override;
 
 private:
-  MPSImageBatch *CreateImageBatch(MPSImageDescriptor *desc);
-  MPSImageBatch *CopyInput(const float_array& input);
-  MPSImageBatch *CopyGrad(const float_array& gradient);
-  MPSCNNLossLabelsBatch *CopyLabels(const float_array& labels);
-
-  void Blob2MPSImage(const float_array& blob, MPSImageBatch *batch);
-  void MPSImage2Blob(float *ptr, MPSImageBatch *batch);
+  MPSImageBatch *create_image_batch(MPSImageDescriptor *desc) const;
+  MPSImageBatch *copy_input(const float_array& input) const;
+  MPSImageBatch *copy_grad(const float_array& gradient) const;
+  MPSCNNLossLabelsBatch *copy_labels(const float_array& labels) const;
 
   id<MTLDevice> dev_;
   id<MTLCommandQueue> cmd_queue_;
-  NSMutableArray<TCMPSGraphModuleBatch *> *pending_batches_;
 
   GraphMode mode_;
   std::unique_ptr<MPSGraphNetwork> network_;
+  std::vector<size_t> result_shape_;
 
   MPSImageDescriptor * _Nullable input_desc_ = nil;
   MPSImageDescriptor * _Nullable output_desc_ = nil;
 
-  MPSImageBatch * _Nullable recycled_input_ = nil;
-  MPSImageBatch * _Nullable recycled_grad_ = nil;
+  NSMutableArray<MPSImageBatch *> *recycled_inputs_ = nil;
+  NSMutableArray<MPSImageBatch *> *recycled_grads_ = nil;
 };
 
 }  // namespace mps

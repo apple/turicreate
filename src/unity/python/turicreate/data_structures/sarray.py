@@ -8,7 +8,7 @@ This module defines the SArray class which provides the
 ability to create, access and manipulate a remote scalable array object.
 
 SArray acts similarly to pandas.Series but without indexing.
-The data is immutable, homogeneous, and is stored on the Turi Server side.
+The data is immutable and homogeneous.
 '''
 from __future__ import print_function as _
 from __future__ import division as _
@@ -20,7 +20,6 @@ from ..cython.cy_flexible_type import infer_type_of_list, infer_type_of_sequence
 from ..cython.cy_sarray import UnitySArrayProxy
 from ..cython.context import debug_trace as cython_context
 from ..util import _is_non_string_iterable, _make_internal_url
-from ..visualization import _get_client_app_path
 from ..visualization import Plot
 from .image import Image as _Image
 from .. import aggregate as _aggregate
@@ -2987,7 +2986,6 @@ class SArray(object):
 
         >>> plt.show()
         """
-        path_to_client = _get_client_app_path()
 
         if title == "":
             title = " "
@@ -3003,7 +3001,7 @@ class SArray(object):
         if ylabel is None:
             ylabel = ""
 
-        return Plot(self.__proxy__.plot(path_to_client, title, xlabel, ylabel))
+        return Plot(self.__proxy__.plot(title, xlabel, ylabel))
 
     def item_length(self):
         """

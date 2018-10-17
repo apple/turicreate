@@ -12,8 +12,6 @@
 namespace turi {
 namespace visualization {
 
-class summary_view_transformation;
-
 class transformation_output {
   public:
     virtual ~transformation_output() = default;
@@ -30,8 +28,10 @@ class transformation_base {
     virtual ~transformation_base() = default;
     virtual std::shared_ptr<transformation_output> get() = 0;
     virtual bool eof() const = 0;
-    virtual flex_int get_rows_processed() const = 0;
+    double get_percent_complete() const;
     virtual size_t get_batch_size() const = 0;
+    virtual flex_int get_total_rows() const = 0;
+    virtual flex_int get_rows_processed() const = 0;
 };
 
 class transformation_collection : public std::vector<std::shared_ptr<transformation_base>> {
@@ -91,7 +91,10 @@ class transformation : public transformation_base {
       DASSERT_LE(m_currentIdx, m_source.size());
       return m_currentIdx;
     }
-
+    virtual flex_int get_total_rows() const override {
+      require_init();
+      return m_source.size();
+    }
     virtual std::shared_ptr<transformation_output> get() override {
       require_init();
       if (this->eof()) {

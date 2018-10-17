@@ -13,7 +13,6 @@
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 
-#include <map>
 #include <string>
 #include <vector>
 
@@ -71,9 +70,12 @@ struct OptimizerOptions {
   }
 };
 
-// Convenient typedef for data structure used to pass configuration and weights
-// into and out of TCMPS.
-using float_array_map = std::map<std::string, shared_float_array>;
+API_AVAILABLE(macos(10.14))
+shared_float_array copy_image_batch_float16(std::vector<size_t> shape,
+                                        MPSImageBatch * _Nonnull batch);
+
+API_AVAILABLE(macos(10.14))
+void fill_image_batch(const float_array& data, MPSImageBatch * _Nonnull batch);
 
 float_array_map make_array_map(char **names, void **arrays,
                                int64_t *sizes, int len);

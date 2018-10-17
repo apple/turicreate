@@ -36,8 +36,10 @@ class summary_view_transformation : public transformation_base {
 
     virtual std::shared_ptr<transformation_output> get() override;
     virtual bool eof() const override;
-    virtual flex_int get_rows_processed() const override;
     virtual size_t get_batch_size() const override;
+    virtual flex_int get_total_rows() const override;
+    virtual flex_int get_rows_processed() const override;
+
 };
 
 }

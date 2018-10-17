@@ -7,11 +7,12 @@
 #import "mps_device_manager.h"
 #import "mps_graph_cnnmodule.h"
 
-using turi::mps::MPSGraphModule;
+using turi::mps::deferred_float_array;
 using turi::mps::float_array;
 using turi::mps::float_array_map;
 using turi::mps::float_array_map_iterator;
 using turi::mps::make_array_map;
+using turi::mps::mps_graph_cnn_module;
 
 int TCMPSHasHighPowerMetalDevice(bool *has_device) {
   API_BEGIN();
@@ -47,64 +48,52 @@ int TCMPSMetalDeviceMemoryLimit(uint64_t *size) {
 
 int TCMPSCreateGraphModule(MPSHandle *out) {
   API_BEGIN();
-  MPSGraphModule *mps = new MPSGraphModule();
+  mps_graph_cnn_module *mps = new mps_graph_cnn_module();
   *out = (void *)mps;
   API_END();
 }
 
 int TCMPSDeleteGraphModule(MPSHandle handle) {
   API_BEGIN();
-  MPSGraphModule *obj = (MPSGraphModule *)handle;
+  mps_graph_cnn_module *obj = (mps_graph_cnn_module *)handle;
   delete obj;
   API_END();
 }
 
-int TCMPSStartTrainingBatchGraph(
-    MPSHandle handle, TCMPSFloatArrayRef inputs, TCMPSFloatArrayRef labels) {
+int TCMPSTrainGraph(MPSHandle handle, TCMPSFloatArrayRef inputs,
+                    TCMPSFloatArrayRef labels, TCMPSFloatArrayRef* loss_out) {
   API_BEGIN();
-  MPSGraphModule *obj = (MPSGraphModule *)handle;
+  mps_graph_cnn_module *obj = (mps_graph_cnn_module *)handle;
   float_array* inputs_ptr = reinterpret_cast<float_array*>(inputs);
   float_array* labels_ptr = reinterpret_cast<float_array*>(labels);
-  obj->StartTrainingBatch(*inputs_ptr, *labels_ptr);
+  deferred_float_array* loss =
+      new deferred_float_array(obj->train(*inputs_ptr, *labels_ptr));
+  *loss_out = reinterpret_cast<TCMPSFloatArrayRef>(loss);
   API_END();
 }
 
-int TCMPSWaitForTrainingBatchGraph(MPSHandle handle, float *loss) {
+int TCMPSPredictGraph(MPSHandle handle, TCMPSFloatArrayRef inputs,
+                      TCMPSFloatArrayRef* outputs_ptr) {
   API_BEGIN();
-  MPSGraphModule *obj = (MPSGraphModule *)handle;
-  obj->WaitForTrainingBatch(loss);
-  API_END();
-}
-
-int TCMPSStartInferenceBatchGraph(MPSHandle handle, TCMPSFloatArrayRef inputs) {
-  API_BEGIN();
-  MPSGraphModule *obj = (MPSGraphModule *)handle;
+  mps_graph_cnn_module *obj = (mps_graph_cnn_module *)handle;
   float_array* inputs_ptr = reinterpret_cast<float_array*>(inputs);
-  obj->StartInferenceBatch(*inputs_ptr);
+  deferred_float_array* outputs =
+      new deferred_float_array(obj->predict(*inputs_ptr));
+  *outputs_ptr = reinterpret_cast<TCMPSFloatArrayRef>(outputs);
   API_END();
 }
 
-int TCMPSWaitForInferenceBatchGraph(MPSHandle handle, float *out_ptr) {
-  API_BEGIN();
-  MPSGraphModule *obj = (MPSGraphModule *)handle;
-  obj->WaitForInferenceBatch(out_ptr);
-  API_END();
-}
+int TCMPSTrainReturnGradGraph(
+    MPSHandle handle, TCMPSFloatArrayRef inputs, TCMPSFloatArrayRef gradient,
+    TCMPSFloatArrayRef* outputs_ptr) {
 
-int TCMPSStartTrainReturnGradBatchGraph(
-    MPSHandle handle, TCMPSFloatArrayRef inputs, TCMPSFloatArrayRef gradient) {
   API_BEGIN();
-  MPSGraphModule *obj = (MPSGraphModule *)handle;
+  mps_graph_cnn_module *obj = (mps_graph_cnn_module *)handle;
   float_array* inputs_ptr = reinterpret_cast<float_array*>(inputs);
   float_array* gradient_ptr = reinterpret_cast<float_array*>(gradient);
-  obj->StartTrainReturnGradBatch(*inputs_ptr, *gradient_ptr);
-  API_END();
-}
-
-int TCMPSWaitForTrainReturnGradBatchGraph(MPSHandle handle, float *out_ptr) {
-  API_BEGIN();
-  MPSGraphModule *obj = (MPSGraphModule *)handle;
-  obj->WaitForTrainReturnGradBatch(out_ptr);
+  deferred_float_array* outputs = new deferred_float_array(
+      obj->train_return_grad(*inputs_ptr, *gradient_ptr));
+  *outputs_ptr = reinterpret_cast<TCMPSFloatArrayRef>(outputs);
   API_END();
 }
 
@@ -121,24 +110,17 @@ int TCMPSInitGraph(MPSHandle handle, int network_id, int n, int c_in, int h_in, 
   float_array_map weights =
       make_array_map(weight_names, weight_arrays, weight_sizes, weight_len);
 
-  MPSGraphModule *obj = (MPSGraphModule *)handle;
-  obj->Init(network_id, n, c_in, h_in, w_in, c_out, h_out, w_out,
+  mps_graph_cnn_module *obj = (mps_graph_cnn_module *)handle;
+  obj->init(network_id, n, c_in, h_in, w_in, c_out, h_out, w_out,
             config, weights);
-  API_END();
-}
-
-int TCMPSNumParamsGraph(MPSHandle handle, int *num) {
-  API_BEGIN();
-  MPSGraphModule *obj = (MPSGraphModule *)handle;
-  *num = obj->NumParams();
   API_END();
 }
 
 int TCMPSExportGraph(MPSHandle handle,
                      TCMPSFloatArrayMapIteratorRef* float_array_map_out) {
   API_BEGIN();
-  MPSGraphModule *obj = (MPSGraphModule *)handle;
-  auto* float_array_map = new float_array_map_iterator(obj->Export());
+  mps_graph_cnn_module *obj = (mps_graph_cnn_module *)handle;
+  auto* float_array_map = new float_array_map_iterator(obj->export_weights());
   *float_array_map_out =
       reinterpret_cast<TCMPSFloatArrayMapIteratorRef>(float_array_map);
   API_END();
@@ -146,7 +128,7 @@ int TCMPSExportGraph(MPSHandle handle,
 
 int TCMPSSetLearningRateGraph(MPSHandle handle, float new_lr) {
   API_BEGIN();
-  MPSGraphModule *obj = (MPSGraphModule *)handle;
-  obj->SetLearningRate(new_lr);
+  mps_graph_cnn_module *obj = (mps_graph_cnn_module *)handle;
+  obj->set_learning_rate(new_lr);
   API_END();
 }

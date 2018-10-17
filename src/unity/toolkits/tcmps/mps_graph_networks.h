@@ -33,8 +33,10 @@ struct MPSGraphNetwork {
   std::vector<GraphLayer *> layers;
   std::unique_ptr<LossGraphLayer> loss_layer_;
   int batch_size{0};
+
   MPSGraphNetwork(){};
   virtual ~MPSGraphNetwork();
+
   void Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> _Nonnull cmd_queue,
             GraphMode mode,
             const float_array_map& config, const float_array_map& weights);
@@ -42,7 +44,7 @@ struct MPSGraphNetwork {
                           MPSCNNLossLabelsBatch *_Nonnull loss_state);
   MPSImageBatch * _Nonnull RunGraph(id<MTLCommandBuffer> _Nonnull  cb, NSDictionary *_Nonnull inputs);
   float_array_map Export() const;
-  int NumParams();
+
   MPSNNGraph *_Nonnull  graph;
   MPSNNImageNode *_Nonnull  input_node;
   MPSNNImageNode * _Nullable grad_node;

@@ -28,7 +28,7 @@ class boxes_and_whiskers : public groupby<boxes_and_whiskers_result> {
 };
 
 // expects x to be str, y to be int/float
-std::shared_ptr<Plot> plot_boxes_and_whiskers(const std::string& path_to_client,
+std::shared_ptr<Plot> plot_boxes_and_whiskers(
                               const gl_sarray& x,
                               const gl_sarray& y,
                               const std::string& xlabel,

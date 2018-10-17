@@ -30,18 +30,22 @@ typedef void *MPSHandle;
 typedef void *TCMPSFloatArrayRef;
 typedef void *TCMPSFloatArrayMapIteratorRef;
 
-EXPORT int TCMPSCreateCNNModule(MPSHandle *handle);
-EXPORT int TCMPSDeleteCNNModule(MPSHandle handle);
-
 EXPORT int TCMPSCreateFloatArray(TCMPSFloatArrayRef *array_out, float* data,
                                  size_t size, size_t* shape, size_t dim);
 EXPORT int TCMPSDeleteFloatArray(TCMPSFloatArrayRef array_ref);
+EXPORT int TCMPSGetFloatArrayShape(TCMPSFloatArrayRef array_ref,
+                                   size_t** shape_out, size_t* dim_out);
+EXPORT int TCMPSReadFloatArray(TCMPSFloatArrayRef array_ref, float** data_out,
+                               size_t** shape_out, size_t* dim_out);
 
 EXPORT int TCMPSNextFloatArray(
     TCMPSFloatArrayMapIteratorRef iter_ref, char** name_out, float** data_out,
     size_t** shape_out, size_t* dim_out);
 EXPORT int TCMPSDeleteFloatArrayMapIterator(
     TCMPSFloatArrayMapIteratorRef iter_ref);
+
+EXPORT int TCMPSCreateCNNModule(MPSHandle *handle);
+EXPORT int TCMPSDeleteCNNModule(MPSHandle handle);
 
 EXPORT int TCMPSForward(MPSHandle handle, TCMPSFloatArrayRef inputs, float *out,
                         bool is_train);

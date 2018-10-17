@@ -29,11 +29,12 @@ namespace visualization {
       void init(gl_sframe sf);
       virtual std::shared_ptr<transformation_output> get() override;
       virtual bool eof() const override;
-      virtual flex_int get_rows_processed() const override;
       virtual size_t get_batch_size() const override;
+      virtual flex_int get_rows_processed() const override;
+      virtual flex_int get_total_rows() const override;
   };
 
-  std::shared_ptr<Plot> plot_scatter(const std::string& path_to_client,
+  std::shared_ptr<Plot> plot_scatter(
                     const gl_sarray& x,
                     const gl_sarray& y,
                     const std::string& xlabel,

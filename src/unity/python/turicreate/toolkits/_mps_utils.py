@@ -166,8 +166,12 @@ def _load_tcmps_lib():
         if _mac_ver() < (10, 14):
             return None
 
+        # The symbols defined in libtcmps are now exposed directly by
+        # libunity_shared. Eventually the object_detector and
+        # activity_classifier toolkits will use the same Python/C++ bridge as
+        # the other toolkits, and this usage of ctypes will go away.
         file_dir = _os.path.dirname(__file__)
-        lib_path = _os.path.abspath(_os.path.join(file_dir, 'libtcmps.dylib'))
+        lib_path = _os.path.abspath(_os.path.join(file_dir, _os.pardir, 'libunity_shared.dylib'))
         try:
             _g_TCMPS_LIB = _ctypes.CDLL(lib_path, _ctypes.RTLD_LOCAL)
         except OSError:
@@ -243,6 +247,33 @@ def _xavier_init(weight):
     c = _np.sqrt(3. / (0.5 * (n_in * scale + n_out * scale)))
     return _np.random.uniform(-c, c, shape).astype(_np.float32)
 
+def _shape_tuple_from_ctypes(shape_ptr, dim):
+    # size_t* shape_ptr
+    assert isinstance(shape_ptr, _ctypes.POINTER(_ctypes.c_size_t))
+
+    # size_t dim
+    assert isinstance(dim, _ctypes.c_size_t)
+
+    # Wrap size_t* as size_t[dim]
+    shape_buf = (_ctypes.c_size_t * dim.value).from_address(
+        _ctypes.addressof(shape_ptr.contents))
+
+    # Convert size_t[dim] to tuple
+    return tuple(shape_buf)
+
+def _numpy_array_from_ctypes(data_ptr, shape_ptr, dim):
+    # float* data_ptr
+    assert isinstance(data_ptr, _ctypes.POINTER(_ctypes.c_float))
+
+    shape = _shape_tuple_from_ctypes(shape_ptr, dim)
+
+    # Wrap float* to float[size]
+    size = _np.prod(shape)
+    data_buf = (_ctypes.c_float * size).from_address(
+        _ctypes.addressof(data_ptr.contents))
+
+    # Convert float[size] to numpy
+    return _np.fromiter(data_buf, _np.float32, size).reshape(shape)
 
 class MpsFloatArray(object):
     """
@@ -254,13 +285,18 @@ class MpsFloatArray(object):
     """
 
     def __init__(self, x):
-        """Wrap a numpy array"""
-
-        assert isinstance(x, _np.ndarray)
+        """Wrap an existing TCMPSFloatArrayRef or a numpy array"""
 
         # Load TCMPS backend library.
         self._LIB = _load_tcmps_lib()
         assert self._LIB is not None, "Cannot use MpsFloatArray without libtcmps.dylib"
+
+        # If `x` is a void*, assume it's the right type and just wrap it.
+        if isinstance(x, _ctypes.c_void_p):
+            self.handle = x
+            return
+
+        assert isinstance(x, _np.ndarray)
 
         # Convert the input if necessary to contain a contiguous float array.
         self.data = x
@@ -289,6 +325,39 @@ class MpsFloatArray(object):
     def __del__(self):
         status_code = self._LIB.TCMPSDeleteFloatArray(self.handle)
         assert status_code == 0, "Error calling TCMPSDeleteFloatArray"
+
+    def shape(self):
+        """Copy the shape from TCMPS as a new numpy ndarray."""
+
+        # Create C variables that will serve as out parameters for TCMPS.
+        shape_ptr = _ctypes.POINTER(_ctypes.c_size_t)()  # size_t* shape_ptr
+        dim = _ctypes.c_size_t()                         # size_t dim
+
+        # Obtain pointer into memory owned by the C++ object self.handle.
+        status_code = self._LIB.TCMPSGetFloatArrayShape(
+            self.handle, _ctypes.byref(shape_ptr), _ctypes.byref(dim))
+        assert status_code == 0, "Error calling TCMPSGetFloatArrayShape"
+
+        return _shape_tuple_from_ctypes(shape_ptr, dim)
+
+    def asnumpy(self):
+        """Copy the data from TCMPS into a new numpy ndarray"""
+
+        # Create C variables that will serve as out parameters for TCMPS.
+        data_ptr = _ctypes.POINTER(_ctypes.c_float)()    # float* data_ptr
+        shape_ptr = _ctypes.POINTER(_ctypes.c_size_t)()  # size_t* shape_ptr
+        dim = _ctypes.c_size_t()                         # size_t dim
+
+        # Obtain pointers into memory owned by the C++ object self.handle.
+        # Note that this may trigger synchronization with another thread
+        # producing the data.
+        status_code = self._LIB.TCMPSReadFloatArray(
+            self.handle, _ctypes.byref(data_ptr), _ctypes.byref(shape_ptr),
+            _ctypes.byref(dim))
+        assert status_code == 0, "Error calling TCMPSReadFloatArray"
+
+        return _numpy_array_from_ctypes(data_ptr, shape_ptr, dim)
+
 
 class MpsFloatArrayIterator(object):
     """
@@ -330,23 +399,11 @@ class MpsFloatArrayIterator(object):
         if status_code != 0:
             raise StopIteration
 
-        # Wrap size_t* as size_t[dim]
-        shape_buf = (_ctypes.c_size_t * dim.value).from_address(
-            _ctypes.addressof(shape_ptr.contents))
-
-        # Convert size_t[dim] to numpy
-        shape = _np.fromiter(shape_buf, _np.uint64, dim.value)
-
-        # Wrap float* to float[size]
-        size = _np.prod(shape)
-        data_buf = (_ctypes.c_float * size).from_address(
-            _ctypes.addressof(data_ptr.contents))
-
-        # Convert float[size] to numpy
-        array = _np.fromiter(data_buf, _np.float32, size).reshape(shape)
-
         # Convert char* to Python string
         name = _decode_bytes_to_native_string(name_ptr.value)
+
+        # Convert data to numpy
+        array = _numpy_array_from_ctypes(data_ptr, shape_ptr, dim)
 
         return (name, array)
 
@@ -418,57 +475,85 @@ class MpsGraphAPI(object):
         self._ishape = (n, h_in, w_in, c_in)
         self._oshape = (n, h_out, w_out, c_out)
 
-    # Submits an input batch to the model. The model will process the input
-    # asynchronously. This call must be matched with a corresponding call to
-    # wait_for_batch. Label data is required for models initialized with
-    # MpsGraphMode.Train; grad data is required for models initialized with
-    # MpsGraphMode.TrainReturnGrad.
-    def start_batch(self, input, label=None, grad=None):
+    def train(self, input, label):
+        """
+        Submits an input batch to the model. Returns a MpsFloatArray
+        representing the batch loss. Calling asnumpy() on this value will wait
+        for the batch to finish and yield the loss as a numpy array.
+        """
+
+        assert self._mode == MpsGraphMode.Train
+        assert input.shape == self._ishape
+        assert label.shape == self._oshape
+
+        input_array = MpsFloatArray(input)
+        label_array = MpsFloatArray(label)
+        result_handle = _ctypes.c_void_p()
+        status_code = self._LIB.TCMPSTrainGraph(
+            self.handle, input_array.handle, label_array.handle,
+                _ctypes.byref(result_handle))
+
+        assert status_code == 0, "Error calling TCMPSTrainGraph"
+        assert result_handle, "TCMPSTrainGraph unexpectedly returned NULL pointer"
+
+        result = MpsFloatArray(result_handle)
+
+        # Output from training should be a one-dimensional array of loss values,
+        # one per example in the batch.
+        assert result.shape() == (self._oshape[0],)
+
+        return result
+
+    def predict(self, input):
+        """
+        Submits an input batch to the model. Returns a MpsFloatArray
+        representing the model predictions. Calling asnumpy() on this value will
+        wait for the batch to finish and yield the predictions as a numpy array.
+        """
+
+        assert self._mode == MpsGraphMode.Inference
         assert input.shape == self._ishape
 
         input_array = MpsFloatArray(input)
+        result_handle = _ctypes.c_void_p()
+        status_code = self._LIB.TCMPSPredictGraph(
+            self.handle, input_array.handle, _ctypes.byref(result_handle))
 
-        if self._mode == MpsGraphMode.Train:
-            assert label is not None, "Training graph requires labels"
-            assert label.shape == self._oshape
+        assert status_code == 0, "Error calling TCMPSPredictGraph"
+        assert result_handle, "TCMPSPredictGraph unexpectedly returned NULL pointer"
 
-            label_array = MpsFloatArray(label)
-            self._LIB.TCMPSStartTrainingBatchGraph(
-                self.handle, input_array.handle, label_array.handle)
+        result = MpsFloatArray(result_handle)
+        assert result.shape() == self._oshape
 
-        elif self._mode == MpsGraphMode.TrainReturnGrad:
-            assert grad is not None, "Training graph (without loss) requires gradient"
-            assert grad.shape == self._oshape
+        return result
 
-            grad_array = MpsFloatArray(grad)
-            self._LIB.TCMPSStartTrainReturnGradBatchGraph(
-                self.handle, input_array.handle, grad_array.handle)
+    def train_return_grad(self, input, grad):
+        """
+        Performs a forward pass from the input batch, followed by a backward
+        pass using the provided gradient (in place of a loss function). Returns
+        a MpsFloatArray representing the output (final gradient) of the backward
+        pass. Calling asnumpy() on this value will wait for the batch to finish
+        and yield the output as a numpy array.
+        """
 
-        else:
-            self._LIB.TCMPSStartInferenceBatchGraph(
-                self.handle, input_array.handle)
+        assert self._mode == MpsGraphMode.TrainReturnGrad
+        assert input.shape == self._ishape
+        assert grad.shape == self._oshape
 
-    # Waits for a previously submitted batch to complete and returns the output.
-    # For models initialized with MpsGraphMode.Train, the return value is the
-    # loss. For models initialized with MpsGraphMode.Inference, the return value
-    # is the model predictions. For models initialized with
-    # MpsGraphMode.TrainReturnGrad, the return value is the gradient for the
-    # input layer.
-    def wait_for_batch(self):
-        if self._mode == MpsGraphMode.Train:
-            self._LIB.TCMPSWaitForTrainingBatchGraph(self.handle, _ctypes.byref(self._buf_loss))
-            loss = _np.frombuffer(self._buf_loss, dtype=_np.float32).copy()
-            return loss
-        elif self._mode == MpsGraphMode.TrainReturnGrad:
-            self._LIB.TCMPSWaitForTrainReturnGradBatchGraph(self.handle, _ctypes.byref(self._buf_out_fp16))
-            raw_out = _np.frombuffer(self._buf_out_fp16, dtype=_np.float16)
-            out = raw_out.reshape(self._ishape).astype(_np.float32).copy()
-            return out
-        else:
-            self._LIB.TCMPSWaitForInferenceBatchGraph(self.handle, _ctypes.byref(self._buf_out_fp16))
-            raw_out = _np.frombuffer(self._buf_out_fp16, dtype=_np.float16)
-            out = raw_out.reshape(self._oshape).astype(_np.float32).copy()
-            return out
+        input_array = MpsFloatArray(input)
+        grad_array = MpsFloatArray(grad)
+        result_handle = _ctypes.c_void_p()
+        status_code = self._LIB.TCMPSTrainGraph(
+            self.handle, input_array.handle, grad_array.handle,
+                _ctypes.byref(result_handle))
+
+        assert status_code == 0, "Error calling TCMPSTrainReturnGradGraph"
+        assert result_handle, "TCMPSTrainReturnGradGraph unexpectedly returned NULL pointer"
+
+        result = MpsFloatArray(result_handle)
+        assert result.shape() == self._ishape
+
+        return result
 
     def set_learning_rate(self, new_lr):
         self._cur_learning_rate = new_lr
@@ -486,11 +571,6 @@ class MpsGraphAPI(object):
         # Reload state
         if self._cur_learning_rate:
             self.set_learning_rate(self._cur_learning_rate)
-
-    def _num_params(self):
-        num = _ctypes.c_int32(0)
-        self._LIB.TCMPSNumParamsGraph(self.handle, _ctypes.byref(num))
-        return num.value
 
     def export(self):
         iter_handle = _ctypes.c_void_p()
@@ -643,11 +723,6 @@ class MpsLowLevelAPI(object):
     def load(self, weights):
         weights_items, weights_name, weights_arr, weights_sz = _prepare_network_parameters(weights)
         self._LIB.TCMPSLoad(self.handle, weights_name, weights_arr, weights_sz, _ctypes.c_int32(len(weights_items)))
-
-    def _num_params(self):
-        num = _ctypes.c_int32(0)
-        self._LIB.TCMPSNumParams(self.handle, _ctypes.byref(num))
-        return num.value
 
     def export(self):
         iter_handle = _ctypes.c_void_p()

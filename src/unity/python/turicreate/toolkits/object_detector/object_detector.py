@@ -513,8 +513,12 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         numpy_worker_thread = _Thread(target=numpy_worker)
         numpy_worker_thread.start()
 
-        batches_started = 0
-        batches_finished = 0
+        batch_queue = []
+        def wait_for_batch():
+            pending_loss = batch_queue.pop(0)
+            batch_loss = pending_loss.asnumpy()  # Waits for the batch to finish
+            return batch_loss.sum() / mps_loss_mult
+
         while True:
             batch = numpy_batch_queue.get()
             if batch is None:
@@ -527,13 +531,11 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                 mps_net.set_learning_rate(new_lr / mps_loss_mult)
 
             # Submit this match to MPS.
-            mps_net.start_batch(batch['input'], label=batch['label'])
-            batches_started += 1
+            batch_queue.append(mps_net.train(batch['input'], batch['label']))
 
             # If we have two batches in flight, wait for the first one.
-            if batches_started - batches_finished > 1:
-                batches_finished += 1
-                cur_loss = mps_net.wait_for_batch().sum() / mps_loss_mult
+            if len(batch_queue) > 1:
+                cur_loss = wait_for_batch()
 
                 # If we just submitted the first batch of an iteration, update
                 # progress for the iteration completed by the last batch we just
@@ -543,9 +545,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
             iteration = batch['iteration']
 
         # Wait for any pending batches and finalize our progress updates.
-        while batches_finished < batches_started:
-            batches_finished += 1
-            cur_loss = mps_net.wait_for_batch().sum() / mps_loss_mult
+        while len(batch_queue) > 0:
+            cur_loss = wait_for_batch()
         update_progress(cur_loss, iteration)
 
         sframe_worker_thread.join()
@@ -821,8 +822,8 @@ class ObjectDetector(_CustomModel):
                                                     dtype=mps_data.dtype)
                         mps_data_padded[:mps_data.shape[0]] = mps_data
                         mps_data = mps_data_padded
-                    self._mps_inference_net.start_batch(mps_data)
-                    mps_z = self._mps_inference_net.wait_for_batch()[:n_samples]
+                    mps_float_array = self._mps_inference_net.predict(mps_data)
+                    mps_z = mps_float_array.asnumpy()[:n_samples]
                     z = _mps_to_mxnet(mps_z)
                 else:
                     z = self._model(data).asnumpy()
