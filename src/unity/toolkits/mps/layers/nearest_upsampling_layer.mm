@@ -10,7 +10,9 @@
         self = [self init];
 
         mName = name;
-        mUpsamplingNode = [MPSCNNUpsamplingNearestNode nodeWithSource:inputNode integerScaleFactorX:scaleY integerScaleFactorY:scaleY];
+        mUpsamplingNode = [MPSCNNUpsamplingNearestNode nodeWithSource:inputNode 
+                                                  integerScaleFactorX:scaleY
+                                                  integerScaleFactorY:scaleY];
     
         return self;
     }

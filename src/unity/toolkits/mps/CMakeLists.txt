@@ -36,7 +36,7 @@ set(MPS
 # make the mps library
 make_library(unity_mps_graph
   SOURCES
-    class_registrations.cpp
+    class_registrations.mm
     ${MPS}
     ${LAYERS}
     ${LAYER_HELPERS}

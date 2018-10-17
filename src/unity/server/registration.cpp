@@ -44,7 +44,7 @@
 #include <unity/toolkits/pattern_mining/class_registrations.hpp>
 #include <unity/toolkits/clustering/class_registrations.hpp>
 #include <unity/toolkits/util/class_registrations.hpp>
-#include <unity/toolkits/mps/class_registrations.hpp>
+#include <unity/toolkits/mps/class_registrations.h>
 
 #include <toolkits/image_deep_feature_extractor/class_registrations.hpp>
 

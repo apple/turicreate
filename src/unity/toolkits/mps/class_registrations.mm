@@ -1,5 +1,5 @@
 #include <unity/lib/toolkit_function_macros.hpp>
-#include <unity/toolkits/mps/class_registrations.hpp>
+#include <unity/toolkits/mps/class_registrations.h>
 
 #include <unity/toolkits/mps/graph.h>
 
