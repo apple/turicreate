@@ -28,12 +28,12 @@ external_float_array::external_float_array(const float* data, size_t size,
   : data_(data), size_(size), shape_(shape), dim_(dim)
 {
   assert(std::all_of(shape, shape + dim, is_positive));
-  assert(size == std::accumulate(shape, shape + dim, 1, multiply));
+  assert(size == std::accumulate(shape, shape + dim, 1u, multiply));
 }
 
 float_buffer::float_buffer(const float* data, std::vector<size_t> shape)
   : shape_(std::move(shape)),
-    size_(std::accumulate(shape_.begin(), shape_.end(), 1, multiply)),
+    size_(std::accumulate(shape_.begin(), shape_.end(), 1u, multiply)),
     data_(data, data + size_)
 {
   assert(size_ > 0);
@@ -41,7 +41,7 @@ float_buffer::float_buffer(const float* data, std::vector<size_t> shape)
 
 float_buffer::float_buffer(std::vector<float> data, std::vector<size_t> shape)
   : shape_(std::move(shape)),
-    size_(std::accumulate(shape_.begin(), shape_.end(), 1, multiply)),
+    size_(std::accumulate(shape_.begin(), shape_.end(), 1u, multiply)),
     data_(std::move(data))
 {
   assert(data_.size() == size_);
@@ -54,7 +54,7 @@ shared_float_array::shared_float_array(
     offset_(offset),
     shape_(shape),
     dim_(dim),
-    size_(std::accumulate(shape_, shape_ + dim_, 1, multiply))
+    size_(std::accumulate(shape_, shape_ + dim_, 1u, multiply))
 {
   // The provided data array must be a view into the impl's data array.
   assert(offset_ + size_ <= impl_->size());
@@ -80,7 +80,7 @@ deferred_float_array::deferred_float_array(
     std::vector<size_t> shape)
   : data_future_(std::move(data_future)),
     shape_(std::move(shape)),
-    size_(std::accumulate(shape_.begin(), shape_.end(), 1, multiply))
+    size_(std::accumulate(shape_.begin(), shape_.end(), 1u, multiply))
 {}
 
 const float* deferred_float_array::data() const {
