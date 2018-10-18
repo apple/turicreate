@@ -76,7 +76,7 @@ variant_map_type init(variant_map_type& params) {
 
   return ret;
 }
-
+/*
 variant_map_type train(variant_map_type& params) {
 
   variant_map_type ret;
@@ -141,7 +141,8 @@ variant_map_type predict(variant_map_type& params) {
 
   return ret;
 }
-
+*/
+/*
 ////////////////////////////////////////////////////////////////////////////////
 
 variant_map_type recommend(variant_map_type& params) {
@@ -195,7 +196,8 @@ variant_map_type recommend(variant_map_type& params) {
 
   return ret;
 }
-
+*/
+/*
 variant_map_type precision_recall(variant_map_type& params) {
 
   std::shared_ptr<recsys_model_base> m =
@@ -351,7 +353,8 @@ variant_map_type summary(variant_map_type& params) {
 
   return ret;
 }
-
+*/
+/*
 variant_map_type train_test_split(variant_map_type& params) {
 
   variant_map_type ret;
@@ -395,8 +398,8 @@ variant_map_type train_test_split(variant_map_type& params) {
   return ret;
 
 }
-
-
+*/
+/*
 variant_map_type get_similar_items(variant_map_type& params) {
 
   variant_map_type ret;
@@ -539,7 +542,7 @@ EXPORT variant_map_type get_data_schema(variant_map_type& params) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
+*/
 void export_to_coreml(
     std::shared_ptr<recsys_model_base> recsys_model,
     const std::string& filename
@@ -550,10 +553,14 @@ void export_to_coreml(
 ////////////////////////////////////////////////////////////////////////////////
 
 BEGIN_FUNCTION_REGISTRATION
+
 REGISTER_FUNCTION(init, "params")
+/*
 REGISTER_FUNCTION(train, "params")
 REGISTER_FUNCTION(predict, "params")
-REGISTER_FUNCTION(recommend, "params")
+*/
+//REGISTER_FUNCTION(recommend, "params")
+/*
 REGISTER_FUNCTION(get_value, "params")
 REGISTER_FUNCTION(list_fields, "params")
 REGISTER_FUNCTION(precision_recall, "params")
@@ -561,7 +568,9 @@ REGISTER_FUNCTION(get_train_stats, "params")
 REGISTER_FUNCTION(get_current_options, "params")
 REGISTER_FUNCTION(set_current_options, "params")
 REGISTER_FUNCTION(summary, "params")
-REGISTER_FUNCTION(train_test_split, "params")
+*/
+//REGISTER_FUNCTION(train_test_split, "params")
+/*
 REGISTER_FUNCTION(get_similar_items, "params")
 REGISTER_FUNCTION(get_similar_users, "params")
 REGISTER_FUNCTION(get_num_items_per_user, "params")
@@ -570,6 +579,7 @@ REGISTER_FUNCTION(get_popularity_baseline, "params")
 REGISTER_FUNCTION(get_data_schema, "params")
 REGISTER_FUNCTION(get_item_intersection_info, "params")
 REGISTER_FUNCTION(export_to_coreml, "model", "filename")
+*/
 END_FUNCTION_REGISTRATION
 
 }}

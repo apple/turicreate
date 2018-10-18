@@ -257,9 +257,11 @@ def create(observation_data,
     opts.update(kwargs)
 
     with QuietProgress(verbose):
-        response = _turicreate.extensions._recsys.train(opts)
+        model_proxy.train(observation_data, user_data, item_data, opts)
+        #response = _turicreate.extensions._recsys.train(opts)
 
-    return ItemSimilarityRecommender(response['model'])
+
+    return ItemSimilarityRecommender(model_proxy) #response['model'])
 
 
 _get_default_options = _get_default_options_wrapper(

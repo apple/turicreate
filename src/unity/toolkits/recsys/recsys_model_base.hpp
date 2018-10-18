@@ -260,7 +260,7 @@ public:
   gl_sframe api_predict(gl_sframe data_to_predict, gl_sframe new_user_data, gl_sframe new_item_data) const;
   variant_map_type api_set_current_options(std::map<std::string, flexible_type> options);
 
-  variant_map_type api_train(gl_sframe _dataset, gl_sframe _user_data, gl_sframe _item_data, std::map<std::string, flexible_type> opts);
+  void api_train(gl_sframe _dataset, gl_sframe _user_data, gl_sframe _item_data, std::map<std::string, flexible_type>& opts);
 
   variant_map_type api_get_current_options();
 

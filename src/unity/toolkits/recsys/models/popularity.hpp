@@ -103,7 +103,7 @@ class EXPORT recsys_popularity : public recsys_model_base {
     "train_test_split2", recsys_popularity::api_train_test_split, "dataset", "user_column", "item_column",
     "max_num_users", "item_test_proportion", "random_seed");
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
-    "train2", recsys_popularity::api_train, "dataset", "user_data", "item_data", "opts");
+    "train", recsys_popularity::api_train, "dataset", "user_data", "item_data", "opts");
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
     "recommend2", recsys_popularity::api_recommend, "query", "exclude", "restrictions", "new_data", "new_user_data",
     "new_item_data", "exclude_training_interactions", "top_k", "diversity", "random_seed");

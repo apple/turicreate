@@ -1839,9 +1839,9 @@ variant_map_type recsys_model_base::api_train_test_split(gl_sframe _dataset, con
 
 }
 
-variant_map_type recsys_model_base::api_train(gl_sframe _dataset, gl_sframe _user_data, gl_sframe _item_data, std::map<std::string, flexible_type> opts) {
+void recsys_model_base::api_train(gl_sframe _dataset, gl_sframe _user_data, gl_sframe _item_data, std::map<std::string, flexible_type>& opts) {
 
-  variant_map_type ret;
+  //variant_map_type ret;
 
   sframe dataset = _dataset.materialize_to_sframe();
   sframe user_data = _user_data.materialize_to_sframe();
@@ -1851,9 +1851,13 @@ variant_map_type recsys_model_base::api_train(gl_sframe _dataset, gl_sframe _use
 
   this->set_options(opts);
   this->setup_and_train(dataset, user_data, item_data);
+/*
+  std::shared_ptr<recsys_model_base> self;
+  self.reset(this);
 
-  ret["model"] = to_variant(this);
+  ret["model"] = to_variant(self);
   return ret;
+*/
 }
 
 

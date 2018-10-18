@@ -80,10 +80,7 @@ class AdditionalDataTest(unittest.TestCase):
         data = self.data
         user_data = self.user_data
         item_data = self.item_data
-        for mod in [tc.factorization_recommender,
-                    tc.ranking_factorization_recommender,
-                    tc.popularity_recommender,
-                    tc.item_similarity_recommender]:
+        for mod in [tc.popularity_recommender]:
 
             m = mod.create(data,
                            user_id='user_id',
@@ -161,10 +158,7 @@ class AdditionalDataTest(unittest.TestCase):
         user_data = self.user_data
         item_data = self.item_data
 
-        for mod in [tc.recommender.item_similarity_recommender,
-                    tc.recommender.factorization_recommender,
-                    tc.recommender.ranking_factorization_recommender,
-                    tc.recommender.popularity_recommender]:
+        for mod in [tc.recommender.popularity_recommender]:
 
             m = mod.create(data, 'user_id', 'item_id', 'rating')
 
@@ -175,10 +169,7 @@ class AdditionalDataTest(unittest.TestCase):
     def test_kwargs(self):
         data = self.data
 
-        for mod in [tc.recommender.item_similarity_recommender,
-                    tc.recommender.factorization_recommender,
-                    tc.recommender.ranking_factorization_recommender,
-                    tc.recommender.popularity_recommender]:
+        for mod in [tc.recommender.popularity_recommender]:
             self.assertRaises(TypeError, lambda: \
                               mod.create(data, 'user_id', 'item_id', 'rating', i_want_a_pony = True))
 
@@ -212,10 +203,7 @@ class AdditionalDataTest(unittest.TestCase):
         item_side["item_hair"] = ["big", "bigger"]
 
 
-        for mod in [tc.recommender.item_similarity_recommender,
-                    tc.recommender.factorization_recommender,
-                    tc.recommender.ranking_factorization_recommender,
-                    tc.recommender.popularity_recommender]:
+        for mod in [tc.recommender.popularity_recommender]:
 
             m = mod.create(X, 'user_id', 'item_id', 'rating',
                            user_data = user_side, item_data = item_side)
