@@ -5,18 +5,18 @@
 #include <string>
 #include <unordered_map>
 
-#include "mps_float_array.hpp"
+#include <unity/toolkits/neural_net/float_array.hpp>
 
 #import "mps_cnnmodule.h"
 #import "mps_utils.h"
 
-using turi::mps::MPSCNNModule;
-using turi::mps::external_float_array;
-using turi::mps::float_array;
-using turi::mps::float_array_map;
-using turi::mps::float_array_map_iterator;
-using turi::mps::make_array_map;
-using turi::mps::shared_float_array;
+using turi::neural_net::MPSCNNModule;
+using turi::neural_net::external_float_array;
+using turi::neural_net::float_array;
+using turi::neural_net::float_array_map;
+using turi::neural_net::float_array_map_iterator;
+using turi::neural_net::make_array_map;
+using turi::neural_net::shared_float_array;
 
 int TCMPSCreateCNNModule(MPSHandle *out) {
   API_BEGIN();

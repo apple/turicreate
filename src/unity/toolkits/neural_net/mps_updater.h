@@ -7,7 +7,7 @@
 #import <Foundation/Foundation.h>
 
 namespace turi {
-namespace mps {
+namespace neural_net {
 
 struct Layer;
 
@@ -61,7 +61,7 @@ struct AdamUpdater : public SGDUpdater {
 };
 MPSUpdater *createUpdater(int updater_id);
 
-}  // namespace mps
+}  // namespace neural_net
 }  // namespace turi
 
 #endif

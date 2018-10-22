@@ -3,7 +3,7 @@
 
 
 namespace turi {
-namespace mps {
+namespace neural_net {
 
 // --------------------------------------------------------------------------------------------
 //                                 Layer Implementations
@@ -333,5 +333,5 @@ MPSCNNLossLabelsBatch *YoloLossGraphLayer::CreateLossState(
   return loss_state;
 }
 
-}  // namespace mps
+}  // namespace neural_net
 }  // namespace turi

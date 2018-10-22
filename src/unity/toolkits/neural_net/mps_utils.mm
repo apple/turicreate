@@ -12,7 +12,7 @@
 #include <memory>
 
 namespace turi {
-namespace mps {
+namespace neural_net {
 
 shared_float_array copy_image_batch_float16(std::vector<size_t> shape,
                                             MPSImageBatch *batch) {
@@ -138,5 +138,5 @@ float sumImage(MPSImage * _Nonnull image) {
   }
 }
 
-}  // namespace mps
+}  // namespace neural_net
 }  // namespace turi

@@ -12,7 +12,7 @@
 @end
 
 namespace turi {
-namespace mps {
+namespace neural_net {
 
 std::unique_ptr<MPSGraphNetwork> createNetworkGraph(
     GraphNetworkType network_id, const std::vector<int> &params,
@@ -140,7 +140,7 @@ float_array_map MPSGraphNetwork::Export() const {
   return table;
 }
 
-}  // namespace mps
+}  // namespace neural_net
 }  // namespace turi
 
 @implementation TCMPSGraphNodeHandle {

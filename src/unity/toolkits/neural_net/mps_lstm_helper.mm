@@ -11,7 +11,7 @@
 #define USE_DIAGONAL_PEEPHOLES  1
 
 namespace turi {
-namespace mps {
+namespace neural_net {
 
 const std::string lstm_weight_names_mxnet_format[] = {
     "i2h_i_weight",
@@ -179,5 +179,5 @@ void printMatrix(MPSMatrix * matrix, const char* name, NSUInteger byteOffset)
     }
 }
 
-}  // namespace mps
+}  // namespace neural_net
 }  // namespace turi

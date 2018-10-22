@@ -79,7 +79,7 @@ imageForCommandBuffer:(__nonnull id<MTLCommandBuffer>)cmdBuf
 @end // MPSCNNWeight
 
 namespace turi {
-namespace mps {
+namespace neural_net {
 
 struct MPSUpdater;
 
@@ -550,7 +550,7 @@ private:
   
 };
 
-}  // namespace mps
+}  // namespace neural_net
 }  // namespace turi
 
 #endif

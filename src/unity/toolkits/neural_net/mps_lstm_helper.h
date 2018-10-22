@@ -15,7 +15,7 @@
 
 
 namespace turi {
-namespace mps {
+namespace neural_net {
 
 extern const std::string lstm_weight_names_mxnet_format[12];
 
@@ -27,7 +27,7 @@ MPSVector * MPSMatrixToVector (MPSMatrix * matrix);
 API_AVAILABLE(macos(10.13))
 void printMatrix(MPSMatrix * matrix, const char* name, NSUInteger byteOffset);
 
-}  // namespace mps
+}  // namespace neural_net
 }  // namespace turi
 
 #endif /* mps_lstm_helper_h */
