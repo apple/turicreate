@@ -44,7 +44,13 @@ endif()
 make_library(unity_neural_net
   SOURCES
     cnn_module.cpp
+    coreml_import.cpp
     float_array.cpp
   REQUIRES
+    logger
+    unity_coreml_model_export
     ${additional_unity_neural_net_requirements}
+  COMPILE_FLAGS_EXTRA_GCC
+    -Wno-unknown-pragmas  # NOTE: used for auto-generated protobuf source files
+    -Wno-unused-function  # NOTE: used for auto-generated protobuf source files
 )

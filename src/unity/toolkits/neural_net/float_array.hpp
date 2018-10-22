@@ -87,6 +87,23 @@ private:
   std::vector<float> data_;
 };
 
+// A float_array implementation that just wraps a single scalar value.
+class float_scalar: public float_array {
+public:
+  float_scalar() = default;
+
+  float_scalar(float value): value_(value) {}
+
+  const float* data() const override { return &value_; }
+  size_t size() const override { return 1; }
+
+  const size_t* shape() const override { return nullptr; }
+  size_t dim() const override { return 0; }
+
+private:
+  float value_ = 0.f;
+};
+
 // A float_array implementation that maintains a view into another float_array
 // (that is possibly shared with others shared_float_array instances). Instances
 // of this class can be efficiently copied (in constant time and incurring no
@@ -102,6 +119,9 @@ public:
                                  std::vector<size_t> shape) {
     return shared_float_array(
         std::make_shared<float_buffer>(std::move(data), std::move(shape)));
+  }
+  static shared_float_array wrap(float value) {
+    return shared_float_array(std::make_shared<float_scalar>(value));
   }
 
   // Simply wraps an existing float_array shared_ptr.
