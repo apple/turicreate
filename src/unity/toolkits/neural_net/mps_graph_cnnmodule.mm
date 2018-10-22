@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_END
 @end
 
 namespace turi {
-namespace mps {
+namespace neural_net {
 
 mps_graph_cnn_module::mps_graph_cnn_module() {
   @autoreleasepool {
@@ -333,5 +333,5 @@ mps_graph_cnn_module::copy_labels(const float_array& labels) const {
   }
 }
 
-}  // namespace mps
+}  // namespace neural_net
 }  // namespace turi

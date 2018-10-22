@@ -6,7 +6,7 @@
 #import "mps_device_manager.h"
 
 namespace turi {
-namespace mps {
+namespace neural_net {
 
 namespace {
 
@@ -544,5 +544,5 @@ MPSImageBatch *MPSCNNModule::ExtractLossImages(
   return lossImages;
 }
 
-}  // namespace mps
+}  // namespace neural_net
 }  // namespace turi

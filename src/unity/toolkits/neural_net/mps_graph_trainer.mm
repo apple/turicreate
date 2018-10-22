@@ -2,17 +2,17 @@
 
 #include <tuple>
 
-#include "mps_float_array.hpp"
+#include <unity/toolkits/neural_net/float_array.hpp>
 
 #import "mps_device_manager.h"
 #import "mps_graph_cnnmodule.h"
 
-using turi::mps::deferred_float_array;
-using turi::mps::float_array;
-using turi::mps::float_array_map;
-using turi::mps::float_array_map_iterator;
-using turi::mps::make_array_map;
-using turi::mps::mps_graph_cnn_module;
+using turi::neural_net::deferred_float_array;
+using turi::neural_net::float_array;
+using turi::neural_net::float_array_map;
+using turi::neural_net::float_array_map_iterator;
+using turi::neural_net::make_array_map;
+using turi::neural_net::mps_graph_cnn_module;
 
 int TCMPSHasHighPowerMetalDevice(bool *has_device) {
   API_BEGIN();

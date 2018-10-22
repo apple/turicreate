@@ -146,7 +146,7 @@ imageForCommandBuffer:(__nonnull id<MTLCommandBuffer>)cmdBuf
 @end /* MPSCNNWeight */
 
 namespace turi {
-namespace mps {
+namespace neural_net {
 
 // --------------------------------------------------------------------------------------------
 //                                 Layer Implementations
@@ -1130,5 +1130,5 @@ void LstmLayer::InitWeightCopyMatrices() {
     }
 }
 
-}  // namespace mps
+}  // namespace neural_net
 }  // namespace turi

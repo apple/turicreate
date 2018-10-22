@@ -16,7 +16,7 @@
 #import "mps_utils.h"
 
 namespace turi {
-namespace mps {
+namespace neural_net {
 
 struct GraphLayer;
 
@@ -178,7 +178,7 @@ struct ODNetworkGraph : public MPSGraphNetwork {
   }
 };
 
-}  // namespace mps
+}  // namespace neural_net
 }  // namespace turi
 
 #endif

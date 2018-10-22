@@ -10,7 +10,7 @@
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 
-#include "mps_float_array.hpp"
+#include <unity/toolkits/neural_net/float_array.hpp>
 
 #import "mps_layers.h"
 #import "mps_weight.h"
@@ -19,7 +19,7 @@
 #pragma clang diagnostic ignored "-Wunguarded-availability-new"
 
 namespace turi {
-namespace mps {
+namespace neural_net {
 
 struct GraphLayer {
   virtual void Init(id<MTLDevice> _Nonnull device,
@@ -220,7 +220,7 @@ private:
   MPSCNNYOLOLossNode *yoloNode_;
 };
 
-}  // namespace mps
+}  // namespace neural_net
 }  // namespace turi
 
 #endif
