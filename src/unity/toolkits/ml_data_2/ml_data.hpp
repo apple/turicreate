@@ -9,12 +9,12 @@
 #include <vector>
 #include <memory>
 #include <sframe/sframe.hpp>
+#include <unity/lib/extensions/option_manager.hpp>
 #include <unity/toolkits/ml_data_2/metadata.hpp>
 #include <unity/toolkits/ml_data_2/ml_data_entry.hpp>
 #include <unity/toolkits/ml_data_2/ml_data_column_modes.hpp>
 #include <unity/toolkits/ml_data_2/data_storage/ml_data_row_format.hpp>
 #include <unity/toolkits/ml_data_2/side_features.hpp>
-#include <unity/toolkits/options/option_manager.hpp>
 
 #include <numerics/armadillo.hpp>
 #include <numerics/armadillo.hpp>

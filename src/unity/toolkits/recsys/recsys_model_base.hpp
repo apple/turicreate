@@ -10,9 +10,9 @@
 #include <string>
 #include <set>
 
+#include <unity/lib/extensions/option_manager.hpp>
 #include <unity/lib/toolkit_function_specification.hpp>
 #include <unity/lib/unity_base_types.hpp>
-#include <unity/toolkits/options/option_manager.hpp>
 #include <unity/toolkits/ml_data_2/ml_data.hpp>
 #include <unity/toolkits/ml_data_2/ml_data_iterators.hpp>
 #include <util/fast_top_k.hpp>

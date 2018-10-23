@@ -17,7 +17,6 @@ make_library(unity_recsys
     unity_ml_model
     unity_ml_data_2
     unity_util
-    unity_options
     unity_nearest_neighbors
     # unity_evaluation
     unity_coreml_model_export
