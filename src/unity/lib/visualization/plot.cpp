@@ -19,7 +19,7 @@ namespace turi{
 
       ::turi::visualization::run_thread([self, path_to_client]() {
         process_wrapper ew(path_to_client);
-        ew << self->m_vega_spec;
+        ew << "{\"vega_spec\": " << self->m_vega_spec << "}\n";
 
         while(ew.good()) {
           vega_data vd;
@@ -29,7 +29,7 @@ namespace turi{
           double num_rows_processed =  static_cast<double>(self->m_transformer->get_rows_processed());
           double percent_complete = num_rows_processed/self->m_size_array;
 
-          ew << vd.get_data_spec(percent_complete);
+          ew << "{\"data_spec\": " << vd.get_data_spec(percent_complete) << "}\n";
 
           if (self->m_transformer->eof()) {
              break;
