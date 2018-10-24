@@ -8,10 +8,10 @@
 
 #include <vector>
 #include <string>
+#include <unity/lib/extensions/option_manager.hpp>
 #include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
 #include <unity/toolkits/recsys/recsys_model_base.hpp>
 #include <generics/symmetric_2d_array.hpp>
-#include <unity/toolkits/options/option_manager.hpp> 
 
 #include <numerics/armadillo.hpp>
 #include <limits>

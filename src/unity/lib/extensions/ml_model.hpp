@@ -13,7 +13,8 @@
 #include <unity/lib/toolkit_class_macros.hpp>
 
 #include <unity/lib/extensions/model_base.hpp>
-#include <unity/toolkits/options/option_manager.hpp>
+#include <unity/lib/extensions/option_manager.hpp>
+
 #include <export.hpp>
 
 namespace turi {
