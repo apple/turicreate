@@ -1787,16 +1787,11 @@ gl_sframe recsys_model_base::api_predict(gl_sframe data_to_predict, gl_sframe ne
 }
 
 /*
-gl_sframe api_get_value(flexible_type field) const {
-
+variant_map_type api_get_value(flexible_type field) {
   log_func_entry();
-
-  // Make sure this model exists.
-  // --------------------------------------------------------------------------
-  auto sa = this->get_value_from_state(field); /// will this work?
-  sframe sf;
-  sf["value"] = sa;
-  return gl_sframe(sf);
+  variant_map_type ret;
+  ret["value"] = this->get_value_from_state(field);
+  return ret;
 }
 */
 
@@ -1820,6 +1815,16 @@ variant_map_type recsys_model_base::api_set_current_options(std::map<std::string
   return variant_map_type();
 }
 
+
+  std::map<std::string, flexible_type> options = this->get_train_stats();
+
+  variant_map_type ret;
+  for (auto& opt : options) {
+    ret[opt.first] = opt.second;
+  }
+  return ret;
+}
+
 variant_map_type recsys_model_base::api_train_test_split(gl_sframe _dataset, const std::string& user_column, const std::string& item_column,
   flexible_type max_num_users, double item_test_proportion, size_t random_seed) {
 
@@ -1839,7 +1844,9 @@ variant_map_type recsys_model_base::api_train_test_split(gl_sframe _dataset, con
 
 }
 
-void recsys_model_base::api_train(gl_sframe _dataset, gl_sframe _user_data, gl_sframe _item_data, std::map<std::string, flexible_type>& opts) {
+void recsys_model_base::api_train(gl_sframe _dataset, gl_sframe _user_data, gl_sframe _item_data,
+                                  const std::map<std::string, flexible_type>& opts, const variant_map_type& extra_data) {
+  //void recsys_model_base::api_train(gl_sframe _dataset, gl_sframe _user_data, gl_sframe _item_data, flexible_type>& opts) {
 
   //variant_map_type ret;
 
@@ -1847,10 +1854,10 @@ void recsys_model_base::api_train(gl_sframe _dataset, gl_sframe _user_data, gl_s
   sframe user_data = _user_data.materialize_to_sframe();
   sframe item_data = _item_data.materialize_to_sframe();
 
-  opts.erase("model_name");
+  //opts.erase("model_name");
 
   this->set_options(opts);
-  this->setup_and_train(dataset, user_data, item_data);
+  this->setup_and_train(dataset, user_data, item_data, extra_data);
 /*
   std::shared_ptr<recsys_model_base> self;
   self.reset(this);
@@ -1897,6 +1904,14 @@ gl_sframe recsys_model_base::api_precision_recall_stats(gl_sframe indexed_valida
 
   return(gl_sframe(precision_recall_stats(indexed_validation_data.materialize_to_sframe(), recommend_output.materialize_to_sframe(), cutoffs)));
 
+}
+
+EXPORT variant_map_type recsys_model_base::api_get_data_schema() {
+
+  variant_map_type ret;
+  ret["schema"] = this->get_data_schema();
+
+  return ret;
 }
 
 }}

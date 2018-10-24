@@ -88,13 +88,13 @@ def create(observation_data,
         user_data = _turicreate.SFrame()
     if item_data is None:
         item_data = _turicreate.SFrame()
-
-    print(type(observation_data))
-    print(type(user_id))
-    print(type(item_id))
-    print(type(target))
-    print(type(user_data))
-    print(type(item_data))
+    nearest_items = _turicreate.SFrame()
+    #print(type(observation_data))
+    #print(type(user_id))
+    #print(type(item_id))
+    #print(type(target))
+    #print(type(user_data))
+    #print(type(item_data))
 
     opts = {#'dataset': observation_data,
             'user_id': user_id,
@@ -106,8 +106,9 @@ def create(observation_data,
             'random_seed': 1}
     #opts={}
 
+    extra_data = {"neareast_items" : _turicreate.SFrame()}
     with QuietProgress(verbose):
-        model_proxy.train(observation_data, user_data, item_data, opts)
+        model_proxy.train(observation_data, user_data, item_data, opts, extra_data)
         #response = _turicreate.extensions._recsys.train(opts)
 
 

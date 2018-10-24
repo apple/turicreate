@@ -499,7 +499,9 @@ def random_split_by_user(dataset,
             'item_test_proportion': item_test_proportion,
             'random_seed': random_seed}
 
-    response = _turicreate.extensions._recsys.train_test_split(opts)
+    #response = _turicreate.extensions._recsys.train_test_split(opts)
+    response = this.train_test_split(dataset, user_id, item_id, max_num_users, item_test_proportion, random_seed)
+
     train = response['train']
     test = response['test']
     return train, test
@@ -577,9 +579,10 @@ class _Recommender(_Model):
         >>> U2 = d['item_id']
         """
         opts = {'model': self.__proxy__, 'field': field}
-        response = _turicreate.extensions._recsys.get_value(opts)
+        ###response = _turicreate.extensions._recsys.get_value(opts)
+        response = self.__proxy__.get_value(field)
 
-        return response["value"]
+        return response#["value"]
 
     def get_num_items_per_user(self):
         """
@@ -795,8 +798,9 @@ class _Recommender(_Model):
         return _toolkit_repr_print(self, sections, section_titles, width=32)
 
     def _get_current_options(self):
-        opts = {'model': self.__proxy__}
-        response = _turicreate.extensions._recsys.get_current_options(opts)
+        #opts = {'model': self.__proxy__}
+        #response = _turicreate.extensions._recsys.get_current_options(opts)
+        response = self.__proxy__.get_current_options()
         return response
 
     def _set_current_options(self, options):
@@ -849,7 +853,8 @@ class _Recommender(_Model):
         if not hasattr(self, "_data_schema"):
 
             opts = {'model': self.__proxy__}
-            response = _turicreate.extensions._recsys.get_data_schema(opts)
+            ###response = _turicreate.extensions._recsys.get_data_schema(opts)
+            response = self.__proxy__.get_data_schema()
 
             self._data_schema = {k : _turicreate.cython.cy_flexible_type.pytype_from_type_name(v)
                                  for k, v in response["schema"].items()}
@@ -929,9 +934,10 @@ class _Recommender(_Model):
                 }
 
         # Call the C++ function for recommender_model
-        response = _turicreate.extensions._recsys.predict(opts)
-        result = response['data']
-        return result['prediction']
+        ####response = _turicreate.extensions._recsys.predict(opts)
+        response = self.__proxy__.predict(dataset, new_user_data, new_item_data)
+        ####result = response['data']
+        return response['prediction']
 
     def get_similar_items(self, items=None, k=10, verbose=False):
         """
@@ -1303,9 +1309,10 @@ class _Recommender(_Model):
                }
 
         with QuietProgress(verbose):
-            response = _turicreate.extensions._recsys.recommend(opt)
+            recs = self.__proxy__.recommend(users, exclude, items, new_observation_data, new_user_data, new_item_data, exclude_known, k, diversity, random_seed)
+            ##response = _turicreate.extensions._recsys.recommend(opt)
 
-        recs = response['data']
+        ##recs = response['data']
 
         if cast_user_to_string_type:
             recs[user_id] = recs[user_id].astype(original_user_type)
@@ -1490,8 +1497,9 @@ class _Recommender(_Model):
 
         """
         _logging.warning("This method will be deprecated soon. Please use m.summary().")
-        opts = {'model': self.__proxy__}
-        response = _turicreate.extensions._recsys.get_train_stats(opts)
+        #opts = {'model': self.__proxy__}
+        #response = _turicreate.extensions._recsys.get_train_stats(opts)
+        response = self.__proxy__.get_train_stats()
         return response
 
     def evaluate_precision_recall(self, dataset, cutoffs=list(range(1,11,1))+list(range(11,50,5)),
@@ -1773,12 +1781,13 @@ class _Recommender(_Model):
         """
 
         opts = {'model': self.__proxy__}
-        response = _turicreate.extensions._recsys.get_popularity_baseline(opts)
 
+        #response = _turicreate.extensions._recsys.get_popularity_baseline(opts)
+        response = self.__proxy__.get_popularity_baseline()
 
         from .popularity_recommender import PopularityRecommender
 
-        return PopularityRecommender(response["popularity_model"])
+        return PopularityRecommender(response)#["popularity_model"])
 
     def _get_item_intersection_info(self, item_pairs):
         """
@@ -1818,8 +1827,10 @@ class _Recommender(_Model):
         opts = {'model': self.__proxy__,
                 'item_pairs' : item_pairs}
 
-        response = _turicreate.extensions._recsys.get_item_intersection_info(opts)
-        return response['item_intersections']
+        #response = _turicreate.extensions._recsys.get_item_intersection_info(opts)
+        response = self.__proxy__.get_item_intersection_info(item_pairs)
+        print("xxx response: {}".format(response))
+        return response#['item_intersections']
 
     def export_coreml(self, filename):
         """
@@ -1840,4 +1851,5 @@ class _Recommender(_Model):
               'https://apple.github.io/turicreate/docs/userguide/recommender/coreml-deployment.html')
 
         import turicreate as tc
-        tc.extensions._recsys.export_to_coreml(self.__proxy__, filename)
+        ##tc.extensions._recsys.export_to_coreml(self.__proxy__, filename)
+        self.__proxy__.export_to_coreml(self.__proxy__, filename) ####

@@ -104,6 +104,48 @@ class recsys_factorization_model : public recsys_factorization_model_base {
   REGISTER_CLASS_MEMBER_FUNCTION(recsys_factorization_model::list_fields)
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
       "get_value", recsys_factorization_model::get_value_from_state, "field");
+
+
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+      "get_value", recsys_factorization_model::get_value_from_state, "field"); //"get_value"
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+      "get_similar_items", recsys_factorization_model::api_get_similar_items, "items", "k", "verbose", "get_all_items");
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+      "get_similar_users", recsys_factorization_model::api_get_similar_users, "users", "k", "get_all_users");
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+      "predict", recsys_factorization_model::api_predict, "data_to_predict", "new_user_data", "new_item_data");
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+      "get_current_options", recsys_factorization_model::api_get_current_options);
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+    "set_current_options", recsys_factorization_model::api_set_current_options, "options");
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+    "get_train_stats", recsys_factorization_model::api_get_train_stats);
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+    "train_test_split", recsys_factorization_model::api_train_test_split, "dataset", "user_column", "item_column",
+    "max_num_users", "item_test_proportion", "random_seed");
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+    "train", recsys_factorization_model::api_train, "dataset", "user_data", "item_data", "nearest_items", "opts");
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+    "recommend", recsys_factorization_model::api_recommend, "query", "exclude", "restrictions", "new_data", "new_user_data",
+    "new_item_data", "exclude_training_interactions", "top_k", "diversity", "random_seed");
+  //REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+  //  "get_popularity_baseline", recsys_factorization_model::get_popularity_baseline);
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+    "get_item_intersection_info", recsys_factorization_model::api_get_item_intersection_info, "item_pairs");
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+    "export_to_coreml", recsys_factorization_model::export_to_coreml, "model", "filename"); ///
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+    "precision_recall_stats", recsys_factorization_model::api_precision_recall_stats, "indexed_validation_data", "recommend_output", "cutoffs");
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+    "get_data_schema", recsys_factorization_model::api_get_data_schema);
+
+
+
+
+
+
   REGISTER_CLASS_MEMBER_FUNCTION(
     recsys_factorization_model::recommend_extension_wrapper, 
     "reference_data", "new_observation_data", "top_k")
@@ -126,6 +168,44 @@ class recsys_ranking_factorization_model : public recsys_factorization_model_bas
   REGISTER_CLASS_MEMBER_FUNCTION(recsys_ranking_factorization_model::list_fields)
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
       "get_value", recsys_ranking_factorization_model::get_value_from_state, "field");
+
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+      "get_value", recsys_ranking_factorization_model::get_value_from_state, "field"); //"get_value"
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+      "get_similar_items", recsys_ranking_factorization_model::api_get_similar_items, "items", "k", "verbose", "get_all_items");
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+      "get_similar_users", recsys_ranking_factorization_model::api_get_similar_users, "users", "k", "get_all_users");
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+      "predict", recsys_ranking_factorization_model::api_predict, "data_to_predict", "new_user_data", "new_item_data");
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+      "get_current_options", recsys_ranking_factorization_model::api_get_current_options);
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+    "set_current_options", recsys_ranking_factorization_model::api_set_current_options, "options");
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+    "get_train_stats", recsys_ranking_factorization_model::api_get_train_stats);
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+    "train_test_split", recsys_ranking_factorization_model::api_train_test_split, "dataset", "user_column", "item_column",
+    "max_num_users", "item_test_proportion", "random_seed");
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+    "train", recsys_ranking_factorization_model::api_train, "dataset", "user_data", "item_data", "nearest_items", "opts");
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+    "recommend", recsys_ranking_factorization_model::api_recommend, "query", "exclude", "restrictions", "new_data", "new_user_data",
+    "new_item_data", "exclude_training_interactions", "top_k", "diversity", "random_seed");
+  //REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+  //  "get_popularity_baseline", recsys_ranking_factorization_model::get_popularity_baseline);
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+    "get_item_intersection_info", recsys_ranking_factorization_model::api_get_item_intersection_info, "item_pairs");
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+    "export_to_coreml", recsys_ranking_factorization_model::export_to_coreml, "model", "filename"); ///
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+    "precision_recall_stats", recsys_ranking_factorization_model::api_precision_recall_stats, "indexed_validation_data", "recommend_output", "cutoffs");
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+    "get_data_schema", recsys_ranking_factorization_model::api_get_data_schema);
+
+
+
   REGISTER_CLASS_MEMBER_FUNCTION(
     recsys_ranking_factorization_model::recommend_extension_wrapper, 
     "reference_data", "new_observation_data", "top_k")

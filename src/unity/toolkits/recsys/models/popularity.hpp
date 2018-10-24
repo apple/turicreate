@@ -88,36 +88,42 @@ class EXPORT recsys_popularity : public recsys_model_base {
   BEGIN_CLASS_MEMBER_REGISTRATION("popularity")
   REGISTER_CLASS_MEMBER_FUNCTION(recsys_popularity::list_fields)
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
-      "get_value", recsys_popularity::get_value_from_state, "field");
+      "get_value", recsys_popularity::get_value_from_state, "field"); //"get_value"
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
-      "get_similar_items2", recsys_popularity::api_get_similar_items, "items", "k", "verbose", "get_all_items");
+      "get_similar_items", recsys_popularity::api_get_similar_items, "items", "k", "verbose", "get_all_items");
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
-      "get_similar_users2", recsys_popularity::api_get_similar_users, "users", "k", "get_all_users");
+      "get_similar_users", recsys_popularity::api_get_similar_users, "users", "k", "get_all_users");
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
-      "predict2", recsys_popularity::api_predict, "data_to_predict", "new_user_data", "new_item_data");
+      "predict", recsys_popularity::api_predict, "data_to_predict", "new_user_data", "new_item_data");
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
-      "get_current_options2", recsys_popularity::api_get_current_options);
+      "get_current_options", recsys_popularity::api_get_current_options);
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
-    "set_current_options2", recsys_popularity::api_set_current_options, "options");
+    "set_current_options", recsys_popularity::api_set_current_options, "options");
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
     "train_test_split2", recsys_popularity::api_train_test_split, "dataset", "user_column", "item_column",
+    "get_train_stats", recsys_popularity::api_get_train_stats);
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+    "train_test_split", recsys_popularity::api_train_test_split, "dataset", "user_column", "item_column",
     "max_num_users", "item_test_proportion", "random_seed");
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
-    "train", recsys_popularity::api_train, "dataset", "user_data", "item_data", "opts");
+    "train", recsys_popularity::api_train, "dataset", "user_data", "item_data", "nearest_items", "opts");
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
-    "recommend2", recsys_popularity::api_recommend, "query", "exclude", "restrictions", "new_data", "new_user_data",
+    "recommend", recsys_popularity::api_recommend, "query", "exclude", "restrictions", "new_data", "new_user_data",
     "new_item_data", "exclude_training_interactions", "top_k", "diversity", "random_seed");
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
-    "get_popularity_baseline2", recsys_popularity::get_popularity_baseline);
+    "get_popularity_baseline", recsys_popularity::get_popularity_baseline);
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
-    "get_item_intersection_info2", recsys_model_base::api_get_item_intersection_info, "item_pairs");
+    "get_item_intersection_info", recsys_popularity::api_get_item_intersection_info, "item_pairs");
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
-    "export_to_coreml2", recsys_model_base::export_to_coreml, "model", "filename");
+    "export_to_coreml", recsys_popularity::export_to_coreml, "model", "filename"); ///
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
-    "precision_recall_stats2", recsys_model_base::api_precision_recall_stats, "indexed_validation_data", "recommend_output", "cutoffs");
+    "precision_recall_stats", recsys_popularity::api_precision_recall_stats, "indexed_validation_data", "recommend_output", "cutoffs");
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+    "get_data_schema", recsys_popularity::api_get_data_schema);
 
   //REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
-  //    "get_value2", recsys_popularity::api_get_value, "field");
+  //    "get_value", recsys_popularity::api_get_value, "field");
   REGISTER_CLASS_MEMBER_FUNCTION(
     recsys_popularity::recommend_extension_wrapper, "reference_data", "new_observation_data", "top_k")
 

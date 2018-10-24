@@ -80,7 +80,10 @@ class AdditionalDataTest(unittest.TestCase):
         data = self.data
         user_data = self.user_data
         item_data = self.item_data
-        for mod in [tc.popularity_recommender]:
+        for mod in [tc.factorization_recommender,
+                    tc.ranking_factorization_recommender,
+                    tc.popularity_recommender,
+                    tc.item_similarity_recommender]:
 
             m = mod.create(data,
                            user_id='user_id',

@@ -142,9 +142,9 @@ variant_map_type predict(variant_map_type& params) {
   return ret;
 }
 */
-/*
-////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////
+/*
 variant_map_type recommend(variant_map_type& params) {
 
   turi::timer timer;
@@ -338,7 +338,7 @@ variant_map_type set_current_options(variant_map_type& params) {
 
   return variant_map_type();
 }
-
+*/
 variant_map_type summary(variant_map_type& params) {
 
   std::shared_ptr<recsys_model_base> model = safe_varmap_get<std::shared_ptr<recsys_model_base>>(params, "model");
@@ -353,7 +353,7 @@ variant_map_type summary(variant_map_type& params) {
 
   return ret;
 }
-*/
+
 /*
 variant_map_type train_test_split(variant_map_type& params) {
 
@@ -567,8 +567,9 @@ REGISTER_FUNCTION(precision_recall, "params")
 REGISTER_FUNCTION(get_train_stats, "params")
 REGISTER_FUNCTION(get_current_options, "params")
 REGISTER_FUNCTION(set_current_options, "params")
-REGISTER_FUNCTION(summary, "params")
 */
+REGISTER_FUNCTION(summary, "params")
+
 //REGISTER_FUNCTION(train_test_split, "params")
 /*
 REGISTER_FUNCTION(get_similar_items, "params")

@@ -281,6 +281,9 @@ class UserDefinedSimilarityTest(RecommenderTestBase):
         y = self.nearest_items.sort(['item_id', 'score'])
         z = m.get_similar_items().sort(['item_id', 'score'])
 
+        #import pdb
+        #pdb.set_trace()
+
         assert all(y["item_id"] == z["item_id"])
         assert all(y["similar"] == z["similar"])
 
@@ -2426,6 +2429,8 @@ class TestContentRecommender(RecommenderTestBase):
         # equally.  In this case, element 3 will be closer to 0 than 1 or 2.
         m_1 = tc.recommender.item_content_recommender.create(item_data, "my_item_id")
         out_1 = m_1.recommend_from_interactions([0], k = 1)
+        #import pdb
+        #pdb.set_trace()
         self.assertEqual(out_1[0]["my_item_id"], 3)
 
         # If the weights are set so that data_1 is 1 and data_2 is 0,

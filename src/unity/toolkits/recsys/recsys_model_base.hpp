@@ -11,6 +11,8 @@
 #include <set>
 
 #include <unity/lib/extensions/option_manager.hpp>
+#include <unity/lib/gl_sframe.hpp>
+#include <unity/lib/gl_sarray.hpp>
 #include <unity/lib/toolkit_function_specification.hpp>
 #include <unity/lib/unity_base_types.hpp>
 #include <unity/toolkits/ml_data_2/ml_data.hpp>
@@ -260,7 +262,10 @@ public:
   gl_sframe api_predict(gl_sframe data_to_predict, gl_sframe new_user_data, gl_sframe new_item_data) const;
   variant_map_type api_set_current_options(std::map<std::string, flexible_type> options);
 
-  void api_train(gl_sframe _dataset, gl_sframe _user_data, gl_sframe _item_data, std::map<std::string, flexible_type>& opts);
+  // void api_train(gl_sframe _dataset, gl_sframe _user_data, gl_sframe _item_data, gl_sframe _nearest_items, std::map<std::string, flexible_type>& opts);
+  // void api_train(gl_sframe _dataset, gl_sframe _user_data, gl_sframe _item_data, flexible_type>& opts);
+  void api_train(gl_sframe _dataset, gl_sframe _user_data, gl_sframe _item_data,
+                                  const std::map<std::string, flexible_type>& opts, const variant_map_type& extra_data);
 
   variant_map_type api_get_current_options();
 
@@ -271,7 +276,11 @@ public:
 
   gl_sframe api_precision_recall_stats(gl_sframe indexed_validation_data, gl_sframe recommend_output, const std::vector<size_t>& cutoffs);
 
-  //gl_sframe api_get_value(flexible_type field);
+  variant_map_type api_get_train_stats();
+
+  EXPORT variant_map_type api_get_data_schema();
+  //variant_map_type api_get_value(flexible_type field);
+
 
   /** Creates and returns a popularity baseline
    *

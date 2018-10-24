@@ -196,15 +196,16 @@ def create(observation_data,
         user_data = _turicreate.SFrame()
     if item_data is None:
         item_data = _turicreate.SFrame()
+    nearest_items = _turicreate.SFrame()
 
-    opts = {'dataset'                 : observation_data,
+    opts = {#'dataset'                 : observation_data,
             'user_id'                 : user_id,
             'item_id'                 : item_id,
             'target'                  : target,
-            'user_data'               : user_data,
-            'item_data'               : item_data,
-            'nearest_items'           : _turicreate.SFrame(),
-            'model'                   : model_proxy,
+            #'user_data'               : user_data,
+            #'item_data'               : item_data,
+            #'nearest_items'           : _turicreate.SFrame(),
+            ##'model'                   : model_proxy,
             'random_seed'             : random_seed,
             'num_factors'             : num_factors,
             'regularization'          : regularization,
@@ -230,12 +231,19 @@ def create(observation_data,
         if bad_arguments:
             raise TypeError("Bad Keyword Arguments: " + ', '.join(bad_arguments))
 
+        ##extra_data = {"neareast_items" : _turicreate.SFrame()}
         opts.update(kwargs)
 
-    with QuietProgress(verbose):
-        response = _turicreate.extensions._recsys.train(opts)
+    extra_data = {"neareast_items" : _turicreate.SFrame()}
 
-    return FactorizationRecommender(response['model'])
+    #import pdb
+    #pdb.set_trace()
+
+    with QuietProgress(verbose):
+        model_proxy.train(observation_data, user_data, item_data, opts, extra_data)
+        #response = _turicreate.extensions._recsys.train(opts)
+
+    return FactorizationRecommender(model_proxy)#response['model'])
 
 _get_default_options = _get_default_options_wrapper(
                           'factorization_recommender',

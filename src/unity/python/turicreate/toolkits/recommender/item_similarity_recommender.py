@@ -229,18 +229,21 @@ def create(observation_data,
         print("WARNING: training_method = " + str(kwargs["training_method"]) + " deprecated; see documentation.")
         kwargs["training_method"] = "auto"
 
-    opts = {'dataset': observation_data,
+    opts = {#'dataset': observation_data,
             'user_id': user_id,
             'item_id': item_id,
             'target': target,
-            'user_data': user_data,
-            'item_data': item_data,
-            'nearest_items': nearest_items,
-            'model': model_proxy,
+            #'user_data': user_data,
+            #'item_data': item_data,
+            #'nearest_items': nearest_items,
+            #'model': model_proxy,
             'similarity_type': similarity_type,
             'threshold': threshold,
             'target_memory_usage' : float(target_memory_usage),
             'max_item_neighborhood_size': only_top_k}
+
+
+    extra_data = {"neareast_items" : nearest_items}
 
     if kwargs:
         try:
@@ -254,10 +257,11 @@ def create(observation_data,
 
         opts.update(kwargs)
 
+    extra_data = {"neareast_items" : nearest_items}
     opts.update(kwargs)
 
     with QuietProgress(verbose):
-        model_proxy.train(observation_data, user_data, item_data, opts)
+        model_proxy.train(observation_data, user_data, item_data, opts, extra_data)
         #response = _turicreate.extensions._recsys.train(opts)
 
 
