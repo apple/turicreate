@@ -150,6 +150,19 @@ def _prepare_network_parameters(arg_dict):
         arr[i] = _ctypes.c_void_p(items[i][1].ctypes.data)
     return items, name, arr, sz
 
+def _prepare_graph_network_parameters(arg_dict):
+    items = []
+    for name, arr in arg_dict.items():
+        if not isinstance(arr, _np.ndarray):
+            arr = _np.array(arr, dtype=_np.float32)
+        items.append((name, MpsFloatArray(arr)))
+
+    name = (_ctypes.c_char_p * len(items))()
+    arr = (_ctypes.c_void_p * len(items))()
+    for i in range(len(items)):
+        name[i] = _ctypes.c_char_p(items[i][0].encode())
+        arr[i] = items[i][1].handle
+    return items, name, arr
 
 _g_TCMPS_LIB = None
 
@@ -450,8 +463,8 @@ class MpsGraphAPI(object):
         self._mode = int(config.get('mode', MpsGraphMode.TrainReturnGrad))
         self._is_train = self._mode in {MpsGraphMode.TrainReturnGrad, MpsGraphMode.Train}
 
-        config_items, config_name, config_arr, config_sz = _prepare_network_parameters(config)
-        weights_items, weights_name, weights_arr, weights_sz = _prepare_network_parameters(weights)
+        config_items, config_name, config_arr = _prepare_graph_network_parameters(config)
+        weights_items, weights_name, weights_arr = _prepare_graph_network_parameters(weights)
         self._LIB.TCMPSInitGraph(
             self.handle,
             self.network_id,
@@ -462,8 +475,8 @@ class MpsGraphAPI(object):
             _ctypes.c_int32(c_out),
             _ctypes.c_int32(h_out),
             _ctypes.c_int32(w_out),
-            config_name, config_arr, config_sz, _ctypes.c_int32(len(config_items)),
-            weights_name, weights_arr, weights_sz, _ctypes.c_int32(len(weights_items)),
+            config_name, config_arr, _ctypes.c_int32(len(config_items)),
+            weights_name, weights_arr, _ctypes.c_int32(len(weights_items)),
         )
         self._cur_config = _deepcopy(config)
         if self._mode == MpsGraphMode.TrainReturnGrad:
@@ -472,8 +485,8 @@ class MpsGraphAPI(object):
             sz = n * c_out * h_out * w_out
         self._buf_out_fp16 = (_ctypes.c_float * (sz // 2))()
         self._buf_loss = (_ctypes.c_float * n)()
-        self._ishape = (n, h_in, w_in, c_in)
-        self._oshape = (n, h_out, w_out, c_out)
+        self._ishape = (n, c_in, h_in, w_in)
+        self._oshape = (n, c_out, h_out, w_out)
 
     def train(self, input, label):
         """
@@ -564,8 +577,8 @@ class MpsGraphAPI(object):
         self.handle = _ctypes.c_void_p()
         self._LIB.TCMPSCreateGraphModule(_ctypes.byref(self.handle),
                                  _ctypes.c_int(self._mode))
-        n, h_in, w_in, c_in = self._ishape
-        _, h_out, w_out, c_out = self._oshape
+        n, c_in, h_in, w_in = self._ishape
+        _, c_out, h_out, w_out = self._oshape
         self.init(n, c_in, h_in, w_in, c_out, h_out, w_out,
                   config=self._cur_config, weights=weights)
         # Reload state

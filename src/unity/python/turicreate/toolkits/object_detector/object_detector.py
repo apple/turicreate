@@ -34,10 +34,7 @@ from .._mps_utils import (use_mps as _use_mps,
                           mps_device_memory_limit as _mps_device_memory_limit,
                           MpsGraphAPI as _MpsGraphAPI,
                           MpsGraphNetworkType as _MpsGraphNetworkType,
-                          MpsGraphMode as _MpsGraphMode,
-                          mps_to_mxnet as _mps_to_mxnet,
-                          mxnet_to_mps as _mxnet_to_mps,
-                          mxnet_network_to_mps_params as _mxnet_network_to_mps_params)
+                          MpsGraphMode as _MpsGraphMode)
 
 
 _MXNET_MODEL_FILENAME = "mxnet_model.params"
@@ -428,7 +425,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         mps_net_params = {}
         keys = list(net_params)
         for k in keys:
-            mps_net_params[k] = _mxnet_to_mps(net_params[k].data().asnumpy())
+            mps_net_params[k] = net_params[k].data().asnumpy()
 
         # Multiplies the loss to move the fp16 gradients away from subnormals
         # and gradual underflow. The learning rate is correspondingly divided
@@ -491,8 +488,14 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                 for x, y in zip(batch.data, batch.label):
                     # Convert to NumPy arrays with required shapes. Note that
                     # asnumpy waits for any pending MXNet operations to finish.
-                    input_data = _mxnet_to_mps(x.asnumpy())
-                    label_data = y.asnumpy().reshape(y.shape[:-2] + (-1,))
+                    input_data = x.asnumpy()
+                    label_data = y.asnumpy()
+
+                    # Flatten last two dimensions: anchor box and bbox/class
+                    label_data = label_data.reshape(y.shape[:-2] + (-1,))
+
+                    # Convert from NHWC to NCHW
+                    label_data = label_data.transpose(0, 3, 1, 2)
 
                     # Convert to packed 32-bit arrays.
                     input_data = input_data.astype(_np.float32)
@@ -557,7 +560,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         keys = mps_net_params.keys()
         for k in keys:
             if k in net_params:
-                net_params[k].set_data(_mps_to_mxnet(mps_net_params[k]))
+                net_params[k].set_data(mps_net_params[k])
 
     else:  # Use MxNet
         net.hybridize()
@@ -773,7 +776,9 @@ class ObjectDetector(_CustomModel):
         use_mps = _use_mps() and num_mxnet_gpus == 0
         if use_mps:
             if not hasattr(self, '_mps_inference_net') or self._mps_inference_net is None:
-                mps_net_params = _mxnet_network_to_mps_params(self._model.collect_params())
+                mxnet_params = self._model.collect_params()
+                mps_net_params = { k : mxnet_params[k].data().asnumpy()
+                                   for k in mxnet_params }
                 mps_config = {
                     'mode': _MpsGraphMode.Inference,
                     'od_include_network': True,
@@ -815,7 +820,7 @@ class ObjectDetector(_CustomModel):
 
             for data, indices, oshapes in zip(split_data, split_indices, split_oshapes):
                 if use_mps:
-                    mps_data = _mxnet_to_mps(data.asnumpy())
+                    mps_data = data.asnumpy()
                     n_samples = mps_data.shape[0]
                     if mps_data.shape[0] != self.batch_size:
                         mps_data_padded = _np.zeros((self.batch_size,) + mps_data.shape[1:],
@@ -823,8 +828,7 @@ class ObjectDetector(_CustomModel):
                         mps_data_padded[:mps_data.shape[0]] = mps_data
                         mps_data = mps_data_padded
                     mps_float_array = self._mps_inference_net.predict(mps_data)
-                    mps_z = mps_float_array.asnumpy()[:n_samples]
-                    z = _mps_to_mxnet(mps_z)
+                    z = mps_float_array.asnumpy()[:n_samples]
                 else:
                     z = self._model(data).asnumpy()
                 if not postprocess:

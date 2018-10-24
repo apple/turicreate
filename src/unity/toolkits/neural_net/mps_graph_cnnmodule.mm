@@ -82,13 +82,13 @@ void mps_graph_cnn_module::init(
       break;
     case kGraphModeTrainReturnGrad:
       // Gradient for input layer
-      result_shape_ = {static_cast<size_t>(n), static_cast<size_t>(h_in),
-                       static_cast<size_t>(w_in), static_cast<size_t>(c_in)};
+      result_shape_ = {static_cast<size_t>(n), static_cast<size_t>(c_in),
+                       static_cast<size_t>(h_in), static_cast<size_t>(w_in)};
       break;
     case kGraphModeInference:
       // Result image from output layer
-      result_shape_ = {static_cast<size_t>(n), static_cast<size_t>(h_out),
-                       static_cast<size_t>(w_out), static_cast<size_t>(c_out)};
+      result_shape_ = {static_cast<size_t>(n), static_cast<size_t>(c_out),
+                       static_cast<size_t>(h_out), static_cast<size_t>(w_out)};
       break;
     default:
       break;
