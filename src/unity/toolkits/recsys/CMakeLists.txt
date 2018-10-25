@@ -3,7 +3,6 @@ project(unity_toolkits)
 make_library(unity_recsys
   SOURCES
     class_registrations.cpp
-    unity_recsys.cpp
     recsys_model_base.cpp
     train_test_split.cpp
     user_item_lists.cpp

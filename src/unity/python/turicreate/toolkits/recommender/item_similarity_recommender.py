@@ -261,7 +261,7 @@ def create(observation_data,
     with QuietProgress(verbose):
         model_proxy.train(observation_data, user_data, item_data, opts, extra_data)
 
-    return ItemSimilarityRecommender(model_proxy) #response['model'])
+    return ItemSimilarityRecommender(model_proxy)
 
 
 _get_default_options = _get_default_options_wrapper(

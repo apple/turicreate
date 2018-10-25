@@ -83,7 +83,7 @@ class EXPORT model_base: public cppipc::ipc_object_base {
    * Serializes the toolkit class. Must save the class to the file format
    * version matching that of get_version().
    */
-  virtual void save_impl(oarchive& oarc) const;
+  virtual void save_impl(oarchive& oarc) const {};
 
   void load(iarchive& iarc) {
     size_t version = 0;
@@ -95,14 +95,14 @@ class EXPORT model_base: public cppipc::ipc_object_base {
    * Loads a toolkit class previously saved at a particular version number.
    * Should raise an exception on failure.
    */
-  virtual void load_version(iarchive& iarc, size_t version);
+  virtual void load_version(iarchive& iarc, size_t version) {} ;
 
 
   /**
    * Returns the current version of the toolkit class for this instance, for
    * serialization purposes.
    */
-  virtual size_t get_version() const;
+  virtual size_t get_version() const { return 0; }
 
   /**
    * Lists all the registered functions.

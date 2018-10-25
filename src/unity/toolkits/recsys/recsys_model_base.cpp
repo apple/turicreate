@@ -1436,7 +1436,7 @@ void recsys_model_base::import_all_from_other_model(const recsys_model_base* oth
   recsys_model_base::operator=(*other);
 }
 
-std::shared_ptr<recsys_popularity> recsys_model_base::get_popularity_baseline() const {
+std::shared_ptr<recsys_model_base> recsys_model_base::get_popularity_baseline() const {
 
   std::shared_ptr<recsys_popularity> pop(new recsys_popularity);
 
@@ -1815,35 +1815,6 @@ variant_map_type recsys_model_base::api_set_current_options(std::map<std::string
   return variant_map_type();
 }
 
-
-  std::map<std::string, flexible_type> options = this->get_train_stats();
-
-  variant_map_type ret;
-  for (auto& opt : options) {
-    ret[opt.first] = opt.second;
-  }
-  return ret;
-}
-
-variant_map_type recsys_model_base::api_train_test_split(gl_sframe _dataset, const std::string& user_column, const std::string& item_column,
-  flexible_type max_num_users, double item_test_proportion, size_t random_seed) {
-
-  variant_map_type ret;
-  sframe dataset = _dataset.materialize_to_sframe();
-  //flexible_type _max_users;
-  size_t max_users = (max_num_users == FLEX_UNDEFINED) ? std::numeric_limits<size_t>::max() : size_t(max_num_users);
-
-  auto train_test = make_recsys_train_test_split(dataset, user_column, item_column,
-                                                 max_users,
-                                                 item_test_proportion,
-                                                 random_seed);
-
-  ret["train"] = to_variant(gl_sframe(train_test.first));
-  ret["test"] = to_variant(gl_sframe(train_test.second));
-  return ret;
-
-}
-
 void recsys_model_base::api_train(
     gl_sframe _dataset, gl_sframe _user_data, gl_sframe _item_data,
     const std::map<std::string, flexible_type>& opts,
@@ -1916,6 +1887,29 @@ EXPORT variant_map_type recsys_model_base::api_get_data_schema() {
 
   return ret;
 }
+
+variant_map_type train_test_split(gl_sframe _dataset, const std::string& user_column, const std::string& item_column,
+  flexible_type max_num_users, double item_test_proportion, size_t random_seed) {
+
+  variant_map_type ret;
+  sframe dataset = _dataset.materialize_to_sframe();
+  //flexible_type _max_users;
+  size_t max_users = (max_num_users == FLEX_UNDEFINED) ? std::numeric_limits<size_t>::max() : size_t(max_num_users);
+
+  auto train_test = make_recsys_train_test_split(dataset, user_column, item_column,
+                                                 max_users,
+                                                 item_test_proportion,
+                                                 random_seed);
+
+  ret["train"] = to_variant(gl_sframe(train_test.first));
+  ret["test"] = to_variant(gl_sframe(train_test.second));
+  return ret;
+
+}
+
+BEGIN_FUNCTION_REGISTRATION
+REGISTER_FUNCTION(train_test_split, "data", "user_column", "item_column", "max_num_users", "item_test_proportion", "random_seed") 
+END_FUNCTION_REGISTRATION
 
 }}
 

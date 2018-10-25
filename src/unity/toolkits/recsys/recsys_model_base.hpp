@@ -256,8 +256,6 @@ public:
 
   gl_sframe api_get_similar_users(gl_sarray users, size_t k, int get_all_users) const;
 
-  variant_map_type api_train_test_split(gl_sframe _dataset, const std::string& user_column, const std::string& item_column,
-  flexible_type max_num_users, double item_test_proportion, size_t random_seed);
 
   gl_sframe api_predict(gl_sframe data_to_predict, gl_sframe new_user_data, gl_sframe new_item_data) const;
   variant_map_type api_set_current_options(std::map<std::string, flexible_type> options);
@@ -284,7 +282,7 @@ public:
   /** Creates and returns a popularity baseline
    *
    */
-  std::shared_ptr<recsys_popularity> get_popularity_baseline() const;
+  std::shared_ptr<recsys_model_base> get_popularity_baseline() const;
 
   flex_dict get_data_schema() const;
   
@@ -388,53 +386,47 @@ public:
   IMPORT_BASE_CLASS_REGISTRATION(ml_model_base)
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_similar_items",
-                                       recsys_popularity::api_get_similar_items,
+                                       recsys_model_base::api_get_similar_items,
                                        "items", "k", "verbose",
                                        "get_all_items");
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_similar_users",
-                                       recsys_popularity::api_get_similar_users,
+                                       recsys_model_base::api_get_similar_users,
                                        "users", "k", "get_all_users");
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("predict",
-                                       recsys_popularity::api_predict,
+                                       recsys_model_base::api_predict,
                                        "data_to_predict", "new_user_data",
                                        "new_item_data");
 
-  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("train_test_split",
-                                       recsys_popularity::api_train_test_split,
-                                       "dataset", "user_column", "item_column",
-                                       "max_num_users", "item_test_proportion",
-                                       "random_seed");
-
-  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("train", recsys_popularity::api_train,
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("train", recsys_model_base::api_train,
                                        "dataset", "user_data", "item_data",
                                        "opts", "extra_data");
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
-      "recommend", recsys_popularity::api_recommend, "query", "exclude",
+      "recommend", recsys_model_base::api_recommend, "query", "exclude",
       "restrictions", "new_data", "new_user_data", "new_item_data",
       "exclude_training_interactions", "top_k", "diversity", "random_seed");
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
-      "get_popularity_baseline", recsys_popularity::get_popularity_baseline);
+      "get_popularity_baseline", recsys_model_base::get_popularity_baseline);
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
       "get_item_intersection_info",
-      recsys_popularity::api_get_item_intersection_info, "item_pairs");
+      recsys_model_base::api_get_item_intersection_info, "item_pairs");
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("export_to_coreml",
-                                       recsys_popularity::export_to_coreml,
+                                       recsys_model_base::export_to_coreml,
                                        "filename");
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
-      "precision_recall_stats", recsys_popularity::api_precision_recall_stats,
+      "precision_recall_stats", recsys_model_base::api_precision_recall_stats,
       "indexed_validation_data", "recommend_output", "cutoffs");
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_data_schema",
-                                       recsys_popularity::api_get_data_schema);
+                                       recsys_model_base::api_get_data_schema);
 
-  REGISTER_CLASS_MEMBER_FUNCTION(recsys_popularity::recommend_extension_wrapper,
+  REGISTER_CLASS_MEMBER_FUNCTION(recsys_model_base::recommend_extension_wrapper,
                                  "reference_data", "new_observation_data",
                                  "top_k")
 
@@ -536,6 +528,16 @@ sframe recsys_model_base::_create_similar_sframe(
   res.close();
   return res;
 }
+
+variant_map_type train_test_split(gl_sframe _dataset,
+                                  const std::string& user_column,
+                                  const std::string& item_column,
+                                  flexible_type max_num_users,
+                                  double item_test_proportion,
+                                  size_t random_seed);
+
+
+std::vector<toolkit_function_specification> get_toolkit_function_registration();
 
 }}
 

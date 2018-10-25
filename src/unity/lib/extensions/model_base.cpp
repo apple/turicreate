@@ -10,12 +10,6 @@ namespace turi {
 
 model_base::~model_base() = default;
 
-void model_base::save_impl(oarchive& oarc) const {}
-
-void model_base::load_version(iarchive& iarc, size_t version) {}
-
-size_t model_base::get_version() const { return 0; }
-
 const std::map<std::string, std::vector<std::string> >&
 model_base::list_functions() {
   _check_registration();

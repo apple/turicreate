@@ -203,24 +203,6 @@ class EXPORT supervised_learning_model_base : public ml_model_base {
   
 
   /**
-   * Save the object using Turi's oarc.
-   */
-  virtual void save_impl(turi::oarchive& oarc) const = 0;
-
-
-  /**
-   * Load the object using Turi's iarc.
-   */
-  virtual void load_version(turi::iarchive& iarc, size_t version) = 0;
-  
-  /**
-   * Initialize the options.
-   *
-   * \param[in] _options Options to set
-   */
-  virtual void init_options(const std::map<std::string,flexible_type>& _options) = 0;
-  
-  /**
    * Get metadata mapping. 
    */
   std::vector<std::vector<flexible_type>> get_metadata_mapping();
