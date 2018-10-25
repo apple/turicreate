@@ -37,9 +37,9 @@ class EXPORT decision_tree_regression: public xgboost_model {
   
   std::shared_ptr<coreml::MLModelWrapper>  export_to_coreml() override;
 
-  SUPERVISED_LEARNING_METHODS_REGISTRATION(
-      "decision_tree_regression", 
-      decision_tree_regression)
+  BEGIN_CLASS_MEMBER_REGISTRATION("decision_tree_regression");
+  IMPORT_BASE_CLASS_REGISTRATION(supervised_learning_model_base);
+  END_CLASS_MEMBER_REGISTRATION
 };
 
 class EXPORT decision_tree_classifier: public xgboost_model {  
@@ -99,9 +99,9 @@ class EXPORT decision_tree_classifier: public xgboost_model {
   
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml() override;
 
-  SUPERVISED_LEARNING_METHODS_REGISTRATION(
-      "decision_tree_classifier", 
-      decision_tree_classifier)
+  BEGIN_CLASS_MEMBER_REGISTRATION("decision_tree_classifier");
+  IMPORT_BASE_CLASS_REGISTRATION(supervised_learning_model_base);
+  END_CLASS_MEMBER_REGISTRATION
 
 
 };

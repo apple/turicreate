@@ -130,7 +130,7 @@ class EXPORT ml_model_base: public model_base {
    * [] operator in python.
    *
    */
-  variant_type get_value_from_state(std::string key);
+  const variant_type& get_value_from_state(std::string key);
 
 
   /**
@@ -168,7 +168,7 @@ class EXPORT ml_model_base: public model_base {
    *
    * \returns Model map.
    */
-  std::map<std::string, variant_type> get_state() const;
+  const std::map<std::string, variant_type>& get_state() const;
 
   /**
    * Is this model trained.
@@ -199,6 +199,21 @@ class EXPORT ml_model_base: public model_base {
    *  parameters.
    */
   const std::vector<option_handling::option_info>& get_option_info() const;
+
+  // Code to perform the registration for the rest of the tools. 
+  BEGIN_BASE_CLASS_MEMBER_REGISTRATION()
+
+  REGISTER_CLASS_MEMBER_FUNCTION(ml_model_base::list_fields);
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_value",
+                                       ml_model_base::get_value_from_state,
+                                       "field");
+  REGISTER_CLASS_MEMBER_FUNCTION(ml_model_base::get_option_value);
+  REGISTER_CLASS_MEMBER_FUNCTION(ml_model_base::is_trained);
+  REGISTER_CLASS_MEMBER_FUNCTION(ml_model_base::get_default_options);
+  REGISTER_CLASS_MEMBER_FUNCTION(ml_model_base::get_state);
+  REGISTER_CLASS_MEMBER_FUNCTION(ml_model_base::set_options);
+
+  END_CLASS_MEMBER_REGISTRATION
 
  protected:
 

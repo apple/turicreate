@@ -64,8 +64,10 @@ class predict_constant : public supervised_learning_model_base {
    * -------------------------------------------------------------------------
    */
 
-  SUPERVISED_LEARNING_METHODS_REGISTRATION("predict_constant", predict_constant)
-
+  BEGIN_CLASS_MEMBER_REGISTRATION("predict_constant");
+  IMPORT_BASE_CLASS_REGISTRATION(supervised_learning_model_base);
+  END_CLASS_MEMBER_REGISTRATION
+  
   /**
    * Train a supervised_learning model.
    */

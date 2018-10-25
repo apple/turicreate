@@ -42,9 +42,10 @@ class EXPORT boosted_trees_regression: public xgboost_model {
 
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml() override;
 
-  SUPERVISED_LEARNING_METHODS_REGISTRATION(
-      "boosted_trees_regression", 
-      boosted_trees_regression)
+
+  BEGIN_CLASS_MEMBER_REGISTRATION("boosted_trees_regression");
+  IMPORT_BASE_CLASS_REGISTRATION(supervised_learning_model_base);
+  END_CLASS_MEMBER_REGISTRATION
 
 };
 
@@ -109,9 +110,9 @@ class EXPORT boosted_trees_classifier : public xgboost_model {
  
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml() override;
 
-  SUPERVISED_LEARNING_METHODS_REGISTRATION(
-      "boosted_trees_classifier", 
-      boosted_trees_classifier)
+  BEGIN_CLASS_MEMBER_REGISTRATION("boosted_trees_classifier");
+  IMPORT_BASE_CLASS_REGISTRATION(supervised_learning_model_base);
+  END_CLASS_MEMBER_REGISTRATION
 
 };
 
