@@ -235,8 +235,6 @@ def create(observation_data,
             'target': target,
             #'user_data': user_data,
             #'item_data': item_data,
-            #'nearest_items': nearest_items,
-            #'model': model_proxy,
             'similarity_type': similarity_type,
             'threshold': threshold,
             'target_memory_usage' : float(target_memory_usage),
@@ -262,8 +260,6 @@ def create(observation_data,
 
     with QuietProgress(verbose):
         model_proxy.train(observation_data, user_data, item_data, opts, extra_data)
-        #response = _turicreate.extensions._recsys.train(opts)
-
 
     return ItemSimilarityRecommender(model_proxy) #response['model'])
 
