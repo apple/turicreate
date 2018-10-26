@@ -417,8 +417,7 @@ static std::vector<size_t> extract_categorical_column(
   return out;
 }
 
-void recsys_model_base::export_to_coreml(std::shared_ptr<recsys_model_base> model,
-  const std::string& filename) {
+void recsys_model_base::export_to_coreml(const std::string& filename) {
   flexible_type model_name = name();
   log_and_throw("Currently, only item similarity models can be exported to Core ML (use turicreate.item_similarity.create to make such a model).");
 }

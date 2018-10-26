@@ -218,8 +218,7 @@ public:
     return sframe();
   }
 
-  virtual void export_to_coreml(std::shared_ptr<recsys_model_base> recsys_model,
-                                const std::string& filename) override;
+  virtual void export_to_coreml(const std::string& filename) override;
   
  private:
   

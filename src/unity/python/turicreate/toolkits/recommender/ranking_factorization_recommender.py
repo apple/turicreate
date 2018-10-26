@@ -271,7 +271,7 @@ def create(observation_data,
 
         opts.update(kwargs)
 
-    extra_data = {"neareast_items" : _turicreate.SFrame()}
+    extra_data = {"nearest_items" : _turicreate.SFrame()}
     with QuietProgress(verbose):
         model_proxy.train(observation_data, user_data, item_data, opts, extra_data)
         #response = _turicreate.extensions._recsys.train(opts)

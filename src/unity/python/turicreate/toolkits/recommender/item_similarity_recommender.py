@@ -241,7 +241,7 @@ def create(observation_data,
             'max_item_neighborhood_size': only_top_k}
 
 
-    extra_data = {"neareast_items" : nearest_items}
+    extra_data = {"nearest_items" : nearest_items}
 
     if kwargs:
         try:
@@ -255,7 +255,7 @@ def create(observation_data,
 
         opts.update(kwargs)
 
-    extra_data = {"neareast_items" : nearest_items}
+    extra_data = {"nearest_items" : nearest_items}
     opts.update(kwargs)
 
     with QuietProgress(verbose):

@@ -255,7 +255,7 @@ def create(item_data, item_id,
             'max_item_neighborhood_size' : max_item_neighborhood_size}
 
     user_data = _turicreate.SFrame()
-    extra_data = {"neareast_items" : graph}
+    extra_data = {"nearest_items" : graph}
     with QuietProgress(verbose):
         model_proxy.train(observation_data, user_data, item_data, opts, extra_data)
         #response = _turicreate.extensions._recsys.train(opts)

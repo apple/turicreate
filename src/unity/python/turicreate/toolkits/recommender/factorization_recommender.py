@@ -231,10 +231,10 @@ def create(observation_data,
         if bad_arguments:
             raise TypeError("Bad Keyword Arguments: " + ', '.join(bad_arguments))
 
-        ##extra_data = {"neareast_items" : _turicreate.SFrame()}
+        ##extra_data = {"nearest_items" : _turicreate.SFrame()}
         opts.update(kwargs)
 
-    extra_data = {"neareast_items" : _turicreate.SFrame()}
+    extra_data = {"nearest_items" : _turicreate.SFrame()}
 
     #import pdb
     #pdb.set_trace()

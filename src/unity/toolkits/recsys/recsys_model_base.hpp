@@ -331,7 +331,7 @@ public:
     std::shared_ptr<unity_sframe_base> new_observation_data,
     flex_int top_k) const;
 
-  virtual void export_to_coreml(std::shared_ptr<recsys_model_base> model, const std::string& filename);
+  virtual void export_to_coreml(const std::string& filename);
 
   /**
    * Compute the precision and recall for a (potentially held out) set of
