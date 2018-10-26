@@ -97,6 +97,22 @@ class EXPORT model_base: public cppipc::ipc_object_base {
    */
   virtual void load_version(iarchive& iarc, size_t version) {} ;
 
+  /**
+   * Save a toolkit class to disk.
+   *
+   * \param sidedata Any additional side information
+   * \param url The destination url to store the class.
+   */
+  void save_model_to_file(const variant_map_type& side_data,
+                          const std::string& url);
+
+  /**
+   * Save a toolkit class to a data stream.
+   *
+   * \param sidedata Any additional side information
+   * \param url The destination url to store the class.
+   */
+  void save_model_to_data(std::ostream& out);
 
   /**
    * Returns the current version of the toolkit class for this instance, for

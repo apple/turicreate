@@ -5,6 +5,7 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 #include <unity/lib/extensions/model_base.hpp>
+#include <unity/lib/unity_global.hpp>
 
 namespace turi {
 
@@ -239,5 +240,33 @@ void model_base::register_docstring(
   if (last_colon != std::string::npos) fnname = fnname.substr(last_colon + 1);
   m_docstring[fnname] = docstring;
 }
+
+  /**
+   * Save a toolkit class to disk.
+   *
+   * \param sidedata Any additional side information
+   * \param url The destination url to store the class.
+   */
+  void model_base::save_model_to_file(const variant_map_type& side_data,
+                          const std::string& url) {
+    std::shared_ptr<model_base> m =
+        std::dynamic_pointer_cast<model_base>(this->shared_from_this());
+
+    turi::get_unity_global_singleton()->save_model(m, side_data, url);
+  }
+
+  /**
+   * Save a toolkit class to a data stream.
+   *
+   * \param sidedata Any additional side information
+   * \param url The destination url to store the class.
+   */
+  void model_base::save_model_to_data(std::ostream& out) {
+    std::shared_ptr<model_base> m =
+        std::dynamic_pointer_cast<model_base>(this->shared_from_this());
+
+    turi::get_unity_global_singleton()->save_model_to_data(m, out);
+  }
+
 
 } // namespace turi

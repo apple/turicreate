@@ -878,7 +878,7 @@ void recsys_itemcf::export_to_coreml(const std::string& filename) {
   auto bytes_value = CoreML::Specification::CustomModel::CustomModelParamValue();
 
   std::stringstream ss;
-  turi::get_unity_global_singleton()->save_model_to_data(this, ss);
+  this->save_model_to_data(ss);
   bytes_value.set_bytesvalue(ss.str());
   (*custom_model_parameters)["turi_create_model"] = bytes_value;
 
