@@ -1907,8 +1907,60 @@ variant_map_type train_test_split(gl_sframe _dataset, const std::string& user_co
 
 }
 
+variant_map_type init(variant_map_type& params) {
+
+  variant_map_type ret;
+
+  // get model name
+  flexible_type model_name = safe_varmap_get<flexible_type>(params, "model_name");
+  // get other options
+  std::map<std::string, flexible_type> opts = varmap_to_flexmap(params);
+  opts.erase("model_name");  // model_name is not an option that can be set
+  logprogress_stream << "Recsys training: model = " << model_name << std::endl;
+
+  // initialize the model
+  std::shared_ptr<recsys_model_base> m;
+  if (model_name == "item_similarity") {
+    m = std::make_shared<recsys_itemcf>();
+  } else if (model_name == "item_content_recommender") {
+    m = std::make_shared<recsys_item_content_recommender>();
+  } else if (model_name == "factorization_recommender") {
+    m = std::make_shared<recsys_factorization_model>();
+  } else if (model_name == "ranking_factorization_recommender") {
+    m = std::make_shared<recsys_ranking_factorization_model>();
+  } else if (model_name == "popularity") {
+    m = std::make_shared<recsys_popularity>();
+  }
+
+  // check the model is actually a recsys model.
+  if (m == nullptr) {
+    throw(std::string("Invalid model name: " + model_name + " is not a recsys model."));
+  }
+  m->add_or_update_state({{"model_name", to_variant(m->name())}});
+  m->init_options(opts);
+
+  ret["model"] = to_variant(m);
+
+  return ret;
+}
+
+variant_map_type get_train_stats(variant_map_type& params) {
+
+  std::shared_ptr<recsys_model_base> model = safe_varmap_get<std::shared_ptr<recsys_model_base>>(params, "model");
+
+  std::map<std::string, flexible_type> options = model->get_train_stats();
+
+  variant_map_type ret;
+  for (auto& opt : options) {
+    ret[opt.first] = opt.second;
+  }
+  return ret;
+}
+
 BEGIN_FUNCTION_REGISTRATION
+REGISTER_FUNCTION(init, "params")
 REGISTER_FUNCTION(train_test_split, "data", "user_column", "item_column", "max_num_users", "item_test_proportion", "random_seed") 
+REGISTER_FUNCTION(get_train_stats, "params")
 END_FUNCTION_REGISTRATION
 
 }}

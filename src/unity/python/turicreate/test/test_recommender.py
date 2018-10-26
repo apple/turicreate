@@ -2427,10 +2427,11 @@ class TestContentRecommender(RecommenderTestBase):
 
         # If the weights are set to auto, then they are currently set
         # equally.  In this case, element 3 will be closer to 0 than 1 or 2.
-        m_1 = tc.recommender.item_content_recommender.create(item_data, "my_item_id")
-        out_1 = m_1.recommend_from_interactions([0], k = 1)
         #import pdb
         #pdb.set_trace()
+        m_1 = tc.recommender.item_content_recommender.create(item_data, "my_item_id")
+        out_1 = m_1.recommend_from_interactions([0], k = 1)
+        
         self.assertEqual(out_1[0]["my_item_id"], 3)
 
         # If the weights are set so that data_1 is 1 and data_2 is 0,

@@ -536,6 +536,9 @@ variant_map_type train_test_split(gl_sframe _dataset,
                                   double item_test_proportion,
                                   size_t random_seed);
 
+variant_map_type init(variant_map_type& params);
+
+variant_map_type get_train_stats(variant_map_type& params);
 
 std::vector<toolkit_function_specification> get_toolkit_function_registration();
 

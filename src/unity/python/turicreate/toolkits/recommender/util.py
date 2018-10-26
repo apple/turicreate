@@ -500,7 +500,7 @@ def random_split_by_user(dataset,
             'random_seed': random_seed}
 
     #response = _turicreate.extensions._recsys.train_test_split(opts)
-    response = this.train_test_split(dataset, user_id, item_id, max_num_users, item_test_proportion, random_seed)
+    response = _turicreate.extensions.train_test_split(dataset, user_id, item_id, max_num_users, item_test_proportion, random_seed)
 
     train = response['train']
     test = response['test']
@@ -1498,8 +1498,8 @@ class _Recommender(_Model):
         """
         _logging.warning("This method will be deprecated soon. Please use m.summary().")
         #opts = {'model': self.__proxy__}
-        #response = _turicreate.extensions._recsys.get_train_stats(opts)
-        response = self.__proxy__.get_train_stats()
+        response = _turicreate.extensions.get_train_stats(opts)
+        #response = get_train_stats(opts)
         return response
 
     def evaluate_precision_recall(self, dataset, cutoffs=list(range(1,11,1))+list(range(11,50,5)),
@@ -1852,4 +1852,4 @@ class _Recommender(_Model):
 
         import turicreate as tc
         ##tc.extensions._recsys.export_to_coreml(self.__proxy__, filename)
-        self.__proxy__.export_to_coreml(self.__proxy__, filename) ####
+        self.__proxy__.export_to_coreml(filename) ####
