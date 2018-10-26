@@ -76,6 +76,8 @@ std::string ml_metadata::feature_name(size_t column_idx, size_t index) const {
     case ml_column_mode::NUMERIC_VECTOR:
       DASSERT_LT(index, column_size(column_idx));
       return name + "[" + std::to_string(index) + "]";
+    default:
+      return name; 
   }
 }
 
