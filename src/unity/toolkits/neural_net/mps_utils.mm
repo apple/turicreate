@@ -17,8 +17,8 @@ namespace turi {
 namespace neural_net {
 
 // Converts from CHW to HWC
-void convert_image_to_mps(const float_array& image, float* out_first,
-                          float* out_last) {
+void convert_chw_to_hwc(const float_array& image, float* out_first,
+                        float* out_last) {
   assert(image.dim() >= 3);
   assert(out_last - out_first == image.size());
 
@@ -67,7 +67,7 @@ void convert_image_to_mps(const float_array& image, float* out_first,
     for (size_t i = 0; i < n; ++i) {
       external_float_array sub_image(image.data() + i * stride,
                                      stride, shape + 1, image.dim() - 1);
-      convert_image_to_mps(sub_image, out, out + stride);
+      convert_chw_to_hwc(sub_image, out, out + stride);
       out += stride;
     }
     assert(out == out_last);
@@ -75,8 +75,8 @@ void convert_image_to_mps(const float_array& image, float* out_first,
 }
 
 // Converts from HWC to CHW
-void convert_image_from_mps(const float_array& image, float* out_first,
-                            float* out_last) {
+void convert_hwc_to_chw(const float_array& image, float* out_first,
+                        float* out_last) {
   assert(image.dim() >= 3);
   assert(out_last - out_first == image.size());
 
@@ -124,7 +124,7 @@ void convert_image_from_mps(const float_array& image, float* out_first,
     for (size_t i = 0; i < n; ++i) {
       external_float_array sub_image(image.data() + i * stride,
                                      stride, shape + 1, image.dim() - 1);
-      convert_image_from_mps(sub_image, out, out + stride);
+      convert_hwc_to_chw(sub_image, out, out + stride);
       out += stride;
     }
     assert(out == out_last);
@@ -133,73 +133,53 @@ void convert_image_from_mps(const float_array& image, float* out_first,
 
 shared_float_array copy_image_batch_float16(std::vector<size_t> shape,
                                             MPSImageBatch *batch) {
-  assert(shape.size() == 4);  // NCHW
+  assert(shape.size() == 4);  // NHWC
 
   const size_t n = shape[0];  // N
-  const size_t stride = shape[1] * shape[2] * shape[3];  // C * H * W
+  const size_t stride = shape[1] * shape[2] * shape[3];  // H * W * C
   const size_t size = n * stride;
 
-  // Perform allocations.
-  std::unique_ptr<__fp16[]> fp16_buffer(new __fp16[stride]);
-  std::unique_ptr<float[]> image_buffer_hwc(new float[stride]);
-  std::vector<float> batch_buffer_chw(size);
-  float* out_chw = batch_buffer_chw.data();
-
+  // Copy from MPS to a local __fp16 buffer.
   assert(batch.count >= n);
+  std::unique_ptr<__fp16[]> fp16_buffer(new __fp16[size]);
   for (size_t i = 0; i < n; ++i) {
     MPSImage *img = batch[i];
-    assert(img.featureChannels == shape[1]);
-    assert(img.height == shape[2]);
-    assert(img.width == shape[3]);
+
+    assert(img.height == shape[1]);
+    assert(img.width == shape[2]);
+    assert(img.featureChannels == shape[3]);
     assert(img.pixelFormat == MTLPixelFormatRGBA16Float);
 
-    // Copy from MPS to local __fp16 buffer.
-    [img readBytes:fp16_buffer.get()
+    [img readBytes:fp16_buffer.get() + stride * i
         dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
         imageIndex:0];
-
-    // Convert from __fp16 to float.
-    std::copy(fp16_buffer.get(), fp16_buffer.get() + stride,
-              image_buffer_hwc.get());
-
-    // Transpose from HWC to CHW.
-    size_t mps_shape[] = { static_cast<size_t>(img.height),
-                           static_cast<size_t>(img.width),
-                           static_cast<size_t>(img.featureChannels) };
-    external_float_array image_hwc(
-        image_buffer_hwc.get(), stride, mps_shape, 3);
-    convert_image_from_mps(image_hwc, out_chw, out_chw + stride);
-    out_chw += stride;
   }
 
-  return shared_float_array::wrap(std::move(batch_buffer_chw),
-                                  std::move(shape));
+  // Convert from __fp16 to float.
+  std::vector<float> float_buffer(fp16_buffer.get(), fp16_buffer.get() + size);
+
+  return shared_float_array::wrap(std::move(float_buffer), std::move(shape)); 
 }
 
 void fill_image_batch(const float_array& blob, MPSImageBatch *batch) {
-  assert(blob.dim() == 4);  // NCHW
+  assert(blob.dim() == 4);  // NHWC
 
-  const float* data_chw = blob.data();
+  const float* data = blob.data();
   const size_t* shape = blob.shape();
-  const size_t stride = shape[1] * shape[2] * shape[3];  // C * H * W
-
-  std::unique_ptr<float[]> data_hwc(new float[stride]);
+  const size_t stride = shape[1] * shape[2] * shape[3];  // H * W * C
 
   assert(batch.count <= shape[0]);
   for (MPSImage *img in batch) {
-    external_float_array sub_blob(data_chw, stride, shape + 1, 3);
-    convert_image_to_mps(sub_blob, data_hwc.get(), data_hwc.get() + stride);
-
-    assert(img.featureChannels == shape[1]);
-    assert(img.height == shape[2]);
-    assert(img.width == shape[3]);
+    assert(img.height == shape[1]);
+    assert(img.width == shape[2]);
+    assert(img.featureChannels == shape[3]);
     assert(img.pixelFormat == MTLPixelFormatRGBA32Float);
 
-    [img writeBytes:data_hwc.get()
+    [img writeBytes:data
          dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
          imageIndex:0];
 
-    data_chw += stride;
+    data += stride;
   }
 }
 

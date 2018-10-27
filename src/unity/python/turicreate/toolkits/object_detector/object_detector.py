@@ -34,7 +34,9 @@ from .._mps_utils import (use_mps as _use_mps,
                           mps_device_memory_limit as _mps_device_memory_limit,
                           MpsGraphAPI as _MpsGraphAPI,
                           MpsGraphNetworkType as _MpsGraphNetworkType,
-                          MpsGraphMode as _MpsGraphMode)
+                          MpsGraphMode as _MpsGraphMode,
+                          mps_to_mxnet as _mps_to_mxnet,
+                          mxnet_to_mps as _mxnet_to_mps)
 
 
 _MXNET_MODEL_FILENAME = "mxnet_model.params"
@@ -488,14 +490,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                 for x, y in zip(batch.data, batch.label):
                     # Convert to NumPy arrays with required shapes. Note that
                     # asnumpy waits for any pending MXNet operations to finish.
-                    input_data = x.asnumpy()
-                    label_data = y.asnumpy()
-
-                    # Flatten last two dimensions: anchor box and bbox/class
-                    label_data = label_data.reshape(y.shape[:-2] + (-1,))
-
-                    # Convert from NHWC to NCHW
-                    label_data = label_data.transpose(0, 3, 1, 2)
+                    input_data = _mxnet_to_mps(x.asnumpy())
+                    label_data = y.asnumpy().reshape(y.shape[:-2] + (-1,))
 
                     # Convert to packed 32-bit arrays.
                     input_data = input_data.astype(_np.float32)
@@ -820,7 +816,7 @@ class ObjectDetector(_CustomModel):
 
             for data, indices, oshapes in zip(split_data, split_indices, split_oshapes):
                 if use_mps:
-                    mps_data = data.asnumpy()
+                    mps_data = _mxnet_to_mps(data.asnumpy())
                     n_samples = mps_data.shape[0]
                     if mps_data.shape[0] != self.batch_size:
                         mps_data_padded = _np.zeros((self.batch_size,) + mps_data.shape[1:],
@@ -828,7 +824,8 @@ class ObjectDetector(_CustomModel):
                         mps_data_padded[:mps_data.shape[0]] = mps_data
                         mps_data = mps_data_padded
                     mps_float_array = self._mps_inference_net.predict(mps_data)
-                    z = mps_float_array.asnumpy()[:n_samples]
+                    mps_z = mps_float_array.asnumpy()[:n_samples]
+                    z = _mps_to_mxnet(mps_z)
                 else:
                     z = self._model(data).asnumpy()
                 if not postprocess:

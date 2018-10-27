@@ -56,7 +56,7 @@ void ConvGraphLayer::Init(id<MTLDevice> _Nonnull device,
     LogStdString("Loading " + weight_key);
     const shared_float_array& w = weights.at(weight_key);
     init_w.reset(new float[w.size()]);
-    convert_image_to_mps(w, init_w.get(), init_w.get() + w.size());
+    convert_chw_to_hwc(w, init_w.get(), init_w.get() + w.size());
   }
   if (weights.count(bias_key) > 0) {
     LogStdString("Loading " + bias_key);
@@ -117,8 +117,8 @@ float_array_map ConvGraphLayer::Export() const {
   std::vector<float> weights(size);
   size_t mps_shape[] = { c_out, k_h, k_w, c_in };
   const float* mps_weights = reinterpret_cast<float*>([weight weights]);
-  convert_image_from_mps(external_float_array(mps_weights, size, mps_shape, 4),
-                         weights.data(), weights.data() + size);
+  convert_hwc_to_chw(external_float_array(mps_weights, size, mps_shape, 4),
+                     weights.data(), weights.data() + size);
   table[weight_key] = shared_float_array::wrap(std::move(weights),
                                                {c_out, c_in, k_h, k_w});
 
@@ -334,14 +334,7 @@ MPSCNNLossLabelsBatch *YoloLossGraphLayer::CreateLossState(
   input_size.depth = static_cast<NSUInteger>(oshape[3]);
   NSUInteger stride = input_size.height * input_size.width * input_size.depth;
   for (int i = 0; i < batch_size; ++i) {
-    // Convert NCHW labels_array to NHWC data.
-    NSMutableData *label_data = [NSMutableData dataWithLength:stride * sizeof(float)];
-    float* label_data_raw = reinterpret_cast<float*>(label_data.mutableBytes);
-    convert_image_to_mps(external_float_array(data + i * stride, stride,
-                                              labels_array.shape() + 1, 3),
-                         label_data_raw, label_data_raw + stride);
-
-    // Pass the transposed labels to MPS.
+    NSData *label_data = [NSData dataWithBytes:data + i * stride length:stride * sizeof(float)];
     MPSCNNLossDataDescriptor *desc =
         [MPSCNNLossDataDescriptor cnnLossDataDescriptorWithData:label_data
                                                          layout:MPSDataLayoutHeightxWidthxFeatureChannels

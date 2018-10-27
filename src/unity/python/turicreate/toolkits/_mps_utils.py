@@ -123,13 +123,6 @@ def ac_weights_mxnet_to_mps(arg_params, aux_params, lstm_h_size):
 
     return mps_weights
 
-def mxnet_network_to_mps_params(net_params):
-    mps_net_params = {}
-    for k in net_params:
-        mps_net_params[k] = mxnet_to_mps(net_params[k].data().asnumpy())
-    return mps_net_params
-
-
 def _prepare_network_parameters(arg_dict):
     items = []
     for name, arr in arg_dict.items():
@@ -485,8 +478,8 @@ class MpsGraphAPI(object):
             sz = n * c_out * h_out * w_out
         self._buf_out_fp16 = (_ctypes.c_float * (sz // 2))()
         self._buf_loss = (_ctypes.c_float * n)()
-        self._ishape = (n, c_in, h_in, w_in)
-        self._oshape = (n, c_out, h_out, w_out)
+        self._ishape = (n, h_in, w_in, c_in)
+        self._oshape = (n, h_out, w_out, c_out)
 
     def train(self, input, label):
         """
@@ -577,8 +570,8 @@ class MpsGraphAPI(object):
         self.handle = _ctypes.c_void_p()
         self._LIB.TCMPSCreateGraphModule(_ctypes.byref(self.handle),
                                  _ctypes.c_int(self._mode))
-        n, c_in, h_in, w_in = self._ishape
-        _, c_out, h_out, w_out = self._oshape
+        n, h_in, w_in, c_in = self._ishape
+        _, h_out, w_out, c_out = self._oshape
         self.init(n, c_in, h_in, w_in, c_out, h_out, w_out,
                   config=self._cur_config, weights=weights)
         # Reload state

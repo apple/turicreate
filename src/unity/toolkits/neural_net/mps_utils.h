@@ -77,10 +77,10 @@ shared_float_array copy_image_batch_float16(std::vector<size_t> shape,
 API_AVAILABLE(macos(10.14))
 void fill_image_batch(const float_array& data, MPSImageBatch * _Nonnull batch);
 
-void convert_image_to_mps(const float_array& image, float* out_first,
-                          float* out_last);
-void convert_image_from_mps(const float_array& image, float* out_first,
-                            float* out_last);
+void convert_chw_to_hwc(const float_array& image, float* out_first,
+                        float* out_last);
+void convert_hwc_to_chw(const float_array& image, float* out_first,
+                        float* out_last);
 
 float_array_map make_array_map(char **names, void **arrays,
                                int64_t *sizes, int len);
