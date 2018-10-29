@@ -222,43 +222,13 @@ std::shared_ptr<MLModelWrapper> export_xgboost_model(
         size_t n = sscanf(feature_name.c_str(), "{%zd}\0", &feature_index);
         ASSERT_EQ(n, 1);
 
-        // This means that we need to swap out the no and the missing columns.
-        /*
-               if(feature_type == "indicator") {
-          tree_ensemble->setupBranchNode(
-              tree_id,
-              node_id,
-              size_t(feature_index),
-              CoreML::BranchMode::BranchOnValueEqual,
-              1,
-              yes_child, missing_child);
-        // For dictionaries, set the threshold separately
-      */
-        if (dict_indices.find(size_t(feature_index)) != dict_indices.end()) {
-          if (exact_value >= 0) {
-            tree_ensemble->setupBranchNode(
-                tree_id, node_id, size_t(feature_index),
-                CoreML::BranchMode::BranchOnValueLessThanEqual, exact_value,
-                missing_child, no_child);
+        tree_ensemble->setupBranchNode(
+            tree_id, node_id, size_t(feature_index),
+            CoreML::BranchMode::BranchOnValueLessThanEqual, exact_value,
+            yes_child, no_child);
 
-            tree_ensemble->setMissingValueBehavior(tree_id, node_id, true);
-          } else {
-            tree_ensemble->setupBranchNode(
-                tree_id, node_id, size_t(feature_index),
-                CoreML::BranchMode::BranchOnValueLessThanEqual, exact_value,
-                yes_child, missing_child);
-
-            tree_ensemble->setMissingValueBehavior(tree_id, node_id, false);
-          }
-        } else {
-          tree_ensemble->setupBranchNode(
-              tree_id, node_id, size_t(feature_index),
-              CoreML::BranchMode::BranchOnValueLessThanEqual, exact_value,
-              yes_child, no_child);
-
-          tree_ensemble->setMissingValueBehavior(tree_id, node_id,
-                                                 (missing_child != yes_child));
-        }
+        tree_ensemble->setMissingValueBehavior(tree_id, node_id,
+                                               (missing_child != yes_child));
       }
     }
   }
