@@ -23,6 +23,119 @@ std::vector<std::string> ml_metadata::column_names() const {
   return column_names;
 }
 
+ /**
+   * Returns the feature name of a specific feature present in the metadata.
+   *
+   * Numeric columns are represented by the column name.
+   *
+   * Categorical / Categorical List / Dictionary columns are represented by
+   * "name[category]".
+   *
+   * Vectors are represented by "vector[index]", where index is numerical.
+   *
+   * ND vectors are represented by "nd_vector[idx1,idx2]" etc.
+   *
+   * \returns Names of features
+   */
+std::string ml_metadata::feature_name(size_t column_idx, size_t index, bool quote_string_values) const {
+  const std::string& name = column_name(column_idx);
+
+  switch (column_mode(column_idx)) {
+    case ml_column_mode::NUMERIC:
+    case ml_column_mode::UNTRANSLATED:
+      DASSERT_EQ(index, 0);
+      return name;
+
+    case ml_column_mode::CATEGORICAL:
+    case ml_column_mode::DICTIONARY:
+    case ml_column_mode::CATEGORICAL_VECTOR:
+    case ml_column_mode::CATEGORICAL_SORTED: {
+      const flexible_type& v = indexer(column_idx)->map_index_to_value(index);
+
+      bool quote = quote_string_values && (v.get_type() == flex_type_enum::STRING);
+
+      return name + (quote ? "[\"" : "[") + v.to<std::string>() + (quote ? "\"]" : "]");
+    }
+
+    case ml_column_mode::NUMERIC_VECTOR:
+      DASSERT_LT(index, column_size(column_idx));
+      return name + "[" + std::to_string(index) + "]";
+    case ml_column_mode::NUMERIC_ND_VECTOR: {
+      const flex_nd_vec::index_range_type& shape = nd_column_shape(column_idx);
+
+      // Need the product of all the remaining shape entries -- which is the
+      // stride of the current dimension -- in order to calculate how much of
+      // the index gets devoted to each dimension. We do this by starting with
+      // the full product and dividing out each current dimension as we
+      // encounter it.
+      int64_t n = index_size(column_idx);
+
+      std::ostringstream ss;
+      ss << name << "[";
+
+      int64_t remainder_idx = index;
+
+      for (int64_t k = 0; k < int64_t(shape.size()); ++k) {
+        DASSERT_EQ(n % shape[k], 0);
+        n /= shape[k];
+
+        auto r = std::div(remainder_idx, n);
+        ss << r.quot;
+        remainder_idx = r.rem;
+
+        if (size_t(k) + 1 != shape.size()) {
+          ss << ',';
+        } else {
+          DASSERT_EQ(n, 1);
+        }
+      }
+
+      ss << "]";
+
+      return ss.str();
+    }
+  }
+  // Should be unreachable
+  ASSERT_UNREACHABLE();
+}
+
+/**
+ * Returns a list of all the feature names present in the metadata.
+ *
+ * Numeric columns are represented by the column name.
+ *
+ * Categorical / Categorical List / Dictionary columns are represented by
+ * "name[category]".
+ *
+ * Vectors are represented by "vector[index]", where index is numerical.
+ *
+ * ND vectors are represented by "nd_vector[idx1,idx2]" etc.
+ *
+ * If unpack_categorical_columns is false, then purely categorical columns (not
+ * lists or dictionaries) are called out only by their column name instead of
+ * their categories.
+ *
+ * \returns Names of features
+ */
+std::vector<std::string> ml_metadata::feature_names(bool unpack_categorical_columns) const {
+
+  std::vector<std::string> feature_names;
+  feature_names.reserve(num_dimensions());
+
+  for(size_t i = 0; i < num_columns(); ++i) {
+    if (column_mode(i) == ml_column_mode::CATEGORICAL &&
+        !unpack_categorical_columns) {
+      feature_names.push_back(column_name(i));
+    } else {
+      for (size_t j = 0; j < index_size(i); ++j) {
+        feature_names.push_back(feature_name(i, j));
+      }
+    }
+  }
+
+  return feature_names;
+}
+
 void ml_metadata::set_training_index_sizes_to_current_column_sizes() {
 
   for(size_t c_idx = 0; c_idx < num_columns(); ++c_idx)

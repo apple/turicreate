@@ -319,8 +319,7 @@ void kmeans_model::train(const sframe& X,
 
   // Update model state after initialization. This can't be done earlier custom
   // centers cause the metadata to change.
-  std::vector<std::string> unpacked_feature_names =
-    supervised::get_feature_names_from_metadata(metadata);
+  std::vector<std::string> unpacked_feature_names = metadata->feature_names();
 
   add_or_update_state ({ {"num_unpacked_features", metadata->num_dimensions()},
                          {"unpacked_features", to_variant(unpacked_feature_names)} });

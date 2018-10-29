@@ -514,6 +514,98 @@ class VectorLinearRegressionTest(unittest.TestCase):
     self.assertEqual(model.num_unpacked_features, len(self.unpacked_features))
     self.assertEqual(model.unpacked_features, self.unpacked_features)
 
+class NDArrayLinearRegressionTest(unittest.TestCase):
+  """
+    Unit test class for testing a Linear Regression create function.
+  """
+
+  @classmethod
+  def setUpClass(self):
+    """
+        Set up (Run only once)
+    """
+    np.random.seed(15)
+    n, d = 100, 6
+    self.sf = tc.SFrame()
+
+    # float columns
+    for i in range(d):
+        self.sf.add_column(tc.SArray(np.random.rand(n)), inplace=True)
+
+    # target column
+    self.sf['target'] = np.random.randint(2, size=n)
+
+    ## Get the right answer with statsmodels
+    df = self.sf.to_dataframe()
+    print(df)
+    formula = 'target ~ ' + \
+        ' + '.join(['X{}'.format(i+1) for i in range(d)])
+    sm_model = sm.ols(formula, data=df).fit()
+
+    self.loss = sm_model.ssr  # sum of squared residuals
+    self.coef = list(sm_model.params)
+    self.stderr = list(sm_model.bse)
+    self.yhat = list(sm_model.fittedvalues)
+    self.rmse = np.sqrt(sm_model.ssr / float(n))
+
+    ## Set the turicreate model params
+    self.target = 'target'
+    self.sf['nd_vec'] = self.sf.apply(lambda row: np.array([row['X{}'.format(i+1)] for i in
+      range(d)]).reshape( (3, 2) ))
+
+    self.features = ['nd_vec']
+    self.unpacked_features = ['nd_vec[%d,%d]' % (i, j) for i in range(3) for j in range(2)]
+
+    self.def_kwargs= _DEFAULT_SOLVER_OPTIONS
+
+  def _test_coefficients(self, model):
+      """
+      Check that the coefficient values are very close to the correct values.
+      """
+      coefs = model.coefficients
+      coef_list = list(coefs['value'])
+      stderr_list = list(coefs['stderr'])
+      self.assertTrue(np.allclose(coef_list, self.coef, rtol=1e-01, atol=1e-01))
+      self.assertTrue(np.allclose(stderr_list, self.stderr, rtol=1e-03, atol=1e-03))
+
+  def _test_create(self, sf, target, features, solver,
+      opts, rescaling):
+
+    model = tc.linear_regression.create(sf, target, features, solver = solver,
+        l2_penalty = 0.0, feature_rescaling = rescaling,
+        validation_set = None,
+        **opts)
+    test_case = 'solver = {solver}, opts = {opts}'.format(solver = solver,
+                                                          opts = opts)
+    self.assertTrue(model is not None)
+    self.assertTrue(abs(model.training_rmse - self.rmse) < 0.1,
+                                                'rmse failed: %s' % test_case)
+    self.assertTrue(abs(model.training_loss - self.loss) < 0.1,
+                                                'loss failed: %s' % test_case)
+    self._test_coefficients(model)
+
+  """
+     Test linear regression create.
+  """
+  def test_create(self):
+
+    for solver in ['newton']:
+        args = (self.sf, self.target, self.features,
+            solver, self.def_kwargs, True)
+        self._test_create(*args)
+        args = (self.sf, self.target, self.features,
+            solver, self.def_kwargs, False)
+        self._test_create(*args)
+
+  def test_features(self):
+
+    model = tc.linear_regression.create(self.sf, self.target, self.features,
+        feature_rescaling = False, validation_set = None)
+    self.assertEqual(model.num_features, len(self.features))
+    self.assertEqual(model.features, self.features)
+    self.assertEqual(model.num_unpacked_features, len(self.unpacked_features))
+    self.assertEqual(model.unpacked_features, self.unpacked_features)
+
 class DictLinearRegressionTest(unittest.TestCase):
   """
     Unit test class for testing a Linear Regression create function.
@@ -688,7 +780,7 @@ class ListCategoricalLinearRegressionTest(unittest.TestCase):
     ## Set the turicreate model params
     self.target = 'target'
     self.features = ['species', 'X1', 'X2', 'X3']
-    self.unpacked_features = ['species', 'X1', 'X2', 'X3']
+    self.unpacked_features = ['species[dog]', 'species[foosa]', 'X1', 'X2', 'X3']
     self.sf['species'] = self.sf["species"].apply(lambda x: [x])
 
     self.def_kwargs = {
@@ -847,17 +939,21 @@ class CategoricalLinearRegressionTest(unittest.TestCase):
 
     model = tc.linear_regression.create(self.sf, self.target, self.features,
         feature_rescaling = False, validation_set = None)
-    self.sf['species'] = self.sf['species'].apply(lambda x: x if x != 'foosa'
+    # Create a copy so we don't alter the original SFrame
+    X_sf = self.sf.copy()
+    X_sf['species'] = X_sf['species'].apply(lambda x: x if x != 'foosa'
         else 'rat')
-    pred = model.predict(self.sf)
+    pred = model.predict(X_sf)
 
   def test_evaluate_extra_cols(self):
 
     model = tc.linear_regression.create(self.sf, self.target, self.features,
         feature_rescaling = False, validation_set = None)
-    self.sf['species'] = self.sf['species'].apply(lambda x: x if x != 'foosa'
+    # Create a copy so we don't alter the original SFrame
+    X_sf = self.sf.copy()
+    X_sf['species'] = X_sf['species'].apply(lambda x: x if x != 'foosa'
         else 'rat')
-    pred = model.evaluate(self.sf)
+    pred = model.evaluate(X_sf)
 
   def test_features(self):
 

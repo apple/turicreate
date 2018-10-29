@@ -307,8 +307,10 @@ def test_suite_boosted_trees_classifier():
     testCases = [
                  binary_classification_integer_target,
                  binary_classification_string_target,
+                 binary_classification_string_target_misc_input,
                  multiclass_classification_integer_target,
                  multiclass_classification_string_target,
+                 multiclass_classification_string_target_misc_input,
                  ]
 
     for t in testCases:
@@ -429,6 +431,15 @@ def binary_classification_string_target(cls):
     cls.get_ans['class_weights'] = lambda x: x == {'0-cat':1.0, '1-cat':1.0}
     cls.get_ans['classes'] = lambda x: x == ['0-cat', '1-cat']
 
+def binary_classification_string_target_misc_input(cls):
+    binary_classification_string_target(cls)
+
+    # Add noise columns of categorical,
+    noise_X = tc.util.generate_random_sframe(cls.data.num_rows(), 'vmdA')
+
+    for c in noise_X.column_names():
+        cls.data[c] = noise_X[c]
+
 
 def multiclass_classification_integer_target(cls):
 
@@ -468,6 +479,15 @@ def multiclass_classification_string_target(cls):
     cls.get_ans['num_examples_per_class'] = lambda x: x == num_examples_per_class
     cls.get_ans['classes'] = lambda x: set(x) == set(map(str, [0,1,2]))
     cls.get_ans['class_weights'] = lambda x: x == {'0':1.0, '1':1.0, '2':1.0}
+
+def multiclass_classification_string_target_misc_input(cls):
+    multiclass_classification_string_target(cls)
+
+    # Add noise columns of categorical,
+    noise_X = tc.util.generate_random_sframe(cls.data.num_rows(), 'vmdA')
+
+    for c in noise_X.column_names():
+        cls.data[c] = noise_X[c]
 
 
 class BoostedTreesClassifierTest(unittest.TestCase):

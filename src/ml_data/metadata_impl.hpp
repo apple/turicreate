@@ -153,6 +153,19 @@ inline size_t ml_metadata::column_size(size_t column_index) const {
   return get_column_metadata(column_index)->column_size();
 }
 
+/** Returns the current nd column shape of the columns
+ */
+inline const flex_nd_vec::index_range_type& ml_metadata::nd_column_shape(size_t column_index) const {
+  return get_column_metadata(column_index)->nd_column_shape();
+}
+
+/** Returns the current nd column shape of the columns
+ */
+inline const flex_nd_vec::index_range_type& ml_metadata::nd_column_shape(const std::string& column_name) const {
+  return nd_column_shape(column_index(column_name));
+}
+
+
 /** Returns the current index size of the columns in the metadata.
  */
 inline size_t ml_metadata::target_column_size() const {

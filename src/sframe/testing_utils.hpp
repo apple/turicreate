@@ -59,11 +59,19 @@ make_testing_sarray(flex_type_enum types,
  *     U:  categorical set with up to 1000 elements.
  *     d:  dictionary with 10 entries.
  *     D:  dictionary with 100 entries.
+ *     1:  1d ndarray of dimension 10
+ *     2:  2d ndarray of dimension 4x3
+ *     3:  3d ndarray of dimension 4x3x2
+ *     4:  4d ndarray of dimension 4x3x2x2
+ *     A:  3d ndarray of dimension 4x3x2, randomized non-canonical striding.
+ *
  *
  *  \param[in] create_target_column If true, then create a random
  *  target column called "target" as well.
 */
-sframe make_random_sframe(size_t n_rows, std::string column_types, bool create_target_column = false);
+sframe make_random_sframe(size_t n_rows, std::string column_types,
+                          bool create_target_column = false,
+                          size_t random_seed = 0);
 
 ////////////////////////////////////////////////////////////////////////////////
 

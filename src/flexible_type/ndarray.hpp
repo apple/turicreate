@@ -87,12 +87,14 @@ class ndarray {
           const index_type start = 0):
               ndarray(std::make_shared<container_type>(elements), shape, stride, start) {}
 
+
   /// construct with custom stride ordering
   ndarray(const std::shared_ptr<container_type>& elements,
           const index_range_type& shape = index_range_type(),
           const index_range_type& stride = index_range_type(),
           const index_type start = 0):
               m_elem(elements), m_shape(shape), m_stride(stride), m_start(start) {
+
     // construct m_shape if not given
     if (m_shape.size() == 0 && elements->size() - m_start > 0) {
       m_shape.push_back(elements->size() - m_start);
@@ -115,6 +117,7 @@ class ndarray {
         empty = true;
       }
     }
+
     if (empty) {
       m_elem->clear();
       m_shape.clear();
@@ -127,6 +130,31 @@ class ndarray {
       ASSERT_TRUE(m_shape[i] > 0);
     }
   }
+
+
+  /// Construct a new ndarray filled with a default value
+  ndarray(const index_range_type& shape, const index_range_type& stride,
+          const value_type& default_value) {
+
+    if(shape.empty()) {
+      return;
+    }
+
+    index_type total_size = 1;
+
+    for(const index_type& t : shape) {
+      total_size *= t;
+    }
+
+    *this = ndarray(std::make_shared<container_type>(total_size, default_value),
+                    shape, stride, 0);
+  }
+
+  /// Construct a new ndarray filled with a default value
+  ndarray(const index_range_type& shape,
+          const value_type& default_value)
+    : ndarray(shape, {}, default_value)
+    {}
 
   ndarray(const ndarray<T>&) = default;
   ndarray(ndarray<T>&&) = default;
@@ -366,18 +394,31 @@ class ndarray {
    * the end of the array. Returns 0 once we increment past the end of the
    * array.
    */
-  template <typename U>
-  size_t inline increment_index(std::vector<U>& idx) const {
-    DASSERT_TRUE(idx.size() == m_shape.size());
+  template <typename U, typename V>
+  static size_t inline increment_index(std::vector<U>& idx, const std::vector<V>& _shape) {
+    DASSERT_TRUE(idx.size() == _shape.size());
     int i = idx.size() - 1;
     for (;i >= 0 ; --i) {
       ++idx[i];
-      if (idx[i] < m_shape[i]) break;
+      if (idx[i] < _shape[i]) break;
       // we hit counter limit we need to advance the next counter;
       idx[i] = 0;
     }
     if (i < 0) return 0;
     else return i + 1;
+  }
+
+  /**
+   * Increments a vector representing an N-D index.
+   *
+   * Assumes that the index is valid to begin with.
+   * Returns 1 + [the index position we incremented] while we have not reached
+   * the end of the array. Returns 0 once we increment past the end of the
+   * array.
+   */
+  template <typename U>
+  size_t inline increment_index(std::vector<U>& idx) const {
+    return ndarray::increment_index(idx, m_shape);
   }
 
   /**

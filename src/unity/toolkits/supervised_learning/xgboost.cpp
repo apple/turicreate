@@ -129,49 +129,44 @@ void MakeFeatMap(utils::FeatMap &featmap,
                  std::shared_ptr<ml_metadata> & metadata) {
   size_t fbase = 0;
   for (size_t col = 0; col < metadata->num_columns(); ++col) {
-    std::string fname_base = metadata->column_name(col);
-    if ( metadata->column_type(col) == flex_type_enum::STRING ) {
-      // fname = column_name=value, e.g. gender=F
-      for (size_t offset = 0; offset < metadata->index_size(col); ++ offset) {
-        std::string fname = fname_base + "=" + std::string(metadata->indexer(col)->map_index_to_value(offset));
-        featmap.PushBack(fbase+offset, fname.c_str(), "i");
-      }
-    } else if ( metadata->column_type(col) == flex_type_enum::INTEGER ) {
-      // fname = column_name e.g. age < 25
-      for (size_t offset = 0; offset < metadata->index_size(col); ++ offset) {
-        featmap.PushBack(fbase, fname_base.c_str(), "int");
-      }
-    } else if ( metadata->column_type(col) == flex_type_enum::FLOAT ) {
-      // fname = column_name e.g. error < 0.25
-      for( size_t offset = 0; offset < metadata->index_size(col); ++ offset ){
-        featmap.PushBack(fbase+offset, fname_base.c_str(), "q");
-      }
-    } else if ( metadata->column_type(col) == flex_type_enum::DICT ) {
-      // fname = column_name["key"] e.g. bag_of_words["machine_learning"] > 20
-      for( size_t offset = 0; offset < metadata->index_size(col); ++ offset ){
 
-        const flexible_type& v = metadata->indexer(col)->map_index_to_value(offset);
-        std::string fname;
+    switch (metadata->column_type(col)) {
+      case flex_type_enum::STRING:
+        // fname = column_name=value, e.g. gender=F
+        for (size_t offset = 0; offset < metadata->index_size(col); ++offset) {
+          std::string fname =
+              (metadata->column_name(col) + "=" +
+               metadata->indexer(col)->map_index_to_value(offset).to<std::string>());
+          featmap.PushBack(fbase + offset, fname.c_str(), "i");
+        }
+        break;
 
-        if(v.get_type() == flex_type_enum::INTEGER) {
-          fname = fname_base + "[" + v.to<flex_string>() + "]";
-        } else {
-          fname = fname_base + "[\"" + v.to<flex_string>() + "\"]";
+      case flex_type_enum::INTEGER:
+
+        // fname = column_name e.g. age < 25
+        for (size_t offset = 0; offset < metadata->index_size(col); ++offset) {
+          featmap.PushBack(fbase, metadata->column_name(col).c_str(), "int");
+        }
+        break;
+
+      case flex_type_enum::FLOAT:
+      case flex_type_enum::DICT:
+      case flex_type_enum::LIST: /* Lists function like a dict with all values = 1. */
+      case flex_type_enum::VECTOR:
+      case flex_type_enum::ND_VECTOR:
+
+        // fname = column_name[index] e.g. prob[1] > 0.5
+        for (size_t offset = 0; offset < metadata->index_size(col); ++offset) {
+          featmap.PushBack(fbase + offset, metadata->feature_name(col, offset, true).c_str(), "q");
         }
 
-        featmap.PushBack(fbase+offset, fname.c_str(), "q");
-      }
-    } else if ( metadata->column_type(col) == flex_type_enum::VECTOR ) {
-      // fname = column_name[index] e.g. prob[1] > 0.5
-      for( size_t offset = 0; offset < metadata->index_size(col); ++ offset ){
-        std::string fname = fname_base + "[" + std::to_string(offset) + "]";
-        featmap.PushBack(fbase+offset, fname.c_str(), "q");
-      }
-    } else {
-      for( size_t offset = 0; offset < metadata->index_size(col); ++ offset ){
-        featmap.PushBack(fbase+offset, fname_base.c_str(), "q");
-      }
+        break;
+      default:
+        ASSERT_MSG(
+            false,
+            "Internal error: type not handled in xgboost switch statement.");
     }
+
     fbase += metadata->index_size(col);
   }
 }
@@ -1442,7 +1437,8 @@ utils::FeatMap get_index_map_with_escaping(
         _index_fmap.PushBack(index, feature_name, xg_type_code);
         break;
       }
-      case ml_column_mode::NUMERIC_VECTOR: {
+      case ml_column_mode::NUMERIC_VECTOR:
+      case ml_column_mode::NUMERIC_ND_VECTOR: {
         for (size_t offset = 0; offset < metadata->index_size(col); ++offset) {
           size_t index = to_index_info(feature_name, col, offset);
           _index_fmap.PushBack(index, feature_name, "q");
@@ -1586,7 +1582,8 @@ gl_sframe xgboost_model::get_feature_importance() {
           }
           break;
         }
-      case ml_column_mode::NUMERIC_VECTOR: {
+      case ml_column_mode::NUMERIC_VECTOR:
+      case ml_column_mode::NUMERIC_ND_VECTOR: {
         for(size_t i = 0; i < metadata->index_size(col_index); ++i) {
           out[1] = std::to_string(i);
           out[2] = counts[pos];

@@ -150,6 +150,7 @@ void column_statistics::_finalize_threadlocal(
 
         case ml_column_mode::NUMERIC:
         case ml_column_mode::NUMERIC_VECTOR:
+        case ml_column_mode::NUMERIC_ND_VECTOR:
           {
             DASSERT_FALSE(using_counts);
             DASSERT_TRUE(using_mean_std);
@@ -262,6 +263,7 @@ std::pair<bool, bool> column_statistics::_get_using_flags() const {
       break;
     case ml_column_mode::NUMERIC:
     case ml_column_mode::NUMERIC_VECTOR:
+    case ml_column_mode::NUMERIC_ND_VECTOR:
       using_mean_std = true;
       using_counts = false;
       break;

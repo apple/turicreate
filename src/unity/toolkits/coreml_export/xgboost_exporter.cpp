@@ -92,11 +92,11 @@ std::shared_ptr<MLModelWrapper> export_xgboost_model(
 
   // set up the pipeline from metadata.
   setup_pipeline_from_mldata(*pipeline, metadata);
-  std::map<size_t, size_t> dict_indices;
+  std::set<size_t> dict_indices;
   for (size_t c = 0; c < metadata->num_columns(); c++) {
     if (metadata->column_type(c) == flex_type_enum::DICT) {
       for (size_t i = 0; i < metadata->index_size(c); i++) {
-          dict_indices[metadata->global_index_offset(c) + i] = 1;
+          dict_indices.insert(metadata->global_index_offset(c) + i);
       }
     }
   }
@@ -183,10 +183,13 @@ std::shared_ptr<MLModelWrapper> export_xgboost_model(
   for(const flexible_type& ft : ft_data.range_iterator()) {
     size_t tree_id = tree_counter; // Start from 0
     ++tree_counter;
+
     for(const flexible_type& node_dict_really_raw : ft.get<flex_list>() ) {
+
       const flex_dict& node_dict_raw = node_dict_really_raw.get<flex_dict>();
 
       std::map<flex_string, flexible_type> node_dict(node_dict_raw.begin(), node_dict_raw.end());
+
       flex_int node_id = node_dict.at("id").get<flex_int>();
       flex_string type = node_dict.at("type").get<flex_string>();
 
@@ -204,6 +207,7 @@ std::shared_ptr<MLModelWrapper> export_xgboost_model(
           }
           exact_value /= num_trees_per_class;
         }
+
         tree_ensemble->setupLeafNode(tree_id, node_id,
                                      { {tree_id % num_dimensions, exact_value} });
       } else {
@@ -218,33 +222,13 @@ std::shared_ptr<MLModelWrapper> export_xgboost_model(
         size_t n = sscanf(feature_name.c_str(), "{%zd}\0", &feature_index);
         ASSERT_EQ(n, 1);
 
-        // This means that we need to swap out the no and the missing columns.
-        if(feature_type == "indicator") {
-          tree_ensemble->setupBranchNode(
-              tree_id,
-              node_id,
-              size_t(feature_index),
-              CoreML::BranchMode::BranchOnValueEqual,
-              1,
-              yes_child, missing_child);
-        // For dictionaries, set the threshold separately
-        } else if(dict_indices.find(size_t(feature_index)) != dict_indices.end()) {
-          tree_ensemble->setupBranchNode(
-              tree_id,
-              node_id,
-              size_t(feature_index),
-              CoreML::BranchMode::BranchOnValueLessThanEqual,
-              0,
-              missing_child, no_child);
-        } else {
-          tree_ensemble->setupBranchNode(
-              tree_id,
-              node_id,
-              size_t(feature_index),
-              CoreML::BranchMode::BranchOnValueLessThanEqual,
-              exact_value,
-              yes_child, no_child);
-        }
+        tree_ensemble->setupBranchNode(
+            tree_id, node_id, size_t(feature_index),
+            CoreML::BranchMode::BranchOnValueLessThanEqual, exact_value,
+            yes_child, no_child);
+
+        tree_ensemble->setMissingValueBehavior(tree_id, node_id,
+                                               (missing_child != yes_child));
       }
     }
   }
