@@ -126,11 +126,9 @@ def ac_weights_mxnet_to_mps(arg_params, aux_params, lstm_h_size):
 def _prepare_network_parameters(arg_dict):
     items = []
     for name, arr in arg_dict.items():
-        if isinstance(arr, _np.ndarray):
-            if not arr.flags.c_contiguous:
-                arr = arr.copy()
-        else:
-            arr = _np.array(arr, dtype=_np.float32)
+        arr = _np.asarray(arr, dtype=_np.float32)
+        if not arr.flags.c_contiguous:
+            arr = arr.copy()
         assert arr.flags.c_contiguous, "Input weights must be row-major"
         items.append((name, arr.astype(_np.float32)))
 
@@ -146,8 +144,7 @@ def _prepare_network_parameters(arg_dict):
 def _prepare_graph_network_parameters(arg_dict):
     items = []
     for name, arr in arg_dict.items():
-        if not isinstance(arr, _np.ndarray):
-            arr = _np.array(arr, dtype=_np.float32)
+        arr = _np.asarray(arr, dtype=_np.float32)
         items.append((name, MpsFloatArray(arr)))
 
     name = (_ctypes.c_char_p * len(items))()
