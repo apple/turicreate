@@ -27,7 +27,7 @@ You will need:
 * On Linux:
   * A C++ compiler toolchain with C++11 support (provided by `build-essential` on Ubuntu)
   * blas and lapack development libraries (typically provided by the `liblapack-dev` package)
-  * `pyfpe.h` (typically provided by the `libpython2.7-dev` package)
+  * `pyfpe.h` (typically provided by the `libpython2.7-dev` package for Python 2.7, or `libpython3.6-dev` for Python 3.6)
   * `gif_lib.h` (typically provided by the `libgif-dev` package)
   * `xxd` (typically provided by the `vim-common` package)
   * For visualization support, X11 libraries (typically provided by `libx11-dev` or `libX11-devel` packages)
