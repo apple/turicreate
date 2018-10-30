@@ -618,7 +618,6 @@ class CustomModel(ExposeAttributesFromProxy):
         --------
         >>> m.summary()
         """
-        print("xxxxx output: {}".format(output))
         if output is None or output == 'stdout':
             pass
         elif (output == 'str'):
