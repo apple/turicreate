@@ -175,8 +175,9 @@ class EXPORT linear_svm: public supervised_learning_model_base {
   
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml() override;
 
-  SUPERVISED_LEARNING_METHODS_REGISTRATION(
-      "classifier_svm", linear_svm); 
+  BEGIN_CLASS_MEMBER_REGISTRATION("classifier_svm");
+  IMPORT_BASE_CLASS_REGISTRATION(supervised_learning_model_base);
+  END_CLASS_MEMBER_REGISTRATION
  
 };
 

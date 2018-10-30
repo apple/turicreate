@@ -11,7 +11,6 @@ subdirs(ml_model
         ml_data_2
         recsys
         util 
-        options
         evaluation
         supervised_learning
         nearest_neighbors

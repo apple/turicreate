@@ -128,15 +128,6 @@ std::vector<std::vector<flexible_type> > testing_extract_sframe_data(const sfram
   return ret;
 }
 
-// The number of categories and the sizes to use for each of the
-// modes below.
-static const size_t n_categorical_few = 10;        // 'c'
-static const size_t n_categorical_many = 5000;     // 'C'
-static const size_t vector_size_small = 10;        // 'v'
-static const size_t vector_size_large = 100;       // 'V'
-static const size_t dict_size_small = 5;           // 'd'
-static const size_t dict_size_large = 100;         // 'D'
-
 /**  Creates a random SFrame for testing purposes.  The
  *  column_types gives the types of the column.
  *
@@ -158,11 +149,16 @@ static const size_t dict_size_large = 100;         // 'D'
  *     U:  categorical set with up to 1000 elements.
  *     d:  dictionary with 10 entries.
  *     D:  dictionary with 100 entries.
+ *     1:  1d ndarray of dimension 10
+ *     2:  2d ndarray of dimension 4x3
+ *     3:  3d ndarray of dimension 4x3x2
+ *     4:  4d ndarray of dimension 4x3x2x2
+ *     A:  3d ndarray of dimension 4x3x2, randomized non-canonical striding.
  *
  */
 sframe make_random_sframe(
     size_t n_rows, std::string column_types,
-    bool create_target_column) {
+    bool generate_target, size_t _random_seed) {
 
   sframe data;
 
@@ -171,66 +167,82 @@ sframe make_random_sframe(
 
   std::vector<std::string> names;
   std::vector<flex_type_enum> types;
-  std::vector<bool> is_categorical;
 
   names.resize(column_types.size());
   types.resize(column_types.size());
-  is_categorical.resize(column_types.size());
 
   ////////////////////////////////////////////////////////////////////////////////
   //  Set up the information lookups for each of the columns: type,
   //  whether it's categorical, and the description to print.
   //
-  for(size_t cid = 0; cid < num_columns; cid++){
+  for(size_t c_idx = 0; c_idx < num_columns; c_idx++){
 
-    names[cid] = std::string("C-") + std::to_string(cid + 1) +  column_types[cid];
+    names[c_idx] = std::string("X") + std::to_string(c_idx + 1) + "-" + column_types[c_idx];
 
-    switch(column_types[cid]) {
+    switch(column_types[c_idx]) {
       case 'n':
-        types[cid] = flex_type_enum::FLOAT;
-        is_categorical[cid] = false;
+      case 'N':
+      case 'r':
+      case 'R':
+        types[c_idx] = flex_type_enum::FLOAT;
         break;
 
       case 'b':
-      case 'c':
-      case 'C':
       case 'z':
       case 'Z':
-        types[cid] = flex_type_enum::INTEGER;
-        is_categorical[cid] = true;
+        types[c_idx] = flex_type_enum::INTEGER;
         break;
 
+      case 'c':
+      case 'C':
       case 's':
       case 'S':
-        types[cid] = flex_type_enum::STRING;
-        is_categorical[cid] = true;
+      case 'x':
+      case 'X':
+      case 'h':
+      case 'H':
+        types[c_idx] = flex_type_enum::STRING;
         break;
 
       case 'v':
       case 'V':
-        types[cid] = flex_type_enum::VECTOR;
-        is_categorical[cid] = false;
+      case 'w':
+      case 'W':
+        types[c_idx] = flex_type_enum::VECTOR;
         break;
 
-      case 'u':
-      case 'U':
-        types[cid] = flex_type_enum::LIST;
-        is_categorical[cid] = true;
+      case 'l':
+      case 'L':
+      case 'm':
+      case 'M':
+        types[c_idx] = flex_type_enum::LIST;
         break;
 
       case 'd':
       case 'D':
-        types[cid] = flex_type_enum::DICT;
-        is_categorical[cid] = true;
+        types[c_idx] = flex_type_enum::DICT;
+        break;
+
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case 'A':
+        types[c_idx] = flex_type_enum::ND_VECTOR;
+        break;
+
+      default:
+        std::string msg = (std::string("Column type ") + column_types[c_idx] + " not recognized.");
+        ASSERT_MSG(false, msg.c_str());
         break;
 
     }
   }
 
-  if(create_target_column) {
+  size_t target_column = names.size();
+  if(generate_target) {
     names.push_back("target");
-    types.push_back(flex_type_enum::INTEGER);
-    column_types += "C";
+    types.push_back(flex_type_enum::INTEGER); // Changed to float later on.
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -238,154 +250,238 @@ sframe make_random_sframe(
 
   data.open_for_write(names, types, "", n_threads);
 
-  std::string base_string = "TESTING STRING!!!  OH YAY!!!!";
+  // For generating a target that can mostly be learned
+  static const size_t n_bins = 16;
+  static const size_t n_target_precision = (1 << 24);
 
-  uint64_t random_seed = random::fast_uniform<size_t>(0, size_t(-1));
-  
+  // Hash it once for a bit of extra random_ness.
+  uint64_t random_seed = hash64(_random_seed);
+
+  std::vector<flex_int> target_adjust;
+
+  if(generate_target) {
+    target_adjust.resize(n_bins);
+    size_t c = 0;
+    for(flex_int & x : target_adjust) {
+      x = long(hash64(++c, random_seed) % n_target_precision) - (n_target_precision/2);
+    }
+  }
+
   in_parallel([&](size_t thread_idx, size_t num_segments) {
 
     auto it_out = data.get_output_iterator(thread_idx);
 
-    std::vector<flexible_type> row(column_types.size());
+    std::vector<flexible_type> row(column_types.size() + (generate_target ? 1 : 0));
 
     size_t start_idx = (thread_idx * n_rows) / num_segments;
     size_t end_idx = ((thread_idx + 1) * n_rows) / num_segments;
 
     for(size_t i = start_idx; i < end_idx; ++i, ++it_out) {
+      /** Base random number generators.  If there is a target
+       *  present, then these also affect the target
+       */
+      size_t _rng_state = hash64(i, random_seed);
 
+      // Start the target seed for this row.
+      flex_int target_value = 0;
+
+      // Go through the columns, randomly filling each.
       for(size_t c_idx = 0; c_idx < column_types.size(); ++c_idx) {
 
-        auto rng_int = [&](size_t lb, size_t ub){
-          return size_t(hash64(i, hash64(c_idx, random_seed)) % (ub - lb + 1)) + lb;
+        auto rng_int = [&](size_t lb, size_t ub) GL_GCC_ONLY(GL_HOT_INLINE_FLATTEN) {
+          size_t z = size_t(hash64(++_rng_state) % (ub - lb + 1));
+          if(generate_target) {
+            target_value += target_adjust[z % target_adjust.size()];
+          }
+          return z + lb;
         };
 
-        auto rng_int_seeded = [&](size_t lb, size_t ub, size_t seed){
-          return size_t(hash64(i, hash64(c_idx, hash64(seed, random_seed))) % (ub - lb + 1)) + lb;
+        auto rng_dbl = [&](double lb, double ub) GL_GCC_ONLY(GL_HOT_INLINE_FLATTEN) {
+
+          double v01 = double(hash64(++_rng_state)) / std::numeric_limits<uint64_t>::max();
+          if(generate_target) {
+            target_value += long(std::round(n_target_precision * v01) - (n_target_precision/2));
+          }
+          double v = lb + (ub - lb) * v01;
+
+          // Now, round it to the nearest 2**12 in order to accomodate possible float32 vs float64 issues.
+          double C = double(1 << 12);
+          return std::round(v * C) / C;
         };
 
-        auto rng_dbl = [&](double lb, double ub){
-          double v01 = double(hash64(i, hash64(c_idx, random_seed))) / std::numeric_limits<uint64_t>::max();
-          return lb + (ub - lb) * v01;
+        /** Composite random number generators.
+         */
+        auto rng_dbl_nan = [&](double lb, double ub) GL_GCC_ONLY(GL_HOT_INLINE_FLATTEN) {
+          return (hash64(++_rng_state) < (std::numeric_limits<uint64_t>::max() / 100)
+                  ? NAN : rng_dbl(lb,ub));
         };
-        
-        auto rng_dbl_seeded = [&](double lb, double ub, size_t seed){
-          double v01 = double(hash64(i, hash64(c_idx, hash64(seed, random_seed)))) / std::numeric_limits<uint64_t>::max();
-          return lb + (ub - lb) * v01;
+
+        // Generate a random hex string of the form "C-###"
+        auto rng_str = [&](size_t pool_size) GL_GCC_ONLY(GL_HOT_INLINE_FLATTEN) {
+          // Everything is deterministic from a random set (1, ...,
+          // pool_size), allowing for limiting the number of random things available
+          char ret[16];
+          std::fill(ret, ret + 16, '\0');
+          snprintf(&ret[0], 16, "C-%ld", rng_int(0, pool_size-1));
+          return std::string(ret);
         };
+
+        // Generate a random hex key
+        auto rng_hex = [&](size_t length, size_t pool_size) GL_GCC_ONLY(GL_HOT_INLINE_FLATTEN) {
+
+          static const char charset[] = "0123456789abcdef";
+
+          // Everything is deterministic from a random set (1, ...,
+          // pool_size), allowing for limiting the number of random things available
+          size_t x = hash64(random_seed, hash64(++_rng_state) % pool_size);
+
+          std::string ret;
+          ret.reserve(length);
+
+          for(size_t i = 0; i < length; i += 8) {
+            uint64_t number = x;
+
+            for(size_t j = 0; j < 16; ++j) {
+              ret.push_back(charset[number & 0xF]);
+              number >>= 4;
+              if(ret.size() >= length) {
+                return ret;
+              }
+            }
+
+            x = hash64(x);
+          }
+
+          return ret;
+        };
+
+        // Generate a random list
+        auto rng_list = [&](size_t max_size, size_t key_pool_size, bool string_values) GL_GCC_ONLY(GL_HOT_INLINE_FLATTEN)  {
+          size_t s = rng_int(0,max_size);
+          flex_list v(s);
+          for(flexible_type& f : v) {
+            if(string_values) {
+              f = rng_str(key_pool_size);
+            } else {
+              f = rng_int(1, key_pool_size);
+            }
+          }
+
+          return v;
+        };
+
+        // Generate a random vector
+        auto rng_vec = [&](size_t s) GL_GCC_ONLY(GL_HOT_INLINE_FLATTEN) {
+          flex_vec v(s);
+          for(double& f : v) f = rng_dbl(0,1);
+          return v;
+        };
+
+        // Generate a random vector
+        auto rng_vec_nan = [&](size_t s) GL_GCC_ONLY(GL_HOT_INLINE_FLATTEN) {
+          flex_vec v(s);
+          for(double& f : v) f = rng_dbl_nan(0,1);
+          return v;
+        };
+
+        // Generate a random dictionary
+        auto rng_dict = [&](size_t max_size, size_t key_pool_size) GL_GCC_ONLY(GL_HOT_INLINE_FLATTEN) {
+          std::map<size_t,double> m;
+
+          size_t s = rng_int(0, max_size);
+
+          for(size_t i = 0; i < s; ++i) {
+            size_t index = rng_int(1, key_pool_size);
+            double value = rng_dbl(0, 1);
+            m[index] = value;
+          }
+
+          flex_dict d;
+          d.reserve(m.size());
+          char key[16];
+
+          for(const auto& p : m) {
+            snprintf(key, 15, "K-%ld", p.first);
+            d.push_back( {flex_string(key), p.second} );
+          }
+
+          return d;
+        };
+
+        auto rng_nd_vec = [&](const flex_nd_vec::index_range_type& shape,
+                              const flex_nd_vec::index_range_type& stride) {
+          flex_nd_vec v(shape, stride, 0.0);
+
+          size_t n = v.num_elem();
+          for (size_t vidx = 0; vidx < n; ++vidx) {
+            v[vidx] = rng_dbl(0, 1);
+          }
+          return v;
+        };
+
+        // Based on the column output type, write it out
         switch(column_types[c_idx]){
 
-          case 'n':
-            row[c_idx] = rng_dbl(0,1);
-            break;
+          case 'n': { row[c_idx] = rng_dbl(0,1);               break; }
+          case 'N': { row[c_idx] = rng_dbl_nan(0,1);           break; }
+          case 'r': { row[c_idx] = rng_dbl(-100,100);          break; }
+          case 'R': { row[c_idx] = rng_dbl_nan(-1000,1000);    break; }
+          case 'b': { row[c_idx] = rng_int(0, 1);              break; }
+          case 'z': { row[c_idx] = rng_int(1, 10);             break; }
+          case 'Z': { row[c_idx] = rng_int(1, 100);            break; }
+          case 's': { row[c_idx] = rng_str(10);                break; }
+          case 'S': { row[c_idx] = rng_str(100);               break; }
+          case 'c': { row[c_idx] = rng_str(1000);              break; }
+          case 'C': { row[c_idx] = rng_str(100000);            break; }
+          case 'x': { row[c_idx] = rng_hex(32, 1000);          break; }
+          case 'X': { row[c_idx] = rng_hex(64, 100000);        break; }
+          case 'h': { row[c_idx] = rng_hex(32, size_t(-1));    break; }
+          case 'H': { row[c_idx] = rng_hex(64, size_t(-1));    break; }
+          case 'v': { row[c_idx] = rng_vec(10);                break; }
+          case 'V': { row[c_idx] = rng_vec(100);               break; }
+          case 'w': { row[c_idx] = rng_vec_nan(10);            break; }
+          case 'W': { row[c_idx] = rng_vec_nan(100);           break; }
+          case 'l': { row[c_idx] = rng_list(10, 100, false);   break; }
+          case 'L': { row[c_idx] = rng_list(100, 1000, false); break; }
+          case 'm': { row[c_idx] = rng_list(10, 100, true);    break; }
+          case 'M': { row[c_idx] = rng_list(100, 1000, true);  break; }
+          case 'd': { row[c_idx] = rng_dict(10, 100);          break; }
+          case 'D': { row[c_idx] = rng_dict(100, 1000);        break; }
 
-          case 'b':
-            row[c_idx] = (rng_dbl(0,1) < 0.5);
-            break;
+          case '1': { row[c_idx] = rng_nd_vec({10}, {});       break; }
+          case '2': { row[c_idx] = rng_nd_vec({4,3}, {});      break; }
+          case '3': { row[c_idx] = rng_nd_vec({4,3,2}, {});    break; }
+          case '4': { row[c_idx] = rng_nd_vec({4,3,2,2}, {});  break; }
+          case 'A': {
+            flex_nd_vec::index_range_type shape = {2,3,4};
+            flex_nd_vec::index_range_type stride(3);
 
-          case 'z':
-            row[c_idx] = rng_int(1, 5);
-            break;
+            flex_nd_vec::index_range_type _order = {0, 1, 2};
+            stride.resize(3, 0);
+            size_t cur_stride = 1;
+            while (!_order.empty()) {
+              int pick_index =
+                  rng_int(0, _order.size() - 1);
+              int index = _order[pick_index];
+              _order.erase(_order.begin() + pick_index);
 
-          case 'Z':
-            row[c_idx] = rng_int(1, 10);
-            break;
-
-          case 'c':
-            row[c_idx] = rng_int(0, n_categorical_few);
-            break;
-
-          case 'C':
-            row[c_idx] = rng_int(0, n_categorical_many);
-            break;
-
-          case 's':
-            row[c_idx] = std::to_string(rng_int(0, n_categorical_few));
-            break;
-
-          case 'S':
-            row[c_idx] = base_string + std::to_string(rng_int(0, n_categorical_many));
-            break;
-
-          case 'v': {
-            flex_vec v(vector_size_small);
-            for (size_t vidx = 0;vidx < v.size(); ++vidx) {
-              v[vidx] = rng_dbl_seeded(0,1, vidx);
-            }
-            row[c_idx] = v;
-            break;
-          }
-
-          case 'V': {
-            flex_vec v(vector_size_large);
-            for (size_t vidx = 0;vidx < v.size(); ++vidx) {
-              v[vidx] = rng_dbl_seeded(0,1, vidx);
-            }
-            row[c_idx] = v;
-            break;
-          }
-
-          case 'u': {
-            size_t s = rng_int(0,10);
-            flex_list v(s);
-            for (size_t vidx = 0;vidx < v.size(); ++vidx) {
-              v[vidx] = rng_int_seeded(0,n_categorical_few, vidx);
+              stride[index] = cur_stride;
+              cur_stride *= shape[index];
             }
 
-            std::sort(v.begin(), v.end());
+            row[c_idx] = rng_nd_vec(shape, stride);
 
-            row[c_idx] = v;
-            break;
-          }
-
-          case 'U': {
-            size_t s = rng_int(0,1000);
-            flex_list v(s);
-            for (size_t vidx = 0;vidx < v.size(); ++vidx) {
-              v[vidx] = rng_int_seeded(0,n_categorical_many, vidx);
-            }
-
-            std::sort(v.begin(), v.end());
-
-            row[c_idx] = v;
-            break;
-          }
-
-          case 'd': {
-            std::unordered_map<flexible_type,flexible_type> m;
-
-            for(size_t i = 0; i < dict_size_small; ++i) {
-              flexible_type index = rng_int_seeded(0, 3*dict_size_small, i);
-              flexible_type value = rng_int_seeded(1, 100, i);
-              m[index] = value;
-            }
-
-            flex_dict d(m.begin(), m.end());
-
-            row[c_idx] = d;
-            break;
-          }
-
-          case 'D': {
-            std::unordered_map<flexible_type,flexible_type> m;
-
-            for(size_t i = 0; i < dict_size_large; ++i) {
-              flexible_type index = rng_int_seeded(0, n_categorical_many, i);
-              flexible_type value = rng_int_seeded(1, 1000, i);
-              m[index] = value;
-            }
-
-            flex_dict d(m.begin(), m.end());
-
-            row[c_idx] = d;
             break;
           }
 
           default:
-            std::string msg = (std::string("Column type ") + column_types[c_idx]
-                               + " not recognized; choose in ncCsSvVdD.");
-
+            std::string msg = (std::string("Column type ") + column_types[c_idx] + " not recognized.");
             ASSERT_MSG(false, msg.c_str());
         }
+      }
+
+      if(generate_target) {
+        row[target_column] = target_value;
       }
 
       *it_out = row;
@@ -393,9 +489,6 @@ sframe make_random_sframe(
     });
 
   data.close();
-
-  DASSERT_EQ(data.num_columns(), column_types.size());
-  DASSERT_TRUE(data.column_types() == types);
 
   return data;
 }

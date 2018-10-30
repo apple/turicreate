@@ -11,7 +11,6 @@ make_library(unity_text
   REQUIRES
     numerics
     unity_core
-    unity_options
     unity_ml_model
     random
     logger

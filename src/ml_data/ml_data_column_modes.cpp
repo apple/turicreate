@@ -22,6 +22,7 @@ const char* column_mode_enum_to_name(ml_column_mode mode) {
     case ml_column_mode::DICTIONARY: return "dictionary";
     case ml_column_mode::UNTRANSLATED: return "untranslated";
     case ml_column_mode::CATEGORICAL_SORTED: return "categorical_sorted";
+    case ml_column_mode::NUMERIC_ND_VECTOR:  return "nd_numeric_vector";
     default: ASSERT_TRUE(false); return "";
   }
 }
@@ -60,7 +61,8 @@ void check_type_consistent_with_mode(const std::string& column_name,
       return;
 
     case ml_column_mode::NUMERIC_VECTOR:
-      if(column_type != flex_type_enum::VECTOR)
+      if(column_type != flex_type_enum::VECTOR
+          && column_type != flex_type_enum::ND_VECTOR)
         raise_error();
       return;
 
@@ -71,6 +73,12 @@ void check_type_consistent_with_mode(const std::string& column_name,
 
     case ml_column_mode::DICTIONARY:
       if(column_type != flex_type_enum::DICT)
+        raise_error();
+      return;
+
+    case ml_column_mode::NUMERIC_ND_VECTOR:
+      if(column_type != flex_type_enum::VECTOR
+          && column_type != flex_type_enum::ND_VECTOR)
         raise_error();
       return;
 
@@ -124,7 +132,8 @@ ml_column_mode choose_column_mode(
         check_type_in({flex_type_enum::FLOAT, flex_type_enum::INTEGER});
         break;
       case ml_column_mode::NUMERIC_VECTOR:
-        check_type_in({flex_type_enum::VECTOR});
+      case ml_column_mode::NUMERIC_ND_VECTOR:
+        check_type_in({flex_type_enum::VECTOR, flex_type_enum::ND_VECTOR});
         break;
       case ml_column_mode::CATEGORICAL:
         check_type_in({flex_type_enum::FLOAT, flex_type_enum::INTEGER,
@@ -189,6 +198,10 @@ ml_column_mode choose_column_mode(
 
       case flex_type_enum::UNDEFINED:
         mode = ml_column_mode::CATEGORICAL;
+        break;
+
+      case flex_type_enum::ND_VECTOR:
+        mode = ml_column_mode::NUMERIC_ND_VECTOR;
         break;
 
       default:

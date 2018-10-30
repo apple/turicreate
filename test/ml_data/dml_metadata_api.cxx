@@ -41,7 +41,9 @@ struct test_metadata  {
           10.0,
           flex_vec{1.0, 10.1},
           flex_list{"1", "2"},
-          flex_dict{ {"8", 1}, {"3", 2}}},
+          flex_dict{ {"8", 1}, {"3", 2} },
+          flex_nd_vec({1,2,3,4}, {}, 5)
+         },
 
          {"1",
           "ut1",
@@ -49,8 +51,9 @@ struct test_metadata  {
           11.0,
           flex_vec{2.0, 11.1},
           flex_list{"2", "3"},
-          flex_dict{ {"8", 1}, {"4", 2}}}
-
+          flex_dict{ {"8", 1}, {"4", 2}},
+          flex_nd_vec({1,2,3,4}, {}, 6)
+         }
         };
 
     std::vector<std::string> names = {
@@ -60,7 +63,8 @@ struct test_metadata  {
       "float",
       "vec",
       "list",
-      "dict"};
+      "dict",
+      "ndarray"};
 
     sframe data_sf = make_testing_sframe(names, raw_data);
 
@@ -82,20 +86,20 @@ struct test_metadata  {
 
       TS_ASSERT(!m->has_target());
 
-      TS_ASSERT_EQUALS(m->num_columns(), 7);
+      TS_ASSERT_EQUALS(m->num_columns(), 8);
       TS_ASSERT_EQUALS(m->num_untranslated_columns(), 1);
       TS_ASSERT(m->has_untranslated_columns());
 
-      TS_ASSERT_EQUALS(m->column_names().size(), 7);
+      TS_ASSERT_EQUALS(m->column_names().size(), 8);
 
       {
         bool include_untranslated_columns = true;
-        TS_ASSERT_EQUALS(m->num_columns(include_untranslated_columns), 7);
+        TS_ASSERT_EQUALS(m->num_columns(include_untranslated_columns), 8);
       }
 
       {
         bool include_untranslated_columns = false;
-        TS_ASSERT_EQUALS(m->num_columns(include_untranslated_columns), 6);
+        TS_ASSERT_EQUALS(m->num_columns(include_untranslated_columns), 7);
       }
 
       size_t global_index_offset = 0;
@@ -339,6 +343,46 @@ struct test_metadata  {
 
         TS_ASSERT_EQUALS(m->column_type(6), flex_type_enum::DICT);
         TS_ASSERT_EQUALS(m->column_type("dict"), flex_type_enum::DICT);
+      }
+      {
+        // The dict column
+        TS_ASSERT(m->column_name(7) == "ndarray");
+        TS_ASSERT(m->column_names()[7] == "ndarray");
+        TS_ASSERT(m->column_index("ndarray") == 7);
+
+        TS_ASSERT(!m->is_indexed(7));
+        TS_ASSERT(!m->is_indexed("ndarray"));
+
+        TS_ASSERT(m->indexer("ndarray").get() == m->indexer(7).get());
+
+        TS_ASSERT(m->statistics("ndarray").get() == m->statistics(7).get());
+
+        // 3 unique categorical keys
+        TS_ASSERT_EQUALS(m->index_size(7), 1*2*3*4);
+        TS_ASSERT_EQUALS(m->index_size("ndarray"), 1*2*3*4);
+
+        // 6 unique entries
+        TS_ASSERT_EQUALS(m->global_index_offset(7), global_index_offset);
+        TS_ASSERT_EQUALS(m->global_index_offset("ndarray"), global_index_offset);
+
+        global_index_offset += (1*2*3*4);
+
+        // Dicts are not categoricals
+        TS_ASSERT(!m->is_categorical(7));
+        TS_ASSERT(!m->is_categorical("ndarray"));
+
+        TS_ASSERT(!m->is_untranslated_column(7));
+        TS_ASSERT(!m->is_untranslated_column("ndarray"));
+
+        TS_ASSERT_EQUALS(m->column_mode(7), ml_column_mode::NUMERIC_ND_VECTOR);
+        TS_ASSERT_EQUALS(m->column_mode("ndarray"), ml_column_mode::NUMERIC_ND_VECTOR);
+
+        TS_ASSERT_EQUALS(m->column_type(7), flex_type_enum::ND_VECTOR);
+        TS_ASSERT_EQUALS(m->column_type("ndarray"), flex_type_enum::ND_VECTOR);
+
+        auto shape = flex_nd_vec::index_range_type{1, 2, 3, 4};
+        TS_ASSERT(m->nd_column_shape(7) == shape);
+        TS_ASSERT(m->nd_column_shape("ndarray") == shape);
       }
     }
   }

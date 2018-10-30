@@ -36,8 +36,7 @@ from .._mps_utils import (use_mps as _use_mps,
                           MpsGraphNetworkType as _MpsGraphNetworkType,
                           MpsGraphMode as _MpsGraphMode,
                           mps_to_mxnet as _mps_to_mxnet,
-                          mxnet_to_mps as _mxnet_to_mps,
-                          mxnet_network_to_mps_params as _mxnet_network_to_mps_params)
+                          mxnet_to_mps as _mxnet_to_mps)
 
 
 _MXNET_MODEL_FILENAME = "mxnet_model.params"
@@ -428,7 +427,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         mps_net_params = {}
         keys = list(net_params)
         for k in keys:
-            mps_net_params[k] = _mxnet_to_mps(net_params[k].data().asnumpy())
+            mps_net_params[k] = net_params[k].data().asnumpy()
 
         # Multiplies the loss to move the fp16 gradients away from subnormals
         # and gradual underflow. The learning rate is correspondingly divided
@@ -557,7 +556,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         keys = mps_net_params.keys()
         for k in keys:
             if k in net_params:
-                net_params[k].set_data(_mps_to_mxnet(mps_net_params[k]))
+                net_params[k].set_data(mps_net_params[k])
 
     else:  # Use MxNet
         net.hybridize()
@@ -773,7 +772,9 @@ class ObjectDetector(_CustomModel):
         use_mps = _use_mps() and num_mxnet_gpus == 0
         if use_mps:
             if not hasattr(self, '_mps_inference_net') or self._mps_inference_net is None:
-                mps_net_params = _mxnet_network_to_mps_params(self._model.collect_params())
+                mxnet_params = self._model.collect_params()
+                mps_net_params = { k : mxnet_params[k].data().asnumpy()
+                                   for k in mxnet_params }
                 mps_config = {
                     'mode': _MpsGraphMode.Inference,
                     'od_include_network': True,

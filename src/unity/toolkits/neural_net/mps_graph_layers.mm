@@ -1,4 +1,7 @@
 #include "mps_graph_layers.h"
+
+#include <memory>
+
 #include "mps_utils.h"
 
 
@@ -46,12 +49,14 @@ void ConvGraphLayer::Init(id<MTLDevice> _Nonnull device,
 
   std::string weight_key = name + "_weight";
   std::string bias_key = name + "_bias";
-  float *init_w = NULL;
+  std::unique_ptr<float[]> init_w;
   float *init_b = NULL;
   // TODO: force has key
   if (weights.count(weight_key) > 0) {
     LogStdString("Loading " + weight_key);
-    init_w = const_cast<float*>(weights.at(weight_key).data());
+    const shared_float_array& w = weights.at(weight_key);
+    init_w.reset(new float[w.size()]);
+    convert_chw_to_hwc(w, init_w.get(), init_w.get() + w.size());
   }
   if (weights.count(bias_key) > 0) {
     LogStdString("Loading " + bias_key);
@@ -70,7 +75,7 @@ void ConvGraphLayer::Init(id<MTLDevice> _Nonnull device,
                 kernelParamsBinaryName:name.c_str()
                                 device:device
                              cmd_queue:cmd_queue
-                       init_weight_ptr:init_w
+                       init_weight_ptr:init_w.get()
                          init_bias_ptr:init_b
                       optimizerOptions:get_array_map_optimizer_options(config)];
 
@@ -104,15 +109,25 @@ float_array_map ConvGraphLayer::Export() const {
   size_t k_w = iparams[1];
   size_t c_in = iparams[2];
   size_t c_out = iparams[3];
+  size_t size = k_h * k_w * c_in * c_out;
   [weight load];
+
+  // Transpose the weights from NHWC to NCHW.
   std::string weight_key = name + "_weight";
-  table[weight_key] = shared_float_array::copy(
-      reinterpret_cast<float*>([weight weights]), {c_out, k_h, k_w, c_in});
+  std::vector<float> weights(size);
+  size_t mps_shape[] = { c_out, k_h, k_w, c_in };
+  const float* mps_weights = reinterpret_cast<float*>([weight weights]);
+  convert_hwc_to_chw(external_float_array(mps_weights, size, mps_shape, 4),
+                     weights.data(), weights.data() + size);
+  table[weight_key] = shared_float_array::wrap(std::move(weights),
+                                               {c_out, c_in, k_h, k_w});
+
   if (use_bias) {
     std::string bias_key = name + "_bias";
     table[bias_key] = shared_float_array::copy(
         reinterpret_cast<float*>([weight biasTerms]), {c_out});
   }
+
   return table;
 }
 

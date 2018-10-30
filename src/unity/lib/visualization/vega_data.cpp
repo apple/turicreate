@@ -12,11 +12,11 @@ namespace turi {
 namespace visualization {
 
 vega_data::vega_data() {
-  m_spec << "{\"data_spec\": {\"name\": \"source_2\", \"values\": [";
+  m_spec << "{\"name\": \"source_2\", \"values\": [";
 }
 
 std::string vega_data::get_data_spec(double progress) {
-  m_spec << "], \"progress\": "+std::to_string(progress)+" }}\n";
+  m_spec << "], \"progress\": "+std::to_string(progress)+" }";
   return m_spec.str();
 }
 

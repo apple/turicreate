@@ -72,14 +72,14 @@ void ml_model_base::set_options(const std::map<std::string, flexible_type>& _opt
 /**
  * Return the "state" map.
  */
-std::map<std::string, variant_type> ml_model_base::get_state() const{
+const std::map<std::string, variant_type>& ml_model_base::get_state() const{
   return state;
 }
 
 /**
  * Get value in the given dictionary.
  */
-variant_type ml_model_base::get_value_from_state(std::string key){
+const variant_type& ml_model_base::get_value_from_state(std::string key){
 
   // Field does not exist
   if(state.count(key) == 0){

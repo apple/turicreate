@@ -9,7 +9,7 @@
 #include <numerics/armadillo.hpp>
 // ML-Data & options manager
 #include <unity/toolkits/ml_data_2/ml_data.hpp>
-#include <unity/toolkits/options/option_manager.hpp> 
+#include <unity/lib/extensions/option_manager.hpp>
 #include <table_printer/table_printer.hpp>
 
 // Factorization model impl
