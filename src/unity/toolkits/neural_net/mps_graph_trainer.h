@@ -16,10 +16,8 @@ EXPORT int TCMPSDeleteGraphModule(MPSHandle handle);
 
 EXPORT int TCMPSInitGraph(MPSHandle handle, int network_id, int n, int c_in, int h_in, int w_in,
                      int c_out, int h_out, int w_out,
-                     char **config_names, void **config_arrays,
-                     int64_t *config_sizes, int config_len,
-                     char **weight_names, void **weight_arrays,
-                     int64_t *weight_sizes, int weight_len);
+                     char **config_names, void **config_arrays, int config_len,
+                     char **weight_names, void **weight_arrays, int weight_len);
 
 EXPORT int TCMPSSetLearningRateGraph(MPSHandle handle, float new_lr);
 

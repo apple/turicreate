@@ -99,16 +99,14 @@ int TCMPSTrainReturnGradGraph(
 
 int TCMPSInitGraph(MPSHandle handle, int network_id, int n, int c_in, int h_in, int w_in,
               int c_out, int h_out, int w_out,
-              char **config_names, void **config_arrays,
-              int64_t *config_sizes, int config_len,
-              char **weight_names, void **weight_arrays,
-              int64_t *weight_sizes, int weight_len) {
+              char **config_names, void **config_arrays, int config_len,
+              char **weight_names, void **weight_arrays, int weight_len) {
   API_BEGIN();
   
   float_array_map config =
-      make_array_map(config_names, config_arrays, config_sizes, config_len);
+      make_array_map(config_names, config_arrays, config_len);
   float_array_map weights =
-      make_array_map(weight_names, weight_arrays, weight_sizes, weight_len);
+      make_array_map(weight_names, weight_arrays, weight_len);
 
   mps_graph_cnn_module *obj = (mps_graph_cnn_module *)handle;
   obj->init(network_id, n, c_in, h_in, w_in, c_out, h_out, w_out,

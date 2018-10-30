@@ -123,21 +123,12 @@ def ac_weights_mxnet_to_mps(arg_params, aux_params, lstm_h_size):
 
     return mps_weights
 
-def mxnet_network_to_mps_params(net_params):
-    mps_net_params = {}
-    for k in net_params:
-        mps_net_params[k] = mxnet_to_mps(net_params[k].data().asnumpy())
-    return mps_net_params
-
-
 def _prepare_network_parameters(arg_dict):
     items = []
     for name, arr in arg_dict.items():
-        if isinstance(arr, _np.ndarray):
-            if not arr.flags.c_contiguous:
-                arr = arr.copy()
-        else:
-            arr = _np.array(arr, dtype=_np.float32)
+        arr = _np.asarray(arr, dtype=_np.float32)
+        if not arr.flags.c_contiguous:
+            arr = arr.copy()
         assert arr.flags.c_contiguous, "Input weights must be row-major"
         items.append((name, arr.astype(_np.float32)))
 
@@ -150,6 +141,18 @@ def _prepare_network_parameters(arg_dict):
         arr[i] = _ctypes.c_void_p(items[i][1].ctypes.data)
     return items, name, arr, sz
 
+def _prepare_graph_network_parameters(arg_dict):
+    items = []
+    for name, arr in arg_dict.items():
+        arr = _np.asarray(arr, dtype=_np.float32)
+        items.append((name, MpsFloatArray(arr)))
+
+    name = (_ctypes.c_char_p * len(items))()
+    arr = (_ctypes.c_void_p * len(items))()
+    for i in range(len(items)):
+        name[i] = _ctypes.c_char_p(items[i][0].encode())
+        arr[i] = items[i][1].handle
+    return items, name, arr
 
 _g_TCMPS_LIB = None
 
@@ -450,8 +453,8 @@ class MpsGraphAPI(object):
         self._mode = int(config.get('mode', MpsGraphMode.TrainReturnGrad))
         self._is_train = self._mode in {MpsGraphMode.TrainReturnGrad, MpsGraphMode.Train}
 
-        config_items, config_name, config_arr, config_sz = _prepare_network_parameters(config)
-        weights_items, weights_name, weights_arr, weights_sz = _prepare_network_parameters(weights)
+        config_items, config_name, config_arr = _prepare_graph_network_parameters(config)
+        weights_items, weights_name, weights_arr = _prepare_graph_network_parameters(weights)
         self._LIB.TCMPSInitGraph(
             self.handle,
             self.network_id,
@@ -462,8 +465,8 @@ class MpsGraphAPI(object):
             _ctypes.c_int32(c_out),
             _ctypes.c_int32(h_out),
             _ctypes.c_int32(w_out),
-            config_name, config_arr, config_sz, _ctypes.c_int32(len(config_items)),
-            weights_name, weights_arr, weights_sz, _ctypes.c_int32(len(weights_items)),
+            config_name, config_arr, _ctypes.c_int32(len(config_items)),
+            weights_name, weights_arr, _ctypes.c_int32(len(weights_items)),
         )
         self._cur_config = _deepcopy(config)
         if self._mode == MpsGraphMode.TrainReturnGrad:

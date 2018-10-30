@@ -7,6 +7,9 @@ project(unity_toolkits)
 
 # When building for macOS, build the MetalPerformanceShaders-based backend.
 if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
+    find_library(ACCELERATE NAMES Accelerate)
+    message("Accelerate found at ${ACCELERATE}.")
+
     find_library(METAL NAMES Metal)
     message("Metal found at ${METAL}.")
 
@@ -30,6 +33,7 @@ if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
         mps_weight.mm
         mps_device_manager.m
       REQUIRES
+        ${ACCELERATE}
         ${METAL}
         ${METAL_PERFORMANCE_SHADERS}
     )

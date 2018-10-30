@@ -50,6 +50,11 @@ public:
   external_float_array(const float* data, size_t size, const size_t* shape,
                        size_t dim);
 
+  explicit external_float_array(const float_array& array)
+    : external_float_array(array.data(), array.size(), array.shape(),
+                           array.dim())
+  {}
+
   const float* data() const override { return data_; }
   size_t size() const override { return size_; }
 
