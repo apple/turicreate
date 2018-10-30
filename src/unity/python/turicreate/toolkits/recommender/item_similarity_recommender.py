@@ -211,12 +211,10 @@ def create(observation_data,
     ItemSimilarityRecommender
 
     """
-
-    method = 'item_similarity'
-
-    opts = {'model_name': method}
-    response = _turicreate.extensions._recsys.init(opts)
-    model_proxy = response['model']
+    
+    opts = {}
+    model_proxy = _turicreate.extensions.item_similarity()
+    model_proxy.init_options(opts)
 
     if user_data is None:
         user_data = _turicreate.SFrame()
@@ -229,12 +227,9 @@ def create(observation_data,
         print("WARNING: training_method = " + str(kwargs["training_method"]) + " deprecated; see documentation.")
         kwargs["training_method"] = "auto"
 
-    opts = {#'dataset': observation_data,
-            'user_id': user_id,
+    opts = {'user_id': user_id,
             'item_id': item_id,
             'target': target,
-            #'user_data': user_data,
-            #'item_data': item_data,
             'similarity_type': similarity_type,
             'threshold': threshold,
             'target_memory_usage' : float(target_memory_usage),

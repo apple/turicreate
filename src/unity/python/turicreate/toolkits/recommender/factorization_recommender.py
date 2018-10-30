@@ -186,11 +186,9 @@ def create(observation_data,
 
     """
 
-    method = 'factorization_recommender'
-
-    opts = {'model_name': method}
-    response = _turicreate.extensions._recsys.init(opts)
-    model_proxy = response['model']
+    opts = {}
+    model_proxy = _turicreate.extensions.factorization_recommender()
+    model_proxy.init_options(opts)
 
     if user_data is None:
         user_data = _turicreate.SFrame()
@@ -198,14 +196,9 @@ def create(observation_data,
         item_data = _turicreate.SFrame()
     nearest_items = _turicreate.SFrame()
 
-    opts = {#'dataset'                 : observation_data,
-            'user_id'                 : user_id,
+    opts = {'user_id'                 : user_id,
             'item_id'                 : item_id,
             'target'                  : target,
-            #'user_data'               : user_data,
-            #'item_data'               : item_data,
-            #'nearest_items'           : _turicreate.SFrame(),
-            ##'model'                   : model_proxy,
             'random_seed'             : random_seed,
             'num_factors'             : num_factors,
             'regularization'          : regularization,
@@ -217,7 +210,6 @@ def create(observation_data,
             'side_data_factorization' : side_data_factorization,
 
         # has no effect in the c++ end; ignore.
-        # 'verbose'                 : verbose,
 
             'nmf'                     : nmf}
 
@@ -231,17 +223,12 @@ def create(observation_data,
         if bad_arguments:
             raise TypeError("Bad Keyword Arguments: " + ', '.join(bad_arguments))
 
-        ##extra_data = {"nearest_items" : _turicreate.SFrame()}
         opts.update(kwargs)
 
     extra_data = {"nearest_items" : _turicreate.SFrame()}
 
-    #import pdb
-    #pdb.set_trace()
-
     with QuietProgress(verbose):
         model_proxy.train(observation_data, user_data, item_data, opts, extra_data)
-        #response = _turicreate.extensions._recsys.train(opts)
 
     return FactorizationRecommender(model_proxy)#response['model'])
 

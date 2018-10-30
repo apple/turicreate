@@ -1238,6 +1238,26 @@ std::shared_ptr<unity_sframe_base> recsys_model_base::recommend_extension_wrappe
 
 }
 
+std::shared_ptr<unity_sframe_base> recsys_model_base::get_num_users_per_item_extension_wrapper() const {
+
+  const sframe& outputSFrame = this->get_num_users_per_item();
+  std::shared_ptr<unity_sframe> usframe = std::make_shared<unity_sframe>();
+  usframe->construct_from_sframe(outputSFrame);
+  
+  return usframe;
+
+}
+
+std::shared_ptr<unity_sframe_base> recsys_model_base::get_num_items_per_user_extension_wrapper() const {
+
+  const sframe& outputSFrame = this->get_num_items_per_user();
+  std::shared_ptr<unity_sframe> usframe = std::make_shared<unity_sframe>();
+  usframe->construct_from_sframe(outputSFrame);
+  
+  return usframe;
+
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 sframe recsys_model_base::precision_recall_stats(
@@ -1819,25 +1839,13 @@ void recsys_model_base::api_train(
     const std::map<std::string, flexible_type>& opts,
     const variant_map_type& extra_data) {
 
-  //void recsys_model_base::api_train(gl_sframe _dataset, gl_sframe _user_data, gl_sframe _item_data, flexible_type>& opts) {
-
-  //variant_map_type ret;
-
   sframe dataset = _dataset.materialize_to_sframe();
   sframe user_data = _user_data.materialize_to_sframe();
   sframe item_data = _item_data.materialize_to_sframe();
 
-  //opts.erase("model_name");
-
-  this->set_options(opts);
+  this->init_options(opts);
   this->setup_and_train(dataset, user_data, item_data, extra_data);
-/*
-  std::shared_ptr<recsys_model_base> self;
-  self.reset(this);
 
-  ret["model"] = to_variant(self);
-  return ret;
-*/
 }
 
 
@@ -1890,6 +1898,19 @@ variant_map_type recsys_model_base::api_get_data_schema() {
   return ret;
 }
 
+variant_map_type recsys_model_base::summary() {
+
+  variant_map_type ret;
+  for (auto& opt : this->get_current_options()) {
+    ret[opt.first] = opt.second;
+  }
+  for (auto& opt : this->get_train_stats()) {
+    ret[opt.first] = opt.second;
+  }
+
+  return ret;
+}
+
 EXPORT variant_map_type train_test_split(gl_sframe _dataset,
                                          const std::string& user_column,
                                          const std::string& item_column,
@@ -1911,6 +1932,8 @@ EXPORT variant_map_type train_test_split(gl_sframe _dataset,
   return ret;
 
 }
+
+
 
 
 

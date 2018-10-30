@@ -79,40 +79,27 @@ def create(observation_data,
     --------
     PopularityRecommender
     """
-
-    opts = {'model_name': 'popularity'}
-    response = _turicreate.extensions._recsys.init(opts)
-    model_proxy = response['model']
+    
+    opts = {}
+    model_proxy = _turicreate.extensions.popularity()
+    model_proxy.init_options(opts)
 
     if user_data is None:
         user_data = _turicreate.SFrame()
     if item_data is None:
         item_data = _turicreate.SFrame()
     nearest_items = _turicreate.SFrame()
-    #print(type(observation_data))
-    #print(type(user_id))
-    #print(type(item_id))
-    #print(type(target))
-    #print(type(user_data))
-    #print(type(item_data))
 
-    opts = {#'dataset': observation_data,
-            'user_id': user_id,
+    opts = {'user_id': user_id,
             'item_id': item_id,
             'target': target,
-    #        'user_data': user_data,
-    #        'item_data': item_data,
-    #        'nearest_items': _turicreate.SFrame(),
             'random_seed': 1}
-    #opts={}
 
     extra_data = {"nearest_items" : _turicreate.SFrame()}
     with QuietProgress(verbose):
         model_proxy.train(observation_data, user_data, item_data, opts, extra_data)
-        #response = _turicreate.extensions._recsys.train(opts)
 
-
-    return PopularityRecommender(model_proxy)#response['model'])
+    return PopularityRecommender(model_proxy)
 
 class PopularityRecommender(_Recommender):
     """

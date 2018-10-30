@@ -331,7 +331,13 @@ public:
     std::shared_ptr<unity_sframe_base> new_observation_data,
     flex_int top_k) const;
 
+  std::shared_ptr<unity_sframe_base> get_num_users_per_item_extension_wrapper() const; 
+
+  std::shared_ptr<unity_sframe_base> get_num_items_per_user_extension_wrapper() const; 
+
   virtual void export_to_coreml(const std::string& filename);
+
+  variant_map_type summary();
 
   /**
    * Compute the precision and recall for a (potentially held out) set of
@@ -378,6 +384,9 @@ public:
   /// Serialization -- load
   void load_version(turi::iarchive& iarc, size_t version) override;
 
+ // Implement the bare minimum of the pure virtual methods
+  //virtual void init_options(const std::map<std::string, flexible_type>&_options) =0;
+
   /// Get stats about algorithm runtime
   std::map<std::string, flexible_type> get_train_stats();
 
@@ -389,6 +398,10 @@ public:
                                        recsys_model_base::api_get_similar_items,
                                        "items", "k", "verbose",
                                        "get_all_items");
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("init_options",
+                                       recsys_model_base::init_options,
+                                       "options");
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_similar_users",
                                        recsys_model_base::api_get_similar_users,
@@ -408,6 +421,25 @@ public:
       "restrictions", "new_data", "new_user_data", "new_item_data",
       "exclude_training_interactions", "top_k", "diversity", "random_seed");
 
+  register_defaults("recommend",
+                    {{"exclude", gl_sframe()},
+                    {"restrictions", gl_sframe()},
+                    {"new_data", gl_sframe()},
+                    {"new_user_data", gl_sframe()},
+                    {"new_item_data", gl_sframe()},
+                    {"exclude_training_interactions", true},
+                    {"diversity", 0},
+                    {"random_seed", 1}});
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+      "get_current_options", recsys_model_base::api_get_current_options); //
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_num_users_per_item", recsys_model_base::get_num_users_per_item_extension_wrapper);
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_num_items_per_user", recsys_model_base::get_num_items_per_user_extension_wrapper);
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("summary", recsys_model_base::summary);
+
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
       "get_popularity_baseline", recsys_model_base::get_popularity_baseline);
 
@@ -425,6 +457,8 @@ public:
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_data_schema",
                                        recsys_model_base::api_get_data_schema);
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_train_stats", recsys_model_base::get_train_stats);
 
   REGISTER_CLASS_MEMBER_FUNCTION(recsys_model_base::recommend_extension_wrapper,
                                  "reference_data", "new_observation_data",
