@@ -23,15 +23,22 @@ Build Dependencies
 
 You will need:
 
-* On macOS, [Xcode](https://itunes.apple.com/us/app/xcode/id497799835) with command line tools (tested with Xcode 9 and Xcode 10 beta 3)
+* On macOS, [Xcode](https://itunes.apple.com/us/app/xcode/id497799835) with command line tools (tested with Xcode 9 and later)
 * On Linux:
-  * A C++ compiler toolchain with C++11 support
+  * A C++ compiler toolchain with C++11 support (provided by `build-essential` on Ubuntu)
+  * blas and lapack development libraries (typically provided by the `liblapack-dev` package)
+  * `pyfpe.h` (typically provided by the `libpython2.7-dev` package for Python 2.7, or `libpython3.6-dev` for Python 3.6)
   * `gif_lib.h` (typically provided by the `libgif-dev` package)
   * `xxd` (typically provided by the `vim-common` package)
   * For visualization support, X11 libraries (typically provided by `libx11-dev` or `libX11-devel` packages)
 * On both macOS and Linux:
   * [Node.js](https://nodejs.org) 6.x or later with `node` and `npm` in `$PATH`
-  * The python `virtualenv` package.
+  * The python `virtualenv` package
+
+Optionally, you may want:
+
+* `cmake` (if not present, one will be downloaded and bootstrapped locally).
+* `ccache` (speeds up subsequent builds by caching intermediate outputs).
 
 Turi Create automatically satisfies other dependencies in the `deps/` directory,
 which includes compiler support and dependent libraries.
