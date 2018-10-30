@@ -59,4 +59,4 @@ script:
   - rm src/unity/python/turicreate/test/test_style_transfer.py src/unity/python/turicreate/test/test_object_detector.py
 
   # Build the wheel
-  - travis_wait 180 bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=2 --debug --skip_cpp_test
+  - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=3 --debug --skip_cpp_test
