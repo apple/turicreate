@@ -33,7 +33,7 @@
 #include <unity/toolkits/nearest_neighbors/distances.hpp>
 #include <unity/toolkits/nearest_neighbors/unity_nearest_neighbors.hpp>
 #include <unity/toolkits/text/unity_text.hpp>
-#include <unity/toolkits/recsys/unity_recsys.hpp>
+#include <unity/toolkits/recsys/recsys_model_base.hpp>
 #include <unity/toolkits/clustering/unity_kmeans.hpp>
 
 #include <unity/toolkits/nearest_neighbors/class_registrations.hpp>

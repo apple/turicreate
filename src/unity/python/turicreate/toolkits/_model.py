@@ -463,6 +463,7 @@ class Model(ExposeAttributesFromProxy):
         elif output == 'dict':
             return _toolkit_serialize_summary_struct( self, \
                                             *self._get_summary_struct() )
+
         try:
             print(self.__repr__())
         except:

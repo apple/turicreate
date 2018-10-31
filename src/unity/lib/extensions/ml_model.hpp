@@ -71,23 +71,6 @@ class EXPORT ml_model_base: public model_base {
   inline virtual ~ml_model_base() { }
 
   /**
-   * Returns the current model version
-   */
-  virtual size_t get_version() const = 0;
-
-  /**
-   * Serializes the model. Must save the model to the file format version
-   * matching that of get_version()
-   */
-  virtual void save_impl(oarchive& oarc) const = 0;
-
-  /**
-   * Loads a model previously saved at a particular version number.
-   * Should raise an exception on failure.
-   */
-  virtual void load_version(iarchive& iarc, size_t version) = 0;
-
-  /**
    * Set one of the options in the algorithm. Use the option manager to set
    * these options. If the option does not satisfy the conditions that the
    * option manager has imposed on it. Errors will be thrown.

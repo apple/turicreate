@@ -211,12 +211,10 @@ def create(observation_data,
     ItemSimilarityRecommender
 
     """
-
-    method = 'item_similarity'
-
-    opts = {'model_name': method}
-    response = _turicreate.extensions._recsys.init(opts)
-    model_proxy = response['model']
+    
+    opts = {}
+    model_proxy = _turicreate.extensions.item_similarity()
+    model_proxy.init_options(opts)
 
     if user_data is None:
         user_data = _turicreate.SFrame()
@@ -229,18 +227,16 @@ def create(observation_data,
         print("WARNING: training_method = " + str(kwargs["training_method"]) + " deprecated; see documentation.")
         kwargs["training_method"] = "auto"
 
-    opts = {'dataset': observation_data,
-            'user_id': user_id,
+    opts = {'user_id': user_id,
             'item_id': item_id,
             'target': target,
-            'user_data': user_data,
-            'item_data': item_data,
-            'nearest_items': nearest_items,
-            'model': model_proxy,
             'similarity_type': similarity_type,
             'threshold': threshold,
             'target_memory_usage' : float(target_memory_usage),
             'max_item_neighborhood_size': only_top_k}
+
+
+    extra_data = {"nearest_items" : nearest_items}
 
     if kwargs:
         try:
@@ -254,12 +250,13 @@ def create(observation_data,
 
         opts.update(kwargs)
 
+    extra_data = {"nearest_items" : nearest_items}
     opts.update(kwargs)
 
     with QuietProgress(verbose):
-        response = _turicreate.extensions._recsys.train(opts)
+        model_proxy.train(observation_data, user_data, item_data, opts, extra_data)
 
-    return ItemSimilarityRecommender(response['model'])
+    return ItemSimilarityRecommender(model_proxy)
 
 
 _get_default_options = _get_default_options_wrapper(

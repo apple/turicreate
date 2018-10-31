@@ -792,9 +792,7 @@ sframe recsys_itemcf::get_similar_items(
   #pragma clang diagnostic ignored "-Wswitch"
 #endif
 
-void recsys_itemcf::export_to_coreml(
-    std::shared_ptr<recsys_model_base> recsys_model,
-    const std::string& filename) {
+void recsys_itemcf::export_to_coreml(const std::string& filename) {
 
   std::shared_ptr<CoreML::Model> coreml_model = std::make_shared<CoreML::Model>(
       std::string("Item Similarity Recommender Model exported from Turi Create ") + __UNITY_VERSION__);
@@ -803,7 +801,7 @@ void recsys_itemcf::export_to_coreml(
   auto* desc = proto.mutable_description();
   auto* interactions_feature = desc->add_input();
 
-  std::string target_column = recsys_model->get_option_value("target");
+  std::string target_column = this->get_option_value("target");
   bool target_is_present = (target_column != "");
 
   interactions_feature->set_name("interactions");
@@ -820,7 +818,7 @@ void recsys_itemcf::export_to_coreml(
   // TODO - what if it has values > 32 bit? MLMultiArray only supports 32-bit ints.
   // TODO - what if it's string? how to tell? can it be anything else?
   // in that case, possible to use CoreML feature transforms to get the inputs to make sense?
-  switch (recsys_model->item_type()) {
+  switch (this->item_type()) {
     case (turi::flex_type_enum::INTEGER): {
       interactions_feature_type->mutable_dictionarytype()->mutable_int64keytype();
       break;
@@ -845,7 +843,7 @@ void recsys_itemcf::export_to_coreml(
   rank_output->set_name("recommendations");
   rank_output->set_shortdescription("Top k recommendations.");
   auto* rank_output_type = rank_output->mutable_type();
-  switch (recsys_model->item_type()) {
+  switch (this->item_type()) {
     case (turi::flex_type_enum::INTEGER): {
       rank_output_type->mutable_dictionarytype()->mutable_int64keytype();
       break;
@@ -861,7 +859,7 @@ void recsys_itemcf::export_to_coreml(
   probability_output->set_name("probabilities");
   probability_output->set_shortdescription("The probability for each recommendation in the top k.");
   auto* probability_output_type = probability_output->mutable_type();
-  switch (recsys_model->item_type()) {
+  switch (this->item_type()) {
     case (turi::flex_type_enum::INTEGER): {
       probability_output_type->mutable_dictionarytype()->mutable_int64keytype();
       break;
@@ -880,7 +878,7 @@ void recsys_itemcf::export_to_coreml(
   auto bytes_value = CoreML::Specification::CustomModel::CustomModelParamValue();
 
   std::stringstream ss;
-  turi::get_unity_global_singleton()->save_model_to_data(recsys_model, ss);
+  this->save_model_to_data(ss);
   bytes_value.set_bytesvalue(ss.str());
   (*custom_model_parameters)["turi_create_model"] = bytes_value;
 
