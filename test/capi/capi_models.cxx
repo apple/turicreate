@@ -299,20 +299,15 @@ BOOST_AUTO_TEST_CASE(test_recommender) {
     CAPI_CHECK_ERROR(error);
 
     // Add in the sframe; then destroy it when we're done with it.
-    {
-      tc_parameters_add_sframe(args, "dataset", sf, &error);
-      CAPI_CHECK_ERROR(error);
-    }
-
-    {
-      tc_parameters_add_sframe(args, "user_data", sf, &error);
-      CAPI_CHECK_ERROR(error);
-    }
-
-    {
-      tc_parameters_add_sframe(args, "item_data", sf, &error);
-      CAPI_CHECK_ERROR(error);
-    }
+    
+    tc_parameters_add_sframe(args, "dataset", sf, &error);
+    CAPI_CHECK_ERROR(error);
+    
+    tc_parameters_add_sframe(args, "user_data", sf, &error);
+    CAPI_CHECK_ERROR(error);
+    
+    tc_parameters_add_sframe(args, "item_data", sf, &error);
+    CAPI_CHECK_ERROR(error);
 
     // Set the options
     {
@@ -339,15 +334,15 @@ BOOST_AUTO_TEST_CASE(test_recommender) {
 
     tc_model* model; 
 
-      // We now have enough to create the model.
-      model = tc_model_new(model_name, &error);
-      CAPI_CHECK_ERROR(error);
+    // We now have enough to create the model.
+    model = tc_model_new(model_name, &error);
+    CAPI_CHECK_ERROR(error);
 
-      tc_variant* ret = tc_model_call_method(model, "train", args, &error);
-      CAPI_CHECK_ERROR(error);
-      TS_ASSERT(ret != NULL);
+    tc_variant* ret = tc_model_call_method(model, "train", args, &error);
+    CAPI_CHECK_ERROR(error);
+    TS_ASSERT(ret != NULL);
 
-      tc_release(ret);
+    tc_release(ret);
     
 
     tc_release(args);
@@ -423,56 +418,7 @@ BOOST_AUTO_TEST_CASE(test_recommender) {
       std::string model_path;
       std::string error_message;
       std::string expected_substr;
-
-#ifdef MECHANISM_FOR_TRIGGERING_AN_ERROR_IN_DOCKER
-      // sad path 1 - attempting to save without permission to location
-      // ensure the error message contains useful info
-
-      // first, make a directory we can't write to
-      std::string bad_directory =
-        turi::fs_util::system_temp_directory_unique_path("capi_model_permission_denied", "");
-      turi::fileio::create_directory(bad_directory);
-      model_path = turi::fs_util::join({bad_directory, "model.mlmodel"});
-
-#ifdef __linux
-      // set the immutable bit on it
-      int new_attrs = FS_IMMUTABLE_FL;
-      size_t fd = open(bad_directory.c_str(), 0);
-      // If ioctl returns -1, it means the user probably isn't root -
-      // in that case, try setting owner_read permission instead.
-      // As root, we must rely on the immutable flag.
-      if (ioctl(fd, FS_IOC_SETFLAGS, &new_attrs) == -1) {
-        boost::filesystem::permissions(bad_directory, boost::filesystem::owner_read);
-      }
-      close(fd);
-#else
-      boost::filesystem::permissions(bad_directory, boost::filesystem::owner_read);
-#endif
-
-      tc_model_save(model, model_path.c_str(), &error);
-      TS_ASSERT_DIFFERS(error, nullptr);
-      error_message = tc_error_message(error);
-      expected_substr = "Ensure that you have write permission to this location, or try again with a different path";
-      TS_ASSERT_DIFFERS(error_message.find(expected_substr), error_message.npos);
-      error = nullptr;
-#endif  // MECHANISM_FOR_TRIGGERING_AN_ERROR_IN_DOCKER
-
-      // sad path 2 - attempting to save into an existing non-directory path
-      // ensure the error message contains useful info
-      model_path =
-        turi::fs_util::system_temp_directory_unique_path("", "_save_test_1_tmp_file");
-      {
-        std::ofstream tmp_file(model_path);
-        tmp_file << "Hello world";
-      }
-      tc_model_save(model, model_path.c_str(), &error);
-      TS_ASSERT_DIFFERS(error, nullptr);
-      error_message = tc_error_message(error);
-      expected_substr = "It already exists as a file";
-      TS_ASSERT_DIFFERS(error_message.find(expected_substr), error_message.npos);
-      error = nullptr;
-
-      // happy path - save should succeed
+      
       model_path =
         turi::fs_util::system_temp_directory_unique_path("", "_save_test_1_tmp_model");
 

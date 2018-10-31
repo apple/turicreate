@@ -162,8 +162,8 @@ class AdditionalDataTest(unittest.TestCase):
         item_data = self.item_data
 
         for mod in [tc.recommender.item_similarity_recommender,
-                    tc.recommender.factorization_recommender,       
-                    tc.recommender.ranking_factorization_recommender,       
+                    tc.recommender.factorization_recommender,
+                    tc.recommender.ranking_factorization_recommender,
                     tc.recommender.popularity_recommender]:
 
             m = mod.create(data, 'user_id', 'item_id', 'rating')
@@ -176,8 +176,8 @@ class AdditionalDataTest(unittest.TestCase):
         data = self.data
 
         for mod in [tc.recommender.item_similarity_recommender,
-                    tc.recommender.factorization_recommender,       
-                    tc.recommender.ranking_factorization_recommender,       
+                    tc.recommender.factorization_recommender,
+                    tc.recommender.ranking_factorization_recommender,
                     tc.recommender.popularity_recommender]:
             self.assertRaises(TypeError, lambda: \
                               mod.create(data, 'user_id', 'item_id', 'rating', i_want_a_pony = True))
@@ -213,8 +213,8 @@ class AdditionalDataTest(unittest.TestCase):
 
 
         for mod in [tc.recommender.item_similarity_recommender,
-                    tc.recommender.factorization_recommender,       
-                    tc.recommender.ranking_factorization_recommender,       
+                    tc.recommender.factorization_recommender,
+                    tc.recommender.ranking_factorization_recommender,
                     tc.recommender.popularity_recommender]:
 
             m = mod.create(X, 'user_id', 'item_id', 'rating',

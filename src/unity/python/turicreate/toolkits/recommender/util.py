@@ -501,7 +501,8 @@ def random_split_by_user(dataset,
             'item_test_proportion': item_test_proportion,
             'random_seed': random_seed}
 
-    response = _turicreate.extensions._recsys.train_test_split(dataset, user_id, item_id, max_num_users, item_test_proportion, random_seed)
+    response = _turicreate.extensions._recsys.train_test_split(dataset, user_id, item_id, 
+        max_num_users, item_test_proportion, random_seed)
 
     train = response['train']
     test = response['test']
@@ -598,7 +599,7 @@ class _Recommender(_Model):
         """
 
         response = self.__proxy__.get_num_items_per_user()
-        return response 
+        return response
 
     def get_num_users_per_item(self):
         """
@@ -1293,7 +1294,8 @@ class _Recommender(_Model):
                }
 
         with QuietProgress(verbose):
-            recs = self.__proxy__.recommend(users, exclude, items, new_observation_data, new_user_data, new_item_data, exclude_known, k, diversity, random_seed)
+            recs = self.__proxy__.recommend(users, exclude, items, new_observation_data, new_user_data, 
+                new_item_data, exclude_known, k, diversity, random_seed)
 
         if cast_user_to_string_type:
             recs[user_id] = recs[user_id].astype(original_user_type)

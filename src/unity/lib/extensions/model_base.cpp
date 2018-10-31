@@ -257,9 +257,6 @@ void model_base::register_docstring(
 
   /**
    * Save a toolkit class to a data stream.
-   *
-   * \param sidedata Any additional side information
-   * \param url The destination url to store the class.
    */
   void model_base::save_model_to_data(std::ostream& out) {
     std::shared_ptr<model_base> m =

@@ -276,7 +276,6 @@ public:
   variant_map_type api_get_train_stats();
 
   EXPORT variant_map_type api_get_data_schema();
-  //variant_map_type api_get_value(flexible_type field);
 
 
   /** Creates and returns a popularity baseline
@@ -384,9 +383,6 @@ public:
   /// Serialization -- load
   void load_version(turi::iarchive& iarc, size_t version) override;
 
- // Implement the bare minimum of the pure virtual methods
-  //virtual void init_options(const std::map<std::string, flexible_type>&_options) =0;
-
   /// Get stats about algorithm runtime
   std::map<std::string, flexible_type> get_train_stats();
 
@@ -432,7 +428,7 @@ public:
                     {"random_seed", 1}});
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
-      "get_current_options", recsys_model_base::api_get_current_options); //
+      "get_current_options", recsys_model_base::api_get_current_options); 
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_num_users_per_item", recsys_model_base::get_num_users_per_item_extension_wrapper);
 

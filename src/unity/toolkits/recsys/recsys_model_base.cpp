@@ -1216,6 +1216,8 @@ sframe recsys_model_base::recommend(
 }
 
 
+// This is a hack to have sframe cross over to python. In the future, the extensions mechanism 
+// should do this automatically and we shouldn't have to write this workaround. 
 std::shared_ptr<unity_sframe_base> recsys_model_base::recommend_extension_wrapper(
   std::shared_ptr<unity_sframe_base> reference_data,
   std::shared_ptr<unity_sframe_base> new_observation_data,
@@ -1223,7 +1225,6 @@ std::shared_ptr<unity_sframe_base> recsys_model_base::recommend_extension_wrappe
 
   std::shared_ptr<unity_sframe> usframe_refdata =
               std::dynamic_pointer_cast<unity_sframe> (reference_data);
-  //std::shared_ptr<sframe> reference_data = usframe_refdata->get_underlying_sframe();
   const sframe& outputSFrame = this->recommend(
     *(std::dynamic_pointer_cast<unity_sframe>(reference_data)->get_underlying_sframe()),
     top_k,
@@ -1238,7 +1239,10 @@ std::shared_ptr<unity_sframe_base> recsys_model_base::recommend_extension_wrappe
 
 }
 
-std::shared_ptr<unity_sframe_base> recsys_model_base::get_num_users_per_item_extension_wrapper() const {
+// This is a hack to have sframe cross over to python. In the future, the extensions mechanism 
+// should do this automatically and we shouldn't have to write this workaround. 
+std::shared_ptr<unity_sframe_base> recsys_model_base::get_num_users_per_item_extension_wrapper(
+  ) const {
 
   const sframe& outputSFrame = this->get_num_users_per_item();
   std::shared_ptr<unity_sframe> usframe = std::make_shared<unity_sframe>();
@@ -1248,7 +1252,10 @@ std::shared_ptr<unity_sframe_base> recsys_model_base::get_num_users_per_item_ext
 
 }
 
-std::shared_ptr<unity_sframe_base> recsys_model_base::get_num_items_per_user_extension_wrapper() const {
+// This is a hack to have sframe cross over to python. In the future, the extensions mechanism 
+// should do this automatically and we shouldn't have to write this workaround. 
+std::shared_ptr<unity_sframe_base> recsys_model_base::get_num_items_per_user_extension_wrapper(
+  ) const {
 
   const sframe& outputSFrame = this->get_num_items_per_user();
   std::shared_ptr<unity_sframe> usframe = std::make_shared<unity_sframe>();
@@ -1805,15 +1812,6 @@ gl_sframe recsys_model_base::api_predict(gl_sframe data_to_predict, gl_sframe ne
   return predictions;
 }
 
-/*
-variant_map_type api_get_value(flexible_type field) {
-  log_func_entry();
-  variant_map_type ret;
-  ret["value"] = this->get_value_from_state(field);
-  return ret;
-}
-*/
-
 variant_map_type recsys_model_base::api_get_current_options() {
 
   std::map<std::string, flexible_type> options = this->get_current_options();
@@ -1919,7 +1917,6 @@ EXPORT variant_map_type train_test_split(gl_sframe _dataset,
                                          size_t random_seed) {
   variant_map_type ret;
   sframe dataset = _dataset.materialize_to_sframe();
-  //flexible_type _max_users;
   size_t max_users = (max_num_users == FLEX_UNDEFINED) ? std::numeric_limits<size_t>::max() : size_t(max_num_users);
 
   auto train_test = make_recsys_train_test_split(dataset, user_column, item_column,
