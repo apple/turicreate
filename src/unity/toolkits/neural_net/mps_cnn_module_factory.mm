@@ -17,7 +17,8 @@ std::unique_ptr<cnn_module> create_mps_object_detector(
 
   std::unique_ptr<mps_graph_cnn_module> result(new mps_graph_cnn_module);
 
-  // TODO: Initialize
+  result->init(/* netword_id */ kODGraphNet, n, c_in, h_in, w_in, c_out, h_out,
+               w_out, config, weights);
 
   return result;
 }
