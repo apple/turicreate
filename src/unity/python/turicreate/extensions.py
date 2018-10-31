@@ -258,8 +258,6 @@ class _ToolkitClass:
         arguments = self._functions[fnname]
         num_args_got = len(args) + len(kwargs)
         num_args_required = len(arguments)
-        if num_args_got != num_args_required:
-            raise TypeError("Expecting " + str(num_args_required) + " arguments, got " + str(num_args_got))
 
         ## fill the dict first with the regular args
         argument_dict = {}
