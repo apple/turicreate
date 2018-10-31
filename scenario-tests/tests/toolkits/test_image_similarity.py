@@ -11,53 +11,64 @@ import pytest
 import turicreate as tc
 from turicreate.toolkits._internal_utils import _mac_ver
 import tempfile
-from . import util as test_util
+import shutil
 import coremltools
 import numpy as np
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 
 
-def get_test_data():
-    '''
-    Create 5 all white images and 5 all black images. Then add some noise to
-    each image.
-    '''
-    from PIL import Image
-    DIM = 224
+def _get_data(image_length):
+    from PIL import Image as _PIL_Image
 
-    # Five all white images
-    data = []
-    for _ in range(5):
-        data.append( np.full((DIM, DIM, 3), 255, dtype=np.uint8) )
-    
-    # Five all black images
-    for _ in range(5):
-        data.append( np.full((DIM, DIM, 3), 0, dtype=np.uint8) )
-
-    # Add some random noise each images
     random = np.random.RandomState(100)
-    for cur_image in data:
-        for _ in range(1000):
-            x, y = random.randint(DIM), random.randint(DIM)
-            rand_pixel_value = (random.randint(255), random.randint(255), random.randint(255))
-            cur_image[x][y] = rand_pixel_value
+    _format = {'JPG': 0, 'PNG': 1, 'RAW': 2, 'UNDEFINED': 3}
 
-    # Convert to an array of tc.Images
-    images = []
-    for cur_data in data:
-        pil_image = Image.fromarray(cur_data)
-        image_data = bytearray([z for l in pil_image.getdata() for z in l ])
+    def from_pil_image(pil_img):
+        height = pil_img.size[1]
+        width = pil_img.size[0]
+        if pil_img.mode == 'L':
+            image_data = bytearray([z for z in pil_img.getdata()])
+            channels = 1
+        elif pil_img.mode == 'RGB':
+            image_data = bytearray([z for l in pil_img.getdata() for z in l ])
+            channels = 3
+        else:
+            image_data = bytearray([z for l in pil_img.getdata() for z in l])
+            channels = 4
+        format_enum = _format['RAW']
         image_data_size = len(image_data)
-        tc_image = tc.Image(_image_data = image_data,
-                             _width = DIM, _height = DIM,
-                             _channels = 3, _format_enum = 2,
-                             _image_data_size = image_data_size)
-        images.append(tc_image)
+        img = tc.Image(_image_data=image_data,
+                _width=width, _height=height,
+                _channels=channels,
+                _format_enum=format_enum,
+                _image_data_size=image_data_size)
+        return img
 
-    return tc.SFrame({'awesome_image': images})
+    num_examples = 100
+    dims = (image_length, image_length)
+    total_dims = dims[0] * dims[1]
+    images = []
+    for i in range(num_examples):
+        def rand_image():
+            return [random.randint(0,255)] * total_dims
+
+        pil_img = _PIL_Image.new('RGB', dims)
+        pil_img.putdata(list(zip(rand_image(), rand_image(), rand_image())))
+        images.append(from_pil_image(pil_img))
+
+    data = tc.SFrame({'awesome_image': tc.SArray(images)})
+    return data
 
 
-data = get_test_data()
+class TempDirectory():
+    name = None
+    def __init__(self):
+        self.name = tempfile.mkdtemp()
+    def __enter__(self):
+        return self.name
+    def __exit__(self, type, value, traceback):
+        if self.name is not None:
+            shutil.rmtree(self.name)
 
 
 class ImageSimilarityTest(unittest.TestCase):
@@ -79,7 +90,8 @@ class ImageSimilarityTest(unittest.TestCase):
         }
 
         # Model
-        self.model = tc.image_similarity.create(data, feature=self.feature,
+        self.sf = _get_data(self.input_image_shape[2])
+        self.model = tc.image_similarity.create(self.sf, feature=self.feature,
                                                 label=None, model=self.pre_trained_model)
         self.nn_model = self.model.feature_extractor
         self.lm_model = self.model.similarity_model
@@ -107,36 +119,28 @@ class ImageSimilarityTest(unittest.TestCase):
 
     def test_create_with_missing_feature(self):
         with self.assertRaises(_ToolkitError):
-            tc.image_similarity.create(data, feature='wrong_feature', label=self.label)
+            tc.image_similarity.create(self.sf, feature='wrong_feature', label=self.label)
 
     def test_create_with_missing_label(self):
         with self.assertRaises(_ToolkitError):
-            tc.image_similarity.create(data, feature=self.feature, label='wrong_label')
+            tc.image_similarity.create(self.sf, feature=self.feature, label='wrong_label')
 
     def test_create_with_empty_dataset(self):
         with self.assertRaises(_ToolkitError):
-            tc.image_similarity.create(data[:0])
+            tc.image_similarity.create(self.sf[:0])
 
     def test_query(self):
         model = self.model
-        preds = model.query(data)
-        self.assertEqual(len(preds), len(data) * 5)
-
-        # Make sure all the white images (first five images) are only similar to the other white images
-        white_sims = preds.filter_by([0, 1, 2, 3, 4], 'query_label')['reference_label']
-        self.assertEqual(sorted(white_sims.unique()), [0, 1, 2, 3, 4])
-
-        # Make sure all the black images (last five images) are only similar to the other black images
-        white_sims = preds.filter_by([5, 6, 7, 8, 9], 'query_label')['reference_label']
-        self.assertEqual(sorted(white_sims.unique()), [5, 6, 7, 8, 9])
+        preds = model.query(self.sf)
+        self.assertEqual(len(preds), len(self.sf) * 5)
 
     def test_similarity_graph(self):
         model = self.model
         preds = model.similarity_graph()
-        self.assertEqual(len(preds.edges), len(data) * 5)
+        self.assertEqual(len(preds.edges), len(self.sf) * 5)
 
         preds = model.similarity_graph(output_type = 'SFrame')
-        self.assertEqual(len(preds), len(data) * 5)
+        self.assertEqual(len(preds), len(self.sf) * 5)
 
     def test_list_fields(self):
         model = self.model
@@ -157,11 +161,11 @@ class ImageSimilarityTest(unittest.TestCase):
     def test_query_input(self):
         model = self.model
 
-        single_image = data[self.feature][0]
+        single_image = self.sf[self.feature][0]
         sims = model.query(single_image)
         self.assertIsNotNone(sims)
 
-        sarray = data[self.feature]
+        sarray = self.sf[self.feature]
         sims = model.query(sarray)
         self.assertIsNotNone(sims)
 
@@ -196,9 +200,9 @@ class ImageSimilarityTest(unittest.TestCase):
         coreml_model = coremltools.models.MLModel(filename)
 
         # Get model distances for comparison
-        img = data[0:1][self.feature][0]
+        img = self.sf[0:1][self.feature][0]
         img_fixed = tc.image_analysis.resize(img, *reversed(self.input_image_shape))
-        tc_ret = self.model.query(img_fixed, k=data.num_rows())
+        tc_ret = self.model.query(img_fixed, k=self.sf.num_rows())
 
         if _mac_ver() >= (10, 13):
             from PIL import Image as _PIL_Image
@@ -212,7 +216,7 @@ class ImageSimilarityTest(unittest.TestCase):
             self.assertTrue(psnr_value > 50)
 
     def test_save_and_load(self):
-        with test_util.TempDirectory() as filename:
+        with TempDirectory() as filename:
 
             self.model.save(filename)
             self.model = tc.load_model(filename)
@@ -230,13 +234,11 @@ class ImageSimilarityTest(unittest.TestCase):
             self.test_export_coreml()
             print("Export coreml passed")
 
-
 class ImageSimilaritySqueezeNetTest(ImageSimilarityTest):
     @classmethod
     def setUpClass(self):
         super(ImageSimilaritySqueezeNetTest, self).setUpClass(model='squeezenet_v1.1',
                                                               input_image_shape=(3, 227, 227))
-
 
 @unittest.skipIf(_mac_ver() < (10,14), 'VisionFeaturePrint_Screen only supported on macOS 10.14+')
 class ImageSimilarityVisionFeaturePrintScreenTest(ImageSimilarityTest):
@@ -244,3 +246,29 @@ class ImageSimilarityVisionFeaturePrintScreenTest(ImageSimilarityTest):
     def setUpClass(self):
         super(ImageSimilarityVisionFeaturePrintScreenTest, self).setUpClass(model='VisionFeaturePrint_Screen',
                                                                             input_image_shape=(3, 299, 299))
+
+@unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
+@pytest.mark.gpu
+class ImageSimilarityGPUTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(self, model='resnet-50'):
+        self.feature = 'awesome_image'
+        self.label = None
+        self.input_image_shape = (3, 224, 224)
+        self.pre_trained_model = model
+        self.sf = _get_data(self.input_image_shape[2])
+
+    def test_gpu_save_load_export(self):
+        old_num_gpus = tc.config.get_num_gpus()
+        gpu_options = set([old_num_gpus, 0, 1])
+        for in_gpus in gpu_options:
+            for out_gpus in gpu_options:
+                tc.config.set_num_gpus(in_gpus)
+                model = tc.image_similarity.create(self.sf, feature=self.feature,
+                                                   label=None, model=self.pre_trained_model)
+                with TempDirectory() as filename:
+                    model.save(filename)
+                    tc.config.set_num_gpus(out_gpus)
+                    model = tc.load_model(filename)
+
+        tc.config.set_num_gpus(old_num_gpus)
