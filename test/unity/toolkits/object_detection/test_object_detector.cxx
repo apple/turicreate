@@ -20,16 +20,61 @@ using turi::neural_net::cnn_module;
 using turi::neural_net::deferred_float_array;
 using turi::neural_net::float_array;
 using turi::neural_net::float_array_map;
+using turi::neural_net::image_augmenter;
+using turi::neural_net::labeled_image;
 using turi::neural_net::shared_float_array;
 
-// Dependencies we can inject into the object_detector class for testing.
-using coreml_importer =
-    std::function<turi::neural_net::float_array_map(const std::string&)>;
-using module_factory =
-    std::function<std::unique_ptr<turi::neural_net::cnn_module>(
-        int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
-        const turi::neural_net::float_array_map& config,
-        const turi::neural_net::float_array_map& weights)>;
+
+
+// Returns an SFrame with columns "test_image" and "test_annotations".
+gl_sframe create_data(size_t num_rows) {
+  flex_list images(num_rows);
+  flex_list annotations(num_rows);
+  for (size_t i = 0; i < num_rows; ++i) {
+    // Each image is a 32x32 RGB image where each pixel has R, G, and B value
+    // equal to the row index (module 256).
+    std::vector<unsigned char> buffer(32*32*3, i % 256);
+    images[i] = flex_image(reinterpret_cast<char*>(buffer.data()), 32, 32, 3,
+                           buffer.size(), IMAGE_TYPE_CURRENT_VERSION,
+                           static_cast<int>(Format::RAW_ARRAY));
+
+    // Each image has one annotation, with the label "foo" and a bounding box in
+    // the center with height and width 16.
+    annotations[i] = flex_list();
+    annotations[i].push_back(flex_dict({
+          {"label", "foo"},
+          {"coordinates", flex_dict({
+                {"x", 16}, {"y", 16}, {"width", 16}, {"height", 16}
+              })},
+        }));
+  }
+
+  return gl_sframe({
+      {"test_image", gl_sarray(images)},
+      {"test_annotations", gl_sarray(annotations)},
+  });
+}
+
+// Test implementation of the object_detector that differs from the production
+// implementation only in that we can inject the dependencies.
+class test_object_detector: public object_detector {
+public:
+  using object_detector::coreml_importer;
+  using object_detector::augmenter_factory;
+  using object_detector::module_factory;
+
+  test_object_detector(coreml_importer coreml_importer_fn,
+                       augmenter_factory augmenter_factory_fn,
+                       module_factory module_factory_fn)
+    : object_detector(std::move(coreml_importer_fn),
+                      std::move(augmenter_factory_fn),
+                      std::move(module_factory_fn))
+  {}
+};
+
+using coreml_importer = test_object_detector::coreml_importer;
+using augmenter_factory = test_object_detector::augmenter_factory;
+using module_factory = test_object_detector::module_factory;
 
 constexpr float TEST_PARAM_VALUE = 3.14159f;
 
@@ -67,15 +112,30 @@ public:
   }
 };
 
-// Test implementation of the object_detector that differs from the production
-// implementation only in that we can inject the dependencies.
-class test_object_detector: public object_detector {
+class stub_image_augmenter: public image_augmenter {
 public:
-  test_object_detector(coreml_importer coreml_importer_fn,
-                       module_factory module_factory_fn)
-    : object_detector(std::move(coreml_importer_fn),
-                      std::move(module_factory_fn))
-  {}
+  const options& get_options() const override { return options_; }
+
+  result prepare_images(std::vector<labeled_image> source_batch) override {
+    result res;
+
+    // At least create a float_array with the correct shape.
+    std::vector<size_t> shape = {
+        source_batch.size(), options_.output_height, options_.output_width, 3
+    };
+    std::vector<float> buffer(shape[0] * shape[1] * shape[2] * shape[3]);
+    res.image_batch = shared_float_array::wrap(std::move(buffer),
+                                               std::move(shape));
+
+    // Just move over the annotations.
+    for (auto& source : source_batch) {
+      res.annotations_batch.push_back(std::move(source.annotations));
+    }
+
+    return res;
+  }
+
+  options options_;
 };
 
 }  // namespace
@@ -93,6 +153,24 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
 
     return create_test_params();
   };
+
+  // Create a mock augmenter_factory that just returns a stub image_augmenter
+  int num_augmenter_factory_calls = 0;
+  stub_image_augmenter* stub_augmenter = new stub_image_augmenter;
+  std::unique_ptr<image_augmenter> unique_stub_augmenter(stub_augmenter);
+  augmenter_factory augmenter_factory_fn =
+      [&](const image_augmenter::options& opts) {
+
+    ++num_augmenter_factory_calls;
+
+    // For now the output image size should always be 416 by 416.
+    TS_ASSERT_EQUALS(opts.output_width, 416);
+    TS_ASSERT_EQUALS(opts.output_height, 416);
+
+    TS_ASSERT(unique_stub_augmenter != nullptr);
+    return std::move(unique_stub_augmenter);
+  };
+
 
   // Create a mock module_factory that just returns a stub cnn_module.
   int num_module_factory_calls = 0;
@@ -117,15 +195,20 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
   };
 
   // Inject the two mocks into a test_object_detector instance.
-  test_object_detector od_instance(coreml_importer_fn, module_factory_fn);
+  test_object_detector od_instance(coreml_importer_fn, augmenter_factory_fn,
+                                   module_factory_fn);
 
   // Invoke training.
   // TODO: Use some non-empty training data.
-  od_instance.train(gl_sframe(), std::string(), std::string(),
-                    { { "model_params_path", test_path } });
+  size_t num_rows = 64;
+  od_instance.train(create_data(num_rows), "test_annotations", "test_image", {
+      { "model_params_path", test_path },
+      { "max_iterations", 7 },
+  });
 
   // Verify that each mock dependency was invoked once.
   TS_ASSERT_EQUALS(num_coreml_importer_calls, 1);
+  TS_ASSERT_EQUALS(num_augmenter_factory_calls, 1);
   TS_ASSERT_EQUALS(num_module_factory_calls, 1);
 }
 
