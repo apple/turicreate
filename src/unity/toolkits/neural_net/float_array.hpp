@@ -80,6 +80,13 @@ public:
   // with the provided `shape`.
   float_buffer(std::vector<float> data, std::vector<size_t> shape);
 
+  // Copies another float_array.
+  float_buffer(const float_array& other)
+    : float_buffer(other.data(),
+                   std::vector<size_t>(other.shape(),
+                                       other.shape() + other.dim()))
+  {}
+
   const float* data() const override { return data_.data(); }
   size_t size() const override { return size_; }
 
@@ -119,6 +126,9 @@ public:
   static shared_float_array copy(const float* data, std::vector<size_t> shape) {
     return shared_float_array(
         std::make_shared<float_buffer>(data, std::move(shape)));
+  }
+  static shared_float_array copy(const float_array& other) {
+    return shared_float_array(std::make_shared<float_buffer>(other));
   }
   static shared_float_array wrap(std::vector<float> data,
                                  std::vector<size_t> shape) {
@@ -167,6 +177,9 @@ public:
   // (known upfront) `shape`.
   deferred_float_array(std::shared_future<shared_float_array> data_future,
                        std::vector<size_t> shape);
+
+  // Wraps an existing (not deferred) float_array
+  deferred_float_array(shared_float_array params);
 
   // Waits for the data future if necessary.
   const float* data() const override;

@@ -14,7 +14,7 @@
 namespace turi {
 namespace neural_net {
 
-void image_box::scale(float image_width, float image_height) {
+void image_box::normalize(float image_width, float image_height) {
   x /= image_width;
   width /= image_width;
 
@@ -30,6 +30,23 @@ void image_box::clip(image_box clip_box) {
   float y_max = std::min(y + height, clip_box.y + clip_box.height);
   y = std::max(y, clip_box.y);
   height = y_max - y;
+}
+
+bool operator==(const image_box& a, const image_box& b) {
+  return a.x == b.x && a.y == b.y && a.width == b.width && a.height == b.height;
+}
+
+std::ostream& operator<<(std::ostream& out, const image_box& box) {
+  return out << "(x=" << box.x
+             << ",y=" << box.y
+             << ",w=" << box.width
+             << ",h=" << box.height
+             << ")";
+}
+
+bool operator==(const image_annotation& a, const image_annotation& b) {
+  return a.identifier == b.identifier && a.bounding_box == b.bounding_box &&
+    a.confidence == b.confidence;
 }
 
 // static

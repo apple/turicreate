@@ -109,22 +109,6 @@ flex_int estimate_max_iterations(flex_int num_instances, flex_int batch_size) {
 
 }  // namespace
 
-object_detector::object_detector()
-  : object_detector([this](const std::string& path) {
-                      return this->init_model_params(path);
-                    },
-                    &image_augmenter::create,
-                    &cnn_module::create_object_detector)
-{}
-
-object_detector::object_detector(coreml_importer coreml_importer_fn,
-                                 augmenter_factory augmenter_factory_fn,
-                                 module_factory module_factory_fn)
-  : coreml_importer_fn_(std::move(coreml_importer_fn)),
-    augmenter_factory_fn_(std::move(augmenter_factory_fn)),
-    module_factory_fn_(std::move(module_factory_fn))
-{}
-
 void object_detector::init_options(
     const std::map<std::string, flexible_type>& opts) {
 
@@ -211,132 +195,6 @@ void object_detector::train(gl_sframe data,
   training_table_printer_.reset();
 }
 
-void object_detector::init_train(gl_sframe data,
-                                 std::string annotations_column_name,
-                                 std::string image_column_name,
-                                 std::map<std::string, flexible_type> opts) {
-
-  // Bind the data to a data iterator.
-  training_data_iterator_.reset(new data_iterator(
-      data, annotations_column_name, image_column_name));
-
-  // Instantiate the data augmenter.
-  image_augmenter::options aug_opts;
-  aug_opts.output_width = GRID_SIZE * SPATIAL_REDUCTION;
-  aug_opts.output_height = GRID_SIZE * SPATIAL_REDUCTION;
-  training_data_augmenter_ = augmenter_factory_fn_(aug_opts);
-
-  // Load the pre-trained model from the provided path.
-  auto mlmodel_path_iter = opts.find("mlmodel_path");
-  if (mlmodel_path_iter == opts.end()) {
-    log_and_throw("Expected option \"mlmodel_path\" not found.");
-  }
-  const std::string mlmodel_path = mlmodel_path_iter->second;
-  float_array_map model_params = coreml_importer_fn_(mlmodel_path);
-
-  // Remove 'mlmodel_path' to avoid storing it as a model field.
-  opts.erase(mlmodel_path_iter);
-
-  // Validate options, and infer values for unspecified options. Note that this
-  // depends on training data statistics in the general case.
-  init_options(opts);
-
-  // Set additional model fields.
-  const std::vector<std::string>& classes =
-      training_data_iterator_->class_labels();
-  std::array<flex_int, 3> input_image_shape =  // Using CoreML CHW format.
-      {3, GRID_SIZE * SPATIAL_REDUCTION, GRID_SIZE * SPATIAL_REDUCTION};
-  add_or_update_state({
-      { "annotations", annotations_column_name },
-      { "classes", flex_list(classes.begin(), classes.end()) },
-      { "feature", image_column_name },
-      { "input_image_shape", flex_list(input_image_shape.begin(),
-                                       input_image_shape.end()) },
-      { "model", "darknet-yolo" },
-      { "num_bounding_boxes", training_data_iterator_->num_instances() },
-      { "num_classes", training_data_iterator_->class_labels().size() },
-      { "num_examples", data.size() },
-      { "training_epochs", 0 },
-      { "training_iterations", 0 },
-  });
-  // TODO: The original Python implementation also exposed "anchors",
-  // "non_maximum_suppression_threshold", and "training_time".
-
-  // Instantiate the NN backend.
-  int num_outputs_per_anchor =  // 4 bbox coords + 1 conf + one-hot class labels
-      5 + static_cast<int>(training_data_iterator_->class_labels().size());
-  int num_output_channels = num_outputs_per_anchor * NUM_ANCHOR_BOXES;
-  training_module_ = module_factory_fn_(
-      /* n */     options.value("batch_size"),
-      /* c_in */  NUM_INPUT_CHANNELS,
-      /* h_in */  GRID_SIZE * SPATIAL_REDUCTION,
-      /* w_in */  GRID_SIZE * SPATIAL_REDUCTION,
-      /* c_out */ num_output_channels,
-      /* h_out */ GRID_SIZE,
-      /* w_out */ GRID_SIZE,
-      get_training_config(),
-      std::move(model_params));
-}
-
-void object_detector::perform_training_iteration() {
-  // Training must have been initialized.
-  ASSERT_TRUE(training_data_iterator_ != nullptr);
-  ASSERT_TRUE(training_data_augmenter_ != nullptr);
-  ASSERT_TRUE(training_module_ != nullptr);
-
-  // We want to have no more than two pending batches at a time (double
-  // buffering). We're about to add a new one, so wait until we only have one.
-  wait_for_training_batches(1);
-
-  // Update iteration count and check learning rate schedule.
-  // TODO: Abstract out the learning rate schedule.
-  flex_int iteration_idx = get_training_iterations();
-  flex_int max_iterations = get_max_iterations();
-  if (iteration_idx == max_iterations / 2) {
-
-    training_module_->set_learning_rate(BASE_LEARNING_RATE / 10.f);
-
-  } else if (iteration_idx == max_iterations * 3 / 4) {
-
-    training_module_->set_learning_rate(BASE_LEARNING_RATE / 100.f);
-
-  } else if (iteration_idx == max_iterations) {
-
-    // Handle any manually triggered iterations after the last planned one.
-    training_module_->set_learning_rate(BASE_LEARNING_RATE / 1000.f);
-  }
-
-  // Update the model fields tracking how much training we've done.
-  flex_int batch_size =
-      variant_get_value<flex_int>(get_value_from_state("batch_size"));
-  flex_int num_examples =
-      variant_get_value<flex_int>(get_value_from_state("num_examples"));
-  add_or_update_state({
-      { "training_iterations", iteration_idx + 1 },
-      { "training_epochs", (iteration_idx + 1) * batch_size / num_examples },
-  });
-
-  // Fetch the next batch of raw images and annotations.
-  std::vector<labeled_image> image_batch =
-      training_data_iterator_->next_batch(static_cast<size_t>(batch_size));
-
-  // Perform data augmentation.
-  image_augmenter::result augmenter_result =
-      training_data_augmenter_->prepare_images(std::move(image_batch));
-
-  // Encode the labels.
-  shared_float_array label_batch =
-      prepare_label_batch(augmenter_result.annotations_batch);
-
-  // Submit the batch to the neural net module.
-  deferred_float_array loss_batch = training_module_->train(
-      augmenter_result.image_batch, label_batch);
-
-  // Save the result, which is a future that can synchronize with the
-  // completion of this batch.
-  pending_training_batches_.emplace(iteration_idx, std::move(loss_batch));
-}
-
 float_array_map object_detector::init_model_params(
     const std::string& pretrained_mlmodel_path) const {
 
@@ -417,6 +275,159 @@ float_array_map object_detector::init_model_params(
                                                 { c_out });
 
   return model_params;
+}
+
+std::unique_ptr<data_iterator> object_detector::create_iterator(
+    gl_sframe data, std::string annotations_column_name,
+    std::string image_column_name) const {
+
+  data_iterator::parameters iterator_params;
+  iterator_params.data = std::move(data);
+  iterator_params.annotations_column_name = std::move(annotations_column_name);
+  iterator_params.image_column_name = std::move(image_column_name);
+
+  return std::unique_ptr<data_iterator>(
+      new simple_data_iterator(iterator_params));  
+}
+
+std::unique_ptr<image_augmenter> object_detector::create_augmenter(
+    const image_augmenter::options& opts) const {
+
+  return image_augmenter::create(opts);
+}
+
+std::unique_ptr<cnn_module> object_detector::create_cnn_module (
+    int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
+    const float_array_map& config, const float_array_map& weights) const {
+
+  return cnn_module::create_object_detector(n, c_in, h_in, w_in, c_out, h_out,
+                                            w_out, config, weights);
+}
+
+void object_detector::init_train(gl_sframe data,
+                                 std::string annotations_column_name,
+                                 std::string image_column_name,
+                                 std::map<std::string, flexible_type> opts) {
+
+  // Bind the data to a data iterator.
+  training_data_iterator_ = create_iterator(data, annotations_column_name,
+                                            image_column_name);
+
+  // Instantiate the data augmenter.
+  image_augmenter::options aug_opts;
+  aug_opts.output_width = GRID_SIZE * SPATIAL_REDUCTION;
+  aug_opts.output_height = GRID_SIZE * SPATIAL_REDUCTION;
+  training_data_augmenter_ = create_augmenter(aug_opts);
+
+  // Load the pre-trained model from the provided path.
+  auto mlmodel_path_iter = opts.find("mlmodel_path");
+  if (mlmodel_path_iter == opts.end()) {
+    log_and_throw("Expected option \"mlmodel_path\" not found.");
+  }
+  const std::string mlmodel_path = mlmodel_path_iter->second;
+  float_array_map model_params = init_model_params(mlmodel_path);
+
+  // Remove 'mlmodel_path' to avoid storing it as a model field.
+  opts.erase(mlmodel_path_iter);
+
+  // Validate options, and infer values for unspecified options. Note that this
+  // depends on training data statistics in the general case.
+  init_options(opts);
+
+  // Set additional model fields.
+  const std::vector<std::string>& classes =
+      training_data_iterator_->class_labels();
+  std::array<flex_int, 3> input_image_shape =  // Using CoreML CHW format.
+      {3, GRID_SIZE * SPATIAL_REDUCTION, GRID_SIZE * SPATIAL_REDUCTION};
+  add_or_update_state({
+      { "annotations", annotations_column_name },
+      { "classes", flex_list(classes.begin(), classes.end()) },
+      { "feature", image_column_name },
+      { "input_image_shape", flex_list(input_image_shape.begin(),
+                                       input_image_shape.end()) },
+      { "model", "darknet-yolo" },
+      { "num_bounding_boxes", training_data_iterator_->num_instances() },
+      { "num_classes", training_data_iterator_->class_labels().size() },
+      { "num_examples", data.size() },
+      { "training_epochs", 0 },
+      { "training_iterations", 0 },
+  });
+  // TODO: The original Python implementation also exposed "anchors",
+  // "non_maximum_suppression_threshold", and "training_time".
+
+  // Instantiate the NN backend.
+  int num_outputs_per_anchor =  // 4 bbox coords + 1 conf + one-hot class labels
+      5 + static_cast<int>(training_data_iterator_->class_labels().size());
+  int num_output_channels = num_outputs_per_anchor * NUM_ANCHOR_BOXES;
+  training_module_ = create_cnn_module(
+      /* n */     options.value("batch_size"),
+      /* c_in */  NUM_INPUT_CHANNELS,
+      /* h_in */  GRID_SIZE * SPATIAL_REDUCTION,
+      /* w_in */  GRID_SIZE * SPATIAL_REDUCTION,
+      /* c_out */ num_output_channels,
+      /* h_out */ GRID_SIZE,
+      /* w_out */ GRID_SIZE,
+      get_training_config(),
+      std::move(model_params));
+}
+
+void object_detector::perform_training_iteration() {
+  // Training must have been initialized.
+  ASSERT_TRUE(training_data_iterator_ != nullptr);
+  ASSERT_TRUE(training_data_augmenter_ != nullptr);
+  ASSERT_TRUE(training_module_ != nullptr);
+
+  // We want to have no more than two pending batches at a time (double
+  // buffering). We're about to add a new one, so wait until we only have one.
+  wait_for_training_batches(1);
+
+  // Update iteration count and check learning rate schedule.
+  // TODO: Abstract out the learning rate schedule.
+  flex_int iteration_idx = get_training_iterations();
+  flex_int max_iterations = get_max_iterations();
+  if (iteration_idx == max_iterations / 2) {
+
+    training_module_->set_learning_rate(BASE_LEARNING_RATE / 10.f);
+
+  } else if (iteration_idx == max_iterations * 3 / 4) {
+
+    training_module_->set_learning_rate(BASE_LEARNING_RATE / 100.f);
+
+  } else if (iteration_idx == max_iterations) {
+
+    // Handle any manually triggered iterations after the last planned one.
+    training_module_->set_learning_rate(BASE_LEARNING_RATE / 1000.f);
+  }
+
+  // Update the model fields tracking how much training we've done.
+  flex_int batch_size =
+      variant_get_value<flex_int>(get_value_from_state("batch_size"));
+  flex_int num_examples =
+      variant_get_value<flex_int>(get_value_from_state("num_examples"));
+  add_or_update_state({
+      { "training_iterations", iteration_idx + 1 },
+      { "training_epochs", (iteration_idx + 1) * batch_size / num_examples },
+  });
+
+  // Fetch the next batch of raw images and annotations.
+  std::vector<labeled_image> image_batch =
+      training_data_iterator_->next_batch(static_cast<size_t>(batch_size));
+
+  // Perform data augmentation.
+  image_augmenter::result augmenter_result =
+      training_data_augmenter_->prepare_images(std::move(image_batch));
+
+  // Encode the labels.
+  shared_float_array label_batch =
+      prepare_label_batch(augmenter_result.annotations_batch);
+
+  // Submit the batch to the neural net module.
+  deferred_float_array loss_batch = training_module_->train(
+      augmenter_result.image_batch, label_batch);
+
+  // Save the result, which is a future that can synchronize with the
+  // completion of this batch.
+  pending_training_batches_.emplace(iteration_idx, std::move(loss_batch));
 }
 
 shared_float_array object_detector::prepare_label_batch(

@@ -19,11 +19,12 @@ namespace turi {
 namespace object_detection {
 
 /**
- * Helper class for producing batches of data (pre-augmentation) from a raw
- * SFrame.
+ * Pure virtual interface for classes that produce batches of data
+ * (pre-augmentation) from a raw SFrame.
  */
 class data_iterator {
 public:
+
   /**
    * Writes a list of image_annotation values into an output float buffer.
    *
@@ -36,6 +37,9 @@ public:
    *            num_anchors * (5 + num_classes)
    * \todo Add a mutable_float_array or shared_float_buffer type for functions
    *       like this one to write into.
+   * \todo This strictly speaking doesn't belong in this data iterator type but
+   *       probably doesn't warrant its own file yet (and would be nice not to
+   *       bury in object_detector.cpp).
    */
   static void convert_annotations_to_yolo(
       const std::vector<neural_net::image_annotation>& annotations,
@@ -43,48 +47,80 @@ public:
       size_t num_classes, float* out);
 
   /**
-   * Constructs a data_iterator wrapping a given SFrame.
-   *
-   * \param data The SFrame to wrap.
-   * \param annotations_column_name The name of the column containing the
-   *            annotations. The values must either be dictionaries containing
-   *            an annotation, or a list of such dictionaries. An annotation
-   *            dictionary has a "label" key whose value is a string, and a
-   *            "coordinates" key whose value is another dictionary containing
-   *            "x", "y", "width", and "height", describing the position of the
-   *            center and the size of the bounding box (in the image's
-   *            coordinates, with the origin at the top left).
-   * \param image_column_name The name of the column containing the images. Each
-   *            value is either an image or a path to an image file on disk.
-   *
-   * \todo Add a parameter to enable shuffling after each epoch.
+   * Defines the inputs to a data_iterator factory function.
    */
-  data_iterator(const gl_sframe& data,
-                const std::string& annotations_column_name,
-                const std::string& image_column_name);
+  struct parameters {
 
-  // Not copyable or movable.
-  data_iterator(const data_iterator&) = delete;
-  data_iterator& operator=(const data_iterator&) = delete;
+    /** The SFrame to traverse */
+    gl_sframe data;
+
+    /**
+     * The name of the column containing the annotations.
+     *
+     * The values must either be dictionaries containing an annotation, or a
+     * list of such dictionaries. An annotation dictionary has a "label" key
+     * whose value is a string, and a "coordinates" key whose value is another
+     * dictionary containing "x", "y", "width", and "height", describing the
+     * position of the center and the size of the bounding box (in the image's
+     * coordinates, with the origin at the top left).
+     */
+    std::string annotations_column_name;
+
+    /**
+     * The name of the column containing the images.
+     *
+     * Each value is either an image or a path to an image file on disk.
+     */
+    std::string image_column_name;
+  };
+
+  virtual ~data_iterator() = default;
 
   /**
-   * Returns a vector whose size is equal to `batch_size`. Note that the
-   * iterator will cycle indefinitely through the SFrame over and over.
+   * Returns a vector whose size is equal to `batch_size`.
+   *
+   * Note that the iterator will cycle indefinitely through the SFrame over and
+   * over. The x,y coordinates in the returned annotations indicate the
+   * upper-left corner of the bounding box.
    */
-  std::vector<neural_net::labeled_image> next_batch(size_t batch_size);
+  virtual std::vector<neural_net::labeled_image>
+      next_batch(size_t batch_size) = 0;
 
   /**
    * Returns a sorted list of the unique "label" values found in the
    * annotations.
    */
-  const std::vector<std::string>& class_labels() const {
-    return annotation_properties_.classes;
-  }
+  virtual const std::vector<std::string>& class_labels() const = 0;
 
   /**
    * Returns the number of annotations (bounding boxes) found across all rows.
    */
-  size_t num_instances() const {
+  virtual size_t num_instances() const = 0;
+};
+
+/**
+ * Concrete data_iterator implementation that doesn't attempt any
+ * parallelization or background I/O.
+ *
+ * \todo This classs should become an abstract_data_iterator base class with
+ *       override points for dispatching work to other threads.
+ */
+class simple_data_iterator: public data_iterator {
+public:
+
+  simple_data_iterator(const parameters& params);
+
+  // Not copyable or movable.
+  simple_data_iterator(const simple_data_iterator&) = delete;
+  simple_data_iterator& operator=(const simple_data_iterator&) = delete;
+
+  std::vector<neural_net::labeled_image> next_batch(size_t batch_size) override;
+
+  const std::vector<std::string>& class_labels() const override {
+    return annotation_properties_.classes;
+  }
+
+  size_t num_instances() const override {
     return annotation_properties_.num_instances;
   }
 

@@ -23,7 +23,6 @@ namespace object_detection {
 
 class EXPORT object_detector: public ml_model_base {
  public:
-  object_detector();
 
   // ml_model_base interface
 
@@ -71,32 +70,39 @@ class EXPORT object_detector: public ml_model_base {
   END_CLASS_MEMBER_REGISTRATION
 
  protected:
-  // Support for dependency injection, for testing purposes.
-  using coreml_importer =
-      std::function<neural_net::float_array_map(const std::string&)>;
-  using augmenter_factory =
-      std::function<std::unique_ptr<neural_net::image_augmenter>(
-          const neural_net::image_augmenter::options&)>;
-  using module_factory =
-      std::function<std::unique_ptr<neural_net::cnn_module>(
-          int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
-          const neural_net::float_array_map& config,
-          const neural_net::float_array_map& weights)>;
 
-  object_detector(coreml_importer coreml_importer_fn,
-                  augmenter_factory augmenter_factory_fn,
-                  module_factory module_factory_fn);
+  // Override points allowing subclasses to inject dependencies
+
+  // Returns the weights to pass to the cnn_module factory method, given the
+  // path to a mlmodel file containing the pretrained weights.
+  virtual neural_net::float_array_map init_model_params(
+      const std::string& pretrained_mlmodel_path) const;
+
+  // Factory for data_iterator
+  virtual std::unique_ptr<data_iterator> create_iterator(
+      gl_sframe data, std::string annotations_column_name,
+      std::string image_column_name) const;
+
+  // Factory for image_augmenter
+  virtual std::unique_ptr<neural_net::image_augmenter> create_augmenter(
+      const neural_net::image_augmenter::options& opts) const;
+
+  // Factory for cnn_module
+  virtual std::unique_ptr<neural_net::cnn_module> create_cnn_module(
+      int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
+      const neural_net::float_array_map& config,
+      const neural_net::float_array_map& weights) const;
+
 
   // Support for iterative training.
   // TODO: Expose via forthcoming C-API checkpointing mechanism?
+
   void init_train(gl_sframe data, std::string annotations_column_name,
                   std::string image_column_name,
                   std::map<std::string, flexible_type> options);
   void perform_training_iteration();
 
  private:
-  neural_net::float_array_map init_model_params(
-      const std::string& pretrained_mlmodel_path) const;
   neural_net::shared_float_array prepare_label_batch(
       std::vector<std::vector<neural_net::image_annotation>> annotations_batch)
       const;
@@ -105,11 +111,6 @@ class EXPORT object_detector: public ml_model_base {
 
   // Waits until the number of pending patches is at most `max_pending`.
   void wait_for_training_batches(size_t max_pending = 0);
-
-  // Injected dependencies
-  coreml_importer coreml_importer_fn_;
-  augmenter_factory augmenter_factory_fn_;
-  module_factory module_factory_fn_;
 
   std::unique_ptr<data_iterator> training_data_iterator_;
   std::unique_ptr<neural_net::image_augmenter> training_data_augmenter_;

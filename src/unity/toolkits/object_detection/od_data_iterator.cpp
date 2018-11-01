@@ -92,7 +92,7 @@ std::vector<image_annotation> parse_annotations(
       annotation.bounding_box.y -= annotation.bounding_box.height / 2.f;
 
       // Translate to normalized coordinates.
-      annotation.bounding_box.scale(image_width, image_height);
+      annotation.bounding_box.normalize(image_width, image_height);
 
       // Add this annotation if we still have a valid bounding box.
       if (annotation.bounding_box.area() > 0.f) {
@@ -183,8 +183,8 @@ void data_iterator::convert_annotations_to_yolo(
   }
 }
 
-data_iterator::annotation_properties data_iterator::compute_properties(
-    const gl_sarray& annotations) {
+simple_data_iterator::annotation_properties
+simple_data_iterator::compute_properties(const gl_sarray& annotations) {
 
   annotation_properties result;
 
@@ -219,26 +219,26 @@ data_iterator::annotation_properties data_iterator::compute_properties(
   return result;
 }
 
-data_iterator::data_iterator(const gl_sframe& data,
-                             const std::string& annotations_column_name,
-                             const std::string& image_column_name)
+simple_data_iterator::simple_data_iterator(const parameters& params)
 
     // Reduce SFrame to the two columns we care about.
-  : data_(data[{annotations_column_name, image_column_name}]),
+  : data_(params.data[ { params.annotations_column_name,
+                         params.image_column_name        } ] ),
 
     // Determine which column is which within each (ordered) row.
-    annotations_index_(data_.column_index(annotations_column_name)),
-    image_index_(data_.column_index(image_column_name)),
+    annotations_index_(data_.column_index(params.annotations_column_name)),
+    image_index_(data_.column_index(params.image_column_name)),
 
     // Identify the class labels and other annotation properties.
-    annotation_properties_(compute_properties(data_[annotations_column_name])),
+    annotation_properties_(
+        compute_properties(data_[params.annotations_column_name])),
 
     // Start an iteration through the entire SFrame.
     range_iterator_(data_.range_iterator()),
     next_row_(range_iterator_.begin())
 {}
 
-std::vector<labeled_image> data_iterator::next_batch(size_t batch_size) {
+std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
 
   // For now, only return empty if we literally have no data at all.
   if (data_.empty()) return {};

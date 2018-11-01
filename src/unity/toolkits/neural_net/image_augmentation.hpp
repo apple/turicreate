@@ -8,6 +8,7 @@
 #define TURI_NEURAL_NET_IMAGE_AUGMENTATION_HPP_
 
 #include <memory>
+#include <ostream>
 #include <vector>
 
 #include <image/image_type.hpp>
@@ -19,10 +20,8 @@ namespace neural_net {
 /**
  * Represents a rectangular area within an image.
  *
- * The (x,y) coordinates specify the upper-left corner of the box, with the
- * origin (0,0) at the upper-left corner of the image. All coordinates should be
- * normalized to the image size, so each value should line in the closed
- * interval [0,1].
+ * The coordinate system is defined by the user. Any rect without a positive
+ * width and a positive height is an empty or null rect.
  */
 struct image_box {
   image_box() = default;
@@ -36,8 +35,8 @@ struct image_box {
     return width * height;
   }
 
-  // Normalizes this instance to the provided image dimensions.
-  void scale(float image_width, float image_height);
+  // Divides each coordinate and length by the appropriate normalizer.
+  void normalize(float image_width, float image_height);
 
   // Sets this instance to the intersection with the given image_box. If no
   // intersection exists, then the result will have area() of 0.f (and may have
@@ -50,6 +49,9 @@ struct image_box {
   float height = 0.f;
 };
 
+bool operator==(const image_box& a, const image_box& b);
+std::ostream& operator<<(std::ostream& out, const image_box& box);
+
 /**
  * Represents a labelled or predicted entity inside an image.
  */
@@ -58,6 +60,8 @@ struct image_annotation {
   image_box bounding_box;
   float confidence = 0.f;  // Typically 1 for training data
 };
+
+bool operator==(const image_annotation& a, const image_annotation& b);
 
 /**
  * Contains one image and its associated annotations.
