@@ -195,11 +195,13 @@ add_definitions(-DCURL_STATICLIB)
 add_definitions(-DIN_TURI_SOURCE_TREE)
 add_definitions(-DFUSION_MAX_VECTOR_SIZE=20)
 add_definitions(-DBOOST_SPIRIT_THREAD_SAFE)
-
 # These determine the maximum number of arguments for extension functions
-add_definitions(-DBOOST_BOOST_FUSION_INVOKE_MAX_ARITY=12)
+add_definitions(-DBOOST_FUSION_INVOKE_MAX_ARITY=12)
 add_definitions(-DBOOST_FUSION_INVOKE_PROCEDURE_MAX_ARITY=12)
 add_definitions(-DBOOST_FUSION_INVOKE_FUNCTION_OBJECT_MAX_ARITY=12)
+
+# Workaround for https://svn.boost.org/trac10/ticket/10443 in Boost 1.68.0
+add_definitions(-DBOOST_RESULT_OF_USE_TR1_WITH_DECLTYPE_FALLBACK)
 
 #**************************************************************************/
 #*                                                                        */
