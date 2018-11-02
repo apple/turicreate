@@ -512,7 +512,7 @@ class LogisticRegressionClassifierModelTest(unittest.TestCase):
 
         # Default
         ans = model.evaluate(self.sf)
-        self.assertEqual(sorted(ans.keys()), sorted(self.metrics))
+        self.assertTrue(set(self.metrics).issubset(ans.keys()))
         for m in self.metrics:
           check_metric(ans, m)
 

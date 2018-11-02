@@ -841,11 +841,17 @@ std::map<std::string, variant_type> supervised_learning_model_base::evaluate(
     }
   });
 
+
   // Get results
   std::map<std::string, variant_type> results;
   for(size_t i=0; i < evaluators.size(); i++){
       results[evaluator_names[i]] = evaluators[i]->get_metric();
   }
+
+  // Add in confusion matrix stuff, etc.
+
+
+
 
   logstream(LOG_INFO) << "Evaluation done at "
             << (t.current_time() - start_time) << "s" << std::endl;
@@ -1012,7 +1018,7 @@ void supervised_learning_model_base::api_train(
   variant_map_type state_update;
 
   {
-    auto ret = this->api_evaluate(data, "auto", "report");
+    auto ret = this->api_evaluate(data, "auto", "auto");
 
     for (auto& p : ret) {
       state_update["training_" + p.first] = p.second;
@@ -1020,7 +1026,7 @@ void supervised_learning_model_base::api_train(
   }
 
   if(validation_data.size() != 0) {
-    auto ret = this->api_evaluate(validation_data, "auto", "report");
+    auto ret = this->api_evaluate(validation_data, "auto", "auto");
 
     for (auto& p : ret) {
       state_update["validation_" + p.first] = p.second;
@@ -1113,31 +1119,35 @@ variant_map_type supervised_learning_model_base::api_evaluate(
   ml_missing_value_action missing_value_action =
       get_missing_value_enum_from_string(missing_value_action_str);
 
-  if(metric == "report") {
+  variant_map_type ret;
+
+  if(metric == "report" || metric == "auto") {
     if(is_classifier()) {
-      std::string target = "class"; 
-      std::string pred_column = "predicted_class";
+      std::string target = "target_label"; 
+      std::string pred_column = "predicted_predicted";
 
 
       gl_sframe out;
 
-      out["class"] = data[variant_get_ref<flexible_type>(state.at("target")).get<flex_string>()];
+      out[target] = data[variant_get_ref<flexible_type>(state.at("target")).get<flex_string>()];
       if(predictions.size() == 0) {
-        out["predicted_class"] =
+        out[pred_column] =
             api_predict(data, missing_value_action_str, "class");
       } else {
-        out["predicted_class"] = predictions;
+        out[pred_column] = predictions;
       }
 
-      variant_map_type ret;
 
       ret["confusion_matrix"] = confusion_matrix(out, target, pred_column);
       ret["report_by_class"] =
           classifier_report_by_class(out, target, pred_column);
       ret["accuracy"] =
-          double((out["class"] == out["predicted_class"]).sum()) / out.size();
+          double((out[target] == out[pred_column]).sum()) / out.size();
 
-      return ret;
+      // If it's "auto", also add in everything given below.
+      if(metric == "report") { 
+         return ret;
+      }
 
     } else {
       metric = "auto";
@@ -1150,9 +1160,11 @@ variant_map_type supervised_learning_model_base::api_evaluate(
   ml_data m_data = setup_ml_data_for_evaluation(
       X, y, model, missing_value_action);
 
-  variant_map_type results = evaluate(m_data, metric);
+  variant_map_type ev_ret = evaluate(m_data, metric);
 
-  return results;
+  ret.insert(ev_ret.begin(), ev_ret.end());
+  
+  return ret;
 }
 
 /**
