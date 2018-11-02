@@ -1,5 +1,5 @@
 # Build Boost =================================================================
-set(PATCHCMD patch -N -p1 -i ${CMAKE_SOURCE_DIR}/deps/patches/boost_date_time_parsers3.patch || true)
+#set(PATCHCMD patch -N -p1 -i ${CMAKE_SOURCE_DIR}/deps/patches/boost_date_time_parsers3.patch || true)
 # disable fchmodat on mac. not supported for OS X 10.8/10.9
 SET(EXTRA_CONFIGURE_COMMANDS "")
 
@@ -69,7 +69,7 @@ endif()
 
 ExternalProject_Add(ex_boost
   PREFIX ${CMAKE_SOURCE_DIR}/deps/build/boost
-  URL "${CMAKE_SOURCE_DIR}/deps/src/boost_1_65_1/"
+  URL "${CMAKE_SOURCE_DIR}/deps/src/boost_1_68_0/"
   BUILD_IN_SOURCE 1
   INSTALL_DIR ${CMAKE_SOURCE_DIR}/deps/local
   PATCH_COMMAND ${PATCHCMD}
