@@ -198,6 +198,37 @@ static tc_sarray* make_sarray_double(const std::vector<double>& v) {
 }
 
 __attribute__((__unused__))
+static tc_sarray* make_sarray_integer(const std::vector<int64_t>& v) {
+
+  tc_error* error = NULL;
+
+  tc_flex_list* fl = make_flex_list_int(v);
+
+  tc_sarray* sa = tc_sarray_create_from_list(fl, &error);
+
+  CAPI_CHECK_ERROR(error);
+
+  {
+    // Make sure it gets out what we want it to.
+    for(size_t i = 0; i < v.size(); ++i) {
+      tc_flexible_type* ft = tc_sarray_extract_element(sa, i, &error);
+      CAPI_CHECK_ERROR(error);
+
+      TS_ASSERT(tc_ft_is_int64(ft) != 0);
+
+      int64_t val = tc_ft_int64(ft, &error);
+      CAPI_CHECK_ERROR(error);
+
+      TS_ASSERT(v[i] == val);
+
+      tc_release(ft);
+    }
+  }
+
+  return sa;
+}
+
+__attribute__((__unused__))
 static tc_sarray* make_sarray_string(const std::vector<std::string>& v) {
 
   tc_error* error = NULL;
@@ -271,7 +302,46 @@ static tc_sframe* make_sframe_double(const std::vector<std::pair<std::string, st
   }
 
 __attribute__((__unused__))
-  static bool check_equality_gl_sframe(
+static tc_sframe* make_sframe_integer(const std::vector<std::pair<std::string, std::vector<int64_t> > >& data ) {
+
+  tc_error* error = NULL;
+
+  tc_sframe* sf = tc_sframe_create_empty(&error);
+
+  CAPI_CHECK_ERROR(error);
+
+  for(auto p : data) {
+
+    tc_sarray* sa = make_sarray_integer(p.second);
+
+    tc_sframe_add_column(sf, p.first.c_str(), sa, &error);
+
+    CAPI_CHECK_ERROR(error);
+
+    tc_release(sa);
+  }
+
+  // Check everything
+  for(auto p : data) {
+    // Make sure it gets out what we want it to.
+    tc_sarray* sa = tc_sframe_extract_column_by_name(sf, p.first.c_str(), &error);
+
+    CAPI_CHECK_ERROR(error);
+
+    tc_sarray* ref_sa = make_sarray_integer(p.second);
+
+    TS_ASSERT(tc_sarray_equals(sa, ref_sa, &error));
+
+    CAPI_CHECK_ERROR(error);
+
+    tc_release(sa);
+  }
+
+  return sf;
+}
+
+__attribute__((__unused__))
+static bool check_equality_gl_sframe(
   turi::gl_sframe sf_gl, turi::gl_sframe ref_gl, bool check_row_order=true) {
 
   size_t num_columns_sf = sf_gl.num_columns();
@@ -319,7 +389,7 @@ __attribute__((__unused__))
 }
 
 __attribute__((__unused__))
-  static bool check_equality_tc_sframe(
+static bool check_equality_tc_sframe(
   tc_sframe *sf, tc_sframe *ref, bool check_row_order=true) {
 
   return check_equality_gl_sframe(sf->value, ref->value, check_row_order);

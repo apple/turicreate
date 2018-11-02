@@ -80,10 +80,25 @@ class EXPORT model_base: public cppipc::ipc_object_base {
   }
 
   /**
-   * Serializes the toolkit class. Must save the class to the file format
+   * Serializes the toolkit class.
+   * Must save the class to the file format
    * version matching that of get_version().
    */
-  virtual void save_impl(oarchive& oarc) const;
+  virtual void save_impl(oarchive& oarc) const {
+    // A subclass needs to override these methods if it has any data that needs to be serialized. 
+    // Otherwise this is a valid serialization of an empty model. 
+  };
+
+  /**
+   * Loads a toolkit class previously saved at a particular version number.
+   * Should raise an exception on failure.
+   */
+  virtual void load_version(iarchive& iarc, size_t version) {
+    // A subclass needs to override these methods if it has any data that needs to be serialized. 
+    // Otherwise this is a valid serialization of an empty model. 
+  } ;
+
+
 
   void load(iarchive& iarc) {
     size_t version = 0;
@@ -91,18 +106,27 @@ class EXPORT model_base: public cppipc::ipc_object_base {
     load_version(iarc, version);
   }
 
-  /**
-   * Loads a toolkit class previously saved at a particular version number.
-   * Should raise an exception on failure.
-   */
-  virtual void load_version(iarchive& iarc, size_t version);
 
+
+  /**
+   * Save a toolkit class to disk.
+   *
+   * \param sidedata Any additional side information
+   * \param url The destination url to store the class.
+   */
+  void save_model_to_file(const variant_map_type& side_data,
+                          const std::string& url);
+
+  /**
+   * Save a toolkit class to a data stream.
+   */
+  void save_model_to_data(std::ostream& out);
 
   /**
    * Returns the current version of the toolkit class for this instance, for
    * serialization purposes.
    */
-  virtual size_t get_version() const;
+  virtual size_t get_version() const { return 0; }
 
   /**
    * Lists all the registered functions.

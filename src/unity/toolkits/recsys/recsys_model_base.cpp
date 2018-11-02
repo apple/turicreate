@@ -15,6 +15,7 @@
 #include <unity/toolkits/recsys/models.hpp>
 #include <unity/toolkits/recsys/user_item_lists.hpp>
 #include <unity/toolkits/recsys/recsys_model_base.hpp>
+#include <unity/toolkits/recsys/train_test_split.hpp>
 #include <unity/toolkits/util/precision_recall.hpp>
 #include <unity/toolkits/util/sframe_utils.hpp>
 #include <unity/toolkits/evaluation/metrics.hpp>
@@ -416,10 +417,8 @@ static std::vector<size_t> extract_categorical_column(
   return out;
 }
 
-void recsys_model_base::export_to_coreml(
-  std::shared_ptr<recsys_model_base> recsys_model,
-  const std::string& filename) {
-  flexible_type model_name = recsys_model->name();
+void recsys_model_base::export_to_coreml(const std::string& filename) {
+  flexible_type model_name = name();
   log_and_throw("Currently, only item similarity models can be exported to Core ML (use turicreate.item_similarity.create to make such a model).");
 }
 
@@ -1217,6 +1216,8 @@ sframe recsys_model_base::recommend(
 }
 
 
+// This is a hack to have sframe cross over to python. In the future, the extensions mechanism 
+// should do this automatically and we shouldn't have to write this workaround. 
 std::shared_ptr<unity_sframe_base> recsys_model_base::recommend_extension_wrapper(
   std::shared_ptr<unity_sframe_base> reference_data,
   std::shared_ptr<unity_sframe_base> new_observation_data,
@@ -1224,7 +1225,6 @@ std::shared_ptr<unity_sframe_base> recsys_model_base::recommend_extension_wrappe
 
   std::shared_ptr<unity_sframe> usframe_refdata =
               std::dynamic_pointer_cast<unity_sframe> (reference_data);
-  //std::shared_ptr<sframe> reference_data = usframe_refdata->get_underlying_sframe();
   const sframe& outputSFrame = this->recommend(
     *(std::dynamic_pointer_cast<unity_sframe>(reference_data)->get_underlying_sframe()),
     top_k,
@@ -1232,6 +1232,32 @@ std::shared_ptr<unity_sframe_base> recsys_model_base::recommend_extension_wrappe
     sframe(), // exclusion_data
     *(std::dynamic_pointer_cast<unity_sframe>(new_observation_data)->get_underlying_sframe())
   );
+  std::shared_ptr<unity_sframe> usframe = std::make_shared<unity_sframe>();
+  usframe->construct_from_sframe(outputSFrame);
+  
+  return usframe;
+
+}
+
+// This is a hack to have sframe cross over to python. In the future, the extensions mechanism 
+// should do this automatically and we shouldn't have to write this workaround. 
+std::shared_ptr<unity_sframe_base> recsys_model_base::get_num_users_per_item_extension_wrapper(
+  ) const {
+
+  const sframe& outputSFrame = this->get_num_users_per_item();
+  std::shared_ptr<unity_sframe> usframe = std::make_shared<unity_sframe>();
+  usframe->construct_from_sframe(outputSFrame);
+  
+  return usframe;
+
+}
+
+// This is a hack to have sframe cross over to python. In the future, the extensions mechanism 
+// should do this automatically and we shouldn't have to write this workaround. 
+std::shared_ptr<unity_sframe_base> recsys_model_base::get_num_items_per_user_extension_wrapper(
+  ) const {
+
+  const sframe& outputSFrame = this->get_num_items_per_user();
   std::shared_ptr<unity_sframe> usframe = std::make_shared<unity_sframe>();
   usframe->construct_from_sframe(outputSFrame);
   
@@ -1436,7 +1462,7 @@ void recsys_model_base::import_all_from_other_model(const recsys_model_base* oth
   recsys_model_base::operator=(*other);
 }
 
-std::shared_ptr<recsys_popularity> recsys_model_base::get_popularity_baseline() const {
+std::shared_ptr<recsys_model_base> recsys_model_base::get_popularity_baseline() const {
 
   std::shared_ptr<recsys_popularity> pop(new recsys_popularity);
 
@@ -1641,6 +1667,12 @@ sframe recsys_model_base::get_item_intersection_info(const sframe& unindexed_ite
   return out_data_1;
 }
 
+gl_sframe recsys_model_base::api_get_item_intersection_info(gl_sframe item_pairs) {
+
+  sframe item_info = this->get_item_intersection_info(item_pairs.materialize_to_sframe());
+
+  return gl_sframe(item_info);
+}
 
 sframe recsys_model_base::get_num_items_per_user() const {
 
@@ -1721,6 +1753,190 @@ sframe recsys_model_base::get_num_users_per_item() const {
   return ret;
 }
 
+gl_sframe recsys_model_base::api_get_similar_items(gl_sarray items, size_t k, size_t verbose, int get_all_items) const {
+
+  turi::timer timer;
+
+  auto items_sa = items.materialize_to_sarray();
+
+  if(get_all_items) {
+    items_sa.reset();
+  }
+
+  timer.start();
+
+  sframe raw_ranks = this->get_similar_items(items_sa, k);
+
+  if (verbose) {
+    logprogress_stream << "Getting similar items completed in "
+                       << timer.current_time() << "" << std::endl;
+  }
+
+  return gl_sframe(raw_ranks);
+}
+
+
+
+gl_sframe recsys_model_base::api_get_similar_users(gl_sarray users, size_t k, int get_all_users) const {
+
+
+  turi::timer timer;
+
+  auto users_sa = users.materialize_to_sarray();
+
+  if(get_all_users) {
+    users_sa.reset();
+  }
+
+  timer.start();
+
+  sframe raw_ranks = this->get_similar_users(users_sa, k);
+
+  logprogress_stream << "Getting similar users completed in "
+      << timer.current_time() << "" << std::endl;
+
+  return gl_sframe(raw_ranks);
+}
+
+gl_sframe recsys_model_base::api_predict(gl_sframe data_to_predict, gl_sframe new_user_data, gl_sframe new_item_data) const {
+
+  sframe sf = data_to_predict.materialize_to_sframe();
+
+  // Currently, new_data is ignored, as none of the models use it.
+
+  sframe new_user_data_sf = new_user_data.materialize_to_sframe();
+  sframe new_item_data_sf = new_item_data.materialize_to_sframe();
+
+  sframe predictions = this->predict(this->create_ml_data(sf, new_user_data_sf, new_item_data_sf));
+
+  return predictions;
+}
+
+variant_map_type recsys_model_base::api_get_current_options() {
+
+  std::map<std::string, flexible_type> options = this->get_current_options();
+
+  variant_map_type ret;
+  for (auto& opt : options) {
+    ret[opt.first] = opt.second;
+  }
+  return ret;
+}
+
+
+variant_map_type recsys_model_base::api_set_current_options(std::map<std::string, flexible_type> options) {
+
+  options.erase("model");
+  this->set_options(options);
+
+  return variant_map_type();
+}
+
+void recsys_model_base::api_train(
+    gl_sframe _dataset, gl_sframe _user_data, gl_sframe _item_data,
+    const std::map<std::string, flexible_type>& opts,
+    const variant_map_type& extra_data) {
+
+  sframe dataset = _dataset.materialize_to_sframe();
+  sframe user_data = _user_data.materialize_to_sframe();
+  sframe item_data = _item_data.materialize_to_sframe();
+
+  this->init_options(opts);
+  this->setup_and_train(dataset, user_data, item_data, extra_data);
+
+}
+
+
+gl_sframe recsys_model_base::api_recommend(gl_sframe _query, gl_sframe _exclude, gl_sframe _restrictions, gl_sframe _new_data, gl_sframe _new_user_data,
+  gl_sframe _new_item_data, bool exclude_training_interactions, size_t top_k, double diversity, size_t random_seed) {
+
+  turi::timer timer;
+
+  sframe query_sf = _query.materialize_to_sframe();
+  sframe exclusion_data_sf = _exclude.materialize_to_sframe();
+  sframe restrictions_sf = _restrictions.materialize_to_sframe();
+  sframe new_observation_data_sf = _new_data.materialize_to_sframe();
+  sframe new_user_data_sf = _new_user_data.materialize_to_sframe();
+  sframe new_item_data_sf = _new_item_data.materialize_to_sframe();
+
+  timer.start();
+
+  // Rank items
+  sframe ranks = this->recommend(query_sf,
+                              top_k,
+                              restrictions_sf,
+                              exclusion_data_sf,
+                              new_observation_data_sf,
+                              new_user_data_sf,
+                              new_item_data_sf,
+                              exclude_training_interactions,
+                              diversity,
+                              random_seed);
+
+  logstream(LOG_INFO) << "Ranking completed in " << timer.current_time() << std::endl;
+
+  return gl_sframe(ranks);
+
+}
+
+gl_sframe recsys_model_base::api_precision_recall_stats(
+    gl_sframe indexed_validation_data, gl_sframe recommend_output,
+    const std::vector<size_t>& cutoffs) {
+
+  return (gl_sframe(precision_recall_stats(
+      indexed_validation_data.materialize_to_sframe(),
+      recommend_output.materialize_to_sframe(), cutoffs)));
+}
+
+variant_map_type recsys_model_base::api_get_data_schema() {
+
+  variant_map_type ret;
+  ret["schema"] = this->get_data_schema();
+
+  return ret;
+}
+
+variant_map_type recsys_model_base::summary() {
+
+  variant_map_type ret;
+  for (auto& opt : this->get_current_options()) {
+    ret[opt.first] = opt.second;
+  }
+  for (auto& opt : this->get_train_stats()) {
+    ret[opt.first] = opt.second;
+  }
+
+  return ret;
+}
+
+EXPORT variant_map_type train_test_split(gl_sframe _dataset,
+                                         const std::string& user_column,
+                                         const std::string& item_column,
+                                         flexible_type max_num_users,
+                                         double item_test_proportion,
+                                         size_t random_seed) {
+  variant_map_type ret;
+  sframe dataset = _dataset.materialize_to_sframe();
+  size_t max_users = (max_num_users == FLEX_UNDEFINED) ? std::numeric_limits<size_t>::max() : size_t(max_num_users);
+
+  auto train_test = make_recsys_train_test_split(dataset, user_column, item_column,
+                                                 max_users,
+                                                 item_test_proportion,
+                                                 random_seed);
+
+  ret["train"] = to_variant(gl_sframe(train_test.first));
+  ret["test"] = to_variant(gl_sframe(train_test.second));
+  return ret;
+
+}
+
+
+
+
+
+BEGIN_FUNCTION_REGISTRATION
+REGISTER_FUNCTION(train_test_split, "data", "user_column", "item_column", "max_num_users", "item_test_proportion", "random_seed") 
+END_FUNCTION_REGISTRATION
 
 }}
 

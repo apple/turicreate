@@ -185,12 +185,9 @@ def create(item_data, item_id,
         print("Applying transform:")
         print(item_data_transform)
 
-    # The name of this model.
-    method = 'item_content_recommender'
-
-    opts = {'model_name': method}
-    response = _turicreate.extensions._recsys.init(opts)
-    model_proxy = response['model']
+    opts = {}
+    model_proxy = _turicreate.extensions.item_content_recommender()
+    model_proxy.init_options(opts)
 
     # The user_id is implicit if none is given.
     if user_id is None:
@@ -243,23 +240,18 @@ def create(item_data, item_id,
 
     graph["score"] = graph["score"].apply(process_weights)
 
-    opts = {'dataset': observation_data,
-            'user_id': user_id,
+    opts = {'user_id': user_id,
             'item_id': item_id,
             'target': target,
-            'user_data': _turicreate.SFrame(),
-            'item_data': item_data,
-            'nearest_items': graph,
-            'model': model_proxy,
             'similarity_type' : "cosine",
             'max_item_neighborhood_size' : max_item_neighborhood_size}
 
+    user_data = _turicreate.SFrame()
+    extra_data = {"nearest_items" : graph}
     with QuietProgress(verbose):
-        response = _turicreate.extensions._recsys.train(opts)
+        model_proxy.train(observation_data, user_data, item_data, opts, extra_data)
 
-    out_model = ItemContentRecommender(response['model'])
-
-    return out_model
+    return ItemContentRecommender(model_proxy)
 
 class ItemContentRecommender(_Recommender):
     """A recommender based on the similarity between item content rather

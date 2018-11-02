@@ -23,6 +23,7 @@ import math
 import os
 import pandas
 import pytz
+import six
 import string
 import sys
 import unittest
@@ -110,11 +111,11 @@ class JSONTest(unittest.TestCase):
     def _assertEqual(self, x, y):
         if type(x) in [long,int]:
             self.assertTrue(type(y) in [long,int])
-        elif type(x) in [str, unicode]:
-            self.assertTrue(type(y) in [str,unicode])
+        elif isinstance(x, six.string_types):
+            self.assertTrue(isinstance(y, six.string_types))
         else:
             self.assertEqual(type(x), type(y))
-        if isinstance(x, (str, unicode)):
+        if isinstance(x, six.string_types):
             self.assertEqual(str(x), str(y))
         elif isinstance(x, SArray):
             _SFrameComparer._assert_sarray_equal(x, y)

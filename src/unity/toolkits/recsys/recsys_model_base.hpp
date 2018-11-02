@@ -11,6 +11,8 @@
 #include <set>
 
 #include <unity/lib/extensions/option_manager.hpp>
+#include <unity/lib/gl_sframe.hpp>
+#include <unity/lib/gl_sarray.hpp>
 #include <unity/lib/toolkit_function_specification.hpp>
 #include <unity/lib/unity_base_types.hpp>
 #include <unity/toolkits/ml_data_2/ml_data.hpp>
@@ -250,11 +252,36 @@ public:
 
   recsys_model_base& operator=(const recsys_model_base&) = default;
 
+  gl_sframe api_get_similar_items(gl_sarray items, size_t k, size_t verbose, int get_all_items) const;
+
+  gl_sframe api_get_similar_users(gl_sarray users, size_t k, int get_all_users) const;
+
+
+  gl_sframe api_predict(gl_sframe data_to_predict, gl_sframe new_user_data, gl_sframe new_item_data) const;
+  variant_map_type api_set_current_options(std::map<std::string, flexible_type> options);
+
+  void api_train(gl_sframe _dataset, gl_sframe _user_data, gl_sframe _item_data,
+                 const std::map<std::string, flexible_type>& opts,
+                 const variant_map_type& extra_data);
+
+  variant_map_type api_get_current_options();
+
+  gl_sframe api_recommend(gl_sframe _query, gl_sframe _exclude, gl_sframe _restrictions, gl_sframe _new_data, gl_sframe _new_user_data,
+  gl_sframe new_item_data, bool exclude_training_interactions, size_t top_k, double diversity, size_t random_seed);
+
+  gl_sframe api_get_item_intersection_info(gl_sframe item_pairs);
+
+  gl_sframe api_precision_recall_stats(gl_sframe indexed_validation_data, gl_sframe recommend_output, const std::vector<size_t>& cutoffs);
+
+  variant_map_type api_get_train_stats();
+
+  EXPORT variant_map_type api_get_data_schema();
+
 
   /** Creates and returns a popularity baseline
    *
    */
-  std::shared_ptr<recsys_popularity> get_popularity_baseline() const;
+  std::shared_ptr<recsys_model_base> get_popularity_baseline() const;
 
   flex_dict get_data_schema() const;
   
@@ -303,9 +330,13 @@ public:
     std::shared_ptr<unity_sframe_base> new_observation_data,
     flex_int top_k) const;
 
-  virtual void export_to_coreml(
-    std::shared_ptr<recsys_model_base> recsys_model,
-    const std::string& filename);
+  std::shared_ptr<unity_sframe_base> get_num_users_per_item_extension_wrapper() const; 
+
+  std::shared_ptr<unity_sframe_base> get_num_items_per_user_extension_wrapper() const; 
+
+  virtual void export_to_coreml(const std::string& filename);
+
+  variant_map_type summary();
 
   /**
    * Compute the precision and recall for a (potentially held out) set of
@@ -355,6 +386,81 @@ public:
   /// Get stats about algorithm runtime
   std::map<std::string, flexible_type> get_train_stats();
 
+
+  BEGIN_BASE_CLASS_MEMBER_REGISTRATION()
+  IMPORT_BASE_CLASS_REGISTRATION(ml_model_base)
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_similar_items",
+                                       recsys_model_base::api_get_similar_items,
+                                       "items", "k", "verbose",
+                                       "get_all_items");
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("init_options",
+                                       recsys_model_base::init_options,
+                                       "options");
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_similar_users",
+                                       recsys_model_base::api_get_similar_users,
+                                       "users", "k", "get_all_users");
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("predict",
+                                       recsys_model_base::api_predict,
+                                       "data_to_predict", "new_user_data",
+                                       "new_item_data");
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("train", recsys_model_base::api_train,
+                                       "dataset", "user_data", "item_data",
+                                       "opts", "extra_data");
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+      "recommend", recsys_model_base::api_recommend, "query", "exclude",
+      "restrictions", "new_data", "new_user_data", "new_item_data",
+      "exclude_training_interactions", "top_k", "diversity", "random_seed");
+
+  register_defaults("recommend",
+                    {{"exclude", gl_sframe()},
+                    {"restrictions", gl_sframe()},
+                    {"new_data", gl_sframe()},
+                    {"new_user_data", gl_sframe()},
+                    {"new_item_data", gl_sframe()},
+                    {"exclude_training_interactions", true},
+                    {"diversity", 0},
+                    {"random_seed", 1}});
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+      "get_current_options", recsys_model_base::api_get_current_options); 
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_num_users_per_item", recsys_model_base::get_num_users_per_item_extension_wrapper);
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_num_items_per_user", recsys_model_base::get_num_items_per_user_extension_wrapper);
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("summary", recsys_model_base::summary);
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+      "get_popularity_baseline", recsys_model_base::get_popularity_baseline);
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+      "get_item_intersection_info",
+      recsys_model_base::api_get_item_intersection_info, "item_pairs");
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("export_to_coreml",
+                                       recsys_model_base::export_to_coreml,
+                                       "filename");
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
+      "precision_recall_stats", recsys_model_base::api_precision_recall_stats,
+      "indexed_validation_data", "recommend_output", "cutoffs");
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_data_schema",
+                                       recsys_model_base::api_get_data_schema);
+
+  REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_train_stats", recsys_model_base::get_train_stats);
+
+  REGISTER_CLASS_MEMBER_FUNCTION(recsys_model_base::recommend_extension_wrapper,
+                                 "reference_data", "new_observation_data",
+                                 "top_k")
+
+  END_CLASS_MEMBER_REGISTRATION
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -452,6 +558,19 @@ sframe recsys_model_base::_create_similar_sframe(
   res.close();
   return res;
 }
+
+variant_map_type train_test_split(gl_sframe _dataset,
+                                  const std::string& user_column,
+                                  const std::string& item_column,
+                                  flexible_type max_num_users,
+                                  double item_test_proportion,
+                                  size_t random_seed);
+
+variant_map_type init(variant_map_type& params);
+
+variant_map_type get_train_stats(variant_map_type& params);
+
+std::vector<toolkit_function_specification> get_toolkit_function_registration();
 
 }}
 

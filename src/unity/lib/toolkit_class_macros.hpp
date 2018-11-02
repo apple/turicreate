@@ -153,7 +153,7 @@
  */
 #define BEGIN_BASE_CLASS_MEMBER_REGISTRATION() \
  public:                                       \
-  virtual inline void perform_registration() { \
+  virtual inline void perform_registration() override { \
 
 
 /**
