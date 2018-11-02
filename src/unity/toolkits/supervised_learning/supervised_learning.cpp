@@ -1124,7 +1124,7 @@ variant_map_type supervised_learning_model_base::api_evaluate(
   if(metric == "report" || metric == "auto") {
     if(is_classifier()) {
       std::string target = "target_label"; 
-      std::string pred_column = "predicted_predicted";
+      std::string pred_column = "predicted_label";
 
 
       gl_sframe out;

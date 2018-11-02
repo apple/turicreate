@@ -127,7 +127,7 @@ class BoostedTreesRegressionTest(unittest.TestCase):
         """
         model = self.model
         fields =  model._list_fields()
-        self.assertEqual(set(fields), set(self.fields_ans))
+        self.assertTrue(set(self.fields_ans).issubset(fields))
 
     def test_get(self):
         """
@@ -217,7 +217,7 @@ class BoostedTreesRegressionTest(unittest.TestCase):
 
         # Default
         ans = model.evaluate(self.dtrain)
-        self.assertEqual(sorted(ans.keys()), sorted(self.metrics))
+        self.assertTrue(set(self.metrics).issubset(ans.keys()))
         for m in self.metrics:
           check_metric(ans, m)
 
@@ -690,7 +690,7 @@ class BoostedTreesClassifierTest(unittest.TestCase):
 
         # Default
         ans = model.evaluate(self.dtrain)
-        self.assertEqual(sorted(ans.keys()), sorted(ans_metrics))
+        self.assertTrue(set(ans_metrics).issubset(ans.keys()))
         for m in ans_metrics:
           check_metric(ans, m)
 
