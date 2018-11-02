@@ -1,0 +1,404 @@
+[[bbv2.faq]]
+= Frequently Asked Questions
+
+[[bbv2.faq.featurevalue]]
+== How do I get the current value of feature in Jamfile?
+
+This is not possible, since Jamfile does not have "current" value of any
+feature, be it toolset, build variant or anything else. For a single run
+of Boost.Build, any given main target can be built with several property
+sets. For example, user can request two build variants on the command
+line. Or one library is built as shared when used from one application,
+and as static when used from another. Each Jamfile is read only once so
+generally there is no single value of a feature you can access in
+Jamfile.
+
+A feature has a specific value only when building a target, and there
+are two ways you can use that value:
+
+* Use conditional requirements or indirect conditional requirements. See
+link:#bbv2.overview.targets.requirements.conditional[the section called “Requirements”].
+* Define a custom generator and a custom main target type. The custom
+generator can do arbitrary processing or properties. See the
+link:#bbv2.extender[extender manual]
+
+[[bbv2.faq.duplicate]]
+== I am getting a "Duplicate name of actual target" error. What does that mean?
+
+The most likely case is that you are trying to compile the same file
+twice, with almost the same, but differing properties. For example:
+
+[source,jam]
+----
+exe a : a.cpp : <include>/usr/local/include ;
+exe b : a.cpp ;
+----
+
+The above snippet requires two different compilations of `a.cpp`, which
+differ only in their `include` property. Since the `include` feature is
+declared as `free` Boost.Build does not create a separate build
+directory for each of its values and those two builds would both produce
+object files generated in the same build directory. Ignoring this and
+compiling the file only once would be dangerous as different includes
+could potentially cause completely different code to be compiled.
+
+To solve this issue, you need to decide if the file should be compiled
+once or twice.
+
+1.  To compile the file only once, make sure that properties are the
+same for both target requests:
++
+[source,jam]
+----
+exe a : a.cpp : <include>/usr/local/include ;
+exe b : a.cpp : <include>/usr/local/include ;
+----
++
+or:
++
+[source,jam]
+----
+alias a-with-include : a.cpp : <include>/usr/local/include ;
+exe a : a-with-include ;
+exe b : a-with-include ;
+----
++
+or if you want the `includes` property not to affect how any other
+sources added for the built `a` and `b` executables would be compiled:
++
+[source,jam]
+----
+obj a-obj : a.cpp : <include>/usr/local/include ;
+exe a : a-obj ;
+exe b : a-obj ;
+----
++
+Note that in both of these cases the `include` property will be applied
+only for building these object files and not any other sources that
+might be added for targets `a` and `b`.
+2.  To compile the file twice, you can tell Boost.Build to compile it to
+two separate object files like so:
++
+[source,jam]
+----
+obj a_obj : a.cpp : <include>/usr/local/include ;
+obj b_obj : a.cpp ;
+exe a : a_obj ;
+exe b : b_obj ;
+----
++
+or you can make the object file targets local to the main target:
++
+[source,jam]
+----
+exe a : [ obj a_obj : a.cpp : <include>/usr/local/include ] ;
+exe b : [ obj a_obj : a.cpp ] ;
+----
++
+which will cause Boost.Build to actually change the generated object
+file names a bit for you and thus avoid any conflicts.
++
+Note that in both of these cases the `include` property will be applied
+only for building these object files and not any other sources that
+might be added for targets `a` and `b`.
+
+A good question is why Boost.Build can not use some of the above
+approaches automatically. The problem is that such magic would only help
+in half of the cases, while in the other half it would be silently doing
+the wrong thing. It is simpler and safer to ask the user to clarify his
+intention in such cases.
+
+[[bbv2.faq.envar]]
+== Accessing environment variables
+
+Many users would like to use environment variables in Jamfiles, for
+example, to control the location of external libraries. In many cases it
+is better to declare those external libraries in the site-config.jam
+file, as documented in the link:#bbv2.recipes.site-config[recipes
+section]. However, if the users already have the environment variables
+set up, it may not be convenient for them to set up their
+site-config.jam files as well and using the environment variables might
+be reasonable.
+
+Boost.Jam automatically imports all environment variables into its
+built-in .ENVIRON module so user can read them from there directly or by
+using the helper os.environ rule. For example:
+
+[source,jam]
+----
+import os ;
+local unga-unga = [ os.environ UNGA_UNGA ] ;
+ECHO $(unga-unga) ;
+----
+
+or a bit more realistic:
+
+[source,jam]
+----
+import os ;
+local SOME_LIBRARY_PATH = [ os.environ SOME_LIBRARY_PATH ] ;
+exe a : a.cpp : <include>$(SOME_LIBRARY_PATH) ;
+----
+
+[[bbv2.faq.proporder]]
+== How to control properties order?
+
+For internal reasons, Boost.Build sorts all the properties
+alphabetically. This means that if you write:
+
+[source,jam]
+----
+exe a : a.cpp : <include>b <include>a ;
+----
+
+then the command line with first mention the `a` include directory, and
+then `b`, even though they are specified in the opposite order. In most
+cases, the user does not care. But sometimes the order of includes, or
+other properties, is important. For such cases, a special syntax is
+provided:
+
+[source,jam]
+----
+exe a : a.cpp : <include>a&&b ;
+----
+
+The `&&` symbols separate property values and specify that their order
+should be preserved. You are advised to use this feature only when the
+order of properties really matters and not as a convenient shortcut.
+Using it everywhere might negatively affect performance.
+
+[[bbv2.faq.liborder]]
+== How to control the library linking order on Unix?
+
+On Unix-like operating systems, the order in which static libraries are
+specified when invoking the linker is important, because by default, the
+linker uses one pass though the libraries list. Passing the libraries in
+the incorrect order will lead to a link error. Further, this behavior
+is often used to make one library override symbols from another. So,
+sometimes it is necessary to force specific library linking order.
+
+Boost.Build tries to automatically compute the right order. The primary
+rule is that if library `a` "uses" library `b`, then library `a` will
+appear on the command line before library `b`. Library `a` is considered
+to use `b` if `b` is present either in the `a` library's sources or its
+usage is listed in its requirements. To explicitly specify the `use`
+relationship one can use the `<use>` feature. For example, both of the
+following lines will cause `a` to appear before `b` on the command line:
+
+[source,jam]
+----
+lib a : a.cpp b ;
+lib a : a.cpp : <use>b ;
+----
+
+The same approach works for searched libraries as well:
+
+[source,jam]
+----
+lib z ;
+lib png : : <use>z ;
+exe viewer : viewer png z ;
+----
+
+[[bbv2.faq.external]]
+== Can I get capture external program output using a Boost.Jam variable?
+
+The `SHELL` builtin rule may be used for this purpose:
+
+[source,jam]
+----
+local gtk_includes = [ SHELL "gtk-config --cflags" ] ;
+----
+
+[[bbv2.faq.projectroot]]
+== How to get the project root (a.k.a. Jamroot) location?
+
+You might want to use your project's root location in your Jamfiles. To
+access it just declare a path constant in your `Jamroot.jam` file using:
+
+[source,jam]
+----
+path-constant TOP : . ;
+----
+
+After that, the `TOP` variable can be used in every Jamfile.
+
+[[bbv2.faq.flags]]
+== How to change compilation flags for one file?
+
+If one file must be compiled with special options, you need to
+explicitly declare an `obj` target for that file and then use that
+target in your `exe` or `lib` target:
+
+[source,jam]
+----
+exe a : a.cpp b ;
+obj b : b.cpp : <optimization>off ;
+----
+
+Of course you can use other properties, for example to specify specific
+C/{CPP} compiler options:
+
+[source,jam]
+----
+exe a : a.cpp b ;
+obj b : b.cpp : <cflags>-g ;
+----
+
+You can also use link:#bbv2.tutorial.conditions[conditional properties]
+for finer control:
+
+[source,jam]
+----
+exe a : a.cpp b ;
+obj b : b.cpp : <variant>release:<optimization>off ;
+----
+
+[[bbv2.faq.dll-path]]
+== Why are the `dll-path` and `hardcode-dll-paths` properties useful?
+
+NOTE: This entry is specific to Unix systems.
+
+Before answering the questions, let us recall a few points about shared
+libraries. Shared libraries can be used by several applications, or
+other libraries, without physically including the library in the
+application which can greatly decrease the total application size. It is
+also possible to upgrade a shared library when the application is
+already installed.
+
+However, in order for application depending on shared libraries to be
+started the OS may need to find the shared library when the application
+is started. The dynamic linker will search in a system-defined list of
+paths, load the library and resolve the symbols. Which means that you
+should either change the system-defined list, given by the
+`LD_LIBRARY_PATH` environment variable, or install the libraries to a
+system location. This can be inconvenient when developing, since the
+libraries are not yet ready to be installed, and cluttering system paths
+may be undesirable. Luckily, on Unix there is another way.
+
+An executable can include a list of additional library paths, which will
+be searched before system paths. This is excellent for development
+because the build system knows the paths to all libraries and can
+include them in the executables. That is done when the
+`hardcode-dll-paths` feature has the `true` value, which is the default.
+When the executables should be installed, the story is different.
+
+Obviously, installed executable should not contain hardcoded paths to
+your development tree. (The `install` rule explicitly disables the
+`hardcode-dll-paths` feature for that reason.) However, you can use the
+`dll-path` feature to add explicit paths manually. For example:
+
+[source,jam]
+----
+install installed : application : <dll-path>/usr/lib/snake
+                                  <location>/usr/bin ;
+----
+
+will allow the application to find libraries placed in the
+`/usr/lib/snake` directory.
+
+If you install libraries to a nonstandard location and add an explicit
+path, you get more control over libraries which will be used. A library
+of the same name in a system location will not be inadvertently used. If
+you install libraries to a system location and do not add any paths, the
+system administrator will have more control. Each library can be
+individually upgraded, and all applications will use the new library.
+
+Which approach is best depends on your situation. If the libraries are
+relatively standalone and can be used by third party applications, they
+should be installed in the system location. If you have lots of
+libraries which can be used only by your application, it makes sense to
+install them to a nonstandard directory and add an explicit path, like
+the example above shows. Please also note that guidelines for different
+systems differ in this respect. For example, the Debian GNU guidelines
+prohibit any additional search paths while Solaris guidelines suggest
+that they should always be used.
+
+[[bbv2.recipes.site-config]]
+== Targets in site-config.jam
+
+It is desirable to declare standard libraries available on a given
+system. Putting target declaration in a specific project's Jamfile is
+not really good, since locations of the libraries can vary between
+different development machines and then such declarations would need to
+be duplicated in different projects. The solution is to declare the
+targets in Boost.Build's `site-config.jam` configuration file:
+
+[source,jam]
+----
+project site-config ;
+lib zlib : : <name>z ;
+----
+
+Recall that both `site-config.jam` and `user-config.jam` are projects,
+and everything you can do in a Jamfile you can do in those files as
+well. So, you declare a project id and a target. Now, one can write:
+
+[source,jam]
+----
+exe hello : hello.cpp /site-config//zlib ;
+----
+
+in any Jamfile.
+
+[[bbv2.faq.header-only-libraries]]
+== Header-only libraries
+
+In modern {CPP}, libraries often consist of just header files, without any
+source files to compile. To use such libraries, you need to add proper
+includes and possibly defines to your project. But with a large number
+of external libraries it becomes problematic to remember which libraries
+are header only, and which ones you have to link to. However, with
+Boost.Build a header-only library can be declared as Boost.Build target
+and all dependents can use such library without having to remember
+whether it is a header-only library or not.
+
+Header-only libraries may be declared using the `alias` rule, specifying
+their include path as a part of its usage requirements, for example:
+
+[source,jam]
+----
+alias my-lib
+    : # no sources
+    : # no build requirements
+    : # no default build
+    : <include>whatever ;
+----
+
+The includes specified in usage requirements of `my-lib` are
+automatically added to all of its dependents build properties. The
+dependents need not care if `my-lib` is a header-only or not, and it is
+possible to later make `my-lib` into a regular compiled library without
+having to add the includes to its dependents declarations.
+
+If you already have proper usage requirements declared for a project
+where a header-only library is defined, you do not need to duplicate
+them for the `alias` target:
+
+[source,jam]
+----
+project my : usage-requirements <include>whatever ;
+alias mylib ;
+----
+
+[[bbv2.faq.names]]
+== What is the difference between Boost.Build, `b2`, `bjam` and Perforce Jam?
+
+Boost.Build is the name of the complete build system. The executable
+that runs it is `b2`. That executable is written in C and implements
+performance-critical algorithms, like traversal of dependency graph and
+executing commands. It also implements an interpreted language used to
+implement the rest of Boost.Build. This executable is formally called
+"Boost.Build engine".
+
+The Boost.Build engine is derived from an earlier build tool called
+Perforce Jam. Originally, there were just minor changes, and the
+filename was `bjam`. Later on, with more and more changes, the
+similarity of names because a disservice to users, and as of Boost
+1.47.0, the official name of the executable was changed to `b2`. A copy
+named `bjam` is still created for compatibility, but you are encouraged
+to use the new name in all cases.
+
+Perforce Jam was an important foundation, and we gratefully acknowledge
+its influence, but for users today, these tools share only some basics
+of the interpreted language.

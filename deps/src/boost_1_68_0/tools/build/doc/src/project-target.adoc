@@ -1,0 +1,59 @@
+[[bbv2.reference.class.project-target]]
+= Class project-target
+
+[source,jam]
+----
+class project-target : abstract-target {
+    rule generate ( property-set )
+    rule build-dir ( )
+    rule main-target ( name )
+    rule has-main-target ( name )
+    rule find ( id : no-error ? )
+
+    # Methods inherited from abstract-target
+    rule name ( )
+    rule project ( )
+    rule location ( )
+    rule full-name ( )
+}
+----
+
+This class has the following responsibilities:
+
+* Maintaining a list of main targets in this project and building them.
+
+--
+1. [[bbv2.reference.class.project-target.generate]] `rule generate ( property-set )`
++
+Overrides
+link:#bbv2.reference.class.abstract-target.generate[abstract-target.generate].
+Generates virtual targets for all the targets contained in this project.
++
+On success, returns:
++
+* a property-set with the usage requirements to be applied to dependents
+* a list of produced virtual targets, which may be empty.
+
+2. `rule build-dir ( )`
++
+Returns the root build directory of the project.
+
+3. `rule main-target ( name )`
++
+Returns a link:#bbv2.reference.class.main-target[main-target] class
+instance corresponding to `name`. Can only be called after the project
+has been fully loaded.
+
+4. `rule has-main-target ( name )`
++
+Returns whether a link:#bbv2.reference.class.main-target[main-target]
+with the specified name exists. Can only be called after the project has
+been fully loaded.
+
+5. `rule find ( id : no-error ? )`
++
+Find and return the target with the specified id, treated relative to
+self. Id may specify either a target or a file name with the target
+taking priority. May report an error or return nothing if the target is
+not found depending on the `no-error` parameter.
+--

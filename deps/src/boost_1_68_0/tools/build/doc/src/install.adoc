@@ -1,0 +1,35 @@
+[[bbv2.installation]]
+= Installation
+
+To install Boost.Build from an official release or a nightly build, as
+available on the http://boost.org/boost-build2[official web site],
+follow these steps:
+
+1.  Unpack the release. On the command line, go to the root of the
+unpacked tree.
+2.  Run either `.\bootstrap.bat` (on Windows), or `./bootstrap.sh` (on
+other operating systems).
+3.  Run
++
+[source,shell]
+----
+$ ./b2 install --prefix=PREFIX
+----
++
+where PREFIX is a directory where you want Boost.Build to be installed.
+4.  Optionally, add `PREFIX/bin` to your PATH environment variable.
+
+If you are not using a Boost.Build package, but rather the version
+bundled with the Boost {CPP} Libraries, the above commands should be run
+in the `tools/build` directory.
+
+Now that Boost.Build is installed, you can try some of the examples.
+Copy `PREFIX/share/boost-build/examples/hello` to a different directory,
+then change to that directory and run:
+
+[source,shell]
+----
+$ PREFIX/bin/b2
+----
+
+A simple executable should be built.

@@ -1,0 +1,65 @@
+[[bbv2.reference.modules.regex]]
+= regex
+
+Contains rules for string processing using regular expressions.
+
+* `"x*"` matches the pattern `"x"` zero or more times.
+* `"x+"` matches `"x"` one or more times.
+* `"x?"` matches `"x"` zero or one time.
+* `"[abcd]"` matches any of the characters, `"a"`, `"b"`, `"c"`, and
+`"d"`. A character range such as `"[a-z]"` matches any character between
+`"a"` and `"z"`. `"[^abc]"` matches any character which is not `"a"`,
+`"b"`, or `"c"`.
+* `"x|y"` matches either pattern `"x"` or pattern `"y"`
+* `(x)` matches `"x"` and captures it.
+* `"^"` matches the beginning of the string.
+* `"$"` matches the end of the string.
+* "\<" matches the beginning of a word.
+* "\>" matches the end of a word.
+
+1. [[bbv2.reference.modules.regex.split]] `rule split ( string separator )`
++
+Returns a list of the following substrings:
++
+.. from beginning till the first occurrence of `separator` or till the
+end,
+.. between each occurrence of `separator` and the next occurrence,
+.. from the last occurrence of `separator` till the end.
++
+If no separator is present, the result will contain only one element.
+
+2. [[bbv2.reference.modules.regex.split-list]] `rule split-list ( list * : separator )`
++
+Returns the concatenated results of applying
+link:#bbv2.reference.modules.regex.split[regex.split] to every element
+of the list using the separator pattern.
+
+3. [[bbv2.reference.modules.regex.match]] `rule match ( pattern : string : indices * )`
++
+Match `string` against `pattern`, and return the elements indicated by
+`indices`.
+
+4. [[bbv2.reference.modules.regex.transform]] `rule transform ( list * : pattern : indices * )`
++
+Matches all elements of `list` against the `pattern` and returns a list
+of elements indicated by `indices` of all successful matches. If
+`indices` is omitted returns a list of first parenthesized groups of all
+successful matches.
+
+5. [[bbv2.reference.modules.regex.escape]] `rule escape ( string : symbols : escape-symbol )`
++
+Escapes all of the characters in `symbols` using the escape symbol
+`escape-symbol` for the given string, and returns the escaped string.
+
+6. [[bbv2.reference.modules.regex.replace]] `rule replace ( string match replacement )`
++
+Replaces occurrences of a match string in a given string and returns the
+new string. The match string can be a regex expression.
+
+7. [[bbv2.reference.modules.regex.replace-list]] `rule replace-list ( list * : match : replacement )`
++
+Replaces occurrences of a match string in a given list of strings and
+returns a list of new strings. The match string can be a regex
+expression.
+
+See also: link:#jam.language.rules.builtins.utility.\_match__[MATCH]

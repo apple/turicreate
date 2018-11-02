@@ -1,0 +1,94 @@
+[[bbv2.util]]
+= Utilities
+
+[[bbv2.util.debugger]]
+== Debugger
+
+[[bbv2.util.debugger.overview]]
+=== Overview
+
+Boost.Build comes with a debugger for Jamfiles. To run the debugger,
+start Boost.Build with `b2 -dconsole`.
+
+----
+$ b2 -dconsole
+(b2db) break gcc.init
+Breakpoint 1 set at gcc.init
+(b2db) run
+Starting program: /usr/bin/b2
+Breakpoint 1, gcc.init ( ) at /usr/share/boost-build/tools/gcc.jam:74
+74      local tool-command = ;
+(b2db) quit
+----
+
+[[bbv2.util.debugger.running]]
+=== Running the Program
+
+The `run` command is used to start a new `b2` subprocess for debugging.
+The arguments to `run` are passed on the command line. If a child
+process is already running, it will be terminated before the new child
+is launched.
+
+When the program is paused `continue` will resume execution. The `step`
+command will advance the program by a single statement, stopping on
+entry to another function or return from the current function. `next` is
+like `step` except that it skips over function calls. `finish` executes
+until the current function returns.
+
+The `kill` command terminates the current child immediately.
+
+[[bbv2.util.debugger.break]]
+=== Breakpoints
+
+Breakpoints are set using the `break` command. The location of the
+breakpoint can be specified as either the name of a function (including
+the module name) or or a file name and line number of the form
+`file:line`. When a breakpoint is created it is given a unique id which
+is used to identify it for other commands.
+
+----
+(b2db) break Jamfile:10
+Breakpoint 1 set at Jamfile:10
+(b2db) break msvc.init
+Breakpoint 2 set at msvc.init
+----
+
+A breakpoint can be temporarily disabled using the `disable` command.
+While a breakpoint is disabled, the child will not stop when it is hit.
+A disabled breakpoint can be activated again with `enable`.
+
+----
+(b2db) disable 1
+(b2db) enable 1
+----
+
+Breakpoints can be removed permanently with `delete` or `clear`. The
+difference between them is that `delete` takes the breakpoint id while
+`clear` takes the location of the breakpoint as originally specified to
+break.
+
+----
+(b2db) clear Jamfile:10
+Deleted breakpoint 1
+(b2db) delete 2
+----
+
+[[bbv2.util.debugger.stack]]
+=== Examining the Stack
+
+The `backtrace` command will print a summary of every frame on the
+stack.
+
+The `print` command can be used to show the value of an expression.
+
+----
+(b2db) print [ modules.peek : ARGV ]
+/usr/bin/b2 toolset=msvc install
+(b2db) print $(__file__)
+Jamfile.jam
+----
+
+[[bbv2.util.debugger.misc]]
+=== Miscellaneous Commands
+
+`quit` exits the debugger. `help` describes the available commands.

@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Macro BOOST_YAP_USER_UDT_UDT_BINARY_OPERATOR</title>
+<link rel="stylesheet" href="../../doc/src/boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="index.html" title="The Boost C++ Libraries BoostBook Documentation Subset">
+<link rel="up" href="reference.html#header.boost.yap.user_macros_hpp" title="Header &lt;boost/yap/user_macros.hpp&gt;">
+<link rel="prev" href="BOOST_YAP_USE_1_3_48_8_7_9.html" title="Macro BOOST_YAP_USER_UDT_UNARY_OPERATOR">
+<link rel="next" href="BOOST_YAP_US_1_3_48_8_7_11.html" title="Macro BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="../../boost.png"></td>
+<td align="center"><a href="../../index.html">Home</a></td>
+<td align="center"><a href="../../libs/libraries.htm">Libraries</a></td>
+<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
+<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
+<td align="center"><a href="../../more/index.htm">More</a></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="BOOST_YAP_USE_1_3_48_8_7_9.html"><img src="../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="reference.html#header.boost.yap.user_macros_hpp"><img src="../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="BOOST_YAP_US_1_3_48_8_7_11.html"><img src="../../doc/src/images/next.png" alt="Next"></a>
+</div>
+<div class="refentry">
+<a name="BOOST_YAP_US_1_3_48_8_7_10"></a><div class="titlepage"></div>
+<div class="refnamediv">
+<h2><span class="refentrytitle">Macro BOOST_YAP_USER_UDT_UDT_BINARY_OPERATOR</span></h2>
+<p>BOOST_YAP_USER_UDT_UDT_BINARY_OPERATOR</p>
+</div>
+<h2 xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" class="refsynopsisdiv-title">Synopsis</h2>
+<div xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" class="refsynopsisdiv"><pre class="synopsis"><span class="comment">// In header: &lt;<a class="link" href="reference.html#header.boost.yap.user_macros_hpp" title="Header &lt;boost/yap/user_macros.hpp&gt;">boost/yap/user_macros.hpp</a>&gt;
+
+</span>BOOST_YAP_USER_UDT_UDT_BINARY_OPERATOR(op_name, expr_template, t_udt_trait, u_udt_trait)</pre></div>
+<div class="refsect1">
+<a name="id-1.3.48.8.7.12.4"></a><h2>Description</h2>
+<p>Defines a free/non-member operator overload for binary operator <span class="emphasis"><em>op_name</em></span> that produces an expression instantiated from the <span class="emphasis"><em>expr_template</em></span> expression template.</p>
+<p>The <span class="emphasis"><em>lhs</em></span> parameter to the defined operator overload may be any type that is <span class="bold"><strong>not</strong></span> an expression and for which</p>
+<pre class="programlisting"><span class="identifier">t_udt_trait</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">remove_cv_t</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">remove_reference_t</span><span class="special">&lt;</span><span class="identifier">T</span><span class="special">&gt;&gt;</span><span class="special">&gt;</span><span class="special">::</span><span class="identifier">value</span> 
+</pre>
+<p> is true. The parameter is wrapped in a terminal expression.</p>
+<p>The <span class="emphasis"><em>rhs</em></span> parameter to the defined operator overload may be any type that is <span class="bold"><strong>not</strong></span> an expression and for which</p>
+<pre class="programlisting"><span class="identifier">u_udt_trait</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">remove_cv_t</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">remove_reference_t</span><span class="special">&lt;</span><span class="identifier">U</span><span class="special">&gt;&gt;</span><span class="special">&gt;</span><span class="special">::</span><span class="identifier">value</span> 
+</pre>
+<p> is true. The parameter is wrapped in a terminal expression.</p>
+<p>Example: </p>
+<pre class="programlisting"></pre>
+<p> 
+</p>
+<div class="variablelist"><table border="0" class="variablelist compact">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody><tr>
+<td><p><span class="term">Parameters:</span></p></td>
+<td><div class="variablelist"><table border="0" class="variablelist compact">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><code class="computeroutput">expr_template</code></span></p></td>
+<td><p>The expression template to use to instantiate the result expression. <span class="emphasis"><em>expr_template</em></span> must be an ExpressionTemplate.</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="computeroutput">op_name</code></span></p></td>
+<td><p>The operator to be overloaded; this must be one of the <span class="bold"><strong>binary</strong></span> enumerators in <code class="computeroutput">expr_kind</code>, without the <code class="computeroutput">expr_kind::</code> qualification.</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="computeroutput">t_udt_trait</code></span></p></td>
+<td><p>A trait template to use to constrain which types are accepted as <span class="emphasis"><em>T</em></span> template parameters to the defined operator overload.</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="computeroutput">u_udt_trait</code></span></p></td>
+<td><p>A trait template to use to constrain which types are accepted as <span class="emphasis"><em>U</em></span> template parameters to the defined operator overload. </p></td>
+</tr>
+</tbody>
+</table></div></td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2018 T. Zachary Laine<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="BOOST_YAP_USE_1_3_48_8_7_9.html"><img src="../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="reference.html#header.boost.yap.user_macros_hpp"><img src="../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="BOOST_YAP_US_1_3_48_8_7_11.html"><img src="../../doc/src/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

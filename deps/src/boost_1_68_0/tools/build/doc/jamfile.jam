@@ -1,0 +1,118 @@
+#|
+Copyright 2004,2006 Vladimir Prus
+Copyright 2018 Rene Rivera
+Distributed under the Boost Software License, Version 1.0.
+(See accompanying file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
+|#
+
+#|
+Doc generation works in two modes: standalone embedded and website.
+
+For the standalone we just generate the local html for inclusion in a release
+archive. This is the default when no arguments are given.
+
+For the website we clone the website branch locally, generatate the docs in
+the website tree, commit, and push. The default for those arguments is to
+build as if we are doing "develop" branch docs.
+
+b2 --website-dir=website --website-doc-dir=manual/develop website
+
+Building documentation has only been tested on Posix systems and requires:
+
+* Ruby
+* Python 2
+* gem install asciidoctor
+* gem install pygments.rb
+* pip install --user Pygments
+* pip install --user https://github.com/bfgroup/jam_pygments/archive/master.zip
+|#
+
+import asciidoctor ;
+import modules ;
+import path ;
+
+project b2doc
+    ;
+
+path-constant PYGMENTS_DIR : src/pygments ;
+
+doc-dir = [ MATCH "--doc-dir=(.*)" : [ modules.peek : ARGV ] ] ;
+doc-dir ?= html ;
+
+website = [ MATCH "(website)" : [ modules.peek : ARGV ] ] ;
+website-dir = [ MATCH "--website-dir=(.*)" : [ modules.peek : ARGV ] ] ;
+website-dir ?= website ;
+website-doc-dir = [ MATCH "--website-doc-dir=(.*)" : [ modules.peek : ARGV ] ] ;
+website-doc-dir ?= manual/develop ;
+if $(website)
+{
+    doc-dir = $(website-dir)/$(website-doc-dir) ;
+}
+# ECHO $(website) .. $(website-dir) .. $(website-doc-dir) .. $(doc-dir) ;
+
+html index : src/standalone.adoc :
+    :
+        <flags>--require=$(PYGMENTS_DIR)/pygments_init.rb
+        <flags>--trace
+        <flags>--verbose
+    ;
+explicit index ;
+
+install html : index : <location>$(doc-dir) <dependency>website-html ;
+explicit html ;
+
+alias standalone-html : html ;
+
+if $(website)
+{
+    make website-checkout : : @website-checkout ;
+    make website-publish : html : @website-publish ;
+    alias website-html : website-checkout ;
+    always website-checkout ;
+    always website-publish ;
+}
+else
+{
+    alias website-checkout ;
+    alias website-publish ;
+    alias website-html ;
+}
+alias website : website-publish ;
+explicit website-checkout ;
+explicit website-publish ;
+explicit website-html ;
+explicit website ;
+
+###############################################################################
+
+actions website-checkout
+{
+    rm -rf "$(website-dir)"
+    git clone --verbose --branch gh-pages --depth 1 "https://${GH_TOKEN}github.com/boostorg/build.git" "$(website-dir)" || exit 1
+    CD=${PWD}
+    cd "$(website-dir)"
+    git rm --ignore-unmatch -r "$(website-doc-dir)" || exit 1
+    mkdir -p "$(website-doc-dir)" || exit 1
+    cd ${CD}
+    echo "done" > "$(<)"
+}
+
+actions website-publish
+{
+    CD=${PWD}
+    cd "$(website-dir)/$(website-doc-dir)"
+    git add --verbose . || exit 1
+    git commit -m "Update user manual."
+    git push || exit 1
+    cd ${CD}
+    rm -rf "$(website-dir)"
+    echo "done" > "$(<)"
+}
+
+###############################################################################
+
+alias boostdoc ;
+explicit boostdoc ;
+
+alias boostrelease : standalone-html ;
+explicit boostrelease ;

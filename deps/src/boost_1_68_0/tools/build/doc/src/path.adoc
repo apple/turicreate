@@ -1,0 +1,123 @@
+[[bbv2.reference.modules.path]]
+= path
+
+Performs various path manipulations. Paths are always in a 'normalized'
+representation. In it, a path may be either:
+
+* `'.'`, or
+* `['/'] [ ( '..' '/' )* (token '/')* token ]`
+
+In plain english, a path can be rooted, `'..'` elements are allowed only
+at the beginning, and it never ends in slash, except for the path
+consisting of slash only.
+
+1. [[bbv2.reference.modules.path.make]] `rule make ( native )`
++
+Converts the native path into normalized form.
+
+2. [[bbv2.reference.modules.path.native]] `rule native ( path )`
++
+Builds the native representation of the path.
+
+3. [[bbv2.reference.modules.path.is-rooted]] `rule is-rooted ( path )`
++
+Tests if a path is rooted.
+
+4. [[bbv2.reference.modules.path.has-parent]] `rule has-parent ( path )`
++
+Tests if a path has a parent.
+
+5. [[bbv2.reference.modules.path.basename]] `rule basename ( path )`
++
+Returns the path without any directory components.
+
+6. [[bbv2.reference.modules.path.parent]] `rule parent ( path )`
++
+Returns the parent directory of the path. If no parent exists, an error
+is issued.
+
+7. [[bbv2.reference.modules.path.reverse]] `rule reverse ( path )`
++
+Returns `path2` such that `[ join path path2 ] = "."`. The path may not
+contain `".."` element or be rooted.
+
+8. [[bbv2.reference.modules.path.join]] `rule join ( elements + )`
++
+Concatenates the passed path elements. Generates an error if any element
+other than the first one is rooted. Skips any empty or undefined path
+elements.
+
+9. [[bbv2.reference.modules.path.root]] `rule root ( path root )`
++
+If `path` is relative, it is rooted at `root`. Otherwise, it is
+unchanged.
+
+10. [[bbv2.reference.modules.path.pwd]] `rule pwd ( )`
++
+Returns the current working directory.
+
+11. [[bbv2.reference.modules.path.glob]] `rule glob ( dirs * : patterns + : exclude-patterns * )`
++
+Returns the list of files matching the given pattern in the specified
+directory. Both directories and patterns are supplied as portable paths.
+Each pattern should be a non-absolute path, and can't contain "." or
+".." elements. Each slash separated element of a pattern can contain the
+following special characters:
++
+* '?' matches any character
+* '*' matches an arbitrary number of characters
++
+A file `$(d)/e1/e2/e3` (where 'd' is in `$(dirs)`) matches the pattern
+p1/p2/p3 if and only if e1 matches p1, e2 matches p2 and so on. For
+example:
++
+[source,jam]
+----
+[ glob . : *.cpp ]
+[ glob . : */build/Jamfile ]
+----
+
+12. [[bbv2.reference.modules.path.glob-tree]] `rule glob-tree ( roots * : patterns + : exclude-patterns * )`
++
+Recursive version of link:#bbv2.reference.modules.path.glob[glob].
+Builds the glob of files while also searching in the subdirectories of
+the given roots. An optional set of exclusion patterns will filter out
+the matching entries from the result. The exclusions also apply to the
+subdirectory scanning, such that directories that match the exclusion
+patterns will not be searched.
+
+13. [[bbv2.reference.modules.path.exists]] `rule exists ( file )`
++
+Returns true if the specified file exists.
+
+14. [[bbv2.reference.modules.path.all-parents]] `rule all-parents ( path : upper_limit ? : cwd ? )`
++
+Find out the absolute name of path and return the list of all the
+parents, starting with the immediate one. Parents are returned as
+relative names. If `upper_limit` is specified, directories above it will
+be pruned.
+
+15. [[bbv2.reference.modules.path.glob-in-parents]] `rule glob-in-parents ( dir : patterns + : upper-limit ? )`
++
+Search for `patterns` in parent directories of `dir`, up to and
+including `upper_limit`, if it is specified, or till the filesystem root
+otherwise.
+
+16. [[bbv2.reference.modules.path.relative]] `rule relative ( child parent : no-error ? )`
++
+Assuming `child` is a subdirectory of `parent`, return the relative path
+from `parent` to `child`.
+
+17. [[bbv2.reference.modules.path.relative-to]] `rule relative-to ( path1 path2 )`
++
+Returns the minimal path to path2 that is relative path1.
+
+18. [[bbv2.reference.modules.path.programs-path]] `rule programs-path ( )`
++
+Returns the list of paths which are used by the operating system for
+looking up programs.
+
+19. [[bbv2.reference.modules.path.makedirs]] `rule makedirs ( path )`
++
+Creates a directory and all parent directories that do not already
+exist.

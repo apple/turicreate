@@ -1,0 +1,30 @@
+[[root_option]]
+
+root
+
+Specifies root directory of the compiler installation. This option is
+necessary only if it is not possible to detect this information from the
+compiler command—for example if the specified compiler command is a user
+script.
+
+[[common_options]]
+
+cflags
+
+Specifies additional compiler flags that will be used when compiling C
+sources.
+
+cxxflags
+
+Specifies additional compiler flags that will be used when compiling {CPP}
+sources.
+
+compileflags
+
+Specifies additional compiler flags that will be used when compiling
+both C and {CPP} sources.
+
+linkflags
+
+Specifies additional command line options that will be passed to the
+linker.

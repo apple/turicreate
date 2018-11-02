@@ -1,0 +1,732 @@
+[[bbv2.tasks]]
+= Common tasks
+
+This section describes main targets types that Boost.Build supports
+out-of-the-box. Unless otherwise noted, all mentioned main target rules
+have the common signature, described in
+link:#bbv2.overview.targets[the section called “Declaring Targets”].
+
+[[bbv2.tasks.programs]]
+== Programs
+
+Programs are created using the `exe` rule, which follows the
+link:#bbv2.main-target-rule-syntax[common syntax]. For example:
+
+[source]
+----
+exe hello
+    : hello.cpp some_library.lib /some_project//library
+    : <threading>multi
+    ;
+----
+
+This will create an executable file from the sources--in this case,
+one {CPP} file, one library file present in the same directory, and
+another library that is created by Boost.Build. Generally, sources can
+include C and {CPP} files, object files and libraries. Boost.Build will
+automatically try to convert targets of other types.
+
+TIP: On Windows, if an application uses shared libraries, and both the
+application and the libraries are built using Boost.Build, it is not
+possible to immediately run the application, because the `PATH` environment
+variable should include the path to the libraries. It means you have to either
+add the paths manually, or have the build place the application and the
+libraries into the same directory. See
+link:#bbv2.tasks.installing[the section called “Installing”].
+
+[[bbv2.tasks.libraries]]
+== Libraries
+
+Library targets are created using the `lib` rule, which follows the
+link:#bbv2.main-target-rule-syntax[common syntax]. For example:
+
+[source]
+----
+lib helpers : helpers.cpp ;
+----
+
+This will define a library target named `helpers` built from the
+`helpers.cpp` source file. It can be either a static library or a shared
+library, depending on the value of the
+link:#bbv2.builtin.features.link[`<link>`] feature.
+
+Library targets can represent:
+
+* Libraries that should be built from source, as in the example above.
+* Prebuilt libraries which already exist on the system. Such libraries
+can be searched for by the tools using them (typically with the linker's
+`-l` option) or their paths can be known in advance by the build system.
+
+The syntax for prebuilt libraries is given below:
+
+[source]
+----
+lib z : : <name>z <search>/home/ghost ;
+lib compress : : <file>/opt/libs/compress.a ;
+----
+
+The `name` property specifies the name of the library without the
+standard prefixes and suffixes. For example, depending on the system,
+`z` could refer to a file called `z.so`, `libz.a`, or `z.lib`, etc. The
+`search` feature specifies paths in which to search for the library in
+addition to the default compiler paths. `search` can be specified
+several times or it can be omitted, in which case only the default
+compiler paths will be searched. The `file` property specifies the file
+location.
+
+The difference between using the `file` feature and using a combination
+of the `name` and `search` features is that `file` is more precise.
+
+[WARNING]
+====
+The value of the `search` feature is just added to the linker search
+path. When linking to multiple libraries, the paths specified by
+`search` are combined without regard to which `lib` target each path
+came from. Thus, given
+
+[source]
+----
+lib a : : <name>a <search>/pool/release ;
+lib b : : <name>b <search>/pool/debug ;
+----
+
+If /pool/release/a.so, /pool/release/b.so, /pool/debug/a.so, and
+/pool/release/b.so all exist, the linker will probably take both `a` and
+`b` from the same directory, instead of finding `a` in /pool/release and
+`b` in /pool/debug. If you need to distinguish between multiple
+libraries with the same name, it's safer to use `file`.
+====
+
+For convenience, the following syntax is allowed:
+
+[source]
+----
+lib z ;
+lib gui db aux ;
+----
+
+which has exactly the same effect as:
+
+[source]
+----
+lib z : : <name>z ;
+lib gui : : <name>gui ;
+lib db : : <name>db ;
+lib aux : : <name>aux ;
+----
+
+When a library references another library you should put that other
+library in its list of sources. This will do the right thing in all
+cases. For portability, you should specify library dependencies even for
+searched and prebuilt libraries, otherwise, static linking on Unix will
+not work. For example:
+
+[source]
+----
+lib z ;
+lib png : z : <name>png ;
+----
+
+[NOTE]
+====
+When a library has a shared library as a source, or a static library has
+another static library as a source then any target linking to the first
+library with automatically link to its source library as well.
+
+On the other hand, when a shared library has a static library as a
+source then the first library will be built so that it completely
+includes the second one.
+
+If you do not want a shared library to include all the libraries
+specified in its sources (especially statically linked ones), you would
+need to use the following:
+
+[source]
+----
+lib b : a.cpp ;
+lib a : a.cpp : <use>b : : <library>b ;
+----
+
+This specifies that library `a` uses library `b`, and causes all
+executables that link to `a` to link to `b` also. In this case, even for
+shared linking, the `a` library will not refer to `b`.
+====
+
+link:#bbv2.overview.targets[Usage requirements] are often very useful
+for defining library targets. For example, imagine that you want you
+build a `helpers` library and its interface is described in its
+`helpers.hpp` header file located in the same directory as the
+`helpers.cpp` source file. Then you could add the following to the
+Jamfile located in that same directory:
+
+[source]
+----
+lib helpers : helpers.cpp : : : <include>. ;
+----
+
+which would automatically add the directory where the target has been
+defined (and where the library's header file is located) to the
+compiler's include path for all targets using the `helpers` library.
+This feature greatly simplifies Jamfiles.
+
+[[bbv2.tasks.alias]]
+== Alias
+
+The `alias` rule gives an alternative name to a group of targets. For
+example, to give the name `core` to a group of three other targets with
+the following code:
+
+[source]
+----
+alias core : im reader writer ;
+----
+
+Using `core` on the command line, or in the source list of any other
+target is the same as explicitly using `im`, `reader`, and `writer`.
+
+Another use of the `alias` rule is to change build properties. For
+example, if you want to link statically to the Boost Threads
+library, you can write the following:
+
+[source]
+----
+alias threads : /boost/thread//boost_thread : <link>static ;
+----
+
+and use only the `threads` alias in your Jamfiles.
+
+You can also specify usage requirements for the `alias` target. If you
+write the following:
+
+[source]
+----
+alias header_only_library : : : :  <include>/usr/include/header_only_library ;
+----
+
+then using `header_only_library` in sources will only add an include
+path. Also note that when an alias has sources, their usage requirements
+are propagated as well. For example:
+
+[source]
+----
+lib library1 : library1.cpp : : : <include>/library/include1 ;
+lib library2 : library2.cpp : : : <include>/library/include2 ;
+alias static_libraries : library1 library2 : <link>static ;
+exe main : main.cpp static_libraries ;
+----
+
+will compile `main.cpp` with additional includes required for using the
+specified static libraries.
+
+[[bbv2.tasks.installing]]
+== Installing
+
+This section describes various ways to install built targets and
+arbitrary files.
+
+=== Basic install
+
+For installing a built target you should use the `install` rule, which
+follows the link:#bbv2.main-target-rule-syntax[common syntax]. For
+example:
+
+[source]
+----
+install dist : hello helpers ;
+----
+
+will cause the targets `hello` and `helpers` to be moved to the `dist`
+directory, relative to the Jamfile's directory. The directory can be
+changed using the `location` property:
+
+[source]
+----
+install dist : hello helpers : <location>/usr/bin ;
+----
+
+While you can achieve the same effect by changing the target name to
+`/usr/bin`, using the `location` property is better as it allows you to
+use a mnemonic target name.
+
+The `location` property is especially handy when the location is not
+fixed, but depends on the build variant or environment variables:
+
+[source]
+----
+install dist : hello helpers :
+    <variant>release:<location>dist/release
+    <variant>debug:<location>dist/debug ;
+install dist2 : hello helpers : <location>$(DIST) ;
+----
+
+See also link:#bbv2.reference.variants.propcond[conditional properties]
+and link:#bbv2.faq.envar[environment variables]
+
+=== Installing with all dependencies
+
+Specifying the names of all libraries to install can be boring. The
+`install` allows you to specify only the top-level executable targets to
+install, and automatically install all dependencies:
+
+[source]
+----
+install dist : hello :
+    <install-dependencies>on <install-type>EXE
+    <install-type>LIB
+    ;
+----
+
+will find all targets that `hello` depends on, and install all of those
+which are either executables or libraries. More specifically, for each
+target, other targets that were specified as sources or as dependency
+properties, will be recursively found. One exception is that targets
+referred with the link:#bbv2.builtin.features.use[`use`] feature are not
+considered, as that feature is typically used to refer to header-only
+libraries. If the set of target types is specified, only targets of that
+type will be installed, otherwise, all found target will be installed.
+
+=== Preserving Directory Hierarchy
+
+By default, the `install` rule will strip paths from its sources. So, if
+sources include `a/b/c.hpp`, the `a/b` part will be ignored. To make the
+`install` rule preserve the directory hierarchy you need to use the
+`<install-source-root>` feature to specify the root of the hierarchy you
+are installing. Relative paths from that root will be preserved. For
+example, if you write:
+
+[source]
+----
+install headers
+    : a/b/c.h
+    : <location>/tmp <install-source-root>a
+    ;
+----
+
+the a file named `/tmp/b/c.h` will be created.
+
+The link:#bbv2.reference.glob-tree[`glob-tree`] rule can be used to find
+all files below a given directory, making it easy to install an entire
+directory tree.
+
+=== Installing into Several Directories
+
+The link:#bbv2.tasks.alias[`alias`] rule can be used when targets need
+to be installed into several directories:
+
+[source]
+----
+alias install : install-bin install-lib ;
+install install-bin : applications : /usr/bin ;
+install install-lib : helper : /usr/lib ;
+----
+
+Because the `install` rule just copies targets, most free features
+footnote:[see the definition of "free" in
+link:#bbv2.reference.features.attributes[the section called “Feature Attributes”].]
+have no effect when used in requirements of the `install` rule. The only two
+that matter are
+link:#bbv2.builtin.features.dependency[`dependency`] and, on Unix,
+link:#bbv2.builtin.features.dll-path[`dll-path`].
+
+NOTE: (Unix specific) On Unix, executables built using Boost.Build typically
+contain the list of paths to all used shared libraries. For installing,
+this is not desired, so Boost.Build relinks the executable with an empty
+list of paths. You can also specify additional paths for installed
+executables using the `dll-path` feature.
+
+[[bbv2.builtins.testing]]
+== Testing
+
+Boost.Build has convenient support for running unit tests. The simplest
+way is the `unit-test` rule, which follows the
+link:#bbv2.main-target-rule-syntax[common syntax]. For example:
+
+[source]
+----
+unit-test helpers_test : helpers_test.cpp helpers ;
+----
+
+The `unit-test` rule behaves like the link:#bbv2.tasks.programs[exe]
+rule, but after the executable is created it is also run. If the
+executable returns an error code, the build system will also return an
+error and will try running the executable on the next invocation until
+it runs successfully. This behavior ensures that you can not miss a
+unit test failure.
+
+There are few specialized testing rules, listed below:
+
+[source]
+----
+rule compile ( sources : requirements * : target-name ? )
+rule compile-fail ( sources : requirements * : target-name ? )
+rule link ( sources + : requirements * : target-name ? )
+rule link-fail ( sources + : requirements * : target-name ? )
+----
+
+They are given a list of sources and requirements. If the target name is
+not provided, the name of the first source file is used instead. The
+`compile*` tests try to compile the passed source. The `link*` rules try
+to compile and link an application from all the passed sources. The
+`compile` and `link` rules expect that compilation/linking succeeds. The
+`compile-fail` and `link-fail` rules expect that the
+compilation/linking fails.
+
+There are two specialized rules for running executables, which are more
+powerful than the `unit-test` rule. The `run` rule has the following
+signature:
+
+[source]
+----
+rule run ( sources + : args * : input-files * : requirements * : target-name ?
+    : default-build * )
+----
+
+The rule builds application from the provided sources and runs it,
+passing `args` and `input-files` as command-line arguments. The `args`
+parameter is passed verbatim and the values of the `input-files`
+parameter are treated as paths relative to containing Jamfile, and are
+adjusted if `b2` is invoked from a different directory. The `run-fail`
+rule is identical to the `run` rule, except that it expects that the run
+fails.
+
+All rules described in this section, if executed successfully, create a
+special manifest file to indicate that the test passed. For the
+`unit-test` rule the files is named `target-name.passed` and for the other
+rules it is called `target-name.test`. The `run*` rules also capture all
+output from the program, and store it in a file named `target-name.output`.
+
+If the `preserve-test-targets` feature has the
+value `off`, then `run` and the `run-fail` rules will remove the
+executable after running it. This somewhat decreases disk space
+requirements for continuous testing environments. The default value of
+`preserve-test-targets` feature is `on`.
+
+It is possible to print the list of all test targets (except for
+`unit-test`) declared in your project, by passing the `--dump-tests`
+command-line option. The output will consist of lines of the form:
+
+[source]
+----
+boost-test(test-type) path : sources
+----
+
+It is possible to process the list of tests, Boost.Build output and the
+presence/absence of the `*.test` files created when test passes into
+human-readable status table of tests. Such processing utilities are not
+included in Boost.Build.
+
+The following features adjust behavior of the testing metatargets.
+
+`testing.arg`::
+
+Defines an argument to be passed to the target when it is executed
+before the list of input files.
++
+[source]
+----
+unit-test helpers_test
+    : helpers_test.cpp helpers
+    : <testing.arg>"--foo bar"
+    ;
+----
+
+`testing.input-file`::
+
+Specifies a file to be passed to the executable on the command line
+after the arguments. All files must be specified in alphabetical order
+due to constraints in the current implementation.
+
+`testing.launcher`::
+
+By default, the executable is run directly. Sometimes, it is desirable
+to run the executable using some helper command. You should use this
+property to specify the name of the helper command. For example, if
+you write:
++
+[source]
+----
+unit-test helpers_test
+    : helpers_test.cpp helpers
+    : <testing.launcher>valgrind
+    ;
+----
++
+The command used to run the executable will be:
++
+[source,shell]
+----
+valgrind bin/$toolset/debug/helpers_test
+----
+
+`test-info`::
+
+A description of the test. This is displayed as part of the
+`--dump-tests` command-line option.
+
+[[bbv2.builtins.raw]]
+== Custom commands
+
+For most main target rules, Boost.Build automatically figures out the
+commands to run. When you want to use new file types or support new
+tools, one approach is to extend Boost.Build to support them smoothly,
+as documented in link:#bbv2.extender[Extender Manual]. However, if the new
+tool is only used in a single place, it might be easier just to specify the
+commands to run explicitly.
+
+Three main target rules can be used for that. The `make` rule allows you to
+construct a single file from any number of source file, by running a command
+you specify. The `notfile` rule allows you to run an arbitrary command,
+without creating any files. And finally, the `generate` rule allows you to
+describe a transformation using Boost.Build's virtual targets. This is
+higher-level than the file names that the `make` rule operates with and
+allows you to create more than one target, create differently named targets
+depending on properties, or use more than one tool.
+
+The `make` rule is used when you want to create one file from a number
+of sources using some specific command. The `notfile` is used to
+unconditionally run a command.
+
+Suppose you want to create the file `file.out` from the file `file.in`
+by running the command `in2out`. Here is how you would do this in Boost.Build:
+
+[source]
+----
+make file.out : file.in : @in2out ;
+actions in2out
+{
+    in2out $(<) $(>)
+}
+----
+
+If you run `b2` and `file.out` does not exist, Boost.Build will run the
+`in2out` command to create that file. For more details on specifying
+actions, see
+link:#bbv2.overview.jam_language.actions[the section called “Boost.Jam Language”].
+
+It could be that you just want to run some command unconditionally, and
+that command does not create any specific files. For that you can use
+the `notfile` rule. For example:
+
+[source]
+----
+notfile echo_something : @echo ;
+actions echo
+{
+    echo "something"
+}
+----
+
+The only difference from the `make` rule is that the name of the target
+is not considered a name of a file, so Boost.Build will unconditionally
+run the action.
+
+The `generate` rule is used when you want to express transformations
+using Boost.Build's virtual targets, as opposed to just filenames. The
+`generate` rule has the standard main target rule signature, but you are
+required to specify the `generating-rule` property. The value of the
+property should be in the form `@_rule-name_`, the named rule should have the
+following signature:
+
+[source]
+----
+rule generating-rule ( project name : property-set : sources * )
+----
+
+and will be called with an instance of the `project-target` class, the
+name of the main target, an instance of the `property-set` class
+containing build properties, and the list of instances of the
+`virtual-target` class corresponding to sources. The rule must return a
+list of `virtual-target` instances. The interface of the
+`virtual-target` class can be learned by looking at the
+`build/virtual-target.jam` file. The `generate` example contained in the
+Boost.Build distribution illustrates how the `generate` rule can be
+used.
+
+[[bbv2.reference.precompiled_headers]]
+== Precompiled Headers
+
+Precompiled headers is a mechanism to speed up compilation by creating a
+partially processed version of some header files, and then using that
+version during compilations rather then repeatedly parsing the original
+headers. Boost.Build supports precompiled headers with gcc and msvc
+toolsets.
+
+To use precompiled headers, follow the following steps:
+
+1. Create a header that includes headers used by your project that you
+want precompiled. It is better to include only headers that are
+sufficiently stable -- like headers from the compiler and external
+libraries. Please wrap the header in `#ifdef BOOST_BUILD_PCH_ENABLED`, so
+that the potentially expensive inclusion of headers is not done when PCH is
+not enabled. Include the new header at the top of your source files.
+
+2. Declare a new Boost.Build target for the precompiled header and add
+that precompiled header to the sources of the target whose compilation
+you want to speed up:
++
+[source]
+----
+cpp-pch pch : pch.hpp ;
+exe main : main.cpp pch ;
+----
++
+You can use the `c-pch` rule if you want to use the precompiled header
+in C programs.
+
+The `pch` example in Boost.Build distribution can be used as reference.
+
+Please note the following:
+
+* The inclusion of the precompiled header must be the first thing in a
+source file, before any code or preprocessor directives.
+* The build properties used to compile the source files and the
+precompiled header must be the same. Consider using project requirements
+to assure this.
+* Precompiled headers must be used purely as a way to improve
+compilation time, not to save the number of `#include` statements. If a
+source file needs to include some header, explicitly include it in the
+source file, even if the same header is included from the precompiled
+header. This makes sure that your project will build even if precompiled
+headers are not supported.
+* On the gcc compiler, the name of the header being precompiled must be
+equal to the name of the `cpp-pch` target. This is a gcc requirement.
+* Prior to version 4.2, the gcc compiler did not allow anonymous
+namespaces in precompiled headers, which limits their utility. See the
+http://gcc.gnu.org/bugzilla/show_bug.cgi?id=29085[bug report] for
+details.
+
+[[bbv2.reference.generated_headers]]
+== Generated headers
+
+Usually, Boost.Build handles implicit dependencies completely
+automatically. For example, for {CPP} files, all `#include` statements are
+found and handled. The only aspect where user help might be needed is
+implicit dependency on generated files.
+
+By default, Boost.Build handles such dependencies within one main
+target. For example, assume that main target "app" has two sources,
+"app.cpp" and "parser.y". The latter source is converted into "parser.c"
+and "parser.h". Then, if "app.cpp" includes "parser.h", Boost.Build will
+detect this dependency. Moreover, since "parser.h" will be generated
+into a build directory, the path to that directory will automatically be
+added to the include path.
+
+Making this mechanism work across main target boundaries is possible,
+but imposes certain overhead. For that reason, if there is implicit
+dependency on files from other main targets, the `<implicit-dependency>`
+feature must be used, for example:
+
+[source]
+----
+lib parser : parser.y ;
+exe app : app.cpp : <implicit-dependency>parser ;
+----
+
+The above example tells the build system that when scanning all sources
+of "app" for implicit-dependencies, it should consider targets from
+"parser" as potential dependencies.
+
+[[bbv2.tasks.crosscompile]]
+== Cross-compilation
+
+Boost.Build supports cross compilation with the gcc and msvc toolsets.
+
+When using gcc, you first need to specify your cross compiler in
+`user-config.jam` (see
+link:#bbv2.overview.configuration[the section called “Configuration”]), for
+example:
+
+[source]
+----
+using gcc : arm : arm-none-linux-gnueabi-g++ ;
+----
+
+After that, if the host and target os are the same, for example Linux,
+you can just request that this compiler version be used:
+
+[source,shell]
+----
+b2 toolset=gcc-arm
+----
+
+If you want to target a different operating system from the host, you
+need to additionally specify the value for the `target-os` feature, for
+example:
+
+[source,bat]
+----
+# On windows box
+b2 toolset=gcc-arm target-os=linux
+# On Linux box
+b2 toolset=gcc-mingw target-os=windows
+----
+
+For the complete list of allowed operating system names, please see the
+documentation for link:#bbv2.builtin.features.target-os[target-os
+feature].
+
+When using the msvc compiler, it's only possible to cross-compile to a
+64-bit system on a 32-bit host. Please see
+link:#bbv2.reference.tools.compiler.msvc.64[the section called “64-bit support”]
+for details.
+
+[[bbv2.tasks.packagemanagers]]
+== Package Managers
+
+Boost.Build support automatic, or manual, loading of generated build files
+from package managers. For example using the Conan package manager which
+generates `conanbuildinfo.jam` files B2 will load that files automatically
+when it loads the project at the same location. The included file can
+define targets and other project declarations in the context of the
+project it's being loaded into. Control over what package manager file
+is loaded can be controlled with (in order of priority):
+
+* With the `use-packages` rule.
+* Command line argument `--use-package-manager=X`.
+* Environment variable `PACKAGE_MANAGER_BUILD_INFO`.
+* Built-in detection of the file. Currently this includes: "conan".
+
+**`use-packages` rule:**
+
+[source]
+----
+rule use-packages ( name-or-glob-pattern ? )
+----
+
+The `use-packages` rule allows one to specify in the projects themselves kind
+of package definitions to use either as the ones for a built-in package
+manager support. For example:
+
+[source]
+----
+use-packages conan ;
+----
+
+Or to specify a `glob` pattern to find the file with the definitions. For
+instance:
+
+[source]
+----
+use-packages "packages.jam" ;
+----
+
+**`--use-package-manager` command line option:**
+
+The `--use-package-manager=NAME` command line option allows one to
+non-intrusively specify per invocation which of the built-in package manager
+types to use.
+
+**`PACKAGE_MANAGER_BUILD_INFO` variable:**
+
+The `PACKAGE_MANAGER_BUILD_INFO` variable, which is taken from the environment
+or defined with the `-sX=Y` option, specifies a `glob` pattern to use to find
+the package definitions.
+
+**Built-in detection:**
+
+There are a number of built-in `glob` patterns to support popular package
+managers. Currently the supported ones are:
+
+* Conan (`conan`): currently supports the
+  link:https://bintray.com/bfgroup/public-conan/b2gen%3Abfgroup[`b2gen`]
+  generator.

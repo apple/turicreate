@@ -1,0 +1,297 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Chapter&#160;47.&#160;Boost.YAP</title>
+<link rel="stylesheet" href="../../doc/src/boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="index.html" title="The Boost C++ Libraries BoostBook Documentation Subset">
+<link rel="up" href="libraries.html" title="Part&#160;I.&#160;The Boost C++ Libraries (BoostBook Subset)">
+<link rel="prev" href="xpressive/appendices.html" title="Appendices">
+<link rel="next" href="boost_yap/manual.html" title="Manual">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="../../boost.png"></td>
+<td align="center"><a href="../../index.html">Home</a></td>
+<td align="center"><a href="../../libs/libraries.htm">Libraries</a></td>
+<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
+<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
+<td align="center"><a href="../../more/index.htm">More</a></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="xpressive/appendices.html"><img src="../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="libraries.html"><img src="../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="boost_yap/manual.html"><img src="../../doc/src/images/next.png" alt="Next"></a>
+</div>
+<div class="chapter">
+<div class="titlepage"><div>
+<div><h2 class="title">
+<a name="yap"></a>Chapter&#160;47.&#160;Boost.YAP</h2></div>
+<div><div class="author"><h3 class="author">
+<span class="firstname">Zach</span> <span class="surname">Laine</span>
+</h3></div></div>
+<div><p class="copyright">Copyright &#169; 2018 T. Zachary Laine</p></div>
+<div><div class="legalnotice">
+<a name="yap.legal"></a><p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></div>
+</div></div>
+<div class="toc">
+<p><b>Table of Contents</b></p>
+<dl class="toc">
+<dt><span class="section"><a href="yap.html#boost_yap.introduction">Introduction</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual.html">Manual</a></span></dt>
+<dd><dl>
+<dt><span class="section"><a href="boost_yap/manual.html#boost_yap.manual.an_expression_template_primer">An Expression
+      Template Primer</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual.html#boost_yap.manual.the_yap_way">The YAP Way</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual.html#boost_yap.manual.expressions">Expressions</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual.html#boost_yap.manual.mix_and_match_expression_templates">Mix-and-Match
+      Expression Templates</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual.html#boost_yap.manual.kinds_of_expressions">Kinds of Expressions</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual.html#boost_yap.manual.operators">Operators</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual.html#boost_yap.manual.transforming_expressions">Transforming
+      Expressions</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual.html#boost_yap.manual.evaluating_expressions">Evaluating Expressions</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual.html#boost_yap.manual.operator_macros">Operator Macros</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual.html#boost_yap.manual.how_expression_operands_are_treated">How
+      Expression Operands Are Treated</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual.html#boost_yap.manual.printing">Printing</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual.html#boost_yap.manual.examples">Examples</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual.html#boost_yap.manual.header_organization">Header Organization</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual.html#boost_yap.manual.configuration">Configuration</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual.html#boost_yap.manual.object_code">Object Code</a></span></dt>
+</dl></dd>
+<dt><span class="section"><a href="boost_yap/concepts.html">Concepts</a></span></dt>
+<dt><span class="section"><a href="boost_yap/compiler_support.html">Compiler Support</a></span></dt>
+<dt><span class="section"><a href="boost_yap/dependencies.html">Dependencies</a></span></dt>
+<dt><span class="section"><a href="reference.html">Reference</a></span></dt>
+<dd><dl>
+<dt><span class="section"><a href="reference.html#header.boost.yap.algorithm_hpp">Header &lt;boost/yap/algorithm.hpp&gt;</a></span></dt>
+<dt><span class="section"><a href="reference.html#header.boost.yap.algorithm_fwd_hpp">Header &lt;boost/yap/algorithm_fwd.hpp&gt;</a></span></dt>
+<dt><span class="section"><a href="reference.html#header.boost.yap.config_hpp">Header &lt;boost/yap/config.hpp&gt;</a></span></dt>
+<dt><span class="section"><a href="reference.html#header.boost.yap.expression_hpp">Header &lt;boost/yap/expression.hpp&gt;</a></span></dt>
+<dt><span class="section"><a href="reference.html#header.boost.yap.print_hpp">Header &lt;boost/yap/print.hpp&gt;</a></span></dt>
+<dt><span class="section"><a href="reference.html#header.boost.yap.user_macros_hpp">Header &lt;boost/yap/user_macros.hpp&gt;</a></span></dt>
+</dl></dd>
+<dt><span class="index"><a href="yap.html#id-1.3.48.9">Class Index</a></span></dt>
+<dt><span class="index"><a href="yap.html#id-1.3.48.10">Function Index</a></span></dt>
+<dt><span class="index"><a href="yap.html#id-1.3.48.11">Macro Index</a></span></dt>
+<dt><span class="section"><a href="boost_yap/rationale.html">Rationale</a></span></dt>
+</dl>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="boost_yap.introduction"></a><a class="link" href="yap.html#boost_yap.introduction" title="Introduction">Introduction</a>
+</h2></div></div></div>
+<p>
+      "I like to start documentation with a quote. A nice, pithy one."
+    </p>
+<p>
+      <span class="emphasis"><em><span class="bold"><strong>&#8212; Eric Niebler (paraphrased)</strong></span></em></span>
+    </p>
+<h4>
+<a name="boost_yap.introduction.h0"></a>
+      <span class="phrase"><a name="boost_yap.introduction.motivation"></a></span><a class="link" href="yap.html#boost_yap.introduction.motivation">Motivation</a>
+    </h4>
+<p>
+      Expression templates are rad. They are used in lots of libraries; here are
+      just three of the most impressive:
+    </p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem">
+          <a href="http://boost-spirit.com" target="_top">Boost.Spirit</a> allows you to
+          write an EBNF-style grammar that gets transformed into a PEG parser.
+        </li>
+<li class="listitem">
+          <a href="http://eigen.tuxfamily.org" target="_top">Eigen</a> allows you to do
+          linear algebra using a very natural and mathematical expression syntax
+          that <a href="http://eigen.tuxfamily.org" target="_top">Eigen</a> uses to heavily
+          optimize your expressions.
+        </li>
+<li class="listitem">
+          <a href="https://www.lri.fr/~falcou/nt2" target="_top">NT2</a> takes slightly
+          modified MatLab code and allows it to be parsed and run as highly optimized
+          C++ code.
+        </li>
+</ul></div>
+<p>
+      However, this can come at a high cost. Expression templates are costly to implement
+      and maintain. Each of <a href="http://eigen.tuxfamily.org" target="_top">Eigen</a>
+      and Boost.Ublas has a large volume of complex expression template code that
+      cannot be reused elsewhere.
+    </p>
+<p>
+      With the language facilities available in the C++14 and C++17 standards, an
+      expression template library is now straightforward to write and use, and has
+      very reasonable compile times.
+    </p>
+<p>
+      As a quick example, let's say we are doing a bit of matrix math, and we write
+      this statement:
+    </p>
+<pre class="programlisting"><span class="identifier">D</span> <span class="special">=</span> <span class="identifier">A</span> <span class="special">*</span> <span class="identifier">B</span> <span class="special">+</span> <span class="identifier">C</span><span class="special">;</span>
+</pre>
+<p>
+      in which all the variables are matrices. It turns out that making a temporary
+      for <code class="computeroutput"><span class="identifier">A</span> <span class="special">*</span>
+      <span class="identifier">B</span></code> and then another temporary for
+      the resulting product plus <code class="computeroutput"><span class="identifier">C</span></code>
+      is very inefficient. Most matrix math libraries will have a single function
+      that does it in one go:
+    </p>
+<pre class="programlisting"><span class="identifier">mul_add_assign</span><span class="special">(</span><span class="identifier">D</span><span class="special">,</span> <span class="identifier">A</span><span class="special">,</span> <span class="identifier">B</span><span class="special">,</span> <span class="identifier">C</span><span class="special">);</span>
+</pre>
+<p>
+      If you use a matrix library that offers both kinds of syntax, you have to notice
+      when some bit of operator-using code should be replaced with some more efficient
+      function; this is tedious and error-prone. If the library does not provide
+      the operator syntax at all, only providing the more-efficient function calls,
+      code using the library is a lot less writable and readable.
+    </p>
+<p>
+      Using Boost.YAP, you can write some library code that enables expressions like
+      <code class="computeroutput"><span class="identifier">D</span> <span class="special">=</span>
+      <span class="identifier">A</span> <span class="special">*</span> <span class="identifier">B</span> <span class="special">+</span> <span class="identifier">C</span></code>
+      to be automatically transformed into expressions like <code class="computeroutput"><span class="identifier">mul_add_assign</span><span class="special">(</span><span class="identifier">D</span><span class="special">,</span>
+      <span class="identifier">A</span><span class="special">,</span> <span class="identifier">B</span><span class="special">,</span> <span class="identifier">C</span><span class="special">)</span></code>.
+    </p>
+<p>
+      Consider another example. Many of us have used Unix command line tools to remove
+      duplicate lines in a file:
+    </p>
+<pre class="programlisting"><span class="identifier">sort</span> <span class="identifier">file_with_duplicates</span> <span class="special">|</span> <span class="identifier">uniq</span> <span class="special">&gt;</span> <span class="identifier">file_without_duplicates</span>
+</pre>
+<p>
+      We can do something very similar with the standard algorithms, of course:
+    </p>
+<p>
+</p>
+<pre class="programlisting"><span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">v1</span> <span class="special">=</span> <span class="special">{</span><span class="number">0</span><span class="special">,</span> <span class="number">2</span><span class="special">,</span> <span class="number">2</span><span class="special">,</span> <span class="number">7</span><span class="special">,</span> <span class="number">1</span><span class="special">,</span> <span class="number">3</span><span class="special">,</span> <span class="number">8</span><span class="special">};</span>
+<span class="identifier">std</span><span class="special">::</span><span class="identifier">sort</span><span class="special">(</span><span class="identifier">v1</span><span class="special">.</span><span class="identifier">begin</span><span class="special">(),</span> <span class="identifier">v1</span><span class="special">.</span><span class="identifier">end</span><span class="special">());</span>
+<span class="keyword">auto</span> <span class="identifier">it</span> <span class="special">=</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">unique</span><span class="special">(</span><span class="identifier">v1</span><span class="special">.</span><span class="identifier">begin</span><span class="special">(),</span> <span class="identifier">v1</span><span class="special">.</span><span class="identifier">end</span><span class="special">());</span>
+<span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="keyword">const</span> <span class="identifier">v2</span><span class="special">(</span><span class="identifier">v1</span><span class="special">.</span><span class="identifier">begin</span><span class="special">(),</span> <span class="identifier">it</span><span class="special">);</span>
+<span class="identifier">assert</span><span class="special">(</span><span class="identifier">v2</span> <span class="special">==</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;({</span><span class="number">0</span><span class="special">,</span> <span class="number">1</span><span class="special">,</span> <span class="number">2</span><span class="special">,</span> <span class="number">3</span><span class="special">,</span> <span class="number">7</span><span class="special">,</span> <span class="number">8</span><span class="special">}));</span>
+</pre>
+<p>
+    </p>
+<p>
+      However, it would be much better if our code did exactly that, but with a more
+      concise syntax:
+    </p>
+<p>
+</p>
+<pre class="programlisting"><span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">v1</span> <span class="special">=</span> <span class="special">{</span><span class="number">0</span><span class="special">,</span> <span class="number">2</span><span class="special">,</span> <span class="number">2</span><span class="special">,</span> <span class="number">7</span><span class="special">,</span> <span class="number">1</span><span class="special">,</span> <span class="number">3</span><span class="special">,</span> <span class="number">8</span><span class="special">};</span>
+<span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="keyword">const</span> <span class="identifier">v2</span> <span class="special">=</span> <span class="identifier">sort</span><span class="special">(</span><span class="identifier">v1</span><span class="special">)</span> <span class="special">|</span> <span class="identifier">unique</span><span class="special">;</span>
+<span class="identifier">assert</span><span class="special">(</span><span class="identifier">v2</span> <span class="special">==</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;({</span><span class="number">0</span><span class="special">,</span> <span class="number">1</span><span class="special">,</span> <span class="number">2</span><span class="special">,</span> <span class="number">3</span><span class="special">,</span> <span class="number">7</span><span class="special">,</span> <span class="number">8</span><span class="special">}));</span>
+</pre>
+<p>
+    </p>
+<p>
+      This looks much more similar to the Unix command line above. (Let's pretend
+      that <a href="https://github.com/ericniebler/range-v3" target="_top">Range-v3</a>
+      doesn't already do almost exactly this.)
+    </p>
+<p>
+      Boost.YAP can be used to do both of these things, in a pretty small amount
+      of code. In fact, you can jump right into the <a class="link" href="boost_yap/manual.html#boost_yap.manual.examples.pipable_algorithms" title="Pipable Algorithms">Pipable
+      Algorithms</a> example if you want to see how the second one can be implemented.
+    </p>
+<h4>
+<a name="boost_yap.introduction.h1"></a>
+      <span class="phrase"><a name="boost_yap.introduction.features"></a></span><a class="link" href="yap.html#boost_yap.introduction.features">Features</a>
+    </h4>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem">
+          Simple <a class="link" href="boost_yap/concepts.html#boost_yap.concepts.expressiontemplate">ExpressionTemplate</a>
+          and <a class="link" href="boost_yap/concepts.html#boost_yap.concepts.expression">Expression</a> concepts
+          easily modeled by user code. Member and non-member functions on <a class="link" href="boost_yap/concepts.html#boost_yap.concepts.expressiontemplate">ExpressionTemplates</a>
+          and <a class="link" href="boost_yap/concepts.html#boost_yap.concepts.expression">Expressions</a> can
+          be added with compact macros, and a reference template that models <a class="link" href="boost_yap/concepts.html#boost_yap.concepts.expressiontemplate">ExpressionTemplate</a>
+          exists for prototyping or experimentation.
+        </li>
+<li class="listitem">
+          Evaluation of Boost.YAP expressions matches the semantics of builtin C++
+          expressions as closely as possible. This leads to clearer understanding
+          of the semantics of expression evaluation, because the definitions are
+          local to the types involved.
+        </li>
+<li class="listitem">
+          Expressions may be transformed explicitly in a user-defined way. This is
+          accomplished with overloaded call operators in a transform class, which
+          are matched against subexpressions in the overall expression. While these
+          member functions may transform a subexpression into anything, a common
+          pattern is to transform only some subexpressions into either new subexpressions
+          or appropriate values and to leave other subexpressions unchanged. This
+          <code class="computeroutput"><span class="identifier">evaluate</span><span class="special">(</span><span class="identifier">transform</span><span class="special">(</span><span class="identifier">expr</span><span class="special">))</span></code>
+          idiom is expected to be one of the most common ways of using Yap to manipulate
+          and evaluate expressions.
+        </li>
+<li class="listitem">
+          Functions that operate on or create expressions. Functions are provided
+          (and used within Boost.YAP) that manipulate expressions or their subexpressions.
+          These simplify the process of writing user-defined transforms, for example.
+        </li>
+</ul></div>
+</div>
+<div class="index">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="id-1.3.48.9"></a>Class Index</h2></div></div></div>
+<div xmlns:xlink="http://www.w3.org/1999/xlink" class="index">
+<div class="indexdiv">
+<h3>A</h3>
+<dl><dt id="ientry-idp445686576">additional parser, <a class="indexterm" href="program_options/howto.html#id-1.3.31.6.3">Non-conventional Syntax</a>
+</dt></dl>
+</div>
+<div class="indexdiv">
+<h3>R</h3>
+<dl><dt id="ientry-idp445692112">response files, <a class="indexterm" href="program_options/howto.html#id-1.3.31.6.4">Response Files</a>
+</dt></dl>
+</div>
+</div>
+</div>
+<div class="index">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="id-1.3.48.10"></a>Function Index</h2></div></div></div>
+<div xmlns:xlink="http://www.w3.org/1999/xlink" class="index">
+<div class="indexdiv">
+<h3>A</h3>
+<dl><dt id="ientry-idp445686576">additional parser, <a class="indexterm" href="program_options/howto.html#id-1.3.31.6.3">Non-conventional Syntax</a>
+</dt></dl>
+</div>
+<div class="indexdiv">
+<h3>R</h3>
+<dl><dt id="ientry-idp445692112">response files, <a class="indexterm" href="program_options/howto.html#id-1.3.31.6.4">Response Files</a>
+</dt></dl>
+</div>
+</div>
+</div>
+<div class="index">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="id-1.3.48.11"></a>Macro Index</h2></div></div></div>
+<div xmlns:xlink="http://www.w3.org/1999/xlink" class="index">
+<div class="indexdiv">
+<h3>A</h3>
+<dl><dt id="ientry-idp445686576">additional parser, <a class="indexterm" href="program_options/howto.html#id-1.3.31.6.3">Non-conventional Syntax</a>
+</dt></dl>
+</div>
+<div class="indexdiv">
+<h3>R</h3>
+<dl><dt id="ientry-idp445692112">response files, <a class="indexterm" href="program_options/howto.html#id-1.3.31.6.4">Response Files</a>
+</dt></dl>
+</div>
+</div>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"><p><small>Last revised: August 01, 2018 at 21:05:31 GMT</small></p></td>
+<td align="right"><div class="copyright-footer"></div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="xpressive/appendices.html"><img src="../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="libraries.html"><img src="../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="boost_yap/manual.html"><img src="../../doc/src/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>
