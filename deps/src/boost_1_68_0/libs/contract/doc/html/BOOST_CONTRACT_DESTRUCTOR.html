@@ -6,7 +6,7 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="Chapter&#160;1.&#160;Boost.Contract 1.0.0">
 <link rel="up" href="reference.html#header.boost.contract_macro_hpp" title="Header &lt;boost/contract_macro.hpp&gt;">
-<link rel="prev" href="BOOST_CONTRACT_idp60103968.html" title="Macro BOOST_CONTRACT_CONSTRUCTOR_PRECONDITION">
+<link rel="prev" href="BOOST_CONTRACT_idp71942480.html" title="Macro BOOST_CONTRACT_CONSTRUCTOR_PRECONDITION">
 <link rel="next" href="BOOST_CONTRACT_FUNCTION.html" title="Macro BOOST_CONTRACT_FUNCTION">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -20,7 +20,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="BOOST_CONTRACT_idp60103968.html"><img src="../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="reference.html#header.boost.contract_macro_hpp"><img src="../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="BOOST_CONTRACT_FUNCTION.html"><img src="../../../../doc/src/images/next.png" alt="Next"></a>
+<a accesskey="p" href="BOOST_CONTRACT_idp71942480.html"><img src="../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="reference.html#header.boost.contract_macro_hpp"><img src="../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="BOOST_CONTRACT_FUNCTION.html"><img src="../../../../doc/src/images/next.png" alt="Next"></a>
 </div>
 <div class="refentry">
 <a name="BOOST_CONTRACT_DESTRUCTOR"></a><div class="titlepage"></div>
@@ -33,8 +33,8 @@
 
 </span>BOOST_CONTRACT_DESTRUCTOR(...)</pre></div>
 <div class="refsect1">
-<a name="idp109850176"></a><h2>Description</h2>
-<p>This is used together with <code class="computeroutput"><a class="link" href="BOOST_CONTRACT_idp59951632.html" title="Macro BOOST_CONTRACT_POSTCONDITION">BOOST_CONTRACT_POSTCONDITION</a></code>,  <code class="computeroutput"><a class="link" href="BOOST_CONTRACT_EXCEPT.html" title="Macro BOOST_CONTRACT_EXCEPT">BOOST_CONTRACT_EXCEPT</a></code>, and <code class="computeroutput"><a class="link" href="BOOST_CONTRACT_OLD.html" title="Macro BOOST_CONTRACT_OLD">BOOST_CONTRACT_OLD</a></code> to specify postconditions, exception guarantees, and old value copies at body that can be completely disabled at compile-time for destructors (destructors cannot have preconditions, see  <a class="link" href="boost_contract/contract_programming_overview.html#boost_contract.contract_programming_overview.destructor_calls" title="Destructor Calls"> Destructor Calls</a>):</p>
+<a name="idp101451008"></a><h2>Description</h2>
+<p>This is used together with <code class="computeroutput"><a class="link" href="BOOST_CONTRACT_idp71790144.html" title="Macro BOOST_CONTRACT_POSTCONDITION">BOOST_CONTRACT_POSTCONDITION</a></code>,  <code class="computeroutput"><a class="link" href="BOOST_CONTRACT_EXCEPT.html" title="Macro BOOST_CONTRACT_EXCEPT">BOOST_CONTRACT_EXCEPT</a></code>, and <code class="computeroutput"><a class="link" href="BOOST_CONTRACT_OLD.html" title="Macro BOOST_CONTRACT_OLD">BOOST_CONTRACT_OLD</a></code> to specify postconditions, exception guarantees, and old value copies at body that can be completely disabled at compile-time for destructors (destructors cannot have preconditions, see  <a class="link" href="boost_contract/contract_programming_overview.html#boost_contract.contract_programming_overview.destructor_calls" title="Destructor Calls"> Destructor Calls</a>):</p>
 <pre class="programlisting"><span class="keyword">class</span> <span class="identifier">u</span> <span class="special">{</span>
     <span class="keyword">friend</span> <span class="keyword">class</span> <a class="link" href="boost/contract/access.html" title="Class access">boost::contract::access</a><span class="special">;</span>
 
@@ -69,7 +69,7 @@
 <span class="special">}</span><span class="special">;</span>
 </pre>
 <p>For optimization, this can be omitted for destructors that do not have postconditions and exception guarantees, within classes that have no invariants.</p>
-<p><code class="computeroutput">BOOST_CONTRACT_DESTRUCTOR(obj)</code> expands to code equivalent to the following (note that no code is generated when  <code class="computeroutput"><a class="link" href="BOOST_CONTRACT_idp59113664.html" title="Macro BOOST_CONTRACT_NO_DESTRUCTORS">BOOST_CONTRACT_NO_DESTRUCTORS</a></code> is defined):</p>
+<p><code class="computeroutput">BOOST_CONTRACT_DESTRUCTOR(obj)</code> expands to code equivalent to the following (note that no code is generated when  <code class="computeroutput"><a class="link" href="BOOST_CONTRACT_idp70952176.html" title="Macro BOOST_CONTRACT_NO_DESTRUCTORS">BOOST_CONTRACT_NO_DESTRUCTORS</a></code> is defined):</p>
 <pre class="programlisting"><span class="preprocessor">#ifndef</span> <span class="identifier">BOOST_CONTRACT_NO_DESTRUCTORS</span>
     <a class="link" href="boost/contract/check.html" title="Class check">boost::contract::check</a> <span class="identifier">internal_var</span> <span class="special">=</span>
             <span class="identifier">boost</span><span class="special">::</span><span class="identifier">contract</span><span class="special">::</span><span class="identifier">destructor</span><span class="special">(</span><span class="identifier">obj</span><span class="special">)</span>
@@ -101,7 +101,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="BOOST_CONTRACT_idp60103968.html"><img src="../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="reference.html#header.boost.contract_macro_hpp"><img src="../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="BOOST_CONTRACT_FUNCTION.html"><img src="../../../../doc/src/images/next.png" alt="Next"></a>
+<a accesskey="p" href="BOOST_CONTRACT_idp71942480.html"><img src="../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="reference.html#header.boost.contract_macro_hpp"><img src="../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="BOOST_CONTRACT_FUNCTION.html"><img src="../../../../doc/src/images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

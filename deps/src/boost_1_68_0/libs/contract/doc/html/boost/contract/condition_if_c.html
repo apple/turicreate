@@ -35,7 +35,7 @@
 <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">bool</span> Pred<span class="special">,</span> <span class="keyword">typename</span> Then<span class="special">&gt;</span> 
   <span class="keyword">bool</span> <span class="identifier">condition_if_c</span><span class="special">(</span><span class="identifier">Then</span> f<span class="special">,</span> <span class="keyword">bool</span> else_ <span class="special">=</span> <span class="keyword">true</span><span class="special">)</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp104891520"></a><h2>Description</h2>
+<a name="idp96491696"></a><h2>Description</h2>
 <p>Compile and execute the nullary boolean functor template call <code class="computeroutput">f()</code> if and only if the specified static boolean predicate <code class="computeroutput">Pred</code> is <code class="computeroutput">true</code>, otherwise trivially return <code class="computeroutput">else_</code> (<code class="computeroutput">true</code> by default) at run-time.</p>
 <p>A call to <code class="computeroutput">boost::contract::condition_if_c&lt;Pred&gt;(f, else_)</code> is logically equivalent to <code class="computeroutput">boost::contract::call_if_c&lt;Pred&gt;(f, [else_] { return else_; })</code> (but its internal implementation is optimized and it does not actually use <code class="computeroutput">call_if_c</code>).</p>
 <p><span class="bold"><strong>See Also:</strong></span></p>

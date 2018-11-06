@@ -33,9 +33,9 @@
 
 </span>
 <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Class<span class="special">&gt;</span> 
-  <a class="link" href="specify_old_po_idp59470800.html" title="Class template specify_old_postcondition_except">specify_old_postcondition_except</a> <span class="identifier">destructor</span><span class="special">(</span><span class="identifier">Class</span> <span class="special">*</span> obj<span class="special">)</span><span class="special">;</span></pre></div>
+  <a class="link" href="specify_old_po_idp71309312.html" title="Class template specify_old_postcondition_except">specify_old_postcondition_except</a> <span class="identifier">destructor</span><span class="special">(</span><span class="identifier">Class</span> <span class="special">*</span> obj<span class="special">)</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp107372448"></a><h2>Description</h2>
+<a name="idp98973216"></a><h2>Description</h2>
 <p>This is used to specify postconditions, exception guarantees, old value copies at body, and check class invariants for destructors (destructors cannot not have preconditions, see  <a class="link" href="../../boost_contract/contract_programming_overview.html#boost_contract.contract_programming_overview.destructor_calls" title="Destructor Calls"> Destructor Calls</a>):</p>
 <pre class="programlisting"><span class="keyword">class</span> <span class="identifier">u</span> <span class="special">{</span>
     <span class="keyword">friend</span> <span class="keyword">class</span> <a class="link" href="access.html" title="Class access">boost::contract::access</a><span class="special">;</span>
@@ -114,7 +114,7 @@
 </tr>
 <tr>
 <td><p><span class="term">Returns:</span></p></td>
-<td><p>The result of this function must be explicitly assigned to a variable of type <code class="computeroutput"><a class="link" href="check.html" title="Class check">boost::contract::check</a></code> declared locally just before the code of the destructor body (otherwise this library will generate a run-time error, see <code class="computeroutput"><a class="link" href="../../BOOST_CONTRACT_idp59017008.html" title="Macro BOOST_CONTRACT_ON_MISSING_CHECK_DECL">BOOST_CONTRACT_ON_MISSING_CHECK_DECL</a></code>). </p></td>
+<td><p>The result of this function must be explicitly assigned to a variable of type <code class="computeroutput"><a class="link" href="check.html" title="Class check">boost::contract::check</a></code> declared locally just before the code of the destructor body (otherwise this library will generate a run-time error, see <code class="computeroutput"><a class="link" href="../../BOOST_CONTRACT_idp70855520.html" title="Macro BOOST_CONTRACT_ON_MISSING_CHECK_DECL">BOOST_CONTRACT_ON_MISSING_CHECK_DECL</a></code>). </p></td>
 </tr>
 </tbody>
 </table></div>

@@ -7,13 +7,13 @@
 <link rel="home" href="../../index.html" title="Chapter&#160;1.&#160;Boost.Log v2">
 <link rel="up" href="../../utilities.html#header.boost.log.utility.manipulators.add_value_hpp" title="Header &lt;boost/log/utility/manipulators/add_value.hpp&gt;">
 <link rel="prev" href="ipc/reliable_message_queue.html" title="Class reliable_message_queue">
-<link rel="next" href="operator_idp57764416.html" title="Function template operator&lt;&lt;">
+<link rel="next" href="operator_idp49905664.html" title="Function template operator&lt;&lt;">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr><td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="../../../../../../boost.png"></td></tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="ipc/reliable_message_queue.html"><img src="../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../utilities.html#header.boost.log.utility.manipulators.add_value_hpp"><img src="../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="operator_idp57764416.html"><img src="../../../../../../doc/src/images/next.png" alt="Next"></a>
+<a accesskey="p" href="ipc/reliable_message_queue.html"><img src="../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../utilities.html#header.boost.log.utility.manipulators.add_value_hpp"><img src="../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="operator_idp49905664.html"><img src="../../../../../../doc/src/images/next.png" alt="Next"></a>
 </div>
 <div class="refentry">
 <a name="boost.log.add_value_manip"></a><div class="titlepage"></div>
@@ -32,30 +32,30 @@
   <span class="keyword">typedef</span> <span class="identifier">remove_cv</span><span class="special">&lt;</span> <span class="keyword">typename</span> <span class="identifier">remove_reference</span><span class="special">&lt;</span> <span class="identifier">reference_type</span> <span class="special">&gt;</span><span class="special">::</span><span class="identifier">type</span> <span class="special">&gt;</span><span class="special">::</span><span class="identifier">type</span> <a name="boost.log.add_value_manip.value_type"></a><span class="identifier">value_type</span><span class="special">;</span>      <span class="comment">// Attribute value type. </span>
 
   <span class="comment">// <a class="link" href="add_value_manip.html#boost.log.add_value_manipconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="add_value_manip.html#idp57762208-bb"><span class="identifier">add_value_manip</span></a><span class="special">(</span><span class="identifier">attribute_name</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">reference_type</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="add_value_manip.html#idp49903456-bb"><span class="identifier">add_value_manip</span></a><span class="special">(</span><span class="identifier">attribute_name</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">reference_type</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="add_value_manip.html#idp57758640-bb">public member functions</a></span>
-  <span class="identifier">attribute_name</span> <a class="link" href="add_value_manip.html#idp57759200-bb"><span class="identifier">get_name</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="identifier">get_value_result_type</span> <a class="link" href="add_value_manip.html#idp57760624-bb"><span class="identifier">get_value</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="add_value_manip.html#idp49899888-bb">public member functions</a></span>
+  <span class="identifier">attribute_name</span> <a class="link" href="add_value_manip.html#idp49900448-bb"><span class="identifier">get_name</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">get_value_result_type</span> <a class="link" href="add_value_manip.html#idp49901872-bb"><span class="identifier">get_value</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp142827392"></a><h2>Description</h2>
+<a name="idp124851776"></a><h2>Description</h2>
 <div class="refsect2">
-<a name="idp142827808"></a><h3>
+<a name="idp124852192"></a><h3>
 <a name="boost.log.add_value_manipconstruct-copy-destruct"></a><code class="computeroutput">add_value_manip</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
-<pre class="literallayout"><a name="idp57762208-bb"></a><span class="identifier">add_value_manip</span><span class="special">(</span><span class="identifier">attribute_name</span> <span class="keyword">const</span> <span class="special">&amp;</span> name<span class="special">,</span> <span class="identifier">reference_type</span> value<span class="special">)</span><span class="special">;</span></pre>Initializing constructor. </li></ol></div>
+<pre class="literallayout"><a name="idp49903456-bb"></a><span class="identifier">add_value_manip</span><span class="special">(</span><span class="identifier">attribute_name</span> <span class="keyword">const</span> <span class="special">&amp;</span> name<span class="special">,</span> <span class="identifier">reference_type</span> value<span class="special">)</span><span class="special">;</span></pre>Initializing constructor. </li></ol></div>
 </div>
 <div class="refsect2">
-<a name="idp142837328"></a><h3>
-<a name="idp57758640-bb"></a><code class="computeroutput">add_value_manip</code> public member functions</h3>
+<a name="idp124861616"></a><h3>
+<a name="idp49899888-bb"></a><code class="computeroutput">add_value_manip</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">attribute_name</span> <a name="idp57759200-bb"></a><span class="identifier">get_name</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Returns attribute name. </li>
+<pre class="literallayout"><span class="identifier">attribute_name</span> <a name="idp49900448-bb"></a><span class="identifier">get_name</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Returns attribute name. </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">get_value_result_type</span> <a name="idp57760624-bb"></a><span class="identifier">get_value</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Returns attribute value. </li>
+<pre class="literallayout"><span class="identifier">get_value_result_type</span> <a name="idp49901872-bb"></a><span class="identifier">get_value</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Returns attribute value. </li>
 </ol></div>
 </div>
 </div>
@@ -70,7 +70,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="ipc/reliable_message_queue.html"><img src="../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../utilities.html#header.boost.log.utility.manipulators.add_value_hpp"><img src="../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="operator_idp57764416.html"><img src="../../../../../../doc/src/images/next.png" alt="Next"></a>
+<a accesskey="p" href="ipc/reliable_message_queue.html"><img src="../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../utilities.html#header.boost.log.utility.manipulators.add_value_hpp"><img src="../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="operator_idp49905664.html"><img src="../../../../../../doc/src/images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

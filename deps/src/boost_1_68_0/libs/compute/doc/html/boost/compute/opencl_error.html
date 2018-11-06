@@ -35,53 +35,53 @@
 <span class="keyword">class</span> <a class="link" href="opencl_error.html" title="Class opencl_error">opencl_error</a> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">exception</span> <span class="special">{</span>
 <span class="keyword">public</span><span class="special">:</span>
   <span class="comment">// <a class="link" href="opencl_error.html#boost.compute.opencl_errorconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <span class="keyword">explicit</span> <a class="link" href="opencl_error.html#idp25840000-bb"><span class="identifier">opencl_error</span></a><span class="special">(</span><span class="identifier">cl_int</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="opencl_error.html#idp25842720-bb"><span class="special">~</span><span class="identifier">opencl_error</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">explicit</span> <a class="link" href="opencl_error.html#idp34614944-bb"><span class="identifier">opencl_error</span></a><span class="special">(</span><span class="identifier">cl_int</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="opencl_error.html#idp34617664-bb"><span class="special">~</span><span class="identifier">opencl_error</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="opencl_error.html#idp25834976-bb">public member functions</a></span>
-  <span class="identifier">cl_int</span> <a class="link" href="opencl_error.html#idp25835536-bb"><span class="identifier">error_code</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="identifier">std</span><span class="special">::</span><span class="identifier">string</span> <a class="link" href="opencl_error.html#idp25836960-bb"><span class="identifier">error_string</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <a class="link" href="opencl_error.html#idp25838400-bb"><span class="identifier">what</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="opencl_error.html#idp34609920-bb">public member functions</a></span>
+  <span class="identifier">cl_int</span> <a class="link" href="opencl_error.html#idp34610480-bb"><span class="identifier">error_code</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">std</span><span class="special">::</span><span class="identifier">string</span> <a class="link" href="opencl_error.html#idp34611904-bb"><span class="identifier">error_string</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <a class="link" href="opencl_error.html#idp34613344-bb"><span class="identifier">what</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="opencl_error.html#idp25844032-bb">public static functions</a></span>
-  <span class="keyword">static</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">string</span> <a class="link" href="opencl_error.html#idp25844592-bb"><span class="identifier">to_string</span></a><span class="special">(</span><span class="identifier">cl_int</span><span class="special">)</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="opencl_error.html#idp34618976-bb">public static functions</a></span>
+  <span class="keyword">static</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">string</span> <a class="link" href="opencl_error.html#idp34619536-bb"><span class="identifier">to_string</span></a><span class="special">(</span><span class="identifier">cl_int</span><span class="special">)</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp106932464"></a><h2>Description</h2>
+<a name="idp99996928"></a><h2>Description</h2>
 <p>The <a class="link" href="opencl_error.html" title="Class opencl_error">opencl_error</a> class represents an error returned from an OpenCL function.</p>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p><a class="link" href="context_error.html" title="Class context_error">context_error</a> </p>
 <p>
 </p>
 <div class="refsect2">
-<a name="idp106936032"></a><h3>
+<a name="idp100000496"></a><h3>
 <a name="boost.compute.opencl_errorconstruct-copy-destruct"></a><code class="computeroutput">opencl_error</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">explicit</span> <a name="idp25840000-bb"></a><span class="identifier">opencl_error</span><span class="special">(</span><span class="identifier">cl_int</span> error<span class="special">)</span><span class="special">;</span></pre>Creates a new <code class="computeroutput"><a class="link" href="opencl_error.html" title="Class opencl_error">opencl_error</a></code> exception object for <code class="computeroutput">error</code>. </li>
+<pre class="literallayout"><span class="keyword">explicit</span> <a name="idp34614944-bb"></a><span class="identifier">opencl_error</span><span class="special">(</span><span class="identifier">cl_int</span> error<span class="special">)</span><span class="special">;</span></pre>Creates a new <code class="computeroutput"><a class="link" href="opencl_error.html" title="Class opencl_error">opencl_error</a></code> exception object for <code class="computeroutput">error</code>. </li>
 <li class="listitem">
-<pre class="literallayout"><a name="idp25842720-bb"></a><span class="special">~</span><span class="identifier">opencl_error</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>Destroys the <code class="computeroutput"><a class="link" href="opencl_error.html" title="Class opencl_error">opencl_error</a></code> object. </li>
+<pre class="literallayout"><a name="idp34617664-bb"></a><span class="special">~</span><span class="identifier">opencl_error</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>Destroys the <code class="computeroutput"><a class="link" href="opencl_error.html" title="Class opencl_error">opencl_error</a></code> object. </li>
 </ol></div>
 </div>
 <div class="refsect2">
-<a name="idp106951072"></a><h3>
-<a name="idp25834976-bb"></a><code class="computeroutput">opencl_error</code> public member functions</h3>
+<a name="idp100015536"></a><h3>
+<a name="idp34609920-bb"></a><code class="computeroutput">opencl_error</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">cl_int</span> <a name="idp25835536-bb"></a><span class="identifier">error_code</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Returns the numeric error code. </li>
+<pre class="literallayout"><span class="identifier">cl_int</span> <a name="idp34610480-bb"></a><span class="identifier">error_code</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Returns the numeric error code. </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">std</span><span class="special">::</span><span class="identifier">string</span> <a name="idp25836960-bb"></a><span class="identifier">error_string</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Returns a string description of the error. </li>
+<pre class="literallayout"><span class="identifier">std</span><span class="special">::</span><span class="identifier">string</span> <a name="idp34611904-bb"></a><span class="identifier">error_string</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Returns a string description of the error. </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <a name="idp25838400-bb"></a><span class="identifier">what</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Returns a C-string description of the error. </li>
+<pre class="literallayout"><span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <a name="idp34613344-bb"></a><span class="identifier">what</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Returns a C-string description of the error. </li>
 </ol></div>
 </div>
 <div class="refsect2">
-<a name="idp106971232"></a><h3>
-<a name="idp25844032-bb"></a><code class="computeroutput">opencl_error</code> public static functions</h3>
+<a name="idp100035696"></a><h3>
+<a name="idp34618976-bb"></a><code class="computeroutput">opencl_error</code> public static functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
-<pre class="literallayout"><span class="keyword">static</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">string</span> <a name="idp25844592-bb"></a><span class="identifier">to_string</span><span class="special">(</span><span class="identifier">cl_int</span> error<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">static</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">string</span> <a name="idp34619536-bb"></a><span class="identifier">to_string</span><span class="special">(</span><span class="identifier">cl_int</span> error<span class="special">)</span><span class="special">;</span></pre>
 <p>Static function which converts the numeric OpenCL error code <code class="computeroutput">error</code> to a human-readable string.</p>
 <p>For example: </p>
 <pre class="programlisting"><span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">opencl_error</span><span class="special">::</span><span class="identifier">to_string</span><span class="special">(</span><span class="identifier">CL_INVALID_KERNEL_ARGS</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>

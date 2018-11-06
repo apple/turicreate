@@ -35,11 +35,11 @@
 <span class="keyword">class</span> <a class="link" href="wait_guard.html" title="Class template wait_guard">wait_guard</a> <span class="special">:</span> <span class="keyword">private</span> <span class="identifier">noncopyable</span> <span class="special">{</span>
 <span class="keyword">public</span><span class="special">:</span>
   <span class="comment">// <a class="link" href="wait_guard.html#boost.compute.wait_guardconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="wait_guard.html#idp25024144-bb"><span class="identifier">wait_guard</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">Waitable</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="wait_guard.html#idp25026592-bb"><span class="special">~</span><span class="identifier">wait_guard</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="wait_guard.html#idp33799088-bb"><span class="identifier">wait_guard</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">Waitable</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="wait_guard.html#idp33801536-bb"><span class="special">~</span><span class="identifier">wait_guard</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp101189936"></a><h2>Description</h2>
+<a name="idp94254048"></a><h2>Description</h2>
 <p>The <a class="link" href="wait_guard.html" title="Class template wait_guard">wait_guard</a> class stores a waitable object representing an operation on a compute device (e.g. event, <a class="link" href="future.html" title="Class template future">future&lt;T&gt;</a>) and calls its <code class="computeroutput">wait()</code> method when the guard object goes out of scope.</p>
 <p>This is useful for ensuring that an OpenCL operation completes before leaving the current scope and cleaning up any resources.</p>
 <p>For example: </p>
@@ -51,15 +51,15 @@
 </pre>
 <p><a class="link" href="wait_list.html" title="Class wait_list">wait_list</a>, wait_for_all() </p>
 <div class="refsect2">
-<a name="idp101207760"></a><h3>
+<a name="idp94271760"></a><h3>
 <a name="boost.compute.wait_guardconstruct-copy-destruct"></a><code class="computeroutput">wait_guard</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><a name="idp25024144-bb"></a><span class="identifier">wait_guard</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">Waitable</span> <span class="special">&amp;</span> waitable<span class="special">)</span><span class="special">;</span></pre>Creates a new <code class="computeroutput"><a class="link" href="wait_guard.html" title="Class template wait_guard">wait_guard</a></code> object for <code class="computeroutput">waitable</code>. </li>
+<pre class="literallayout"><a name="idp33799088-bb"></a><span class="identifier">wait_guard</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">Waitable</span> <span class="special">&amp;</span> waitable<span class="special">)</span><span class="special">;</span></pre>Creates a new <code class="computeroutput"><a class="link" href="wait_guard.html" title="Class template wait_guard">wait_guard</a></code> object for <code class="computeroutput">waitable</code>. </li>
 <li class="listitem">
-<pre class="literallayout"><a name="idp25026592-bb"></a><span class="special">~</span><span class="identifier">wait_guard</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a name="idp33801536-bb"></a><span class="special">~</span><span class="identifier">wait_guard</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>Destroys the <code class="computeroutput"><a class="link" href="wait_guard.html" title="Class template wait_guard">wait_guard</a></code> object. The default implementation will call <code class="computeroutput">wait()</code> on the stored waitable object. </p>
 </li>
 </ol></div>

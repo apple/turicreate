@@ -35,7 +35,7 @@
 <span class="keyword">struct</span> <a class="link" href="is_old_value_copyable.html" title="Struct template is_old_value_copyable">is_old_value_copyable</a> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">is_copy_constructible</span><span class="special">&lt;</span> <span class="identifier">T</span> <span class="special">&gt;</span> <span class="special">{</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp107604944"></a><h2>Description</h2>
+<a name="idp99205968"></a><h2>Description</h2>
 <p>By default, this unary boolean meta-function is equivalent to <code class="computeroutput">boost::is_copy_constructible&lt;T&gt;</code> but programmers can chose to specialize it for user-defined types (in general some kind of specialization is needed on compilers that do not support C++11, see <a href="http://www.boost.org/doc/libs/release/libs/type_traits/doc/html/boost_typetraits/reference/is_copy_constructible.html" target="_top"><code class="computeroutput">boost::is_copy_constructible</code></a>):</p>
 <pre class="programlisting"><span class="keyword">class</span> <span class="identifier">u</span><span class="special">;</span> <span class="comment">// Some user-defined type.</span>
 

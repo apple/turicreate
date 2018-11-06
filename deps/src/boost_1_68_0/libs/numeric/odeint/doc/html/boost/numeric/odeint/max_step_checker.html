@@ -35,31 +35,31 @@
 <span class="keyword">class</span> <a class="link" href="max_step_checker.html" title="Class max_step_checker">max_step_checker</a> <span class="special">{</span>
 <span class="keyword">public</span><span class="special">:</span>
   <span class="comment">// <a class="link" href="max_step_checker.html#boost.numeric.odeint.max_step_checkerconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="max_step_checker.html#idp33142512-bb"><span class="identifier">max_step_checker</span></a><span class="special">(</span><span class="keyword">const</span> <span class="keyword">int</span> <span class="special">=</span> <span class="number">500</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="max_step_checker.html#idp50579840-bb"><span class="identifier">max_step_checker</span></a><span class="special">(</span><span class="keyword">const</span> <span class="keyword">int</span> <span class="special">=</span> <span class="number">500</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="max_step_checker.html#idp33138016-bb">public member functions</a></span>
-  <span class="keyword">void</span> <a class="link" href="max_step_checker.html#idp33138576-bb"><span class="identifier">reset</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="max_step_checker.html#idp33140480-bb"><span class="keyword">operator</span><span class="special">(</span><span class="special">)</span></a><span class="special">(</span><span class="keyword">void</span><span class="special">)</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="max_step_checker.html#idp50575344-bb">public member functions</a></span>
+  <span class="keyword">void</span> <a class="link" href="max_step_checker.html#idp50575904-bb"><span class="identifier">reset</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="max_step_checker.html#idp50577808-bb"><span class="keyword">operator</span><span class="special">(</span><span class="special">)</span></a><span class="special">(</span><span class="keyword">void</span><span class="special">)</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp87990704"></a><h2>Description</h2>
+<a name="idp103399920"></a><h2>Description</h2>
 <p>Provide an instance of this class to integrate functions if you want to throw a runtime error if too many steps are performed without progress during the integrate routine. </p>
 <div class="refsect2">
-<a name="idp87991568"></a><h3>
+<a name="idp103400784"></a><h3>
 <a name="boost.numeric.odeint.max_step_checkerconstruct-copy-destruct"></a><code class="computeroutput">max_step_checker</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
-<pre class="literallayout"><a name="idp33142512-bb"></a><span class="identifier">max_step_checker</span><span class="special">(</span><span class="keyword">const</span> <span class="keyword">int</span> max_steps <span class="special">=</span> <span class="number">500</span><span class="special">)</span><span class="special">;</span></pre>Construct the <code class="computeroutput"><a class="link" href="max_step_checker.html" title="Class max_step_checker">max_step_checker</a></code>. max_steps is the maximal number of iterations allowed before runtime_error is thrown. </li></ol></div>
+<pre class="literallayout"><a name="idp50579840-bb"></a><span class="identifier">max_step_checker</span><span class="special">(</span><span class="keyword">const</span> <span class="keyword">int</span> max_steps <span class="special">=</span> <span class="number">500</span><span class="special">)</span><span class="special">;</span></pre>Construct the <code class="computeroutput"><a class="link" href="max_step_checker.html" title="Class max_step_checker">max_step_checker</a></code>. max_steps is the maximal number of iterations allowed before runtime_error is thrown. </li></ol></div>
 </div>
 <div class="refsect2">
-<a name="idp88001648"></a><h3>
-<a name="idp33138016-bb"></a><code class="computeroutput">max_step_checker</code> public member functions</h3>
+<a name="idp103410736"></a><h3>
+<a name="idp50575344-bb"></a><code class="computeroutput">max_step_checker</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp33138576-bb"></a><span class="identifier">reset</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>Resets the <code class="computeroutput"><a class="link" href="max_step_checker.html" title="Class max_step_checker">max_step_checker</a></code> by setting the internal counter to 0. </li>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp50575904-bb"></a><span class="identifier">reset</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>Resets the <code class="computeroutput"><a class="link" href="max_step_checker.html" title="Class max_step_checker">max_step_checker</a></code> by setting the internal counter to 0. </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp33140480-bb"></a><span class="keyword">operator</span><span class="special">(</span><span class="special">)</span><span class="special">(</span><span class="keyword">void</span><span class="special">)</span><span class="special">;</span></pre>Increases the counter and performs the iteration check. </li>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp50577808-bb"></a><span class="keyword">operator</span><span class="special">(</span><span class="special">)</span><span class="special">(</span><span class="keyword">void</span><span class="special">)</span><span class="special">;</span></pre>Increases the counter and performs the iteration check. </li>
 </ol></div>
 </div>
 </div>

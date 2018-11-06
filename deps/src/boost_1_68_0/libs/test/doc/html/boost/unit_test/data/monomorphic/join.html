@@ -41,45 +41,45 @@
 
   <span class="keyword">struct</span> <a class="link" href="join/iterator.html" title="Struct iterator">iterator</a> <span class="special">{</span>
     <span class="comment">// <a class="link" href="join/iterator.html#boost.unit_test.data.monomorphic.join.iteratorconstruct-copy-destruct">construct/copy/destruct</a></span>
-    <span class="keyword">explicit</span> <a class="link" href="join/iterator.html#idp72170080-bb"><span class="identifier">iterator</span></a><span class="special">(</span><span class="identifier">dataset1_iter</span><span class="special">,</span> <span class="identifier">dataset2_iter</span><span class="special">,</span> <a class="link" href="../size_t.html" title="Class size_t">data::size_t</a><span class="special">)</span><span class="special">;</span>
+    <span class="keyword">explicit</span> <a class="link" href="join/iterator.html#idp53788352-bb"><span class="identifier">iterator</span></a><span class="special">(</span><span class="identifier">dataset1_iter</span><span class="special">,</span> <span class="identifier">dataset2_iter</span><span class="special">,</span> <a class="link" href="../size_t.html" title="Class size_t">data::size_t</a><span class="special">)</span><span class="special">;</span>
 
-    <span class="comment">// <a class="link" href="join/iterator.html#idp72167392-bb">public member functions</a></span>
-    <span class="identifier">sample</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a class="link" href="join/iterator.html#idp72167952-bb"><span class="keyword">operator</span><span class="special">*</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-    <span class="keyword">void</span> <a class="link" href="join/iterator.html#idp72169072-bb"><span class="keyword">operator</span><span class="special">++</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+    <span class="comment">// <a class="link" href="join/iterator.html#idp53785664-bb">public member functions</a></span>
+    <span class="identifier">sample</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a class="link" href="join/iterator.html#idp53786224-bb"><span class="keyword">operator</span><span class="special">*</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+    <span class="keyword">void</span> <a class="link" href="join/iterator.html#idp53787344-bb"><span class="keyword">operator</span><span class="special">++</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
   <span class="special">}</span><span class="special">;</span>
 
   <span class="keyword">enum</span> <a name="boost.unit_test.data.monomorphic.join.@9"></a>@9 <span class="special">{</span> arity = = dataset1_decay::arity <span class="special">}</span><span class="special">;</span>
 
   <span class="comment">// <a class="link" href="join.html#boost.unit_test.data.monomorphic.joinconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="join.html#idp72178432-bb"><span class="identifier">join</span></a><span class="special">(</span><span class="identifier">DataSet1</span> <span class="special">&amp;&amp;</span><span class="special">,</span> <span class="identifier">DataSet2</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="join.html#idp72180384-bb"><span class="identifier">join</span></a><span class="special">(</span><a class="link" href="join.html" title="Class template join">join</a> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="join.html#idp53796704-bb"><span class="identifier">join</span></a><span class="special">(</span><span class="identifier">DataSet1</span> <span class="special">&amp;&amp;</span><span class="special">,</span> <span class="identifier">DataSet2</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="join.html#idp53798656-bb"><span class="identifier">join</span></a><span class="special">(</span><a class="link" href="join.html" title="Class template join">join</a> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="join.html#idp72174928-bb">public member functions</a></span>
-  <a class="link" href="../size_t.html" title="Class size_t">data::size_t</a> <a class="link" href="join.html#idp72175488-bb"><span class="identifier">size</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <a class="link" href="join/iterator.html" title="Struct iterator">iterator</a> <a class="link" href="join.html#idp72177024-bb"><span class="identifier">begin</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="join.html#idp53793200-bb">public member functions</a></span>
+  <a class="link" href="../size_t.html" title="Class size_t">data::size_t</a> <a class="link" href="join.html#idp53793760-bb"><span class="identifier">size</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <a class="link" href="join/iterator.html" title="Struct iterator">iterator</a> <a class="link" href="join.html#idp53795296-bb"><span class="identifier">begin</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp97489728"></a><h2>Description</h2>
+<a name="idp103239040"></a><h2>Description</h2>
 <p>The size of the resulting dataset is the sum of the two underlying datasets. The arity of the datasets should match. </p>
 <div class="refsect2">
-<a name="idp97490528"></a><h3>
+<a name="idp103239808"></a><h3>
 <a name="boost.unit_test.data.monomorphic.joinconstruct-copy-destruct"></a><code class="computeroutput">join</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><a name="idp72178432-bb"></a><span class="identifier">join</span><span class="special">(</span><span class="identifier">DataSet1</span> <span class="special">&amp;&amp;</span> ds1<span class="special">,</span> <span class="identifier">DataSet2</span> <span class="special">&amp;&amp;</span> ds2<span class="special">)</span><span class="special">;</span></pre>Constructor. </li>
+<pre class="literallayout"><a name="idp53796704-bb"></a><span class="identifier">join</span><span class="special">(</span><span class="identifier">DataSet1</span> <span class="special">&amp;&amp;</span> ds1<span class="special">,</span> <span class="identifier">DataSet2</span> <span class="special">&amp;&amp;</span> ds2<span class="special">)</span><span class="special">;</span></pre>Constructor. </li>
 <li class="listitem">
-<pre class="literallayout"><a name="idp72180384-bb"></a><span class="identifier">join</span><span class="special">(</span><a class="link" href="join.html" title="Class template join">join</a> <span class="special">&amp;&amp;</span> j<span class="special">)</span><span class="special">;</span></pre>Move constructor. </li>
+<pre class="literallayout"><a name="idp53798656-bb"></a><span class="identifier">join</span><span class="special">(</span><a class="link" href="join.html" title="Class template join">join</a> <span class="special">&amp;&amp;</span> j<span class="special">)</span><span class="special">;</span></pre>Move constructor. </li>
 </ol></div>
 </div>
 <div class="refsect2">
-<a name="idp97505264"></a><h3>
-<a name="idp72174928-bb"></a><code class="computeroutput">join</code> public member functions</h3>
+<a name="idp103252960"></a><h3>
+<a name="idp53793200-bb"></a><code class="computeroutput">join</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><a class="link" href="../size_t.html" title="Class size_t">data::size_t</a> <a name="idp72175488-bb"></a><span class="identifier">size</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>dataset interface </li>
-<li class="listitem"><pre class="literallayout"><a class="link" href="join/iterator.html" title="Struct iterator">iterator</a> <a name="idp72177024-bb"></a><span class="identifier">begin</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre></li>
+<pre class="literallayout"><a class="link" href="../size_t.html" title="Class size_t">data::size_t</a> <a name="idp53793760-bb"></a><span class="identifier">size</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>dataset interface </li>
+<li class="listitem"><pre class="literallayout"><a class="link" href="join/iterator.html" title="Struct iterator">iterator</a> <a name="idp53795296-bb"></a><span class="identifier">begin</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre></li>
 </ol></div>
 </div>
 </div>

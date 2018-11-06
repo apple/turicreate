@@ -40,15 +40,15 @@
   <span class="keyword">typedef</span> <span class="identifier">base_t</span><span class="special">::</span><span class="identifier">size_type</span> <a name="boost.interprocess.basic_managed_heap_memory.size_type"></a><span class="identifier">size_type</span><span class="special">;</span>
 
   <span class="comment">// <a class="link" href="basic_managed_heap_memory.html#boost.interprocess.basic_managed_heap_memoryconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="basic_managed_heap_memory.html#idp53882384-bb"><span class="identifier">basic_managed_heap_memory</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="basic_managed_heap_memory.html#idp53883920-bb"><span class="identifier">basic_managed_heap_memory</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="basic_managed_heap_memory.html#idp53885376-bb"><span class="identifier">basic_managed_heap_memory</span></a><span class="special">(</span><a class="link" href="basic_managed_heap_memory.html" title="Class template basic_managed_heap_memory">basic_managed_heap_memory</a> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="basic_managed_heap_memory.html" title="Class template basic_managed_heap_memory">basic_managed_heap_memory</a> <span class="special">&amp;</span> <a class="link" href="basic_managed_heap_memory.html#idp53887008-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><a class="link" href="basic_managed_heap_memory.html" title="Class template basic_managed_heap_memory">basic_managed_heap_memory</a> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="basic_managed_heap_memory.html#idp53883152-bb"><span class="special">~</span><span class="identifier">basic_managed_heap_memory</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="basic_managed_heap_memory.html#idp63026048-bb"><span class="identifier">basic_managed_heap_memory</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="basic_managed_heap_memory.html#idp63027584-bb"><span class="identifier">basic_managed_heap_memory</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="basic_managed_heap_memory.html#idp63029040-bb"><span class="identifier">basic_managed_heap_memory</span></a><span class="special">(</span><a class="link" href="basic_managed_heap_memory.html" title="Class template basic_managed_heap_memory">basic_managed_heap_memory</a> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="basic_managed_heap_memory.html" title="Class template basic_managed_heap_memory">basic_managed_heap_memory</a> <span class="special">&amp;</span> <a class="link" href="basic_managed_heap_memory.html#idp63030672-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><a class="link" href="basic_managed_heap_memory.html" title="Class template basic_managed_heap_memory">basic_managed_heap_memory</a> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="basic_managed_heap_memory.html#idp63026816-bb"><span class="special">~</span><span class="identifier">basic_managed_heap_memory</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="basic_managed_heap_memory.html#idp53876928-bb">public member functions</a></span>
-  <span class="keyword">bool</span> <a class="link" href="basic_managed_heap_memory.html#idp53877488-bb"><span class="identifier">grow</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="basic_managed_heap_memory.html#idp53879888-bb"><span class="identifier">swap</span></a><span class="special">(</span><a class="link" href="basic_managed_heap_memory.html" title="Class template basic_managed_heap_memory">basic_managed_heap_memory</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="basic_managed_heap_memory.html#idp63020592-bb">public member functions</a></span>
+  <span class="keyword">bool</span> <a class="link" href="basic_managed_heap_memory.html#idp63021152-bb"><span class="identifier">grow</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="basic_managed_heap_memory.html#idp63023552-bb"><span class="identifier">swap</span></a><span class="special">(</span><a class="link" href="basic_managed_heap_memory.html" title="Class template basic_managed_heap_memory">basic_managed_heap_memory</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
 <a name="id-1.3.18.17.3.36.4.4"></a><h2>Description</h2>
@@ -60,33 +60,33 @@
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><a name="idp53882384-bb"></a><span class="identifier">basic_managed_heap_memory</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a name="idp63026048-bb"></a><span class="identifier">basic_managed_heap_memory</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>Default constructor. Does nothing. Useful in combination with move semantics </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><a name="idp53883920-bb"></a><span class="identifier">basic_managed_heap_memory</span><span class="special">(</span><span class="identifier">size_type</span> size<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a name="idp63027584-bb"></a><span class="identifier">basic_managed_heap_memory</span><span class="special">(</span><span class="identifier">size_type</span> size<span class="special">)</span><span class="special">;</span></pre>
 <p>Creates heap memory and initializes the segment manager. This can throw. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><a name="idp53885376-bb"></a><span class="identifier">basic_managed_heap_memory</span><span class="special">(</span><a class="link" href="basic_managed_heap_memory.html" title="Class template basic_managed_heap_memory">basic_managed_heap_memory</a> <span class="special">&amp;&amp;</span> moved<span class="special">)</span><span class="special">;</span></pre>Moves the ownership of "moved"'s managed memory to *this. Does not throw. </li>
+<pre class="literallayout"><a name="idp63029040-bb"></a><span class="identifier">basic_managed_heap_memory</span><span class="special">(</span><a class="link" href="basic_managed_heap_memory.html" title="Class template basic_managed_heap_memory">basic_managed_heap_memory</a> <span class="special">&amp;&amp;</span> moved<span class="special">)</span><span class="special">;</span></pre>Moves the ownership of "moved"'s managed memory to *this. Does not throw. </li>
 <li class="listitem">
-<pre class="literallayout"><a class="link" href="basic_managed_heap_memory.html" title="Class template basic_managed_heap_memory">basic_managed_heap_memory</a> <span class="special">&amp;</span> <a name="idp53887008-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><a class="link" href="basic_managed_heap_memory.html" title="Class template basic_managed_heap_memory">basic_managed_heap_memory</a> <span class="special">&amp;&amp;</span> moved<span class="special">)</span><span class="special">;</span></pre>Moves the ownership of "moved"'s managed memory to *this. Does not throw. </li>
+<pre class="literallayout"><a class="link" href="basic_managed_heap_memory.html" title="Class template basic_managed_heap_memory">basic_managed_heap_memory</a> <span class="special">&amp;</span> <a name="idp63030672-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><a class="link" href="basic_managed_heap_memory.html" title="Class template basic_managed_heap_memory">basic_managed_heap_memory</a> <span class="special">&amp;&amp;</span> moved<span class="special">)</span><span class="special">;</span></pre>Moves the ownership of "moved"'s managed memory to *this. Does not throw. </li>
 <li class="listitem">
-<pre class="literallayout"><a name="idp53883152-bb"></a><span class="special">~</span><span class="identifier">basic_managed_heap_memory</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a name="idp63026816-bb"></a><span class="special">~</span><span class="identifier">basic_managed_heap_memory</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>Destructor. Liberates the heap memory holding the managed data. Never throws. </p>
 </li>
 </ol></div>
 </div>
 <div class="refsect2">
 <a name="id-1.3.18.17.3.36.4.4.4"></a><h3>
-<a name="idp53876928-bb"></a><code class="computeroutput">basic_managed_heap_memory</code> public member functions</h3>
+<a name="idp63020592-bb"></a><code class="computeroutput">basic_managed_heap_memory</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">bool</span> <a name="idp53877488-bb"></a><span class="identifier">grow</span><span class="special">(</span><span class="identifier">size_type</span> extra_bytes<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">bool</span> <a name="idp63021152-bb"></a><span class="identifier">grow</span><span class="special">(</span><span class="identifier">size_type</span> extra_bytes<span class="special">)</span><span class="special">;</span></pre>
 <p>Tries to resize internal heap memory so that we have room for more objects. WARNING: If memory is reallocated, all the objects will be binary-copied to the new buffer. To be able to use this function, all pointers constructed in this buffer must be offset pointers. Otherwise, the result is undefined. Returns true if the growth has been successful, so you will have some extra bytes to allocate new objects. If returns false, the heap allocation has failed. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp53879888-bb"></a><span class="identifier">swap</span><span class="special">(</span><a class="link" href="basic_managed_heap_memory.html" title="Class template basic_managed_heap_memory">basic_managed_heap_memory</a> <span class="special">&amp;</span> other<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp63023552-bb"></a><span class="identifier">swap</span><span class="special">(</span><a class="link" href="basic_managed_heap_memory.html" title="Class template basic_managed_heap_memory">basic_managed_heap_memory</a> <span class="special">&amp;</span> other<span class="special">)</span><span class="special">;</span></pre>
 <p>Swaps the ownership of the managed heap memories managed by *this and other. Never throws. </p>
 </li>
 </ol></div>

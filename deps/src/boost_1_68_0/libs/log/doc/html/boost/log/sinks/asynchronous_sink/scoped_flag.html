@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="../../../../../../../../doc/src/boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="../../../../index.html" title="Chapter&#160;1.&#160;Boost.Log v2">
-<link rel="up" href="../asynchronous_sink.html#idp131826240" title="Description">
+<link rel="up" href="../asynchronous_sink.html#idp113852496" title="Description">
 <link rel="prev" href="../asynchronous_sink.html" title="Class template asynchronous_sink">
 <link rel="next" href="scoped_thread_id.html" title="Class scoped_thread_id">
 </head>
@@ -13,7 +13,7 @@
 <table cellpadding="2" width="100%"><tr><td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="../../../../../../../../boost.png"></td></tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="../asynchronous_sink.html"><img src="../../../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../asynchronous_sink.html#idp131826240"><img src="../../../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../../../index.html"><img src="../../../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="scoped_thread_id.html"><img src="../../../../../../../../doc/src/images/next.png" alt="Next"></a>
+<a accesskey="p" href="../asynchronous_sink.html"><img src="../../../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../asynchronous_sink.html#idp113852496"><img src="../../../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../../../index.html"><img src="../../../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="scoped_thread_id.html"><img src="../../../../../../../../doc/src/images/next.png" alt="Next"></a>
 </div>
 <div class="refentry">
 <a name="boost.log.sinks.asynchronous_sink.scoped_flag"></a><div class="titlepage"></div>
@@ -31,25 +31,25 @@
 <span class="keyword">class</span> <a class="link" href="scoped_flag.html" title="Class scoped_flag">scoped_flag</a> <span class="special">{</span>
 <span class="keyword">public</span><span class="special">:</span>
   <span class="comment">// <a class="link" href="scoped_flag.html#boost.log.sinks.asynchronous_sink.scoped_flagconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <span class="keyword">explicit</span> <a class="link" href="scoped_flag.html#idp50653488-bb"><span class="identifier">scoped_flag</span></a><span class="special">(</span><span class="identifier">frontend_mutex_type</span> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">condition_variable_any</span> <span class="special">&amp;</span><span class="special">,</span> 
+  <span class="keyword">explicit</span> <a class="link" href="scoped_flag.html#idp43887568-bb"><span class="identifier">scoped_flag</span></a><span class="special">(</span><span class="identifier">frontend_mutex_type</span> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">condition_variable_any</span> <span class="special">&amp;</span><span class="special">,</span> 
                        <span class="identifier">boost</span><span class="special">::</span><span class="identifier">atomic</span><span class="special">&lt;</span> <span class="keyword">bool</span> <span class="special">&gt;</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="scoped_flag.html#idp50656416-bb"><span class="identifier">scoped_flag</span></a><span class="special">(</span><span class="identifier">scoped_flag</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">delete</span><span class="special">;</span>
-  <span class="identifier">scoped_flag</span> <span class="special">&amp;</span> <a class="link" href="scoped_flag.html#idp50657664-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><span class="identifier">scoped_flag</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">delete</span><span class="special">;</span>
-  <a class="link" href="scoped_flag.html#idp50656128-bb"><span class="special">~</span><span class="identifier">scoped_flag</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="scoped_flag.html#idp42741824-bb"><span class="identifier">scoped_flag</span></a><span class="special">(</span><span class="identifier">scoped_flag</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">delete</span><span class="special">;</span>
+  <span class="identifier">scoped_flag</span> <span class="special">&amp;</span> <a class="link" href="scoped_flag.html#idp42743072-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><span class="identifier">scoped_flag</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">delete</span><span class="special">;</span>
+  <a class="link" href="scoped_flag.html#idp42741536-bb"><span class="special">~</span><span class="identifier">scoped_flag</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp131969696"></a><h2>Description</h2>
+<a name="idp113995984"></a><h2>Description</h2>
 <div class="refsect2">
-<a name="idp131970112"></a><h3>
+<a name="idp113996400"></a><h3>
 <a name="boost.log.sinks.asynchronous_sink.scoped_flagconstruct-copy-destruct"></a><code class="computeroutput">scoped_flag</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
-<li class="listitem"><pre class="literallayout"><span class="keyword">explicit</span> <a name="idp50653488-bb"></a><span class="identifier">scoped_flag</span><span class="special">(</span><span class="identifier">frontend_mutex_type</span> <span class="special">&amp;</span> mut<span class="special">,</span> <span class="identifier">condition_variable_any</span> <span class="special">&amp;</span> cond<span class="special">,</span> 
+<li class="listitem"><pre class="literallayout"><span class="keyword">explicit</span> <a name="idp43887568-bb"></a><span class="identifier">scoped_flag</span><span class="special">(</span><span class="identifier">frontend_mutex_type</span> <span class="special">&amp;</span> mut<span class="special">,</span> <span class="identifier">condition_variable_any</span> <span class="special">&amp;</span> cond<span class="special">,</span> 
                      <span class="identifier">boost</span><span class="special">::</span><span class="identifier">atomic</span><span class="special">&lt;</span> <span class="keyword">bool</span> <span class="special">&gt;</span> <span class="special">&amp;</span> f<span class="special">)</span><span class="special">;</span></pre></li>
-<li class="listitem"><pre class="literallayout"><a name="idp50656416-bb"></a><span class="identifier">scoped_flag</span><span class="special">(</span><span class="identifier">scoped_flag</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">delete</span><span class="special">;</span></pre></li>
-<li class="listitem"><pre class="literallayout"><span class="identifier">scoped_flag</span> <span class="special">&amp;</span> <a name="idp50657664-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><span class="identifier">scoped_flag</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">delete</span><span class="special">;</span></pre></li>
-<li class="listitem"><pre class="literallayout"><a name="idp50656128-bb"></a><span class="special">~</span><span class="identifier">scoped_flag</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><a name="idp42741824-bb"></a><span class="identifier">scoped_flag</span><span class="special">(</span><span class="identifier">scoped_flag</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">delete</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><span class="identifier">scoped_flag</span> <span class="special">&amp;</span> <a name="idp42743072-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><span class="identifier">scoped_flag</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">delete</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><a name="idp42741536-bb"></a><span class="special">~</span><span class="identifier">scoped_flag</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre></li>
 </ol></div>
 </div>
 </div>
@@ -64,7 +64,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="../asynchronous_sink.html"><img src="../../../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../asynchronous_sink.html#idp131826240"><img src="../../../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../../../index.html"><img src="../../../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="scoped_thread_id.html"><img src="../../../../../../../../doc/src/images/next.png" alt="Next"></a>
+<a accesskey="p" href="../asynchronous_sink.html"><img src="../../../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../asynchronous_sink.html#idp113852496"><img src="../../../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../../../index.html"><img src="../../../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="scoped_thread_id.html"><img src="../../../../../../../../doc/src/images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

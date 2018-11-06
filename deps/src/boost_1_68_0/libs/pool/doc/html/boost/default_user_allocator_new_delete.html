@@ -37,22 +37,22 @@
   <span class="keyword">typedef</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span>    <a name="boost.default_user_allocator_new_delete.size_type"></a><span class="identifier">size_type</span><span class="special">;</span>        <span class="comment">// An unsigned integral type that can represent the size of the largest object to be allocated. </span>
   <span class="keyword">typedef</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">ptrdiff_t</span> <a name="boost.default_user_allocator_new_delete.difference_type"></a><span class="identifier">difference_type</span><span class="special">;</span>  <span class="comment">// A signed integral type that can represent the difference of any two pointers. </span>
 
-  <span class="comment">// <a class="link" href="default_user_allocator_new_delete.html#idp35348368-bb">public static functions</a></span>
-  <span class="keyword">static</span> <span class="keyword">char</span> <span class="special">*</span> <a class="link" href="default_user_allocator_new_delete.html#idp35348928-bb"><span class="identifier">malloc</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">static</span> <span class="keyword">void</span> <a class="link" href="default_user_allocator_new_delete.html#idp35351120-bb"><span class="identifier">free</span></a><span class="special">(</span><span class="keyword">char</span> <span class="special">*</span><span class="keyword">const</span><span class="special">)</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="default_user_allocator_new_delete.html#idp20800528-bb">public static functions</a></span>
+  <span class="keyword">static</span> <span class="keyword">char</span> <span class="special">*</span> <a class="link" href="default_user_allocator_new_delete.html#idp20801088-bb"><span class="identifier">malloc</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">static</span> <span class="keyword">void</span> <a class="link" href="default_user_allocator_new_delete.html#idp20803280-bb"><span class="identifier">free</span></a><span class="special">(</span><span class="keyword">char</span> <span class="special">*</span><span class="keyword">const</span><span class="special">)</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp78563216"></a><h2>Description</h2>
+<a name="idp78694224"></a><h2>Description</h2>
 <div class="refsect2">
-<a name="idp78563600"></a><h3>
-<a name="idp35348368-bb"></a><code class="computeroutput">default_user_allocator_new_delete</code> public static functions</h3>
+<a name="idp78694608"></a><h3>
+<a name="idp20800528-bb"></a><code class="computeroutput">default_user_allocator_new_delete</code> public static functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">static</span> <span class="keyword">char</span> <span class="special">*</span> <a name="idp35348928-bb"></a><span class="identifier">malloc</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">size_type</span> bytes<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">static</span> <span class="keyword">char</span> <span class="special">*</span> <a name="idp20801088-bb"></a><span class="identifier">malloc</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">size_type</span> bytes<span class="special">)</span><span class="special">;</span></pre>
 <p>Attempts to allocate n bytes from the system. Returns 0 if out-of-memory </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">static</span> <span class="keyword">void</span> <a name="idp35351120-bb"></a><span class="identifier">free</span><span class="special">(</span><span class="keyword">char</span> <span class="special">*</span><span class="keyword">const</span> block<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">static</span> <span class="keyword">void</span> <a name="idp20803280-bb"></a><span class="identifier">free</span><span class="special">(</span><span class="keyword">char</span> <span class="special">*</span><span class="keyword">const</span> block<span class="special">)</span><span class="special">;</span></pre>
 <p>Attempts to de-allocate block. 
 </p>
 <div class="variablelist"><table border="0" class="variablelist compact">

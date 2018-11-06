@@ -33,39 +33,39 @@
   <span class="keyword">typedef</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span>            <a name="boost.log.sinks.text_multifile_backend.file_name_composer_type"></a><span class="identifier">file_name_composer_type</span><span class="special">;</span>  <span class="comment">// File name composer functor type. </span>
 
   <span class="comment">// <a class="link" href="text_multifile_backend.html#boost.log.sinks.text_multifile_backendconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="text_multifile_backend.html#idp55595072-bb"><span class="identifier">text_multifile_backend</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="text_multifile_backend.html#idp55595872-bb"><span class="special">~</span><span class="identifier">text_multifile_backend</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="text_multifile_backend.html#idp47736304-bb"><span class="identifier">text_multifile_backend</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="text_multifile_backend.html#idp47737104-bb"><span class="special">~</span><span class="identifier">text_multifile_backend</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="text_multifile_backend.html#idp55588080-bb">public member functions</a></span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> ComposerT<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="text_multifile_backend.html#idp55588640-bb"><span class="identifier">set_file_name_composer</span></a><span class="special">(</span><span class="identifier">ComposerT</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="text_multifile_backend.html#idp55592240-bb"><span class="identifier">consume</span></a><span class="special">(</span><span class="identifier">record_view</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">string_type</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="text_multifile_backend.html#idp47729312-bb">public member functions</a></span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> ComposerT<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="text_multifile_backend.html#idp47729872-bb"><span class="identifier">set_file_name_composer</span></a><span class="special">(</span><span class="identifier">ComposerT</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="text_multifile_backend.html#idp47733472-bb"><span class="identifier">consume</span></a><span class="special">(</span><span class="identifier">record_view</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">string_type</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp136442352"></a><h2>Description</h2>
+<a name="idp118467632"></a><h2>Description</h2>
 <p>The sink backend puts formatted log records to one of the text files. The particular file is chosen upon each record's attribute values, which allows to distribute records into individual files or to group records related to some entity or process in a separate file. </p>
 <div class="refsect2">
-<a name="idp136443312"></a><h3>
+<a name="idp118468592"></a><h3>
 <a name="boost.log.sinks.text_multifile_backendconstruct-copy-destruct"></a><code class="computeroutput">text_multifile_backend</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><a name="idp55595072-bb"></a><span class="identifier">text_multifile_backend</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a name="idp47736304-bb"></a><span class="identifier">text_multifile_backend</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>Default constructor. The constructed sink backend has no file name composer and thus will not write any files. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><a name="idp55595872-bb"></a><span class="special">~</span><span class="identifier">text_multifile_backend</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a name="idp47737104-bb"></a><span class="special">~</span><span class="identifier">text_multifile_backend</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>Destructor </p>
 </li>
 </ol></div>
 </div>
 <div class="refsect2">
-<a name="idp136453984"></a><h3>
-<a name="idp55588080-bb"></a><code class="computeroutput">text_multifile_backend</code> public member functions</h3>
+<a name="idp118479392"></a><h3>
+<a name="idp47729312-bb"></a><code class="computeroutput">text_multifile_backend</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
 <pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> ComposerT<span class="special">&gt;</span> 
-  <span class="keyword">void</span> <a name="idp55588640-bb"></a><span class="identifier">set_file_name_composer</span><span class="special">(</span><span class="identifier">ComposerT</span> <span class="keyword">const</span> <span class="special">&amp;</span> composer<span class="special">)</span><span class="special">;</span></pre>
+  <span class="keyword">void</span> <a name="idp47729872-bb"></a><span class="identifier">set_file_name_composer</span><span class="special">(</span><span class="identifier">ComposerT</span> <span class="keyword">const</span> <span class="special">&amp;</span> composer<span class="special">)</span><span class="special">;</span></pre>
 <p>The method sets file name composer functional object. Log record formatters are accepted, too.</p>
 <p>
 </p>
@@ -90,7 +90,7 @@
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp55592240-bb"></a><span class="identifier">consume</span><span class="special">(</span><span class="identifier">record_view</span> <span class="keyword">const</span> <span class="special">&amp;</span> rec<span class="special">,</span> <span class="identifier">string_type</span> <span class="keyword">const</span> <span class="special">&amp;</span> formatted_message<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp47733472-bb"></a><span class="identifier">consume</span><span class="special">(</span><span class="identifier">record_view</span> <span class="keyword">const</span> <span class="special">&amp;</span> rec<span class="special">,</span> <span class="identifier">string_type</span> <span class="keyword">const</span> <span class="special">&amp;</span> formatted_message<span class="special">)</span><span class="special">;</span></pre>
 <p>The method writes the message to the sink </p>
 </li>
 </ol></div>

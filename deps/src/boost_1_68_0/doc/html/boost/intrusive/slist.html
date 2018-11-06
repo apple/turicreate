@@ -54,126 +54,126 @@
   <span class="keyword">typedef</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span>                                <a name="boost.intrusive.slist.node_algorithms"></a><span class="identifier">node_algorithms</span><span class="special">;</span>   
 
   <span class="comment">// <a class="link" href="slist.html#boost.intrusive.slistconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="slist.html#idp85697904-bb"><span class="identifier">slist</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">explicit</span> <a class="link" href="slist.html#idp85700976-bb"><span class="identifier">slist</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">value_traits</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="slist.html#idp72441440-bb"><span class="identifier">slist</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">explicit</span> <a class="link" href="slist.html#idp72444512-bb"><span class="identifier">slist</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">value_traits</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Iterator<span class="special">&gt;</span> 
-    <a class="link" href="slist.html#idp85705008-bb"><span class="identifier">slist</span></a><span class="special">(</span><span class="identifier">Iterator</span><span class="special">,</span> <span class="identifier">Iterator</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">value_traits</span> <span class="special">&amp;</span> <span class="special">=</span> <span class="identifier">value_traits</span><span class="special">(</span><span class="special">)</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="slist.html#idp85712224-bb"><span class="identifier">slist</span></a><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> <a class="link" href="slist.html#idp85716496-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="slist.html#idp85719312-bb"><span class="special">~</span><span class="identifier">slist</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+    <a class="link" href="slist.html#idp72448544-bb"><span class="identifier">slist</span></a><span class="special">(</span><span class="identifier">Iterator</span><span class="special">,</span> <span class="identifier">Iterator</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">value_traits</span> <span class="special">&amp;</span> <span class="special">=</span> <span class="identifier">value_traits</span><span class="special">(</span><span class="special">)</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="slist.html#idp72455760-bb"><span class="identifier">slist</span></a><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> <a class="link" href="slist.html#idp72460032-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="slist.html#idp72462848-bb"><span class="special">~</span><span class="identifier">slist</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="slist.html#idp85225520-bb">public member functions</a></span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85226080-bb"><span class="identifier">clear</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Disposer<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="slist.html#idp85230640-bb"><span class="identifier">clear_and_dispose</span></a><span class="special">(</span><span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85237584-bb"><span class="identifier">push_front</span></a><span class="special">(</span><span class="identifier">reference</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85243616-bb"><span class="identifier">push_back</span></a><span class="special">(</span><span class="identifier">reference</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85249696-bb"><span class="identifier">pop_front</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Disposer<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="slist.html#idp85254176-bb"><span class="identifier">pop_front_and_dispose</span></a><span class="special">(</span><span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">reference</span> <a class="link" href="slist.html#idp85261088-bb"><span class="identifier">front</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">const_reference</span> <a class="link" href="slist.html#idp85264640-bb"><span class="identifier">front</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="identifier">reference</span> <a class="link" href="slist.html#idp85268480-bb"><span class="identifier">back</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">const_reference</span> <a class="link" href="slist.html#idp85272976-bb"><span class="identifier">back</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp85277760-bb"><span class="identifier">begin</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp85281328-bb"><span class="identifier">begin</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp85285168-bb"><span class="identifier">cbegin</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp85289008-bb"><span class="identifier">end</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp85292560-bb"><span class="identifier">end</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp85296384-bb"><span class="identifier">cend</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp85300208-bb"><span class="identifier">before_begin</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp85303808-bb"><span class="identifier">before_begin</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp85307680-bb"><span class="identifier">cbefore_begin</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp85311552-bb"><span class="identifier">last</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp85316016-bb"><span class="identifier">last</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp85320752-bb"><span class="identifier">clast</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="identifier">size_type</span> <a class="link" href="slist.html#idp85325488-bb"><span class="identifier">size</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="keyword">bool</span> <a class="link" href="slist.html#idp85331024-bb"><span class="identifier">empty</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85335744-bb"><span class="identifier">swap</span></a><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85341248-bb"><span class="identifier">shift_backwards</span></a><span class="special">(</span><span class="identifier">size_type</span> <span class="special">=</span> <span class="number">1</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85346832-bb"><span class="identifier">shift_forward</span></a><span class="special">(</span><span class="identifier">size_type</span> <span class="special">=</span> <span class="number">1</span><span class="special">)</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="slist.html#idp71969056-bb">public member functions</a></span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp71969616-bb"><span class="identifier">clear</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Disposer<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="slist.html#idp71974176-bb"><span class="identifier">clear_and_dispose</span></a><span class="special">(</span><span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp71981120-bb"><span class="identifier">push_front</span></a><span class="special">(</span><span class="identifier">reference</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp71987152-bb"><span class="identifier">push_back</span></a><span class="special">(</span><span class="identifier">reference</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp71993232-bb"><span class="identifier">pop_front</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Disposer<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="slist.html#idp71997712-bb"><span class="identifier">pop_front_and_dispose</span></a><span class="special">(</span><span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">reference</span> <a class="link" href="slist.html#idp72004624-bb"><span class="identifier">front</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">const_reference</span> <a class="link" href="slist.html#idp72008176-bb"><span class="identifier">front</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">reference</span> <a class="link" href="slist.html#idp72012016-bb"><span class="identifier">back</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">const_reference</span> <a class="link" href="slist.html#idp72016512-bb"><span class="identifier">back</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp72021296-bb"><span class="identifier">begin</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp72024864-bb"><span class="identifier">begin</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp72028704-bb"><span class="identifier">cbegin</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp72032544-bb"><span class="identifier">end</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp72036096-bb"><span class="identifier">end</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp72039920-bb"><span class="identifier">cend</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp72043744-bb"><span class="identifier">before_begin</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp72047344-bb"><span class="identifier">before_begin</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp72051216-bb"><span class="identifier">cbefore_begin</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp72055088-bb"><span class="identifier">last</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp72059552-bb"><span class="identifier">last</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp72064288-bb"><span class="identifier">clast</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">size_type</span> <a class="link" href="slist.html#idp72069024-bb"><span class="identifier">size</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">bool</span> <a class="link" href="slist.html#idp72074560-bb"><span class="identifier">empty</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72079280-bb"><span class="identifier">swap</span></a><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72084784-bb"><span class="identifier">shift_backwards</span></a><span class="special">(</span><span class="identifier">size_type</span> <span class="special">=</span> <span class="number">1</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72090368-bb"><span class="identifier">shift_forward</span></a><span class="special">(</span><span class="identifier">size_type</span> <span class="special">=</span> <span class="number">1</span><span class="special">)</span><span class="special">;</span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Cloner<span class="special">,</span> <span class="keyword">typename</span> Disposer<span class="special">&gt;</span> 
-    <span class="keyword">void</span> <a class="link" href="slist.html#idp85352400-bb"><span class="identifier">clone_from</span></a><span class="special">(</span><span class="keyword">const</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">Cloner</span><span class="special">,</span> <span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
+    <span class="keyword">void</span> <a class="link" href="slist.html#idp72095936-bb"><span class="identifier">clone_from</span></a><span class="special">(</span><span class="keyword">const</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">Cloner</span><span class="special">,</span> <span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Cloner<span class="special">,</span> <span class="keyword">typename</span> Disposer<span class="special">&gt;</span> 
-    <span class="keyword">void</span> <a class="link" href="slist.html#idp85361344-bb"><span class="identifier">clone_from</span></a><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;&amp;</span><span class="special">,</span> <span class="identifier">Cloner</span><span class="special">,</span> <span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp85370128-bb"><span class="identifier">insert_after</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">reference</span><span class="special">)</span><span class="special">;</span>
+    <span class="keyword">void</span> <a class="link" href="slist.html#idp72104880-bb"><span class="identifier">clone_from</span></a><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;&amp;</span><span class="special">,</span> <span class="identifier">Cloner</span><span class="special">,</span> <span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp72113664-bb"><span class="identifier">insert_after</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">reference</span><span class="special">)</span><span class="special">;</span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Iterator<span class="special">&gt;</span> 
-    <span class="keyword">void</span> <a class="link" href="slist.html#idp85377792-bb"><span class="identifier">insert_after</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">Iterator</span><span class="special">,</span> <span class="identifier">Iterator</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp85386160-bb"><span class="identifier">insert</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">reference</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Iterator<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="slist.html#idp85393024-bb"><span class="identifier">insert</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">Iterator</span><span class="special">,</span> <span class="identifier">Iterator</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp85401568-bb"><span class="identifier">erase_after</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp85407696-bb"><span class="identifier">erase_after</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp85414624-bb"><span class="identifier">erase_after</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp85422928-bb"><span class="identifier">erase</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp85429056-bb"><span class="identifier">erase</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp85436736-bb"><span class="identifier">erase</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
+    <span class="keyword">void</span> <a class="link" href="slist.html#idp72121328-bb"><span class="identifier">insert_after</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">Iterator</span><span class="special">,</span> <span class="identifier">Iterator</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp72129696-bb"><span class="identifier">insert</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">reference</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Iterator<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="slist.html#idp72136560-bb"><span class="identifier">insert</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">Iterator</span><span class="special">,</span> <span class="identifier">Iterator</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp72145104-bb"><span class="identifier">erase_after</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp72151232-bb"><span class="identifier">erase_after</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp72158160-bb"><span class="identifier">erase_after</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp72166464-bb"><span class="identifier">erase</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp72172592-bb"><span class="identifier">erase</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp72180272-bb"><span class="identifier">erase</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Disposer<span class="special">&gt;</span> 
-    <span class="identifier">iterator</span> <a class="link" href="slist.html#idp85445776-bb"><span class="identifier">erase_after_and_dispose</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
+    <span class="identifier">iterator</span> <a class="link" href="slist.html#idp72189312-bb"><span class="identifier">erase_after_and_dispose</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Disposer<span class="special">&gt;</span> 
-    <span class="identifier">iterator</span> <a class="link" href="slist.html#idp85454320-bb"><span class="identifier">erase_after_and_dispose</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
+    <span class="identifier">iterator</span> <a class="link" href="slist.html#idp72197856-bb"><span class="identifier">erase_after_and_dispose</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Disposer<span class="special">&gt;</span> 
-    <span class="identifier">iterator</span> <a class="link" href="slist.html#idp85463568-bb"><span class="identifier">erase_and_dispose</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
+    <span class="identifier">iterator</span> <a class="link" href="slist.html#idp72207104-bb"><span class="identifier">erase_and_dispose</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Disposer<span class="special">&gt;</span> 
-    <span class="identifier">iterator</span> <a class="link" href="slist.html#idp85472176-bb"><span class="identifier">erase_and_dispose</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Iterator<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="slist.html#idp85481552-bb"><span class="identifier">assign</span></a><span class="special">(</span><span class="identifier">Iterator</span><span class="special">,</span> <span class="identifier">Iterator</span><span class="special">)</span><span class="special">;</span>
+    <span class="identifier">iterator</span> <a class="link" href="slist.html#idp72215712-bb"><span class="identifier">erase_and_dispose</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Iterator<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="slist.html#idp72225088-bb"><span class="identifier">assign</span></a><span class="special">(</span><span class="identifier">Iterator</span><span class="special">,</span> <span class="identifier">Iterator</span><span class="special">)</span><span class="special">;</span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Iterator<span class="special">,</span> <span class="keyword">typename</span> Disposer<span class="special">&gt;</span> 
-    <span class="keyword">void</span> <a class="link" href="slist.html#idp85489392-bb"><span class="identifier">dispose_and_assign</span></a><span class="special">(</span><span class="identifier">Disposer</span><span class="special">,</span> <span class="identifier">Iterator</span><span class="special">,</span> <span class="identifier">Iterator</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85499312-bb"><span class="identifier">splice_after</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">const_iterator</span> <span class="special">*</span> <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85509600-bb"><span class="identifier">splice_after</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85517584-bb"><span class="identifier">splice_after</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85527040-bb"><span class="identifier">splice_after</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">,</span> 
+    <span class="keyword">void</span> <a class="link" href="slist.html#idp72232928-bb"><span class="identifier">dispose_and_assign</span></a><span class="special">(</span><span class="identifier">Disposer</span><span class="special">,</span> <span class="identifier">Iterator</span><span class="special">,</span> <span class="identifier">Iterator</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72242848-bb"><span class="identifier">splice_after</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">const_iterator</span> <span class="special">*</span> <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72253136-bb"><span class="identifier">splice_after</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72261120-bb"><span class="identifier">splice_after</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72270576-bb"><span class="identifier">splice_after</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">,</span> 
                     <span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85536432-bb"><span class="identifier">splice</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">const_iterator</span> <span class="special">*</span> <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85546704-bb"><span class="identifier">splice</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85554736-bb"><span class="identifier">splice</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85565040-bb"><span class="identifier">splice</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">,</span> 
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72279968-bb"><span class="identifier">splice</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">const_iterator</span> <span class="special">*</span> <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72290240-bb"><span class="identifier">splice</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72298272-bb"><span class="identifier">splice</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72308576-bb"><span class="identifier">splice</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">,</span> 
               <span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Predicate<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="slist.html#idp85574480-bb"><span class="identifier">sort</span></a><span class="special">(</span><span class="identifier">Predicate</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85580768-bb"><span class="identifier">sort</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Predicate<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="slist.html#idp72318016-bb"><span class="identifier">sort</span></a><span class="special">(</span><span class="identifier">Predicate</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72324304-bb"><span class="identifier">sort</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Predicate<span class="special">&gt;</span> 
-    <span class="keyword">void</span> <a class="link" href="slist.html#idp85586592-bb"><span class="identifier">merge</span></a><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">Predicate</span><span class="special">,</span> <span class="identifier">const_iterator</span> <span class="special">*</span> <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85597600-bb"><span class="identifier">merge</span></a><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85603312-bb"><span class="identifier">reverse</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85607776-bb"><span class="identifier">remove</span></a><span class="special">(</span><span class="identifier">const_reference</span><span class="special">)</span><span class="special">;</span>
+    <span class="keyword">void</span> <a class="link" href="slist.html#idp72330128-bb"><span class="identifier">merge</span></a><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">Predicate</span><span class="special">,</span> <span class="identifier">const_iterator</span> <span class="special">*</span> <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72341136-bb"><span class="identifier">merge</span></a><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72346848-bb"><span class="identifier">reverse</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72351312-bb"><span class="identifier">remove</span></a><span class="special">(</span><span class="identifier">const_reference</span><span class="special">)</span><span class="special">;</span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Disposer<span class="special">&gt;</span> 
-    <span class="keyword">void</span> <a class="link" href="slist.html#idp85613168-bb"><span class="identifier">remove_and_dispose</span></a><span class="special">(</span><span class="identifier">const_reference</span><span class="special">,</span> <span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Pred<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="slist.html#idp85620944-bb"><span class="identifier">remove_if</span></a><span class="special">(</span><span class="identifier">Pred</span><span class="special">)</span><span class="special">;</span>
+    <span class="keyword">void</span> <a class="link" href="slist.html#idp72356704-bb"><span class="identifier">remove_and_dispose</span></a><span class="special">(</span><span class="identifier">const_reference</span><span class="special">,</span> <span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Pred<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="slist.html#idp72364480-bb"><span class="identifier">remove_if</span></a><span class="special">(</span><span class="identifier">Pred</span><span class="special">)</span><span class="special">;</span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Pred<span class="special">,</span> <span class="keyword">typename</span> Disposer<span class="special">&gt;</span> 
-    <span class="keyword">void</span> <a class="link" href="slist.html#idp85627104-bb"><span class="identifier">remove_and_dispose_if</span></a><span class="special">(</span><span class="identifier">Pred</span><span class="special">,</span> <span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85635440-bb"><span class="identifier">unique</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> BinaryPredicate<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="slist.html#idp85640080-bb"><span class="identifier">unique</span></a><span class="special">(</span><span class="identifier">BinaryPredicate</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Disposer<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="slist.html#idp85646288-bb"><span class="identifier">unique_and_dispose</span></a><span class="special">(</span><span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
+    <span class="keyword">void</span> <a class="link" href="slist.html#idp72370640-bb"><span class="identifier">remove_and_dispose_if</span></a><span class="special">(</span><span class="identifier">Pred</span><span class="special">,</span> <span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72378976-bb"><span class="identifier">unique</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> BinaryPredicate<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="slist.html#idp72383616-bb"><span class="identifier">unique</span></a><span class="special">(</span><span class="identifier">BinaryPredicate</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Disposer<span class="special">&gt;</span> <span class="keyword">void</span> <a class="link" href="slist.html#idp72389824-bb"><span class="identifier">unique_and_dispose</span></a><span class="special">(</span><span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> BinaryPredicate<span class="special">,</span> <span class="keyword">typename</span> Disposer<span class="special">&gt;</span> 
-    <span class="keyword">void</span> <a class="link" href="slist.html#idp85653424-bb"><span class="identifier">unique_and_dispose</span></a><span class="special">(</span><span class="identifier">BinaryPredicate</span><span class="special">,</span> <span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp85661808-bb"><span class="identifier">iterator_to</span></a><span class="special">(</span><span class="identifier">reference</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp85667840-bb"><span class="identifier">iterator_to</span></a><span class="special">(</span><span class="identifier">const_reference</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp85674144-bb"><span class="identifier">previous</span></a><span class="special">(</span><span class="identifier">iterator</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp85678544-bb"><span class="identifier">previous</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp85683232-bb"><span class="identifier">previous</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">iterator</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp85688368-bb"><span class="identifier">previous</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85693792-bb"><span class="identifier">check</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+    <span class="keyword">void</span> <a class="link" href="slist.html#idp72396960-bb"><span class="identifier">unique_and_dispose</span></a><span class="special">(</span><span class="identifier">BinaryPredicate</span><span class="special">,</span> <span class="identifier">Disposer</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp72405344-bb"><span class="identifier">iterator_to</span></a><span class="special">(</span><span class="identifier">reference</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp72411376-bb"><span class="identifier">iterator_to</span></a><span class="special">(</span><span class="identifier">const_reference</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp72417680-bb"><span class="identifier">previous</span></a><span class="special">(</span><span class="identifier">iterator</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp72422080-bb"><span class="identifier">previous</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">iterator</span> <a class="link" href="slist.html#idp72426768-bb"><span class="identifier">previous</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">iterator</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp72431904-bb"><span class="identifier">previous</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">,</span> <span class="identifier">const_iterator</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72437328-bb"><span class="identifier">check</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="slist.html#idp85722544-bb">public static functions</a></span>
-  <span class="keyword">static</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> <a class="link" href="slist.html#idp85723104-bb"><span class="identifier">container_from_end_iterator</span></a><span class="special">(</span><span class="identifier">iterator</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">static</span> <span class="keyword">const</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> <a class="link" href="slist.html#idp85728816-bb"><span class="identifier">container_from_end_iterator</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">static</span> <span class="identifier">iterator</span> <a class="link" href="slist.html#idp85734704-bb"><span class="identifier">s_iterator_to</span></a><span class="special">(</span><span class="identifier">reference</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">static</span> <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp85741504-bb"><span class="identifier">s_iterator_to</span></a><span class="special">(</span><span class="identifier">const_reference</span><span class="special">)</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="slist.html#idp72466080-bb">public static functions</a></span>
+  <span class="keyword">static</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> <a class="link" href="slist.html#idp72466640-bb"><span class="identifier">container_from_end_iterator</span></a><span class="special">(</span><span class="identifier">iterator</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">static</span> <span class="keyword">const</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> <a class="link" href="slist.html#idp72472352-bb"><span class="identifier">container_from_end_iterator</span></a><span class="special">(</span><span class="identifier">const_iterator</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">static</span> <span class="identifier">iterator</span> <a class="link" href="slist.html#idp72478240-bb"><span class="identifier">s_iterator_to</span></a><span class="special">(</span><span class="identifier">reference</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">static</span> <span class="identifier">const_iterator</span> <a class="link" href="slist.html#idp72485040-bb"><span class="identifier">s_iterator_to</span></a><span class="special">(</span><span class="identifier">const_reference</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="slist.html#idp85748464-bb">private member functions</a></span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85749040-bb"><span class="identifier">priv_splice_after</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span><span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span><span class="special">,</span> 
+  <span class="comment">// <a class="link" href="slist.html#idp72492000-bb">private member functions</a></span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72492576-bb"><span class="identifier">priv_splice_after</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span><span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span><span class="special">,</span> 
                          <span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85752928-bb"><span class="identifier">priv_incorporate_after</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span><span class="special">,</span> 
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72496464-bb"><span class="identifier">priv_incorporate_after</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span><span class="special">,</span> 
                               <span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85755840-bb"><span class="identifier">priv_reverse</span></a><span class="special">(</span><span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85757504-bb"><span class="identifier">priv_reverse</span></a><span class="special">(</span><span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85759168-bb"><span class="identifier">priv_shift_backwards</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">,</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85761520-bb"><span class="identifier">priv_shift_backwards</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">,</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85763872-bb"><span class="identifier">priv_shift_forward</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">,</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="slist.html#idp85766224-bb"><span class="identifier">priv_shift_forward</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">,</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72499376-bb"><span class="identifier">priv_reverse</span></a><span class="special">(</span><span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72501040-bb"><span class="identifier">priv_reverse</span></a><span class="special">(</span><span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72502704-bb"><span class="identifier">priv_shift_backwards</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">,</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72505056-bb"><span class="identifier">priv_shift_backwards</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">,</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72507408-bb"><span class="identifier">priv_shift_forward</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">,</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="slist.html#idp72509760-bb"><span class="identifier">priv_shift_forward</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">,</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="slist.html#idp85768736-bb">private static functions</a></span>
-  <span class="keyword">static</span> <span class="keyword">void</span> <a class="link" href="slist.html#idp85769312-bb"><span class="identifier">priv_swap_cache_last</span></a><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">*</span><span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">*</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">static</span> <span class="keyword">void</span> <a class="link" href="slist.html#idp85772384-bb"><span class="identifier">priv_swap_lists</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span><span class="special">,</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">static</span> <span class="keyword">void</span> <a class="link" href="slist.html#idp85775696-bb"><span class="identifier">priv_swap_lists</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span><span class="special">,</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">static</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> <a class="link" href="slist.html#idp85779008-bb"><span class="identifier">priv_container_from_end_iterator</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">const_iterator</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="slist.html#idp72512272-bb">private static functions</a></span>
+  <span class="keyword">static</span> <span class="keyword">void</span> <a class="link" href="slist.html#idp72512848-bb"><span class="identifier">priv_swap_cache_last</span></a><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">*</span><span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">*</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">static</span> <span class="keyword">void</span> <a class="link" href="slist.html#idp72515920-bb"><span class="identifier">priv_swap_lists</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span><span class="special">,</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">static</span> <span class="keyword">void</span> <a class="link" href="slist.html#idp72519232-bb"><span class="identifier">priv_swap_lists</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span><span class="special">,</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">static</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> <a class="link" href="slist.html#idp72522544-bb"><span class="identifier">priv_container_from_end_iterator</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">const_iterator</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
 
   <span class="comment">// public data members</span>
   <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">bool</span> <span class="identifier">constant_time_size</span><span class="special">;</span>
@@ -195,20 +195,20 @@
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><a name="idp85697904-bb"></a><span class="identifier">slist</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a name="idp72441440-bb"></a><span class="identifier">slist</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: constructs an empty list.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Constant</p>
 <p><span class="bold"><strong>Throws</strong></span>: If value_traits::node_traits::node constructor throws (this does not happen with predefined Boost.Intrusive hooks). </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">explicit</span> <a name="idp85700976-bb"></a><span class="identifier">slist</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">value_traits</span> <span class="special">&amp;</span> v_traits<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">explicit</span> <a name="idp72444512-bb"></a><span class="identifier">slist</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">value_traits</span> <span class="special">&amp;</span> v_traits<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: constructs an empty list.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Constant</p>
 <p><span class="bold"><strong>Throws</strong></span>: If value_traits::node_traits::node constructor throws (this does not happen with predefined Boost.Intrusive hooks). </p>
 </li>
 <li class="listitem">
 <pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Iterator<span class="special">&gt;</span> 
-  <a name="idp85705008-bb"></a><span class="identifier">slist</span><span class="special">(</span><span class="identifier">Iterator</span> b<span class="special">,</span> <span class="identifier">Iterator</span> e<span class="special">,</span> 
+  <a name="idp72448544-bb"></a><span class="identifier">slist</span><span class="special">(</span><span class="identifier">Iterator</span> b<span class="special">,</span> <span class="identifier">Iterator</span> e<span class="special">,</span> 
         <span class="keyword">const</span> <span class="identifier">value_traits</span> <span class="special">&amp;</span> v_traits <span class="special">=</span> <span class="identifier">value_traits</span><span class="special">(</span><span class="special">)</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: Dereferencing iterator must yield an lvalue of type value_type.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Constructs a list equal to [b ,e).</p>
@@ -216,17 +216,17 @@
 <p><span class="bold"><strong>Throws</strong></span>: If value_traits::node_traits::node constructor throws (this does not happen with predefined Boost.Intrusive hooks). </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><a name="idp85712224-bb"></a><span class="identifier">slist</span><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;&amp;</span> x<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a name="idp72455760-bb"></a><span class="identifier">slist</span><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;&amp;</span> x<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Constructs a container moving resources from another container. Internal value traits are move constructed and nodes belonging to x (except the node representing the "end") are linked to *this.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Constant.</p>
 <p><span class="bold"><strong>Throws</strong></span>: If value_traits::node_traits::node's move constructor throws (this does not happen with predefined Boost.Intrusive hooks) or the move constructor of value traits throws. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> <a name="idp85716496-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;&amp;</span> x<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> <a name="idp72460032-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;&amp;</span> x<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Equivalent to swap </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><a name="idp85719312-bb"></a><span class="special">~</span><span class="identifier">slist</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a name="idp72462848-bb"></a><span class="special">~</span><span class="identifier">slist</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: If it's a safe-mode or auto-unlink value, the destructor does nothing (ie. no code is generated). Otherwise it detaches all elements from this. In this case the objects in the list are not deleted (i.e. no destructors are called), but the hooks according to the <code class="computeroutput"><a class="link" href="value_traits.html" title="Struct template value_traits">value_traits</a></code> template parameter are set to their default value.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Linear to the number of elements in the list, if it's a safe-mode or auto-unlink value. Otherwise constant. </p>
 </li>
@@ -234,17 +234,17 @@
 </div>
 <div class="refsect2">
 <a name="id-1.3.19.43.35.3.4.7"></a><h3>
-<a name="idp85225520-bb"></a><code class="computeroutput">slist</code> public member functions</h3>
+<a name="idp71969056-bb"></a><code class="computeroutput">slist</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp85226080-bb"></a><span class="identifier">clear</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp71969616-bb"></a><span class="identifier">clear</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Erases all the elements of the container.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Linear to the number of elements of the list. if it's a safe-mode or auto-unlink value_type. Constant time otherwise.</p>
 <p><span class="bold"><strong>Note</strong></span>: Invalidates the iterators (but not the references) to the erased elements. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Disposer<span class="special">&gt;</span> <span class="keyword">void</span> <a name="idp85230640-bb"></a><span class="identifier">clear_and_dispose</span><span class="special">(</span><span class="identifier">Disposer</span> disposer<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Disposer<span class="special">&gt;</span> <span class="keyword">void</span> <a name="idp71974176-bb"></a><span class="identifier">clear_and_dispose</span><span class="special">(</span><span class="identifier">Disposer</span> disposer<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: Disposer::operator()(pointer) shouldn't throw.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Erases all the elements of the container Disposer::operator()(pointer) is called for the removed elements.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
@@ -252,7 +252,7 @@
 <p><span class="bold"><strong>Note</strong></span>: Invalidates the iterators to the erased elements. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp85237584-bb"></a><span class="identifier">push_front</span><span class="special">(</span><span class="identifier">reference</span> value<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp71981120-bb"></a><span class="identifier">push_front</span><span class="special">(</span><span class="identifier">reference</span> value<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: value must be an lvalue.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Inserts the value in the front of the list. No copy constructors are called.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
@@ -260,7 +260,7 @@
 <p><span class="bold"><strong>Note</strong></span>: Does not affect the validity of iterators and references. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp85243616-bb"></a><span class="identifier">push_back</span><span class="special">(</span><span class="identifier">reference</span> value<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp71987152-bb"></a><span class="identifier">push_back</span><span class="special">(</span><span class="identifier">reference</span> value<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: value must be an lvalue.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Inserts the value in the back of the list. No copy constructors are called.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
@@ -268,14 +268,14 @@
 <p><span class="bold"><strong>Note</strong></span>: Does not affect the validity of iterators and references. This function is only available is cache_last&lt;&gt; is true. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp85249696-bb"></a><span class="identifier">pop_front</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp71993232-bb"></a><span class="identifier">pop_front</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Erases the first element of the list. No destructors are called.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Constant.</p>
 <p><span class="bold"><strong>Note</strong></span>: Invalidates the iterators (but not the references) to the erased element. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Disposer<span class="special">&gt;</span> <span class="keyword">void</span> <a name="idp85254176-bb"></a><span class="identifier">pop_front_and_dispose</span><span class="special">(</span><span class="identifier">Disposer</span> disposer<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Disposer<span class="special">&gt;</span> <span class="keyword">void</span> <a name="idp71997712-bb"></a><span class="identifier">pop_front_and_dispose</span><span class="special">(</span><span class="identifier">Disposer</span> disposer<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: Disposer::operator()(pointer) shouldn't throw.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Erases the first element of the list. Disposer::operator()(pointer) is called for the removed element.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
@@ -283,136 +283,136 @@
 <p><span class="bold"><strong>Note</strong></span>: Invalidates the iterators to the erased element. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">reference</span> <a name="idp85261088-bb"></a><span class="identifier">front</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">reference</span> <a name="idp72004624-bb"></a><span class="identifier">front</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Returns a reference to the first element of the list.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Constant. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">const_reference</span> <a name="idp85264640-bb"></a><span class="identifier">front</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">const_reference</span> <a name="idp72008176-bb"></a><span class="identifier">front</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Returns a const_reference to the first element of the list.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Constant. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">reference</span> <a name="idp85268480-bb"></a><span class="identifier">back</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">reference</span> <a name="idp72012016-bb"></a><span class="identifier">back</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Returns a reference to the last element of the list.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Constant.</p>
 <p><span class="bold"><strong>Note</strong></span>: Does not affect the validity of iterators and references. This function is only available is cache_last&lt;&gt; is true. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">const_reference</span> <a name="idp85272976-bb"></a><span class="identifier">back</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">const_reference</span> <a name="idp72016512-bb"></a><span class="identifier">back</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Returns a const_reference to the last element of the list.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Constant.</p>
 <p><span class="bold"><strong>Note</strong></span>: Does not affect the validity of iterators and references. This function is only available is cache_last&lt;&gt; is true. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp85277760-bb"></a><span class="identifier">begin</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp72021296-bb"></a><span class="identifier">begin</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Returns an iterator to the first element contained in the list.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Constant. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idp85281328-bb"></a><span class="identifier">begin</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idp72024864-bb"></a><span class="identifier">begin</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Returns a const_iterator to the first element contained in the list.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Constant. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idp85285168-bb"></a><span class="identifier">cbegin</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idp72028704-bb"></a><span class="identifier">cbegin</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Returns a const_iterator to the first element contained in the list.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Constant. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp85289008-bb"></a><span class="identifier">end</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp72032544-bb"></a><span class="identifier">end</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Returns an iterator to the end of the list.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Constant. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idp85292560-bb"></a><span class="identifier">end</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idp72036096-bb"></a><span class="identifier">end</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Returns a const_iterator to the end of the list.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Constant. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idp85296384-bb"></a><span class="identifier">cend</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idp72039920-bb"></a><span class="identifier">cend</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Returns a const_iterator to the end of the list.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Constant. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp85300208-bb"></a><span class="identifier">before_begin</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp72043744-bb"></a><span class="identifier">before_begin</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Returns an iterator that points to a position before the first element. Equivalent to "end()"</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Constant. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idp85303808-bb"></a><span class="identifier">before_begin</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idp72047344-bb"></a><span class="identifier">before_begin</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Returns an iterator that points to a position before the first element. Equivalent to "end()"</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Constant. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idp85307680-bb"></a><span class="identifier">cbefore_begin</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idp72051216-bb"></a><span class="identifier">cbefore_begin</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Returns an iterator that points to a position before the first element. Equivalent to "end()"</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Constant. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp85311552-bb"></a><span class="identifier">last</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp72055088-bb"></a><span class="identifier">last</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Returns an iterator to the last element contained in the list.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Constant.</p>
 <p><span class="bold"><strong>Note</strong></span>: This function is present only if cached_last&lt;&gt; option is true. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idp85316016-bb"></a><span class="identifier">last</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idp72059552-bb"></a><span class="identifier">last</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Returns a const_iterator to the last element contained in the list.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Constant.</p>
 <p><span class="bold"><strong>Note</strong></span>: This function is present only if cached_last&lt;&gt; option is true. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idp85320752-bb"></a><span class="identifier">clast</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idp72064288-bb"></a><span class="identifier">clast</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Returns a const_iterator to the last element contained in the list.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Constant.</p>
 <p><span class="bold"><strong>Note</strong></span>: This function is present only if cached_last&lt;&gt; option is true. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">size_type</span> <a name="idp85325488-bb"></a><span class="identifier">size</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">size_type</span> <a name="idp72069024-bb"></a><span class="identifier">size</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Returns the number of the elements contained in the list.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Linear to the number of elements contained in the list. if <code class="computeroutput"><a class="link" href="constant_time_size.html" title="Struct template constant_time_size">constant_time_size</a></code> is false. Constant time otherwise.</p>
 <p><span class="bold"><strong>Note</strong></span>: Does not affect the validity of iterators and references. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">bool</span> <a name="idp85331024-bb"></a><span class="identifier">empty</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">bool</span> <a name="idp72074560-bb"></a><span class="identifier">empty</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Returns true if the list contains no elements.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Constant.</p>
 <p><span class="bold"><strong>Note</strong></span>: Does not affect the validity of iterators and references. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp85335744-bb"></a><span class="identifier">swap</span><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> other<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp72079280-bb"></a><span class="identifier">swap</span><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> other<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Swaps the elements of x and *this.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Linear to the number of elements of both lists. Constant-time if linear&lt;&gt; and/or cache_last&lt;&gt; options are used.</p>
 <p><span class="bold"><strong>Note</strong></span>: Does not affect the validity of iterators and references. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp85341248-bb"></a><span class="identifier">shift_backwards</span><span class="special">(</span><span class="identifier">size_type</span> n <span class="special">=</span> <span class="number">1</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp72084784-bb"></a><span class="identifier">shift_backwards</span><span class="special">(</span><span class="identifier">size_type</span> n <span class="special">=</span> <span class="number">1</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Moves backwards all the elements, so that the first element becomes the second, the second becomes the third... the last element becomes the first one.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Linear to the number of elements plus the number shifts.</p>
 <p><span class="bold"><strong>Note</strong></span>: Iterators Does not affect the validity of iterators and references. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp85346832-bb"></a><span class="identifier">shift_forward</span><span class="special">(</span><span class="identifier">size_type</span> n <span class="special">=</span> <span class="number">1</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp72090368-bb"></a><span class="identifier">shift_forward</span><span class="special">(</span><span class="identifier">size_type</span> n <span class="special">=</span> <span class="number">1</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Moves forward all the elements, so that the second element becomes the first, the third becomes the second... the first element becomes the last one.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Linear to the number of elements plus the number shifts.</p>
@@ -420,7 +420,7 @@
 </li>
 <li class="listitem">
 <pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Cloner<span class="special">,</span> <span class="keyword">typename</span> Disposer<span class="special">&gt;</span> 
-  <span class="keyword">void</span> <a name="idp85352400-bb"></a><span class="identifier">clone_from</span><span class="special">(</span><span class="keyword">const</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> src<span class="special">,</span> <span class="identifier">Cloner</span> cloner<span class="special">,</span> <span class="identifier">Disposer</span> disposer<span class="special">)</span><span class="special">;</span></pre>
+  <span class="keyword">void</span> <a name="idp72095936-bb"></a><span class="identifier">clone_from</span><span class="special">(</span><span class="keyword">const</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> src<span class="special">,</span> <span class="identifier">Cloner</span> cloner<span class="special">,</span> <span class="identifier">Disposer</span> disposer<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: Disposer::operator()(pointer) shouldn't throw. Cloner should yield to nodes equivalent to the original nodes.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Erases all the elements from *this calling Disposer::operator()(pointer), clones all the elements from src calling Cloner::operator()(const_reference ) and inserts them on *this.</p>
 <p>If cloner throws, all cloned elements are unlinked and disposed calling Disposer::operator()(pointer).</p>
@@ -429,7 +429,7 @@
 </li>
 <li class="listitem">
 <pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Cloner<span class="special">,</span> <span class="keyword">typename</span> Disposer<span class="special">&gt;</span> 
-  <span class="keyword">void</span> <a name="idp85361344-bb"></a><span class="identifier">clone_from</span><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;&amp;</span> src<span class="special">,</span> <span class="identifier">Cloner</span> cloner<span class="special">,</span> <span class="identifier">Disposer</span> disposer<span class="special">)</span><span class="special">;</span></pre>
+  <span class="keyword">void</span> <a name="idp72104880-bb"></a><span class="identifier">clone_from</span><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;&amp;</span> src<span class="special">,</span> <span class="identifier">Cloner</span> cloner<span class="special">,</span> <span class="identifier">Disposer</span> disposer<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: Disposer::operator()(pointer) shouldn't throw. Cloner should yield to nodes equivalent to the original nodes.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Erases all the elements from *this calling Disposer::operator()(pointer), clones all the elements from src calling Cloner::operator()(reference) and inserts them on *this.</p>
 <p>If cloner throws, all cloned elements are unlinked and disposed calling Disposer::operator()(pointer).</p>
@@ -437,7 +437,7 @@
 <p><span class="bold"><strong>Throws</strong></span>: If cloner throws. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp85370128-bb"></a><span class="identifier">insert_after</span><span class="special">(</span><span class="identifier">const_iterator</span> prev_p<span class="special">,</span> <span class="identifier">reference</span> value<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp72113664-bb"></a><span class="identifier">insert_after</span><span class="special">(</span><span class="identifier">const_iterator</span> prev_p<span class="special">,</span> <span class="identifier">reference</span> value<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: value must be an lvalue and prev_p must point to an element contained by the list or to end().</p>
 <p><span class="bold"><strong>Effects</strong></span>: Inserts the value after the position pointed by prev_p. No copy constructor is called.</p>
 <p><span class="bold"><strong>Returns</strong></span>: An iterator to the inserted element.</p>
@@ -447,7 +447,7 @@
 </li>
 <li class="listitem">
 <pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Iterator<span class="special">&gt;</span> 
-  <span class="keyword">void</span> <a name="idp85377792-bb"></a><span class="identifier">insert_after</span><span class="special">(</span><span class="identifier">const_iterator</span> prev_p<span class="special">,</span> <span class="identifier">Iterator</span> f<span class="special">,</span> <span class="identifier">Iterator</span> l<span class="special">)</span><span class="special">;</span></pre>
+  <span class="keyword">void</span> <a name="idp72121328-bb"></a><span class="identifier">insert_after</span><span class="special">(</span><span class="identifier">const_iterator</span> prev_p<span class="special">,</span> <span class="identifier">Iterator</span> f<span class="special">,</span> <span class="identifier">Iterator</span> l<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: Dereferencing iterator must yield an lvalue of type value_type and prev_p must point to an element contained by the list or to the end node.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Inserts the [f, l) after the position prev_p.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
@@ -455,7 +455,7 @@
 <p><span class="bold"><strong>Note</strong></span>: Does not affect the validity of iterators and references. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp85386160-bb"></a><span class="identifier">insert</span><span class="special">(</span><span class="identifier">const_iterator</span> p<span class="special">,</span> <span class="identifier">reference</span> value<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp72129696-bb"></a><span class="identifier">insert</span><span class="special">(</span><span class="identifier">const_iterator</span> p<span class="special">,</span> <span class="identifier">reference</span> value<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: value must be an lvalue and p must point to an element contained by the list or to end().</p>
 <p><span class="bold"><strong>Effects</strong></span>: Inserts the value before the position pointed by p. No copy constructor is called.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
@@ -464,7 +464,7 @@
 </li>
 <li class="listitem">
 <pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Iterator<span class="special">&gt;</span> 
-  <span class="keyword">void</span> <a name="idp85393024-bb"></a><span class="identifier">insert</span><span class="special">(</span><span class="identifier">const_iterator</span> p<span class="special">,</span> <span class="identifier">Iterator</span> b<span class="special">,</span> <span class="identifier">Iterator</span> e<span class="special">)</span><span class="special">;</span></pre>
+  <span class="keyword">void</span> <a name="idp72136560-bb"></a><span class="identifier">insert</span><span class="special">(</span><span class="identifier">const_iterator</span> p<span class="special">,</span> <span class="identifier">Iterator</span> b<span class="special">,</span> <span class="identifier">Iterator</span> e<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: Dereferencing iterator must yield an lvalue of type value_type and p must point to an element contained by the list or to the end node.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Inserts the pointed by b and e before the position p. No copy constructors are called.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
@@ -472,7 +472,7 @@
 <p><span class="bold"><strong>Note</strong></span>: Does not affect the validity of iterators and references. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp85401568-bb"></a><span class="identifier">erase_after</span><span class="special">(</span><span class="identifier">const_iterator</span> prev<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp72145104-bb"></a><span class="identifier">erase_after</span><span class="special">(</span><span class="identifier">const_iterator</span> prev<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Erases the element after the element pointed by prev of the list. No destructors are called.</p>
 <p><span class="bold"><strong>Returns</strong></span>: the first element remaining beyond the removed elements, or end() if no such element exists.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
@@ -480,7 +480,7 @@
 <p><span class="bold"><strong>Note</strong></span>: Invalidates the iterators (but not the references) to the erased element. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp85407696-bb"></a><span class="identifier">erase_after</span><span class="special">(</span><span class="identifier">const_iterator</span> before_f<span class="special">,</span> <span class="identifier">const_iterator</span> l<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp72151232-bb"></a><span class="identifier">erase_after</span><span class="special">(</span><span class="identifier">const_iterator</span> before_f<span class="special">,</span> <span class="identifier">const_iterator</span> l<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Erases the range (before_f, l) from the list. No destructors are called.</p>
 <p><span class="bold"><strong>Returns</strong></span>: the first element remaining beyond the removed elements, or end() if no such element exists.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
@@ -488,7 +488,7 @@
 <p><span class="bold"><strong>Note</strong></span>: Invalidates the iterators (but not the references) to the erased element. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp85414624-bb"></a><span class="identifier">erase_after</span><span class="special">(</span><span class="identifier">const_iterator</span> before_f<span class="special">,</span> <span class="identifier">const_iterator</span> l<span class="special">,</span> <span class="identifier">size_type</span> n<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp72158160-bb"></a><span class="identifier">erase_after</span><span class="special">(</span><span class="identifier">const_iterator</span> before_f<span class="special">,</span> <span class="identifier">const_iterator</span> l<span class="special">,</span> <span class="identifier">size_type</span> n<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Erases the range (before_f, l) from the list. n must be distance(before_f, l) - 1. No destructors are called.</p>
 <p><span class="bold"><strong>Returns</strong></span>: the first element remaining beyond the removed elements, or end() if no such element exists.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
@@ -496,7 +496,7 @@
 <p><span class="bold"><strong>Note</strong></span>: Invalidates the iterators (but not the references) to the erased element. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp85422928-bb"></a><span class="identifier">erase</span><span class="special">(</span><span class="identifier">const_iterator</span> i<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp72166464-bb"></a><span class="identifier">erase</span><span class="special">(</span><span class="identifier">const_iterator</span> i<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Erases the element pointed by i of the list. No destructors are called.</p>
 <p><span class="bold"><strong>Returns</strong></span>: the first element remaining beyond the removed element, or end() if no such element exists.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
@@ -504,7 +504,7 @@
 <p><span class="bold"><strong>Note</strong></span>: Invalidates the iterators (but not the references) to the erased element. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp85429056-bb"></a><span class="identifier">erase</span><span class="special">(</span><span class="identifier">const_iterator</span> f<span class="special">,</span> <span class="identifier">const_iterator</span> l<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp72172592-bb"></a><span class="identifier">erase</span><span class="special">(</span><span class="identifier">const_iterator</span> f<span class="special">,</span> <span class="identifier">const_iterator</span> l<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: f and l must be valid iterator to elements in *this.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Erases the range pointed by b and e. No destructors are called.</p>
 <p><span class="bold"><strong>Returns</strong></span>: the first element remaining beyond the removed elements, or end() if no such element exists.</p>
@@ -513,7 +513,7 @@
 <p><span class="bold"><strong>Note</strong></span>: Invalidates the iterators (but not the references) to the erased elements. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp85436736-bb"></a><span class="identifier">erase</span><span class="special">(</span><span class="identifier">const_iterator</span> f<span class="special">,</span> <span class="identifier">const_iterator</span> l<span class="special">,</span> <span class="identifier">size_type</span> n<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp72180272-bb"></a><span class="identifier">erase</span><span class="special">(</span><span class="identifier">const_iterator</span> f<span class="special">,</span> <span class="identifier">const_iterator</span> l<span class="special">,</span> <span class="identifier">size_type</span> n<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Erases the range [f, l) from the list. n must be distance(f, l). No destructors are called.</p>
 <p><span class="bold"><strong>Returns</strong></span>: the first element remaining beyond the removed elements, or end() if no such element exists.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
@@ -522,7 +522,7 @@
 </li>
 <li class="listitem">
 <pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Disposer<span class="special">&gt;</span> 
-  <span class="identifier">iterator</span> <a name="idp85445776-bb"></a><span class="identifier">erase_after_and_dispose</span><span class="special">(</span><span class="identifier">const_iterator</span> prev<span class="special">,</span> <span class="identifier">Disposer</span> disposer<span class="special">)</span><span class="special">;</span></pre>
+  <span class="identifier">iterator</span> <a name="idp72189312-bb"></a><span class="identifier">erase_after_and_dispose</span><span class="special">(</span><span class="identifier">const_iterator</span> prev<span class="special">,</span> <span class="identifier">Disposer</span> disposer<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: Disposer::operator()(pointer) shouldn't throw.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Erases the element after the element pointed by prev of the list. Disposer::operator()(pointer) is called for the removed element.</p>
 <p><span class="bold"><strong>Returns</strong></span>: the first element remaining beyond the removed elements, or end() if no such element exists.</p>
@@ -532,7 +532,7 @@
 </li>
 <li class="listitem">
 <pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Disposer<span class="special">&gt;</span> 
-  <span class="identifier">iterator</span> <a name="idp85454320-bb"></a><span class="identifier">erase_after_and_dispose</span><span class="special">(</span><span class="identifier">const_iterator</span> before_f<span class="special">,</span> <span class="identifier">const_iterator</span> l<span class="special">,</span> 
+  <span class="identifier">iterator</span> <a name="idp72197856-bb"></a><span class="identifier">erase_after_and_dispose</span><span class="special">(</span><span class="identifier">const_iterator</span> before_f<span class="special">,</span> <span class="identifier">const_iterator</span> l<span class="special">,</span> 
                                    <span class="identifier">Disposer</span> disposer<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: Disposer::operator()(pointer) shouldn't throw.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Erases the range (before_f, l) from the list. Disposer::operator()(pointer) is called for the removed elements.</p>
@@ -543,7 +543,7 @@
 </li>
 <li class="listitem">
 <pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Disposer<span class="special">&gt;</span> 
-  <span class="identifier">iterator</span> <a name="idp85463568-bb"></a><span class="identifier">erase_and_dispose</span><span class="special">(</span><span class="identifier">const_iterator</span> i<span class="special">,</span> <span class="identifier">Disposer</span> disposer<span class="special">)</span><span class="special">;</span></pre>
+  <span class="identifier">iterator</span> <a name="idp72207104-bb"></a><span class="identifier">erase_and_dispose</span><span class="special">(</span><span class="identifier">const_iterator</span> i<span class="special">,</span> <span class="identifier">Disposer</span> disposer<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: Disposer::operator()(pointer) shouldn't throw.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Erases the element pointed by i of the list. No destructors are called. Disposer::operator()(pointer) is called for the removed element.</p>
 <p><span class="bold"><strong>Returns</strong></span>: the first element remaining beyond the removed element, or end() if no such element exists.</p>
@@ -553,7 +553,7 @@
 </li>
 <li class="listitem">
 <pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Disposer<span class="special">&gt;</span> 
-  <span class="identifier">iterator</span> <a name="idp85472176-bb"></a><span class="identifier">erase_and_dispose</span><span class="special">(</span><span class="identifier">const_iterator</span> f<span class="special">,</span> <span class="identifier">const_iterator</span> l<span class="special">,</span> 
+  <span class="identifier">iterator</span> <a name="idp72215712-bb"></a><span class="identifier">erase_and_dispose</span><span class="special">(</span><span class="identifier">const_iterator</span> f<span class="special">,</span> <span class="identifier">const_iterator</span> l<span class="special">,</span> 
                              <span class="identifier">Disposer</span> disposer<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: f and l must be valid iterator to elements in *this. Disposer::operator()(pointer) shouldn't throw.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Erases the range pointed by b and e. No destructors are called. Disposer::operator()(pointer) is called for the removed elements.</p>
@@ -563,7 +563,7 @@
 <p><span class="bold"><strong>Note</strong></span>: Invalidates the iterators (but not the references) to the erased elements. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Iterator<span class="special">&gt;</span> <span class="keyword">void</span> <a name="idp85481552-bb"></a><span class="identifier">assign</span><span class="special">(</span><span class="identifier">Iterator</span> b<span class="special">,</span> <span class="identifier">Iterator</span> e<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Iterator<span class="special">&gt;</span> <span class="keyword">void</span> <a name="idp72225088-bb"></a><span class="identifier">assign</span><span class="special">(</span><span class="identifier">Iterator</span> b<span class="special">,</span> <span class="identifier">Iterator</span> e<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: Dereferencing iterator must yield an lvalue of type value_type.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Clears the list and inserts the range pointed by b and e. No destructors or copy constructors are called.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
@@ -572,7 +572,7 @@
 </li>
 <li class="listitem">
 <pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Iterator<span class="special">,</span> <span class="keyword">typename</span> Disposer<span class="special">&gt;</span> 
-  <span class="keyword">void</span> <a name="idp85489392-bb"></a><span class="identifier">dispose_and_assign</span><span class="special">(</span><span class="identifier">Disposer</span> disposer<span class="special">,</span> <span class="identifier">Iterator</span> b<span class="special">,</span> <span class="identifier">Iterator</span> e<span class="special">)</span><span class="special">;</span></pre>
+  <span class="keyword">void</span> <a name="idp72232928-bb"></a><span class="identifier">dispose_and_assign</span><span class="special">(</span><span class="identifier">Disposer</span> disposer<span class="special">,</span> <span class="identifier">Iterator</span> b<span class="special">,</span> <span class="identifier">Iterator</span> e<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: Disposer::operator()(pointer) shouldn't throw.</p>
 <p><span class="bold"><strong>Requires</strong></span>: Dereferencing iterator must yield an lvalue of type value_type.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Clears the list and inserts the range pointed by b and e. No destructors or copy constructors are called. Disposer::operator()(pointer) is called for the removed elements.</p>
@@ -581,7 +581,7 @@
 <p><span class="bold"><strong>Note</strong></span>: Invalidates the iterators (but not the references) to the erased elements. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp85499312-bb"></a><span class="identifier">splice_after</span><span class="special">(</span><span class="identifier">const_iterator</span> prev<span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> x<span class="special">,</span> <span class="identifier">const_iterator</span> <span class="special">*</span> l <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp72242848-bb"></a><span class="identifier">splice_after</span><span class="special">(</span><span class="identifier">const_iterator</span> prev<span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> x<span class="special">,</span> <span class="identifier">const_iterator</span> <span class="special">*</span> l <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: prev must point to an element contained by this list or to the before_begin() element</p>
 <p><span class="bold"><strong>Effects</strong></span>: Transfers all the elements of list x to this list, after the the element pointed by prev. No destructors or copy constructors are called.</p>
 <p><span class="bold"><strong>Returns</strong></span>: Nothing.</p>
@@ -591,7 +591,7 @@
 <p><span class="bold"><strong>Additional note</strong></span>: If the optional parameter "l" is provided, it will be assigned to the last spliced element or prev if x is empty. This iterator can be used as new "prev" iterator for a new splice_after call. that will splice new values after the previously spliced values. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp85509600-bb"></a><span class="identifier">splice_after</span><span class="special">(</span><span class="identifier">const_iterator</span> prev_pos<span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> x<span class="special">,</span> <span class="identifier">const_iterator</span> prev_ele<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp72253136-bb"></a><span class="identifier">splice_after</span><span class="special">(</span><span class="identifier">const_iterator</span> prev_pos<span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> x<span class="special">,</span> <span class="identifier">const_iterator</span> prev_ele<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: prev must point to an element contained by this list or to the before_begin() element. prev_ele must point to an element contained in list x or must be x.before_begin().</p>
 <p><span class="bold"><strong>Effects</strong></span>: Transfers the element after prev_ele, from list x to this list, after the element pointed by prev. No destructors or copy constructors are called.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
@@ -599,7 +599,7 @@
 <p><span class="bold"><strong>Note</strong></span>: Iterators of values obtained from list x now point to elements of this list. Iterators of this list and all the references are not invalidated. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp85517584-bb"></a><span class="identifier">splice_after</span><span class="special">(</span><span class="identifier">const_iterator</span> prev_pos<span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> x<span class="special">,</span> <span class="identifier">const_iterator</span> before_f<span class="special">,</span> 
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp72261120-bb"></a><span class="identifier">splice_after</span><span class="special">(</span><span class="identifier">const_iterator</span> prev_pos<span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> x<span class="special">,</span> <span class="identifier">const_iterator</span> before_f<span class="special">,</span> 
                   <span class="identifier">const_iterator</span> before_l<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: prev_pos must be a dereferenceable iterator in *this or be before_begin(), and before_f and before_l belong to x and ++before_f != x.end() &amp;&amp; before_l != x.end().</p>
 <p><span class="bold"><strong>Effects</strong></span>: Transfers the range (before_f, before_l] from list x to this list, after the element pointed by prev_pos. No destructors or copy constructors are called.</p>
@@ -608,7 +608,7 @@
 <p><span class="bold"><strong>Note</strong></span>: Iterators of values obtained from list x now point to elements of this list. Iterators of this list and all the references are not invalidated. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp85527040-bb"></a><span class="identifier">splice_after</span><span class="special">(</span><span class="identifier">const_iterator</span> prev_pos<span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> x<span class="special">,</span> <span class="identifier">const_iterator</span> before_f<span class="special">,</span> 
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp72270576-bb"></a><span class="identifier">splice_after</span><span class="special">(</span><span class="identifier">const_iterator</span> prev_pos<span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> x<span class="special">,</span> <span class="identifier">const_iterator</span> before_f<span class="special">,</span> 
                   <span class="identifier">const_iterator</span> before_l<span class="special">,</span> <span class="identifier">size_type</span> n<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: prev_pos must be a dereferenceable iterator in *this or be before_begin(), and before_f and before_l belong to x and ++before_f != x.end() &amp;&amp; before_l != x.end() and n == distance(before_f, before_l).</p>
 <p><span class="bold"><strong>Effects</strong></span>: Transfers the range (before_f, before_l] from list x to this list, after the element pointed by p. No destructors or copy constructors are called.</p>
@@ -617,7 +617,7 @@
 <p><span class="bold"><strong>Note</strong></span>: Iterators of values obtained from list x now point to elements of this list. Iterators of this list and all the references are not invalidated. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp85536432-bb"></a><span class="identifier">splice</span><span class="special">(</span><span class="identifier">const_iterator</span> it<span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> x<span class="special">,</span> <span class="identifier">const_iterator</span> <span class="special">*</span> l <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp72279968-bb"></a><span class="identifier">splice</span><span class="special">(</span><span class="identifier">const_iterator</span> it<span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> x<span class="special">,</span> <span class="identifier">const_iterator</span> <span class="special">*</span> l <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: it is an iterator to an element in *this.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Transfers all the elements of list x to this list, before the the element pointed by it. No destructors or copy constructors are called.</p>
 <p><span class="bold"><strong>Returns</strong></span>: Nothing.</p>
@@ -627,7 +627,7 @@
 <p><span class="bold"><strong>Additional note</strong></span>: If the optional parameter "l" is provided, it will be assigned to the last spliced element or prev if x is empty. This iterator can be used as new "prev" iterator for a new splice_after call. that will splice new values after the previously spliced values. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp85546704-bb"></a><span class="identifier">splice</span><span class="special">(</span><span class="identifier">const_iterator</span> pos<span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> x<span class="special">,</span> <span class="identifier">const_iterator</span> elem<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp72290240-bb"></a><span class="identifier">splice</span><span class="special">(</span><span class="identifier">const_iterator</span> pos<span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> x<span class="special">,</span> <span class="identifier">const_iterator</span> elem<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: it p must be a valid iterator of *this. elem must point to an element contained in list x.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Transfers the element elem, from list x to this list, before the element pointed by pos. No destructors or copy constructors are called.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
@@ -635,7 +635,7 @@
 <p><span class="bold"><strong>Note</strong></span>: Iterators of values obtained from list x now point to elements of this list. Iterators of this list and all the references are not invalidated. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp85554736-bb"></a><span class="identifier">splice</span><span class="special">(</span><span class="identifier">const_iterator</span> pos<span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> x<span class="special">,</span> <span class="identifier">const_iterator</span> f<span class="special">,</span> <span class="identifier">const_iterator</span> l<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp72298272-bb"></a><span class="identifier">splice</span><span class="special">(</span><span class="identifier">const_iterator</span> pos<span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> x<span class="special">,</span> <span class="identifier">const_iterator</span> f<span class="special">,</span> <span class="identifier">const_iterator</span> l<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: pos must be a dereferenceable iterator in *this and f and f belong to x and f and f a valid range on x.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Transfers the range [f, l) from list x to this list, before the element pointed by pos. No destructors or copy constructors are called.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
@@ -643,7 +643,7 @@
 <p><span class="bold"><strong>Note</strong></span>: Iterators of values obtained from list x now point to elements of this list. Iterators of this list and all the references are not invalidated. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp85565040-bb"></a><span class="identifier">splice</span><span class="special">(</span><span class="identifier">const_iterator</span> pos<span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> x<span class="special">,</span> <span class="identifier">const_iterator</span> f<span class="special">,</span> <span class="identifier">const_iterator</span> l<span class="special">,</span> 
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp72308576-bb"></a><span class="identifier">splice</span><span class="special">(</span><span class="identifier">const_iterator</span> pos<span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> x<span class="special">,</span> <span class="identifier">const_iterator</span> f<span class="special">,</span> <span class="identifier">const_iterator</span> l<span class="special">,</span> 
             <span class="identifier">size_type</span> n<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: pos must be a dereferenceable iterator in *this and f and l belong to x and f and l a valid range on x. n == distance(f, l).</p>
 <p><span class="bold"><strong>Effects</strong></span>: Transfers the range [f, l) from list x to this list, before the element pointed by pos. No destructors or copy constructors are called.</p>
@@ -652,14 +652,14 @@
 <p><span class="bold"><strong>Note</strong></span>: Iterators of values obtained from list x now point to elements of this list. Iterators of this list and all the references are not invalidated. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Predicate<span class="special">&gt;</span> <span class="keyword">void</span> <a name="idp85574480-bb"></a><span class="identifier">sort</span><span class="special">(</span><span class="identifier">Predicate</span> p<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Predicate<span class="special">&gt;</span> <span class="keyword">void</span> <a name="idp72318016-bb"></a><span class="identifier">sort</span><span class="special">(</span><span class="identifier">Predicate</span> p<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: This function sorts the list *this according to std::less&lt;value_type&gt;. The sort is stable, that is, the relative order of equivalent elements is preserved.</p>
 <p><span class="bold"><strong>Throws</strong></span>: If value_traits::node_traits::node constructor throws (this does not happen with predefined Boost.Intrusive hooks) or the predicate throws. Basic guarantee.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: The number of comparisons is approximately N log N, where N is the list's size.</p>
 <p><span class="bold"><strong>Note</strong></span>: Iterators and references are not invalidated </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp85580768-bb"></a><span class="identifier">sort</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp72324304-bb"></a><span class="identifier">sort</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: p must be a comparison function that induces a strict weak ordering and both *this and x must be sorted according to that ordering The lists x and *this must be distinct.</p>
 <p><span class="bold"><strong>Effects</strong></span>: This function removes all of x's elements and inserts them in order into *this. The merge is stable; that is, if an element from *this is equivalent to one from x, then the element from *this will precede the one from x.</p>
 <p><span class="bold"><strong>Throws</strong></span>: If value_traits::node_traits::node constructor throws (this does not happen with predefined Boost.Intrusive hooks) or std::less&lt;value_type&gt; throws. Basic guarantee.</p>
@@ -668,7 +668,7 @@
 </li>
 <li class="listitem">
 <pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Predicate<span class="special">&gt;</span> 
-  <span class="keyword">void</span> <a name="idp85586592-bb"></a><span class="identifier">merge</span><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> x<span class="special">,</span> <span class="identifier">Predicate</span> p<span class="special">,</span> <span class="identifier">const_iterator</span> <span class="special">*</span> l <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span></pre>
+  <span class="keyword">void</span> <a name="idp72330128-bb"></a><span class="identifier">merge</span><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> x<span class="special">,</span> <span class="identifier">Predicate</span> p<span class="special">,</span> <span class="identifier">const_iterator</span> <span class="special">*</span> l <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: p must be a comparison function that induces a strict weak ordering and both *this and x must be sorted according to that ordering The lists x and *this must be distinct.</p>
 <p><span class="bold"><strong>Effects</strong></span>: This function removes all of x's elements and inserts them in order into *this. The merge is stable; that is, if an element from *this is equivalent to one from x, then the element from *this will precede the one from x.</p>
 <p><span class="bold"><strong>Returns</strong></span>: Nothing.</p>
@@ -678,21 +678,21 @@
 <p><span class="bold"><strong>Additional note</strong></span>: If optional "l" argument is passed, it is assigned to an iterator to the last transferred value or end() is x is empty. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp85597600-bb"></a><span class="identifier">merge</span><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> x<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp72341136-bb"></a><span class="identifier">merge</span><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> x<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: This function removes all of x's elements and inserts them in order into *this according to std::less&lt;value_type&gt;. The merge is stable; that is, if an element from *this is equivalent to one from x, then the element from *this will precede the one from x.</p>
 <p><span class="bold"><strong>Throws</strong></span>: if std::less&lt;value_type&gt; throws. Basic guarantee.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: This function is linear time: it performs at most size() + x.size() - 1 comparisons.</p>
 <p><span class="bold"><strong>Note</strong></span>: Iterators and references are not invalidated </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp85603312-bb"></a><span class="identifier">reverse</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp72346848-bb"></a><span class="identifier">reverse</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Reverses the order of elements in the list.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: This function is linear to the contained elements.</p>
 <p><span class="bold"><strong>Note</strong></span>: Iterators and references are not invalidated </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp85607776-bb"></a><span class="identifier">remove</span><span class="special">(</span><span class="identifier">const_reference</span> value<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp72351312-bb"></a><span class="identifier">remove</span><span class="special">(</span><span class="identifier">const_reference</span> value<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Removes all the elements that compare equal to value. No destructors are called.</p>
 <p><span class="bold"><strong>Throws</strong></span>: If std::equal_to&lt;value_type&gt; throws. Basic guarantee.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Linear time. It performs exactly size() comparisons for equality.</p>
@@ -700,7 +700,7 @@
 </li>
 <li class="listitem">
 <pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Disposer<span class="special">&gt;</span> 
-  <span class="keyword">void</span> <a name="idp85613168-bb"></a><span class="identifier">remove_and_dispose</span><span class="special">(</span><span class="identifier">const_reference</span> value<span class="special">,</span> <span class="identifier">Disposer</span> disposer<span class="special">)</span><span class="special">;</span></pre>
+  <span class="keyword">void</span> <a name="idp72356704-bb"></a><span class="identifier">remove_and_dispose</span><span class="special">(</span><span class="identifier">const_reference</span> value<span class="special">,</span> <span class="identifier">Disposer</span> disposer<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: Disposer::operator()(pointer) shouldn't throw.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Removes all the elements that compare equal to value. Disposer::operator()(pointer) is called for every removed element.</p>
 <p><span class="bold"><strong>Throws</strong></span>: If std::equal_to&lt;value_type&gt; throws. Basic guarantee.</p>
@@ -708,7 +708,7 @@
 <p><span class="bold"><strong>Note</strong></span>: The relative order of elements that are not removed is unchanged, and iterators to elements that are not removed remain valid. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Pred<span class="special">&gt;</span> <span class="keyword">void</span> <a name="idp85620944-bb"></a><span class="identifier">remove_if</span><span class="special">(</span><span class="identifier">Pred</span> pred<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Pred<span class="special">&gt;</span> <span class="keyword">void</span> <a name="idp72364480-bb"></a><span class="identifier">remove_if</span><span class="special">(</span><span class="identifier">Pred</span> pred<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Removes all the elements for which a specified predicate is satisfied. No destructors are called.</p>
 <p><span class="bold"><strong>Throws</strong></span>: If pred throws. Basic guarantee.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Linear time. It performs exactly size() calls to the predicate.</p>
@@ -716,7 +716,7 @@
 </li>
 <li class="listitem">
 <pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Pred<span class="special">,</span> <span class="keyword">typename</span> Disposer<span class="special">&gt;</span> 
-  <span class="keyword">void</span> <a name="idp85627104-bb"></a><span class="identifier">remove_and_dispose_if</span><span class="special">(</span><span class="identifier">Pred</span> pred<span class="special">,</span> <span class="identifier">Disposer</span> disposer<span class="special">)</span><span class="special">;</span></pre>
+  <span class="keyword">void</span> <a name="idp72370640-bb"></a><span class="identifier">remove_and_dispose_if</span><span class="special">(</span><span class="identifier">Pred</span> pred<span class="special">,</span> <span class="identifier">Disposer</span> disposer<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: Disposer::operator()(pointer) shouldn't throw.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Removes all the elements for which a specified predicate is satisfied. Disposer::operator()(pointer) is called for every removed element.</p>
 <p><span class="bold"><strong>Throws</strong></span>: If pred throws. Basic guarantee.</p>
@@ -724,21 +724,21 @@
 <p><span class="bold"><strong>Note</strong></span>: The relative order of elements that are not removed is unchanged, and iterators to elements that are not removed remain valid. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp85635440-bb"></a><span class="identifier">unique</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp72378976-bb"></a><span class="identifier">unique</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Removes adjacent duplicate elements or adjacent elements that are equal from the list. No destructors are called.</p>
 <p><span class="bold"><strong>Throws</strong></span>: If std::equal_to&lt;value_type&gt; throws. Basic guarantee.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Linear time (size()-1) comparisons calls to pred()).</p>
 <p><span class="bold"><strong>Note</strong></span>: The relative order of elements that are not removed is unchanged, and iterators to elements that are not removed remain valid. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> BinaryPredicate<span class="special">&gt;</span> <span class="keyword">void</span> <a name="idp85640080-bb"></a><span class="identifier">unique</span><span class="special">(</span><span class="identifier">BinaryPredicate</span> pred<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> BinaryPredicate<span class="special">&gt;</span> <span class="keyword">void</span> <a name="idp72383616-bb"></a><span class="identifier">unique</span><span class="special">(</span><span class="identifier">BinaryPredicate</span> pred<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Removes adjacent duplicate elements or adjacent elements that satisfy some binary predicate from the list. No destructors are called.</p>
 <p><span class="bold"><strong>Throws</strong></span>: If the predicate throws. Basic guarantee.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Linear time (size()-1) comparisons equality comparisons.</p>
 <p><span class="bold"><strong>Note</strong></span>: The relative order of elements that are not removed is unchanged, and iterators to elements that are not removed remain valid. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Disposer<span class="special">&gt;</span> <span class="keyword">void</span> <a name="idp85646288-bb"></a><span class="identifier">unique_and_dispose</span><span class="special">(</span><span class="identifier">Disposer</span> disposer<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Disposer<span class="special">&gt;</span> <span class="keyword">void</span> <a name="idp72389824-bb"></a><span class="identifier">unique_and_dispose</span><span class="special">(</span><span class="identifier">Disposer</span> disposer<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: Disposer::operator()(pointer) shouldn't throw.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Removes adjacent duplicate elements or adjacent elements that satisfy some binary predicate from the list. Disposer::operator()(pointer) is called for every removed element.</p>
 <p><span class="bold"><strong>Throws</strong></span>: If std::equal_to&lt;value_type&gt; throws. Basic guarantee.</p>
@@ -747,7 +747,7 @@
 </li>
 <li class="listitem">
 <pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> BinaryPredicate<span class="special">,</span> <span class="keyword">typename</span> Disposer<span class="special">&gt;</span> 
-  <span class="keyword">void</span> <a name="idp85653424-bb"></a><span class="identifier">unique_and_dispose</span><span class="special">(</span><span class="identifier">BinaryPredicate</span> pred<span class="special">,</span> <span class="identifier">Disposer</span> disposer<span class="special">)</span><span class="special">;</span></pre>
+  <span class="keyword">void</span> <a name="idp72396960-bb"></a><span class="identifier">unique_and_dispose</span><span class="special">(</span><span class="identifier">BinaryPredicate</span> pred<span class="special">,</span> <span class="identifier">Disposer</span> disposer<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: Disposer::operator()(pointer) shouldn't throw.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Removes adjacent duplicate elements or adjacent elements that satisfy some binary predicate from the list. Disposer::operator()(pointer) is called for every removed element.</p>
 <p><span class="bold"><strong>Throws</strong></span>: If the predicate throws. Basic guarantee.</p>
@@ -755,7 +755,7 @@
 <p><span class="bold"><strong>Note</strong></span>: The relative order of elements that are not removed is unchanged, and iterators to elements that are not removed remain valid. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp85661808-bb"></a><span class="identifier">iterator_to</span><span class="special">(</span><span class="identifier">reference</span> value<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp72405344-bb"></a><span class="identifier">iterator_to</span><span class="special">(</span><span class="identifier">reference</span> value<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: value must be a reference to a value inserted in a list.</p>
 <p><span class="bold"><strong>Effects</strong></span>: This function returns a const_iterator pointing to the element</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
@@ -763,7 +763,7 @@
 <p><span class="bold"><strong>Note</strong></span>: Iterators and references are not invalidated. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idp85667840-bb"></a><span class="identifier">iterator_to</span><span class="special">(</span><span class="identifier">const_reference</span> value<span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idp72411376-bb"></a><span class="identifier">iterator_to</span><span class="special">(</span><span class="identifier">const_reference</span> value<span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: value must be a const reference to a value inserted in a list.</p>
 <p><span class="bold"><strong>Effects</strong></span>: This function returns an iterator pointing to the element.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
@@ -771,31 +771,31 @@
 <p><span class="bold"><strong>Note</strong></span>: Iterators and references are not invalidated. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp85674144-bb"></a><span class="identifier">previous</span><span class="special">(</span><span class="identifier">iterator</span> i<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp72417680-bb"></a><span class="identifier">previous</span><span class="special">(</span><span class="identifier">iterator</span> i<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Returns</strong></span>: The iterator to the element before i in the list. Returns the end-iterator, if either i is the begin-iterator or the list is empty.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Linear to the number of elements before i. Constant if cache_last&lt;&gt; is true and i == end(). </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idp85678544-bb"></a><span class="identifier">previous</span><span class="special">(</span><span class="identifier">const_iterator</span> i<span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idp72422080-bb"></a><span class="identifier">previous</span><span class="special">(</span><span class="identifier">const_iterator</span> i<span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Returns</strong></span>: The const_iterator to the element before i in the list. Returns the end-const_iterator, if either i is the begin-const_iterator or the list is empty.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Linear to the number of elements before i. Constant if cache_last&lt;&gt; is true and i == end(). </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp85683232-bb"></a><span class="identifier">previous</span><span class="special">(</span><span class="identifier">const_iterator</span> prev_from<span class="special">,</span> <span class="identifier">iterator</span> i<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">iterator</span> <a name="idp72426768-bb"></a><span class="identifier">previous</span><span class="special">(</span><span class="identifier">const_iterator</span> prev_from<span class="special">,</span> <span class="identifier">iterator</span> i<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Returns</strong></span>: The iterator to the element before i in the list, starting the search on element after prev_from. Returns the end-iterator, if either i is the begin-iterator or the list is empty.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Linear to the number of elements before i. Constant if cache_last&lt;&gt; is true and i == end(). </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idp85688368-bb"></a><span class="identifier">previous</span><span class="special">(</span><span class="identifier">const_iterator</span> prev_from<span class="special">,</span> <span class="identifier">const_iterator</span> i<span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">const_iterator</span> <a name="idp72431904-bb"></a><span class="identifier">previous</span><span class="special">(</span><span class="identifier">const_iterator</span> prev_from<span class="special">,</span> <span class="identifier">const_iterator</span> i<span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Returns</strong></span>: The const_iterator to the element before i in the list, starting the search on element after prev_from. Returns the end-const_iterator, if either i is the begin-const_iterator or the list is empty.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Linear to the number of elements before i. Constant if cache_last&lt;&gt; is true and i == end(). </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp85693792-bb"></a><span class="identifier">check</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp72437328-bb"></a><span class="identifier">check</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Effects</strong></span>: Asserts the integrity of the container.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Linear time.</p>
 <p><span class="bold"><strong>Note</strong></span>: The method has no effect when asserts are turned off (e.g., with NDEBUG). Experimental function, interface might change in future versions. </p>
@@ -804,24 +804,24 @@
 </div>
 <div class="refsect2">
 <a name="id-1.3.19.43.35.3.4.8"></a><h3>
-<a name="idp85722544-bb"></a><code class="computeroutput">slist</code> public static functions</h3>
+<a name="idp72466080-bb"></a><code class="computeroutput">slist</code> public static functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">static</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> <a name="idp85723104-bb"></a><span class="identifier">container_from_end_iterator</span><span class="special">(</span><span class="identifier">iterator</span> end_iterator<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">static</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> <a name="idp72466640-bb"></a><span class="identifier">container_from_end_iterator</span><span class="special">(</span><span class="identifier">iterator</span> end_iterator<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Precondition</strong></span>: end_iterator must be a valid end iterator of slist.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Returns a const reference to the slist associated to the end iterator</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Constant. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">static</span> <span class="keyword">const</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> <a name="idp85728816-bb"></a><span class="identifier">container_from_end_iterator</span><span class="special">(</span><span class="identifier">const_iterator</span> end_iterator<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">static</span> <span class="keyword">const</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> <a name="idp72472352-bb"></a><span class="identifier">container_from_end_iterator</span><span class="special">(</span><span class="identifier">const_iterator</span> end_iterator<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Precondition</strong></span>: end_iterator must be a valid end const_iterator of slist.</p>
 <p><span class="bold"><strong>Effects</strong></span>: Returns a const reference to the slist associated to the end iterator</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
 <p><span class="bold"><strong>Complexity</strong></span>: Constant. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">static</span> <span class="identifier">iterator</span> <a name="idp85734704-bb"></a><span class="identifier">s_iterator_to</span><span class="special">(</span><span class="identifier">reference</span> value<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">static</span> <span class="identifier">iterator</span> <a name="idp72478240-bb"></a><span class="identifier">s_iterator_to</span><span class="special">(</span><span class="identifier">reference</span> value<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: value must be a reference to a value inserted in a list.</p>
 <p><span class="bold"><strong>Effects</strong></span>: This function returns a const_iterator pointing to the element</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
@@ -829,7 +829,7 @@
 <p><span class="bold"><strong>Note</strong></span>: Iterators and references are not invalidated. This static function is available only if the <span class="emphasis"><em>value traits</em></span> is stateless. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">static</span> <span class="identifier">const_iterator</span> <a name="idp85741504-bb"></a><span class="identifier">s_iterator_to</span><span class="special">(</span><span class="identifier">const_reference</span> value<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">static</span> <span class="identifier">const_iterator</span> <a name="idp72485040-bb"></a><span class="identifier">s_iterator_to</span><span class="special">(</span><span class="identifier">const_reference</span> value<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Requires</strong></span>: value must be a const reference to a value inserted in a list.</p>
 <p><span class="bold"><strong>Effects</strong></span>: This function returns an iterator pointing to the element.</p>
 <p><span class="bold"><strong>Throws</strong></span>: Nothing.</p>
@@ -840,33 +840,33 @@
 </div>
 <div class="refsect2">
 <a name="id-1.3.19.43.35.3.4.9"></a><h3>
-<a name="idp85748464-bb"></a><code class="computeroutput">slist</code> private member functions</h3>
+<a name="idp72492000-bb"></a><code class="computeroutput">slist</code> private member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
-<li class="listitem"><pre class="literallayout"><span class="keyword">void</span> <a name="idp85749040-bb"></a><span class="identifier">priv_splice_after</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span> prev_pos_n<span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> x<span class="special">,</span> 
+<li class="listitem"><pre class="literallayout"><span class="keyword">void</span> <a name="idp72492576-bb"></a><span class="identifier">priv_splice_after</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span> prev_pos_n<span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> x<span class="special">,</span> 
                        <span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span> before_f_n<span class="special">,</span> 
                        <span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span> before_l_n<span class="special">)</span><span class="special">;</span></pre></li>
-<li class="listitem"><pre class="literallayout"><span class="keyword">void</span> <a name="idp85752928-bb"></a><span class="identifier">priv_incorporate_after</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span> prev_pos_n<span class="special">,</span> 
+<li class="listitem"><pre class="literallayout"><span class="keyword">void</span> <a name="idp72496464-bb"></a><span class="identifier">priv_incorporate_after</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span> prev_pos_n<span class="special">,</span> 
                             <span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span> first_n<span class="special">,</span> 
                             <span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span> before_l_n<span class="special">)</span><span class="special">;</span></pre></li>
-<li class="listitem"><pre class="literallayout"><span class="keyword">void</span> <a name="idp85755840-bb"></a><span class="identifier">priv_reverse</span><span class="special">(</span><span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span></pre></li>
-<li class="listitem"><pre class="literallayout"><span class="keyword">void</span> <a name="idp85757504-bb"></a><span class="identifier">priv_reverse</span><span class="special">(</span><span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span></pre></li>
-<li class="listitem"><pre class="literallayout"><span class="keyword">void</span> <a name="idp85759168-bb"></a><span class="identifier">priv_shift_backwards</span><span class="special">(</span><span class="identifier">size_type</span> n<span class="special">,</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span></pre></li>
-<li class="listitem"><pre class="literallayout"><span class="keyword">void</span> <a name="idp85761520-bb"></a><span class="identifier">priv_shift_backwards</span><span class="special">(</span><span class="identifier">size_type</span> n<span class="special">,</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span></pre></li>
-<li class="listitem"><pre class="literallayout"><span class="keyword">void</span> <a name="idp85763872-bb"></a><span class="identifier">priv_shift_forward</span><span class="special">(</span><span class="identifier">size_type</span> n<span class="special">,</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span></pre></li>
-<li class="listitem"><pre class="literallayout"><span class="keyword">void</span> <a name="idp85766224-bb"></a><span class="identifier">priv_shift_forward</span><span class="special">(</span><span class="identifier">size_type</span> n<span class="special">,</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><span class="keyword">void</span> <a name="idp72499376-bb"></a><span class="identifier">priv_reverse</span><span class="special">(</span><span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><span class="keyword">void</span> <a name="idp72501040-bb"></a><span class="identifier">priv_reverse</span><span class="special">(</span><span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><span class="keyword">void</span> <a name="idp72502704-bb"></a><span class="identifier">priv_shift_backwards</span><span class="special">(</span><span class="identifier">size_type</span> n<span class="special">,</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><span class="keyword">void</span> <a name="idp72505056-bb"></a><span class="identifier">priv_shift_backwards</span><span class="special">(</span><span class="identifier">size_type</span> n<span class="special">,</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><span class="keyword">void</span> <a name="idp72507408-bb"></a><span class="identifier">priv_shift_forward</span><span class="special">(</span><span class="identifier">size_type</span> n<span class="special">,</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><span class="keyword">void</span> <a name="idp72509760-bb"></a><span class="identifier">priv_shift_forward</span><span class="special">(</span><span class="identifier">size_type</span> n<span class="special">,</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span></pre></li>
 </ol></div>
 </div>
 <div class="refsect2">
 <a name="id-1.3.19.43.35.3.4.10"></a><h3>
-<a name="idp85768736-bb"></a><code class="computeroutput">slist</code> private static functions</h3>
+<a name="idp72512272-bb"></a><code class="computeroutput">slist</code> private static functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
-<li class="listitem"><pre class="literallayout"><span class="keyword">static</span> <span class="keyword">void</span> <a name="idp85769312-bb"></a><span class="identifier">priv_swap_cache_last</span><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">*</span> this_impl<span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">*</span> other_impl<span class="special">)</span><span class="special">;</span></pre></li>
-<li class="listitem"><pre class="literallayout"><span class="keyword">static</span> <span class="keyword">void</span> <a name="idp85772384-bb"></a><span class="identifier">priv_swap_lists</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span> this_node<span class="special">,</span> 
+<li class="listitem"><pre class="literallayout"><span class="keyword">static</span> <span class="keyword">void</span> <a name="idp72512848-bb"></a><span class="identifier">priv_swap_cache_last</span><span class="special">(</span><a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">*</span> this_impl<span class="special">,</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">*</span> other_impl<span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><span class="keyword">static</span> <span class="keyword">void</span> <a name="idp72515920-bb"></a><span class="identifier">priv_swap_lists</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span> this_node<span class="special">,</span> 
                             <span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span> other_node<span class="special">,</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span></pre></li>
-<li class="listitem"><pre class="literallayout"><span class="keyword">static</span> <span class="keyword">void</span> <a name="idp85775696-bb"></a><span class="identifier">priv_swap_lists</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span> this_node<span class="special">,</span> 
+<li class="listitem"><pre class="literallayout"><span class="keyword">static</span> <span class="keyword">void</span> <a name="idp72519232-bb"></a><span class="identifier">priv_swap_lists</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span> this_node<span class="special">,</span> 
                             <span class="keyword">const</span> <span class="identifier">node_ptr</span> <span class="special">&amp;</span> other_node<span class="special">,</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span><span class="special">)</span><span class="special">;</span></pre></li>
 <li class="listitem"><pre class="literallayout"><span class="keyword">static</span> <a class="link" href="slist.html" title="Class template slist">slist</a> <span class="special">&amp;</span> 
-<a name="idp85779008-bb"></a><span class="identifier">priv_container_from_end_iterator</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">const_iterator</span> <span class="special">&amp;</span> end_iterator<span class="special">)</span><span class="special">;</span></pre></li>
+<a name="idp72522544-bb"></a><span class="identifier">priv_container_from_end_iterator</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">const_iterator</span> <span class="special">&amp;</span> end_iterator<span class="special">)</span><span class="special">;</span></pre></li>
 </ol></div>
 </div>
 </div>

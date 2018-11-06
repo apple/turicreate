@@ -7,13 +7,13 @@
 <link rel="home" href="../../../index.html" title="Chapter&#160;1.&#160;Boost.Log v2">
 <link rel="up" href="../../../expressions.html#header.boost.log.expressions.formatters.wrap_formatter_hpp" title="Header &lt;boost/log/expressions/formatters/wrap_formatter.hpp&gt;">
 <link rel="prev" href="wrapped_formatter_terminal.html" title="Class template wrapped_formatter_terminal">
-<link rel="next" href="wrap_formatter_idp53586208.html" title="Function template wrap_formatter">
+<link rel="next" href="wrap_formatter_idp45727872.html" title="Function template wrap_formatter">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr><td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="../../../../../../../boost.png"></td></tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="wrapped_formatter_terminal.html"><img src="../../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../../expressions.html#header.boost.log.expressions.formatters.wrap_formatter_hpp"><img src="../../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="wrap_formatter_idp53586208.html"><img src="../../../../../../../doc/src/images/next.png" alt="Next"></a>
+<a accesskey="p" href="wrapped_formatter_terminal.html"><img src="../../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../../expressions.html#header.boost.log.expressions.formatters.wrap_formatter_hpp"><img src="../../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="wrap_formatter_idp45727872.html"><img src="../../../../../../../doc/src/images/next.png" alt="Next"></a>
 </div>
 <div class="refentry">
 <a name="boost.log.expressions.wrapped_formatter_actor"></a><div class="titlepage"></div>
@@ -37,27 +37,27 @@
   <span class="keyword">typedef</span> <span class="identifier">ActorT</span><span class="special">&lt;</span> <span class="identifier">terminal_type</span> <span class="special">&gt;</span>                                <a name="boost.log.expressions.wrapped_formatter_actor.base_type"></a><span class="identifier">base_type</span><span class="special">;</span>      <span class="comment">// Base actor type. </span>
 
   <span class="comment">// <a class="link" href="wrapped_formatter_actor.html#boost.log.expressions.wrapped_formatter_actorconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <span class="keyword">explicit</span> <a class="link" href="wrapped_formatter_actor.html#idp53584464-bb"><span class="identifier">wrapped_formatter_actor</span></a><span class="special">(</span><span class="identifier">base_type</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">explicit</span> <a class="link" href="wrapped_formatter_actor.html#idp45726128-bb"><span class="identifier">wrapped_formatter_actor</span></a><span class="special">(</span><span class="identifier">base_type</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="wrapped_formatter_actor.html#idp53581792-bb">public member functions</a></span>
-  <span class="identifier">function_type</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a class="link" href="wrapped_formatter_actor.html#idp53582352-bb"><span class="identifier">get_function</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="wrapped_formatter_actor.html#idp45723456-bb">public member functions</a></span>
+  <span class="identifier">function_type</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a class="link" href="wrapped_formatter_actor.html#idp45724016-bb"><span class="identifier">get_function</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp123346016"></a><h2>Description</h2>
+<a name="idp105375232"></a><h2>Description</h2>
 <p>Wrapped formatter function actor. </p>
 <div class="refsect2">
-<a name="idp123346736"></a><h3>
+<a name="idp105375872"></a><h3>
 <a name="boost.log.expressions.wrapped_formatter_actorconstruct-copy-destruct"></a><code class="computeroutput">wrapped_formatter_actor</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
-<pre class="literallayout"><span class="keyword">explicit</span> <a name="idp53584464-bb"></a><span class="identifier">wrapped_formatter_actor</span><span class="special">(</span><span class="identifier">base_type</span> <span class="keyword">const</span> <span class="special">&amp;</span> act<span class="special">)</span><span class="special">;</span></pre>Initializing constructor. </li></ol></div>
+<pre class="literallayout"><span class="keyword">explicit</span> <a name="idp45726128-bb"></a><span class="identifier">wrapped_formatter_actor</span><span class="special">(</span><span class="identifier">base_type</span> <span class="keyword">const</span> <span class="special">&amp;</span> act<span class="special">)</span><span class="special">;</span></pre>Initializing constructor. </li></ol></div>
 </div>
 <div class="refsect2">
-<a name="idp123355600"></a><h3>
-<a name="idp53581792-bb"></a><code class="computeroutput">wrapped_formatter_actor</code> public member functions</h3>
+<a name="idp105383728"></a><h3>
+<a name="idp45723456-bb"></a><code class="computeroutput">wrapped_formatter_actor</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
-<pre class="literallayout"><span class="identifier">function_type</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a name="idp53582352-bb"></a><span class="identifier">get_function</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">function_type</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a name="idp45724016-bb"></a><span class="identifier">get_function</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p>
 </p>
 <div class="variablelist"><table border="0" class="variablelist compact">
@@ -84,7 +84,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="wrapped_formatter_terminal.html"><img src="../../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../../expressions.html#header.boost.log.expressions.formatters.wrap_formatter_hpp"><img src="../../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="wrap_formatter_idp53586208.html"><img src="../../../../../../../doc/src/images/next.png" alt="Next"></a>
+<a accesskey="p" href="wrapped_formatter_terminal.html"><img src="../../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../../expressions.html#header.boost.log.expressions.formatters.wrap_formatter_hpp"><img src="../../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="wrap_formatter_idp45727872.html"><img src="../../../../../../../doc/src/images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

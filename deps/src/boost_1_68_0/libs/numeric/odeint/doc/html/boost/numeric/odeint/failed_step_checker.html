@@ -35,31 +35,31 @@
 <span class="keyword">class</span> <a class="link" href="failed_step_checker.html" title="Class failed_step_checker">failed_step_checker</a> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">odeint</span><span class="special">::</span><span class="identifier">max_step_checker</span> <span class="special">{</span>
 <span class="keyword">public</span><span class="special">:</span>
   <span class="comment">// <a class="link" href="failed_step_checker.html#boost.numeric.odeint.failed_step_checkerconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="failed_step_checker.html#idp33151232-bb"><span class="identifier">failed_step_checker</span></a><span class="special">(</span><span class="keyword">const</span> <span class="keyword">int</span> <span class="special">=</span> <span class="number">500</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="failed_step_checker.html#idp50588560-bb"><span class="identifier">failed_step_checker</span></a><span class="special">(</span><span class="keyword">const</span> <span class="keyword">int</span> <span class="special">=</span> <span class="number">500</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="failed_step_checker.html#idp33146736-bb">public member functions</a></span>
-  <span class="keyword">void</span> <a class="link" href="failed_step_checker.html#idp33147296-bb"><span class="keyword">operator</span><span class="special">(</span><span class="special">)</span></a><span class="special">(</span><span class="keyword">void</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="failed_step_checker.html#idp33149168-bb"><span class="identifier">reset</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="failed_step_checker.html#idp50584064-bb">public member functions</a></span>
+  <span class="keyword">void</span> <a class="link" href="failed_step_checker.html#idp50584624-bb"><span class="keyword">operator</span><span class="special">(</span><span class="special">)</span></a><span class="special">(</span><span class="keyword">void</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="failed_step_checker.html#idp50586496-bb"><span class="identifier">reset</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp88047328"></a><h2>Description</h2>
+<a name="idp103456480"></a><h2>Description</h2>
 <p>Used internally within the dense output stepper and integrate routines. </p>
 <div class="refsect2">
-<a name="idp88048000"></a><h3>
+<a name="idp103457152"></a><h3>
 <a name="boost.numeric.odeint.failed_step_checkerconstruct-copy-destruct"></a><code class="computeroutput">failed_step_checker</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
-<pre class="literallayout"><a name="idp33151232-bb"></a><span class="identifier">failed_step_checker</span><span class="special">(</span><span class="keyword">const</span> <span class="keyword">int</span> max_steps <span class="special">=</span> <span class="number">500</span><span class="special">)</span><span class="special">;</span></pre>Construct the <code class="computeroutput"><a class="link" href="failed_step_checker.html" title="Class failed_step_checker">failed_step_checker</a></code>. max_steps is the maximal number of iterations allowed before runtime_error is thrown. </li></ol></div>
+<pre class="literallayout"><a name="idp50588560-bb"></a><span class="identifier">failed_step_checker</span><span class="special">(</span><span class="keyword">const</span> <span class="keyword">int</span> max_steps <span class="special">=</span> <span class="number">500</span><span class="special">)</span><span class="special">;</span></pre>Construct the <code class="computeroutput"><a class="link" href="failed_step_checker.html" title="Class failed_step_checker">failed_step_checker</a></code>. max_steps is the maximal number of iterations allowed before runtime_error is thrown. </li></ol></div>
 </div>
 <div class="refsect2">
-<a name="idp88058128"></a><h3>
-<a name="idp33146736-bb"></a><code class="computeroutput">failed_step_checker</code> public member functions</h3>
+<a name="idp103467152"></a><h3>
+<a name="idp50584064-bb"></a><code class="computeroutput">failed_step_checker</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp33147296-bb"></a><span class="keyword">operator</span><span class="special">(</span><span class="special">)</span><span class="special">(</span><span class="keyword">void</span><span class="special">)</span><span class="special">;</span></pre>Increases the counter and performs the iteration check. </li>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp50584624-bb"></a><span class="keyword">operator</span><span class="special">(</span><span class="special">)</span><span class="special">(</span><span class="keyword">void</span><span class="special">)</span><span class="special">;</span></pre>Increases the counter and performs the iteration check. </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp33149168-bb"></a><span class="identifier">reset</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>Resets the <code class="computeroutput"><a class="link" href="max_step_checker.html" title="Class max_step_checker">max_step_checker</a></code> by setting the internal counter to 0. </li>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp50586496-bb"></a><span class="identifier">reset</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>Resets the <code class="computeroutput"><a class="link" href="max_step_checker.html" title="Class max_step_checker">max_step_checker</a></code> by setting the internal counter to 0. </li>
 </ol></div>
 </div>
 </div>

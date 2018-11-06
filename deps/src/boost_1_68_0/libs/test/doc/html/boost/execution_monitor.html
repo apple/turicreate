@@ -35,21 +35,21 @@
 <span class="keyword">class</span> <a class="link" href="execution_monitor.html" title="Class execution_monitor">execution_monitor</a> <span class="special">{</span>
 <span class="keyword">public</span><span class="special">:</span>
   <span class="comment">// <a class="link" href="execution_monitor.html#boost.execution_monitorconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="execution_monitor.html#idp72523744-bb"><span class="identifier">execution_monitor</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="execution_monitor.html#idp54142016-bb"><span class="identifier">execution_monitor</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="execution_monitor.html#idp72496272-bb">public member functions</a></span>
-  <span class="keyword">int</span> <a class="link" href="execution_monitor.html#idp72496832-bb"><span class="identifier">execute</span></a><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">function</span><span class="special">&lt;</span> <span class="keyword">int</span><span class="special">(</span><span class="special">)</span><span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="execution_monitor.html#idp72503120-bb"><span class="identifier">vexecute</span></a><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">function</span><span class="special">&lt;</span> <span class="keyword">void</span><span class="special">(</span><span class="special">)</span><span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="execution_monitor.html#idp54114544-bb">public member functions</a></span>
+  <span class="keyword">int</span> <a class="link" href="execution_monitor.html#idp54115104-bb"><span class="identifier">execute</span></a><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">function</span><span class="special">&lt;</span> <span class="keyword">int</span><span class="special">(</span><span class="special">)</span><span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="execution_monitor.html#idp54121392-bb"><span class="identifier">vexecute</span></a><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">function</span><span class="special">&lt;</span> <span class="keyword">void</span><span class="special">(</span><span class="special">)</span><span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> ExceptionType<span class="special">,</span> <span class="keyword">typename</span> ExceptionTranslator<span class="special">&gt;</span> 
-    <span class="keyword">void</span> <a class="link" href="execution_monitor.html#idp72507072-bb"><span class="identifier">register_exception_translator</span></a><span class="special">(</span><span class="identifier">ExceptionTranslator</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">,</span> 
+    <span class="keyword">void</span> <a class="link" href="execution_monitor.html#idp54125344-bb"><span class="identifier">register_exception_translator</span></a><span class="special">(</span><span class="identifier">ExceptionTranslator</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">,</span> 
                                        <span class="identifier">const_string</span> <span class="special">=</span> <span class="identifier">const_string</span><span class="special">(</span><span class="special">)</span><span class="special">,</span> 
                                        <span class="identifier">boost</span><span class="special">::</span><span class="identifier">type</span><span class="special">&lt;</span> <span class="identifier">ExceptionType</span> <span class="special">&gt;</span> <span class="special">*</span> <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="execution_monitor.html#idp72517280-bb"><span class="identifier">erase_exception_translator</span></a><span class="special">(</span><span class="identifier">const_string</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="execution_monitor.html#idp54135552-bb"><span class="identifier">erase_exception_translator</span></a><span class="special">(</span><span class="identifier">const_string</span><span class="special">)</span><span class="special">;</span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> ExceptionType<span class="special">&gt;</span> 
-    <span class="keyword">void</span> <a class="link" href="execution_monitor.html#idp72520064-bb"><span class="identifier">erase_exception_translator</span></a><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">type</span><span class="special">&lt;</span> <span class="identifier">ExceptionType</span> <span class="special">&gt;</span> <span class="special">*</span> <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span>
+    <span class="keyword">void</span> <a class="link" href="execution_monitor.html#idp54138336-bb"><span class="identifier">erase_exception_translator</span></a><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">type</span><span class="special">&lt;</span> <span class="identifier">ExceptionType</span> <span class="special">&gt;</span> <span class="special">*</span> <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="execution_monitor.html#idp72524368-bb">private member functions</a></span>
-  <span class="keyword">int</span> <a class="link" href="execution_monitor.html#idp72524944-bb"><span class="identifier">catch_signals</span></a><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">function</span><span class="special">&lt;</span> <span class="keyword">int</span><span class="special">(</span><span class="special">)</span><span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="execution_monitor.html#idp54142640-bb">private member functions</a></span>
+  <span class="keyword">int</span> <a class="link" href="execution_monitor.html#idp54143216-bb"><span class="identifier">catch_signals</span></a><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">function</span><span class="special">&lt;</span> <span class="keyword">int</span><span class="special">(</span><span class="special">)</span><span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
 
   <span class="comment">// <a class="link" href="execution_monitor.html#boost.execution_monitorpublic-data-members">public data members</a></span>
   <span class="identifier">unit_test</span><span class="special">::</span><span class="identifier">readwrite_property</span><span class="special">&lt;</span> <span class="keyword">bool</span> <span class="special">&gt;</span> <a class="link" href="execution_monitor.html#boost.execution_monitor.p_catch_system_errors"><span class="identifier">p_catch_system_errors</span></a><span class="special">;</span>  <span class="comment">// Should monitor catch system errors. </span>
@@ -59,23 +59,23 @@
   <span class="identifier">unit_test</span><span class="special">::</span><span class="identifier">readwrite_property</span><span class="special">&lt;</span> <span class="keyword">unsigned</span> <span class="special">&gt;</span> <a class="link" href="execution_monitor.html#boost.execution_monitor.p_detect_fp_exceptions"><span class="identifier">p_detect_fp_exceptions</span></a><span class="special">;</span>  <span class="comment">// Should monitor try to detect hardware floating point exceptions (!= 0), and which specific exception to catch. </span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp99267424"></a><h2>Description</h2>
+<a name="idp104942864"></a><h2>Description</h2>
 <p>This class is used to uniformly detect and report an occurrence of several types of signals and exceptions, reducing various errors to a uniform <a class="link" href="execution_exception.html" title="Class execution_exception">execution_exception</a> that is returned to a caller.</p>
 <p>The executiom_monitor behavior can be customized through a set of public parameters (properties) associated with the <a class="link" href="execution_monitor.html" title="Class execution_monitor">execution_monitor</a> instance. All parameters are implemented as public unit_test::readwrite_property data members of the class <a class="link" href="execution_monitor.html" title="Class execution_monitor">execution_monitor</a>. </p>
 <div class="refsect2">
-<a name="idp99270608"></a><h3>
+<a name="idp104946688"></a><h3>
 <a name="boost.execution_monitorconstruct-copy-destruct"></a><code class="computeroutput">execution_monitor</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
-<pre class="literallayout"><a name="idp72523744-bb"></a><span class="identifier">execution_monitor</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>Default constructor initializes all execution monitor properties. </li></ol></div>
+<pre class="literallayout"><a name="idp54142016-bb"></a><span class="identifier">execution_monitor</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>Default constructor initializes all execution monitor properties. </li></ol></div>
 </div>
 <div class="refsect2">
-<a name="idp99275888"></a><h3>
-<a name="idp72496272-bb"></a><code class="computeroutput">execution_monitor</code> public member functions</h3>
+<a name="idp104952768"></a><h3>
+<a name="idp54114544-bb"></a><code class="computeroutput">execution_monitor</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">int</span> <a name="idp72496832-bb"></a><span class="identifier">execute</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">function</span><span class="special">&lt;</span> <span class="keyword">int</span><span class="special">(</span><span class="special">)</span><span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span> F<span class="special">)</span><span class="special">;</span></pre>Execution monitor entry point for functions returning integer value. <p>This method executes supplied function F inside a try/catch block and also may include other unspecified platform dependent error detection code.</p>
+<pre class="literallayout"><span class="keyword">int</span> <a name="idp54115104-bb"></a><span class="identifier">execute</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">function</span><span class="special">&lt;</span> <span class="keyword">int</span><span class="special">(</span><span class="special">)</span><span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span> F<span class="special">)</span><span class="special">;</span></pre>Execution monitor entry point for functions returning integer value. <p>This method executes supplied function F inside a try/catch block and also may include other unspecified platform dependent error detection code.</p>
 <p>This method throws an <code class="computeroutput"><a class="link" href="execution_exception.html" title="Class execution_exception">execution_exception</a></code> on an uncaught C++ exception, a hardware or software signal, trap, or other user exception.</p>
 <div class="note"><table border="0" summary="Note">
 <tr>
@@ -119,7 +119,7 @@
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp72503120-bb"></a><span class="identifier">vexecute</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">function</span><span class="special">&lt;</span> <span class="keyword">void</span><span class="special">(</span><span class="special">)</span><span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span> F<span class="special">)</span><span class="special">;</span></pre>Execution monitor entry point for functions returning void. <p>This method is semantically identical to execution_monitor::execute, but des't produce any result code. 
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp54121392-bb"></a><span class="identifier">vexecute</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">function</span><span class="special">&lt;</span> <span class="keyword">void</span><span class="special">(</span><span class="special">)</span><span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span> F<span class="special">)</span><span class="special">;</span></pre>Execution monitor entry point for functions returning void. <p>This method is semantically identical to execution_monitor::execute, but des't produce any result code. 
 </p>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>execute </p>
@@ -147,7 +147,7 @@
 </li>
 <li class="listitem">
 <pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> ExceptionType<span class="special">,</span> <span class="keyword">typename</span> ExceptionTranslator<span class="special">&gt;</span> 
-  <span class="keyword">void</span> <a name="idp72507072-bb"></a><span class="identifier">register_exception_translator</span><span class="special">(</span><span class="identifier">ExceptionTranslator</span> <span class="keyword">const</span> <span class="special">&amp;</span> tr<span class="special">,</span> 
+  <span class="keyword">void</span> <a name="idp54125344-bb"></a><span class="identifier">register_exception_translator</span><span class="special">(</span><span class="identifier">ExceptionTranslator</span> <span class="keyword">const</span> <span class="special">&amp;</span> tr<span class="special">,</span> 
                                      <span class="identifier">const_string</span> tag <span class="special">=</span> <span class="identifier">const_string</span><span class="special">(</span><span class="special">)</span><span class="special">,</span> 
                                      <span class="identifier">boost</span><span class="special">::</span><span class="identifier">type</span><span class="special">&lt;</span> <span class="identifier">ExceptionType</span> <span class="special">&gt;</span> <span class="special">*</span> <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span></pre>Registers custom (user supplied) exception translator. <p>This method template registers a translator for an exception type specified as a first template argument. For example </p>
 <pre class="programlisting"><span class="keyword">void</span> <span class="identifier">myExceptTr</span><span class="special">(</span> <span class="identifier">MyException</span> <span class="keyword">const</span><span class="special">&amp;</span> <span class="identifier">ex</span> <span class="special">)</span> <span class="special">{</span> <span class="comment">/*do something with the exception here*/</span><span class="special">}</span>
@@ -204,7 +204,7 @@
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp72517280-bb"></a><span class="identifier">erase_exception_translator</span><span class="special">(</span><span class="identifier">const_string</span> tag<span class="special">)</span><span class="special">;</span></pre>Erases custom exception translator based on a tag. <p>Use the same tag as the one used during translator registration 
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp54135552-bb"></a><span class="identifier">erase_exception_translator</span><span class="special">(</span><span class="identifier">const_string</span> tag<span class="special">)</span><span class="special">;</span></pre>Erases custom exception translator based on a tag. <p>Use the same tag as the one used during translator registration 
 </p>
 <div class="variablelist"><table border="0" class="variablelist compact">
 <colgroup>
@@ -228,17 +228,17 @@
 </li>
 <li class="listitem">
 <pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> ExceptionType<span class="special">&gt;</span> 
-  <span class="keyword">void</span> <a name="idp72520064-bb"></a><span class="identifier">erase_exception_translator</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">type</span><span class="special">&lt;</span> <span class="identifier">ExceptionType</span> <span class="special">&gt;</span> <span class="special">*</span> <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span></pre>Erases custom exception translator based on an exception type. <p>tparam ExceptionType Exception type for which you want to erase the translator </p>
+  <span class="keyword">void</span> <a name="idp54138336-bb"></a><span class="identifier">erase_exception_translator</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">type</span><span class="special">&lt;</span> <span class="identifier">ExceptionType</span> <span class="special">&gt;</span> <span class="special">*</span> <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span></pre>Erases custom exception translator based on an exception type. <p>tparam ExceptionType Exception type for which you want to erase the translator </p>
 </li>
 </ol></div>
 </div>
 <div class="refsect2">
-<a name="idp99374288"></a><h3>
-<a name="idp72524368-bb"></a><code class="computeroutput">execution_monitor</code> private member functions</h3>
-<div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><pre class="literallayout"><span class="keyword">int</span> <a name="idp72524944-bb"></a><span class="identifier">catch_signals</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">function</span><span class="special">&lt;</span> <span class="keyword">int</span><span class="special">(</span><span class="special">)</span><span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span> F<span class="special">)</span><span class="special">;</span></pre></li></ol></div>
+<a name="idp105054400"></a><h3>
+<a name="idp54142640-bb"></a><code class="computeroutput">execution_monitor</code> private member functions</h3>
+<div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><pre class="literallayout"><span class="keyword">int</span> <a name="idp54143216-bb"></a><span class="identifier">catch_signals</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">function</span><span class="special">&lt;</span> <span class="keyword">int</span><span class="special">(</span><span class="special">)</span><span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span> F<span class="special">)</span><span class="special">;</span></pre></li></ol></div>
 </div>
 <div class="refsect2">
-<a name="idp99386784"></a><h3>
+<a name="idp105066832"></a><h3>
 <a name="boost.execution_monitorpublic-data-members"></a><code class="computeroutput">execution_monitor</code> 
         public
        public data members</h3>

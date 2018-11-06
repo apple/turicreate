@@ -6,8 +6,8 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="Chapter&#160;1.&#160;Boost.Contract 1.0.0">
 <link rel="up" href="reference.html#header.boost.contract_macro_hpp" title="Header &lt;boost/contract_macro.hpp&gt;">
-<link rel="prev" href="BOOST_CONTRACT_idp60014256.html" title="Macro BOOST_CONTRACT_OLD_PTR_IF_COPYABLE">
-<link rel="next" href="BOOST_CONTRACT_idp60056096.html" title="Macro BOOST_CONTRACT_INVARIANT_VOLATILE">
+<link rel="prev" href="BOOST_CONTRACT_idp71852768.html" title="Macro BOOST_CONTRACT_OLD_PTR_IF_COPYABLE">
+<link rel="next" href="BOOST_CONTRACT_idp71894608.html" title="Macro BOOST_CONTRACT_INVARIANT_VOLATILE">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -20,7 +20,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="BOOST_CONTRACT_idp60014256.html"><img src="../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="reference.html#header.boost.contract_macro_hpp"><img src="../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="BOOST_CONTRACT_idp60056096.html"><img src="../../../../doc/src/images/next.png" alt="Next"></a>
+<a accesskey="p" href="BOOST_CONTRACT_idp71852768.html"><img src="../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="reference.html#header.boost.contract_macro_hpp"><img src="../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="BOOST_CONTRACT_idp71894608.html"><img src="../../../../doc/src/images/next.png" alt="Next"></a>
 </div>
 <div class="refentry">
 <a name="BOOST_CONTRACT_INVARIANT"></a><div class="titlepage"></div>
@@ -33,8 +33,8 @@
 
 </span>BOOST_CONTRACT_INVARIANT(...)</pre></div>
 <div class="refsect1">
-<a name="idp109608912"></a><h2>Description</h2>
-<p><code class="computeroutput">BOOST_CONTRACT_INVARIANT</code>({ ... }) expands to code equivalent to the following (note that no code is generated when  <code class="computeroutput"><a class="link" href="BOOST_CONTRACT_idp59086864.html" title="Macro BOOST_CONTRACT_NO_INVARIANTS">BOOST_CONTRACT_NO_INVARIANTS</a></code> is defined):</p>
+<a name="idp101209728"></a><h2>Description</h2>
+<p><code class="computeroutput">BOOST_CONTRACT_INVARIANT</code>({ ... }) expands to code equivalent to the following (note that no code is generated when  <code class="computeroutput"><a class="link" href="BOOST_CONTRACT_idp70925376.html" title="Macro BOOST_CONTRACT_NO_INVARIANTS">BOOST_CONTRACT_NO_INVARIANTS</a></code> is defined):</p>
 <pre class="programlisting"><span class="preprocessor">#ifndef</span> <span class="identifier">BOOST_CONTRACT_NO_INVARIANTS</span>
     <span class="keyword">void</span> <span class="identifier">BOOST_CONTRACT_INVARIANT_FUNC</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span> <span class="special">{</span>
         <span class="special">...</span>
@@ -42,7 +42,7 @@
 <span class="preprocessor">#endif</span>
 </pre>
 <p>Where:</p>
-<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><span class="bold"><strong>{ ... }</strong></span> is the definition of the function that checks class invariants for public functions that are not static and not volatile (see <code class="computeroutput"><a class="link" href="BOOST_CONTRACT_idp60069632.html" title="Macro BOOST_CONTRACT_STATIC_INVARIANT">BOOST_CONTRACT_STATIC_INVARIANT</a></code> and  <code class="computeroutput"><a class="link" href="BOOST_CONTRACT_idp60056096.html" title="Macro BOOST_CONTRACT_INVARIANT_VOLATILE">BOOST_CONTRACT_INVARIANT_VOLATILE</a></code>). The curly parenthesis are mandatory. Assertions within this function are usually programmed using  <code class="computeroutput"><a class="link" href="BOOST_CONTRACT_ASSERT.html" title="Macro BOOST_CONTRACT_ASSERT">BOOST_CONTRACT_ASSERT</a></code>, but any exception thrown by a call to this function indicates a contract assertion failure (and will result in this library calling either  <code class="computeroutput"><a class="link" href="boost/contract/entry_invariant_failure.html" title="Function entry_invariant_failure">boost::contract::entry_invariant_failure</a></code> or  <code class="computeroutput"><a class="link" href="boost/contract/exit_invariant_failure.html" title="Function exit_invariant_failure">boost::contract::exit_invariant_failure</a></code>). (This is a variadic macro parameter so it can contain commas not protected by round parenthesis.)</p></li></ul></div>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><span class="bold"><strong>{ ... }</strong></span> is the definition of the function that checks class invariants for public functions that are not static and not volatile (see <code class="computeroutput"><a class="link" href="BOOST_CONTRACT_idp71908144.html" title="Macro BOOST_CONTRACT_STATIC_INVARIANT">BOOST_CONTRACT_STATIC_INVARIANT</a></code> and  <code class="computeroutput"><a class="link" href="BOOST_CONTRACT_idp71894608.html" title="Macro BOOST_CONTRACT_INVARIANT_VOLATILE">BOOST_CONTRACT_INVARIANT_VOLATILE</a></code>). The curly parenthesis are mandatory. Assertions within this function are usually programmed using  <code class="computeroutput"><a class="link" href="BOOST_CONTRACT_ASSERT.html" title="Macro BOOST_CONTRACT_ASSERT">BOOST_CONTRACT_ASSERT</a></code>, but any exception thrown by a call to this function indicates a contract assertion failure (and will result in this library calling either  <code class="computeroutput"><a class="link" href="boost/contract/entry_invariant_failure.html" title="Function entry_invariant_failure">boost::contract::entry_invariant_failure</a></code> or  <code class="computeroutput"><a class="link" href="boost/contract/exit_invariant_failure.html" title="Function exit_invariant_failure">boost::contract::exit_invariant_failure</a></code>). (This is a variadic macro parameter so it can contain commas not protected by round parenthesis.)</p></li></ul></div>
 <p>
 </p>
 <p><span class="bold"><strong>See Also:</strong></span></p>
@@ -62,7 +62,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="BOOST_CONTRACT_idp60014256.html"><img src="../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="reference.html#header.boost.contract_macro_hpp"><img src="../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="BOOST_CONTRACT_idp60056096.html"><img src="../../../../doc/src/images/next.png" alt="Next"></a>
+<a accesskey="p" href="BOOST_CONTRACT_idp71852768.html"><img src="../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="reference.html#header.boost.contract_macro_hpp"><img src="../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="BOOST_CONTRACT_idp71894608.html"><img src="../../../../doc/src/images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

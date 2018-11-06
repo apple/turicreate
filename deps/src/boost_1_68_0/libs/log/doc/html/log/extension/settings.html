@@ -76,7 +76,7 @@
         </p>
 <p>
           Then, in order to register this type with the simple formatter factory,
-          a single call to <code class="computeroutput"><a class="link" href="../../boost/log/register_simpl_idp58201440.html" title="Function template register_simple_formatter_factory">register_simple_formatter_factory</a></code>
+          a single call to <code class="computeroutput"><a class="link" href="../../boost/log/register_simpl_idp50342688.html" title="Function template register_simple_formatter_factory">register_simple_formatter_factory</a></code>
           will suffice:
         </p>
 <p>
@@ -132,8 +132,8 @@
 <p>
           The simple formatter factory ignores all additional parameters from the
           format string, so we have to implement our own factory instead. Custom
-          factories are registered with the <code class="computeroutput"><a class="link" href="../../boost/log/register_forma_idp58188704.html" title="Function template register_formatter_factory">register_formatter_factory</a></code>
-          function, which is similar to <code class="computeroutput"><a class="link" href="../../boost/log/register_simpl_idp58201440.html" title="Function template register_simple_formatter_factory">register_simple_formatter_factory</a></code>
+          factories are registered with the <code class="computeroutput"><a class="link" href="../../boost/log/register_forma_idp50329952.html" title="Function template register_formatter_factory">register_formatter_factory</a></code>
+          function, which is similar to <code class="computeroutput"><a class="link" href="../../boost/log/register_simpl_idp50342688.html" title="Function template register_simple_formatter_factory">register_simple_formatter_factory</a></code>
           but accepts a pointer to the factory instead of the explicit template parameters.
         </p>
 <p>
@@ -217,7 +217,7 @@
           empty if the value is not present.
         </p>
 <p>
-          Lastly, the call to <code class="computeroutput"><a class="link" href="../../boost/log/register_forma_idp58188704.html" title="Function template register_formatter_factory">register_formatter_factory</a></code>
+          Lastly, the call to <code class="computeroutput"><a class="link" href="../../boost/log/register_forma_idp50329952.html" title="Function template register_formatter_factory">register_formatter_factory</a></code>
           creates the factory and adds it to the library.
         </p>
 <p>
@@ -263,7 +263,7 @@
             </li>
 </ol></div>
 <p>
-          Naturally, all these operators must be visible from the point of the <code class="computeroutput"><a class="link" href="../../boost/log/register_simpl_idp58119296.html" title="Function template register_simple_filter_factory">register_simple_filter_factory</a></code>
+          Naturally, all these operators must be visible from the point of the <code class="computeroutput"><a class="link" href="../../boost/log/register_simpl_idp50260544.html" title="Function template register_simple_filter_factory">register_simple_filter_factory</a></code>
           call. Note that unlike the simple formatter factory, the filter factory
           requires the user's type to support reading from a stream. This is so because
           the filter factory would have to parse the argument of the filter relation
@@ -336,7 +336,7 @@
 <p>
         </p>
 <p>
-          Having called the <code class="computeroutput"><a class="link" href="../../boost/log/register_filte_idp58106368.html" title="Function template register_filter_factory">register_filter_factory</a></code>
+          Having called the <code class="computeroutput"><a class="link" href="../../boost/log/register_filte_idp50247616.html" title="Function template register_filter_factory">register_filter_factory</a></code>
           function, whenever the <a class="link" href="../detailed/utilities.html#log.detailed.utilities.setup.filter_formatter" title="Filter and formatter parsers">filter
           parser</a> encounters the "Coordinates" attribute mentioned
           in the filter, it will use the <code class="computeroutput"><span class="identifier">point_filter_factory</span></code>
@@ -600,7 +600,7 @@
           and out custom "StatCollector" sink.
         </p>
 <p>
-          After defining the factory we only have to register it with the <code class="computeroutput"><a class="link" href="../../boost/log/register_sink__idp58250896.html" title="Function template register_sink_factory">register_sink_factory</a></code>
+          After defining the factory we only have to register it with the <code class="computeroutput"><a class="link" href="../../boost/log/register_sink__idp50392144.html" title="Function template register_sink_factory">register_sink_factory</a></code>
           call. The first argument is the new value of the "Destination"
           parameter in the settings. Whenever the library finds sink description
           with destination "StatCollector", our factory will be invoked

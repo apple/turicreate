@@ -35,11 +35,11 @@
 <span class="keyword">class</span> <a class="link" href="constructor_precondition.html" title="Class template constructor_precondition">constructor_precondition</a> <span class="special">{</span>
 <span class="keyword">public</span><span class="special">:</span>
   <span class="comment">// <a class="link" href="constructor_precondition.html#boost.contract.constructor_preconditionconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="constructor_precondition.html#idp59171632-bb"><span class="identifier">constructor_precondition</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> F<span class="special">&gt;</span> <span class="keyword">explicit</span> <a class="link" href="constructor_precondition.html#idp59173616-bb"><span class="identifier">constructor_precondition</span></a><span class="special">(</span><span class="identifier">F</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="constructor_precondition.html#idp71010144-bb"><span class="identifier">constructor_precondition</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> F<span class="special">&gt;</span> <span class="keyword">explicit</span> <a class="link" href="constructor_precondition.html#idp71012128-bb"><span class="identifier">constructor_precondition</span></a><span class="special">(</span><span class="identifier">F</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp105927584"></a><h2>Description</h2>
+<a name="idp97528000"></a><h2>Description</h2>
 <p>This class must be the very first base of the class declaring the constructor for which preconditions are programmed (that way constructor arguments can be checked by preconditions even before they are used to initialize other base classes):</p>
 <pre class="programlisting"><span class="keyword">class</span> <span class="identifier">u</span>
     <span class="preprocessor">#define</span> <span class="identifier">BASES</span> <span class="keyword">private</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">contract</span><span class="special">::</span><span class="identifier">constructor_precondition</span><span class="special">&lt;</span><span class="identifier">u</span><span class="special">&gt;</span><span class="special">,</span> \
@@ -71,20 +71,20 @@
 
 </p>
 <div class="refsect2">
-<a name="idp105977184"></a><h3>Template Parameters</h3>
+<a name="idp97577760"></a><h3>Template Parameters</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
 <pre class="literallayout"><span class="keyword">typename</span> Class</pre>
 <p>The class type of the constructor for which preconditions are being programmed. </p>
 </li></ol></div>
 </div>
 <div class="refsect2">
-<a name="idp105980400"></a><h3>
+<a name="idp97580976"></a><h3>
 <a name="boost.contract.constructor_preconditionconstruct-copy-destruct"></a><code class="computeroutput">constructor_precondition</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><a name="idp59171632-bb"></a><span class="identifier">constructor_precondition</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>Construct this object without specifying constructor preconditions. <p>This is implicitly called for those constructors of the contracted class that do not specify preconditions.</p>
+<pre class="literallayout"><a name="idp71010144-bb"></a><span class="identifier">constructor_precondition</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>Construct this object without specifying constructor preconditions. <p>This is implicitly called for those constructors of the contracted class that do not specify preconditions.</p>
 <div class="note"><table border="0" summary="Note">
 <tr>
 <td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../../../../../../doc/src/images/note.png"></td>
@@ -96,7 +96,7 @@
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> F<span class="special">&gt;</span> <span class="keyword">explicit</span> <a name="idp59173616-bb"></a><span class="identifier">constructor_precondition</span><span class="special">(</span><span class="identifier">F</span> <span class="keyword">const</span> <span class="special">&amp;</span> f<span class="special">)</span><span class="special">;</span></pre>Construct this object specifying constructor preconditions. <p>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> F<span class="special">&gt;</span> <span class="keyword">explicit</span> <a name="idp71012128-bb"></a><span class="identifier">constructor_precondition</span><span class="special">(</span><span class="identifier">F</span> <span class="keyword">const</span> <span class="special">&amp;</span> f<span class="special">)</span><span class="special">;</span></pre>Construct this object specifying constructor preconditions. <p>
 </p>
 <div class="variablelist"><table border="0" class="variablelist compact">
 <colgroup>

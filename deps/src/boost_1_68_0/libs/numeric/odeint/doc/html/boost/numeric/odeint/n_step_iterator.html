@@ -35,18 +35,18 @@
 <span class="keyword">class</span> <a class="link" href="n_step_iterator.html" title="Class template n_step_iterator">n_step_iterator</a> <span class="special">{</span>
 <span class="keyword">public</span><span class="special">:</span>
   <span class="comment">// <a class="link" href="n_step_iterator.html#boost.numeric.odeint.n_step_iteratorconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="n_step_iterator.html#idp33371232-bb"><span class="identifier">n_step_iterator</span></a><span class="special">(</span><span class="identifier">Stepper</span><span class="special">,</span> <span class="identifier">System</span><span class="special">,</span> <span class="identifier">State</span> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">time_type</span><span class="special">,</span> <span class="identifier">time_type</span><span class="special">,</span> <span class="identifier">size_t</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="n_step_iterator.html#idp33375648-bb"><span class="identifier">n_step_iterator</span></a><span class="special">(</span><span class="identifier">Stepper</span><span class="special">,</span> <span class="identifier">System</span><span class="special">,</span> <span class="identifier">State</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="n_step_iterator.html#idp50808560-bb"><span class="identifier">n_step_iterator</span></a><span class="special">(</span><span class="identifier">Stepper</span><span class="special">,</span> <span class="identifier">System</span><span class="special">,</span> <span class="identifier">State</span> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">time_type</span><span class="special">,</span> <span class="identifier">time_type</span><span class="special">,</span> <span class="identifier">size_t</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="n_step_iterator.html#idp50812976-bb"><span class="identifier">n_step_iterator</span></a><span class="special">(</span><span class="identifier">Stepper</span><span class="special">,</span> <span class="identifier">System</span><span class="special">,</span> <span class="identifier">State</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp89500368"></a><h2>Description</h2>
+<a name="idp104910000"></a><h2>Description</h2>
 <p>Implements an iterator representing the solution of an ODE starting from t with n steps and a constant step size dt. After each iteration the iterator dereferences to the state x at the next time t+dt. This iterator can be used with Steppers and DenseOutputSteppers and it always makes use of the all the given steppers capabilities. A for_each over such an iterator range behaves similar to the integrate_n_steps routine.</p>
 <p><a class="link" href="n_step_iterator.html" title="Class template n_step_iterator">n_step_iterator</a> is a model of single-pass iterator.</p>
 <p>The value type of this iterator is the state type of the stepper. Hence one can only access the state and not the current time.</p>
 <p>
 </p>
 <div class="refsect2">
-<a name="idp89503136"></a><h3>Template Parameters</h3>
+<a name="idp104912768"></a><h3>Template Parameters</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
 <pre class="literallayout"><span class="keyword">typename</span> Stepper</pre>
@@ -63,14 +63,14 @@
 </ol></div>
 </div>
 <div class="refsect2">
-<a name="idp89510448"></a><h3>
+<a name="idp104920080"></a><h3>
 <a name="boost.numeric.odeint.n_step_iteratorconstruct-copy-destruct"></a><code class="computeroutput">n_step_iterator</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
-<li class="listitem"><pre class="literallayout"><a name="idp33371232-bb"></a><span class="identifier">n_step_iterator</span><span class="special">(</span><span class="identifier">Stepper</span> stepper<span class="special">,</span> <span class="identifier">System</span> sys<span class="special">,</span> <span class="identifier">State</span> <span class="special">&amp;</span> s<span class="special">,</span> <span class="identifier">time_type</span> t<span class="special">,</span> 
+<li class="listitem"><pre class="literallayout"><a name="idp50808560-bb"></a><span class="identifier">n_step_iterator</span><span class="special">(</span><span class="identifier">Stepper</span> stepper<span class="special">,</span> <span class="identifier">System</span> sys<span class="special">,</span> <span class="identifier">State</span> <span class="special">&amp;</span> s<span class="special">,</span> <span class="identifier">time_type</span> t<span class="special">,</span> 
                 <span class="identifier">time_type</span> dt<span class="special">,</span> <span class="identifier">size_t</span> num_of_steps<span class="special">)</span><span class="special">;</span></pre></li>
-<li class="listitem"><pre class="literallayout"><a name="idp33375648-bb"></a><span class="identifier">n_step_iterator</span><span class="special">(</span><span class="identifier">Stepper</span> stepper<span class="special">,</span> <span class="identifier">System</span> sys<span class="special">,</span> <span class="identifier">State</span> <span class="special">&amp;</span> s<span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><a name="idp50812976-bb"></a><span class="identifier">n_step_iterator</span><span class="special">(</span><span class="identifier">Stepper</span> stepper<span class="special">,</span> <span class="identifier">System</span> sys<span class="special">,</span> <span class="identifier">State</span> <span class="special">&amp;</span> s<span class="special">)</span><span class="special">;</span></pre></li>
 </ol></div>
 </div>
 </div>

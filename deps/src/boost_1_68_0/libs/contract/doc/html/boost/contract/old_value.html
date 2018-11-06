@@ -36,14 +36,14 @@
 <span class="keyword">public</span><span class="special">:</span>
   <span class="comment">// <a class="link" href="old_value.html#boost.contract.old_valueconstruct-copy-destruct">construct/copy/destruct</a></span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> 
-    <a class="link" href="old_value.html#idp59685392-bb"><span class="identifier">old_value</span></a><span class="special">(</span><span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">,</span> 
+    <a class="link" href="old_value.html#idp71523904-bb"><span class="identifier">old_value</span></a><span class="special">(</span><span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">,</span> 
               <span class="keyword">typename</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">enable_if</span><span class="special">&lt;</span> <a class="link" href="is_old_value_copyable.html" title="Struct template is_old_value_copyable">boost::contract::is_old_value_copyable</a><span class="special">&lt;</span> <span class="identifier">T</span> <span class="special">&gt;</span> <span class="special">&gt;</span><span class="special">::</span><span class="identifier">type</span> <span class="special">*</span> <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> 
-    <a class="link" href="old_value.html#idp59692480-bb"><span class="identifier">old_value</span></a><span class="special">(</span><span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">,</span> 
+    <a class="link" href="old_value.html#idp71530992-bb"><span class="identifier">old_value</span></a><span class="special">(</span><span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">,</span> 
               <span class="keyword">typename</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">disable_if</span><span class="special">&lt;</span> <a class="link" href="is_old_value_copyable.html" title="Struct template is_old_value_copyable">boost::contract::is_old_value_copyable</a><span class="special">&lt;</span> <span class="identifier">T</span> <span class="special">&gt;</span> <span class="special">&gt;</span><span class="special">::</span><span class="identifier">type</span> <span class="special">*</span> <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp108019024"></a><h2>Description</h2>
+<a name="idp99619920"></a><h2>Description</h2>
 <p>This class is often only implicitly used by this library and it does not explicitly appear in user code.</p>
 <p>On older compilers that cannot correctly deduce the <code class="computeroutput"><a class="link" href="is_old_value_copyable.html" title="Struct template is_old_value_copyable">boost::contract::is_old_value_copyable</a></code> trait, programmers can manually specialize that trait to make sure that only old value types that are copyable are actually copied.</p>
 <p><span class="bold"><strong>See Also:</strong></span></p>
@@ -52,14 +52,14 @@
 <p>
 </p>
 <div class="refsect2">
-<a name="idp108023648"></a><h3>
+<a name="idp99624544"></a><h3>
 <a name="boost.contract.old_valueconstruct-copy-destruct"></a><code class="computeroutput">old_value</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
 <pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> 
-  <a name="idp59685392-bb"></a><span class="identifier">old_value</span><span class="special">(</span><span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span> old<span class="special">,</span> 
+  <a name="idp71523904-bb"></a><span class="identifier">old_value</span><span class="special">(</span><span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span> old<span class="special">,</span> 
             <span class="keyword">typename</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">enable_if</span><span class="special">&lt;</span> <a class="link" href="is_old_value_copyable.html" title="Struct template is_old_value_copyable">boost::contract::is_old_value_copyable</a><span class="special">&lt;</span> <span class="identifier">T</span> <span class="special">&gt;</span> <span class="special">&gt;</span><span class="special">::</span><span class="identifier">type</span> <span class="special">*</span> <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span></pre>Construct this object from the specified old value when the old value type is copy constructible. <p>The specified old value is copied (one time only) using <code class="computeroutput"><code class="computeroutput"><a class="link" href="old_value_copy.html" title="Struct template old_value_copy">boost::contract::old_value_copy</a></code></code>, in which case related old value pointer will not be null (no copy is made if postconditions and exception guarantees are not being checked, see <code class="computeroutput"><code class="computeroutput"><a class="link" href="../../BOOST_CONTRACT_NO_OLDS.html" title="Macro BOOST_CONTRACT_NO_OLDS">BOOST_CONTRACT_NO_OLDS</a></code></code>).</p>
 <p>
 
@@ -101,7 +101,7 @@
 </li>
 <li class="listitem">
 <pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> 
-  <a name="idp59692480-bb"></a><span class="identifier">old_value</span><span class="special">(</span><span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span> old<span class="special">,</span> 
+  <a name="idp71530992-bb"></a><span class="identifier">old_value</span><span class="special">(</span><span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span> old<span class="special">,</span> 
             <span class="keyword">typename</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">disable_if</span><span class="special">&lt;</span> <a class="link" href="is_old_value_copyable.html" title="Struct template is_old_value_copyable">boost::contract::is_old_value_copyable</a><span class="special">&lt;</span> <span class="identifier">T</span> <span class="special">&gt;</span> <span class="special">&gt;</span><span class="special">::</span><span class="identifier">type</span> <span class="special">*</span> <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span></pre>Construct this object from the specified old value when the old value type is not copyable. <p>The specified old value cannot be copied in this case so it is not copied and the related old value pointer will always be null (thus a call to this constructor has no effect and it will likely be optimized away by most compilers).</p>
 <p>
 

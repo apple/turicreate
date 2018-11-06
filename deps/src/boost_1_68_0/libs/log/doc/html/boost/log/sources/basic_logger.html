@@ -41,33 +41,33 @@
   <span class="keyword">typedef</span> <span class="identifier">no_lock</span><span class="special">&lt;</span> <span class="identifier">threading_model</span> <span class="special">&gt;</span> <a name="boost.log.sources.basic_logger.push_record_lock"></a><span class="identifier">push_record_lock</span><span class="special">;</span>            <span class="comment">// Lock requirement for the push_record_unlocked method. </span>
 
   <span class="comment">// <a class="link" href="basic_logger.html#boost.log.sources.basic_loggerconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="basic_logger.html#idp51597616-bb"><span class="identifier">basic_logger</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="basic_logger.html#idp51598416-bb"><span class="identifier">basic_logger</span></a><span class="special">(</span><a class="link" href="basic_logger.html" title="Class template basic_logger">basic_logger</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="basic_logger.html#idp51601232-bb"><span class="identifier">basic_logger</span></a><span class="special">(</span><a class="link" href="basic_logger.html" title="Class template basic_logger">basic_logger</a> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> ArgsT<span class="special">&gt;</span> <span class="keyword">explicit</span> <a class="link" href="basic_logger.html#idp51604048-bb"><span class="identifier">basic_logger</span></a><span class="special">(</span><span class="identifier">ArgsT</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="basic_logger.html" title="Class template basic_logger">basic_logger</a> <span class="special">&amp;</span> <a class="link" href="basic_logger.html#idp51404400-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><a class="link" href="basic_logger.html" title="Class template basic_logger">basic_logger</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">delete</span><span class="special">;</span>
+  <a class="link" href="basic_logger.html#idp43870080-bb"><span class="identifier">basic_logger</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="basic_logger.html#idp43870880-bb"><span class="identifier">basic_logger</span></a><span class="special">(</span><a class="link" href="basic_logger.html" title="Class template basic_logger">basic_logger</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="basic_logger.html#idp43873696-bb"><span class="identifier">basic_logger</span></a><span class="special">(</span><a class="link" href="basic_logger.html" title="Class template basic_logger">basic_logger</a> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> ArgsT<span class="special">&gt;</span> <span class="keyword">explicit</span> <a class="link" href="basic_logger.html#idp43876512-bb"><span class="identifier">basic_logger</span></a><span class="special">(</span><span class="identifier">ArgsT</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="basic_logger.html" title="Class template basic_logger">basic_logger</a> <span class="special">&amp;</span> <a class="link" href="basic_logger.html#idp43811008-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><a class="link" href="basic_logger.html" title="Class template basic_logger">basic_logger</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">delete</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="basic_logger.html#idp51606688-bb">protected member functions</a></span>
-  <span class="identifier">core_ptr</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a class="link" href="basic_logger.html#idp51372448-bb"><span class="identifier">core</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="identifier">attribute_set</span> <span class="special">&amp;</span> <a class="link" href="basic_logger.html#idp51374016-bb"><span class="identifier">attributes</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">attribute_set</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a class="link" href="basic_logger.html#idp51375296-bb"><span class="identifier">attributes</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="identifier">threading_model</span> <span class="special">&amp;</span> <a class="link" href="basic_logger.html#idp51376848-bb"><span class="identifier">get_threading_model</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">threading_model</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a class="link" href="basic_logger.html#idp51378144-bb"><span class="identifier">get_threading_model</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="identifier">final_type</span> <span class="special">*</span> <a class="link" href="basic_logger.html#idp51379712-bb"><span class="identifier">final_this</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">final_type</span> <span class="keyword">const</span> <span class="special">*</span> <a class="link" href="basic_logger.html#idp51380992-bb"><span class="identifier">final_this</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="basic_logger.html#idp51382544-bb"><span class="identifier">swap_unlocked</span></a><span class="special">(</span><a class="link" href="basic_logger.html" title="Class template basic_logger">basic_logger</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="basic_logger.html#idp43778480-bb">protected member functions</a></span>
+  <span class="identifier">core_ptr</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a class="link" href="basic_logger.html#idp43779056-bb"><span class="identifier">core</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">attribute_set</span> <span class="special">&amp;</span> <a class="link" href="basic_logger.html#idp43780624-bb"><span class="identifier">attributes</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">attribute_set</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a class="link" href="basic_logger.html#idp43781904-bb"><span class="identifier">attributes</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">threading_model</span> <span class="special">&amp;</span> <a class="link" href="basic_logger.html#idp43783456-bb"><span class="identifier">get_threading_model</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">threading_model</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a class="link" href="basic_logger.html#idp43784752-bb"><span class="identifier">get_threading_model</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">final_type</span> <span class="special">*</span> <a class="link" href="basic_logger.html#idp43786320-bb"><span class="identifier">final_this</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">final_type</span> <span class="keyword">const</span> <span class="special">*</span> <a class="link" href="basic_logger.html#idp43787600-bb"><span class="identifier">final_this</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="basic_logger.html#idp43789152-bb"><span class="identifier">swap_unlocked</span></a><span class="special">(</span><a class="link" href="basic_logger.html" title="Class template basic_logger">basic_logger</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
   <span class="identifier">std</span><span class="special">::</span><span class="identifier">pair</span><span class="special">&lt;</span> <span class="identifier">attribute_set</span><span class="special">::</span><span class="identifier">iterator</span><span class="special">,</span> <span class="keyword">bool</span> <span class="special">&gt;</span> 
-  <a class="link" href="basic_logger.html#idp51385232-bb"><span class="identifier">add_attribute_unlocked</span></a><span class="special">(</span><span class="identifier">attribute_name</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">attribute</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="basic_logger.html#idp51388352-bb"><span class="identifier">remove_attribute_unlocked</span></a><span class="special">(</span><span class="identifier">attribute_set</span><span class="special">::</span><span class="identifier">iterator</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="basic_logger.html#idp51390768-bb"><span class="identifier">remove_all_attributes_unlocked</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">record</span> <a class="link" href="basic_logger.html#idp51392496-bb"><span class="identifier">open_record_unlocked</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> ArgsT<span class="special">&gt;</span> <span class="identifier">record</span> <a class="link" href="basic_logger.html#idp51394208-bb"><span class="identifier">open_record_unlocked</span></a><span class="special">(</span><span class="identifier">ArgsT</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="basic_logger.html#idp51397456-bb"><span class="identifier">push_record_unlocked</span></a><span class="special">(</span><span class="identifier">record</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">attribute_set</span> <a class="link" href="basic_logger.html#idp51399856-bb"><span class="identifier">get_attributes_unlocked</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="basic_logger.html#idp51401840-bb"><span class="identifier">set_attributes_unlocked</span></a><span class="special">(</span><span class="identifier">attribute_set</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="basic_logger.html#idp43791840-bb"><span class="identifier">add_attribute_unlocked</span></a><span class="special">(</span><span class="identifier">attribute_name</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">attribute</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="basic_logger.html#idp43794960-bb"><span class="identifier">remove_attribute_unlocked</span></a><span class="special">(</span><span class="identifier">attribute_set</span><span class="special">::</span><span class="identifier">iterator</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="basic_logger.html#idp43797376-bb"><span class="identifier">remove_all_attributes_unlocked</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">record</span> <a class="link" href="basic_logger.html#idp43799104-bb"><span class="identifier">open_record_unlocked</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> ArgsT<span class="special">&gt;</span> <span class="identifier">record</span> <a class="link" href="basic_logger.html#idp43800816-bb"><span class="identifier">open_record_unlocked</span></a><span class="special">(</span><span class="identifier">ArgsT</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="basic_logger.html#idp43804064-bb"><span class="identifier">push_record_unlocked</span></a><span class="special">(</span><span class="identifier">record</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">attribute_set</span> <a class="link" href="basic_logger.html#idp43806464-bb"><span class="identifier">get_attributes_unlocked</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="basic_logger.html#idp43808448-bb"><span class="identifier">set_attributes_unlocked</span></a><span class="special">(</span><span class="identifier">attribute_set</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp127544624"></a><h2>Description</h2>
+<a name="idp109569584"></a><h2>Description</h2>
 <p>The <code class="computeroutput"><a class="link" href="basic_logger.html" title="Class template basic_logger">basic_logger</a></code> class template serves as a base class for all loggers provided by the library. It can also be used as a base for user-defined loggers. The template parameters are:</p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem"><p><code class="computeroutput">CharT</code> - logging character type </p></li>
@@ -77,17 +77,17 @@
 <p>
 The logger implements fundamental facilities of loggers, such as storing source-specific attribute set and formatting log record messages. The basic logger interacts with the logging core in order to apply filtering and pass records to sinks. </p>
 <div class="refsect2">
-<a name="idp127560480"></a><h3>
+<a name="idp109585504"></a><h3>
 <a name="boost.log.sources.basic_loggerconstruct-copy-destruct"></a><code class="computeroutput">basic_logger</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><a name="idp51597616-bb"></a><span class="identifier">basic_logger</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a name="idp43870080-bb"></a><span class="identifier">basic_logger</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>Constructor. Initializes internal data structures of the basic logger class, acquires reference to the logging core. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><a name="idp51598416-bb"></a><span class="identifier">basic_logger</span><span class="special">(</span><a class="link" href="basic_logger.html" title="Class template basic_logger">basic_logger</a> <span class="keyword">const</span> <span class="special">&amp;</span> that<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a name="idp43870880-bb"></a><span class="identifier">basic_logger</span><span class="special">(</span><a class="link" href="basic_logger.html" title="Class template basic_logger">basic_logger</a> <span class="keyword">const</span> <span class="special">&amp;</span> that<span class="special">)</span><span class="special">;</span></pre>
 <p>Copy constructor. Copies all attributes from the source logger.</p>
 <div class="note"><table border="0" summary="Note">
 <tr>
@@ -120,7 +120,7 @@ The logger implements fundamental facilities of loggers, such as storing source-
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><a name="idp51601232-bb"></a><span class="identifier">basic_logger</span><span class="special">(</span><a class="link" href="basic_logger.html" title="Class template basic_logger">basic_logger</a> <span class="special">&amp;&amp;</span> that<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a name="idp43873696-bb"></a><span class="identifier">basic_logger</span><span class="special">(</span><a class="link" href="basic_logger.html" title="Class template basic_logger">basic_logger</a> <span class="special">&amp;&amp;</span> that<span class="special">)</span><span class="special">;</span></pre>
 <p>Move constructor. Moves all attributes from the source logger.</p>
 <div class="note"><table border="0" summary="Note">
 <tr>
@@ -153,80 +153,80 @@ The logger implements fundamental facilities of loggers, such as storing source-
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> ArgsT<span class="special">&gt;</span> <span class="keyword">explicit</span> <a name="idp51604048-bb"></a><span class="identifier">basic_logger</span><span class="special">(</span><span class="identifier">ArgsT</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> ArgsT<span class="special">&gt;</span> <span class="keyword">explicit</span> <a name="idp43876512-bb"></a><span class="identifier">basic_logger</span><span class="special">(</span><span class="identifier">ArgsT</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span></pre>
 <p>Constructor with named arguments. The constructor ignores all arguments. The result of construction is equivalent to default construction. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><a class="link" href="basic_logger.html" title="Class template basic_logger">basic_logger</a> <span class="special">&amp;</span> <a name="idp51404400-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><a class="link" href="basic_logger.html" title="Class template basic_logger">basic_logger</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">delete</span><span class="special">;</span></pre>Assignment is closed (should be implemented through copy and swap in the final class) </li>
+<pre class="literallayout"><a class="link" href="basic_logger.html" title="Class template basic_logger">basic_logger</a> <span class="special">&amp;</span> <a name="idp43811008-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><a class="link" href="basic_logger.html" title="Class template basic_logger">basic_logger</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">delete</span><span class="special">;</span></pre>Assignment is closed (should be implemented through copy and swap in the final class) </li>
 </ol></div>
 </div>
 <div class="refsect2">
-<a name="idp127604288"></a><h3>
-<a name="idp51606688-bb"></a><code class="computeroutput">basic_logger</code> protected member functions</h3>
+<a name="idp109629376"></a><h3>
+<a name="idp43778480-bb"></a><code class="computeroutput">basic_logger</code> protected member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">core_ptr</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a name="idp51372448-bb"></a><span class="identifier">core</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">core_ptr</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a name="idp43779056-bb"></a><span class="identifier">core</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p>An accessor to the logging system pointer </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">attribute_set</span> <span class="special">&amp;</span> <a name="idp51374016-bb"></a><span class="identifier">attributes</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">attribute_set</span> <span class="special">&amp;</span> <a name="idp43780624-bb"></a><span class="identifier">attributes</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>An accessor to the logger attributes </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">attribute_set</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a name="idp51375296-bb"></a><span class="identifier">attributes</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">attribute_set</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a name="idp43781904-bb"></a><span class="identifier">attributes</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p>An accessor to the logger attributes </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">threading_model</span> <span class="special">&amp;</span> <a name="idp51376848-bb"></a><span class="identifier">get_threading_model</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">threading_model</span> <span class="special">&amp;</span> <a name="idp43783456-bb"></a><span class="identifier">get_threading_model</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>An accessor to the threading model base </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">threading_model</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a name="idp51378144-bb"></a><span class="identifier">get_threading_model</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">threading_model</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a name="idp43784752-bb"></a><span class="identifier">get_threading_model</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p>An accessor to the threading model base </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">final_type</span> <span class="special">*</span> <a name="idp51379712-bb"></a><span class="identifier">final_this</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">final_type</span> <span class="special">*</span> <a name="idp43786320-bb"></a><span class="identifier">final_this</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>An accessor to the final logger </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">final_type</span> <span class="keyword">const</span> <span class="special">*</span> <a name="idp51380992-bb"></a><span class="identifier">final_this</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">final_type</span> <span class="keyword">const</span> <span class="special">*</span> <a name="idp43787600-bb"></a><span class="identifier">final_this</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p>An accessor to the final logger </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp51382544-bb"></a><span class="identifier">swap_unlocked</span><span class="special">(</span><a class="link" href="basic_logger.html" title="Class template basic_logger">basic_logger</a> <span class="special">&amp;</span> that<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp43789152-bb"></a><span class="identifier">swap_unlocked</span><span class="special">(</span><a class="link" href="basic_logger.html" title="Class template basic_logger">basic_logger</a> <span class="special">&amp;</span> that<span class="special">)</span><span class="special">;</span></pre>
 <p>Unlocked <code class="computeroutput">swap</code> </p>
 </li>
 <li class="listitem">
 <pre class="literallayout"><span class="identifier">std</span><span class="special">::</span><span class="identifier">pair</span><span class="special">&lt;</span> <span class="identifier">attribute_set</span><span class="special">::</span><span class="identifier">iterator</span><span class="special">,</span> <span class="keyword">bool</span> <span class="special">&gt;</span> 
-<a name="idp51385232-bb"></a><span class="identifier">add_attribute_unlocked</span><span class="special">(</span><span class="identifier">attribute_name</span> <span class="keyword">const</span> <span class="special">&amp;</span> name<span class="special">,</span> <span class="identifier">attribute</span> <span class="keyword">const</span> <span class="special">&amp;</span> attr<span class="special">)</span><span class="special">;</span></pre>
+<a name="idp43791840-bb"></a><span class="identifier">add_attribute_unlocked</span><span class="special">(</span><span class="identifier">attribute_name</span> <span class="keyword">const</span> <span class="special">&amp;</span> name<span class="special">,</span> <span class="identifier">attribute</span> <span class="keyword">const</span> <span class="special">&amp;</span> attr<span class="special">)</span><span class="special">;</span></pre>
 <p>Unlocked <code class="computeroutput">add_attribute</code> </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp51388352-bb"></a><span class="identifier">remove_attribute_unlocked</span><span class="special">(</span><span class="identifier">attribute_set</span><span class="special">::</span><span class="identifier">iterator</span> it<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp43794960-bb"></a><span class="identifier">remove_attribute_unlocked</span><span class="special">(</span><span class="identifier">attribute_set</span><span class="special">::</span><span class="identifier">iterator</span> it<span class="special">)</span><span class="special">;</span></pre>
 <p>Unlocked <code class="computeroutput">remove_attribute</code> </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp51390768-bb"></a><span class="identifier">remove_all_attributes_unlocked</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp43797376-bb"></a><span class="identifier">remove_all_attributes_unlocked</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>Unlocked <code class="computeroutput">remove_all_attributes</code> </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">record</span> <a name="idp51392496-bb"></a><span class="identifier">open_record_unlocked</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">record</span> <a name="idp43799104-bb"></a><span class="identifier">open_record_unlocked</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>Unlocked <code class="computeroutput">open_record</code> </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> ArgsT<span class="special">&gt;</span> <span class="identifier">record</span> <a name="idp51394208-bb"></a><span class="identifier">open_record_unlocked</span><span class="special">(</span><span class="identifier">ArgsT</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> ArgsT<span class="special">&gt;</span> <span class="identifier">record</span> <a name="idp43800816-bb"></a><span class="identifier">open_record_unlocked</span><span class="special">(</span><span class="identifier">ArgsT</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span></pre>
 <p>Unlocked <code class="computeroutput">open_record</code> </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp51397456-bb"></a><span class="identifier">push_record_unlocked</span><span class="special">(</span><span class="identifier">record</span> <span class="special">&amp;&amp;</span> rec<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp43804064-bb"></a><span class="identifier">push_record_unlocked</span><span class="special">(</span><span class="identifier">record</span> <span class="special">&amp;&amp;</span> rec<span class="special">)</span><span class="special">;</span></pre>
 <p>Unlocked <code class="computeroutput">push_record</code> </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">attribute_set</span> <a name="idp51399856-bb"></a><span class="identifier">get_attributes_unlocked</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">attribute_set</span> <a name="idp43806464-bb"></a><span class="identifier">get_attributes_unlocked</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p>Unlocked <code class="computeroutput">get_attributes</code> </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp51401840-bb"></a><span class="identifier">set_attributes_unlocked</span><span class="special">(</span><span class="identifier">attribute_set</span> <span class="keyword">const</span> <span class="special">&amp;</span> attrs<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp43808448-bb"></a><span class="identifier">set_attributes_unlocked</span><span class="special">(</span><span class="identifier">attribute_set</span> <span class="keyword">const</span> <span class="special">&amp;</span> attrs<span class="special">)</span><span class="special">;</span></pre>
 <p>Unlocked <code class="computeroutput">set_attributes</code> </p>
 </li>
 </ol></div>

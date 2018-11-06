@@ -34,41 +34,41 @@
   <span class="keyword">typedef</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">basic_ostream</span><span class="special">&lt;</span> <span class="identifier">char_type</span> <span class="special">&gt;</span> <a name="boost.log.sinks.basic_text_ostream_backend.stream_type"></a><span class="identifier">stream_type</span><span class="special">;</span>  <span class="comment">// Output stream type. </span>
 
   <span class="comment">// <a class="link" href="basic_text_ostream_backend.html#boost.log.sinks.basic_text_ostream_backendconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="basic_text_ostream_backend.html#idp55641344-bb"><span class="identifier">basic_text_ostream_backend</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="basic_text_ostream_backend.html#idp55642128-bb"><span class="special">~</span><span class="identifier">basic_text_ostream_backend</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="basic_text_ostream_backend.html#idp47782576-bb"><span class="identifier">basic_text_ostream_backend</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="basic_text_ostream_backend.html#idp47783360-bb"><span class="special">~</span><span class="identifier">basic_text_ostream_backend</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="basic_text_ostream_backend.html#idp55628800-bb">public member functions</a></span>
-  <span class="keyword">void</span> <a class="link" href="basic_text_ostream_backend.html#idp55629360-bb"><span class="identifier">add_stream</span></a><span class="special">(</span><span class="identifier">shared_ptr</span><span class="special">&lt;</span> <span class="identifier">stream_type</span> <span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="basic_text_ostream_backend.html#idp55632096-bb"><span class="identifier">remove_stream</span></a><span class="special">(</span><span class="identifier">shared_ptr</span><span class="special">&lt;</span> <span class="identifier">stream_type</span> <span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="basic_text_ostream_backend.html#idp55634896-bb"><span class="identifier">auto_flush</span></a><span class="special">(</span><span class="keyword">bool</span> <span class="special">=</span> <span class="keyword">true</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="basic_text_ostream_backend.html#idp55637216-bb"><span class="identifier">consume</span></a><span class="special">(</span><span class="identifier">record_view</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">string_type</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="basic_text_ostream_backend.html#idp55639888-bb"><span class="identifier">flush</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="basic_text_ostream_backend.html#idp47770032-bb">public member functions</a></span>
+  <span class="keyword">void</span> <a class="link" href="basic_text_ostream_backend.html#idp47770592-bb"><span class="identifier">add_stream</span></a><span class="special">(</span><span class="identifier">shared_ptr</span><span class="special">&lt;</span> <span class="identifier">stream_type</span> <span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="basic_text_ostream_backend.html#idp47773328-bb"><span class="identifier">remove_stream</span></a><span class="special">(</span><span class="identifier">shared_ptr</span><span class="special">&lt;</span> <span class="identifier">stream_type</span> <span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="basic_text_ostream_backend.html#idp47776128-bb"><span class="identifier">auto_flush</span></a><span class="special">(</span><span class="keyword">bool</span> <span class="special">=</span> <span class="keyword">true</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="basic_text_ostream_backend.html#idp47778448-bb"><span class="identifier">consume</span></a><span class="special">(</span><span class="identifier">record_view</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">string_type</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="basic_text_ostream_backend.html#idp47781120-bb"><span class="identifier">flush</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp136578656"></a><h2>Description</h2>
+<a name="idp118603904"></a><h2>Description</h2>
 <p>The sink backend puts formatted log records to one or more text streams. </p>
 <div class="refsect2">
-<a name="idp136579328"></a><h3>
+<a name="idp118604576"></a><h3>
 <a name="boost.log.sinks.basic_text_ostream_backendconstruct-copy-destruct"></a><code class="computeroutput">basic_text_ostream_backend</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><a name="idp55641344-bb"></a><span class="identifier">basic_text_ostream_backend</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a name="idp47782576-bb"></a><span class="identifier">basic_text_ostream_backend</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>Constructor. No streams attached to the constructed backend, auto flush feature disabled. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><a name="idp55642128-bb"></a><span class="special">~</span><span class="identifier">basic_text_ostream_backend</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a name="idp47783360-bb"></a><span class="special">~</span><span class="identifier">basic_text_ostream_backend</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>Destructor </p>
 </li>
 </ol></div>
 </div>
 <div class="refsect2">
-<a name="idp136590032"></a><h3>
-<a name="idp55628800-bb"></a><code class="computeroutput">basic_text_ostream_backend</code> public member functions</h3>
+<a name="idp118615344"></a><h3>
+<a name="idp47770032-bb"></a><code class="computeroutput">basic_text_ostream_backend</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp55629360-bb"></a><span class="identifier">add_stream</span><span class="special">(</span><span class="identifier">shared_ptr</span><span class="special">&lt;</span> <span class="identifier">stream_type</span> <span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span> strm<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp47770592-bb"></a><span class="identifier">add_stream</span><span class="special">(</span><span class="identifier">shared_ptr</span><span class="special">&lt;</span> <span class="identifier">stream_type</span> <span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span> strm<span class="special">)</span><span class="special">;</span></pre>
 <p>The method adds a new stream to the sink.</p>
 <p>
 </p>
@@ -93,7 +93,7 @@
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp55632096-bb"></a><span class="identifier">remove_stream</span><span class="special">(</span><span class="identifier">shared_ptr</span><span class="special">&lt;</span> <span class="identifier">stream_type</span> <span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span> strm<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp47773328-bb"></a><span class="identifier">remove_stream</span><span class="special">(</span><span class="identifier">shared_ptr</span><span class="special">&lt;</span> <span class="identifier">stream_type</span> <span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span> strm<span class="special">)</span><span class="special">;</span></pre>
 <p>The method removes a stream from the sink. If the stream is not attached to the sink, the method has no effect.</p>
 <p>
 </p>
@@ -118,15 +118,15 @@
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp55634896-bb"></a><span class="identifier">auto_flush</span><span class="special">(</span><span class="keyword">bool</span> f <span class="special">=</span> <span class="keyword">true</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp47776128-bb"></a><span class="identifier">auto_flush</span><span class="special">(</span><span class="keyword">bool</span> f <span class="special">=</span> <span class="keyword">true</span><span class="special">)</span><span class="special">;</span></pre>
 <p>Sets the flag to automatically flush buffers of all attached streams after each log record </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp55637216-bb"></a><span class="identifier">consume</span><span class="special">(</span><span class="identifier">record_view</span> <span class="keyword">const</span> <span class="special">&amp;</span> rec<span class="special">,</span> <span class="identifier">string_type</span> <span class="keyword">const</span> <span class="special">&amp;</span> formatted_message<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp47778448-bb"></a><span class="identifier">consume</span><span class="special">(</span><span class="identifier">record_view</span> <span class="keyword">const</span> <span class="special">&amp;</span> rec<span class="special">,</span> <span class="identifier">string_type</span> <span class="keyword">const</span> <span class="special">&amp;</span> formatted_message<span class="special">)</span><span class="special">;</span></pre>
 <p>The method writes the message to the sink </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp55639888-bb"></a><span class="identifier">flush</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp47781120-bb"></a><span class="identifier">flush</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>The method flushes the associated streams </p>
 </li>
 </ol></div>

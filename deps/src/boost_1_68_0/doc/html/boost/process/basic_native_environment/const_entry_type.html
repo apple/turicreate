@@ -43,12 +43,12 @@
   <span class="keyword">typedef</span> <span class="identifier">Environment</span>                      <a name="boost.process.basic_native_environment.const_entry_type.environment_t"></a><span class="identifier">environment_t</span><span class="special">;</span>
 
   <span class="comment">// <a class="link" href="const_entry_type.html#boost.process.basic_native_environment.const_entry_typeconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <span class="identifier">const_entry</span> <span class="special">&amp;</span> <a class="link" href="const_entry_type.html#idp41225968-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">const_entry</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span>
+  <span class="identifier">const_entry</span> <span class="special">&amp;</span> <a class="link" href="const_entry_type.html#idp44574624-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">const_entry</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="const_entry_type.html#idp41220640-bb">public member functions</a></span>
-  <span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span> <span class="identifier">string_type</span> <span class="special">&gt;</span> <a class="link" href="const_entry_type.html#idp41221136-bb"><span class="identifier">to_vector</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-   <a class="link" href="const_entry_type.html#idp41222848-bb"><span class="identifier">const_entry</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">const_entry</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span>
-  <span class="keyword">bool</span> <a class="link" href="const_entry_type.html#idp41224592-bb"><span class="identifier">empty</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="const_entry_type.html#idp44569296-bb">public member functions</a></span>
+  <span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span> <span class="identifier">string_type</span> <span class="special">&gt;</span> <a class="link" href="const_entry_type.html#idp44569792-bb"><span class="identifier">to_vector</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+   <a class="link" href="const_entry_type.html#idp44571504-bb"><span class="identifier">const_entry</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">const_entry</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span>
+  <span class="keyword">bool</span> <a class="link" href="const_entry_type.html#idp44573248-bb"><span class="identifier">empty</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
 <a name="id-1.3.30.9.9.4.4.5.4"></a><h2>Description</h2>
@@ -68,19 +68,19 @@
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
-<pre class="literallayout"><span class="identifier">const_entry</span> <span class="special">&amp;</span> <a name="idp41225968-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">const_entry</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span></pre>Move Constructor. </li></ol></div>
+<pre class="literallayout"><span class="identifier">const_entry</span> <span class="special">&amp;</span> <a name="idp44574624-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">const_entry</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span></pre>Move Constructor. </li></ol></div>
 </div>
 <div class="refsect2">
 <a name="id-1.3.30.9.9.4.4.5.4.4"></a><h3>
-<a name="idp41220640-bb"></a><code class="computeroutput">const_entry_type</code> public member functions</h3>
+<a name="idp44569296-bb"></a><code class="computeroutput">const_entry_type</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span> <span class="identifier">string_type</span> <span class="special">&gt;</span> <a name="idp41221136-bb"></a><span class="identifier">to_vector</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Split the entry by ";" or ":" and return it as a vector. Used by PATH. <p>Get the value as string. Get the name of this entry. </p>
+<pre class="literallayout"><span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span> <span class="identifier">string_type</span> <span class="special">&gt;</span> <a name="idp44569792-bb"></a><span class="identifier">to_vector</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Split the entry by ";" or ":" and return it as a vector. Used by PATH. <p>Get the value as string. Get the name of this entry. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"> <a name="idp41222848-bb"></a><span class="identifier">const_entry</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">const_entry</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span></pre>Copy Constructor. </li>
+<pre class="literallayout"> <a name="idp44571504-bb"></a><span class="identifier">const_entry</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">const_entry</span> <span class="special">&amp;</span><span class="special">)</span> <span class="special">=</span> <span class="keyword">default</span><span class="special">;</span></pre>Copy Constructor. </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">bool</span> <a name="idp41224592-bb"></a><span class="identifier">empty</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Check if the entry is empty. </li>
+<pre class="literallayout"><span class="keyword">bool</span> <a name="idp44573248-bb"></a><span class="identifier">empty</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Check if the entry is empty. </li>
 </ol></div>
 </div>
 </div>

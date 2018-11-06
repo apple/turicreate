@@ -5,15 +5,15 @@
 <link rel="stylesheet" href="../../../../../../../doc/src/boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="../../../index.html" title="Chapter&#160;1.&#160;Boost.Log v2">
-<link rel="up" href="../attribute.html#idp112201504" title="Description">
+<link rel="up" href="../attribute.html#idp94229056" title="Description">
 <link rel="prev" href="../attribute.html" title="Class attribute">
-<link rel="next" href="../swap_idp51910064.html" title="Function swap">
+<link rel="next" href="../swap_idp44051664.html" title="Function swap">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr><td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="../../../../../../../boost.png"></td></tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="../attribute.html"><img src="../../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../attribute.html#idp112201504"><img src="../../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="../swap_idp51910064.html"><img src="../../../../../../../doc/src/images/next.png" alt="Next"></a>
+<a accesskey="p" href="../attribute.html"><img src="../../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../attribute.html#idp94229056"><img src="../../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="../swap_idp44051664.html"><img src="../../../../../../../doc/src/images/next.png" alt="Next"></a>
 </div>
 <div class="refentry">
 <a name="boost.log.attribute.impl"></a><div class="titlepage"></div>
@@ -30,31 +30,31 @@
 
 <span class="keyword">struct</span> <a class="link" href="impl.html" title="Struct impl">impl</a> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">intrusive_ref_counter</span><span class="special">&lt;</span> <span class="identifier">impl</span> <span class="special">&gt;</span> <span class="special">{</span>
   <span class="comment">// <a class="link" href="impl.html#boost.log.attribute.implconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="impl.html#idp50696912-bb"><span class="special">~</span><span class="identifier">impl</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="impl.html#idp42838656-bb"><span class="special">~</span><span class="identifier">impl</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="impl.html#idp47494976-bb">public member functions</a></span>
-  <span class="keyword">virtual</span> <a class="link" href="../attribute_value.html" title="Class attribute_value">attribute_value</a> <a class="link" href="impl.html#idp47495536-bb"><span class="identifier">get_value</span></a><span class="special">(</span><span class="special">)</span> <span class="special">=</span> <span class="number">0</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="impl.html#idp39638144-bb">public member functions</a></span>
+  <span class="keyword">virtual</span> <a class="link" href="../attribute_value.html" title="Class attribute_value">attribute_value</a> <a class="link" href="impl.html#idp39638704-bb"><span class="identifier">get_value</span></a><span class="special">(</span><span class="special">)</span> <span class="special">=</span> <span class="number">0</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="impl.html#idp50697488-bb">public static functions</a></span>
-  <span class="keyword">static</span> <span class="keyword">void</span> <span class="special">*</span> <a class="link" href="impl.html#idp50697936-bb"><span class="keyword">operator</span> <span class="keyword">new</span></a><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">static</span> <span class="keyword">void</span> <a class="link" href="impl.html#idp50699744-bb"><span class="keyword">operator</span> <span class="keyword">delete</span></a><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="special">,</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span><span class="special">)</span> <span class="keyword">noexcept</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="impl.html#idp42839232-bb">public static functions</a></span>
+  <span class="keyword">static</span> <span class="keyword">void</span> <span class="special">*</span> <a class="link" href="impl.html#idp42839792-bb"><span class="keyword">operator</span> <span class="keyword">new</span></a><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">static</span> <span class="keyword">void</span> <a class="link" href="impl.html#idp42841600-bb"><span class="keyword">operator</span> <span class="keyword">delete</span></a><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="special">,</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span><span class="special">)</span> <span class="keyword">noexcept</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp112359088"></a><h2>Description</h2>
+<a name="idp94386464"></a><h2>Description</h2>
 <p>All attributes must derive their implementation from this class. </p>
 <div class="refsect2">
-<a name="idp112359840"></a><h3>
+<a name="idp94387216"></a><h3>
 <a name="boost.log.attribute.implconstruct-copy-destruct"></a><code class="computeroutput">impl</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
-<pre class="literallayout"><a name="idp50696912-bb"></a><span class="special">~</span><span class="identifier">impl</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>Virtual destructor. </li></ol></div>
+<pre class="literallayout"><a name="idp42838656-bb"></a><span class="special">~</span><span class="identifier">impl</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>Virtual destructor. </li></ol></div>
 </div>
 <div class="refsect2">
-<a name="idp112366336"></a><h3>
-<a name="idp47494976-bb"></a><code class="computeroutput">impl</code> public member functions</h3>
+<a name="idp94393776"></a><h3>
+<a name="idp39638144-bb"></a><code class="computeroutput">impl</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
-<pre class="literallayout"><span class="keyword">virtual</span> <a class="link" href="../attribute_value.html" title="Class attribute_value">attribute_value</a> <a name="idp47495536-bb"></a><span class="identifier">get_value</span><span class="special">(</span><span class="special">)</span> <span class="special">=</span> <span class="number">0</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">virtual</span> <a class="link" href="../attribute_value.html" title="Class attribute_value">attribute_value</a> <a name="idp39638704-bb"></a><span class="identifier">get_value</span><span class="special">(</span><span class="special">)</span> <span class="special">=</span> <span class="number">0</span><span class="special">;</span></pre>
 <p>
 </p>
 <div class="variablelist"><table border="0" class="variablelist compact">
@@ -70,11 +70,11 @@
 </li></ol></div>
 </div>
 <div class="refsect2">
-<a name="idp112376896"></a><h3>
-<a name="idp50697488-bb"></a><code class="computeroutput">impl</code> public static functions</h3>
+<a name="idp94404336"></a><h3>
+<a name="idp42839232-bb"></a><code class="computeroutput">impl</code> public static functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
-<li class="listitem"><pre class="literallayout"><span class="keyword">static</span> <span class="keyword">void</span> <span class="special">*</span> <a name="idp50697936-bb"></a><span class="keyword">operator</span> <span class="keyword">new</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span> size<span class="special">)</span><span class="special">;</span></pre></li>
-<li class="listitem"><pre class="literallayout"><span class="keyword">static</span> <span class="keyword">void</span> <a name="idp50699744-bb"></a><span class="keyword">operator</span> <span class="keyword">delete</span><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span> p<span class="special">,</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span> size<span class="special">)</span> <span class="keyword">noexcept</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><span class="keyword">static</span> <span class="keyword">void</span> <span class="special">*</span> <a name="idp42839792-bb"></a><span class="keyword">operator</span> <span class="keyword">new</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span> size<span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><span class="keyword">static</span> <span class="keyword">void</span> <a name="idp42841600-bb"></a><span class="keyword">operator</span> <span class="keyword">delete</span><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span> p<span class="special">,</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span> size<span class="special">)</span> <span class="keyword">noexcept</span><span class="special">;</span></pre></li>
 </ol></div>
 </div>
 </div>
@@ -89,7 +89,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="../attribute.html"><img src="../../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../attribute.html#idp112201504"><img src="../../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="../swap_idp51910064.html"><img src="../../../../../../../doc/src/images/next.png" alt="Next"></a>
+<a accesskey="p" href="../attribute.html"><img src="../../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../attribute.html#idp94229056"><img src="../../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="../swap_idp44051664.html"><img src="../../../../../../../doc/src/images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

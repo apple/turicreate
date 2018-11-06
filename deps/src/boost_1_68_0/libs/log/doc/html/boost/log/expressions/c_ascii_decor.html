@@ -26,7 +26,7 @@
 
 </span><span class="emphasis"><em><span class="identifier">unspecified</span></em></span> c_ascii_decor<span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp120245968"></a><h2>Description</h2>
+<a name="idp102222432"></a><h2>Description</h2>
 <p>C-style decorator generator object. Acts similarly to <code class="computeroutput">c_decor</code>, except that <code class="computeroutput">c_ascii_decor</code> also converts all non-ASCII and non-printable ASCII characters, except for space character, into C-style hexadecimal escape sequences. The generator provides <code class="computeroutput">operator[]</code> that can be used to construct the actual decorator. For example:</p>
 <p><code class="computeroutput"> c_ascii_decor[ stream &lt;&lt; attr&lt; std::string &gt;("MyAttr") ] </code></p>
 <p>For wide-character formatting there is the similar <code class="computeroutput">wc_ascii_decor</code> decorator generator object. </p>

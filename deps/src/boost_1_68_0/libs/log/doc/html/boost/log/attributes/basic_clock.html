@@ -6,14 +6,14 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="../../../index.html" title="Chapter&#160;1.&#160;Boost.Log v2">
 <link rel="up" href="../../../attributes.html#header.boost.log.attributes.clock_hpp" title="Header &lt;boost/log/attributes/clock.hpp&gt;">
-<link rel="prev" href="../swap_idp52321984.html" title="Function swap">
+<link rel="prev" href="../swap_idp44463792.html" title="Function swap">
 <link rel="next" href="basic_clock/impl.html" title="Struct impl">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr><td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="../../../../../../../boost.png"></td></tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="../swap_idp52321984.html"><img src="../../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../../attributes.html#header.boost.log.attributes.clock_hpp"><img src="../../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="basic_clock/impl.html"><img src="../../../../../../../doc/src/images/next.png" alt="Next"></a>
+<a accesskey="p" href="../swap_idp44463792.html"><img src="../../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../../attributes.html#header.boost.log.attributes.clock_hpp"><img src="../../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="basic_clock/impl.html"><img src="../../../../../../../doc/src/images/next.png" alt="Next"></a>
 </div>
 <div class="refentry">
 <a name="boost.log.attributes.basic_clock"></a><div class="titlepage"></div>
@@ -36,30 +36,30 @@
 
   <span class="keyword">struct</span> <a class="link" href="basic_clock/impl.html" title="Struct impl">impl</a> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">attribute</span><span class="special">::</span><span class="identifier">impl</span> <span class="special">{</span>
 
-    <span class="comment">// <a class="link" href="basic_clock/impl.html#idp52335696-bb">public member functions</a></span>
-    <span class="keyword">virtual</span> <a class="link" href="../attribute_value.html" title="Class attribute_value">attribute_value</a> <a class="link" href="basic_clock/impl.html#idp52336256-bb"><span class="identifier">get_value</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+    <span class="comment">// <a class="link" href="basic_clock/impl.html#idp44477504-bb">public member functions</a></span>
+    <span class="keyword">virtual</span> <a class="link" href="../attribute_value.html" title="Class attribute_value">attribute_value</a> <a class="link" href="basic_clock/impl.html#idp44478064-bb"><span class="identifier">get_value</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
   <span class="special">}</span><span class="special">;</span>
 
   <span class="comment">// <a class="link" href="basic_clock.html#boost.log.attributes.basic_clockconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="basic_clock.html#idp52340448-bb"><span class="identifier">basic_clock</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">explicit</span> <a class="link" href="basic_clock.html#idp52341152-bb"><span class="identifier">basic_clock</span></a><span class="special">(</span><a class="link" href="cast_source.html" title="Class cast_source">cast_source</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="basic_clock.html#idp44482256-bb"><span class="identifier">basic_clock</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">explicit</span> <a class="link" href="basic_clock.html#idp44482960-bb"><span class="identifier">basic_clock</span></a><span class="special">(</span><a class="link" href="cast_source.html" title="Class cast_source">cast_source</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp114576960"></a><h2>Description</h2>
+<a name="idp96604000"></a><h2>Description</h2>
 <p>The attribute generates current time stamp as a value. The type of the attribute value is determined with time traits passed to the class template as a template parameter. The time traits provided by the library use <code class="computeroutput">boost::posix_time::ptime</code> as the time type.</p>
 <p>Time traits also determine the way time is acquired. There are two types of time traits provided by the library: <code class="computeroutput"><a class="link" href="utc_time_traits.html" title="Struct utc_time_traits">utc_time_traits</a></code> and <code class="computeroutput"><a class="link" href="local_time_traits.html" title="Struct local_time_traits">local_time_traits</a></code>. The first returns UTC time, the second returns local time. </p>
 <div class="refsect2">
-<a name="idp114581568"></a><h3>
+<a name="idp96608608"></a><h3>
 <a name="boost.log.attributes.basic_clockconstruct-copy-destruct"></a><code class="computeroutput">basic_clock</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><a name="idp52340448-bb"></a><span class="identifier">basic_clock</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a name="idp44482256-bb"></a><span class="identifier">basic_clock</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>Default constructor </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">explicit</span> <a name="idp52341152-bb"></a><span class="identifier">basic_clock</span><span class="special">(</span><a class="link" href="cast_source.html" title="Class cast_source">cast_source</a> <span class="keyword">const</span> <span class="special">&amp;</span> source<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">explicit</span> <a name="idp44482960-bb"></a><span class="identifier">basic_clock</span><span class="special">(</span><a class="link" href="cast_source.html" title="Class cast_source">cast_source</a> <span class="keyword">const</span> <span class="special">&amp;</span> source<span class="special">)</span><span class="special">;</span></pre>
 <p>Constructor for casting support </p>
 </li>
 </ol></div>
@@ -76,7 +76,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="../swap_idp52321984.html"><img src="../../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../../attributes.html#header.boost.log.attributes.clock_hpp"><img src="../../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="basic_clock/impl.html"><img src="../../../../../../../doc/src/images/next.png" alt="Next"></a>
+<a accesskey="p" href="../swap_idp44463792.html"><img src="../../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../../attributes.html#header.boost.log.attributes.clock_hpp"><img src="../../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="basic_clock/impl.html"><img src="../../../../../../../doc/src/images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

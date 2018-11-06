@@ -37,19 +37,19 @@
 <span class="special">{</span>
 <span class="keyword">public</span><span class="special">:</span>
   <span class="comment">// <a class="link" href="assertion_failure.html#boost.contract.assertion_failureconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <span class="keyword">explicit</span> <a class="link" href="assertion_failure.html#idp59228160-bb"><span class="identifier">assertion_failure</span></a><span class="special">(</span><span class="keyword">char</span> <span class="keyword">const</span> <span class="special">*</span> <span class="special">=</span> <span class="string">""</span><span class="special">,</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="special">=</span> <span class="number">0</span><span class="special">,</span> 
+  <span class="keyword">explicit</span> <a class="link" href="assertion_failure.html#idp71066672-bb"><span class="identifier">assertion_failure</span></a><span class="special">(</span><span class="keyword">char</span> <span class="keyword">const</span> <span class="special">*</span> <span class="special">=</span> <span class="string">""</span><span class="special">,</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="special">=</span> <span class="number">0</span><span class="special">,</span> 
                              <span class="keyword">char</span> <span class="keyword">const</span> <span class="special">*</span> <span class="special">=</span> <span class="string">""</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">explicit</span> <a class="link" href="assertion_failure.html#idp59235200-bb"><span class="identifier">assertion_failure</span></a><span class="special">(</span><span class="keyword">char</span> <span class="keyword">const</span> <span class="special">*</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="assertion_failure.html#idp59237680-bb"><span class="special">~</span><span class="identifier">assertion_failure</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">explicit</span> <a class="link" href="assertion_failure.html#idp71073712-bb"><span class="identifier">assertion_failure</span></a><span class="special">(</span><span class="keyword">char</span> <span class="keyword">const</span> <span class="special">*</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="assertion_failure.html#idp71076192-bb"><span class="special">~</span><span class="identifier">assertion_failure</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="assertion_failure.html#idp59214176-bb">public member functions</a></span>
-  <span class="keyword">virtual</span> <span class="keyword">char</span> <span class="keyword">const</span> <span class="special">*</span> <a class="link" href="assertion_failure.html#idp59214736-bb"><span class="identifier">what</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="keyword">char</span> <span class="keyword">const</span> <span class="special">*</span> <a class="link" href="assertion_failure.html#idp59219648-bb"><span class="identifier">file</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="keyword">unsigned</span> <span class="keyword">long</span> <a class="link" href="assertion_failure.html#idp59222416-bb"><span class="identifier">line</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="keyword">char</span> <span class="keyword">const</span> <span class="special">*</span> <a class="link" href="assertion_failure.html#idp59225184-bb"><span class="identifier">code</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="assertion_failure.html#idp71052688-bb">public member functions</a></span>
+  <span class="keyword">virtual</span> <span class="keyword">char</span> <span class="keyword">const</span> <span class="special">*</span> <a class="link" href="assertion_failure.html#idp71053248-bb"><span class="identifier">what</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">char</span> <span class="keyword">const</span> <span class="special">*</span> <a class="link" href="assertion_failure.html#idp71058160-bb"><span class="identifier">file</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">unsigned</span> <span class="keyword">long</span> <a class="link" href="assertion_failure.html#idp71060928-bb"><span class="identifier">line</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">char</span> <span class="keyword">const</span> <span class="special">*</span> <a class="link" href="assertion_failure.html#idp71063696-bb"><span class="identifier">code</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp106311472"></a><h2>Description</h2>
+<a name="idp97911872"></a><h2>Description</h2>
 <p>This exception is thrown by code expanded by <code class="computeroutput"><a class="link" href="../../BOOST_CONTRACT_ASSERT.html" title="Macro BOOST_CONTRACT_ASSERT">BOOST_CONTRACT_ASSERT</a></code> (but it can also be thrown by user code programmed manually without that macro). This exception is typically used to report contract assertion failures because it contains detailed information about the file name, line number, and source code of the asserted condition (so it can be used by this library to provide detailed error messages). However, any other exception can be used to report a contract assertion failure (including user-defined exceptions).</p>
 <p>This library will call the appropriate contract failure handler function ( <code class="computeroutput"><a class="link" href="precondition_failure.html" title="Function precondition_failure">boost::contract::precondition_failure</a></code>, etc.) when this or any other exception is thrown while checking contracts (by default, these failure handler functions print an error message to <code class="computeroutput">std::cerr</code> and terminate the program, but they can be customized to take any other action).</p>
 <p><span class="bold"><strong>See Also:</strong></span></p>
@@ -57,13 +57,13 @@
 <p>
 </p>
 <div class="refsect2">
-<a name="idp106319408"></a><h3>
+<a name="idp97919808"></a><h3>
 <a name="boost.contract.assertion_failureconstruct-copy-destruct"></a><code class="computeroutput">assertion_failure</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">explicit</span> <a name="idp59228160-bb"></a><span class="identifier">assertion_failure</span><span class="special">(</span><span class="keyword">char</span> <span class="keyword">const</span> <span class="special">*</span> file <span class="special">=</span> <span class="string">""</span><span class="special">,</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> line <span class="special">=</span> <span class="number">0</span><span class="special">,</span> 
+<pre class="literallayout"><span class="keyword">explicit</span> <a name="idp71066672-bb"></a><span class="identifier">assertion_failure</span><span class="special">(</span><span class="keyword">char</span> <span class="keyword">const</span> <span class="special">*</span> file <span class="special">=</span> <span class="string">""</span><span class="special">,</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> line <span class="special">=</span> <span class="number">0</span><span class="special">,</span> 
                            <span class="keyword">char</span> <span class="keyword">const</span> <span class="special">*</span> code <span class="special">=</span> <span class="string">""</span><span class="special">)</span><span class="special">;</span></pre>Construct this object with file name, line number, and source code text of an assertion condition (all optional). <p>This constructor can also be used to specify no information (default constructor), or to specify only file name and line number but not source code text (because of the parameter default values).</p>
 <p>
 </p>
@@ -98,7 +98,7 @@
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">explicit</span> <a name="idp59235200-bb"></a><span class="identifier">assertion_failure</span><span class="special">(</span><span class="keyword">char</span> <span class="keyword">const</span> <span class="special">*</span> code<span class="special">)</span><span class="special">;</span></pre>Construct this object only with the source code text of the assertion condition. <p>
+<pre class="literallayout"><span class="keyword">explicit</span> <a name="idp71073712-bb"></a><span class="identifier">assertion_failure</span><span class="special">(</span><span class="keyword">char</span> <span class="keyword">const</span> <span class="special">*</span> code<span class="special">)</span><span class="special">;</span></pre>Construct this object only with the source code text of the assertion condition. <p>
 </p>
 <div class="variablelist"><table border="0" class="variablelist compact">
 <colgroup>
@@ -121,16 +121,16 @@
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><a name="idp59237680-bb"></a><span class="special">~</span><span class="identifier">assertion_failure</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>Destruct this object. <p><span class="bold"><strong>Throws:</strong></span> This is declared <code class="computeroutput">noexcept</code> (or <code class="computeroutput">throw()</code> before C++11). </p>
+<pre class="literallayout"><a name="idp71076192-bb"></a><span class="special">~</span><span class="identifier">assertion_failure</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>Destruct this object. <p><span class="bold"><strong>Throws:</strong></span> This is declared <code class="computeroutput">noexcept</code> (or <code class="computeroutput">throw()</code> before C++11). </p>
 </li>
 </ol></div>
 </div>
 <div class="refsect2">
-<a name="idp106360672"></a><h3>
-<a name="idp59214176-bb"></a><code class="computeroutput">assertion_failure</code> public member functions</h3>
+<a name="idp97961056"></a><h3>
+<a name="idp71052688-bb"></a><code class="computeroutput">assertion_failure</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">virtual</span> <span class="keyword">char</span> <span class="keyword">const</span> <span class="special">*</span> <a name="idp59214736-bb"></a><span class="identifier">what</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>String describing the failed assertion. <p><span class="bold"><strong>Throws:</strong></span> This is declared <code class="computeroutput">noexcept</code> (or <code class="computeroutput">throw()</code> before C++11).</p>
+<pre class="literallayout"><span class="keyword">virtual</span> <span class="keyword">char</span> <span class="keyword">const</span> <span class="special">*</span> <a name="idp71053248-bb"></a><span class="identifier">what</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>String describing the failed assertion. <p><span class="bold"><strong>Throws:</strong></span> This is declared <code class="computeroutput">noexcept</code> (or <code class="computeroutput">throw()</code> before C++11).</p>
 <p>
 </p>
 <div class="variablelist"><table border="0" class="variablelist compact">
@@ -145,7 +145,7 @@
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">char</span> <span class="keyword">const</span> <span class="special">*</span> <a name="idp59219648-bb"></a><span class="identifier">file</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Name of the file containing the assertion. <p>
+<pre class="literallayout"><span class="keyword">char</span> <span class="keyword">const</span> <span class="special">*</span> <a name="idp71058160-bb"></a><span class="identifier">file</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Name of the file containing the assertion. <p>
 </p>
 <div class="variablelist"><table border="0" class="variablelist compact">
 <colgroup>
@@ -159,7 +159,7 @@
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">unsigned</span> <span class="keyword">long</span> <a name="idp59222416-bb"></a><span class="identifier">line</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Number of the line containing the assertion. <p>
+<pre class="literallayout"><span class="keyword">unsigned</span> <span class="keyword">long</span> <a name="idp71060928-bb"></a><span class="identifier">line</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Number of the line containing the assertion. <p>
 </p>
 <div class="variablelist"><table border="0" class="variablelist compact">
 <colgroup>
@@ -173,7 +173,7 @@
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">char</span> <span class="keyword">const</span> <span class="special">*</span> <a name="idp59225184-bb"></a><span class="identifier">code</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Text listing the source code of the assertion condition. <p>
+<pre class="literallayout"><span class="keyword">char</span> <span class="keyword">const</span> <span class="special">*</span> <a name="idp71063696-bb"></a><span class="identifier">code</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Text listing the source code of the assertion condition. <p>
 </p>
 <div class="variablelist"><table border="0" class="variablelist compact">
 <colgroup>

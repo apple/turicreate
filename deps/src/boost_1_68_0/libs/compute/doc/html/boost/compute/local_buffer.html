@@ -35,16 +35,16 @@
 <span class="keyword">class</span> <a class="link" href="local_buffer.html" title="Class template local_buffer">local_buffer</a> <span class="special">{</span>
 <span class="keyword">public</span><span class="special">:</span>
   <span class="comment">// <a class="link" href="local_buffer.html#boost.compute.local_bufferconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="local_buffer.html#idp26852576-bb"><span class="identifier">local_buffer</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">size_t</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="local_buffer.html#idp26854304-bb"><span class="identifier">local_buffer</span></a><span class="special">(</span><span class="keyword">const</span> <a class="link" href="local_buffer.html" title="Class template local_buffer">local_buffer</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="local_buffer.html" title="Class template local_buffer">local_buffer</a> <span class="special">&amp;</span> <a class="link" href="local_buffer.html#idp26856496-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><span class="keyword">const</span> <a class="link" href="local_buffer.html" title="Class template local_buffer">local_buffer</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="local_buffer.html#idp26859680-bb"><span class="special">~</span><span class="identifier">local_buffer</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="local_buffer.html#idp35627520-bb"><span class="identifier">local_buffer</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">size_t</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="local_buffer.html#idp35629248-bb"><span class="identifier">local_buffer</span></a><span class="special">(</span><span class="keyword">const</span> <a class="link" href="local_buffer.html" title="Class template local_buffer">local_buffer</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="local_buffer.html" title="Class template local_buffer">local_buffer</a> <span class="special">&amp;</span> <a class="link" href="local_buffer.html#idp35631440-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><span class="keyword">const</span> <a class="link" href="local_buffer.html" title="Class template local_buffer">local_buffer</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="local_buffer.html#idp35634624-bb"><span class="special">~</span><span class="identifier">local_buffer</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="local_buffer.html#idp26850416-bb">public member functions</a></span>
-  <span class="identifier">size_t</span> <a class="link" href="local_buffer.html#idp26850976-bb"><span class="identifier">size</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="local_buffer.html#idp35625360-bb">public member functions</a></span>
+  <span class="identifier">size_t</span> <a class="link" href="local_buffer.html#idp35625920-bb"><span class="identifier">size</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp112713200"></a><h2>Description</h2>
+<a name="idp105776624"></a><h2>Description</h2>
 <p>The <a class="link" href="local_buffer.html" title="Class template local_buffer">local_buffer</a> class represents a block of local memory on a compute device.</p>
 <p>This class is most commonly used to set local memory arguments for compute kernels: </p>
 <pre class="programlisting"><span class="comment">// set argument to a local buffer with storage for 32 float's</span>
@@ -55,26 +55,26 @@
 <p>
 </p>
 <div class="refsect2">
-<a name="idp112725856"></a><h3>
+<a name="idp105789280"></a><h3>
 <a name="boost.compute.local_bufferconstruct-copy-destruct"></a><code class="computeroutput">local_buffer</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><a name="idp26852576-bb"></a><span class="identifier">local_buffer</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">size_t</span> size<span class="special">)</span><span class="special">;</span></pre>Creates a local buffer object for <code class="computeroutput">size</code> elements. </li>
+<pre class="literallayout"><a name="idp35627520-bb"></a><span class="identifier">local_buffer</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">size_t</span> size<span class="special">)</span><span class="special">;</span></pre>Creates a local buffer object for <code class="computeroutput">size</code> elements. </li>
 <li class="listitem">
-<pre class="literallayout"><a name="idp26854304-bb"></a><span class="identifier">local_buffer</span><span class="special">(</span><span class="keyword">const</span> <a class="link" href="local_buffer.html" title="Class template local_buffer">local_buffer</a> <span class="special">&amp;</span> other<span class="special">)</span><span class="special">;</span></pre>Creates a local buffer object as a copy of <code class="computeroutput">other</code>. </li>
+<pre class="literallayout"><a name="idp35629248-bb"></a><span class="identifier">local_buffer</span><span class="special">(</span><span class="keyword">const</span> <a class="link" href="local_buffer.html" title="Class template local_buffer">local_buffer</a> <span class="special">&amp;</span> other<span class="special">)</span><span class="special">;</span></pre>Creates a local buffer object as a copy of <code class="computeroutput">other</code>. </li>
 <li class="listitem">
-<pre class="literallayout"><a class="link" href="local_buffer.html" title="Class template local_buffer">local_buffer</a> <span class="special">&amp;</span> <a name="idp26856496-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><span class="keyword">const</span> <a class="link" href="local_buffer.html" title="Class template local_buffer">local_buffer</a> <span class="special">&amp;</span> other<span class="special">)</span><span class="special">;</span></pre>Copies <code class="computeroutput">other</code> to <code class="computeroutput">*this</code>. </li>
+<pre class="literallayout"><a class="link" href="local_buffer.html" title="Class template local_buffer">local_buffer</a> <span class="special">&amp;</span> <a name="idp35631440-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><span class="keyword">const</span> <a class="link" href="local_buffer.html" title="Class template local_buffer">local_buffer</a> <span class="special">&amp;</span> other<span class="special">)</span><span class="special">;</span></pre>Copies <code class="computeroutput">other</code> to <code class="computeroutput">*this</code>. </li>
 <li class="listitem">
-<pre class="literallayout"><a name="idp26859680-bb"></a><span class="special">~</span><span class="identifier">local_buffer</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>Destroys the local memory object. </li>
+<pre class="literallayout"><a name="idp35634624-bb"></a><span class="special">~</span><span class="identifier">local_buffer</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>Destroys the local memory object. </li>
 </ol></div>
 </div>
 <div class="refsect2">
-<a name="idp112754544"></a><h3>
-<a name="idp26850416-bb"></a><code class="computeroutput">local_buffer</code> public member functions</h3>
+<a name="idp105817872"></a><h3>
+<a name="idp35625360-bb"></a><code class="computeroutput">local_buffer</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
-<pre class="literallayout"><span class="identifier">size_t</span> <a name="idp26850976-bb"></a><span class="identifier">size</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Returns the number of elements in the local buffer. </li></ol></div>
+<pre class="literallayout"><span class="identifier">size_t</span> <a name="idp35625920-bb"></a><span class="identifier">size</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Returns the number of elements in the local buffer. </li></ol></div>
 </div>
 </div>
 </div>

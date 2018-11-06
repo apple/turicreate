@@ -40,7 +40,7 @@
       </p>
 <p>
         In order to develop a sink backend, you derive your class from either <code class="computeroutput"><a class="link" href="../boost/log/sinks/basic_sink_backend.html" title="Struct template basic_sink_backend">basic_sink_backend</a></code>
-        or <code class="computeroutput"><a class="link" href="../boost/log/sinks/basic_formatte_idp54843856.html" title="Struct template basic_formatted_sink_backend">basic_formatted_sink_backend</a></code>,
+        or <code class="computeroutput"><a class="link" href="../boost/log/sinks/basic_formatte_idp46985088.html" title="Struct template basic_formatted_sink_backend">basic_formatted_sink_backend</a></code>,
         depending on whether your backend requires formatted log records or not.
         Both base classes define a set of types that are required to interface with
         sink frontends. One of these types is <code class="computeroutput"><span class="identifier">frontend_requirements</span></code>.
@@ -77,7 +77,7 @@
             The backend expects formatted log records. The frontend implements formatting
             to a string with character type defined by the <code class="computeroutput"><span class="identifier">char_type</span></code>
             typedef within the backend. The formatted string will be passed along
-            with the log record to the backend. The <code class="computeroutput"><a class="link" href="../boost/log/sinks/basic_formatte_idp54843856.html" title="Struct template basic_formatted_sink_backend">basic_formatted_sink_backend</a></code>
+            with the log record to the backend. The <code class="computeroutput"><a class="link" href="../boost/log/sinks/basic_formatte_idp46985088.html" title="Struct template basic_formatted_sink_backend">basic_formatted_sink_backend</a></code>
             base class automatically adds this requirement to the <code class="computeroutput"><span class="identifier">frontend_requirements</span></code>
             type.
           </li>
@@ -352,7 +352,7 @@
 </table></div>
 <p>
         The first thing to notice is that the <code class="computeroutput"><span class="identifier">app_launcher</span></code>
-        backend derives from <code class="computeroutput"><a class="link" href="../boost/log/sinks/basic_formatte_idp54843856.html" title="Struct template basic_formatted_sink_backend">basic_formatted_sink_backend</a></code>
+        backend derives from <code class="computeroutput"><a class="link" href="../boost/log/sinks/basic_formatte_idp46985088.html" title="Struct template basic_formatted_sink_backend">basic_formatted_sink_backend</a></code>
         rather than <code class="computeroutput"><a class="link" href="../boost/log/sinks/basic_sink_backend.html" title="Struct template basic_sink_backend">basic_sink_backend</a></code>.
         This base class accepts the character type in addition to the requirements.
         The specified character type defines the target string type the formatter
@@ -366,7 +366,7 @@
         The second notable difference from the previous examples is that <code class="computeroutput"><span class="identifier">consume</span></code> method takes an additional string
         parameter besides the log record. This is the result of formatting. The
         <code class="computeroutput"><span class="identifier">string_type</span></code> type is defined
-        by the <code class="computeroutput"><a class="link" href="../boost/log/sinks/basic_formatte_idp54843856.html" title="Struct template basic_formatted_sink_backend">basic_formatted_sink_backend</a></code>
+        by the <code class="computeroutput"><a class="link" href="../boost/log/sinks/basic_formatte_idp46985088.html" title="Struct template basic_formatted_sink_backend">basic_formatted_sink_backend</a></code>
         base class and it corresponds to the requested character type.
       </p>
 <p>
@@ -469,7 +469,7 @@
         keywords</a> to identify particular attribute values in the formatter.
         Notice that string attribute values have to be preprocessed so that special
         characters interpreted by the shell are escaped in the command line. We achieve
-        that with the <code class="computeroutput"><a class="link" href="../boost/log/expressions/char_decor_idp53207200.html" title="Function template char_decor">char_decor</a></code> decorator with
+        that with the <code class="computeroutput"><a class="link" href="../boost/log/expressions/char_decor_idp45348864.html" title="Function template char_decor">char_decor</a></code> decorator with
         our custom replacement map. After the sink is configured we also add the
         <a class="link" href="detailed/attributes.html#log.detailed.attributes.process_name" title="Current process name">current process name</a>
         attribute to the core so that we don't have to add it to every record.

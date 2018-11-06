@@ -38,68 +38,68 @@
   <span class="keyword">typedef</span> <span class="identifier">IntType</span> <a name="boost.compute.discrete_distribution.result_type"></a><span class="identifier">result_type</span><span class="special">;</span>
 
   <span class="comment">// <a class="link" href="discrete_distribution.html#boost.compute.discrete_distributionconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="discrete_distribution.html#idp26923104-bb"><span class="identifier">discrete_distribution</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="discrete_distribution.html#idp35698048-bb"><span class="identifier">discrete_distribution</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> InputIterator<span class="special">&gt;</span> 
-    <a class="link" href="discrete_distribution.html#idp26923904-bb"><span class="identifier">discrete_distribution</span></a><span class="special">(</span><span class="identifier">InputIterator</span><span class="special">,</span> <span class="identifier">InputIterator</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="discrete_distribution.html#idp26927776-bb"><span class="special">~</span><span class="identifier">discrete_distribution</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+    <a class="link" href="discrete_distribution.html#idp35698848-bb"><span class="identifier">discrete_distribution</span></a><span class="special">(</span><span class="identifier">InputIterator</span><span class="special">,</span> <span class="identifier">InputIterator</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="discrete_distribution.html#idp35702720-bb"><span class="special">~</span><span class="identifier">discrete_distribution</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="discrete_distribution.html#idp26911680-bb">public member functions</a></span>
-  <span class="special">::</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span> <span class="keyword">double</span> <span class="special">&gt;</span> <a class="link" href="discrete_distribution.html#idp26912240-bb"><span class="identifier">probabilities</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="identifier">result_type</span> <span class="identifier">min</span> <a class="link" href="discrete_distribution.html#idp26913664-bb"><span class="identifier">BOOST_PREVENT_MACRO_SUBSTITUTION</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="identifier">result_type</span> <span class="identifier">max</span> <a class="link" href="discrete_distribution.html#idp26915120-bb"><span class="identifier">BOOST_PREVENT_MACRO_SUBSTITUTION</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="discrete_distribution.html#idp35686624-bb">public member functions</a></span>
+  <span class="special">::</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span> <span class="keyword">double</span> <span class="special">&gt;</span> <a class="link" href="discrete_distribution.html#idp35687184-bb"><span class="identifier">probabilities</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">result_type</span> <span class="identifier">min</span> <a class="link" href="discrete_distribution.html#idp35688608-bb"><span class="identifier">BOOST_PREVENT_MACRO_SUBSTITUTION</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="identifier">result_type</span> <span class="identifier">max</span> <a class="link" href="discrete_distribution.html#idp35690064-bb"><span class="identifier">BOOST_PREVENT_MACRO_SUBSTITUTION</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
   <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> OutputIterator<span class="special">,</span> <span class="keyword">typename</span> Generator<span class="special">&gt;</span> 
-    <span class="keyword">void</span> <a class="link" href="discrete_distribution.html#idp26916576-bb"><span class="identifier">generate</span></a><span class="special">(</span><span class="identifier">OutputIterator</span><span class="special">,</span> <span class="identifier">OutputIterator</span><span class="special">,</span> <span class="identifier">Generator</span> <span class="special">&amp;</span><span class="special">,</span> 
+    <span class="keyword">void</span> <a class="link" href="discrete_distribution.html#idp35691520-bb"><span class="identifier">generate</span></a><span class="special">(</span><span class="identifier">OutputIterator</span><span class="special">,</span> <span class="identifier">OutputIterator</span><span class="special">,</span> <span class="identifier">Generator</span> <span class="special">&amp;</span><span class="special">,</span> 
                   <span class="identifier">command_queue</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="discrete_distribution.html#idp26929088-bb">private member functions</a></span>
-   <a class="link" href="discrete_distribution.html#idp26929664-bb"><span class="identifier">BOOST_STATIC_ASSERT_MSG</span></a><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">is_integral</span><span class="special">&lt;</span> <span class="identifier">IntType</span> <span class="special">&gt;</span><span class="special">::</span><span class="identifier">value</span><span class="special">,</span> 
+  <span class="comment">// <a class="link" href="discrete_distribution.html#idp35704032-bb">private member functions</a></span>
+   <a class="link" href="discrete_distribution.html#idp35704608-bb"><span class="identifier">BOOST_STATIC_ASSERT_MSG</span></a><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">is_integral</span><span class="special">&lt;</span> <span class="identifier">IntType</span> <span class="special">&gt;</span><span class="special">::</span><span class="identifier">value</span><span class="special">,</span> 
                            <span class="string">"Template argument must be integral"</span><span class="special">)</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp113181216"></a><h2>Description</h2>
+<a name="idp106244704"></a><h2>Description</h2>
 <p>The following example shows how to setup a discrete distribution to produce 0 and 1 with equal probability</p>
 <pre class="programlisting"></pre>
 <div class="refsect2">
-<a name="idp113182544"></a><h3>
+<a name="idp106246032"></a><h3>
 <a name="boost.compute.discrete_distributionconstruct-copy-destruct"></a><code class="computeroutput">discrete_distribution</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><a name="idp26923104-bb"></a><span class="identifier">discrete_distribution</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a name="idp35698048-bb"></a><span class="identifier">discrete_distribution</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>Creates a new discrete distribution with a single weight p = { 1 }. This distribution produces only zeroes. </p>
 </li>
 <li class="listitem">
 <pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> InputIterator<span class="special">&gt;</span> 
-  <a name="idp26923904-bb"></a><span class="identifier">discrete_distribution</span><span class="special">(</span><span class="identifier">InputIterator</span> first<span class="special">,</span> <span class="identifier">InputIterator</span> last<span class="special">)</span><span class="special">;</span></pre>
+  <a name="idp35698848-bb"></a><span class="identifier">discrete_distribution</span><span class="special">(</span><span class="identifier">InputIterator</span> first<span class="special">,</span> <span class="identifier">InputIterator</span> last<span class="special">)</span><span class="special">;</span></pre>
 <p>Creates a new discrete distribution with weights given by the range [<code class="computeroutput">first</code>, <code class="computeroutput">last</code>). </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><a name="idp26927776-bb"></a><span class="special">~</span><span class="identifier">discrete_distribution</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>Destroys the <code class="computeroutput"><a class="link" href="discrete_distribution.html" title="Class template discrete_distribution">discrete_distribution</a></code> object. </li>
+<pre class="literallayout"><a name="idp35702720-bb"></a><span class="special">~</span><span class="identifier">discrete_distribution</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>Destroys the <code class="computeroutput"><a class="link" href="discrete_distribution.html" title="Class template discrete_distribution">discrete_distribution</a></code> object. </li>
 </ol></div>
 </div>
 <div class="refsect2">
-<a name="idp113204272"></a><h3>
-<a name="idp26911680-bb"></a><code class="computeroutput">discrete_distribution</code> public member functions</h3>
+<a name="idp106267792"></a><h3>
+<a name="idp35686624-bb"></a><code class="computeroutput">discrete_distribution</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><span class="special">::</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span> <span class="keyword">double</span> <span class="special">&gt;</span> <a name="idp26912240-bb"></a><span class="identifier">probabilities</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Returns the probabilities. </li>
+<pre class="literallayout"><span class="special">::</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span> <span class="keyword">double</span> <span class="special">&gt;</span> <a name="idp35687184-bb"></a><span class="identifier">probabilities</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Returns the probabilities. </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">result_type</span> <span class="identifier">min</span> <a name="idp26913664-bb"></a><span class="identifier">BOOST_PREVENT_MACRO_SUBSTITUTION</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Returns the minimum potentially generated value. </li>
+<pre class="literallayout"><span class="identifier">result_type</span> <span class="identifier">min</span> <a name="idp35688608-bb"></a><span class="identifier">BOOST_PREVENT_MACRO_SUBSTITUTION</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Returns the minimum potentially generated value. </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">result_type</span> <span class="identifier">max</span> <a name="idp26915120-bb"></a><span class="identifier">BOOST_PREVENT_MACRO_SUBSTITUTION</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Returns the maximum potentially generated value. </li>
+<pre class="literallayout"><span class="identifier">result_type</span> <span class="identifier">max</span> <a name="idp35690064-bb"></a><span class="identifier">BOOST_PREVENT_MACRO_SUBSTITUTION</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Returns the maximum potentially generated value. </li>
 <li class="listitem">
 <pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> OutputIterator<span class="special">,</span> <span class="keyword">typename</span> Generator<span class="special">&gt;</span> 
-  <span class="keyword">void</span> <a name="idp26916576-bb"></a><span class="identifier">generate</span><span class="special">(</span><span class="identifier">OutputIterator</span> first<span class="special">,</span> <span class="identifier">OutputIterator</span> last<span class="special">,</span> 
+  <span class="keyword">void</span> <a name="idp35691520-bb"></a><span class="identifier">generate</span><span class="special">(</span><span class="identifier">OutputIterator</span> first<span class="special">,</span> <span class="identifier">OutputIterator</span> last<span class="special">,</span> 
                 <span class="identifier">Generator</span> <span class="special">&amp;</span> generator<span class="special">,</span> <span class="identifier">command_queue</span> <span class="special">&amp;</span> queue<span class="special">)</span><span class="special">;</span></pre>
 <p>Generates uniformly distributed integers and stores them to the range [<code class="computeroutput">first</code>, <code class="computeroutput">last</code>). </p>
 </li>
 </ol></div>
 </div>
 <div class="refsect2">
-<a name="idp113242864"></a><h3>
-<a name="idp26929088-bb"></a><code class="computeroutput">discrete_distribution</code> private member functions</h3>
-<div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><pre class="literallayout"> <a name="idp26929664-bb"></a><span class="identifier">BOOST_STATIC_ASSERT_MSG</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">is_integral</span><span class="special">&lt;</span> <span class="identifier">IntType</span> <span class="special">&gt;</span><span class="special">::</span><span class="identifier">value</span><span class="special">,</span> 
+<a name="idp106306384"></a><h3>
+<a name="idp35704032-bb"></a><code class="computeroutput">discrete_distribution</code> private member functions</h3>
+<div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><pre class="literallayout"> <a name="idp35704608-bb"></a><span class="identifier">BOOST_STATIC_ASSERT_MSG</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">is_integral</span><span class="special">&lt;</span> <span class="identifier">IntType</span> <span class="special">&gt;</span><span class="special">::</span><span class="identifier">value</span><span class="special">,</span> 
                          <span class="string">"Template argument must be integral"</span><span class="special">)</span><span class="special">;</span></pre></li></ol></div>
 </div>
 </div>

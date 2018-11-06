@@ -32,9 +32,9 @@
 <div xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" class="refsynopsisdiv"><pre class="synopsis"><span class="comment">// In header: &lt;<a class="link" href="../../reference.html#header.boost.contract.function_hpp" title="Header &lt;boost/contract/function.hpp&gt;">boost/contract/function.hpp</a>&gt;
 
 </span>
-<a class="link" href="specify_precon_idp59428848.html" title="Class template specify_precondition_old_postcondition_except">specify_precondition_old_postcondition_except</a> <span class="identifier">function</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre></div>
+<a class="link" href="specify_precon_idp71267360.html" title="Class template specify_precondition_old_postcondition_except">specify_precondition_old_postcondition_except</a> <span class="identifier">function</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp107468304"></a><h2>Description</h2>
+<a name="idp99069248"></a><h2>Description</h2>
 <p>This is used to specify preconditions, postconditions, exception guarantees, and old value copies at body for non-member, private and protected functions (these functions never check class invariants, see  <a class="link" href="../../boost_contract/contract_programming_overview.html#boost_contract.contract_programming_overview.function_calls" title="Function Calls"> Function Calls</a>):</p>
 <pre class="programlisting"><span class="keyword">void</span> <span class="identifier">f</span><span class="special">(</span><span class="special">...</span><span class="special">)</span> <span class="special">{</span>
     <a class="link" href="old_ptr.html" title="Class template old_ptr">boost::contract::old_ptr&lt;old_type&gt;</a> <span class="identifier">old_var</span><span class="special">;</span>
@@ -75,7 +75,7 @@
 </colgroup>
 <tbody><tr>
 <td><p><span class="term">Returns:</span></p></td>
-<td><p>The result of this function must be explicitly assigned to a variable of type <code class="computeroutput"><a class="link" href="check.html" title="Class check">boost::contract::check</a></code> declared locally just before the function body code (otherwise this library will generate a run-time error, see <code class="computeroutput"><a class="link" href="../../BOOST_CONTRACT_idp59017008.html" title="Macro BOOST_CONTRACT_ON_MISSING_CHECK_DECL">BOOST_CONTRACT_ON_MISSING_CHECK_DECL</a></code>). </p></td>
+<td><p>The result of this function must be explicitly assigned to a variable of type <code class="computeroutput"><a class="link" href="check.html" title="Class check">boost::contract::check</a></code> declared locally just before the function body code (otherwise this library will generate a run-time error, see <code class="computeroutput"><a class="link" href="../../BOOST_CONTRACT_idp70855520.html" title="Macro BOOST_CONTRACT_ON_MISSING_CHECK_DECL">BOOST_CONTRACT_ON_MISSING_CHECK_DECL</a></code>). </p></td>
 </tr></tbody>
 </table></div>
 </div>

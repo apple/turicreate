@@ -7,13 +7,13 @@
 <link rel="home" href="../../../index.html" title="Chapter&#160;1.&#160;Boost.Log v2">
 <link rel="up" href="../../../logging_sources.html#header.boost.log.sources.basic_logger_hpp" title="Header &lt;boost/log/sources/basic_logger.hpp&gt;">
 <link rel="prev" href="basic_logger.html" title="Class template basic_logger">
-<link rel="next" href="basic_composit_idp51084944.html" title="Class template basic_composite_logger&lt;CharT, FinalT, single_thread_model, FeaturesT&gt;">
+<link rel="next" href="basic_composit_idp43529472.html" title="Class template basic_composite_logger&lt;CharT, FinalT, single_thread_model, FeaturesT&gt;">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr><td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="../../../../../../../boost.png"></td></tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="basic_logger.html"><img src="../../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../../logging_sources.html#header.boost.log.sources.basic_logger_hpp"><img src="../../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="basic_composit_idp51084944.html"><img src="../../../../../../../doc/src/images/next.png" alt="Next"></a>
+<a accesskey="p" href="basic_logger.html"><img src="../../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../../logging_sources.html#header.boost.log.sources.basic_logger_hpp"><img src="../../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="basic_composit_idp43529472.html"><img src="../../../../../../../doc/src/images/next.png" alt="Next"></a>
 </div>
 <div class="refentry">
 <a name="boost.log.sources.basic_composite_logger"></a><div class="titlepage"></div>
@@ -32,60 +32,60 @@
   <span class="keyword">typedef</span> <span class="identifier">base_type</span><span class="special">::</span><span class="identifier">threading_model</span> <a name="boost.log.sources.basic_composite_logger.threading_model"></a><span class="identifier">threading_model</span><span class="special">;</span>  <span class="comment">// Threading model being used. </span>
 
   <span class="comment">// <a class="link" href="basic_composite_logger.html#boost.log.sources.basic_composite_loggerconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="basic_composite_logger.html#idp51075856-bb"><span class="identifier">basic_composite_logger</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="basic_composite_logger.html#idp51076592-bb"><span class="identifier">basic_composite_logger</span></a><span class="special">(</span><a class="link" href="basic_composite_logger.html" title="Class template basic_composite_logger">basic_composite_logger</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="basic_composite_logger.html#idp51078272-bb"><span class="identifier">basic_composite_logger</span></a><span class="special">(</span><span class="identifier">logger_base</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> ArgsT<span class="special">&gt;</span> <span class="keyword">explicit</span> <a class="link" href="basic_composite_logger.html#idp51079664-bb"><span class="identifier">basic_composite_logger</span></a><span class="special">(</span><span class="identifier">ArgsT</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="basic_composite_logger.html#idp43520384-bb"><span class="identifier">basic_composite_logger</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="basic_composite_logger.html#idp43521120-bb"><span class="identifier">basic_composite_logger</span></a><span class="special">(</span><a class="link" href="basic_composite_logger.html" title="Class template basic_composite_logger">basic_composite_logger</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="basic_composite_logger.html#idp43522800-bb"><span class="identifier">basic_composite_logger</span></a><span class="special">(</span><span class="identifier">logger_base</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> ArgsT<span class="special">&gt;</span> <span class="keyword">explicit</span> <a class="link" href="basic_composite_logger.html#idp43524192-bb"><span class="identifier">basic_composite_logger</span></a><span class="special">(</span><span class="identifier">ArgsT</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="basic_composite_logger.html#idp51413088-bb">public member functions</a></span>
+  <span class="comment">// <a class="link" href="basic_composite_logger.html#idp43492400-bb">public member functions</a></span>
   <span class="identifier">std</span><span class="special">::</span><span class="identifier">pair</span><span class="special">&lt;</span> <span class="identifier">attribute_set</span><span class="special">::</span><span class="identifier">iterator</span><span class="special">,</span> <span class="keyword">bool</span> <span class="special">&gt;</span> 
-  <a class="link" href="basic_composite_logger.html#idp51413648-bb"><span class="identifier">add_attribute</span></a><span class="special">(</span><span class="identifier">attribute_name</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">attribute</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="basic_composite_logger.html#idp51053248-bb"><span class="identifier">remove_attribute</span></a><span class="special">(</span><span class="identifier">attribute_set</span><span class="special">::</span><span class="identifier">iterator</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="basic_composite_logger.html#idp51056992-bb"><span class="identifier">remove_all_attributes</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">attribute_set</span> <a class="link" href="basic_composite_logger.html#idp51058368-bb"><span class="identifier">get_attributes</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="basic_composite_logger.html#idp51060720-bb"><span class="identifier">set_attributes</span></a><span class="special">(</span><span class="identifier">attribute_set</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="identifier">record</span> <a class="link" href="basic_composite_logger.html#idp51064544-bb"><span class="identifier">open_record</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> ArgsT<span class="special">&gt;</span> <span class="identifier">record</span> <a class="link" href="basic_composite_logger.html#idp51066624-bb"><span class="identifier">open_record</span></a><span class="special">(</span><span class="identifier">ArgsT</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="basic_composite_logger.html#idp51070704-bb"><span class="identifier">push_record</span></a><span class="special">(</span><span class="identifier">record</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="basic_composite_logger.html#idp51073440-bb"><span class="identifier">swap</span></a><span class="special">(</span><a class="link" href="basic_composite_logger.html" title="Class template basic_composite_logger">basic_composite_logger</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="basic_composite_logger.html#idp43492960-bb"><span class="identifier">add_attribute</span></a><span class="special">(</span><span class="identifier">attribute_name</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">,</span> <span class="identifier">attribute</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="basic_composite_logger.html#idp43497952-bb"><span class="identifier">remove_attribute</span></a><span class="special">(</span><span class="identifier">attribute_set</span><span class="special">::</span><span class="identifier">iterator</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="basic_composite_logger.html#idp43501520-bb"><span class="identifier">remove_all_attributes</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">attribute_set</span> <a class="link" href="basic_composite_logger.html#idp43502896-bb"><span class="identifier">get_attributes</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="basic_composite_logger.html#idp43505248-bb"><span class="identifier">set_attributes</span></a><span class="special">(</span><span class="identifier">attribute_set</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">record</span> <a class="link" href="basic_composite_logger.html#idp43509072-bb"><span class="identifier">open_record</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> ArgsT<span class="special">&gt;</span> <span class="identifier">record</span> <a class="link" href="basic_composite_logger.html#idp43511152-bb"><span class="identifier">open_record</span></a><span class="special">(</span><span class="identifier">ArgsT</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="basic_composite_logger.html#idp43515232-bb"><span class="identifier">push_record</span></a><span class="special">(</span><span class="identifier">record</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="basic_composite_logger.html#idp43517968-bb"><span class="identifier">swap</span></a><span class="special">(</span><a class="link" href="basic_composite_logger.html" title="Class template basic_composite_logger">basic_composite_logger</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="basic_composite_logger.html#idp51082192-bb">protected member functions</a></span>
-  <span class="identifier">FinalT</span> <span class="special">&amp;</span> <a class="link" href="basic_composite_logger.html#idp51082768-bb"><span class="identifier">assign</span></a><span class="special">(</span><span class="identifier">FinalT</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="basic_composite_logger.html#idp43526720-bb">protected member functions</a></span>
+  <span class="identifier">FinalT</span> <span class="special">&amp;</span> <a class="link" href="basic_composite_logger.html#idp43527296-bb"><span class="identifier">assign</span></a><span class="special">(</span><span class="identifier">FinalT</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp127824080"></a><h2>Description</h2>
+<a name="idp109849200"></a><h2>Description</h2>
 <p>The composite logger is a helper class that simplifies feature composition into the final logger. The user's logger class is expected to derive from the composite logger class, instantiated with the character type, the user's logger class, the threading model and the list of the required features. The former three parameters are passed to the <code class="computeroutput"><a class="link" href="basic_logger.html" title="Class template basic_logger">basic_logger</a></code> class template. The feature list must be an MPL type sequence, where each element is a unary MPL metafunction class, that upon applying on its argument results in a logging feature class that derives from the argument. Every logger feature provided by the library can participate in the feature list. </p>
 <div class="refsect2">
-<a name="idp127826672"></a><h3>
+<a name="idp109851600"></a><h3>
 <a name="boost.log.sources.basic_composite_loggerconstruct-copy-destruct"></a><code class="computeroutput">basic_composite_logger</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><a name="idp51075856-bb"></a><span class="identifier">basic_composite_logger</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a name="idp43520384-bb"></a><span class="identifier">basic_composite_logger</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>Default constructor (default-constructs all features) </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><a name="idp51076592-bb"></a><span class="identifier">basic_composite_logger</span><span class="special">(</span><a class="link" href="basic_composite_logger.html" title="Class template basic_composite_logger">basic_composite_logger</a> <span class="keyword">const</span> <span class="special">&amp;</span> that<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a name="idp43521120-bb"></a><span class="identifier">basic_composite_logger</span><span class="special">(</span><a class="link" href="basic_composite_logger.html" title="Class template basic_composite_logger">basic_composite_logger</a> <span class="keyword">const</span> <span class="special">&amp;</span> that<span class="special">)</span><span class="special">;</span></pre>
 <p>Copy constructor </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><a name="idp51078272-bb"></a><span class="identifier">basic_composite_logger</span><span class="special">(</span><span class="identifier">logger_base</span> <span class="special">&amp;&amp;</span> that<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a name="idp43522800-bb"></a><span class="identifier">basic_composite_logger</span><span class="special">(</span><span class="identifier">logger_base</span> <span class="special">&amp;&amp;</span> that<span class="special">)</span><span class="special">;</span></pre>
 <p>Move constructor </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> ArgsT<span class="special">&gt;</span> <span class="keyword">explicit</span> <a name="idp51079664-bb"></a><span class="identifier">basic_composite_logger</span><span class="special">(</span><span class="identifier">ArgsT</span> <span class="keyword">const</span> <span class="special">&amp;</span> args<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> ArgsT<span class="special">&gt;</span> <span class="keyword">explicit</span> <a name="idp43524192-bb"></a><span class="identifier">basic_composite_logger</span><span class="special">(</span><span class="identifier">ArgsT</span> <span class="keyword">const</span> <span class="special">&amp;</span> args<span class="special">)</span><span class="special">;</span></pre>
 <p>Constructor with named parameters </p>
 </li>
 </ol></div>
 </div>
 <div class="refsect2">
-<a name="idp127853696"></a><h3>
-<a name="idp51413088-bb"></a><code class="computeroutput">basic_composite_logger</code> public member functions</h3>
+<a name="idp109878624"></a><h3>
+<a name="idp43492400-bb"></a><code class="computeroutput">basic_composite_logger</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
 <pre class="literallayout"><span class="identifier">std</span><span class="special">::</span><span class="identifier">pair</span><span class="special">&lt;</span> <span class="identifier">attribute_set</span><span class="special">::</span><span class="identifier">iterator</span><span class="special">,</span> <span class="keyword">bool</span> <span class="special">&gt;</span> 
-<a name="idp51413648-bb"></a><span class="identifier">add_attribute</span><span class="special">(</span><span class="identifier">attribute_name</span> <span class="keyword">const</span> <span class="special">&amp;</span> name<span class="special">,</span> <span class="identifier">attribute</span> <span class="keyword">const</span> <span class="special">&amp;</span> attr<span class="special">)</span><span class="special">;</span></pre>
+<a name="idp43492960-bb"></a><span class="identifier">add_attribute</span><span class="special">(</span><span class="identifier">attribute_name</span> <span class="keyword">const</span> <span class="special">&amp;</span> name<span class="special">,</span> <span class="identifier">attribute</span> <span class="keyword">const</span> <span class="special">&amp;</span> attr<span class="special">)</span><span class="special">;</span></pre>
 <p>The method adds an attribute to the source-specific attribute set. The attribute will be implicitly added to every log record made with the current logger.</p>
 <p>
 
@@ -123,7 +123,7 @@
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp51053248-bb"></a><span class="identifier">remove_attribute</span><span class="special">(</span><span class="identifier">attribute_set</span><span class="special">::</span><span class="identifier">iterator</span> it<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp43497952-bb"></a><span class="identifier">remove_attribute</span><span class="special">(</span><span class="identifier">attribute_set</span><span class="special">::</span><span class="identifier">iterator</span> it<span class="special">)</span><span class="special">;</span></pre>
 <p>The method removes an attribute from the source-specific attribute set.</p>
 <p>
 
@@ -160,11 +160,11 @@
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp51056992-bb"></a><span class="identifier">remove_all_attributes</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp43501520-bb"></a><span class="identifier">remove_all_attributes</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>The method removes all attributes from the logger. All iterators and references to the removed attributes are invalidated. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">attribute_set</span> <a name="idp51058368-bb"></a><span class="identifier">get_attributes</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">attribute_set</span> <a name="idp43502896-bb"></a><span class="identifier">get_attributes</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p>The method retrieves a copy of a set with all attributes from the logger.</p>
 <p>
 </p>
@@ -180,7 +180,7 @@
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp51060720-bb"></a><span class="identifier">set_attributes</span><span class="special">(</span><span class="identifier">attribute_set</span> <span class="keyword">const</span> <span class="special">&amp;</span> attrs<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp43505248-bb"></a><span class="identifier">set_attributes</span><span class="special">(</span><span class="identifier">attribute_set</span> <span class="keyword">const</span> <span class="special">&amp;</span> attrs<span class="special">)</span><span class="special">;</span></pre>
 <p>The method installs the whole attribute set into the logger. All iterators and references to elements of the previous set are invalidated. Iterators to the <span class="emphasis"><em>attrs</em></span> set are not valid to be used with the logger (that is, the logger owns a copy of <span class="emphasis"><em>attrs</em></span> after completion).</p>
 <p>
 </p>
@@ -205,7 +205,7 @@
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="identifier">record</span> <a name="idp51064544-bb"></a><span class="identifier">open_record</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">record</span> <a name="idp43509072-bb"></a><span class="identifier">open_record</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>The method opens a new log record in the logging core.</p>
 <p>
 </p>
@@ -221,7 +221,7 @@
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> ArgsT<span class="special">&gt;</span> <span class="identifier">record</span> <a name="idp51066624-bb"></a><span class="identifier">open_record</span><span class="special">(</span><span class="identifier">ArgsT</span> <span class="keyword">const</span> <span class="special">&amp;</span> args<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> ArgsT<span class="special">&gt;</span> <span class="identifier">record</span> <a name="idp43511152-bb"></a><span class="identifier">open_record</span><span class="special">(</span><span class="identifier">ArgsT</span> <span class="keyword">const</span> <span class="special">&amp;</span> args<span class="special">)</span><span class="special">;</span></pre>
 <p>The method opens a new log record in the logging core.</p>
 <p>
 
@@ -253,7 +253,7 @@
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp51070704-bb"></a><span class="identifier">push_record</span><span class="special">(</span><span class="identifier">record</span> <span class="special">&amp;&amp;</span> rec<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp43515232-bb"></a><span class="identifier">push_record</span><span class="special">(</span><span class="identifier">record</span> <span class="special">&amp;&amp;</span> rec<span class="special">)</span><span class="special">;</span></pre>
 <p>The method pushes the constructed message to the logging core</p>
 <p>
 </p>
@@ -278,22 +278,22 @@
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp51073440-bb"></a><span class="identifier">swap</span><span class="special">(</span><a class="link" href="basic_composite_logger.html" title="Class template basic_composite_logger">basic_composite_logger</a> <span class="special">&amp;</span> that<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp43517968-bb"></a><span class="identifier">swap</span><span class="special">(</span><a class="link" href="basic_composite_logger.html" title="Class template basic_composite_logger">basic_composite_logger</a> <span class="special">&amp;</span> that<span class="special">)</span><span class="special">;</span></pre>
 <p>Thread-safe implementation of swap </p>
 </li>
 </ol></div>
 </div>
 <div class="refsect2">
-<a name="idp127946272"></a><h3>
-<a name="idp51082192-bb"></a><code class="computeroutput">basic_composite_logger</code> protected member functions</h3>
+<a name="idp109971136"></a><h3>
+<a name="idp43526720-bb"></a><code class="computeroutput">basic_composite_logger</code> protected member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
-<pre class="literallayout"><span class="identifier">FinalT</span> <span class="special">&amp;</span> <a name="idp51082768-bb"></a><span class="identifier">assign</span><span class="special">(</span><span class="identifier">FinalT</span> <span class="keyword">const</span> <span class="special">&amp;</span> that<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="identifier">FinalT</span> <span class="special">&amp;</span> <a name="idp43527296-bb"></a><span class="identifier">assign</span><span class="special">(</span><span class="identifier">FinalT</span> <span class="keyword">const</span> <span class="special">&amp;</span> that<span class="special">)</span><span class="special">;</span></pre>
 <p>Assignment for the final class. Threadsafe, provides strong exception guarantee. </p>
 </li></ol></div>
 </div>
 <div class="refsect2">
-<a name="idp127955824"></a><h3>Specializations</h3>
-<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><a class="link" href="basic_composit_idp51084944.html" title="Class template basic_composite_logger&lt;CharT, FinalT, single_thread_model, FeaturesT&gt;">Class template basic_composite_logger&lt;CharT, FinalT, single_thread_model, FeaturesT&gt;</a></p></li></ul></div>
+<a name="idp109980688"></a><h3>Specializations</h3>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><a class="link" href="basic_composit_idp43529472.html" title="Class template basic_composite_logger&lt;CharT, FinalT, single_thread_model, FeaturesT&gt;">Class template basic_composite_logger&lt;CharT, FinalT, single_thread_model, FeaturesT&gt;</a></p></li></ul></div>
 </div>
 </div>
 </div>
@@ -307,7 +307,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="basic_logger.html"><img src="../../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../../logging_sources.html#header.boost.log.sources.basic_logger_hpp"><img src="../../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="basic_composit_idp51084944.html"><img src="../../../../../../../doc/src/images/next.png" alt="Next"></a>
+<a accesskey="p" href="basic_logger.html"><img src="../../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../../logging_sources.html#header.boost.log.sources.basic_logger_hpp"><img src="../../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="basic_composit_idp43529472.html"><img src="../../../../../../../doc/src/images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

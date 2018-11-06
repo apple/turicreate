@@ -454,7 +454,7 @@
           in one logger, then yes, you certainly can. The library provides <code class="computeroutput"><a class="link" href="../../boost/log/sources/severity_channel_logger.html" title="Class template severity_channel_logger">severity_channel_logger</a></code>
           and <code class="computeroutput"><a class="link" href="../../boost/log/sources/severity_channel_logger_mt.html" title="Class template severity_channel_logger_mt">severity_channel_logger_mt</a></code>
           (with their wide-char analogues <code class="computeroutput"><a class="link" href="../../boost/log/sources/wseverity_channel_logger.html" title="Class template wseverity_channel_logger">wseverity_channel_logger</a></code>
-          and <code class="computeroutput"><a class="link" href="../../boost/log/sources/wseverity_chan_idp54290080.html" title="Class template wseverity_channel_logger_mt">wseverity_channel_logger_mt</a></code>)
+          and <code class="computeroutput"><a class="link" href="../../boost/log/sources/wseverity_chan_idp46431680.html" title="Class template wseverity_channel_logger_mt">wseverity_channel_logger_mt</a></code>)
           which combine features of the described loggers with <a class="link" href="sources.html#log.detailed.sources.severity_level_logger" title="Loggers with severity level support">severity
           level</a> and <a class="link" href="sources.html#log.detailed.sources.channel_logger" title="Loggers with channel support">channels</a>
           support. The composite loggers are templates, too, which allows you to
@@ -571,7 +571,7 @@
 <p>
           The easiest way to declare a global logger is to use the following macro:
         </p>
-<pre class="programlisting"><code class="computeroutput"><a class="link" href="../../BOOST_LOG_INLI_idp54099232.html" title="Macro BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT">BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT</a></code><span class="special">(</span><span class="identifier">my_logger</span><span class="special">,</span> <span class="identifier">src</span><span class="special">::</span><span class="identifier">severity_logger_mt</span><span class="special">&lt;</span> <span class="special">&gt;)</span>
+<pre class="programlisting"><code class="computeroutput"><a class="link" href="../../BOOST_LOG_INLI_idp46240832.html" title="Macro BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT">BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT</a></code><span class="special">(</span><span class="identifier">my_logger</span><span class="special">,</span> <span class="identifier">src</span><span class="special">::</span><span class="identifier">severity_logger_mt</span><span class="special">&lt;</span> <span class="special">&gt;)</span>
 </pre>
 <p>
           The <code class="computeroutput"><span class="identifier">my_logger</span></code> argument
@@ -585,7 +585,7 @@
           If passing arguments to the logger constructor is needed, there is another
           macro:
         </p>
-<pre class="programlisting"><code class="computeroutput"><a class="link" href="../../BOOST_LOG_INLI_idp54101216.html" title="Macro BOOST_LOG_INLINE_GLOBAL_LOGGER_CTOR_ARGS">BOOST_LOG_INLINE_GLOBAL_LOGGER_CTOR_ARGS</a></code><span class="special">(</span>
+<pre class="programlisting"><code class="computeroutput"><a class="link" href="../../BOOST_LOG_INLI_idp46242816.html" title="Macro BOOST_LOG_INLINE_GLOBAL_LOGGER_CTOR_ARGS">BOOST_LOG_INLINE_GLOBAL_LOGGER_CTOR_ARGS</a></code><span class="special">(</span>
     <span class="identifier">my_logger</span><span class="special">,</span>
     <span class="identifier">src</span><span class="special">::</span><span class="identifier">severity_channel_logger</span><span class="special">&lt;</span> <span class="special">&gt;,</span>
     <span class="special">(</span><span class="identifier">keywords</span><span class="special">::</span><span class="identifier">severity</span> <span class="special">=</span> <span class="identifier">error</span><span class="special">)(</span><span class="identifier">keywords</span><span class="special">::</span><span class="identifier">channel</span> <span class="special">=</span> <span class="string">"my_channel"</span><span class="special">))</span>
@@ -604,7 +604,7 @@
           The third macro of this section provides maximum initialization flexibility,
           allowing the user to actually define the logic of creating the logger.
         </p>
-<pre class="programlisting"><code class="computeroutput"><a class="link" href="../../BOOST_LOG_INLI_idp54097248.html" title="Macro BOOST_LOG_INLINE_GLOBAL_LOGGER_INIT">BOOST_LOG_INLINE_GLOBAL_LOGGER_INIT</a></code><span class="special">(</span><span class="identifier">my_logger</span><span class="special">,</span> <span class="identifier">src</span><span class="special">::</span><span class="identifier">severity_logger_mt</span><span class="special">)</span>
+<pre class="programlisting"><code class="computeroutput"><a class="link" href="../../BOOST_LOG_INLI_idp46238848.html" title="Macro BOOST_LOG_INLINE_GLOBAL_LOGGER_INIT">BOOST_LOG_INLINE_GLOBAL_LOGGER_INIT</a></code><span class="special">(</span><span class="identifier">my_logger</span><span class="special">,</span> <span class="identifier">src</span><span class="special">::</span><span class="identifier">severity_logger_mt</span><span class="special">)</span>
 <span class="special">{</span>
     <span class="comment">// Do something that needs to be done on logger initialization,</span>
     <span class="comment">// e.g. add a stop watch attribute.</span>
@@ -615,7 +615,7 @@
 <span class="special">}</span>
 </pre>
 <p>
-          Like the <code class="computeroutput"><a class="link" href="../../BOOST_LOG_INLI_idp54101216.html" title="Macro BOOST_LOG_INLINE_GLOBAL_LOGGER_CTOR_ARGS">BOOST_LOG_INLINE_GLOBAL_LOGGER_CTOR_ARGS</a></code>
+          Like the <code class="computeroutput"><a class="link" href="../../BOOST_LOG_INLI_idp46242816.html" title="Macro BOOST_LOG_INLINE_GLOBAL_LOGGER_CTOR_ARGS">BOOST_LOG_INLINE_GLOBAL_LOGGER_CTOR_ARGS</a></code>
           macro, the initialization code is called only once, on the first request
           of the logger.
         </p>
@@ -630,7 +630,7 @@
             logger is declared in exactly the same way at all occurrences</span>
             and <span class="underline">all symbol names involved in the declaration
             resolve to the same entities</span>. The latter includes the names
-            used within the initialization routine of the <code class="computeroutput"><a class="link" href="../../BOOST_LOG_INLI_idp54097248.html" title="Macro BOOST_LOG_INLINE_GLOBAL_LOGGER_INIT">BOOST_LOG_INLINE_GLOBAL_LOGGER_INIT</a></code>
+            used within the initialization routine of the <code class="computeroutput"><a class="link" href="../../BOOST_LOG_INLI_idp46238848.html" title="Macro BOOST_LOG_INLINE_GLOBAL_LOGGER_INIT">BOOST_LOG_INLINE_GLOBAL_LOGGER_INIT</a></code>
             macro, such as references to external variables, functions and types.
             The library tries to protect itself from ODR violations to a certain
             degree, but in general the behavior is undefined if the rule is violated.
@@ -648,9 +648,9 @@
               to the <code class="computeroutput"><span class="identifier">BOOST_LOG_INLINE_GLOBAL_LOGGER</span><span class="special">*</span></code> macros described above.
             </li>
 <li class="listitem">
-              <code class="computeroutput"><a class="link" href="../../BOOST_LOG_GLOB_idp54090832.html" title="Macro BOOST_LOG_GLOBAL_LOGGER_INIT">BOOST_LOG_GLOBAL_LOGGER_INIT</a></code>,
-              <code class="computeroutput"><a class="link" href="../../BOOST_LOG_GLOB_idp54092816.html" title="Macro BOOST_LOG_GLOBAL_LOGGER_DEFAULT">BOOST_LOG_GLOBAL_LOGGER_DEFAULT</a></code>
-              and <code class="computeroutput"><a class="link" href="../../BOOST_LOG_GLOB_idp54094816.html" title="Macro BOOST_LOG_GLOBAL_LOGGER_CTOR_ARGS">BOOST_LOG_GLOBAL_LOGGER_CTOR_ARGS</a></code>
+              <code class="computeroutput"><a class="link" href="../../BOOST_LOG_GLOB_idp46232432.html" title="Macro BOOST_LOG_GLOBAL_LOGGER_INIT">BOOST_LOG_GLOBAL_LOGGER_INIT</a></code>,
+              <code class="computeroutput"><a class="link" href="../../BOOST_LOG_GLOB_idp46234416.html" title="Macro BOOST_LOG_GLOBAL_LOGGER_DEFAULT">BOOST_LOG_GLOBAL_LOGGER_DEFAULT</a></code>
+              and <code class="computeroutput"><a class="link" href="../../BOOST_LOG_GLOB_idp46236416.html" title="Macro BOOST_LOG_GLOBAL_LOGGER_CTOR_ARGS">BOOST_LOG_GLOBAL_LOGGER_CTOR_ARGS</a></code>
               define the logger initialization routine. Their semantics and usage
               is similar to the corresponding <code class="computeroutput"><span class="identifier">BOOST_LOG_INLINE_GLOBAL_LOGGER</span><span class="special">*</span></code> macros, for one exception: these macros
               should be used in a single .cpp file.

@@ -6,7 +6,7 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="../../index.html" title="Chapter&#160;1.&#160;Boost.Compute">
 <link rel="up" href="../../boost_compute/reference.html#header.boost.compute.iterator.permutation_iterator_hpp" title="Header &lt;boost/compute/iterator/permutation_iterator.hpp&gt;">
-<link rel="prev" href="make_function__idp26663584.html" title="Function template make_function_input_iterator">
+<link rel="prev" href="make_function__idp35438528.html" title="Function template make_function_input_iterator">
 <link rel="next" href="make_permutation_iterator.html" title="Function template make_permutation_iterator">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -20,7 +20,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="make_function__idp26663584.html"><img src="../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../boost_compute/reference.html#header.boost.compute.iterator.permutation_iterator_hpp"><img src="../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="make_permutation_iterator.html"><img src="../../../../../../doc/src/images/next.png" alt="Next"></a>
+<a accesskey="p" href="make_function__idp35438528.html"><img src="../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../boost_compute/reference.html#header.boost.compute.iterator.permutation_iterator_hpp"><img src="../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="make_permutation_iterator.html"><img src="../../../../../../doc/src/images/next.png" alt="Next"></a>
 </div>
 <div class="refentry">
 <a name="boost.compute.permutation_iterator"></a><div class="titlepage"></div>
@@ -43,22 +43,22 @@
   <span class="keyword">typedef</span> <span class="identifier">IndexIterator</span>               <a name="boost.compute.permutation_iterator.index_iterator"></a><span class="identifier">index_iterator</span><span class="special">;</span> 
 
   <span class="comment">// <a class="link" href="permutation_iterator.html#boost.compute.permutation_iteratorconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="permutation_iterator.html#idp26690496-bb"><span class="identifier">permutation_iterator</span></a><span class="special">(</span><span class="identifier">ElementIterator</span><span class="special">,</span> <span class="identifier">IndexIterator</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="permutation_iterator.html#idp26692160-bb"><span class="identifier">permutation_iterator</span></a><span class="special">(</span><span class="keyword">const</span> <a class="link" href="permutation_iterator.html" title="Class template permutation_iterator">permutation_iterator</a><span class="special">&lt;</span> <span class="identifier">ElementIterator</span><span class="special">,</span> <span class="identifier">IndexIterator</span> <span class="special">&gt;</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="permutation_iterator.html#idp35465440-bb"><span class="identifier">permutation_iterator</span></a><span class="special">(</span><span class="identifier">ElementIterator</span><span class="special">,</span> <span class="identifier">IndexIterator</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="permutation_iterator.html#idp35467104-bb"><span class="identifier">permutation_iterator</span></a><span class="special">(</span><span class="keyword">const</span> <a class="link" href="permutation_iterator.html" title="Class template permutation_iterator">permutation_iterator</a><span class="special">&lt;</span> <span class="identifier">ElementIterator</span><span class="special">,</span> <span class="identifier">IndexIterator</span> <span class="special">&gt;</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
   <a class="link" href="permutation_iterator.html" title="Class template permutation_iterator">permutation_iterator</a><span class="special">&lt;</span> <span class="identifier">ElementIterator</span><span class="special">,</span> <span class="identifier">IndexIterator</span> <span class="special">&gt;</span> <span class="special">&amp;</span> 
-  <a class="link" href="permutation_iterator.html#idp26693600-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><span class="keyword">const</span> <a class="link" href="permutation_iterator.html" title="Class template permutation_iterator">permutation_iterator</a><span class="special">&lt;</span> <span class="identifier">ElementIterator</span><span class="special">,</span> <span class="identifier">IndexIterator</span> <span class="special">&gt;</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="permutation_iterator.html#idp26695632-bb"><span class="special">~</span><span class="identifier">permutation_iterator</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="permutation_iterator.html#idp35468544-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><span class="keyword">const</span> <a class="link" href="permutation_iterator.html" title="Class template permutation_iterator">permutation_iterator</a><span class="special">&lt;</span> <span class="identifier">ElementIterator</span><span class="special">,</span> <span class="identifier">IndexIterator</span> <span class="special">&gt;</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="permutation_iterator.html#idp35470576-bb"><span class="special">~</span><span class="identifier">permutation_iterator</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="permutation_iterator.html#idp26684752-bb">public member functions</a></span>
-  <span class="identifier">size_t</span> <a class="link" href="permutation_iterator.html#idp26685312-bb"><span class="identifier">get_index</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="keyword">const</span> <span class="identifier">buffer</span> <span class="special">&amp;</span> <a class="link" href="permutation_iterator.html#idp26686432-bb"><span class="identifier">get_buffer</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> IndexExpr<span class="special">&gt;</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span> <a class="link" href="permutation_iterator.html#idp26687552-bb"><span class="keyword">operator</span><span class="special">[</span><span class="special">]</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">IndexExpr</span> <span class="special">&amp;</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="permutation_iterator.html#idp35459696-bb">public member functions</a></span>
+  <span class="identifier">size_t</span> <a class="link" href="permutation_iterator.html#idp35460256-bb"><span class="identifier">get_index</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">const</span> <span class="identifier">buffer</span> <span class="special">&amp;</span> <a class="link" href="permutation_iterator.html#idp35461376-bb"><span class="identifier">get_buffer</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> IndexExpr<span class="special">&gt;</span> <span class="emphasis"><em><span class="identifier">unspecified</span></em></span> <a class="link" href="permutation_iterator.html#idp35462496-bb"><span class="keyword">operator</span><span class="special">[</span><span class="special">]</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">IndexExpr</span> <span class="special">&amp;</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="permutation_iterator.html#idp26695920-bb">private member functions</a></span>
-  <span class="identifier">reference</span> <a class="link" href="permutation_iterator.html#idp26696496-bb"><span class="identifier">dereference</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="permutation_iterator.html#idp35470864-bb">private member functions</a></span>
+  <span class="identifier">reference</span> <a class="link" href="permutation_iterator.html#idp35471440-bb"><span class="identifier">dereference</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp111694528"></a><h2>Description</h2>
+<a name="idp104758080"></a><h2>Description</h2>
 <p>A permutation iterator iterates over a value range and an index range. When dereferenced, it returns the value from the value range using the current index from the index range.</p>
 <p>For example, to reverse a range using the copy() algorithm and a permutation sequence:</p>
 <pre class="programlisting"></pre>
@@ -68,32 +68,32 @@
 <p>
 </p>
 <div class="refsect2">
-<a name="idp111697360"></a><h3>
+<a name="idp104761072"></a><h3>
 <a name="boost.compute.permutation_iteratorconstruct-copy-destruct"></a><code class="computeroutput">permutation_iterator</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
-<li class="listitem"><pre class="literallayout"><a name="idp26690496-bb"></a><span class="identifier">permutation_iterator</span><span class="special">(</span><span class="identifier">ElementIterator</span> e<span class="special">,</span> <span class="identifier">IndexIterator</span> i<span class="special">)</span><span class="special">;</span></pre></li>
-<li class="listitem"><pre class="literallayout"><a name="idp26692160-bb"></a><span class="identifier">permutation_iterator</span><span class="special">(</span><span class="keyword">const</span> <a class="link" href="permutation_iterator.html" title="Class template permutation_iterator">permutation_iterator</a><span class="special">&lt;</span> <span class="identifier">ElementIterator</span><span class="special">,</span> <span class="identifier">IndexIterator</span> <span class="special">&gt;</span> <span class="special">&amp;</span> other<span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><a name="idp35465440-bb"></a><span class="identifier">permutation_iterator</span><span class="special">(</span><span class="identifier">ElementIterator</span> e<span class="special">,</span> <span class="identifier">IndexIterator</span> i<span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><a name="idp35467104-bb"></a><span class="identifier">permutation_iterator</span><span class="special">(</span><span class="keyword">const</span> <a class="link" href="permutation_iterator.html" title="Class template permutation_iterator">permutation_iterator</a><span class="special">&lt;</span> <span class="identifier">ElementIterator</span><span class="special">,</span> <span class="identifier">IndexIterator</span> <span class="special">&gt;</span> <span class="special">&amp;</span> other<span class="special">)</span><span class="special">;</span></pre></li>
 <li class="listitem"><pre class="literallayout"><a class="link" href="permutation_iterator.html" title="Class template permutation_iterator">permutation_iterator</a><span class="special">&lt;</span> <span class="identifier">ElementIterator</span><span class="special">,</span> <span class="identifier">IndexIterator</span> <span class="special">&gt;</span> <span class="special">&amp;</span> 
-<a name="idp26693600-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><span class="keyword">const</span> <a class="link" href="permutation_iterator.html" title="Class template permutation_iterator">permutation_iterator</a><span class="special">&lt;</span> <span class="identifier">ElementIterator</span><span class="special">,</span> <span class="identifier">IndexIterator</span> <span class="special">&gt;</span> <span class="special">&amp;</span> other<span class="special">)</span><span class="special">;</span></pre></li>
-<li class="listitem"><pre class="literallayout"><a name="idp26695632-bb"></a><span class="special">~</span><span class="identifier">permutation_iterator</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre></li>
+<a name="idp35468544-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><span class="keyword">const</span> <a class="link" href="permutation_iterator.html" title="Class template permutation_iterator">permutation_iterator</a><span class="special">&lt;</span> <span class="identifier">ElementIterator</span><span class="special">,</span> <span class="identifier">IndexIterator</span> <span class="special">&gt;</span> <span class="special">&amp;</span> other<span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><a name="idp35470576-bb"></a><span class="special">~</span><span class="identifier">permutation_iterator</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre></li>
 </ol></div>
 </div>
 <div class="refsect2">
-<a name="idp111732688"></a><h3>
-<a name="idp26684752-bb"></a><code class="computeroutput">permutation_iterator</code> public member functions</h3>
+<a name="idp104796480"></a><h3>
+<a name="idp35459696-bb"></a><code class="computeroutput">permutation_iterator</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
-<li class="listitem"><pre class="literallayout"><span class="identifier">size_t</span> <a name="idp26685312-bb"></a><span class="identifier">get_index</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre></li>
-<li class="listitem"><pre class="literallayout"><span class="keyword">const</span> <span class="identifier">buffer</span> <span class="special">&amp;</span> <a name="idp26686432-bb"></a><span class="identifier">get_buffer</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><span class="identifier">size_t</span> <a name="idp35460256-bb"></a><span class="identifier">get_index</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><span class="keyword">const</span> <span class="identifier">buffer</span> <span class="special">&amp;</span> <a name="idp35461376-bb"></a><span class="identifier">get_buffer</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre></li>
 <li class="listitem"><pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> IndexExpr<span class="special">&gt;</span> 
-  <span class="emphasis"><em><span class="identifier">unspecified</span></em></span> <a name="idp26687552-bb"></a><span class="keyword">operator</span><span class="special">[</span><span class="special">]</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">IndexExpr</span> <span class="special">&amp;</span> expr<span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre></li>
+  <span class="emphasis"><em><span class="identifier">unspecified</span></em></span> <a name="idp35462496-bb"></a><span class="keyword">operator</span><span class="special">[</span><span class="special">]</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">IndexExpr</span> <span class="special">&amp;</span> expr<span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre></li>
 </ol></div>
 </div>
 <div class="refsect2">
-<a name="idp111757008"></a><h3>
-<a name="idp26695920-bb"></a><code class="computeroutput">permutation_iterator</code> private member functions</h3>
-<div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><pre class="literallayout"><span class="identifier">reference</span> <a name="idp26696496-bb"></a><span class="identifier">dereference</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre></li></ol></div>
+<a name="idp104820736"></a><h3>
+<a name="idp35470864-bb"></a><code class="computeroutput">permutation_iterator</code> private member functions</h3>
+<div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><pre class="literallayout"><span class="identifier">reference</span> <a name="idp35471440-bb"></a><span class="identifier">dereference</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre></li></ol></div>
 </div>
 </div>
 </div>
@@ -107,7 +107,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="make_function__idp26663584.html"><img src="../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../boost_compute/reference.html#header.boost.compute.iterator.permutation_iterator_hpp"><img src="../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="make_permutation_iterator.html"><img src="../../../../../../doc/src/images/next.png" alt="Next"></a>
+<a accesskey="p" href="make_function__idp35438528.html"><img src="../../../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../boost_compute/reference.html#header.boost.compute.iterator.permutation_iterator_hpp"><img src="../../../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="make_permutation_iterator.html"><img src="../../../../../../doc/src/images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

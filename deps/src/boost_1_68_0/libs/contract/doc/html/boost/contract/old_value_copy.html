@@ -34,13 +34,13 @@
 </span><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> 
 <span class="keyword">struct</span> <a class="link" href="old_value_copy.html" title="Struct template old_value_copy">old_value_copy</a> <span class="special">{</span>
   <span class="comment">// <a class="link" href="old_value_copy.html#boost.contract.old_value_copyconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <span class="keyword">explicit</span> <a class="link" href="old_value_copy.html#idp59621584-bb"><span class="identifier">old_value_copy</span></a><span class="special">(</span><span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">explicit</span> <a class="link" href="old_value_copy.html#idp71460096-bb"><span class="identifier">old_value_copy</span></a><span class="special">(</span><span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="old_value_copy.html#idp59617696-bb">public member functions</a></span>
-  <span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a class="link" href="old_value_copy.html#idp59618256-bb"><span class="identifier">old</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="old_value_copy.html#idp71456208-bb">public member functions</a></span>
+  <span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a class="link" href="old_value_copy.html#idp71456768-bb"><span class="identifier">old</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp107657792"></a><h2>Description</h2>
+<a name="idp99258752"></a><h2>Description</h2>
 <p>By default, the implementation of this trait uses <code class="computeroutput">T's</code> copy constructor to make one single copy of the specified <code class="computeroutput">value</code>. However, programmers can specialize this trait to copy old values using user-specific operations different from <code class="computeroutput">T's</code> copy constructor. The default implementation of this trait is equivalent to:</p>
 <pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">T</span><span class="special">&gt;</span>
 <span class="keyword">class</span> <span class="identifier">old_value_copy</span> <span class="special">{</span>
@@ -62,12 +62,12 @@
 <p>
 </p>
 <div class="refsect2">
-<a name="idp107695072"></a><h3>
+<a name="idp99296080"></a><h3>
 <a name="boost.contract.old_value_copyconstruct-copy-destruct"></a><code class="computeroutput">old_value_copy</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
-<pre class="literallayout"><span class="keyword">explicit</span> <a name="idp59621584-bb"></a><span class="identifier">old_value_copy</span><span class="special">(</span><span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span> old<span class="special">)</span><span class="special">;</span></pre>Construct this object by making one single copy of the specified old value. <p>This is the only operation within this library that actually copies old values. This ensures this library makes one and only one copy of old values (if they actually need to be copied).</p>
+<pre class="literallayout"><span class="keyword">explicit</span> <a name="idp71460096-bb"></a><span class="identifier">old_value_copy</span><span class="special">(</span><span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span> old<span class="special">)</span><span class="special">;</span></pre>Construct this object by making one single copy of the specified old value. <p>This is the only operation within this library that actually copies old values. This ensures this library makes one and only one copy of old values (if they actually need to be copied).</p>
 <p>
 </p>
 <div class="variablelist"><table border="0" class="variablelist compact">
@@ -92,10 +92,10 @@
 </li></ol></div>
 </div>
 <div class="refsect2">
-<a name="idp107707552"></a><h3>
-<a name="idp59617696-bb"></a><code class="computeroutput">old_value_copy</code> public member functions</h3>
+<a name="idp99308624"></a><h3>
+<a name="idp71456208-bb"></a><code class="computeroutput">old_value_copy</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
-<pre class="literallayout"><span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a name="idp59618256-bb"></a><span class="identifier">old</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Return a (constant) reference to the old value that was copied. <p>Contract assertions should not change the state of the program so the old value copy is returned as <code class="computeroutput">const</code> (see  <a class="link" href="../../boost_contract/contract_programming_overview.html#boost_contract.contract_programming_overview.constant_correctness" title="Constant-Correctness">
+<pre class="literallayout"><span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span> <a name="idp71456768-bb"></a><span class="identifier">old</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>Return a (constant) reference to the old value that was copied. <p>Contract assertions should not change the state of the program so the old value copy is returned as <code class="computeroutput">const</code> (see  <a class="link" href="../../boost_contract/contract_programming_overview.html#boost_contract.contract_programming_overview.constant_correctness" title="Constant-Correctness">
 Constant Correctness</a>). </p>
 </li></ol></div>
 </div>

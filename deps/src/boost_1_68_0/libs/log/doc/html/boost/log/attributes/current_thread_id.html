@@ -37,18 +37,18 @@
   <span class="keyword">class</span> <a class="link" href="current_thread_id/impl.html" title="Class impl">impl</a> <span class="special">:</span> <span class="keyword">public</span> <span class="identifier">attribute_value</span><span class="special">::</span><span class="identifier">impl</span> <span class="special">{</span>
   <span class="keyword">public</span><span class="special">:</span>
 
-    <span class="comment">// <a class="link" href="current_thread_id/impl.html#idp52419904-bb">public member functions</a></span>
-    <span class="keyword">virtual</span> <span class="keyword">bool</span> <a class="link" href="current_thread_id/impl.html#idp52420464-bb"><span class="identifier">dispatch</span></a><span class="special">(</span><span class="identifier">type_dispatcher</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-    <span class="keyword">virtual</span> <span class="identifier">intrusive_ptr</span><span class="special">&lt;</span> <a class="link" href="../attribute_value/impl.html" title="Struct impl">attribute_value::impl</a> <span class="special">&gt;</span> <a class="link" href="current_thread_id/impl.html#idp52424384-bb"><span class="identifier">detach_from_thread</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-    <span class="keyword">virtual</span> <span class="identifier">typeindex</span><span class="special">::</span><span class="identifier">type_index</span> <a class="link" href="current_thread_id/impl.html#idp52427472-bb"><span class="identifier">get_type</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+    <span class="comment">// <a class="link" href="current_thread_id/impl.html#idp44561712-bb">public member functions</a></span>
+    <span class="keyword">virtual</span> <span class="keyword">bool</span> <a class="link" href="current_thread_id/impl.html#idp44562272-bb"><span class="identifier">dispatch</span></a><span class="special">(</span><span class="identifier">type_dispatcher</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+    <span class="keyword">virtual</span> <span class="identifier">intrusive_ptr</span><span class="special">&lt;</span> <a class="link" href="../attribute_value/impl.html" title="Struct impl">attribute_value::impl</a> <span class="special">&gt;</span> <a class="link" href="current_thread_id/impl.html#idp44566192-bb"><span class="identifier">detach_from_thread</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+    <span class="keyword">virtual</span> <span class="identifier">typeindex</span><span class="special">::</span><span class="identifier">type_index</span> <a class="link" href="current_thread_id/impl.html#idp44569280-bb"><span class="identifier">get_type</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
   <span class="special">}</span><span class="special">;</span>
 
   <span class="comment">// <a class="link" href="current_thread_id.html#boost.log.attributes.current_thread_idconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="current_thread_id.html#idp52431744-bb"><span class="identifier">current_thread_id</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">explicit</span> <a class="link" href="current_thread_id.html#idp52432448-bb"><span class="identifier">current_thread_id</span></a><span class="special">(</span><a class="link" href="cast_source.html" title="Class cast_source">cast_source</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="current_thread_id.html#idp44573552-bb"><span class="identifier">current_thread_id</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">explicit</span> <a class="link" href="current_thread_id.html#idp44574256-bb"><span class="identifier">current_thread_id</span></a><span class="special">(</span><a class="link" href="cast_source.html" title="Class cast_source">cast_source</a> <span class="keyword">const</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp115120320"></a><h2>Description</h2>
+<a name="idp97147664"></a><h2>Description</h2>
 <div class="note"><table border="0" summary="Note">
 <tr>
 <td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../../../../../../../doc/src/images/note.png"></td>
@@ -59,17 +59,17 @@
 <p>
 </p>
 <div class="refsect2">
-<a name="idp115121536"></a><h3>
+<a name="idp97148880"></a><h3>
 <a name="boost.log.attributes.current_thread_idconstruct-copy-destruct"></a><code class="computeroutput">current_thread_id</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><a name="idp52431744-bb"></a><span class="identifier">current_thread_id</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a name="idp44573552-bb"></a><span class="identifier">current_thread_id</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>Default constructor </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">explicit</span> <a name="idp52432448-bb"></a><span class="identifier">current_thread_id</span><span class="special">(</span><a class="link" href="cast_source.html" title="Class cast_source">cast_source</a> <span class="keyword">const</span> <span class="special">&amp;</span> source<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">explicit</span> <a name="idp44574256-bb"></a><span class="identifier">current_thread_id</span><span class="special">(</span><a class="link" href="cast_source.html" title="Class cast_source">cast_source</a> <span class="keyword">const</span> <span class="special">&amp;</span> source<span class="special">)</span><span class="special">;</span></pre>
 <p>Constructor for casting support </p>
 </li>
 </ol></div>

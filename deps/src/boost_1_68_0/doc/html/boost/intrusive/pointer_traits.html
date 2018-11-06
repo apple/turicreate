@@ -7,8 +7,8 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="../../index.html" title="The Boost C++ Libraries BoostBook Documentation Subset">
 <link rel="up" href="../../intrusive/reference.html#header.boost.intrusive.pointer_traits_hpp" title="Header &lt;boost/intrusive/pointer_traits.hpp&gt;">
-<link rel="prev" href="pointer_rebind_idp80740448.html" title="Struct template pointer_rebind&lt;T *, U&gt;">
-<link rel="next" href="pointer_traits_idp80785600.html" title="Struct template pointer_traits&lt;T *&gt;">
+<link rel="prev" href="pointer_rebind_idp67483984.html" title="Struct template pointer_rebind&lt;T *, U&gt;">
+<link rel="next" href="pointer_traits_idp67529136.html" title="Struct template pointer_traits&lt;T *&gt;">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -21,7 +21,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="pointer_rebind_idp80740448.html"><img src="../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../intrusive/reference.html#header.boost.intrusive.pointer_traits_hpp"><img src="../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="pointer_traits_idp80785600.html"><img src="../../../../doc/src/images/next.png" alt="Next"></a>
+<a accesskey="p" href="pointer_rebind_idp67483984.html"><img src="../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../intrusive/reference.html#header.boost.intrusive.pointer_traits_hpp"><img src="../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="pointer_traits_idp67529136.html"><img src="../../../../doc/src/images/next.png" alt="Next"></a>
 </div>
 <div class="refentry">
 <a name="boost.intrusive.pointer_traits"></a><div class="titlepage"></div>
@@ -41,11 +41,11 @@
   <span class="keyword">typedef</span> <span class="identifier">unspecified</span>      <a class="link" href="pointer_traits.html#boost.intrusive.pointer_traits.rebind"><span class="identifier">rebind</span></a><span class="special">;</span>         
   <span class="keyword">typedef</span> <span class="identifier">unspecified_type</span> <a class="link" href="pointer_traits.html#boost.intrusive.pointer_traits.reference"><span class="identifier">reference</span></a><span class="special">;</span>      
 
-  <span class="comment">// <a class="link" href="pointer_traits.html#idp80761056-bb">public static functions</a></span>
-  <span class="keyword">static</span> <span class="identifier">pointer</span> <a class="link" href="pointer_traits.html#idp80761616-bb"><span class="identifier">pointer_to</span></a><span class="special">(</span><span class="identifier">reference</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> UPtr<span class="special">&gt;</span> <span class="keyword">static</span> <span class="identifier">pointer</span> <a class="link" href="pointer_traits.html#idp80766864-bb"><span class="identifier">static_cast_from</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">UPtr</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> UPtr<span class="special">&gt;</span> <span class="keyword">static</span> <span class="identifier">pointer</span> <a class="link" href="pointer_traits.html#idp80772912-bb"><span class="identifier">const_cast_from</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">UPtr</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> UPtr<span class="special">&gt;</span> <span class="keyword">static</span> <span class="identifier">pointer</span> <a class="link" href="pointer_traits.html#idp80778960-bb"><span class="identifier">dynamic_cast_from</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">UPtr</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="pointer_traits.html#idp67504592-bb">public static functions</a></span>
+  <span class="keyword">static</span> <span class="identifier">pointer</span> <a class="link" href="pointer_traits.html#idp67505152-bb"><span class="identifier">pointer_to</span></a><span class="special">(</span><span class="identifier">reference</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> UPtr<span class="special">&gt;</span> <span class="keyword">static</span> <span class="identifier">pointer</span> <a class="link" href="pointer_traits.html#idp67510400-bb"><span class="identifier">static_cast_from</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">UPtr</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> UPtr<span class="special">&gt;</span> <span class="keyword">static</span> <span class="identifier">pointer</span> <a class="link" href="pointer_traits.html#idp67516448-bb"><span class="identifier">const_cast_from</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">UPtr</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> UPtr<span class="special">&gt;</span> <span class="keyword">static</span> <span class="identifier">pointer</span> <a class="link" href="pointer_traits.html#idp67522496-bb"><span class="identifier">dynamic_cast_from</span></a><span class="special">(</span><span class="keyword">const</span> <span class="identifier">UPtr</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
 <a name="id-1.3.19.43.26.3.4"></a><h2>Description</h2>
@@ -88,28 +88,28 @@
 </div>
 <div class="refsect2">
 <a name="id-1.3.19.43.26.3.4.6"></a><h3>
-<a name="idp80761056-bb"></a><code class="computeroutput">pointer_traits</code> public static functions</h3>
+<a name="idp67504592-bb"></a><code class="computeroutput">pointer_traits</code> public static functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">static</span> <span class="identifier">pointer</span> <a name="idp80761616-bb"></a><span class="identifier">pointer_to</span><span class="special">(</span><span class="identifier">reference</span> r<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">static</span> <span class="identifier">pointer</span> <a name="idp67505152-bb"></a><span class="identifier">pointer_to</span><span class="special">(</span><span class="identifier">reference</span> r<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Remark</strong></span>: If element_type is (possibly cv-qualified) void, r type is unspecified; otherwise, it is element_type &amp;.</p>
 <p><span class="bold"><strong>Returns</strong></span>: A dereferenceable pointer to r obtained by calling Ptr::pointer_to(reference). Non-standard extension: If such function does not exist, returns pointer(addressof(r));</p>
 <p><span class="bold"><strong>Note</strong></span>: For non-conforming compilers only the existence of a member function called <code class="computeroutput">pointer_to</code> is checked. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> UPtr<span class="special">&gt;</span> <span class="keyword">static</span> <span class="identifier">pointer</span> <a name="idp80766864-bb"></a><span class="identifier">static_cast_from</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">UPtr</span> <span class="special">&amp;</span> uptr<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> UPtr<span class="special">&gt;</span> <span class="keyword">static</span> <span class="identifier">pointer</span> <a name="idp67510400-bb"></a><span class="identifier">static_cast_from</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">UPtr</span> <span class="special">&amp;</span> uptr<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Remark</strong></span>: Non-standard extension.</p>
 <p><span class="bold"><strong>Returns</strong></span>: A dereferenceable pointer to r obtained by calling the static template function Ptr::static_cast_from(UPpr/const UPpr &amp;). If such function does not exist, returns pointer_to(static_cast&lt;element_type&amp;&gt;(*uptr))</p>
 <p><span class="bold"><strong>Note</strong></span>: For non-conforming compilers only the existence of a member function called <code class="computeroutput">static_cast_from</code> is checked. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> UPtr<span class="special">&gt;</span> <span class="keyword">static</span> <span class="identifier">pointer</span> <a name="idp80772912-bb"></a><span class="identifier">const_cast_from</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">UPtr</span> <span class="special">&amp;</span> uptr<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> UPtr<span class="special">&gt;</span> <span class="keyword">static</span> <span class="identifier">pointer</span> <a name="idp67516448-bb"></a><span class="identifier">const_cast_from</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">UPtr</span> <span class="special">&amp;</span> uptr<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Remark</strong></span>: Non-standard extension.</p>
 <p><span class="bold"><strong>Returns</strong></span>: A dereferenceable pointer to r obtained by calling the static template function Ptr::const_cast_from&lt;UPtr&gt;(UPpr/const UPpr &amp;). If such function does not exist, returns pointer_to(const_cast&lt;element_type&amp;&gt;(*uptr))</p>
 <p><span class="bold"><strong>Note</strong></span>: For non-conforming compilers only the existence of a member function called <code class="computeroutput">const_cast_from</code> is checked. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> UPtr<span class="special">&gt;</span> <span class="keyword">static</span> <span class="identifier">pointer</span> <a name="idp80778960-bb"></a><span class="identifier">dynamic_cast_from</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">UPtr</span> <span class="special">&amp;</span> uptr<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> UPtr<span class="special">&gt;</span> <span class="keyword">static</span> <span class="identifier">pointer</span> <a name="idp67522496-bb"></a><span class="identifier">dynamic_cast_from</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">UPtr</span> <span class="special">&amp;</span> uptr<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>Remark</strong></span>: Non-standard extension.</p>
 <p><span class="bold"><strong>Returns</strong></span>: A dereferenceable pointer to r obtained by calling the static template function Ptr::dynamic_cast_from&lt;UPtr&gt;(UPpr/const UPpr &amp;). If such function does not exist, returns pointer_to(<span class="emphasis"><em>dynamic_cast&lt;element_type</em></span>&gt;(&amp;*uptr))</p>
 <p><span class="bold"><strong>Note</strong></span>: For non-conforming compilers only the existence of a member function called <code class="computeroutput">dynamic_cast_from</code> is checked. </p>
@@ -128,7 +128,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="pointer_rebind_idp80740448.html"><img src="../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../intrusive/reference.html#header.boost.intrusive.pointer_traits_hpp"><img src="../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="pointer_traits_idp80785600.html"><img src="../../../../doc/src/images/next.png" alt="Next"></a>
+<a accesskey="p" href="pointer_rebind_idp67483984.html"><img src="../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../intrusive/reference.html#header.boost.intrusive.pointer_traits_hpp"><img src="../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="pointer_traits_idp67529136.html"><img src="../../../../doc/src/images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

@@ -33,7 +33,7 @@
 
 </span>BOOST_CONTRACT_CHECK_AXIOM(cond)</pre></div>
 <div class="refsect1">
-<a name="idp105420960"></a><h2>Description</h2>
+<a name="idp97021248"></a><h2>Description</h2>
 <p>The specified condition will always be compiled and validated syntactically, but it will never be evaluated at run-time. This macro is defined by code equivalent to:</p>
 <pre class="programlisting"><span class="preprocessor">#define</span> <span class="identifier">BOOST_CONTRACT_CHECK_AXIOM</span><span class="special">(</span><span class="identifier">cond</span><span class="special">)</span> \
     <span class="identifier">BOOST_CONTRACT_CHECK</span><span class="special">(</span><span class="keyword">true</span> <span class="special">||</span> <span class="identifier">cond</span><span class="special">)</span>

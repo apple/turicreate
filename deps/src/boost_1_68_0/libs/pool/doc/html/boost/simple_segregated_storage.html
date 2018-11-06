@@ -38,46 +38,46 @@
   <span class="keyword">typedef</span> <span class="identifier">SizeType</span> <a name="boost.simple_segregated_storage.size_type"></a><span class="identifier">size_type</span><span class="special">;</span>
 
   <span class="comment">// <a class="link" href="simple_segregated_storage.html#boost.simple_segregated_storageconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="simple_segregated_storage.html#idp42932960-bb"><span class="identifier">simple_segregated_storage</span></a><span class="special">(</span><span class="keyword">const</span> <a class="link" href="simple_segregated_storage.html" title="Class template simple_segregated_storage">simple_segregated_storage</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="simple_segregated_storage.html#idp42976912-bb"><span class="identifier">simple_segregated_storage</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="simple_segregated_storage.html#idp42934224-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><span class="keyword">const</span> <a class="link" href="simple_segregated_storage.html" title="Class template simple_segregated_storage">simple_segregated_storage</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="simple_segregated_storage.html#idp28330384-bb"><span class="identifier">simple_segregated_storage</span></a><span class="special">(</span><span class="keyword">const</span> <a class="link" href="simple_segregated_storage.html" title="Class template simple_segregated_storage">simple_segregated_storage</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="simple_segregated_storage.html#idp28374336-bb"><span class="identifier">simple_segregated_storage</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="simple_segregated_storage.html#idp28331648-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><span class="keyword">const</span> <a class="link" href="simple_segregated_storage.html" title="Class template simple_segregated_storage">simple_segregated_storage</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="simple_segregated_storage.html#idp42935744-bb">private static functions</a></span>
-  <span class="keyword">static</span> <span class="keyword">void</span> <span class="special">*</span> <a class="link" href="simple_segregated_storage.html#idp42936240-bb"><span class="identifier">try_malloc_n</span></a><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="special">&amp;</span><span class="special">,</span> <span class="identifier">size_type</span><span class="special">,</span> <span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="simple_segregated_storage.html#idp28333168-bb">private static functions</a></span>
+  <span class="keyword">static</span> <span class="keyword">void</span> <span class="special">*</span> <a class="link" href="simple_segregated_storage.html#idp28333664-bb"><span class="identifier">try_malloc_n</span></a><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="special">&amp;</span><span class="special">,</span> <span class="identifier">size_type</span><span class="special">,</span> <span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="simple_segregated_storage.html#idp42941072-bb">protected member functions</a></span>
-  <span class="keyword">void</span> <span class="special">*</span> <a class="link" href="simple_segregated_storage.html#idp42941568-bb"><span class="identifier">find_prev</span></a><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="special">)</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="simple_segregated_storage.html#idp28338496-bb">protected member functions</a></span>
+  <span class="keyword">void</span> <span class="special">*</span> <a class="link" href="simple_segregated_storage.html#idp28338992-bb"><span class="identifier">find_prev</span></a><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="simple_segregated_storage.html#idp42944960-bb">protected static functions</a></span>
-  <span class="keyword">static</span> <span class="keyword">void</span> <span class="special">*</span><span class="special">&amp;</span> <a class="link" href="simple_segregated_storage.html#idp42945456-bb"><span class="identifier">nextof</span></a><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span><span class="special">)</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="simple_segregated_storage.html#idp28342384-bb">protected static functions</a></span>
+  <span class="keyword">static</span> <span class="keyword">void</span> <span class="special">*</span><span class="special">&amp;</span> <a class="link" href="simple_segregated_storage.html#idp28342880-bb"><span class="identifier">nextof</span></a><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="simple_segregated_storage.html#idp42948800-bb">public member functions</a></span>
-  <span class="keyword">void</span> <a class="link" href="simple_segregated_storage.html#idp42949296-bb"><span class="identifier">add_block</span></a><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="simple_segregated_storage.html#idp42953184-bb"><span class="identifier">add_ordered_block</span></a><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">bool</span> <a class="link" href="simple_segregated_storage.html#idp42956352-bb"><span class="identifier">empty</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
-  <span class="keyword">void</span> <span class="special">*</span> <a class="link" href="simple_segregated_storage.html#idp42958736-bb"><span class="identifier">malloc</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="simple_segregated_storage.html#idp42960336-bb"><span class="identifier">free</span></a><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="simple_segregated_storage.html#idp42962960-bb"><span class="identifier">ordered_free</span></a><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <span class="special">*</span> <a class="link" href="simple_segregated_storage.html#idp42965696-bb"><span class="identifier">malloc_n</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">,</span> <span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="simple_segregated_storage.html#idp42968528-bb"><span class="identifier">free_n</span></a><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">void</span> <a class="link" href="simple_segregated_storage.html#idp42973024-bb"><span class="identifier">ordered_free_n</span></a><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="simple_segregated_storage.html#idp28346224-bb">public member functions</a></span>
+  <span class="keyword">void</span> <a class="link" href="simple_segregated_storage.html#idp28346720-bb"><span class="identifier">add_block</span></a><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="simple_segregated_storage.html#idp28350608-bb"><span class="identifier">add_ordered_block</span></a><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">bool</span> <a class="link" href="simple_segregated_storage.html#idp28353776-bb"><span class="identifier">empty</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">void</span> <span class="special">*</span> <a class="link" href="simple_segregated_storage.html#idp28356160-bb"><span class="identifier">malloc</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="simple_segregated_storage.html#idp28357760-bb"><span class="identifier">free</span></a><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="simple_segregated_storage.html#idp28360384-bb"><span class="identifier">ordered_free</span></a><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <span class="special">*</span> <a class="link" href="simple_segregated_storage.html#idp28363120-bb"><span class="identifier">malloc_n</span></a><span class="special">(</span><span class="identifier">size_type</span><span class="special">,</span> <span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="simple_segregated_storage.html#idp28365952-bb"><span class="identifier">free_n</span></a><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="simple_segregated_storage.html#idp28370448-bb"><span class="identifier">ordered_free_n</span></a><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="simple_segregated_storage.html#idp42977936-bb">public static functions</a></span>
-  <span class="keyword">static</span> <span class="keyword">void</span> <span class="special">*</span> <a class="link" href="simple_segregated_storage.html#idp42978432-bb"><span class="identifier">segregate</span></a><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="special">,</span> <span class="identifier">size_type</span><span class="special">,</span> <span class="identifier">size_type</span><span class="special">,</span> <span class="keyword">void</span> <span class="special">*</span> <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="simple_segregated_storage.html#idp28375360-bb">public static functions</a></span>
+  <span class="keyword">static</span> <span class="keyword">void</span> <span class="special">*</span> <a class="link" href="simple_segregated_storage.html#idp28375856-bb"><span class="identifier">segregate</span></a><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="special">,</span> <span class="identifier">size_type</span><span class="special">,</span> <span class="identifier">size_type</span><span class="special">,</span> <span class="keyword">void</span> <span class="special">*</span> <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp80120528"></a><h2>Description</h2>
+<a name="idp80248864"></a><h2>Description</h2>
 <p>Template class <a class="link" href="simple_segregated_storage.html" title="Class template simple_segregated_storage">simple_segregated_storage</a> controls access to a free list of memory chunks. Please note that this is a very simple class, with preconditions on almost all its functions. It is intended to be the fastest and smallest possible quick memory allocator - e.g., something to use in embedded systems. This class delegates many difficult preconditions to the user (i.e., alignment issues).</p>
 <p>An object of type simple_segregated_storage&lt;SizeType&gt; is empty if its free list is empty. If it is not empty, then it is ordered if its free list is ordered. A free list is ordered if repeated calls to <code class="computeroutput">malloc()</code> will result in a constantly-increasing sequence of values, as determined by <code class="computeroutput">std::less&lt;void *&gt;</code>. A member function is <span class="emphasis"><em>order-preserving</em></span> if the free list maintains its order orientation (that is, an ordered free list is still ordered after the member function call). </p>
 <div class="refsect2">
-<a name="idp80125264"></a><h3>
+<a name="idp80253600"></a><h3>
 <a name="boost.simple_segregated_storageconstruct-copy-destruct"></a><code class="computeroutput">simple_segregated_storage</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
-<li class="listitem"><pre class="literallayout"><a name="idp42932960-bb"></a><span class="identifier">simple_segregated_storage</span><span class="special">(</span><span class="keyword">const</span> <a class="link" href="simple_segregated_storage.html" title="Class template simple_segregated_storage">simple_segregated_storage</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><a name="idp28330384-bb"></a><span class="identifier">simple_segregated_storage</span><span class="special">(</span><span class="keyword">const</span> <a class="link" href="simple_segregated_storage.html" title="Class template simple_segregated_storage">simple_segregated_storage</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span></pre></li>
 <li class="listitem">
-<pre class="literallayout"><a name="idp42976912-bb"></a><span class="identifier">simple_segregated_storage</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a name="idp28374336-bb"></a><span class="identifier">simple_segregated_storage</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>Construct empty storage area. 
 </p>
 <div class="variablelist"><table border="0" class="variablelist compact">
@@ -91,15 +91,15 @@
 </tr></tbody>
 </table></div>
 </li>
-<li class="listitem"><pre class="literallayout"><span class="keyword">void</span> <a name="idp42934224-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><span class="keyword">const</span> <a class="link" href="simple_segregated_storage.html" title="Class template simple_segregated_storage">simple_segregated_storage</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span></pre></li>
+<li class="listitem"><pre class="literallayout"><span class="keyword">void</span> <a name="idp28331648-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><span class="keyword">const</span> <a class="link" href="simple_segregated_storage.html" title="Class template simple_segregated_storage">simple_segregated_storage</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span></pre></li>
 </ol></div>
 </div>
 <div class="refsect2">
-<a name="idp80145632"></a><h3>
-<a name="idp42935744-bb"></a><code class="computeroutput">simple_segregated_storage</code> private static functions</h3>
+<a name="idp80273776"></a><h3>
+<a name="idp28333168-bb"></a><code class="computeroutput">simple_segregated_storage</code> private static functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
 <pre class="literallayout"><span class="keyword">static</span> <span class="keyword">void</span> <span class="special">*</span> 
-<a name="idp42936240-bb"></a><span class="identifier">try_malloc_n</span><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="special">&amp;</span> start<span class="special">,</span> <span class="identifier">size_type</span> n<span class="special">,</span> <span class="identifier">size_type</span> partition_size<span class="special">)</span><span class="special">;</span></pre>
+<a name="idp28333664-bb"></a><span class="identifier">try_malloc_n</span><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="special">&amp;</span> start<span class="special">,</span> <span class="identifier">size_type</span> n<span class="special">,</span> <span class="identifier">size_type</span> partition_size<span class="special">)</span><span class="special">;</span></pre>
 <p>
 
 </p>
@@ -122,10 +122,10 @@
 </li></ol></div>
 </div>
 <div class="refsect2">
-<a name="idp80161408"></a><h3>
-<a name="idp42941072-bb"></a><code class="computeroutput">simple_segregated_storage</code> protected member functions</h3>
+<a name="idp80289616"></a><h3>
+<a name="idp28338496-bb"></a><code class="computeroutput">simple_segregated_storage</code> protected member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <span class="special">*</span> <a name="idp42941568-bb"></a><span class="identifier">find_prev</span><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span> ptr<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <span class="special">*</span> <a name="idp28338992-bb"></a><span class="identifier">find_prev</span><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span> ptr<span class="special">)</span><span class="special">;</span></pre>
 <p>Traverses the free list referred to by "first", and returns the iterator previous to where "ptr" would go if it was in the free list. Returns 0 if "ptr" would go at the beginning of the free list (i.e., before "first"). </p>
 <div class="note"><table border="0" summary="Note">
 <tr>
@@ -150,10 +150,10 @@
 </li></ol></div>
 </div>
 <div class="refsect2">
-<a name="idp80172752"></a><h3>
-<a name="idp42944960-bb"></a><code class="computeroutput">simple_segregated_storage</code> protected static functions</h3>
+<a name="idp80300896"></a><h3>
+<a name="idp28342384-bb"></a><code class="computeroutput">simple_segregated_storage</code> protected static functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
-<pre class="literallayout"><span class="keyword">static</span> <span class="keyword">void</span> <span class="special">*</span><span class="special">&amp;</span> <a name="idp42945456-bb"></a><span class="identifier">nextof</span><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span> ptr<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">static</span> <span class="keyword">void</span> <span class="special">*</span><span class="special">&amp;</span> <a name="idp28342880-bb"></a><span class="identifier">nextof</span><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span> ptr<span class="special">)</span><span class="special">;</span></pre>
 <p>The return value is just *ptr cast to the appropriate type. ptr must not be 0. (For the sake of code readability :)</p>
 <p>As an example, let us assume that we want to truncate the free list after the first chunk. That is, we want to set *first to 0; this will result in a free list with only one entry. The normal way to do this is to first cast first to a pointer to a pointer to void, and then dereference and assign (*static_cast&lt;void **&gt;(first) = 0;). This can be done more easily through the use of this convenience function (nextof(first) = 0;). 
 </p>
@@ -170,11 +170,11 @@
 </li></ol></div>
 </div>
 <div class="refsect2">
-<a name="idp80185840"></a><h3>
-<a name="idp42948800-bb"></a><code class="computeroutput">simple_segregated_storage</code> public member functions</h3>
+<a name="idp80313920"></a><h3>
+<a name="idp28346224-bb"></a><code class="computeroutput">simple_segregated_storage</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp42949296-bb"></a><span class="identifier">add_block</span><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span> block<span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span> nsz<span class="special">,</span> 
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp28346720-bb"></a><span class="identifier">add_block</span><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span> block<span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span> nsz<span class="special">,</span> 
                <span class="keyword">const</span> <span class="identifier">size_type</span> npartition_sz<span class="special">)</span><span class="special">;</span></pre>
 <p>Add block Segregate this block and merge its free list into the free list referred to by "first". 
 
@@ -197,12 +197,12 @@
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp42953184-bb"></a><span class="identifier">add_ordered_block</span><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span> block<span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span> nsz<span class="special">,</span> 
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp28350608-bb"></a><span class="identifier">add_ordered_block</span><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span> block<span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span> nsz<span class="special">,</span> 
                        <span class="keyword">const</span> <span class="identifier">size_type</span> npartition_sz<span class="special">)</span><span class="special">;</span></pre>
 <p>add block (ordered into list) This (slower) version of add_block segregates the block and merges its free list into our free list in the proper order. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">bool</span> <a name="idp42956352-bb"></a><span class="identifier">empty</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">bool</span> <a name="idp28353776-bb"></a><span class="identifier">empty</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p>
 </p>
 <div class="variablelist"><table border="0" class="variablelist compact">
@@ -217,7 +217,7 @@
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <span class="special">*</span> <a name="idp42958736-bb"></a><span class="identifier">malloc</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <span class="special">*</span> <a name="idp28356160-bb"></a><span class="identifier">malloc</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>Create a chunk. 
 </p>
 <div class="variablelist"><table border="0" class="variablelist compact">
@@ -232,7 +232,7 @@
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp42960336-bb"></a><span class="identifier">free</span><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span> chunk<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp28357760-bb"></a><span class="identifier">free</span><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span> chunk<span class="special">)</span><span class="special">;</span></pre>
 <p>Free a chunk. 
 
 </p>
@@ -254,7 +254,7 @@
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp42962960-bb"></a><span class="identifier">ordered_free</span><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span> chunk<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp28360384-bb"></a><span class="identifier">ordered_free</span><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span> chunk<span class="special">)</span><span class="special">;</span></pre>
 <p>This (slower) implementation of 'free' places the memory back in the list in its proper order. 
 
 </p>
@@ -276,11 +276,11 @@
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <span class="special">*</span> <a name="idp42965696-bb"></a><span class="identifier">malloc_n</span><span class="special">(</span><span class="identifier">size_type</span> n<span class="special">,</span> <span class="identifier">size_type</span> partition_size<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">void</span> <span class="special">*</span> <a name="idp28363120-bb"></a><span class="identifier">malloc_n</span><span class="special">(</span><span class="identifier">size_type</span> n<span class="special">,</span> <span class="identifier">size_type</span> partition_size<span class="special">)</span><span class="special">;</span></pre>
 <p>Attempts to find a contiguous sequence of n partition_sz-sized chunks. If found, removes them all from the free list and returns a pointer to the first. If not found, returns 0. It is strongly recommended (but not required) that the free list be ordered, as this algorithm will fail to find a contiguous sequence unless it is contiguous in the free list as well. Order-preserving. O(N) with respect to the size of the free list. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp42968528-bb"></a><span class="identifier">free_n</span><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span> chunks<span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span> n<span class="special">,</span> 
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp28365952-bb"></a><span class="identifier">free_n</span><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span> chunks<span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span> n<span class="special">,</span> 
             <span class="keyword">const</span> <span class="identifier">size_type</span> partition_size<span class="special">)</span><span class="special">;</span></pre>
 <p>
 
@@ -312,7 +312,7 @@
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">void</span> <a name="idp42973024-bb"></a><span class="identifier">ordered_free_n</span><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span> chunks<span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span> n<span class="special">,</span> 
+<pre class="literallayout"><span class="keyword">void</span> <a name="idp28370448-bb"></a><span class="identifier">ordered_free_n</span><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span><span class="keyword">const</span> chunks<span class="special">,</span> <span class="keyword">const</span> <span class="identifier">size_type</span> n<span class="special">,</span> 
                     <span class="keyword">const</span> <span class="identifier">size_type</span> partition_size<span class="special">)</span><span class="special">;</span></pre>
 <p>Free n chunks from order list. 
 </p>
@@ -333,11 +333,11 @@
 </ol></div>
 </div>
 <div class="refsect2">
-<a name="idp80277280"></a><h3>
-<a name="idp42977936-bb"></a><code class="computeroutput">simple_segregated_storage</code> public static functions</h3>
+<a name="idp80405296"></a><h3>
+<a name="idp28375360-bb"></a><code class="computeroutput">simple_segregated_storage</code> public static functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
 <pre class="literallayout"><span class="keyword">static</span> <span class="keyword">void</span> <span class="special">*</span> 
-<a name="idp42978432-bb"></a><span class="identifier">segregate</span><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span> block<span class="special">,</span> <span class="identifier">size_type</span> nsz<span class="special">,</span> <span class="identifier">size_type</span> npartition_sz<span class="special">,</span> 
+<a name="idp28375856-bb"></a><span class="identifier">segregate</span><span class="special">(</span><span class="keyword">void</span> <span class="special">*</span> block<span class="special">,</span> <span class="identifier">size_type</span> nsz<span class="special">,</span> <span class="identifier">size_type</span> npartition_sz<span class="special">,</span> 
           <span class="keyword">void</span> <span class="special">*</span> end <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span></pre>
 <p>Segregate block into chunks. 
 </p>

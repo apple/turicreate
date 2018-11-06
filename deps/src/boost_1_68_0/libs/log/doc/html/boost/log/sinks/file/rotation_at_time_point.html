@@ -31,17 +31,17 @@
   <span class="keyword">typedef</span> <span class="keyword">bool</span> <a name="boost.log.sinks.file.rotation_at_time_point.result_type"></a><span class="identifier">result_type</span><span class="special">;</span>
 
   <span class="comment">// <a class="link" href="rotation_at_time_point.html#boost.log.sinks.file.rotation_at_time_pointconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <span class="keyword">explicit</span> <a class="link" href="rotation_at_time_point.html#idp55508832-bb"><span class="identifier">rotation_at_time_point</span></a><span class="special">(</span><span class="keyword">unsigned</span> <span class="keyword">char</span><span class="special">,</span> <span class="keyword">unsigned</span> <span class="keyword">char</span><span class="special">,</span> <span class="keyword">unsigned</span> <span class="keyword">char</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">explicit</span> <a class="link" href="rotation_at_time_point.html#idp55513552-bb"><span class="identifier">rotation_at_time_point</span></a><span class="special">(</span><span class="identifier">date_time</span><span class="special">::</span><span class="identifier">weekdays</span><span class="special">,</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> <span class="special">=</span> <span class="number">0</span><span class="special">,</span> 
+  <span class="keyword">explicit</span> <a class="link" href="rotation_at_time_point.html#idp47650064-bb"><span class="identifier">rotation_at_time_point</span></a><span class="special">(</span><span class="keyword">unsigned</span> <span class="keyword">char</span><span class="special">,</span> <span class="keyword">unsigned</span> <span class="keyword">char</span><span class="special">,</span> <span class="keyword">unsigned</span> <span class="keyword">char</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">explicit</span> <a class="link" href="rotation_at_time_point.html#idp47654784-bb"><span class="identifier">rotation_at_time_point</span></a><span class="special">(</span><span class="identifier">date_time</span><span class="special">::</span><span class="identifier">weekdays</span><span class="special">,</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> <span class="special">=</span> <span class="number">0</span><span class="special">,</span> 
                                   <span class="keyword">unsigned</span> <span class="keyword">char</span> <span class="special">=</span> <span class="number">0</span><span class="special">,</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">explicit</span> <a class="link" href="rotation_at_time_point.html#idp55520272-bb"><span class="identifier">rotation_at_time_point</span></a><span class="special">(</span><span class="identifier">gregorian</span><span class="special">::</span><span class="identifier">greg_day</span><span class="special">,</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> <span class="special">=</span> <span class="number">0</span><span class="special">,</span> 
+  <span class="keyword">explicit</span> <a class="link" href="rotation_at_time_point.html#idp47661504-bb"><span class="identifier">rotation_at_time_point</span></a><span class="special">(</span><span class="identifier">gregorian</span><span class="special">::</span><span class="identifier">greg_day</span><span class="special">,</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> <span class="special">=</span> <span class="number">0</span><span class="special">,</span> 
                                   <span class="keyword">unsigned</span> <span class="keyword">char</span> <span class="special">=</span> <span class="number">0</span><span class="special">,</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="rotation_at_time_point.html#idp55506560-bb">public member functions</a></span>
-  <span class="keyword">bool</span> <a class="link" href="rotation_at_time_point.html#idp55507120-bb"><span class="keyword">operator</span><span class="special">(</span><span class="special">)</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="rotation_at_time_point.html#idp47647792-bb">public member functions</a></span>
+  <span class="keyword">bool</span> <a class="link" href="rotation_at_time_point.html#idp47648352-bb"><span class="keyword">operator</span><span class="special">(</span><span class="special">)</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp135581312"></a><h2>Description</h2>
+<a name="idp117606832"></a><h2>Description</h2>
 <p>The class represents the time point of log file rotation. One can specify one of three types of time point based rotation:</p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem"><p>rotation takes place every day, at the specified time </p></li>
@@ -51,13 +51,13 @@
 <p>
 The time points are considered to be local time. </p>
 <div class="refsect2">
-<a name="idp135584496"></a><h3>
+<a name="idp117610016"></a><h3>
 <a name="boost.log.sinks.file.rotation_at_time_pointconstruct-copy-destruct"></a><code class="computeroutput">rotation_at_time_point</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">explicit</span> <a name="idp55508832-bb"></a><span class="identifier">rotation_at_time_point</span><span class="special">(</span><span class="keyword">unsigned</span> <span class="keyword">char</span> hour<span class="special">,</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> minute<span class="special">,</span> 
+<pre class="literallayout"><span class="keyword">explicit</span> <a name="idp47650064-bb"></a><span class="identifier">rotation_at_time_point</span><span class="special">(</span><span class="keyword">unsigned</span> <span class="keyword">char</span> hour<span class="special">,</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> minute<span class="special">,</span> 
                                 <span class="keyword">unsigned</span> <span class="keyword">char</span> second<span class="special">)</span><span class="special">;</span></pre>
 <p>Creates a rotation time point of every day at the specified time</p>
 <p>
@@ -93,7 +93,7 @@ The time points are considered to be local time. </p>
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">explicit</span> <a name="idp55513552-bb"></a><span class="identifier">rotation_at_time_point</span><span class="special">(</span><span class="identifier">date_time</span><span class="special">::</span><span class="identifier">weekdays</span> wday<span class="special">,</span> 
+<pre class="literallayout"><span class="keyword">explicit</span> <a name="idp47654784-bb"></a><span class="identifier">rotation_at_time_point</span><span class="special">(</span><span class="identifier">date_time</span><span class="special">::</span><span class="identifier">weekdays</span> wday<span class="special">,</span> 
                                 <span class="keyword">unsigned</span> <span class="keyword">char</span> hour <span class="special">=</span> <span class="number">0</span><span class="special">,</span> 
                                 <span class="keyword">unsigned</span> <span class="keyword">char</span> minute <span class="special">=</span> <span class="number">0</span><span class="special">,</span> 
                                 <span class="keyword">unsigned</span> <span class="keyword">char</span> second <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span></pre>
@@ -135,7 +135,7 @@ The time points are considered to be local time. </p>
 </table></div>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">explicit</span> <a name="idp55520272-bb"></a><span class="identifier">rotation_at_time_point</span><span class="special">(</span><span class="identifier">gregorian</span><span class="special">::</span><span class="identifier">greg_day</span> mday<span class="special">,</span> 
+<pre class="literallayout"><span class="keyword">explicit</span> <a name="idp47661504-bb"></a><span class="identifier">rotation_at_time_point</span><span class="special">(</span><span class="identifier">gregorian</span><span class="special">::</span><span class="identifier">greg_day</span> mday<span class="special">,</span> 
                                 <span class="keyword">unsigned</span> <span class="keyword">char</span> hour <span class="special">=</span> <span class="number">0</span><span class="special">,</span> 
                                 <span class="keyword">unsigned</span> <span class="keyword">char</span> minute <span class="special">=</span> <span class="number">0</span><span class="special">,</span> 
                                 <span class="keyword">unsigned</span> <span class="keyword">char</span> second <span class="special">=</span> <span class="number">0</span><span class="special">)</span><span class="special">;</span></pre>
@@ -179,10 +179,10 @@ The time points are considered to be local time. </p>
 </ol></div>
 </div>
 <div class="refsect2">
-<a name="idp135649136"></a><h3>
-<a name="idp55506560-bb"></a><code class="computeroutput">rotation_at_time_point</code> public member functions</h3>
+<a name="idp117674656"></a><h3>
+<a name="idp47647792-bb"></a><code class="computeroutput">rotation_at_time_point</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
-<pre class="literallayout"><span class="keyword">bool</span> <a name="idp55507120-bb"></a><span class="keyword">operator</span><span class="special">(</span><span class="special">)</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">bool</span> <a name="idp47648352-bb"></a><span class="keyword">operator</span><span class="special">(</span><span class="special">)</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
 <p>Checks if it's time to rotate the file </p>
 </li></ol></div>
 </div>

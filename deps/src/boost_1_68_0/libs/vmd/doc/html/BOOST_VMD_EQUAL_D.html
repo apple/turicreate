@@ -33,7 +33,7 @@
 
 </span>BOOST_VMD_EQUAL_D(d, sequence, ...)</pre></div>
 <div class="refsect1">
-<a name="idp98510880"></a><h2>Description</h2>
+<a name="idp97832752"></a><h2>Description</h2>
 <p>d = The next available BOOST_PP_WHILE iteration. sequence = First sequence. ... = variadic parameters, maximum of 2.</p>
 <p>The first variadic parameter is required and is the second sequence to test. The optional second variadic parameter is a VMD type as a filter.</p>
 <p>The macro tests any two sequences for equality. For sequences to be equal the VMD types of each sequence must be equal and the individual elements of the sequence must be equal. For Boost PP composite types the macro tests that the composite types have the same size and then tests that each element of the composite type is equal. This means that all elements of a composite type must be a VMD type in order to use this macro successfully.</p>
