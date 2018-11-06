@@ -7,6 +7,7 @@ set(LAYERS
     layers/convolution_data_loader.mm
     layers/convolution_layer.mm
     layers/convolution_padding.mm
+    layers/input_layer.mm
     layers/instance_norm_data_loader.mm
     layers/instance_norm_layer.mm
     layers/nearest_upsampling_layer.mm

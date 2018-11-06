@@ -15,10 +15,13 @@ def create_mps_graph(sym_model, weight_dict, input_shape, outputs):
 	layers = []
 	layer_dict = {}
 
+	mps_graph = _turicreate.extensions.create_graph()
+
 	# Set Input Node
 	input_node_name = str(net_nodes[0]["name"])
 	layer_dict[input_node_name] = _turicreate.extensions._InputNode()
 	layer_dict[input_node_name].init(input_node_name)
+	mps_graph.add_node(layer_dict[input_node_name])
 
 	for idx, n in enumerate(net_nodes):
 		if(n['op'] == "Convolution"):
@@ -72,6 +75,7 @@ def create_mps_graph(sym_model, weight_dict, input_shape, outputs):
 			layer.init(name, input_to_layer, options, data)
 			layers.append(layer)
 			layer_dict[str(name)] = layer
+			mps_graph.add_node(layer)
 
 		elif(n['op'] == 'InstanceNorm'):
 			
@@ -111,6 +115,7 @@ def create_mps_graph(sym_model, weight_dict, input_shape, outputs):
 			layer.init(name, input_to_layer, int(channels), int(styles), data)
 			layers.append(layer)
 			layer_dict[str(name)] = layer
+			mps_graph.add_node(layer)
 
 		elif(n['op'] == 'take'):
 			pass # HACK: right now the InstanceNorm defined isn't a pure instance norm, it also contains take
@@ -132,6 +137,7 @@ def create_mps_graph(sym_model, weight_dict, input_shape, outputs):
 				layer.init(name, input_to_layer)
 				layers.append(layer)
 				layer_dict[str(name)] = layer
+				mps_graph.add_node(layer)
 
 			elif(activation == "relu"):
 				input_to_layer = layer_dict[net_nodes[n['inputs'][0][0]]['name']]
@@ -139,6 +145,7 @@ def create_mps_graph(sym_model, weight_dict, input_shape, outputs):
 				layer.init(name, input_to_layer)
 				layers.append(layer)
 				layer_dict[str(name)] = layer
+				mps_graph.add_node(layer)
 
 		elif(n['op'] == 'UpSampling'):
 			scale_x = n['attrs']['scale']
@@ -150,6 +157,7 @@ def create_mps_graph(sym_model, weight_dict, input_shape, outputs):
 			layer.init(name, input_to_layer, int(scale_x), int(scale_y), 3)
 			layers.append(layer)
 			layer_dict[str(name)] = layer
+			mps_graph.add_node(layer)
 
 		elif(n['op'] == 'elemwise_add'):
 			input_1 = net_nodes[n['inputs'][0][0]]["name"]
@@ -163,6 +171,7 @@ def create_mps_graph(sym_model, weight_dict, input_shape, outputs):
 			layer.init(name, left_input_to_layer, right_input_to_layer)
 			layers.append(layer)
 			layer_dict[str(name)] = layer
+			mps_graph.add_node(layer)
 
 		elif(n['op'] != 'null' ):
 			raise ValueError('We do not currently support the layer operation %s' % (n['op']))
@@ -175,5 +184,6 @@ def create_mps_graph(sym_model, weight_dict, input_shape, outputs):
 	layer.init("output", out_arr)
 	layers.append(layer)
 	layer_dict["output"] = layer
+	mps_graph.add_node(layer)
 
-	_turicreate.extensions.create_graph(layer_dict, layers)
+	mps_graph.compile(layers)

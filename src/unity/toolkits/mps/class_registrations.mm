@@ -22,7 +22,7 @@ using namespace turi;
 namespace turi {
     namespace mps {
         BEGIN_FUNCTION_REGISTRATION
-        REGISTER_FUNCTION(create_graph, "layer_dict", "layer_arr");
+        REGISTER_FUNCTION(create_graph);
         REGISTER_FUNCTION(test);
         END_FUNCTION_REGISTRATION
     }

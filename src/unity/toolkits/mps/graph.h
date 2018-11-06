@@ -5,11 +5,6 @@
 #include <string>
 #include <vector>
 
-#import <Accelerate/Accelerate.h>
-#import <Foundation/Foundation.h>
-#import <Metal/Metal.h>
-#import <MetalPerformanceShaders/MetalPerformanceShaders.h>
-
 #include <unity/lib/toolkit_class_macros.hpp>
 #include <unity/lib/toolkit_function_macros.hpp>
 #include <unity/lib/extensions/model_base.hpp>
@@ -21,10 +16,16 @@ namespace turi {
         class EXPORT Graph : public model_base {
             public:
                 Graph();
-                ~Graph();
 
                 void add_node(std::shared_ptr<Layer> layer);
-                void compile();
+                /*
+                void create_from_metadata(std::vector<std::string> names,
+                                          std::vector<std::map<std::string, std::float>> parameters,
+                                          std::vector<int> type,
+                                          std::vector<std::map<std::string, std::vector<float>>> data);
+                */
+
+                void compile(std::vector<std::shared_ptr<Layer>> &m_layers);
                 void clear();
 
                 void forward();
@@ -34,16 +35,13 @@ namespace turi {
                 void set_trainable_layers(std::map<std::string, bool> trainable);
 
                 std::string debugDescription();
-                
-                std::vector<std::shared_ptr<Layer>> m_layers;
-                id<MTLDevice> m_dev;
-                NSMutableDictionary *m_mps_layer_dictionary;
-                MPSNNGraph *m_graph API_AVAILABLE(macos(10.13));
-                BOOL *m_results_needed;
+
+                //std::vector<std::shared_ptr<Layer>> m_layers;
 
                 BEGIN_CLASS_MEMBER_REGISTRATION("_Graph")
                 REGISTER_CLASS_MEMBER_FUNCTION(Graph::add_node, "layer")
-                REGISTER_CLASS_MEMBER_FUNCTION(Graph::compile)
+                //REGISTER_CLASS_MEMBER_FUNCTION(Graph::create_from_metadata, "names", "parameters", "type", "data")
+                REGISTER_CLASS_MEMBER_FUNCTION(Graph::compile, "m_layers")
                 REGISTER_CLASS_MEMBER_FUNCTION(Graph::clear)
                 REGISTER_CLASS_MEMBER_FUNCTION(Graph::forward)
                 REGISTER_CLASS_MEMBER_FUNCTION(Graph::backward)

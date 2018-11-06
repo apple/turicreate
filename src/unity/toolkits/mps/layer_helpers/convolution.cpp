@@ -4,14 +4,14 @@ namespace turi{
     namespace mps {
         ConvolutionNode::ConvolutionNode(std::string name,
                                          std::shared_ptr<Layer> input,
-                                         size_t kernel_width,
-                                         size_t kernel_height,
-                                         size_t input_feature_channels,
-                                         size_t output_feature_channels,
-                                         size_t stride_width,
-                                         size_t stride_height,
-                                         size_t padding_width,
-                                         size_t padding_height,
+                                         int kernel_width,
+                                         int kernel_height,
+                                         int input_feature_channels,
+                                         int output_feature_channels,
+                                         int stride_width,
+                                         int stride_height,
+                                         int padding_width,
+                                         int padding_height,
                                          std::vector<float> weights,
                                          std::vector<float> biases):
             Layer(name, layer_type::convolution),
@@ -29,7 +29,7 @@ namespace turi{
 
         void ConvolutionNode::init(std::string name,
                                    std::shared_ptr<Layer> input,
-                                   std::map<std::string, size_t> options,
+                                   std::map<std::string, int> options,
                                    std::map<std::string, std::vector<float>> data) {
 
             m_input = input;

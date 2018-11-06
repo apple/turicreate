@@ -9,8 +9,8 @@
 
 namespace turi {
     namespace mps { 
-        std::shared_ptr<Graph> create_graph(std::map<std::string, std::shared_ptr<Layer>>& layer_dict, std::vector<std::shared_ptr<Layer>> layer_arr);
-        
+        std::shared_ptr<Graph> create_graph();
+
         int test();
     }
 }
