@@ -7,3 +7,5 @@ make_boost_test(test_coreml_import.cxx
     -Wno-unknown-pragmas  # NOTE: used for auto-generated protobuf source files
     -Wno-unused-function  # NOTE: used for auto-generated protobuf source files
 )
+
+make_boost_test(test_image_augmentation.cxx REQUIRES unity_neural_net)
