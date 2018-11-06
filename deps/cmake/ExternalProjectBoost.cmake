@@ -1,5 +1,5 @@
 # Build Boost =================================================================
-set(PATCHCMD patch -N -p1 -i ${CMAKE_SOURCE_DIR}/deps/patches/boost_date_time_parsers3.patch)
+set(PATCHCMD patch -N -p1 -i ${CMAKE_SOURCE_DIR}/deps/patches/boost_date_time_parsers3.patch || true)
 # disable fchmodat on mac. not supported for OS X 10.8/10.9
 SET(EXTRA_CONFIGURE_COMMANDS "")
 
