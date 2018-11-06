@@ -21,6 +21,13 @@ bool is_positive(size_t x) { return x > 0; }
 
 size_t multiply(size_t a, size_t b) { return a * b; }
 
+template <class T>
+std::future<T> wrap_as_future(T val) {
+  std::promise<T> promise;
+  promise.set_value(std::move(val));
+  return promise.get_future();
+}
+
 }  // namespace
 
 external_float_array::external_float_array(const float* data, size_t size,
@@ -67,11 +74,8 @@ shared_float_array::shared_float_array(
 // static
 std::shared_ptr<float_array> shared_float_array::default_value() {
   // n.b. static variables should have trivial destructors
-  static const float default_scalar = 0.f;
   static const std::shared_ptr<float_array>* const singleton =
-      new std::shared_ptr<float_array>(
-          std::make_shared<external_float_array>(&default_scalar, /* size */ 1,
-                                                 nullptr, /* dim */ 0));
+      new std::shared_ptr<float_array>(std::make_shared<float_scalar>(0.f));
   return *singleton;
 }
 
@@ -81,6 +85,12 @@ deferred_float_array::deferred_float_array(
   : data_future_(std::move(data_future)),
     shape_(std::move(shape)),
     size_(std::accumulate(shape_.begin(), shape_.end(), 1u, multiply))
+{}
+
+deferred_float_array::deferred_float_array(shared_float_array params)
+  : deferred_float_array(wrap_as_future(params),
+                         std::vector<size_t>(params.shape(),
+                                             params.shape() + params.dim()))
 {}
 
 const float* deferred_float_array::data() const {
