@@ -323,7 +323,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/Turi Create Visualization/src/user_interface\"\nnpm install\nnpm run build";
+			shellScript = "cd \"$SRCROOT/Turi Create Visualization/src/user_interface\"\nnpm install\nnpm run build\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

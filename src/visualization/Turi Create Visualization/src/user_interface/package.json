@@ -9,6 +9,7 @@
         "@fortawesome/react-fontawesome": "0.0.18",
         "d3": "^5.0.0",
         "element-resize-event": "^2.0.9",
+        "eslint": "^5.8.0",
         "react": "^16.2.0",
         "react-dom": "^16.2.0",
         "react-json-pretty": "^1.7.5",
