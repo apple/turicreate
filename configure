@@ -39,7 +39,9 @@ function print_help {
   echo "  --no-visualization"
   echo
   echo "  --release-opt-for-size            Optimize for size."
+  echo "  --debug-opt                       Debug optimize."
   echo "  --debug-opt-for-size              Debug optimize for size."
+  echo 
   echo "  --target-ios                      Build for iOS (macOS only)"
   echo
   echo "  --with-remotefs (default)         Include capabilities for remote file access."
@@ -117,6 +119,7 @@ with_ccache=1
 with_visualization=1
 with_remotefs=1
 release_opt_for_size=0
+debug_opt=0
 debug_opt_for_size=0
 
 ###############################################################################
@@ -130,6 +133,7 @@ while [ $# -gt 0 ]
     --install-python-toolchain) python_only=1;;
     
     --release-opt-for-size) release_opt_for_size=1;;
+    --debug-opt)            debug_opt=1;;
     --debug-opt-for-size)   debug_opt_for_size=1;;
     --target-ios)           with_ios=1; with_python=0; with_capi=1; release_opt_for_size=1;; 
 
@@ -194,6 +198,10 @@ fi
 
 if [[ $debug_opt_for_size == 1 ]]; then
   CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DDEBUG_OPT_FOR_SIZE=1"
+fi
+
+if [[ $debug_opt == 1 ]]; then
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DDEBUG_OPT=1"
 fi
 
 # Check what is needed with the remote_fs stuff

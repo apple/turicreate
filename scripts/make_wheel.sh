@@ -56,6 +56,7 @@ while [ $# -gt 0 ]
     --skip_doc)             SKIP_DOC=1;;
     --release)              build_type="release";;
     --debug)                build_type="debug";;
+    --debug-opt)            build_type="debug"; DEBUG_OPT=1;;
     --help)                 print_help ;;
     *) unknown_option $1 ;;
   esac
@@ -105,7 +106,11 @@ build_source() {
   # Configure
   cd ${WORKSPACE}
 
-  ./configure
+  if [[ ${DEBUG_OPT} ]] ; then
+    ./configure --debug-opt-for-size
+  else
+    ./configure
+  fi
 
   push_ld_library_path
 

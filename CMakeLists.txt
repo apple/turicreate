@@ -368,6 +368,8 @@ endif()
 
 if(${DEBUG_OPT_FOR_SIZE})
   set(DEBUG_OPTIMIZATION_FLAGS -Os)
+elseif(${DEBUG_OPT})
+  set(DEBUG_OPTIMIZATION_FLAGS -O2)
 else()
   set(DEBUG_OPTIMIZATION_FLAGS "-O0 -fno-inline")
 endif()
