@@ -19,23 +19,4 @@ There are a number of different pieces that enable this extensions mechanism to 
 
 
 
-```
-class _extensions_wrapper(object):
-  def __init__(self, wrapped):
-    self._wrapped = wrapped
-    self.__doc__ = wrapped.__doc__
-
-  def __getattr__(self, name):
-    try:
-        return getattr(self._wrapped, name)
-    except:
-        pass
-    turicreate.connect.main.get_unity()
-    return getattr(self._wrapped, name)
-
-import sys as _sys
-_sys.modules["turicreate.extensions"] = _extensions_wrapper(_sys.modules["turicreate.extensions"])
-# rewrite the import
-extensions = _sys.modules["turicreate.extensions"]
-```
-file: `src/unity/python/turicreate__init__.py` 
+https://github.com/abhishekpratapa/turicreate/blob/1ab1c19d790becfcaccd4703dcca5c2e1fb4863e/src/unity/python/turicreate/__init__.py#L103-L119
