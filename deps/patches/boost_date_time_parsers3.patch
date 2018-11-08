@@ -9,17 +9,6 @@
          min_type min = 0;
          sec_type sec = 0;
          typename time_duration_type::fractional_seconds_type frac(0);
-@@ -1092,9 +1094,7 @@ namespace date_time {
-                 case 'e':
-                   {
-                     try {
--                      t_day = (*itr == 'd') ?
--                          this->m_parser.parse_day_of_month(sitr, stream_end) :
--                          this->m_parser.parse_var_day_of_month(sitr, stream_end);
-+                      this->m_parser.parse_var_day_of_month(sitr, stream_end);
-                     }
-                     catch(std::out_of_range&) { // base class for exception bad_day_of_month
-                       match_results mr;
 @@ -1111,13 +1111,77 @@ namespace date_time {
                  // time flags
                  case 'H':
