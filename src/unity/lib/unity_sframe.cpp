@@ -34,7 +34,6 @@
 #include <sframe_query_engine/operators/operator_properties.hpp>
 #include <exceptions/error_types.hpp>
 
-#if(TC_BUILD_VISUALIZATION_CLIENT)
 #include <unity/lib/visualization/plot.hpp>
 #include <unity/lib/visualization/process_wrapper.hpp>
 #include <unity/lib/visualization/histogram.hpp>
@@ -46,7 +45,6 @@
 #include <unity/lib/visualization/summary_view.hpp>
 #include <unity/lib/visualization/vega_data.hpp>
 #include <unity/lib/visualization/vega_spec.hpp>
-#endif
 
 #include <unity/lib/image_util.hpp>
 #include <unity/lib/unity_sketch.hpp>
@@ -1617,7 +1615,6 @@ std::string unity_sframe::generate_next_column_name() {
 }
 
 void unity_sframe::show(const std::string& path_to_client) {
-#if(TC_BUILD_VISUALIZATION_CLIENT)
   using namespace turi;
   using namespace turi::visualization;
 
@@ -1626,26 +1623,18 @@ void unity_sframe::show(const std::string& path_to_client) {
   if(plt != nullptr){
     plt->show(path_to_client);
   }
-#else
-  std_log_and_throw(std::runtime_error, "Turi Create compiled with visualizations disabled.");
-#endif
 }
 
 std::shared_ptr<model_base> unity_sframe::plot(){
-#if(TC_BUILD_VISUALIZATION_CLIENT)
   using namespace turi;
   using namespace turi::visualization;
 
   std::shared_ptr<unity_sframe_base> self = this->select_columns(this->column_names());
 
   return plot_columnwise_summary(self);
-#else
-  std_log_and_throw(std::runtime_error, "Turi Create compiled with visualizations disabled.");
-#endif
 }
 
 void unity_sframe::explore(const std::string& path_to_client, const std::string& title) {
-#if(TC_BUILD_VISUALIZATION_CLIENT)
   using namespace turi;
   using namespace turi::visualization;
 
@@ -2018,10 +2007,6 @@ void unity_sframe::explore(const std::string& path_to_client, const std::string&
       }
     }
   });
-#else
-  std_log_and_throw(std::runtime_error, "Turi Create compiled with visualizations disabled.");
-#endif
-
 }
 
 } // namespace turi
