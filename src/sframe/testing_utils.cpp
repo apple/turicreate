@@ -145,8 +145,12 @@ std::vector<std::vector<flexible_type> > testing_extract_sframe_data(const sfram
  *     S:  categorical column with short string keys and 100000 categories.
  *     v:  numeric vector with 10 elements.
  *     V:  numeric vector with 1000 elements.
- *     u:  categorical set with up to 10 elements.
- *     U:  categorical set with up to 1000 elements.
+ *     l:  list with up to 10 elements, integers, from a pool of 100.
+ *     L:  list with up to 100 elements, integers, from a pool of 1000.
+ *     m:  list with up to 10 elements, strings, from a pool of 100.
+ *     M:  list with up to 1000 elements, strings, from a pool of 1000. 
+ *     u:  categorical set, unique, with up to 10 elements, strings, from a pool of 100.
+ *     U:  categorical set, unique, up to 100 elements, strings, from a pool of 1000.
  *     d:  dictionary with 10 entries.
  *     D:  dictionary with 100 entries.
  *     1:  1d ndarray of dimension 10
@@ -215,6 +219,8 @@ sframe make_random_sframe(
       case 'L':
       case 'm':
       case 'M':
+      case 'u':
+      case 'U':
         types[c_idx] = flex_type_enum::LIST;
         break;
 
@@ -356,19 +362,36 @@ sframe make_random_sframe(
         };
 
         // Generate a random list
-        auto rng_list = [&](size_t max_size, size_t key_pool_size, bool string_values) GL_GCC_ONLY(GL_HOT_INLINE_FLATTEN)  {
-          size_t s = rng_int(0,max_size);
-          flex_list v(s);
-          for(flexible_type& f : v) {
-            if(string_values) {
-              f = rng_str(key_pool_size);
-            } else {
-              f = rng_int(1, key_pool_size);
-            }
-          }
+        auto rng_list =
+            [&](size_t max_size, size_t key_pool_size, bool string_values, bool unique)
+                GL_GCC_ONLY(GL_HOT_INLINE_FLATTEN) {
 
-          return v;
-        };
+                  size_t s = rng_int(0, max_size);
+                  std::vector<flex_int> v(s);
+
+                  for (flex_int& f : v) {
+                    f = rng_int(0, key_pool_size);
+                  }
+
+                  if(unique) {
+                    std::set<flex_int> s(v.begin(), v.end()); 
+                    v.assign(s.begin(), s.end());
+                  }
+
+                  flex_list ret(v.begin(), v.end());
+
+                  if(string_values) {
+                    for(flexible_type& f : ret) {
+                      f = "C-" + f.to<flex_string>();
+                    }
+                  }
+                  
+                  if(unique) {
+                    std::sort(ret.begin(), ret.end());
+                  }
+
+                  return ret;
+                };
 
         // Generate a random vector
         auto rng_vec = [&](size_t s) GL_GCC_ONLY(GL_HOT_INLINE_FLATTEN) {
@@ -441,10 +464,12 @@ sframe make_random_sframe(
           case 'V': { row[c_idx] = rng_vec(100);               break; }
           case 'w': { row[c_idx] = rng_vec_nan(10);            break; }
           case 'W': { row[c_idx] = rng_vec_nan(100);           break; }
-          case 'l': { row[c_idx] = rng_list(10, 100, false);   break; }
-          case 'L': { row[c_idx] = rng_list(100, 1000, false); break; }
-          case 'm': { row[c_idx] = rng_list(10, 100, true);    break; }
-          case 'M': { row[c_idx] = rng_list(100, 1000, true);  break; }
+          case 'l': { row[c_idx] = rng_list(10, 100, false, false);   break; }
+          case 'L': { row[c_idx] = rng_list(100, 1000, false, false); break; }
+          case 'm': { row[c_idx] = rng_list(10, 100, true, false);    break; }
+          case 'M': { row[c_idx] = rng_list(100, 1000, true, false);  break; }
+          case 'u': { row[c_idx] = rng_list(10, 100, true, true);     break; }
+          case 'U': { row[c_idx] = rng_list(100, 1000, true, true);   break; }
           case 'd': { row[c_idx] = rng_dict(10, 100);          break; }
           case 'D': { row[c_idx] = rng_dict(100, 1000);        break; }
 
