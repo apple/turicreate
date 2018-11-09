@@ -49,9 +49,12 @@ make_library(unity_neural_net
   SOURCES
     cnn_module.cpp
     coreml_import.cpp
+    image_augmentation.cpp
     float_array.cpp
   REQUIRES
+    image_type
     logger
+    unity_core
     unity_coreml_model_export
     ${additional_unity_neural_net_requirements}
   COMPILE_FLAGS_EXTRA_GCC

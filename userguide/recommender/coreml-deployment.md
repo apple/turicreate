@@ -16,12 +16,12 @@ After you drag and drop the exported Core ML model in your iOS app, it will look
 
 Before you can go ahead and use the recommender model in your app, you must
 drag and drop the relevant `.dylib` into your app. If you are writing an app 
-for a Mac or an iOS simulator, you would want `libRecommender-x86_64.dylib`. 
-If you are writing an iOS app for the iPhone/iPad, you would want 
-`libRecommender-arm64.dylib`. 
+for a Mac or an iOS simulator, you would want the `x86_64` variant. 
+If you are writing an iOS app for the iPhone/iPad, you would want the
+`arm64` variant. 
 All the relevant `.dylib` files are available on the 
 [Github releases page](https://github.com/apple/turicreate/releases) 
-starting with Turi Create 5.0b1. **Please ensure that you rename the respective `.dylib` that you need to `libRecommender.dylib`.**
+starting with Turi Create 5.0b3, downloadable as `libRecommender.zip`.
 When you drag and drop the `.dylib`, you must copy all items and create folder 
 references. Here is a screenshot of what your selections on the dialog box 
 should look like.

@@ -65,11 +65,6 @@ EXPORT tc_sarray* tc_sarray_create_copy(
   ERROR_HANDLE_END(error, NULL);
 }
 
-// DEPRECATED : For temporary backwards compatibility.
-EXPORT tc_sarray* tc_sarray_create(const tc_flex_list* data, tc_error** error) {
-   return tc_sarray_create_from_list(data, error);
-}
-
 EXPORT tc_sarray* tc_sarray_create_from_list(
     const tc_flex_list* fl, tc_error** error) {
 
