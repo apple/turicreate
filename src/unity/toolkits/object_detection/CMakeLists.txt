@@ -1,12 +1,13 @@
 project(unity_toolkits)
 
 make_library(unity_object_detection
-SOURCES
+  SOURCES
     class_registrations.cpp
     object_detector.cpp
     od_data_iterator.cpp
-REQUIRES
+  REQUIRES
     image_io
+    random
     table_printer
     unity_core
     unity_neural_net
