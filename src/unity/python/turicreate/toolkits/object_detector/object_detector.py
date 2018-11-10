@@ -1165,8 +1165,8 @@ class ObjectDetector(_CustomModel):
         import coremltools
         from coremltools.models import datatypes, neural_network
 
-        if not iou_threshold: iou_threshold = self.non_maximum_suppression_threshold
-        if not confidence_threshold: confidence_threshold = 0.25
+        if iou_threshold is None: iou_threshold = self.non_maximum_suppression_threshold
+        if confidence_threshold is None: confidence_threshold = 0.25
 
         preds_per_box = 5 + self.num_classes
         num_anchors = len(self.anchors)
