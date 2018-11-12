@@ -152,4 +152,6 @@ If you want to build Turi Create from source, see [BUILD.md](BUILD.md).
 Contributing
 ------------
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+Prior to contributing, please review [CONTRIBUTING.md](CONTRIBUTING.md) and do
+not provide any contributions unless you agree with the terms and conditions
+set forth in [CONTRIBUTING.md](CONTRIBUTING.md).
