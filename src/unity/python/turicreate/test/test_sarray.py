@@ -3168,24 +3168,20 @@ class SArrayTest(unittest.TestCase):
         
         #integer example
         x = SArray([1,2,3,4,5,6,7])
-        self.assertTrue(np.array_equal(x.filter_by([11,7,2,8,4]), SArray([2,4,7])))
-        self.assertTrue(np.array_equal(x.filter_by([11,7,2,8,4,3], exclude=True), SArray([1,5,6])))
+        self.assertEqual(sorted(x.filter_by([11,7,2,8,4])), [2,4,7])
+        self.assertEqual(sorted(x.filter_by([11,7,2,8,4,3], exclude=True)), [1,5,6])
     
         #empty SArray
-        self.assertTrue(np.array_equal(x.filter_by([77,22,18,42]), SArray([])))
-        self.assertTrue(np.array_equal(x.filter_by([77,22,18,42], exclude=True).sort(), x))
+        self.assertEqual(sorted(x.filter_by([77,22,18,42])), [])
+        self.assertEqual(sorted(x.filter_by([77,22,18,42], exclude=True)), list(x))
         
         #duplicates
-        self.assertTrue(np.array_equal(x.filter_by([2,2,3,44]),SArray([2,3])))
+        self.assertEqual(sorted(x.filter_by([2,2,3,44])), [2,3])
         x = SArray([1,2,2,3,4,5,6,7])
-        self.assertTrue(np.array_equal(x.filter_by([2,2,3,44]), SArray([2,2,3])))
+        self.assertEqual(sorted(x.filter_by([2,2,3,44])), [2,2,3])
     
         #strings
         x = SArray(['dog', 'cat', 'cow', 'horse'])
-        self.assertTrue(np.array_equal(x.filter_by(['cat', 'hamster', 'dog', 'fish', 'bird', 'snake']), SArray(['dog', 'cat'])))
-        self.assertTrue(np.array_equal(x.filter_by(['cat', 'hamster', 'dog', 'fish', 'bird', 'snake'], exclude=True), SArray(['horse', 'cow'])))
-        self.assertTrue(np.array_equal(x.filter_by('dog'), SArray(['dog'])))
-    
-    
-
-
+        self.assertEqual(sorted(x.filter_by(['cat', 'hamster', 'dog', 'fish', 'bird', 'snake'])), ['cat', 'dog'])
+        self.assertEqual(sorted(x.filter_by(['cat', 'hamster', 'dog', 'fish', 'bird', 'snake'], exclude=True)), ['cow', 'horse'])
+        self.assertEqual(sorted(x.filter_by('dog')), ['dog'])
