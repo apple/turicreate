@@ -16,7 +16,7 @@
 
 #include <logger/assertions.hpp>
 #include <logger/logger.hpp>
-#include <unity/toolkits/neural_net/coreml_import.hpp>
+#include <random/random.hpp>
 
 using turi::neural_net::cnn_module;
 using turi::neural_net::deferred_float_array;
@@ -24,7 +24,7 @@ using turi::neural_net::float_array_map;
 using turi::neural_net::image_annotation;
 using turi::neural_net::image_augmenter;
 using turi::neural_net::labeled_image;
-using turi::neural_net::load_network_params;
+using turi::neural_net::model_spec;
 using turi::neural_net::shared_float_array;
 
 namespace turi {
@@ -175,7 +175,6 @@ void object_detector::train(gl_sframe data,
   // TODO: Make progress printing optional.
   training_table_printer_.reset(new table_printer(
       {{ "Iteration", 12}, {"Loss", 12}, {"Elapsed Time", 12}}));
-  training_table_printer_->print_header();
 
   // Instantiate the training dependencies: data iterator, image augmenter,
   // backend NN module.
@@ -193,88 +192,87 @@ void object_detector::train(gl_sframe data,
   // Finish printing progress.
   training_table_printer_->print_footer();
   training_table_printer_.reset();
+
+  // Sync trained weights to our local storage of the NN weights.
+  float_array_map trained_weights = training_module_->export_weights();
+  nn_spec_->update_params(trained_weights);
 }
 
-float_array_map object_detector::init_model_params(
+std::unique_ptr<model_spec> object_detector::init_model(
     const std::string& pretrained_mlmodel_path) const {
 
   // All of this presumes that the pre-trained model is the darknet model from
   // our first object detector implementation....
 
   // TODO: Make this more generalizable.
-  // TODO: Extract some of the pieces here into utility code.
-
-  static constexpr size_t BUFFER_SIZE = 32;
-  char name[BUFFER_SIZE];
 
   // Start with parameters from the pre-trained model.
-  float_array_map model_params = load_network_params(pretrained_mlmodel_path);
+  std::unique_ptr<model_spec> nn_spec(new model_spec(pretrained_mlmodel_path));
 
-  // Fill out the parameters for the batch-norm layers.
-  std::array<size_t, 8> batchnorm_sizes =
-      {16, 32, 64, 128, 256, 512, 1024, 1024};
-  for (unsigned i = 0; i < batchnorm_sizes.size(); ++i) {
-    size_t size = batchnorm_sizes[i];
-
-    // The last layer does not come from the pre-trained model and must be
-    // initialized from scratch.
-    if (i == 7) {
-      std::snprintf(name, BUFFER_SIZE, "batchnorm%u_beta", i);
-      model_params[name] =
-          shared_float_array::wrap(std::vector<float>(size, 0.f), {size});
-
-      std::snprintf(name, BUFFER_SIZE, "batchnorm%u_gamma", i);
-      model_params[name] =
-          shared_float_array::wrap(std::vector<float>(size, 1.f), {size});
-    }
-
-    std::snprintf(name, BUFFER_SIZE, "batchnorm%u_running_mean", i);
-    model_params[name] =
-        shared_float_array::wrap(std::vector<float>(size, 0.f), {size});
-
-    std::snprintf(name, BUFFER_SIZE, "batchnorm%u_running_var", i);
-    model_params[name] =
-        shared_float_array::wrap(std::vector<float>(size, 1.f), {size});
+  // Verify that the pre-trained model ends with the expected leakyrelu6 layer.
+  // TODO: Also verify that activation shape here is [1024, 13, 13]?
+  if (!nn_spec->has_layer_output("leakyrelu6_fwd")) {
+    log_and_throw("Expected leakyrelu6_fwd layer in NeuralNetwork parsed from "
+                  + pretrained_mlmodel_path);
   }
 
-  // Initialize conv7 using the Xavier method (with base magnitude 3).
+  // Append conv7, initialized using the Xavier method (with base magnitude 3).
   // The conv7 weights have shape [1024, 1024, 3, 3], so fan in and fan out are
   // both 1024*3*3.
   static constexpr size_t CONV7_FAN_IN = 1024 * 3 * 3;
-  float conv7_magnitude = std::sqrt(3.f / CONV7_FAN_IN);
-  std::vector<float> conv7_weights(1024*1024*3*3);
-  for (float& w : conv7_weights) {
-    w = random::fast_uniform(-conv7_magnitude, conv7_magnitude);
-  }
-  std::snprintf(name, BUFFER_SIZE, "conv%u_weight", 7);
-  model_params[name] = shared_float_array::wrap(std::move(conv7_weights),
-                                                { 1024, 1024, 3, 3});
+  const float conv7_magnitude = std::sqrt(3.f / CONV7_FAN_IN);
+  auto conv7_init_fn = [conv7_magnitude](float* w, float* w_end) {
+    while (w != w_end) {
+      *w++ = random::fast_uniform(-conv7_magnitude, conv7_magnitude);
+    }
+  };
+  nn_spec->add_convolution(/* name */                "conv7_fwd",
+                           /* input */               "leakyrelu6_fwd",
+                           /* num_output_channels */ 1024,
+                           /* num_kernel_channels */ 1024,
+                           /* kernel_size */         3,
+                           /* weight_init_fn */      conv7_init_fn);
 
-  // Initialize conv8.
+  // Append batchnorm7.
+  nn_spec->add_batchnorm(/* name */                  "batchnorm7_fwd",
+                         /* input */                 "conv7_fwd",
+                         /* num_channels */          1024,
+                         /* epsilon */               0.00001f);
 
+  // Append leakyrelu7.
+  nn_spec->add_leakyrelu(/* name */                  "leakyrelu7_fwd",
+                         /* input */                 "batchnorm7_fwd",
+                         /* alpha */                 0.1f);
+
+  // Append conv8.
   static constexpr float CONV8_MAGNITUDE = 0.00005f;
-  size_t num_classes = training_data_iterator_->class_labels().size();
-  size_t num_predictions = 5 + num_classes;  // Per anchor box
-  size_t c_out = NUM_ANCHOR_BOXES * num_predictions;
-  std::vector<float> conv8_weights(c_out*1024*1*1);
-  for (float& w : conv8_weights) {
-    w = random::fast_uniform(-CONV8_MAGNITUDE, CONV8_MAGNITUDE);
-  }
-  std::snprintf(name, BUFFER_SIZE, "conv%u_weight", 8);
-  model_params[name] = shared_float_array::wrap(std::move(conv8_weights),
-                                                { c_out, 1024, 1, 1});
+  const size_t num_classes = training_data_iterator_->class_labels().size();
+  const size_t num_predictions = 5 + num_classes;  // Per anchor box
+  const size_t conv8_c_out = NUM_ANCHOR_BOXES * num_predictions;
+  auto conv8_weight_init_fn = [](float* w, float* w_end) {
+    while (w != w_end) {
+      *w++ = random::fast_uniform(-CONV8_MAGNITUDE, CONV8_MAGNITUDE);
+    }
+  };
+  auto conv8_bias_init_fn = [num_predictions](float* w, float* w_end) {
+    while (w < w_end) {
+      // Initialize object confidence low, preventing an unnecessary adjustment
+      // period toward conservative estimates
+      w[4] = -6.f;
 
-  // Initialize object confidence low, preventing an unnecessary adjustment
-  // period toward conservative estimates
-  std::vector<float> conv8_bias(c_out);  // Zero-initialized.
-  for (size_t i = 0; i < NUM_ANCHOR_BOXES; ++i) {
-    conv8_bias[i * num_predictions + 4] = -6.f;
-  }
-  std::snprintf(name, BUFFER_SIZE, "conv%u_bias", 8);
-  model_params[name] = shared_float_array::wrap(std::move(conv8_bias),
-                                                { c_out });
+      // Iterate through each anchor box.
+      w += num_predictions;
+    }
+  };
+  nn_spec->add_convolution(/* name */                "conv8_fwd",
+                           /* input */               "leakyrelu7_fwd",
+                           /* num_output_channels */ conv8_c_out,
+                           /* num_kernel_channels */ 1024,
+                           /* kernel_size */         1,
+                           /* weight_init_fn */      conv8_weight_init_fn,
+                           /* bias_init_fn */        conv8_bias_init_fn);
 
-  return model_params;
+  return nn_spec;
 }
 
 std::unique_ptr<data_iterator> object_detector::create_iterator(
@@ -319,16 +317,32 @@ void object_detector::init_train(gl_sframe data,
   aug_opts.output_height = GRID_SIZE * SPATIAL_REDUCTION;
   training_data_augmenter_ = create_augmenter(aug_opts);
 
-  // Load the pre-trained model from the provided path.
+  // Extract 'mlmodel_path' from the options, to avoid storing it as a model
+  // field.
   auto mlmodel_path_iter = opts.find("mlmodel_path");
   if (mlmodel_path_iter == opts.end()) {
     log_and_throw("Expected option \"mlmodel_path\" not found.");
   }
   const std::string mlmodel_path = mlmodel_path_iter->second;
-  float_array_map model_params = init_model_params(mlmodel_path);
-
-  // Remove 'mlmodel_path' to avoid storing it as a model field.
   opts.erase(mlmodel_path_iter);
+
+  // Load the pre-trained model from the provided path.
+  nn_spec_ = init_model(mlmodel_path);
+  float_array_map raw_model_params = nn_spec_->export_params_view();
+
+  // Strip the substring "_fwd" from any parameter names, for compatibility with
+  // the training backend. (We preserve the substring in nn_spec_ for inclusion
+  // in the final exported model.)
+  float_array_map model_params;
+  for (const float_array_map::value_type& kv : raw_model_params) {
+    const std::string qualifier = "_fwd";
+    std::string name = kv.first;
+    size_t pos = name.find(qualifier);
+    if (pos != std::string::npos) {
+      name.erase(pos, qualifier.size());
+    }
+    model_params[name] = kv.second;
+  }
 
   // Validate options, and infer values for unspecified options. Note that this
   // depends on training data statistics in the general case.
@@ -369,6 +383,11 @@ void object_detector::init_train(gl_sframe data,
       /* w_out */ GRID_SIZE,
       get_training_config(),
       std::move(model_params));
+
+  // Print the header last, after any logging triggered by initialization above.
+  if (training_table_printer_) {
+    training_table_printer_->print_header();
+  }
 }
 
 void object_detector::perform_training_iteration() {

@@ -20,6 +20,7 @@ namespace turi {
 namespace object_detection {
 namespace {
 
+using CoreML::Specification::NeuralNetwork;
 using turi::neural_net::cnn_module;
 using turi::neural_net::deferred_float_array;
 using turi::neural_net::float_array;
@@ -27,6 +28,7 @@ using turi::neural_net::float_array_map;
 using turi::neural_net::image_annotation;
 using turi::neural_net::image_augmenter;
 using turi::neural_net::labeled_image;
+using turi::neural_net::model_spec;
 using turi::neural_net::shared_float_array;
 
 // First, define mock implementations of the key object_detector dependencies.
@@ -149,9 +151,6 @@ public:
 // object_detector dependencies.
 class test_object_detector: public object_detector {
 public:
-  using init_model_params_call = std::function<float_array_map(
-      const std::string& pretrained_mlmodel_path)>;
-
   using create_iterator_call =
       std::function<std::unique_ptr<data_iterator>(
           gl_sframe data, std::string annotations_column_name,
@@ -160,26 +159,19 @@ public:
   using create_augmenter_call = std::function<std::unique_ptr<image_augmenter>(
       const image_augmenter::options& opts)>;
 
+  using init_model_call = std::function<std::unique_ptr<model_spec>(
+      const std::string& pretrained_mlmodel_path)>;
+
   using create_cnn_module_call = std::function<std::unique_ptr<cnn_module>(
       int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
       const float_array_map& config, const float_array_map& weights)>;
 
   ~test_object_detector() {
-    TS_ASSERT(init_model_params_calls_.empty());
     TS_ASSERT(create_iterator_calls_.empty());
     TS_ASSERT(create_augmenter_calls_.empty());
+    TS_ASSERT(init_model_calls_.empty());
     TS_ASSERT(create_cnn_module_calls_.empty());
   }
-
-  float_array_map init_model_params(
-      const std::string& pretrained_mlmodel_path) const override {
-
-    TS_ASSERT(!init_model_params_calls_.empty());
-    init_model_params_call expected_call =
-        std::move(init_model_params_calls_.front());
-    init_model_params_calls_.pop_front();
-    return expected_call(pretrained_mlmodel_path);
-}
 
   std::unique_ptr<data_iterator> create_iterator(
       gl_sframe data, std::string annotations_column_name,
@@ -202,6 +194,15 @@ public:
     return expected_call(opts);
   }
 
+  std::unique_ptr<model_spec> init_model(
+      const std::string& pretrained_mlmodel_path) const override {
+
+    TS_ASSERT(!init_model_calls_.empty());
+    init_model_call expected_call = std::move(init_model_calls_.front());
+    init_model_calls_.pop_front();
+    return expected_call(pretrained_mlmodel_path);
+  }
+
   std::unique_ptr<cnn_module> create_cnn_module(
       int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
       const float_array_map& config,
@@ -220,9 +221,9 @@ public:
     return variant_get_value<T>(get_value_from_state(name));
   }
 
-  mutable std::deque<init_model_params_call> init_model_params_calls_;
   mutable std::deque<create_iterator_call> create_iterator_calls_;
   mutable std::deque<create_augmenter_call> create_augmenter_calls_;
+  mutable std::deque<init_model_call> init_model_calls_;
   mutable std::deque<create_cnn_module_call> create_cnn_module_calls_;
 };
 
@@ -340,17 +341,6 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
   const std::string test_annotations_name = "test_annotations";
   const std::string test_image_name = "test_image";
 
-  // We'll provide this path for the "mlmodel_path" option. When the
-  // object_detector attempts to initialize weights from that path, just return
-  // some arbitrary dummy params.
-  const std::string test_mlmodel_path = "/test/foo.mlmodel";
-  const float_array_map test_model_params =
-      { {"test_param", shared_float_array::wrap(0.75f)} };
-  model.init_model_params_calls_.push_back([=](const std::string& model_path) {
-    TS_ASSERT_EQUALS(model_path, test_mlmodel_path);
-    return test_model_params;
-  });
-
   // The following callbacks capture by reference so that they can transfer
   // ownership of the mocks created above.
 
@@ -373,6 +363,23 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
   };
   model.create_augmenter_calls_.push_back(create_augmenter_impl);
 
+  // We'll provide this path for the "mlmodel_path" option. When the
+  // object_detector attempts to initialize weights from that path, just return
+  // some arbitrary dummy params.
+  const std::string test_mlmodel_path = "/test/foo.mlmodel";
+  model.init_model_calls_.emplace_back([=](const std::string& model_path) {
+    TS_ASSERT_EQUALS(model_path, test_mlmodel_path);
+
+    std::unique_ptr<model_spec> nn_spec(new model_spec);
+    nn_spec->add_convolution("test_layer", "test_input", 16, 16, 3,
+                             /* weight_init_fn */ [](float*w , float* w_end) {
+                               for (int i = 0; i < w_end - w; ++i) {
+                                 w[i] = static_cast<float>(i);
+                               }
+                             });
+    return nn_spec;
+  });
+
   auto create_cnn_module_impl = [&](int n, int c_in, int h_in, int w_in,
                                     int c_out, int h_out, int w_out,
                                     const float_array_map& config,
@@ -386,9 +393,14 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
     TS_ASSERT_EQUALS(h_out, 13);
     TS_ASSERT_EQUALS(w_out, 13);
 
-    // weights should be what we returned from init_model_params
+    // weights should be what we returned from init_model, as copied by
+    // neural_net::wrap_network_params
     TS_ASSERT_EQUALS(weights.size(), 1);
-    TS_ASSERT_EQUALS(weights.count("test_param"), 1);
+    auto it = weights.find("test_layer_weight");
+    TS_ASSERT(it != weights.end());
+    for (size_t i = 0; i < it->second.size(); ++i) {
+      TS_ASSERT_EQUALS(it->second.data()[i], static_cast<float>(i));
+    }
 
     // TODO: Assert the config values?
 

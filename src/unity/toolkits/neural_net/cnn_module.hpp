@@ -28,6 +28,8 @@ public:
    *
    * \todo Define a object_detector_config struct to encapsulate these
    *       parameters in a more self-documenting and typesafe way.
+   * \todo Initialize the network directly from a model_spec, in lieu of passing
+   *       weights as a float_array_map.
    */
   static std::unique_ptr<cnn_module> create_object_detector(
       int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
@@ -52,6 +54,10 @@ public:
 
   /**
    * Exports the network weights.
+   *
+   * \todo Someday, once no Python frontend depends on this method, this could
+   *       just take a mutable model_spec (updating the one used to initialize
+   *       the cnn_module).
    */
   virtual float_array_map export_weights() const = 0;
 };
