@@ -8,6 +8,8 @@ from tempfile import mkstemp as _mkstemp
 from subprocess import Popen as _Popen
 from subprocess import PIPE as _PIPE
 
+LABEL_DEFAULT = "__TURI_DEFAULT_LABEL"
+
 _target = 'auto'
 
 _SUCCESS = 0

@@ -31,9 +31,9 @@ class boxes_and_whiskers : public groupby<boxes_and_whiskers_result> {
 std::shared_ptr<Plot> plot_boxes_and_whiskers(
                               const gl_sarray& x,
                               const gl_sarray& y,
-                              const std::string& xlabel,
-                              const std::string& ylabel,
-                              const std::string& title);
+                              const flexible_type& xlabel,
+                              const flexible_type& ylabel,
+                              const flexible_type& title);
 
 }} // turi::visualization
 

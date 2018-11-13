@@ -135,8 +135,8 @@ namespace turi {
   namespace visualization {
 
     std::shared_ptr<Plot> plot_item_frequency(
-      gl_sarray& sa, std::string xlabel, std::string ylabel, 
-      std::string title) {
+      const gl_sarray& sa, const flexible_type& xlabel, const flexible_type& ylabel, 
+      const flexible_type& title) {
 
         using namespace turi;
         using namespace turi::visualization;
@@ -157,22 +157,7 @@ namespace turi {
         auto result = transformer->emit().get<flex_dict>();
         size_t length_list = std::min(200UL, result.size());
         
-        if (title.empty()) {
-          title = std::string("Distribution of Values [");
-          title.append(flex_type_enum_to_name(self->dtype()));
-          title.append("]");
-        }
-
-        if (xlabel.empty()) {
-          xlabel = "Count";
-        }
-        if (ylabel.empty()) {
-          ylabel = "Values";
-        }
-
-        std::stringstream ss;
-        ss << categorical_spec(length_list, title, xlabel, ylabel);
-        std::string category_spec = ss.str();
+        std::string category_spec = categorical_spec(length_list, title, xlabel, ylabel, self->dtype());
 
         double size_array = static_cast<double>(self->size());
 

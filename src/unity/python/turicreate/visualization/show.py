@@ -6,7 +6,7 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-from ._plot import Plot
+from ._plot import Plot, LABEL_DEFAULT
 import turicreate as tc
 
 def _get_title(title):
@@ -17,7 +17,7 @@ def _get_title(title):
 
     return title
 
-def show(x, y, xlabel="X", ylabel="Y", title=None):
+def show(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     """
     Plots the data in `x` on the X axis and the data in `y` on the Y axis
     in a 2d visualization, and shows the resulting visualization.
@@ -80,7 +80,7 @@ def show(x, y, xlabel="X", ylabel="Y", title=None):
     plt_ref = tc.extensions.plot(x, y, xlabel, ylabel, title)
     Plot(plt_ref).show()
 
-def scatter(x, y, xlabel="X", ylabel="Y", title=None):
+def scatter(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     """
     Plots the data in `x` on the X axis and the data in `y` on the Y axis
     in a 2d scatter plot, and returns the resulting Plot object.
@@ -129,7 +129,7 @@ def scatter(x, y, xlabel="X", ylabel="Y", title=None):
       xlabel, ylabel,title)
     return Plot(plt_ref)
 
-def categorical_heatmap(x, y, xlabel="X", ylabel="Y", title=None):
+def categorical_heatmap(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     """
     Plots the data in `x` on the X axis and the data in `y` on the Y axis
     in a 2d categorical heatmap, and returns the resulting Plot object.
@@ -177,7 +177,7 @@ def categorical_heatmap(x, y, xlabel="X", ylabel="Y", title=None):
       xlabel, ylabel, title)
     return Plot(plt_ref)
 
-def heatmap(x, y, xlabel="X", ylabel="Y", title=None):
+def heatmap(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     """
     Plots the data in `x` on the X axis and the data in `y` on the Y axis
     in a 2d heatmap, and returns the resulting Plot object.
@@ -224,7 +224,7 @@ def heatmap(x, y, xlabel="X", ylabel="Y", title=None):
       xlabel, ylabel, title)
     return Plot(plt_ref)
 
-def box_plot(x, y, xlabel="X", ylabel="Y", title=None):
+def box_plot(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     """
     Plots the data in `x` on the X axis and the data in `y` on the Y axis
     in a 2d box and whiskers plot, and returns the resulting Plot object.
@@ -302,7 +302,7 @@ def columnwise_summary(sf):
     plt_ref = tc.extensions.plot_columnwise_summary(sf)
     return Plot(plt_ref)
 
-def histogram(sa, xlabel="Values", ylabel="Count", title=None):
+def histogram(sa, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     """
     Plots a histogram of the sarray provided as input, and returns the 
     resulting Plot object.
@@ -343,7 +343,7 @@ def histogram(sa, xlabel="Values", ylabel="Count", title=None):
       xlabel, ylabel, title)
     return Plot(plt_ref)
 
-def item_frequency(sa, xlabel="Values", ylabel="Count", title=None):
+def item_frequency(sa, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     """
     Plots an item frequency of the sarray provided as input, and returns the 
     resulting Plot object.
