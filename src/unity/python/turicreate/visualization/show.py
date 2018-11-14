@@ -17,6 +17,68 @@ def _get_title(title):
 
     return title
 
+def plot(x, y, xlabel="X", ylabel="Y", title=None):
+    """
+    Plots the data in `x` on the X axis and the data in `y` on the Y axis
+    in a 2d visualization, and shows the resulting visualization.
+    Uses the following heuristic to choose the visualization:
+
+    * If `x` and `y` are both numeric (SArray of int or float), and they contain
+      fewer than or equal to 5,000 values, show a scatter plot.
+    * If `x` and `y` are both numeric (SArray of int or float), and they contain
+      more than 5,000 values, show a heat map.
+    * If `x` is numeric and `y` is an SArray of string, show a box and whisker
+      plot for the distribution of numeric values for each categorical (string)
+      value.
+    * If `x` and `y` are both SArrays of string, show a categorical heat map.
+
+    This show method supports SArrays of dtypes: int, float, str.
+
+    Notes
+    -----
+    - The plot will be returned as a Plot object, which can then be shown,
+      saved, etc. and will display automatically in a Jupyter Notebook.
+
+    Parameters
+    ----------
+    x : SArray
+      The data to plot on the X axis of a 2d visualization.
+    y : SArray
+      The data to plot on the Y axis of a 2d visualization. Must be the same
+      length as `x`.
+    xlabel : str (optional)
+      The text label for the X axis. Defaults to "X".
+    ylabel : str (optional)
+      The text label for the Y axis. Defaults to "Y".
+    title : str (optional)
+      The title of the plot. Defaults to None. If the value is None, the title
+      will be "<xlabel> vs. <ylabel>". Otherwise, the string passed in as the
+      title will be used as the plot title.
+
+    Examples
+    --------
+    Show a categorical heat map of pets and their feelings.
+
+    >>> x = turicreate.SArray(['dog', 'cat', 'dog', 'dog', 'cat'])
+    >>> y = turicreate.SArray(['happy', 'grumpy', 'grumpy', 'happy', 'grumpy'])
+    >>> turicreate.show(x, y)
+
+
+    Show a scatter plot of the function y = 2x, for x from 0 through 9, labeling
+    the axes and plot title with custom strings.
+
+    >>> x = turicreate.SArray(range(10))
+    >>> y = x * 2
+    >>> turicreate.show(x, y,
+    ...                 xlabel="Custom X label",
+    ...                 ylabel="Custom Y label",
+    ...                 title="Custom title")
+
+    """
+    title = _get_title(title)
+    plt_ref = tc.extensions.plot(x, y, xlabel, ylabel, title)
+    return Plot(plt_ref)
+
 def show(x, y, xlabel="X", ylabel="Y", title=None):
     """
     Plots the data in `x` on the X axis and the data in `y` on the Y axis
@@ -76,9 +138,7 @@ def show(x, y, xlabel="X", ylabel="Y", title=None):
     ...                 title="Custom title")
 
     """
-    title = _get_title(title)
-    plt_ref = tc.extensions.plot(x, y, xlabel, ylabel, title)
-    Plot(plt_ref).show()
+    plot(x, y, xlabel, ylabel, title).show()
 
 def scatter(x, y, xlabel="X", ylabel="Y", title=None):
     """

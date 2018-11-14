@@ -139,6 +139,6 @@ def _mxnet_check():
 
 _mxnet_check()
 
-from .visualization import show
+from .visualization import plot, show
 
 _launch()
