@@ -81,12 +81,6 @@ class TcPlot extends Component {
         };
 
         this.vega_json = spec;
-
-        this.opt = {
-        mode: ('$schema' in this.vega_json && this.vega_json['$schema'].indexOf('vega-lite') === -1) ? "vega": "vega-lite",
-        renderer: "svg"
-        };
-
         this.vega_json.autosize = {"type": "fit", "resize": true, "contains": "padding"};
 
         if(this.vega_json["metadata"] != null){
@@ -96,7 +90,7 @@ class TcPlot extends Component {
         }
 
         this.vegaLoading = true;
-        this.vegaView = new vega.View(vega.parse(this.vega_json))
+        this.vegaView = new vega.View(vega.parse(this.vega_json), {'renderer': 'svg'})
                                 .initialize(this.vega_container)
                                 .hover()
                                 .run();
