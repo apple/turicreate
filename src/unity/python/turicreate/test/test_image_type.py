@@ -121,7 +121,7 @@ class ImageClassTest(unittest.TestCase):
                         pilimage = pilimage.convert('RGBA')
                     self.__check_raw_image_equals_pilimage(glimage_resized, pilimage)
 
-    def test_color_channels_conversion(self):
+    def test_cmyk_not_supported(self):
         for meta_info in test_image_info:
             input_img = PIL_Image.open(meta_info.url)
             input_img = input_img.convert('CMYK')
