@@ -83,7 +83,7 @@ void decode_jpeg(const char* data, size_t length, char** out_data, size_t& out_l
     jpeg_start_decompress(&cinfo); // Start decompressor
 
     if (cinfo.out_color_space != JCS_GRAYSCALE && cinfo.out_color_space != JCS_RGB) {
-      log_and_throw(std::string("Image provided is not in supported colorspaces Grayscale or RGB."));
+      log_and_throw(std::string("Unsupported colorspace format. Currently, only RGB and Grayscale are supported."));
     }
 
     size_t width = cinfo.image_width;

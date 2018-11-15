@@ -82,8 +82,9 @@ class _SFrameDataSource:
         # Copy the image data for this row into a NumPy array.
         row = self.sframe[row_index]
         image = row[self.feature_column].pixel_data
-
-        if image.shape[2]>3:
+        image_channels = row[self.feature_column].channels
+        
+        if image_channels!=3:
             image = _convert_image_to_raw(row[self.feature_column]).pixel_data
 
         # Copy the annotated bounding boxes for this image, if requested.
