@@ -81,12 +81,11 @@ class _SFrameDataSource:
 
         # Copy the image data for this row into a NumPy array.
         row = self.sframe[row_index]
-        image_channels = row[self.feature_column].channels
-        
-        if image_channels!=3:
-            image = _convert_image_to_raw(row[self.feature_column]).pixel_data
-        else:
-            image = row[self.feature_column].pixel_data
+
+        turi_image = row[self.feature_column]        
+        if turi_image.channels!=3:
+            turi_image = _convert_image_to_raw(turi_image)
+        image = turi_image.pixel_data
 
         # Copy the annotated bounding boxes for this image, if requested.
         if self.load_labels:
