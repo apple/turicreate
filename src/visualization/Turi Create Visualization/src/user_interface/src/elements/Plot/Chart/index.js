@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import vegaEmbed from 'vega-embed';
-
 import './index.css';
 
 var vega = require('vega');
