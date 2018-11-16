@@ -2,7 +2,7 @@
     "name": "turicreate-user-interface",
     "version": "0.2.0",
     "private": true,
-    "homepage": "https://github.com/apple/turicreate",
+    "homepage": "./",
     "dependencies": {
         "@fortawesome/fontawesome": "^1.1.5",
         "@fortawesome/fontawesome-free-solid": "^5.0.9",
