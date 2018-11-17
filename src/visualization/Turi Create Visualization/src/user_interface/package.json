@@ -12,9 +12,8 @@
         "react": "^16.2.0",
         "react-dom": "^16.2.0",
         "react-json-pretty": "^1.7.5",
-        "vega": "4.2.0",
-        "vega-embed": "3.18.2",
-        "vega-tooltip": "^0.6.1"
+        "vega": "4.3.0",
+        "vega-tooltip": "0.6.1"
     },
     "scripts": {
         "start": "react-scripts start",
@@ -27,6 +26,7 @@
         "babel-plugin-transform-class-properties": "^6.24.1",
         "babel-plugin-transform-react-remove-prop-types": "^0.4.13",
         "babel-preset-es2017": "^6.24.1",
-        "react-scripts": "1.1.1"
+        "react-scripts": "1.1.1",
+        "tslib": "^1.9.3"
     }
 }

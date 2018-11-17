@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega/v4.json",
-  "autosize": "fit",
+  "autosize": {"type": "fit", "resize": true, "contains": "padding"},
   "metadata": {
     "bubbleOpts": {
       "showAllFields": false,
@@ -27,10 +27,8 @@
     }
   },
   "title": {
-    "text": %1%,
-    "offset": 30
+    "text": %1%
   },
-  "padding": 5,
   "height": 550,
   "style": "cell",
   "data": [
@@ -51,7 +49,7 @@
     },
     {
       "name": "width",
-      "update": "bandspace(domain('x').length, 0.1, 0.1) * x_step"
+      "update": "max(720, 100 + bandspace(domain('x').length, 0.1, 0.1) * x_step)"
     }
   ],
   "marks": [
