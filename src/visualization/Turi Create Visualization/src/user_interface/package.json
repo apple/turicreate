@@ -1,6 +1,6 @@
 {
-    "name": "user-interface",
-    "version": "0.1.0",
+    "name": "turicreate-user-interface",
+    "version": "0.2.0",
     "private": true,
     "homepage": "./",
     "dependencies": {

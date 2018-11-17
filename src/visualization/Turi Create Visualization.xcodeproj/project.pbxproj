@@ -248,7 +248,6 @@
 			buildConfigurationList = 9226E7E51F366F2E00C33A64 /* Build configuration list for PBXNativeTarget "Turi Create Visualization" */;
 			buildPhases = (
 				9226E7BC1F366F2E00C33A64 /* Sources */,
-				FC1A878A1FB14D2900A67DAD /* ShellScript */,
 				9226E7BD1F366F2E00C33A64 /* Frameworks */,
 				9226E7BE1F366F2E00C33A64 /* Resources */,
 			);
@@ -310,22 +309,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		FC1A878A1FB14D2900A67DAD /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/Turi Create Visualization/src/user_interface\"\nnpm install\nnpm run build";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		9226E7BC1F366F2E00C33A64 /* Sources */ = {
