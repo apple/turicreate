@@ -15,8 +15,8 @@
 
 #include <unity/toolkits/neural_net/float_array.hpp>
 
-// Forward declare CoreML::Specification::Model in lieu of including problematic
-// protocol buffer headers.
+// Forward declare CoreML::Specification::NeuralNetwork in lieu of including
+// problematic protocol buffer headers.
 namespace CoreML {
 namespace Specification {
 class NeuralNetwork;
@@ -82,9 +82,7 @@ public:
    *
    * (Note that this method may only be invoked from a model_spec&&)
    */
-  std::unique_ptr<CoreML::Specification::NeuralNetwork> move_coreml_spec() && {
-    return std::move(impl_);
-  }
+  std::unique_ptr<CoreML::Specification::NeuralNetwork> move_coreml_spec() &&;
 
   /**
    * Creates a shared_float_array view (weak reference) into the parameters of

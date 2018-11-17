@@ -283,6 +283,10 @@ model_spec::model_spec(const std::string& mlmodel_path)
 
 model_spec::~model_spec() = default;
 
+std::unique_ptr<NeuralNetwork> model_spec::move_coreml_spec() && {
+  return std::move(impl_);
+}
+
 float_array_map model_spec::export_params_view() const {
   float_array_map result;
   wrap_network_params(*impl_, &result);
