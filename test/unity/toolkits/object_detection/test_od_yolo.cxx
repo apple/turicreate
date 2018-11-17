@@ -177,12 +177,12 @@ BOOST_AUTO_TEST_CASE(test_add_tiny_darknet_yolo) {
   TS_ASSERT_EQUALS(c_anchors.loadconstant().shape(2), OUTPUT_GRID_SIZE);
   TS_ASSERT_EQUALS(c_anchors.loadconstant().data().floatvalue_size(),
                    2 * anchor_boxes.size() * OUTPUT_GRID_AREA);
-  for (int i = 0; i < anchor_boxes.size(); ++i) {
-    for (int j = 0; j < OUTPUT_GRID_AREA; ++j) {
-      int idx = i * OUTPUT_GRID_AREA + j;
+  for (size_t i = 0; i < anchor_boxes.size(); ++i) {
+    for (size_t j = 0; j < OUTPUT_GRID_AREA; ++j) {
+      int idx = static_cast<int>(i * OUTPUT_GRID_AREA + j);
       TS_ASSERT_EQUALS(c_anchors.loadconstant().data().floatvalue(idx),
                        anchor_boxes[i].first);
-      idx += anchor_boxes.size() * OUTPUT_GRID_AREA;
+      idx += static_cast<int>(anchor_boxes.size() * OUTPUT_GRID_AREA);
       TS_ASSERT_EQUALS(c_anchors.loadconstant().data().floatvalue(idx),
                        anchor_boxes[i].second);
     }
@@ -284,7 +284,7 @@ BOOST_AUTO_TEST_CASE(test_add_tiny_darknet_yolo) {
 
   const auto& conf_tiled_sp = nn.layers(20);
   TS_ASSERT_EQUALS(conf_tiled_sp.input_size(), NUM_CLASSES);
-  for (int i = 0; i < NUM_CLASSES; ++i) {
+  for (int i = 0; i < static_cast<int>(NUM_CLASSES); ++i) {
     TS_ASSERT_EQUALS(conf_tiled_sp.input(i), prefix + "conf_sp");
   }
   TS_ASSERT_EQUALS(conf_tiled_sp.output_size(), 1);
