@@ -32,7 +32,6 @@ You will need:
   * `xxd` (typically provided by the `vim-common` package)
   * For visualization support, X11 libraries (typically provided by `libx11-dev` or `libX11-devel` packages)
 * On both macOS and Linux:
-  * [Node.js](https://nodejs.org) 6.x or later with `node` and `npm` in `$PATH`
   * The python `virtualenv` package
 
 Optionally, you may want:

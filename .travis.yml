@@ -33,14 +33,8 @@ before_install:
   - sudo easy_install pip
   - sudo pip install --upgrade pip
   - sudo pip install virtualenv
-  # Install node.js from binary
-  - pushd /opt
-  - curl -O https://nodejs.org/dist/v8.9.4/node-v8.9.4-linux-x64.tar.xz
-  - tar xf node-v8.9.4-linux-x64.tar.xz
-  - popd
 
 script:
-  - export PATH="/opt/node-v8.9.4-linux-x64/bin:${PATH}"
   - sudo ln -s /usr/bin/gcc-5 /usr/local/bin/gcc
   - sudo ln -s /usr/bin/g++-5 /usr/local/bin/g++
   # We sometimes get `error: No space left on device`
