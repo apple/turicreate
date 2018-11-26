@@ -17,6 +17,10 @@ from ._detection import yolo_boxes_to_yolo_map as _yolo_boxes_to_yolo_map
 _TMP_COL_RANDOM_ORDER = '_random_order'
 
 
+def _convert_image_to_raw(image):
+    # Decode image and make sure it has 3 channels
+    return _tc.image_analysis.resize(image, image.width, image.height, 3, decode=True)
+
 def _is_rectangle_annotation(ann):
     return 'type' not in ann or ann['type'] == 'rectangle'
 
@@ -77,7 +81,11 @@ class _SFrameDataSource:
 
         # Copy the image data for this row into a NumPy array.
         row = self.sframe[row_index]
-        image = row[self.feature_column].pixel_data
+
+        turi_image = row[self.feature_column]        
+        if turi_image.channels!=3:
+            turi_image = _convert_image_to_raw(turi_image)
+        image = turi_image.pixel_data
 
         # Copy the annotated bounding boxes for this image, if requested.
         if self.load_labels:
