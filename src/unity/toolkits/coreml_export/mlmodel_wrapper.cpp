@@ -1,5 +1,7 @@
-#include <unity/lib/toolkit_function_macros.hpp>
 #include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
+
+#include <unity/toolkits/coreml_export/coreml_export_utils.hpp>
+#include <unity/toolkits/coreml_export/mlmodel_include.hpp>
 
 namespace turi {
 namespace coreml {

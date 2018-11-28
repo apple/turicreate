@@ -30,7 +30,7 @@ let objectRecognition = VNCoreMLRequest(model: visionModel,
         print(bestLabel.identifier, bestLabel.confidence, objectBounds)
     }
 })
-
+objectRecognition.imageCropAndScaleOption = .scaleFill
 ```
 
 For more details on the integration with Core ML and a sample app to get

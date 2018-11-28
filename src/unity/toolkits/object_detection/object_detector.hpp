@@ -14,6 +14,7 @@
 #include <table_printer/table_printer.hpp>
 #include <unity/lib/extensions/ml_model.hpp>
 #include <unity/lib/gl_sframe.hpp>
+#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
 #include <unity/toolkits/neural_net/cnn_module.hpp>
 #include <unity/toolkits/neural_net/image_augmentation.hpp>
 #include <unity/toolkits/neural_net/model_spec.hpp>
@@ -38,6 +39,8 @@ class EXPORT object_detector: public ml_model_base {
   void train(gl_sframe data, std::string annotations_column_name,
              std::string image_column_name,
              std::map<std::string, flexible_type> options);
+  std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
+      std::string filename);
 
   // Register with Unity server
 
@@ -66,7 +69,9 @@ class EXPORT object_detector: public ml_model_base {
   );
   // TODO: Addition training options: batch_size, max_iterations, etc.
 
-  // TODO: Remainder of interface: predict, export_to_coreml, etc.
+  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::export_to_coreml, "filename");
+
+  // TODO: Remainder of interface: predict, etc.
 
   END_CLASS_MEMBER_REGISTRATION
 
@@ -102,6 +107,13 @@ class EXPORT object_detector: public ml_model_base {
                   std::string image_column_name,
                   std::map<std::string, flexible_type> options);
   void perform_training_iteration();
+
+  // Utility code
+
+  template <typename T>
+  T read_state(const std::string& key) const {
+    return variant_get_value<T>(get_state().at(key));
+  }
 
  private:
   neural_net::shared_float_array prepare_label_batch(

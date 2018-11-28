@@ -23,20 +23,10 @@ namespace {
 using CoreML::Specification::NeuralNetwork;
 using CoreML::Specification::NeuralNetworkLayer;
 
-class test_model_spec: public model_spec {
-public:
-
-  test_model_spec() = default;
-  test_model_spec(const NeuralNetwork& nn_model): model_spec(nn_model) {}
-
-  // Expose protected methods intended for testing support.
-  using model_spec::get_coreml_spec;
-};
-
 BOOST_AUTO_TEST_CASE(test_export_empty) {
 
   NeuralNetwork nn_model;
-  test_model_spec nn_spec(nn_model);
+  model_spec nn_spec(nn_model);
   float_array_map params = nn_spec.export_params_view();
   TS_ASSERT(params.empty());
 }
@@ -59,7 +49,7 @@ BOOST_AUTO_TEST_CASE(test_export_conv_params) {
   }
 
   // Extract the parameters from the spec.
-  test_model_spec nn_spec(nn_model);
+  model_spec nn_spec(nn_model);
   float_array_map params = nn_spec.export_params_view();
 
   // The result should have just one float array.
@@ -87,7 +77,7 @@ BOOST_AUTO_TEST_CASE(test_export_conv_params_invalid) {
   conv_layer->mutable_convolution();
   // The default ConvolutionLayerParams value is not valid.
 
-  test_model_spec nn_spec(nn_model);
+  model_spec nn_spec(nn_model);
   TS_ASSERT_THROWS_ANYTHING(nn_spec.export_params_view());
 }
 
@@ -105,7 +95,7 @@ BOOST_AUTO_TEST_CASE(test_export_batchnorm_params) {
   batchnorm_params->mutable_variance()->add_floatvalue(5.0f);
 
   // Extract the parameters from the spec.
-  test_model_spec nn_spec(nn_model);
+  model_spec nn_spec(nn_model);
   float_array_map params = nn_spec.export_params_view();
 
   // The result should have four float arrays.
@@ -131,7 +121,7 @@ BOOST_AUTO_TEST_CASE(test_export_batchnorm_params) {
 BOOST_AUTO_TEST_CASE(test_add_convolution) {
 
   // Add an arbitrary convolution layer to an empty model spec.
-  test_model_spec nn_spec;
+  model_spec nn_spec;
   int weights_size = 16*8*5*5;
   auto weight_init_fn = [weights_size](float* w, float* w_end) {
     TS_ASSERT_EQUALS(w_end - w, weights_size);
@@ -197,7 +187,7 @@ BOOST_AUTO_TEST_CASE(test_add_convolution) {
 BOOST_AUTO_TEST_CASE(test_add_batchnorm) {
 
   // Add an arbitrary batch layer to an empty model spec.
-  test_model_spec nn_spec;
+  model_spec nn_spec;
   nn_spec.add_batchnorm("test_name", "test_input", 16, 0.125f);
 
   // Verify the resulting NeuralNetworkLayer value.
@@ -248,7 +238,7 @@ BOOST_AUTO_TEST_CASE(test_add_batchnorm) {
 BOOST_AUTO_TEST_CASE(test_add_leakyrelu) {
 
   // Add an arbitrary leaky ReLU layer to an empty model spec.
-  test_model_spec nn_spec;
+  model_spec nn_spec;
   nn_spec.add_leakyrelu("test_name", "test_input", 0.125f);
 
   // Verify the resulting NeuralNetworkLayer value.
