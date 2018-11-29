@@ -10,5 +10,5 @@ var dir_c08f73a4d66ba0417946990fd98fd29f =
     [ "optimization_interface.hpp", "optimization__interface_8hpp_source.html", null ],
     [ "regularizer_interface.hpp", "regularizer__interface_8hpp_source.html", null ],
     [ "regularizers-inl.hpp", "regularizers-inl_8hpp_source.html", null ],
-    [ "utils.hpp", "utils_8hpp_source.html", null ]
+    [ "utils.hpp", "optimization_2utils_8hpp_source.html", null ]
 ];

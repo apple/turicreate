@@ -1,0 +1,26 @@
+var classturi_1_1neural__net_1_1model__spec =
+[
+    [ "weight_initializer", "classturi_1_1neural__net_1_1model__spec.html#a7b7a187cf35cb228d9b915a9491a9568", null ],
+    [ "model_spec", "classturi_1_1neural__net_1_1model__spec.html#af1ff523b7e54fe4869bc6cbee430afaa", null ],
+    [ "model_spec", "classturi_1_1neural__net_1_1model__spec.html#afe558dd5f6c1480738de3da6e82c0d11", null ],
+    [ "model_spec", "classturi_1_1neural__net_1_1model__spec.html#a7b0e02b00b3e555b59928311a0318439", null ],
+    [ "add_addition", "classturi_1_1neural__net_1_1model__spec.html#a1e1623161bae417d84204c4e9b965c3b", null ],
+    [ "add_batchnorm", "classturi_1_1neural__net_1_1model__spec.html#a583420894fa2754f703fa1933ba88f11", null ],
+    [ "add_channel_concat", "classturi_1_1neural__net_1_1model__spec.html#a58b191a4c24d2c4efb49c48ac8eb0ea0", null ],
+    [ "add_channel_slice", "classturi_1_1neural__net_1_1model__spec.html#ac18acd609ede2684ef4bd9a3d0af2e8c", null ],
+    [ "add_constant", "classturi_1_1neural__net_1_1model__spec.html#a4f0880d0964b3c08382d7c018c46824d", null ],
+    [ "add_convolution", "classturi_1_1neural__net_1_1model__spec.html#a1e1d038a939d3f421217d58943085802", null ],
+    [ "add_exp", "classturi_1_1neural__net_1_1model__spec.html#a87f4589de4b9fa9ae4733a6229dd6c0e", null ],
+    [ "add_leakyrelu", "classturi_1_1neural__net_1_1model__spec.html#acb6626db8f0340e548cff0bd05ac0ad4", null ],
+    [ "add_multiplication", "classturi_1_1neural__net_1_1model__spec.html#a3a17edc293d3f7bf22cc32ac23183ade", null ],
+    [ "add_permute", "classturi_1_1neural__net_1_1model__spec.html#a722e25fe02cf66dcea3694b68df5bd46", null ],
+    [ "add_reshape", "classturi_1_1neural__net_1_1model__spec.html#a575b67647ae4cbf2be46a01438b05c8b", null ],
+    [ "add_scale", "classturi_1_1neural__net_1_1model__spec.html#aacd3f9410da6627d678279231bcabfbb", null ],
+    [ "add_sigmoid", "classturi_1_1neural__net_1_1model__spec.html#a18df584c6e1eef1cf34fbcb043e935dd", null ],
+    [ "add_softmax", "classturi_1_1neural__net_1_1model__spec.html#a903131139a2277c91efae7e68916f13a", null ],
+    [ "export_params_view", "classturi_1_1neural__net_1_1model__spec.html#a26ad351e337f3cc1aeeef2a1cd12fcb5", null ],
+    [ "get_coreml_spec", "classturi_1_1neural__net_1_1model__spec.html#a3775e8fc38066e8516ada6751b7f054b", null ],
+    [ "has_layer_output", "classturi_1_1neural__net_1_1model__spec.html#af96893504d042d7f4fdf654f1bcdf853", null ],
+    [ "move_coreml_spec", "classturi_1_1neural__net_1_1model__spec.html#acd529f8eaf81a24965c424f331cacb24", null ],
+    [ "update_params", "classturi_1_1neural__net_1_1model__spec.html#aec2f3705367eac080429f63f2623166c", null ]
+];

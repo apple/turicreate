@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame &mdash; Turi Create API 5.1 documentation</title>
+  <title>turicreate.SFrame &mdash; Turi Create API 5.2 documentation</title>
   
 
   
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
-    <link rel="top" title="Turi Create API 5.1 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 5.2 documentation" href="../index.html"/>
         <link rel="up" title="Data" href="../turicreate.data_structures.html"/>
         <link rel="next" title="turicreate.SGraph" href="turicreate.SGraph.html"/>
         <link rel="prev" title="turicreate.SArray" href="turicreate.SArray.html"/> 
@@ -130,7 +130,7 @@
 <dt id="turicreate.SFrame">
 <em class="property">class </em><code class="descclassname">turicreate.</code><code class="descname">SFrame</code><span class="sig-paren">(</span><em>data=list()</em>, <em>format='auto'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>A tabular, column-mutable dataframe object that can scale to big data. The
-data in SFrame is stored column-wise on the Turi Server side, and is
+data in SFrame is stored column-wise, and is
 stored on persistent storage (e.g. disk) to avoid being constrained by
 memory size.  Each column in an SFrame is a size-immutable
 <a class="reference internal" href="turicreate.SArray.html#turicreate.SArray" title="turicreate.SArray"><code class="xref py py-class docutils literal"><span class="pre">SArray</span></code></a>, but SFrames are mutable in that columns can be
@@ -150,7 +150,7 @@ previously)</li>
 <p>and from the following sources:</p>
 <ul class="simple">
 <li>your local file system</li>
-<li>the Turi Server&#8217;s file system</li>
+<li>a network file system mounted locally</li>
 <li>HDFS</li>
 <li>Amazon S3</li>
 <li>HTTP(S).</li>
@@ -865,7 +865,7 @@ is otherwise not expressible with simple boolean functions. For instance:</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Oct 01, 2018.
+      Last updated on Nov 29, 2018.
     </p>
   </div>
 </footer>
@@ -883,7 +883,7 @@ is otherwise not expressible with simple boolean functions. For instance:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.1',
+            VERSION:'5.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

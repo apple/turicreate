@@ -32,5 +32,6 @@ var searchData=
   ['optimization_5fengine',['optimization_engine',['../classturi_1_1query__eval_1_1optimization__engine.html',1,'turi::query_eval']]],
   ['optimization_5ftransform_5fregistry',['optimization_transform_registry',['../structturi_1_1query__eval_1_1optimization__transform__registry.html',1,'turi::query_eval']]],
   ['option_5finfo',['option_info',['../structturi_1_1option__handling_1_1option__info.html',1,'turi::option_handling']]],
-  ['option_5fmanager',['option_manager',['../classturi_1_1option__manager.html',1,'turi']]]
+  ['option_5fmanager',['option_manager',['../classturi_1_1option__manager.html',1,'turi']]],
+  ['options',['options',['../structturi_1_1neural__net_1_1image__augmenter_1_1options.html',1,'turi::neural_net::image_augmenter']]]
 ];

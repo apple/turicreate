@@ -11,5 +11,5 @@ var dir_c5a52a81292cf9a5167198f4f346d6d9 =
     [ "so_utils", "dir_956efec707f34fb50577baec59477415.html", "dir_956efec707f34fb50577baec59477415" ],
     [ "timer", "dir_eeb2bea22f07d3d7cb1d549a91f5d804.html", "dir_eeb2bea22f07d3d7cb1d549a91f5d804" ],
     [ "user_pagefault", "dir_61c1b33f3b14087dee5f5bb1422367e0.html", "dir_61c1b33f3b14087dee5f5bb1422367e0" ],
-    [ "export.hpp", "export_8hpp_source.html", null ]
+    [ "export.hpp", "platform_2export_8hpp_source.html", null ]
 ];

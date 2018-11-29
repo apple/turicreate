@@ -5,7 +5,6 @@ var dir_5f6fd12ab942ff12d3dfad81c820354d =
     [ "models.hpp", "models_8hpp_source.html", null ],
     [ "recsys_model_base.hpp", "recsys__model__base_8hpp_source.html", null ],
     [ "train_test_split.hpp", "train__test__split_8hpp_source.html", null ],
-    [ "unity_recsys.hpp", "unity__recsys_8hpp_source.html", null ],
     [ "user_item_graph.hpp", "user__item__graph_8hpp_source.html", null ],
     [ "user_item_lists.hpp", "user__item__lists_8hpp_source.html", null ]
 ];
