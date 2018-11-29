@@ -1,13 +1,16 @@
 #ifndef __TC_ML_MODEL_WRAPPER_HPP_
 #define __TC_ML_MODEL_WRAPPER_HPP_
 
+#include <memory>
+
 #include <unity/lib/extensions/model_base.hpp>
 #include <unity/lib/toolkit_class_macros.hpp>
-#include <unity/lib/toolkit_function_macros.hpp>
 
-#include <unity/toolkits/coreml_export/coreml_export_utils.hpp>
-#include <unity/toolkits/coreml_export/mldata_exporter.hpp>
-#include <unity/toolkits/coreml_export/mlmodel_include.hpp>
+// Forward declare CoreML::Model in lieu of including problematic protocol
+// buffer headers.
+namespace CoreML {
+class Model;
+}
 
 namespace turi {
 namespace coreml { 

@@ -8,7 +8,6 @@
 
 #include <algorithm>
 #include <fstream>
-#include <initializer_list>
 #include <memory>
 #include <vector>
 
@@ -37,7 +36,7 @@ public:
 
   // Convenience function to help the compiler convert initializer lists to
   // std::vector first, before trying to resolve the std::make_shared template.
-  static shared_float_array create_shared(
+  static shared_float_array create_view(
       std::vector<size_t> shape, const WeightParams& weights) {
 
     return shared_float_array(
@@ -101,12 +100,12 @@ void wrap_network_params(const std::string& name,
   const size_t h = convolution.kernelsize(0);
   const size_t w = convolution.kernelsize(1);
 
-  shared_float_array weights = weight_params_float_array::create_shared(
+  shared_float_array weights = weight_params_float_array::create_view(
       {n, c, h, w}, convolution.weights());
   params_out->emplace(name + "_weight", std::move(weights));
 
   if (convolution.has_bias()) {
-    shared_float_array bias = weight_params_float_array::create_shared(
+    shared_float_array bias = weight_params_float_array::create_view(
         {n}, convolution.bias());
     params_out->emplace(name + "_bias", std::move(bias));
   }
@@ -137,19 +136,19 @@ void wrap_network_params(const std::string& name,
 
   const size_t n = batch_norm.channels();
 
-  shared_float_array gamma = weight_params_float_array::create_shared(
+  shared_float_array gamma = weight_params_float_array::create_view(
       {n}, batch_norm.gamma());
   params_out->emplace(name + "_gamma", std::move(gamma));
 
-  shared_float_array beta = weight_params_float_array::create_shared(
+  shared_float_array beta = weight_params_float_array::create_view(
       {n}, batch_norm.beta());
   params_out->emplace(name + "_beta", std::move(beta));
 
-  shared_float_array mean = weight_params_float_array::create_shared(
+  shared_float_array mean = weight_params_float_array::create_view(
       {n}, batch_norm.mean());
   params_out->emplace(name + "_running_mean", std::move(mean));
 
-  shared_float_array variance = weight_params_float_array::create_shared(
+  shared_float_array variance = weight_params_float_array::create_view(
       {n}, batch_norm.variance());
   params_out->emplace(name + "_running_var", std::move(variance));
 }
@@ -284,6 +283,10 @@ model_spec::model_spec(const std::string& mlmodel_path)
 
 model_spec::~model_spec() = default;
 
+std::unique_ptr<NeuralNetwork> model_spec::move_coreml_spec() && {
+  return std::move(impl_);
+}
+
 float_array_map model_spec::export_params_view() const {
   float_array_map result;
   wrap_network_params(*impl_, &result);
@@ -307,6 +310,28 @@ bool model_spec::has_layer_output(const std::string& layer_name) const {
   return false;
 }
 
+void model_spec::add_leakyrelu(const std::string& name,
+                               const std::string& input, float alpha) {
+
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  layer->add_output(name);
+
+  layer->mutable_activation()->mutable_leakyrelu()->set_alpha(alpha);
+}
+
+void model_spec::add_sigmoid(const std::string& name,
+                             const std::string& input) {
+
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  layer->add_output(name);
+
+  layer->mutable_activation()->mutable_sigmoid();
+}
+
 void model_spec::add_convolution(
     const std::string& name, const std::string& input,
     size_t num_output_channels, size_t num_kernel_channels, size_t kernel_size,
@@ -324,7 +349,7 @@ void model_spec::add_convolution(
   params->set_ngroups(1);
   params->add_kernelsize(kernel_size);
   params->add_kernelsize(kernel_size);
-  params->add_stride(1);
+  params->add_stride(1);  // TODO: Parameterize
   params->add_stride(1);
   params->add_dilationfactor(1);
   params->add_dilationfactor(1);
@@ -367,15 +392,151 @@ void model_spec::add_batchnorm(
   params->mutable_variance()->mutable_floatvalue()->Resize(size, 1.f);
 }
 
-void model_spec::add_leakyrelu(const std::string& name,
-                               const std::string& input, float alpha) {
+void model_spec::add_channel_concat(const std::string& name,
+                                    const std::vector<std::string>& inputs) {
+
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  for (const std::string& input : inputs) {
+    layer->add_input(input);
+  }
+  layer->add_output(name);
+
+  layer->mutable_concat();
+}
+
+void model_spec::add_softmax(const std::string& name,
+                             const std::string& input) {
 
   NeuralNetworkLayer* layer = impl_->add_layers();
   layer->set_name(name);
   layer->add_input(input);
   layer->add_output(name);
 
-  layer->mutable_activation()->mutable_leakyrelu()->set_alpha(alpha);
+  layer->mutable_softmax();
+}
+
+void model_spec::add_addition(const std::string& name,
+                              const std::vector<std::string>& inputs) {
+
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  for (const std::string& input : inputs) {
+    layer->add_input(input);
+  }
+  layer->add_output(name);
+
+  layer->mutable_add();
+}
+
+void model_spec::add_multiplication(const std::string& name,
+                                    const std::vector<std::string>& inputs) {
+
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  for (const std::string& input : inputs) {
+    layer->add_input(input);
+  }
+  layer->add_output(name);
+
+  layer->mutable_multiply();
+}
+
+void model_spec::add_exp(const std::string& name, const std::string& input) {
+
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  layer->add_output(name);
+
+  layer->mutable_unary()->set_type(
+      CoreML::Specification::UnaryFunctionLayerParams::EXP);
+}
+
+void model_spec::add_scale(const std::string& name, const std::string& input,
+                           const std::array<size_t, 3>& shape_c_h_w,
+                           weight_initializer scale_initializer_fn) {
+
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  layer->add_output(name);
+
+  CoreML::Specification::ScaleLayerParams* params = layer->mutable_scale();
+  size_t size = 1;
+  for (size_t i = 0; i < 3; ++i) {
+    params->add_shapescale(shape_c_h_w[i]);
+    size *= shape_c_h_w[i];
+  }
+
+  auto* scale = params->mutable_scale()->mutable_floatvalue();
+  scale->Resize(static_cast<int>(size), 0.f);
+  scale_initializer_fn(scale->mutable_data(), scale->mutable_data() + size);
+}
+
+void model_spec::add_constant(const std::string& name,
+                              const std::array<size_t, 3>& shape_c_h_w,
+                              weight_initializer weight_initializer_fn) {
+
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_output(name);
+
+  CoreML::Specification::LoadConstantLayerParams* params =
+      layer->mutable_loadconstant();
+  size_t size = 1;
+  for (size_t i = 0; i < 3; ++i) {
+    params->add_shape(shape_c_h_w[i]);
+    size *= shape_c_h_w[i];
+  }
+
+  auto* w = params->mutable_data()->mutable_floatvalue();
+  w->Resize(static_cast<int>(size), 0.f);
+  weight_initializer_fn(w->mutable_data(), w->mutable_data() + size);
+}
+
+void model_spec::add_reshape(const std::string& name, const std::string& input,
+                             const std::array<size_t, 4>& seq_c_h_w) {
+
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  layer->add_output(name);
+
+  CoreML::Specification::ReshapeLayerParams* params = layer->mutable_reshape();
+  for (size_t i = 0; i < 4; ++i) {
+    params->add_targetshape(seq_c_h_w[i]);
+  }
+}
+
+void model_spec::add_permute(const std::string& name, const std::string& input,
+                             const std::array<size_t, 4>& axis_permutation) {
+
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  layer->add_output(name);
+
+  CoreML::Specification::PermuteLayerParams* params = layer->mutable_permute();
+  for (size_t i = 0; i < 4; ++i) {
+    params->add_axis(axis_permutation[i]);
+  }
+}
+
+void model_spec::add_channel_slice(
+    const std::string& name, const std::string& input, int start_index,
+    int end_index, size_t stride) {
+
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  layer->add_output(name);
+
+  CoreML::Specification::SliceLayerParams* params = layer->mutable_slice();
+  params->set_startindex(start_index);
+  params->set_endindex(end_index);
+  params->set_stride(stride);
+  params->set_axis(CoreML::Specification::SliceLayerParams::CHANNEL_AXIS);
 }
 
 }  // neural_net
