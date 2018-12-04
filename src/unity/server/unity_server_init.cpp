@@ -59,6 +59,8 @@ void unity_server_initializer::init_extensions(
       }
       // exclude libhdfs
       if (boost::ends_with(file.first, "libhdfs.so")) continue;
+      if (boost::ends_with(file.first, "libhdfs.dylib")) continue;
+      if (boost::ends_with(file.first, "hdfs.dll")) continue;
       if (file.second == file_status::REGULAR_FILE) {
         logstream(LOG_INFO) << "Autoloading of " << file.first << std::endl;
         unity_global_ptr->load_toolkit(file.first, "..");
