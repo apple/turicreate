@@ -77,7 +77,7 @@ class EXPORT ml_model_base: public model_base {
    *
    * \param[in] options Options to set
    */
-  virtual void init_options(const std::map<std::string,flexible_type>& _options) = 0;
+  virtual void init_options(const std::map<std::string,flexible_type>& _options) {};
 
 
   /**

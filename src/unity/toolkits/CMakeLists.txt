@@ -20,6 +20,7 @@ subdirs(ml_model
         image
         neural_net
         object_detection
+        prototype
 )
 
 

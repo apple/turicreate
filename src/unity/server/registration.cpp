@@ -43,6 +43,7 @@
 #include <unity/toolkits/pattern_mining/class_registrations.hpp>
 #include <unity/toolkits/clustering/class_registrations.hpp>
 #include <unity/toolkits/util/class_registrations.hpp>
+#include <unity/toolkits/prototype/class_registrations.hpp>
 
 #include <toolkits/image_deep_feature_extractor/class_registrations.hpp>
 
@@ -131,6 +132,9 @@ void register_models(toolkit_class_registry& registry) {
 
   // Object Detection
   registry.register_toolkit_class(turi::object_detection::get_toolkit_class_registration());
+  
+  // Various prototypes
+  registry.register_toolkit_class(turi::prototype::get_toolkit_class_registration());
 
 }
 
