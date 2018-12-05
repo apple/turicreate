@@ -539,6 +539,12 @@ class file_logger{
       bool& streamactive = streambufentry->streamactive;
 
       if (streamactive) {
+        // TODO: previously, we had a check for if (endltype(f) == endltype(std::endl))
+        // and only flushed the stream on endl (ignoring all other stream modifiers).
+        // On recent clang compilers, this check seems to always return false in debug.
+        // (tested with Apple LLVM version 10.0.0 (clang-1000.11.45.5))
+        // As a workaround, let's just flush the stream on all modifiers.
+        // In practice they're usually endl anyway, so the perf hit should not be too bad.
         streambuffer << f;
         stream_flush();
         if(streamloglevel == LOG_FATAL) {
