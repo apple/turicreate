@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <unity/lib/toolkit_class_macros.hpp>
+#include <unity/toolkits/prototype/class_registrations.hpp>
 #include <unity/toolkits/prototype/sparse_nn.hpp>
 
 namespace turi {

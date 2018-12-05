@@ -13,6 +13,8 @@ class EXPORT sparse_nn : public ml_model_base {
  public:
   static constexpr size_t SPARSE_NN_VERSION = 0;
 
+  typedef uint128_t hash_type; 
+
   // Call this function to set up the training data.  All columns must be string
   // or integer columns and are treated as categorical indicators.
   void train(const gl_sframe& data, const std::string& id_column);
@@ -45,13 +47,14 @@ class EXPORT sparse_nn : public ml_model_base {
   //
   // 2. Increment the corresponding values in hit_indices that are denoted by
   // the bounds given in access_bounds at the index of the found hash in hashes.
-  std::vector<uint128_t> hashes;
+  std::vector<hash_type> hashes;
 
   std::vector<std::pair<uint32_t, uint32_t> > access_bounds;
   std::vector<uint32_t> hit_indices;
 
-  inline uint128_t feature_hash(const std::string& column,
+  inline hash_type feature_hash(const std::string& column,
                                 const flexible_type& feature) const {
+    //return column + ":" + feature.to<std::string>(); 
     return hash128_combine(hash128(column), feature.hash128());
   }
 };

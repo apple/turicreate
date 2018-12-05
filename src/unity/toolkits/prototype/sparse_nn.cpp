@@ -8,7 +8,15 @@ void sparse_nn::train(const gl_sframe& data, const std::string& id_column) {
   // Number this.  To be used later.
   ids.resize(data.size());
   std::iota(ids.begin(), ids.end(), 0);
-  num_columns = data.num_columns();
+
+  if (!id_column.empty()) {
+    if (!data.contains_column(id_column)) {
+      log_and_throw("data does not contain id column.");
+    }
+    num_columns = data.num_columns() - 1;
+  } else {
+    num_columns = data.num_columns();
+  }
 
   for (flex_type_enum t : data.column_types()) {
     if (t != flex_type_enum::STRING && t != flex_type_enum::INTEGER) {
@@ -20,14 +28,14 @@ void sparse_nn::train(const gl_sframe& data, const std::string& id_column) {
 
   // Track which rows are "hit" (have matching feature in a given column) for
   // each feature in the original data.
-  std::map<uint128_t, std::vector<size_t> > hit_tracker;
+  std::map<hash_type, std::vector<size_t> > hit_tracker;
 
   // Unpack the data into the intermediate structure.
   size_t row_index = 0;
   for (const auto& row : data.range_iterator()) {
-    for (size_t i = 0; i < num_columns; ++i) {
+    for (size_t i = 0; i < data.num_columns(); ++i) {
       // Go through and update the hit locations for each match.
-      if (columns[i] == id_column) {
+      if (id_column != "" && columns[i] == id_column) {
         ids[row_index] = row[i];
         continue;
       }
@@ -51,10 +59,10 @@ void sparse_nn::train(const gl_sframe& data, const std::string& id_column) {
   // hit_tracker is already sorted, so we can just directly set up the lookup
   // tables now
   for (const auto& p : hit_tracker) {
-    uint128_t hash = p.first;
+    hash_type hash = p.first;
     const auto& hits = p.second;
 
-    size_t s = hit_tracker.size();
+    size_t s = hit_indices.size();
 
     hashes.push_back(hash);
     access_bounds.push_back({s, s + hits.size()});
@@ -65,6 +73,11 @@ void sparse_nn::train(const gl_sframe& data, const std::string& id_column) {
 // Perform a fast query of the model.
 GL_HOT_NOINLINE_FLATTEN flex_dict sparse_nn::query(const flex_dict& fd,
                                                    size_t k) const {
+
+  if(num_columns == 0) {
+    log_and_throw("Model not trained yet.");
+  }
+
   atomic<size_t> current_index = 0;
 
   std::vector<atomic<uint32_t> > hit_counts(ids.size(), 0);
@@ -75,7 +88,7 @@ GL_HOT_NOINLINE_FLATTEN flex_dict sparse_nn::query(const flex_dict& fd,
     while (true) {
       size_t idx = (++current_index) - 1;
 
-      if (idx >= num_columns) {
+      if (idx >= fd.size()) {
         break;
       }
 
@@ -85,7 +98,7 @@ GL_HOT_NOINLINE_FLATTEN flex_dict sparse_nn::query(const flex_dict& fd,
       }
 
       const std::string& column = fd[idx].first.get<flex_string>();
-      const uint128_t& h = feature_hash(column, fd[idx].second);
+      const hash_type& h = feature_hash(column, fd[idx].second);
 
       auto it = std::lower_bound(hashes.begin(), hashes.end(), h);
 
@@ -97,7 +110,7 @@ GL_HOT_NOINLINE_FLATTEN flex_dict sparse_nn::query(const flex_dict& fd,
       auto b = access_bounds[lookup_index];
 
       for (size_t i = b.first; i < b.second; ++i) {
-        ++hit_counts[i];
+        ++hit_counts[hit_indices[i]];
       }
     }
   });
@@ -117,7 +130,7 @@ GL_HOT_NOINLINE_FLATTEN flex_dict sparse_nn::query(const flex_dict& fd,
     // Return value is a pair: (ids, jaccard similarity)
     ret[i] = {
         ids[hits_idx[i].second],
-        double(hits_idx[i].first) / (2 * num_columns - hits_idx[i].first)};
+        double(hits_idx[i].first) / (num_columns + fd.size() - hits_idx[i].first)};
   }
 
   return ret;
