@@ -189,7 +189,6 @@ void lbfgs_solver::setup(
 /////////////////////////////////////////////////////////////////////////////////
 
 bool lbfgs_solver::next_iteration() {
-  double iteration_start_time = compute_timer.current_time();
   compute_timer.start();
 
   // Set up some convenience notations to make the expressions below more
@@ -199,7 +198,7 @@ bool lbfgs_solver::next_iteration() {
   // A function to fill out the status before return.
   auto fill_current_status = [&](OPTIMIZATION_STATUS status) {
     m_status.status = status;
-    m_status.solver_time += compute_timer.current_time() - iteration_start_time;
+    m_status.solver_time += compute_timer.current_time();
   };
 
   // Set up references to the containers already held in the stats

@@ -28,8 +28,8 @@ namespace optimization {
  * Solver status.
  */
 struct solver_status {
-  size_t iteration = -1;                        /*!< Iterations taken */
-  double solver_time = -1;                      /*!< Wall clock time (s) */
+  size_t iteration = 0;                         /*!< Iterations taken */
+  double solver_time = 0;                       /*!< Wall clock time (s) */
   DenseVector solution;                         /*!< Current Solution */
   DenseVector gradient;                         /*!< Current gradient */
   DenseMatrix hessian;                          /*!< Current hessian */
