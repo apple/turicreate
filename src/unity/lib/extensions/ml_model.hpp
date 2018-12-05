@@ -186,6 +186,8 @@ class EXPORT ml_model_base: public model_base {
   // Code to perform the registration for the rest of the tools. 
   BEGIN_BASE_CLASS_MEMBER_REGISTRATION()
 
+  IMPORT_BASE_CLASS_REGISTRATION(model_base);
+
   REGISTER_CLASS_MEMBER_FUNCTION(ml_model_base::list_fields);
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_value",
                                        ml_model_base::get_value_from_state,

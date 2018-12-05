@@ -111,16 +111,17 @@ class EXPORT model_base: public cppipc::ipc_object_base {
   /**
    * Save a toolkit class to disk.
    *
-   * \param sidedata Any additional side information
    * \param url The destination url to store the class.
+   * \param sidedata Any additional side information
    */
-  void save_model_to_file(const variant_map_type& side_data,
-                          const std::string& url);
+  void save_to_url(const std::string& url, const variant_map_type& side_data = {});
+
 
   /**
    * Save a toolkit class to a data stream.
    */
   void save_model_to_data(std::ostream& out);
+  
 
   /**
    * Returns the current version of the toolkit class for this instance, for
@@ -165,6 +166,12 @@ class EXPORT model_base: public cppipc::ipc_object_base {
    */
   const std::string& get_docstring(const std::string& symbol);
 
+  /** Declare the base registration function.  This class has to be handled
+   * specially; the macros don't work here due to the override declarations.
+   *
+   */
+  virtual void perform_registration();
+
   // TODO: Remove this vestigial macro invocation once the dependency on cppipc
   // has been removed.
   REGISTRATION_BEGIN(model_base);
@@ -174,16 +181,12 @@ class EXPORT model_base: public cppipc::ipc_object_base {
   using impl_fn = std::function<variant_type(model_base*, variant_map_type)>;
 
   // The macros defined in toolkit_class_macros.h use these functions to
-  // conveniently define this instance's collection of client-level methods and
-  // properties.
+  // conveniently define this instance's collection of client-level methods
+  // and properties.
 
-  /**
-   * Function implemented by BEGIN_CLASS_MEMBER_REGISTRATION and invoked the
-   * first time a public member function executes.
-   */ 
-  virtual void perform_registration() = 0;
 
-  // Used to ensure that perform_registration is called once for each instance.
+  // Used to ensure that perform_registration is called once for each
+  // instance.
   bool is_registered() const { return m_registered; }
   void set_registered() { m_registered = true; }
 
@@ -212,12 +215,13 @@ class EXPORT model_base: public cppipc::ipc_object_base {
   /**
    * Adds a docstring for the specified function or property name.
    */
-  void register_docstring(const std::pair<std::string, std::string>& fnname_docstring);
+  void register_docstring(
+      const std::pair<std::string, std::string>& fnname_docstring);
 
  private:
   // whether perform registration has been called
   bool m_registered = false;
-  // a description of all the function arguments. This is returned by 
+  // a description of all the function arguments. This is returned by
   // list_functions().
   std::map<std::string, std::vector<std::string>> m_function_args;
 
@@ -230,7 +234,7 @@ class EXPORT model_base: public cppipc::ipc_object_base {
   mutable std::vector<std::string> m_set_property_cache;
 
   // The implementation of each getter function
-  std::map<std::string, impl_fn > m_get_property_list;
+  std::map<std::string, impl_fn> m_get_property_list;
   mutable std::vector<std::string> m_get_property_cache;
 
   // The docstring for each symbol
@@ -240,9 +244,8 @@ class EXPORT model_base: public cppipc::ipc_object_base {
   inline void _check_registration();
 
   template <typename T>
-  GL_COLD_NOINLINE_ERROR
-  void _raise_not_found_error(const std::string& name,
-                             const std::map<std::string, T>& m);
+  GL_COLD_NOINLINE_ERROR void _raise_not_found_error(
+      const std::string& name, const std::map<std::string, T>& m);
 
   std::string _make_method_name(const std::string& function);
 
