@@ -498,7 +498,9 @@ class file_logger{
       std::stringstream& streambuffer = streambufentry->streambuffer;
       bool& streamactive = streambufentry->streamactive;
 
-      if (streamactive) streambuffer << a;
+      if (streamactive) {
+        streambuffer << a;
+      }
     }
     return *this;
   }
@@ -536,15 +538,12 @@ class file_logger{
       std::stringstream& streambuffer = streambufentry->streambuffer;
       bool& streamactive = streambufentry->streamactive;
 
-      typedef std::ostream& (*endltype)(std::ostream&);
       if (streamactive) {
-        if (endltype(f) == endltype(std::endl)) {
-          streambuffer << "\n";
-          stream_flush();
-          if(streamloglevel == LOG_FATAL) {
-            __print_back_trace();
-            TURI_LOGGER_FAIL_METHOD("LOG_FATAL encountered");
-          }
+        streambuffer << f;
+        stream_flush();
+        if(streamloglevel == LOG_FATAL) {
+          __print_back_trace();
+          TURI_LOGGER_FAIL_METHOD("LOG_FATAL encountered");
         }
       }
     }
