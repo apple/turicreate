@@ -358,34 +358,38 @@ extern  "C" {
   static std::vector<fs::path> get_potential_libhdfs_paths() {
     static std::vector<fs::path> libhdfs_potential_paths = {
 
-      // Search order: 
-        // find one in the unity_server directory
-        // find one in the local directory
-        // Internal build path location; special handling there.
-        // Hadoop home dir
-        // Global search paths scoured by libhdfs.
+    // Search order:
+    // find one in the unity_server directory
+    // find one in the local directory
+    // Internal build path location; special handling there.
+    // Hadoop home dir
+    // Global search paths scoured by libhdfs.
 
 #ifdef __WIN32
-        fs::path(turi::GLOBALS_MAIN_PROCESS_PATH + "/hdfs.dll"),
-        fs::path("./hdfs.dll"),
-        fs::path(turi::GLOBALS_MAIN_PROCESS_PATH +
-                 "/../../../../deps/local/bin/hdfs.dll"),
-        fs::path(get_hadoop_home_dir() + "/lib/native/hdfs.dll"),
-        fs::path("hdfs.dll"),
-#elif __APPLE__
-        fs::path(turi::GLOBALS_MAIN_PROCESS_PATH + "/libhdfs.dylib"),
-        fs::path("./libhdfs.dylib"),
-        fs::path(turi::GLOBALS_MAIN_PROCESS_PATH +
-                 "/../../../../deps/local/lib/libhdfs.dylib"),
-        fs::path(get_hadoop_home_dir() + "/lib/native/libhdfs.dylib"),
-        fs::path("libhdfs.dylib")
+      fs::path(turi::GLOBALS_MAIN_PROCESS_PATH + "/hdfs.dll"),
+      fs::path("./hdfs.dll"),
+      fs::path(turi::GLOBALS_MAIN_PROCESS_PATH +
+               "/../../../../deps/local/bin/hdfs.dll"),
+      fs::path(get_hadoop_home_dir() + "/lib/native/hdfs.dll"),
+      fs::path("hdfs.dll"),
 #else
-        fs::path(turi::GLOBALS_MAIN_PROCESS_PATH + "/libhdfs.so"),
-        fs::path("./libhdfs.so"),
-        fs::path(turi::GLOBALS_MAIN_PROCESS_PATH +
-                 "/../../../../deps/local/lib/libhdfs.so"),
-        fs::path(get_hadoop_home_dir() + "/lib/native/libhdfs.so"),
-        fs::path("libhdfs.so")
+
+      fs::path(turi::GLOBALS_MAIN_PROCESS_PATH + "/libhdfs.so"),
+      fs::path("./libhdfs.so"),
+      fs::path(turi::GLOBALS_MAIN_PROCESS_PATH +
+               "/../../../../deps/local/lib/libhdfs.so"),
+      fs::path(get_hadoop_home_dir() + "/lib/native/libhdfs.so"),
+      fs::path("libhdfs.so"),
+
+#if __APPLE__  // For apple, also add in the dylib versions; it may be either.
+      fs::path(turi::GLOBALS_MAIN_PROCESS_PATH + "/libhdfs.dylib"),
+      fs::path("./libhdfs.dylib"),
+      fs::path(turi::GLOBALS_MAIN_PROCESS_PATH +
+               "/../../../../deps/local/lib/libhdfs.dylib"),
+      fs::path(get_hadoop_home_dir() + "/lib/native/libhdfs.dylib"),
+      fs::path("libhdfs.dylib")
+#endif // End if apple.
+
 #endif
     };
 
