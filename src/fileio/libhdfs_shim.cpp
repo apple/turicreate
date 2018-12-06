@@ -99,7 +99,7 @@ extern  "C" {
       try_dlopen(libhdfs_potential_paths, "libhdfs", libhdfs_handle);
 
       if(libhdfs_handle == NULL) {
-        logstream(LOG_ERROR) << "Error loading libhdfs.  Please make sure HADOOP_HOME_DIR is set properly." << std::endl; 
+        logstream(LOG_ERROR) << "Error loading libhdfs.  Please make sure the environment variable HADOOP_HOME_DIR is set properly, and that libhdfs.so, libhdfs.dylib, or hdfs.dll is found in one of $(HADOOP_HOME_DIR)/lib/native/, $(HADOOP_HOME_DIR)/lib/,$(HADOOP_HOME_DIR)/libhdfs/, or $(HADOOP_HOME_DIR)/.  Also, please make sure that CLASS_PATH is set to the output of `hadoop classpath --glob`, and JAVA_HOME is set correctly." << std::endl; 
       }
 
       dlopen_fail = (libhdfs_handle == NULL);
@@ -371,6 +371,9 @@ extern  "C" {
       fs::path(turi::GLOBALS_MAIN_PROCESS_PATH +
                "/../../../../deps/local/bin/hdfs.dll"),
       fs::path(get_hadoop_home_dir() + "/lib/native/hdfs.dll"),
+      fs::path(get_hadoop_home_dir() + "/lib/hdfs.dll"),
+      fs::path(get_hadoop_home_dir() + "/libhdfs/hdfs.dll"),
+      fs::path(get_hadoop_home_dir() + "/hdfs.dll"),
       fs::path("hdfs.dll"),
 #else
 
@@ -379,6 +382,9 @@ extern  "C" {
       fs::path(turi::GLOBALS_MAIN_PROCESS_PATH +
                "/../../../../deps/local/lib/libhdfs.so"),
       fs::path(get_hadoop_home_dir() + "/lib/native/libhdfs.so"),
+      fs::path(get_hadoop_home_dir() + "/lib/libhdfs.so"),
+      fs::path(get_hadoop_home_dir() + "/libhdfs/libhdfs.so"),
+      fs::path(get_hadoop_home_dir() + "/libhdfs.so"),
       fs::path("libhdfs.so"),
 
 #if __APPLE__  // For apple, also add in the dylib versions; it may be either.
@@ -387,6 +393,9 @@ extern  "C" {
       fs::path(turi::GLOBALS_MAIN_PROCESS_PATH +
                "/../../../../deps/local/lib/libhdfs.dylib"),
       fs::path(get_hadoop_home_dir() + "/lib/native/libhdfs.dylib"),
+      fs::path(get_hadoop_home_dir() + "/lib/libhdfs.dylib"),
+      fs::path(get_hadoop_home_dir() + "/libhdfs/libhdfs.dylib"),
+      fs::path(get_hadoop_home_dir() + "/libhdfs.dylib"),
       fs::path("libhdfs.dylib")
 #endif // End if apple.
 
