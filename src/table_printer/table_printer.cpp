@@ -11,6 +11,40 @@
 #include <globals/globals.hpp>
 #include <table_printer/table_printer.hpp>
 
+#ifdef __APPLE__
+#include <os/log.h>
+#undef MIN
+#undef MAX
+
+#define _os_log_event_impl(event)                                         \
+  os_log_info(                                                            \
+    OS_LOG_DEFAULT,                                                       \
+    "source: %lu, event: %lu",                                            \
+    1ul, /* source: table printer */                                      \
+    event)
+
+#define _os_log_event_with_value_impl(format, event, column_index, value) \
+  os_log_info(                                                            \
+    OS_LOG_DEFAULT,                                                       \
+    format,                                                               \
+    1ul, /* source: table printer */                                      \
+    event,                                                                \
+    column_index,                                                         \
+    value)
+
+#define _os_log_header_impl(format, column_index, value)                  \
+  _os_log_event_with_value_impl(format, 1ul, column_index, value)
+
+#define _os_log_value_impl(format, column_index, value)                   \
+  _os_log_event_with_value_impl(format, 2ul, column_index, value)
+
+#else
+#define _os_log_event_impl(...)
+#define _os_log_header_impl(...)
+#define _os_log_value_impl(...)
+#endif
+
+
 namespace turi {
 
   EXPORT double MIN_SECONDS_BETWEEN_TICK_PRINTS = 3.0;
@@ -69,18 +103,10 @@ table_printer::~table_printer() {
  *      +-----------+------------+----------+------------------+
  */
 void table_printer::print_header() const {
+  _os_log_event_impl(0ul /* event: started */);
+
   print_line_break();
-
   std::ostringstream ss;
-
-#ifdef __APPLE__
-    os_log_info(
-      OS_LOG_DEFAULT,
-      "source: %lu, event: %lu",
-      1ul, /* source: table printer */
-      0ul); /* event: started */
-#endif
-
   ss << '|';
 
   size_t i = 0;
@@ -95,15 +121,11 @@ void table_printer::print_header() const {
 
     ss << ' ' << '|';
 
-#ifdef __APPLE__
-    os_log_info(
-      OS_LOG_DEFAULT,
+    _os_log_header_impl(
       "source: %lu, event: %lu, column: %lu, value: %{public}s",
-      1ul, /* source: table printer */
-      1ul, /* event: header */
-      i, /* column index */
+      i, /* column_index */
       p.first.c_str());
-#endif
+
     i++;
   }
 
@@ -148,13 +170,7 @@ void table_printer::print_footer() const {
 
   print_line_break();
 
-#ifdef __APPLE__
-  os_log_info(
-    OS_LOG_DEFAULT,
-    "source: %lu, event: %lu",
-    1ul, /* source: table printer */
-    3ul); /* event: ended */
-#endif
+  _os_log_event_impl(3ul /* event: ended */);
 }
 
 /** Returns the elapsed time since class creation.  This is the
@@ -273,15 +289,6 @@ size_t table_printer::set_up_time_printing_interval(size_t tick) {
   return _tick_interval; 
 }
 
-#define _os_log_value_impl(format, column_index, value) \
-  os_log_info(                                          \
-    OS_LOG_DEFAULT,                                     \
-    format,                                             \
-    1ul, /* source: table printer */                    \
-    2ul, /* event: value */                             \
-    column_index,                                       \
-    value)                                              \
-
 
 void table_printer::_os_log_value(size_t column_index, unsigned long long value) {
   _os_log_value_impl("source: %lu, event: %lu, column: %lu, value: %llu", column_index, value);
@@ -318,10 +325,6 @@ void table_printer::_os_log_value(size_t column_index, float value) {
 void table_printer::_os_log_value(size_t column_index, const progress_time& value) const {
   double t = (value.elapsed_seconds < 0) ? tt.current_time() : value.elapsed_seconds;
   _os_log_value_impl("source: %lu, event: %lu, column: %lu, value: %f seconds", column_index, t);
-}
-
-void table_printer::_os_log_value(size_t column_index, char* value) {
-  _os_log_value_impl("source: %lu, event: %lu, column: %lu, value: %{public}s", column_index, value);
 }
 
 void table_printer::_os_log_value(size_t column_index, const char* value) {

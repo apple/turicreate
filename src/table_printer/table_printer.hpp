@@ -18,12 +18,6 @@
 #include <util/code_optimization.hpp>
 #include <table_printer/table_element_printers.hpp>
 
-#ifdef __APPLE__
-#include <os/log.h>
-#undef MIN
-#undef MAX
-#endif
-
 namespace turi {
 
 extern double MIN_SECONDS_BETWEEN_TICK_PRINTS;
@@ -245,7 +239,6 @@ class table_printer {
   static void _os_log_value(size_t column_index, double value);
   static void _os_log_value(size_t column_index, float value);
   void _os_log_value(size_t column_index, const progress_time& value) const;
-  static void _os_log_value(size_t column_index, char* value);
   static void _os_log_value(size_t column_index, const char* value);
   static void _os_log_value(size_t column_index, bool value);
   static void _os_log_value(size_t column_index, const flexible_type& value);
