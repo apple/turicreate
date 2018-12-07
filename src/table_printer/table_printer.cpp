@@ -16,18 +16,21 @@
 #undef MIN
 #undef MAX
 
+static os_log_t& os_log_object() {
+  static os_log_t log_object = os_log_create("turi", "table_printer");
+  return log_object;
+}
+
 #define _os_log_event_impl(event)                                         \
   os_log_info(                                                            \
-    OS_LOG_DEFAULT,                                                       \
-    "source: %lu, event: %lu",                                            \
-    1ul, /* source: table printer */                                      \
+    os_log_object(),                                                      \
+    "event: %lu",                                                         \
     event)
 
 #define _os_log_event_with_value_impl(format, event, column_index, value) \
   os_log_info(                                                            \
-    OS_LOG_DEFAULT,                                                       \
+    os_log_object(),                                                      \
     format,                                                               \
-    1ul, /* source: table printer */                                      \
     event,                                                                \
     column_index,                                                         \
     value)
@@ -122,7 +125,7 @@ void table_printer::print_header() const {
     ss << ' ' << '|';
 
     _os_log_header_impl(
-      "source: %lu, event: %lu, column: %lu, value: %{public}s",
+      "event: %lu, column: %lu, value: %{public}s",
       i, /* column_index */
       p.first.c_str());
 
@@ -231,7 +234,7 @@ void table_printer::print_track_row_if_necessary() const {
   ss << '|';
   for (size_t i = 0; i < track_row_values_.size(); ++i) {
     const flexible_type& value = track_row_values_[i];
-    _os_log_value(i, value);
+    os_log_value(i, value);
     const size_t width = format[i].second;
 
     // Use track_row_styles_ to recover any type information lost when stuffing
@@ -289,84 +292,81 @@ size_t table_printer::set_up_time_printing_interval(size_t tick) {
   return _tick_interval; 
 }
 
-
-void table_printer::_os_log_value(size_t column_index, unsigned long long value) {
-  _os_log_value_impl("source: %lu, event: %lu, column: %lu, value: %llu", column_index, value);
+void table_printer::os_log_value(size_t column_index, unsigned long long value) {
+  _os_log_value_impl("event: %lu, column: %lu, value: %llu", column_index, value);
 }
 
-void table_printer::_os_log_value(size_t column_index, unsigned long value) {
-  _os_log_value_impl("source: %lu, event: %lu, column: %lu, value: %lu", column_index, value);
+void table_printer::os_log_value(size_t column_index, unsigned long value) {
+  _os_log_value_impl("event: %lu, column: %lu, value: %lu", column_index, value);
 }
 
-void table_printer::_os_log_value(size_t column_index, unsigned int value) {
-  _os_log_value_impl("source: %lu, event: %lu, column: %lu, value: %u", column_index, value);
+void table_printer::os_log_value(size_t column_index, unsigned int value) {
+  _os_log_value_impl("event: %lu, column: %lu, value: %u", column_index, value);
 }
 
-void table_printer::_os_log_value(size_t column_index, long long value) {
-  _os_log_value_impl("source: %lu, event: %lu, column: %lu, value: %lld", column_index, value);
+void table_printer::os_log_value(size_t column_index, long long value) {
+  _os_log_value_impl("event: %lu, column: %lu, value: %lld", column_index, value);
 }
 
-void table_printer::_os_log_value(size_t column_index, long value) {
-  _os_log_value_impl("source: %lu, event: %lu, column: %lu, value: %ld", column_index, value);
+void table_printer::os_log_value(size_t column_index, long value) {
+  _os_log_value_impl("event: %lu, column: %lu, value: %ld", column_index, value);
 }
 
-void table_printer::_os_log_value(size_t column_index, int value) {
-  _os_log_value_impl("source: %lu, event: %lu, column: %lu, value: %d", column_index, value);
+void table_printer::os_log_value(size_t column_index, int value) {
+  _os_log_value_impl("event: %lu, column: %lu, value: %d", column_index, value);
 }
 
-void table_printer::_os_log_value(size_t column_index, double value) {
-  _os_log_value_impl("source: %lu, event: %lu, column: %lu, value: %f", column_index, value);
+void table_printer::os_log_value(size_t column_index, double value) {
+  _os_log_value_impl("event: %lu, column: %lu, value: %f", column_index, value);
 }
 
-void table_printer::_os_log_value(size_t column_index, float value) {
-  _os_log_value_impl("source: %lu, event: %lu, column: %lu, value: %f", column_index, value);
+void table_printer::os_log_value(size_t column_index, float value) {
+  _os_log_value_impl("event: %lu, column: %lu, value: %f", column_index, value);
 }
 
-void table_printer::_os_log_value(size_t column_index, const progress_time& value) const {
-  _os_log_value_impl("source: %lu, event: %lu, column: %lu, value: %f seconds",
+void table_printer::os_log_value(size_t column_index, const progress_time& value) const {
+  _os_log_value_impl("event: %lu, column: %lu, value: %f seconds",
     column_index,
     (value.elapsed_seconds < 0) ? tt.current_time() : value.elapsed_seconds);
 }
 
-void table_printer::_os_log_value(size_t column_index, const char* value) {
-  _os_log_value_impl("source: %lu, event: %lu, column: %lu, value: %{public}s", column_index, value);
+void table_printer::os_log_value(size_t column_index, const char* value) {
+  _os_log_value_impl("event: %lu, column: %lu, value: %{public}s", column_index, value);
 }
 
-void table_printer::_os_log_value(size_t column_index, bool value) {
-  _os_log_value_impl("source: %lu, event: %lu, column: %lu, value: %hhud", column_index, static_cast<unsigned char>(value));
+void table_printer::os_log_value(size_t column_index, bool value) {
+  _os_log_value_impl("event: %lu, column: %lu, value: %hhu", column_index, static_cast<unsigned char>(value));
 }
 
-void table_printer::_os_log_value(size_t column_index, const flexible_type& value) {
-  #ifdef __APPLE__
-      switch (value.get_type()) {
-        case flex_type_enum::INTEGER:
-          _os_log_value_impl("source: %lu, event: %lu, column: %lu, value: %lld", column_index, value.get<flex_int>());
-          break;
-        case flex_type_enum::DATETIME:
-        {
-          int64_t timestamp = value.get<flex_date_time>().posix_timestamp();
-          _os_log_value_impl("source: %lu, event: %lu, column: %lu, value: %{time}lld", column_index, timestamp);
-          break;
-        }
-        case flex_type_enum::FLOAT:
-          _os_log_value_impl("source: %lu, event: %lu, column: %lu, value: %f", column_index, value.get<flex_float>());
-          break;
-        case flex_type_enum::STRING:
-        {
-          std::string str_value = value.get<flex_string>();
-          _os_log_value_impl("source: %lu, event: %lu, column: %lu, value: %{public}s", column_index, str_value.c_str());
-          break;
-        }
-        case flex_type_enum::VECTOR:
-        case flex_type_enum::ND_VECTOR:
-        case flex_type_enum::LIST:
-        case flex_type_enum::DICT:
-        case flex_type_enum::IMAGE:
-        default:
-          _os_log_value_impl("source: %lu, event: %lu, column: %lu, value: instance of complex type %{public}s", column_index, flex_type_enum_to_name(value.get_type()));
-          break;
-      }
-  #endif
+void table_printer::os_log_value(size_t column_index, const flexible_type& value) {
+  switch (value.get_type()) {
+    case flex_type_enum::INTEGER:
+      _os_log_value_impl("event: %lu, column: %lu, value: %lld", column_index, value.get<flex_int>());
+      break;
+    case flex_type_enum::DATETIME:
+    {
+      int64_t timestamp = value.get<flex_date_time>().posix_timestamp();
+      _os_log_value_impl("event: %lu, column: %lu, value: %{time_t}lld", column_index, timestamp);
+      break;
+    }
+    case flex_type_enum::FLOAT:
+      _os_log_value_impl("event: %lu, column: %lu, value: %f", column_index, value.get<flex_float>());
+      break;
+    case flex_type_enum::STRING:
+    {
+      std::string str_value = value.get<flex_string>();
+      _os_log_value_impl("event: %lu, column: %lu, value: %{public}s", column_index, str_value.c_str());
+      break;
+    }
+    case flex_type_enum::VECTOR:
+    case flex_type_enum::ND_VECTOR:
+    case flex_type_enum::LIST:
+    case flex_type_enum::DICT:
+    case flex_type_enum::IMAGE:
+    default:
+      _os_log_value_impl("event: %lu, column: %lu, value: instance of complex type %{public}s", column_index, flex_type_enum_to_name(value.get_type()));
+      break;
+  }
 }
 
 }
