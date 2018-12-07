@@ -34,8 +34,8 @@ class EXPORT sparse_nn : public ml_model_base {
 
  private:
   // Some metadata.
-  size_t num_columns = 0;
-  std::vector<flexible_type> ids;
+  size_t m_num_columns = 0;
+  std::vector<flexible_type> m_ids;
 
   // This is optimized for extremely efficient lookup on small, in-memory
   // datasets.
@@ -47,14 +47,13 @@ class EXPORT sparse_nn : public ml_model_base {
   //
   // 2. Increment the corresponding values in hit_indices that are denoted by
   // the bounds given in access_bounds at the index of the found hash in hashes.
-  std::vector<hash_type> hashes;
+  std::vector<hash_type> m_hashes;
 
-  std::vector<std::pair<uint32_t, uint32_t> > access_bounds;
-  std::vector<uint32_t> hit_indices;
+  std::vector<std::pair<uint32_t, uint32_t> > m_access_bounds;
+  std::vector<uint32_t> m_hit_indices;
 
   inline hash_type feature_hash(const std::string& column,
                                 const flexible_type& feature) const {
-    //return column + ":" + feature.to<std::string>(); 
     return hash128_combine(hash128(column), feature.hash128());
   }
 };

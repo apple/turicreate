@@ -6,16 +6,16 @@ namespace prototype {
 
 void sparse_nn::train(const gl_sframe& data, const std::string& id_column) {
   // Number this.  To be used later.
-  ids.resize(data.size());
-  std::iota(ids.begin(), ids.end(), 0);
+  m_ids.resize(data.size());
+  std::iota(m_ids.begin(), m_ids.end(), 0);
 
   if (!id_column.empty()) {
     if (!data.contains_column(id_column)) {
       log_and_throw("data does not contain id column.");
     }
-    num_columns = data.num_columns() - 1;
+    m_num_columns = data.num_columns() - 1;
   } else {
-    num_columns = data.num_columns();
+    m_num_columns = data.num_columns();
   }
 
   for (flex_type_enum t : data.column_types()) {
@@ -36,7 +36,7 @@ void sparse_nn::train(const gl_sframe& data, const std::string& id_column) {
     for (size_t i = 0; i < data.num_columns(); ++i) {
       // Go through and update the hit locations for each match.
       if (id_column != "" && columns[i] == id_column) {
-        ids[row_index] = row[i];
+        m_ids[row_index] = row[i];
         continue;
       }
 
@@ -47,14 +47,14 @@ void sparse_nn::train(const gl_sframe& data, const std::string& id_column) {
   }
 
   // Now go through and set up the query data structures.
-  hashes.clear();
-  hashes.reserve(hit_tracker.size());
+  m_hashes.clear();
+  m_hashes.reserve(hit_tracker.size());
 
-  access_bounds.clear();
-  access_bounds.reserve(hit_indices.size());
+  m_access_bounds.clear();
+  m_access_bounds.reserve(m_hit_indices.size());
 
-  hit_indices.clear();
-  hit_indices.reserve(data.size() * data.num_columns());
+  m_hit_indices.clear();
+  m_hit_indices.reserve(data.size() * data.num_columns());
 
   // hit_tracker is already sorted, so we can just directly set up the lookup
   // tables now
@@ -62,31 +62,31 @@ void sparse_nn::train(const gl_sframe& data, const std::string& id_column) {
     hash_type hash = p.first;
     const auto& hits = p.second;
 
-    size_t s = hit_indices.size();
+    size_t s = m_hit_indices.size();
 
-    hashes.push_back(hash);
-    access_bounds.push_back({s, s + hits.size()});
-    hit_indices.insert(hit_indices.end(), hits.begin(), hits.end());
+    m_hashes.push_back(hash);
+    m_access_bounds.push_back({s, s + hits.size()});
+    m_hit_indices.insert(m_hit_indices.end(), hits.begin(), hits.end());
   }
 }
 
 // Perform a fast query of the model.
-GL_HOT_NOINLINE_FLATTEN flex_dict sparse_nn::query(const flex_dict& fd,
-                                                   size_t k) const {
-
-  if(num_columns == 0) {
+flex_dict sparse_nn::query(const flex_dict& fd, size_t k) const {
+  if (m_num_columns == 0) {
     log_and_throw("Model not trained yet.");
   }
 
   atomic<size_t> current_index = 0;
 
-  std::vector<atomic<uint32_t> > hit_counts(ids.size(), 0);
+  std::vector<atomic<uint32_t> > hit_counts(m_ids.size(), 0);
 
+  // Using in_parallel here with an atomic counter as the size of each of these
+  // lookup tables varies significantly.
   in_parallel([&](size_t thread_idx, size_t num_threads) GL_HOT_FLATTEN {
 
     // Each thread takes the next one
     while (true) {
-      size_t idx = (++current_index) - 1;
+      size_t idx = current_index++;
 
       if (idx >= fd.size()) {
         break;
@@ -100,17 +100,17 @@ GL_HOT_NOINLINE_FLATTEN flex_dict sparse_nn::query(const flex_dict& fd,
       const std::string& column = fd[idx].first.get<flex_string>();
       const hash_type& h = feature_hash(column, fd[idx].second);
 
-      auto it = std::lower_bound(hashes.begin(), hashes.end(), h);
+      auto it = std::lower_bound(m_hashes.begin(), m_hashes.end(), h);
 
-      if (it == hashes.end() || *it != h) {
+      if (it == m_hashes.end() || *it != h) {
         continue;  // no match.
       }
 
-      size_t lookup_index = it - hashes.begin();
-      auto b = access_bounds[lookup_index];
+      size_t lookup_index = it - m_hashes.begin();
+      auto b = m_access_bounds[lookup_index];
 
       for (size_t i = b.first; i < b.second; ++i) {
-        ++hit_counts[hit_indices[i]];
+        ++hit_counts[m_hit_indices[i]];
       }
     }
   });
@@ -127,23 +127,23 @@ GL_HOT_NOINLINE_FLATTEN flex_dict sparse_nn::query(const flex_dict& fd,
   flex_dict ret(k);
 
   for (size_t i = 0; i < k; ++i) {
-    // Return value is a pair: (ids, jaccard similarity)
-    ret[i] = {
-        ids[hits_idx[i].second],
-        double(hits_idx[i].first) / (num_columns + fd.size() - hits_idx[i].first)};
+    // Return value is a pair: (m_ids, jaccard similarity)
+    ret[i] = {m_ids[hits_idx[i].second],
+              double(hits_idx[i].first) /
+                  (m_num_columns + fd.size() - hits_idx[i].first)};
   }
 
   return ret;
 }
 
 void sparse_nn::save_impl(oarchive& oarc) const {
-  oarc << num_columns << ids << hashes << access_bounds << hit_indices;
+  oarc << m_num_columns << m_ids << m_hashes << m_access_bounds << m_hit_indices;
 }
 
 void sparse_nn::load_version(iarchive& iarc, size_t version) {
   ASSERT_EQ(version, SPARSE_NN_VERSION);
 
-  iarc >> num_columns >> ids >> hashes >> access_bounds >> hit_indices;
+  iarc >> m_num_columns >> m_ids >> m_hashes >> m_access_bounds >> m_hit_indices;
 }
 
 }  // namespace prototype
