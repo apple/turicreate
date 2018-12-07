@@ -98,6 +98,10 @@ extern  "C" {
       std::vector<fs::path> libhdfs_potential_paths = get_potential_libhdfs_paths();
       try_dlopen(libhdfs_potential_paths, "libhdfs", libhdfs_handle);
 
+      if(libhdfs_handle == NULL) {
+        logstream(LOG_ERROR) << "Error loading libhdfs.  Please make sure the environment variable HADOOP_HOME_DIR is set properly, and that libhdfs.so, libhdfs.dylib, or hdfs.dll is found in one of $(HADOOP_HOME_DIR)/lib/native/, $(HADOOP_HOME_DIR)/lib/,$(HADOOP_HOME_DIR)/libhdfs/, or $(HADOOP_HOME_DIR)/.  Also, please make sure that CLASS_PATH is set to the output of `hadoop classpath --glob`, and JAVA_HOME is set correctly." << std::endl; 
+      }
+
       dlopen_fail = (libhdfs_handle == NULL);
     }
   }
@@ -131,11 +135,11 @@ extern  "C" {
     if (ptr_hdfsConnect) { 
       auto x = turi::run_as_native(ptr_hdfsConnect, host, port);
       if (x == NULL) {
-        logstream(LOG_INFO) << "hdfsConnect to " << host << ":" << port << " Failed" << std::endl;
+        logstream(LOG_ERROR) << "hdfsConnect to " << host << ":" << port << " Failed" << std::endl;
       } 
       return x;
     } else {
-      logstream(LOG_INFO) << "hdfsConnect failed because the hdfsConnect symbol cannot be found" << std::endl;
+      logstream(LOG_ERROR) << "hdfsConnect failed because the hdfsConnect symbol cannot be found" << std::endl;
       return NULL;
     }
   }
@@ -346,22 +350,58 @@ extern  "C" {
     else return 0;
   }
 
+  static std::string get_hadoop_home_dir() {
+    static std::string hadoop_home = std::getenv("HADOOP_HOME_DIR");
+    return hadoop_home;
+  }
 
   static std::vector<fs::path> get_potential_libhdfs_paths() {
-    std::vector<fs::path> libhdfs_potential_paths = {
-      // find one in the unity_server directory
-      fs::path(turi::GLOBALS_MAIN_PROCESS_PATH + "/libhdfs.so"),
+    static std::vector<fs::path> libhdfs_potential_paths = {
+
+    // Search order:
+    // find one in the unity_server directory
+    // find one in the local directory
+    // Internal build path location; special handling there.
+    // Hadoop home dir
+    // Global search paths scoured by libhdfs.
+
+#ifdef __WIN32
       fs::path(turi::GLOBALS_MAIN_PROCESS_PATH + "/hdfs.dll"),
-      // find one in the local directory
-      fs::path("./libhdfs.so"),
       fs::path("./hdfs.dll"),
-      // special handling for internal build path locations
-      fs::path(turi::GLOBALS_MAIN_PROCESS_PATH + "/../../../../deps/local/lib/libhdfs.so"),
-      fs::path(turi::GLOBALS_MAIN_PROCESS_PATH + "/../../../../deps/local/bin/hdfs.dll"),
-      // find a global libhdfs.so
-      fs::path("libhdfs.so"),
+      fs::path(turi::GLOBALS_MAIN_PROCESS_PATH +
+               "/../../../../deps/local/bin/hdfs.dll"),
+      fs::path(get_hadoop_home_dir() + "/lib/native/hdfs.dll"),
+      fs::path(get_hadoop_home_dir() + "/lib/hdfs.dll"),
+      fs::path(get_hadoop_home_dir() + "/libhdfs/hdfs.dll"),
+      fs::path(get_hadoop_home_dir() + "/hdfs.dll"),
       fs::path("hdfs.dll"),
+#else
+
+      fs::path(turi::GLOBALS_MAIN_PROCESS_PATH + "/libhdfs.so"),
+      fs::path("./libhdfs.so"),
+      fs::path(turi::GLOBALS_MAIN_PROCESS_PATH +
+               "/../../../../deps/local/lib/libhdfs.so"),
+      fs::path(get_hadoop_home_dir() + "/lib/native/libhdfs.so"),
+      fs::path(get_hadoop_home_dir() + "/lib/libhdfs.so"),
+      fs::path(get_hadoop_home_dir() + "/libhdfs/libhdfs.so"),
+      fs::path(get_hadoop_home_dir() + "/libhdfs.so"),
+      fs::path("libhdfs.so"),
+
+#if __APPLE__  // For apple, also add in the dylib versions; it may be either.
+      fs::path(turi::GLOBALS_MAIN_PROCESS_PATH + "/libhdfs.dylib"),
+      fs::path("./libhdfs.dylib"),
+      fs::path(turi::GLOBALS_MAIN_PROCESS_PATH +
+               "/../../../../deps/local/lib/libhdfs.dylib"),
+      fs::path(get_hadoop_home_dir() + "/lib/native/libhdfs.dylib"),
+      fs::path(get_hadoop_home_dir() + "/lib/libhdfs.dylib"),
+      fs::path(get_hadoop_home_dir() + "/libhdfs/libhdfs.dylib"),
+      fs::path(get_hadoop_home_dir() + "/libhdfs.dylib"),
+      fs::path("libhdfs.dylib")
+#endif // End if apple.
+
+#endif
     };
+
     return libhdfs_potential_paths;
   }
 
@@ -384,6 +424,7 @@ extern  "C" {
     search_prefixes = {""};
     search_suffixes = {""};
     file_name = "libjvm.dylib";
+    
 
     // Run /usr/libexec/java_home to get the libjvm location
     std::string libjvm_location = "";
@@ -400,11 +441,24 @@ extern  "C" {
       logstream(LOG_WARNING) << "Error running " << java_home_cmd << std::endl;
       libjvm_location = "";
     }
+    
+
     if (!libjvm_location.empty()) {
       // Make this location to be searched first `/usr/libexec/java_home`/jre/lib/server/libjvm.dylib
       search_prefixes.insert(search_prefixes.begin(), libjvm_location);
       search_suffixes.insert(search_suffixes.begin(), "/jre/lib/server");
     }
+
+    // Add following environment variables at the beginning of the search path
+    // to search_prefixes: "TURI_JAVA_HOME", or "JAVA_HOME
+    for (const char* env_name : {"TURI_JAVA_HOME", "JAVA_HOME"}) {
+      std::string env_value; 
+      if(! (env_value = std::getenv(env_name)).empty()) {
+        logstream(LOG_INFO) << "Found environment variable " << env_name << ": " << env_value << std::endl;
+        search_prefixes.insert(search_prefixes.begin(), env_value);
+      }
+    }
+
 #else
     search_prefixes = {
       "/usr/lib/jvm/default-java",               // ubuntu / debian distros
@@ -415,15 +469,27 @@ extern  "C" {
       "/usr/local/lib/jvm/java",                 // alt rhel6
       "/usr/local/lib/jvm",                      // alt centos6
       "/usr/local/lib64/jvm",                    // alt opensuse 13
+      "/usr/local/lib/jvm/java-9-openjdk-amd64", // alt ubuntu / debian distros
+      "/usr/lib/jvm/java-9-openjdk-amd64",       // alt ubuntu / debian distros
+      "/usr/local/lib/jvm/java-8-openjdk-amd64", // alt ubuntu / debian distros
+      "/usr/lib/jvm/java-8-openjdk-amd64",       // alt ubuntu / debian distros
       "/usr/local/lib/jvm/java-7-openjdk-amd64", // alt ubuntu / debian distros
       "/usr/lib/jvm/java-7-openjdk-amd64",       // alt ubuntu / debian distros
       "/usr/local/lib/jvm/java-6-openjdk-amd64", // alt ubuntu / debian distros
       "/usr/lib/jvm/java-6-openjdk-amd64",       // alt ubuntu / debian distros
-      "/usr/lib/jvm/java-7-oracle",              // alt ubuntu
+      "/usr/lib/jvm/java-12-oracle",             // alt ubuntu
+      "/usr/lib/jvm/java-11-oracle",             // alt ubuntu
+      "/usr/lib/jvm/java-10-oracle",             // alt ubuntu
+      "/usr/lib/jvm/java-9-oracle",              // alt ubuntu
       "/usr/lib/jvm/java-8-oracle",              // alt ubuntu
+      "/usr/lib/jvm/java-7-oracle",              // alt ubuntu
       "/usr/lib/jvm/java-6-oracle",              // alt ubuntu
-      "/usr/local/lib/jvm/java-7-oracle",        // alt ubuntu
+      "/usr/local/lib/jvm/java-12-oracle",       // alt ubuntu
+      "/usr/local/lib/jvm/java-11-oracle",       // alt ubuntu
+      "/usr/local/lib/jvm/java-10-oracle",       // alt ubuntu
+      "/usr/local/lib/jvm/java-9-oracle",        // alt ubuntu
       "/usr/local/lib/jvm/java-8-oracle",        // alt ubuntu
+      "/usr/local/lib/jvm/java-7-oracle",        // alt ubuntu
       "/usr/local/lib/jvm/java-6-oracle",        // alt ubuntu
       "/usr/lib/jvm/default",                    // alt centos
       "/usr/java/latest",                        // alt centos
