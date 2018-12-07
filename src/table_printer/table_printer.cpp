@@ -323,8 +323,9 @@ void table_printer::_os_log_value(size_t column_index, float value) {
 }
 
 void table_printer::_os_log_value(size_t column_index, const progress_time& value) const {
-  double t = (value.elapsed_seconds < 0) ? tt.current_time() : value.elapsed_seconds;
-  _os_log_value_impl("source: %lu, event: %lu, column: %lu, value: %f seconds", column_index, t);
+  _os_log_value_impl("source: %lu, event: %lu, column: %lu, value: %f seconds",
+    column_index,
+    (value.elapsed_seconds < 0) ? tt.current_time() : value.elapsed_seconds);
 }
 
 void table_printer::_os_log_value(size_t column_index, const char* value) {
