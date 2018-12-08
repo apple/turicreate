@@ -1,0 +1,52 @@
+.AnnotationText{
+	padding-top: 20px;
+	padding-bottom: 20px;
+	font-family: Helvetica;
+	font-size: 12px;
+	color: #4A4A4A;
+	line-height: 16px;
+}
+
+.AnnotationContainer{
+	width: 200px;
+	background: #FFFFFF;
+	border: 1px solid #EDEDEB;
+	margin-top: 20px;
+	display: inline-block;
+	float: left;
+}
+
+.AnnotationScrollable{
+	overflow: scroll;
+	height: 100px;
+}
+
+.AnnotationImage{
+	display: inline-block;
+	float: left;
+}
+
+.AnnotationImageLeft{
+	position: absolute;
+	cursor: pointer;
+	left: 233px;
+	height: 100%;
+	display: flex;
+    align-items: center;
+}
+
+.AnnotationImageRight{
+	position: absolute;
+	cursor: pointer;
+	right: 259px;
+	display: flex;
+    align-items: center;
+}
+
+.AnnotationImageLeftImage:hover{
+	opacity: 0.5;
+}
+
+.AnnotationImageRightImage:hover{
+	opacity: 0.5;
+}

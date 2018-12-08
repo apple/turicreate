@@ -1,0 +1,22 @@
+.ImageInfiniteScroll{
+	position: relative;
+	text-align: left;
+}
+
+.ImageInfiniteScrollHelpText{
+	position: absolute; 
+	bottom: 0;
+	font-family: Helvetica;
+	font-size: 12px;
+	color: #484856;
+	width: 100%;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	text-align: center;
+}
+
+.ImageInfiniteScrollImageContainer{
+	overflow: scroll;
+	margin-left: 20px;
+	margin-right: 20px;
+}

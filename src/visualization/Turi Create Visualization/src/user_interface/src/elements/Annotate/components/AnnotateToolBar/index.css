@@ -1,0 +1,45 @@
+.AnnotateToolBar{
+	width: 100%;
+	padding-top: 29px;
+	padding-bottom: 29px;
+	text-align: left;
+}
+
+.AnnotateToolBarSwitchViews{
+	height: 14px;
+	margin-right: 10px;
+	cursor: pointer;
+}
+
+.AnnotateToolBarSwitchViews:hover{
+	opacity: 0.5;
+}
+
+.AnnotateToolBarStats{
+	display: inline-block;
+	float: left;
+	padding-left: 29px;
+	font-family: Helvetica;
+	font-size: 14px;
+	color: #484856;
+	line-height: 20px;
+}
+
+.AnnotateToolBarActions{
+	display: inline-block;
+	float: right;
+	padding-right: 29px;
+	font-family: Helvetica;
+	font-size: 10px;
+	color: #484856;
+}
+
+.AnnotateToolBarHideText{
+	display: inline-block;
+	padding-top: 1px;
+	vertical-align: top;
+}
+
+.switch{
+	width: 10px;
+}

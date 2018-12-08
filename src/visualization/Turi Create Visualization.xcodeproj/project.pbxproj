@@ -17,6 +17,55 @@
 		FC245BF31F4F7FFB009F54C6 /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC245BF21F4F7FFB009F54C6 /* JSON.swift */; };
 		FC245BF51F4F8110009F54C6 /* Pipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC245BF41F4F8110009F54C6 /* Pipe.swift */; };
 		FC5F0B3C1F5F3A3E0001BCEE /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC5F0B3B1F5F3A3E0001BCEE /* Error.swift */; };
+		FC7C541F21BB43D100E45116 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C53E321BB43D100E45116 /* index.js */; };
+		FC7C542021BB43D100E45116 /* index.css in Resources */ = {isa = PBXBuildFile; fileRef = FC7C53E421BB43D100E45116 /* index.css */; };
+		FC7C542121BB43D100E45116 /* index.test.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C53E521BB43D100E45116 /* index.test.js */; };
+		FC7C542221BB43D100E45116 /* connected_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = FC7C53E621BB43D100E45116 /* connected_icon.png */; };
+		FC7C542321BB43D100E45116 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C53E821BB43D100E45116 /* index.js */; };
+		FC7C542421BB43D100E45116 /* index.css in Resources */ = {isa = PBXBuildFile; fileRef = FC7C53E921BB43D100E45116 /* index.css */; };
+		FC7C542521BB43D100E45116 /* index.test.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C53EA21BB43D100E45116 /* index.test.js */; };
+		FC7C542621BB43D100E45116 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C53EC21BB43D100E45116 /* index.js */; };
+		FC7C542721BB43D100E45116 /* index.css in Resources */ = {isa = PBXBuildFile; fileRef = FC7C53ED21BB43D100E45116 /* index.css */; };
+		FC7C542821BB43D100E45116 /* rightArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = FC7C53EE21BB43D100E45116 /* rightArrow.png */; };
+		FC7C542921BB43D100E45116 /* leftArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = FC7C53EF21BB43D100E45116 /* leftArrow.png */; };
+		FC7C542A21BB43D100E45116 /* index.test.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C53F021BB43D100E45116 /* index.test.js */; };
+		FC7C542B21BB43D100E45116 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C53F221BB43D100E45116 /* index.js */; };
+		FC7C542C21BB43D100E45116 /* index.css in Resources */ = {isa = PBXBuildFile; fileRef = FC7C53F321BB43D100E45116 /* index.css */; };
+		FC7C542D21BB43D100E45116 /* index.test.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C53F421BB43D100E45116 /* index.test.js */; };
+		FC7C542E21BB43D100E45116 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C53F621BB43D100E45116 /* index.js */; };
+		FC7C542F21BB43D100E45116 /* index.css in Resources */ = {isa = PBXBuildFile; fileRef = FC7C53F721BB43D100E45116 /* index.css */; };
+		FC7C543021BB43D100E45116 /* index.test.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C53F821BB43D100E45116 /* index.test.js */; };
+		FC7C543121BB43D100E45116 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C53FA21BB43D100E45116 /* index.js */; };
+		FC7C543221BB43D100E45116 /* index.css in Resources */ = {isa = PBXBuildFile; fileRef = FC7C53FB21BB43D100E45116 /* index.css */; };
+		FC7C543321BB43D100E45116 /* index.test.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C53FC21BB43D100E45116 /* index.test.js */; };
+		FC7C543421BB43D100E45116 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C53FE21BB43D100E45116 /* index.js */; };
+		FC7C543521BB43D100E45116 /* index.css in Resources */ = {isa = PBXBuildFile; fileRef = FC7C53FF21BB43D100E45116 /* index.css */; };
+		FC7C543621BB43D100E45116 /* index.test.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C540021BB43D100E45116 /* index.test.js */; };
+		FC7C543721BB43D100E45116 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C540221BB43D100E45116 /* index.js */; };
+		FC7C543821BB43D100E45116 /* index.css in Resources */ = {isa = PBXBuildFile; fileRef = FC7C540321BB43D100E45116 /* index.css */; };
+		FC7C543921BB43D100E45116 /* index.test.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C540421BB43D100E45116 /* index.test.js */; };
+		FC7C543A21BB43D100E45116 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C540621BB43D100E45116 /* index.js */; };
+		FC7C543B21BB43D100E45116 /* index.css in Resources */ = {isa = PBXBuildFile; fileRef = FC7C540721BB43D100E45116 /* index.css */; };
+		FC7C543C21BB43D100E45116 /* index.test.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C540821BB43D100E45116 /* index.test.js */; };
+		FC7C543D21BB43D100E45116 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C540A21BB43D100E45116 /* index.js */; };
+		FC7C543E21BB43D100E45116 /* index.css in Resources */ = {isa = PBXBuildFile; fileRef = FC7C540B21BB43D100E45116 /* index.css */; };
+		FC7C543F21BB43D100E45116 /* index.test.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C540C21BB43D100E45116 /* index.test.js */; };
+		FC7C544021BB43D100E45116 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C540E21BB43D100E45116 /* index.js */; };
+		FC7C544121BB43D100E45116 /* index.css in Resources */ = {isa = PBXBuildFile; fileRef = FC7C540F21BB43D100E45116 /* index.css */; };
+		FC7C544221BB43D100E45116 /* index.test.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C541021BB43D100E45116 /* index.test.js */; };
+		FC7C544321BB43D100E45116 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C541221BB43D100E45116 /* index.js */; };
+		FC7C544421BB43D100E45116 /* index.css in Resources */ = {isa = PBXBuildFile; fileRef = FC7C541321BB43D100E45116 /* index.css */; };
+		FC7C544521BB43D100E45116 /* index.test.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C541421BB43D100E45116 /* index.test.js */; };
+		FC7C544621BB43D100E45116 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C541621BB43D100E45116 /* index.js */; };
+		FC7C544721BB43D100E45116 /* index.css in Resources */ = {isa = PBXBuildFile; fileRef = FC7C541721BB43D100E45116 /* index.css */; };
+		FC7C544821BB43D100E45116 /* clone.png in Resources */ = {isa = PBXBuildFile; fileRef = FC7C541821BB43D100E45116 /* clone.png */; };
+		FC7C544921BB43D100E45116 /* index.test.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C541921BB43D100E45116 /* index.test.js */; };
+		FC7C544A21BB43D100E45116 /* question.png in Resources */ = {isa = PBXBuildFile; fileRef = FC7C541B21BB43D100E45116 /* question.png */; };
+		FC7C544B21BB43D100E45116 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C541C21BB43D100E45116 /* index.js */; };
+		FC7C544C21BB43D100E45116 /* index.css in Resources */ = {isa = PBXBuildFile; fileRef = FC7C541D21BB43D100E45116 /* index.css */; };
+		FC7C544D21BB43D100E45116 /* index.test.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C541E21BB43D100E45116 /* index.test.js */; };
+		FC7C545121BB43DE00E45116 /* store.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C544F21BB43DE00E45116 /* store.js */; };
+		FC7C545221BB43DE00E45116 /* label_data.js in Resources */ = {isa = PBXBuildFile; fileRef = FC7C545021BB43DE00E45116 /* label_data.js */; };
 		FC9066011F425B4800AE3881 /* AppData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC9066001F425B4800AE3881 /* AppData.swift */; };
 		FCB8DFE1206EF950001A7089 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = FCB8DFE0206EF950001A7089 /* index.html */; };
 		FCB8DFE3206F1756001A7089 /* index.css in Resources */ = {isa = PBXBuildFile; fileRef = FCB8DFE2206F1756001A7089 /* index.css */; };
@@ -53,6 +102,55 @@
 		FC78046F2072A115004BE45B /* index.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = index.css; path = Row/index.css; sourceTree = "<group>"; };
 		FC7804712072A14B004BE45B /* index.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = index.css; sourceTree = "<group>"; };
 		FC7804732072A168004BE45B /* index.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = index.css; sourceTree = "<group>"; };
+		FC7C53E321BB43D100E45116 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FC7C53E421BB43D100E45116 /* index.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = index.css; sourceTree = "<group>"; };
+		FC7C53E521BB43D100E45116 /* index.test.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.test.js; sourceTree = "<group>"; };
+		FC7C53E621BB43D100E45116 /* connected_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = connected_icon.png; sourceTree = "<group>"; };
+		FC7C53E821BB43D100E45116 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FC7C53E921BB43D100E45116 /* index.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = index.css; sourceTree = "<group>"; };
+		FC7C53EA21BB43D100E45116 /* index.test.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.test.js; sourceTree = "<group>"; };
+		FC7C53EC21BB43D100E45116 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FC7C53ED21BB43D100E45116 /* index.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = index.css; sourceTree = "<group>"; };
+		FC7C53EE21BB43D100E45116 /* rightArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rightArrow.png; sourceTree = "<group>"; };
+		FC7C53EF21BB43D100E45116 /* leftArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = leftArrow.png; sourceTree = "<group>"; };
+		FC7C53F021BB43D100E45116 /* index.test.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.test.js; sourceTree = "<group>"; };
+		FC7C53F221BB43D100E45116 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FC7C53F321BB43D100E45116 /* index.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = index.css; sourceTree = "<group>"; };
+		FC7C53F421BB43D100E45116 /* index.test.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.test.js; sourceTree = "<group>"; };
+		FC7C53F621BB43D100E45116 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FC7C53F721BB43D100E45116 /* index.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = index.css; sourceTree = "<group>"; };
+		FC7C53F821BB43D100E45116 /* index.test.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.test.js; sourceTree = "<group>"; };
+		FC7C53FA21BB43D100E45116 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FC7C53FB21BB43D100E45116 /* index.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = index.css; sourceTree = "<group>"; };
+		FC7C53FC21BB43D100E45116 /* index.test.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.test.js; sourceTree = "<group>"; };
+		FC7C53FE21BB43D100E45116 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FC7C53FF21BB43D100E45116 /* index.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = index.css; sourceTree = "<group>"; };
+		FC7C540021BB43D100E45116 /* index.test.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.test.js; sourceTree = "<group>"; };
+		FC7C540221BB43D100E45116 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FC7C540321BB43D100E45116 /* index.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = index.css; sourceTree = "<group>"; };
+		FC7C540421BB43D100E45116 /* index.test.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.test.js; sourceTree = "<group>"; };
+		FC7C540621BB43D100E45116 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FC7C540721BB43D100E45116 /* index.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = index.css; sourceTree = "<group>"; };
+		FC7C540821BB43D100E45116 /* index.test.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.test.js; sourceTree = "<group>"; };
+		FC7C540A21BB43D100E45116 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FC7C540B21BB43D100E45116 /* index.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = index.css; sourceTree = "<group>"; };
+		FC7C540C21BB43D100E45116 /* index.test.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.test.js; sourceTree = "<group>"; };
+		FC7C540E21BB43D100E45116 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FC7C540F21BB43D100E45116 /* index.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = index.css; sourceTree = "<group>"; };
+		FC7C541021BB43D100E45116 /* index.test.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.test.js; sourceTree = "<group>"; };
+		FC7C541221BB43D100E45116 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FC7C541321BB43D100E45116 /* index.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = index.css; sourceTree = "<group>"; };
+		FC7C541421BB43D100E45116 /* index.test.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.test.js; sourceTree = "<group>"; };
+		FC7C541621BB43D100E45116 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FC7C541721BB43D100E45116 /* index.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = index.css; sourceTree = "<group>"; };
+		FC7C541821BB43D100E45116 /* clone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = clone.png; sourceTree = "<group>"; };
+		FC7C541921BB43D100E45116 /* index.test.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.test.js; sourceTree = "<group>"; };
+		FC7C541B21BB43D100E45116 /* question.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = question.png; sourceTree = "<group>"; };
+		FC7C541C21BB43D100E45116 /* index.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		FC7C541D21BB43D100E45116 /* index.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = index.css; sourceTree = "<group>"; };
+		FC7C541E21BB43D100E45116 /* index.test.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = index.test.js; sourceTree = "<group>"; };
+		FC7C544F21BB43DE00E45116 /* store.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = store.js; sourceTree = "<group>"; };
+		FC7C545021BB43DE00E45116 /* label_data.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = label_data.js; sourceTree = "<group>"; };
 		FC9066001F425B4800AE3881 /* AppData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppData.swift; sourceTree = "<group>"; };
 		FCB8DFDD206EF548001A7089 /* index.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = index.css; sourceTree = "<group>"; };
 		FCB8DFE0206EF950001A7089 /* index.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
@@ -140,6 +238,7 @@
 		FC3E34D6206EF42200B6B69A /* elements */ = {
 			isa = PBXGroup;
 			children = (
+				FC7C53E021BB437400E45116 /* Annotate */,
 				FC3E34D8206EF45700B6B69A /* Plot */,
 				FC3E34D7206EF43F00B6B69A /* Explore */,
 			);
@@ -230,6 +329,190 @@
 			name = Table;
 			sourceTree = "<group>";
 		};
+		FC7C53E021BB437400E45116 /* Annotate */ = {
+			isa = PBXGroup;
+			children = (
+				FC7C544E21BB43DE00E45116 /* data */,
+				FC7C53E121BB43D100E45116 /* components */,
+			);
+			path = Annotate;
+			sourceTree = "<group>";
+		};
+		FC7C53E121BB43D100E45116 /* components */ = {
+			isa = PBXGroup;
+			children = (
+				FC7C53E221BB43D100E45116 /* ConnectorIndicator */,
+				FC7C53E721BB43D100E45116 /* DisplayContainer */,
+				FC7C53EB21BB43D100E45116 /* AnnotationContainer */,
+				FC7C53F121BB43D100E45116 /* ImageClassificationAnnotation */,
+				FC7C53F521BB43D100E45116 /* ImageInfiniteScroll */,
+				FC7C53F921BB43D100E45116 /* Labels */,
+				FC7C53FD21BB43D100E45116 /* ToggleButton */,
+				FC7C540121BB43D100E45116 /* LabelContainer */,
+				FC7C540521BB43D100E45116 /* Content */,
+				FC7C540921BB43D100E45116 /* ProgressBar */,
+				FC7C540D21BB43D100E45116 /* AnnotationImageDisplay */,
+				FC7C541121BB43D100E45116 /* SelectableImages */,
+				FC7C541521BB43D100E45116 /* AnnotateToolBar */,
+				FC7C541A21BB43D100E45116 /* Header */,
+			);
+			path = components;
+			sourceTree = "<group>";
+		};
+		FC7C53E221BB43D100E45116 /* ConnectorIndicator */ = {
+			isa = PBXGroup;
+			children = (
+				FC7C53E321BB43D100E45116 /* index.js */,
+				FC7C53E421BB43D100E45116 /* index.css */,
+				FC7C53E521BB43D100E45116 /* index.test.js */,
+				FC7C53E621BB43D100E45116 /* connected_icon.png */,
+			);
+			path = ConnectorIndicator;
+			sourceTree = "<group>";
+		};
+		FC7C53E721BB43D100E45116 /* DisplayContainer */ = {
+			isa = PBXGroup;
+			children = (
+				FC7C53E821BB43D100E45116 /* index.js */,
+				FC7C53E921BB43D100E45116 /* index.css */,
+				FC7C53EA21BB43D100E45116 /* index.test.js */,
+			);
+			path = DisplayContainer;
+			sourceTree = "<group>";
+		};
+		FC7C53EB21BB43D100E45116 /* AnnotationContainer */ = {
+			isa = PBXGroup;
+			children = (
+				FC7C53EC21BB43D100E45116 /* index.js */,
+				FC7C53ED21BB43D100E45116 /* index.css */,
+				FC7C53EE21BB43D100E45116 /* rightArrow.png */,
+				FC7C53EF21BB43D100E45116 /* leftArrow.png */,
+				FC7C53F021BB43D100E45116 /* index.test.js */,
+			);
+			path = AnnotationContainer;
+			sourceTree = "<group>";
+		};
+		FC7C53F121BB43D100E45116 /* ImageClassificationAnnotation */ = {
+			isa = PBXGroup;
+			children = (
+				FC7C53F221BB43D100E45116 /* index.js */,
+				FC7C53F321BB43D100E45116 /* index.css */,
+				FC7C53F421BB43D100E45116 /* index.test.js */,
+			);
+			path = ImageClassificationAnnotation;
+			sourceTree = "<group>";
+		};
+		FC7C53F521BB43D100E45116 /* ImageInfiniteScroll */ = {
+			isa = PBXGroup;
+			children = (
+				FC7C53F621BB43D100E45116 /* index.js */,
+				FC7C53F721BB43D100E45116 /* index.css */,
+				FC7C53F821BB43D100E45116 /* index.test.js */,
+			);
+			path = ImageInfiniteScroll;
+			sourceTree = "<group>";
+		};
+		FC7C53F921BB43D100E45116 /* Labels */ = {
+			isa = PBXGroup;
+			children = (
+				FC7C53FA21BB43D100E45116 /* index.js */,
+				FC7C53FB21BB43D100E45116 /* index.css */,
+				FC7C53FC21BB43D100E45116 /* index.test.js */,
+			);
+			path = Labels;
+			sourceTree = "<group>";
+		};
+		FC7C53FD21BB43D100E45116 /* ToggleButton */ = {
+			isa = PBXGroup;
+			children = (
+				FC7C53FE21BB43D100E45116 /* index.js */,
+				FC7C53FF21BB43D100E45116 /* index.css */,
+				FC7C540021BB43D100E45116 /* index.test.js */,
+			);
+			path = ToggleButton;
+			sourceTree = "<group>";
+		};
+		FC7C540121BB43D100E45116 /* LabelContainer */ = {
+			isa = PBXGroup;
+			children = (
+				FC7C540221BB43D100E45116 /* index.js */,
+				FC7C540321BB43D100E45116 /* index.css */,
+				FC7C540421BB43D100E45116 /* index.test.js */,
+			);
+			path = LabelContainer;
+			sourceTree = "<group>";
+		};
+		FC7C540521BB43D100E45116 /* Content */ = {
+			isa = PBXGroup;
+			children = (
+				FC7C540621BB43D100E45116 /* index.js */,
+				FC7C540721BB43D100E45116 /* index.css */,
+				FC7C540821BB43D100E45116 /* index.test.js */,
+			);
+			path = Content;
+			sourceTree = "<group>";
+		};
+		FC7C540921BB43D100E45116 /* ProgressBar */ = {
+			isa = PBXGroup;
+			children = (
+				FC7C540A21BB43D100E45116 /* index.js */,
+				FC7C540B21BB43D100E45116 /* index.css */,
+				FC7C540C21BB43D100E45116 /* index.test.js */,
+			);
+			path = ProgressBar;
+			sourceTree = "<group>";
+		};
+		FC7C540D21BB43D100E45116 /* AnnotationImageDisplay */ = {
+			isa = PBXGroup;
+			children = (
+				FC7C540E21BB43D100E45116 /* index.js */,
+				FC7C540F21BB43D100E45116 /* index.css */,
+				FC7C541021BB43D100E45116 /* index.test.js */,
+			);
+			path = AnnotationImageDisplay;
+			sourceTree = "<group>";
+		};
+		FC7C541121BB43D100E45116 /* SelectableImages */ = {
+			isa = PBXGroup;
+			children = (
+				FC7C541221BB43D100E45116 /* index.js */,
+				FC7C541321BB43D100E45116 /* index.css */,
+				FC7C541421BB43D100E45116 /* index.test.js */,
+			);
+			path = SelectableImages;
+			sourceTree = "<group>";
+		};
+		FC7C541521BB43D100E45116 /* AnnotateToolBar */ = {
+			isa = PBXGroup;
+			children = (
+				FC7C541621BB43D100E45116 /* index.js */,
+				FC7C541721BB43D100E45116 /* index.css */,
+				FC7C541821BB43D100E45116 /* clone.png */,
+				FC7C541921BB43D100E45116 /* index.test.js */,
+			);
+			path = AnnotateToolBar;
+			sourceTree = "<group>";
+		};
+		FC7C541A21BB43D100E45116 /* Header */ = {
+			isa = PBXGroup;
+			children = (
+				FC7C541B21BB43D100E45116 /* question.png */,
+				FC7C541C21BB43D100E45116 /* index.js */,
+				FC7C541D21BB43D100E45116 /* index.css */,
+				FC7C541E21BB43D100E45116 /* index.test.js */,
+			);
+			path = Header;
+			sourceTree = "<group>";
+		};
+		FC7C544E21BB43DE00E45116 /* data */ = {
+			isa = PBXGroup;
+			children = (
+				FC7C544F21BB43DE00E45116 /* store.js */,
+				FC7C545021BB43DE00E45116 /* label_data.js */,
+			);
+			path = data;
+			sourceTree = "<group>";
+		};
 		FCB8DFDF206EF93A001A7089 /* public */ = {
 			isa = PBXGroup;
 			children = (
@@ -299,12 +582,61 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FC7C543121BB43D100E45116 /* index.js in Resources */,
+				FC7C542021BB43D100E45116 /* index.css in Resources */,
+				FC7C545221BB43DE00E45116 /* label_data.js in Resources */,
+				FC7C542F21BB43D100E45116 /* index.css in Resources */,
+				FC7C542D21BB43D100E45116 /* index.test.js in Resources */,
+				FC7C543721BB43D100E45116 /* index.js in Resources */,
+				FC7C544A21BB43D100E45116 /* question.png in Resources */,
 				FCB8DFE5206F187D001A7089 /* index.js in Resources */,
+				FC7C542221BB43D100E45116 /* connected_icon.png in Resources */,
+				FC7C543F21BB43D100E45116 /* index.test.js in Resources */,
 				FCB8DFE1206EF950001A7089 /* index.html in Resources */,
 				FCB8DFE3206F1756001A7089 /* index.css in Resources */,
 				FCE3954420B4C2CB0029FDB5 /* build in Resources */,
+				FC7C544B21BB43D100E45116 /* index.js in Resources */,
+				FC7C543D21BB43D100E45116 /* index.js in Resources */,
+				FC7C545121BB43DE00E45116 /* store.js in Resources */,
+				FC7C542321BB43D100E45116 /* index.js in Resources */,
+				FC7C543B21BB43D100E45116 /* index.css in Resources */,
+				FC7C542521BB43D100E45116 /* index.test.js in Resources */,
+				FC7C543521BB43D100E45116 /* index.css in Resources */,
+				FC7C543421BB43D100E45116 /* index.js in Resources */,
+				FC7C541F21BB43D100E45116 /* index.js in Resources */,
+				FC7C542421BB43D100E45116 /* index.css in Resources */,
+				FC7C542821BB43D100E45116 /* rightArrow.png in Resources */,
+				FC7C542B21BB43D100E45116 /* index.js in Resources */,
 				9226E7C81F366F2E00C33A64 /* Assets.xcassets in Resources */,
+				FC7C544921BB43D100E45116 /* index.test.js in Resources */,
+				FC7C544221BB43D100E45116 /* index.test.js in Resources */,
+				FC7C542721BB43D100E45116 /* index.css in Resources */,
+				FC7C544421BB43D100E45116 /* index.css in Resources */,
+				FC7C542621BB43D100E45116 /* index.js in Resources */,
+				FC7C542121BB43D100E45116 /* index.test.js in Resources */,
+				FC7C542E21BB43D100E45116 /* index.js in Resources */,
+				FC7C542C21BB43D100E45116 /* index.css in Resources */,
+				FC7C543821BB43D100E45116 /* index.css in Resources */,
 				9226E7CB1F366F2E00C33A64 /* Main.storyboard in Resources */,
+				FC7C544621BB43D100E45116 /* index.js in Resources */,
+				FC7C543221BB43D100E45116 /* index.css in Resources */,
+				FC7C542A21BB43D100E45116 /* index.test.js in Resources */,
+				FC7C543921BB43D100E45116 /* index.test.js in Resources */,
+				FC7C543A21BB43D100E45116 /* index.js in Resources */,
+				FC7C544D21BB43D100E45116 /* index.test.js in Resources */,
+				FC7C543E21BB43D100E45116 /* index.css in Resources */,
+				FC7C544721BB43D100E45116 /* index.css in Resources */,
+				FC7C544121BB43D100E45116 /* index.css in Resources */,
+				FC7C544321BB43D100E45116 /* index.js in Resources */,
+				FC7C543021BB43D100E45116 /* index.test.js in Resources */,
+				FC7C544021BB43D100E45116 /* index.js in Resources */,
+				FC7C543321BB43D100E45116 /* index.test.js in Resources */,
+				FC7C543621BB43D100E45116 /* index.test.js in Resources */,
+				FC7C543C21BB43D100E45116 /* index.test.js in Resources */,
+				FC7C544C21BB43D100E45116 /* index.css in Resources */,
+				FC7C544821BB43D100E45116 /* clone.png in Resources */,
+				FC7C544521BB43D100E45116 /* index.test.js in Resources */,
+				FC7C542921BB43D100E45116 /* leftArrow.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

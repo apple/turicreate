@@ -1,0 +1,15 @@
+.AnnotationImageDisplayImageContainer{
+	height: 300px;
+	width: 300px;
+	padding: 20px;
+
+	position: absolute;
+	top: 50%;
+	left: 50%;
+
+	margin: -90px 0 0 -170px;
+	text-align: center;
+
+	background: red;
+}
+

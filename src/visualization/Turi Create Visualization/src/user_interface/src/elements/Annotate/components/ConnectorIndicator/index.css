@@ -1,0 +1,25 @@
+.ConnectorIndicator{
+	width: 300px;
+	position: absolute;
+	right: 10px;
+	top: 18px;
+}
+
+.ConnectorImageContainer{
+	position: relative;
+	display: inline-block;
+	float: right;
+}
+
+.ConnectorIcon{
+	padding-top: 2px;
+	height: 14px;
+} 
+
+.ConnectorText{
+	position: relative;
+	display: inline-block;
+	float: right;
+	padding-left: 10px;
+}
+

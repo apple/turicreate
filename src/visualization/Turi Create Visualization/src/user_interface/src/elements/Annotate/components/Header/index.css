@@ -1,0 +1,86 @@
+.Header{
+	position: fixed;
+	width: 100%;
+	height: 56px;
+
+	background: #FFFFFF;
+	border-bottom: 1px solid #CCCCCC;
+	z-index: 1;
+}
+
+.HeaderImageButtonContainer{
+	display: inline-block;
+	float: left;
+}
+
+.HeaderImageButton{
+	background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+
+	width: 25px;
+	height: 25px;
+
+	margin-top: 15px;
+	margin-left: 13px;
+}
+
+.HeaderImageButton:hover {
+	opacity: 0.5;
+}
+
+
+.HeaderImage{
+	width: 25px;
+	height: 25px;
+}
+
+.HeaderConnectButton{
+	background: #007AFF;
+	border: 1px solid #066EE0;
+	border-radius: 4px;
+
+	font-family: Helvetica;
+	font-size: 13px;
+	color: #FFFFFF;
+	line-height: 18px;
+
+	padding: 4px;
+	padding-left: 13px;
+	padding-right: 13px;
+
+	margin-top: 13px;
+	margin-right: 13px;
+
+	position: inline-block;
+
+	cursor: pointer;
+
+	float: right;
+}
+
+.HeaderConnectButton:hover {
+	background: #066EE0;
+}
+
+.HeaderConnectIndicator{
+	position: inline-block;
+
+	float: right;
+}
+
+.HeaderConnectedIcon{
+	height: 14px;
+	margin-top: 20px;
+	margin-right: 8px;
+}
+
+.HeaderConnnectedText{
+	font-family: Helvetica;
+	font-size: 13px;
+	color: #393E56;
+}
