@@ -40,8 +40,8 @@ class item_frequency : public item_frequency_parent {
 };
 
 std::shared_ptr<Plot> plot_item_frequency(
-  gl_sarray& sa, std::string xlabel, std::string ylabel, 
-  std::string title);
+  const gl_sarray& sa, const flexible_type& xlabel, const flexible_type& ylabel, 
+  const flexible_type& title);
 
 }} // turi::visualization
 

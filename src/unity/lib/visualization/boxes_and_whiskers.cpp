@@ -79,14 +79,12 @@ std::string boxes_and_whiskers_result::vega_column_data(bool sframe) const {
 std::shared_ptr<Plot> turi::visualization::plot_boxes_and_whiskers(
                                                     const gl_sarray& x,
                                                     const gl_sarray& y,
-                                                    const std::string& xlabel,
-                                                    const std::string& ylabel,
-                                                    const std::string& title) {
+                                                    const flexible_type& xlabel,
+                                                    const flexible_type& ylabel,
+                                                    const flexible_type& title) {
 
 
-  std::stringstream ss;
-  ss << boxes_and_whiskers_spec(xlabel, ylabel, title);
-  std::string boxes_and_whiskers_specification = ss.str();
+  std::string boxes_and_whiskers_specification = boxes_and_whiskers_spec(xlabel, ylabel, title);
 
   double size_array = static_cast<double>(x.size());
 

@@ -35,9 +35,9 @@ static inline gl_sarray validate_dtype(const gl_sarray& input) {
 std::shared_ptr<Plot> turi::visualization::plot_heatmap(
                                        const gl_sarray& x,
                                        const gl_sarray& y,
-                                       const std::string& xlabel,
-                                       const std::string& ylabel,
-                                       const std::string& title) {
+                                       const flexible_type& xlabel,
+                                       const flexible_type& ylabel,
+                                       const flexible_type& title) {
   validate_dtype(x);
   validate_dtype(y);
 
