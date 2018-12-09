@@ -13,6 +13,8 @@
 #include <sframe/sarray_reader_buffer.hpp>
 #include <unity/lib/image_util.hpp>
 #include <sframe_query_engine/planning/planner.hpp>
+#include <unity/lib/visualization/histogram.hpp>
+#include <unity/lib/visualization/item_frequency.hpp>
 
 namespace turi {
 
@@ -671,16 +673,41 @@ gl_sarray gl_sarray::builtin_rolling_apply(const std::string &fn_name,
 
 
 void gl_sarray::show(const std::string& path_to_client,
-                     const std::string& title,
-                     const std::string& xlabel,
-                     const std::string& ylabel) const {
-  get_proxy()->show(path_to_client, title, xlabel, ylabel);
+                     const flexible_type& title,
+                     const flexible_type& xlabel,
+                     const flexible_type& ylabel) const {
+  using namespace turi;
+  using namespace turi::visualization;
+
+  std::shared_ptr<Plot> plt = this->plot(title, xlabel, ylabel);
+
+  if(plt != nullptr){
+    plt->show(path_to_client);
+  }
 }
 
-std::shared_ptr<model_base> gl_sarray::plot(const std::string& title,
-                                            const std::string& xlabel,
-                                            const std::string& ylabel) const {
-  return get_proxy()->plot(title, xlabel, ylabel);
+std::shared_ptr<visualization::Plot> gl_sarray::plot(const flexible_type& title,
+                                            const flexible_type& xlabel,
+                                            const flexible_type& ylabel) const {
+  using namespace turi;
+  using namespace turi::visualization;
+
+  this->materialize();
+
+  if (this->size() == 0) {
+    log_and_throw("Nothing to show; SArray is empty.");
+  }
+
+  switch (this->dtype()) {
+    case flex_type_enum::INTEGER:
+    case flex_type_enum::FLOAT:
+      return plot_histogram(*this, xlabel, ylabel, title);
+    case flex_type_enum::STRING:
+      return plot_item_frequency(*this, xlabel, ylabel, title);
+    default:
+      log_and_throw(std::string("SArray.plot is currently not available for SArrays of type ") + flex_type_enum_to_name(this->dtype()));
+      return nullptr;
+  }
 }
 
 gl_sarray gl_sarray::cumulative_aggregate(

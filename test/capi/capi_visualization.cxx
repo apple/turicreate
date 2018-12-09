@@ -115,11 +115,11 @@ class capi_test_visualization {
             CAPI_CHECK_ERROR(error);
 
             // numeric histogram (float)
-            expected_obj_base = m_sa_float->value.plot("foo", "bar", "baz");
+            expected_obj_base = m_sa_float->value.plot(FLEX_UNDEFINED, FLEX_UNDEFINED, FLEX_UNDEFINED);
             expected_obj = std::dynamic_pointer_cast<Plot>(expected_obj_base);
             expected_spec = expected_obj->get_spec();
             error = nullptr;
-            actual_obj = tc_plot_create_1d(m_sa_float, "foo", "bar", "baz", nullptr, &error);
+            actual_obj = tc_plot_create_1d(m_sa_float, nullptr, nullptr, nullptr, nullptr, &error);
             CAPI_CHECK_ERROR(error);
             actual_spec_ft = tc_plot_get_vega_spec(actual_obj, nullptr, &error);
             CAPI_CHECK_ERROR(error);

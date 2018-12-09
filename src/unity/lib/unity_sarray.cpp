@@ -39,13 +39,6 @@
 #include <sframe_query_engine/util/aggregates.hpp>
 #include <sframe/rolling_aggregate.hpp>
 #include <unity/lib/gl_sarray.hpp>
-#include <unity/lib/visualization/process_wrapper.hpp>
-#include <unity/lib/visualization/histogram.hpp>
-#include <unity/lib/visualization/item_frequency.hpp>
-#include <unity/lib/visualization/thread.hpp>
-#include <unity/lib/visualization/plot.hpp>
-#include <unity/lib/visualization/vega_data.hpp>
-#include <unity/lib/visualization/vega_spec.hpp>
 #include <unity/lib/unity_sketch.hpp>
 #include <algorithm>
 #include <logger/logger.hpp>
@@ -2949,46 +2942,19 @@ std::shared_ptr<unity_sarray_base> unity_sarray::builtin_rolling_apply(
 }
 
 void unity_sarray::show(const std::string& path_to_client,
-                        const std::string& _title,
-                        const std::string& _xlabel,
-                        const std::string& _ylabel) {
-  using namespace turi;
-  using namespace turi::visualization;
-
-  std::shared_ptr<Plot> plt = std::dynamic_pointer_cast<Plot>(this->plot(_title, _xlabel, _ylabel));
-
-  if(plt != nullptr){
-    plt->show(path_to_client);
-  }
+                        const flexible_type& title,
+                        const flexible_type& xlabel,
+                        const flexible_type& ylabel) {
+  gl_sarray in(std::make_shared<unity_sarray>(*this));
+  in.show(path_to_client, title, xlabel, ylabel);
 }
 
 std::shared_ptr<model_base> unity_sarray::plot(
-                        const std::string& _title,
-                        const std::string& _xlabel,
-                        const std::string& _ylabel) {
-
-  using namespace turi;
-  using namespace turi::visualization;
-
-  this->materialize();
-
-  if (this->size() == 0) {
-    log_and_throw("Nothing to show; SArray is empty.");
-  }
-
-  std::shared_ptr<unity_sarray> self = std::make_shared<unity_sarray>(*this);
-  gl_sarray sa(self);
-
-  switch (self->dtype()) {
-    case flex_type_enum::INTEGER:
-    case flex_type_enum::FLOAT:
-      return plot_histogram(sa, _xlabel, _ylabel, _title);
-    case flex_type_enum::STRING:
-      return plot_item_frequency(sa, _xlabel, _ylabel, _title);
-    default:
-      log_and_throw(std::string("SArray.plot is currently not available for SArrays of type ") + flex_type_enum_to_name(self->dtype()));
-      return nullptr;
-  }
+                        const flexible_type& title,
+                        const flexible_type& xlabel,
+                        const flexible_type& ylabel) {
+  gl_sarray in(std::make_shared<unity_sarray>(*this));
+  return in.plot(title, xlabel, ylabel);
 }
 
 

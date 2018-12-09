@@ -87,8 +87,8 @@ GENERATE_INTERFACE_AND_PROXY(unity_sarray_base, unity_sarray_proxy,
       (std::shared_ptr<unity_sarray_base>, builtin_cumulative_aggregate,(const std::string&))
       (std::shared_ptr<unity_sarray_base>, ternary_operator,(std::shared_ptr<unity_sarray_base>)(std::shared_ptr<unity_sarray_base>))
       (std::shared_ptr<unity_sarray_base>, to_const,(const flexible_type&)(flex_type_enum))
-      (void, show, (const std::string&)(const std::string&)(const std::string&)(const std::string&))
-      (std::shared_ptr<model_base>, plot,(const std::string&)(const std::string&)(const std::string&))
+      (void, show, (const std::string&)(const flexible_type&)(const flexible_type&)(const flexible_type&))
+      (std::shared_ptr<model_base>, plot,(const flexible_type&)(const flexible_type&)(const flexible_type&))
     )
 } // namespace turi
 #endif // TURI_UNITY_SARRAY_INTERFACE_HPP
