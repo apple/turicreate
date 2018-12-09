@@ -13,18 +13,23 @@
 #include <iostream>
 #include <limits>
 #include <numeric>
+#include <utility>
+#include <vector>
 
 #include <logger/assertions.hpp>
 #include <logger/logger.hpp>
-#include <unity/toolkits/neural_net/coreml_import.hpp>
+#include <random/random.hpp>
+#include <unity/toolkits/coreml_export/neural_net_models_exporter.hpp>
+#include <unity/toolkits/object_detection/od_yolo.hpp>
 
+using turi::coreml::MLModelWrapper;
 using turi::neural_net::cnn_module;
 using turi::neural_net::deferred_float_array;
 using turi::neural_net::float_array_map;
 using turi::neural_net::image_annotation;
 using turi::neural_net::image_augmenter;
 using turi::neural_net::labeled_image;
-using turi::neural_net::load_network_params;
+using turi::neural_net::model_spec;
 using turi::neural_net::shared_float_array;
 
 namespace turi {
@@ -43,9 +48,6 @@ constexpr int NUM_INPUT_CHANNELS = 3;
 // GRID_SIZE x GRID_SIZE grid laid over the image.
 constexpr int GRID_SIZE = 13;
 
-// Each bounding box is evaluated relative to a list of pre-defined sizes.
-constexpr int NUM_ANCHOR_BOXES = 15;
-
 // The spatial reduction depends on the input size of the pre-trained model
 // (relative to the grid size).
 // TODO: When we support alternative base models, we will have to generalize.
@@ -60,6 +62,19 @@ constexpr int SPATIAL_REDUCTION = 32;
 constexpr float MPS_LOSS_MULTIPLIER = 8;
 
 constexpr float BASE_LEARNING_RATE = 0.001f / MPS_LOSS_MULTIPLIER;
+
+// Each bounding box is evaluated relative to a list of pre-defined sizes.
+const std::vector<std::pair<float, float>>& anchor_boxes() {
+  static const std::vector<std::pair<float, float>>* const default_boxes =
+      new std::vector<std::pair<float, float>>({
+          {1.f, 2.f}, {1.f, 1.f}, {2.f, 1.f},
+          {2.f, 4.f}, {2.f, 2.f}, {4.f, 2.f},
+          {4.f, 8.f}, {4.f, 4.f}, {8.f, 4.f},
+          {8.f, 16.f}, {8.f, 8.f}, {16.f, 8.f},
+          {16.f, 32.f}, {16.f, 16.f}, {32.f, 16.f},
+      });
+  return *default_boxes;
+};
 
 // These are the fixed values that the Python implementation currently passes
 // into TCMPS.
@@ -175,7 +190,6 @@ void object_detector::train(gl_sframe data,
   // TODO: Make progress printing optional.
   training_table_printer_.reset(new table_printer(
       {{ "Iteration", 12}, {"Loss", 12}, {"Elapsed Time", 12}}));
-  training_table_printer_->print_header();
 
   // Instantiate the training dependencies: data iterator, image augmenter,
   // backend NN module.
@@ -193,88 +207,152 @@ void object_detector::train(gl_sframe data,
   // Finish printing progress.
   training_table_printer_->print_footer();
   training_table_printer_.reset();
+
+  // Sync trained weights to our local storage of the NN weights.
+  float_array_map raw_trained_weights = training_module_->export_weights();
+  float_array_map trained_weights;
+  for (const auto& kv : raw_trained_weights) {
+    // Convert keys from the cnn_module names (e.g. "conv7_weight") to the names
+    // we're exporting to CoreML (e.g. "conv7_fwd_weight").
+    const std::string modifier = "_fwd";
+    std::string key = kv.first;
+    std::string::iterator it = std::find(key.begin(), key.end(), '_');
+    key.insert(it, modifier.begin(), modifier.end());
+    trained_weights[key] = kv.second;
+  }
+  nn_spec_->update_params(trained_weights);
 }
 
-float_array_map object_detector::init_model_params(
+std::unique_ptr<model_spec> object_detector::init_model(
     const std::string& pretrained_mlmodel_path) const {
 
   // All of this presumes that the pre-trained model is the darknet model from
   // our first object detector implementation....
 
   // TODO: Make this more generalizable.
-  // TODO: Extract some of the pieces here into utility code.
-
-  static constexpr size_t BUFFER_SIZE = 32;
-  char name[BUFFER_SIZE];
 
   // Start with parameters from the pre-trained model.
-  float_array_map model_params = load_network_params(pretrained_mlmodel_path);
+  std::unique_ptr<model_spec> nn_spec(new model_spec(pretrained_mlmodel_path));
 
-  // Fill out the parameters for the batch-norm layers.
-  std::array<size_t, 8> batchnorm_sizes =
-      {16, 32, 64, 128, 256, 512, 1024, 1024};
-  for (unsigned i = 0; i < batchnorm_sizes.size(); ++i) {
-    size_t size = batchnorm_sizes[i];
-
-    // The last layer does not come from the pre-trained model and must be
-    // initialized from scratch.
-    if (i == 7) {
-      std::snprintf(name, BUFFER_SIZE, "batchnorm%u_beta", i);
-      model_params[name] =
-          shared_float_array::wrap(std::vector<float>(size, 0.f), {size});
-
-      std::snprintf(name, BUFFER_SIZE, "batchnorm%u_gamma", i);
-      model_params[name] =
-          shared_float_array::wrap(std::vector<float>(size, 1.f), {size});
-    }
-
-    std::snprintf(name, BUFFER_SIZE, "batchnorm%u_running_mean", i);
-    model_params[name] =
-        shared_float_array::wrap(std::vector<float>(size, 0.f), {size});
-
-    std::snprintf(name, BUFFER_SIZE, "batchnorm%u_running_var", i);
-    model_params[name] =
-        shared_float_array::wrap(std::vector<float>(size, 1.f), {size});
+  // Verify that the pre-trained model ends with the expected leakyrelu6 layer.
+  // TODO: Also verify that activation shape here is [1024, 13, 13]?
+  if (!nn_spec->has_layer_output("leakyrelu6_fwd")) {
+    log_and_throw("Expected leakyrelu6_fwd layer in NeuralNetwork parsed from "
+                  + pretrained_mlmodel_path);
   }
 
-  // Initialize conv7 using the Xavier method (with base magnitude 3).
+  // Append conv7, initialized using the Xavier method (with base magnitude 3).
   // The conv7 weights have shape [1024, 1024, 3, 3], so fan in and fan out are
   // both 1024*3*3.
   static constexpr size_t CONV7_FAN_IN = 1024 * 3 * 3;
-  float conv7_magnitude = std::sqrt(3.f / CONV7_FAN_IN);
-  std::vector<float> conv7_weights(1024*1024*3*3);
-  for (float& w : conv7_weights) {
-    w = random::fast_uniform(-conv7_magnitude, conv7_magnitude);
-  }
-  std::snprintf(name, BUFFER_SIZE, "conv%u_weight", 7);
-  model_params[name] = shared_float_array::wrap(std::move(conv7_weights),
-                                                { 1024, 1024, 3, 3});
+  const float conv7_magnitude = std::sqrt(3.f / CONV7_FAN_IN);
+  auto conv7_init_fn = [conv7_magnitude](float* w, float* w_end) {
+    while (w != w_end) {
+      *w++ = random::fast_uniform(-conv7_magnitude, conv7_magnitude);
+    }
+  };
+  nn_spec->add_convolution(/* name */                "conv7_fwd",
+                           /* input */               "leakyrelu6_fwd",
+                           /* num_output_channels */ 1024,
+                           /* num_kernel_channels */ 1024,
+                           /* kernel_size */         3,
+                           /* weight_init_fn */      conv7_init_fn);
 
-  // Initialize conv8.
+  // Append batchnorm7.
+  nn_spec->add_batchnorm(/* name */                  "batchnorm7_fwd",
+                         /* input */                 "conv7_fwd",
+                         /* num_channels */          1024,
+                         /* epsilon */               0.00001f);
 
+  // Append leakyrelu7.
+  nn_spec->add_leakyrelu(/* name */                  "leakyrelu7_fwd",
+                         /* input */                 "batchnorm7_fwd",
+                         /* alpha */                 0.1f);
+
+  // Append conv8.
   static constexpr float CONV8_MAGNITUDE = 0.00005f;
-  size_t num_classes = training_data_iterator_->class_labels().size();
-  size_t num_predictions = 5 + num_classes;  // Per anchor box
-  size_t c_out = NUM_ANCHOR_BOXES * num_predictions;
-  std::vector<float> conv8_weights(c_out*1024*1*1);
-  for (float& w : conv8_weights) {
-    w = random::fast_uniform(-CONV8_MAGNITUDE, CONV8_MAGNITUDE);
-  }
-  std::snprintf(name, BUFFER_SIZE, "conv%u_weight", 8);
-  model_params[name] = shared_float_array::wrap(std::move(conv8_weights),
-                                                { c_out, 1024, 1, 1});
+  const size_t num_classes = training_data_iterator_->class_labels().size();
+  const size_t num_predictions = 5 + num_classes;  // Per anchor box
+  const size_t conv8_c_out = anchor_boxes().size() * num_predictions;
+  auto conv8_weight_init_fn = [](float* w, float* w_end) {
+    while (w != w_end) {
+      *w++ = random::fast_uniform(-CONV8_MAGNITUDE, CONV8_MAGNITUDE);
+    }
+  };
+  auto conv8_bias_init_fn = [num_predictions](float* w, float* w_end) {
+    while (w < w_end) {
+      // Initialize object confidence low, preventing an unnecessary adjustment
+      // period toward conservative estimates
+      w[4] = -6.f;
 
-  // Initialize object confidence low, preventing an unnecessary adjustment
-  // period toward conservative estimates
-  std::vector<float> conv8_bias(c_out);  // Zero-initialized.
-  for (size_t i = 0; i < NUM_ANCHOR_BOXES; ++i) {
-    conv8_bias[i * num_predictions + 4] = -6.f;
-  }
-  std::snprintf(name, BUFFER_SIZE, "conv%u_bias", 8);
-  model_params[name] = shared_float_array::wrap(std::move(conv8_bias),
-                                                { c_out });
+      // Iterate through each anchor box.
+      w += num_predictions;
+    }
+  };
+  nn_spec->add_convolution(/* name */                "conv8_fwd",
+                           /* input */               "leakyrelu7_fwd",
+                           /* num_output_channels */ conv8_c_out,
+                           /* num_kernel_channels */ 1024,
+                           /* kernel_size */         1,
+                           /* weight_init_fn */      conv8_weight_init_fn,
+                           /* bias_init_fn */        conv8_bias_init_fn);
 
-  return model_params;
+  return nn_spec;
+}
+
+std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
+    std::string filename) {
+
+  // Initialize the result with the learned layers from the cnn_module.
+  model_spec yolo_nn_spec(nn_spec_->get_coreml_spec());
+
+  // Add the layers that convert to intelligible predictions.
+  add_yolo(&yolo_nn_spec, "coordinates", "confidence", "conv8_fwd",
+           anchor_boxes(),
+           variant_get_value<flex_int>(get_value_from_state("num_classes")),
+           GRID_SIZE, GRID_SIZE);
+
+  // TODO: Support non-maximal suppression.
+
+  // Compute the string representation of the list of class labels.
+  flex_string class_labels_str;
+  flex_list class_labels = read_state<flex_list>("classes");
+  if (!class_labels.empty()) {
+    class_labels_str = class_labels.front().get<flex_string>();
+  }
+  for (size_t i = 1; i < class_labels.size(); ++i) {
+    class_labels_str += "," + class_labels[i].get<flex_string>();
+  }
+
+  // Generate "user-defined" metadata.
+  flex_dict user_defined_metadata = {
+    {"model", read_state<flex_string>("model")},
+    {"max_iterations", read_state<flex_int>("max_iterations")},
+    {"training_iterations", read_state<flex_int>("training_iterations")},
+    {"include_non_maximum_suppression", "False"},
+    // TODO: {"confidence_threshold", ... },
+    // TODO: {"iou_threshold", ...},
+    {"feature", read_state<flex_string>("feature")},
+    {"annotations", read_state<flex_string>("annotations")},
+    {"classes", class_labels_str},
+  };
+
+  // TODO: Should we also be adding the non-user-defined keys, such as
+  // "version" and "shortDescription", or is that up to the frontend?
+
+  std::shared_ptr<MLModelWrapper> model_wrapper =
+      export_object_detector_model(yolo_nn_spec,
+                                   GRID_SIZE * SPATIAL_REDUCTION,
+                                   GRID_SIZE * SPATIAL_REDUCTION,
+                                   class_labels.size(),
+                                   GRID_SIZE*GRID_SIZE * anchor_boxes().size(),
+                                   std::move(user_defined_metadata));
+
+  if (!filename.empty()) {
+    model_wrapper->save(filename);
+  }
+
+  return model_wrapper;
 }
 
 std::unique_ptr<data_iterator> object_detector::create_iterator(
@@ -319,16 +397,35 @@ void object_detector::init_train(gl_sframe data,
   aug_opts.output_height = GRID_SIZE * SPATIAL_REDUCTION;
   training_data_augmenter_ = create_augmenter(aug_opts);
 
-  // Load the pre-trained model from the provided path.
+  // Extract 'mlmodel_path' from the options, to avoid storing it as a model
+  // field.
   auto mlmodel_path_iter = opts.find("mlmodel_path");
   if (mlmodel_path_iter == opts.end()) {
     log_and_throw("Expected option \"mlmodel_path\" not found.");
   }
   const std::string mlmodel_path = mlmodel_path_iter->second;
-  float_array_map model_params = init_model_params(mlmodel_path);
-
-  // Remove 'mlmodel_path' to avoid storing it as a model field.
   opts.erase(mlmodel_path_iter);
+
+  // Load the pre-trained model from the provided path.
+  nn_spec_ = init_model(mlmodel_path);
+  float_array_map raw_model_params = nn_spec_->export_params_view();
+
+  // Strip the substring "_fwd" from any parameter names, for compatibility with
+  // the training backend. (We preserve the substring in nn_spec_ for inclusion
+  // in the final exported model.)
+  // TODO: Someday, this will all be an implementation detail of each
+  // cnn_module implementation, once they actually take model_spec values as
+  // inputs. Or maybe we should just not use "_fwd" in the exported model?
+  float_array_map model_params;
+  for (const float_array_map::value_type& kv : raw_model_params) {
+    const std::string modifier = "_fwd";
+    std::string name = kv.first;
+    size_t pos = name.find(modifier);
+    if (pos != std::string::npos) {
+      name.erase(pos, modifier.size());
+    }
+    model_params[name] = kv.second;
+  }
 
   // Validate options, and infer values for unspecified options. Note that this
   // depends on training data statistics in the general case.
@@ -358,7 +455,7 @@ void object_detector::init_train(gl_sframe data,
   // Instantiate the NN backend.
   int num_outputs_per_anchor =  // 4 bbox coords + 1 conf + one-hot class labels
       5 + static_cast<int>(training_data_iterator_->class_labels().size());
-  int num_output_channels = num_outputs_per_anchor * NUM_ANCHOR_BOXES;
+  int num_output_channels = num_outputs_per_anchor * anchor_boxes().size();
   training_module_ = create_cnn_module(
       /* n */     options.value("batch_size"),
       /* c_in */  NUM_INPUT_CHANNELS,
@@ -369,6 +466,11 @@ void object_detector::init_train(gl_sframe data,
       /* w_out */ GRID_SIZE,
       get_training_config(),
       std::move(model_params));
+
+  // Print the header last, after any logging triggered by initialization above.
+  if (training_table_printer_) {
+    training_table_printer_->print_header();
+  }
 }
 
 void object_detector::perform_training_iteration() {
@@ -435,7 +537,7 @@ shared_float_array object_detector::prepare_label_batch(
 
   // Allocate a float buffer of sufficient size.
   size_t num_classes = training_data_iterator_->class_labels().size();
-  size_t num_channels = NUM_ANCHOR_BOXES * (5 + num_classes);  // C
+  size_t num_channels = anchor_boxes().size() * (5 + num_classes);  // C
   size_t batch_stride = GRID_SIZE * GRID_SIZE * num_channels;  // H * W * C
   std::vector<float> result(annotations_batch.size() * batch_stride);  // NHWC
 
@@ -444,7 +546,7 @@ shared_float_array object_detector::prepare_label_batch(
   for (const std::vector<image_annotation>& annotations : annotations_batch) {
 
     data_iterator::convert_annotations_to_yolo(
-        annotations, GRID_SIZE, GRID_SIZE, NUM_ANCHOR_BOXES, num_classes,
+        annotations, GRID_SIZE, GRID_SIZE, anchor_boxes().size(), num_classes,
         result_out);
 
     result_out += batch_stride;

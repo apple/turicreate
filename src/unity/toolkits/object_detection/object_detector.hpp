@@ -14,8 +14,10 @@
 #include <table_printer/table_printer.hpp>
 #include <unity/lib/extensions/ml_model.hpp>
 #include <unity/lib/gl_sframe.hpp>
+#include <unity/toolkits/coreml_export/mlmodel_wrapper.hpp>
 #include <unity/toolkits/neural_net/cnn_module.hpp>
 #include <unity/toolkits/neural_net/image_augmentation.hpp>
+#include <unity/toolkits/neural_net/model_spec.hpp>
 #include <unity/toolkits/object_detection/od_data_iterator.hpp>
 
 namespace turi {
@@ -37,6 +39,8 @@ class EXPORT object_detector: public ml_model_base {
   void train(gl_sframe data, std::string annotations_column_name,
              std::string image_column_name,
              std::map<std::string, flexible_type> options);
+  std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
+      std::string filename);
 
   // Register with Unity server
 
@@ -65,18 +69,15 @@ class EXPORT object_detector: public ml_model_base {
   );
   // TODO: Addition training options: batch_size, max_iterations, etc.
 
-  // TODO: Remainder of interface: predict, export_to_coreml, etc.
+  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::export_to_coreml, "filename");
+
+  // TODO: Remainder of interface: predict, etc.
 
   END_CLASS_MEMBER_REGISTRATION
 
  protected:
 
   // Override points allowing subclasses to inject dependencies
-
-  // Returns the weights to pass to the cnn_module factory method, given the
-  // path to a mlmodel file containing the pretrained weights.
-  virtual neural_net::float_array_map init_model_params(
-      const std::string& pretrained_mlmodel_path) const;
 
   // Factory for data_iterator
   virtual std::unique_ptr<data_iterator> create_iterator(
@@ -86,6 +87,11 @@ class EXPORT object_detector: public ml_model_base {
   // Factory for image_augmenter
   virtual std::unique_ptr<neural_net::image_augmenter> create_augmenter(
       const neural_net::image_augmenter::options& opts) const;
+
+  // Returns the initial neural network to train (represented by its CoreML
+  // spec), given the path to a mlmodel file containing the pretrained weights.
+  virtual std::unique_ptr<neural_net::model_spec> init_model(
+      const std::string& pretrained_mlmodel_path) const;
 
   // Factory for cnn_module
   virtual std::unique_ptr<neural_net::cnn_module> create_cnn_module(
@@ -102,6 +108,13 @@ class EXPORT object_detector: public ml_model_base {
                   std::map<std::string, flexible_type> options);
   void perform_training_iteration();
 
+  // Utility code
+
+  template <typename T>
+  T read_state(const std::string& key) const {
+    return variant_get_value<T>(get_state().at(key));
+  }
+
  private:
   neural_net::shared_float_array prepare_label_batch(
       std::vector<std::vector<neural_net::image_annotation>> annotations_batch)
@@ -112,10 +125,16 @@ class EXPORT object_detector: public ml_model_base {
   // Waits until the number of pending patches is at most `max_pending`.
   void wait_for_training_batches(size_t max_pending = 0);
 
+  // Primary representation for the trained model.
+  std::unique_ptr<neural_net::model_spec> nn_spec_;
+
+  // Primary dependencies for training. These should be nonnull while training
+  // is in progress.
   std::unique_ptr<data_iterator> training_data_iterator_;
   std::unique_ptr<neural_net::image_augmenter> training_data_augmenter_;
   std::unique_ptr<neural_net::cnn_module> training_module_;
 
+  // Nonnull while training is in progress, if progress printing is enabled.
   std::unique_ptr<table_printer> training_table_printer_;
 
   // Map from iteration index to the loss future.

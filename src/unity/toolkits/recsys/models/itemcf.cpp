@@ -27,6 +27,7 @@
 #include <unity/toolkits/sparse_similarity/sparse_similarity_lookup.hpp>
 #include <unity/toolkits/sparse_similarity/similarities.hpp>
 #include <table_printer/table_printer.hpp>
+#include <unity/toolkits/coreml_export/mlmodel_include.hpp>
 
 namespace turi { namespace recsys {
 

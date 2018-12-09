@@ -23,7 +23,7 @@ struct test_table_printer  {
   void test_table() {
     size_t num_columns = 4;
 
-    sframe sf = make_random_sframe(100, "cnsb");
+    sframe sf = make_random_sframe(100, "znsb");
 
     std::vector<std::vector<flexible_type> > values = testing_extract_sframe_data(sf);
 

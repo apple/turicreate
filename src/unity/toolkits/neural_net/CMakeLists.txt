@@ -48,9 +48,9 @@ endif()
 make_library(unity_neural_net
   SOURCES
     cnn_module.cpp
-    coreml_import.cpp
-    image_augmentation.cpp
     float_array.cpp
+    image_augmentation.cpp
+    model_spec.cpp
   REQUIRES
     image_type
     logger

@@ -1,6 +1,6 @@
 project(unity_test_toolkits)
 
-make_boost_test(test_coreml_import.cxx
+make_boost_test(test_model_spec.cxx
   REQUIRES
     unity_neural_net
   COMPILE_FLAGS_EXTRA_GCC
