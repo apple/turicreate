@@ -344,20 +344,14 @@ void table_printer::os_log_value(size_t column_index, const flexible_type& value
       _os_log_value_impl("event: %lu, column: %lu, value: %lld", column_index, value.get<flex_int>());
       break;
     case flex_type_enum::DATETIME:
-    {
-      int64_t timestamp = value.get<flex_date_time>().posix_timestamp();
-      _os_log_value_impl("event: %lu, column: %lu, value: %{time_t}lld", column_index, timestamp);
+      _os_log_value_impl("event: %lu, column: %lu, value: %{time_t}lld", column_index, value.get<flex_date_time>().posix_timestamp());
       break;
-    }
     case flex_type_enum::FLOAT:
       _os_log_value_impl("event: %lu, column: %lu, value: %f", column_index, value.get<flex_float>());
       break;
     case flex_type_enum::STRING:
-    {
-      std::string str_value = value.get<flex_string>();
-      _os_log_value_impl("event: %lu, column: %lu, value: %{public}s", column_index, str_value.c_str());
+      _os_log_value_impl("event: %lu, column: %lu, value: %{public}s", column_index, value.get<flex_string>().c_str());
       break;
-    }
     case flex_type_enum::VECTOR:
     case flex_type_enum::ND_VECTOR:
     case flex_type_enum::LIST:
