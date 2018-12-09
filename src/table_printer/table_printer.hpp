@@ -228,7 +228,8 @@ class table_printer {
    */
   void set_output_stream(std::ostream& out_stream) {
     alt_output_stream = &out_stream;
-  }  
+  }
+
   
   /** Prints the header.
    *
@@ -290,8 +291,10 @@ class table_printer {
 
     ss << '|';
 
-    for (size_t i = 0; i < row_string.size(); ++i)
+    for (size_t i = 0; i < row_string.size(); ++i) {
+      os_log_value(i, row_string[i]);
       _get_table_printer(row_string[i]).print(ss, format[i].second);
+    }
 
     _p(ss);
   }
@@ -426,6 +429,23 @@ class table_printer {
   sframe get_tracked_table();
 
 private:
+  
+  /**
+   * Methods to log specific value types
+   */
+  static void os_log_value(size_t column_index, unsigned long long value);
+  static void os_log_value(size_t column_index, unsigned long value);
+  static void os_log_value(size_t column_index, unsigned int value);
+  static void os_log_value(size_t column_index, long long value);
+  static void os_log_value(size_t column_index, long value);
+  static void os_log_value(size_t column_index, int value);
+  static void os_log_value(size_t column_index, double value);
+  static void os_log_value(size_t column_index, float value);
+  void os_log_value(size_t column_index, const progress_time& value) const;
+  static void os_log_value(size_t column_index, const char* value);
+  static void os_log_value(size_t column_index, bool value);
+  static void os_log_value(size_t column_index, const flexible_type& value);
+
 
   /** Returns the table_printer::style_type for a given value
    */
@@ -463,6 +483,7 @@ private:
   GL_HOT_INLINE_FLATTEN void _add_values_in_row(std::ostringstream& ss, size_t column_index,
                                                 const T& t, const Args&... columns) const {
 
+    os_log_value(column_index, t);
     _get_table_printer(t).print(ss, format[column_index].second);
     _add_values_in_row(ss, column_index + 1, columns...);
   }
@@ -471,6 +492,7 @@ private:
    */
   template <typename T, typename... Args>
   GL_HOT_INLINE_FLATTEN void _add_values_in_row(std::ostringstream& ss, size_t column_index, const T& t) const {
+    os_log_value(column_index, t);
     _get_table_printer(t).print(ss, format[column_index].second);
   }
 
