@@ -20,6 +20,7 @@ subdirs(ml_model
         image
         neural_net
         object_detection
+        prototype
 )
 
 
@@ -39,4 +40,5 @@ make_empty_library(unity_toolkits
     unity_image_export
     unity_activity_classification
     unity_object_detection
+    unity_prototype
     )

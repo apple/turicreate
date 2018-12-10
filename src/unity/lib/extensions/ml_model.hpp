@@ -77,7 +77,7 @@ class EXPORT ml_model_base: public model_base {
    *
    * \param[in] options Options to set
    */
-  virtual void init_options(const std::map<std::string,flexible_type>& _options) = 0;
+  virtual void init_options(const std::map<std::string,flexible_type>& _options) {};
 
 
   /**
@@ -185,6 +185,8 @@ class EXPORT ml_model_base: public model_base {
 
   // Code to perform the registration for the rest of the tools. 
   BEGIN_BASE_CLASS_MEMBER_REGISTRATION()
+
+  IMPORT_BASE_CLASS_REGISTRATION(model_base);
 
   REGISTER_CLASS_MEMBER_FUNCTION(ml_model_base::list_fields);
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("get_value",
