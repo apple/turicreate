@@ -41,10 +41,10 @@ class transformation_collection : public std::vector<std::shared_ptr<transformat
 };
 
 template<typename InputIterable,
-         typename Output,
-         size_t BATCH_SIZE>
+         typename Output>
 class transformation : public transformation_base {
   protected:
+    size_t m_batch_size;
     InputIterable m_source;
     std::shared_ptr<Output> m_transformer;
     size_t m_currentIdx = 0;
@@ -74,8 +74,9 @@ class transformation : public transformation_base {
     virtual void merge_results(std::vector<Output>& transformers) = 0;
 
   public:
-    virtual void init(const InputIterable& source) {
+    virtual void init(const InputIterable& source, size_t batch_size) {
       check_init("Transformer is already initialized.", false);
+      m_batch_size = batch_size;
       m_source = source;
       m_transformer = std::make_shared<Output>();
       m_currentIdx = 0;
@@ -104,7 +105,7 @@ class transformation : public transformation_base {
 
       const size_t num_threads_reported = thread_pool::get_instance().size();
       const size_t start = m_currentIdx;
-      const size_t input_size = std::min(BATCH_SIZE, m_source.size() - m_currentIdx);
+      const size_t input_size = std::min(m_batch_size, m_source.size() - m_currentIdx);
       const size_t end = start + input_size;
       auto transformers = this->split_input(num_threads_reported);
       const auto& source = this->m_source;
@@ -138,7 +139,7 @@ class transformation : public transformation_base {
     }
 
     virtual size_t get_batch_size() const override {
-      return BATCH_SIZE;
+      return m_batch_size;
     }
 };
 

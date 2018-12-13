@@ -151,7 +151,7 @@ namespace turi {
         std::shared_ptr<const gl_sarray> self = std::make_shared<const gl_sarray>(sa);
 
         item_frequency item_freq;
-        item_freq.init(*self);
+        item_freq.init(*self, 5000000 /* batch_size */);
 
         auto transformer = std::dynamic_pointer_cast<item_frequency_result>(item_freq.get());
         auto result = transformer->emit().get<flex_dict>();

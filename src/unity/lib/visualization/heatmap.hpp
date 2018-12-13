@@ -57,7 +57,7 @@ namespace visualization {
    */
   class heatmap : public groupby<heatmap_result> {
     public:
-      virtual void init(const gl_sframe& source) override;
+      virtual void init(const gl_sframe& source, size_t batch_size) override;
       virtual std::vector<heatmap_result> split_input(size_t num_threads) override;
   };
 

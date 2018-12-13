@@ -54,7 +54,7 @@ std::shared_ptr<Plot> turi::visualization::plot_heatmap(
   temp_sf[x_name] = x;
   temp_sf[y_name] = y;
 
-  hm.init(temp_sf);
+  hm.init(temp_sf, 5000000 /* batch_size */);
 
   std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<heatmap>(hm);
   return std::make_shared<Plot>(heatmap_specification, shared_unity_transformer, size_array);
@@ -70,9 +70,9 @@ void heatmap_result::init(double xMin, double xMax, double yMin, double yMax) {
   extrema.y.update(yMax);
 }
 
-void heatmap::init(const gl_sframe& source) {
+void heatmap::init(const gl_sframe& source, size_t batch_size) {
   // initialize parent class
-  groupby<heatmap_result>::init(source);
+  groupby<heatmap_result>::init(source, batch_size);
 
   // initialize heatmap_result
   const auto& head = source.head(10000); // infer min/max from first 10k rows
