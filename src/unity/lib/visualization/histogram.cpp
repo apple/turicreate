@@ -213,8 +213,8 @@ void histogram_result::add_element_simple(const flexible_type& value) {
   this->bins[bin] += 1;
 }
 
-void histogram::init(const gl_sarray& source) {
-  histogram_parent::init(source);
+void histogram::init(const gl_sarray& source, size_t batch_size) {
+  histogram_parent::init(source, batch_size);
   flex_type_enum dtype = m_source.dtype();
   if (dtype != flex_type_enum::INTEGER &&
       dtype != flex_type_enum::FLOAT) {
@@ -354,7 +354,7 @@ std::shared_ptr<Plot> plot_histogram(
     std::string spec = histogram_spec(title, xlabel, ylabel, self->dtype());
     double size_array = static_cast<double>(self->size());
 
-    hist.init(*self);
+    hist.init(*self, 5000000 /* batch_size */);
 
     std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<histogram>(hist);
     return std::make_shared<Plot>(spec, shared_unity_transformer, size_array);

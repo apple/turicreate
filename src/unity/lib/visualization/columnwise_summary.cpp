@@ -40,20 +40,9 @@ namespace turi {
         switch (sarr->dtype()) {
           case flex_type_enum::INTEGER:
           case flex_type_enum::FLOAT:
-          {
-            i++;
-            std::shared_ptr<histogram> hist = std::make_shared<histogram>();
-            hist->init(sarr);
-            column_transformers.push_back(hist);
-            column_names.push_back(col);
-            break;
-          }
           case flex_type_enum::STRING:
           {
             i++;
-            std::shared_ptr<item_frequency> item_freq = std::make_shared<item_frequency>();
-            item_freq->init(sarr);
-            column_transformers.push_back(item_freq);
             column_names.push_back(col);
             break;
           }
@@ -69,6 +58,31 @@ namespace turi {
                                  << "Further warnings of unsupported type will be suppressed."
                                  << std::endl;
             }
+            break;
+        }
+      }
+
+      // now that we've collected columns, pick a batch size and add transformers
+      size_t batch_size = 5000000 / column_names.size();
+      for (const std::string& col : column_names) {
+        std::shared_ptr<unity_sarray_base> sarr = sf->select_column(col);
+        switch (sarr->dtype()) {
+          case flex_type_enum::INTEGER:
+          case flex_type_enum::FLOAT:
+          {
+            std::shared_ptr<histogram> hist = std::make_shared<histogram>();
+            hist->init(sarr, batch_size);
+            column_transformers.push_back(hist);
+            break;
+          }
+          case flex_type_enum::STRING:
+          {
+            std::shared_ptr<item_frequency> item_freq = std::make_shared<item_frequency>();
+            item_freq->init(sarr, batch_size);
+            column_transformers.push_back(item_freq);
+            break;
+          }
+          default:
             break;
         }
       }
