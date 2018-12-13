@@ -17,7 +17,7 @@
 #undef MAX
 
 static os_log_t& os_log_object() {
-  static os_log_t log_object = os_log_create("turi", "table_printer");
+  static os_log_t log_object = os_log_create("com.apple.turi", "table_printer");
   return log_object;
 }
 
