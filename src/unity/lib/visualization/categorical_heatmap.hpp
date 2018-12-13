@@ -23,7 +23,7 @@ class categorical_heatmap_result: public transformation_output,
 // expects a gl_sframe of:
 // "x": str,
 // "y": float
-typedef transformation<gl_sframe, categorical_heatmap_result, 5000000> categorical_heatmap_parent;
+typedef transformation<gl_sframe, categorical_heatmap_result> categorical_heatmap_parent;
 
 class categorical_heatmap : public categorical_heatmap_parent {
   public:
