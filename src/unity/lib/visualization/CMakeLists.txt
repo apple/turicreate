@@ -9,13 +9,13 @@ project(unity)
 make_library(
   visualization
   SOURCES
+    batch_size.cpp
     boxes_and_whiskers.cpp
     categorical_heatmap.cpp
     escape.cpp
     groupby.cpp
     heatmap.cpp
     histogram.cpp
-    hyperloglog.cpp
     io_buffer.cpp
     item_frequency.cpp
     plot.cpp

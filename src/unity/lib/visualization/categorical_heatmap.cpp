@@ -5,6 +5,7 @@
  */
 #include "categorical_heatmap.hpp"
 
+#include "batch_size.hpp"
 #include "process_wrapper.hpp"
 #include "thread.hpp"
 #include "vega_data.hpp"
@@ -89,7 +90,7 @@ std::shared_ptr<Plot> turi::visualization::plot_categorical_heatmap(
     temp_sf["x"] = x;
     temp_sf["y"] = y;
 
-    hm.init(temp_sf, 5000000 /* batch_size */);
+    hm.init(temp_sf, batch_size(x, y));
 
     std::shared_ptr<transformation_base> shared_unity_transformer = std::make_shared<categorical_heatmap>(hm);
     return std::make_shared<Plot>(categorical_heatmap_specification, shared_unity_transformer, size_array);
