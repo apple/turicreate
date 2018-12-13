@@ -10,6 +10,9 @@ if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
     find_library(ACCELERATE NAMES Accelerate)
     message("Accelerate found at ${ACCELERATE}.")
 
+    find_library(CORE_IMAGE NAMES CoreImage)
+    message("CoreImage found at ${CORE_IMAGE}.")
+
     find_library(METAL NAMES Metal)
     message("Metal found at ${METAL}.")
 
@@ -18,7 +21,9 @@ if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
 
     make_library(tcmps
         SOURCES
-        mps_cnn_module_factory.mm
+        TCMPSImageAugmenting.m
+        mps_image_augmentation.mm
+        mps_factory.mm
         mps_graph_trainer.mm
         mps_graph_networks.mm
         mps_updater.mm
@@ -33,7 +38,9 @@ if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
         mps_weight.mm
         mps_device_manager.m
       REQUIRES
+        unity_core
         ${ACCELERATE}
+        ${CORE_IMAGE}
         ${METAL}
         ${METAL_PERFORMANCE_SHADERS}
     )

@@ -4,12 +4,19 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include "mps_cnn_module_factory.h"
+#include <unity/toolkits/neural_net/mps_factory.hpp>
 
-#include "mps_graph_cnnmodule.h"
+#include <unity/toolkits/neural_net/mps_graph_cnnmodule.h>
+#include <unity/toolkits/neural_net/mps_image_augmentation.hpp>
 
 namespace turi {
 namespace neural_net {
+
+std::unique_ptr<image_augmenter> create_mps_image_augmenter(
+    const image_augmenter::options& opts) {
+
+  return std::unique_ptr<image_augmenter>(new mps_image_augmenter(opts));
+}
 
 std::unique_ptr<cnn_module> create_mps_object_detector(
     int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
