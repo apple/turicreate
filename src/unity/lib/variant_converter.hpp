@@ -538,9 +538,9 @@ struct variant_converter<std::function<S(Args...)>,
       typename boost::mpl::range_c<int, 0, sizeof...(Args)>::type tuple_range;
       variant_converter_impl::fill_variant<std::tuple<Args...>> filler;
       filler.input = &val;
-      filler.output.resize(sizeof...(Args));
+      filler.output->resize(sizeof...(Args));
       boost::fusion::for_each(tuple_range, filler);
-      return variant_converter<S>().get(native_execute_function(filler.output));
+      return variant_converter<S>().get(native_execute_function(*(filler.output)));
     };
   }
   variant_type set(const std::function<S(Args...)>& val) {
