@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
-#include "MLModelSpecification.hpp"
+#include "ValidatorUtils-inl.hpp"
 #include "QuantizationValidationUtils.hpp"
 
 namespace CoreML {

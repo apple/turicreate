@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 
-#include "MLModelSpecification.hpp"
+#include "Format.hpp"
 
 namespace CoreML {
     inline uint64_t bitsToBytesCeil(uint64_t nBits){

@@ -1819,7 +1819,7 @@ namespace CoreML {
         // This isn't true for classifiers and regressors -- need to template specialize it to make these work
         if (!std::all_of(interface.output().begin(),
                          interface.output().end(),
-                         [](const auto& output) {
+                         [](const Specification::FeatureDescription& output) {
                              return output.type().Type_case() == Specification::FeatureType::kMultiArrayType ||
                                     output.type().Type_case() == Specification::FeatureType::kImageType;
                          })) {

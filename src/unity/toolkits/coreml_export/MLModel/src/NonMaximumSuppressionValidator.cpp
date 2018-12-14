@@ -253,7 +253,7 @@ namespace CoreML {
         }
         
         // For now, require consistent usage of new/old
-        if (confUseOld && !coordsUseOld || confUseNew && !coordsUseNew) {
+        if ((confUseOld && !coordsUseOld) || (confUseNew && !coordsUseNew)) {
             return Result(ResultType::INVALID_MODEL_PARAMETERS,
                           "Confidence and coordinates cannot use a mix of shape (deprecated) and allowedShapes.");
         }
