@@ -1,0 +1,458 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Concepts</title>
+<link rel="stylesheet" href="../../../doc/src/boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../index.html" title="The Boost C++ Libraries BoostBook Documentation Subset">
+<link rel="up" href="../yap.html" title="Chapter&#160;47.&#160;Boost.YAP">
+<link rel="prev" href="manual.html" title="Manual">
+<link rel="next" href="compiler_support.html" title="Compiler Support">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="../../../boost.png"></td>
+<td align="center"><a href="../../../index.html">Home</a></td>
+<td align="center"><a href="../../../libs/libraries.htm">Libraries</a></td>
+<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
+<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
+<td align="center"><a href="../../../more/index.htm">More</a></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="manual.html"><img src="../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../yap.html"><img src="../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="compiler_support.html"><img src="../../../doc/src/images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="boost_yap.concepts"></a><a class="link" href="concepts.html" title="Concepts">Concepts</a>
+</h2></div></div></div>
+<h4>
+<a name="boost_yap.concepts.h0"></a>
+      <span class="phrase"><a name="boost_yap.concepts.expression"></a></span><a class="link" href="concepts.html#boost_yap.concepts.expression">Expression</a>
+    </h4>
+<p>
+      <a class="link" href="concepts.html#boost_yap.concepts.expression">Expression</a> is the central
+      concept in Boost.YAP. It must contain at least an <code class="computeroutput"><a class="link" href="../boost/yap/expr_kind.html" title="Type expr_kind">expr_kind</a></code> and a <code class="computeroutput"><span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">tuple</span><span class="special">&lt;&gt;</span></code>
+      of values.
+    </p>
+<p>
+      Here is a summary of the requirements on <a class="link" href="concepts.html#boost_yap.concepts.expression">Expression</a>.
+      In the tables below, <code class="computeroutput"><span class="identifier">E</span></code> is a
+      type that models <a class="link" href="concepts.html#boost_yap.concepts.expression">Expression</a>;
+      <code class="computeroutput"><span class="identifier">e</span></code> is an object of type <code class="computeroutput"><span class="identifier">E</span></code>; <code class="computeroutput"><span class="identifier">Tuple</span></code>
+      is an instantiation of <code class="computeroutput"><span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">tuple</span><span class="special">&lt;&gt;</span></code>;
+      and <code class="computeroutput"><span class="identifier">t</span></code> is an object of type
+      <code class="computeroutput"><span class="identifier">Tuple</span></code>.
+    </p>
+<div class="table">
+<a name="boost_yap.concepts.t0"></a><p class="title"><b>Table&#160;47.6.&#160;Expression Requirements</b></p>
+<div class="table-contents"><table class="table" summary="Expression Requirements">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>
+              <p>
+                Expression
+              </p>
+            </th>
+<th>
+              <p>
+                Type
+              </p>
+            </th>
+<th>
+              <p>
+                Description
+              </p>
+            </th>
+<th>
+              <p>
+                Notes
+              </p>
+            </th>
+</tr></thead>
+<tbody>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">E</span><span class="special">::</span><span class="identifier">kind</span></code>
+              </p>
+            </td>
+<td>
+              <p>
+                <code class="computeroutput"><a class="link" href="../boost/yap/expr_kind.html" title="Type expr_kind">expr_kind</a></code>
+              </p>
+            </td>
+<td>
+              <p>
+                The kind of expression <code class="computeroutput"><span class="identifier">E</span></code>
+                is.
+              </p>
+            </td>
+<td>
+              <p>
+                Must be a compile-time constant.
+              </p>
+            </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">e</span><span class="special">.</span><span class="identifier">elements</span></code>
+              </p>
+            </td>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">Tuple</span></code>
+              </p>
+            </td>
+<td>
+              <p>
+                The child expressions of <code class="computeroutput"><span class="identifier">e</span></code>.
+              </p>
+            </td>
+<td>
+              <p>
+                The types of the elements must be appropriate to the kind of the
+                expression.
+              </p>
+            </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">E</span> <span class="identifier">e</span><span class="special">{</span><span class="identifier">t</span><span class="special">}</span></code>
+              </p>
+            </td>
+<td>
+            </td>
+<td>
+              <p>
+                Construction/initialization of <code class="computeroutput"><span class="identifier">e</span></code>.
+              </p>
+            </td>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">t</span></code> must be stored
+                in <code class="computeroutput"><span class="identifier">e</span><span class="special">.</span><span class="identifier">elements</span></code>.
+              </p>
+            </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<br class="table-break"><p>
+      As stated above, the <code class="computeroutput"><span class="identifier">elements</span></code>
+      data member must match the kind of the expression:
+    </p>
+<div class="table">
+<a name="boost_yap.concepts.t1"></a><p class="title"><b>Table&#160;47.7.&#160;Expression Requirements</b></p>
+<div class="table-contents"><table class="table" summary="Expression Requirements">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>
+              <p>
+                <code class="computeroutput"><span class="identifier">E</span><span class="special">::</span><span class="identifier">kind</span></code>
+              </p>
+            </th>
+<th>
+              <p>
+                <code class="computeroutput"><span class="identifier">hana</span><span class="special">::</span><span class="identifier">size</span><span class="special">(</span><span class="identifier">e</span><span class="special">.</span><span class="identifier">elements</span><span class="special">)</span></code>
+              </p>
+            </th>
+<th>
+              <p>
+                Possible Tuple Element Types
+              </p>
+            </th>
+<th>
+              <p>
+                Notes
+              </p>
+            </th>
+</tr></thead>
+<tbody>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">expr_ref</span></code>
+              </p>
+            </td>
+<td>
+              <p>
+                1
+              </p>
+            </td>
+<td>
+              <p>
+                Any non-<a class="link" href="../boost/yap/expr_kind.html#boost.yap.expr_kind.expr_ref"><code class="computeroutput"><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">expr_ref</span></code></a> <a class="link" href="concepts.html#boost_yap.concepts.expression">Expression</a>.
+              </p>
+            </td>
+<td>
+            </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">terminal</span></code>
+              </p>
+            </td>
+<td>
+              <p>
+                1
+              </p>
+            </td>
+<td>
+              <p>
+                Any non-<a class="link" href="concepts.html#boost_yap.concepts.expression">Expression</a>.
+              </p>
+            </td>
+<td>
+              <p>
+                A terminal with a <code class="computeroutput"><a class="link" href="../boost/yap/placeholder.html" title="Struct template placeholder">placeholder&lt;&gt;</a></code>
+                value will be treated as a placeholder.
+              </p>
+            </td>
+</tr>
+<tr>
+<td>
+              <p>
+                Any unary operator
+              </p>
+            </td>
+<td>
+              <p>
+                1
+              </p>
+            </td>
+<td>
+              <p>
+                Any <a class="link" href="concepts.html#boost_yap.concepts.expression">Expression</a>.
+              </p>
+            </td>
+<td>
+            </td>
+</tr>
+<tr>
+<td>
+              <p>
+                Any binary operator
+              </p>
+            </td>
+<td>
+              <p>
+                2
+              </p>
+            </td>
+<td>
+              <p>
+                Any <a class="link" href="concepts.html#boost_yap.concepts.expression">Expression</a>.
+              </p>
+            </td>
+<td>
+            </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">if_else</span></code>
+              </p>
+            </td>
+<td>
+              <p>
+                3
+              </p>
+            </td>
+<td>
+              <p>
+                Any <a class="link" href="concepts.html#boost_yap.concepts.expression">Expression</a>.
+              </p>
+            </td>
+<td>
+            </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">call</span></code>
+              </p>
+            </td>
+<td>
+              <p>
+                Any number &gt;= 1.
+              </p>
+            </td>
+<td>
+              <p>
+                Any <a class="link" href="concepts.html#boost_yap.concepts.expression">Expression</a>.
+              </p>
+            </td>
+<td>
+            </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<br class="table-break"><h4>
+<a name="boost_yap.concepts.h1"></a>
+      <span class="phrase"><a name="boost_yap.concepts.expressiontemplate"></a></span><a class="link" href="concepts.html#boost_yap.concepts.expressiontemplate">ExpressionTemplate</a>
+    </h4>
+<p>
+      <a class="link" href="concepts.html#boost_yap.concepts.expressiontemplate">ExpressionTemplate</a>
+      is any template with two parameters that, when instantiated with an <code class="computeroutput"><a class="link" href="../boost/yap/expr_kind.html" title="Type expr_kind">expr_kind</a></code>
+      and a <code class="computeroutput"><span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">tuple</span><span class="special">&lt;&gt;</span></code>, results in an <a class="link" href="concepts.html#boost_yap.concepts.expression">Expression</a>.
+    </p>
+<h4>
+<a name="boost_yap.concepts.h2"></a>
+      <span class="phrase"><a name="boost_yap.concepts.transform"></a></span><a class="link" href="concepts.html#boost_yap.concepts.transform">Transform</a>
+    </h4>
+<p>
+      <code class="computeroutput"><a class="link" href="../boost/yap/transform.html" title="Function template transform">transform()</a></code> takes a <a class="link" href="concepts.html#boost_yap.concepts.transform">Transform</a>
+      as its second parameter. A <a class="link" href="concepts.html#boost_yap.concepts.transform">Transform</a>
+      is a <a href="http://en.cppreference.com/w/cpp/concept/Callable" target="_top">Callable</a>
+      that takes expressions and returns values of unconstrained type. There are
+      two sorts of overloads <a class="link" href="concepts.html#boost_yap.concepts.transform">Transform</a>
+      may use: <a class="link" href="concepts.html#boost_yap.concepts.expressiontransform">ExpressionTransform</a>
+      and <a class="link" href="concepts.html#boost_yap.concepts.tagtransform">TagTransform</a>.
+    </p>
+<p>
+      A <a class="link" href="concepts.html#boost_yap.concepts.transform">Transform</a> may have any
+      number of overloads, including none.
+    </p>
+<h4>
+<a name="boost_yap.concepts.h3"></a>
+      <span class="phrase"><a name="boost_yap.concepts.expressiontransform"></a></span><a class="link" href="concepts.html#boost_yap.concepts.expressiontransform">ExpressionTransform</a>
+    </h4>
+<p>
+      <a class="link" href="concepts.html#boost_yap.concepts.expressiontransform">ExpressionTransform</a>
+      takes an <a class="link" href="concepts.html#boost_yap.concepts.expression">Expression</a> as
+      its only parameter. Here are some examples.
+    </p>
+<p>
+      This one takes any <a class="link" href="concepts.html#boost_yap.concepts.expression">Expression</a>:
+    </p>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">xform</span>
+<span class="special">{</span>
+    <span class="keyword">template</span> <span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">Expr</span><span class="special">&gt;</span>
+    <span class="keyword">auto</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">Expr</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">expr</span><span class="special">)</span>
+    <span class="special">{</span>
+        <span class="comment">// ...</span>
+    <span class="special">}</span>
+<span class="special">};</span>
+</pre>
+<p>
+      This one takes any type of <a class="link" href="concepts.html#boost_yap.concepts.expression">Expression</a>
+      that satisfies the constraints imposed by its template parameters:
+    </p>
+<pre class="programlisting"><span class="keyword">template</span> <span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">Expr1</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">Expr2</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">Expr3</span><span class="special">&gt;</span>
+<span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <span class="identifier">xform</span> <span class="special">(</span>
+    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expression</span><span class="special">&lt;</span>
+        <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">plus</span><span class="special">,</span>
+        <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">tuple</span><span class="special">&lt;</span>
+            <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expression</span><span class="special">&lt;</span>
+                <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">multiplies</span><span class="special">,</span>
+                <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">tuple</span><span class="special">&lt;</span>
+                    <span class="identifier">Expr1</span><span class="special">,</span>
+                    <span class="identifier">Expr2</span>
+                <span class="special">&gt;</span>
+            <span class="special">&gt;,</span>
+            <span class="identifier">Expr3</span>
+        <span class="special">&gt;</span>
+    <span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">expr</span>
+<span class="special">)</span> <span class="special">{</span>
+    <span class="comment">// ...</span>
+<span class="special">}</span>
+</pre>
+<p>
+      This one takes only a specific type:
+    </p>
+<pre class="programlisting"><span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <span class="identifier">xform</span> <span class="special">(</span>
+    <span class="keyword">decltype</span><span class="special">(</span><span class="identifier">term</span><span class="special">&lt;</span><span class="identifier">number</span><span class="special">&gt;{{</span><span class="number">0.0</span><span class="special">}}</span> <span class="special">*</span> <span class="identifier">number</span><span class="special">{}</span> <span class="special">+</span> <span class="identifier">number</span><span class="special">{})</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">expr</span>
+<span class="special">)</span> <span class="special">{</span>
+    <span class="comment">// ...</span>
+<span class="special">}</span>
+</pre>
+<h4>
+<a name="boost_yap.concepts.h4"></a>
+      <span class="phrase"><a name="boost_yap.concepts.tagtransform"></a></span><a class="link" href="concepts.html#boost_yap.concepts.tagtransform">TagTransform</a>
+    </h4>
+<p>
+      <a class="link" href="concepts.html#boost_yap.concepts.tagtransform">TagTransform</a> takes a
+      tag-type as its first parameter, and the individual elements of an expression
+      as the remaining parameters.
+    </p>
+<p>
+      Tags are named such that the tag for an expression with <code class="computeroutput"><a class="link" href="../boost/yap/expr_kind.html" title="Type expr_kind">expr_kind</a></code> <code class="computeroutput"><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">foo</span></code> is
+      named <code class="computeroutput"><span class="identifier">foo_tag</span></code>. Here are some
+      examples.
+    </p>
+<p>
+      This one takes any terminal that contains a <code class="computeroutput"><span class="identifier">user</span><span class="special">::</span><span class="identifier">number</span></code>
+      (or reference to such a terminal):
+    </p>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">xform</span>
+<span class="special">{</span>
+    <span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">terminal_tag</span><span class="special">,</span> <span class="identifier">user</span><span class="special">::</span><span class="identifier">number</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">n</span><span class="special">)</span>
+    <span class="special">{</span>
+        <span class="comment">// ...</span>
+    <span class="special">}</span>
+<span class="special">};</span>
+</pre>
+<p>
+      This one takes any plus expression that contains a pair of <code class="computeroutput"><span class="identifier">user</span><span class="special">::</span><span class="identifier">number</span></code>
+      terminals (or references to terminals):
+    </p>
+<pre class="programlisting"><span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <span class="identifier">xform</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">plus_tag</span><span class="special">,</span> <span class="identifier">user</span><span class="special">::</span><span class="identifier">number</span> <span class="identifier">lhs</span><span class="special">,</span> <span class="identifier">user</span><span class="special">::</span><span class="identifier">number</span> <span class="identifier">rhs</span><span class="special">)</span>
+<span class="special">{</span>
+    <span class="comment">// ...</span>
+<span class="special">}</span>
+</pre>
+<p>
+      This one takes any negation expression:
+    </p>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">xform</span>
+<span class="special">{</span>
+    <span class="keyword">template</span> <span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">Expr</span><span class="special">&gt;</span>
+    <span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">negate_tag</span><span class="special">,</span> <span class="identifier">Expr</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">expr</span><span class="special">)</span>
+    <span class="special">{</span>
+        <span class="comment">// ...</span>
+    <span class="special">}</span>
+<span class="special">};</span>
+</pre>
+<p>
+      This one takes any call expression with two terminals (or references to terminals)
+      containing values convertible to <code class="computeroutput"><span class="keyword">double</span></code>:
+    </p>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">xform</span>
+<span class="special">{</span>
+    <span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">call_tag</span><span class="special">,</span> <span class="identifier">tag_type</span><span class="special">,</span> <span class="keyword">double</span> <span class="identifier">a</span><span class="special">,</span> <span class="keyword">double</span> <span class="identifier">b</span><span class="special">)</span>
+    <span class="special">{</span>
+        <span class="comment">// ...</span>
+    <span class="special">}</span>
+<span class="special">}</span>
+</pre>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2018 T. Zachary Laine<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="manual.html"><img src="../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../yap.html"><img src="../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="compiler_support.html"><img src="../../../doc/src/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

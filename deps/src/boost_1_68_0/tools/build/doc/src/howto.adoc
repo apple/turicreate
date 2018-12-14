@@ -1,0 +1,21 @@
+Want to learn about Boost.Build features? Start with the
+link:#bbv2.tutorial[tutorial] and continue with the link:#bbv2.overview[overview].
+When you're ready to try Boost.Build in practice, go to the
+link:#bbv2.installation[installation].
+
+Building a project with Boost.Build? See the link:#bbv2.installation[installation]
+and then read the link:#bbv2.overview.invocation[overview].
+
+Setting up Boost.Build on your project? Take a look at the
+link:#bbv2.overview[overview] and link:#bbv2.extender[extender manual].
+
+If there's anything you find unclear in this documentation, report the
+problem directly in the https://github.com/boostorg/build/issues[issue
+tracker]. For more general questions, please post them to our mailing
+list (http://boost.org/more/mailing_lists.htm#jamboost[]).
+
+****
+Copyright 2006, 2014 http://vladimirprus.com[Vladimir Prus]. Distributed
+under the Boost Software License, Version 1.0. (See accompanying file
+`LICENSE_1_0.txt` or copy at http://www.boost.org/LICENSE_1_0.txt)
+****

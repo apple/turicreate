@@ -1,6 +1,6 @@
 --- a/boost/date_time/time_facet.hpp
 +++ b/boost/date_time/time_facet.hpp
-@@ -971,6 +971,8 @@ namespace date_time {
+@@ -972,6 +972,8 @@ namespace date_time {
  
          // time elements
          hour_type hour = 0;
@@ -9,16 +9,7 @@
          min_type min = 0;
          sec_type sec = 0;
          typename time_duration_type::fractional_seconds_type frac(0);
-@@ -1090,7 +1092,7 @@ namespace date_time {
-                 case 'd':
-                   {
-                     try {
--                      t_day = this->m_parser.parse_day_of_month(sitr, stream_end);
-+                      t_day = this->m_parser.parse_var_day_of_month(sitr, stream_end);
-                     }
-                     catch(std::out_of_range&) { // base class for exception bad_day_of_month
-                       match_results mr;
-@@ -1107,13 +1109,77 @@ namespace date_time {
+@@ -1111,13 +1111,77 @@ namespace date_time {
                  // time flags
                  case 'H':
                    {
@@ -98,11 +89,10 @@
                  case 'M':
                    {
                      match_results mr;
-@@ -1231,7 +1297,15 @@ namespace date_time {
-         else {
+@@ -1238,6 +1302,16 @@ namespace date_time {
            d = date_type(t_year, t_month, t_day);
          }
--
+ 
 +        // handle the case where 12:15am really means 0015
 +        // and 12:15pm really means 12:15
 +        // Also 12pm is noon, 12am is midnight
@@ -112,6 +102,7 @@
 +          boost::throw_exception(
 +              std::ios_base::failure("Bad hour value"));
 +        }
++
          time_duration_type td(hour, min, sec, frac);
          t = time_type(d, td);
          return sitr;

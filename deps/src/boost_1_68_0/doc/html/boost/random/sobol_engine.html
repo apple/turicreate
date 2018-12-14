@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Class template sobol_engine</title>
+<link rel="stylesheet" href="../../../../doc/src/boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../../index.html" title="The Boost C++ Libraries BoostBook Documentation Subset">
+<link rel="up" href="../../boost_random/reference.html#header.boost.random.sobol_hpp" title="Header &lt;boost/random/sobol.hpp&gt;">
+<link rel="prev" href="knuth_b.html" title="Type definition knuth_b">
+<link rel="next" href="sobol.html" title="Type definition sobol">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="../../../../boost.png"></td>
+<td align="center"><a href="../../../../index.html">Home</a></td>
+<td align="center"><a href="../../../../libs/libraries.htm">Libraries</a></td>
+<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
+<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
+<td align="center"><a href="../../../../more/index.htm">More</a></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="knuth_b.html"><img src="../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../boost_random/reference.html#header.boost.random.sobol_hpp"><img src="../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="sobol.html"><img src="../../../../doc/src/images/next.png" alt="Next"></a>
+</div>
+<div class="refentry">
+<a name="boost.random.sobol_engine"></a><div class="titlepage"></div>
+<div class="refnamediv">
+<h2><span class="refentrytitle">Class template sobol_engine</span></h2>
+<p>boost::random::sobol_engine</p>
+</div>
+<h2 xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" class="refsynopsisdiv-title">Synopsis</h2>
+<div xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" class="refsynopsisdiv"><pre class="synopsis"><span class="comment">// In header: &lt;<a class="link" href="../../boost_random/reference.html#header.boost.random.sobol_hpp" title="Header &lt;boost/random/sobol.hpp&gt;">boost/random/sobol.hpp</a>&gt;
+
+</span><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> UIntType<span class="special">,</span> <span class="keyword">unsigned</span> w<span class="special">,</span> 
+         <span class="keyword">typename</span> SobolTables <span class="special">=</span> <span class="identifier">default_sobol_table</span><span class="special">&gt;</span> 
+<span class="keyword">class</span> <a class="link" href="sobol_engine.html" title="Class template sobol_engine">sobol_engine</a> <span class="special">{</span>
+<span class="keyword">public</span><span class="special">:</span>
+  <span class="comment">// types</span>
+  <span class="keyword">typedef</span> <span class="identifier">UIntType</span> <a name="boost.random.sobol_engine.result_type"></a><span class="identifier">result_type</span><span class="special">;</span>
+
+  <span class="comment">// <a class="link" href="sobol_engine.html#boost.random.sobol_engineconstruct-copy-destruct">construct/copy/destruct</a></span>
+  <span class="keyword">explicit</span> <a class="link" href="sobol_engine.html#id-1_3_34_5_6_39_1_1_1_5-bb"><span class="identifier">sobol_engine</span></a><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span><span class="special">)</span><span class="special">;</span>
+
+  <span class="comment">// <a class="link" href="sobol_engine.html#id-1_3_34_5_6_39_1_1_1_4-bb">public member functions</a></span>
+  <span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span> <a class="link" href="sobol_engine.html#id-1_3_34_5_6_39_1_1_1_4_1-bb"><span class="identifier">dimension</span></a><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="sobol_engine.html#id-1_3_34_5_6_39_1_1_1_4_2-bb"><span class="identifier">seed</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="sobol_engine.html#id-1_3_34_5_6_39_1_1_1_4_3-bb"><span class="identifier">seed</span></a><span class="special">(</span><span class="identifier">UIntType</span><span class="special">)</span><span class="special">;</span>
+  <span class="identifier">result_type</span> <a class="link" href="sobol_engine.html#id-1_3_34_5_6_39_1_1_1_4_4-bb"><span class="keyword">operator</span><span class="special">(</span><span class="special">)</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">void</span> <a class="link" href="sobol_engine.html#id-1_3_34_5_6_39_1_1_1_4_5-bb"><span class="identifier">discard</span></a><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">uintmax_t</span><span class="special">)</span><span class="special">;</span>
+
+  <span class="comment">// <a class="link" href="sobol_engine.html#id-1_3_34_5_6_39_1_1_1_6-bb">public static functions</a></span>
+  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="identifier">result_type</span> <a class="link" href="sobol_engine.html#id-1_3_34_5_6_39_1_1_1_6_1-bb"><span class="identifier">min</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="identifier">result_type</span> <a class="link" href="sobol_engine.html#id-1_3_34_5_6_39_1_1_1_6_2-bb"><span class="identifier">max</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+
+  <span class="comment">// <a class="link" href="sobol_engine.html#id-1_3_34_5_6_39_1_1_1_7-bb">friend functions</a></span>
+  <span class="keyword">friend</span> <span class="keyword">bool</span> <a class="link" href="sobol_engine.html#id-1_3_34_5_6_39_1_1_1_7_1-bb"><span class="keyword">operator</span><span class="special">==</span></a><span class="special">(</span><span class="keyword">const</span> <a class="link" href="sobol_engine.html" title="Class template sobol_engine">sobol_engine</a> <span class="special">&amp;</span><span class="special">,</span> <span class="keyword">const</span> <a class="link" href="sobol_engine.html" title="Class template sobol_engine">sobol_engine</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">friend</span> <span class="keyword">bool</span> <a class="link" href="sobol_engine.html#id-1_3_34_5_6_39_1_1_1_7_2-bb"><span class="keyword">operator</span><span class="special">!=</span></a><span class="special">(</span><span class="keyword">const</span> <a class="link" href="sobol_engine.html" title="Class template sobol_engine">sobol_engine</a> <span class="special">&amp;</span><span class="special">,</span> <span class="keyword">const</span> <a class="link" href="sobol_engine.html" title="Class template sobol_engine">sobol_engine</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> CharT<span class="special">,</span> <span class="keyword">typename</span> Traits<span class="special">&gt;</span> 
+    <span class="keyword">friend</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">basic_ostream</span><span class="special">&lt;</span> <span class="identifier">CharT</span><span class="special">,</span> <span class="identifier">Traits</span> <span class="special">&gt;</span> <span class="special">&amp;</span> 
+    <a class="link" href="sobol_engine.html#id-1_3_34_5_6_39_1_1_1_7_3-bb"><span class="keyword">operator</span><span class="special">&lt;&lt;</span></a><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">basic_ostream</span><span class="special">&lt;</span> <span class="identifier">CharT</span><span class="special">,</span> <span class="identifier">Traits</span> <span class="special">&gt;</span> <span class="special">&amp;</span><span class="special">,</span> <span class="keyword">const</span> <a class="link" href="sobol_engine.html" title="Class template sobol_engine">sobol_engine</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> CharT<span class="special">,</span> <span class="keyword">typename</span> Traits<span class="special">&gt;</span> 
+    <span class="keyword">friend</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">basic_istream</span><span class="special">&lt;</span> <span class="identifier">CharT</span><span class="special">,</span> <span class="identifier">Traits</span> <span class="special">&gt;</span> <span class="special">&amp;</span> 
+    <a class="link" href="sobol_engine.html#id-1_3_34_5_6_39_1_1_1_7_4-bb"><span class="keyword">operator</span><span class="special">&gt;&gt;</span></a><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">basic_istream</span><span class="special">&lt;</span> <span class="identifier">CharT</span><span class="special">,</span> <span class="identifier">Traits</span> <span class="special">&gt;</span> <span class="special">&amp;</span><span class="special">,</span> <span class="keyword">const</span> <a class="link" href="sobol_engine.html" title="Class template sobol_engine">sobol_engine</a> <span class="special">&amp;</span><span class="special">)</span><span class="special">;</span>
+<span class="special">}</span><span class="special">;</span></pre></div>
+<div class="refsect1">
+<a name="id-1.3.34.5.6.38.3.4"></a><h2>Description</h2>
+<p>Instantiations of class template <a class="link" href="sobol_engine.html" title="Class template sobol_engine">sobol_engine</a> model a <a class="link" href="../../boost_random/reference.html#boost_random.reference.concepts.quasi_random_number_generator" title="Quasi-Random Number Generator">quasi-random number generator</a> . The <a class="link" href="sobol_engine.html" title="Class template sobol_engine">sobol_engine</a> uses the algorithm described in  </p>
+<div class="blockquote"><blockquote class="blockquote"><p>  [Bratley+Fox, TOMS 14, 88 (1988)] and [Antonov+Saleev, USSR Comput. Maths. Math. Phys. 19, 252 (1980)]  </p></blockquote></div>
+<p> </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../../../../doc/src/images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top">
+<p><a class="link" href="sobol_engine.html" title="Class template sobol_engine">sobol_engine</a> skips trivial zeroes at the start of the sequence. For example, the beginning of the 2-dimensional Sobol sequence in <code class="computeroutput"><a class="link" href="uniform_01.html" title="Class template uniform_01">uniform_01</a></code> distribution will look like this: </p>
+<pre class="programlisting"><span class="number">0</span><span class="special">.</span><span class="number">5</span><span class="special">,</span> <span class="number">0</span><span class="special">.</span><span class="number">5</span><span class="special">,</span>
+<span class="number">0</span><span class="special">.</span><span class="number">75</span><span class="special">,</span> <span class="number">0</span><span class="special">.</span><span class="number">25</span><span class="special">,</span>
+<span class="number">0</span><span class="special">.</span><span class="number">25</span><span class="special">,</span> <span class="number">0</span><span class="special">.</span><span class="number">75</span><span class="special">,</span>
+<span class="number">0</span><span class="special">.</span><span class="number">375</span><span class="special">,</span> <span class="number">0</span><span class="special">.</span><span class="number">375</span><span class="special">,</span>
+<span class="number">0</span><span class="special">.</span><span class="number">875</span><span class="special">,</span> <span class="number">0</span><span class="special">.</span><span class="number">875</span><span class="special">,</span>
+<span class="special">...</span>
+</pre>
+</td></tr>
+</table></div>
+<p>
+In the following documentation <code class="computeroutput">X</code> denotes the concrete class of the template <a class="link" href="sobol_engine.html" title="Class template sobol_engine">sobol_engine</a> returning objects of type <code class="computeroutput">UIntType</code>, u and v are the values of <code class="computeroutput">X</code>.</p>
+<p>Some member functions may throw exceptions of type <code class="computeroutput">std::range_error</code>. This happens when the quasi-random domain is exhausted and the generator cannot produce any more values. The length of the low discrepancy sequence is given by <span class="inlinemediaobject"><img src="../../images/random//form_31.png"></span>. </p>
+<div class="refsect2">
+<a name="id-1.3.34.5.6.38.3.4.5"></a><h3>
+<a name="boost.random.sobol_engineconstruct-copy-destruct"></a><code class="computeroutput">sobol_engine</code> 
+        public
+       construct/copy/destruct</h3>
+<div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
+<pre class="literallayout"><span class="keyword">explicit</span> <a name="id-1_3_34_5_6_39_1_1_1_5-bb"></a><span class="identifier">sobol_engine</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span> s<span class="special">)</span><span class="special">;</span></pre>
+<p>Effects: Constructs the default <code class="computeroutput">s</code>-dimensional Sobol quasi-random number generator.</p>
+<p>Throws: bad_alloc, invalid_argument, range_error. </p>
+</li></ol></div>
+</div>
+<div class="refsect2">
+<a name="id-1.3.34.5.6.38.3.4.6"></a><h3>
+<a name="id-1_3_34_5_6_39_1_1_1_4-bb"></a><code class="computeroutput">sobol_engine</code> public member functions</h3>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span> <a name="id-1_3_34_5_6_39_1_1_1_4_1-bb"></a><span class="identifier">dimension</span><span class="special">(</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span></pre>
+<p>Returns: The dimension of of the quasi-random domain.</p>
+<p>Throws: nothing. </p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">void</span> <a name="id-1_3_34_5_6_39_1_1_1_4_2-bb"></a><span class="identifier">seed</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>Throws: nothing. <p>Effects: Resets the quasi-random number generator state to the one given by the default construction. Equivalent to u.seed(0). </p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">void</span> <a name="id-1_3_34_5_6_39_1_1_1_4_3-bb"></a><span class="identifier">seed</span><span class="special">(</span><span class="identifier">UIntType</span> init<span class="special">)</span><span class="special">;</span></pre>Throws: range_error. <p>Effects: Effectively sets the quasi-random number generator state to the <code class="computeroutput">init</code>-th vector in the <code class="computeroutput">s</code>-dimensional quasi-random domain, where <code class="computeroutput">s</code> == X::dimension(). </p>
+<pre class="programlisting"><span class="identifier">X</span> <span class="identifier">u</span><span class="special">,</span> <span class="identifier">v</span><span class="special">;</span>
+<span class="keyword">for</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">i</span> <span class="special">=</span> <span class="number">0</span><span class="special">;</span> <span class="identifier">i</span> <span class="special">&lt;</span> <span class="identifier">N</span><span class="special">;</span> <span class="special">++</span><span class="identifier">i</span><span class="special">)</span>
+    <span class="keyword">for</span><span class="special">(</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span> <span class="identifier">j</span> <span class="special">=</span> <span class="number">0</span><span class="special">;</span> <span class="identifier">j</span> <span class="special">&lt;</span> <span class="identifier">u</span><span class="special">.</span><span class="identifier">dimension</span><span class="special">(</span><span class="special">)</span><span class="special">;</span> <span class="special">++</span><span class="identifier">j</span> <span class="special">)</span>
+        <span class="identifier">u</span><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+<span class="identifier">v</span><span class="special">.</span><span class="identifier">seed</span><span class="special">(</span><span class="identifier">N</span><span class="special">)</span><span class="special">;</span>
+<span class="identifier">assert</span><span class="special">(</span><span class="identifier">u</span><span class="special">(</span><span class="special">)</span> <span class="special">==</span> <span class="identifier">v</span><span class="special">(</span><span class="special">)</span><span class="special">)</span><span class="special">;</span>
+</pre>
+<p> </p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="identifier">result_type</span> <a name="id-1_3_34_5_6_39_1_1_1_4_4-bb"></a><span class="keyword">operator</span><span class="special">(</span><span class="special">)</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<p>Returns: Returns a successive element of an <code class="computeroutput">s</code>-dimensional (s = X::dimension()) vector at each invocation. When all elements are exhausted, X::operator() begins anew with the starting element of a subsequent <code class="computeroutput">s</code>-dimensional vector.</p>
+<p>Throws: range_error. </p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">void</span> <a name="id-1_3_34_5_6_39_1_1_1_4_5-bb"></a><span class="identifier">discard</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">uintmax_t</span> z<span class="special">)</span><span class="special">;</span></pre>
+<p>Effects: Advances *this state as if <code class="computeroutput">z</code> consecutive X::operator() invocations were executed. </p>
+<pre class="programlisting"><span class="identifier">X</span> <span class="identifier">u</span> <span class="special">=</span> <span class="identifier">v</span><span class="special">;</span>
+<span class="keyword">for</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">i</span> <span class="special">=</span> <span class="number">0</span><span class="special">;</span> <span class="identifier">i</span> <span class="special">&lt;</span> <span class="identifier">N</span><span class="special">;</span> <span class="special">++</span><span class="identifier">i</span><span class="special">)</span>
+    <span class="identifier">u</span><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+<span class="identifier">v</span><span class="special">.</span><span class="identifier">discard</span><span class="special">(</span><span class="identifier">N</span><span class="special">)</span><span class="special">;</span>
+<span class="identifier">assert</span><span class="special">(</span><span class="identifier">u</span><span class="special">(</span><span class="special">)</span> <span class="special">==</span> <span class="identifier">v</span><span class="special">(</span><span class="special">)</span><span class="special">)</span><span class="special">;</span>
+</pre>
+<p>Throws: range_error. </p>
+</li>
+</ol></div>
+</div>
+<div class="refsect2">
+<a name="id-1.3.34.5.6.38.3.4.7"></a><h3>
+<a name="id-1_3_34_5_6_39_1_1_1_6-bb"></a><code class="computeroutput">sobol_engine</code> public static functions</h3>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="identifier">result_type</span> <a name="id-1_3_34_5_6_39_1_1_1_6_1-bb"></a><span class="identifier">min</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<p>Returns: Tight lower bound on the set of values returned by operator().</p>
+<p>Throws: nothing. </p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="identifier">result_type</span> <a name="id-1_3_34_5_6_39_1_1_1_6_2-bb"></a><span class="identifier">max</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<p>Returns: Tight upper bound on the set of values returned by operator().</p>
+<p>Throws: nothing. </p>
+</li>
+</ol></div>
+</div>
+<div class="refsect2">
+<a name="id-1.3.34.5.6.38.3.4.8"></a><h3>
+<a name="id-1_3_34_5_6_39_1_1_1_7-bb"></a><code class="computeroutput">sobol_engine</code> friend functions</h3>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">friend</span> <span class="keyword">bool</span> <a name="id-1_3_34_5_6_39_1_1_1_7_1-bb"></a><span class="keyword">operator</span><span class="special">==</span><span class="special">(</span><span class="keyword">const</span> <a class="link" href="sobol_engine.html" title="Class template sobol_engine">sobol_engine</a> <span class="special">&amp;</span> x<span class="special">,</span> <span class="keyword">const</span> <a class="link" href="sobol_engine.html" title="Class template sobol_engine">sobol_engine</a> <span class="special">&amp;</span> y<span class="special">)</span><span class="special">;</span></pre>
+<p>Returns true if the two generators will produce identical sequences of outputs. </p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">friend</span> <span class="keyword">bool</span> <a name="id-1_3_34_5_6_39_1_1_1_7_2-bb"></a><span class="keyword">operator</span><span class="special">!=</span><span class="special">(</span><span class="keyword">const</span> <a class="link" href="sobol_engine.html" title="Class template sobol_engine">sobol_engine</a> <span class="special">&amp;</span> lhs<span class="special">,</span> <span class="keyword">const</span> <a class="link" href="sobol_engine.html" title="Class template sobol_engine">sobol_engine</a> <span class="special">&amp;</span> rhs<span class="special">)</span><span class="special">;</span></pre>
+<p>Returns true if the two generators will produce different sequences of outputs. </p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> CharT<span class="special">,</span> <span class="keyword">typename</span> Traits<span class="special">&gt;</span> 
+  <span class="keyword">friend</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">basic_ostream</span><span class="special">&lt;</span> <span class="identifier">CharT</span><span class="special">,</span> <span class="identifier">Traits</span> <span class="special">&gt;</span> <span class="special">&amp;</span> 
+  <a name="id-1_3_34_5_6_39_1_1_1_7_3-bb"></a><span class="keyword">operator</span><span class="special">&lt;&lt;</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">basic_ostream</span><span class="special">&lt;</span> <span class="identifier">CharT</span><span class="special">,</span> <span class="identifier">Traits</span> <span class="special">&gt;</span> <span class="special">&amp;</span> os<span class="special">,</span> <span class="keyword">const</span> <a class="link" href="sobol_engine.html" title="Class template sobol_engine">sobol_engine</a> <span class="special">&amp;</span> s<span class="special">)</span><span class="special">;</span></pre>
+<p>Writes the textual representation of the generator to a <code class="computeroutput">std::ostream</code>. </p>
+</li>
+<li class="listitem">
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> CharT<span class="special">,</span> <span class="keyword">typename</span> Traits<span class="special">&gt;</span> 
+  <span class="keyword">friend</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">basic_istream</span><span class="special">&lt;</span> <span class="identifier">CharT</span><span class="special">,</span> <span class="identifier">Traits</span> <span class="special">&gt;</span> <span class="special">&amp;</span> 
+  <a name="id-1_3_34_5_6_39_1_1_1_7_4-bb"></a><span class="keyword">operator</span><span class="special">&gt;&gt;</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">basic_istream</span><span class="special">&lt;</span> <span class="identifier">CharT</span><span class="special">,</span> <span class="identifier">Traits</span> <span class="special">&gt;</span> <span class="special">&amp;</span> is<span class="special">,</span> <span class="keyword">const</span> <a class="link" href="sobol_engine.html" title="Class template sobol_engine">sobol_engine</a> <span class="special">&amp;</span> s<span class="special">)</span><span class="special">;</span></pre>
+<p>Reads the textual representation of the generator from a <code class="computeroutput">std::istream</code>. </p>
+</li>
+</ol></div>
+</div>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2000-2005 Jens Maurer<br>Copyright &#169; 2009, 2010 Steven Watanabe<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="knuth_b.html"><img src="../../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../../boost_random/reference.html#header.boost.random.sobol_hpp"><img src="../../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="sobol.html"><img src="../../../../doc/src/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

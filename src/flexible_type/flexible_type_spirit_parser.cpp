@@ -213,6 +213,7 @@ flexible_type_parser::general_flexible_type_parse(const char** str, size_t len) 
     ret.second = qi::phrase_parse((*str), (*str) + len, 
                                   *non_space_parser,
                                   qi::eoi,
+                                  qi::skip_flag::dont_postskip,
                                   ret.first);
   }
   if (ret.second) {

@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Limitations</title>
+<link rel="stylesheet" href="../../../doc/src/boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../index.html" title="The Boost C++ Libraries BoostBook Documentation Subset">
+<link rel="up" href="../atomic.html" title="Chapter&#160;6.&#160;Boost.Atomic">
+<link rel="prev" href="usage_examples.html" title="Usage examples">
+<link rel="next" href="porting.html" title="Porting">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="../../../boost.png"></td>
+<td align="center"><a href="../../../index.html">Home</a></td>
+<td align="center"><a href="../../../libs/libraries.htm">Libraries</a></td>
+<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
+<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
+<td align="center"><a href="../../../more/index.htm">More</a></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="usage_examples.html"><img src="../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../atomic.html"><img src="../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="porting.html"><img src="../../../doc/src/images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="atomic.limitations"></a><a class="link" href="limitations.html" title="Limitations">Limitations</a>
+</h2></div></div></div>
+<p>
+      While <span class="bold"><strong>Boost.Atomic</strong></span> strives to implement the
+      atomic operations from C++11 and later as faithfully as possible, there are
+      a few limitations that cannot be lifted without compiler support:
+    </p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem">
+          <span class="bold"><strong>Aggregate initialization syntax is not supported</strong></span>:
+          Since <span class="bold"><strong>Boost.Atomic</strong></span> sometimes uses storage
+          type that is different from the value type, the <code class="computeroutput"><span class="identifier">atomic</span><span class="special">&lt;&gt;</span></code> template needs an initialization
+          constructor that performs the necessary conversion. This makes <code class="computeroutput"><span class="identifier">atomic</span><span class="special">&lt;&gt;</span></code>
+          a non-aggregate type and prohibits aggregate initialization syntax (<code class="computeroutput"><span class="identifier">atomic</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">a</span> <span class="special">=</span> <span class="special">{</span><span class="number">10</span><span class="special">}</span></code>).
+          <span class="bold"><strong>Boost.Atomic</strong></span> does support direct and unified
+          initialization syntax though. <span class="bold"><strong>Advice</strong></span>:
+          Always use direct initialization (<code class="computeroutput"><span class="identifier">atomic</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">a</span><span class="special">(</span><span class="number">10</span><span class="special">)</span></code>)
+          or unified initialization (<code class="computeroutput"><span class="identifier">atomic</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">a</span><span class="special">{</span><span class="number">10</span><span class="special">}</span></code>)
+          syntax.
+        </li>
+<li class="listitem">
+          <span class="bold"><strong>Initializing constructor is not <code class="computeroutput"><span class="keyword">constexpr</span></code>
+          for some types</strong></span>: For value types other than integral types and
+          <code class="computeroutput"><span class="keyword">bool</span></code>, <code class="computeroutput"><span class="identifier">atomic</span><span class="special">&lt;&gt;</span></code> initializing constructor needs
+          to perform runtime conversion to the storage type. This limitation may
+          be lifted for more categories of types in the future.
+        </li>
+<li class="listitem">
+          <span class="bold"><strong>Default constructor is not trivial in C++03</strong></span>:
+          Because the initializing constructor has to be defined in <code class="computeroutput"><span class="identifier">atomic</span><span class="special">&lt;&gt;</span></code>,
+          the default constructor must also be defined. In C++03 the constructor
+          cannot be defined as defaulted and therefore it is not trivial. In C++11
+          the constructor is defaulted (and trivial, if the default constructor of
+          the value type is). In any case, the default constructor of <code class="computeroutput"><span class="identifier">atomic</span><span class="special">&lt;&gt;</span></code>
+          performs default initialization of the atomic value, as required in C++11.
+          <span class="bold"><strong>Advice</strong></span>: In C++03, do not use <span class="bold"><strong>Boost.Atomic</strong></span> in contexts where trivial default constructor
+          is important (e.g. as a global variable which is required to be statically
+          initialized).
+        </li>
+<li class="listitem">
+          <span class="bold"><strong>C++03 compilers may transform computation dependency
+          to control dependency</strong></span>: Crucially, <code class="computeroutput"><span class="identifier">memory_order_consume</span></code>
+          only affects computationally-dependent operations, but in general there
+          is nothing preventing a compiler from transforming a computation dependency
+          into a control dependency. A fully compliant C++11 compiler would be forbidden
+          from such a transformation, but in practice most if not all compilers have
+          chosen to promote <code class="computeroutput"><span class="identifier">memory_order_consume</span></code>
+          to <code class="computeroutput"><span class="identifier">memory_order_acquire</span></code>
+          instead (see <a href="https://gcc.gnu.org/bugzilla/show_bug.cgi?id=59448" target="_top">this</a>
+          gcc bug for example). In the current implementation <span class="bold"><strong>Boost.Atomic</strong></span>
+          follows that trend, but this may change in the future. <span class="bold"><strong>Advice</strong></span>:
+          In general, avoid <code class="computeroutput"><span class="identifier">memory_order_consume</span></code>
+          and use <code class="computeroutput"><span class="identifier">memory_order_acquire</span></code>
+          instead. Use <code class="computeroutput"><span class="identifier">memory_order_consume</span></code>
+          only in conjunction with pointer values, and only if you can ensure that
+          the compiler cannot speculate and transform these into control dependencies.
+        </li>
+<li class="listitem">
+          <span class="bold"><strong>Fence operations may enforce "too strong"
+          compiler ordering</strong></span>: Semantically, <code class="computeroutput"><span class="identifier">memory_order_acquire</span></code>/<code class="computeroutput"><span class="identifier">memory_order_consume</span></code> and <code class="computeroutput"><span class="identifier">memory_order_release</span></code> need to restrain
+          reordering of memory operations only in one direction. Since in C++03 there
+          is no way to express this constraint to the compiler, these act as "full
+          compiler barriers" in C++03 implementation. In corner cases this may
+          result in a slightly less efficient code than a C++11 compiler could generate.
+          <span class="bold"><strong>Boost.Atomic</strong></span> will use compiler intrinsics,
+          if possible, to express the proper ordering constraints.
+        </li>
+<li class="listitem">
+          <span class="bold"><strong>Atomic operations may enforce "too strong"
+          memory ordering in debug mode</strong></span>: On some compilers, disabling
+          optimizations makes it impossible to provide memory ordering constraints
+          as compile-time constants to the compiler intrinsics. This causes the compiler
+          to silently ignore the provided constraints and choose the "strongest"
+          memory order (<code class="computeroutput"><span class="identifier">memory_order_seq_cst</span></code>)
+          to generate code. Not only this reduces performance, this may hide bugs
+          in the user's code (e.g. if the user used a wrong memory order constraint,
+          which caused a data race). <span class="bold"><strong>Advice</strong></span>: Always
+          test your code with optimizations enabled.
+        </li>
+<li class="listitem">
+          <span class="bold"><strong>No interprocess fallback</strong></span>: using <code class="computeroutput"><span class="identifier">atomic</span><span class="special">&lt;</span><span class="identifier">T</span><span class="special">&gt;</span></code>
+          in shared memory only works correctly, if <code class="computeroutput"><span class="identifier">atomic</span><span class="special">&lt;</span><span class="identifier">T</span><span class="special">&gt;::</span><span class="identifier">is_lock_free</span><span class="special">()</span> <span class="special">==</span> <span class="keyword">true</span></code>.
+        </li>
+<li class="listitem">
+          <span class="bold"><strong>Signed integers must use <a href="https://en.wikipedia.org/wiki/Two%27s_complement" target="_top">two's
+          complement</a> representation</strong></span>: <span class="bold"><strong>Boost.Atomic</strong></span>
+          makes this requirement in order to implement conversions between signed
+          and unsigned integers internally. C++11 requires all atomic arithmetic
+          operations on integers to be well defined according to two's complement
+          arithmetics, which means that Boost.Atomic has to operate on unsigned integers
+          internally to avoid undefined behavior that results from signed integer
+          overflows. Platforms with other signed integer representations are not
+          supported.
+        </li>
+</ul></div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2011 Helge Bahmann<br>Copyright &#169; 2012 Tim Blechmann<br>Copyright &#169; 2013, 2017, 2018 Andrey Semashev<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="usage_examples.html"><img src="../../../doc/src/images/prev.png" alt="Prev"></a><a accesskey="u" href="../atomic.html"><img src="../../../doc/src/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../../../doc/src/images/home.png" alt="Home"></a><a accesskey="n" href="porting.html"><img src="../../../doc/src/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

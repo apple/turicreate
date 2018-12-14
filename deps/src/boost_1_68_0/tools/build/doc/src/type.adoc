@@ -1,0 +1,108 @@
+[[bbv2.reference.modules.type]]
+= type
+
+Deals with target type declaration and defines target class which
+supports typed targets.
+
+1. [[bbv2.reference.modules.type.register]] `rule register ( type : suffixes * : base-type ? )`
++
+Registers a target type, possible derived from a `base-type`. Providing
+a list of suffixes here is a shortcut for separately calling the
+link:#bbv2.reference.modules.type.register-suffixes[register-suffixes]
+rule with the given suffixes and the
+link:#bbv2.reference.modules.type.set-generated-target-suffix[set-generated-target-suffix]
+rule with the first given suffix.
+
+2. [[bbv2.reference.modules.type.register-suffixes]] `rule register-suffixes ( suffixes + : type )`
++
+Specifies that files with suffix from `suffixes` be recognized as
+targets of type `type`. Issues an error if a different type is already
+specified for any of the suffixes.
+
+3. [[bbv2.reference.modules.type.registered]] `rule registered ( type )`
++
+Returns true iff type has been registered.
+
+4. [[bbv2.reference.modules.type.validate]] `rule validate ( type )`
++
+Issues an error if `type` is unknown.
+
+5. [[bbv2.reference.modules.type.set-scanner]] `rule set-scanner ( type : scanner )`
++
+Sets a scanner class that will be used for this type.
+
+6. [[bbv2.reference.modules.type.get-scanner]] `rule get-scanner ( type : property-set )`
++
+Returns a scanner instance appropriate to `type` and `property-set`.
+
+7. [[bbv2.reference.modules.type.base]] `rule base ( type )`
++
+Returns a base type for the given type or nothing in case the given type
+is not derived.
+
+8. [[bbv2.reference.modules.type.all-bases]] `rule all-bases ( type )`
++
+Returns the given type and all of its base types in order of their
+distance from type.
+
+9. [[bbv2.reference.modules.type.all-derived]] `rule all-derived ( type )`
++
+Returns the given type and all of its derived types in order of their
+distance from type.
+
+10. [[bbv2.reference.modules.type.is-derived]] `rule is-derived ( type base )`
++
+Returns true if `type` is equal to `base` or has `base` as its direct or
+indirect base.
+
+11. [[bbv2.reference.modules.type.set-generated-target-suffix]] `rule set-generated-target-suffix ( type : properties * : suffix )`
++
+Sets a file suffix to be used when generating a target of `type` with
+the specified properties. Can be called with no properties if no suffix
+has already been specified for the `type`. The `suffix` parameter can be
+an empty string (`""`) to indicate that no suffix should be used.
++
+Note that this does not cause files with `suffix` to be automatically
+recognized as being of `type`. Two different types can use the same
+suffix for their generated files but only one type can be auto-detected
+for a file with that suffix. User should explicitly specify which one
+using the
+link:#bbv2.reference.modules.type.register-suffixes[register-suffixes]
+rule.
+
+12. [[bbv2.reference.modules.type.change-generated-target-suffix]] `rule change-generated-target-suffix ( type : properties * : suffix )`
++
+Change the suffix previously registered for this type/properties
+combination. If suffix is not yet specified, sets it.
+
+13. [[bbv2.reference.modules.type.generated-target-suffix]] `rule generated-target-suffix ( type : property-set )`
++
+Returns the suffix used when generating a file of `type` with the given
+properties.
+
+14. [[bbv2.reference.modules.type.set-generated-target-prefix]] `rule set-generated-target-prefix ( type : properties * : prefix )`
++
+Sets a target prefix that should be used when generating targets of
+`type` with the specified properties. Can be called with empty
+properties if no prefix for `type` has been specified yet.
++
+The `prefix` parameter can be empty string (`""`) to indicate that no
+prefix should be used.
++
+Usage example: library names use the `"lib"` prefix on unix.
+
+15. [[bbv2.reference.modules.type.change-generated-target-prefix]] `rule change-generated-target-prefix ( type : properties * : prefix )`
++
+Change the prefix previously registered for this type/properties
+combination. If prefix is not yet specified, sets it.
+
+16. [[bbv2.reference.modules.type.generated-target-prefix]] `rule generated-target-prefix ( type : property-set )`
++
+Returns the prefix used when generating a file of `type` with the given
+properties.
+
+17. [[bbv2.reference.modules.type.type]] `rule type ( filename )`
++
+Returns file type given its name. If there are several dots in filename,
+tries each suffix. E.g. for name of "file.so.1.2" suffixes "2", "1", and
+"so" will be tried.
