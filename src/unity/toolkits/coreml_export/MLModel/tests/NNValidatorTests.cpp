@@ -1,12 +1,15 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
- *
- * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
- */
+//
+//  NNValidatorTests.cpp
+//  libmlmodelspec
+//
+//  Created by Bill March on 3/16/17.
+//  Copyright © 2017 Apple. All rights reserved.
+//
+
 #include "MLModelTests.hpp"
 #include "../src/Format.hpp"
 #include "../src/Model.hpp"
-#include "NeuralNetworkShapes.hpp"
+#include "../src/NeuralNetworkShapes.hpp"
 
 #include "framework/TestUtils.hpp"
 
@@ -1746,7 +1749,7 @@ int testValidSlice1() {
     topIn->set_name("input");
     auto *shape = topIn->mutable_type()->mutable_multiarraytype();
     shape->set_datatype(Specification::ArrayFeatureType_ArrayDataType_DOUBLE);
-    shape->add_shape(10);
+    shape->add_shape(17);
     shape->add_shape(11);
     shape->add_shape(12);
     
